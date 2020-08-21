@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CB624CB56
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9641E24CB2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgHUDW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:22:28 -0400
-Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:42081
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727888AbgHUDW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:22:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GOA4VSPKU1ktgNDwkaZQfKIX10GTQInIDanr1eGJ2nzJlZHLA/VPALTgYRC/273Gf29GlKNjty1aK3bTh0tTIlNhHj+z94Xa2ERKEnV/ObyZ108SsBXMuh9YyaKzl+tsDscrV2NLsw/czEPosl+MPzmGz266U/cRqeAThINULOQvEQy5ndjhfuLBKsHWPo3XO6T4DS6LbYGNI3phUY4iawUSd85FLuEJTmEICh6ojauoYA3MYSZiTUGw3/d5e8pAZdb68VTucUgRDgSt1qVxxnOIKzHl/dQvcqOhWPciRP/I6+E2ta8aZKK4AxorfNnryWJutlOBgzqiC0yeLBLoFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+KFooVM9k3BXdfBcjsr9k3COPM2XXtXOyUae9hfhpww=;
- b=RxUlQyhN8Fvwc/yu8E4TMlUlt3LPzmIR8qYVAG+he9qTI/eee6b6vwkLOcowpqVhhAG0/tlysp4fsFBscSRCP/NjvRfLv3hmi4bO8a7RW2esDfADfdvYF73GO7brG784c44yiUKjjEUWY5xGsisULZbciKvb3b8RmtP43gZFNZooxsBGDD0/xpWojJq36DxowOEaUjZ9c0MhfjTgLvyBtkwqGw2UJir5easlhCV5pD8P+HsRiQojx/ZyNU2cqnkavpEa1eLxwrr3/j6pPrbbtxStqH30BTSnug3j9KOXv6g7XKxxh061MInf2HtSJPyPQpn98eNYK351JHRChaU3SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1727112AbgHUDOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbgHUDOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:14:18 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA56C061385;
+        Thu, 20 Aug 2020 20:14:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 128so336348pgd.5;
+        Thu, 20 Aug 2020 20:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+KFooVM9k3BXdfBcjsr9k3COPM2XXtXOyUae9hfhpww=;
- b=h7BDphG3HmHaTsAM+U2LsrIL47TMxUpoFXEVzk4cfKX3RXc6Cbv1g+9+hMrBrcZEHxCq91jtxyGE2BKPidYWALYLNb736jCWphT4edu7Ym0IzPZJUWNJCHgDQQ2dSTRqbRaOKXMXHFbo24aFDob8GKA620l8wVa03R0dAp8G0FE=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB4617.namprd03.prod.outlook.com (2603:10b6:5:15e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Fri, 21 Aug
- 2020 03:22:24 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3305.025; Fri, 21 Aug 2020
- 03:22:24 +0000
-Date:   Fri, 21 Aug 2020 11:14:03 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 04/15] regulator: fixed: Fix W=1 build warnings when
- CONFIG_OF=n
-Message-ID: <20200821111403.3e8b58a3@xhacker.debian>
-In-Reply-To: <20200821111135.0b958d3a@xhacker.debian>
-References: <20200821111135.0b958d3a@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: TY2PR06CA0043.apcprd06.prod.outlook.com
- (2603:1096:404:2e::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/YxLwfqRT0LzVr6sU/PoWPx80Kd+H0Hr2LJri5kk/Pc=;
+        b=FSf5Jpl9/IFj6kOf3jntWnnXmVi0fLzyoVNQd9Et5l837ZviEz5bE51u7MyzY6jN8t
+         1g9QNe55Es1Nb1JFpV+rTReUp4PBLd/w1e4Ub0VahG7xJ+3rH20rvqP+0UXh/87EGoFO
+         pL9rqZH508dmmnpYu4gIA3rrQ50GklgzWc9//pBTGS/krgazkAdC/0lb83YMtgVqQ1DB
+         yubYb7m7vreAwvGmz3sBZwhPm2//3l7q5G3aB2LawHC+oVLKanL0o7S0sPo1KCEkTwav
+         soByUFvv+zRuPOu7B0Wy1d2ItNz2SDssVb/rRDupRH1JyZXec7eTt3BvN3ni3zpq0kn6
+         coxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/YxLwfqRT0LzVr6sU/PoWPx80Kd+H0Hr2LJri5kk/Pc=;
+        b=mpjSOZ6GzqJtBTU6MH4CbNhgAWRTHWy5zPTOQ6IhXx4zNGtG1KrIUBLmGppJMCS8Cj
+         KuwffJoviuwVZ00Lvgf39tg901sVKrEbbN6G9BmcmlrTTlIGIYIvkN0PfNinrYasRjyC
+         usG88kWEgx954Q0UB4apc73qWQuXDK+GMbnh7mAirsNNQwuytUydMkP5eVyQT2N/fD/0
+         S+kyj3cZ4Azo44as+rR29+Dl1iW/vgcUdyFQ7IeP952lea5wLoZcMpzVEyZ5qxZnJz9g
+         XLRybjg6z/Q6uvI/L1N0sTCobNjZA6Lw/6oJxYN7YfSlQiMo6J7PYkpkT4KfHMVVeTSC
+         eY+Q==
+X-Gm-Message-State: AOAM532RAo7pOnUqKKF20kyDQh3yqOMK2f+5ee9e7rr4n6qc/xLSog2Z
+        PLOyxhFJUgb2X5MVy2X6Wsp6tl40Vzr/REn1GAU=
+X-Google-Smtp-Source: ABdhPJz4sS4YBiY4YgsXDfQAOA6FAJKd3JDRxKn3w9h0Gc1psHawgfUEVTaUUsVEuEbrx9ShztbGLA==
+X-Received: by 2002:a63:5a0f:: with SMTP id o15mr839105pgb.187.1597979657741;
+        Thu, 20 Aug 2020 20:14:17 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id np4sm376656pjb.4.2020.08.20.20.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 20:14:17 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 21 Aug 2020 11:14:04 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     netdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Manish Chopra <manishc@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 3/3] staging: qlge: clean up code that dump info to dmesg
+Message-ID: <20200821031404.mjlqgcvvz3htxoj2@Rk>
+References: <20200814160601.901682-1-coiby.xu@gmail.com>
+ <20200814160601.901682-4-coiby.xu@gmail.com>
+ <20200816025717.GA28176@f3>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY2PR06CA0043.apcprd06.prod.outlook.com (2603:1096:404:2e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Fri, 21 Aug 2020 03:22:20 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 17f285f0-c33c-4833-955a-08d845816c54
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4617:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB4617B3AD52316BAE39445505ED5B0@DM6PR03MB4617.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:530;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NgbT0wyE3/QKJES+Qiw70MKAkf5Ksx/ZtCNb4kuBJGjYqtfMaPHSLsCPUAs747lsotaM89yIleT0TfZlJGYkXgRLll31Aj5CBl27v0WRwLqvb8yb16cg1vONXiNNd5qVafi7ZJDf95+77Q6ruJaFtslWJpKuJjoELxMGivn1hKHEd0l0TDs/QzYN1E+5ISk9Q72jhhjuRB/ta75e3k5doci4/V8IbTuDbyM3+bhXxFgfSqU4wq+qhjJr4WK1yC5mNp3QkhIoWjZZxX95mgeOSQZkTYweehlRXWjkUcq8JdiH74YaCtQBhXE4qOIIRloW0AAba5hj9NabakBH4ddiy6ytPgwvfKQ5DMAaw+EwwF13uVGqIQhuH2fjWbNo5qpk
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(39860400002)(346002)(66946007)(478600001)(8936002)(1076003)(7416002)(66556008)(6486002)(52116002)(110011004)(9686003)(4326008)(66476007)(8676002)(6666004)(5660300002)(86362001)(956004)(16576012)(186003)(316002)(26005)(110136005)(2906002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: AU5iz4Xi3lCSfGJR/zbir2YV7p8OyXCgy86bUeEvsBLM1KRedcllnH0xO01tdp1nRedztZO9mdIb7Iuii5i2G61t+ZULOIgBMrhyGos2Sb9dJnE4jVECoX6C1Z6Ujt1HTm66Lj5xV7CMMD9UJkfb1igDo4rFgyyps+N5KvhE9+0fpSyaj8jWW9FAkTFH2jnaWACTs5Hp0RzS908+yg5S2ekaHSnwamx/AyYOsL1rdQhldiXDPwLLN7DFc0lySI29rjV1dWapj8ct5DAPq3SkPQFP38ghjOk/KeQXHwu9rWoVelIKJ3zrpfTJHG66rnwlfjEDuFKKjCkN/AJqTpHYEMwFtglj75bbBc9InRuyqeEktN7Rb/m1PywGZX6XJXU96fmTsJxkYEgr2kyxxSIcfuNsfWW3Xa5KIjeTJcZRSio6ivYsfgwu/nUAvbP6W95UrFgh9qaS+5m8VPjMtQZghUp7zhssFqt+33EtAkdbJGe+WzxAxDsaJ0uLDWXHZN4SCV5HFoUWp/VCTiVOcRq3QIrimBnRKUYJdDTvEhLG8Q2wYA7z8NxG2u2YuGScr4Sn8QOgSmMcj/s7DGdtqsbwwznjE5eS5mex0lTIN/HYwRqqdj1tibHeS7AL6aWNwXd5jAs9r3x6O4IA7eP3Yfos2w==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17f285f0-c33c-4833-955a-08d845816c54
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2020 03:22:24.8562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LhYPbqWDQf/J9BXAJRZUpzEL+9rw7XlUyEDvGeH+9v1lN4FuHv6IztGPon3MyhCABntKqjYZMzkf1yqmKlRDDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4617
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200816025717.GA28176@f3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warnings when CONFIG_OF=3Dn:
+On Sun, Aug 16, 2020 at 11:57:17AM +0900, Benjamin Poirier wrote:
+>On 2020-08-15 00:06 +0800, Coiby Xu wrote:
+>> The related code are not necessary because,
+>> - Device status and general registers can be obtained by ethtool.
+>> - Coredump can be done via devlink health reporter.
+>> - Structure related to the hardware (struct ql_adapter) can be obtained
+>>   by crash or drgn.
+>
+>I would suggest to add the drgn script from the cover letter to
+>Documentation/networking/device_drivers/qlogic/
 
-drivers/regulator/fixed.c:48:36: warning: =E2=80=98fixed_clkenable_data=E2=
-=80=99 defined but not used [-Wunused-const-variable=3D]
-   48 | static const struct fixed_dev_type fixed_clkenable_data =3D {
-      |                                    ^~~~~~~~~~~~~~~~~~~~
-drivers/regulator/fixed.c:44:36: warning: =E2=80=98fixed_voltage_data=E2=80=
-=99 defined but not used [-Wunused-const-variable=3D]
-   44 | static const struct fixed_dev_type fixed_voltage_data =3D {
-      |                                    ^~~~~~~~~~~~~~~~~~
+Thank you for this suggestion! I planned to send a pull request to
+https://github.com/osandov/drgn. This is a better idea.
+>
+>I would also suggest to submit a separate patch now which fixes the
+>build breakage reported in <20200629053004.GA6165@f3> while you work on
+>removing that code.
+>
+I'll send a single patch to fix that issue before preparing for v1
+of this work.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/regulator/fixed.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+>>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  drivers/staging/qlge/qlge.h         |  82 ----
+>>  drivers/staging/qlge/qlge_dbg.c     | 672 ----------------------------
+>>  drivers/staging/qlge/qlge_ethtool.c |   1 -
+>>  drivers/staging/qlge/qlge_main.c    |   6 -
+>>  4 files changed, 761 deletions(-)
+>>
+>[...]
+>> diff --git a/drivers/staging/qlge/qlge_dbg.c b/drivers/staging/qlge/qlge_dbg.c
+>> index 058889687907..368394123d16 100644
+>> --- a/drivers/staging/qlge/qlge_dbg.c
+>> +++ b/drivers/staging/qlge/qlge_dbg.c
+>> @@ -1326,675 +1326,3 @@ void ql_mpi_core_to_log(struct work_struct *work)
+>>  		       sizeof(*qdev->mpi_coredump), false);
+>>  }
+>>
+>> -#ifdef QL_REG_DUMP
+>> -static void ql_dump_intr_states(struct ql_adapter *qdev)
+>> -{
+>[...]
+>> -	}
+>> -}
+>> -#endif
+>
+>This leaves a stray newline at the end of the file and also does not
+>apply over latest staging.
 
-diff --git a/drivers/regulator/fixed.c b/drivers/regulator/fixed.c
-index 142a70a89153..5a03fd86ad0a 100644
---- a/drivers/regulator/fixed.c
-+++ b/drivers/regulator/fixed.c
-@@ -41,14 +41,6 @@ struct fixed_dev_type {
- 	bool has_enable_clock;
- };
-=20
--static const struct fixed_dev_type fixed_voltage_data =3D {
--	.has_enable_clock =3D false,
--};
--
--static const struct fixed_dev_type fixed_clkenable_data =3D {
--	.has_enable_clock =3D true,
--};
--
- static int reg_clock_enable(struct regulator_dev *rdev)
- {
- 	struct fixed_voltage_data *priv =3D rdev_get_drvdata(rdev);
-@@ -260,6 +252,14 @@ static int reg_fixed_voltage_probe(struct platform_dev=
-ice *pdev)
- }
-=20
- #if defined(CONFIG_OF)
-+static const struct fixed_dev_type fixed_voltage_data =3D {
-+	.has_enable_clock =3D false,
-+};
-+
-+static const struct fixed_dev_type fixed_clkenable_data =3D {
-+	.has_enable_clock =3D true,
-+};
-+
- static const struct of_device_id fixed_of_match[] =3D {
- 	{
- 		.compatible =3D "regulator-fixed",
---=20
-2.28.0
+I will fix it in v1. Thank you for reviewing this patch!
 
+--
+Best regards,
+Coiby
