@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E6624D5A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9205024D5AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgHUNBt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Aug 2020 09:01:49 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:62309 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727123AbgHUNBs (ORCPT
+        id S1728508AbgHUNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727123AbgHUNDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:01:48 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22198351-1500050 
-        for multiple; Fri, 21 Aug 2020 14:01:43 +0100
-Content-Type: text/plain; charset="utf-8"
+        Fri, 21 Aug 2020 09:03:55 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF259C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:03:53 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id y17so507183uaq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O+UdDeZ/2tqE7MfvVL8jobOjZYYl/iWCp3SMwXE+pYI=;
+        b=oye/IAhwoGHhUTKN0VDCeB9+n7Ej5BVwsxTVFBrPEUrAH3agaKG/a8gY/MpxPCDPQL
+         RhDAZBl1ESEo046+/7L962m/G0G9ZBoKssMsZ+UiQwq2KTW5KSLNgdLqtsdWuBFMNoSA
+         O9WJmv6LyF5YRFDFll1a4lw6Q7JgIPX7ffEvBu28jH1DXV46fBULX011gWhf2xqU7yOY
+         +cM47S3PVLc7HRUZz2U+fCtvWaLE2sp9piQtHatgqWV/iNGFqMxPXQ2LHxvfPCGwhYms
+         o6DrsY5zx0QTBIDLTElUd4P5ONhgafNb8/ZRgmSFJu1EF/r9N+KAZPUXAYrqBvv7Ifs/
+         yvzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O+UdDeZ/2tqE7MfvVL8jobOjZYYl/iWCp3SMwXE+pYI=;
+        b=p0uHn53b49O3N+wYdhQM8q9TDwS0CGhrkjg9CHKmmqNnUi9J9jsaz5PJf/4XUOonKw
+         yVxAEPd1d+UF6hEEeAB5CltLZw+BBNQIO3FG2ZFxvuJB8DF5T5ifsyvL8BporyCDcaHu
+         QX8ih2igBMipMm/IBxH8Gx8Xrv+XvYPGygks9wpbShZAHhb18Qd0+Yrh/OHGmBP3Cuek
+         C2ZYQR2Xygn56QHJ1bSAA3+hA3OJRzbmKgYfnHzKYpd8+k5+pAhjaWfjSpC73n7iBUDh
+         CmS1UYk3UcS4zqIQrUjtjseNIQW2sm74qZhmfEU3i7xal1/X3szv4oooenHIh3vUodz8
+         st5Q==
+X-Gm-Message-State: AOAM532r/rnhbJ7waz6dE6OWKBSLGeR9z44JRz1Vj3bb0Zu0Efo2cLd3
+        FRkKU9kj0hp/XDM/6HTLlIjox6nk5fy02QSo8LnbXA==
+X-Google-Smtp-Source: ABdhPJxDTEfIcRtV8RMQHOwlZMFRP/4rR96hCwMj4qXIk7uEX+dsYaSghRhbtxsDlt6Dcfzr8CA6M9pC/tkoV/n7lWU=
+X-Received: by 2002:ab0:65c3:: with SMTP id n3mr1386883uaq.100.1598015032299;
+ Fri, 21 Aug 2020 06:03:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAHk-=wiu1WHD0x0VXKoLQGy43S7KLCY=Yd-TPDh=7tDW08554w@mail.gmail.com>
-References: <20200821085011.28878-1-chris@chris-wilson.co.uk> <20200821085011.28878-2-chris@chris-wilson.co.uk> <CAHk-=wiu1WHD0x0VXKoLQGy43S7KLCY=Yd-TPDh=7tDW08554w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drm/i915/gem: Sync the vmap PTEs upon construction
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Linux-MM <linux-mm@kvack.org>, Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dave Airlie <airlied@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        stable <stable@vger.kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 21 Aug 2020 14:01:41 +0100
-Message-ID: <159801490171.29194.13892566081151243171@build.alporthouse.com>
-User-Agent: alot/0.9
+References: <20200718090614.88946-1-grandmaster@al2klimov.de>
+In-Reply-To: <20200718090614.88946-1-grandmaster@al2klimov.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 21 Aug 2020 15:03:14 +0200
+Message-ID: <CAPDyKFrzq0dGKJtR4Ncp670-EdsoHBhWQQ=30dUnK3FM_TmWQQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci_am654: Replace HTTP links with HTTPS ones
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Linus Torvalds (2020-08-21 13:41:03)
-> On Fri, Aug 21, 2020 at 1:50 AM Chris Wilson <chris@chris-wilson.co.uk> wrote:
-> >
-> > Since synchronising the PTE after assignment is a manual step, use the
-> > newly exported interface to flush the PTE after assigning via
-> > alloc_vm_area().
-> 
-> This commit message doesn't make much sense to me.
-> 
-> Are you talking about synchronizing the page directory structure
-> across processes after possibly creating new kernel page tables?
-> 
-> Because that has nothing to do with the PTE. It's all about making
-> sure the _upper_ layers of the page directories are populated
-> everywhere..
-> 
-> The name seems off to me too - what are you "flushing"? (And yes, I
-> know about the flush_cache_vmap(), but that looks just bogus, since
-> any non-mapped area shouldn't have any virtual caches to begin with,
-> so I suspect that is just the crazy architectures being confused -
-> flush_cache_vmap() is a no-op on any sane architecture - and powerpc
-> that mis-uses it for other things).
+On Sat, 18 Jul 2020 at 11:06, Alexander A. Klimov
+<grandmaster@al2klimov.de> wrote:
+>
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 
-I was trying to mimic map_kernel_range() which does the
-arch_sync_kernel_mappings and flush_cache_vmap on top of the
-apply_to_page_range performed by alloc_vm_area, because buried away in
-there, on x86-32, is a set_pmd(). Since map_kernel_range() wrapped
-map_kernel_range_noflush(), flush seemed like the right verb.
+Applied for next, thanks!
 
-Joerg pointed out that the sync belonged to __apply_to_page_range and
-fixed it in situ.
--Chris
+Kind regards
+Uffe
+
+
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+>
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+>
+>  If you apply the patch, please let me know.
+>
+>
+>  drivers/mmc/host/sdhci_am654.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+> index 061b4398a4f1..f2c89f0c0263 100644
+> --- a/drivers/mmc/host/sdhci_am654.c
+> +++ b/drivers/mmc/host/sdhci_am654.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * sdhci_am654.c - SDHCI driver for TI's AM654 SOCs
+>   *
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
+>   *
+>   */
+>  #include <linux/clk.h>
+> --
+> 2.27.0
+>
