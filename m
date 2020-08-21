@@ -2,168 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEA724DAA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFC024DAAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgHUQYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728468AbgHUQVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:21:36 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C6DB22B4D;
-        Fri, 21 Aug 2020 16:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026843;
-        bh=/lMY8eePtvGNjO1BZEJlEb7FchkMJ4xt/2arr+COr9s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wpDy5J+Wqt/p6eDpK72ylJsCAb9crW+cfgLML2vE0ojf05eSwJoaMyk/4civWVnkT
-         S75fT4IfFatZteVufTCkvco/8kGMjnqF5+3ho+Mfr2L1ppQIv6xfc0UepiPe32x9cF
-         T7gP2aW5mc6OcIqGw6wcsuaXpaeMp5YanItxp0UM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 22/22] EDAC/ie31200: Fallback if host bridge device is already initialized
+        id S1728285AbgHUQYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:24:32 -0400
+Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:18634 "EHLO
+        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728550AbgHUQXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:23:06 -0400
+Received: from pps.filterd (m0050095.ppops.net [127.0.0.1])
+        by m0050095.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 07LGLbUe005671;
+        Fri, 21 Aug 2020 17:21:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id; s=jan2016.eng;
+ bh=rzIJAPEqi9ZbyvNsKoNPSLx0bNPb0cYaCsV3sB7wpNw=;
+ b=JjBXPwoUdmZbAzQQXOABQ4KCyONKzCLOFOG/CSYoz3MbSTpu0pCA3wa1ru6VdcZC06fH
+ sY3IH6bOhQAE7SmiOwqGzAQd0U6wZB4ioG4v9UTk6JxEutOjGxbl2gRRQ0Gf3PLxWx/L
+ ABNJN7edtKoTcGgenlDBTPaM3T2+O5BxzFuzAqo/2stl7FjbEuJ39MUtNO7FXSl0cB7/
+ wWvUoSxnf56wMZf5PbPfmwfBTBAmn1fvkQx19hZG15FujFxzYd36864C/GHb8Z8S8DMA
+ /Gss8qT7brRRgvbzjdwBA2PHc4PqtNkK74Zm8lqt0BS8z3ItWsotKQiDyZY/MdTUCo9P qg== 
+Received: from prod-mail-ppoint4 (a72-247-45-32.deploy.static.akamaitechnologies.com [72.247.45.32] (may be forged))
+        by m0050095.ppops.net-00190b01. with ESMTP id 331d2fg4a9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Aug 2020 17:21:37 +0100
+Received: from pps.filterd (prod-mail-ppoint4.akamai.com [127.0.0.1])
+        by prod-mail-ppoint4.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 07LFnKSk008414;
+        Fri, 21 Aug 2020 12:21:31 -0400
+Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
+        by prod-mail-ppoint4.akamai.com with ESMTP id 32xb1yhq7e-1;
+        Fri, 21 Aug 2020 12:21:31 -0400
+Received: from bos-lpjec.145bw.corp.akamai.com (bos-lpjec.145bw.corp.akamai.com [172.28.3.71])
+        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 6712F6025E;
+        Fri, 21 Aug 2020 16:21:31 +0000 (GMT)
+From:   Jason Baron <jbaron@akamai.com>
+To:     linux@roeck-us.net, jdelvare@suse.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: (nct7904) Correct divide by 0
 Date:   Fri, 21 Aug 2020 12:20:14 -0400
-Message-Id: <20200821162014.349506-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821162014.349506-1-sashal@kernel.org>
-References: <20200821162014.349506-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Message-Id: <1598026814-2604-1-git-send-email-jbaron@akamai.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-21_08:2020-08-21,2020-08-21 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210147
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-21_08:2020-08-21,2020-08-21 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 clxscore=1011 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210153
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Baron <jbaron@akamai.com>
+We hit a kernel panic due to a divide by 0 in nct7904_read_fan() for
+the hwmon_fan_min case. Extend the check to hwmon_fan_input case as well
+for safety.
 
-[ Upstream commit 709ed1bcef12398ac1a35c149f3e582db04456c2 ]
-
-The Intel uncore driver may claim some of the pci ids from ie31200 which
-means that the ie31200 edac driver will not initialize them as part of
-pci_register_driver().
-
-Let's add a fallback for this case to 'pci_get_device()' to get a
-reference on the device such that it can still be configured. This is
-similar in approach to other edac drivers.
+[ 1656.545650] divide error: 0000 [#1] SMP PTI
+[ 1656.545779] CPU: 12 PID: 18010 Comm: sensors Not tainted 5.4.47 #1
+[ 1656.546065] RIP: 0010:nct7904_read+0x1e9/0x510 [nct7904]
+...
+[ 1656.546549] RAX: 0000000000149970 RBX: ffffbd6b86bcbe08 RCX: 0000000000000000
+...
+[ 1656.547548] Call Trace:
+[ 1656.547665]  hwmon_attr_show+0x32/0xd0 [hwmon]
+[ 1656.547783]  dev_attr_show+0x18/0x50
+[ 1656.547898]  sysfs_kf_seq_show+0x99/0x120
+[ 1656.548013]  seq_read+0xd8/0x3e0
+[ 1656.548127]  vfs_read+0x89/0x130
+[ 1656.548234]  ksys_read+0x7d/0xb0
+[ 1656.548342]  do_syscall_64+0x48/0x110
+[ 1656.548451]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 Signed-off-by: Jason Baron <jbaron@akamai.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-edac <linux-edac@vger.kernel.org>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/1594923911-10885-1-git-send-email-jbaron@akamai.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/ie31200_edac.c | 50 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 47 insertions(+), 3 deletions(-)
+ drivers/hwmon/nct7904.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/edac/ie31200_edac.c b/drivers/edac/ie31200_edac.c
-index 18d77ace4813c..30f83fb6b145a 100644
---- a/drivers/edac/ie31200_edac.c
-+++ b/drivers/edac/ie31200_edac.c
-@@ -131,6 +131,8 @@
- #define IE31200_PAGES(n)		(n << (28 - PAGE_SHIFT))
- 
- static int nr_channels;
-+static struct pci_dev *mci_pdev;
-+static int ie31200_registered = 1;
- 
- struct ie31200_priv {
- 	void __iomem *window;
-@@ -456,12 +458,16 @@ static int ie31200_probe1(struct pci_dev *pdev, int dev_idx)
- static int ie31200_init_one(struct pci_dev *pdev,
- 			    const struct pci_device_id *ent)
- {
--	edac_dbg(0, "MC:\n");
-+	int rc;
- 
-+	edac_dbg(0, "MC:\n");
- 	if (pci_enable_device(pdev) < 0)
- 		return -EIO;
-+	rc = ie31200_probe1(pdev, ent->driver_data);
-+	if (rc == 0 && !mci_pdev)
-+		mci_pdev = pci_dev_get(pdev);
- 
--	return ie31200_probe1(pdev, ent->driver_data);
-+	return rc;
- }
- 
- static void ie31200_remove_one(struct pci_dev *pdev)
-@@ -470,6 +476,8 @@ static void ie31200_remove_one(struct pci_dev *pdev)
- 	struct ie31200_priv *priv;
- 
- 	edac_dbg(0, "\n");
-+	pci_dev_put(mci_pdev);
-+	mci_pdev = NULL;
- 	mci = edac_mc_del_mc(&pdev->dev);
- 	if (!mci)
- 		return;
-@@ -515,17 +523,53 @@ static struct pci_driver ie31200_driver = {
- 
- static int __init ie31200_init(void)
- {
-+	int pci_rc, i;
-+
- 	edac_dbg(3, "MC:\n");
- 	/* Ensure that the OPSTATE is set correctly for POLL or NMI */
- 	opstate_init();
- 
--	return pci_register_driver(&ie31200_driver);
-+	pci_rc = pci_register_driver(&ie31200_driver);
-+	if (pci_rc < 0)
-+		goto fail0;
-+
-+	if (!mci_pdev) {
-+		ie31200_registered = 0;
-+		for (i = 0; ie31200_pci_tbl[i].vendor != 0; i++) {
-+			mci_pdev = pci_get_device(ie31200_pci_tbl[i].vendor,
-+						  ie31200_pci_tbl[i].device,
-+						  NULL);
-+			if (mci_pdev)
-+				break;
-+		}
-+		if (!mci_pdev) {
-+			edac_dbg(0, "ie31200 pci_get_device fail\n");
-+			pci_rc = -ENODEV;
-+			goto fail1;
-+		}
-+		pci_rc = ie31200_init_one(mci_pdev, &ie31200_pci_tbl[i]);
-+		if (pci_rc < 0) {
-+			edac_dbg(0, "ie31200 init fail\n");
-+			pci_rc = -ENODEV;
-+			goto fail1;
-+		}
-+	}
-+	return 0;
-+
-+fail1:
-+	pci_unregister_driver(&ie31200_driver);
-+fail0:
-+	pci_dev_put(mci_pdev);
-+
-+	return pci_rc;
- }
- 
- static void __exit ie31200_exit(void)
- {
- 	edac_dbg(3, "MC:\n");
- 	pci_unregister_driver(&ie31200_driver);
-+	if (!ie31200_registered)
-+		ie31200_remove_one(mci_pdev);
- }
- 
- module_init(ie31200_init);
+diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
+index b042569..242ff8b 100644
+--- a/drivers/hwmon/nct7904.c
++++ b/drivers/hwmon/nct7904.c
+@@ -231,7 +231,7 @@ static int nct7904_read_fan(struct device *dev, u32 attr, int channel,
+ 		if (ret < 0)
+ 			return ret;
+ 		cnt = ((ret & 0xff00) >> 3) | (ret & 0x1f);
+-		if (cnt == 0x1fff)
++		if (cnt == 0 || cnt == 0x1fff)
+ 			rpm = 0;
+ 		else
+ 			rpm = 1350000 / cnt;
+@@ -243,7 +243,7 @@ static int nct7904_read_fan(struct device *dev, u32 attr, int channel,
+ 		if (ret < 0)
+ 			return ret;
+ 		cnt = ((ret & 0xff00) >> 3) | (ret & 0x1f);
+-		if (cnt == 0x1fff)
++		if (cnt == 0 || cnt == 0x1fff)
+ 			rpm = 0;
+ 		else
+ 			rpm = 1350000 / cnt;
 -- 
-2.25.1
+2.7.4
 
