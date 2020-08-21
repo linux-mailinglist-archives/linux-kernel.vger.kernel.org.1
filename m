@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA26B24D845
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E188B24D85B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgHUPPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        id S1728260AbgHUPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgHUPPk (ORCPT
+        with ESMTP id S1727941AbgHUPSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:15:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0A5C061573;
-        Fri, 21 Aug 2020 08:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Ahg5nela1JUC9KKhjqVH9llbBwk/SBHjRly3x+0Iphs=; b=ExF9oePk725V3Fkj0cDJnMOL29
-        fRGLS/wZGNIy8iKl6MYajnMRsjNpX14e78K4xXUyBRfLvSm22SPfN9WA0jxJ3W+GXb3CXb1xps5ME
-        MRreSSGlboy+cQ3W9cryCB49lfytJEK/O568Hc+KXtvEgmmtBMSzj5j+BHXPRLV/ZwqzOaX3p9jci
-        njbH6fgXL8Z3IjBIo6h98RVM5elwbjZP5n4pjj/TL1bwAzd7xatpSLHUa6MhKp4oZ2YNhNhIYle4l
-        XM8c7RmwQp9Dk2+wOi4qbBhh+pcTkDtZl2qIBqDhJKea8RlVQIlPxVbZfGa7QijyV/AeN/SCpLjdh
-        cgPg0tAw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k98lK-0003zK-K7; Fri, 21 Aug 2020 15:15:26 +0000
-Subject: Re: [PATCH 2/2] PCI: sprd: Add support for Unisoc SoCs' PCIe
- controller
-To:     Hongtao Wu <wuht06@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Billows Wu <billows.wu@unisoc.com>
-References: <1598003509-27896-1-git-send-email-wuht06@gmail.com>
- <1598003509-27896-3-git-send-email-wuht06@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a9e4caef-08b5-51c7-848d-1f360c9f3ea2@infradead.org>
-Date:   Fri, 21 Aug 2020 08:15:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 21 Aug 2020 11:18:07 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBDDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:07 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id w2so1717937edv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EW86S+wOpEKW8Kx1XDDlLAS9uMUipxyI6cdNEFb3Vyc=;
+        b=gE1uffvkQ25P/5633mrrWxh8bc7NtDkX3krN3YHGog8ioySgsKwYrYIjKpLUwJEqj0
+         /cB3n1LkfGWtRU9dZn3uY8rYFUa88pVyEB2MDEHXGzj03D6nIcV5rvssfwfp37+/xUfq
+         u+LPKbKan9sXbY233/JYB0+SuRDm11ph2ehAQvn1fk7IFhnfISd62SqoSRkOo9rg47sO
+         fsa3mKa5hBfYnLJzQnUEqFVs7IqyycEiHSMa/23WU0wIobD3bWR+Dyr5WOkSUhxSOo/e
+         QtPgrJhHhV7CIRluNvapatdHo/7riRekygzRlKkmxv1NtNvlxYM2kJ2uuiAD0y65o3MJ
+         fZyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EW86S+wOpEKW8Kx1XDDlLAS9uMUipxyI6cdNEFb3Vyc=;
+        b=XvLu6zdaw4tS3w50XrDbnrW6K7PPU8sFtYmHxkapRdJyKsq1oBpzhvz6wGm2Qq0Tfg
+         wFW4O3nJoqIS3weyaADyT0zB9LIupObCbNL0CwQLHN5/HLcHa1Q1n1RkYzBvLWhEbXeA
+         88A6OOF/bDpBxsk2SxcJMaU8J6zMMlwHxQRT1FHL2KrpEHYHDkdJPNpm0xNv7VeQ0IMj
+         c2zv8k9ea7zzNcdrdO2MWlUnhYJVvmGS8pVmk2ZoouIFkOgSAxgFBPh/r4eW6JoqiFGu
+         OwvTDS/gqo54lm3ODoXaGEjsWteDLqLe23JU2of/TemMohZEPfvWnJ3yNPmnWQPRD+eG
+         knng==
+X-Gm-Message-State: AOAM5312k1N0vuXI5YQy+Es1ExxTlfwFrnA8M8eopKgQeqjBzZ03P7iH
+        GGr2sTz7a5UpVQc9C4ZoIxA+Rw==
+X-Google-Smtp-Source: ABdhPJwMNB68/r/+Pn1Djk2McNP2tPUKyR/yeSAbMTRbuPvKKlWLlLS4F9/9jsYD8g4maRjcgs/p+Q==
+X-Received: by 2002:a05:6402:3130:: with SMTP id dd16mr3250341edb.55.1598023085801;
+        Fri, 21 Aug 2020 08:18:05 -0700 (PDT)
+Received: from localhost.localdomain (223.60-242-81.adsl-dyn.isp.belgacom.be. [81.242.60.223])
+        by smtp.gmail.com with ESMTPSA id qp16sm1482709ejb.89.2020.08.21.08.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 08:18:05 -0700 (PDT)
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mptcp@lists.01.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] bpf: add MPTCP subflow support
+Date:   Fri, 21 Aug 2020 17:15:38 +0200
+Message-Id: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1598003509-27896-3-git-send-email-wuht06@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/20 2:51 AM, Hongtao Wu wrote:
-> From: Billows Wu <billows.wu@unisoc.com>
-> 
-> This series adds PCIe controller driver for Unisoc SoCs.
-> This controller is based on DesignWare PCIe IP.
-> 
-> Signed-off-by: Billows Wu <billows.wu@unisoc.com>
-> ---
->  drivers/pci/controller/dwc/Kconfig     |  12 ++
->  drivers/pci/controller/dwc/Makefile    |   1 +
->  drivers/pci/controller/dwc/pcie-sprd.c | 256 +++++++++++++++++++++++++++++++++
->  3 files changed, 269 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+Previously it was not possible to make a distinction between plain TCP
+sockets and MPTCP subflow sockets on the BPF_PROG_TYPE_SOCK_OPS hook.
 
-Hi,
+This patch series now enables a fine control of subflow sockets. In its
+current state, it allows to put different sockopt on each subflow from a
+same MPTCP connection (socket mark, TCP congestion algorithm, ...) using
+BPF programs.
 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 044a376..d26ce94 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -311,4 +311,16 @@ config PCIE_AL
->  	  required only for DT-based platforms. ACPI platforms with the
->  	  Annapurna Labs PCIe controller don't need to enable this.
-> 
-> +config PCIE_SPRD
-> +       tristate "Unisoc PCIe controller - RC mode"
-> +       depends on ARCH_SPRD
-> +       depends on PCI_MSI_IRQ_DOMAIN
-> +       select PCIE_DW_HOST
-> +       help
-> +         Some Uisoc SoCs contain two PCIe controllers as RC: One is gen2,
+It should also be the basis of exposing MPTCP-specific fields through BPF.
 
-	         Unisoc
+Nicolas Rybowski (3):
+  bpf: expose is_mptcp flag to bpf_tcp_sock
+  mptcp: attach subflow socket to parent cgroup
+  bpf: add 'bpf_mptcp_sock' structure and helper
 
-> +         and the other is gen3. While other Unisoc SoCs may have only one
-> +         PCIe controller which can be configured as an Endpoint(EP) or a Root
-> +         complex(RC). In order to enable host-specific features PCIE_SPRD must
-
-	    complex (RC).
-
-> +         be selected, which uses the Designware core.
-> +
->  endmenu
-
-Also, please follow Documentation/process/coding-style.rst for
-Kconfig entries:
-
-  For all of the Kconfig* configuration files throughout the source tree,
-  the indentation is somewhat different.  Lines under a ``config`` definition
-  are indented with one tab, while help text is indented an additional two
-  spaces.
-
+ include/linux/bpf.h            | 33 ++++++++++++++++
+ include/uapi/linux/bpf.h       | 14 +++++++
+ kernel/bpf/verifier.c          | 30 ++++++++++++++
+ net/core/filter.c              | 13 +++++-
+ net/mptcp/Makefile             |  2 +
+ net/mptcp/bpf.c                | 72 ++++++++++++++++++++++++++++++++++
+ net/mptcp/subflow.c            | 27 +++++++++++++
+ scripts/bpf_helpers_doc.py     |  2 +
+ tools/include/uapi/linux/bpf.h | 14 +++++++
+ 9 files changed, 206 insertions(+), 1 deletion(-)
+ create mode 100644 net/mptcp/bpf.c
 
 -- 
-~Randy
+2.28.0
 
