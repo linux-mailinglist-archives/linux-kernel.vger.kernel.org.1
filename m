@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DCB24DADD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0700A24DC60
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgHUQ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728271AbgHUQ2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:28:16 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871A7C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:28:10 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m22so2497471ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:28:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ASBotJZ8EZpsI/eCx5HlBKysI3NgkGBSfRhPo944ZDA=;
-        b=mvQsNqxvDRfKY9x4pIZgEPhlpB930QAuNErYXzNPLu7IhTBgokTUR97DSKDApKmNfS
-         cibjePU5QCWO42UFsCRWQwMu/X9Q9pISUETSOyLv8GDQ7qwMEl4Ib/H3WWqJjSRry3xl
-         9TU6msunmhJlIGiYjWcVH7a2M3X4BhkWw0G2xvXyrrXNTBchQ9LtnRpmS8/pffU/upUX
-         /kFJp8461OeN+P7fP/3Y2HmjrCgDZQYrsQfpcRdb/+ho08gxWAK1CegzesM559po/s7S
-         QS3/ic98qpHNV6+NY5HcH0fd2uQX7y1u6cKBRJq2fY9JRNDQP1Z7JMuCbauUj7xPMwgM
-         dTgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ASBotJZ8EZpsI/eCx5HlBKysI3NgkGBSfRhPo944ZDA=;
-        b=isUBKKKOMtFxoE2POdUZeJ+8zZCvFbqAFHHYkpot1NsGl+qBAIkpxO8bXIpPPoMiRn
-         iThrsTWhl/cx6uzunKuAR7ovHJcoEyz5ejQS9EA1jc0vNwag48KuPwU1ncKIR4GizhGw
-         /pZSXe9elp1MV5dWrRRzFb0JvCJs/LrUQ38JfHdAS7fDf56AA4Uk/8IruNRG8eiaIMyy
-         5vla98X6E3SF05buQBOKFGp8KkmOTnVzcC9HU2dwmsmTGlobD1MEspa6UyjCneUOERPM
-         kQ9CUnym+vm0SlnurzN8Atf0CRKdS/h3uOKR/bul6byeqphqn5ei1izcVItVzoSMxI7O
-         Wipw==
-X-Gm-Message-State: AOAM532SsyDxAQ1l5TwjgBJmNHvEscmoV/TA1nU+CMRBp9UTJZ29nMJT
-        VY/zifjmNlu+il12879PCGAQnDNl+GVdAOo/3j140g==
-X-Google-Smtp-Source: ABdhPJxBJx48eP7IauIXH6HjOknwmi0SBAJ//UG77vmKK+pXc4hy+ku162ReCSBX43dsu2Kih9HINa4PcVbhBog5/lU=
-X-Received: by 2002:a2e:96c3:: with SMTP id d3mr1932135ljj.270.1598027287929;
- Fri, 21 Aug 2020 09:28:07 -0700 (PDT)
+        id S1728139AbgHURAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728272AbgHUQT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:19:27 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4687422D2A;
+        Fri, 21 Aug 2020 16:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598026718;
+        bh=t+79K8HCYy5ZJDQtlt64zFoLi5U8JEx55FQPzEolKiU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BpUj6tNAt1Gx1MgF0caSpOenA30Xa/jLA0GKccNd/lQitqVCmnbvCmSxBXqg11Qeu
+         nh6Ytlwel77YBnl0DM+3cR8yHW62zRJpfoDmE6m1WQXXh34FihYNsN/kOJUbZddmUO
+         baToaNtRq4Sfz1/CZ4hmyJjlYEsqddLNSoUeukDU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qiushi Wu <wu000273@umn.edu>, Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 23/38] PCI: Fix pci_create_slot() reference count leak
+Date:   Fri, 21 Aug 2020 12:17:52 -0400
+Message-Id: <20200821161807.348600-23-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200821161807.348600-1-sashal@kernel.org>
+References: <20200821161807.348600-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200528135444.11508-1-schatzberg.dan@gmail.com>
- <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
- <20200821150405.GA4137@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com> <20200821160128.GA2233370@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200821160128.GA2233370@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 21 Aug 2020 09:27:56 -0700
-Message-ID: <CALvZod69w5UoCjfWcqVAejpKWzRAUxX7dEPzqDUknHhUFV_XEA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] Charge loop device i/o to issuing cgroup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 9:02 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Aug 21, 2020 at 11:04:05AM -0400, Dan Schatzberg wrote:
-> > On Thu, Aug 20, 2020 at 10:06:44AM -0700, Shakeel Butt wrote:
-> > > On Thu, May 28, 2020 at 6:55 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> > > >
-> > > > Much of the discussion about this has died down. There's been a
-> > > > concern raised that we could generalize infrastructure across loop,
-> > > > md, etc. This may be possible, in the future, but it isn't clear to me
-> > > > how this would look like. I'm inclined to fix the existing issue with
-> > > > loop devices now (this is a problem we hit at FB) and address
-> > > > consolidation with other cases if and when those need to be addressed.
-> > > >
-> > >
-> > > What's the status of this series?
-> >
-> > Thanks for reminding me about this. I haven't got any further
-> > feedback. I'll bug Jens to take a look and see if he has any concerns
-> > and if not send a rebased version.
->
-> Just as a note, I stole a patch from this series called
-> "mm: support nesting memalloc_use_memcg()" to use for the bpf memory accounting.
-> I rewrote the commit log and rebased to the tot with some trivial changes.
->
-> I just sent it upstream:
-> https://lore.kernel.org/bpf/20200821150134.2581465-1-guro@fb.com/T/#md7edb6b5b940cee1c4d15e3cef17aa8b07328c2e
->
-> It looks like we need it for two independent sub-systems, so I wonder
-> if we want to route it first through the mm tree as a standalone patch?
->
+From: Qiushi Wu <wu000273@umn.edu>
 
-Another way is to push that patch to 5.9-rc2 linus tree, so both block
-and mm branches for 5.10 will have it. (Not sure if that's ok.)
+[ Upstream commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5 ]
+
+kobject_init_and_add() takes a reference even when it fails.  If it returns
+an error, kobject_put() must be called to clean up the memory associated
+with the object.
+
+When kobject_init_and_add() fails, call kobject_put() instead of kfree().
+
+b8eb718348b8 ("net-sysfs: Fix reference count leak in
+rx|netdev_queue_add_kobject") fixed a similar problem.
+
+Link: https://lore.kernel.org/r/20200528021322.1984-1-wu000273@umn.edu
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/pci/slot.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
+index a32897f83ee51..fb7478b6c4f9d 100644
+--- a/drivers/pci/slot.c
++++ b/drivers/pci/slot.c
+@@ -303,13 +303,16 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+ 	slot_name = make_slot_name(name);
+ 	if (!slot_name) {
+ 		err = -ENOMEM;
++		kfree(slot);
+ 		goto err;
+ 	}
+ 
+ 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+ 				   "%s", slot_name);
+-	if (err)
++	if (err) {
++		kobject_put(&slot->kobj);
+ 		goto err;
++	}
+ 
+ 	INIT_LIST_HEAD(&slot->list);
+ 	list_add(&slot->list, &parent->slots);
+@@ -328,7 +331,6 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+ 	mutex_unlock(&pci_slot_mutex);
+ 	return slot;
+ err:
+-	kfree(slot);
+ 	slot = ERR_PTR(err);
+ 	goto out;
+ }
+-- 
+2.25.1
+
