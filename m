@@ -2,112 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFC024DAAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5211C24DAB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgHUQYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:24:32 -0400
-Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:18634 "EHLO
-        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728550AbgHUQXG (ORCPT
+        id S1728406AbgHUQZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728461AbgHUQVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:23:06 -0400
-Received: from pps.filterd (m0050095.ppops.net [127.0.0.1])
-        by m0050095.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 07LGLbUe005671;
-        Fri, 21 Aug 2020 17:21:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
- subject : date : message-id; s=jan2016.eng;
- bh=rzIJAPEqi9ZbyvNsKoNPSLx0bNPb0cYaCsV3sB7wpNw=;
- b=JjBXPwoUdmZbAzQQXOABQ4KCyONKzCLOFOG/CSYoz3MbSTpu0pCA3wa1ru6VdcZC06fH
- sY3IH6bOhQAE7SmiOwqGzAQd0U6wZB4ioG4v9UTk6JxEutOjGxbl2gRRQ0Gf3PLxWx/L
- ABNJN7edtKoTcGgenlDBTPaM3T2+O5BxzFuzAqo/2stl7FjbEuJ39MUtNO7FXSl0cB7/
- wWvUoSxnf56wMZf5PbPfmwfBTBAmn1fvkQx19hZG15FujFxzYd36864C/GHb8Z8S8DMA
- /Gss8qT7brRRgvbzjdwBA2PHc4PqtNkK74Zm8lqt0BS8z3ItWsotKQiDyZY/MdTUCo9P qg== 
-Received: from prod-mail-ppoint4 (a72-247-45-32.deploy.static.akamaitechnologies.com [72.247.45.32] (may be forged))
-        by m0050095.ppops.net-00190b01. with ESMTP id 331d2fg4a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 17:21:37 +0100
-Received: from pps.filterd (prod-mail-ppoint4.akamai.com [127.0.0.1])
-        by prod-mail-ppoint4.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 07LFnKSk008414;
-        Fri, 21 Aug 2020 12:21:31 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint4.akamai.com with ESMTP id 32xb1yhq7e-1;
-        Fri, 21 Aug 2020 12:21:31 -0400
-Received: from bos-lpjec.145bw.corp.akamai.com (bos-lpjec.145bw.corp.akamai.com [172.28.3.71])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 6712F6025E;
-        Fri, 21 Aug 2020 16:21:31 +0000 (GMT)
-From:   Jason Baron <jbaron@akamai.com>
-To:     linux@roeck-us.net, jdelvare@suse.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (nct7904) Correct divide by 0
-Date:   Fri, 21 Aug 2020 12:20:14 -0400
-Message-Id: <1598026814-2604-1-git-send-email-jbaron@akamai.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-21_08:2020-08-21,2020-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008210147
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-21_08:2020-08-21,2020-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 clxscore=1011 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008210153
+        Fri, 21 Aug 2020 12:21:35 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C5BC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:21:34 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id i20so538720vkk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iGVeXcDNIvRh8qe1/2584zUekwk8kU52P/kL+vHcf2k=;
+        b=ji/pjQgi0VxnFeZYwxWaAiU3Vrdf06GkDeZC3JB6loVzhqamPN5JMsYieQFYBj+3Hs
+         RRMOMqC+TMGPyGgOCEATA58h94MWiPeiQ9FnjYMnyoQUWXUYZPf695EN+xYx3AByv4VK
+         FbbkbmdO6zYhfUZA/5SYL+2bQZsgrKE4dMatvE5VFheBFxOflx+OiHVhpv+3/vD9FM5d
+         lz6M9HKQF2YAr5n36Fpm8ms16IEdEad2ElYT/2l9s1tqeLOLwdRl92zVYYaRl+nuXuSV
+         nneuRiGvNTnJeyahLdH3sk2yW+WvyrX/bwp/cV6cPZPjf4cqujMn2b3IYW44kLPCnFsl
+         61uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iGVeXcDNIvRh8qe1/2584zUekwk8kU52P/kL+vHcf2k=;
+        b=FYHsvRolPJe8sgVDo4beREpDXjDQkAxjUwA5nR/p4qZ3mX4/YW7rtFjTB+RtKpw6VY
+         Mz51v0hX1ZRfcLXw4YzmRhnzVttJ5p29filfs00aUrGMA6PBmOt3nfApKnmoqe+tpE7X
+         6GfSZn2KmaOxCMYhjBOLwB82OtQ8WWGJHHUE2vCL9pO3eHafK3eMIpSWy3CtIvRzHUZo
+         mxt/twFsm6Hkk+Kuv6w+W2D2brPQHG4tSwNuaeB1aZ7n+q1/R3UykWNO5Vp9Z+fCBC8M
+         UIoOPIoc5/CXFov0D2DVt909cIB35wk/WdPCcekMMeIOSkdXmssgwxCE4jxLLhhGa3oO
+         nQXA==
+X-Gm-Message-State: AOAM5337tc8iJ6iMxpPqsM7ycLdNVGNbvAOk3gmTfmQ7vk0xhhURocJq
+        OkIpyK1tStwmiC9nsMBkoXsBZLlqRwZm+5QQP8RIVQ==
+X-Google-Smtp-Source: ABdhPJxiNdxtxxUKYT6rb+L9FRF6H2nEkJ4ZpJqNK6OBdBlc8q4YCCspNRYmFOTVAEB0DjVNW5ZROnJK1ZJOdt8kd9k=
+X-Received: by 2002:a1f:2fc1:: with SMTP id v184mr2425414vkv.42.1598026893599;
+ Fri, 21 Aug 2020 09:21:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200820091612.692383444@linuxfoundation.org> <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
+ <20200821111535.GC2222852@kroah.com>
+In-Reply-To: <20200821111535.GC2222852@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 Aug 2020 21:51:22 +0530
+Message-ID: <CA+G9fYvc2tqXf7ownJ=HMsVz+uuigqZJXJmjMSWCzO_-ODk1fQ@mail.gmail.com>
+Subject: Re: [PATCH 5.8 000/232] 5.8.3-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LTP List <ltp@lists.linux.it>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We hit a kernel panic due to a divide by 0 in nct7904_read_fan() for
-the hwmon_fan_min case. Extend the check to hwmon_fan_input case as well
-for safety.
+On Fri, 21 Aug 2020 at 16:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Aug 20, 2020 at 08:57:57PM +0530, Naresh Kamboju wrote:
+> > On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.8.3 release.
+> > > There are 232 patches in this series, all will be posted as a respons=
+e
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> > >
+> > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/pa=
+tch-5.8.3-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git linux-5.8.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > > Herbert Xu <herbert@gondor.apana.org.au>
+> > >     crypto: af_alg - Fix regression on empty requests
+> >
+> > Results from Linaro=E2=80=99s test farm.
+> > Regressions detected.
+> >
+> >   ltp-crypto-tests:
+> >     * af_alg02
+> >   ltp-cve-tests:
+> >     * cve-2017-17805
+> >
+> > af_alg02.c:52: BROK: Timed out while reading from request socket.
+> > We are running the LTP 20200515 tag released test suite.
+> >  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel=
+/crypto/af_alg02.c
+>
+> Looks like the crypto tests are now fixed :)
+>
+> Anyway, thanks for testing all of these and letting me know.
 
-[ 1656.545650] divide error: 0000 [#1] SMP PTI
-[ 1656.545779] CPU: 12 PID: 18010 Comm: sensors Not tainted 5.4.47 #1
-[ 1656.546065] RIP: 0010:nct7904_read+0x1e9/0x510 [nct7904]
-...
-[ 1656.546549] RAX: 0000000000149970 RBX: ffffbd6b86bcbe08 RCX: 0000000000000000
-...
-[ 1656.547548] Call Trace:
-[ 1656.547665]  hwmon_attr_show+0x32/0xd0 [hwmon]
-[ 1656.547783]  dev_attr_show+0x18/0x50
-[ 1656.547898]  sysfs_kf_seq_show+0x99/0x120
-[ 1656.548013]  seq_read+0xd8/0x3e0
-[ 1656.548127]  vfs_read+0x89/0x130
-[ 1656.548234]  ksys_read+0x7d/0xb0
-[ 1656.548342]  do_syscall_64+0x48/0x110
-[ 1656.548451]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Apart from the reported LTP crypto test case problem all other results
+look good to me.
 
-Signed-off-by: Jason Baron <jbaron@akamai.com>
----
- drivers/hwmon/nct7904.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-index b042569..242ff8b 100644
---- a/drivers/hwmon/nct7904.c
-+++ b/drivers/hwmon/nct7904.c
-@@ -231,7 +231,7 @@ static int nct7904_read_fan(struct device *dev, u32 attr, int channel,
- 		if (ret < 0)
- 			return ret;
- 		cnt = ((ret & 0xff00) >> 3) | (ret & 0x1f);
--		if (cnt == 0x1fff)
-+		if (cnt == 0 || cnt == 0x1fff)
- 			rpm = 0;
- 		else
- 			rpm = 1350000 / cnt;
-@@ -243,7 +243,7 @@ static int nct7904_read_fan(struct device *dev, u32 attr, int channel,
- 		if (ret < 0)
- 			return ret;
- 		cnt = ((ret & 0xff00) >> 3) | (ret & 0x1f);
--		if (cnt == 0x1fff)
-+		if (cnt == 0 || cnt == 0x1fff)
- 			rpm = 0;
- 		else
- 			rpm = 1350000 / cnt;
--- 
-2.7.4
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.8.3
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.8.y
+git commit: a1101e94767e2d5da5bcbee12573d96a1c8be5bb
+git describe: v5.8.3
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/bui=
+ld/v5.8.3
+
+No regressions (compared to build v5.8.2)
+
+No fixes (compared to build v5.8.2)
+
+Ran 30256 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-tracing-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* v4l2-compliance
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* network-basic-tests
+* igt-gpu-tools
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
