@@ -2,137 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5933A24DDA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39DE24DDD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729100AbgHURVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:21:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8450 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728993AbgHURVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:21:04 -0400
-IronPort-SDR: mZvUzcQQ79QCAUG4UxpaapmGANXwFHG5etu9Gb2FMpoXYiFQBx9dUaLhB9gs0q1JrwyFQKKK2/
- dsurMsWdVsuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="153192107"
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
-   d="scan'208";a="153192107"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 10:21:03 -0700
-IronPort-SDR: LHdu62qyqt0eng3KmoaeVx//hy//ABIL7iweTfJJ/3XMD+/oBtI/2ljW3aSOtsW1I98ymV31T8
- KjVCvuLN401g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
-   d="scan'208";a="498041036"
-Received: from lkp-server01.sh.intel.com (HELO 91ed66e1ca04) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Aug 2020 10:21:00 -0700
-Received: from kbuild by 91ed66e1ca04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k9Aiq-0001GR-7C; Fri, 21 Aug 2020 17:21:00 +0000
-Date:   Sat, 22 Aug 2020 01:20:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>,
-        linux-media@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        mchehab@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        mripard@kernel.org, wens@csie.org, yong.deng@magewell.com,
-        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] media: i2c: Add support for the OV8865 image sensor
-Message-ID: <202008220159.zlX8y0F3%lkp@intel.com>
-References: <20200821145935.20346-4-kevin.lhopital@bootlin.com>
+        id S1728943AbgHURXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728887AbgHURWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:22:17 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89331C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:22:17 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id s14so1180884plp.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h6F45IixAOPfMRMH67FKA7ZAbNwFjoG24ThPGkxleF8=;
+        b=VbJ5XxhtpOO2KZl1vkxhnQ/fhsYqiD8fN9AMkshiFAB5ccj1Z6m+ShREEoPDuQDsAy
+         iEDh1KaYzK2+Z9OjbtW2hPTQFG9lSDx8y0abCnvwguC+KyIlxDZMfzT8JvKxMP/Nnp3J
+         fqYF41W4FyD9Dq0aZxBgPifgg4QuOfqU7+WPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h6F45IixAOPfMRMH67FKA7ZAbNwFjoG24ThPGkxleF8=;
+        b=A7RVmGyuVHSwxWClccWx6jHfN8BfIo+td/cjWKP2j7xirS196r2p1vZcvMJf1/kBuU
+         6+elK+4KfWViTHydAaZjrtcDjtvx/6L1pIXxBrDV+IY2NlWNc/VgDDdoXTfub/fF4RLv
+         Qrmf1Ceh4gl5pz/b/ir0vhEQ8oCNzpe9rsaNgN3x8WdVv/CgAjlliYgr6j3wJBcHtS1C
+         IgmUyaVoIDKmzvS0cJRPtzpXsbIAoFCq2rcIuO+VE7MlcCKr9/LPWGduRR7YzOxCrx7e
+         OhBow8FMXfOPaDpgUFAL3IT9e3Cu2z31yo9YwtOLTwkFx+9z6lGDlfjdlsNibMJAH1fs
+         H/bg==
+X-Gm-Message-State: AOAM530OjwpPRM6jE6Vxil4O+9aTRvaYDwRjqQLUuxKtyomeMx4tx7qn
+        kClmnSe0a5GoNq8+2nQPqZWwnA==
+X-Google-Smtp-Source: ABdhPJzJgMrExwlYjiSmCTmjjxtDp092F3nkrO/f++8r5KPWih6kKRCsUa27MT+totrInty0e+3A7w==
+X-Received: by 2002:a17:902:bd09:: with SMTP id p9mr3244072pls.322.1598030536752;
+        Fri, 21 Aug 2020 10:22:16 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id a15sm3128517pfo.185.2020.08.21.10.22.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 10:22:16 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 10:22:15 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V3 2/3] arm64: dts: qcom: sc7180: Add sleep pin ctrl for
+ BT uart
+Message-ID: <20200821172215.GB486007@google.com>
+References: <1597931467-24268-1-git-send-email-skakit@codeaurora.org>
+ <1597931467-24268-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200821145935.20346-4-kevin.lhopital@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1597931467-24268-3-git-send-email-skakit@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi "Kévin,
+On Thu, Aug 20, 2020 at 07:21:06PM +0530, satya priya wrote:
+> Add sleep pin ctrl for BT uart, and also change the bias
+> configuration to match Bluetooth module.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> ---
+> Changes in V2:
+>  - This patch adds sleep state for BT UART. Newly added in V2.
+> 
+> Changes in V3:
+>  - Remove "output-high" for TX from both sleep and default states
+>    as it is not required. Configure pull-up for TX in sleep state.
+> 
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 54 +++++++++++++++++++++++++++------
+>  1 file changed, 45 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index d8b5507..806f626 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -473,20 +473,20 @@
+>  
+>  &qup_uart3_default {
+>  	pinconf-cts {
+> -		/*
+> -		 * Configure a pull-down on 38 (CTS) to match the pull of
+> -		 * the Bluetooth module.
+> -		 */
+> +		/* Configure no pull on 38 (CTS) to match Bluetooth module */
+>  		pins = "gpio38";
+> -		bias-pull-down;
+> -		output-high;
+> +		bias-disable;
 
-Thank you for the patch! Yet something to improve:
+I think it should be ok in functional terms, but I don't like the rationale
+and also doubt the change is really needed.
 
-[auto build test ERROR on linuxtv-media/master]
-[also build test ERROR on sunxi/sunxi/for-next robh/for-next v5.9-rc1 next-20200821]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+If the pull is removed to match the Bluetooth module, then that sounds as
+if the signal was floating on the the BT side, which I think is not the case.
+Yes, according to the datasheet there is no pull when the BT controller is
+active, but then it drives the signal actively to either high or low. There
+seems to be no merit in 'matching' the Bluetooth side in this case, if the
+signal was really floating on the BT side we would definitely not want this.
 
-url:    https://github.com/0day-ci/linux/commits/K-vin-L-h-pital/Support-of-MIPI-CSI-2-for-A83T-and-OV8865-camera/20200821-230356
-base:   git://linuxtv.org/media_tree.git master
-config: x86_64-randconfig-a002-20200820
-compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project b587ca93be114d07ec3bf654add97d7872325281)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install x86_64 cross compiling tool for clang build
-        # apt-get install binutils-x86-64-linux-gnu
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64  randconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+In a reply to v2 you said:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> Recently on cherokee we worked with BT team and came to an agreement to
+> keep no-pull from our side in order to not conflict with their pull in
+> any state.
 
-All errors (new ones prefixed by >>):
+What are these conflicting pull states?
 
->> drivers/media/i2c/Kconfig:741:error: recursive dependency detected!
-   drivers/media/i2c/Kconfig:741: symbol VIDEO_IMX214 depends on V4L2_FWNODE
-   drivers/media/v4l2-core/Kconfig:71: symbol V4L2_FWNODE is selected by VIDEO_OV8865
-   drivers/media/i2c/Kconfig:1036: symbol VIDEO_OV8865 depends on VIDEO_V4L2_SUBDEV_API
-   drivers/media/v4l2-core/Kconfig:19: symbol VIDEO_V4L2_SUBDEV_API depends on MEDIA_CONTROLLER
-   drivers/media/Kconfig:168: symbol MEDIA_CONTROLLER is selected by VIDEO_IMX214
-   For a resolution refer to Documentation/kbuild/kconfig-language.rst
-   subsection "Kconfig recursive dependency limitations"
+The WCN3998 datasheet has a pull-down on RTS (WCN3998 side) in reset and
+boot mode, and no pull in active mode. In reset and boot mode the host
+config with a pull down would match, and no pull in active mode doesn't
+conflict with the pull-down on the host UART. My understanding is that
+the pinconf pulls are weak pulls, so as soon as the BT chip drives its
+RTS the pull on the host side shouldn't matter.
 
-# https://github.com/0day-ci/linux/commit/aef022e7b2b7fca2cecab96bcbd6bca991163ab4
-git remote add linux-review https://github.com/0day-ci/linux
-git fetch --no-tags linux-review K-vin-L-h-pital/Support-of-MIPI-CSI-2-for-A83T-and-OV8865-camera/20200821-230356
-git checkout aef022e7b2b7fca2cecab96bcbd6bca991163ab4
-vim +741 drivers/media/i2c/Kconfig
+Is this change actually related with wakeup support? I have the impression
+that multiple things are conflated in this patch. If some of the changes
+are just fixing/improving other things they should be in a separate patch,
+which could be part of this series, otherwise it's really hard to
+distinguish between the pieces that are actually relevant for wakeup and
+the rest.
 
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  718  
-5c57ae64e8bccc6 Mauro Carvalho Chehab 2020-04-15  719  menu "Camera sensor devices"
-5c57ae64e8bccc6 Mauro Carvalho Chehab 2020-04-15  720  	visible if MEDIA_CAMERA_SUPPORT
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  721  
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  722  config VIDEO_APTINA_PLL
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  723  	tristate
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  724  
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  725  config VIDEO_SMIAPP_PLL
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  726  	tristate
-f48fd1514212b5c Mauro Carvalho Chehab 2020-03-25  727  
-e62138403a841e4 Shawn Tu              2019-11-01  728  config VIDEO_HI556
-e62138403a841e4 Shawn Tu              2019-11-01  729  	tristate "Hynix Hi-556 sensor support"
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  730  	depends on I2C && VIDEO_V4L2
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  731  	select MEDIA_CONTROLLER
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  732  	select VIDEO_V4L2_SUBDEV_API
-e62138403a841e4 Shawn Tu              2019-11-01  733  	select V4L2_FWNODE
-e62138403a841e4 Shawn Tu              2019-11-01  734  	help
-e62138403a841e4 Shawn Tu              2019-11-01  735  	  This is a Video4Linux2 sensor driver for the Hynix
-e62138403a841e4 Shawn Tu              2019-11-01  736  	  Hi-556 camera.
-e62138403a841e4 Shawn Tu              2019-11-01  737  
-e62138403a841e4 Shawn Tu              2019-11-01  738  	  To compile this driver as a module, choose M here: the
-e62138403a841e4 Shawn Tu              2019-11-01  739  	  module will be called hi556.
-e62138403a841e4 Shawn Tu              2019-11-01  740  
-4361905962417ef Ricardo Ribalda       2018-10-05 @741  config VIDEO_IMX214
-4361905962417ef Ricardo Ribalda       2018-10-05  742  	tristate "Sony IMX214 sensor support"
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  743  	depends on GPIOLIB && I2C && VIDEO_V4L2
-4361905962417ef Ricardo Ribalda       2018-10-05  744  	depends on V4L2_FWNODE
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  745  	select MEDIA_CONTROLLER
-32a363d0b0b142f Mauro Carvalho Chehab 2020-03-25  746  	select VIDEO_V4L2_SUBDEV_API
-6de18fa3bd1dd51 Ian Kumlien           2020-02-26  747  	select REGMAP_I2C
-4361905962417ef Ricardo Ribalda       2018-10-05  748  	help
-4361905962417ef Ricardo Ribalda       2018-10-05  749  	  This is a Video4Linux2 sensor driver for the Sony
-4361905962417ef Ricardo Ribalda       2018-10-05  750  	  IMX214 camera.
-4361905962417ef Ricardo Ribalda       2018-10-05  751  
-4361905962417ef Ricardo Ribalda       2018-10-05  752  	  To compile this driver as a module, choose M here: the
-4361905962417ef Ricardo Ribalda       2018-10-05  753  	  module will be called imx214.
-4361905962417ef Ricardo Ribalda       2018-10-05  754  
+Independently of whether the changes are done in a single or multiple
+patches, the commit log should include details on why the changes are
+necessary, especially when there are not explantatory comments in the
+DT/code itself (e.g. the removal of 'output-high', which seems correct
+to me, but no reason is given why it is done).
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  	};
+>  
+>  	pinconf-rts {
+> -		/* We'll drive 39 (RTS), so no pull */
+> +		/*
+> +		 * Configure pull-down on 39 (RTS). This is needed to avoid a
+> +		 * floating pin which could mislead Bluetooth controller
+> +		 * with UART RFR state (READY/NOT_READY).
+> +		 */
+>  		pins = "gpio39";
+>  		drive-strength = <2>;
+> -		bias-disable;
+> +		bias-pull-down;
+>  	};
+
+[copy of my comment on v2]
+
+I'm a bit at a loss here, about two things:
+
+RTS is an output pin controlled by the UART. IIUC if the UART port is active
+and hardware flow control is enabled the RTS signal is either driven to high
+or low, but not floating.
+
+Now lets assume I'm wrong with the above and RTS can be floating. We only want
+the BT SoC to send data when the host UART is ready to receive them, right?
+RTS is an active low signal, hence by configuring it as a pull-down the BT
+SoC can send data regardless of whether the host UART actually asserts RTS,
+so the host UART may not be ready to receive it. I would argue that if there
+is really such a thing as a floating RTS signal then it should have a pull-up,
+to prevent the BT SoC from sending data at any time.
+
+I'm not an expert in UART communication and pinconf, so it could be that I
+got something wrong, but as of now it seems to me that no pull is the correct
+config for RTS.
+
+>  
+>  	pinconf-tx {
+> @@ -494,7 +494,43 @@
+>  		pins = "gpio40";
+>  		drive-strength = <2>;
+>  		bias-disable;
+> -		output-high;
+> +	};
+> +
+> +	pinconf-rx {
+> +		/*
+> +		 * Configure a pull-up on 41 (RX). This is needed to avoid
+> +		 * garbage data when the TX pin of the Bluetooth module is
+> +		 * in tri-state (module powered off or not driving the
+> +		 * signal yet).
+> +		 */
+> +		pins = "gpio41";
+> +		bias-pull-up;
+> +	};
+> +};
+> +
+> +&qup_uart3_sleep {
+> +	pinconf-cts {
+> +		/* Configure no-pull on 38 (CTS) to match Bluetooth module */
+> +		pins = "gpio38";
+> +		bias-disable;
+> +	};
+> +
+> +	pinconf-rts {
+> +		/*
+> +		 * Configure pull-down on 39 (RTS). This is needed to avoid a
+> +		 * floating pin which could mislead Bluetooth controller
+> +		 * with UART RFR state (READY/NOT_READY).
+> +		 */
+> +		pins = "gpio39";
+> +		drive-strength = <2>;
+> +		bias-pull-down;
+> +	};
+
+I don't know all the details, but I have the impression that this is the
+relevant pull change for wakeup. From the title of the series I derive
+that the UART RX pin is used for signalling wakeup. A pull-down on RTS
+indicates the BT controller that it can always send data to wake up the
+host.
+
+I think RTS in default mode should remain with no-pull (the UART is driving
+the signal), and then change it to pull-down in sleep mode.
+
+
+> +
+> +	pinconf-tx {
+> +		/* Configure pull-up on 40 (TX) when it isn't actively driven */
+
+nit: just say '... on TX ...', the GPIO number isn't really interesting and can
+easily be determined by looking at 'pins' if needed . Applicable to all comments
+involving pins.
+
+> +		pins = "gpio40";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+
+This makes sense to me.
