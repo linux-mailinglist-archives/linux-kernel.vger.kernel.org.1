@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B069624E2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7400124E2CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgHUVqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 17:46:36 -0400
+        id S1726826AbgHUVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 17:46:37 -0400
 Received: from mga17.intel.com ([192.55.52.151]:51124 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726433AbgHUVqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 17:46:35 -0400
-IronPort-SDR: LQO+orxU8Qw4NjKCsjGxlPQzc+gCVpJX5izQIdO/ZtSgmq1e22aU3ddDwQQOcIMR6kMfJKZFik
- MZlEkUthL1/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="135704243"
+        id S1726570AbgHUVqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 17:46:36 -0400
+IronPort-SDR: Iw9eGNyG1OrmBysRwkj34+RTdYRGid3PClXhrl4cjx83QZytmtu/EKLFAfohFTUtOLf6FwhrfI
+ 8L5B4Q5zu40g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="135704246"
 X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
-   d="scan'208";a="135704243"
+   d="scan'208";a="135704246"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 14:46:34 -0700
-IronPort-SDR: ZxZtS3zpvyVjxPKG+rWe6VqY6Rd2qHsMBaRBX/gYnp/j6ujYbhqlvzWJOcO6WKckjbImRTI03R
- r/gTj0tJgS+g==
+IronPort-SDR: lToYYZPPROX6ANHr/RK7GD+c5UgwBXkkMivNh3FzdtOAHGyimuRtQQ/F5EJv82awIzLkmrc2Vc
+ eBIzwUnaYdkw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
-   d="scan'208";a="372033684"
+   d="scan'208";a="372033687"
 Received: from otc-chromeosbuild-1.jf.intel.com ([10.54.30.83])
   by orsmga001.jf.intel.com with ESMTP; 21 Aug 2020 14:46:34 -0700
 From:   Azhar Shaikh <azhar.shaikh@intel.com>
@@ -34,80 +34,61 @@ To:     bleung@chromium.org, enric.balletbo@collabora.com,
 Cc:     linux-kernel@vger.kernel.org, azhar.shaikh@intel.com,
         rajmohan.mani@intel.com, utkarsh.h.patel@intel.com,
         casey.g.bowman@intel.com
-Subject: [PATCH v5 0/3] TypeC Connector Class driver improvements
-Date:   Fri, 21 Aug 2020 14:47:21 -0700
-Message-Id: <20200821214724.20056-1-azhar.shaikh@intel.com>
+Subject: [PATCH v5 1/3] platform/chrome: cros_ec_typec: Send enum values to usb_role_switch_set_role()
+Date:   Fri, 21 Aug 2020 14:47:22 -0700
+Message-Id: <20200821214724.20056-2-azhar.shaikh@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200821214724.20056-1-azhar.shaikh@intel.com>
+References: <20200821214724.20056-1-azhar.shaikh@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+usb_role_switch_set_role() has the second argument as enum for usb_role.
+Currently depending upon the data role i.e. UFP(0) or DFP(1) is sent.
+This eventually translates to USB_ROLE_NONE in case of UFP and
+USB_ROLE_DEVICE in case of DFP. Correct this by sending correct enum
+values as USB_ROLE_DEVICE in case of UFP and USB_ROLE_HOST in case of
+DFP.
+
+Fixes: 7e7def15fa4b ("platform/chrome: cros_ec_typec: Add USB mux control")
+Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+Cc: Prashant Malani <pmalani@chromium.org>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
 Changes in v5:
-
-* Patch 1: "platform/chrome: cros_ec_typec: Send enum values to
-            usb_role_switch_set_role()"
-  - Rebased on top of https://lkml.org/lkml/2020/7/10/1063
-
-* Patch 2: "platform/chrome: cros_ec_typec: Avoid setting usb role twice
-            during disconnect"
-  - Rebased on top of https://lkml.org/lkml/2020/7/10/1063
-  - Added Reviewed-by from v4
-
-* Patch 3: "platform/chrome: cros_ec_typec: Re-order connector
-            configuration steps"
-  - Rebased on top of https://lkml.org/lkml/2020/7/10/1063
-  - Added Reviewed-by from v4
+ - Rebased on top of https://lkml.org/lkml/2020/7/10/1063
 
 Changes in v4:
-* Patch 1: "platform/chrome: cros_ec_typec: Send enum values to
-            usb_role_switch_set_role()"
-  - Remove extra line between Fixes and Signed-off tag.
-  - Added Reviewed-by and Cc tags from v1 and v2.
-
-* Patch 2: "platform/chrome: cros_ec_typec: Avoid setting usb role twice
-            during disconnect"
-  - Added Suggested-by from v2.
-
-* Patch 3: "platform/chrome: cros_ec_typec: Re-order connector
-            configuration steps"
-  - No change
+ - Remove extra line between Fixes and Signed-off tag.
+ - Added Reviewed-by and Cc tags from v1 and v2.
 
 Changes in v3:
-* Patch 1: "platform/chrome: cros_ec_typec: Send enum values to
-            usb_role_switch_set_role()"
- - No change
-
-* Patch 2: "platform/chrome: cros_ec_typec: Avoid setting usb role twice
-            during disconnect"
- - Move the location of calling usb_role_switch_set_role() to
-   end of function in cros_typec_configure_mux() to avoid any change
-   in code flow.
-
-* Patch 3: "platform/chrome: cros_ec_typec: Re-order connector
-            configuration steps"
- - New patch added
+ - No changes
 
 Changes in v2:
-* Patch 1: "platform/chrome: cros_ec_typec: Send enum values to
-            usb_role_switch_set_role()"
-  - Update the commit message to change 'USB_ROLE_HOST in case of
+ - Update the commit message to change 'USB_ROLE_HOST in case of
     UFP.'  to 'USB_ROLE_HOST in case of DFP.'
 
-* Patch 2: "platform/chrome: cros_ec_typec: Avoid setting usb role twice
-            during disconnect"
-  - New patch added.
+ drivers/platform/chrome/cros_ec_typec.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Azhar Shaikh (3):
-  platform/chrome: cros_ec_typec: Send enum values to
-    usb_role_switch_set_role()
-  platform/chrome: cros_ec_typec: Avoid setting usb role twice during
-    disconnect
-  platform/chrome: cros_ec_typec: Re-order connector configuration steps
-
- drivers/platform/chrome/cros_ec_typec.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 585f27e2b362..739a1c846949 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -622,7 +622,8 @@ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
+ 		dev_warn(typec->dev, "Configure muxes failed, err = %d\n", ret);
+ 
+ 	return usb_role_switch_set_role(typec->ports[port_num]->role_sw,
+-					!!(resp.role & PD_CTRL_RESP_ROLE_DATA));
++					resp.role & PD_CTRL_RESP_ROLE_DATA
++					? USB_ROLE_HOST : USB_ROLE_DEVICE);
+ }
+ 
+ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
 -- 
 2.17.1
 
