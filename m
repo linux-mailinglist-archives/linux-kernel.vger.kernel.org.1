@@ -2,97 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5324B24DD2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108EF24DD5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgHURNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:13:25 -0400
-Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:35671 "EHLO
-        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728358AbgHURNG (ORCPT
+        id S1728971AbgHURQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbgHURP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:13:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598029984; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=U1SjeBOzCYIJRtx7y/FBaCP228fucmN/EodwmeP9rqe1Uae2UNpu/G2B+8W29yrhCAkhFpZvwXrXAxB6/sj2Xns6V/flUdtbgtAgUGL+5KciKc8i5Sv3kkADRxmX9TBPhir4R5/+SIgNyADQs3+1sIBDBmNGXuvs6o5/RS6NeKEcODdw6JoRLSTdTn9pZDIbs06BtYKlDyAP7G4ZT7gO8bGZT6OBOk53v3Kli1XeK9RzNoZAuDGIdp2eiN2occxrr+gYg14FDHVxVMuu8Z9BLVVngWfpigOQ0tUucJYYkFgDxj1kxO8aN91yhL3epoTrZaYdWs665NpPCPERkD30qw==
-X-YMail-OSG: ixmF2NkVM1lgr7eqtMfLam91TJHBRLG6nNEQcZzUFIRQ4shFsJdFYXS6vMDkOcN
- JSNhiyy6V_bWOMgNbR7rhFN_.kf.RgAy7_7qi9vrduz9K55OQUK7T3dfdlRhE6CrLELS2GteJ7cU
- bxmCovmTq5.l_y8HvnGl0L68tAMqFbL2qrIa.m1mY280hTLbsvMWyWopKAnH54CiOklUhaLBGtPM
- kmPIKsf5LrdufikeYk4fG3A_cG9eF9kY.ugfjC1mpuEQxPrHLdhh_Hhq1YxaE2ioNqIL654aiRdg
- WYHLZj1IiLXZOn8d8BlnN4ULsSJj7qORX_cw1t1_oB21Q2jp2XZffc53lsczxYVSMhCMOM66H_Se
- zwnT.8aPzqnbtltq85gOWL8DbM0m9I024MEe09rG5bjLjmhYxoQJOMG6SeDou3Yo_FlRSJsXa4Co
- gLXlVMnBUGr.PVDCmH5o9Pk7EDtGUw1xcFoNX_HcK.ZrvZpSCFdfOUJ01Kp6Xg_PMIIXPJRkdU.X
- Q.vGykpWM27pcHkrzIyNUKtrXkAalhkqZhzKd5lThR5YSNhrWx10TRDQpYscz.DeKDNnyvWK33cB
- wb2zTJK3cvGTGcYBjUoV_LqWi2zBnN0ADr2OtEhcAWIN6jJjX8XhG5GhgkkxTVbIqV1tjzFYM2Mo
- 8HJ8EqSo70SPWxp6r99oYJTcCdLuwOfceVyk6PP7B2gZSya0NWAoQSJM0lErZJbFz2yZ8eXRp.fr
- vKV4O7i9nKsSkLtCPYNTrSdhIPb0E49Kzkdr2ZV5nGT0lCB58A9PGsTJ1ojPbSzuvYhZZ6y26qka
- vzE8ZKHG7XSINTnJpYXfDfp6OShH9EXqJ2psWiGRDWpuAiwrCOAsvRmu1pk1RHoe3_0kD5J9CgtK
- YGu1UFZUSNbw1L9232ngmUPgycdRC78.nl8lGfY02qe7tUjR_GiwHV8SfX2xYr4p.8JdPU63w1lQ
- vf4rglQAP2r0s5Z.lrAcxuGcbO94h1P0tvfWretqK2Yk.z4wnDQg9r22DF0A7zUNhky8op62Lnn9
- 7NeIAiTNsPnKEDuvd4zPe9Qj6tICoS_NxJ.6D2MEIp1ed.qktaOGQRl3OwW9ZXPr7s3g31r3d_q2
- OxhAioXnwd3J0p4gKZUwQkoInOBGhjM7RrJgfb_gBnkaQbAe0cr0fwvflo50ZSE1GveguyP.PbUx
- Rl1ty5QDnIdiK0P7uTl9UYsv0YYTdxZ0uO47jdzUD3rDQsQeCAg1KkNDKFEgma1o3Su47p29F2Q0
- LgDjfSroXzA2RkssGG4oJXtw1MEAWIReXke4XAOgYSQe83aYUo2rsV9.iGtg4rynTMfTPwVzF.Pg
- mRr4tuqdOwYlNdYjHs2lnfNjY_p.dUc7U5sbW3CK45ia8kYdgJ6QOWVuHukiol3DrVYF354HUD5a
- 0dRLPhcs7Smu7GewWmk8GmU6XsUx0ly5ZBWN6xBGPSbNctxkAVF3wNvA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 21 Aug 2020 17:13:04 +0000
-Date:   Fri, 21 Aug 2020 17:13:02 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.minaaaliyahbrunel0001@gmail.com>
-Reply-To: mrsminaabrunel@myself.com
-Message-ID: <1501158460.4198168.1598029982258@mail.yahoo.com>
-Subject: My Dear in the lord
+        Fri, 21 Aug 2020 13:15:59 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A388BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:15:58 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so3156347eje.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RLhv+dlgRulyMUTYR7EluA/fm0+WWZQOVaVRuB116Jk=;
+        b=aXSykjDcDV9xi4VkacL6aS3kw4HeyODNxJATMu3pAw4xqmgoKpfND2vrbAaHUFRCu9
+         9fq6AsbBaIOOs2mF6oVjHHv13QfO8HHrvG+mB0hap7tYEKQXAtZ7yGcPT6lJuZHZVqFX
+         SX+OkDYD8Gpl84Lzf691f0UsiDT/JRlbeR4AYypnUb4ijGkFgCujXb4F5ZgfFgmqWews
+         6FLiUlW/TQy8jSW+EQB2HYS1bUJ4FpH2B6jbFxdxqvl3rZAy/agUPBz/mjzhIlglAMOG
+         HTaZU/++bSWtT6HK9c14W1ex9xTZ7SY4l+2EGMTS9xeC8ayRb3z48vcme9m+NkPM2oeY
+         1NMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RLhv+dlgRulyMUTYR7EluA/fm0+WWZQOVaVRuB116Jk=;
+        b=bDTAjgfPxSwczV2qD9SQArAyB5sIb0wnRM3ZNzLq5L31ilCsZI0x8LCUSoTttItNhh
+         2J1DcLh24C9b7Z6iUQ6QQT/EMxwsLfo8V3WxCB9+MZkpAvu3/+1dUiGlEdSZLDYGhLCN
+         ygkdI4stwZHJqu6olN0SxLKIRJkpK4wT3WbsQzJHGo/xdfUW9L080HVGv2nmX7FOl3He
+         MlhzosMrOCudXa20lsp7TFuCJBWm55m7amBtpFbKUN4+U+ybg/vbfVSrDzEgKhCQQoQv
+         53q0qrNMSFKxqcVjk84tculc1sq6maZPyupY3uhYX97TaqIp6NhbS5xxKWeGWSUamX80
+         Y9eA==
+X-Gm-Message-State: AOAM5338/JJa37oli3lNmgCrlzuSX/G9nKEHF/ybycJiayNo1QnZm9x0
+        dVjcObcAKApOqXRr+MvtHWiA9EE76+zbTdz1Tn4=
+X-Google-Smtp-Source: ABdhPJySpsAZCPPP42VmuygeG2Mfi6X5G6fsKlU35JADIUTD5pa6p3C2PactC/a+5Est4t2zg0G6AA0trYMb7mAsZPo=
+X-Received: by 2002:a17:906:7291:: with SMTP id b17mr3770259ejl.25.1598030157296;
+ Fri, 21 Aug 2020 10:15:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1501158460.4198168.1598029982258.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <000000000000e44b7d05ad6624df@google.com>
+In-Reply-To: <000000000000e44b7d05ad6624df@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 21 Aug 2020 10:15:45 -0700
+Message-ID: <CAHbLzkqM-x0aD59z0mFRW37JsxRPL+5xKRRfU1qY18LKksQ3ZQ@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in do_madvise
+To:     syzbot <syzbot+b90df26038d1d5d85c97@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 21, 2020 at 10:06 AM syzbot
+<syzbot+b90df26038d1d5d85c97@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    da2968ff Merge tag 'pci-v5.9-fixes-1' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1339995a900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b90df26038d1d5d85c97
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1225d919900000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b90df26038d1d5d85c97@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KASAN: use-after-free in madvise_willneed mm/madvise.c:293 [inline]
+> BUG: KASAN: use-after-free in madvise_vma mm/madvise.c:942 [inline]
+> BUG: KASAN: use-after-free in do_madvise.part.0+0x1c8b/0x1cf0 mm/madvise.c:1145
+> Read of size 8 at addr ffff8880a6163eb0 by task syz-executor.0/9996
+>
+> CPU: 0 PID: 9996 Comm: syz-executor.0 Not tainted 5.9.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+>  __kasan_report mm/kasan/report.c:513 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+>  madvise_willneed mm/madvise.c:293 [inline]
+>  madvise_vma mm/madvise.c:942 [inline]
+>  do_madvise.part.0+0x1c8b/0x1cf0 mm/madvise.c:1145
+>  do_madvise mm/madvise.c:1169 [inline]
+>  __do_sys_madvise mm/madvise.c:1171 [inline]
+>  __se_sys_madvise mm/madvise.c:1169 [inline]
+>  __x64_sys_madvise+0xd9/0x110 mm/madvise.c:1169
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45d4d9
+> Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f04f7464c78 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+> RAX: ffffffffffffffda RBX: 0000000000020800 RCX: 000000000045d4d9
+> RDX: 0000000000000003 RSI: 0000000000600003 RDI: 0000000020000000
+> RBP: 000000000118d020 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cfec
+> R13: 00007ffc579cce7f R14: 00007f04f74659c0 R15: 000000000118cfec
+>
+> Allocated by task 9992:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track mm/kasan/common.c:56 [inline]
+>  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+>  slab_post_alloc_hook mm/slab.h:518 [inline]
+>  slab_alloc mm/slab.c:3312 [inline]
+>  kmem_cache_alloc+0x138/0x3a0 mm/slab.c:3482
+>  vm_area_alloc+0x1c/0x110 kernel/fork.c:347
+>  mmap_region+0x8e5/0x1780 mm/mmap.c:1743
+>  do_mmap+0xcf9/0x11d0 mm/mmap.c:1545
+>  vm_mmap_pgoff+0x195/0x200 mm/util.c:506
+>  ksys_mmap_pgoff+0x43a/0x560 mm/mmap.c:1596
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Freed by task 9992:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+>  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+>  __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+>  __cache_free mm/slab.c:3418 [inline]
+>  kmem_cache_free.part.0+0x67/0x1f0 mm/slab.c:3693
+>  remove_vma+0x132/0x170 mm/mmap.c:184
+>  remove_vma_list mm/mmap.c:2613 [inline]
+>  __do_munmap+0x743/0x1170 mm/mmap.c:2869
+>  do_munmap mm/mmap.c:2877 [inline]
+>  mmap_region+0x257/0x1780 mm/mmap.c:1716
+>  do_mmap+0xcf9/0x11d0 mm/mmap.c:1545
+>  vm_mmap_pgoff+0x195/0x200 mm/util.c:506
+>  ksys_mmap_pgoff+0x43a/0x560 mm/mmap.c:1596
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+It looks the vma is gone. The below patch should be able to fix it:
 
-My Dear in the lord
+diff --git a/mm/madvise.c b/mm/madvise.c
+index dd1d43cf026d..d4aa5f776543 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -289,9 +289,9 @@ static long madvise_willneed(struct vm_area_struct *vma,
+         */
+        *prev = NULL;   /* tell sys_madvise we drop mmap_lock */
+        get_file(file);
+-       mmap_read_unlock(current->mm);
+        offset = (loff_t)(start - vma->vm_start)
+                        + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
++       mmap_read_unlock(current->mm);
+        vfs_fadvise(file, offset, end - start, POSIX_FADV_WILLNEED);
+        fput(file);
+        mmap_read_lock(current->mm);
 
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+>
+> The buggy address belongs to the object at ffff8880a6163eb0
+>  which belongs to the cache vm_area_struct of size 200
+> The buggy address is located 0 bytes inside of
+>  200-byte region [ffff8880a6163eb0, ffff8880a6163f78)
+> The buggy address belongs to the page:
+> page:00000000dc1e014c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xa6163
+> flags: 0xfffe0000000200(slab)
+> raw: 00fffe0000000200 ffffea0002494bc8 ffffea0002a5ad88 ffff8880aa06f500
+> raw: 0000000000000000 ffff8880a6163040 000000010000000f 0000000000000000
+> page dumped because: kasan: bad access detected
+>
+> Memory state around the buggy address:
+>  ffff8880a6163d80: fc fc fc fc fc 00 00 00 00 00 00 00 00 00 00 00
+>  ffff8880a6163e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
+> >ffff8880a6163e80: fc fc fc fc fc fc fa fb fb fb fb fb fb fb fb fb
+>                                      ^
+>  ffff8880a6163f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc
+>  ffff8880a6163f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
