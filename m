@@ -2,102 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07EE24CAFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B9624CB00
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgHUCtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:49:11 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:41955 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgHUCtH (ORCPT
+        id S1727106AbgHUCuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbgHUCuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:49:07 -0400
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 07L2miiI008430
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:48:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 07L2miiI008430
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1597978125;
-        bh=ASVoDxPVaHEphvEWRnO7mYJc+Au9FF54c7QJWbl4ee0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V+YPuOsQkInKZN376aTj+f2rVfneOSHqbB2VjV+e25gFzYQn437FXxpmHjU9obNkI
-         Bgk2DHeXR3r6fuAXyTAll3D2WOiJ0Ay+JrWNuySu0z9JN+keM5hzvopGzfgndqP7DZ
-         GqwGYKIkUrsP0ERxVMhR226tpG6nxbhn8xKceJOxUKEZ/w0XYJi+TDlImg8awdeJyy
-         sqKkcbrLv4Gq2dmRfpTzSgxISHc8jyQOJwmXFnU41skCuk06dGm8u5+ehAd5wyyhED
-         7nMLr24Bv0MZMHMYtGR4kAW3QHvZ7VSCnti21huzQFMU3HxgFzVNHQLJ5iUKjo5yWG
-         V8V8BgT8I49Ag==
-X-Nifty-SrcIP: [209.85.222.51]
-Received: by mail-ua1-f51.google.com with SMTP id x17so143709uao.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:48:44 -0700 (PDT)
-X-Gm-Message-State: AOAM533yrYwhyKyMfImB0yEHca1oUegIbhN4XXCABCr3ylq9yUC/NyHu
-        QH6I6ITnVe+ZVBPvGKiJSTBNCoRmGK1F79hEQlA=
-X-Google-Smtp-Source: ABdhPJxg+cikE5V+obxr8K+doH4JPFIvuWY0Z+64GR4C12XQE67sBr6z/Q4BwcGREYBB67Bh+WghnVNCT5ZrWSn/BdM=
-X-Received: by 2002:ab0:108:: with SMTP id 8mr389564uak.25.1597978123729; Thu,
- 20 Aug 2020 19:48:43 -0700 (PDT)
+        Thu, 20 Aug 2020 22:50:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D17C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=o8FOD1P0Ywv5Vt6CEpvQmhpEk1fBVgUX3n+CuvA7v/c=; b=TheepzJO/krjJ5ZXXdUKl/s/Ui
+        5NwLqjcxka5lAsbKNOVpc2zD9wn4Z7Z3yI7Q6ht60Op2OglNliMaipeC6C8F8XBdp1jmpd0tYAPCr
+        /lx/Ho2sxJhmTn48VsUmhTr1mGgqurhzzoFGULF1Gr41VLeMc6mUdGqxt9G0QRYaQFRD0rrfWRSvw
+        tF5qXrLADexgpUUudDw9bTTajVzSItpePMMW4M9+hfK6DjJ+u9wNmAM88bEf7ItLSMhzxDCAI0Ukk
+        mA7PvLKa2k9Sne2JI+OjOVogH779r2EDdPkPiUIC+R4lUiXNJ+erfzDq7Vcm2ujVwXvF0jhAWtUq6
+        iy1Vm6Zw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8x7x-0006dh-6L; Fri, 21 Aug 2020 02:50:01 +0000
+Subject: Re: [PATCH v6 1/2] dma-contiguous: provide the ability to reserve
+ per-numa CMA
+To:     Barry Song <song.bao.hua@hisilicon.com>, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com, will@kernel.org,
+        ganapatrao.kulkarni@cavium.com, catalin.marinas@arm.com
+Cc:     iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huangdaode@huawei.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Steve Capper <steve.capper@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <20200821022615.28596-1-song.bao.hua@hisilicon.com>
+ <20200821022615.28596-2-song.bao.hua@hisilicon.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5dbe456d-d408-11ef-788e-63d996435fa8@infradead.org>
+Date:   Thu, 20 Aug 2020 19:49:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200820063526.GA3278096@gmail.com>
-In-Reply-To: <20200820063526.GA3278096@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 21 Aug 2020 11:48:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
-Message-ID: <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Run syncconfig with -s
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200821022615.28596-2-song.bao.hua@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 3:35 PM Ingo Molnar <mingo@kernel.org> wrote:
->
-> On every kernel build that runs --syncconfig, there's an output of the following line:
->
->   scripts/kconfig/conf  --syncconfig Kconfig
->
-> This is the only non-platform build message the kbuild system emits that isn't
-> prefixed by at least a space, or is a build warning.
->
-> Run it under -s - if there's any problem it will emit messages anyway.
->
-> With this change the following simple grep filter will show all build warnings
-> and errors of a kernel build:
->
->    make | grep -v '^ '
-
-
-
-I do want to see something when syncconfig is invoked.
-
-I will apply this instead:
-https://patchwork.kernel.org/patch/11727445/
-
-
-
-
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+On 8/20/20 7:26 PM, Barry Song wrote:
+> 
+> 
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ganapatrao Kulkarni <ganapatrao.kulkarni@cavium.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Cc: Steve Capper <steve.capper@arm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > ---
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 9cac6fde3479..2057c92a6205 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -709,7 +709,7 @@ $(KCONFIG_CONFIG):
->  # The syncconfig should be executed only once to make all the targets.
->  # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
->  %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
-> -       $(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
-> +       $(Q)$(MAKE) -sf $(srctree)/Makefile syncconfig
->  else # !may-sync-config
->  # External modules and some install targets need include/generated/autoconf.h
->  # and include/config/auto.conf but do not care if they are up-to-date.
+>  v6: rebase on top of 5.9-rc1;
+>      doc cleanup
+> 
+>  .../admin-guide/kernel-parameters.txt         |   9 ++
+>  include/linux/dma-contiguous.h                |   6 ++
+>  kernel/dma/Kconfig                            |  10 ++
+>  kernel/dma/contiguous.c                       | 100 ++++++++++++++++--
+>  4 files changed, 115 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index bdc1f33fd3d1..3f33b89aeab5 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -599,6 +599,15 @@
+>  			altogether. For more information, see
+>  			include/linux/dma-contiguous.h
+>  
+> +	pernuma_cma=nn[MG]
+
+memparse() allows any one of these suffixes: K, M, G, T, P, E
+and nothing in the option parsing function cares what suffix is used...
+
+> +			[ARM64,KNL]
+> +			Sets the size of kernel per-numa memory area for
+> +			contiguous memory allocations. A value of 0 disables
+> +			per-numa CMA altogether. DMA users on node nid will
+> +			first try to allocate buffer from the pernuma area
+> +			which is located in node nid, if the allocation fails,
+> +			they will fallback to the global default memory area.
+> +
+>  	cmo_free_hint=	[PPC] Format: { yes | no }
+>  			Specify whether pages are marked as being inactive
+>  			when they are freed.  This is used in CMO environments
+
+> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+> index cff7e60968b9..89b95f10e56d 100644
+> --- a/kernel/dma/contiguous.c
+> +++ b/kernel/dma/contiguous.c
+> @@ -69,6 +69,19 @@ static int __init early_cma(char *p)
+>  }
+>  early_param("cma", early_cma);
+>  
+> +#ifdef CONFIG_DMA_PERNUMA_CMA
+> +
+> +static struct cma *dma_contiguous_pernuma_area[MAX_NUMNODES];
+> +static phys_addr_t pernuma_size_bytes __initdata;
+
+why phys_addr_t? couldn't it just be unsigned long long?
+
+OK, so cma_declare_contiguous_nid() uses phys_addr_t. Fine.
+
+> +
+> +static int __init early_pernuma_cma(char *p)
+> +{
+> +	pernuma_size_bytes = memparse(p, &p);
+> +	return 0;
+> +}
+> +early_param("pernuma_cma", early_pernuma_cma);
+> +#endif
+> +
+>  #ifdef CONFIG_CMA_SIZE_PERCENTAGE
+>  
+>  static phys_addr_t __init __maybe_unused cma_early_percent_memory(void)
+> @@ -96,6 +109,34 @@ static inline __maybe_unused phys_addr_t cma_early_percent_memory(void)
+>  
+>  #endif
+>  
+> +#ifdef CONFIG_DMA_PERNUMA_CMA
+> +void __init dma_pernuma_cma_reserve(void)
+> +{
+> +	int nid;
+> +
+> +	if (!pernuma_size_bytes)
+> +		return;
+> +
+> +	for_each_node_state(nid, N_ONLINE) {
+> +		int ret;
+> +		char name[20];
+> +		struct cma **cma = &dma_contiguous_pernuma_area[nid];
+> +
+> +		snprintf(name, sizeof(name), "pernuma%d", nid);
+> +		ret = cma_declare_contiguous_nid(0, pernuma_size_bytes, 0, 0,
+> +						 0, false, name, cma, nid);
+> +		if (ret) {
+> +			pr_warn("%s: reservation failed: err %d, node %d", __func__,
+> +				ret, nid);
+> +			continue;
+> +		}
+> +
+> +		pr_debug("%s: reserved %llu MiB on node %d\n", __func__,
+> +			(unsigned long long)pernuma_size_bytes / SZ_1M, nid);
+
+Conversely, if you want to leave pernuma_size_bytes as phys_addr_t,
+you should use %pa (or %pap) to print it.
+
+> +	}
+> +}
+> +#endif
 
 
 
 -- 
-Best Regards
-Masahiro Yamada
+~Randy
+
