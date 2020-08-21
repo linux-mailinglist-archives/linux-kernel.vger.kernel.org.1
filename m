@@ -2,205 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411B624DB6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2699C24DB59
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgHUQju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:39:50 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2688 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728370AbgHUQiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:38:52 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id E73945C0CB8D9B46D780;
-        Fri, 21 Aug 2020 17:38:50 +0100 (IST)
-Received: from localhost (10.52.123.86) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 21 Aug
- 2020 17:38:50 +0100
-Date:   Fri, 21 Aug 2020 17:37:18 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Brice Goglin" <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        <linux-api@vger.kernel.org>, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v9 4/6] ACPI: HMAT: Fix handling of changes from ACPI
- 6.2 to ACPI 6.3
-Message-ID: <20200821173718.000028fc@Huawei.com>
-In-Reply-To: <20200821134622.GA1620197@bjorn-Precision-5520>
-References: <20200821135901.0000260b@Huawei.com>
-        <20200821134622.GA1620197@bjorn-Precision-5520>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728265AbgHUQiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:38:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37459 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728611AbgHUQho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:37:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598027862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0lJhV0AuRAshzZDQ8A0+XwDhVR+Tf/PekK/bov5/xP8=;
+        b=MO+q2Z3NicsYNUsIYUuIS2yCC8MijqA/jFkmZj8DvBvGuDmJbUcDZUU2nSGMGG7bNTD723
+        1grcshvYYh5x7q+ZdHsVsgjC/hf0cO6DnyLoi4t+4YgrWogimOAEbo0qpHfUeBQCpw8elM
+        /p3mVw1P423aO62Wa7X2RMPiKDi5+7I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-515-I75JHwW-NbqN86TNKQBV8Q-1; Fri, 21 Aug 2020 12:37:41 -0400
+X-MC-Unique: I75JHwW-NbqN86TNKQBV8Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 837A780733B;
+        Fri, 21 Aug 2020 16:37:36 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5BE651014186;
+        Fri, 21 Aug 2020 16:37:26 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 21 Aug 2020 18:37:36 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 18:37:25 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tim Murray <timmurray@google.com>, mingo@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com,
+        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
+        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de,
+        John Johansen <john.johansen@canonical.com>,
+        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200821163724.GC19445@redhat.com>
+References: <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
+ <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
+ <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+ <87k0xtv0d4.fsf@x220.int.ebiederm.org>
+ <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
+ <20200820162645.GP5033@dhcp22.suse.cz>
+ <87r1s0txxe.fsf@x220.int.ebiederm.org>
+ <20200821111558.GG4546@redhat.com>
+ <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
+ <CAJuCfpG06_KLhQyg9N84bRQOdvG27uAZ2oBDEQPR-OnZeNJd1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.86]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpG06_KLhQyg9N84bRQOdvG27uAZ2oBDEQPR-OnZeNJd1w@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 08:46:22 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+again, don't really understand...
 
-> On Fri, Aug 21, 2020 at 01:59:01PM +0100, Jonathan Cameron wrote:
-> > On Fri, 21 Aug 2020 07:13:56 -0500
-> > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >   
-> > > [+cc Keith, author of 3accf7ae37a9 ("acpi/hmat: Parse and report
-> > > heterogeneous memory")]
-> > > 
-> > > On Fri, Aug 21, 2020 at 09:42:58AM +0100, Jonathan Cameron wrote:  
-> > > > On Thu, 20 Aug 2020 17:21:29 -0500
-> > > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > >     
-> > > > > On Wed, Aug 19, 2020 at 10:51:09PM +0800, Jonathan Cameron wrote:    
-> > > > > > In ACPI 6.3, the Memory Proximity Domain Attributes Structure
-> > > > > > changed substantially.  One of those changes was that the flag
-> > > > > > for "Memory Proximity Domain field is valid" was deprecated.
-> > > > > > 
-> > > > > > This was because the field "Proximity Domain for the Memory"
-> > > > > > became a required field and hence having a validity flag makes
-> > > > > > no sense.
-> > > > > > 
-> > > > > > So the correct logic is to always assume the field is there.
-> > > > > > Current code assumes it never is.
-> > > > > > 
-> > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > > > ---
-> > > > > >  drivers/acpi/numa/hmat.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
-> > > > > > index 2c32cfb72370..07cfe50136e0 100644
-> > > > > > --- a/drivers/acpi/numa/hmat.c
-> > > > > > +++ b/drivers/acpi/numa/hmat.c
-> > > > > > @@ -424,7 +424,7 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
-> > > > > >  		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
-> > > > > >  			p->flags, p->processor_PD, p->memory_PD);
-> > > > > >  
-> > > > > > -	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
-> > > > > > +	if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) || hmat_revision == 2) {      
-> > > > > 
-> > > > > I hope/assume the spec is written in such a way that p->memory_PD is
-> > > > > required for any revision > 1?  So maybe this should be:
-> > > > > 
-> > > > >   if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) ||
-> > > > >       hmat_revision > 1) {    
-> > > 
-> > > I should have said simply:
-> > > 
-> > >   if (hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID)
-> > > 
-> > > We shouldn't even test p->flags for ACPI_HMAT_MEMORY_PD_VALID unless
-> > > we already know it's revision 1.
-> > > 
-> > > And unless there was a revision 0 of HMAT, there's no need to look for
-> > > hmat_revison > 1.  
-> > 
-> > It needs to stay as an or statement as you had the first time.
-> > The field is always valid for hmat_revision > 1, and valid for
-> > hmat_revision == 1 with the flag set.  You could express it as
-> > 
-> > if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID) || (hmat_revision != 1))
-> > 
-> > but that seems more confusing to me.  
-> 
-> Oh, you're right, sorry!  There are two questions here:
-> 
-> 1) In what order should we test "p->flags & ACPI_HMAT_MEMORY_PD_VALID"
->    and "hmat_revision == 1"?  ACPI_HMAT_MEMORY_PD_VALID is defined
->    only when "hmat_revision == 1", so I think we should test the
->    revision first.
-> 
->    When "hmat_revision == 2", ACPI_HMAT_MEMORY_PD_VALID is reserved,
->    so we shouldn't test it, even if we later check the revision and
->    discard the result of the flag test.  This is a tiny thing,
->    admittedly, but I think it follows the spec more clearly.
+On 08/21, Suren Baghdasaryan wrote:
+>
+> Actually, reviewing again and considering where list_add_tail_rcu is
+> happening, maybe the race with clone(CLONE_VM) does not introduce
+> false negatives.
 
-Agreed.
+I think it does... Whatever we check, mm_users or MMF_PROC_SHARED,
+the task can do clone(CLONE_VM) right after the check.
 
-> 
-> 2) Do we need to test hmat_revision for anything other than 1?  Yes,
->    you're right, see below.
-> 
-> > > > Good point.  We have existing protections elsewhere against
-> > > > hmat_revision being anything other than 1 or 2, so we should aim to
-> > > > keep that in only one place.    
-> > > 
-> > > I think the "Ignoring HMAT: Unknown revision" test in hmat_init(),
-> > > added by 3accf7ae37a9 ("acpi/hmat: Parse and report heterogeneous
-> > > memory"), is a mistake.
-> > > 
-> > > And I think hmat_normalize() has a similar mistake in that it tests
-> > > explicitly for hmat_revision == 2 when it should accept 2 AND anything
-> > > later.
-> > > 
-> > > We should assume that future spec revisions will be backwards
-> > > compatible.  Otherwise we're forced to make kernel changes when we
-> > > otherwise would not have to.  
-> > 
-> > I disagree with this. There is no rule in ACPI about maintaining
-> > backwards compatibility. The assumption is that the version number
-> > will always be checked.  The meaning of fields changed between
-> > version 1 and version 2 so it would be bold to assume that won't
-> > happen in the future!  
-> 
-> There *is* a rule about maintaining backwards compatibility.  ACPI
-> v6.3, sec 5.2.2, says:
-> 
->   All versions of the ACPI tables must maintain backward
->   compatibility. To accomplish this, modifications of the tables
->   consist of redefinition of previously reserved fields and values
->   plus appending data to the 1.0 tables. Modifications of the ACPI
->   tables require that the version numbers of the modified tables be
->   incremented.
+> However a false negative I think will happen when a
+> task shares mm with another task and also has an additional thread.
+> Shared mm will increment mm_users without adding to signal->live
 
-Fair point.  Unfortunately it's not true here...  The field we
-are talking about here is probably fine, but the latency units
-changed between v1 and v2.  
+Yes,
 
-> 
-> > HMAT is an optional table, so if someone boots up an old kernel
-> > they are probably better off failing to use it at all than
-> > misinterpreting it.   
-> 
-> An old kernel tests:
-> 
->   if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1)
->     target = find_mem_target(p->memory_PD);
-> 
-> which is fine on old firmware.  On new firmware (hmat_revision == 2),
-> it will ignore p->memory_PD.  That is probably a problem, but I think
-> we should check for that at the place where we need a memory_PD and
-> don't find one.  That's more general than sanity checking a revision.
-> 
-> A new kernel that tests:
-> 
->   if ((hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID) ||
->        hmat_revision > 1)
->     target = find_mem_target(p->memory_PD);
-> 
-> will do the right thing on both old and new firmware.
-> 
+> and
+> the additional thread will advance signal->live without adding to
+> mm_users.
 
-For the case here we are fine, but as mentioned above, it's not the
-only version dependent part.
+No, please note that CLONE_THREAD requires CLONE_VM.
 
-Jonathan
-
-
-> Bjorn
-
+Oleg.
 
