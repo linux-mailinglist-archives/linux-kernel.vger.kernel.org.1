@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C4724D60E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE5F24D612
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgHUNVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726975AbgHUNVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:21:09 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0CBC061573;
-        Fri, 21 Aug 2020 06:21:09 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 449775C0160;
-        Fri, 21 Aug 2020 15:21:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1598016060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jAmn351OrHHZYEgU6zTRjzq0M49ckKbBSek16/Foebc=;
-        b=mKcMiFnbPzsC8l9AFLdkncUV9EmSxcMITYQK9r8Mbook20kfNTEZhAmXrE/rB2GmTuYNog
-        4opHaOqUBdcKd5HT9d65OES7IknI6F77qRH604l5v04B6LM8tDr9Jedh5GgCk7i1F6n9Mn
-        eXKlbEnYBy2ozI6ebEvEx28pmLwTem4=
-MIME-Version: 1.0
+        id S1728130AbgHUN2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:28:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727808AbgHUN2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:28:51 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D471520724;
+        Fri, 21 Aug 2020 13:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598016530;
+        bh=oxNoRlZu8fZm0t7Eoh9NrCABbyRY5otstXAZMBFkHuc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nY+/7A1g+pTS23xZF44/+fWTVyTXsI3EAZKbgRhdtEnJGYzrn0CBivv5PsodixTux
+         rtG+Pn2N9g/CnzwWmGObvdUKrMi1s64BJb5wob40mgkgj8IkjPNjhBmbJkcFFfOThf
+         WRmcFHpiLIdnfOmzgKY1O6CyTb/Vep1M8jFiYYuc=
+Date:   Fri, 21 Aug 2020 22:28:47 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        songliubraving@fb.com, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] kprobes: Fix kill kprobe which has been marked as gone
+Message-Id: <20200821222847.7d0730e4b193c3ea8da6bae2@kernel.org>
+In-Reply-To: <20200821212843.180dc6f2f417e60cff2b886c@kernel.org>
+References: <20200820031933.46025-1-songmuchun@bytedance.com>
+        <20200821212843.180dc6f2f417e60cff2b886c@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 Aug 2020 15:20:59 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Chris Healy <cphealy@gmail.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        robh+dt@kernel.org, andrew.smirnov@gmail.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, festevam@gmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: vfxxx: Add syscon compatible with ocotp
-In-Reply-To: <20200820041055.75848-1-cphealy@gmail.com>
-References: <20200820041055.75848-1-cphealy@gmail.com>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <1bf1c9664d8c376c87dc55aeb27da6e4@agner.ch>
-X-Sender: stefan@agner.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-20 06:10, Chris Healy wrote:
-> From: Chris Healy <cphealy@gmail.com>
-> 
-> Add syscon compatibility with Vybrid ocotp node. This is required to
-> access the UID.
+On Fri, 21 Aug 2020 21:28:43 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Hm, it seems today the SoC driver uses the specific compatible. It also
-should expose the UID as soc_id, see drivers/soc/imx/soc-imx.c.
-
-Maybe it does make sense exposing it as syscon, but then we should
-probably also adjust
-Documentation/devicetree/bindings/nvmem/vf610-ocotp.txt.
-
---
-Stefan
-
+> Hi Muchun,
 > 
-> Fixes: fa8d20c8dbb77 ("ARM: dts: vfxxx: Add node corresponding to OCOTP")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Chris Healy <cphealy@gmail.com>
-> ---
-> Changes in v2:
->  - Add Fixes line to commit message
+> On Thu, 20 Aug 2020 11:19:33 +0800
+> Muchun Song <songmuchun@bytedance.com> wrote:
 > 
->  arch/arm/boot/dts/vfxxx.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > If a kprobe is marked as gone, we should not kill it again. Otherwise,
+> > we can disarm the kprobe more than once. In that case, the statistics
+> > of kprobe_ftrace_enabled can unbalance which can lead to that kprobe
+> > do not work.
+> > 
 > 
-> diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
-> index 0fe03aa0367f..2259d11af721 100644
-> --- a/arch/arm/boot/dts/vfxxx.dtsi
-> +++ b/arch/arm/boot/dts/vfxxx.dtsi
-> @@ -495,7 +495,7 @@ edma1: dma-controller@40098000 {
->  			};
->  
->  			ocotp: ocotp@400a5000 {
-> -				compatible = "fsl,vf610-ocotp";
-> +				compatible = "fsl,vf610-ocotp", "syscon";
->  				reg = <0x400a5000 0x1000>;
->  				clocks = <&clks VF610_CLK_OCOTP>;
->  			};
+> Good catch! Hmm, I think we also need an assertion in
+> kill_kprobe() so that p is already gone. Anyway, this looks good to me.
+> 
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Thanks!
+> 
+> > Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
+
+BTW, this fixes older bug than this commit.
+
+Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
+
+Thank you,
+
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > ---
+> >  kernel/kprobes.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index d36e2b017588..7bac3ea44ff4 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -2422,7 +2422,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
+> >  	mutex_lock(&kprobe_mutex);
+> >  	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
+> >  		head = &kprobe_table[i];
+> > -		hlist_for_each_entry(p, head, hlist)
+> > +		hlist_for_each_entry(p, head, hlist) {
+> > +			if (kprobe_gone(p))
+> > +				continue;
+> > +
+> >  			if (within_module_init((unsigned long)p->addr, mod) ||
+> >  			    (checkcore &&
+> >  			     within_module_core((unsigned long)p->addr, mod))) {
+> > @@ -2439,6 +2442,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+> >  				 */
+> >  				kill_kprobe(p);
+> >  			}
+> > +		}
+> >  	}
+> >  	if (val == MODULE_STATE_GOING)
+> >  		remove_module_kprobe_blacklist(mod);
+> > -- 
+> > 2.11.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
