@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AAA24D9F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE6124D987
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgHUQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgHUQPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:15:01 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40EBA21741;
-        Fri, 21 Aug 2020 16:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026501;
-        bh=l8A2krO7X5bmyZWqfJPn18y+U9YtDtgV6LKcbdwCpdQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qbt8lIMMGBR08EDD7MaA+49J9ekzqpQ5LChjHWPYPSSlhEx/nBywUklwK9BLO39X1
-         0Muw4HeGCozrv3IX2lQNqV2DF5DBedXr7yYlKIv7Yo1nYA7I8gMB/1/FW4eLg4flro
-         +mDLh39tg1BVHuoho88MySNlBEq+dCbgVcqHiyck=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 30/62] scsi: lpfc: Fix shost refcount mismatch when deleting vport
-Date:   Fri, 21 Aug 2020 12:13:51 -0400
-Message-Id: <20200821161423.347071-30-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
-References: <20200821161423.347071-1-sashal@kernel.org>
+        id S1726181AbgHUQOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:14:39 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:38718 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgHUQOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:14:07 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200821161405euoutp02ff1a11b29361b1b1c569baa1d89db216~tVJXzz18S0659906599euoutp02H
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:14:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200821161405euoutp02ff1a11b29361b1b1c569baa1d89db216~tVJXzz18S0659906599euoutp02H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598026445;
+        bh=z++olWEZiYHevwzEaZpqj3hyDJFzsFUj7ho3wt7OKh0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=JWvIOnj9QJUUBh+7Os3e+8vyFyDgDOgQ5wrUqMKQmqWL37yVt+WfbH2HOjymvejiD
+         79VtEEauvI768CwzvAS91ys9wg8/tpZWow/rUnMOlcNWaHIASUV0LWlLtcXkx00+up
+         uLPV2RD02FkgHnLFUHlm0FFGBwcpPASzacEJO40s=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200821161405eucas1p2ccea9449b176120df3a3b2a5a01fc961~tVJXf_zf62032520325eucas1p2g;
+        Fri, 21 Aug 2020 16:14:05 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id BE.9E.05997.DC2FF3F5; Fri, 21
+        Aug 2020 17:14:05 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200821161404eucas1p20577160d1bff2e8f5cae7403e93716ab~tVJXDyjyL2032520325eucas1p2f;
+        Fri, 21 Aug 2020 16:14:04 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200821161404eusmtrp1fb99f20d180cd5fa6291e4be553fe7f0~tVJXDDJ-61179011790eusmtrp12;
+        Fri, 21 Aug 2020 16:14:04 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-c0-5f3ff2cd2ab2
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 2D.A9.06017.CC2FF3F5; Fri, 21
+        Aug 2020 17:14:04 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200821161404eusmtip26563b85b475ad000c6271d91c80bc5d1~tVJW03UKt2050020500eusmtip2R;
+        Fri, 21 Aug 2020 16:14:04 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     m.szyprowski@samsung.com, b.zolnierkie@samsung.com,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2 0/9] Some fixes for spi-s3c64xx
+Date:   Fri, 21 Aug 2020 18:13:52 +0200
+Message-Id: <20200821161401.11307-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7djPc7pnP9nHG0zYI2mx+MdzJouNM9az
+        Wkx9+ITNov/xa2aL8+c3sFvcPLSC0WLT42usFpd3zWGzmHF+H5NF48eb7BZrj9xld+D2uL7k
+        E7PHplWdbB6bl9R79G1ZxejxeZNcAGsUl01Kak5mWWqRvl0CV8bF4zeYC25wV7zpOMbSwHiK
+        s4uRk0NCwERi05WLzF2MXBxCAisYJfbuboVyvjBK7P/UxArhfGaU+D9nCjNMy6epXSwQieWM
+        Et97F0K1PGeUWP9rCSNIFZuAo0T/0hNg7SICE5gkHp57wwaSYBYolejZeQjMFhYwkjh0dRE7
+        iM0ioCpx7sZKpi5GDg5eAWuJ849tILbJS7Qv3w5WzisgKHFy5hMWEJtfQEtiTdN1FoiR8hLN
+        W2eDHSEhsItd4lfDKTaIZheJhgP9ULawxKvjW9ghbBmJ05N7WEB2SQjUS0yeZAbR28MosW3O
+        DxaIGmuJO+d+sYHUMAtoSqzfpQ8RdpR4P28CM0Qrn8SNt4IQJ/BJTNo2HSrMK9HRJgRRrSKx
+        rn8P1EApid5XKxghbA+JPasms01gVJyF5LFZSJ6ZhbB3ASPzKkbx1NLi3PTUYqO81HK94sTc
+        4tK8dL3k/NxNjMCEdPrf8S87GHf9STrEKMDBqMTD++OQfbwQa2JZcWXuIUYJDmYlEV6ns6fj
+        hHhTEiurUovy44tKc1KLDzFKc7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamAM4v9yYt6P
+        tMRjR4QucYZkRVzcPe2aDrfMx4CzYX/rHju5N2W7JOmlfFypvf/r3L0L376f+2ztLM7vCb9P
+        HtpRvdfzq/jyDW77D7VbODiU7VohkND80L35ZnLJvRilvRuOn/xQpBuRe4hf25Wztvwy599N
+        LMe8pqcWMDbVOvavjeFVYDi0LDtdiaU4I9FQi7moOBEAJvyhfUQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xe7pnPtnHG0zdaWqx+MdzJouNM9az
+        Wkx9+ITNov/xa2aL8+c3sFvcPLSC0WLT42usFpd3zWGzmHF+H5NF48eb7BZrj9xld+D2uL7k
+        E7PHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
+        rJWRqZK+nU1Kak5mWWqRvl2CXsbF4zeYC25wV7zpOMbSwHiKs4uRk0NCwETi09Quli5GLg4h
+        gaWMEqvPPmbqYuQASkhJrJybDlEjLPHnWhcbiC0k8JRR4vQKUxCbTcBRon/pCVaQXhGBGUwS
+        T25MZgVJMAuUS1ya9ZwdxBYWMJI4dHURmM0ioCpx7sZKsPm8AtYS5x/bQMyXl2hfvh1sPq+A
+        oMTJmU9YQEqYBdQl1s8TAgnzC2hJrGm6zgIxXV6ieets5gmMArOQdMxC6JiFpGoBI/MqRpHU
+        0uLc9NxiI73ixNzi0rx0veT83E2MwFjaduznlh2MXe+CDzEKcDAq8fD+OGQfL8SaWFZcmXuI
+        UYKDWUmE1+ns6Tgh3pTEyqrUovz4otKc1OJDjKZA30xklhJNzgfGeV5JvKGpobmFpaG5sbmx
+        mYWSOG+HwMEYIYH0xJLU7NTUgtQimD4mDk6pBsby7746ByaIRjIGnjvDvbr93vfdretnsb9j
+        UVzuY3vztdi0htfLQ7N+sb7ddHuVtWyEXKWMzfkXMbq3fj0R5zEqXuCpevWByIUKQ2n5U0on
+        NLqi4wvm8qezRkW8N95+WG1l6aueGR3NBZ+eqrVVi7EqvY9c2xNZ3xTy9nhfy4T0O37/FKof
+        aSqxFGckGmoxFxUnAgDVFelNuwIAAA==
+X-CMS-MailID: 20200821161404eucas1p20577160d1bff2e8f5cae7403e93716ab
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200821161404eucas1p20577160d1bff2e8f5cae7403e93716ab
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200821161404eucas1p20577160d1bff2e8f5cae7403e93716ab
+References: <CGME20200821161404eucas1p20577160d1bff2e8f5cae7403e93716ab@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dick Kennedy <dick.kennedy@broadcom.com>
+This is a series of fixes created during porting a device driver (these
+patches will be released soon too) for an SPI device to the current kernel.
 
-[ Upstream commit 03dbfe0668e6692917ac278883e0586cd7f7d753 ]
+The two most important are 
 
-When vports are deleted, it is observed that there is memory/kthread
-leakage as the vport isn't fully being released.
+  spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
+  spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for Exynos3250
 
-There is a shost reference taken in scsi_add_host_dma that is not released
-during scsi_remove_host. It was noticed that other drivers resolve this by
-doing a scsi_host_put after calling scsi_remove_host.
+Without them DMA transfers larger than 512 bytes from the SPI controller
+would fail.
 
-The vport_delete routine is taking two references one that corresponds to
-an access to the scsi_host in the vport_delete routine and another that is
-released after the adapter mailbox command completes that destroys the VPI
-that corresponds to the vport.
+Łukasz Stelmach (9):
+  spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and
+    s3c64xx_enable_datapath()
+  spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for Exynos3250
+  spi: spi-s3c64xx: Report more information when errors occur
+  spi: spi-s3c64xx: Rename S3C64XX_SPI_SLAVE_* to S3C64XX_SPI_CS_*
+  spi: spi-s3c64xx: Fix doc comment for struct s3c64xx_spi_driver_data
+  spi: spi-s3c64xx: Check return values
+  spi: spi-s3c64xx: Ensure cur_speed holds actual clock value
+  spi: spi-s3c64xx: Increase transfer timeout
+  spi: spi-s3c64xx: Turn on interrupts upon resume
 
-Remove one of the references taken such that the second reference that is
-put will complete the missing scsi_add_host_dma reference and the shost
-will be terminated.
+ drivers/spi/spi-s3c64xx.c | 111 +++++++++++++++++++++++++++-----------
+ 1 file changed, 79 insertions(+), 32 deletions(-)
 
-Link: https://lore.kernel.org/r/20200630215001.70793-8-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/lpfc/lpfc_vport.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_vport.c b/drivers/scsi/lpfc/lpfc_vport.c
-index b766463579800..d0296f7cf45fc 100644
---- a/drivers/scsi/lpfc/lpfc_vport.c
-+++ b/drivers/scsi/lpfc/lpfc_vport.c
-@@ -642,27 +642,16 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
- 		    vport->port_state < LPFC_VPORT_READY)
- 			return -EAGAIN;
- 	}
-+
- 	/*
--	 * This is a bit of a mess.  We want to ensure the shost doesn't get
--	 * torn down until we're done with the embedded lpfc_vport structure.
--	 *
--	 * Beyond holding a reference for this function, we also need a
--	 * reference for outstanding I/O requests we schedule during delete
--	 * processing.  But once we scsi_remove_host() we can no longer obtain
--	 * a reference through scsi_host_get().
--	 *
--	 * So we take two references here.  We release one reference at the
--	 * bottom of the function -- after delinking the vport.  And we
--	 * release the other at the completion of the unreg_vpi that get's
--	 * initiated after we've disposed of all other resources associated
--	 * with the port.
-+	 * Take early refcount for outstanding I/O requests we schedule during
-+	 * delete processing for unreg_vpi.  Always keep this before
-+	 * scsi_remove_host() as we can no longer obtain a reference through
-+	 * scsi_host_get() after scsi_host_remove as shost is set to SHOST_DEL.
- 	 */
- 	if (!scsi_host_get(shost))
- 		return VPORT_INVAL;
--	if (!scsi_host_get(shost)) {
--		scsi_host_put(shost);
--		return VPORT_INVAL;
--	}
-+
- 	lpfc_free_sysfs_attr(vport);
- 
- 	lpfc_debugfs_terminate(vport);
-@@ -809,8 +798,9 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
- 		if (!(vport->vpi_state & LPFC_VPI_REGISTERED) ||
- 				lpfc_mbx_unreg_vpi(vport))
- 			scsi_host_put(shost);
--	} else
-+	} else {
- 		scsi_host_put(shost);
-+	}
- 
- 	lpfc_free_vpi(phba, vport->vpi);
- 	vport->work_port_events = 0;
+Changes in v2:
+  - added missing commit descriptions
+  - added spi: spi-s3c64xx: Ensure cur_speed holds actual clock value
+  - implemented error propagation in
+      spi: spi-s3c64xx: Check return values
+  - rebased onto v5.9-rc1 which contains
+      spi: spi-s3c64xx: Add missing entries for structs 's3c64xx_spi_dma_data' and 's3c64xx_spi_dma_data'
 -- 
-2.25.1
+2.26.2
 
