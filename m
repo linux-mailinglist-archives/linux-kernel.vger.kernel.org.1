@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727D324D537
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4670024D542
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgHUMmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728375AbgHUMmJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:42:09 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E705DC061385;
-        Fri, 21 Aug 2020 05:42:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id p14so1714073wmg.1;
-        Fri, 21 Aug 2020 05:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PMgjS6TbvnNFuUvjyUB4t/vSCOuQYAmjXBRUb4TOC1U=;
-        b=Il5o4Pv/5wUAqtykgtuqOPhZvYUTLTDr5f/IuxehsDDsDA3NCWQl1HtGKfEMz4ly5u
-         mo+9Gb5Td0C8WSasVhTEfNrFanWAjSrxUV+U5tfFTDM+fupjJoGyBFK9J/1Iu756pb1t
-         5xBKGN6TwyWzG7s2i5wzWzuCyv1j/zCeXtmp7gkGI0WbxOBDI0ycFZ/mcpSPuMZzMDg/
-         NlJQpavRJ0BbzGHY19HXFFKPaoWxTdGlFczSAsi7p1Tpu/a/Pb5Mk1KVIXqFdKnE/Hef
-         vvfnZ0EX6KaPsTYpVfyr+MGLM3VRZK/WixmvElxmLIlVq4wTqIm1a00jsZiBXc8ho3ID
-         aigQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PMgjS6TbvnNFuUvjyUB4t/vSCOuQYAmjXBRUb4TOC1U=;
-        b=c4nzlpxnKIkY+xleCdOZ70feTg75lyB/B5hoJWE65IRxxy5DngG5Saimi15Wuyg5hn
-         MbgXGWINxYzmcGEE6Hu1zgaI2qZCT5fdiIEzN2rlf39mo37rdcgW9Z3ECxlR4crD7U91
-         SMRrLMnnA6Jyd25pG438h66JHu52KHyfIAQ/jywFiI4oFNIlwDT8QPVR/+KCLxmJ2+x6
-         dvm1TNX2nJ3iQTXX9PfnR0dGWTnacVY/0iNKs9JqWDGSWCDIKEDmd8h2KlE7Jyr8C40M
-         r217kt/js/PrExWS6Bt7pFolXAuoxdUxMq2T+SXxOYk6fODzPHfJ7hx+pC3QJYLNdljb
-         RZ7A==
-X-Gm-Message-State: AOAM533ODOvwDiE9ikSaaMeK6XbyEyyw8Nri+2V9YZiUQ78JPA8Yw+Tg
-        yKadYn7BpXZuRRLyDU6U0UM=
-X-Google-Smtp-Source: ABdhPJyzwlZDHumT3taKe8Dm0S+5C+Ko4Xf+iQ/rbwPsHIL2sUHpS1rN0OkC6cSAr89k6NvSTzut3Q==
-X-Received: by 2002:a1c:48c2:: with SMTP id v185mr2961666wma.5.1598013725134;
-        Fri, 21 Aug 2020 05:42:05 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:23c4:4b87:b300:cc3a:c411:9a4b:dba6])
-        by smtp.gmail.com with ESMTPSA id l21sm4664448wmj.25.2020.08.21.05.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 05:42:04 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH] btrfs: check return value of filemap_fdatawrite_range()
-Date:   Fri, 21 Aug 2020 13:41:54 +0100
-Message-Id: <20200821124154.10218-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728083AbgHUMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:44:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:31050 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725935AbgHUMoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 08:44:17 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BY1Rd0Sbbz9v0RG;
+        Fri, 21 Aug 2020 14:44:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Q_TLAb2lp2QD; Fri, 21 Aug 2020 14:44:12 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BY1Rc5GVgz9v0RF;
+        Fri, 21 Aug 2020 14:44:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 260E78B8E1;
+        Fri, 21 Aug 2020 14:44:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id isIM-AjxvK5w; Fri, 21 Aug 2020 14:44:14 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 238988B8C5;
+        Fri, 21 Aug 2020 14:44:13 +0200 (CEST)
+Subject: Re: [PATCH v5 5/8] mm: HUGE_VMAP arch support cleanup
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>
+References: <20200821044427.736424-1-npiggin@gmail.com>
+ <20200821044427.736424-6-npiggin@gmail.com>
+ <9b67b892-9482-15dc-0c1e-c5d5a93a3c91@csgroup.eu>
+ <1598006254.vcbwyiiw9l.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2bd2e0a4-37bc-680d-1e11-f6f44204c317@csgroup.eu>
+Date:   Fri, 21 Aug 2020 14:43:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <1598006254.vcbwyiiw9l.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In btrfs_dio_imap_begin(), filemap_fdatawrite_range() is called without
-checking the return value. Add a check to catch errors.
 
-Fixes: c0aaf9b7a114f ("btrfs: switch to iomap_dio_rw() for dio")
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- fs/btrfs/inode.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7b57aaa1f9acc..38fde20b4a81b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7347,9 +7347,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	 * outstanding dirty pages are on disk.
- 	 */
- 	if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
--		     &BTRFS_I(inode)->runtime_flags))
-+		     &BTRFS_I(inode)->runtime_flags)) {
- 		ret = filemap_fdatawrite_range(inode->i_mapping, start,
- 					       start + length - 1);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	dio_data = kzalloc(sizeof(*dio_data), GFP_NOFS);
- 	if (!dio_data)
--- 
-2.28.0
+Le 21/08/2020 à 12:39, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of August 21, 2020 3:40 pm:
+>>
+>>
+>> Le 21/08/2020 à 06:44, Nicholas Piggin a écrit :
+>>> This changes the awkward approach where architectures provide init
+>>> functions to determine which levels they can provide large mappings for,
+>>> to one where the arch is queried for each call.
+>>>
+>>> This removes code and indirection, and allows constant-folding of dead
+>>> code for unsupported levels.
+>>
+>> I think that in order to allow constant-folding of dead code for
+>> unsupported levels, you must define arch_vmap_xxx_supported() as static
+>> inline in a .h
+>>
+>> If you have them in .c files, you'll get calls to tiny functions that
+>> will always return false, but will still be called and dead code won't
+>> be eliminated. And performance wise, that's probably not optimal either.
+> 
+> Yeah that's true actually, I think I didn't find a good place to add
+> the prototypes in the arch code but I'll have another look and either
+> rewrite the changelog or remove it. Although this does get a step closer
+> at least.
+> 
 
+linux/vmalloc.h includes asm/vmalloc.h
+Should it go there ?
+
+Christophe
