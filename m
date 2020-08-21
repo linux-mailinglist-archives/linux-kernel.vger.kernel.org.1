@@ -2,176 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE2024DC4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3CB24DE60
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgHUQ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38320 "EHLO mail.kernel.org"
+        id S1728912AbgHUR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:29:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728009AbgHUQyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:54:43 -0400
-Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726373AbgHUQO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:14:29 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7BA220732;
-        Fri, 21 Aug 2020 16:54:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6B79208DB;
+        Fri, 21 Aug 2020 16:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598028882;
-        bh=zgdYKWhIWdTaV8L2k+Z7Jg6RQXaZxDZgYbEDHMVmddk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=0xPx/ylaJtMLaSx/oyCf273U5CvhJTeknl7jktEViwsKMlH781NH4huzDlKzzS6ti
-         0lBJya/8xlZ/TzPhZIbboV3eWyRdbhef748FRWdKYduhfgrDI3MyPk1ltqDmqP9OkY
-         2zsGJj7U5AU5qwrKpIfwCNqDTgPFOtDGNTkTXofM=
-Date:   Fri, 21 Aug 2020 11:54:40 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, linuxarm@huawei.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        linux-api@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v9 4/6] ACPI: HMAT: Fix handling of changes from ACPI 6.2
- to ACPI 6.3
-Message-ID: <20200821165440.GA1683523@bjorn-Precision-5520>
+        s=default; t=1598026468;
+        bh=KXQV7iN6LfRHw4fLqfpnmxvNW34f/PK96F7lMXsjoCQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hv7W/vIizXQxpqteMFQwNXpFg8sppcx4MvtwnUQZ1qOGmwkWxt1dOYwlvK/oOVqgl
+         ns/8qwGAGlWdXotADZaQ6DWWp6Gao3P4ZMdFxP9D99VPR3XoFJropswSDl+VjgWzU5
+         Ei2huTCDiuOiBOAJwppNkWosW2ok3GcX9fkZpjV0=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.8 03/62] ALSA: hda/realtek: Fix pin default on Intel NUC 8 Rugged
+Date:   Fri, 21 Aug 2020 12:13:24 -0400
+Message-Id: <20200821161423.347071-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
+References: <20200821161423.347071-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821173718.000028fc@Huawei.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 05:37:18PM +0100, Jonathan Cameron wrote:
-> On Fri, 21 Aug 2020 08:46:22 -0500
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
-> > On Fri, Aug 21, 2020 at 01:59:01PM +0100, Jonathan Cameron wrote:
-> > > On Fri, 21 Aug 2020 07:13:56 -0500
-> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >   
-> > > > [+cc Keith, author of 3accf7ae37a9 ("acpi/hmat: Parse and report
-> > > > heterogeneous memory")]
-> > > > 
-> > > > On Fri, Aug 21, 2020 at 09:42:58AM +0100, Jonathan Cameron wrote:  
-> > > > > On Thu, 20 Aug 2020 17:21:29 -0500
-> > > > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > >     
-> > > > > > On Wed, Aug 19, 2020 at 10:51:09PM +0800, Jonathan Cameron wrote:    
-> > > > > > > In ACPI 6.3, the Memory Proximity Domain Attributes Structure
-> > > > > > > changed substantially.  One of those changes was that the flag
-> > > > > > > for "Memory Proximity Domain field is valid" was deprecated.
-> > > > > > > 
-> > > > > > > This was because the field "Proximity Domain for the Memory"
-> > > > > > > became a required field and hence having a validity flag makes
-> > > > > > > no sense.
-> > > > > > > 
-> > > > > > > So the correct logic is to always assume the field is there.
-> > > > > > > Current code assumes it never is.
-> > > > > > > 
-> > > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > > > > ---
-> > > > > > >  drivers/acpi/numa/hmat.c | 2 +-
-> > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
-> > > > > > > index 2c32cfb72370..07cfe50136e0 100644
-> > > > > > > --- a/drivers/acpi/numa/hmat.c
-> > > > > > > +++ b/drivers/acpi/numa/hmat.c
-> > > > > > > @@ -424,7 +424,7 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
-> > > > > > >  		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
-> > > > > > >  			p->flags, p->processor_PD, p->memory_PD);
-> > > > > > >  
-> > > > > > > -	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
-> > > > > > > +	if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) || hmat_revision == 2) {      
-> > > > > > 
-> > > > > > I hope/assume the spec is written in such a way that p->memory_PD is
-> > > > > > required for any revision > 1?  So maybe this should be:
-> > > > > > 
-> > > > > >   if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) ||
-> > > > > >       hmat_revision > 1) {    
-> > > > 
-> > > > I should have said simply:
-> > > > 
-> > > >   if (hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID)
-> > > > 
-> > > > We shouldn't even test p->flags for ACPI_HMAT_MEMORY_PD_VALID unless
-> > > > we already know it's revision 1.
-> > > > 
-> > > > And unless there was a revision 0 of HMAT, there's no need to look for
-> > > > hmat_revison > 1.  
-> > > 
-> > > It needs to stay as an or statement as you had the first time.
-> > > The field is always valid for hmat_revision > 1, and valid for
-> > > hmat_revision == 1 with the flag set.  You could express it as
-> > > 
-> > > if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID) || (hmat_revision != 1))
-> > > 
-> > > but that seems more confusing to me.  
-> > 
-> > Oh, you're right, sorry!  There are two questions here:
-> > 
-> > 1) In what order should we test "p->flags & ACPI_HMAT_MEMORY_PD_VALID"
-> >    and "hmat_revision == 1"?  ACPI_HMAT_MEMORY_PD_VALID is defined
-> >    only when "hmat_revision == 1", so I think we should test the
-> >    revision first.
-> > 
-> >    When "hmat_revision == 2", ACPI_HMAT_MEMORY_PD_VALID is reserved,
-> >    so we shouldn't test it, even if we later check the revision and
-> >    discard the result of the flag test.  This is a tiny thing,
-> >    admittedly, but I think it follows the spec more clearly.
-> 
-> Agreed.
-> 
-> > 
-> > 2) Do we need to test hmat_revision for anything other than 1?  Yes,
-> >    you're right, see below.
-> > 
-> > > > > Good point.  We have existing protections elsewhere against
-> > > > > hmat_revision being anything other than 1 or 2, so we should aim to
-> > > > > keep that in only one place.    
-> > > > 
-> > > > I think the "Ignoring HMAT: Unknown revision" test in hmat_init(),
-> > > > added by 3accf7ae37a9 ("acpi/hmat: Parse and report heterogeneous
-> > > > memory"), is a mistake.
-> > > > 
-> > > > And I think hmat_normalize() has a similar mistake in that it tests
-> > > > explicitly for hmat_revision == 2 when it should accept 2 AND anything
-> > > > later.
-> > > > 
-> > > > We should assume that future spec revisions will be backwards
-> > > > compatible.  Otherwise we're forced to make kernel changes when we
-> > > > otherwise would not have to.  
-> > > 
-> > > I disagree with this. There is no rule in ACPI about maintaining
-> > > backwards compatibility. The assumption is that the version number
-> > > will always be checked.  The meaning of fields changed between
-> > > version 1 and version 2 so it would be bold to assume that won't
-> > > happen in the future!  
-> > 
-> > There *is* a rule about maintaining backwards compatibility.  ACPI
-> > v6.3, sec 5.2.2, says:
-> > 
-> >   All versions of the ACPI tables must maintain backward
-> >   compatibility. To accomplish this, modifications of the tables
-> >   consist of redefinition of previously reserved fields and values
-> >   plus appending data to the 1.0 tables. Modifications of the ACPI
-> >   tables require that the version numbers of the modified tables be
-> >   incremented.
-> 
-> Fair point.  Unfortunately it's not true here...  The field we
-> are talking about here is probably fine, but the latency units
-> changed between v1 and v2.  
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Oops.  Sounds like this should have been done in a way that didn't
-break old kernels reading new tables.  It's OK if old kernels can't
-use new features, but not OK if things that used to work are broken
-by new tables.
+[ Upstream commit e2d2fded6bdf3f7bb40718a208140dba8b4ec574 ]
 
-Bjorn
+The jack on Intel NUC 8 Rugged rear panel doesn't work.
+
+The spec [1] states that the jack supports both headphone and
+microphone, so override a Pin Complex which has both Amp-In and Amp-Out
+to make the jack work.
+
+Node 0x1b fits the requirement, and user confirmed the jack now works
+with new pin config.
+
+[1] https://www.intel.com/content/dam/support/us/en/documents/mini-pcs/NUC8CCH_TechProdSpec.pdf
+BugLink: https://bugs.launchpad.net/bugs/1875199
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20200807080514.15293-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 00d155b98c1d1..049a07447ba1a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6169,6 +6169,7 @@ enum {
+ 	ALC269_FIXUP_CZC_L101,
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
++	ALC256_FIXUP_INTEL_NUC8_RUGGED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7490,6 +7491,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		},
+ 		.chain_id = ALC269_FIXUP_DMIC,
+ 	},
++	[ALC256_FIXUP_INTEL_NUC8_RUGGED] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7787,6 +7797,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
++	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+-- 
+2.25.1
+
