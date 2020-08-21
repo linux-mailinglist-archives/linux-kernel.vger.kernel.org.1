@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3FE24E252
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1845124E256
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgHUUzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 16:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgHUUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 16:55:09 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22FAA20724;
-        Fri, 21 Aug 2020 20:55:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598043308;
-        bh=lFPj1Yo752ipcEnQysJGQoRPKTfWhUtUxBkOy91w4Yo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2rw4RRpEhcqRsgt+VQ4jfF+2tRRhajw6yJRuUnhFQsLTtoFnaRW6qqDqAr5/uXXEw
-         +d+C4ucs0OPpmEOAxsGMX3KgECAuC7XRSkLBNhGUVUGd4rztm3r7KuadavCpY7CNco
-         HFfp93yR2RGpqbDsS/6IyB8pLajVOEUu/lqSJpYc=
-Date:   Fri, 21 Aug 2020 13:55:07 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        Baoquan He <bhe@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Qian Cai <cai@lca.pw>
-Subject: Re: [PATCH v5 0/6] mm / virtio-mem: support ZONE_MOVABLE
-Message-Id: <20200821135507.cc20edbdd11205257cfd86e5@linux-foundation.org>
-In-Reply-To: <bb7cad5a-daa3-132e-1bc1-19110476b55e@redhat.com>
-References: <20200816125333.7434-1-david@redhat.com>
-        <552a2a55-6082-d286-1cd4-7f7e368eebb4@redhat.com>
-        <bb7cad5a-daa3-132e-1bc1-19110476b55e@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726588AbgHUU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 16:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726306AbgHUU7j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 16:59:39 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9ABC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:59:38 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id m23so2466411iol.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XKFfO4N2/hicKSjWcRzCq5o2k9jEfAy6BdO+i/OYE34=;
+        b=LuN1tV0G4JUiOXpjk+bLyPWVmrnabSf55V0uKz4SKO4IJwmYRqX9pTl7RHY/d/ecaX
+         rdrb0aHhf11rr+T4E6gF4RGzUcoO6+hL3OansWhnZ8gwlmL8TRqq89rCUoq7n5XvosP2
+         NW6Ny+Wf+5pZtrxvptKVqGBeATavB68IPuKWN4pyARuY7TGwftJbZ/IPeMyTcb/zlfx4
+         vNuQjyPl6dy4l8nSAwJSIYc9u0A08VobhcqvkXT0w2sPLyll00H7rWVSRSR7/nS/2oz3
+         NsO4e25HznBINes6KRxx2/MXKKu/SPbHJxWr4DrJF21+Pb5Z6nlAOWZqL+6x+tseUxEz
+         bVQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XKFfO4N2/hicKSjWcRzCq5o2k9jEfAy6BdO+i/OYE34=;
+        b=S0tUDMqBjV5QZl7rnbI1COUKHrYo10wDBOAwN0aNxO9E7AUELqmrOjgZ3pWUf4iaNy
+         a5CV+XeqgjJgPSaVpDsw+pDfpQYrYSizRXXbdvcVHt9BQPTNfd9vibkfWU8tgMS2Ejxw
+         XbDVGI5ltmx9czUu+nxa3bT5foAocRNe7zAj9OB6E3JqBhnAvJ9ii0sEKExEXA6nN7Sn
+         CcSnCDm6W6N0qkDL4Wxlu93/f1bpGcXGnSuAcqE2KU1aI5y1yYe8lfPgvmUnh9lOK8or
+         RxO1X9sn6PbREXZiJal+miH7PCT4xe0iwLH75xPuHv5Q1czGet9xlSjhw71zA07pIK4y
+         zR4g==
+X-Gm-Message-State: AOAM531Wsoaz5Acg/KKkCtFZ0GxV0M/41D9KhWgZOQUYlBD63codcnrq
+        ZpULUH2230ctiro060KfGO3gbZrkWyM0YA+Z5nc=
+X-Google-Smtp-Source: ABdhPJxtv4o86CTSi6m9KCM2IR9QWLIPE4pmUdlf4tHqiQR2/s6wM3uCm63ynntGvv6deUggMqdOho9NHSS4FbHyzas=
+X-Received: by 2002:a6b:e211:: with SMTP id z17mr3715454ioc.82.1598043577996;
+ Fri, 21 Aug 2020 13:59:37 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a6b:7404:0:0:0:0:0 with HTTP; Fri, 21 Aug 2020 13:59:37
+ -0700 (PDT)
+Reply-To: aishaalqaddafi83@gmail.com
+From:   Aisha Ghadafi <ben.mark110@gmail.com>
+Date:   Fri, 21 Aug 2020 13:59:37 -0700
+Message-ID: <CA+Jf3=sb4QS0VCE7FXjzU9VtaG3PD1DDVEG2prYhoK072ELjsA@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 10:45:33 +0200 David Hildenbrand <david@redhat.com> wrote:
+Dear Friend,
 
-> On 21.08.20 10:31, David Hildenbrand wrote:
-> > On 16.08.20 14:53, David Hildenbrand wrote:
-> >> For 5.10. Patch #1-#4,#6 have RBs or ACKs, patch #5 is virtio-mem stuff
-> >> maintained by me. This should go via the -mm tree.
-> >>
-> > 
-> > @Andrew, can we give this a churn if there are no further comments? Thanks!
-> 
-> ... I just spotted the patches in -next, strange I didn't get an email
-> notification. Thanks :)
+I came across your e-mail contact prior a private search while in need
+of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children
+.
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-https://lore.kernel.org/mm-commits/20200819025501.gJhZlolfC%25akpm@linux-foundation.org/
+I am willing to negotiate investment/business profit sharing ratio
+with you base on the future investment earning profits.
 
-akpm!=spam :)
+If you are willing to handle this project on my behalf kindly reply
+urgent to enable me provide you more information about the investment
+funds. PLEASE REPLY ME THROUGH THIS EMAIL  aishaalqaddafi83@gmail.com
+
+Your Urgent Reply Will Be Appreciated
+Best Regards
+Mrs Aisha Al-Qaddafi
