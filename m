@@ -2,259 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BA924D5A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB4D24D5A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgHUNB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:01:58 -0400
-Received: from mx.exactcode.de ([144.76.154.42]:58946 "EHLO mx.exactcode.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbgHUNBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:01:55 -0400
-X-Greylist: delayed 1548 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 09:01:54 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
-        h=Content-Transfer-Encoding:Content-Type:Mime-Version:From:Subject:To:Message-Id:Date; bh=EZakprQURThyScfP48Tq8ctA9RQ6xHO0ZAnyTU/h0CI=;
-        b=n9TrCahZbh3QFtbJbr1Yr1LaDvppcZN+wYZtvI/hVX6hTT5SfNWIgCCvJEK+Akm6R2puEmw0ltV38Pf5vgh14h6ov5eoF6+tMV+z3EK7L/MKno9KqQUgeglt+q2mt4naMWMKWQzlm5LDo3ziSl756zq0T8TFNU67ggr/duhuUaM=;
-Received: from exactco.de ([90.187.5.221])
-        by mx.exactcode.de with esmtp (Exim 4.82)
-        (envelope-from <rene@exactcode.com>)
-        id 1k96HX-0002kE-I8
-        for linux-kernel@vger.kernel.org; Fri, 21 Aug 2020 12:36:31 +0000
-Received: from [192.168.2.130] (helo=localhost)
-        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.86_2)
-        (envelope-from <rene@exactcode.com>)
-        id 1k95ys-0002O4-PH
-        for linux-kernel@vger.kernel.org; Fri, 21 Aug 2020 12:17:16 +0000
-Date:   Fri, 21 Aug 2020 14:35:53 +0200 (CEST)
-Message-Id: <20200821.143553.1830499839841272707.rene@exactcode.com>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] zstd compressed firmware loading
-From:   Rene Rebe <rene@exactcode.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -3.1 (---)
+        id S1727897AbgHUNAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:00:49 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2683 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727123AbgHUNAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:00:36 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id EE9029E83CF50866E9B6;
+        Fri, 21 Aug 2020 14:00:33 +0100 (IST)
+Received: from localhost (10.52.123.86) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 21 Aug
+ 2020 14:00:33 +0100
+Date:   Fri, 21 Aug 2020 13:59:01 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Brice Goglin" <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        <linux-api@vger.kernel.org>, Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v9 4/6] ACPI: HMAT: Fix handling of changes from ACPI
+ 6.2 to ACPI 6.3
+Message-ID: <20200821135901.0000260b@Huawei.com>
+In-Reply-To: <20200821121356.GA1616281@bjorn-Precision-5520>
+References: <20200821094258.00007925@Huawei.com>
+        <20200821121356.GA1616281@bjorn-Precision-5520>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.86]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 Aug 2020 07:13:56 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-Now with zstd compressed kernel & initrd upstream, we would rather
-compress everything with one type of compressor, so I added support
-for zstd compressed firmware loading, too.
+> [+cc Keith, author of 3accf7ae37a9 ("acpi/hmat: Parse and report
+> heterogeneous memory")]
+> 
+> On Fri, Aug 21, 2020 at 09:42:58AM +0100, Jonathan Cameron wrote:
+> > On Thu, 20 Aug 2020 17:21:29 -0500
+> > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >   
+> > > On Wed, Aug 19, 2020 at 10:51:09PM +0800, Jonathan Cameron wrote:  
+> > > > In ACPI 6.3, the Memory Proximity Domain Attributes Structure
+> > > > changed substantially.  One of those changes was that the flag
+> > > > for "Memory Proximity Domain field is valid" was deprecated.
+> > > > 
+> > > > This was because the field "Proximity Domain for the Memory"
+> > > > became a required field and hence having a validity flag makes
+> > > > no sense.
+> > > > 
+> > > > So the correct logic is to always assume the field is there.
+> > > > Current code assumes it never is.
+> > > > 
+> > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > ---
+> > > >  drivers/acpi/numa/hmat.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
+> > > > index 2c32cfb72370..07cfe50136e0 100644
+> > > > --- a/drivers/acpi/numa/hmat.c
+> > > > +++ b/drivers/acpi/numa/hmat.c
+> > > > @@ -424,7 +424,7 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
+> > > >  		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
+> > > >  			p->flags, p->processor_PD, p->memory_PD);
+> > > >  
+> > > > -	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
+> > > > +	if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) || hmat_revision == 2) {    
+> > > 
+> > > I hope/assume the spec is written in such a way that p->memory_PD is
+> > > required for any revision > 1?  So maybe this should be:
+> > > 
+> > >   if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) ||
+> > >       hmat_revision > 1) {  
+> 
+> I should have said simply:
+> 
+>   if (hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID)
+> 
+> We shouldn't even test p->flags for ACPI_HMAT_MEMORY_PD_VALID unless
+> we already know it's revision 1.
+> 
+> And unless there was a revision 0 of HMAT, there's no need to look for
+> hmat_revison > 1.
 
-Tested on x86-64, sparc64 and mips64.
+It needs to stay as an or statement as you had the first time.
+The field is always valid for hmat_revision > 1, and valid for
+hmat_revision == 1 with the flag set.  You could express it as
 
-Signed-off-by: Ren=E9 Rebe <rene@exactcode.de>
+if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID) || (hmat_revision != 1))
 
-diff --git a/drivers/base/firmware_loader/Kconfig b/drivers/base/firmwa=
-re_loader/Kconfig
-index 5b24f3959255..30d440bec257 100644
---- a/drivers/base/firmware_loader/Kconfig
-+++ b/drivers/base/firmware_loader/Kconfig
-@@ -169,6 +169,16 @@ config FW_LOADER_COMPRESS
- 	  be compressed with either none or crc32 integrity check type (pass
- 	  "-C crc32" option to xz command).
- =
+but that seems more confusing to me.
 
-+config FW_LOADER_COMPRESS_ZSTD
-+	bool "Enable Zstd compressed firmware support"
-+	select FW_LOADER_PAGED_BUF
-+	select ZSTD_DECOMPRESS
-+	help
-+	  This option enables the support for loading Zstd compressed firmwar=
-e
-+	  files. The caller of firmware API receives the decompressed file
-+	  content. The compressed file is loaded as a fallback, only after
-+	  loading the raw file failed at first.
-+
- config FW_CACHE
- 	bool "Enable firmware caching during suspend"
- 	depends on PM_SLEEP
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmwar=
-e_loader/main.c
-index 9da0c9d5f538..5deb73dbe81e 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -33,7 +33,9 @@
- #include <linux/syscore_ops.h>
- #include <linux/reboot.h>
- #include <linux/security.h>
-+#include <linux/decompress/mm.h>
- #include <linux/xz.h>
-+#include <linux/zstd.h>
- =
+> 
+> > Good point.  We have existing protections elsewhere against
+> > hmat_revision being anything other than 1 or 2, so we should aim to
+> > keep that in only one place.  
+> 
+> I think the "Ignoring HMAT: Unknown revision" test in hmat_init(),
+> added by 3accf7ae37a9 ("acpi/hmat: Parse and report heterogeneous
+> memory"), is a mistake.
+> 
+> And I think hmat_normalize() has a similar mistake in that it tests
+> explicitly for hmat_revision == 2 when it should accept 2 AND anything
+> later.
+> 
+> We should assume that future spec revisions will be backwards
+> compatible.  Otherwise we're forced to make kernel changes when we
+> otherwise would not have to.
 
- #include <generated/utsrelease.h>
- =
+I disagree with this. There is no rule in ACPI about maintaining
+backwards compatibility. The assumption is that the version number
+will always be checked.  The meaning of fields changed between
+version 1 and version 2 so it would be bold to assume that won't
+happen in the future!
 
-@@ -435,6 +437,140 @@ static int fw_decompress_xz(struct device *dev, s=
-truct fw_priv *fw_priv,
- }
- #endif /* CONFIG_FW_LOADER_COMPRESS */
- =
+HMAT is an optional table, so if someone boots up an old kernel
+they are probably better off failing to use it at all than
+misinterpreting it. 
 
-+/*
-+ * Zstd-compressed firmware support
-+ */
-+#ifdef CONFIG_FW_LOADER_COMPRESS_ZSTD
-+/* show an error and return the standard error code */
-+static int handle_zstd_error(size_t ret)
-+{
-+	const int err =3D ZSTD_getErrorCode(ret);
-+
-+	if (!ZSTD_isError(ret))
-+		return 0;
-+
-+	switch (err) {
-+	case ZSTD_error_memory_allocation:
-+		printk("ZSTD decompressor ran out of memory");
-+		break;
-+	case ZSTD_error_prefix_unknown:
-+		printk("Input is not in the ZSTD format (wrong magic bytes)");
-+		break;
-+	case ZSTD_error_dstSize_tooSmall:
-+	case ZSTD_error_corruption_detected:
-+	case ZSTD_error_checksum_wrong:
-+		printk("ZSTD-compressed data is corrupt");
-+		break;
-+	default:
-+		printk("ZSTD-compressed data is probably corrupt");
-+		break;
-+	}
-+	return -1;
-+}
-+
-+/* single-shot decompression onto the pre-allocated buffer */
-+static int fw_decompress_zstd_single(struct device *dev, struct fw_pri=
-v *fw_priv,
-+				   size_t in_size, const void *in_buffer)
-+{
-+	const size_t wksp_size =3D ZSTD_DCtxWorkspaceBound();
-+	void *wksp =3D large_malloc(wksp_size);
-+	ZSTD_DCtx *dctx =3D ZSTD_initDCtx(wksp, wksp_size);
-+	int err;
-+	size_t ret;
-+
-+	printk("zstd_single\n");
-+
-+	if (dctx =3D=3D NULL) {
-+	        dev_warn(dev, "Out of memory while allocating ZSTD_DCtx");
-+		err =3D -1;
-+		goto out;
-+	}
-+	/* Find out how large the frame actually is, there may be junk at
-+	 * the end of the frame that ZSTD_decompressDCtx() can't handle.
-+	 */
-+	ret =3D ZSTD_findFrameCompressedSize(in_buffer, in_size);
-+	err =3D handle_zstd_error(ret);
-+	if (err)
-+		goto out;
-+	in_size =3D (long)ret;
-+
-+	ret =3D ZSTD_decompressDCtx(dctx, fw_priv->data, fw_priv->allocated_s=
-ize, in_buffer, in_size);
-+	err =3D handle_zstd_error(ret);
-+	if (err)
-+		goto out;
-+
-+	fw_priv->size =3D ret;
-+
-+out:
-+	if (wksp !=3D NULL)
-+		large_free(wksp);
-+	return err;
-+}
-+
-+/* decompression on paged buffer and map it */
-+static int fw_decompress_zstd_pages(struct device *dev, struct fw_priv=
- *fw_priv,
-+				  size_t in_size, const void *in_buffer)
-+{
-+#if 0
-+	struct zstd_dec *zstd_dec;
-+	struct zstd_buf zstd_buf;
-+	enum zstd_ret zstd_ret;
-+	struct page *page;
-+	int err =3D 0;
-+
-+	printk("zstd_pages\n");
-+
-+	zstd_dec =3D zstd_dec_init(ZSTD_DYNALLOC, (u32)-1);
-+	if (!zstd_dec)
-+		return -ENOMEM;
-+
-+	zstd_buf.in_size =3D in_size;
-+	zstd_buf.in =3D in_buffer;
-+	zstd_buf.in_pos =3D 0;
-+
-+	fw_priv->is_paged_buf =3D true;
-+	fw_priv->size =3D 0;
-+	do {
-+		if (fw_grow_paged_buf(fw_priv, fw_priv->nr_pages + 1)) {
-+			err =3D -ENOMEM;
-+			goto out;
-+		}
-+
-+		/* decompress onto the new allocated page */
-+		page =3D fw_priv->pages[fw_priv->nr_pages - 1];
-+		zstd_buf.out =3D kmap(page);
-+		zstd_buf.out_pos =3D 0;
-+		zstd_buf.out_size =3D PAGE_SIZE;
-+		zstd_ret =3D zstd_dec_run(zstd_dec, &zstd_buf);
-+		kunmap(page);
-+		fw_priv->size +=3D zstd_buf.out_pos;
-+		/* partial decompression means either end or error */
-+		if (zstd_buf.out_pos !=3D PAGE_SIZE)
-+			break;
-+	} while (zstd_ret =3D=3D ZSTD_OK);
-+
-+	err =3D fw_decompress_zstd_error(dev, zstd_ret);
-+	if (!err)
-+		err =3D fw_map_paged_buf(fw_priv);
-+
-+ out:
-+	zstd_dec_end(zstd_dec);
-+	return err;
-+#endif
-+	return -ENOMEM;
-+}
-+
-+static int fw_decompress_zstd(struct device *dev, struct fw_priv *fw_p=
-riv,
-+			    size_t in_size, const void *in_buffer)
-+{
-+	/* if the buffer is pre-allocated, we can perform in single-shot mode=
- */
-+	if (fw_priv->data)
-+		return fw_decompress_zstd_single(dev, fw_priv, in_size, in_buffer);
-+	else
-+		return fw_decompress_zstd_pages(dev, fw_priv, in_size, in_buffer);
-+}
-+#endif /* CONFIG_FW_LOADER_COMPRESS_ZSTD */
-+
- /* direct firmware loading support */
- static char fw_path_para[256];
- static const char * const fw_path[] =3D {
-@@ -773,6 +909,11 @@ _request_firmware(const struct firmware **firmware=
-_p, const char *name,
- 		ret =3D fw_get_filesystem_firmware(device, fw->priv, ".xz",
- 						 fw_decompress_xz);
- #endif
-+#ifdef CONFIG_FW_LOADER_COMPRESS_ZSTD
-+	if (ret =3D=3D -ENOENT)
-+		ret =3D fw_get_filesystem_firmware(device, fw->priv, ".zst",
-+						 fw_decompress_zstd);
-+#endif
- =
+Having the sanity check in one place makes sense, but removing it
+entirely is a bad idea.
 
- 	if (ret =3D=3D -ENOENT)
- 		ret =3D firmware_fallback_platform(fw->priv, opt_flags);
+Jonathan
 
--- =
 
-  Ren=E9 Rebe, ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
-  https://exactcode.com | https://t2sde.org | https://rene.rebe.de
+> 
+> Bjorn
+
+
