@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931A724E09B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F9F24E0A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgHUTVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:21:18 -0400
-Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:52922 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725831AbgHUTVS (ORCPT
+        id S1726600AbgHUTaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgHUTaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:21:18 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 150751803EB5B;
-        Fri, 21 Aug 2020 19:21:17 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 59C72181D2063;
-        Fri, 21 Aug 2020 19:21:15 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2919:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4362:5007:6117:6120:6248:7901:7903:10004:10400:10848:11232:11658:11914:12048:12297:12679:12740:12760:12895:13069:13095:13181:13229:13255:13311:13357:13439:14659:14721:14777:21067:21080:21433:21627:21819:21939:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hate40_0c00a172703b
-X-Filterd-Recvd-Size: 1695
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 21 Aug 2020 19:21:14 +0000 (UTC)
-Message-ID: <ed518871bf6182bb7d9a2b95074985cf8af1d5c4.camel@perches.com>
-Subject: Re: [PATCH v2 00/10] fs: NTFS read-write driver GPL implementation
- by Paragon Software.
-From:   Joe Perches <joe@perches.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Cc:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Date:   Fri, 21 Aug 2020 12:21:12 -0700
-In-Reply-To: <904d985365a34f0787a4511435417ab3@paragon-software.com>
-References: <904d985365a34f0787a4511435417ab3@paragon-software.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 21 Aug 2020 15:30:01 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E69BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:30:00 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id m22so3071522ljj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9gB440Ze4ZBHaiJd3Tg8xGm277dDUwBE5I6gf2Si2z0=;
+        b=WOJ24K7m95T6qyq7uMw1ZdUwa/ZY4iGih7G5ZretzrJOrNpRBizAWpzqXrw1KWVWpc
+         9TkDhakIq2vNEGCc92t86ZIgDgIbr11x7Ktk8FlZyRm+v8heqUVRBJ7OMmGX9+L9XQtV
+         J5Et6X/zWbSvpX6upyCYcudXQqtPQNKhJtMC0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9gB440Ze4ZBHaiJd3Tg8xGm277dDUwBE5I6gf2Si2z0=;
+        b=iRz6bSuPa9AJoJy68KxVTg0hc061h2zZwxDKVNsbGsYT2sl2aNEqcl4Aa5nIwWo/so
+         KXB7JET2VIzWLmDuh+/m65ZJiQ4dBCF+K6no6FUCwOqFXSBisAxMozWvCQyI/2rzUfKK
+         h7uXSePk8oAjolTR6QW7yWmUAe0NWT+01e9U2AkYRQjTsH/OwhM+0rKBhFmZKUDMuYxo
+         BPc0zHOia00uBhGYH7Sk4SjNht/eLHKfNSLD5xwkiDXf7JgQsV0NyqJW4LX8Spk8XxVl
+         6KAZO6wQfKgwJ/LmrLn8T+fWxPQZ1iKgJ5XFeZ+GJnJ7x7+QJQy/qp9XBs9cHCbnpSxa
+         fPpQ==
+X-Gm-Message-State: AOAM533x7k3UIN8iwN1QSEqSQIYoB71jEFts9xsWPh/nTm+ASyl9/xA3
+        cN8exwF8xsQb3sDaNb0mWXnMg5yCAo3nmw==
+X-Google-Smtp-Source: ABdhPJyOwIvAGo88yZqJ6ZS1ta9NQJpzdG+F8ASBsfInlBQ1hQBSNJsq0+ALuTwSQqNLcMX82ubfIA==
+X-Received: by 2002:a05:651c:1343:: with SMTP id j3mr2016036ljb.112.1598038198025;
+        Fri, 21 Aug 2020 12:29:58 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id 20sm570387ljj.51.2020.08.21.12.29.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 12:29:57 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id v9so3074394ljk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:29:57 -0700 (PDT)
+X-Received: by 2002:ac2:58d5:: with SMTP id u21mr2053187lfo.31.1598037806053;
+ Fri, 21 Aug 2020 12:23:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
+ <20200820175617.GA604994@rani.riverdale.lan> <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+ <20200821172935.GA1411923@rani.riverdale.lan> <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+ <CAHk-=whjVCTjZG0Y88WhJruLdbxF=7q3mmFThD+N5WK0P5giSw@mail.gmail.com> <20200821191458.GA1475504@rani.riverdale.lan>
+In-Reply-To: <20200821191458.GA1475504@rani.riverdale.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 21 Aug 2020 12:23:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjX6jaRH+yozTh3kV3ocF2Qv0v96o8JofvbV6=U_K2mXw@mail.gmail.com>
+Message-ID: <CAHk-=wjX6jaRH+yozTh3kV3ocF2Qv0v96o8JofvbV6=U_K2mXw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 16:24 +0000, Konstantin Komarov wrote:
-> This patch adds NTFS Read-Write driver to fs/ntfs3.
+On Fri, Aug 21, 2020 at 12:15 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> How are you testing it?
+>
+> https://godbolt.org/z/eahdGn
 
-Thanks.
-Proper ntfs read/write support will be great addition.
+Ugh. I tested the reverse thing - that the builtin is still available
+for manual use despite the -fno-builtin.
 
-Trivia:
+Because I - stupidly - assumed that fno-builtin would do *something*.
 
-If this patchset is submitted again with a new version,
-please use something like "git format-patch --cover-letter"
-and "git send-email" so all parts of the patches and replies
-have the a single message thread to follow.
+But if it's available for manual use _and_ it's used implicitly by the
+compiler, then that was clearly very naive of me.
 
-That will add an "in-reply-to" header of the 0/m patch
-message-id to all n/m parts.
-
-One style oddity I noticed is the use of goto labels in
-favor of if block indentation.  It's not terrible style,
-just unusual for kernel code.
-
-
+                     Linus
