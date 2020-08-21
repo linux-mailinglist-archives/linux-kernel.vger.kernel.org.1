@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355FD24CB81
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C024CB90
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgHUDpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727090AbgHUDpF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:45:05 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672FBC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:45:05 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id k4so301690ilr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pjb3qXMqNGgbJ/lSuknPKaxC91VgiCH9RpbBjdcDS+8=;
-        b=mV8MyBfwdtBHyzYdMge8jfhsn0YXfWoqfrEOge4JH25XoMui3ok4QyrAfAHSRsxDUD
-         BbFoOhjLpPdqki5bLodj0gyNJif5RCd8HiuIHXg/rtUVRQfOaacVwr1i7upVDHR7DV47
-         ABbgHTY/zwpTVpqbyL2Rccs5IRsNy4N2lC2NMl6a8U1FTWRInZlBE0gv7Mf8fE83Ea60
-         bvmlXqd4QCjdqXHPvlv83QOdA1U4U/JgS3aS7rF4GCoNF0hg/sXgFB9bk08YuZ/PZbnw
-         Lj24IFQ3UUP1UNc7Fr5GwdXe8BoIMFMFVfqI4bTsaH4y2/VSJQPMj8BotrkS+lv3C8v7
-         dZOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pjb3qXMqNGgbJ/lSuknPKaxC91VgiCH9RpbBjdcDS+8=;
-        b=jQg6phyKf0EYlfS+Z/wu/ifzUH6F0S4mf4rj7xQKfGbhfNgEa+uDzuntdkZnNo3/6k
-         U+ca+KbclDYvQHwT1ygkmBxeOEVGJ78KLU/Dl41JcYKKrIKsbd4VnjxmRajxVY7Tjo99
-         f+o6lVHqnmKNJmjKVtyg8Vx37RtbcY4lFjUBkR1llMSC8dkD18GdkDKw3diEXIoBys3k
-         2HzvdIuJDp3dUXqsefpld6T9XSXP5/up0LinXrY0fhc8XrkbnOAu+1H3V7MmrB79Fva/
-         kfsSYcKIYIz/XunTqx2kCqsoFvNUB1ubrY1wtlgYX7os8ynas/x1MuYinSVd8Zpi+VH5
-         c+0w==
-X-Gm-Message-State: AOAM5335seHIY+F4qfLo+ZZvYNyAKmi2rjnxYiHhEcRUtN3xURNymCsU
-        oqQGQ1hzsrFWGHTqQUUI0qA=
-X-Google-Smtp-Source: ABdhPJyQO2gsgp9hegbJXCRacpvIWQr1eAIAyQvGnHxGPvbmUrWyvaCsC/lHY6qQXi/ljXI9Zed6fg==
-X-Received: by 2002:a92:2901:: with SMTP id l1mr949385ilg.306.1597981503759;
-        Thu, 20 Aug 2020 20:45:03 -0700 (PDT)
-Received: from localhost.localdomain (x-128-101-215-112.reshalls.umn.edu. [128.101.215.112])
-        by smtp.gmail.com with ESMTPSA id c90sm390227ilf.30.2020.08.20.20.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 20:45:03 -0700 (PDT)
-From:   George Acosta <acostag.ubuntu@gmail.com>
-To:     acostag.ubuntu@gmail.com
-Cc:     Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rapidio: fix get device imbalance on error
-Date:   Thu, 20 Aug 2020 22:44:57 -0500
-Message-Id: <20200821034458.22472-1-acostag.ubuntu@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728050AbgHUDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:47:02 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:49734 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727125AbgHUDrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:47:02 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k8y0x-0008OY-JO; Fri, 21 Aug 2020 13:46:52 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 13:46:51 +1000
+Date:   Fri, 21 Aug 2020 13:46:51 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Andrei Botila <andrei.botila@oss.nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
+ more than 8B IV
+Message-ID: <20200821034651.GA25442@gondor.apana.org.au>
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+ <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the imbalance in mport_cdev_open.
-Call put_device in error path to balance the
-refcount that increased by the get_device.
+On Thu, Aug 06, 2020 at 07:35:43PM +0300, Andrei Botila wrote:
+>
+> +static bool xts_skcipher_ivsize(struct skcipher_request *req)
+> +{
+> +	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
+> +	unsigned int ivsize = crypto_skcipher_ivsize(skcipher);
+> +	u64 size = 0;
+> +
+> +	if (IS_ALIGNED((unsigned long)req->iv, __alignof__(u64)))
+> +		size = *(u64 *)(req->iv + (ivsize / 2));
+> +	else
+> +		size = get_unaligned((u64 *)(req->iv + (ivsize / 2)));
+> +
+> +	return !!size;
+> +}
 
-Fixes: e8de370188d0 ("rapidio: add mport char device driver")
-Signed-off-by: George Acosta <acostag.ubuntu@gmail.com>
----
- drivers/rapidio/devices/rio_mport_cdev.c | 1 +
- 1 file changed, 1 insertion(+)
+Just go with the get_unaligned unconditionally.
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index c07ceec3c6d4..3b68e00eb40f 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -1908,6 +1908,7 @@ static int mport_cdev_open(struct inode *inode, struct file *filp)
- 			  sizeof(struct rio_event) * MPORT_EVENT_DEPTH,
- 			  GFP_KERNEL);
- 	if (ret < 0) {
-+		put_device(&chdev->dev);
- 		dev_err(&chdev->dev, DRV_NAME ": kfifo_alloc failed\n");
- 		ret = -ENOMEM;
- 		goto err_fifo;
+Cheers,
 -- 
-2.17.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
