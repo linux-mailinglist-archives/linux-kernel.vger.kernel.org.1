@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511E124D068
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6362C24D06B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgHUIOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgHUIOo (ORCPT
+        id S1727074AbgHUIPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:15:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51976 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgHUIPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:14:44 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537BCC061385
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 01:14:44 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id m200so605761ybf.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 01:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9Sa84KuNUFfV1BzPCtN6+5TepgyVkJdVvBLY4aoS9rQ=;
-        b=G1NT8NDJtSDpu9ZRE/XmXRVIGddUeK3zj8BQy3ChI1akAjXzYAiFvO7P5NydMG0cPF
-         7N0hU6OsLQqMkt/NXjk+I14jtVIAEEGw0wPoFk/GVubTjW2H1yXJF/p3WjM1HnhjhQIz
-         jB9dgR/HI9tqAugNgWwaLl+wWUrPZSDXeKTrRtYPhCLt2THhnMPcQdOMIsfV4U/lgbHs
-         acGR+3g06qnrtsULVtc8AHLwkTm34LB/iZtGEsV3+W74Rs+BBMmKzLu8LiUpvpi35V9X
-         41ieCa14nSmXemE7bE6u2zjYMvSlY1pHk9076D4StO3L17MaZxLEKBVmnmKqsQVxNJqW
-         kLvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9Sa84KuNUFfV1BzPCtN6+5TepgyVkJdVvBLY4aoS9rQ=;
-        b=rjncloNyXemiELTM2c9QXLWUPvCxOD4sTjcD6sHfM8ywRGJbCzGuiTUc71rf7DOJlq
-         8il0QCOPHhGs/wTkP4NpHXJnIQINQAmbeu0xKvlhwbLHIyH5bhTNDDD1cEPyyNMp3dXd
-         DZ94CBcBA7DLMDiQV5PEirCk2bD4dIgLfRw2khUGKZG2taqYao5qOsobH3coe80OX2MC
-         R6IkaBPpoItzzQ5lYmdTKgMEha1HVL3y26/O0/Yqyvrhyy/Xnto5Ao1f+0tUcvghybPN
-         BFVKtcYGI6MEQnwpXvdRlySrEgSyWbgcfeuA2HqSYOLN6MBVGWCEcqYzOIBTpfl2Lgd+
-         rA9g==
-X-Gm-Message-State: AOAM533qGwh+lNtoWK+nWhfJcu5EOoY8bCdYxZNmKUyajVpDjgypwTRU
-        FfQoTgiSn9Cv5NGCM+JONh44ajRIUKhFGLAq+3c=
-X-Google-Smtp-Source: ABdhPJwV2nXVgxSiL6RtdxuaSvl3mIG0id0Ifo33uc13BbfJjxR1hekRQKygUrKO4OP5T9iAN29MBsvs4RDDICD0Jhw=
-X-Received: by 2002:a25:d98f:: with SMTP id q137mr2005184ybg.480.1597997683529;
- Fri, 21 Aug 2020 01:14:43 -0700 (PDT)
+        Fri, 21 Aug 2020 04:15:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L8CJTG114576;
+        Fri, 21 Aug 2020 08:15:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=virkOKZ2n5oKm9Yasu1MHN0bo07T4qM9mrntv5iiZx8=;
+ b=pOXTBKj94ywtNURN/e/oKgSyZNdwfTIoXUWns83Bmhn2ASYO9gl+pi3Or4OMJAvyJwjp
+ 9v4vfu8lftUOfjpSXI+pdRZNkGL94hrOdvdHZDSIeJuZyygktkPBVWwqXFDxwV9XH00V
+ B4vipGG6OGBDTwWawplPx67wSrjnm6z1DMj+7V0CDO1GO4U2vPVWqxlsk4pWVN0MQw+b
+ KJNeimuIaWEY0pbnUHzeGx1j7YVnvvn96Aq3O0nBnNiUndG1MZ/SVs6m0jcYCc1ux4qQ
+ /omtNNxVvsHBulptxh2sUuDF4N4KdLihB3abcYMEcQt4WAEJQ43NusbTGGxzjt7sroJb bQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32x74rmuvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 08:15:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L8D4K7041903;
+        Fri, 21 Aug 2020 08:15:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 32xsn2b0bh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 08:15:03 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07L8EvD0019439;
+        Fri, 21 Aug 2020 08:14:57 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 08:14:56 +0000
+Date:   Fri, 21 Aug 2020 11:14:49 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     George Acosta <acostag.ubuntu@gmail.com>
+Cc:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rapidio: fix get device imbalance on error
+Message-ID: <20200821081449.GI5493@kadam>
+References: <20200821034458.22472-1-acostag.ubuntu@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:4f14:0:0:0:0 with HTTP; Fri, 21 Aug 2020 01:14:43
- -0700 (PDT)
-Reply-To: tapsobaahmed100@gmail.com
-From:   "Mr. Tapsoba Ahmed" <miss.mimunazongo1985@gmail.com>
-Date:   Fri, 21 Aug 2020 03:14:43 -0500
-Message-ID: <CAAyAQ1FKLfg4vucWeuAT=DE_yVvyQFd1QOxHbYGywGZiYqt_Fw@mail.gmail.com>
-Subject: I NEED YOUR URGENT RESPOND PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821034458.22472-1-acostag.ubuntu@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=2 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=2 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210076
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear Friend,
+On Thu, Aug 20, 2020 at 10:44:57PM -0500, George Acosta wrote:
+> Fix the imbalance in mport_cdev_open.
+> Call put_device in error path to balance the
+> refcount that increased by the get_device.
+> 
+> Fixes: e8de370188d0 ("rapidio: add mport char device driver")
+> Signed-off-by: George Acosta <acostag.ubuntu@gmail.com>
+> ---
+>  drivers/rapidio/devices/rio_mport_cdev.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+> index c07ceec3c6d4..3b68e00eb40f 100644
+> --- a/drivers/rapidio/devices/rio_mport_cdev.c
+> +++ b/drivers/rapidio/devices/rio_mport_cdev.c
+> @@ -1908,6 +1908,7 @@ static int mport_cdev_open(struct inode *inode, struct file *filp)
+>  			  sizeof(struct rio_event) * MPORT_EVENT_DEPTH,
+>  			  GFP_KERNEL);
+>  	if (ret < 0) {
+> +		put_device(&chdev->dev);
+>  		dev_err(&chdev->dev, DRV_NAME ": kfifo_alloc failed\n");
+>  		ret = -ENOMEM;
+>  		goto err_fifo;
+> -- 
 
-My name is Mr.Tapsoba Ahmed. I have decided to seek a confidential
-co-operation  with you in the execution of the deal described
-here-under for our both  mutual benefit and I hope you will keep it a
-top secret because of the nature  of the transaction, During the
-course of our bank year auditing, I discovered  an unclaimed/abandoned
-fund, sum total of {US$19.3 Million United State  Dollars} in the bank
-account that belongs to a Saudi Arabia businessman Who unfortunately
-lost his life and entire family in a Motor Accident.
+If we ever hit this error path then the:
 
-Now our bank has been waiting for any of the relatives to come-up for
-the claim but nobody has done that. I personally has been unsuccessful
-in locating any of the relatives, now, I sincerely seek your consent
-to present you as the next of kin / Will Beneficiary to the deceased
-so that the proceeds of this account valued at {US$19.3 Million United
-State Dollars} can be paid to you, which we will share in these
-percentages ratio, 60% to me and 40% to you. All I request is your
-utmost sincere co-operation; trust and maximum confidentiality to
-achieve this project successfully. I have carefully mapped out the
-moralities for execution of this transaction under a legitimate
-arrangement to protect you from any breach of the law both in your
-country and here in Burkina Faso when the fund is being transferred to
-your bank account.
+	list_add_tail(&priv->list, &chdev->file_list);
 
-I will have to provide all the relevant document that will be
-requested to indicate that you are the rightful beneficiary of this
-legacy and our bank will release the fund to you without any further
-delay, upon your consideration and acceptance of this offer, please
-send me the following information as stated below so we can proceed
-and get this fund transferred to your designated bank account
-immediately.
+needs to be removed from the list as well or it lead to a use after
+free.  Probably just move the list_add_tail() after the kfifo_alloc()
+has succeeded. We need to remove it from the list in mport_cdev_release()
+as well...
 
--Your Full Name:
--Your Contact Address:
--Your direct Mobile telephone Number:
--Your Date of Birth:
--Your occupation:
+The error handling in this function is kind of rubbish.
+1) Get rid of the out label and return directly (more readable).
+1b) Use "return 0;" instead of "retur ret;" for the success path.
+2) Name the labels after what they do not where they "come from".  In
+other words do.
 
-I await your swift response and re-assurance.
+err_priv:
+	kfree(priv);
 
-Best regards,
-Mr.Tapsoba Ahmed.
+3) Create a label to call put_device:
+
+err_device:
+	put_device(&chdev->dev);
+
+Change all the error paths to use the goto instead of calling
+put_device() before the goto.
+
+regards,
+dan carpenter
