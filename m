@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005D424DF38
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B32224DF3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgHUSQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        id S1727858AbgHUSQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgHUSQh (ORCPT
+        with ESMTP id S1726976AbgHUSQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:16:37 -0400
+        Fri, 21 Aug 2020 14:16:40 -0400
 Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FEEC061574;
-        Fri, 21 Aug 2020 11:16:35 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mt12so1170937pjb.4;
-        Fri, 21 Aug 2020 11:16:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A32C061573;
+        Fri, 21 Aug 2020 11:16:39 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t6so1167558pjr.0;
+        Fri, 21 Aug 2020 11:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D8hyRclC+HKYvxgCtKXwPHRBVmbPAJqIPR/vH5lUYTk=;
-        b=flkfq6LG781RQcBi8FmPLs6PtQjf53j71d5qsIlSZDXmHkgLswlIrWtwEivmHkNGGS
-         VMLUTTvLXnbr3hB8/hc7J1EWMuNZainCdHRL93sRoqSMe2pJRyg9PiB6cBErDmF5HhMw
-         ZXAlPJH82sK7pYb5FF2PFGYu7ki2IhQ4ywt8J+cLt0dsKpLHvOgoMnebJal8i7nhIddZ
-         965ZHorRXaVcO8EJtsjtr2OHYjJrFI8h5IhZHSKNz9cpqjuRyZ2C86VSAjBiHDq9m87v
-         UEqQd6I9xvLIxhdiDT+iP8n7WucdCA+JkZapJ0xTS1DFB5MXNT2o009jmWDm7PLtxZST
-         5RsA==
+        bh=ChipikirAeqxhzEp4RF3ufjdn+NYQXRsxZeDk2bboxU=;
+        b=BPQFqb8HdI4vm/jmV78FOqUx+2b9o5SmkSRf3ybsvzNuBDTy3ZRIBnhff50MorbRaH
+         lLHRmjFb4IOn9oNPlFnbICUF4M8B4DgKDtSqh4KPRrfCkEGfJOmnuIlTclPhG4330Rrk
+         2krl1ThBL6uzMRVcHDZMd6mSN/zeEeM0p6tEw+eobBisKnOsskrjSJYVl5kKdmkIT2jV
+         f+VwmfcYSLp4ChFc9v3QcknRBHwnwKMpIialPjnK2lylpAMFUCQAP/k03aQ2+sWJhuIr
+         KU/9rZse8r8y1VgiEegg6TaNBleaur5VlIeerjvBmj4uWpo636AcEkkKLE/22alezAiI
+         cAhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D8hyRclC+HKYvxgCtKXwPHRBVmbPAJqIPR/vH5lUYTk=;
-        b=b9fMd9LbbIjwySEePQIsoe1r4GGCouvtBrmbSLlINxvT3q5axGpOTQsDZRFBgGXVNx
-         LacT2e/7Rk2aF1PWGfN2C75yjZF08TzjKDdcRDxpUCUmBJcY9/ImHFGAoCgKQRf9zSaC
-         5ncc1ahBKyPPcxFECdvuYtthQ4CXQBiaZD7Y96V1f4IERHEfA5brLzP1npeM/vBipfRV
-         i591F+qCE/V4krUcJGCaOGtr7IdVY6rCP4FehBFyePJz96idEEemaasDZfBCaUzm73eG
-         2nWS5XIC67v+AWCLtZGY3J6LIf9M7lwAOVSMiWGXILbHSL3uJNSKzX+V92En1rUBQwEJ
-         iWBA==
-X-Gm-Message-State: AOAM532G8rKbB6XPlISYaW2fjhwgRwM8LvDm/y/TUtYIUsYzWuXsusxE
-        catO2R62TbkDaFzC/eougiTmrU9SZphKKA==
-X-Google-Smtp-Source: ABdhPJwWYALigU71ohdgtDhoE8HYurRrYCmNoS2qcWpr33ejfqAt448ia9zKHlaPeczY60fsenIiwQ==
-X-Received: by 2002:a17:902:c382:: with SMTP id g2mr3213832plg.120.1598033795113;
-        Fri, 21 Aug 2020 11:16:35 -0700 (PDT)
+        bh=ChipikirAeqxhzEp4RF3ufjdn+NYQXRsxZeDk2bboxU=;
+        b=AUzqd/29GnQOt1VvXbvb5dZ3vMnJG0uDvLJDIKRft/+c2N+yxypqMKwAggF4p3tf7K
+         PtEtF+dvRAH0ledVgOgUdl+0L8ocPsxEm9F5DKh7zUrSypRpyZZXNeLTg+RTAyhdog4Y
+         Kwlm2rbHa/LPb7E1VpTNdu+li0f9qWWweBQgFrjhpIDy5UVE++27iOXtoNBKWBK2QOVI
+         9yQHg/zVTAD5ey37mvkTFIbKdiyPlRucz/8rPKgWI1mMP1I7GUUEZFV4pSvsEDn17noQ
+         nlOENt6h1+KSPvh9kwMoKSsNX60kvh0qguego54eDnVjCmAqeqPnWzzcPNOT+lwaQ1GX
+         Zcow==
+X-Gm-Message-State: AOAM533CEt0cXf9pAJW7UDDdcx+SMiQeBhpIySwT3/oKj2mKOuRw5L3g
+        rKFXJiN7F1P0UKbxhSeuavAex1YBtgP1zw==
+X-Google-Smtp-Source: ABdhPJyghNNY2EpIrc0b1a/O1Gkx/mvQwHIRP9vmTOm3a9Slzq3+UMT9M4acTyfAj4vNVUOFNcc4Tw==
+X-Received: by 2002:a17:902:be12:: with SMTP id r18mr3300766pls.116.1598033798863;
+        Fri, 21 Aug 2020 11:16:38 -0700 (PDT)
 Received: from jaguar.thds.mooo.com (061239037006.ctinets.com. [61.239.37.6])
-        by smtp.gmail.com with ESMTPSA id a13sm3158152pfo.49.2020.08.21.11.16.33
+        by smtp.gmail.com with ESMTPSA id a13sm3158152pfo.49.2020.08.21.11.16.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 11:16:34 -0700 (PDT)
+        Fri, 21 Aug 2020 11:16:38 -0700 (PDT)
 From:   Kenneth Chan <kenneth.t.chan@gmail.com>
 To:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     laforge@gnumonks.org, Kenneth Chan <kenneth.t.chan@gmail.com>
-Subject: [PATCH 4/9] fix naming of platform files for consistency with other modules
-Date:   Sat, 22 Aug 2020 02:14:28 +0800
-Message-Id: <20200821181433.17653-5-kenneth.t.chan@gmail.com>
+Subject: [PATCH 5/9] fix sticky key init bug
+Date:   Sat, 22 Aug 2020 02:14:29 +0800
+Message-Id: <20200821181433.17653-6-kenneth.t.chan@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200821181433.17653-1-kenneth.t.chan@gmail.com>
 References: <20200821181433.17653-1-kenneth.t.chan@gmail.com>
@@ -64,86 +64,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change platform device function names for consistency with other modules
+The return value of the sticky key on some models (e.g. CF-W5) do not reflect its
+state. How to retrieve its state from firmware is unkown. The safest bet is to reset
+it at module init and store its state in pcc struct.
+
 
 Signed-off-by: Kenneth Chan <kenneth.t.chan@gmail.com>
 ---
- drivers/platform/x86/panasonic-laptop.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/platform/x86/panasonic-laptop.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/platform/x86/panasonic-laptop.c b/drivers/platform/x86/panasonic-laptop.c
-index 162b6c560af1..abf70e6e6578 100644
+index abf70e6e6578..c77292588a8a 100644
 --- a/drivers/platform/x86/panasonic-laptop.c
 +++ b/drivers/platform/x86/panasonic-laptop.c
-@@ -13,6 +13,8 @@
+@@ -13,6 +13,7 @@
   *
   * ChangeLog:
   *	Aug.18, 2020	Kenneth Chan <kenneth.t.chan@gmail.com>
-+ *			fix naming of platform files for consistency with other
-+ *			modules
++ *			fix sticky_key init bug
+  *			fix naming of platform files for consistency with other
+  *			modules
   *			split MODULE_AUTHOR() by one author per macro call
-  *			replace ACPI prints with pr_*() macros
-  *		-v0.97	add support for cdpower hardware switch
-@@ -444,7 +446,7 @@ static int set_optd_power_state(int new_state)
+@@ -218,7 +219,7 @@ static const struct key_entry panasonic_keymap[] = {
+ struct pcc_acpi {
+ 	acpi_handle		handle;
+ 	unsigned long		num_sifr;
+-	int			sticky_mode;
++	int			sticky_key;
+ 	u32			*sinf;
+ 	struct acpi_device	*device;
+ 	struct input_dev	*input_dev;
+@@ -491,7 +492,7 @@ static ssize_t sticky_key_show(struct device *dev, struct device_attribute *attr
+ 	if (!acpi_pcc_retrieve_biosdata(pcc))
+ 		return -EIO;
  
- /* sysfs user interface functions */
- 
--static ssize_t show_numbatt(struct device *dev, struct device_attribute *attr,
-+static ssize_t numbatt_show(struct device *dev, struct device_attribute *attr,
- 			    char *buf)
- {
- 	struct acpi_device *acpi = to_acpi_device(dev);
-@@ -456,7 +458,7 @@ static ssize_t show_numbatt(struct device *dev, struct device_attribute *attr,
- 	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sinf[SINF_NUM_BATTERIES]);
+-	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sinf[SINF_STICKY_KEY]);
++	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sticky_key);
  }
  
--static ssize_t show_lcdtype(struct device *dev, struct device_attribute *attr,
-+static ssize_t lcdtype_show(struct device *dev, struct device_attribute *attr,
- 			    char *buf)
+ static ssize_t sticky_key_store(struct device *dev, struct device_attribute *attr,
+@@ -499,12 +500,14 @@ static ssize_t sticky_key_store(struct device *dev, struct device_attribute *att
  {
  	struct acpi_device *acpi = to_acpi_device(dev);
-@@ -468,7 +470,7 @@ static ssize_t show_lcdtype(struct device *dev, struct device_attribute *attr,
- 	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sinf[SINF_LCD_TYPE]);
- }
+ 	struct pcc_acpi *pcc = acpi_driver_data(acpi);
+-	int val;
++	int err, val;
  
--static ssize_t show_mute(struct device *dev, struct device_attribute *attr,
-+static ssize_t mute_show(struct device *dev, struct device_attribute *attr,
- 			 char *buf)
- {
- 	struct acpi_device *acpi = to_acpi_device(dev);
-@@ -480,7 +482,7 @@ static ssize_t show_mute(struct device *dev, struct device_attribute *attr,
- 	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sinf[SINF_MUTE]);
- }
+-	if (count && sscanf(buf, "%i", &val) == 1 &&
+-	    (val == 0 || val == 1)) {
++	err = kstrtoint(buf, 0, &val);
++	if (err)
++		return err;
++	if (val == 0 || val == 1) {
+ 		acpi_pcc_write_sset(pcc, SINF_STICKY_KEY, val);
+-		pcc->sticky_mode = val;
++		pcc->sticky_key = val;
+ 	}
  
--static ssize_t show_sticky(struct device *dev, struct device_attribute *attr,
-+static ssize_t sticky_key_show(struct device *dev, struct device_attribute *attr,
- 			   char *buf)
- {
- 	struct acpi_device *acpi = to_acpi_device(dev);
-@@ -492,7 +494,7 @@ static ssize_t show_sticky(struct device *dev, struct device_attribute *attr,
- 	return snprintf(buf, PAGE_SIZE, "%u\n", pcc->sinf[SINF_STICKY_KEY]);
- }
- 
--static ssize_t set_sticky(struct device *dev, struct device_attribute *attr,
-+static ssize_t sticky_key_store(struct device *dev, struct device_attribute *attr,
- 			  const char *buf, size_t count)
- {
- 	struct acpi_device *acpi = to_acpi_device(dev);
-@@ -526,10 +528,10 @@ static ssize_t cdpower_store(struct device *dev, struct device_attribute *attr,
  	return count;
+@@ -687,7 +690,9 @@ static int acpi_pcc_hotkey_resume(struct device *dev)
+ 	if (!pcc)
+ 		return -EINVAL;
+ 
+-	return acpi_pcc_write_sset(pcc, SINF_STICKY_KEY, pcc->sticky_mode);
++	acpi_pcc_write_sset(pcc, SINF_STICKY_KEY, pcc->sticky_key);
++
++	return 0;
  }
+ #endif
  
--static DEVICE_ATTR(numbatt, S_IRUGO, show_numbatt, NULL);
--static DEVICE_ATTR(lcdtype, S_IRUGO, show_lcdtype, NULL);
--static DEVICE_ATTR(mute, S_IRUGO, show_mute, NULL);
--static DEVICE_ATTR(sticky_key, S_IRUGO | S_IWUSR, show_sticky, set_sticky);
-+static DEVICE_ATTR_RO(numbatt);
-+static DEVICE_ATTR_RO(lcdtype);
-+static DEVICE_ATTR_RO(mute);
-+static DEVICE_ATTR_RW(sticky_key);
- static DEVICE_ATTR_RW(cdpower);
+@@ -751,8 +756,9 @@ static int acpi_pcc_hotkey_add(struct acpi_device *device)
+ 	/* read the initial brightness setting from the hardware */
+ 	pcc->backlight->props.brightness = pcc->sinf[SINF_AC_CUR_BRIGHT];
  
- static struct attribute *pcc_sysfs_entries[] = {
+-	/* read the initial sticky key mode from the hardware */
+-	pcc->sticky_mode = pcc->sinf[SINF_STICKY_KEY];
++	/* Reset initial sticky key mode since the hardware register state is not consistent */
++	acpi_pcc_write_sset(pcc, SINF_STICKY_KEY, 0);
++	pcc->sticky_key = 0;
+ 
+ 	/* add sysfs attributes */
+ 	result = sysfs_create_group(&device->dev.kobj, &pcc_attr_group);
 -- 
 2.17.5
 
