@@ -2,183 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D86324E33A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 00:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C05124E347
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 00:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgHUWW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 18:22:56 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:17353 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbgHUWWy (ORCPT
+        id S1727010AbgHUW0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 18:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgHUW0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 18:22:54 -0400
+        Fri, 21 Aug 2020 18:26:20 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88372C061573;
+        Fri, 21 Aug 2020 15:26:20 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id v1so1343874qvn.3;
+        Fri, 21 Aug 2020 15:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1598048573; x=1629584573;
-  h=date:from:to:subject:message-id:mime-version;
-  bh=pCzwDhN0iVXUQqFByiUrlU6LR1qEKbE8xAOG3bRhl3E=;
-  b=PI7GeONlDITVjEQYYTEFGC0SntSPRdAOCCdEiEL5+PfRsIVh8KYUmfr7
-   WL14IafWzt7Gmocc1Ibhh/MgIIP2uAvyGhThrmU3XqVcT7Jwfok68dnOL
-   wpC1x5upw7Lro74Z1FXhoST8oI00uPzJZI740Co7D8s0HXIGm7WgumXs9
-   c=;
-X-IronPort-AV: E=Sophos;i="5.76,338,1592870400"; 
-   d="scan'208";a="49403112"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 21 Aug 2020 22:22:50 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 13476A260D;
-        Fri, 21 Aug 2020 22:22:48 +0000 (UTC)
-Received: from EX13D10UWB002.ant.amazon.com (10.43.161.130) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 21 Aug 2020 22:22:43 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D10UWB002.ant.amazon.com (10.43.161.130) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 21 Aug 2020 22:22:43 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Fri, 21 Aug 2020 22:22:43 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 8D45F40362; Fri, 21 Aug 2020 22:22:43 +0000 (UTC)
-Date:   Fri, 21 Aug 2020 22:22:43 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <boris.ostrovsky@oracle.com>,
-        <jgross@suse.com>, <linux-pm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kamatam@amazon.com>,
-        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
-        <roger.pau@citrix.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
-        <rjw@rjwysocki.net>, <len.brown@intel.com>, <pavel@ucw.cz>,
-        <peterz@infradead.org>, <eduval@amazon.com>, <sblbir@amazon.com>,
-        <anchalag@amazon.com>, <xen-devel@lists.xenproject.org>,
-        <vkuznets@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
-        <benh@kernel.crashing.org>
-Subject: [PATCH v3 00/11] Fix PM hibernation in Xen guests
-Message-ID: <cover.1598042152.git.anchalag@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HrOAERB4tSMoXoJY/dYcv8QwQPeglxKI3SzuuvU5xXQ=;
+        b=huthoZKn+508NeIu97asjfKk5ZibW6IM4BwjqcxZMPWYLra5ewPwdly+MfbsuG/QLg
+         /8J4bHe3FCdTAaWgN1f+9zAk2hBtUQabdrpxqcr+bYnbaIgE0KglsnLM1B2CI8hWEMjW
+         v2g9xTpt4HWouGnqaaBZmY2bLy+/A8KUyypw2yRLVXiI/Wi/0++zFTq6RCa+GvofiKbO
+         oMH3tm9ILfkWDpuQ/eQ5LcSjaEGlHCGkaouhR09i+xxwU9Kd7vGD+kobDG1rQxwx4o2x
+         OOk4mJ4QnSckrNzepGuU5gMtsCM1yGagTmh2AE3geFUXsq8bcKgBEn0HhgVmWs13eKsQ
+         QItQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HrOAERB4tSMoXoJY/dYcv8QwQPeglxKI3SzuuvU5xXQ=;
+        b=PvRn00jmt/bgbFI/uiyoFa1U38sKy7OCYjFkJOJFf/qJTVTRn5buTdbUZC/jTIhxbl
+         O2IXqRjCllRVbleSzvP4eXZTe3rmgiJoy2r8ljANc4pnPoeGI0GykreZqnjDwmUhQAwZ
+         /TWNTdGvWy3/zPK6A1vfUow2J5JiOTf9377F4rXM97oU6Wn91a/A65SYcVs+R8Ub+nPP
+         Ql+me5m937YywsnZbmmvVyQ0Imd+sPPZbKjmXNKYSFK8SPbbGfcgWvHE1OgWNj7E2HHD
+         E1WICCtq5/Evadko/1hEwPDm2Kue/Jny95/MV2skJN4HYNXnk7oUra2l6wiLYlOH1pIY
+         m/Dg==
+X-Gm-Message-State: AOAM5309VHXC3Ik2mAZrAFxLOuAhtT7fLXkn4EGobIitTDqCY+8ib6J0
+        ui+rQUjooe09CRW36S8hbVM=
+X-Google-Smtp-Source: ABdhPJxmS78uvNp2NIm9J15TU+btuZga7HRhSpq2d0fpIuKjBRp8+b8fUxWDJ8Zt2GeSAQtcjSy/UA==
+X-Received: by 2002:ad4:4ea7:: with SMTP id ed7mr4536770qvb.8.1598048779620;
+        Fri, 21 Aug 2020 15:26:19 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id t32sm3649927qtb.3.2020.08.21.15.26.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 15:26:18 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] net: dsa: sja1105: Do not use address of compatible member in sja1105_check_device_id
+Date:   Fri, 21 Aug 2020 15:25:16 -0700
+Message-Id: <20200821222515.414167-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-This series fixes PM hibernation for hvm guests running on xen hypervisor.
-The running guest could now be hibernated and resumed successfully at a
-later time. The fixes for PM hibernation are added to block and
-network device drivers i.e xen-blkfront and xen-netfront. Any other driver
-that needs to add S4 support if not already, can follow same method of
-introducing freeze/thaw/restore callbacks.
-The patches had been tested against upstream kernel and xen4.11. Large
-scale testing is also done on Xen based Amazon EC2 instances. All this testing
-involved running memory exhausting workload in the background.
-  
-Doing guest hibernation does not involve any support from hypervisor and
-this way guest has complete control over its state. Infrastructure
-restrictions for saving up guest state can be overcome by guest initiated
-hibernation.
-  
-These patches were send out as RFC before and all the feedback had been
-incorporated in the patches. The last v1 & v2 could be found here:
-  
-[v1]: https://lkml.org/lkml/2020/5/19/1312
-[v2]: https://lkml.org/lkml/2020/7/2/995
-All comments and feedback from v2 had been incorporated in v3 series.
+Clang warns:
 
-Known issues:
-1.KASLR causes intermittent hibernation failures. VM fails to resumes and
-has to be restarted. I will investigate this issue separately and shouldn't
-be a blocker for this patch series.
-2. During hibernation, I observed sometimes that freezing of tasks fails due
-to busy XFS workqueuei[xfs-cil/xfs-sync]. This is also intermittent may be 1
-out of 200 runs and hibernation is aborted in this case. Re-trying hibernation
-may work. Also, this is a known issue with hibernation and some
-filesystems like XFS has been discussed by the community for years with not an
-effectve resolution at this point.
+drivers/net/dsa/sja1105/sja1105_main.c:3418:38: warning: address of
+array 'match->compatible' will always evaluate to 'true'
+[-Wpointer-bool-conversion]
+        for (match = sja1105_dt_ids; match->compatible; match++) {
+        ~~~                          ~~~~~~~^~~~~~~~~~
+1 warning generated.
 
-Testing How to:
----------------
-1. Setup xen hypervisor on a physical machine[ I used Ubuntu 16.04 +upstream
-xen-4.11]
-2. Bring up a HVM guest w/t kernel compiled with hibernation patches
-[I used ubuntu18.04 netboot bionic images and also Amazon Linux on-prem images].
-3. Create a swap file size=RAM size
-4. Update grub parameters and reboot
-5. Trigger pm-hibernation from within the VM
+We should check the value of the first character in compatible to see if
+it is empty or not. This matches how the rest of the tree iterates over
+IDs.
 
-Example:
-Set up a file-backed swap space. Swap file size>=Total memory on the system
-sudo dd if=/dev/zero of=/swap bs=$(( 1024 * 1024 )) count=4096 # 4096MiB
-sudo chmod 600 /swap
-sudo mkswap /swap
-sudo swapon /swap
+Fixes: 0b0e299720bb ("net: dsa: sja1105: use detected device id instead of DT one on mismatch")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1139
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/dsa/sja1105/sja1105_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Update resume device/resume offset in grub if using swap file:
-resume=/dev/xvda1 resume_offset=200704 no_console_suspend=1
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index c3f6f124e5f0..5a28dfb36ec3 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -3415,7 +3415,7 @@ static int sja1105_check_device_id(struct sja1105_private *priv)
+ 
+ 	sja1105_unpack(prod_id, &part_no, 19, 4, SJA1105_SIZE_DEVICE_ID);
+ 
+-	for (match = sja1105_dt_ids; match->compatible; match++) {
++	for (match = sja1105_dt_ids; match->compatible[0]; match++) {
+ 		const struct sja1105_info *info = match->data;
+ 
+ 		/* Is what's been probed in our match table at all? */
 
-Execute:
---------
-sudo pm-hibernate
-OR
-echo disk > /sys/power/state && echo reboot > /sys/power/disk
-
-Compute resume offset code:
-"
-#!/usr/bin/env python
-import sys
-import array
-import fcntl
-
-#swap file
-f = open(sys.argv[1], 'r')
-buf = array.array('L', [0])
-
-#FIBMAP
-ret = fcntl.ioctl(f.fileno(), 0x01, buf)
-print buf[0]
-"
-
-Aleksei Besogonov (1):
-  PM / hibernate: update the resume offset on SNAPSHOT_SET_SWAP_AREA
-
-Anchal Agarwal (4):
-  x86/xen: Introduce new function to map HYPERVISOR_shared_info on
-    Resume
-  x86/xen: save and restore steal clock during PM hibernation
-  xen: Introduce wrapper for save/restore sched clock offset
-  xen: Update sched clock offset to avoid system instability in
-    hibernation
-
-Munehisa Kamata (5):
-  xen/manage: keep track of the on-going suspend mode
-  xenbus: add freeze/thaw/restore callbacks support
-  x86/xen: add system core suspend and resume callbacks
-  xen-blkfront: add callbacks for PM suspend and hibernation
-  xen-netfront: add callbacks for PM suspend and hibernation
-
-Thomas Gleixner (1):
-  genirq: Shutdown irq chips in suspend/resume during hibernation
-
- arch/x86/xen/enlighten_hvm.c      |   7 +++
- arch/x86/xen/suspend.c            |  63 ++++++++++++++++++++
- arch/x86/xen/time.c               |  15 ++++-
- arch/x86/xen/xen-ops.h            |   3 +
- drivers/block/xen-blkfront.c      | 122 ++++++++++++++++++++++++++++++++++++--
- drivers/net/xen-netfront.c        |  96 +++++++++++++++++++++++++++++-
- drivers/xen/events/events_base.c  |   1 +
- drivers/xen/manage.c              |  46 ++++++++++++++
- drivers/xen/xenbus/xenbus_probe.c |  96 +++++++++++++++++++++++++-----
- include/linux/irq.h               |   2 +
- include/xen/xen-ops.h             |   3 +
- include/xen/xenbus.h              |   3 +
- kernel/irq/chip.c                 |   2 +-
- kernel/irq/internals.h            |   1 +
- kernel/irq/pm.c                   |  31 +++++++---
- kernel/power/user.c               |   7 ++-
- 16 files changed, 464 insertions(+), 34 deletions(-)
-
+base-commit: 4af7b32f84aa4cd60e39b355bc8a1eab6cd8d8a4
 -- 
-2.16.6
+2.28.0
 
