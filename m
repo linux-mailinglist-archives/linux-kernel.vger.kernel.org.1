@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B7324D70E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB80E24D716
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgHUOLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 10:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        id S1727770AbgHUONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 10:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgHUOLr (ORCPT
+        with ESMTP id S1725948AbgHUONq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:11:47 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C433C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:11:47 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o22so1244575qtt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:11:47 -0700 (PDT)
+        Fri, 21 Aug 2020 10:13:46 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35AFC061573;
+        Fri, 21 Aug 2020 07:13:45 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w25so1983615ljo.12;
+        Fri, 21 Aug 2020 07:13:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/O7GsQlyOvKMn4vyIwYIr3C3iH5spCXWnHT7lFFAbyY=;
-        b=azMuqrPNOdNg2w70CvNRuUyt5rnFriNwiKakFhXOpvnFpexz7yruIqjma3h0vFsJ29
-         1Qy0FCVqaVtCmh+9q0zyYjIBhcOXxgTRKGSxLUkCIeRf4CLq+NcBGNGQHRaHsLRM67cj
-         mO8wJHaXCIGKyaDZBpS5StuxO/+6sdVbK+Bftmmbx2FeI8hJcTGrXqpVUlD+96TC+idA
-         rweeIzIkcDeFBMkBNVHufmb7P9Eyd2+Ttbf2rZ6nSnk7eWFWInSZiifqIYYoCLOceKKA
-         gzz+kpZG1PXyqTCHH1VqnSrKjJU6DzN9aAx7bmd+f7xzRETL0xhfOacaPITRtNkDhr5U
-         Ur6Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iuOUrhDGs69pCpgj1fMoa06fENK8uW3BqIW8Jq5g85Q=;
+        b=ZGW6gaN2P0cT3qr4LuJjzkzbSgOXn/pUE1LDefJiepgL2ga8abKfz1DuDER/Jy8p6D
+         khQY2g2VODZNBVKWAoT1h38toCQcVnrsjEoyKoR4feb6RUSTzKVDbLK7MgreTm6aDPxQ
+         Pc7ABKq5+QiuS6GHL3umrbQ6Pj4y7jv4nZ13aO7fdaYv7H+P9Va0QWMkZhIT+arC8x12
+         thypehnIhoCed6p/Me7np8GrymkpKQlR7Ri0NBny8hHGUBxsWi6cA+G/reu+L4Gatid+
+         jJ7P20aqDeJ5GSse27pyd9bLhR4xlCuNuOrwmPXka9QgyVYscITZwxBhH2JmDRDZRrzU
+         CHMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/O7GsQlyOvKMn4vyIwYIr3C3iH5spCXWnHT7lFFAbyY=;
-        b=W4cHiGdZyqR89ky402/6clkFBMmXhjtHDa2xTVGha6d5Ny1wIvo3D3/9UAOhf5UT46
-         jbQ93z/mrlcLsmfR25C4bBnrazOwa0yHpMkXZv9cNi20LBW0YTgiZDzpiw0/SXGzOCHV
-         POV962H19oKNDNfswkp3ObsAjxZwVuExQZL0AOU5l9erZAJ8Z0wkB9HG5LBgqxRLMyVl
-         0WPFsAjMPDyd4z/xQS8k45gvPZCY/6A40rYEHRkVfj7//kcoYqiEzBNScqDOL3oHGM9a
-         RliRJg+jhFLs+3pJLaxjmQBsvco2BwUVMk4FfdpFYOz5IAnCz60vr0rwLCxxCjapRa3d
-         Mlcg==
-X-Gm-Message-State: AOAM530arMLnrc1Yy0gVSTnqC4R7vE1DxlZAJZbqaLxCAX7wlrbsQPXR
-        6s8xH/XbLSm8P7lFtzRzWigzs75E9NpKIrU4
-X-Google-Smtp-Source: ABdhPJzfnGpcJKcS4ULozLzoVaIH2pkxr/lK8lZcQc6x9wmaPcOQ6uDtYUIhhN4cj4uKEdsMM0D9Mw==
-X-Received: by 2002:aed:2dc1:: with SMTP id i59mr2956362qtd.340.1598019106177;
-        Fri, 21 Aug 2020 07:11:46 -0700 (PDT)
-Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x28sm1798067qki.55.2020.08.21.07.11.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 07:11:45 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: check return value of filemap_fdatawrite_range()
-To:     Alex Dewar <alex.dewar90@gmail.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200821124154.10218-1-alex.dewar90@gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <c3c0ddbe-e225-22a4-c9bf-9317a50c211b@toxicpanda.com>
-Date:   Fri, 21 Aug 2020 10:11:44 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iuOUrhDGs69pCpgj1fMoa06fENK8uW3BqIW8Jq5g85Q=;
+        b=DysJT6OHLKeyvPrVVquckbGIT1E3/V1TgcuZ79u60UXGTpJpJC9iDa7kdBYY20dY+B
+         reRgm+I+3OjuKOCQGXZduyBvoPuU2Goikeph2rYGuXkQG3fjxHzOCBEkmFqAs/xnZh0P
+         oEuvLCc73m7c1CGNrmHmPTdH2oYqg6QTH1ou3ZHfKY2bhlobnoGpzJHw25Yb3shP7Tdy
+         /4Nx1XP/TbFNUiA2v8DjsGdU+0rp0WGUehdLH2huozc5n8xlivN+x1syJU4X0Qa7M9Fk
+         GkFrfaaglRmQghti1Z5jtCrmd/UlMw0h2PrkawIWlsV8L1SCUU5DkNTsE9fOjCZvUYU9
+         AR6g==
+X-Gm-Message-State: AOAM531aUeMTNKsm+IUQp/LYZTgr7/lTHjDDf5a+YLmP0ADxEs4X8j38
+        lmV1cay/nCTowx9idcLjTi0QODAd7SriXkHfmIQ=
+X-Google-Smtp-Source: ABdhPJwMBpVd1ySrrPtiFSM7g7uixqBkVna/EYqmFeqaQr13VAUSfCDpHkv6TU6DJzfemWdYtOMIxjQniuzGL7SPB+4=
+X-Received: by 2002:a2e:8ed4:: with SMTP id e20mr1744788ljl.403.1598019224063;
+ Fri, 21 Aug 2020 07:13:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200821124154.10218-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200820041055.75848-1-cphealy@gmail.com> <1bf1c9664d8c376c87dc55aeb27da6e4@agner.ch>
+In-Reply-To: <1bf1c9664d8c376c87dc55aeb27da6e4@agner.ch>
+From:   Chris Healy <cphealy@gmail.com>
+Date:   Fri, 21 Aug 2020 07:13:32 -0700
+Message-ID: <CAFXsbZp0_hCZ-cz3vBtFySv-q4X8bKjSaPrAMt-aA5aAbtGVGA@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: vfxxx: Add syscon compatible with ocotp
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/20 8:41 AM, Alex Dewar wrote:
-> In btrfs_dio_imap_begin(), filemap_fdatawrite_range() is called without
-> checking the return value. Add a check to catch errors.
-> 
-> Fixes: c0aaf9b7a114f ("btrfs: switch to iomap_dio_rw() for dio")
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->   fs/btrfs/inode.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 7b57aaa1f9acc..38fde20b4a81b 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7347,9 +7347,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->   	 * outstanding dirty pages are on disk.
->   	 */
->   	if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
-> -		     &BTRFS_I(inode)->runtime_flags))
-> +		     &BTRFS_I(inode)->runtime_flags)) {
->   		ret = filemap_fdatawrite_range(inode->i_mapping, start,
->   					       start + length - 1);
-> +		if (ret)
-> +			return ret;
-> +	}
->   
->   	dio_data = kzalloc(sizeof(*dio_data), GFP_NOFS);
->   	if (!dio_data)
-> 
+On Fri, Aug 21, 2020 at 6:21 AM Stefan Agner <stefan@agner.ch> wrote:
+>
+> On 2020-08-20 06:10, Chris Healy wrote:
+> > From: Chris Healy <cphealy@gmail.com>
+> >
+> > Add syscon compatibility with Vybrid ocotp node. This is required to
+> > access the UID.
+>
+> Hm, it seems today the SoC driver uses the specific compatible. It also
+> should expose the UID as soc_id, see drivers/soc/imx/soc-imx.c.
+>
+Yes, until I added syscon, the soc_id was empty and I would get the
+following line in dmesg:  "failed to find vf610-ocotp regmap!
 
-Had to check to make sure there's no cleanup that's needed, there isn't, 
-you can add
+> Maybe it does make sense exposing it as syscon, but then we should
+> probably also adjust
+> Documentation/devicetree/bindings/nvmem/vf610-ocotp.txt.
+>
+Makes sense.  I will update vf610-ocotp.txt in v3.  Tnx
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
+> --
+> Stefan
+>
+> >
+> > Fixes: fa8d20c8dbb77 ("ARM: dts: vfxxx: Add node corresponding to OCOTP")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Chris Healy <cphealy@gmail.com>
+> > ---
+> > Changes in v2:
+> >  - Add Fixes line to commit message
+> >
+> >  arch/arm/boot/dts/vfxxx.dtsi | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
+> > index 0fe03aa0367f..2259d11af721 100644
+> > --- a/arch/arm/boot/dts/vfxxx.dtsi
+> > +++ b/arch/arm/boot/dts/vfxxx.dtsi
+> > @@ -495,7 +495,7 @@ edma1: dma-controller@40098000 {
+> >                       };
+> >
+> >                       ocotp: ocotp@400a5000 {
+> > -                             compatible = "fsl,vf610-ocotp";
+> > +                             compatible = "fsl,vf610-ocotp", "syscon";
+> >                               reg = <0x400a5000 0x1000>;
+> >                               clocks = <&clks VF610_CLK_OCOTP>;
+> >                       };
