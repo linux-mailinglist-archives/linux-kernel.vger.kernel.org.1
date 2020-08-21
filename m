@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D114424D370
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AC524D37A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgHULB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 07:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727770AbgHULBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 07:01:52 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A79A20738;
-        Fri, 21 Aug 2020 11:01:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598007711;
-        bh=RuQ3tAsSpGBjNhThS2+HWBKVcKCmLZrkBeKh8fCgBp4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bumbYinV45FvdPicWwbx/xtAosfsueSLyBe3Ea6CzYNab0wkirrcIjFGFKpjE72g0
-         hkHAnaPYfbFIAc9VG0WZ0pu93JzpSnp/YSWc72QyP+eQKSjGuBt2QHNxhHiIZ0YxE/
-         OY0nx7ohbAHQ1iKKO5y47jXNHLPq4DsCuVOw1zhE=
-Date:   Fri, 21 Aug 2020 12:01:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: linux-next: build warnings after merge of the sound-asoc-fixes
- tree
-Message-ID: <20200821110117.GC4870@sirena.org.uk>
-References: <20200821093901.4257afdc@canb.auug.org.au>
- <a8b47ba9-7b45-bef1-08a2-820fe48c4cc4@linux.intel.com>
+        id S1727870AbgHULDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 07:03:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10299 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726118AbgHULDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 07:03:48 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2728DAB371526D17C577;
+        Fri, 21 Aug 2020 19:03:44 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 21 Aug 2020
+ 19:03:37 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH v3] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
+Date:   Fri, 21 Aug 2020 19:02:56 +0800
+Message-ID: <20200821110256.6660-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200818114235.51052-1-yuehaibing@huawei.com>
+References: <20200818114235.51052-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
-Content-Disposition: inline
-In-Reply-To: <a8b47ba9-7b45-bef1-08a2-820fe48c4cc4@linux.intel.com>
-X-Cookie: divorce, n:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+drivers/scsi/libfc/fc_disc.c:304
+ fc_disc_error() warn: passing zero to 'PTR_ERR'
 
---z4+8/lEcDcG5Ke9S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+fp maybe NULL in fc_disc_error(), use PTR_ERR_OR_ZERO to handle this.
 
-On Thu, Aug 20, 2020 at 07:01:15PM -0500, Pierre-Louis Bossart wrote:
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+v3: use PTR_ERR_OR_ZERO
+v2: use use IS_ERR in fc_disc_error()
+---
+ drivers/scsi/libfc/fc_disc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> There is a companion patch 1eb629363aa35 ("ASoC: SOF: Intel: hda: import
-> SOUNDWIRE_INIT namespace") that does the import, not sure what causes the
-> warning?
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index d8cbc9c0e766..43284c3b2903 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -302,7 +302,7 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
+ 	unsigned long delay = 0;
+ 
+ 	FC_DISC_DBG(disc, "Error %ld, retries %d/%d\n",
+-		    PTR_ERR(fp), disc->retry_count,
++		    PTR_ERR_OR_ZERO(fp), disc->retry_count,
+ 		    FC_DISC_RETRY_LIMIT);
+ 
+ 	if (!fp || PTR_ERR(fp) == -FC_EX_TIMEOUT) {
+-- 
+2.17.1
 
-A patch which was not sent as part of the same series and where no
-dependency was mentioned :(
 
---z4+8/lEcDcG5Ke9S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8/qX0ACgkQJNaLcl1U
-h9Arggf/d9LIC/aumFY+tjivgrwS8qGt3j9UBJjw41fmICZBc6kxoeJAP58PaD7K
-wM3Lpp5P+jD1v5NHo86poZpXhcGLtrmTh8KACphaK8fnCyuqrPGxZsyz+JBxVUbo
-PmPHwcqIZWmrkN4+Ixnl/D6cvDy4SEiDSlksqsykhXXZSzJNqOchK1D0dnzee5tT
-0TJJN/ZCqgtisYTo2HydpcgCbpXdDG2frjnb8u5F89MVyBugalwxU7La7Vd3Yj/N
-6bkfTk9kRRoQ1Eqle8Pwq/RQUSnTpeWSu/twSqCUDfz4ShvxQZ/w9sMRzhD/sGV5
-VATmFxretXyPUgHFiFZBceNvyqB0Rg==
-=UXdR
------END PGP SIGNATURE-----
-
---z4+8/lEcDcG5Ke9S--
