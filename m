@@ -2,302 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E6924CDCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A707324CDE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgHUGPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbgHUGPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:15:06 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D07620702;
-        Fri, 21 Aug 2020 06:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597990505;
-        bh=HtZtEqMJWa6v3dxpOCJD+qG/hLS19G82LkSofuiaKCE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Cg1UFB2hWRgaLxqJET7zYpuqVCiBC4EDIvlIvizwTJRLITR7lbwgVf8v9E4JMEO5a
-         LCANYFbYh/n4r/+OvfTCFObuUveacrjkqpv4CWf2lqKFhtTHONj6kW9wLwwU+CPLFu
-         zZlTLgNJs0bIP6EI8cVDYIUsBOyEmkDhTMMo1Z7c=
-Date:   Fri, 21 Aug 2020 01:20:52 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stanislaw Gruszka <stf_xl@wp.pl>,
-        Helmut Schaa <helmut.schaa@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] rt2x00: Use fallthrough pseudo-keyword
-Message-ID: <20200821062052.GA8618@embeddedor>
+        id S1727104AbgHUGV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbgHUGVZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:21:25 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E405C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 23:21:25 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y2so653951ljc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 23:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L2GL4FMgc/dSMOohNfUAefXXfnpWIv3+pJWm+SgM0hU=;
+        b=fMEkVuVNPXsUdpLu94DxjsRcpHErma5pTjbfM2Oz93C7Pz1/rCR9Rc42NEGRQyGVA0
+         e5qt5B4wH2s62jAY1HDYneEuD3KzU2ZHOAH45kgG38hDDdQffHA/YkEJjHD5buGh8Ap5
+         TRuC6uKrwdPxOCyPy7fcvk04tcpWl2AH6lbYmS2qgRstct7jVHszm38L5YVTN+UvSj4Z
+         VjY9UyQneg3fieaCszPy1wBx8QvdCYpySDQak5V2KNZDQDS/k657feOilzstvqvxWz9/
+         86feiSl3+ky9mkMnNiki5ccwfdrHjsJ2/ZTq8wR3Y0Tu7Njmv30F7p7hKUwkVtPSMk9D
+         eh3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L2GL4FMgc/dSMOohNfUAefXXfnpWIv3+pJWm+SgM0hU=;
+        b=KFca7MktPxJ5C3Y1ewtAEba3adA12I+PJxrNaUQvjXPzp1X05RvbMDfnA8HiyiAYCC
+         +SKGe94NcjCvAJ0aaCXJgEieLFByqxuPo3RmPgrtJSsvnROmRNgfQhGZ4LE7PZxUCO8s
+         O8xGVkArwqmyFlx6U6UjUu90iHo5pmHJbc5gn5RU24kab2qJitHqAzHkTgNAC6mDOla1
+         YJ6Kr2xHpGgs2HonetF+tT6jzJW2ECBApo5FDPeIwkYnC81v379FxluCU/HSb7zykvv4
+         bIyIy4whpc3k9/YTgBkG6YgV0OX/6QUrgAnSJWUJXvOAyMCTyHEtrjzYR4DHzq6rbiig
+         hSMw==
+X-Gm-Message-State: AOAM5319ABMZjAbokqwEtbdegykyXlSPuMO06mrfkIDO7d8QFcGKEnL4
+        C1MVAv9t/cBSlqwka5uRivufVg==
+X-Google-Smtp-Source: ABdhPJzuK4VmvYfPlSxrNdvXuyb9K9Colt6ot6MsF3X4j/XQ+D6iII3Gm7+KTYTi8x4BCDvkgLJGIg==
+X-Received: by 2002:a2e:8157:: with SMTP id t23mr778218ljg.417.1597990883459;
+        Thu, 20 Aug 2020 23:21:23 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id a23sm175171ljp.121.2020.08.20.23.21.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 23:21:22 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 08:21:21 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv9] drivers: optee: allow op-tee to access devices on the
+ i2c bus
+Message-ID: <20200821062121.GA1020247@jade>
+References: <20200814111221.5813-1-jorge@foundries.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200814111221.5813-1-jorge@foundries.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+On Fri, Aug 14, 2020 at 01:12:21PM +0200, Jorge Ramirez-Ortiz wrote:
+> Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+> control this type of cryptographic devices it needs coordinated access
+> to the bus, so collisions and RUNTIME_PM dont get in the way.
+> 
+> This trampoline driver allow OP-TEE to access them.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+> v9: params return value must be written before optee_msg_to_param is called
+> v8: review fixes:
+>     fix types and add TEEC_ERROR_NOT_SUPPORTED to GP errors
+> v7: add support for ten bit i2c slave addressing
+> v6: compile out if CONFIG_I2C not enabled
+> v5: alphabetic order of includes
+> v4: remove unnecessary extra line in optee_msg.h
+> v3: use from/to msg param to support all types of memory
+>     modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+> 
+>  drivers/tee/optee/optee_msg.h     | 21 +++++++
+>  drivers/tee/optee/optee_private.h |  1 +
+>  drivers/tee/optee/rpc.c           | 95 +++++++++++++++++++++++++++++++
+>  3 files changed, 117 insertions(+)
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+Looks good. Did you test this with the recently merged
+https://github.com/OP-TEE/optee_os/pull/4033 ?
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- .../net/wireless/ralink/rt2x00/rt2400pci.c    |  2 +-
- .../net/wireless/ralink/rt2x00/rt2500pci.c    |  2 +-
- .../net/wireless/ralink/rt2x00/rt2800lib.c    | 42 +++++++++----------
- .../net/wireless/ralink/rt2x00/rt2800mmio.c   |  1 -
- .../net/wireless/ralink/rt2x00/rt2800usb.c    |  1 -
- drivers/net/wireless/ralink/rt2x00/rt61pci.c  |  3 +-
- drivers/net/wireless/ralink/rt2x00/rt73usb.c  |  1 -
- 7 files changed, 24 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2400pci.c b/drivers/net/wireless/ralink/rt2x00/rt2400pci.c
-index c1ac933349d1..c8bb378148c3 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2400pci.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2400pci.c
-@@ -1291,7 +1291,7 @@ static void rt2400pci_txdone(struct rt2x00_dev *rt2x00dev,
- 			break;
- 		case 2: /* Failure, excessive retries */
- 			__set_bit(TXDONE_EXCESSIVE_RETRY, &txdesc.flags);
--			/* Fall through - this is a failed frame! */
-+			fallthrough;	/* this is a failed frame! */
- 		default: /* Failure */
- 			__set_bit(TXDONE_FAILURE, &txdesc.flags);
- 		}
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2500pci.c b/drivers/net/wireless/ralink/rt2x00/rt2500pci.c
-index 0859adebd860..2e015c16cd4b 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2500pci.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2500pci.c
-@@ -1419,7 +1419,7 @@ static void rt2500pci_txdone(struct rt2x00_dev *rt2x00dev,
- 			break;
- 		case 2: /* Failure, excessive retries */
- 			__set_bit(TXDONE_EXCESSIVE_RETRY, &txdesc.flags);
--			/* Fall through - this is a failed frame! */
-+			fallthrough;	/* this is a failed frame! */
- 		default: /* Failure */
- 			__set_bit(TXDONE_FAILURE, &txdesc.flags);
- 		}
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-index a779fe771a55..fed6d21cd6ce 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-@@ -928,7 +928,7 @@ static void rt2800_rate_from_status(struct skb_frame_desc *skbdesc,
- 	switch (rt2x00_get_field32(status, TX_STA_FIFO_PHYMODE)) {
- 	case RATE_MODE_HT_GREENFIELD:
- 		flags |= IEEE80211_TX_RC_GREEN_FIELD;
--		/* fall through */
-+		fallthrough;
- 	case RATE_MODE_HT_MIX:
- 		flags |= IEEE80211_TX_RC_MCS;
- 		break;
-@@ -2567,7 +2567,7 @@ static void rt2800_config_channel_rf3052(struct rt2x00_dev *rt2x00dev,
- 		switch (rt2x00dev->default_ant.tx_chain_num) {
- 		case 1:
- 			rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
--			/* fall through */
-+			fallthrough;
- 		case 2:
- 			rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 1);
- 			break;
-@@ -2576,7 +2576,7 @@ static void rt2800_config_channel_rf3052(struct rt2x00_dev *rt2x00dev,
- 		switch (rt2x00dev->default_ant.rx_chain_num) {
- 		case 1:
- 			rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
--			/* fall through */
-+			fallthrough;
- 		case 2:
- 			rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 1);
- 			break;
-@@ -2768,10 +2768,10 @@ static void rt2800_config_channel_rf3053(struct rt2x00_dev *rt2x00dev,
- 	switch (rt2x00dev->default_ant.tx_chain_num) {
- 	case 3:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 2:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 1:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
- 		break;
-@@ -2780,10 +2780,10 @@ static void rt2800_config_channel_rf3053(struct rt2x00_dev *rt2x00dev,
- 	switch (rt2x00dev->default_ant.rx_chain_num) {
- 	case 3:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 2:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 1:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
- 		break;
-@@ -3005,10 +3005,10 @@ static void rt2800_config_channel_rf3853(struct rt2x00_dev *rt2x00dev,
- 	switch (rt2x00dev->default_ant.tx_chain_num) {
- 	case 3:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 2:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 1:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
- 		break;
-@@ -3017,10 +3017,10 @@ static void rt2800_config_channel_rf3853(struct rt2x00_dev *rt2x00dev,
- 	switch (rt2x00dev->default_ant.rx_chain_num) {
- 	case 3:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 2:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
--		/* fallthrough */
-+		fallthrough;
- 	case 1:
- 		rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
- 		break;
-@@ -4216,14 +4216,14 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
- 				   rf->channel > 14);
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G2_EN,
- 				   rf->channel <= 14);
--		/* fall-through */
-+		fallthrough;
- 	case 2:
- 		/* Turn on secondary PAs */
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A1_EN,
- 				   rf->channel > 14);
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G1_EN,
- 				   rf->channel <= 14);
--		/* fall-through */
-+		fallthrough;
- 	case 1:
- 		/* Turn on primary PAs */
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A0_EN,
-@@ -4241,12 +4241,12 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
- 		/* Turn on tertiary LNAs */
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A2_EN, 1);
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_G2_EN, 1);
--		/* fall-through */
-+		fallthrough;
- 	case 2:
- 		/* Turn on secondary LNAs */
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A1_EN, 1);
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_G1_EN, 1);
--		/* fall-through */
-+		fallthrough;
- 	case 1:
- 		/* Turn on primary LNAs */
- 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A0_EN, 1);
-@@ -5438,10 +5438,10 @@ void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev)
- 		switch (rt2x00dev->default_ant.tx_chain_num) {
- 		case 3:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G2_EN, 1);
--			/* fall through */
-+			fallthrough;
- 		case 2:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G1_EN, 1);
--			/* fall through */
-+			fallthrough;
- 		case 1:
- 		default:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G0_EN, 1);
-@@ -5451,10 +5451,10 @@ void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev)
- 		switch (rt2x00dev->default_ant.tx_chain_num) {
- 		case 3:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A2_EN, 1);
--			/* fall through */
-+			fallthrough;
- 		case 2:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A1_EN, 1);
--			/* fall through */
-+			fallthrough;
- 		case 1:
- 		default:
- 			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A0_EN, 1);
-@@ -10100,10 +10100,10 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
- 	switch (rx_chains) {
- 	case 3:
- 		spec->ht.mcs.rx_mask[2] = 0xff;
--		/* fall through */
-+		fallthrough;
- 	case 2:
- 		spec->ht.mcs.rx_mask[1] = 0xff;
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 		spec->ht.mcs.rx_mask[0] = 0xff;
- 		spec->ht.mcs.rx_mask[4] = 0x1; /* MCS32 */
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c b/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c
-index 110bb391c372..6e7c14757261 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c
-@@ -593,7 +593,6 @@ void rt2800mmio_queue_init(struct data_queue *queue)
- 		break;
- 
- 	case QID_ATIM:
--		/* fallthrough */
- 	default:
- 		BUG();
- 		break;
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800usb.c b/drivers/net/wireless/ralink/rt2x00/rt2800usb.c
-index 4cc64fe481a7..d08b251ec5a2 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2800usb.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2800usb.c
-@@ -746,7 +746,6 @@ static void rt2800usb_queue_init(struct data_queue *queue)
- 		break;
- 
- 	case QID_ATIM:
--		/* fallthrough */
- 	default:
- 		BUG();
- 		break;
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt61pci.c b/drivers/net/wireless/ralink/rt2x00/rt61pci.c
-index eefce76fc99b..43c3cdd13710 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt61pci.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt61pci.c
-@@ -2130,7 +2130,7 @@ static void rt61pci_txdone(struct rt2x00_dev *rt2x00dev)
- 			break;
- 		case 6: /* Failure, excessive retries */
- 			__set_bit(TXDONE_EXCESSIVE_RETRY, &txdesc.flags);
--			/* Fall through - this is a failed frame! */
-+			fallthrough;	/* this is a failed frame! */
- 		default: /* Failure */
- 			__set_bit(TXDONE_FAILURE, &txdesc.flags);
- 		}
-@@ -2953,7 +2953,6 @@ static void rt61pci_queue_init(struct data_queue *queue)
- 		break;
- 
- 	case QID_ATIM:
--		/* fallthrough */
- 	default:
- 		BUG();
- 		break;
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt73usb.c b/drivers/net/wireless/ralink/rt2x00/rt73usb.c
-index e908c303b677..e69793773d87 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt73usb.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt73usb.c
-@@ -2373,7 +2373,6 @@ static void rt73usb_queue_init(struct data_queue *queue)
- 		break;
- 
- 	case QID_ATIM:
--		/* fallthrough */
- 	default:
- 		BUG();
- 		break;
--- 
-2.27.0
-
+Cheers,
+Jens
