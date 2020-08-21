@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8E924D108
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF5E24D0FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgHUI5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:57:50 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2682 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726661AbgHUI5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:57:49 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 844336D67F456C21CBF7;
-        Fri, 21 Aug 2020 09:57:48 +0100 (IST)
-Received: from [127.0.0.1] (10.47.8.200) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 21 Aug
- 2020 09:57:47 +0100
-Subject: Re: [PATCH v2] MAINTAINERS: Add entries for CoreSight and Arm SPE
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <acme@kernel.org>
-CC:     <will@kernel.org>, <leo.yan@linaro.org>, <jolsa@redhat.com>,
-        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200820175510.3935932-1-mathieu.poirier@linaro.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <938c45cc-e832-e364-6e1d-019356763c54@huawei.com>
-Date:   Fri, 21 Aug 2020 09:55:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727770AbgHUI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728361AbgHUI47 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:56:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACA4C061387;
+        Fri, 21 Aug 2020 01:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=EVl8E61DXgRR1ZNIk2YxGikvQ2O1Ac8Y751dPUZf5kA=; b=Mahqk11P0dtVI6WvpVZ3wbPfd6
+        TOLmouapre5P0kVTzEU3HqwZFByZlxCfsG6R4LCAQEde65aGjIHnOELkSeXiwBiVLsCgnaiFc5MSt
+        bvGYyrZ9NusMwXnv+hlzhDJ+I4OVdlWF/WhR7di5/YwH+8C/4tFLNJRZdH9NKDu3+jfaCADVNAeGN
+        ktm0Qw0jD8zXP93Qm5deyNsGMKjxkuKyjwIUIvulughoawMKj7P036hpaE1C8BhnQ1KNpjW7ltyqz
+        UB5eZs1ummTyPWBBdfzQmKKtQe7CWVkU7RMOrEnMA4elIOFazI/1fyVNV75dx+bpdv3LTg5BtDuoO
+        VVT7V/RQ==;
+Received: from [2001:4bb8:198:f3b2:a2b:85ba:fb78:c253] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k92qE-0007el-7k; Fri, 21 Aug 2020 08:56:07 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Justin Sanders <justin@coraid.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Xianting Tian <xianting_tian@126.com>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: fix block device size update serialization
+Date:   Fri, 21 Aug 2020 10:55:58 +0200
+Message-Id: <20200821085600.2395666-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200820175510.3935932-1-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.200]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/2020 18:55, Mathieu Poirier wrote:
-> Add entries for perf tools elements related to the support of Arm CoreSight
-> and Arm SPE.  Also lump in Arm and Arm64 architecture files to provide
-> coverage.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Hi Jens,
 
-thanks
-Acked-by: John Garry <john.garry@huawei.com>
+this series fixes how we update i_size for the block device inodes (and
+thus the block device).  Different helpers use two different locks
+(bd_mutex and i_rwsem) to protect the update, and it appears device
+mapper uses yet another internal lock.  A lot of the drivers do the
+update handcrafted in often crufty ways.  And in addition to that mess
+it turns out that the "main" lock, bd_mutex is pretty dead lock prone
+vs other spots in the block layer that acquire it during revalidation
+operations, as reported by Xianting.
 
-> ---
-> V2:
-> - Completed fileset for SPE.
-> - Added Arm and Arm64 architecture files.
-> 
->   MAINTAINERS | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index deaafb617361..e76f7bb014ce 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13569,12 +13569,18 @@ F:	kernel/events/*
->   F:	tools/lib/perf/
->   F:	tools/perf/
->   
-> -PERFORMANCE EVENTS SUBSYSTEM ARM64 PMU EVENTS
-> +PERFORMANCE EVENTS SUBSYSTEM ARM64
->   R:	John Garry <john.garry@huawei.com>
->   R:	Will Deacon <will@kernel.org>
-> +R:	Mathieu Poirier <mathieu.poirier@linaro.org>
-> +R:	Leo Yan <leo.yan@linaro.org>
->   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->   S:	Supported
-> +F:	tools/build/feature/test-libopencsd.c
-> +F:	tools/perf/arch/arm*/
->   F:	tools/perf/pmu-events/arch/arm64/
-> +F:	tools/perf/util/arm-spe*
-> +F:	tools/perf/util/cs-etm*
->   
->   PERSONALITY HANDLING
->   M:	Christoph Hellwig <hch@infradead.org>
-> 
-
+Fix all that by adding a dedicated spinlock just for the size updates.
