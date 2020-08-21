@@ -2,94 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB43024E191
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DEE24E1A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgHUT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:58:58 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8979 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbgHUT64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:58:56 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4027710001>; Fri, 21 Aug 2020 12:58:41 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 21 Aug 2020 12:58:55 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 21 Aug 2020 12:58:55 -0700
-Received: from [10.2.94.162] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 21 Aug
- 2020 19:58:55 +0000
-Subject: Re: [GIT PULL] tee subsystem pin_user_pages for v5.8
-To:     Olof Johansson <olof@lixom.net>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-CC:     <arm@kernel.org>, <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        <tee-dev@lists.linaro.org>
-References: <20200526131259.GA97001@jade> <20200821184910.GB3407@lx2k>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <f7c8bb6e-e732-2565-8b50-20f5504701c9@nvidia.com>
-Date:   Fri, 21 Aug 2020 12:58:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727910AbgHUUAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 16:00:05 -0400
+Received: from mga01.intel.com ([192.55.52.88]:43119 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726750AbgHUT7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:59:40 -0400
+IronPort-SDR: coxufCFWbO97Y51czNC5uvxpfNRzBH8XgRS2gSw3sodFPA7t4P5nTSRx/6TIXCol9GG8zjejfJ
+ Nc6N/VgYMDvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="173658055"
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
+   d="scan'208";a="173658055"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 12:59:39 -0700
+IronPort-SDR: +N961mZ9YIUL8nxa8Vs+5MsMfAfiughcAEwmSuRupC9QN8jZOUlnOKtfHASQ4BA92CfB+hxyvO
+ T5x55sZGz1dw==
+X-IronPort-AV: E=Sophos;i="5.76,338,1592895600"; 
+   d="scan'208";a="298045154"
+Received: from jbrandeb-mobl3.amr.corp.intel.com (HELO localhost) ([10.212.38.54])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 12:59:38 -0700
+Date:   Fri, 21 Aug 2020 12:59:36 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Murali Karicheri <m-karicheri2@ti.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
+        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [net v2 PATCH 1/2] net: ethernet: ti: cpsw: fix clean up of
+ vlan mc entries for host port
+Message-ID: <20200821125936.00003fc7@intel.com>
+In-Reply-To: <20200821134912.30008-1-m-karicheri2@ti.com>
+References: <20200821134912.30008-1-m-karicheri2@ti.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20200821184910.GB3407@lx2k>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598039921; bh=931QlgWgkSLnaXy3M6zhhPT2hTM3lsmrxSz7sNfiqzM=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=nnz1DA/cKW4KvK7uDJzLxRuIqIXK+DuN9tuKtlC5zqI3Y03Xe4x0V7/obhtO9LINQ
-         bPzqUheBtXuKWJL4qJNiCC56pkkMFxkQ5055n1AvEYyrDCGeDs1IeOzCFnLmwtYMN1
-         vkRAme4qWDo9m3P6sYPYlAy48DmSMjA8V4yhSfkqJm5EENV9HSZ/razc0w8lVxqU30
-         PPZqQhh0tXpe5McsFrTs2uReW5ouYPhW1YXZMP0kEzcZZRws8X7ar1YS76zNH9yDXt
-         JP7HNZk2aWlBGMybHSAo4WuO3vUcf2H9IBZci8IYgRNO4irVpziG49BUtHJPY6JqRe
-         679ahwfMrEgkQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/20 11:49 AM, Olof Johansson wrote:
-> On Tue, May 26, 2020 at 03:12:59PM +0200, Jens Wiklander wrote:
->> Hello arm-soc maintainers,
->>
->> Please pull this small patch converting the tee subsystem to use
->> pin_user_pages() instead of get_user_pages().
->>
->> Thanks,
->> Jens
->>
->> The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
->>
->>    Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
->>
->> are available in the Git repository at:
->>
->>    git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-pin-user-pages-for-5.8
->>
->> for you to fetch changes up to 37f6b4d5f47b600ec4ab6682c005a44a1bfca530:
->>
->>    tee: convert get_user_pages() --> pin_user_pages() (2020-05-26 10:42:41 +0200)
-> 
-> Hi, I noticed this never got merged, but I don't see any follow-up here that
-> retracts it. Is it still pending merge such that I should queue it for v5.10?
-> 
+Murali Karicheri wrote:
 
-I think so. I had marked it in my notes as "accepted, and the maintainer will
-eventually merge it", and I left it at that. It's still desirable.
+> To flush the vid + mc entries from ALE, which is required when a VLAN
+> interface is removed, driver needs to call cpsw_ale_flush_multicast()
+> with ALE_PORT_HOST for port mask as these entries are added only for
+> host port. Without this, these entries remain in the ALE table even
+> after removing the VLAN interface. cpsw_ale_flush_multicast() calls
+> cpsw_ale_flush_mcast which expects a port mask to do the job.
+> 
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Patch makes sense. Please resend with a Fixes: tag.
