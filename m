@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BB124D88B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F0C24D894
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgHUP2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        id S1727975AbgHUP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgHUP2S (ORCPT
+        with ESMTP id S1728174AbgHUP3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:28:18 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2ECC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:28:18 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u18so2304720wmc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:28:18 -0700 (PDT)
+        Fri, 21 Aug 2020 11:29:00 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E76C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:29:00 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id n4so1005097vsl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+y66MqggCakjVuRG4cFz30VjWieYM9CuDcuOFxkR0Z0=;
-        b=XrqNGUmj2d6Xu6Kb6GMB3M6jmXO1rzxI9r2vGH/mlHjReZ/EU9RkaCjmwICLzWY4Gn
-         TGX8IBv6+v8eYu5rSay0806nirzMq65EzeJd6NOkbwQbwSEiQFJy8wdhquSBc4YOfmUG
-         p5s1Bzs56kl0dmEPlRi1W31V8SFMxK3pzTUz2D6boIA6gDo8i1/ZZgcjkvirtaMc+lJ5
-         UDWeWSgwgYyOdUACy2ozcc/Iz83Ln4ITtmcCsk/xqOjAcwFXWIiCIgjVAxfygoZs1p0z
-         gKl3GsxfxpaqAYLtGx3HWCsRKVXuJHaNRjzlKM+z/lvf1aseKPg6eUs2uPFuZ5fcGSSB
-         4/Sw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EfNlVXRvcKj6Y0hPR3mdXqrOmf9uMfzMQoJ/2wwN28s=;
+        b=TxXlzi+3Re0/Y9A0DJKuWYYfMbzRZqmxmjtsXj3fQuS4mqCgNSCPkMIQPvBngkmWlL
+         l+2M8q+GXYbPRKVD+IckYVampaZtFXiHooayDG34TdBXVrx9JkAMywZrNoMj4nxurTbK
+         hIEm/0LDDdzWPZXsTtvAUAku7YOeaXpfHpi8sX0O6l0dcRBbvZN7a84HeF1b02vhtebg
+         9YXjlG+gLFSzi9twT8LENDCNB7E555n/NpyTP1TmCq4IocXeoibGF8U+WhgTSQO/Qf/1
+         Dluhy83z8d9UtOK4Xcv0+yM9ul9o4AEHrED67jdkIUeyhJ3q18M4gxRHP/YJ7S+WD1Bl
+         y9tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+y66MqggCakjVuRG4cFz30VjWieYM9CuDcuOFxkR0Z0=;
-        b=o74IrWaPBbrw3+0Meu2vWN4Hd1/8+rpF5RT94sQAu33LEoNTodQMn253cZocT/ew4j
-         zsJWswN6FsLCqAD+0iR92EPY6ZGKsPPCLSjYNWn65HCVjqkUT0RSwXdDWMmCGOaldibj
-         ssR8wqoQyaVmekklyXGLBls+bKQQCf4AL+/ioK32fItSCWsqK8pqwig7mFec5hbcTca+
-         eC5gshaEjnVANAA7b+XY14ByUmNDx3Vpw2Z8SXIG/Fn5HVR/CkbH2cjv9RkH4BDI4dAU
-         0D2h1ID+FZFxmSRb3f1oDPnILNK5XpoP4fmci2GaXg9XgwbKJia0Xb9x7Y6nDGibNXTm
-         oqlQ==
-X-Gm-Message-State: AOAM531gKUHxbd1xeNlcU3XWfQm/flJZdrSO+o5WENongJkl5ETWPBmR
-        2oxf55/de1fefw1cxXsk0NU=
-X-Google-Smtp-Source: ABdhPJzsj3Ldq5q3T34rHmzgtlQJTbTH7AApriawiIsBCRv3S499thDPeosIx/PU22cuIXSKmQim4Q==
-X-Received: by 2002:a7b:c011:: with SMTP id c17mr4278996wmb.63.1598023697023;
-        Fri, 21 Aug 2020 08:28:17 -0700 (PDT)
-Received: from tsnow (IGLD-83-130-85-196.inter.net.il. [83.130.85.196])
-        by smtp.gmail.com with ESMTPSA id w132sm6418009wma.32.2020.08.21.08.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:28:16 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 18:28:10 +0300
-From:   Tomer Samara <tomersamara98@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Riley Andrews <riandrews@android.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] staging: android: Remove BUG from ion_system_heap.c
-Message-ID: <a39407f84031eaeed5e65a7aab515a079edf5fcc.1598023524.git.tomersamara98@gmail.com>
-References: <cover.1598023523.git.tomersamara98@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EfNlVXRvcKj6Y0hPR3mdXqrOmf9uMfzMQoJ/2wwN28s=;
+        b=q0XmntA98F9vmh526d6+taW07+gzUTmMh7eD4gKw0aMR1qmQM7H2cjtr7NvRzFYtzi
+         57CX0JuC4tCBvsAUaZITxuMaW0IycPhsccwhZhbhM3Fu2aog1R2a2y8bmAtB7gB+kShL
+         llTNcdZcXHD8Dng08Bwm+BhXcTRw2eDO3aH1qrjtGzxk3XlMKzkLf/baNR40ZFG7mOFH
+         FRrJCCjXsmjASocVYBlfsF+YBea2R2C7ESNzpCJTizSGG1ObB29+d01ahN14V0IZ4C9k
+         4oX5eIsHGglj+inqA/qzAUL52bo5/bGPcLO7oF8whofEu2k/IIVlO+pkWMkHVuqDbArI
+         CobA==
+X-Gm-Message-State: AOAM532mDnLNYGkkq1eP7gcTfyScu2pvtCI1kDj4/TTJTZhkkiK8APeQ
+        GkxZjTY0/p8yseOvZJxLod5bpXCWKRxOHg6qtDE23Q==
+X-Google-Smtp-Source: ABdhPJzuHGDNNiJJ/NVWgNCFo1qYw+4Wfg2mv7fUfSmQoHgQcGFTX5WEJREfXbTaagyxn+o5RQxZ5jAycl8ogxstPMQ=
+X-Received: by 2002:a67:f30e:: with SMTP id p14mr2165736vsf.119.1598023739293;
+ Fri, 21 Aug 2020 08:28:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1598023523.git.tomersamara98@gmail.com>
+References: <87d03lxysr.fsf@x220.int.ebiederm.org> <20200820132631.GK5033@dhcp22.suse.cz>
+ <20200820133454.ch24kewh42ax4ebl@wittgenstein> <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
+ <20200820140054.fdkbotd4tgfrqpe6@wittgenstein> <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+ <87k0xtv0d4.fsf@x220.int.ebiederm.org> <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
+ <20200820162645.GP5033@dhcp22.suse.cz> <87r1s0txxe.fsf@x220.int.ebiederm.org> <20200821111558.GG4546@redhat.com>
+In-Reply-To: <20200821111558.GG4546@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 21 Aug 2020 08:28:48 -0700
+Message-ID: <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tim Murray <timmurray@google.com>, mingo@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com,
+        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
+        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de,
+        John Johansen <john.johansen@canonical.com>,
+        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove BUG() from ion_sytem_heap.c
+On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> On 08/20, Eric W. Biederman wrote:
+> >
+> > That said if we are going for a small change why not:
+> >
+> >       /*
+> >        * Make sure we will check other processes sharing the mm if this is
+> >        * not vfrok which wants its own oom_score_adj.
+> >        * pin the mm so it doesn't go away and get reused after task_unlock
+> >        */
+> >       if (!task->vfork_done) {
+> >               struct task_struct *p = find_lock_task_mm(task);
+> >
+> >               if (p) {
+> > -                     if (atomic_read(&p->mm->mm_users) > 1) {
+> > +                     if (atomic_read(&p->mm->mm_users) > p->signal->nr_threads) {
+>
+> In theory this needs a barrier to avoid the race with do_exit(). And I'd
+> suggest to use signal->live, I think signal->nr_threads should die...
+> Something like
+>
+>         bool probably_has_other_mm_users(tsk)
+>         {
+>                 return  atomic_read_acquire(&tsk->mm->mm_users) >
+>                         atomic_read(&tsk->signal->live);
+>         }
+>
+> The barrier implied by _acquire ensures that if we race with the exiting
+> task and see the result of exit_mm()->mmput(mm), then we must also see
+> the result of atomic_dec_and_test(signal->live).
+>
+> Either way, if we want to fix the race with clone(CLONE_VM) we need other
+> changes.
 
-this fix the following checkpatch issue:
-Avoid crashing the kernel - try using WARN_ON &
-recovery code ratherthan BUG() or BUG_ON().
+The way I understand this condition in __set_oom_adj() sync logic is
+that we would be ok with false positives (when we loop unnecessarily)
+but we can't tolerate false negatives (when oom_score_adj gets out of
+sync). With the clone(CLONE_VM) race not addressed we are allowing
+false negatives and IMHO that's not acceptable because it creates a
+possibility for userspace to get an inconsistent picture. When
+developing the patch I did think about using (p->mm->mm_users >
+p->signal->nr_threads) condition and had to reject it due to that
+reason.
 
-Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
----
- drivers/staging/android/ion/ion_system_heap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/android/ion/ion_system_heap.c b/drivers/staging/android/ion/ion_system_heap.c
-index eac0632ab4e8..00d6154aec34 100644
---- a/drivers/staging/android/ion/ion_system_heap.c
-+++ b/drivers/staging/android/ion/ion_system_heap.c
-@@ -30,7 +30,7 @@ static int order_to_index(unsigned int order)
- 	for (i = 0; i < NUM_ORDERS; i++)
- 		if (order == orders[i])
- 			return i;
--	BUG();
-+	/* This is impossible. */
- 	return -1;
- }
- 
--- 
-2.25.1
-
+>
+> Oleg.
+>
