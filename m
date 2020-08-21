@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE02224DC9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B6524DC74
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgHURFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728252AbgHUQSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:18:47 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456A6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:42 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id h4so2266315ioe.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=luUAi1TbOa9Dnc1tIwWCWIIp6OXw4Q4Gp7/3zvZWN+4=;
-        b=ahSuHdM/nkUJ6JtkBGtFBeRVfzbonjEc/j96YRLEJ4vtmgg/KKihM/7sXJPF+cxzsp
-         QAV3Vt2rftE+yFPlN3N9m9EO0Q3Hto7nzTNZzODiCr5quN7ecOhjw9W9+c9BmYLGabVu
-         E257jRzn/TFc6+q8S1SliMsuyT+g5ggI0Wq4nsEiLaXf0oxG8Za4ala0j1N8BM9LU4kh
-         5R1yY5XWkQh5JRWT1nTTfhm7+z8qkA/rAv9wlXqFEiUn2wJKGX1I4s0Tw9kozND2q7vL
-         N5Rn5ptnxGRFDutvd0+GGNwT+yWVBwQ6bT8s+/djlP7sY3x7ga+3SVfN2hoA+YqCoBF6
-         PzvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=luUAi1TbOa9Dnc1tIwWCWIIp6OXw4Q4Gp7/3zvZWN+4=;
-        b=U/QigE2m3kkXDb3btzNnC3ZjbVEYGdIKOGUoz3zJiAzaBYYUasdTi+avMAd2JLm4Or
-         WfaBKuLn5vSedDjrbWfYJoZ6Ihn+9VSedhYVi5maKkanb+K8jW/fQXHsoC61zDqiGDA1
-         BNYe2hEcRQDleYaly6MKr8+Zv+asa2d6kT05Pvf+aMvEd3t3HsIeXc62DxcpprdA0b1V
-         17jom0PvZOJ9Zo3lhAupPE0PV6nUD0uMKzC8SA61kcoLADosoEuS108NqA1enT6pfljo
-         jBXlkI6r6cv1eonoy+H0+OUQSQ6w70K4fQnQ8b0KdZLKHyMvWjXZtD/lFQnB29s3fnO0
-         bQmA==
-X-Gm-Message-State: AOAM532kQn48ho+UaCWFi/yiIcS6ut2NF8QvH1Adv8JKd9kTwuyBMAko
-        9ImOzG0h2/vYT7T7hDbJIWBeGQfKAIZvqMC5vDX/oxz5PvsNtQ==
-X-Google-Smtp-Source: ABdhPJz5jpr2DxnMaG9eqJjbyNPm6jyyHc64mTSoHOxOHhYYkgi7vT1uWhdnCIVnP0s7oboMggBGb9m0MGs/KT7TKYo=
-X-Received: by 2002:a6b:b495:: with SMTP id d143mr2998016iof.61.1598026721446;
- Fri, 21 Aug 2020 09:18:41 -0700 (PDT)
+        id S1728453AbgHURDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:03:01 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54990 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728220AbgHUQ5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:57:42 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k9AME-0003dt-00; Fri, 21 Aug 2020 18:57:38 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 79A5CC0D8F; Fri, 21 Aug 2020 18:55:39 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 18:55:39 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 1/2] MIPS: cacheinfo: Add missing VCache
+Message-ID: <20200821165539.GA15948@alpha.franken.de>
+References: <20200820004253.3418-1-jiaxun.yang@flygoat.com>
+ <20200820004253.3418-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-References: <20200821151942.6b01dbd8@canb.auug.org.au>
-In-Reply-To: <20200821151942.6b01dbd8@canb.auug.org.au>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Fri, 21 Aug 2020 09:18:29 -0700
-Message-ID: <CAOesGMhHhBBdXdEAM+P5orFz56bdQTk8MP20k4UZ2rh53Ge6XQ@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commits in the
- arm-soc-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820004253.3418-2-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Aug 20, 2020 at 08:42:49AM +0800, Jiaxun Yang wrote:
+> Victim Cache is defined by Loongson as per-core unified
+> private Cache.
+> Add this into cacheinfo and make cache levels selfincrement
+> instead of hardcode levels.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
+>  1 file changed, 26 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+> index 47312c529410..83548331ee94 100644
+> --- a/arch/mips/kernel/cacheinfo.c
+> +++ b/arch/mips/kernel/cacheinfo.c
+> @@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
+>  
+>  	leaves += (c->icache.waysize) ? 2 : 1;
+>  
+> +	if (c->vcache.waysize) {
+> +		levels++;
+> +		leaves++;
+> +	}
+> +
+>  	if (c->scache.waysize) {
+>  		levels++;
+>  		leaves++;
+> @@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
+>  	struct cpuinfo_mips *c = &current_cpu_data;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+>  	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
+> +	int level = 1;
+>  
+>  	if (c->icache.waysize) {
+> -		/* L1 caches are per core */
+> +		/* D/I caches are per core */
+>  		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+> -		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
+> +		populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
+>  		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+> -		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
+> +		populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
+> +		level++;
+>  	} else {
+> -		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
+> +		populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
+> +		level++;
+> +	}
+> +
+> +	if (c->vcache.waysize) {
 
-On Thu, Aug 20, 2020 at 10:19 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commits
->
->   8d53ecfbf231 ("arm64: dts: xilinx: Align IOMMU nodename with dtschema")
->   b4b6fb8de8dc ("arm64: dts: zynqmp: Add GTR transceivers")
->
-> are missing a Signed-off-by from their committer.
+why can't we insert vcache as level 4 and leave the rest of the file
+alone ?
 
-Ah, I see what happened here. I've been relying on some of my
-semi-automation scripts for catching this, but I had to use regular
-manual git merge for this branch due to GPG signatures not capturing
-it in patchwork.
+Thomas.
 
-Since the committer was Michal, and the pull request came from him, we
-still have the chain of contribution documented, but I'll keep this in
-mind on future manual merges.
-
-
--Olof
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
