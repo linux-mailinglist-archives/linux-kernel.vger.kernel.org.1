@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF7924CBA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB4524CBA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgHUDvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:51:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727050AbgHUDvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:51:18 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB25F2076E;
-        Fri, 21 Aug 2020 03:51:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597981877;
-        bh=P/+5Iuw27xx7rvW/RiUtG3rRebK71DLY9gVtxYSoVmk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tvzMiECk3m9ZrFgL9jWU3YPIwWqO83e0eOBZI8fT7UYKgOTTR5tOcQrywMwXnaGtR
-         nDISKx6Es41eovSWj2Y0XN+e+eoPyOdfpwZ8ullZrFDFb1avY/rQTke0Ei0HkLDdw3
-         6hMahyJROMnAZr9c5fAW4e80s2tqTFEbOhlyxuyM=
-Date:   Thu, 20 Aug 2020 20:51:16 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chris Kennelly <ckennelly@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        David Rientjes <rientjes@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Hugh Dickens <hughd@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] fs/binfmt_elf: Use PT_LOAD p_align values for
- suitable start address.
-Message-Id: <20200820205116.3467a186cb4ac20342f0ee4b@linux-foundation.org>
-In-Reply-To: <20200820170541.1132271-2-ckennelly@google.com>
-References: <20200820170541.1132271-1-ckennelly@google.com>
-        <20200820170541.1132271-2-ckennelly@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727873AbgHUDvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:51:39 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18601 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbgHUDvg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:51:36 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f3f44b90000>; Thu, 20 Aug 2020 20:51:21 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 20 Aug 2020 20:51:35 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 20 Aug 2020 20:51:35 -0700
+Received: from [10.2.56.96] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 21 Aug
+ 2020 03:51:28 +0000
+Subject: Re: [PATCH] mm/gup_benchmark: update the documentation in Kconfig
+To:     Barry Song <song.bao.hua@hisilicon.com>,
+        <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        Keith Busch <keith.busch@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200821032546.19992-1-song.bao.hua@hisilicon.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <622e5ba7-41e9-0335-1630-cbcdaf9a162f@nvidia.com>
+Date:   Thu, 20 Aug 2020 20:51:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200821032546.19992-1-song.bao.hua@hisilicon.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1597981881; bh=OFw05gqtm34jtOGr2u9s+eSTW+9vg7j82ohz9WyBrNw=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=fi9ERSL8dvklD8RB4vq2gFIHipBcnEQz3N2KkExotSl+ktAMRKdtVgaXpfJuBzP2C
+         a0jmZIdu7s4rubJNRY5D7uFV3ltRU/MP5HZnU7+MXs+U8Gj7ehoCKptBatREdRtJNN
+         J6RmRcJJI5OFOKp5NJVtwM5BG3yvskd0GgnP1Uc0rsR+FjaN42idBgodUZM197IcOI
+         hr8zCFzai/IE0uHuUxBgQqxXVOcbcbQICUcwgCimpR7cIriI15YYjd/YNKopJyuqRG
+         PTqWaBekanSLdviVIsoq346JFBHCt/GiXxRp0rGDQwpo9FgbMCUUxBFCZaniAEng33
+         KENOMf+DJCu8w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 13:05:40 -0400 Chris Kennelly <ckennelly@google.com> wrote:
+On 8/20/20 8:25 PM, Barry Song wrote:
+> In the beginning, mm/gup_benchmark.c supported get_user_pages_fast()
+> only, but right now, it supports the benchmarking of a couple of
+> get_user_pages() related calls like:
+> * get_user_pages_fast()
+> * get_user_pages()
+> * pin_user_pages_fast()
+> * pin_user_pages()
+> The documentation is confusing and needs update.
 
-> The current ELF loading mechancism provides page-aligned mappings.  This
-> can lead to the program being loaded in a way unsuitable for
-> file-backed, transparent huge pages when handling PIE executables.
+hmmm, it's not that confusing, given that pin_user_pages() and
+get_user_pages() use the same underlying get_user_pages()
+implementation.
+
 > 
-> For binaries built with increased alignment, this limits the number of
-> bits usable for ASLR, but provides some randomization over using fixed
-> load addresses/non-PIE binaries.
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>   mm/Kconfig | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> @@ -421,6 +422,24 @@ static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
->  	return 0;
->  }
->  
-> +static unsigned long maximum_alignment(struct elf_phdr *cmds, int nr)
-> +{
-> +	unsigned long alignment = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		if (cmds[i].p_type == PT_LOAD) {
-> +			/* skip non-power of two alignments */
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 6c974888f86f..f7c9374da7b3 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -831,10 +831,10 @@ config PERCPU_STATS
+>   	  be used to help understand percpu memory usage.
+>   
+>   config GUP_BENCHMARK
+> -	bool "Enable infrastructure for get_user_pages_fast() benchmarking"
+> +	bool "Enable infrastructure for get_user_pages() and related calls benchmarking"
 
-Comment isn't terribly helpful.  It explains "what" (which is utterly
-obvious from the code anyway) but it fails to explain "why".
+If we really want to go to the trouble of tweaking this, then I'd go with
+something more like:
 
-> +			if (!is_power_of_2(cmds[i].p_align))
-> +				continue;
-> +			alignment = max(alignment, cmds[i].p_align);
+"Enable infrastructure for get_user_pages() and pin_user_pages benchmarking"
 
-generates a max() warning:
+...but I don't think it really warrants a patch just yet. *However*, my
+judgment is skewed right now, because I'm planning a small patchset to split
+up gup_benchmark a little bit, and to add some more testing and take advantage
+of parts of it to do a dump_page() test. At which point "related calls" would
+make more sense, but then it would be different enough that this patch would
+still need changing.
 
-fs/binfmt_elf.c:435:16: note: in expansion of macro `max'
-    alignment = max(alignment, cmds[i].p_align);
+So I'm inclined to just recommend leaving this alone for a bit, but if others
+want to put it in, I'm OK with that too.
 
-p_align may be Elf64_Xword, may be Elf32_Word, may be something else. 
-That's quite unwieldy and I don't like max_t.  How about this?
+>   	help
+>   	  Provides /sys/kernel/debug/gup_benchmark that helps with testing
+> -	  performance of get_user_pages_fast().
+> +	  performance of get_user_pages() and related calls.
+>   
+>   	  See tools/testing/selftests/vm/gup_benchmark.c
+>   
+> 
 
---- a/fs/binfmt_elf.c~fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address-fix
-+++ a/fs/binfmt_elf.c
-@@ -429,10 +429,12 @@ static unsigned long maximum_alignment(s
- 
- 	for (i = 0; i < nr; i++) {
- 		if (cmds[i].p_type == PT_LOAD) {
-+			unsigned long p_align = cmds[i].p_align;
-+
- 			/* skip non-power of two alignments */
--			if (!is_power_of_2(cmds[i].p_align))
-+			if (!is_power_of_2(p_align))
- 				continue;
--			alignment = max(alignment, cmds[i].p_align);
-+			alignment = max(alignment, p_align);
- 		}
- 	}
- 
-_
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
