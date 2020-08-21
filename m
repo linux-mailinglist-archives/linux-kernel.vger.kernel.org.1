@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B50824D1BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6157324D1C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgHUJve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:51:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34666 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725855AbgHUJvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:51:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0C2CAB9F;
-        Fri, 21 Aug 2020 09:51:59 +0000 (UTC)
-Date:   Fri, 21 Aug 2020 11:51:29 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-mm@kvack.org, Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Airlie <airlied@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Vrabel <david.vrabel@citrix.com>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/4] mm: Export flush_vm_area() to sync the PTEs upon
- construction
-Message-ID: <20200821095129.GF3354@suse.de>
-References: <20200821085011.28878-1-chris@chris-wilson.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821085011.28878-1-chris@chris-wilson.co.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728536AbgHUJwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbgHUJwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 05:52:08 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF97C061385;
+        Fri, 21 Aug 2020 02:52:07 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y6so640329plk.10;
+        Fri, 21 Aug 2020 02:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vI9mO8HnX6t9W8shIT4/LTp6bxe8W2StQmuh+lanvF8=;
+        b=GMotWNycqT1E/lPDQE8YxedWVYl6vMLx5GX6XNQWd18ro4iVT6uds94AA8NHx8ZuNp
+         mhESZvHPpPauR3FU2XxtpWyFOro3+bLMIfGYOeg1SdDv6kbQII5APvToJ7gHaWSrWsGl
+         me4zrPf/x/fQkGQPatOrFujm1kpi23evo4y9L48ZDk7DnnvvXFVjzCM50LInsSueyvw0
+         PJwHWbUVgiU2UrwoiMEAieXaKhxw14i85gxfUjXeA+uHKK6gUg/8OwTiGqUGYU2zJ/br
+         y0jRHOAoO27/oHAW7X9wmow1jB5OFBWuBwKezS7e16I/7Iw7mCLjhp8YPRIjD74TUrWy
+         IBOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vI9mO8HnX6t9W8shIT4/LTp6bxe8W2StQmuh+lanvF8=;
+        b=m2wTLT6oe5+XkH7wwHAA9Q+hDbtkTe+bD/o8HlJ9LvopsPiDSh5ZwY7C7YaWYob11b
+         f9vouyijRTZu3xQe/lriSQM/kFWeS4pJKvbEiD3bUTiwPIkhGd1aps+nyWc/VsHbao64
+         QtgBYFnSNmTAZm0z4PUkybm/CBrdXrw6PugIWliYMRk79s6Y+n8inIElKLIyh3slLpY9
+         C667ydGoNEqm3RowESJ5pYJTC0WP+ILQTfI/lNvbMdhQP5BLJdMppkgDn3T8hL1vNGuv
+         /ze7ucfehokE+PW/gOj05oQPlEdcvd78/vWNOX2vkFKD4gYIfzL5aDRQxZylNfIl7MOO
+         x+iQ==
+X-Gm-Message-State: AOAM533rLsgtG0E3jqx0aRL8vNT+uZmVTX2YMKmXJXXF5pCF9hPraIMR
+        UnFh7hwObWxas//WnSR6gFg=
+X-Google-Smtp-Source: ABdhPJxKdVDX462cAY6jXOhpg3VyShvratvz74tXjra6Av8RhLd5BIoG8g0vjauFtU56/H6zyknm+Q==
+X-Received: by 2002:a17:90a:aa90:: with SMTP id l16mr1762857pjq.210.1598003527247;
+        Fri, 21 Aug 2020 02:52:07 -0700 (PDT)
+Received: from sh05419pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id d5sm1479828pjw.18.2020.08.21.02.52.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Aug 2020 02:52:06 -0700 (PDT)
+From:   Hongtao Wu <wuht06@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Billows Wu <billows.wu@unisoc.com>
+Subject: [PATCH 0/2] PCI: Add new Unisoc PCIe driver
+Date:   Fri, 21 Aug 2020 17:51:47 +0800
+Message-Id: <1598003509-27896-1-git-send-email-wuht06@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 09:50:08AM +0100, Chris Wilson wrote:
-> The alloc_vm_area() is another method for drivers to
-> vmap/map_kernel_range that uses apply_to_page_range() rather than the
-> direct vmalloc walkers. This is missing the page table modification
-> tracking, and the ability to synchronize the PTE updates afterwards.
-> Provide flush_vm_area() for the users of alloc_vm_area() that assumes
-> the worst and ensures that the page directories are correctly flushed
-> upon construction.
-> 
-> The impact is most pronounced on x86_32 due to the delayed set_pmd().
-> 
-> Reported-by: Pavel Machek <pavel@ucw.cz>
-> References: 2ba3e6947aed ("mm/vmalloc: track which page-table levels were modified")
-> References: 86cf69f1d893 ("x86/mm/32: implement arch_sync_kernel_mappings()")
-> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Dave Airlie <airlied@redhat.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: David Vrabel <david.vrabel@citrix.com>
-> Cc: <stable@vger.kernel.org> # v5.8+
-> ---
->  include/linux/vmalloc.h |  1 +
->  mm/vmalloc.c            | 16 ++++++++++++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 0221f852a7e1..a253b27df0ac 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -204,6 +204,7 @@ static inline void set_vm_flush_reset_perms(void *addr)
->  
->  /* Allocate/destroy a 'vmalloc' VM area. */
->  extern struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes);
-> +extern void flush_vm_area(struct vm_struct *area);
->  extern void free_vm_area(struct vm_struct *area);
->  
->  /* for /dev/kmem */
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index b482d240f9a2..c41934486031 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3078,6 +3078,22 @@ struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
->  }
->  EXPORT_SYMBOL_GPL(alloc_vm_area);
->  
-> +void flush_vm_area(struct vm_struct *area)
-> +{
-> +	unsigned long addr = (unsigned long)area->addr;
-> +
-> +	/* apply_to_page_range() doesn't track the damage, assume the worst */
-> +	if (ARCH_PAGE_TABLE_SYNC_MASK & (PGTBL_PTE_MODIFIED |
-> +					 PGTBL_PMD_MODIFIED |
-> +					 PGTBL_PUD_MODIFIED |
-> +					 PGTBL_P4D_MODIFIED |
-> +					 PGTBL_PGD_MODIFIED))
-> +		arch_sync_kernel_mappings(addr, addr + area->size);
+From: Billows Wu <billows.wu@unisoc.com>
 
-This should happen in __apply_to_page_range() directly and look like
-this:
+This series adds PCIe controller driver for Unisoc SoCs.
+This controller is based on DesignWare PCIe IP.
 
-	if (ARCH_PAGE_TABLE_SYNC_MASK && create)
-		arch_sync_kernel_mappings(addr, addr + size);
 
-Or even better, track whether something had to be allocated in the
-__apply_to_page_range() path and check for:
+Billows Wu (2):
+  dt-bindings: PCI: sprd: Document Unisoc PCIe RC host controller
+  PCI: sprd: Add support for Unisoc SoCs' PCIe controller
 
-	if (ARCH_PAGE_TABLE_SYNC_MASK & mask)
+ .../devicetree/bindings/pci/sprd-pcie.yaml         |  88 +++++++
+ drivers/pci/controller/dwc/Kconfig                 |  12 +
+ drivers/pci/controller/dwc/Makefile                |   1 +
+ drivers/pci/controller/dwc/pcie-sprd.c             | 256 +++++++++++++++++++++
+ 4 files changed, 357 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+
+-- 
+2.7.4
 
