@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA66824E11E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD52024E123
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgHUTrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:47:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726804AbgHUTrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:47:13 -0400
-Received: from localhost.localdomain (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54AE220838;
-        Fri, 21 Aug 2020 19:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598039232;
-        bh=gFqOD0U26drtgdxA4LsBWsBNukOx3mLYjKZya5hw0rA=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=VGR1w4uxwraxff6F0/nbGvFcCAvg9FdrR87htSQH3T3ziqKQHdyYGYrsytbZXgG3U
-         DsqMm+HQDPxSngqOmwPvrcGWMkoeCOHfyPox5OTKXYQ0xkfqBwav7HyPaG+v8YQSMi
-         ZwzJg0KTjhSiXSCyNpNLRJ5QoO2ZBLNw5CfA3UQE=
-From:   zanussi@kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH RT 5/5] Linux 4.19.135-rt61-rc1
-Date:   Fri, 21 Aug 2020 14:47:04 -0500
-Message-Id: <d975f7e45b5787e2d45fcf0fa654304c85cdba2b.1598039186.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1598039186.git.zanussi@kernel.org>
-References: <cover.1598039186.git.zanussi@kernel.org>
-In-Reply-To: <cover.1598039186.git.zanussi@kernel.org>
-References: <cover.1598039186.git.zanussi@kernel.org>
+        id S1727768AbgHUTrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:47:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58382 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgHUTrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:47:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598039264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oc6rWuK4RWluEJBMD17wpMBfxGYcOFdDWSkk5lcadvw=;
+        b=KiXQi33Xg/nd2cc5p/iAKtPJMeJNOzlCIzhWjWEbDdZsQcUjTDcZub6BshDwVTeuzhZGv3
+        zw2QKFIaV6T0xnr0tMl0umwZIX8sVQuHMEUfRQUVCSNH+RS3Ctu3yRElL1RDrH9OSkUBvR
+        Tsr3wMNO6B9xByzMz6gnGKvZsy58iZhaXxtRYkjnJJ3WTiyQxefyan9gZqT9mGBT6u+xX7
+        879KRDH1ZIZQf7iaP+awji6DDAUxA8bYq12w27+m5dPt9dX2xBuAi7ENRI59fAae7fEgGi
+        t8GgtNuJOLOuihUaToMYiDcn5kSYsxXPj3V4PLzYavwP+TAnb34LXNCN2fVjfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598039264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oc6rWuK4RWluEJBMD17wpMBfxGYcOFdDWSkk5lcadvw=;
+        b=ZNTKZwPc7JAJl8Qd563jtK8cr0w4Fu55mv5EH+kVE+8/1HT5hcM/atj4LWnPcJrRJGhXkM
+        niAVH0dbiv4S6wAA==
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Marc Zyngier <maz@kernel.org>, Megha Dey <megha.dey@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [patch RFC 38/38] irqchip: Add IMS array driver - NOT FOR MERGING
+In-Reply-To: <20200821124547.GY1152540@nvidia.com>
+References: <20200821002424.119492231@linutronix.de> <20200821002949.049867339@linutronix.de> <20200821124547.GY1152540@nvidia.com>
+Date:   Fri, 21 Aug 2020 21:47:43 +0200
+Message-ID: <874kovsrvk.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+On Fri, Aug 21 2020 at 09:45, Jason Gunthorpe wrote:
+> On Fri, Aug 21, 2020 at 02:25:02AM +0200, Thomas Gleixner wrote:
+>> +static void ims_mask_irq(struct irq_data *data)
+>> +{
+>> +	struct msi_desc *desc = irq_data_get_msi_desc(data);
+>> +	struct ims_array_slot __iomem *slot = desc->device_msi.priv_iomem;
+>> +	u32 __iomem *ctrl = &slot->ctrl;
+>> +
+>> +	iowrite32(ioread32(ctrl) & ~IMS_VECTOR_CTRL_UNMASK, ctrl);
+>
+> Just to be clear, this is exactly the sort of operation we can't do
+> with non-MSI interrupts. For a real PCI device to execute this it
+> would have to keep the data on die.
 
-v4.19.135-rt61-rc1 stable review patch.
-If anyone has any objections, please let me know.
+We means NVIDIA and your new device, right?
 
------------
+So if I understand correctly then the queue memory where the MSI
+descriptor sits is in RAM.
 
+How is that supposed to work if interrupt remapping is disabled?
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- localversion-rt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That means irq migration and proper disabling of an interrupt become an
+interesting exercise. I'm so not looking forward to that.
 
-diff --git a/localversion-rt b/localversion-rt
-index 66fa05e70f29..c04074665349 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt60
-+-rt61-rc1
--- 
-2.17.1
+If interrupt remapping is enabled then both are trivial because then the
+irq chip can delegate everything to the parent chip, i.e. the remapping
+unit.
 
+Can you please explain that a bit more precise?
+
+> I saw the idxd driver was doing something like this, I assume it
+> avoids trouble because it is a fake PCI device integrated with the
+> CPU, not on a real PCI bus?
+
+That's how it is implemented as far as I understood the patches. It's
+device memory therefore iowrite32().
+
+> It is really nice to see irq_domain used properly in x86!
+
+If you ignore the abuse in XEN :)
+
+And to be fair proper and usable (hierarchical) irq domains originate
+from x86 and happened to solve quite a few horrorshows on the ARM side.
+
+Just back then when we converted the original maze, nobody had a good
+idea and the stomach to touch XEN.
+
+Thanks,
+
+        tglx
