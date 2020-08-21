@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC5524CB6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A5124CB17
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgHUD2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:28:32 -0400
-Received: from gateway36.websitewelcome.com ([192.185.198.13]:28800 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726844AbgHUD2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:28:32 -0400
-X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 23:28:32 EDT
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id E9799401CA004
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 21:07:45 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 8x1FkZr92CjCV8x1FkOOzI; Thu, 20 Aug 2020 21:43:05 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mqMipfFxAhFP9IXccuiRfTgI9EhL9JTdB+RkoJtnolI=; b=pRlD8xLCWlfRtNoWKbKm+7SWzN
-        iJdeAd1OKKgY4WWHVAqK4rmS9SUIDjWkp6Uaes41S3M20eXWgL+Pqr1jYtaYzJPo+LUNOLYNSBMVK
-        bBnKQqdrjT1Bld3fFZgKz4yiiJpwAkpYwKfy8f430GKSJNeeqop5USxIjIv8UAQXjeBCajHwtby2b
-        STPO7ClblZIYHrhv5U06XYRVu1xcVe2wTEqlpm+EkuzPd0AztPXa4FdpJBoLRJ77jbmZe+jQrIKs5
-        jt/RcsFHAbAmd8Oao/RFRtZ5IAgW6PXH/+YqrTpcCeKueukU0REzAeOhFbhwgm6EhuEpIg132AWHG
-        SpGwJnxw==;
-Received: from [191.248.104.145] (port=44546 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1k8x1E-000UJv-Uo; Thu, 20 Aug 2020 23:43:05 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] btrfs: block-group: Fix free-space bitmap threshould
-Date:   Thu, 20 Aug 2020 23:42:31 -0300
-Message-Id: <20200821024231.16256-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727095AbgHUDBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgHUDBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:01:08 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1EF220732;
+        Fri, 21 Aug 2020 03:01:06 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 23:01:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devel@driverdev.osuosl.org, lkml <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v4 3/3] media: atomisp: Only use trace_printk if allowed
+Message-ID: <20200820230105.1f9651b7@oasis.local.home>
+In-Reply-To: <CANMq1KCpV+RKCqHsK-=Xeb+Vq28qdnBVF51rcga7m9-xjqNSCg@mail.gmail.com>
+References: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
+        <20200820170951.v4.3.I066d89f39023956c47fb0a42edf196b3950ffbf7@changeid>
+        <20200820102347.15d2f610@oasis.local.home>
+        <CANMq1KCoEZVj=sjxCqBhqLZKBab57+82=Rk_LN7fc3aCuNHMUw@mail.gmail.com>
+        <20200820203601.4f70bf98@oasis.local.home>
+        <CANMq1KAAgXG9MKMZ_D9zYFV-j0oVreA_AeSw-8FoyJgZ9eWQpg@mail.gmail.com>
+        <20200820215701.667f02b2@oasis.local.home>
+        <CANMq1KCpV+RKCqHsK-=Xeb+Vq28qdnBVF51rcga7m9-xjqNSCg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 191.248.104.145
-X-Source-L: No
-X-Exim-ID: 1k8x1E-000UJv-Uo
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:44546
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 6
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Fri, 21 Aug 2020 10:39:02 +0800
+Nicolas Boichat <drinkcat@chromium.org> wrote:
 
-[BUG]
-After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
-block group item"), cache->length is being assigned after calling
-btrfs_create_block_group_cache. This causes a problem since
-set_free_space_tree_thresholds is calculate the free-space threshould to
-decide is the free-space tree should convert from extents to bitmaps.
+> I'm not sure how that helps? I mean, the use case you have in mind is
+> somebody reusing a distro/random config and not being able to use
+> trace_printk, right? If that config has CONFIG_DISABLE_TRACE_PRINTK=y,
+> then the developer will still need to flip that back.
+> 
+> Note that the option I'm added has default=y (_allow_ trace_printk),
+> so I don't think default y or default n really matters?
 
-The current code calls set_free_space_tree_thresholds with cache->length
-being 0, which then makes cache->bitmap_high_thresh being zero. This
-implies the system will always use bitmap instead of extents, which is
-not desired if the block group is not fragmented.
+Ideally, the production system doesn't have it set. It only sets it to
+make sure that it's clean before sending out. But then it can add it
+back before production. Yeah, it's pretty much cutting hairs between
+the two. I don't like either one.
 
-This behavior can be seen by a test that expects to repair systems
-with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
-created FREE_SPACE_BITMAP.
+Really, if you are worried about this, just add your patch to your
+local tree. I'm not sure this is something that can be fixed upstream.
 
-[FIX]
-Call set_free_space_tree_thresholds after setting cache->length.
+Another idea is to add something like below, and build with:
 
-Link: https://github.com/kdave/btrfs-progs/issues/251
-Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
-CC: stable@vger.kernel.org # 5.8+
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- fs/btrfs/block-group.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ make CHECK_TRACE_PRINT=1
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 44fdfa2eeb2e..01e8ba1da1d3 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+This way it is a build command line option that causes the build to
+fail if trace_printk() is added.
+
+This way production systems can add this to make sure their kernels are
+free of trace_printk() but it doesn't affect the config that is used.
+
+-- Steve
+
+[ Not even compiled tested! ]
+
+diff --git a/Makefile b/Makefile
+index 2057c92a6205..5714a738879d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -91,6 +91,13 @@ else
+   Q = @
+ endif
  
- 	cache->fs_info = fs_info;
- 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
--	set_free_space_tree_thresholds(cache);
- 
- 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
- 
-@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 
- 	read_block_group_item(cache, path, key);
- 
-+	set_free_space_tree_thresholds(cache);
++ifeq ("$(origin CHECK_TRACE_PRINTK)", "command line")
++  KBUILD_NO_TRACE_PRINTK = $(NO_TRACE_PRINTK)
++endif
++ifndef KBUILD_NO_TRACE_PRINTK
++  KBUILD_NO_TRACE_PRINTK = 0
++endif
 +
- 	if (need_clear) {
- 		/*
- 		 * When we mount with old space cache, we need to
-@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 		return -ENOMEM;
+ # If the user is running make -s (silent mode), suppress echoing of
+ # commands
  
- 	cache->length = size;
-+	set_free_space_tree_thresholds(cache);
- 	cache->used = bytes_used;
- 	cache->flags = type;
- 	cache->last_byte_to_unpin = (u64)-1;
--- 
-2.28.0
-
+@@ -839,6 +846,10 @@ KBUILD_AFLAGS	+= -gz=zlib
+ KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
+ endif
+ 
++ifeq ($(KBUILD_NO_TRACE_PRINTK),1)
++KBUILD_CFLAGS += -DNO_TRACE_PRINTK
++endif
++
+ KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+ export DEBUG_CFLAGS
+ 
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 500def620d8f..bee432547d26 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -680,11 +680,14 @@ extern void tracing_stop(void);
+ static inline __printf(1, 2)
+ void ____trace_printk_check_format(const char *fmt, ...)
+ {
++#ifdef NO_TRACE_PRINTK
++	extern void __no_trace_printk_on_build(void);
++	__no_trace_printk_on_build();
++#endif
+ }
+ #define __trace_printk_check_format(fmt, args...)			\
+ do {									\
+-	if (0)								\
+-		____trace_printk_check_format(fmt, ##args);		\
++	____trace_printk_check_format(fmt, ##args);			\
+ } while (0)
+ 
+ /**
