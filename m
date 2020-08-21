@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E1F24D34B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB3424D357
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgHUKyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:54:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:57554 "EHLO foss.arm.com"
+        id S1728138AbgHUK43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 06:56:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:2823 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727979AbgHUKyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:54:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C45E1063;
-        Fri, 21 Aug 2020 03:53:51 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6B203F6CF;
-        Fri, 21 Aug 2020 03:53:50 -0700 (PDT)
-Subject: Re: [PATCH] ARM64: vdso32: Install vdso32 from vdso_install
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200818014950.42492-1-swboyd@chromium.org>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <9f2a9b2b-bcb6-a719-1861-83ea8617eea6@arm.com>
-Date:   Fri, 21 Aug 2020 11:56:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727870AbgHUK4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 06:56:24 -0400
+IronPort-SDR: gSnvnVK8oPywWPZBB9Byf6WSXnIERHyvOUeeGsuma0Q/QG2slIa7vf/py4xCsJ5BtQX/rJFDXt
+ YSoxwvHdic/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="173558562"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="173558562"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 03:56:24 -0700
+IronPort-SDR: CsJI5Wj63gTb3B1Tl19oudAImk8ftZNnw0BHjXy5zUCr3I316Q5cyB9SpxPu/pXvyjHqi0wDjp
+ 0MoNshqIqnIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="327731752"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2020 03:56:20 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1k94iY-00AK7y-OP; Fri, 21 Aug 2020 13:56:18 +0300
+Date:   Fri, 21 Aug 2020 13:56:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+Subject: Re: [PATCH v9 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200821105618.GO1891694@smile.fi.intel.com>
+References: <cover.1598001442.git.rahul.tanwar@linux.intel.com>
+ <fedf5d1ace7c389a5fc0116865b9b88aa3ddeaa5.1598001442.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200818014950.42492-1-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fedf5d1ace7c389a5fc0116865b9b88aa3ddeaa5.1598001442.git.rahul.tanwar@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/20 2:49 AM, Stephen Boyd wrote:
-> Add the 32-bit vdso Makefile to the vdso_install rule so that 'make
-> vdso_install' installs the 32-bit compat vdso when it is compiled.
-> 
-> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Fixes: a7f71a2c8903 ("arm64: compat: Add vDSO")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  arch/arm64/Makefile               | 1 +
->  arch/arm64/kernel/vdso32/Makefile | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
+On Fri, Aug 21, 2020 at 05:32:11PM +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
 
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+...
 
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 55bc8546d9c7..b45f0124cc16 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -165,6 +165,7 @@ zinstall install:
->  PHONY += vdso_install
->  vdso_install:
->  	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso $@
-> +	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso32 $@
->  
->  # We use MRPROPER_FILES and CLEAN_FILES now
->  archclean:
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index 5139a5f19256..d6adb4677c25 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -208,7 +208,7 @@ quiet_cmd_vdsosym = VDSOSYM $@
->        cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
->  
->  # Install commands for the unstripped file
-> -quiet_cmd_vdso_install = INSTALL $@
-> +quiet_cmd_vdso_install = INSTALL32 $@
->        cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/vdso32.so
->  
->  vdso.so: $(obj)/vdso.so.dbg
-> 
-> base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
-> 
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/module.h>
+
+> +#include <linux/of_device.h>
+
+We haven't settle this yet...
+
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
 
 -- 
-Regards,
-Vincenzo
+With Best Regards,
+Andy Shevchenko
+
+
