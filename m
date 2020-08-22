@@ -2,189 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D43224E5E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 08:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C924E5F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 09:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgHVG6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 02:58:24 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:23552 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725917AbgHVG6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 02:58:24 -0400
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app4 (Coremail) with SMTP id cS_KCgB3v__vwUBfK74zAQ--.24265S4;
-        Sat, 22 Aug 2020 14:57:55 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        zhengbin <zhengbin13@huawei.com>, Jyri Sarha <jsarha@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] drm/omap: Fix runtime PM imbalance on error
-Date:   Sat, 22 Aug 2020 14:57:33 +0800
-Message-Id: <20200822065743.13671-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgB3v__vwUBfK74zAQ--.24265S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr15ArW7ZF1xZr17WF1kAFb_yoWrAF1Dpr
-        Wkta4jvryxAa13tr1DA3ZxXas8Wa1xZFyfGryUC3s3ua1rAa4Utr95AFWYvFyvkrWkAF17
-        tFsrJrWavF1rKr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAwsv
+        id S1725932AbgHVHEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 03:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgHVHEl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 03:04:41 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC705C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 00:04:40 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i26so3416341edv.4
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 00:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fwfunudANjOoTZXdPkqCPqeCMIZCPPl9JuhA1bl5pBw=;
+        b=AtiHmTovOFzL0yalRrqMCdj2asvK/1cxQIlCX37p5Ym1vHLaK5/uyoXDO5PV0Cynn4
+         dUM/RyqHAU8i3IVnpbxyAy5dQVFN3g1WwEgsnZVzWq2wHi8GnA8hZpnKmhaHNY1HPo7I
+         NFWTu98Pw2ehMm3Mg9FVtUzRJ8xGKoxA8Cto7R84r8AZJDA4CVjbhQHT8pSBZ0sVyoEx
+         P3xULHzA0ZOWuFJmDb5bDK2gJCPGMIn+ihEgGD4GwaiL75StGkLVdp9+E8TrJT4jSIF+
+         WslnbwaP1YImU7zqbBh5iEYHAe5d1z08fGQSgSaPSylBFep6M6IalNYNsDlgFB5hK0MK
+         ncYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fwfunudANjOoTZXdPkqCPqeCMIZCPPl9JuhA1bl5pBw=;
+        b=MbPz1iAi9K+1ZROZG/yk65GD0af1rGKxQf85wnmlVvZJ2Bvmcqe6JnQpatOnJ8t1d8
+         pCNimAX6GLdPRvHuWM2Bv7a/LG1HGzdkc4Xw9IPjv7VXMwnt2qEESXOsii/Vh68MmbCA
+         Z/rSjb+cvybo8xYtIPsKenH6kQeZIGiH+6aUiMK4XK7rAj53W5f4Z+ztd0AbkXgx1hEC
+         haLmw9I+YZe7vZpNaOotyc1dci+VFNdWSqg2aolydNgiysIDP8TLazEFkMLjzXJ4a+3f
+         XXcdZzBfMAQUO/uTRDzw7l9rb1y3E+O1CIxY7iEeRHtdJVes+iw+wrhYr68FuSqV6+m2
+         iddw==
+X-Gm-Message-State: AOAM531ub7+EOOX1k7TBOrL9WN7uxAf1VtarWoajCIdKNlyJR0Kci2pg
+        I4ZDdH35CSvPJOremIW8FiQ4413nF2eZlDrzUrswbw==
+X-Google-Smtp-Source: ABdhPJxYY8CRHDb7qzuMzF83Z04DfNrYhMMudL5DibJuxlaN0+NROigEgLH3AQp37MMKbZJaEeSrr6V8kf9TiBhN0P4=
+X-Received: by 2002:a05:6402:30a5:: with SMTP id df5mr6082918edb.18.1598079878906;
+ Sat, 22 Aug 2020 00:04:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-4-haoluo@google.com>
+ <d50a1530-9a9f-45b2-5aba-05fe4b895fbc@fb.com> <CAEf4BzZmLUcw4M16U6w-s2Zd6KbsuY4dzzkeEBx9CejetT5BwQ@mail.gmail.com>
+ <CA+khW7jZc=p50eGUb6kLUq00bq8C_JmN2pJcu66uMUu3aL7=ZQ@mail.gmail.com> <CAEf4Bzb70CYZMYXEW0RO+S99xG4iwr9BQmGhD4ymWkwq_NR=6Q@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb70CYZMYXEW0RO+S99xG4iwr9BQmGhD4ymWkwq_NR=6Q@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Sat, 22 Aug 2020 00:04:27 -0700
+Message-ID: <CA+khW7hQh8E8p=BAb=3WTD=0JTP_AX2x6wZp-QMQqwoQ2rgG-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/8] bpf: Introduce help function to validate
+ ksym's type.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter
-even when it returns an error code. However, users of its
-direct wrappers in omapdrm assume that PM usage counter will
-not change on error. Thus a pairing decrement is needed on
-the error handling path for these wrappers to keep the counter
-balanced.
+Ah, I see bpf_core_types_are_compat() after sync'ing my local repo. It
+seems the perfect fit for my use case. I only found the
+btf_equal_xxx() defined in btf.c when posting these patches. I can
+test and use bpf_core_types_are_compat() in v2. Thanks for pointing it
+out and explaining the public APIs.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+Hao
 
-Changelog:
-
-v2: - Fix 5 additional similar cases in omapdrm.
----
- drivers/gpu/drm/omapdrm/dss/dispc.c | 7 +++++--
- drivers/gpu/drm/omapdrm/dss/dsi.c   | 7 +++++--
- drivers/gpu/drm/omapdrm/dss/dss.c   | 7 +++++--
- drivers/gpu/drm/omapdrm/dss/hdmi4.c | 6 +++---
- drivers/gpu/drm/omapdrm/dss/hdmi5.c | 6 +++---
- drivers/gpu/drm/omapdrm/dss/venc.c  | 7 +++++--
- 6 files changed, 26 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/gpu/drm/omapdrm/dss/dispc.c b/drivers/gpu/drm/omapdrm/dss/dispc.c
-index 48593932bddf..599183879caf 100644
---- a/drivers/gpu/drm/omapdrm/dss/dispc.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
-@@ -653,8 +653,11 @@ int dispc_runtime_get(struct dispc_device *dispc)
- 	DSSDBG("dispc_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&dispc->pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(&dispc->pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- void dispc_runtime_put(struct dispc_device *dispc)
-diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-index eeccf40bae41..973bfa14a104 100644
---- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-@@ -1112,8 +1112,11 @@ static int dsi_runtime_get(struct dsi_data *dsi)
- 	DSSDBG("dsi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(dsi->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(dsi->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- static void dsi_runtime_put(struct dsi_data *dsi)
-diff --git a/drivers/gpu/drm/omapdrm/dss/dss.c b/drivers/gpu/drm/omapdrm/dss/dss.c
-index 6ccbc29c4ce4..d7b2f5bcac16 100644
---- a/drivers/gpu/drm/omapdrm/dss/dss.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dss.c
-@@ -858,8 +858,11 @@ int dss_runtime_get(struct dss_device *dss)
- 	DSSDBG("dss_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&dss->pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(&dss->pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- void dss_runtime_put(struct dss_device *dss)
-diff --git a/drivers/gpu/drm/omapdrm/dss/hdmi4.c b/drivers/gpu/drm/omapdrm/dss/hdmi4.c
-index 2578c95570f6..2cc804bdc2e4 100644
---- a/drivers/gpu/drm/omapdrm/dss/hdmi4.c
-+++ b/drivers/gpu/drm/omapdrm/dss/hdmi4.c
-@@ -44,10 +44,10 @@ static int hdmi_runtime_get(struct omap_hdmi *hdmi)
- 	DSSDBG("hdmi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&hdmi->pdev->dev);
--	WARN_ON(r < 0);
--	if (r < 0)
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(&hdmi->pdev->dev);
- 		return r;
--
-+	}
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/omapdrm/dss/hdmi5.c b/drivers/gpu/drm/omapdrm/dss/hdmi5.c
-index 4d4c1fabd0a1..92fe05d3da5a 100644
---- a/drivers/gpu/drm/omapdrm/dss/hdmi5.c
-+++ b/drivers/gpu/drm/omapdrm/dss/hdmi5.c
-@@ -45,10 +45,10 @@ static int hdmi_runtime_get(struct omap_hdmi *hdmi)
- 	DSSDBG("hdmi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&hdmi->pdev->dev);
--	WARN_ON(r < 0);
--	if (r < 0)
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(&hdmi->pdev->dev);
- 		return r;
--
-+	}
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/omapdrm/dss/venc.c b/drivers/gpu/drm/omapdrm/dss/venc.c
-index e0817934ee16..4844743fd507 100644
---- a/drivers/gpu/drm/omapdrm/dss/venc.c
-+++ b/drivers/gpu/drm/omapdrm/dss/venc.c
-@@ -361,8 +361,11 @@ static int venc_runtime_get(struct venc_device *venc)
- 	DSSDBG("venc_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&venc->pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(&venc->pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- static void venc_runtime_put(struct venc_device *venc)
--- 
-2.17.1
-
+On Fri, Aug 21, 2020 at 7:43 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Aug 21, 2020 at 5:43 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > On Fri, Aug 21, 2020 at 2:50 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Aug 20, 2020 at 10:22 AM Yonghong Song <yhs@fb.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 8/19/20 3:40 PM, Hao Luo wrote:
+> > > > > For a ksym to be safely dereferenced and accessed, its type defined in
+> > > > > bpf program should basically match its type defined in kernel. Implement
+> > > > > a help function for a quick matching, which is used by libbpf when
+> > > > > resolving the kernel btf_id of a ksym.
+> > > > >
+> > > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > > ---
+> > [...]
+> > > > > +/*
+> > > > > + * Match a ksym's type defined in bpf programs against its type encoded in
+> > > > > + * kernel btf.
+> > > > > + */
+> > > > > +bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
+> > > > > +                      const struct btf *bb, __u32 id_b)
+> > > > > +{
+> > >
+> > > [...]
+> > >
+> > > > > +                     }
+> > > > > +             }
+> > > >
+> > > > I am wondering whether this is too strict and how this can co-work with
+> > > > CO-RE. Forcing users to write almost identical structure definition to
+> > > > the underlying kernel will not be user friendly and may not work cross
+> > > > kernel versions even if the field user cares have not changed.
+> > > >
+> > > > Maybe we can relax the constraint here. You can look at existing
+> > > > libbpf CO-RE code.
+> > >
+> > > Right. Hao, can you just re-use bpf_core_types_are_compat() instead?
+> > > See if semantics makes sense, but I think it should. BPF CO-RE has
+> > > been permissive in terms of struct size and few other type aspects,
+> > > because it handles relocations so well. This approach allows to not
+> > > have to exactly match all possible variations of some struct
+> > > definition, which is a big problem with ever-changing kernel data
+> > > structures.
+> > >
+> >
+> > I have to say I hate myself writing another type comparison instead of
+> > reusing the existing one. The issue is that when bpf_core_types_compat
+> > compares names, it uses t1->name_off == t2->name_off. It is also used
+>
+> Huh? Are we talking about the same bpf_core_types_are_compat() (there
+> is no bpf_core_types_compat, I think it's a typo)?
+> bpf_core_types_are_compat() doesn't even compare any name, so I'm not
+> sure what you are talking about. Some of btf_dedup functions do string
+> comparisons using name_off directly, but that's a special and very
+> careful case, it's not relevant here.
+>
+>
+> > in bpf_equal_common(). In my case, because these types are from two
+> > different BTFs, their name_off are not expected to be the same, right?
+> > I didn't find a good solution to refactor before posting this patch. I
+>
+> bpf_core_types_are_compat() didn't land until this week, so you must
+> be confusing something. Please take another look.
+>
+> > think I can adapt bpf_core_type_compat() and pay more attention to
+> > CO-RE.
+> >
+> > > >
+> > > > > +             break;
+> > > > > +     }
+> > >
+> > > [...]
+> > >
+> > > > > +
+> > > > >   struct btf_ext_sec_setup_param {
+> > > > >       __u32 off;
+> > > > >       __u32 len;
+> > > > > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > > > > index 91f0ad0e0325..5ef220e52485 100644
+> > > > > --- a/tools/lib/bpf/btf.h
+> > > > > +++ b/tools/lib/bpf/btf.h
+> > > > > @@ -52,6 +52,8 @@ LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
+> > > > >                                   __u32 expected_key_size,
+> > > > >                                   __u32 expected_value_size,
+> > > > >                                   __u32 *key_type_id, __u32 *value_type_id);
+> > > > > +LIBBPF_API bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
+> > > > > +                                 const struct btf *bb, __u32 id_b);
+> > > > >
+> > > > >   LIBBPF_API struct btf_ext *btf_ext__new(__u8 *data, __u32 size);
+> > > > >   LIBBPF_API void btf_ext__free(struct btf_ext *btf_ext);
+> > > >
+> > > > The new API function should be added to libbpf.map.
+> > >
+> > > My question is why does this even have to be a public API?
+> >
+> > I can fix. Please pardon my ignorance, what is the difference between
+> > public and internal APIs? I wasn't sure, so used it improperly.
+>
+> public APIs are those that users of libbpf are supposed to use,
+> internal one is just for libbpf internal use. The former can't change,
+> the latter can be refactor as much as we need to.
+>
+> >
+> > Thanks,
+> > Hao
