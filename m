@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D6824E563
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7673424E55F
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgHVE3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 00:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
+        id S1726556AbgHVE3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 00:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgHVE2d (ORCPT
+        with ESMTP id S1726037AbgHVE2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 00:28:33 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFA5C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:33 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o13so1953901pgf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:33 -0700 (PDT)
+        Sat, 22 Aug 2020 00:28:34 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4EFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:34 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a79so2054563pfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=87kAejLSZtdI5TJfy/HhQEBqd/O3XWuFJNQpO9tWsn0=;
-        b=QBdxPzMWHJRHFtdLQzyjyd3z7TGbM8K4E4ZJc9fvUjGsK1002qAxkmyD8/RfNk6Mrx
-         /Pb2/vT++kIHM4uXocCqT8/CiBm4wfhX4rKHz+RkR0h5irzAU6LFdUqX+7JLnAU+1FkD
-         C8KefT6Ki6nzS9QrP96NOHk903Wpb0TNjELC9H2fbGMpfycK28LhaYv+TwH/QFNwJCKs
-         JAeJEEWZGEVjPRcboPvPnFy480VaWEgY3xnIvGuolFnzYy+dS+08rdF6nHcNAmanFfKB
-         DyaR3l62zOlR2dFDFI61EOmT/8kjESAeJWAyEVsT9rxnYkEZMf1crrGXQEKRucKfSztk
-         fBEQ==
+        bh=uqBr/lnoyyjrVPbppt18J/CaYj+H3LTptFWomD24EK8=;
+        b=k6gYU3BQoMFCaQD+AlH0UdJa7EouME7f09Wr67RQ0UgSnQtksUl9M/XY9lpiDXJEDE
+         eqsBxJ21y3hKfagcR87kOSVqxwdBQ6XMKzHOzWNykOAhqOlwThPzkYmJWKfC0xP0o2p7
+         r3NbPu7gJKcMUICczwCpP02cNZxiMgTSg/TC5RK3W4eaALSDJi0Zwo3xeIvjxJDnL2lp
+         PHada2DmX90mA9176PXGI//LblawMwTjFkvN/t5kWwrBHZ4ZZtQDX6caj/1/3B5dJnpB
+         wZf7vueze3b+pmTZbvhWexQxEBZSO6C44UZSgMGZETqAVZ8YKNkd4hNY8J/ogHLEqJ5i
+         G5/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=87kAejLSZtdI5TJfy/HhQEBqd/O3XWuFJNQpO9tWsn0=;
-        b=UmgMcoM7vdCDZVcDp+mnrOda/d0yYsfj7MNwvFzFqHLMlFil21ysvyLK+eZiogvW92
-         zJrOr/gIgaeFKPgEEAsxNdi2YiozWf6aUsQ31QR8DiPdBRSfMN6PLK79H363KoSyB0Tr
-         reZH8xQis//kg+lY2xD9PMilFFzv0PtlywlE8nPOtOKnfpuftMj9RVSmEuN0G4ctbWFf
-         CjaGWC74pfAgwYQpRz7PY2h8LE7CBo5wPBdBNHUYPhGeWVgRZywLY9bm5cYbvG+MKBow
-         vk6lu61z+ZnALFeIwmid7Xkprmx5gQ1oA7sbDPEsvVV85VGhDbyc6gr6z6N2oBs4mbkY
-         YHgw==
-X-Gm-Message-State: AOAM533I0TKx1A/jMvKMNfI0u4JehD9Is2IoMb3jD79EgUMUPXXbQjNe
-        AZb8lN/dox/Ycn7nsYMlCEI=
-X-Google-Smtp-Source: ABdhPJz62OSM+1HVr8xtL0W6SFZH6xT+ySwXJCPbRPqPhJe/40wWBsl+syDPnCRQHoOlIZ3xIgsBuA==
-X-Received: by 2002:a62:164a:: with SMTP id 71mr5054237pfw.266.1598070512576;
-        Fri, 21 Aug 2020 21:28:32 -0700 (PDT)
+        bh=uqBr/lnoyyjrVPbppt18J/CaYj+H3LTptFWomD24EK8=;
+        b=ZFeIZz2kwoCdufS1ytwVQwVjj9US93wuGbczRHq+EP7WcMrNmUQC/SJtJ2f8dTAt8K
+         fKfik7Z/p83QeKG/q5xK1Rc/ovdDE7QsVEJLwVBclIa2z6i17Eb76jRLeOdPF6Hho8ep
+         72MGIF6Cg8idcreebBTPnN6K7XcssjAUQJYQo0lCTHmmzKrGdQGoSA9F8Tcu7oBtaak9
+         4D9kOu4ZwImBpXnGm5DE3e2kdgIX9xSHOMRsTjx2y+hjHa3v23Mb0GLwyj8+CI9U1ncy
+         gQdK0g2qBYPLiO8S7N8SnmA9Yfwst2MslqvO5zS48OgSC6aZv075W+MGLyYmmbYpGAD5
+         MSHw==
+X-Gm-Message-State: AOAM532+OMERL9Mi9A4VGr/WCSdwSwJDIODUtfPkdeZfpggCL4+BAcrx
+        UtJeMiOp4d5rtvgZLWmZOao=
+X-Google-Smtp-Source: ABdhPJw+Y9gmCJ//53qiUrfo5XJC0rxQJ+ex61YOdl0PD+gHIbZUDNi4Sx226cKTe4jeWjVgPh0TRg==
+X-Received: by 2002:aa7:9ac2:: with SMTP id x2mr4896468pfp.57.1598070513961;
+        Fri, 21 Aug 2020 21:28:33 -0700 (PDT)
 Received: from jacob-builder.jf.intel.com ([192.55.55.43])
-        by smtp.gmail.com with ESMTPSA id q5sm3341582pgi.31.2020.08.21.21.28.31
+        by smtp.gmail.com with ESMTPSA id q5sm3341582pgi.31.2020.08.21.21.28.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 21:28:32 -0700 (PDT)
+        Fri, 21 Aug 2020 21:28:33 -0700 (PDT)
 From:   Jacob Pan <jacob.pan.linux@gmail.com>
 X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
 To:     iommu@lists.linux-foundation.org,
@@ -58,9 +58,9 @@ To:     iommu@lists.linux-foundation.org,
 Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
         Raj Ashok <ashok.raj@intel.com>,
         Eric Auger <eric.auger@redhat.com>, Wu Hao <hao.wu@intel.com>
-Subject: [PATCH v2 7/9] iommu/vt-d: Listen to IOASID notifications
-Date:   Fri, 21 Aug 2020 21:35:16 -0700
-Message-Id: <1598070918-21321-8-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v2 8/9] iommu/vt-d: Send IOASID bind/unbind notifications
+Date:   Fri, 21 Aug 2020 21:35:17 -0700
+Message-Id: <1598070918-21321-9-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -69,140 +69,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Intel Scalable I/O Virtualization (SIOV) enabled platforms, IOMMU
-driver is one of the users of IOASIDs. In normal flow, callers will
-perform IOASID allocation, bind, unbind, and free in order. However, for
-guest SVA, IOASID free could come before unbind as guest is untrusted.
-This patch registers IOASID notification handler such that IOMMU driver
-can perform PASID teardown upon receiving an unexpected IOASID free
-event.
+On Intel Scalable I/O Virtualization (SIOV) enabled platforms with
+ENQCMD in use by the guest, KVM must establish a guest-host PASID
+translation table prior to the issuing of ENQCMD. PASID translation
+table also depends on the IOMMU PASID entry, which is configured during
+the guest page table bind time. This patch adds a notification event to
+the IOMMU driver such that KVM can be notified when a new guest-host
+PASID mapping is established or demolished.
 
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/intel/svm.c   | 74 ++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/intel-iommu.h |  2 ++
- 2 files changed, 75 insertions(+), 1 deletion(-)
+ drivers/iommu/intel/svm.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 634e191ca2c3..600e3ae5b656 100644
+index 600e3ae5b656..d8a5efa75095 100644
 --- a/drivers/iommu/intel/svm.c
 +++ b/drivers/iommu/intel/svm.c
-@@ -95,6 +95,72 @@ static inline bool intel_svm_capable(struct intel_iommu *iommu)
- 	return iommu->flags & VTD_FLAG_SVM_CAPABLE;
+@@ -471,6 +471,11 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+ 	}
+ 
+ 	mutex_unlock(&pasid_mutex);
++	/*
++	 * Notify KVM new host-guest PASID bind is ready. KVM will set up
++	 * PASID translation table to support guest ENQCMD.
++	 */
++	ioasid_notify(data->hpasid, IOASID_BIND, IOASID_NOTIFY_SET);
+ 	return ret;
  }
  
-+#define pasid_lock_held() lock_is_held(&pasid_mutex.dep_map)
-+static DEFINE_MUTEX(pasid_mutex);
-+
-+static void intel_svm_free_async_fn(struct work_struct *work)
-+{
-+	struct intel_svm *svm = container_of(work, struct intel_svm, work);
-+	struct intel_svm_dev *sdev;
-+
-+	/*
-+	 * Unbind all devices associated with this PASID which is
-+	 * being freed by other users such as VFIO.
-+	 */
-+	mutex_lock(&pasid_mutex);
-+	list_for_each_entry_rcu(sdev, &svm->devs, list, pasid_lock_held()) {
-+		/* Does not poison forward pointer */
-+		list_del_rcu(&sdev->list);
-+		spin_lock(&svm->iommu->lock);
-+		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
-+					svm->pasid, true);
-+		spin_unlock(&svm->iommu->lock);
-+		kfree_rcu(sdev, rcu);
-+		/*
-+		 * Free before unbind only happens with guest usaged
-+		 * host PASIDs. IOASID free will detach private data
-+		 * and free the IOASID entry.
-+		 */
-+		ioasid_put(NULL, svm->pasid);
-+		if (list_empty(&svm->devs))
-+			kfree(svm);
-+	}
-+	mutex_unlock(&pasid_mutex);
-+}
-+
-+
-+static int pasid_status_change(struct notifier_block *nb,
-+				unsigned long code, void *data)
-+{
-+	struct ioasid_nb_args *args = (struct ioasid_nb_args *)data;
-+	struct intel_svm *svm = (struct intel_svm *)args->pdata;
-+	int ret = NOTIFY_DONE;
-+
-+	if (code == IOASID_FREE) {
-+		if (!svm)
-+			goto done;
-+		if (args->id != svm->pasid) {
-+			pr_warn("Notify PASID does not match data %d : %d\n",
-+				args->id, svm->pasid);
-+			goto done;
-+		}
-+		schedule_work(&svm->work);
-+		return NOTIFY_OK;
-+	}
-+done:
-+	return ret;
-+}
-+
-+static struct notifier_block pasid_nb = {
-+	.notifier_call = pasid_status_change,
-+};
-+
-+void intel_svm_add_pasid_notifier(void)
-+{
-+	/* Listen to all PASIDs, not specific to a set */
-+	ioasid_register_notifier(NULL, &pasid_nb);
-+}
-+
- void intel_svm_check(struct intel_iommu *iommu)
- {
- 	if (!pasid_supported(iommu))
-@@ -221,7 +287,6 @@ static const struct mmu_notifier_ops intel_mmuops = {
- 	.invalidate_range = intel_invalidate_range,
- };
- 
--static DEFINE_MUTEX(pasid_mutex);
- static LIST_HEAD(global_svm_list);
- 
- #define for_each_svm_dev(sdev, svm, d)			\
-@@ -342,7 +407,14 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			svm->gpasid = data->gpasid;
- 			svm->flags |= SVM_FLAG_GUEST_PASID;
+@@ -510,6 +515,8 @@ int intel_svm_unbind_gpasid(struct device *dev, int pasid)
+ 				 * and perform cleanup.
+ 				 */
+ 				ioasid_attach_data(pasid, NULL);
++				ioasid_notify(pasid, IOASID_UNBIND,
++					IOASID_NOTIFY_SET);
+ 				kfree(svm);
+ 			}
  		}
-+		svm->iommu = iommu;
-+		/*
-+		 * Set up cleanup async work in case IOASID core notify us PASID
-+		 * is freed before unbind.
-+		 */
-+		INIT_WORK(&svm->work, intel_svm_free_async_fn);
- 		ioasid_attach_data(data->hpasid, svm);
-+		ioasid_get(NULL, svm->pasid);
- 		INIT_LIST_HEAD_RCU(&svm->devs);
- 		mmput(svm->mm);
- 	}
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index b1ed2f25f7c0..d36038e6ae0b 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -744,6 +744,7 @@ void intel_svm_unbind(struct iommu_sva *handle);
- int intel_svm_get_pasid(struct iommu_sva *handle);
- int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
- 			    struct iommu_page_response *msg);
-+void intel_svm_add_pasid_notifier(void);
- 
- struct svm_dev_ops;
- 
-@@ -770,6 +771,7 @@ struct intel_svm {
- 	int gpasid; /* In case that guest PASID is different from host PASID */
- 	struct list_head devs;
- 	struct list_head list;
-+	struct work_struct work; /* For deferred clean up */
- };
- #else
- static inline void intel_svm_check(struct intel_iommu *iommu) {}
 -- 
 2.7.4
 
