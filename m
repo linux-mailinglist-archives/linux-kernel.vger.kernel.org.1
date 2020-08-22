@@ -2,110 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8919424E639
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 10:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919C524E64C
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 10:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgHVIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 04:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgHVIGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 04:06:53 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31502C061573;
-        Sat, 22 Aug 2020 01:06:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id t2so3593051wma.0;
-        Sat, 22 Aug 2020 01:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nhZfeKpNSacQbwTrkcUeaFzZcY4FZUsrUpQMtrkrP2c=;
-        b=YQV7DnC3V8PvPvptXW/BVERjjxjrNXBeychEiMxzqTFY+lGLNxR6aSk0ypAfQYyhL9
-         XbSFgUa3IJsKKPTIzvHWGogGn662txyC9Q5euywi/Hhl8+mXePCd4GU4cEhe9RR9ORT9
-         gLukSaM27MjShgntoLgntSyeUglxKzb6ErnHy+FcKVKGSShxCvX6FCuOoDG8oaeCa4Ak
-         9QtOUzLAm/T77bXmFkuH0hwP4gZoG4Fju/V4uRRgB8voNUFQwE8CT04iZ5e3UFmDqanX
-         yYj4jQ8enMcsa8GHKeSe2nmP1qi/Sgwxnxjqy5HuuwER3IXdGBV1m9UDsWHbO0lhbthX
-         vsXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=nhZfeKpNSacQbwTrkcUeaFzZcY4FZUsrUpQMtrkrP2c=;
-        b=bqzhF1u9LX9Mf9KRCiaTdD/oIeoJuUh1/ZOKGykiDaAX1r3g7Pkdr4biw3M+IUPpU2
-         4Itt9iGswp1QvNjmc5OLpsfS7/4RHTx1qBHXEvUzndfFqn7FtPZnQh/Dx3cZ/G+zuWwG
-         4EmCMd4q4g3E3ww7OlM/OuiEYP1vtRZytG1+Uj8tzd2UZcO9d8LsRyE/44W8aC2OyBzF
-         PJhE6UJIL6/usNUFXLqMlUlgTi3Ls7NUpYBUgeUkTxl7mqGfDZTGQyyzsWF93Ol+C6Vr
-         1NmzA0XaDMO+i1EGEU3GjHxk2o2jx2x7aVp4B+AGLA5LCjAb8FW/9QqNN8lsTOvHC7bj
-         OgAw==
-X-Gm-Message-State: AOAM530t/tk/X5G6HVP2961c52PHnY+ADouY+cunFiyRvi31ffh9P8v5
-        YTxT8wX/ELYdWjdLg2q6EoE=
-X-Google-Smtp-Source: ABdhPJwYvtwRWEsSBMuzGRA2zYq/qq1QawjKPThni5wD8n7e8wcqJTjonTZVOCpTdhfeRZ487YrRXw==
-X-Received: by 2002:a7b:c095:: with SMTP id r21mr7134017wmh.152.1598083611868;
-        Sat, 22 Aug 2020 01:06:51 -0700 (PDT)
-Received: from donizetti.lan ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
-        by smtp.gmail.com with ESMTPSA id i4sm8804892wrw.26.2020.08.22.01.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Aug 2020 01:06:51 -0700 (PDT)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, maz@kernel.org
-Subject: [GIT PULL] KVM changes for Linux 5.9-rc2
-Date:   Sat, 22 Aug 2020 10:06:47 +0200
-Message-Id: <20200822080647.722819-1-pbonzini@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727936AbgHVIKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 04:10:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10306 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727087AbgHVIJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 04:09:57 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C5B774E86E6268C52B1D;
+        Sat, 22 Aug 2020 16:09:52 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 22 Aug 2020
+ 16:09:46 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <gerrit@erg.abdn.ac.uk>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <grandmaster@al2klimov.de>
+CC:     <dccp@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH] net: dccp: Convert to use the preferred fallthrough macro
+Date:   Sat, 22 Aug 2020 04:08:27 -0400
+Message-ID: <20200822080827.33935-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Convert the uses of fallthrough comments to fallthrough macro.
 
-The following changes since commit e792415c5d3e0eb52527cce228a72e4392f8cae2:
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/dccp/ccids/ccid3.c |  2 +-
+ net/dccp/feat.c        |  3 ++-
+ net/dccp/input.c       | 10 +++++-----
+ net/dccp/options.c     |  2 +-
+ net/dccp/output.c      |  8 ++++----
+ net/dccp/proto.c       |  8 ++++----
+ 6 files changed, 17 insertions(+), 16 deletions(-)
 
-  KVM: MIPS/VZ: Fix build error caused by 'kvm_run' cleanup (2020-08-11 07:19:41 -0400)
+diff --git a/net/dccp/ccids/ccid3.c b/net/dccp/ccids/ccid3.c
+index aef72f6a2829..b9ee1a4a8955 100644
+--- a/net/dccp/ccids/ccid3.c
++++ b/net/dccp/ccids/ccid3.c
+@@ -608,7 +608,7 @@ static void ccid3_hc_rx_send_feedback(struct sock *sk,
+ 		 */
+ 		if (hc->rx_x_recv > 0)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case CCID3_FBACK_PERIODIC:
+ 		delta = ktime_us_delta(now, hc->rx_tstamp_last_feedback);
+ 		if (delta <= 0)
+diff --git a/net/dccp/feat.c b/net/dccp/feat.c
+index afc071ea1271..788dd629c420 100644
+--- a/net/dccp/feat.c
++++ b/net/dccp/feat.c
+@@ -1407,7 +1407,8 @@ int dccp_feat_parse_options(struct sock *sk, struct dccp_request_sock *dreq,
+ 	 *	Negotiation during connection setup
+ 	 */
+ 	case DCCP_LISTEN:
+-		server = true;			/* fall through */
++		server = true;
++		fallthrough;
+ 	case DCCP_REQUESTING:
+ 		switch (opt) {
+ 		case DCCPO_CHANGE_L:
+diff --git a/net/dccp/input.c b/net/dccp/input.c
+index bd9cfdb67436..2cbb757a894f 100644
+--- a/net/dccp/input.c
++++ b/net/dccp/input.c
+@@ -64,7 +64,7 @@ static int dccp_rcv_close(struct sock *sk, struct sk_buff *skb)
+ 		 */
+ 		if (dccp_sk(sk)->dccps_role != DCCP_ROLE_CLIENT)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_REQUESTING:
+ 	case DCCP_ACTIVE_CLOSEREQ:
+ 		dccp_send_reset(sk, DCCP_RESET_CODE_CLOSED);
+@@ -76,7 +76,7 @@ static int dccp_rcv_close(struct sock *sk, struct sk_buff *skb)
+ 		queued = 1;
+ 		dccp_fin(sk, skb);
+ 		dccp_set_state(sk, DCCP_PASSIVE_CLOSE);
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_PASSIVE_CLOSE:
+ 		/*
+ 		 * Retransmitted Close: we have already enqueued the first one.
+@@ -113,7 +113,7 @@ static int dccp_rcv_closereq(struct sock *sk, struct sk_buff *skb)
+ 		queued = 1;
+ 		dccp_fin(sk, skb);
+ 		dccp_set_state(sk, DCCP_PASSIVE_CLOSEREQ);
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_PASSIVE_CLOSEREQ:
+ 		sk_wake_async(sk, SOCK_WAKE_WAITD, POLL_HUP);
+ 	}
+@@ -530,7 +530,7 @@ static int dccp_rcv_respond_partopen_state_process(struct sock *sk,
+ 	case DCCP_PKT_DATA:
+ 		if (sk->sk_state == DCCP_RESPOND)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_PKT_DATAACK:
+ 	case DCCP_PKT_ACK:
+ 		/*
+@@ -684,7 +684,7 @@ int dccp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
+ 		/* Step 8: if using Ack Vectors, mark packet acknowledgeable */
+ 		dccp_handle_ackvec_processing(sk, skb);
+ 		dccp_deliver_input_to_ccids(sk, skb);
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_RESPOND:
+ 		queued = dccp_rcv_respond_partopen_state_process(sk, skb,
+ 								 dh, len);
+diff --git a/net/dccp/options.c b/net/dccp/options.c
+index 51aaba7a5d45..d24cad05001e 100644
+--- a/net/dccp/options.c
++++ b/net/dccp/options.c
+@@ -225,7 +225,7 @@ int dccp_parse_options(struct sock *sk, struct dccp_request_sock *dreq,
+ 			 * interested. The RX CCID need not parse Ack Vectors,
+ 			 * since it is only interested in clearing old state.
+ 			 */
+-			/* fall through */
++			fallthrough;
+ 		case DCCPO_MIN_TX_CCID_SPECIFIC ... DCCPO_MAX_TX_CCID_SPECIFIC:
+ 			if (ccid_hc_tx_parse_options(dp->dccps_hc_tx_ccid, sk,
+ 						     pkt_type, opt, value, len))
+diff --git a/net/dccp/output.c b/net/dccp/output.c
+index 6433187a5cc4..50e6d5699bb2 100644
+--- a/net/dccp/output.c
++++ b/net/dccp/output.c
+@@ -62,7 +62,7 @@ static int dccp_transmit_skb(struct sock *sk, struct sk_buff *skb)
+ 		switch (dcb->dccpd_type) {
+ 		case DCCP_PKT_DATA:
+ 			set_ack = 0;
+-			/* fall through */
++			fallthrough;
+ 		case DCCP_PKT_DATAACK:
+ 		case DCCP_PKT_RESET:
+ 			break;
+@@ -72,12 +72,12 @@ static int dccp_transmit_skb(struct sock *sk, struct sk_buff *skb)
+ 			/* Use ISS on the first (non-retransmitted) Request. */
+ 			if (icsk->icsk_retransmits == 0)
+ 				dcb->dccpd_seq = dp->dccps_iss;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case DCCP_PKT_SYNC:
+ 		case DCCP_PKT_SYNCACK:
+ 			ackno = dcb->dccpd_ack_seq;
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			/*
+ 			 * Set owner/destructor: some skbs are allocated via
+@@ -481,7 +481,7 @@ struct sk_buff *dccp_ctl_make_reset(struct sock *sk, struct sk_buff *rcv_skb)
+ 	case DCCP_RESET_CODE_PACKET_ERROR:
+ 		dhr->dccph_reset_data[0] = rxdh->dccph_type;
+ 		break;
+-	case DCCP_RESET_CODE_OPTION_ERROR:	/* fall through */
++	case DCCP_RESET_CODE_OPTION_ERROR:
+ 	case DCCP_RESET_CODE_MANDATORY_ERROR:
+ 		memcpy(dhr->dccph_reset_data, dcb->dccpd_reset_data, 3);
+ 		break;
+diff --git a/net/dccp/proto.c b/net/dccp/proto.c
+index d148ab1530e5..6d705d90c614 100644
+--- a/net/dccp/proto.c
++++ b/net/dccp/proto.c
+@@ -101,7 +101,7 @@ void dccp_set_state(struct sock *sk, const int state)
+ 		if (inet_csk(sk)->icsk_bind_hash != NULL &&
+ 		    !(sk->sk_userlocks & SOCK_BINDPORT_LOCK))
+ 			inet_put_port(sk);
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		if (oldstate == DCCP_OPEN)
+ 			DCCP_DEC_STATS(DCCP_MIB_CURRESTAB);
+@@ -834,7 +834,7 @@ int dccp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int nonblock,
+ 		case DCCP_PKT_CLOSEREQ:
+ 			if (!(flags & MSG_PEEK))
+ 				dccp_finish_passive_close(sk);
+-			/* fall through */
++			fallthrough;
+ 		case DCCP_PKT_RESET:
+ 			dccp_pr_debug("found fin (%s) ok!\n",
+ 				      dccp_packet_name(dh->dccph_type));
+@@ -960,7 +960,7 @@ static void dccp_terminate_connection(struct sock *sk)
+ 	case DCCP_PARTOPEN:
+ 		dccp_pr_debug("Stop PARTOPEN timer (%p)\n", sk);
+ 		inet_csk_clear_xmit_timer(sk, ICSK_TIME_DACK);
+-		/* fall through */
++		fallthrough;
+ 	case DCCP_OPEN:
+ 		dccp_send_close(sk, 1);
+ 
+@@ -969,7 +969,7 @@ static void dccp_terminate_connection(struct sock *sk)
+ 			next_state = DCCP_ACTIVE_CLOSEREQ;
+ 		else
+ 			next_state = DCCP_CLOSING;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		dccp_set_state(sk, next_state);
+ 	}
+-- 
+2.19.1
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to b5331379bc62611d1026173a09c73573384201d9:
-
-  KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set (2020-08-21 18:06:43 -0400)
-
-----------------------------------------------------------------
-* PAE and PKU bugfixes for x86
-* selftests fix for new binutils
-* MMU notifier fix for arm64
-
-----------------------------------------------------------------
-Jim Mattson (2):
-      kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode
-      kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode
-
-Paolo Bonzini (1):
-      KVM: x86: fix access code passed to gva_to_gpa
-
-Will Deacon (2):
-      KVM: Pass MMU notifier range flags to kvm_unmap_hva_range()
-      KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set
-
-Yang Weijiang (1):
-      selftests: kvm: Use a shorter encoding to clear RAX
-
- arch/arm64/include/asm/kvm_host.h               |  2 +-
- arch/arm64/kvm/mmu.c                            | 19 ++++++++++++++-----
- arch/mips/include/asm/kvm_host.h                |  2 +-
- arch/mips/kvm/mmu.c                             |  3 ++-
- arch/powerpc/include/asm/kvm_host.h             |  3 ++-
- arch/powerpc/kvm/book3s.c                       |  3 ++-
- arch/powerpc/kvm/e500_mmu_host.c                |  3 ++-
- arch/x86/include/asm/kvm_host.h                 |  3 ++-
- arch/x86/kvm/mmu/mmu.c                          |  3 ++-
- arch/x86/kvm/x86.c                              |  6 ++++--
- tools/testing/selftests/kvm/x86_64/debug_regs.c |  4 ++--
- virt/kvm/kvm_main.c                             |  3 ++-
- 12 files changed, 36 insertions(+), 18 deletions(-)
