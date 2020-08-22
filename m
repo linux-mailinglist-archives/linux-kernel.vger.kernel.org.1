@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EE424E62B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 09:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F0724E630
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 09:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgHVHuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 03:50:24 -0400
-Received: from mga02.intel.com ([134.134.136.20]:33916 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727775AbgHVHuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 03:50:24 -0400
-IronPort-SDR: W5h7VT3T+gc5vtPrSh273OogaHPIDCwPGEzBSGpooHPL66oWH0rQ9HCjFQAhgmXHa+thT5fTX3
- OiTM6bL5TW4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="143469007"
-X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
-   d="scan'208";a="143469007"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2020 00:50:23 -0700
-IronPort-SDR: v5Ws/XgJ9SmB5zZ64wt8iuEJY5wufiKZ/iEGZycaoBNttyy73FShNkoBMC57+RO34l9WuyYFfl
- bclKvLCN6NXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
-   d="scan'208";a="327965594"
-Received: from lkp-server01.sh.intel.com (HELO 91ed66e1ca04) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 22 Aug 2020 00:50:22 -0700
-Received: from kbuild by 91ed66e1ca04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k9OI9-0001c1-JQ; Sat, 22 Aug 2020 07:50:21 +0000
-Date:   Sat, 22 Aug 2020 15:50:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 72cc80705122926b2717ad420abc6e135c453768
-Message-ID: <5f40ce38.wlo9HUstKxN2E+eb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727858AbgHVHzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 03:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727802AbgHVHzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 03:55:20 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D20C061573;
+        Sat, 22 Aug 2020 00:55:20 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id u6so2303998ybf.1;
+        Sat, 22 Aug 2020 00:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3FGIc23gIcAL+scd1gVHTER4ApVxnptisLCy0nOA3ec=;
+        b=RSzSqkuk2hxMrHDgNEpuWCYiDfGZ3ACWe7ZA3ruJMeA/Y1jKDRp2N7eo+K+HWkuOhT
+         NEcgA6U5EZ4g9jrmuDDYJ0DsiA7/FYDxn5Xb7wvxwT5aguFaEuF3VCxgfovw8q00cD1i
+         V1hPb1wxj3LBqItsJYj0Rw7VzzMLfjgN48w9XQM33H3lzwL2rpXw4uA/JOzicBnQ1zyT
+         5NzldIftdoAo9G3m/c9gFEBsTu0D4LTmeLNgYvb8etkJViKZvvJ3hmTeHq+I8Im5DxLJ
+         a8teefzkh2SOisuAnh4eXkzwDO07XgfG1v996L6RAHFY94ECcBvIUHBQB00bIQDYqIdJ
+         JT4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FGIc23gIcAL+scd1gVHTER4ApVxnptisLCy0nOA3ec=;
+        b=gVPLfIz4RPt+AjN5bPhwkZe2tFtjhc2VphtVUT2C5OScSTas1GwVOLyMDYefoq4iqJ
+         ss5kQPEtYaFhHGqypHUnvJ0XIlIckZhtLImAprD96m5LwNdQh68n1Ui/Z06LJ7o+v/ht
+         0liPYi5irNEWaM8PNEAXnhdAHdJZsGc/T4EUxXYLu+XHRIImpJRlOZg5pppy/49F5/as
+         h10IHzK1iG5bL7mUl8ZxCpr/BTn9zRi5bd+WaTRAK36dOCg3eX7btHHOJz4LkCsNbFLX
+         NS0Kd0uv1HomdZHVEzNGqTk5VhV3cgt6atiygTpOY8wbdrHo/39G+a1qeVMploQlpLyf
+         xeJw==
+X-Gm-Message-State: AOAM533cFpRr2doHB+ILD2Gsqf9hC+JSQBut+z++UqpqjWTiuXBitrmS
+        ASLwd88UK8wDKcMub6HEzrd8c0DlmUqgsx2BC7U=
+X-Google-Smtp-Source: ABdhPJwlkJniKwUnZRzObGLsXHNYy3Kczys5fZJbeSKZ6lFpfoqfikT6wmGUzFODlcdPWsMox3Zwhh+ziW5xQAAFHIo=
+X-Received: by 2002:a25:bc50:: with SMTP id d16mr7987916ybk.230.1598082919371;
+ Sat, 22 Aug 2020 00:55:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-7-haoluo@google.com>
+ <CAEf4BzZY2LyJvF9HCdAzHM7WG26GO0qqX=Wc6EiXArks=kmazA@mail.gmail.com>
+ <CAEf4BzZ+uqE73tM6W1vXyc-hu6fB8B9ZNniq-XHYhFDjhHg9gA@mail.gmail.com> <CA+khW7jQmdw-TZMnST_rBcQWmxZ_eVw4ja+nsrqCM9HSkeWaXQ@mail.gmail.com>
+In-Reply-To: <CA+khW7jQmdw-TZMnST_rBcQWmxZ_eVw4ja+nsrqCM9HSkeWaXQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 22 Aug 2020 00:55:08 -0700
+Message-ID: <CAEf4BzZwtpvBSE=00XyHGr2p2OD6X_rwnntwvSZBjGvZUEZKCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 6/8] bpf: Introduce bpf_per_cpu_ptr()
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 72cc80705122926b2717ad420abc6e135c453768  rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()
+On Sat, Aug 22, 2020 at 12:49 AM Hao Luo <haoluo@google.com> wrote:
+>
+> On Fri, Aug 21, 2020 at 8:31 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Aug 21, 2020 at 8:26 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Aug 19, 2020 at 3:42 PM Hao Luo <haoluo@google.com> wrote:
+> > > >
+> > > > Add bpf_per_cpu_ptr() to help bpf programs access percpu vars.
+> > > > bpf_per_cpu_ptr() has the same semantic as per_cpu_ptr() in the kernel
+> > > > except that it may return NULL. This happens when the cpu parameter is
+> > > > out of range. So the caller must check the returned value.
+> > > >
+> > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > ---
+> > >
+> > > The logic looks correct, few naming nits, but otherwise:
+> > >
+> > > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > >
+> > > >  include/linux/bpf.h      |  3 ++
+> > > >  include/linux/btf.h      | 11 +++++++
+> > > >  include/uapi/linux/bpf.h | 14 +++++++++
+> > > >  kernel/bpf/btf.c         | 10 -------
+> > > >  kernel/bpf/verifier.c    | 64 ++++++++++++++++++++++++++++++++++++++--
+> > > >  kernel/trace/bpf_trace.c | 18 +++++++++++
+> > > >  6 files changed, 107 insertions(+), 13 deletions(-)
+> [...]
+> >
+> > btw, having bpf_this_cpu_ptr(const void *ptr) seems worthwhile as well, WDYT?
+> >
+>
+> It's probably not a good idea, IMHO. How does it interact with
+> preemption? Should we treat it as __this_cpu_ptr()? If so, I feel it's
+> easy to be misused, if the bpf program is called in a preemptible
+> context.
+>
+> Btw, is bpf programs always called with preemption disabled? How about
+> interrupts? I haven't thought about these questions before but I think
+> they matter as we start to have more ways for bpf programs to interact
+> with the kernel.
 
-elapsed time: 721m
+non-sleepable BPF is always disabling CPU migration, so there is no
+problem with this_cpu_ptr. For sleepable not sure, but we can disable
+this helper for sleepable BPF programs, if that's a problem.
 
-configs tested: 69
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           ip28_defconfig
-x86_64                           allyesconfig
-arm                            mmp2_defconfig
-h8300                    h8300h-sim_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200820
-i386                 randconfig-a004-20200820
-i386                 randconfig-a005-20200820
-i386                 randconfig-a003-20200820
-i386                 randconfig-a006-20200820
-i386                 randconfig-a001-20200820
-x86_64               randconfig-a015-20200820
-x86_64               randconfig-a012-20200820
-x86_64               randconfig-a016-20200820
-x86_64               randconfig-a014-20200820
-x86_64               randconfig-a011-20200820
-x86_64               randconfig-a013-20200820
-i386                 randconfig-a013-20200820
-i386                 randconfig-a012-20200820
-i386                 randconfig-a011-20200820
-i386                 randconfig-a016-20200820
-i386                 randconfig-a014-20200820
-i386                 randconfig-a015-20200820
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Best,
+> Hao
