@@ -2,192 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F38C24E9C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 22:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA5A24E9D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 22:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgHVUWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 16:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgHVUWm (ORCPT
+        id S1728060AbgHVUjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 16:39:33 -0400
+Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:35838 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727835AbgHVUjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 16:22:42 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C88C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 13:22:41 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id k4so4169814ilr.12
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 13:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C7wZdIaE0onpIemQjxXUCkgW61pWCFWrOyPSaP9VrK4=;
-        b=wXl8oHUwfpgpiE+u1wtuDYaEzqm9fWOAiLRWb6ABXFxnxVtVhfd0WLaISpoC22XUp2
-         AVEm9u9+vAhY6UAY+LyHV9lr3aHfWuxRGab8SOUDMwr77NSQMCpDUSdij2JYV7ONBE0b
-         SWo2wKLmNxd8RM6Rq0vCWNGvml/gMJybANups=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C7wZdIaE0onpIemQjxXUCkgW61pWCFWrOyPSaP9VrK4=;
-        b=Vv016C4vY5xWpNjSqu7n2Y912QXIAD1I4/CeQVOeRgntbGtyhHKuvXNxlEXHKq/ZTh
-         3ZVPV3wvbFNo/Ick75431F6LvMNqRu6kjuDxFa0JdHGZ6D/wml4v0/6OMczck1+RLOGR
-         DX9DyPHcTmqJlBjBnxyjCGK+onts7AUTN8Yev3271MT/WE1oW8gKw8Hhk5PeRDQrJpcz
-         77pSkX6Ag4fltp+VAzZ9quNxlx3N718fG8N4Gw5+RCzUbvm8F8NsA1yB57VECvkIigTs
-         tLT8wuU2pXcpVverlyEFW1uSHMsS60lt1nziaBYQfqbePn7zcZbVuJw5qc4/mcqFmBct
-         MgEA==
-X-Gm-Message-State: AOAM5330wO3AUiZj2XZv3lqNrfo/hlJzTBg9KbUKqMGQz7dXM4cRSdFN
-        No16Av9erQXElhvbWv6GdJYMHIw/+PLGp/n0sGOxFHn9jx1wBd0h
-X-Google-Smtp-Source: ABdhPJz8ujdJlrIPDu+wJay5OVYu5b5gg4fJpNpHkCcRWHLTS1Nmaqmn/xVRRbLTwv1khUTWaFIhVEmeC6+XaSJzW3I=
-X-Received: by 2002:a92:660e:: with SMTP id a14mr7536816ilc.262.1598127760755;
- Sat, 22 Aug 2020 13:22:40 -0700 (PDT)
+        Sat, 22 Aug 2020 16:39:32 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 02671100E7B43;
+        Sat, 22 Aug 2020 20:39:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3870:3871:3872:4321:4605:5007:6117:6119:6691:7522:7576:9592:10004:10400:10848:10967:11026:11232:11658:11914:12043:12291:12296:12297:12438:12555:12663:12683:12740:12760:12895:12986:13439:14096:14097:14181:14659:14721:21080:21451:21627:21740:21987:30012:30054:30070:30075:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: camp61_0b0be6b27044
+X-Filterd-Recvd-Size: 4345
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 22 Aug 2020 20:39:29 +0000 (UTC)
+Message-ID: <ae154f9a96a710157f9b402ba21c6888c855dd1e.camel@perches.com>
+Subject: Re: [PATCH net-next] net: Remove unnecessary intermediate variables
+From:   Joe Perches <joe@perches.com>
+To:     David Miller <davem@davemloft.net>, Jianlin.Lv@arm.com
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, Song.Zhu@arm.com,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 22 Aug 2020 13:39:28 -0700
+In-Reply-To: <20200822.123315.787815838209253525.davem@davemloft.net>
+References: <20200822020431.125732-1-Jianlin.Lv@arm.com>
+         <20200822.123315.787815838209253525.davem@davemloft.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200815031908.1015049-1-joel@joelfernandes.org>
-In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sat, 22 Aug 2020 16:22:27 -0400
-Message-ID: <CAEXW_YTzX98eRihcvHW-8Vwp_=CHehO6FM_J69YEFzMcW2yyOg@mail.gmail.com>
-Subject: Re: [PATCH RFC 00/12] Core-sched v6+: kernel protection and hotplug fixes
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 11:19 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> Hello!
->
-> This series is continuation of main core-sched v6 series [1] and adds support
-> for syscall and IRQ isolation from usermode processes and guests. It is key to
-> safely entering kernel mode in an HT while the other HT is in use by a user or
-> guest. The series also fixes CPU hotplug issues arising because of the
-> cpu_smt_mask changing while the next task is being picked. These hotplug fixes
-> are needed also for kernel protection to work correctly.
->
-> The series is based on Thomas's x86/entry tree.
->
-> [1]  https://lwn.net/Articles/824918/
+On Sat, 2020-08-22 at 12:33 -0700, David Miller wrote:
+> From: Jianlin Lv <Jianlin.Lv@arm.com>
+> Date: Sat, 22 Aug 2020 10:04:31 +0800
+> 
+> > It is not necessary to use src/dst as an intermediate variable for
+> > assignment operation; Delete src/dst intermediate variables to avoid
+> > unnecessary variable declarations.
+> > 
+> > Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+> 
+> It keeps the line lengths within reasonable length, so these local
+> variables are fine.
+> 
+> Also, the appropriate subsystem prefix for this patch should be "vxlan: "
+> not "net: " in your Subject line.  If someone is skimming the shortlog
+> in 'git' how will they tell where exactly in the networking your change
+> is being made?
+> 
+> Anyways, I'm not applying this, thanks.
 
-Hello,
-Just wanted to mention that we are talking about this series during
-the refereed talk on Monday at 16:00 UTC :
-https://linuxplumbersconf.org/event/7/contributions/648/
+It _might_ be slightly faster to use inlines
+instead so there's less copy of 16 byte structs
+on the ipv6 side.
 
-The slides are here with some nice pictures showing the kernel protection stuff:
-https://docs.google.com/presentation/d/1VzeQo3AyGTN35DJ3LKoPWBfiZHZJiF8q0NrX9eVYG70/edit?usp=sharing
+It's slightly smaller object code.
+---
+ drivers/net/vxlan.c | 46 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 20 deletions(-)
 
-And Julien has some promising data to share which he just collected
-with this series (and will add them to the slides).
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index b9fefe27e3e8..e0ea246b3678 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -95,7 +95,25 @@ static inline bool vxlan_collect_metadata(struct vxlan_sock *vs)
+ 	       ip_tunnel_collect_metadata();
+ }
+ 
++static __always_inline
++void vxlan_use_v4_addrs(struct ip_tunnel_info *info,
++			union vxlan_addr *remote_ip,
++			union vxlan_addr *local_ip)
++{
++	info->key.u.ipv4.src = remote_ip->sin.sin_addr.s_addr;
++	info->key.u.ipv4.dst = local_ip->sin.sin_addr.s_addr;
++}
++
+ #if IS_ENABLED(CONFIG_IPV6)
++static __always_inline
++void vxlan_use_v6_addrs(struct ip_tunnel_info *info,
++			union vxlan_addr *remote_ip,
++			union vxlan_addr *local_ip)
++{
++	info->key.u.ipv6.src = remote_ip->sin6.sin6_addr;
++	info->key.u.ipv6.dst = local_ip->sin6.sin6_addr;
++}
++
+ static inline
+ bool vxlan_addr_equal(const union vxlan_addr *a, const union vxlan_addr *b)
+ {
+@@ -2724,17 +2742,11 @@ static void vxlan_xmit_one(struct sk_buff *skb, struct net_device *dev,
+ 		ndst = &rt->dst;
+ 		err = skb_tunnel_check_pmtu(skb, ndst, VXLAN_HEADROOM,
+ 					    netif_is_any_bridge_port(dev));
+-		if (err < 0) {
++		if (err < 0)
+ 			goto tx_error;
+-		} else if (err) {
+-			if (info) {
+-				struct in_addr src, dst;
+-
+-				src = remote_ip.sin.sin_addr;
+-				dst = local_ip.sin.sin_addr;
+-				info->key.u.ipv4.src = src.s_addr;
+-				info->key.u.ipv4.dst = dst.s_addr;
+-			}
++		if (err) {	/* newly built encapsulation length */
++			if (info)
++				vxlan_use_v4_addrs(info, &remote_ip, &local_ip);
+ 			vxlan_encap_bypass(skb, vxlan, vxlan, vni, false);
+ 			dst_release(ndst);
+ 			goto out_unlock;
+@@ -2780,17 +2792,11 @@ static void vxlan_xmit_one(struct sk_buff *skb, struct net_device *dev,
+ 
+ 		err = skb_tunnel_check_pmtu(skb, ndst, VXLAN6_HEADROOM,
+ 					    netif_is_any_bridge_port(dev));
+-		if (err < 0) {
++		if (err < 0)
+ 			goto tx_error;
+-		} else if (err) {
+-			if (info) {
+-				struct in6_addr src, dst;
+-
+-				src = remote_ip.sin6.sin6_addr;
+-				dst = local_ip.sin6.sin6_addr;
+-				info->key.u.ipv6.src = src;
+-				info->key.u.ipv6.dst = dst;
+-			}
++		if (err) {	/* newly built encapsulation length */
++			if (info)
++				vxlan_use_v6_addrs(info, &remote_ip, &local_ip);
+ 
+ 			vxlan_encap_bypass(skb, vxlan, vxlan, vni, false);
+ 			dst_release(ndst);
 
-Looking forward to possibly seeing you there and your participation
-for these topics both during the refereed talk and the scheduler MC,
-thanks!
 
- - Joel
-
-
->
-> Background:
->
-> Core-scheduling prevents hyperthreads in usermode from attacking each
-> other, but it does not do anything about one of the hyperthreads
-> entering the kernel for any reason. This leaves the door open for MDS
-> and L1TF attacks with concurrent execution sequences between
-> hyperthreads.
->
-> This series adds support for protecting all syscall and IRQ kernel mode entries
-> by cleverly tracking when any sibling in a core enter the kernel, and when all
-> the siblings exit the kernel. IPIs are sent to force siblings into the kernel.
->
-> Care is taken to avoid waiting in IRQ-disabled sections as Thomas suggested
-> thus avoiding stop_machine deadlocks. Every attempt is made to avoid
-> unnecessary IPIs.
->
-> Performance tests:
-> sysbench is used to test the performance of the patch series. Used a 8 cpu/4
-> Core VM and ran 2 sysbench tests in parallel. Each sysbench test runs 4 tasks:
-> sysbench --test=cpu --cpu-max-prime=100000 --num-threads=4 run
->
-> Compared the performance results for various combinations as below.
-> The metric below is 'events per second':
->
-> 1. Coresched disabled
->     sysbench-1/sysbench-2 => 175.7/175.6
->
-> 2. Coreched enabled, both sysbench tagged
->   sysbench-1/sysbench-2 => 168.8/165.6
->
-> 3. Coresched enabled, sysbench-1 tagged and sysbench-2 untagged
->     sysbench-1/sysbench-2 => 96.4/176.9
->
-> 4. smt off
->     sysbench-1/sysbench-2 => 97.9/98.8
->
-> When both sysbench-es are tagged, there is a perf drop of ~4%. With a
-> tagged/untagged case, the tagged one suffers because it always gets
-> stalled when the sibiling enters kernel. But this is no worse than smtoff.
->
-> Also a modified rcutorture was used to heavily stress the kernel to make sure
-> there is not crash or instability.
->
-> Joel Fernandes (Google) (5):
-> irq_work: Add support to detect if work is pending
-> entry/idle: Add a common function for activites during idle entry/exit
-> arch/x86: Add a new TIF flag for untrusted tasks
-> kernel/entry: Add support for core-wide protection of kernel-mode
-> entry/idle: Enter and exit kernel protection during idle entry and
-> exit
->
-> Vineeth Pillai (7):
-> entry/kvm: Protect the kernel when entering from guest
-> bitops: Introduce find_next_or_bit
-> cpumask: Introduce a new iterator for_each_cpu_wrap_or
-> sched/coresched: Use for_each_cpu(_wrap)_or for pick_next_task
-> sched/coresched: Make core_pick_seq per run-queue
-> sched/coresched: Check for dynamic changes in smt_mask
-> sched/coresched: rq->core should be set only if not previously set
->
-> arch/x86/include/asm/thread_info.h |   2 +
-> arch/x86/kvm/x86.c                 |   3 +
-> include/asm-generic/bitops/find.h  |  16 ++
-> include/linux/cpumask.h            |  42 +++++
-> include/linux/entry-common.h       |  22 +++
-> include/linux/entry-kvm.h          |  12 ++
-> include/linux/irq_work.h           |   1 +
-> include/linux/sched.h              |  12 ++
-> kernel/entry/common.c              |  88 +++++----
-> kernel/entry/kvm.c                 |  12 ++
-> kernel/irq_work.c                  |  11 ++
-> kernel/sched/core.c                | 281 ++++++++++++++++++++++++++---
-> kernel/sched/idle.c                |  17 +-
-> kernel/sched/sched.h               |  11 +-
-> lib/cpumask.c                      |  53 ++++++
-> lib/find_bit.c                     |  56 ++++--
-> 16 files changed, 564 insertions(+), 75 deletions(-)
->
-> --
-> 2.28.0.220.ged08abb693-goog
->
