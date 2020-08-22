@@ -2,117 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6163824E4AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 04:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CF424E4B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 04:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgHVChB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 22:37:01 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40812 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgHVChA (ORCPT
+        id S1726749AbgHVCnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 22:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgHVCnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 22:37:00 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07M2Vqrj044965;
-        Sat, 22 Aug 2020 02:36:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=VrMyZbyBm5q5JH1uyUIBYVhGI28hB+36YlS9BaRhVzc=;
- b=KfcyncsEN599jLWRwRUFy++fSRdYfTDYxQgh8M3zAGZ4jZrLiJ9+0RWpahpIulxAsKjT
- Ngc53d5QfpXw1dEwtpToWBTMdeTw63jZ6CjfsL+kgvmwqR7hCDFQyHyFoFZBascJt/xj
- /Y2wG9QheOrsDfbkEBmsDjct+wCXOf1dAFwFU7Oy21x8V7oMOiPVyaN8X/8jYztwp6E2
- gxC2l3/LSCjhpPSXOTs/QJ1LYEGLTqcxWbyB/ICXroKz191h2G0UXcHeIZG9egFluNCm
- VC9mnfKM90RI5nuFhzI5GdBr20iEgxrJ7ZQ2Phj5NUgmn1k8maUQZra0NnLcwDBzYULn Ug== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 3322bjn8ya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 22 Aug 2020 02:36:47 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07M2XITN135968;
-        Sat, 22 Aug 2020 02:34:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 332rfqtq57-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 Aug 2020 02:34:46 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07M2YdNw010014;
-        Sat, 22 Aug 2020 02:34:39 GMT
-Received: from localhost.localdomain (/73.243.10.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 22 Aug 2020 02:34:39 +0000
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.0.3\))
-Subject: Re: [PATCH 0/7] Overhaul find_get_entries and pagevec_lookup_entries
-From:   William Kucharski <william.kucharski@oracle.com>
-In-Reply-To: <20200819150555.31669-1-willy@infradead.org>
-Date:   Fri, 21 Aug 2020 20:34:38 -0600
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F3875B5A-52FF-41B8-8F57-2F25659949D6@oracle.com>
-References: <20200819150555.31669-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-X-Mailer: Apple Mail (2.3654.0.3)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008220022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 clxscore=1011 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008220021
+        Fri, 21 Aug 2020 22:43:19 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB073C061573;
+        Fri, 21 Aug 2020 19:43:18 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id a34so2055942ybj.9;
+        Fri, 21 Aug 2020 19:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tT+1l+/BC3EOuKQ2iWSGuqNPPQLKkFRRGGmFxrYn8yg=;
+        b=DhxNyoLLtWcFmfqGGrlqvHxFgvfcnbkSbNE3tTPwExZJJ61TcjFx0tSTHXWEcbKJgX
+         afo73BWK2RVl0K0yDgM8PMfESnkjVKEpftIUzIPhF2NfyRiRJBzarsB2YjuUIUgEUlme
+         6Qs80wYKTu+DtgGunUMStozQ2oZAlESEbvutwoUKhgnO5ZXSWOiky/bgn66uGbAk14ob
+         P9Z4iwX32lt3iREFd/WCesSVkMQe1iRLvygvFTc5zuPl7Jaqk1ZqbRLFthQcg96J1uZV
+         AnHhOcVVKsuJsCagQJnqkNqC+DpfSHytVfWiIr5cRI8DTc5dCLRO6DdF1OazrxEGOFeg
+         G8cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tT+1l+/BC3EOuKQ2iWSGuqNPPQLKkFRRGGmFxrYn8yg=;
+        b=glhabZkAVKJ1ZaJFKoBE/PCnmtA1Ck0Zyq/0JgqGAL/d398ooBMKWhjT1EUQsNG64R
+         MXZXCx4QtHGBGu4d/PQO1RLjH7O51NEvJ9BbtTJzmeT+W2rsqcitORGwKd0jlaZaegjM
+         nLQJJf0s6mIHnKtLXdCNapiVDxupsT0Cdch67EwrHWi9HNPJG/Y25xvwUcclt+xkCCbY
+         TH8FC5iWj5U0b+a9wF8LJJJDWt2ymmOLTqcBD2KZs+YXa5WcvleA+25wwPp18Mtwp7FF
+         IaJGFl2yzkpMvR5jCnMeu1JyYiHb8hMLWDKwNHXAuQW2x+fBoHnnML1/PeISw5yAQ9i8
+         xYNA==
+X-Gm-Message-State: AOAM531U18DUZOKtLzi0y9FooNL4zpDXY9E6ZPuO4BbvHUl71PyLIiyP
+        oEMlc98r/CV8zMNgZj/GVNwGTVyLEdBvyxPE3FU=
+X-Google-Smtp-Source: ABdhPJwLz0bTjIfjL7Q/EfBWQn1Mj2+ggqWeLXxo64+iot7jlMG7IdezK+72EYgTefou96VRSQOFnnjC3FzG9qtMYrs=
+X-Received: by 2002:a25:2ad3:: with SMTP id q202mr7321797ybq.27.1598064197708;
+ Fri, 21 Aug 2020 19:43:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-4-haoluo@google.com>
+ <d50a1530-9a9f-45b2-5aba-05fe4b895fbc@fb.com> <CAEf4BzZmLUcw4M16U6w-s2Zd6KbsuY4dzzkeEBx9CejetT5BwQ@mail.gmail.com>
+ <CA+khW7jZc=p50eGUb6kLUq00bq8C_JmN2pJcu66uMUu3aL7=ZQ@mail.gmail.com>
+In-Reply-To: <CA+khW7jZc=p50eGUb6kLUq00bq8C_JmN2pJcu66uMUu3aL7=ZQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Aug 2020 19:43:06 -0700
+Message-ID: <CAEf4Bzb70CYZMYXEW0RO+S99xG4iwr9BQmGhD4ymWkwq_NR=6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/8] bpf: Introduce help function to validate
+ ksym's type.
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 21, 2020 at 5:43 PM Hao Luo <haoluo@google.com> wrote:
+>
+> On Fri, Aug 21, 2020 at 2:50 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Aug 20, 2020 at 10:22 AM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > >
+> > > On 8/19/20 3:40 PM, Hao Luo wrote:
+> > > > For a ksym to be safely dereferenced and accessed, its type defined in
+> > > > bpf program should basically match its type defined in kernel. Implement
+> > > > a help function for a quick matching, which is used by libbpf when
+> > > > resolving the kernel btf_id of a ksym.
+> > > >
+> > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > ---
+> [...]
+> > > > +/*
+> > > > + * Match a ksym's type defined in bpf programs against its type encoded in
+> > > > + * kernel btf.
+> > > > + */
+> > > > +bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
+> > > > +                      const struct btf *bb, __u32 id_b)
+> > > > +{
+> >
+> > [...]
+> >
+> > > > +                     }
+> > > > +             }
+> > >
+> > > I am wondering whether this is too strict and how this can co-work with
+> > > CO-RE. Forcing users to write almost identical structure definition to
+> > > the underlying kernel will not be user friendly and may not work cross
+> > > kernel versions even if the field user cares have not changed.
+> > >
+> > > Maybe we can relax the constraint here. You can look at existing
+> > > libbpf CO-RE code.
+> >
+> > Right. Hao, can you just re-use bpf_core_types_are_compat() instead?
+> > See if semantics makes sense, but I think it should. BPF CO-RE has
+> > been permissive in terms of struct size and few other type aspects,
+> > because it handles relocations so well. This approach allows to not
+> > have to exactly match all possible variations of some struct
+> > definition, which is a big problem with ever-changing kernel data
+> > structures.
+> >
+>
+> I have to say I hate myself writing another type comparison instead of
+> reusing the existing one. The issue is that when bpf_core_types_compat
+> compares names, it uses t1->name_off == t2->name_off. It is also used
+
+Huh? Are we talking about the same bpf_core_types_are_compat() (there
+is no bpf_core_types_compat, I think it's a typo)?
+bpf_core_types_are_compat() doesn't even compare any name, so I'm not
+sure what you are talking about. Some of btf_dedup functions do string
+comparisons using name_off directly, but that's a special and very
+careful case, it's not relevant here.
 
 
-> On Aug 19, 2020, at 9:05 AM, Matthew Wilcox (Oracle) =
-<willy@infradead.org> wrote:
->=20
-> This started out as part of the THP patchset, but it's turned into a
-> nice simplification in its own right.  Essentially we end up unifying
-> find_get_entries() and pagevec_lookup_entries() into one function =
-that's
-> better than either, and we get rid of a lot of code in the callers as
-> a result.
->=20
-> I'm running this through xfstests right now, but something similar to
-> this has already passed xfstests as part of the THP patchset.
->=20
-> I've done my best to avoid off-by-one errors for 'end', but I wouldn't =
-be
-> surprised if I made a mistake.  We're not consistent with whether =
-'end'
-> is inclusive or exclusive and I didn't want to make extensive changes
-> to ensure they were consistent.
->=20
-> Matthew Wilcox (Oracle) (7):
->  mm: Use pagevec_lookup in shmem_unlock_mapping
->  mm: Rewrite shmem_seek_hole_data
->  mm: Add an 'end' parameter to find_get_entries
->  mm: Add an 'end' parameter to pagevec_lookup_entries
->  mm: Remove nr_entries parameter from pagevec_lookup_entries
->  mm: Pass pvec directly to find_get_entries
->  mm: Remove pagevec_lookup_entries
->=20
-> include/linux/pagemap.h |  3 +-
-> include/linux/pagevec.h |  4 --
-> mm/filemap.c            | 19 +++++----
-> mm/shmem.c              | 85 ++++++++++++++---------------------------
-> mm/swap.c               | 38 +-----------------
-> mm/truncate.c           | 33 +++-------------
-> 6 files changed, 45 insertions(+), 137 deletions(-)
+> in bpf_equal_common(). In my case, because these types are from two
+> different BTFs, their name_off are not expected to be the same, right?
+> I didn't find a good solution to refactor before posting this patch. I
 
-Very nice cleanups and the code makes more sense, thanks.
+bpf_core_types_are_compat() didn't land until this week, so you must
+be confusing something. Please take another look.
 
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>=
+> think I can adapt bpf_core_type_compat() and pay more attention to
+> CO-RE.
+>
+> > >
+> > > > +             break;
+> > > > +     }
+> >
+> > [...]
+> >
+> > > > +
+> > > >   struct btf_ext_sec_setup_param {
+> > > >       __u32 off;
+> > > >       __u32 len;
+> > > > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > > > index 91f0ad0e0325..5ef220e52485 100644
+> > > > --- a/tools/lib/bpf/btf.h
+> > > > +++ b/tools/lib/bpf/btf.h
+> > > > @@ -52,6 +52,8 @@ LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
+> > > >                                   __u32 expected_key_size,
+> > > >                                   __u32 expected_value_size,
+> > > >                                   __u32 *key_type_id, __u32 *value_type_id);
+> > > > +LIBBPF_API bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
+> > > > +                                 const struct btf *bb, __u32 id_b);
+> > > >
+> > > >   LIBBPF_API struct btf_ext *btf_ext__new(__u8 *data, __u32 size);
+> > > >   LIBBPF_API void btf_ext__free(struct btf_ext *btf_ext);
+> > >
+> > > The new API function should be added to libbpf.map.
+> >
+> > My question is why does this even have to be a public API?
+>
+> I can fix. Please pardon my ignorance, what is the difference between
+> public and internal APIs? I wasn't sure, so used it improperly.
+
+public APIs are those that users of libbpf are supposed to use,
+internal one is just for libbpf internal use. The former can't change,
+the latter can be refactor as much as we need to.
+
+>
+> Thanks,
+> Hao
