@@ -2,76 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676E124E908
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66CE24E90B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgHVRau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 13:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728132AbgHVRas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 13:30:48 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C48C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 10:30:48 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id e187so2817408ybc.5
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 10:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uDk1uTkzBrobW1w/NKB0oMWkQcelQXY/S6aVRrAX0ZA=;
-        b=dyCpYQrxZN93H1AZy0Svu15URVWoPeG7t+Bjh405njPSC+q6aqdkS/8H/dJChB+kxX
-         whnTVWTCOFzgZGQ3lqwsivukNlwOwYS10yIBa2iCcpKlqlifHV+hF3o+tpuxP8m1Vez9
-         tt2xfKXXvTYFk6sNGaCwM5y/XWvyLTsrrXwfBQjtWT2euwkPyLLi2XzVljG7somyHg44
-         HI4vV/ZXhA6msoH0Uj0HOQdA7SivMo2hPfjMRFq12ND1Qd6I9YI8uPsCTsct6dD1MlSN
-         PSAQdI1+dqSmrDRRhWgDkOkGdCsVYXynn3H1xBiKuC3dsVM5FN/yeh0g7yU6lnIbIa5y
-         YV6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDk1uTkzBrobW1w/NKB0oMWkQcelQXY/S6aVRrAX0ZA=;
-        b=Zc+7x2zw7Ifl3F5AsCz3Zd6YTc0wQVdJYMzy/GMqI5w/U82XsNNqamvjD69dz0D9Vs
-         oxSRw3n7+Uypo88idakH+K7NKmPodoTxF/EB1B9QWcmWQfYJxVwOaW/4sy9gGe2qVc3P
-         5ZkzVqBI7HwZGdPJsOTS7hytEwNm8RJNNeAsc9fZOykQneFgATMjcpoKHP1KZrUnqN6z
-         j+sn7coct3bitGq7p/k91Sq3WErMiY+M49kQGJqgPKGzrkUG2JLu51EnyWg4sSwXQ1um
-         GNwYj4UWFn9HlUaNEVw/wkYgTo6Qb4dqcjULZ7Z7hzBnP+hZaSAHmCBsBnzX3+Csrsnx
-         e2ww==
-X-Gm-Message-State: AOAM530DFcU3AKB6XH52FhbvTYmmntpOebKavoPE/SplRAt1OmH5gU4E
-        f6sYae/EojoqNHHBDzzvaigtGcmdMctFtlnavRA3Aw==
-X-Google-Smtp-Source: ABdhPJx6OI5qEcfI3wAi2qnLIinIWm8ZhOM7frPW9ne8dpaYB3ssb0hlJOW/CYwILyYDgT8yZDdMqrVimTKgGB+5hAo=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr10605839ybf.162.1598117446875;
- Sat, 22 Aug 2020 10:30:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANN689HMLC4uKCjztqfZsDO7pPbsvViOQQ_HDWWYU4=8cZbKvQ@mail.gmail.com>
-In-Reply-To: <CANN689HMLC4uKCjztqfZsDO7pPbsvViOQQ_HDWWYU4=8cZbKvQ@mail.gmail.com>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Sat, 22 Aug 2020 10:30:34 -0700
-Message-ID: <CANN689EscUK7_ZaiUbCdt5K-=PYPFgVdeE_GFem0A7WZVfQH-A@mail.gmail.com>
-Subject: Re: Lockdep question regarding two-level locks
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728490AbgHVRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 13:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727856AbgHVRcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 13:32:15 -0400
+Subject: Re: [GIT PULL] KVM changes for Linux 5.9-rc2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598117535;
+        bh=8K0jUsGXkC83DrDlS2QiLNPUAJsU7P/a/bjYxNJzG5s=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Bvo4VNWyvgEs3kERSEWP8hhgzFAI26YvP5JJPOrnD3ioTMDf0zidTAHmVJA3AEuRt
+         wB4CqH7Ew8iEGiycv5b9JxhXi9sIlK06SlUP9X9WpHBgry1kL/6UxfyBr7I07u6mXp
+         +C5twnxR6ZuGSA1yhfYt22oSK2Xhhi71esliEE8A=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200822080647.722819-1-pbonzini@redhat.com>
+References: <20200822080647.722819-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200822080647.722819-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: b5331379bc62611d1026173a09c73573384201d9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b2d9e99622796576eb6faa236b2d1f592cc43ace
+Message-Id: <159811753509.17427.9520000885402685829.pr-tracker-bot@kernel.org>
+Date:   Sat, 22 Aug 2020 17:32:15 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, maz@kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 9:04 AM Michel Lespinasse <walken@google.com> wrote:
-> - B's implementation could, when lockdep is enabled, always release
-> lock A before acquiring lock B. This is not ideal though, since this
-> would hinder testing of the not-blocked code path in the acquire
-> sequence.
+The pull request you sent on Sat, 22 Aug 2020 10:06:47 +0200:
 
-Actually, this may be an acceptable way to handle my issue. In the
-non-blocking case, B's implementation does not have to actually
-release A, but it could tell lockdep that it's released A, acquired B
-and acquired A again. Kinda ugly but should work...
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b2d9e99622796576eb6faa236b2d1f592cc43ace
+
+Thank you!
 
 -- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
