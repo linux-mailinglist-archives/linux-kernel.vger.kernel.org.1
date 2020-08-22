@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC35224E63F
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 10:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8919424E639
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 10:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgHVIJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 04:09:35 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:36496 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727008AbgHVIJ1 (ORCPT
+        id S1726227AbgHVIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 04:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgHVIGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 04:09:27 -0400
-X-UUID: 97798217ae4b435ab16de9eda914188a-20200822
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1f1GqktsmoCBBHY58Mnms9zF6E9zoWUyHkZ1qxBjj5A=;
-        b=bTS+Qnr4b3tPMI41AdLVavYNePWv0WlNLuMWx31i5DZtW3XiQ9GPonkNfsG/s95mgvtnjGaP8lJc4OGI0amImT/WmbAQRilppyQRtpeJVHKdETZUMr4ETxqCUyjNrULgfsCYmk+SKnLA6Ek/r/1mVys5cpcqVK3+sh+H3ZO/PV0=;
-X-UUID: 97798217ae4b435ab16de9eda914188a-20200822
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 78470259; Sat, 22 Aug 2020 16:09:19 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31DR.mediatek.inc (172.27.6.102) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 22 Aug 2020 16:09:19 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 22 Aug 2020 16:09:17 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH v3 11/11] iopoll: update kerneldoc of read_poll_timeout_atomic()
-Date:   Sat, 22 Aug 2020 16:05:53 +0800
-Message-ID: <1598083553-31896-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1598083553-31896-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1598083553-31896-1-git-send-email-chunfeng.yun@mediatek.com>
+        Sat, 22 Aug 2020 04:06:53 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31502C061573;
+        Sat, 22 Aug 2020 01:06:53 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id t2so3593051wma.0;
+        Sat, 22 Aug 2020 01:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nhZfeKpNSacQbwTrkcUeaFzZcY4FZUsrUpQMtrkrP2c=;
+        b=YQV7DnC3V8PvPvptXW/BVERjjxjrNXBeychEiMxzqTFY+lGLNxR6aSk0ypAfQYyhL9
+         XbSFgUa3IJsKKPTIzvHWGogGn662txyC9Q5euywi/Hhl8+mXePCd4GU4cEhe9RR9ORT9
+         gLukSaM27MjShgntoLgntSyeUglxKzb6ErnHy+FcKVKGSShxCvX6FCuOoDG8oaeCa4Ak
+         9QtOUzLAm/T77bXmFkuH0hwP4gZoG4Fju/V4uRRgB8voNUFQwE8CT04iZ5e3UFmDqanX
+         yYj4jQ8enMcsa8GHKeSe2nmP1qi/Sgwxnxjqy5HuuwER3IXdGBV1m9UDsWHbO0lhbthX
+         vsXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=nhZfeKpNSacQbwTrkcUeaFzZcY4FZUsrUpQMtrkrP2c=;
+        b=bqzhF1u9LX9Mf9KRCiaTdD/oIeoJuUh1/ZOKGykiDaAX1r3g7Pkdr4biw3M+IUPpU2
+         4Itt9iGswp1QvNjmc5OLpsfS7/4RHTx1qBHXEvUzndfFqn7FtPZnQh/Dx3cZ/G+zuWwG
+         4EmCMd4q4g3E3ww7OlM/OuiEYP1vtRZytG1+Uj8tzd2UZcO9d8LsRyE/44W8aC2OyBzF
+         PJhE6UJIL6/usNUFXLqMlUlgTi3Ls7NUpYBUgeUkTxl7mqGfDZTGQyyzsWF93Ol+C6Vr
+         1NmzA0XaDMO+i1EGEU3GjHxk2o2jx2x7aVp4B+AGLA5LCjAb8FW/9QqNN8lsTOvHC7bj
+         OgAw==
+X-Gm-Message-State: AOAM530t/tk/X5G6HVP2961c52PHnY+ADouY+cunFiyRvi31ffh9P8v5
+        YTxT8wX/ELYdWjdLg2q6EoE=
+X-Google-Smtp-Source: ABdhPJwYvtwRWEsSBMuzGRA2zYq/qq1QawjKPThni5wD8n7e8wcqJTjonTZVOCpTdhfeRZ487YrRXw==
+X-Received: by 2002:a7b:c095:: with SMTP id r21mr7134017wmh.152.1598083611868;
+        Sat, 22 Aug 2020 01:06:51 -0700 (PDT)
+Received: from donizetti.lan ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
+        by smtp.gmail.com with ESMTPSA id i4sm8804892wrw.26.2020.08.22.01.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Aug 2020 01:06:51 -0700 (PDT)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, maz@kernel.org
+Subject: [GIT PULL] KVM changes for Linux 5.9-rc2
+Date:   Sat, 22 Aug 2020 10:06:47 +0200
+Message-Id: <20200822080647.722819-1-pbonzini@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 08DE332221603EEB4127FB0BA2C940C91FF642440EAC2E2737773133EF96AEEA2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QXJndW1lbnRzIGRlc2NyaXB0aW9uIG9mIHJlYWRfcG9sbF90aW1lb3V0X2F0b21pYygpIGlzIG91
-dCBvZiBkYXRlLA0KdXBkYXRlIGl0Lg0KDQpDYzogQWxhbiBTdGVybiA8c3Rlcm5Acm93bGFuZC5o
-YXJ2YXJkLmVkdT4NClNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1l
-ZGlhdGVrLmNvbT4NCi0tLQ0KdjM6IGZpeCB0eXBvIGluIGNvbW1pdCBtZXNzYWdlIHN1Z2dlc3Rl
-ZCBieSBTZXJnZWkNCg0KdjI6IG5ldyBwYXRjaCwgc3VnZ2VzdGVkIGJ5IEFsYW4NCi0tLQ0KIGlu
-Y2x1ZGUvbGludXgvaW9wb2xsLmggfCA0ICsrLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRp
-b25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9pb3Bv
-bGwuaCBiL2luY2x1ZGUvbGludXgvaW9wb2xsLmgNCmluZGV4IGJjODlhYzYuLjJjODg2MGUgMTAw
-NjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L2lvcG9sbC5oDQorKysgYi9pbmNsdWRlL2xpbnV4L2lv
-cG9sbC5oDQpAQCAtNjAsOCArNjAsNyBAQA0KIC8qKg0KICAqIHJlYWRfcG9sbF90aW1lb3V0X2F0
-b21pYyAtIFBlcmlvZGljYWxseSBwb2xsIGFuIGFkZHJlc3MgdW50aWwgYSBjb25kaXRpb24gaXMN
-CiAgKiAJCQkJbWV0IG9yIGEgdGltZW91dCBvY2N1cnMNCi0gKiBAb3A6IGFjY2Vzc29yIGZ1bmN0
-aW9uICh0YWtlcyBAYWRkciBhcyBpdHMgb25seSBhcmd1bWVudCkNCi0gKiBAYWRkcjogQWRkcmVz
-cyB0byBwb2xsDQorICogQG9wOiBhY2Nlc3NvciBmdW5jdGlvbiAodGFrZXMgQGFyZ3MgYXMgaXRz
-IGFyZ3VtZW50cykNCiAgKiBAdmFsOiBWYXJpYWJsZSB0byByZWFkIHRoZSB2YWx1ZSBpbnRvDQog
-ICogQGNvbmQ6IEJyZWFrIGNvbmRpdGlvbiAodXN1YWxseSBpbnZvbHZpbmcgQHZhbCkNCiAgKiBA
-ZGVsYXlfdXM6IFRpbWUgdG8gdWRlbGF5IGJldHdlZW4gcmVhZHMgaW4gdXMgKDAgdGlnaHQtbG9v
-cHMpLiAgU2hvdWxkDQpAQCAtNjksNiArNjgsNyBAQA0KICAqICAgICAgICAgICAgRG9jdW1lbnRh
-dGlvbi90aW1lcnMvdGltZXJzLWhvd3RvLnJzdCkuDQogICogQHRpbWVvdXRfdXM6IFRpbWVvdXQg
-aW4gdXMsIDAgbWVhbnMgbmV2ZXIgdGltZW91dA0KICAqIEBkZWxheV9iZWZvcmVfcmVhZDogaWYg
-aXQgaXMgdHJ1ZSwgZGVsYXkgQGRlbGF5X3VzIGJlZm9yZSByZWFkLg0KKyAqIEBhcmdzOiBhcmd1
-bWVudHMgZm9yIEBvcCBwb2xsDQogICoNCiAgKiBSZXR1cm5zIDAgb24gc3VjY2VzcyBhbmQgLUVU
-SU1FRE9VVCB1cG9uIGEgdGltZW91dC4gSW4gZWl0aGVyDQogICogY2FzZSwgdGhlIGxhc3QgcmVh
-ZCB2YWx1ZSBhdCBAYXJncyBpcyBzdG9yZWQgaW4gQHZhbC4NCi0tIA0KMS45LjENCg==
+Linus,
 
+The following changes since commit e792415c5d3e0eb52527cce228a72e4392f8cae2:
+
+  KVM: MIPS/VZ: Fix build error caused by 'kvm_run' cleanup (2020-08-11 07:19:41 -0400)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to b5331379bc62611d1026173a09c73573384201d9:
+
+  KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set (2020-08-21 18:06:43 -0400)
+
+----------------------------------------------------------------
+* PAE and PKU bugfixes for x86
+* selftests fix for new binutils
+* MMU notifier fix for arm64
+
+----------------------------------------------------------------
+Jim Mattson (2):
+      kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode
+      kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode
+
+Paolo Bonzini (1):
+      KVM: x86: fix access code passed to gva_to_gpa
+
+Will Deacon (2):
+      KVM: Pass MMU notifier range flags to kvm_unmap_hva_range()
+      KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set
+
+Yang Weijiang (1):
+      selftests: kvm: Use a shorter encoding to clear RAX
+
+ arch/arm64/include/asm/kvm_host.h               |  2 +-
+ arch/arm64/kvm/mmu.c                            | 19 ++++++++++++++-----
+ arch/mips/include/asm/kvm_host.h                |  2 +-
+ arch/mips/kvm/mmu.c                             |  3 ++-
+ arch/powerpc/include/asm/kvm_host.h             |  3 ++-
+ arch/powerpc/kvm/book3s.c                       |  3 ++-
+ arch/powerpc/kvm/e500_mmu_host.c                |  3 ++-
+ arch/x86/include/asm/kvm_host.h                 |  3 ++-
+ arch/x86/kvm/mmu/mmu.c                          |  3 ++-
+ arch/x86/kvm/x86.c                              |  6 ++++--
+ tools/testing/selftests/kvm/x86_64/debug_regs.c |  4 ++--
+ virt/kvm/kvm_main.c                             |  3 ++-
+ 12 files changed, 36 insertions(+), 18 deletions(-)
