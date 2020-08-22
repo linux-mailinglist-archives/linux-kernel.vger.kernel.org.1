@@ -2,87 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F94624E988
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 22:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C124E998
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 22:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgHVT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 15:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
+        id S1727017AbgHVUEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 16:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgHVT7V (ORCPT
+        with ESMTP id S1725948AbgHVUEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 15:59:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9DEC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 12:59:20 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id t14so4823112wmi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 12:59:20 -0700 (PDT)
+        Sat, 22 Aug 2020 16:04:14 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DBDC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 13:04:13 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id u3so4276367qkd.9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 13:04:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tfz-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tdwBhPhtCsN/JQvKp7YTOpn4Lpk5w39RK5RYDO92HW4=;
-        b=aBihwtoX6UoEawRpRhnhZTU/EV/u5sm2Bvg49HAx4AffL36z8qH992WqOJtRoW7ijR
-         +Pa72oGUyYoEONL6qFHeziXobK/N2EfK1x2OAjX+fs7acb2Nkj/PdUQD2Hlami5+GC/j
-         Mtmp+9aL7T5iitXJ2GjTxw0Er2lI81dIGxt4QJ15/4MVXVrV1sQ3zWZz3gy3PVbt5+vL
-         PfoeXezTX2KvpLiqe8sbsK48nlPJzOPnY2m5QoeBSK1Gd/QO/kYbQJ05kK7PlKvjFiQM
-         xXncdZVpykLqVTam6OQDiP4UjJjJF8MVPndp4iUVoN0nIIjrB54j81WX5xu8/6DYiVzI
-         na6Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=UE2JwjfsuVo0MWoKDr7qXxd/qt2fnX4/3fsOyt0RJ5g=;
+        b=qpAUKHHDbeAxrmOZPJCM9u+F9Uqf3yurXrUX0xpttZ82v4bQBMZCBj1ZVw9kL8Vvpn
+         cpfPDTIJr2zmKQSpETHS5wUx4WKUmBF8xbMMfuWT035KuPE4S0R8wU+qPGBkTXfHbjy1
+         Ov1zR32px4MqdTkFLu6v3ogvaF40hctB4SFeU4n3/7amNWoqyTV45z1/vYFcXN8dVd7i
+         Fp4/TMNkGgxS8VMtZiLkSJgrpey7/A+GojQ65jGI8zbM0us4ug8Fx4wcqu5QeMghyDhR
+         /3Ndv9XxB7wyNIsc6FyMSZBdNlTcf/ma4sZX+mHlYV52rb2+Ik/iHPcFqUbXg1ibp59k
+         OJyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tdwBhPhtCsN/JQvKp7YTOpn4Lpk5w39RK5RYDO92HW4=;
-        b=AnyoLoq9RrAVIhwRmfTiP+ofFa5Rj+uBgbTV0XoApyiC9sSDQncfFLWCIcfboMo0PT
-         CidpiaBZQE1RqezLan/vAIdQD6REh0XWvyST4Z8ZETLwF/3Uc7A6G+1jRC+a0YGTYHk+
-         a05oRdlTMk/g7SUCDi0NqXlEhL6NLm9bDEVMTkjsnjRK8CKVL4n9FoAQbD/IgOutfyY3
-         TvE9FhbX1eUv/tP0xA3y0sT+aacslsAsNcONxwfXkPqAzonjJ8kbkOVs73Td9r3qYsR6
-         oMgZAT95ZP5meVx4g2f6BbJeDNqbqlDalNTtpVk11E6lQkRsFRAETYHTTsCYyp+Od1gC
-         8D+w==
-X-Gm-Message-State: AOAM531O4Oy/dt6IUdNQgYwF+P7QvDSw939/kEo/5mGvWh9ZLOB5T2MV
-        gUHPV413D+Iaery3UqcXn+RKIMRDLSm5f+iAUh+5/Q==
-X-Google-Smtp-Source: ABdhPJw0/K42CFhQrPnxt7ZAtulKyqck4MJDWapHs8CJeNnb0ySgc12eotg4a5/z2JRlvwYhiXck+CNjPUkFxDAQW7o=
-X-Received: by 2002:a7b:c308:: with SMTP id k8mr9273324wmj.90.1598126358713;
- Sat, 22 Aug 2020 12:59:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200815182344.7469-1-kalou@tfz.net> <20200822032827.6386-1-kalou@tfz.net>
- <20200822032827.6386-2-kalou@tfz.net> <20200822.123650.1479943925913245500.davem@davemloft.net>
-In-Reply-To: <20200822.123650.1479943925913245500.davem@davemloft.net>
-From:   Pascal Bouchareine <kalou@tfz.net>
-Date:   Sat, 22 Aug 2020 12:59:08 -0700
-Message-ID: <CAGbU3_nRMbe8Syo3OHw6B4LXUheGiXXcLcaEQe0EAFTAB7xgng@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] net: socket: implement SO_DESCRIPTION
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=UE2JwjfsuVo0MWoKDr7qXxd/qt2fnX4/3fsOyt0RJ5g=;
+        b=QCHOn3+WT0wgK1pqL9h4wa4Bz+Ty1iseJQVPmTrKjrCHBemPBVTu7x3nGBrbjEWKlY
+         XtWvhdQcdx8CcZg/V0NjD2a4VDQ4CcDwpk6ukAfm0IfcdTe6iUHbOlkdSdzqakQPr1Ba
+         oOk4GOgKA05aj8EWOvj95vHTmWMv55fJe329m3K3XvEHF8O8j96aMKdbBqR1yD0ehMI4
+         jnZdP/l/RZh25s01k/swa84C7Qtf6H7AsQSMZJjg8bR6bZi5YQ6AjyLWAXS2xsPydETT
+         71Xdh82pJo8j5Cb/hfGyEFgv1LswfE0faNIqrYXuQ0D0nppFF8TXOf51OkzxAfBXffDJ
+         5ZKQ==
+X-Gm-Message-State: AOAM5314A7IDx6pkLyEIpj9HcBpBocGvfVlNgOdJn9yRvx+I+nTnF2Tm
+        WNYDINMykbgNNXhU6YqH3Rc=
+X-Google-Smtp-Source: ABdhPJw2zpzAa0NyWYkICLWYLfDIVUKnFseS2eY99F0al027/dk028/EMdpPq8prt3PPzg+vv3xT9A==
+X-Received: by 2002:a05:620a:21d1:: with SMTP id h17mr7619491qka.292.1598126648091;
+        Sat, 22 Aug 2020 13:04:08 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id h125sm2750940qkf.90.2020.08.22.13.04.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Aug 2020 13:04:07 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "Kishon Vijay Abraham I" <kishon@ti.com>,
+        "Vinod" <vkoul@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] phy: tusb1210: use bitmasks to set
+ VENDOR_SPECIFIC2
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>
+Date:   Sat, 22 Aug 2020 15:59:23 -0400
+Message-Id: <C53SIK03FQTU.192BHHIVG7II9@atris>
+In-Reply-To: <CAMuHMdUGu+pqZs5YoiBnZ2j7Yx86VDU9oKr4C15c1Jc9GjQuNA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you,
+Hi Geert,
 
-On Sat, Aug 22, 2020 at 12:36 PM David Miller <davem@davemloft.net> wrote:
-> > We ignore optlen and constrain the string to a static max size
-> >
-> > Signed-off-by: Pascal Bouchareine <kalou@tfz.net>
+On Wed Aug 19, 2020 at 9:57 AM EDT, Geert Uytterhoeven wrote:
+> Hi Liam,
 >
-> This change is really a non-starter unless the information gets
-> published somewhere where people actually look at dumped sockets, and
-> that's inet_diag and friends.
+>
+> On Mon, Aug 17, 2020 at 7:38 PM Liam Beguin <liambeguin@gmail.com>
+> wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >
+> > Start by reading the content of the VENDOR_SPECIFIC2 register and updat=
+e
+> > each bit field based on device properties when defined.
+> >
+> > The use of bit masks prevents fields from overriding each other and
+> > enables users to clear bits which are set by default, like datapolarity
+> > in this instance.
+> >
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> > Changes since v1:
+> > - use set_mask_bits
+> >
+> > Changes since v2:
+> > - fix missing bit shift dropped in v2
+> > - rebase on 5.9-rc1
+> >
+> >  drivers/phy/ti/phy-tusb1210.c | 27 +++++++++++++++++----------
+> >  1 file changed, 17 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb121=
+0.c
+> > index d8d0cc11d187..358842b5790f 100644
+> > --- a/drivers/phy/ti/phy-tusb1210.c
+> > +++ b/drivers/phy/ti/phy-tusb1210.c
+> > @@ -14,8 +14,11 @@
+> >
+> >  #define TUSB1210_VENDOR_SPECIFIC2              0x80
+> >  #define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT  0
+> > +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK   GENMASK(3, 0)
+> >  #define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT 4
+> > +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK  GENMASK(5, 4)
+> >  #define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT     6
+> > +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK      BIT(6)
+> >
+> >  struct tusb1210 {
+> >         struct ulpi *ulpi;
+> > @@ -118,23 +121,27 @@ static int tusb1210_probe(struct ulpi *ulpi)
+> >          * diagram optimization and DP/DM swap.
+> >          */
+> >
+> > +       reg =3D ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
+> > +
+> >         /* High speed output drive strength configuration */
+> > -       device_property_read_u8(&ulpi->dev, "ihstx", &val);
+> > -       reg =3D val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
+> > +       if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
+> > +               reg =3D set_mask_bits(&reg, TUSB1210_VENDOR_SPECIFIC2_I=
+HSTX_MASK,
+> > +                                   val << TUSB1210_VENDOR_SPECIFIC2_IH=
+STX_SHIFT);
+>
+> Triggered by your patches to add support for cmpxchg on u8 pointers to
+> various architectures (which is a valuable goal in itself ;-), I decided
+> to have a look at the underlying problem you were facing.
+>
 
-Would it make sense to also make UDIAG_SHOW_NAME use sk_description?
-(And keep the existing change - setsockopt + show_fd_info via
-/proc/.../fdinfo/..)
+Thanks for taking the time to look at this, I'll still give the SuperH
+patch a try if I can test it properly :-).
 
-I would feel like adding a pid information (and what else am I missing
-here) to inet_diag might also be a good improvement then?
+> IMHO, using set_mask_bits() is overkill here. That helper is meant to
+> update individual bits in a variable that may be accessed concurrently,
+> hence its use of cmpxchg().
+>
+> In this driver, you just want to modify a local variable, by clearing a
+> field, and setting some bits. No concurrency is involved.
+> Perhaps using FIELD_PREP() from include/linux/bitfield.h is more
+> appropriate?
+>
 
-I understand that users have to scan /proc to find the FDs, matching
-the inode number for the socket to find the owning process today.
+Using set_mask_bits() does seem overkill seeing that it triggers all
+these kbot warnings...
+I'll prepare a patch using functions from bitfield.h instead.
+Thanks again,
 
-If that's of interest I can explore that too
+Liam
+
+> Gr{oetje,eeting}s,
+>
+> Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
+> geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker.
+> But
+> when I'm talking to journalists I just say "programmer" or something
+> like that.
+> -- Linus Torvalds
+
