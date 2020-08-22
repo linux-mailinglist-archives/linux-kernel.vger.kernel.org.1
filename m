@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0824C24E8AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 18:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3235524E8B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 18:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgHVQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 12:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgHVQV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 12:21:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD2AC061573;
-        Sat, 22 Aug 2020 09:21:59 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d19so2448926pgl.10;
-        Sat, 22 Aug 2020 09:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=v6Eq/Tjzvf6HcWrWSGQuyz+ZESZxc7q+AWHXE8G7it4=;
-        b=N7eEdIWHuVFHn9O1UpKk07XIIsTcR0EkQaLdMqF5pmBD/yq3NWLAwT/UBG2Ns9vC38
-         3ZrlV0+SSHodm25DGLmpf8mWArgx3zTwZrDuBS1xPFqBa6QQVBKG/w9In8z+Pa103r4+
-         nFrIzd1wLlIDVJ/ZoIYHs2bN3EuA2glX8W3t+P2JId2nfbzqLylYocGZzDUPYyKLFZxN
-         X3NO6yaUSrbYuML6hCb04FpDCuUT57Wyh9YE/ktJaI0rwKNle+bRAzA+NNy6kvwq9VUR
-         Xx7n6KKf7dhbpi4GCGjwhgaYIL11kaYi6Dm6r7TRFRJvy/N5v/sW2dp6+RY2H3VLm+/0
-         vYqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=v6Eq/Tjzvf6HcWrWSGQuyz+ZESZxc7q+AWHXE8G7it4=;
-        b=ZxPyIio7BxDLPzSqRDTtxNcwUey7CzG3ZHM3OCntS7r44E9dhaa5wSSiwgg1/EymvW
-         09KVWyHBhtCJkeK6hcNhR86qjO7bLC76O4Rlj+cU0rq3u4HS138GsniYv0iMc49XUykx
-         RJZaA6ji94p2MWMU6esUGfkuyBzOKP1gE4fYzuIhnyH4uBuI7mk43gM3tzcSA2/vf3oD
-         y3R/oP3eugbJoIxSQPWgEx3lLJFHxDQadha6kL++I7rR8k2GDAG7PJ4RxcatQk5XRKyT
-         3iNrVf1DH+JOJLBDDv2lqng5X+Bd772RV6w47shD9xwZrZEDxHP221eKDlJJtoM3FOUs
-         EN9w==
-X-Gm-Message-State: AOAM532KMS2L4+Q5r3pTo9gWC2oP49tVIepI8ZajN/dLzCiX2Ho8qOPf
-        bmiSYmRdorJDkjvvwgyl0QM=
-X-Google-Smtp-Source: ABdhPJypqbX4OK3Q0iEmI9LZm142cRGsviKzvBZudFj8Hv8MT4tTGBp9E6XjbWCUjGwz2zjVeVy65g==
-X-Received: by 2002:a62:206:: with SMTP id 6mr6555079pfc.228.1598113319092;
-        Sat, 22 Aug 2020 09:21:59 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k125sm5143259pga.48.2020.08.22.09.21.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 22 Aug 2020 09:21:58 -0700 (PDT)
-Date:   Sat, 22 Aug 2020 09:21:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     alexandru.tachici@analog.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v8 0/6] hwmon: pmbus: adm1266: add support
-Message-ID: <20200822162156.GA258960@roeck-us.net>
-References: <20200812142055.9213-1-alexandru.tachici@analog.com>
+        id S1728461AbgHVQXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 12:23:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58396 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728380AbgHVQXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 12:23:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598113393; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=FYhJMKEBU4SFBiKHH2BxM4N53QqRKVAxSvII5SnSWsw=; b=OY7P8/bQw8K3b/s4sswNiJqqe9grWGUP0ybYkAV07oVeLVq8ZTtwXOAMt0qqptfpZIIOYUhE
+ iFR2S/SFdTrYWbW+GSSg5ZHxPy1chLu1n4LXDDwb9pcvz6LfTtml6u7wWY9fVAP+D4ADk98X
+ 4XPjpgcIV/kn0XqrSjtHEc9QGG0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f414671c1ce10a051518a44 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 22 Aug 2020 16:23:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 314FEC43391; Sat, 22 Aug 2020 16:23:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.0.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29B4DC433C6;
+        Sat, 22 Aug 2020 16:23:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 29B4DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH 2/2] Revert "Revert "soc: qcom: rpmh: Allow RPMH driver to
+ be loaded as a module""
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        ulf.hansson@linaro.org, dianders@chromium.org,
+        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Todd Kjos <tkjos@google.com>,
+        Saravana Kannan <saravanak@google.com>
+References: <1597831670-17401-1-git-send-email-mkshah@codeaurora.org>
+ <1597831670-17401-3-git-send-email-mkshah@codeaurora.org>
+ <159796512284.334488.2457174259443414342@swboyd.mtv.corp.google.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <739fd1bd-ebf0-8a1e-f737-5b11342ad72f@codeaurora.org>
+Date:   Sat, 22 Aug 2020 21:53:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812142055.9213-1-alexandru.tachici@analog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <159796512284.334488.2457174259443414342@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 05:20:49PM +0300, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> Add PMBus probing driver for the adm1266 Cascadable
-> Super Sequencer with Margin Control and Fault Recording.
-> Driver is using the pmbus_core, creating sysfs files
-> under hwmon for inputs: vh1->vh4 and vp1->vp13.
-> 
+Hi,
 
-Series applied.
+On 8/21/2020 4:42 AM, Stephen Boyd wrote:
+> Quoting Maulik Shah (2020-08-19 03:07:50)
+>> The _rcuidle tracepoints are removed from RPMH driver which prevented
+>> to compile it as module. Bring back the change to make it module.
+>>
+>> This reverts commit 1f7a3eb785e4a4e196729cd3d5ec97bd5f9f2940.
+>>
+>> Cc: John Stultz <john.stultz@linaro.org>
+>> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Cc: Todd Kjos <tkjos@google.com>
+>> Cc: Saravana Kannan <saravanak@google.com>
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+> Please send the original patch and add your SoB to it. Reverting a patch
+> out of the history works, but doesn't do justice to the authorship of
+> the patch.
+Sure, i will re-send the original patch in v2 instead of doing revert's 
+revert.
 
 Thanks,
-Guenter
+Maulik
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
