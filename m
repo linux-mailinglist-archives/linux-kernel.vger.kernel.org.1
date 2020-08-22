@@ -2,205 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5160D24E6D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 12:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399A624E6D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 12:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgHVKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 06:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S1727838AbgHVKMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 06:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgHVKKC (ORCPT
+        with ESMTP id S1726670AbgHVKMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 06:10:02 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D466EC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 03:10:02 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f193so2290111pfa.12
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 03:10:02 -0700 (PDT)
+        Sat, 22 Aug 2020 06:12:54 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88241C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 03:12:54 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u18so3991073wmc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 03:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cXjQrR/T5raX6AbUhraqTEHMJAZC5hVfvFOW6Ij5a2g=;
-        b=sbrMXZZja9pgMpu13x9qyBHH1xr73SDaZxOZAVCxAzX5XIrfglhdk6XRzI/vsa/NZB
-         5BlK0LDP/Tx5rw7E+wQQ7nO4zCNy/KorUqJTl3r20ZhILXbIw/WYxdxwq0EVfb0jUYxx
-         E0uM6IeyqD42KMjVVrOQH9zGcrz6FirrBWY3BNG/GEHF/XOg4glt8GIdUQna4ntCg5fH
-         XToUmucK4QGNrHGUTkjSErY/D/XwXqvCbS41AQzRvTT77XPz0gFs7ea3UBPUvY5LHIRq
-         yqI9kzPk7iXBdikExpV5eIhm/F6RdJif1A0aCzM7wyyVcJTlhalt0ldAkZNdWfxwTzPC
-         5vYg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=sKQX7+QPM8TCkmUA+73lNsGtd5xyce1g0GepBIdvk64=;
+        b=rIBOX/3CpjYKIN51xKf+zx02Oyx+INbrByNl31mS6zenmY6u1yK1fvH3ERNMTUE2vE
+         PH7Xy480NosOyergwJKMDHmFKjGCh9iTzK3bmNyEO70pRJZQIa/WcOn57KyCTqPcs8Sq
+         uPREcXafH0u3tAJCeVwGhncsPbnwibxoXERSzdv/li764kSAV487D0rhDo/zFVR9tf4E
+         Z3z7Ndnq1c/tjyXittRmwrMM3uDuUY0ksFJalpZt3dOx6fDAXA/+Nz00N+US2yfeX43x
+         /QfWY/zGdn+RjgiwtkpnaydK17p8hNfVz755fBHsJINyln+vzeYz+6MijQL6zEG7JjwZ
+         20pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=cXjQrR/T5raX6AbUhraqTEHMJAZC5hVfvFOW6Ij5a2g=;
-        b=t1DqfanNNRIQtw8Vq3LXSIi7xZ9UIr5gh3O+3pQqpLjlEfiexhybtvx9o9C9ZzrQWk
-         BuoPPKqYI+vRv18yi5y1LAg5FPmKY4VjOV42/4ZoG1fT+UEChKmlu52FbC2cHXRQrRat
-         dFQSQdQhCvET3L6DjTX6f6Xa1V600yUHOUcKLDaVZPt+mtlRkVCn73t7iUyOchuNpF1n
-         /yGxJsxAdy5chLiKWD5bjTNSixXlph5dJFhrxuv8kunlAXrbWgjt6kIymaPIiJDT/hTD
-         CqBN4qBqpVQ2fRJ8NSFHOOYyDTGpiKEnDOEaNK5vPxzbCBKF6jx55kaCp29njs7kImGB
-         uEVw==
-X-Gm-Message-State: AOAM532CYwjgNTEcm8g/L/SwP7xb+lOw0dO7E02hoF4SQJTWfR8+eDab
-        /s4u4giVvWTeuPKt+CV3J01fxT12rxJieg==
-X-Google-Smtp-Source: ABdhPJwHP3q9+tPT/jVR+WUuXEvNsRSwHYeMpeuYX6s/lzdmsY9nqauGT3RQg1Xm3ZYs27w+0yoeRQ==
-X-Received: by 2002:aa7:984e:: with SMTP id n14mr5772635pfq.272.1598091002040;
-        Sat, 22 Aug 2020 03:10:02 -0700 (PDT)
-Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with ESMTPSA id b20sm5281994pfo.88.2020.08.22.03.09.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Aug 2020 03:10:01 -0700 (PDT)
-Subject: Re: [PATCH v1 03/10] powerpc/kernel/iommu: Use largepool as a last
- resort when !largealloc
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Joel Stanley <joel@jms.id.au>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
-        David Dai <zdai@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20200817234033.442511-1-leobras.c@gmail.com>
- <20200817234033.442511-4-leobras.c@gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Autocrypt: addr=aik@ozlabs.ru; keydata=
- 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
-Message-ID: <75fb1e8b-2506-ffd8-64af-4abfefe03d2f@ozlabs.ru>
-Date:   Sat, 22 Aug 2020 20:09:55 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=sKQX7+QPM8TCkmUA+73lNsGtd5xyce1g0GepBIdvk64=;
+        b=jPyoncKuMX7yjJ6fK3PGOqUTSUKQ728Pk+gcPUdQ6I5xQ8MiQXXb6eyvAEex7jsSy3
+         ZyDaGT0MtEewdTOO780GUoRWkmcPWwv+Ozp+rGuTWmk39K+6SMiSD2bmiuqS2PrQNyK+
+         KmtyRi/lBlaneg5kxZrAV3AhmG/kEU/gavZae8+Mwl1nIdxToxbOe0vB219yYMSt8o9Y
+         ZASb+41LCobpKb9Ii7tWPxpkqCGrVNgd6uq3Nr6Uq/kEixs7QNZjE1eOfWx+dC++EH4r
+         W3fcKKy0rQG3MQpLe/nKTUGcP1vpL6iOrG8k1FazqeRYibif1PAbT2x4Pjq07XyK650Z
+         vE1A==
+X-Gm-Message-State: AOAM531PRdLzH7FCFcAzR40RK7LGOJyephYHP5EHcT+PR2wJ1NWKVnKA
+        VVXG3f27+RczEQ6cQSQGu4jE/Q3l/h8=
+X-Google-Smtp-Source: ABdhPJzK5fE5wIic0HWGpYPZRyf7qrksQ4cQO4rmzb6yJT3eYh8bPthobhCrXSWRxSV2xXPMnYg31w==
+X-Received: by 2002:a1c:1b17:: with SMTP id b23mr2363635wmb.152.1598091173039;
+        Sat, 22 Aug 2020 03:12:53 -0700 (PDT)
+Received: from ogabbay-VM ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id v20sm10732193wrd.6.2020.08.22.03.12.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 22 Aug 2020 03:12:52 -0700 (PDT)
+Date:   Sat, 22 Aug 2020 13:12:50 +0300
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs fixes pull request for kernel 5.9-rc2/3
+Message-ID: <20200822101250.GA16935@ogabbay-VM>
 MIME-Version: 1.0
-In-Reply-To: <20200817234033.442511-4-leobras.c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Greg,
 
+This is the pull request for habanalabs driver fixes for 5.9-rc2/3.
+Mostly security fixes but also some functionality fixes. More details are
+in the tag.
 
-On 18/08/2020 09:40, Leonardo Bras wrote:
-> As of today, doing iommu_range_alloc() only for !largealloc (npages <= 15)
-> will only be able to use 3/4 of the available pages, given pages on
-> largepool  not being available for !largealloc.
-> 
-> This could mean some drivers not being able to fully use all the available
-> pages for the DMA window.
-> 
-> Add pages on largepool as a last resort for !largealloc, making all pages
-> of the DMA window available.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->  arch/powerpc/kernel/iommu.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index d7086087830f..7f603d4e62d4 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -261,6 +261,15 @@ static unsigned long iommu_range_alloc(struct device *dev,
->  			pass++;
->  			goto again;
->  
-> +		} else if (pass == tbl->nr_pools + 1) {
-> +			/* Last resort: try largepool */
-> +			spin_unlock(&pool->lock);
-> +			pool = &tbl->large_pool;
-> +			spin_lock(&pool->lock);
-> +			pool->hint = pool->start;
-> +			pass++;
-> +			goto again;
-> +
+Thanks,
+Oded
 
+The following changes since commit 51072c0f5b5e98a035c6f63b83ba2afedbb7accd:
 
-A nit: unnecessary new line.
+  mei: hdcp: fix mei_hdcp_verify_mprime() input parameter (2020-08-18 15:39:38 +0200)
 
+are available in the Git repository at:
 
-Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-fixes-2020-08-22
 
+for you to fetch changes up to 5aba368893c0d9e275f4b823e053fd16155f63b9:
 
+  habanalabs: correctly report inbound pci region cfg error (2020-08-22 12:47:58 +0300)
 
->  		} else {
->  			/* Give up */
->  			spin_unlock_irqrestore(&(pool->lock), flags);
-> 
+----------------------------------------------------------------
+This tag contains the following bug fixes for 5.9-rc2/3:
 
--- 
-Alexey
+- Correct cleanup of PCI bar mapping in case of failure during
+  initialization.
+
+- Several security fixes:
+  - Validating user addresses before mapping them
+  - Validating packet id (from user) before using it as index for array.
+  - Validating F/W file size before coping it.
+  - Prevent possible overflow when validating address from user in
+    profiler.
+  - Validate queue index (from user) before using it as index for array.
+  - Check for correct vmalloc return code
+
+- Fix memory corruption in debugfs entry
+
+- Fix a loop in gaudi_extract_ecc_info()
+
+- Fix the set clock gating function in gaudi code
+
+- Set maximum power to F/W according to the card type
+
+- Cix incorrect check on failed workqueue create
+
+- Correctly report error when configuring the PCI controller
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      habanalabs: fix incorrect check on failed workqueue create
+
+Dan Carpenter (2):
+      habanalabs: Fix memory corruption in debugfs
+      habanalabs: Fix a loop in gaudi_extract_ecc_info()
+
+Oded Gabbay (1):
+      habanalabs: set max power according to card type
+
+Ofir Bitton (9):
+      habanalabs: unmap PCI bars upon iATU failure
+      habanalabs: Validate user address before mapping
+      habanalabs: validate packet id during CB parse
+      habanalabs: verify user input in cs_ioctl_signal_wait
+      habanalabs: set clock gating according to mask
+      habanalabs: proper handling of alloc size in coresight
+      habanalabs: validate FW file size
+      habanalabs: check correct vmalloc return code
+      habanalabs: correctly report inbound pci region cfg error
+
+ drivers/misc/habanalabs/common/command_buffer.c    | 16 +++-
+ .../misc/habanalabs/common/command_submission.c    |  8 ++
+ drivers/misc/habanalabs/common/debugfs.c           |  8 +-
+ drivers/misc/habanalabs/common/device.c            |  9 ++-
+ drivers/misc/habanalabs/common/firmware_if.c       |  9 +++
+ drivers/misc/habanalabs/common/habanalabs.h        |  7 +-
+ drivers/misc/habanalabs/common/memory.c            |  9 ++-
+ drivers/misc/habanalabs/common/mmu.c               |  2 +-
+ drivers/misc/habanalabs/common/pci.c               |  8 +-
+ drivers/misc/habanalabs/common/sysfs.c             |  7 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 92 ++++++++++++++++------
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |  3 +-
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |  8 +-
+ drivers/misc/habanalabs/goya/goya.c                | 31 ++++++++
+ drivers/misc/habanalabs/goya/goya_coresight.c      |  8 +-
+ 15 files changed, 178 insertions(+), 47 deletions(-)
