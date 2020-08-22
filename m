@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6635424E913
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A2F24E90E
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgHVReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 13:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56126 "EHLO mail.kernel.org"
+        id S1728534AbgHVRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 13:32:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728132AbgHVRcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 13:32:17 -0400
-Subject: Re: [GIT PULL] Kbuild fixes for v5.9-rc2
+        id S1728503AbgHVRce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 13:32:34 -0400
+Subject: Re: [GIT PULL] Devicetree fixes for v5.9, take 2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598117537;
-        bh=Q6N6KwbYhvbkpIQumB9/HhFg2VuHmS4sQTBfNSvj1Ck=;
+        s=default; t=1598117551;
+        bh=FLzSlgFVBkF5QZVZMU+BHTmjffHTpS912NtlkIN1fXU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=N1KzH3iBLcbp9hsrZDZnuw1r1AezTJ+eT1VifmvtTAFCwAwY5bpBsqIRetW2AwM8Q
-         zvoLKC5OK+Fo+HhuBMCa5r7hGfYiLPvBYqtBfiO46FgWOKpRMsq/0p65j5EDRuGdnd
-         lRe2D+OvzrMU6hlhBJvkV2yFyTLHfw0It+weEXFg=
+        b=r4Q2kFDl6GTpSNrtrhoHxYPJWuDCGq+Uuk+fP2Xf53Amt9MHTJy7/vPQ6j3o6ghCF
+         Z5ZT4UsUtXhn5i7cffMn40dxDkOjQvY1ixDkSaNZliPXoMQQHyExn/cWFXEUPGvzbL
+         YlACbApmWOsePqUyOXCNoIccAlsN09VEjEfYVl6w=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
-References: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9
-X-PR-Tracked-Commit-Id: 510bc3cb1ddc32f9533e6ed0a68c980544c3ca3f
+In-Reply-To: <20200822032540.GA2215775@bogus>
+References: <20200822032540.GA2215775@bogus>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200822032540.GA2215775@bogus>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.9-2
+X-PR-Tracked-Commit-Id: 5cd841d2676a702e5f79a8bacbfbae3bfc2411f7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c3d8f220d01220a5b253e422be407d068dc65511
-Message-Id: <159811753724.17427.16062703476306424501.pr-tracker-bot@kernel.org>
-Date:   Sat, 22 Aug 2020 17:32:17 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
+X-PR-Merge-Commit-Id: d6af63305666f4e6fb211f3f12b802b3255f5194
+Message-Id: <159811755175.17427.3895877017502808357.pr-tracker-bot@kernel.org>
+Date:   Sat, 22 Aug 2020 17:32:31 +0000
+To:     Rob Herring <robh@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 22 Aug 2020 23:00:58 +0900:
+The pull request you sent on Fri, 21 Aug 2020 21:25:40 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9
+> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.9-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c3d8f220d01220a5b253e422be407d068dc65511
+https://git.kernel.org/torvalds/c/d6af63305666f4e6fb211f3f12b802b3255f5194
 
 Thank you!
 
