@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8BC24D8C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA6524D902
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgHUPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:37:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10252 "EHLO huawei.com"
+        id S1727924AbgHUPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:46:15 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10253 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728020AbgHUPha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:37:30 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A82DCE63793C753BE110;
-        Fri, 21 Aug 2020 23:37:20 +0800 (CST)
-Received: from huawei.com (10.151.151.249) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 21 Aug 2020
- 23:37:11 +0800
+        id S1725828AbgHUPqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:46:11 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 54A0117A4900C0881F6B;
+        Fri, 21 Aug 2020 23:46:07 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 21 Aug 2020
+ 23:45:57 +0800
 From:   Dongjiu Geng <gengdongjiu@huawei.com>
 To:     <mingo@redhat.com>, <peterz@infradead.org>,
         <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
@@ -25,9 +25,9 @@ To:     <mingo@redhat.com>, <peterz@infradead.org>,
         <thara.gopinath@linaro.org>, <pauld@redhat.com>,
         <vincent.donnefort@arm.com>, <rdunlap@infradead.org>
 CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH] sched: Add trace for task wake up latency and leave running time
-Date:   Fri, 21 Aug 2020 23:59:28 +0000
-Message-ID: <20200821235928.32727-1-gengdongjiu@huawei.com>
+Subject: [PATCH v2] sched: Add trace for task wake up latency and leave running time
+Date:   Sat, 22 Aug 2020 00:08:14 +0000
+Message-ID: <20200822000814.33189-1-gengdongjiu@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -50,8 +50,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
    echo 1 > /sys/kernel/debug/tracing/events/sched/sched_wakeup_latency/enable
 
 2) Similarly, when tune performance, we usually want to know which
-   tasks are not running for a long time, Use the following methods
-   to save CPU overhead and storage space.
+   tasks are not running for a long time that is greater than a
+   certain threshold, Use the following commands can easily implement
+   it.
 
    echo 'time > 10000000' > /sys/kernel/debug/tracing/events/sched/sched_leave_running_time/filter
    echo 1 > /sys/kernel/debug/tracing/events/sched/sched_leave_running_time/enable
