@@ -2,235 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD7C24E917
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C690F24E926
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgHVRgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 13:36:49 -0400
-Received: from smtprelay0083.hostedemail.com ([216.40.44.83]:38756 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727945AbgHVRgq (ORCPT
+        id S1728357AbgHVRwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 13:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbgHVRwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 13:36:46 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 46521182CED28;
-        Sat, 22 Aug 2020 17:36:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1593:1594:1605:1730:1747:1777:1792:1801:2393:2559:2562:2693:2828:2904:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:4050:4119:4250:4321:4605:5007:6609:7875:9592:10004:10848:11026:11232:11473:11657:11658:11914:12043:12295:12296:12297:12438:12555:12679:12740:12760:12895:12986:13019:13439:14096:14097:14659:21060:21080:21611:21627:21740:21789:21939:30003:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grain22_34001cf27043
-X-Filterd-Recvd-Size: 8567
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 22 Aug 2020 17:36:43 +0000 (UTC)
-Message-ID: <ae31327674df92df720b1f026804b66c59e43e4c.camel@perches.com>
-Subject: Re: [GIT PULL] fallthrough pseudo-keyword macro conversions for
- 5.9-rc2
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Sat, 22 Aug 2020 10:36:42 -0700
-In-Reply-To: <20200820220210.GA14894@embeddedor>
-References: <20200820220210.GA14894@embeddedor>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 22 Aug 2020 13:52:01 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35742C061573;
+        Sat, 22 Aug 2020 10:52:01 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f193so2671583pfa.12;
+        Sat, 22 Aug 2020 10:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6pe9e9T2twD5/s7EIOh11y2F9Qe9Loy+s9jYVy+9GcQ=;
+        b=Kae2hkjtqCH1AQ3t4ujJSspPFilOMnRYd30SkprY1/HQlAqanO9AnTcVRpuFx1naL3
+         jvJZFzPdgU8U5LkBJm/ThV/bfJgxViwpzT6V4SCi+j8C5XVTSAc4aj5KtUHQbkKrhAyz
+         Ty3YxQXHJDRyx9UsRAW8ZRO5EEo4brOuXoOfRuP+k+TokknisUrOix68px/R6BRJ85yX
+         epWv9DFDNYSA8dfjoIwwCnaxGoZRbOt/r7Cqk9+Yv7OGX/fFEg6P+EEt2o77qyKYxTUn
+         PzMA0P23jZeEatVaUuDbqHNoI9LAx97fH3I1x1Z3sMhBr38uDZJTEsNtJGWgGj1iSH08
+         bZvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6pe9e9T2twD5/s7EIOh11y2F9Qe9Loy+s9jYVy+9GcQ=;
+        b=bj0CR8RHmt4xDe2z1wtFcyOzm+2+jiyh4U4+7u/6eEqx5z4mcCekAUIuUGfZY+W0IY
+         roM95rP46NEJIhrcHVNJj51nqmJ0L7sTDl8F26iliab4L/6iuTMZK2swmlTdfZqFroGU
+         lNBOtZ7HRAAllG2P6m9Tzy0Ia2ltikmP+yjbxUrcuSt9888GsnLqhxoZG1IQPuehsnVU
+         gALLrWzQ9hQRI/oFG6f8WT2aaTdJfO57v53bkmEUK1GxPYuK0opX5so28LSJvzGd811A
+         Drap7UTLUq1yMCpRrsLaZFlY7tOiRAXFsIM7/3Z6cnTdEUlop0XKpmOtpSogqKsqzSC/
+         zHgQ==
+X-Gm-Message-State: AOAM533xB6k9a6Qex5iSvE7SMKmr0mtvyMtamjf65m0vWr9G0ibBlXHg
+        Tj5NnuPvrmlzug+mabb1M10=
+X-Google-Smtp-Source: ABdhPJxTIF8SEg5kQ7iKSi30Rkzh/VQZDW09KS3xVrB6DSdOUljq+/rLGKP+iwW+mx/5pQhPJb/Byg==
+X-Received: by 2002:a65:49c9:: with SMTP id t9mr526692pgs.256.1598118720669;
+        Sat, 22 Aug 2020 10:52:00 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id f19sm5496232pgn.10.2020.08.22.10.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Aug 2020 10:51:59 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm: drop cache sync hack
+Date:   Sat, 22 Aug 2020 10:52:54 -0700
+Message-Id: <20200822175254.1105377-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 17:02 -0500, Gustavo A. R. Silva wrote:
-> This treewide patch doesn't address ALL fall-through markings in all
-> subsystems at once because I have previously sent out patches for some of
-> such subsystems separately, and I will follow up on them; however, this
-> definitely contributes most of the work needed to replace all the
-> fall-through markings with the fallthrough pseudo-keyword macro in the
-> whole codebase.
+From: Rob Clark <robdclark@chromium.org>
 
-Hi Gustavo.  Thanks for this.
+Now that it isn't causing problems to use dma_map/unmap, we can drop the
+hack of using dma_sync in certain cases.
 
-Some stragglers (for -next) in the arch/subsystems modified
-by this patch:
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
-arch/x86/
-drivers/gpu/
-drivers/misc/
-drivers/net/ethernet/
-lib/
-
-And some in scripts/ and tools/ which maybe shouldn't be changed.
-
-Possible diffs for each straggler directory block below:
-
->  arch/x86/
-
-$ git diff -U0 arch
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 0f3d01562ded..b825a5a5ede7 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1149 +1149 @@ static inline void x86_assign_hw_event(struct perf_event *event,
--               /* fall through */
-+               fallthrough;
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index 983cd53ed4c9..097cc3439e53 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -190 +190 @@ static void __init e820_print_type(enum e820_type type)
--       case E820_TYPE_RAM:             /* Fall through: */
-+       case E820_TYPE_RAM:
-@@ -197 +197 @@ static void __init e820_print_type(enum e820_type type)
--       case E820_TYPE_PMEM:            /* Fall through: */
-+       case E820_TYPE_PMEM:
-@@ -1044 +1044 @@ static const char *__init e820_type_to_string(struct e820_entry *entry)
--       case E820_TYPE_RESERVED_KERN:   /* Fall-through: */
-+       case E820_TYPE_RESERVED_KERN:
-@@ -1060 +1060 @@ static unsigned long __init e820_type_to_iomem_type(struct e820_entry *entry)
--       case E820_TYPE_RESERVED_KERN:   /* Fall-through: */
-+       case E820_TYPE_RESERVED_KERN:
-@@ -1062,7 +1062,7 @@ static unsigned long __init e820_type_to_iomem_type(struct e820_entry *entry)
--       case E820_TYPE_ACPI:            /* Fall-through: */
--       case E820_TYPE_NVS:             /* Fall-through: */
--       case E820_TYPE_UNUSABLE:        /* Fall-through: */
--       case E820_TYPE_PRAM:            /* Fall-through: */
--       case E820_TYPE_PMEM:            /* Fall-through: */
--       case E820_TYPE_RESERVED:        /* Fall-through: */
--       case E820_TYPE_SOFT_RESERVED:   /* Fall-through: */
-+       case E820_TYPE_ACPI:
-+       case E820_TYPE_NVS:
-+       case E820_TYPE_UNUSABLE:
-+       case E820_TYPE_PRAM:
-+       case E820_TYPE_PMEM:
-+       case E820_TYPE_RESERVED:
-+       case E820_TYPE_SOFT_RESERVED:
-@@ -1082,3 +1082,3 @@ static unsigned long __init e820_type_to_iores_desc(struct e820_entry *entry)
--       case E820_TYPE_RESERVED_KERN:   /* Fall-through: */
--       case E820_TYPE_RAM:             /* Fall-through: */
--       case E820_TYPE_UNUSABLE:        /* Fall-through: */
-+       case E820_TYPE_RESERVED_KERN:
-+       case E820_TYPE_RAM:
-+       case E820_TYPE_UNUSABLE:
-
->  drivers/gpu/
-
-$ git diff -U1 drivers/gpu
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-index b5986d19dc08..77dec1a56b9b 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-@@ -6203,3 +6203,3 @@ static void si_request_link_speed_change_before_state_change(struct amdgpu_devic
- #endif
--                       /* fall through */
-+                       fallthrough;
-                default:
-diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
-index 886e9959496f..6ba12f141833 100644
---- a/drivers/gpu/drm/radeon/ci_dpm.c
-+++ b/drivers/gpu/drm/radeon/ci_dpm.c
-@@ -4863,3 +4863,3 @@ static void ci_request_link_speed_change_before_state_change(struct radeon_devic
- #endif
--                       /* fall through */
-+                       fallthrough;
-                default:
-diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
-index d1c73e9db889..76427c893827 100644
---- a/drivers/gpu/drm/radeon/si_dpm.c
-+++ b/drivers/gpu/drm/radeon/si_dpm.c
-@@ -5751,3 +5751,3 @@ static void si_request_link_speed_change_before_state_change(struct radeon_devic
- #endif
--                       /* fall through */
-+                       fallthrough;
-                default:
-
-> drivers/misc/
-
-diff --git a/drivers/misc/mei/interrupt.c b/drivers/misc/mei/interrupt.c
-index 326955b04fda..683871267f4f 100644
---- a/drivers/misc/mei/interrupt.c
-+++ b/drivers/misc/mei/interrupt.c
-@@ -135 +134,0 @@ static int mei_cl_irq_read_msg(struct mei_cl *cl,
--                               fallthrough;
-
->  drivers/net/ethernet/
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
-index 08c76636c164..2a86307e3c43 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-anarion.c
-@@ -87,3 +87,2 @@ static struct anarion_gmac *anarion_config_dt(struct platform_device *pdev)
-        case PHY_INTERFACE_MODE_RGMII:
--               fallthrough;
-        case PHY_INTERFACE_MODE_RGMII_ID:
-
->  drivers/scsi/
-
-$ git diff -U1 drivers/scsi
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index cd7c7d269f6f..26c992213c9c 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -468,5 +468,4 @@ static void sas_discover_domain(struct work_struct *work)
-                pr_notice("ATA device seen but CONFIG_SCSI_SAS_ATA=N so cannot attach\n");
--               /* Fall through */
-+               fallthrough;
- #endif
--               /* Fall through - only for the #else condition above. */
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index b2f49152b4d4..3cb7aeb93fd3 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -52,26 +52,16 @@ static void sync_for_device(struct msm_gem_object *msm_obj)
+ {
+ 	struct device *dev = msm_obj->base.dev->dev;
  
->  lib/
-
-$ git diff -U0 lib
-diff --git a/lib/nlattr.c b/lib/nlattr.c
-index 665bdaff02c8..e0da8c23d674 100644
---- a/lib/nlattr.c
-+++ b/lib/nlattr.c
-@@ -404,2 +404 @@ static int validate_nla(const struct nlattr *nla, int maxtype,
--		/* fall through */
--
-+		fallthrough;
-diff --git a/lib/zlib_inflate/inflate.c b/lib/zlib_inflate/inflate.c
-index 67cc9b08ae9d..8147b0ade347 100644
---- a/lib/zlib_inflate/inflate.c
-+++ b/lib/zlib_inflate/inflate.c
-@@ -399 +399 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -407 +407 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -410 +410 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -449 +449 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -483 +483 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -504 +504 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -578 +578 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -618 +618 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -626 +626 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -652 +652 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -672 +672 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-@@ -723 +723 @@ int zlib_inflate(z_streamp strm, int flush)
--	    /* fall through */
-+        	fallthrough;
-
-
+-	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
+-		dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
+-			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+-	} else {
+-		dma_map_sg(dev, msm_obj->sgt->sgl,
+-			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+-	}
++	dma_map_sg(dev, msm_obj->sgt->sgl,
++		msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+ }
+ 
+ static void sync_for_cpu(struct msm_gem_object *msm_obj)
+ {
+ 	struct device *dev = msm_obj->base.dev->dev;
+ 
+-	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
+-		dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
+-			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+-	} else {
+-		dma_unmap_sg(dev, msm_obj->sgt->sgl,
+-			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+-	}
++	dma_unmap_sg(dev, msm_obj->sgt->sgl,
++		msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+ }
+ 
+ /* allocate pages from VRAM carveout, used when no IOMMU: */
+-- 
+2.26.2
 
