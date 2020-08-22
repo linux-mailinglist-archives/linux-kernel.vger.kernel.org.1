@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BB324E564
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE20224E576
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgHVE3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 00:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgHVE2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 00:28:36 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E17C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:36 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t11so1792157plr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dtHtIWl6J8kIFWKXyZWws3NaZY5n+Lcb3UuZs+GuLv4=;
-        b=R53OrZZWGDIlIq1se/YzOjwMVMXn4r1O33D1gHWELFMDJddknNzoTdyoDOZjJxRSC+
-         0BA8PkFUN5wcjq4ZPW5+yV9S8gKYo17gG6reRRjvQ+HdSiL+Fe/hRBEMvq+AYQqzch91
-         RABhbEfIDTyk7Bl0wqiPe1T1elJOPCYEyrq8dIhksxYbFMj54FFIFs1+/EfoUXZ3LfQ3
-         birdcw54W2pRGqRm7F5VKjAfUxvS58PKB7NuWisieG/zBgiqlFHOri9AMan2sSUFs0oL
-         Pq/VUxGQxAWQxKtVlHaFrONvuBcCPxZ/3pkXFse6GnPCcTuwJLVop4SWI1qibS4eth2B
-         eXXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dtHtIWl6J8kIFWKXyZWws3NaZY5n+Lcb3UuZs+GuLv4=;
-        b=M6VlEgJS2ZQ3QawI3+VCpS0tWqdxAyE83vzW4TO/9xO9E5+jByXzLBrFerRmztFqIw
-         mJtvgthug2fwkO8lq5L8ZhUlBsUl8W2ZgvT+4ZyFPslnaT0+es1JJ10u0qViIRAn9jMl
-         3KzuE6HI/Pj6ZgwTI7O2UeO+2vTCGrMU11oQXQLh75WIbs1eAXXwdP0AMrz6N+YDIYwU
-         K4FmtSesk0QeIlNnDiptxUbVo7pU1OB0iC2IJJzEM7Nwa4O870R+6WtR3mOTOWCMz5Ju
-         p0c7eBpfT7nI6ysSVcgywrrWr8t3PdD6DFoZUua/H4PPYk2pfUWOiKbWDkNvdzJh+NTW
-         tHLA==
-X-Gm-Message-State: AOAM531tKDJeATPFs3csaNcaeGPZM+8+DpiIXlnIRo/kdbPXfI0vgMtY
-        1YnDOjHl8PNvWLLaHE/+WPo=
-X-Google-Smtp-Source: ABdhPJw20iJdex84y+BAqAEu6iBpS8k4sg6GOf+cwWHA6VnqRrDPHBAvJkMquof+YQNxHnXJtXlhmA==
-X-Received: by 2002:a17:90b:4397:: with SMTP id in23mr4651060pjb.102.1598070515318;
-        Fri, 21 Aug 2020 21:28:35 -0700 (PDT)
-Received: from jacob-builder.jf.intel.com ([192.55.55.43])
-        by smtp.gmail.com with ESMTPSA id q5sm3341582pgi.31.2020.08.21.21.28.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 21:28:34 -0700 (PDT)
-From:   Jacob Pan <jacob.pan.linux@gmail.com>
-X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>, Wu Hao <hao.wu@intel.com>
-Subject: [PATCH v2 9/9] iommu/vt-d: Store guest PASID during bind
-Date:   Fri, 21 Aug 2020 21:35:18 -0700
-Message-Id: <1598070918-21321-10-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1726676AbgHVEmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 00:42:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:62111 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725840AbgHVEmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 00:42:02 -0400
+IronPort-SDR: L5cWrMKeTLKA+Ql7C8AaxVuaFgEuQJe2/QT6SFAkOg5BTHZzkciTnp/ykw8j2GoZofVgWD9vsC
+ Ob758+GcXEEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="153275278"
+X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
+   d="scan'208";a="153275278"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 21:42:00 -0700
+IronPort-SDR: /wRozzR/+pHnFL1sLFEhDuh29wmyHAaIIjcALqJySqFz31V/w+W3Lh2NcT1oZa6hhrPaDMdhMM
+ grwt4A3mgmHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
+   d="scan'208";a="327943115"
+Received: from glacier.sc.intel.com ([10.3.62.63])
+  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2020 21:42:00 -0700
+From:   Rajmohan Mani <rajmohan.mani@intel.com>
+To:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ayman Bagabas <ayman.bagabas@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Cc:     pmalani@chromium.org, bleung@chromium.org,
+        Rajmohan Mani <rajmohan.mani@intel.com>
+Subject: [PATCH v2 0/3] Add Intel Input Output Manager driver 
+Date:   Fri, 21 Aug 2020 21:05:05 -0700
+Message-Id: <20200822040508.23510-1-rajmohan.mani@intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOASID core maintains the guest-host mapping in the form of SPID and
-IOASID. This patch assigns the guest PASID (if valid) as SPID while
-binding guest page table with a host PASID. This mapping will be used
-for lookup and notifications.
+Hi,
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch series add support for Intel Input Output Manager (IOM)
+driver, which is leveraged by the Intel PMC USB mux control driver.
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index d8a5efa75095..4c958b1aec4c 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -406,6 +406,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 		if (data->flags & IOMMU_SVA_GPASID_VAL) {
- 			svm->gpasid = data->gpasid;
- 			svm->flags |= SVM_FLAG_GUEST_PASID;
-+			ioasid_attach_spid(data->hpasid, data->gpasid);
- 		}
- 		svm->iommu = iommu;
- 		/*
-@@ -517,6 +518,7 @@ int intel_svm_unbind_gpasid(struct device *dev, int pasid)
- 				ioasid_attach_data(pasid, NULL);
- 				ioasid_notify(pasid, IOASID_UNBIND,
- 					IOASID_NOTIFY_SET);
-+				ioasid_attach_spid(pasid, INVALID_IOASID);
- 				kfree(svm);
- 			}
- 		}
+changes from v1:
+- Included device role (UFP) support patch from Heikki to this series.
+- Addressed Greg's comments on v1 with below changes
+- Used per-instance variable for struct intel_iom
+- Removed struct device *dev inside probe function
+- Removed dev_set_drvdata() inside probe function
+- Added NULL pointer check on struct intel_iom * as well as members
+  dev and regbar, inside intel_iom_port_status(), to protect against
+  calls to this API before driver gets probed.
+- Limit support to only one IOM device
+- Removed intel_iom_get()/intel_iom_put() calls, as the dependency through
+  Kconfig is enough to prevent the IOM driver from unloading, when used
+  by callers.
+
+Heikki Krogerus (2):
+  usb: typec: intel_pmc_mux: Check the port status before connect
+  usb: typec: intel_pmc_mux: Support for device role (UFP)
+
+Rajmohan Mani (1):
+  platform/x86: Add Intel Input Output Manager (IOM) driver
+
+ drivers/platform/x86/Kconfig                |  16 +++
+ drivers/platform/x86/Makefile               |   1 +
+ drivers/platform/x86/intel_iom.c            |  95 +++++++++++++++
+ drivers/usb/typec/mux/Kconfig               |   1 +
+ drivers/usb/typec/mux/intel_pmc_mux.c       | 124 ++++++++++++++------
+ include/linux/platform_data/x86/intel_iom.h |  49 ++++++++
+ 6 files changed, 251 insertions(+), 35 deletions(-)
+ create mode 100644 drivers/platform/x86/intel_iom.c
+ create mode 100644 include/linux/platform_data/x86/intel_iom.h
+
 -- 
-2.7.4
+2.20.1
 
