@@ -2,53 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CD824E62E
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 09:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8EE24E619
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 09:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgHVHwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 03:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgHVHwo (ORCPT
+        id S1727123AbgHVHbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 03:31:11 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51645 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgHVHbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 03:52:44 -0400
-X-Greylist: delayed 1349 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 22 Aug 2020 00:52:43 PDT
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADFAC061573;
-        Sat, 22 Aug 2020 00:52:43 -0700 (PDT)
-Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.89)
-        (envelope-from <laforge@gnumonks.org>)
-        id 1k9NyW-0001MY-7W; Sat, 22 Aug 2020 09:30:04 +0200
-Received: from laforge by localhost.localdomain with local (Exim 4.94)
-        (envelope-from <laforge@gnumonks.org>)
-        id 1k9NyH-00Ftt6-AZ; Sat, 22 Aug 2020 09:29:49 +0200
-Date:   Sat, 22 Aug 2020 09:29:49 +0200
-From:   Harald Welte <laforge@gnumonks.org>
-To:     Kenneth Chan <kenneth.t.chan@gmail.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] platform/x86: panasonic-laptop: add optical drive,
- brightness and battery charging threshold
-Message-ID: <20200822072949.GR3544863@nataraja>
-References: <20200821181433.17653-1-kenneth.t.chan@gmail.com>
+        Sat, 22 Aug 2020 03:31:11 -0400
+Received: by mail-io1-f70.google.com with SMTP id z68so2345431iof.18
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 00:31:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=st/hVTe2E9UvLC8UmO2GkUboqUCZ3XQhCIkbhqXTjpA=;
+        b=WL9Mq3voFHKKzKzDsd0BdmPsh2O2VGMBoO/8PB7hFRtiLGrZ7FbxOk7NITantIKozu
+         L1g0wtPL/PTT6LFIuPuK0lR17hUlwwku85gfshs3jYpJsiQ4IBxV0NtD9kmY3sTpAoeJ
+         gZV7P8QTarQrYh1nYBLqa2ZX1c/5tE2aITv6AhZ5RzSBOGxJVNof8FhJWJ8ODkJJqClL
+         vOeni0toGFrRtM5zZu1VuJpoV2RK6RrhqIz6D6s/h44P/G0Rf8a48Dm82YyK34phlM72
+         hG4MsHThBEq165ZWOCMlaJlStiLEyEIlKL0Xh+lCeoJFAf+s4T+OQBGJ2GXsfDFlDzbI
+         aLWg==
+X-Gm-Message-State: AOAM530+ROq4LSsCQ7EK2Sx4CNVSJYybFdauIC/l2DCblpiAJ8sNseFt
+        zokeSDmQA/l6GttXMKCDg1iBYTN2Ck3CEAZEhFMQzvr/TFts
+X-Google-Smtp-Source: ABdhPJwDJ03bPMLLffCjApN5HVm3XE5CyNuvzwhwK3nMhUQDfP0iE4Evksxu0fstZGt0Ojjv2WExu+Qh5Yitp6b0W8YQQjCNOZOP
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821181433.17653-1-kenneth.t.chan@gmail.com>
+X-Received: by 2002:a92:a119:: with SMTP id v25mr5628952ili.77.1598081470384;
+ Sat, 22 Aug 2020 00:31:10 -0700 (PDT)
+Date:   Sat, 22 Aug 2020 00:31:10 -0700
+In-Reply-To: <000000000000e8f42805ad5d136c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005d511305ad725632@google.com>
+Subject: Re: KASAN: use-after-free Write in vcs_read
+From:   syzbot <syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, jslaby@suse.com, jslaby@suse.cz,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, nico@fluxnic.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Keneth and Linux kernel developers,
+syzbot has bisected this issue to:
 
-as I have discontinued maintenance of the panasonic-laptop driver (and
-recently sent a related MAINTAINERS update to that fact), I would like
-to suggest Kenneth as the new maintainer for this driver.
+commit b1c32fcfadf5593ab7a63261cc8a5747c36e627e
+Author: Jiri Slaby <jslaby@suse.cz>
+Date:   Tue Aug 18 08:57:05 2020 +0000
 
-Regards,
-	Harald
--- 
-- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
-============================================================================
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
+    vc_screen: extract vcs_read_buf_header
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13259dee900000
+start commit:   494d311a Add linux-next specific files for 20200821
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10a59dee900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17259dee900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a61d44f28687f508
+dashboard link: https://syzkaller.appspot.com/bug?extid=ad1f53726c3bd11180cb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16704b7e900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1588a046900000
+
+Reported-by: syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com
+Fixes: b1c32fcfadf5 ("vc_screen: extract vcs_read_buf_header")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
