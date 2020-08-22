@@ -2,138 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E794824E560
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B36E24E559
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgHVE3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 00:29:02 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:46810 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726475AbgHVE2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 00:28:41 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 65C68F7596F323BC7664;
-        Sat, 22 Aug 2020 12:28:38 +0800 (CST)
-Received: from huawei.com (10.175.112.70) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Sat, 22 Aug 2020
- 12:28:28 +0800
-From:   Ding Tianhong <dingtianhong@huawei.com>
-To:     <dingtianhong@huawei.com>, <hoan@os.amperecomputing.com>,
-        <fancer.lancer@gmail.com>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel.openeuler@huawei.com>
-Subject: [PATCH] gpio: dwapb: add support for new hisilicon ascend soc
-Date:   Sat, 22 Aug 2020 12:27:53 +0800
-Message-ID: <1598070473-46624-1-git-send-email-dingtianhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1725877AbgHVE2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 00:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgHVE2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 00:28:22 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57C7C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:22 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q1so1675938pjd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YYpeb/PkPwRbYOwET4nNHLv4kDK8jDR1mJWP198+wu4=;
+        b=loWFE4rMVDX8IGXeu/alOJRUkonwP9feeX6uYFVfzGYkUYTqL0rN1TSZox0V/jBcyE
+         ST0IcVmRzqfvHAw59t0VXChNV9zmzKHttulB69GBPiMG+Zrf25IK179q5Z+pPQY+X69a
+         BdTrJxCFPs99S9DEJGUsAljDdRDO0zuWgQeODz3iY3GcIi6iqLbsT22dMqgr/ZA+7ulJ
+         fDeI4TBx18g9TnJnrtonVP9OLRI2oiJt32HScRYg4A3t22ALg9tfafoLn+MEo+T0Xeho
+         kg7zMvakUzqOY6fTRrb/HvAKBjQJ99Iww5ownAxZe1ZpugIu1tbk8qh1uF/Uxe0VkhJZ
+         B97g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YYpeb/PkPwRbYOwET4nNHLv4kDK8jDR1mJWP198+wu4=;
+        b=Z2DSw3G71JEeJnoFsdTKvgmRV1Z4zu8zPycGSMuTgGKrZFGF810diVIMyLNkyHcUj1
+         lV1oTasODgBjhC3/TMAybZMYuyRCI2DHiVWiOMrLbLVMAkDb8hSjca+kDOroEwG7QhCH
+         eUJ+OG4AZbQPt+ik1v3C0SkW9G9Sd6x/iKs2Mgobd9Y73hUFZnjgFPXYvhhf1r2Mzz7j
+         qBmDPGxAp+MzxYR47whkHBfsGSSj1tIUg3MWVOBklQJV80lTjKn7SKWnr54wTeSWOhgV
+         607tXSsUrZ/FTPuai0O63fXk/sqEXykNbWDLdmQjBuCDkI/Lln0NHyK0Owvd1EfGRWqq
+         x/bw==
+X-Gm-Message-State: AOAM5308v0FufrUoEo/DQkcTiuXpgvjoatW+QNLsPhsCwuGuxLuplJgu
+        BPf6MHWicT3fkwqpa8t0Bu4=
+X-Google-Smtp-Source: ABdhPJymyNPfeAEVglq7lG1V+0IlRKVWGITLjG2VC6ZG7AQXKNBReKqOjLFGvlAWcjuhjRyR29xPQA==
+X-Received: by 2002:a17:902:690a:: with SMTP id j10mr4872494plk.155.1598070502310;
+        Fri, 21 Aug 2020 21:28:22 -0700 (PDT)
+Received: from jacob-builder.jf.intel.com ([192.55.55.43])
+        by smtp.gmail.com with ESMTPSA id q5sm3341582pgi.31.2020.08.21.21.28.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Aug 2020 21:28:21 -0700 (PDT)
+From:   Jacob Pan <jacob.pan.linux@gmail.com>
+X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>, Wu Hao <hao.wu@intel.com>
+Subject: [PATCH v2 0/9] IOASID extensions for guest SVA
+Date:   Fri, 21 Aug 2020 21:35:09 -0700
+Message-Id: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hisilicon ascend soc's gpio is based on the synopsys DW gpio,
-and expand the register to support for INTCOMB_MASK, the new
-register is used to enable/disable the interrupt combine features.
+IOASID was introduced in v5.5 as a generic kernel allocator service for
+both PCIe Process Address Space ID (PASID) and ARM SMMU's Sub Stream
+ID. In addition to basic ID allocation, ioasid_set was defined as a
+token that is shared by a group of IOASIDs. This set token can be used
+for permission checking, but lack of some features to address the
+following needs by guest Shared Virtual Address (SVA).
+- Manage IOASIDs by group, group ownership, quota, etc.
+- State synchronization among IOASID users
+- Non-identity guest-host IOASID mapping
+- Lifecycle management across many users
 
-Both support for ACPI and Device Tree.
+This patchset introduces the following extensions as solutions to the
+problems above.
+- Redefine and extend IOASID set such that IOASIDs can be managed by groups.
+- Add notifications for IOASID state synchronization
+- Add reference counting for life cycle alignment among users
+- Support ioasid_set private IDs, which can be used as guest IOASIDs
+Please refer to Documentation/ioasid.rst in enclosed patch 1/9 for more
+details.
 
-Signed-off-by: Ding Tianhong <dingtianhong@huawei.com>
----
- drivers/gpio/gpio-dwapb.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+This patchset only included VT-d driver as users of some of the new APIs.
+VFIO and KVM patches are coming up to fully utilize the APIs introduced
+here.
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 1d8d55b..923b381 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -49,6 +49,8 @@
- #define GPIO_EXT_PORTC		0x58
- #define GPIO_EXT_PORTD		0x5c
- 
-+#define GPIO_INTCOMB_MASK	0xffc
-+
- #define DWAPB_DRIVER_NAME	"gpio-dwapb"
- #define DWAPB_MAX_PORTS		4
- 
-@@ -58,6 +60,10 @@
- 
- #define GPIO_REG_OFFSET_V2	1
- 
-+#define GPIO_REG_INT_COMB	2
-+#define ENABLE_INT_COMB		1
-+#define DISABLE_INT_COMB	0
-+
- #define GPIO_INTMASK_V2		0x44
- #define GPIO_INTTYPE_LEVEL_V2	0x34
- #define GPIO_INT_POLARITY_V2	0x38
-@@ -354,6 +360,20 @@ static irqreturn_t dwapb_irq_handler_mfd(int irq, void *dev_id)
- 	return IRQ_RETVAL(dwapb_do_irq(dev_id));
- }
- 
-+static void dwapb_enable_inq_combine(struct dwapb_gpio *gpio, unsigned int enable)
-+{
-+	u32 val;
-+
-+	if (gpio->flags & GPIO_REG_INT_COMB) {
-+		val = dwapb_read(gpio, GPIO_INTCOMB_MASK);
-+		if (enable)
-+			val |= BIT(0);
-+		else
-+			val &= BIT(0);
-+		dwapb_write(gpio, GPIO_INTCOMB_MASK, val);
-+	}
-+}
-+
- static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
- 				 struct dwapb_gpio_port *port,
- 				 struct dwapb_port_property *pp)
-@@ -446,6 +466,8 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
- 		irq_create_mapping(gpio->domain, hwirq);
- 
- 	port->gc.to_irq = dwapb_gpio_to_irq;
-+
-+	dwapb_enable_inq_combine(gpio, ENABLE_INT_COMB);
- }
- 
- static void dwapb_irq_teardown(struct dwapb_gpio *gpio)
-@@ -618,6 +640,7 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
- static const struct of_device_id dwapb_of_match[] = {
- 	{ .compatible = "snps,dw-apb-gpio", .data = (void *)0},
- 	{ .compatible = "apm,xgene-gpio-v2", .data = (void *)GPIO_REG_OFFSET_V2},
-+	{ .compatible = "hisi,ascend-gpio", .data = (void *)GPIO_REG_INT_COMB},
- 	{ /* Sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, dwapb_of_match);
-@@ -626,6 +649,7 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
- 	{"HISI0181", 0},
- 	{"APMC0D07", 0},
- 	{"APMC0D81", GPIO_REG_OFFSET_V2},
-+	{"HISI19XX", GPIO_REG_INT_COMB},
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, dwapb_acpi_match);
-@@ -713,6 +737,8 @@ static int dwapb_gpio_remove(struct platform_device *pdev)
- 	reset_control_assert(gpio->rst);
- 	clk_bulk_disable_unprepare(DWAPB_NR_CLOCKS, gpio->clks);
- 
-+	dwapb_enable_inq_combine(gpio, DISABLE_INT_COMB);
-+
- 	return 0;
- }
- 
-@@ -794,6 +820,8 @@ static int dwapb_gpio_resume(struct device *dev)
- 			dwapb_write(gpio, GPIO_INTEN, ctx->int_en);
- 			dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
- 
-+			dwapb_enable_inq_combine(gpio, ENABLE_INT_COMB);
-+
- 			/* Clear out spurious interrupts */
- 			dwapb_write(gpio, GPIO_PORTA_EOI, 0xffffffff);
- 		}
+You can find this series at:
+https://github.com/jacobpan/linux.git ioasid_ext_v2
+(VFIO and KVM patches will be available at this branch when published.)
+
+This work is a result of collaboration with many people:
+Liu, Yi L <yi.l.liu@intel.com>
+Wu Hao <hao.wu@intel.com>
+Ashok Raj <ashok.raj@intel.com>
+Kevin Tian <kevin.tian@intel.com>
+
+Thanks,
+
+Jacob
+
+Changelog
+
+V2:
+- Redesigned ioasid_set APIs, removed set ID
+- Added set private ID (SPID) for guest PASID usage.
+- Add per ioasid_set notification and priority support.
+- Back to use spinlocks and atomic notifications.
+- Added async work in VT-d driver to perform teardown outside atomic context
+
+Jacob Pan (9):
+  docs: Document IO Address Space ID (IOASID) APIs
+  iommu/ioasid: Rename ioasid_set_data()
+  iommu/ioasid: Introduce ioasid_set APIs
+  iommu/ioasid: Add reference couting functions
+  iommu/ioasid: Introduce ioasid_set private ID
+  iommu/ioasid: Introduce notification APIs
+  iommu/vt-d: Listen to IOASID notifications
+  iommu/vt-d: Send IOASID bind/unbind notifications
+  iommu/vt-d: Store guest PASID during bind
+
+ Documentation/ioasid.rst    | 618 ++++++++++++++++++++++++++++++++
+ drivers/iommu/intel/iommu.c |  27 +-
+ drivers/iommu/intel/pasid.h |   1 +
+ drivers/iommu/intel/svm.c   |  97 ++++-
+ drivers/iommu/ioasid.c      | 835 ++++++++++++++++++++++++++++++++++++++++++--
+ include/linux/intel-iommu.h |   2 +
+ include/linux/ioasid.h      | 166 ++++++++-
+ 7 files changed, 1699 insertions(+), 47 deletions(-)
+ create mode 100644 Documentation/ioasid.rst
+
 -- 
-1.8.3.1
+2.7.4
 
