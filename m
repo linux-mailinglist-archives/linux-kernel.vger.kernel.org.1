@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508EE24E4EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 05:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89ACB24E4F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 05:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgHVDfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 23:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgHVDfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 23:35:43 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F916C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 20:35:42 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 144so3135263qkl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 20:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=KG6D35LrETrIbEfRR6i8e5kjQoSsAlfAd76Negglopk=;
-        b=ZLiF4nKTa6K1HQaBpXgSIFMMvGzHJi8jg30bu8smasWga6F6Z6Dp/z48oYS+prRwEL
-         j91ry5qS9XZJsCmKuR0SiRVobdT73zx55YSa01bGbr35MgE40OO0yjBa4C0nVAUpIqCa
-         dCzOwPEUo6ug+qKL++tJRdAfIf0ARwvMUC9aF+LVLfYQsOJGF4OwXNu+UY20YhvfHndb
-         POpJoYvGm2z1DGNwoSYJe1XWaDa1zTonVDmD+/T9dH1NlLgIUCRKkivCaUGd3qmnyn1H
-         KNKTsIHJ9OR+ijbYH+Oxw37DIcwj+Ro6f/A+TZysAycsp51Sp+/rKKFiwI+scuouCpSQ
-         J0fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=KG6D35LrETrIbEfRR6i8e5kjQoSsAlfAd76Negglopk=;
-        b=SvvrCCpqfv5nGXTEHo1/e9Ht++XhTw24lPGcMiaPnrz846+prkkI67Ua8JC/CrDRJN
-         OMlAcjMiH+u3AmykD3FuooJfZeB9XAxcpB/JheJpyZm6ENEHuiXpofGaBcgxxjvQ8d18
-         aM2eTpPI2IzqVC9SRzzSmmaQaHA9tjWLEcnqYYEwdAp0oaBz6YG4ZxvDN7oGplwq/dw3
-         Hz87XSTO4N4oi/nPVaC4AzL3LFRGatc+BHS0UcxGCgG9riMx4CYUV0UjOmKdgT4epWM9
-         48cEmjrRhRcjAku7iS8JEIEp1xbYH3RDf7J1vRW+l6cX+J58cYJKq2qdRxTuQ8mRlmFM
-         rHbQ==
-X-Gm-Message-State: AOAM530yDqRJRwxrT1pIc4gFE5Lwz2qYqxAj62SHLqtoZfYApkjnPR9L
-        QE0IOgK5/JvtwE3UMOX1uYBinw==
-X-Google-Smtp-Source: ABdhPJyXiMG8R/vxxpTmr6jwH49uQw4sDsejPXcgr60otWQbrUaOArpxK+wbVrBg76CIxpKdyIKIUA==
-X-Received: by 2002:a05:620a:128e:: with SMTP id w14mr5216948qki.97.1598067341235;
-        Fri, 21 Aug 2020 20:35:41 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c000:a8c1::359])
-        by smtp.gmail.com with ESMTPSA id w44sm4481201qtj.86.2020.08.21.20.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 20:35:39 -0700 (PDT)
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Joe Perches <joe@perches.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cocci <cocci@systeme.lip6.fr>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@shadowen.org>
-Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re: [PATCH] checkpatch: Add test for comma use that should be semicolon)
-In-Reply-To: <744af177c09f8ce22c99d6e1df458bced558518b.camel@perches.com>
-References: <20200818184107.f8af232fb58b17160c570874@linux-foundation.org> <3bf27caf462007dfa75647b040ab3191374a59de.camel@perches.com> <b0fd63e4b379eda69ee85ab098353582b8c054bb.camel@perches.com> <alpine.DEB.2.22.394.2008201021400.2524@hadrien> <a5713d8597065ef986f780499428fcc4cd31c003.camel@perches.com> <alpine.DEB.2.22.394.2008201856110.2524@hadrien>
- <744af177c09f8ce22c99d6e1df458bced558518b.camel@perches.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1598067338_2109P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 Aug 2020 23:35:38 -0400
-Message-ID: <162653.1598067338@turing-police>
+        id S1726909AbgHVDku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 23:40:50 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27132 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726588AbgHVDkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 23:40:49 -0400
+IronPort-SDR: XI8iZwOPVRae2SmO+ZrWvqBwxj/r8G/3aocDDZ2He1icgfqhzknynFypuWlhlsC39tZyYJlNQt
+ CGEdwDtgDiog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9720"; a="143314513"
+X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
+   d="scan'208";a="143314513"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 20:40:48 -0700
+IronPort-SDR: mOIn+FLsb6AuSFKJaaWlUZqjfnGTlLWwIYCCjdzZV6hPJlZXc7LShklM3zKdnwjO/NhfmTI97Y
+ 6923My5/k4Fw==
+X-IronPort-AV: E=Sophos;i="5.76,339,1592895600"; 
+   d="scan'208";a="401644126"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 20:40:47 -0700
+Date:   Fri, 21 Aug 2020 20:40:46 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: VMX: fix crash cleanup when KVM wasn't used
+Message-ID: <20200822034046.GE4769@sjchrist-ice>
+References: <20200401081348.1345307-1-vkuznets@redhat.com>
+ <CALMp9eROXAOg_g=R8JRVfywY7uQXzBtVxKJYXq0dUcob-BfR-g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eROXAOg_g=R8JRVfywY7uQXzBtVxKJYXq0dUcob-BfR-g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1598067338_2109P
-Content-Type: text/plain; charset=us-ascii
-
-On Fri, 21 Aug 2020 18:08:08 -0700, Joe Perches said:
-> (forwarding on to kernel-janitors/mentees and kernelnewbies)
->
-> Just fyi for anyone that cares:
->
-> A janitorial task for someone might be to use Julia's coccinelle
-> script below to convert the existing instances of commas that
-> separate statements into semicolons.
-
-Note that you need to *really* check for possible changes in semantics.
-It's *usually* OK to do that, but sometimes it's not...
-
-for (i=0; i++, last++; !last) {
-
-changing that comma to a ; will break the compile.  In other cases, it can
-introduce subtle bugs.
-
-> > I do appreciate that coccinelle adds braces for multiple
-> > expression comma use after an if.
+On Thu, Aug 20, 2020 at 01:08:22PM -0700, Jim Mattson wrote:
+> On Wed, Apr 1, 2020 at 1:13 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
 > >
-> > i.e.:
-> > 	if (foo)
-> > 		a = 1, b = 2;
-> > becomes
-> > 	if (foo) {
-> > 		a = 1; b = 2;
-> > 	}
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 3aba51d782e2..39a5dde12b79 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -2257,10 +2257,6 @@ static int hardware_enable(void)
+> >             !hv_get_vp_assist_page(cpu))
+> >                 return -EFAULT;
+> >
+> > -       INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
+> > -       INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
+> > -       spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
+> > -
+> >         r = kvm_cpu_vmxon(phys_addr);
+> >         if (r)
+> >                 return r;
+> > @@ -8006,7 +8002,7 @@ module_exit(vmx_exit);
+> >
+> >  static int __init vmx_init(void)
+> >  {
+> > -       int r;
+> > +       int r, cpu;
+> >
+> >  #if IS_ENABLED(CONFIG_HYPERV)
+> >         /*
+> > @@ -8060,6 +8056,12 @@ static int __init vmx_init(void)
+> >                 return r;
+> >         }
+> >
+> > +       for_each_possible_cpu(cpu) {
+> > +               INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
+> > +               INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
+> > +               spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
+> > +       }
+> 
+> Just above this chunk, we have:
+> 
+> r = vmx_setup_l1d_flush(vmentry_l1d_flush_param);
+> if (r) {
+>         vmx_exit();
+> ...
+> 
+> If we take that early exit, because vmx_setup_l1d_flush() fails, we
+> won't initialize loaded_vmcss_on_cpu. However, vmx_exit() calls
+> kvm_exit(), which calls on_each_cpu(hardware_disable_nolock, NULL, 1).
+> Hardware_disable_nolock() then calls kvm_arch_hardware_disable(),
+> which calls kvm_x86_ops.hardware_disable() [the vmx.c
+> hardware_disable()], which calls vmclear_local_loaded_vmcss().
+> 
+> I believe that vmclear_local_loaded_vmcss() will then try to
+> dereference a NULL pointer, since per_cpu(loaded_vmcss_on_cpu, cpu) is
+> uninitialzed.
 
-Yeah.  Like there, if you forget to add the {}.
+I agree the code is a mess (kvm_init() and kvm_exit() included), but I'm
+pretty sure hardware_disable_nolock() is guaranteed to be a nop as it's
+impossible for kvm_usage_count to be non-zero if vmx_init() hasn't
+finished.
 
---==_Exmh_1598067338_2109P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBX0CSigdmEQWDXROgAQKNCQ/8DDgTmFpZiCAqadYFLPHzj4cazPnhAUXW
-F7pYc//dQ403pifqc84z6kGRQsocCpaXTMRzYfSe/EMYP/oCLxYr+qvbG2UJg1qs
-ltyI+7Z3UY0lz/OxBmzwm+/QmCc5YHpEZ+eK4zmQwgP4KfgjD8BDrraWqAueAHi2
-mOBcWxQ2/KcYwN4dvDJ3ESRJyiws6KOfCe4a216h1mpc+u94zgmRUkUXBxVNZQB+
-Ew3a+GI5cLTAXt9JbSrakXqoj/sH9+GqJnJ1T0flu/mBhs5gRRXDmcfoEDgxUeJQ
-T+5Yunwj00vqcCql+G6jOaLvBcPnxI2xx7UaOIzl3JO+4wQZOjj6JC3EJjpLYtLL
-RZGwHt/35XSJV6Tci/tAE/5H7twYwhig68ChnuGAOgxm2yg1sUxpKdgl/K6u+qOs
-xIzp1f66xWljUPSx7xJxxc1445gd1I6udjeY8tUP2wVLlUseD4L2JwJInRvfufy5
-7dN3nTy4e1s3Vu5P6CK4PntJagNPNm83EQtBk9a0A3skoPZyADW1UUCPRhIdy/te
-Z1IC/I3rGRw6lVzVZR8tXox70QhVBRHLL99Zxv4w5DedB0dDNsu7//pE3YSQrRW+
-t2vRvfBi0Nz6MZVxMMV/uMHa4sqJjqt9T4JD3uijdvQFkMxtm5o6cSXWuAobIU/T
-w6QQ1Tjr1Z4=
-=9BEy
------END PGP SIGNATURE-----
-
---==_Exmh_1598067338_2109P--
+> >  #ifdef CONFIG_KEXEC_CORE
+> >         rcu_assign_pointer(crash_vmclear_loaded_vmcss,
+> >                            crash_vmclear_local_loaded_vmcss);
+> > --
+> > 2.25.1
+> >
