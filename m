@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D1224E909
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6635424E913
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 19:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgHVRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 13:32:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56096 "EHLO mail.kernel.org"
+        id S1728647AbgHVReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 13:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727945AbgHVRcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 13:32:16 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc1
+        id S1728132AbgHVRcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 13:32:17 -0400
+Subject: Re: [GIT PULL] Kbuild fixes for v5.9-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598117536;
-        bh=CW0BFa3lqAoKRheOJs8wvJct9GqCYqUGvshYzWb9CQ4=;
+        s=default; t=1598117537;
+        bh=Q6N6KwbYhvbkpIQumB9/HhFg2VuHmS4sQTBfNSvj1Ck=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=RxOCnYR7rAKMRGNcL2eSAiU2co7gK5BUD7k5CCgtlmHOy3JZuH0z74CjQTqtkPzF8
-         wsUn4eGpBwhLZ2NfEo2fsNO50K/GmOQD/602YKDRU2Ms78fS3X5UPWzhBpnJwt4qJ7
-         fdK4OTR5udA06ExUi9U6+d3bV/n+IUi9Xus3x/kQ=
+        b=N1KzH3iBLcbp9hsrZDZnuw1r1AezTJ+eT1VifmvtTAFCwAwY5bpBsqIRetW2AwM8Q
+         zvoLKC5OK+Fo+HhuBMCa5r7hGfYiLPvBYqtBfiO46FgWOKpRMsq/0p65j5EDRuGdnd
+         lRe2D+OvzrMU6hlhBJvkV2yFyTLHfw0It+weEXFg=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1598075304.3547.4.camel@HansenPartnership.com>
-References: <1598075304.3547.4.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1598075304.3547.4.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: dca93232b361d260413933903cd4bdbd92ebcc7f
+In-Reply-To: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
+References: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNAQO7kay52Dxku3sgyYk=4OGEB8m+gmN7wLemjc0f-pY-A@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9
+X-PR-Tracked-Commit-Id: 510bc3cb1ddc32f9533e6ed0a68c980544c3ca3f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9e574b74b781f14fa7348ba8b980b19a250a9c83
-Message-Id: <159811753625.17427.14465916040387699392.pr-tracker-bot@kernel.org>
-Date:   Sat, 22 Aug 2020 17:32:16 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: c3d8f220d01220a5b253e422be407d068dc65511
+Message-Id: <159811753724.17427.16062703476306424501.pr-tracker-bot@kernel.org>
+Date:   Sat, 22 Aug 2020 17:32:17 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 21 Aug 2020 22:48:24 -0700:
+The pull request you sent on Sat, 22 Aug 2020 23:00:58 +0900:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9e574b74b781f14fa7348ba8b980b19a250a9c83
+https://git.kernel.org/torvalds/c/c3d8f220d01220a5b253e422be407d068dc65511
 
 Thank you!
 
