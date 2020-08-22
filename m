@@ -2,160 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FFC24E83F
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 17:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D7A24E852
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 17:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgHVPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 11:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        id S1728223AbgHVPLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 11:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgHVPJN (ORCPT
+        with ESMTP id S1727807AbgHVPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 11:09:13 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C3C061573;
-        Sat, 22 Aug 2020 08:09:12 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q1so2076143pjd.1;
-        Sat, 22 Aug 2020 08:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tyw6vA6yQNsN/wIQW/tyNI4Wu5/Dv3Pgq6wDKg4/E3s=;
-        b=YbE1w7oD6AZf3nS8X/ngNno+kA8Zo52fmQNdcS18SCftss1D3yFLglNwe+oipf8jOX
-         DRFtnMAZWNojSnWzlc/n6pDvWWDbgcQwFYYCml+QMVZGfqO3RzcIRiXLGa0Nsm3se4oe
-         Fei6MpahuQeRmntgo9MrDRT//+440ZakOLhqTIEGfW696V25d3fA/s0NxNA0bmIH2OVi
-         LuKWw37yjwTZp14MPJNrDNSPou2msXBze3NnXQcnsLezWul4nMFMXOIvi8+w1NM6PWyK
-         zF+G4NS6A5QAswGttxfG3mb6YYzOK+QKMl30yPAs9o7g1KjIoAVhN7zodbgq6HqskgA+
-         FeIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=tyw6vA6yQNsN/wIQW/tyNI4Wu5/Dv3Pgq6wDKg4/E3s=;
-        b=FjD7n+67SrhlkyqQxKEtQktzsWGKn2qaadHj2+SqqwxqTNeVYYF44RDfadUX6fgSfA
-         T8ksI+2dP3ZlpeB6rBg7KIV00Kod0aa140hLzIP7nD8CGvqW3jgmkZNCh+AzUvmNoz1g
-         bGEtBMlKZnWFTBoYY+zNkFsVq9PiTWQD8r7k3Lkv0hlQ1KAVvuppRWFwLPeywExmVImA
-         l53EXmTkk9LDgMHHbG4+hIx0XepPAFagARdVqpcZxVv67ujJF2MqVNZffwkT/Uj8fbV7
-         fsK+8Jv6Qsa2g2f3p/bjW7KUp7ZGQiSB1ucbMBI3U1cdWT/dGPNwP9bkXWBuWo0ge27m
-         Ol3w==
-X-Gm-Message-State: AOAM533atrtWbfc6eOwW5/GQ17svOWi2srKAnHOChznVaKjXixAFzTj2
-        I5HGZxMorzWKvw8TI05au5o=
-X-Google-Smtp-Source: ABdhPJyVbAW/pyqe68An3ewBWq6iwe7ykVWD8BuDS3ND+hrizcTTwB7VQ11E/eWTtXdShmZOKg5Xpw==
-X-Received: by 2002:a17:902:7605:: with SMTP id k5mr6513045pll.122.1598108952417;
-        Sat, 22 Aug 2020 08:09:12 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l9sm5331944pgg.29.2020.08.22.08.09.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 22 Aug 2020 08:09:12 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v5 7/7] pwm: cros-ec: Simplify EC error handling
-Date:   Sat, 22 Aug 2020 08:08:57 -0700
-Message-Id: <20200822150857.205775-8-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200822150857.205775-1-linux@roeck-us.net>
-References: <20200822150857.205775-1-linux@roeck-us.net>
+        Sat, 22 Aug 2020 11:11:17 -0400
+Received: from mxout014.mail.hostpoint.ch (mxout014.mail.hostpoint.ch [IPv6:2a00:d70:0:e::314])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1196AC061573;
+        Sat, 22 Aug 2020 08:11:16 -0700 (PDT)
+Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
+        by mxout014.mail.hostpoint.ch with esmtp (Exim 4.92.3 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1k9VAZ-000HEL-DA; Sat, 22 Aug 2020 17:10:59 +0200
+Received: from [2a02:168:6182:1:880e:adee:9ae9:610] (helo=ryzen2700.dss.husqvarnagroup.com)
+        by asmtp013.mail.hostpoint.ch with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3 (FreeBSD))
+        (envelope-from <code@reto-schneider.ch>)
+        id 1k9VAZ-000K4J-AK; Sat, 22 Aug 2020 17:10:59 +0200
+X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
+From:   Reto Schneider <code@reto-schneider.ch>
+To:     linux-arm-kernel@lists.infradead.org, alexandre.belloni@bootlin.com
+Cc:     Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/2] dt-bindings: arm: at91: Add GARDENA smart Gateway (Art. 19000) board
+Date:   Sat, 22 Aug 2020 17:10:20 +0200
+Message-Id: <20200822151023.31629-1-code@reto-schneider.ch>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200810171921.8679-1-code@reto-schneider.ch>
+References: <20200810171921.8679-1-code@reto-schneider.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With enhanced error reporting from cros_ec_cmd_xfer_status() in place,
-we can fully use it and no longer rely on EC error codes.
+From: Reto Schneider <reto.schneider@husqvarnagroup.com>
 
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Document devicetree's bindings for the GARDENA smart Gateway with
+article number 19000, based on the SAM9G25 Atmel SoC.
+
+Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
 ---
-v5: Added Brian's Reviewed-by: tag
-    Added Uwe's Acked-by: tag
-v4: Added patch to series
+ Documentation/devicetree/bindings/arm/atmel-at91.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/pwm/pwm-cros-ec.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/pwm/pwm-cros-ec.c b/drivers/pwm/pwm-cros-ec.c
-index 94d3dff9b0e5..c1c337969e4e 100644
---- a/drivers/pwm/pwm-cros-ec.c
-+++ b/drivers/pwm/pwm-cros-ec.c
-@@ -81,8 +81,7 @@ static int cros_ec_pwm_set_duty(struct cros_ec_device *ec, u8 index, u16 duty)
- 	return cros_ec_cmd_xfer_status(ec, msg);
- }
- 
--static int __cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index,
--				  u32 *result)
-+static int cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index)
- {
- 	struct {
- 		struct cros_ec_command msg;
-@@ -107,19 +106,12 @@ static int __cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index,
- 	params->index = index;
- 
- 	ret = cros_ec_cmd_xfer_status(ec, msg);
--	if (result)
--		*result = msg->result;
- 	if (ret < 0)
- 		return ret;
- 
- 	return resp->duty;
- }
- 
--static int cros_ec_pwm_get_duty(struct cros_ec_device *ec, u8 index)
--{
--	return __cros_ec_pwm_get_duty(ec, index, NULL);
--}
--
- static int cros_ec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			     const struct pwm_state *state)
- {
-@@ -215,28 +207,18 @@ static int cros_ec_num_pwms(struct cros_ec_device *ec)
- 
- 	/* The index field is only 8 bits */
- 	for (i = 0; i <= U8_MAX; i++) {
--		u32 result = 0;
--
--		ret = __cros_ec_pwm_get_duty(ec, i, &result);
-+		ret = cros_ec_pwm_get_duty(ec, i);
- 		/*
- 		 * We look for SUCCESS, INVALID_COMMAND, or INVALID_PARAM
- 		 * responses; everything else is treated as an error.
--		 * The EC error codes either map to -EOPNOTSUPP / -EINVAL,
--		 * or -EPROTO is returned and the EC error is in the result
--		 * field. Check for both.
-+		 * The EC error codes map to -EOPNOTSUPP and -EINVAL,
-+		 * so check for those.
- 		 */
- 		switch (ret) {
- 		case -EOPNOTSUPP:	/* invalid command */
- 			return -ENODEV;
- 		case -EINVAL:		/* invalid parameter */
- 			return i;
--		case -EPROTO:
--			/* Old or new error return code: Handle both */
--			if (result == EC_RES_INVALID_COMMAND)
--				return -ENODEV;
--			else if (result == EC_RES_INVALID_PARAM)
--				return i;
--			return -EPROTO;
- 		default:
- 			if (ret < 0)
- 				return ret;
+diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+index 31b0c54fa2cf..c0fa195698c8 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
++++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+@@ -41,6 +41,8 @@ properties:
+               - overkiz,kizboxmini-mb   # Overkiz kizbox Mini Mother Board
+               - overkiz,kizboxmini-rd   # Overkiz kizbox Mini RailDIN
+               - overkiz,smartkiz        # Overkiz SmartKiz Board
++              - gardena,smart-gateway-at91sam # GARDENA smart Gateway (Article
++                                              # No. 19000)
+           - const: atmel,at91sam9g25
+           - const: atmel,at91sam9x5
+           - const: atmel,at91sam9
 -- 
-2.17.1
+2.27.0
 
