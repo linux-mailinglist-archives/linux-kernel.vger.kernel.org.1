@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73EE24E573
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C8224E583
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 06:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbgHVEjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 00:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725856AbgHVEjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 00:39:03 -0400
-Received: from dragon (unknown [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EB9420720;
-        Sat, 22 Aug 2020 04:38:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598071142;
-        bh=u0ARyHoe/q0GF5AUrK5En0djwtUiP/IUJLs7gd5smHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ivXyupBicmYnhkyJ4QjTa+EJuNcACyQJ1wc8vV1N/R3vm0AT9JaJ2uC+5wegLetxd
-         MFFhEmJfiNIDpLwsIHJWI13VZX8fmIMvYHT3gtiWw4TlT/XiFFTVjYDYnTzH0qGi7k
-         7Phu/exZ3JiYgy3gf4igNt4dr1dX2CuX54rkW7n0=
-Date:   Sat, 22 Aug 2020 12:38:48 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        arnd@arndb.de, peng.fan@nxp.com, abel.vesa@nxp.com,
-        fugang.duan@nxp.com, daniel.baluta@nxp.com, yuehaibing@huawei.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Linux-imx@nxp.com
-Subject: Re: [PATCH V9 0/6] Support building i.MX ARMv8 platforms clock
- driver as module
-Message-ID: <20200822043847.GE27575@dragon>
-References: <1596072174-16358-1-git-send-email-Anson.Huang@nxp.com>
+        id S1726036AbgHVEs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 00:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725856AbgHVEs1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 Aug 2020 00:48:27 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3762C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:48:26 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id b66so1349552wmb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 21:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8EpfXuOfl5Lc4X03a/2NthXamDtm3ZTxJlpaERf1P2M=;
+        b=E04jO1XaLwTEoC5F7ckK/3aQt1ozC0Fcmt/b8GJiWlnGHUdQBoV46zHaqX8lhyuA6t
+         61+o8lWe+YunryUin42fuZz646fxNWnJy0TAxA/h6js4kvJ1SF9qesCf7SuIuuoB8HGl
+         AVSzLN/Orw0rBpLQpmsY/cxB9ued9UHWTnUR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8EpfXuOfl5Lc4X03a/2NthXamDtm3ZTxJlpaERf1P2M=;
+        b=to+NpobgG81gjda5CGzDzbUAnz/4IK3dO7UzaZx0gCGYCRQeigxv4i2rQydboyhtB7
+         Rbh3hjyDsjiShHkNVTdUepVIA/b5OVQcV/ifvx4LhS49DXIFyda7iNeFeO/Ix34MDxsa
+         MglVkpBeN2nVoVxRRCOd7Ea8PnAj8wzDy9jva06z0Tlf30/H+BkvFgcod2FOosYrDjZl
+         W8QU/w13wgvpuloWuW2P2rBtbGOxtkPpGrZ98Sw6bkYlSiHYog+yL12wGLpcbcdZPxNs
+         2hDn/EGXpRXQeK4oaO4QGQ8Z2Z4ciVuJfcC0t49iy6k4gGRPaJtsZQcbZ1oRnGS8sLCy
+         RiUw==
+X-Gm-Message-State: AOAM531zTCaZfYcRuCaDMeESjSxgckwC+Go2pr4ZGJATPxzaqeedKqYB
+        yKN4cysmV+PCN2IPGS7pgFVB3gXZ4q2RRS33gfGPmQ==
+X-Google-Smtp-Source: ABdhPJw7xCkJoXDkG4cyA0Eab/W2Nf7VdU8EymJP8iNVywtv1/Z8GU515lX7IbfzvyLf86zSlVJwlLuih6meBwQ3rx0=
+X-Received: by 2002:a7b:c10d:: with SMTP id w13mr6535376wmi.2.1598071704261;
+ Fri, 21 Aug 2020 21:48:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596072174-16358-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200819034231.20726-1-mark-pk.tsai@mediatek.com> <20200819153757.28993-1-mark-pk.tsai@mediatek.com>
+In-Reply-To: <20200819153757.28993-1-mark-pk.tsai@mediatek.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sat, 22 Aug 2020 13:48:13 +0900
+Message-ID: <CAFr9PXni=BmDY6_iuJPnYb3d6XB1VrxE6WP3YtSBxT6NciZMMA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] irqchip: irq-mst: Add MStar interrupt controller support
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     Marc Zyngier <maz@kernel.org>, alix.wu@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, yj.chiang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 09:22:48AM +0800, Anson Huang wrote:
-> Nowdays, there are more and more requirements of building SoC specific drivers as
-> modules, such as Android GKI (generic kernel image), this patch set supports building
-> i.MX ARMv8 SoCs clock drivers as modules,
-> 
-> The CLK_IMXxxx is introduced for i.MX ARMv7 platforms in order to make the build options
-> aligned, the reason why i.MX ARMv7 platforms clock driver do NOT support module build
-> and COMPILE_TEST is because, some drivers like i.MX GPT timer driver depends on clock
-> driver to be ready before it, GPT driver uses TIMER_OF_DECLARE(), while i.MX6/7 clock
-> drivers use CLK_OF_DECLARE(), and GPT driver is critical for i.MX6/7 platforms kernel
-> boot up, so GPT driver needs to be changed to support loadable clock driver first,
-> then the i.MX6/7 clock drivers can support loadable module, this will be done later.
-> 
-> Changes since V8:
-> 	- explicitly include linux/bits.h in patch #1.
-> 
-> Anson Huang (6):
->   clk: imx6sl: Use BIT(x) to avoid shifting signed 32-bit value by 31
->     bits
->   clk: composite: Export clk_hw_register_composite()
->   clk: imx: Support building i.MX common clock driver as module
->   clk: imx: Add clock configuration for ARMv7 platforms
->   clk: imx8m: Support module build
->   clk: imx8qxp: Support building i.MX8QXP clock driver as module
+Hi Mark-PK,
 
-Applied all, thanks.
+On Thu, 20 Aug 2020 at 00:38, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+>
+> Add MStar interrupt controller support using hierarchy irq
+> domain.
+>
+> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+
+I've integrated this version into my MStar/SigmaStar tree and tested
+on an MStar MSC313E
+based board (BreadBee) and I'm happy to say it seems to be working:
+
+$ cat /proc/interrupts
+          CPU0
+17:       1219     GIC-0  29 Level     arch_timer
+18:          0     GIC-0  30 Level     arch_timer
+21:          0     GIC-0  42 Level     arm-pmu
+24:          0  mst-intc  44 Level     1f002400.rtc
+30:          0  mst-intc   2 Level     1f006000.wdt
+31:          0  mst-intc   0 Level     1f006040.timer
+32:          0  mst-intc   1 Level     1f006080.timer
+33:          0  mst-intc  12 Level     1f0060c0.timer
+34:          0  mst-intc  40 Level     1f200400.bdma
+35:       3977  mst-intc  41 Level     1f200400.bdma
+37:        196  mst-intc  34 Level     ttyS0
+40:          0  mst-intc  30 Level     soc:usbphy@0
+<snip>
+
+So here's my tested by:
+
+Tested-by: Daniel Palmer <daniel@thingy.jp>
+
+I don't think your series contained an update to MAINTAINERS.
+If/when you add this could you add my address above as a reviewer so
+I'm in the loop if anyone makes changes to this going forward?
+
+Thanks,
+
+Daniel
