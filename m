@@ -2,265 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFF924E854
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 17:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2F824E859
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 17:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgHVPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 11:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgHVPLR (ORCPT
+        id S1728208AbgHVPSr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 22 Aug 2020 11:18:47 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39827 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727807AbgHVPSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 11:11:17 -0400
-Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C21DC061574;
-        Sat, 22 Aug 2020 08:11:16 -0700 (PDT)
-Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
-        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.92.3 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1k9VAd-000An6-Gt; Sat, 22 Aug 2020 17:11:03 +0200
-Received: from [2a02:168:6182:1:880e:adee:9ae9:610] (helo=ryzen2700.dss.husqvarnagroup.com)
-        by asmtp013.mail.hostpoint.ch with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1k9VAd-000K4J-AF; Sat, 22 Aug 2020 17:11:03 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From:   Reto Schneider <code@reto-schneider.ch>
-To:     linux-arm-kernel@lists.infradead.org, alexandre.belloni@bootlin.com
-Cc:     Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Stefan Roese <sr@denx.de>,
-        Michael Zimmermann <michael.zimmermann@grandcentrix.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] ARM: at91: Add GARDENA smart Gateway (Art. 19000) support
-Date:   Sat, 22 Aug 2020 17:10:21 +0200
-Message-Id: <20200822151023.31629-2-code@reto-schneider.ch>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200822151023.31629-1-code@reto-schneider.ch>
-References: <20200810171921.8679-1-code@reto-schneider.ch>
- <20200822151023.31629-1-code@reto-schneider.ch>
+        Sat, 22 Aug 2020 11:18:45 -0400
+Received: by mail-wr1-f66.google.com with SMTP id a5so4567744wrm.6;
+        Sat, 22 Aug 2020 08:18:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fPurPcq4qIlsFmVZToY8qZyZV/HXm+35zPSjztTMBbk=;
+        b=RnHBy8FoT6Z6vtdD4wKfJaNHSVPsg4CvGvsOy/FAascPpMTGFY438NYgVrT+clquCY
+         5zKgykQGAXd3WLMcDv7b1Zp8KxvuF3PjAvgEnjF/q+WQLatvdJvPDmlFimLpQRDBz4Pg
+         03zomDg/gzdAFQtdFz8nkRQpaRYUIBXwipjXjQeTgy3lx5s9mpyCjTi4dpiFlF/H3+Q2
+         ZB7FeFnsFVkMG0f1UZJy4lJjjKDVSVq6qc8juoyfiz0P/wCzZ9pIyR2EocrmEvYFSGEY
+         RVjZWdmW1uyh98Vj4C4cHGrgSjbx+ZYsSiFb4rfZNdrGYSzLkSSGBd5HBb8wYHhBAVES
+         uqPw==
+X-Gm-Message-State: AOAM532T1qkDrwy7WF7qxKlxDF5r5xu4gTNrpPgTxb522aW1o15+gHFT
+        6ZbymATerxUhDdTuSkEHjcg=
+X-Google-Smtp-Source: ABdhPJxopqANZ1WSRtMZknMlZMkWKProljOBBBQjtUznRcRFTqGL5IEt7HEGpC7njulqLAHazh5Wgg==
+X-Received: by 2002:adf:fac8:: with SMTP id a8mr7477185wrs.368.1598109523037;
+        Sat, 22 Aug 2020 08:18:43 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id m16sm10738841wrr.71.2020.08.22.08.18.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 22 Aug 2020 08:18:42 -0700 (PDT)
+Date:   Sat, 22 Aug 2020 17:18:19 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v2 7/9] spi: spi-s3c64xx: Ensure cur_speed holds actual
+ clock value
+Message-ID: <20200822151819.GA13668@kozik-lap>
+References: <20200821161401.11307-1-l.stelmach@samsung.com>
+ <CGME20200821161407eucas1p249e4833b8839f717cc2a496ab43bb8a2@eucas1p2.samsung.com>
+ <20200821161401.11307-8-l.stelmach@samsung.com>
+ <20200822124325.GF20423@kozik-lap>
+ <CAAFQd5CmPXDsOWmPBS+z5McxGvn+L2nkV2Wh934Bq7xY6DMO4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAAFQd5CmPXDsOWmPBS+z5McxGvn+L2nkV2Wh934Bq7xY6DMO4A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Reto Schneider <reto.schneider@husqvarnagroup.com>
+On Sat, Aug 22, 2020 at 04:52:40PM +0200, Tomasz Figa wrote:
+> On Sat, Aug 22, 2020 at 2:43 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > On Fri, Aug 21, 2020 at 06:13:59PM +0200, Łukasz Stelmach wrote:
+> > > cur_speed is used to calculate transfer timeout and needs to be
+> > > set to the actual value of (half) the clock speed for precise
+> > > calculations.
+> >
+> > If you need this only for timeout calculation just divide it in
+> > s3c64xx_wait_for_dma().
+> 
+> Division is not the point of the patch. The point is that
+> clk_set_rate() that was originally there doesn't guarantee that the
+> rate is set exactly.
 
-This patch adds support for the GARDENA smart Gateway, which is based on
-the Atmel AT91SAM9G25. It is equipped with 128 MiB of DDR2 RAM and
-256 MiB NAND storage.
+Unfortunately onlt that point of timeout is mentioned in commit msg. If
+the correction of timeout was not the point of the patch, then describe
+the real point...
 
-Please note that this gateway is not actually based on a AT91SAM9x5 EK
-board, but is close enough to allow its DT to be used.
+> The rate directly determines the SPI transfer
+> speed and thus the driver needs to use the rate that was actually set
+> for further calculations.
 
-Co-developed-by: Stefan Roese <sr@denx.de>
-Signed-off-by: Stefan Roese <sr@denx.de>
-Co-developed-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
-Signed-off-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
-Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
+Yep, makes sense.
 
----
-Changes in v3:
-- Fix DT binding schema violation, put it in separate commit
-- Fix line length violation
-- Sort new dtb entry in Makefile
+> 
+> > Otherwise why only if (cmu) case is updated?
+> 
+> Right, the !cmu case actually suffers from the same problem. The code
+> divides the parent clock rate with the requested speed to obtain the
+> divider to program into the register. This is subject to integer
+> rounding, so (parent / (parent / speed)) doesn't always equal (speed).
 
-Changes in v2:
-- Remove duplicated DT entries
-- Improve model name
-- Add device to relevant DT binding schema
----
- arch/arm/boot/dts/Makefile                    |   1 +
- .../dts/at91sam9g25-gardena-smart-gateway.dts | 158 ++++++++++++++++++
- 2 files changed, 159 insertions(+)
- create mode 100644 arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+It is not only this problem. The meaning of cur_speed is now changed.
+For !cmu_case this the requested in trasnfer SPI bus clock frequency,
+for cmu_case this is now real src_clk frequency. It's getting slightly
+messier.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e6a1cac0bfc7..6cd1cfcd5316 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -43,6 +43,7 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
- 	at91-smartkiz.dtb \
- 	at91-wb45n.dtb \
- 	at91sam9g15ek.dtb \
-+	at91sam9g25-gardena-smart-gateway.dtb \
- 	at91sam9g25ek.dtb \
- 	at91sam9g35ek.dtb \
- 	at91sam9x25ek.dtb \
-diff --git a/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
-new file mode 100644
-index 000000000000..7da70aeeb528
---- /dev/null
-+++ b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Device Tree file for the GARDENA smart Gateway (Article No. 19000)
-+ *
-+ *  Copyright (C) 2020 GARDENA GmbH
-+ */
-+
-+/dts-v1/;
-+
-+#include "at91sam9g25.dtsi"
-+#include "at91sam9x5ek.dtsi"
-+#include <dt-bindings/input/input.h>
-+
-+/ {
-+	model = "GARDENA smart Gateway (Article No. 19000)";
-+	compatible = "gardena,smart-gateway-at91sam", "atmel,at91sam9g25", "atmel,at91sam9x5",
-+		"atmel,at91sam9";
-+
-+	aliases {
-+		serial1 = &usart3;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		user_btn1 {
-+			label = "USER_BTN1";
-+			gpios = <&pioA 24 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_PROG1>;
-+		};
-+	};
-+
-+	1wire_cm {
-+		status = "disabled";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		power_blue {
-+			label = "smartgw:power:blue";
-+			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		power_green {
-+			label = "smartgw:power:green";
-+			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+
-+		power_red {
-+			label = "smartgw:power:red";
-+			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_blue {
-+			label = "smartgw:radio:blue";
-+			gpios = <&pioC 18 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_green {
-+			label = "smartgw:radio:green";
-+			gpios = <&pioC 17 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_red {
-+			label = "smartgw:radio:red";
-+			gpios = <&pioC 16 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_blue {
-+			label = "smartgw:internet:blue";
-+			gpios = <&pioC 15 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_green {
-+			label = "smartgw:internet:green";
-+			gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_red {
-+			label = "smartgw:internet:red";
-+			gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		heartbeat {
-+			label = "smartgw:heartbeat";
-+			gpios = <&pioB 8 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		pb18 {
-+			status = "disabled";
-+		};
-+
-+		pd21 {
-+			status = "disabled";
-+		};
-+	};
-+};
-+
-+&macb0 {
-+	phy-mode = "rmii";
-+	status = "okay";
-+};
-+
-+&usart0 {
-+	status = "disabled";
-+};
-+
-+&usart2 {
-+	status = "disabled";
-+};
-+
-+&usart3 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&pinctrl_usart3
-+		     &pinctrl_usart3_rts
-+		     &pinctrl_usart3_cts
-+		    >;
-+};
-+
-+&watchdog {
-+	status = "okay";
-+};
-+
-+&mmc0 {
-+	status = "disabled";
-+};
-+
-+&mmc1 {
-+	status = "disabled";
-+};
-+
-+&spi0 {
-+	status = "disabled";
-+};
-+
-+&i2c0 {
-+	status = "disabled";
-+};
-+
-+&adc0 {
-+	status = "disabled";
-+};
-+
-+&ssc0 {
-+	status = "disabled";
-+};
--- 
-2.27.0
+> 
+> >
+> > You are also affecting here not only timeout but
+> > s3c64xx_enable_datapath() which is not mentioned in commit log. In other
+> > words, this looks wrong.
+> 
+> Actually this is right and fixes one more problem, which I didn't spot
+> when looking at this code when I suggested the change (I only spotted
+> the effects on timeout calculation). The rounding error might have
+> caused wrong configuration there, because e.g. 30000000 Hz could be
+> requested and rounded to 28000000 Hz. The former is a threshold for
+> setting the S3C64XX_SPI_CH_HS_EN bit, but the real frequency wouldn't
+> actually require setting it.
+
+Wrong is here describing one thing and doing much more.
+
+Best regards,
+Krzysztof
 
