@@ -2,181 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D55C24EA30
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 01:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1485524EA3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 01:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgHVXFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 19:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        id S1728040AbgHVXLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 19:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgHVXFT (ORCPT
+        with ESMTP id S1725959AbgHVXK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 19:05:19 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15AC061573;
-        Sat, 22 Aug 2020 16:05:17 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id m20so4975928eds.2;
-        Sat, 22 Aug 2020 16:05:17 -0700 (PDT)
+        Sat, 22 Aug 2020 19:10:59 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D44C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 16:10:59 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id c12so3806985qtn.9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Aug 2020 16:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2Fpwogtsb8NGet/9oeWKnkv+ON3vD5cWlFlPhK4b0pk=;
-        b=VY/TWFNJYwEBGSFmB855o1i9sz1IzgZKm3lUxnLXUie8J/srUwF+A0uaE3cPaylP+2
-         qJ5XB6qMdiGbkgiapFi1+HzxVhrz8noLOVTykooRgf/xsUrvbAIoXLyeb759/eNmJgci
-         agVVK1j5RR/60xocQJyUU+m/RqtlI+cCUz1e7R2Z1No0lHA/HKLxr/Y4/nlQ6+snV0T8
-         FMer8eq3bYpIr0eQEgL97J/bswbGK4HUvf03Z31PomdqKBLlYU0f3OJ42mA2g7HQ8xX9
-         DlS0AYYGQGDHRy7ageKAbX1+o3Wk7iGHnsmYjjAbqOPQsMU0jnO8/aOf+ptmgeN50nlJ
-         Vxnw==
+        bh=WP9wSIBfD5wQcrpZkPoM0hMwoWbFysB2p8Lq1GzRYos=;
+        b=ht6E7a1eeLBJIHl9aEjd3ev1/r7WsVvVKww5iOuCNDhCAduLaASmfQpoUjIloOPDXe
+         KqGFzgukIGYxxjVfUWPeb9q8AH1TihQTQ4z9EwPOA8C4f3sdmd54Z0vePcQAnaX18gC6
+         hSM1lZyF2nw43CeUKprvNYjlSyde1iCa7YCOvAKMbuO2x2MFDqztu9lJxHs0d9wUXsBS
+         B43ZPYojNY8aFKCkGU8TOs5bHwRUkNjbv8iW/VbfPCvfXsmK2PwwWb7wrZkoO2H2/9ph
+         JUGCWcGr9/xb7RmodLwXwTXMPVVRmD1jxDjeEMN1BauAKNYBNJhOZncmHGkAYMyt6R+P
+         1KSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Fpwogtsb8NGet/9oeWKnkv+ON3vD5cWlFlPhK4b0pk=;
-        b=hkig9ci8OfTs9eaKLN1sfPUK52acDol85JW5Y9DNolqBhvd5KbtKzR6ivIr4RVq3kd
-         FQ3EbPGnfBUW9XiCIIb/QRryzlmMjRhxtXtpFioV5b06awpkaaNNJMjaq8zLX/yOYDoe
-         sNPQ2Dp37qI8GRLpWMt/MsR/RV0ryaYb8vT/umVYSu3BXPTxDz9q/aWptHsv6K76ZjyG
-         8+mxMwLvT5zceZNkXCsVkpM33UXdHkeNwtSvKhOTR8AfmVi7u6or9RdjAJVsRt2C25Dx
-         RWssz8QQLU3xYLhjWXsOv0P/90YJwMMuBStgGSdgEkilfwKDD8723VS+IqXlRuJr9Q1J
-         LAtg==
-X-Gm-Message-State: AOAM531YWv8kplfSX5zAG8IsAceB15dBdESSt/UfPbUrz0TGVwqAoGSI
-        riWZdbc8gzBuwyRI/8PFmoc=
-X-Google-Smtp-Source: ABdhPJzjZpBkLXFOtvZZoBfrQJVlw0sie6RZD0ECwJErzc05Hv0HcFVAw0DamE6gu+iZizm2xo0GAg==
-X-Received: by 2002:a05:6402:168c:: with SMTP id a12mr3199388edv.275.1598137516401;
-        Sat, 22 Aug 2020 16:05:16 -0700 (PDT)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id z10sm4195099eje.122.2020.08.22.16.05.15
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WP9wSIBfD5wQcrpZkPoM0hMwoWbFysB2p8Lq1GzRYos=;
+        b=Ff3JkaF4vzbS5o4Es6zx6siAgtYEt1aGL7ofoQgmYFlHrUbzF1DrSDpjJy8OpbPOG3
+         3HprYKpjc5NWwEshUSL/KS4btZMJngEfAojDtv9jPujp8eYkRjKUSgGYxI1yy9JMwBPO
+         7WDavcIA3mi3itwg+NdEK8j2AUTnslLgEHD9qKPXnlPAJcqJiLct8jfLUAYtnDwPL5Uy
+         RFSV4LF7OwIAEulD41m+QYv3zRAIINMwAmYvEtUf8oxStC0ik+Vw4kmgYAEW06cKkLKb
+         UZUTxrhlOjr3OIzTwZSXPsTknSevFqi0a9gMyZfAtZq0TCQdOOqkIm5cmGuSH/iibVmO
+         4QCg==
+X-Gm-Message-State: AOAM531PChPq7JWrl79MiVKYCf80G3e2t8CRHqghc/7KQ41KZCbMkAe5
+        zspdRSistvji0yI5YGZFLCE=
+X-Google-Smtp-Source: ABdhPJxlgdZdjJPfofYPG5NLgouYEpUg3oFBpJPyD7TEeo54elozEDffExEtl8fFLQD+9tUbWCZGwg==
+X-Received: by 2002:ac8:777a:: with SMTP id h26mr8246848qtu.141.1598137857602;
+        Sat, 22 Aug 2020 16:10:57 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id z10sm6774896qtf.24.2020.08.22.16.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Aug 2020 16:05:15 -0700 (PDT)
-Date:   Sun, 23 Aug 2020 02:05:13 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH v5 0/3] Add Actions Semi Owl family sirq support
-Message-ID: <20200822230513.GA2260050@BV030612LT>
-References: <cover.1597852360.git.cristian.ciocaltea@gmail.com>
- <20200822131712.GB5954@Mani-XPS-13-9360>
+        Sat, 22 Aug 2020 16:10:57 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Sat, 22 Aug 2020 19:10:55 -0400
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
+Message-ID: <20200822231055.GA1871205@rani.riverdale.lan>
+References: <87zh6ohm03.fsf@nanos.tec.linutronix.de>
+ <20200821230435.GA56974@rani.riverdale.lan>
+ <CAKwvOdkoB+fT9tt7vgg1R6J-NEr77EWP5X8nFat_L-HvEzWGzA@mail.gmail.com>
+ <87eenzqzmr.fsf@nanos.tec.linutronix.de>
+ <20200822035552.GA104886@rani.riverdale.lan>
+ <20200822084133.GL28786@gate.crashing.org>
+ <CA+icZUVf9a8LC2Mf0cFymYQfALWs6bVfR1v1nRbxKaLAyU6NkQ@mail.gmail.com>
+ <CA+icZUWGHo3mkN4=ZYeU37p8KJhxTXS5QKcAvq_HaqTHmFkw2g@mail.gmail.com>
+ <CANiq72=3iOh5Z_rboZf-_GUpBE2LUUv3yPKOVNN_XmaNswdNSw@mail.gmail.com>
+ <CAHk-=whaVW4FQjdwaicLFE4kiqr18rk6V50CuU-ziUPyRFjHrg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200822131712.GB5954@Mani-XPS-13-9360>
+In-Reply-To: <CAHk-=whaVW4FQjdwaicLFE4kiqr18rk6V50CuU-ziUPyRFjHrg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-
-On Sat, Aug 22, 2020 at 06:47:12PM +0530, Manivannan Sadhasivam wrote:
-> Hi Cristi,
+On Sat, Aug 22, 2020 at 02:08:27PM -0700, Linus Torvalds wrote:
+> However, in this case, can we just leave that old "__force_order" hack
+> alone, and to work around the clang thing, just make a dummy
+> definition of it anyway.
 > 
-> On Wed, Aug 19, 2020 at 07:37:55PM +0300, Cristian Ciocaltea wrote:
-> > This patch series adds support for the external interrupt controller
-> > (SIRQ) found in the Actions Semi Owl family of SoC's (S500, S700 and
-> > S900). The controller handles up to 3 external interrupt lines through
-> > dedicated SIRQ pins.
-> > 
-> > This is a rework of the patch series submitted some time ago by 
-> > Parthiban Nallathambi: 
-> > https://lore.kernel.org/lkml/20181126100356.2840578-1-pn@denx.de/
-> > 
+> Alternatively, just use the memory clobber. We use memory clobbers
+> elsewhere in inline asms to make sure they are serialized, it's not
+> normally a huge problem. Both clang and gcc should be smart enough to
+> know that a memory clobber doesn't matter for things like local
+> variables etc that might be on stack but have never had their address
+> taken.
 > 
-> You need to preserve the authorship while reposting the patches. If you'd
-> like to take the authorship intentionally then please explain the reason in
-> cover letter.
+> Or are there other cases than that particular __force_order thing that
+> people now worry about?
 > 
-> Thanks,
-> Mani
+>              Linus
 
-Thanks for pointing this out, I was not aware of the procedure - this is
-actually my very first repost. Could you please indicate how should I
-proceed to fix this? I had absolutely no intention to take the authorship..
+Actually, is a memory clobber required for correctness? Memory accesses
+probably shouldn't be reordered across a CRn write. Is asm volatile
+enough to stop that or do you need a memory clobber?
 
-Sorry for the mistake,
-Cristi
-
-> > Please note I have dropped, for the moment, the S700 related patches 
-> > since I do not own a compatible hardware for testing. I'm using instead
-> > an S500 SoC based board for which I have already provided the initial
-> > support:
-> > https://lore.kernel.org/lkml/cover.1592123160.git.cristian.ciocaltea@gmail.com/
-> > 
-> > The SIRQ controller support is a prerequisite of the soon to be submitted
-> > MFD driver for the Actions Semi ATC260x PMICs.
-> > 
-> > Thanks and regards,
-> > Cristi
-> > 
-> > Changes in v5:
-> > - Integrated Marc's review (more details in the driver patch changelog)
-> > - Rebased patch series on v5.9-rc1
-> > 
-> > Changes in v4:
-> > - Simplified the DTS structure:
-> >   * dropped 'actions,sirq-shared-reg' node, now the differentiation
-> >     between SoC variants is handled now via the compatible property
-> >   * dropped 'actions,sirq-reg-offset', now controller base address in
-> >     DTS points to SIRQ0 register, so no additional information is
-> >     required for S500 and S700, while for S900 SoC the offsets of SIRQ1
-> >     and SIRQ2 regs are provided by the driver
-> >   * 'actions,ext-irq-range' was replaced with 'actions,ext-interrupts',
-> >     an array of the GIC interrupts triggered by the controller
-> > - Fixed wrong INTC_EXTCTL_TYPE_MASK definition
-> > - Removed redundant irq_fwspec checks in owl_sirq_domain_alloc()
-> > - Improved error handling in owl_sirq_of_init()
-> > - Added yaml binding document
-> > - Dropped S700 related DTS patches for lack of testing hardware:
-> >   * arm64: dts: actions: Add sirq node for Actions Semi S700
-> >   * arm64: dts: actions: s700-cubieboard7: Enable SIRQ
-> > - Updated MAINTAINERS
-> > - Rebased patchset on kernel v5.8
-> > - Cosmetic changes
-> >  * Ordered include statements alphabetically
-> >  * Added comment to owl_sirq_set_type() describing conversion of falling
-> >    edge or active low signals
-> >  * Replaced IRQF_TRIGGER_* with corresponding IRQ_TYPE_* variants
-> >  * Ensured data types and function naming are consistent regarding the
-> >    'owl_sirq' prefix
-> > 
-> > Changes in v3 (Parthiban Nallathambi):
-> > - Set default operating frequency to 24MHz
-> > - Falling edge and Low Level interrupts translated to rising edge and high level
-> > - Introduced common function with lock handling for register read and write
-> > - Used direct GIC interrupt number for interrupt local hwirq and finding offset
-> > using DT entry (range) when registers are shared 
-> > - Changed irq_ack to irq_eoi
-> > - Added translation method for irq_domain_ops
-> > - Clearing interrupt pending based on bitmask for edge triggered
-> > - Added pinctrl definition for sirq for cubieboard7. This depends on,
-> > https://lore.kernel.org/patchwork/patch/1012859/
-> > 
-> > Changes in v2 (Parthiban Nallathambi):
-> > - Added SIRQ as hierarchical chip
-> >         GIC <----> SIRQ <----> External interrupt controller/Child devices
-> > - Device binding updates with vendor prefix
-> > - Register sharing handled globally and common init sequence/data for all
-> > actions SoC family
-> > 
-> > Cristian Ciocaltea (3):
-> >   dt-bindings: interrupt-controller: Add Actions SIRQ controller binding
-> >   irqchip: Add Actions Semi Owl SIRQ controller
-> >   MAINTAINERS: Add entries for Actions Semi Owl SIRQ controller
-> > 
-> >  .../actions,owl-sirq.yaml                     |  68 ++++
-> >  MAINTAINERS                                   |   2 +
-> >  drivers/irqchip/Makefile                      |   1 +
-> >  drivers/irqchip/irq-owl-sirq.c                | 347 ++++++++++++++++++
-> >  4 files changed, 418 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
-> >  create mode 100644 drivers/irqchip/irq-owl-sirq.c
-> > 
-> > -- 
-> > 2.28.0
-> > 
+Replacing force_order with memory clobber introduces a few extra
+instructions (testing with defconfig), but only in x86-64
+hibernate/reboot/sleep code and early_ioremap_init on x86-32.
