@@ -2,48 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABC824E7A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 15:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D79A24E7B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 15:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgHVNjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Aug 2020 09:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S1728174AbgHVNjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Aug 2020 09:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgHVNjB (ORCPT
+        with ESMTP id S1728086AbgHVNjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Aug 2020 09:39:01 -0400
+        Sat, 22 Aug 2020 09:39:02 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0373C061574;
-        Sat, 22 Aug 2020 06:39:00 -0700 (PDT)
-Date:   Sat, 22 Aug 2020 13:38:57 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2291C061574;
+        Sat, 22 Aug 2020 06:39:01 -0700 (PDT)
+Date:   Sat, 22 Aug 2020 13:38:58 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598103538;
+        s=2020; t=1598103539;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AB39r1CmG85FAxZK4JH68Qkhw+TaVVWNegRqmRDPq1Q=;
-        b=pxI+h9q3bpdeEAIwlpNEW+IkQPr9/s5ljQIfeesh9/6i8sUW27/Rw62aSCXk4vyShJafay
-        wg14uuQKQW2AHb1bmw95wmjyDMDcxaXTYY65DnMqf/gAFVhQh6OZKqXevxr2dalbvDEC27
-        og29cc79MvxvZklfD7IIdUGFGrj7pWKaMgbcS+WcAmL9KApkBLYliQqLuEd9pZARsrjLoy
-        bENo/6uwTV5EKJsZwZ/wxsXwLuma+7EG1tW33jTfnvlCyEpFtplw44X94i2hjZzWcppPDb
-        6pyLdSeLqpdZdUEToTPAqAIU7RdCEYZpYvUmmqm3pnLsJ6E44CVVKte4xKcHoA==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nxClsAni8MetG2l9vr8TLwbGulfmhd4lEpWk5Z1JUTQ=;
+        b=jtirZxsYI1DdtlnxSehiV4xiRa9IVm3XCEoREQZK34bEmZqM13Ql1Qc8QXLc/4YOXn38j9
+        vcyfs7CWsEwQbul1NBy+fPIKx0BVaETemn7SQRRrWqAVNrEegazhjF0LjAHc8iwU+RLaMF
+        L89Jq6kJsoYZFh4feOYYpwaSYTW9F5TiDuN71Be6PSE+6WJ373eycLXvWd218XUVcOuVcu
+        YaX5xMxsDUOFikkQ1hBe3LtOa4Ob3XHmJKSY02OMa/Y1uUWKzfITpYY6+K21q6zfSohd41
+        48fPVgjmYczQsp73OA2xHVwyB/pB+nuuQgplXSWeWe94Mn7VvazyHCHTowQ2ww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598103538;
+        s=2020e; t=1598103539;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AB39r1CmG85FAxZK4JH68Qkhw+TaVVWNegRqmRDPq1Q=;
-        b=9617Df2f/VSIEJYoVloniMFgNOj8tS57Oi81F/Wqy7Da0f9zzpNGkeHKY2EcSuojO7kwKy
-        hi495ocNYe6OZ0AQ==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nxClsAni8MetG2l9vr8TLwbGulfmhd4lEpWk5Z1JUTQ=;
+        b=ZTEQV6FyCpbCJS3euPNcdYUBZJbBW6LGiEh/JQOI9efZC3Z4ioMnj0J0L2zsw5mOkrwZc2
+        sxJBEuXOx3JcywCw==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] Documentation: efi: remove description of efi=old_map
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+Subject: [tip: efi/urgent] efi/libstub: Handle unterminated cmdline
+Cc:     <stable@vger.kernel.org>, Arvind Sankar <nivedita@alum.mit.edu>,
         Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200813185811.554051-4-nivedita@alum.mit.edu>
+References: <20200813185811.554051-4-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Message-ID: <159810353738.3192.1106749969218812060.tip-bot2@tip-bot2>
+Message-ID: <159810353887.3192.8959117951765134192.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,47 +61,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/urgent branch of tip:
 
-Commit-ID:     fb1201aececc59990b75ef59fca93ae4aa1e1444
-Gitweb:        https://git.kernel.org/tip/fb1201aececc59990b75ef59fca93ae4aa1e1444
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Mon, 17 Aug 2020 12:00:17 +02:00
+Commit-ID:     8a8a3237a78cbc0557f0eb16a89f16d616323e99
+Gitweb:        https://git.kernel.org/tip/8a8a3237a78cbc0557f0eb16a89f16d616323e99
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Thu, 13 Aug 2020 14:58:11 -04:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Thu, 20 Aug 2020 11:18:36 +02:00
+CommitterDate: Thu, 20 Aug 2020 11:18:58 +02:00
 
-Documentation: efi: remove description of efi=old_map
+efi/libstub: Handle unterminated cmdline
 
-The old EFI runtime region mapping logic that was kept around for some
-time has finally been removed entirely, along with the SGI UV1 support
-code that was its last remaining user. So remove any mention of the
-efi=old_map command line parameter from the docs.
+Make the command line parsing more robust, by handling the case it is
+not NUL-terminated.
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
+Use strnlen instead of strlen, and make sure that the temporary copy is
+NUL-terminated before parsing.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Link: https://lore.kernel.org/r/20200813185811.554051-4-nivedita@alum.mit.edu
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/firmware/efi/libstub/efi-stub-helper.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bdc1f33..a106874 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1233,8 +1233,7 @@
- 	efi=		[EFI]
- 			Format: { "debug", "disable_early_pci_dma",
- 				  "nochunk", "noruntime", "nosoftreserve",
--				  "novamap", "no_disable_early_pci_dma",
--				  "old_map" }
-+				  "novamap", "no_disable_early_pci_dma" }
- 			debug: enable misc debug output.
- 			disable_early_pci_dma: disable the busmaster bit on all
- 			PCI bridges while in the EFI boot stub.
-@@ -1251,8 +1250,6 @@
- 			novamap: do not call SetVirtualAddressMap().
- 			no_disable_early_pci_dma: Leave the busmaster bit set
- 			on all PCI bridges while in the EFI boot stub
--			old_map [X86-64]: switch to the old ioremap-based EFI
--			runtime services mapping. [Needs CONFIG_X86_UV=y]
+diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+index f53652a..f735db5 100644
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -194,12 +194,14 @@ efi_status_t efi_parse_options(char const *cmdline)
+ 	if (!cmdline)
+ 		return EFI_SUCCESS;
  
- 	efi_no_storage_paranoia [EFI; X86]
- 			Using this parameter you can use more than 50% of
+-	len = strlen(cmdline) + 1;
++	len = strnlen(cmdline, COMMAND_LINE_SIZE - 1) + 1;
+ 	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, len, (void **)&buf);
+ 	if (status != EFI_SUCCESS)
+ 		return status;
+ 
+-	str = skip_spaces(memcpy(buf, cmdline, len));
++	memcpy(buf, cmdline, len - 1);
++	buf[len - 1] = '\0';
++	str = skip_spaces(buf);
+ 
+ 	while (*str) {
+ 		char *param, *val;
