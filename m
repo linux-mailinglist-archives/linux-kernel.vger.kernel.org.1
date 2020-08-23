@@ -2,106 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5906B24EC2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CB924EC30
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgHWI07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 04:26:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36840 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgHWI04 (ORCPT
+        id S1727792AbgHWIg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 04:36:56 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:51338 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgHWIg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 04:26:56 -0400
-Date:   Sun, 23 Aug 2020 08:25:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598171214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=wIulMwNvh9KDOFTt4xoI0rBBKxDjZgxmw/KMv8JdaSg=;
-        b=wPzq5BXX6JBTPQRa3++Cqz0GtfzAeo9JhyYS2GzLRW+lqk8Ai1oX+TTX17RwZLboHHZ0Ud
-        C56FjkJUGoZCR71uPrLlc2r/xJJxQJTEhXcFRkxUMyjZrsFTUSnbQ1ZRpkk67UJ7qCeWPO
-        jQZ2S0CUVLsfSWgDBIoqeDpUzfte6B+xZRkQb5x+qdZ32bN4whT1ZkNRLivuaT/GxDl/LA
-        7sCdDXUy0duoiHh8pvyPdBwHceRMg8qF50Y0pIjuQWCfqRnkdI5tgNo296RPQZZ1oGf4jK
-        A+8MaExAyPu+C/x+gMGd3EHy2VvsnqbpV4Es1dDKf3XNSAoLolXu6kvG5J9uDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598171214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=wIulMwNvh9KDOFTt4xoI0rBBKxDjZgxmw/KMv8JdaSg=;
-        b=f7WO+WpvFMdFkdlxW+4eprtPkDOQubCmnGtr0SobEPlTQ+23a5a7QwjW2127YBIsX/01Rq
-        7mx//aTj8RQu8iAw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for v5.9-rc2
-References: <159817113401.5783.14776307451257171431.tglx@nanos>
-Message-ID: <159817113762.5783.6214320432160748743.tglx@nanos>
-Content-Type: text/plain; charset="utf-8"
+        Sun, 23 Aug 2020 04:36:56 -0400
+Received: from localhost.localdomain ([93.22.133.217])
+        by mwinf5d55 with ME
+        id Jwcr2300H4hbG4l03wcsbl; Sun, 23 Aug 2020 10:36:53 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 23 Aug 2020 10:36:53 +0200
+X-ME-IP: 93.22.133.217
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, leon@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] chelsio: switch from 'pci_' to 'dma_' API
+Date:   Sun, 23 Aug 2020 10:36:48 +0200
+Message-Id: <20200823083648.171858-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-please pull the latest x86/urgent branch from:
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-08-23
+When memory is allocated in 'free_rx_resources()' and
+'alloc_tx_resources()' (sge.c) GFP_KERNEL can be used because it is
+already used in these functions.
 
-up to:  6a3ea3e68b8a: x86/entry/64: Do not use RDPID in paranoid entry to accomodate KVM
+Moreover, they can only be called from a .ndo_open	function. So it is
+guarded by the 'rtnl_lock()', which is a mutex.
 
+While at it, a pr_err message in 'init_one()' has been updated accordingly
+(s/consistent/coherent).
 
-A single fix for x86 which removes the RDPID usage from the paranoid entry
-path and unconditionally uses LSL to retrieve the CPU number. RDPID depends
-on MSR_TSX_AUX.  KVM has an optmization to avoid expensive MRS read/writes
-on VMENTER/EXIT. It caches the MSR values and restores them either when
-leaving the run loop, on preemption or when going out to user
-space. MSR_TSX_AUX is part of that lazy MSR set, so after writing the guest
-value and before the lazy restore any exception using the paranoid entry
-will read the guest value and use it as CPU number to retrieve the GSBASE
-value for the current CPU when FSGSBASE is enabled. As RDPID is only used
-in that particular entry path, there is no reason to burden VMENTER/EXIT
-with two extra MSR writes. Remove the RDPID optimization, which is not even
-backed by numbers from the paranoid entry path instead.
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-Thanks,
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-	tglx
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
------------------->
-Sean Christopherson (1):
-      x86/entry/64: Do not use RDPID in paranoid entry to accomodate KVM
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
- arch/x86/entry/calling.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index 98e4d8886f11..ae9b0d4615b3 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -374,12 +374,14 @@ For 32-bit we have the following conventions - kernel is built with
-  * Fetch the per-CPU GSBASE value for this processor and put it in @reg.
-  * We normally use %gs for accessing per-CPU data, but we are setting up
-  * %gs here and obviously can not use %gs itself to access per-CPU data.
-+ *
-+ * Do not use RDPID, because KVM loads guest's TSC_AUX on vm-entry and
-+ * may not restore the host's value until the CPU returns to userspace.
-+ * Thus the kernel would consume a guest's TSC_AUX if an NMI arrives
-+ * while running KVM's run loop.
-  */
- .macro GET_PERCPU_BASE reg:req
--	ALTERNATIVE \
--		"LOAD_CPU_AND_NODE_SEG_LIMIT \reg", \
--		"RDPID	\reg", \
--		X86_FEATURE_RDPID
-+	LOAD_CPU_AND_NODE_SEG_LIMIT \reg
- 	andq	$VDSO_CPUNODE_MASK, \reg
- 	movq	__per_cpu_offset(, \reg, 8), \reg
- .endm
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 10 ++--
+ drivers/net/ethernet/chelsio/cxgb/sge.c   | 64 ++++++++++++-----------
+ 2 files changed, 39 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+index 99736796e1a0..0e4a0f413960 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
++++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+@@ -997,17 +997,17 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto out_disable_pdev;
+ 	}
+ 
+-	if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
++	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) {
+ 		pci_using_dac = 1;
+ 
+-		if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64))) {
+-			pr_err("%s: unable to obtain 64-bit DMA for "
+-			       "consistent allocations\n", pci_name(pdev));
++		if (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
++			pr_err("%s: unable to obtain 64-bit DMA for coherent allocations\n",
++			       pci_name(pdev));
+ 			err = -ENODEV;
+ 			goto out_disable_pdev;
+ 		}
+ 
+-	} else if ((err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) != 0) {
++	} else if ((err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) != 0) {
+ 		pr_err("%s: no usable DMA configuration\n", pci_name(pdev));
+ 		goto out_disable_pdev;
+ 	}
+diff --git a/drivers/net/ethernet/chelsio/cxgb/sge.c b/drivers/net/ethernet/chelsio/cxgb/sge.c
+index 47b5c8e2104b..21016de20b2d 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb/sge.c
+@@ -509,9 +509,8 @@ static void free_freelQ_buffers(struct pci_dev *pdev, struct freelQ *q)
+ 	while (q->credits--) {
+ 		struct freelQ_ce *ce = &q->centries[cidx];
+ 
+-		pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
+-				 dma_unmap_len(ce, dma_len),
+-				 PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&pdev->dev, dma_unmap_addr(ce, dma_addr),
++				 dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
+ 		dev_kfree_skb(ce->skb);
+ 		ce->skb = NULL;
+ 		if (++cidx == q->size)
+@@ -529,8 +528,8 @@ static void free_rx_resources(struct sge *sge)
+ 
+ 	if (sge->respQ.entries) {
+ 		size = sizeof(struct respQ_e) * sge->respQ.size;
+-		pci_free_consistent(pdev, size, sge->respQ.entries,
+-				    sge->respQ.dma_addr);
++		dma_free_coherent(&pdev->dev, size, sge->respQ.entries,
++				  sge->respQ.dma_addr);
+ 	}
+ 
+ 	for (i = 0; i < SGE_FREELQ_N; i++) {
+@@ -542,8 +541,8 @@ static void free_rx_resources(struct sge *sge)
+ 		}
+ 		if (q->entries) {
+ 			size = sizeof(struct freelQ_e) * q->size;
+-			pci_free_consistent(pdev, size, q->entries,
+-					    q->dma_addr);
++			dma_free_coherent(&pdev->dev, size, q->entries,
++					  q->dma_addr);
+ 		}
+ 	}
+ }
+@@ -564,7 +563,8 @@ static int alloc_rx_resources(struct sge *sge, struct sge_params *p)
+ 		q->size = p->freelQ_size[i];
+ 		q->dma_offset = sge->rx_pkt_pad ? 0 : NET_IP_ALIGN;
+ 		size = sizeof(struct freelQ_e) * q->size;
+-		q->entries = pci_alloc_consistent(pdev, size, &q->dma_addr);
++		q->entries = dma_alloc_coherent(&pdev->dev, size,
++						&q->dma_addr, GFP_KERNEL);
+ 		if (!q->entries)
+ 			goto err_no_mem;
+ 
+@@ -601,7 +601,8 @@ static int alloc_rx_resources(struct sge *sge, struct sge_params *p)
+ 	sge->respQ.credits = 0;
+ 	size = sizeof(struct respQ_e) * sge->respQ.size;
+ 	sge->respQ.entries =
+-		pci_alloc_consistent(pdev, size, &sge->respQ.dma_addr);
++		dma_alloc_coherent(&pdev->dev, size, &sge->respQ.dma_addr,
++				   GFP_KERNEL);
+ 	if (!sge->respQ.entries)
+ 		goto err_no_mem;
+ 	return 0;
+@@ -624,9 +625,10 @@ static void free_cmdQ_buffers(struct sge *sge, struct cmdQ *q, unsigned int n)
+ 	ce = &q->centries[cidx];
+ 	while (n--) {
+ 		if (likely(dma_unmap_len(ce, dma_len))) {
+-			pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
++			dma_unmap_single(&pdev->dev,
++					 dma_unmap_addr(ce, dma_addr),
+ 					 dma_unmap_len(ce, dma_len),
+-					 PCI_DMA_TODEVICE);
++					 DMA_TO_DEVICE);
+ 			if (q->sop)
+ 				q->sop = 0;
+ 		}
+@@ -663,8 +665,8 @@ static void free_tx_resources(struct sge *sge)
+ 		}
+ 		if (q->entries) {
+ 			size = sizeof(struct cmdQ_e) * q->size;
+-			pci_free_consistent(pdev, size, q->entries,
+-					    q->dma_addr);
++			dma_free_coherent(&pdev->dev, size, q->entries,
++					  q->dma_addr);
+ 		}
+ 	}
+ }
+@@ -689,7 +691,8 @@ static int alloc_tx_resources(struct sge *sge, struct sge_params *p)
+ 		q->stop_thres = 0;
+ 		spin_lock_init(&q->lock);
+ 		size = sizeof(struct cmdQ_e) * q->size;
+-		q->entries = pci_alloc_consistent(pdev, size, &q->dma_addr);
++		q->entries = dma_alloc_coherent(&pdev->dev, size,
++						&q->dma_addr, GFP_KERNEL);
+ 		if (!q->entries)
+ 			goto err_no_mem;
+ 
+@@ -837,8 +840,8 @@ static void refill_free_list(struct sge *sge, struct freelQ *q)
+ 			break;
+ 
+ 		skb_reserve(skb, q->dma_offset);
+-		mapping = pci_map_single(pdev, skb->data, dma_len,
+-					 PCI_DMA_FROMDEVICE);
++		mapping = dma_map_single(&pdev->dev, skb->data, dma_len,
++					 DMA_FROM_DEVICE);
+ 		skb_reserve(skb, sge->rx_pkt_pad);
+ 
+ 		ce->skb = skb;
+@@ -1049,15 +1052,15 @@ static inline struct sk_buff *get_packet(struct adapter *adapter,
+ 			goto use_orig_buf;
+ 
+ 		skb_put(skb, len);
+-		pci_dma_sync_single_for_cpu(pdev,
+-					    dma_unmap_addr(ce, dma_addr),
+-					    dma_unmap_len(ce, dma_len),
+-					    PCI_DMA_FROMDEVICE);
++		dma_sync_single_for_cpu(&pdev->dev,
++					dma_unmap_addr(ce, dma_addr),
++					dma_unmap_len(ce, dma_len),
++					DMA_FROM_DEVICE);
+ 		skb_copy_from_linear_data(ce->skb, skb->data, len);
+-		pci_dma_sync_single_for_device(pdev,
+-					       dma_unmap_addr(ce, dma_addr),
+-					       dma_unmap_len(ce, dma_len),
+-					       PCI_DMA_FROMDEVICE);
++		dma_sync_single_for_device(&pdev->dev,
++					   dma_unmap_addr(ce, dma_addr),
++					   dma_unmap_len(ce, dma_len),
++					   DMA_FROM_DEVICE);
+ 		recycle_fl_buf(fl, fl->cidx);
+ 		return skb;
+ 	}
+@@ -1068,8 +1071,8 @@ static inline struct sk_buff *get_packet(struct adapter *adapter,
+ 		return NULL;
+ 	}
+ 
+-	pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
+-			 dma_unmap_len(ce, dma_len), PCI_DMA_FROMDEVICE);
++	dma_unmap_single(&pdev->dev, dma_unmap_addr(ce, dma_addr),
++			 dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
+ 	skb = ce->skb;
+ 	prefetch(skb->data);
+ 
+@@ -1091,8 +1094,9 @@ static void unexpected_offload(struct adapter *adapter, struct freelQ *fl)
+ 	struct freelQ_ce *ce = &fl->centries[fl->cidx];
+ 	struct sk_buff *skb = ce->skb;
+ 
+-	pci_dma_sync_single_for_cpu(adapter->pdev, dma_unmap_addr(ce, dma_addr),
+-			    dma_unmap_len(ce, dma_len), PCI_DMA_FROMDEVICE);
++	dma_sync_single_for_cpu(&adapter->pdev->dev,
++				dma_unmap_addr(ce, dma_addr),
++				dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
+ 	pr_err("%s: unexpected offload packet, cmd %u\n",
+ 	       adapter->name, *skb->data);
+ 	recycle_fl_buf(fl, fl->cidx);
+@@ -1209,8 +1213,8 @@ static inline void write_tx_descs(struct adapter *adapter, struct sk_buff *skb,
+ 	e = e1 = &q->entries[pidx];
+ 	ce = &q->centries[pidx];
+ 
+-	mapping = pci_map_single(adapter->pdev, skb->data,
+-				 skb_headlen(skb), PCI_DMA_TODEVICE);
++	mapping = dma_map_single(&adapter->pdev->dev, skb->data,
++				 skb_headlen(skb), DMA_TO_DEVICE);
+ 
+ 	desc_mapping = mapping;
+ 	desc_len = skb_headlen(skb);
+-- 
+2.25.1
 
