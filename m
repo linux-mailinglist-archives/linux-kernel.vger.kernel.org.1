@@ -2,158 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEF624EC5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 11:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B38624EC68
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 11:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgHWJLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 05:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgHWJK7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 05:10:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA2FC061574;
-        Sun, 23 Aug 2020 02:10:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=YPbj+jYW6lSNd//SqFpfbe0WS/0uxusHOvL8V2ZlRJE=; b=PBHmhgX3NKK5fsFULhyEkxdAjV
-        lcuLxZeeBDtHkLtVSr+FauH/Uhg6/Cib7sLCpnO32g6qDNrlzXmVZmfVtfpk+9H/ZIBjWDMBmpPLZ
-        aY4KfRVmILHn9aLbdzWIv773n8eTQtoMuFG1abn4VejyUN0fjHqCPi7WYIvBXxMqpui7rMsj4JnLJ
-        mVKZi0VsGgtKf0i9Mz+bJoj+LA5U4Ye4Ya0rRFA0iGsSKX+JHs0uflLrCN0kLhtBFessERgmXbpWs
-        FcYN815nGaIhqgZ1VEeGKGy0QdlTgZwmMWU/mrknMU/raoGtBKjOR8ojSgw6S2OWYbcek3QqYOxC2
-        SunijzaA==;
-Received: from 171.168.43.195.cust.ip.kpnqwest.it ([195.43.168.171] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k9m1a-0003LF-G4; Sun, 23 Aug 2020 09:10:50 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Justin Sanders <justin@coraid.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Xianting Tian <xianting_tian@126.com>,
-        linux-block@vger.kernel.org, dm-devel@redhat.com,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
-Subject: [PATCH 3/3] nvme: don't call revalidate_disk from nvme_set_queue_dying
-Date:   Sun, 23 Aug 2020 11:10:43 +0200
-Message-Id: <20200823091043.2600261-4-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200823091043.2600261-1-hch@lst.de>
-References: <20200823091043.2600261-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1726449AbgHWJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 05:15:11 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:24886 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725913AbgHWJPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 05:15:10 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBn3nmNM0JfBb47AQ--.54780S4;
+        Sun, 23 Aug 2020 17:14:56 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: pm8001: Fix memleak in pm8001_exec_internal_task_abort
+Date:   Sun, 23 Aug 2020 17:14:53 +0800
+Message-Id: <20200823091453.4782-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBn3nmNM0JfBb47AQ--.54780S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy5WF48tr1UXrWrZF1rCrg_yoW3ArX_Gr
+        4xJFn2gry8GrZ7Ga4UCrs0yr9F9FWrXF1xCF1Yvas3uayrur45WF45ZF45AF1UXw4xG3Wj
+        qw1kGa1fZr13tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JUhNVgUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhABBse
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nvme_set_queue_dying we really just want to ensure the disk and bdev
-sizes are set to zero.  Going through revalidate_disk leads to a somewhat
-arcance and complex callchain relying on special behavior in a few
-places.  Instead just lift the set_capacity directly to
-nvme_set_queue_dying, and rename and move the nvme_mpath_update_disk_size
-helper so that we can use it in nvme_set_queue_dying to propagate the
-size to the bdev without detours.
+When pm8001_tag_alloc() fails, task should be freed just
+like what we've done in the subsequent error paths.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/nvme/host/core.c | 33 +++++++++++++++++++++++----------
- drivers/nvme/host/nvme.h | 13 -------------
- 2 files changed, 23 insertions(+), 23 deletions(-)
+ drivers/scsi/pm8001/pm8001_sas.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 88cff309d8e4f0..12dea15527f61a 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -94,21 +94,34 @@ static void nvme_put_subsystem(struct nvme_subsystem *subsys);
- static void nvme_remove_invalid_namespaces(struct nvme_ctrl *ctrl,
- 					   unsigned nsid);
+diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+index 337e79d6837f..9889bab7d31c 100644
+--- a/drivers/scsi/pm8001/pm8001_sas.c
++++ b/drivers/scsi/pm8001/pm8001_sas.c
+@@ -818,7 +818,7 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
  
-+static void nvme_update_bdev_size(struct gendisk *disk)
-+{
-+	struct block_device *bdev = bdget_disk(disk, 0);
-+
-+	if (bdev) {
-+		bd_set_nr_sectors(bdev, get_capacity(disk));
-+		bdput(bdev);
-+	}
-+}
-+
-+/*
-+ * Prepare a queue for teardown.
-+ *
-+ * This must forcibly unquiesce queues to avoid blocking dispatch, and only set
-+ * the capacity to 0 after that to avoid blocking dispatchers that may be
-+ * holding bd_butex.  This will end buffered writers dirtying pages that can't
-+ * be synced.
-+ */
- static void nvme_set_queue_dying(struct nvme_ns *ns)
- {
--	/*
--	 * Revalidating a dead namespace sets capacity to 0. This will end
--	 * buffered writers dirtying pages that can't be synced.
--	 */
- 	if (test_and_set_bit(NVME_NS_DEAD, &ns->flags))
- 		return;
-+
- 	blk_set_queue_dying(ns->queue);
--	/* Forcibly unquiesce queues to avoid blocking dispatch */
- 	blk_mq_unquiesce_queue(ns->queue);
--	/*
--	 * Revalidate after unblocking dispatchers that may be holding bd_butex
--	 */
--	revalidate_disk(ns->disk);
-+
-+	set_capacity(ns->disk, 0);
-+	nvme_update_bdev_size(ns->disk);
- }
- 
- static void nvme_queue_scan(struct nvme_ctrl *ctrl)
-@@ -2083,7 +2096,7 @@ static int __nvme_revalidate_disk(struct gendisk *disk, struct nvme_id_ns *id)
- 		nvme_update_disk_info(ns->head->disk, ns, id);
- 		blk_stack_limits(&ns->head->disk->queue->limits,
- 				 &ns->queue->limits, 0);
--		nvme_mpath_update_disk_size(ns->head->disk);
-+		nvme_update_bdev_size(ns->head->disk);
- 	}
- #endif
- 	return 0;
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index ae5cad5a08f411..4cadaea9034ae4 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -659,16 +659,6 @@ static inline void nvme_trace_bio_complete(struct request *req,
- 		trace_block_bio_complete(ns->head->disk->queue, req->bio);
- }
- 
--static inline void nvme_mpath_update_disk_size(struct gendisk *disk)
--{
--	struct block_device *bdev = bdget_disk(disk, 0);
--
--	if (bdev) {
--		bd_set_nr_sectors(bdev, get_capacity(disk));
--		bdput(bdev);
--	}
--}
--
- extern struct device_attribute dev_attr_ana_grpid;
- extern struct device_attribute dev_attr_ana_state;
- extern struct device_attribute subsys_attr_iopolicy;
-@@ -744,9 +734,6 @@ static inline void nvme_mpath_wait_freeze(struct nvme_subsystem *subsys)
- static inline void nvme_mpath_start_freeze(struct nvme_subsystem *subsys)
- {
- }
--static inline void nvme_mpath_update_disk_size(struct gendisk *disk)
--{
--}
- #endif /* CONFIG_NVME_MULTIPATH */
- 
- #ifdef CONFIG_BLK_DEV_ZONED
+ 		res = pm8001_tag_alloc(pm8001_ha, &ccb_tag);
+ 		if (res)
+-			return res;
++			goto ex_err;
+ 		ccb = &pm8001_ha->ccb_info[ccb_tag];
+ 		ccb->device = pm8001_dev;
+ 		ccb->ccb_tag = ccb_tag;
 -- 
-2.28.0
+2.17.1
 
