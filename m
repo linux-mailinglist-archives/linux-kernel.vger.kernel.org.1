@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A3A24F07E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 01:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8082A24F088
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 01:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgHWXSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 19:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S1727000AbgHWXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 19:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbgHWXSA (ORCPT
+        with ESMTP id S1726912AbgHWXmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 19:18:00 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41B6C061573;
-        Sun, 23 Aug 2020 16:17:59 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4A436279;
-        Mon, 24 Aug 2020 01:17:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598224676;
-        bh=5pNVaxdIH2zklieYTCrcATi7SEHr44vYPcKJt9zZAqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HxrdpSIncsK7SqIusa7ueSzkfiflhHGkJDYNSGu6BlfSrEIj6iPb5P6E74uL2HJUf
-         j07c4xhbbMghXdxzf9ap0czkBscavCYTkThGloDytYBZJsvhZxFxKBJSyzTe8yQJr5
-         2kIPV+bULEXPuH/3EIUbDD8IOo1Gc/Bil1AETxKQ=
-Date:   Mon, 24 Aug 2020 02:17:37 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hyun Kwon <hyun.kwon@xilinx.com>
-Cc:     Kenneth Sloat <ksloat@designlinxhs.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Michal Simek <michals@xilinx.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: Re: dt-bindings: display: xlnx: mixer: Inconsistent pixel format
- terminology in dt docs
-Message-ID: <20200823231737.GM6002@pendragon.ideasonboard.com>
-References: <1ac0eeed-7455-b0a3-a3e4-4501ae3129df@designlinxhs.com>
- <20200820233817.GA508@xilinx.com>
+        Sun, 23 Aug 2020 19:42:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11241C061573;
+        Sun, 23 Aug 2020 16:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Jy0vzNYy+s6HE2SSzuYgcZY2sl8odgHtqPcJjLTSJAw=; b=Bviw/rEJ5FyF2LVx/xWlz6jh5U
+        28IH6U2RYsc2vgowT/ArXe12w1lJvbvi6CwYBwaETS89g6K/b9UwOQqnGWky9GnGF7m7SFi/daklR
+        f7zaaftXjfgGjsAPBgQVfNWa0is/0NU2ZORfo78/FJXaJowV0igxfYFY51jZ/ewhSB4Am5yJo0T/g
+        YD3FEr0GO2xKNyij8GlbNyLX0twRxLEmUfGrrJaD+N6r0YDV7r6D5GV5snYe0Ip/xhDp9KINlo8fz
+        F4gmkCcs50oKL6MddSk686Q0WCF7J3pU9xBEJKERSRXzFT0eE1IthF4F+s/TGAilLJu1qAtpBrN6R
+        UWTh0QBQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k9zch-0001XS-GA; Sun, 23 Aug 2020 23:42:03 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] Documentation: fix dma-buf.rst underline length warning
+Message-ID: <1b22d4c3-4ea5-c633-9e35-71ce65d8dbcc@infradead.org>
+Date:   Sun, 23 Aug 2020 16:41:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820233817.GA508@xilinx.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Randy Dunlap <rdunlap@infradead.org>
 
-On Thu, Aug 20, 2020 at 04:38:18PM -0700, Hyun Kwon wrote:
-> On Thursday, August 20, 2020 2:18 PM, Kenneth Sloat write:
-> > Hello,
-> > 
-> > The Xilinx Video mixer IP uses the DRM fourcc string as a device tree binding in
-> > order to describe the format for a specific DRM layer/plane. Currently, in the
-> > device tree doc in
-> > "Documentation/devicetree/bindings/dma/xilinx/xilinx_frmbuf.txt" there is a list
-> > called "VIDEO FORMATS" with a table containing "Mixer IP Format" and
-> > associated "Driver supported Format String" (fourcc). In general, this table is not
-> > helpful, because "Mixer IP Format" does not match the Xilinx IP datasheet
-> > terminology for formats but rather some other commonly used nomenclature.
-> > This is also inconsistent from other Xilinx dts binding docs which specify the
-> > actual correct IP name and at times list other format nomenclature where
-> > helpful (i.e. xilinx_frmbuf.txt)
-> > 
-> > My suggestion is to remove the current "Mixer IP Format" strings in the doc and
-> > replace them with the actual IP names in the datasheet (which also match those
-> > used in Xilinx's Vivado FPGA tool). Otherwise, the programmer must cross
-> > reference other dts documentation or the code in order to figure these out. I am
-> > happy to provide a patch for this but wanted to throw out the suggestion first.
+/home/rdunlap/lnx/lnx-59-rc2/Documentation/driver-api/dma-buf.rst:182: WARNING: Title underline too short.
+Indefinite DMA Fences
+~~~~~~~~~~~~~~~~~~~~
 
-Are you talking about the "Video Format" column in table 2-8 of PG243 ?
-Those values seem good to me.
+Fixes: 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are a bad idea")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Dave Airlie <airlied@redhat.com>
+---
+ Documentation/driver-api/dma-buf.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Documentation/devicetree/bindings/media/xilinx/video.txt also defines a
-xlnx,video-format property that uses the values from UG934 for the AXI
-streaming interface.
+--- lnx-59-rc2.orig/Documentation/driver-api/dma-buf.rst
++++ lnx-59-rc2/Documentation/driver-api/dma-buf.rst
+@@ -179,7 +179,7 @@ DMA Fence uABI/Sync File
+    :internal:
+ 
+ Indefinite DMA Fences
+-~~~~~~~~~~~~~~~~~~~~
++~~~~~~~~~~~~~~~~~~~~~
+ 
+ At various times &dma_fence with an indefinite time until dma_fence_wait()
+ finishes have been proposed. Examples include:
 
-> I agree. The bindings should be in sync with datasheet and not rely on
-> software definitions. Since the driver is only in Xilinx vendor tree,
-> please send directly to git@xilinx.com.
-
--- 
-Regards,
-
-Laurent Pinchart
