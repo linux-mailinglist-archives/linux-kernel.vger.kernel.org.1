@@ -2,49 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2439624EF4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 20:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9353924EF47
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 20:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgHWSjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 14:39:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48156 "EHLO mail.kernel.org"
+        id S1726631AbgHWSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 14:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725992AbgHWSjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 14:39:24 -0400
-Subject: Re: [GIT pull] core/urgent for v5.9-rc2
+        id S1726356AbgHWSjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 14:39:25 -0400
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.9-3 tag
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598207963;
-        bh=nW31LJUiQBpYV32e+bvFLVnpTxFhXwgvwwryQS9MImw=;
+        s=default; t=1598207964;
+        bh=hIKoVmpC88VP1ZThEbWeQVRYJkQKluOV7vCcJ3XkcvI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=nb0ZuOSwfEbdC+p7H3WZpHxoCU5B7jMPbQD+wzWzwLJ6lHA3mjxEaEyh4yEHmt8+w
-         3crxzZaILHHfoD3laNNI/mzp4tNYpdQYo7/F5o7WZeTAOnZXJqHPgZ7xmuf4lEpKrp
-         HeEH6qmKoDMJXC96IGgQf84iNn3DP/tibsVoiBTY=
+        b=J16Vx4irGTsvEoj+6w5Krxn8bXfPOXR8rzPSggBAewZUx7aTVygXGxnaRSkMD9D+C
+         Xl8zz3va8W1QUwsEzhNmfYvaKAPf9plTbairHqH0o2bLK9rnDkr68CGwWKZjiYqTe+
+         RJlvh2YZ/fW46lOXC98MeUYDRM+SmT2EkQcYnfuQ=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <159817113401.5783.14776307451257171431.tglx@nanos>
-References: <159817113401.5783.14776307451257171431.tglx@nanos>
+In-Reply-To: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
+References: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <159817113401.5783.14776307451257171431.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2020-08-23
-X-PR-Tracked-Commit-Id: d88d59b64ca35abae208e2781fdb45e69cbed56c
+X-PR-Tracked-Message-Id: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-3
+X-PR-Tracked-Commit-Id: 64ef8f2c4791940d7f3945507b6a45c20d959260
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e99b2507baccca79394ec646e3d1a0884667ea98
-Message-Id: <159820796355.12134.4421321352772303.pr-tracker-bot@kernel.org>
-Date:   Sun, 23 Aug 2020 18:39:23 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
+X-PR-Merge-Commit-Id: cb95712138ec5e480db5160b41172bbc6f6494cc
+Message-Id: <159820796470.12134.6083209572149218193.pr-tracker-bot@kernel.org>
+Date:   Sun, 23 Aug 2020 18:39:24 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        aneesh.kumar@linux.ibm.com, anju@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
+        fbarrat@linux.ibm.com, hegdevasant@linux.vnet.ibm.com,
+        kjain@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
+        mdroth@linux.vnet.ibm.com, mikey@neuling.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 23 Aug 2020 08:25:34 -0000:
+The pull request you sent on Sun, 23 Aug 2020 22:50:13 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2020-08-23
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e99b2507baccca79394ec646e3d1a0884667ea98
+https://git.kernel.org/torvalds/c/cb95712138ec5e480db5160b41172bbc6f6494cc
 
 Thank you!
 
