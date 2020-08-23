@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B2D24EEFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 19:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F9E24EF01
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 19:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgHWRUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 13:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50998 "EHLO mail.kernel.org"
+        id S1727866AbgHWRVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 13:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726727AbgHWRUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 13:20:32 -0400
+        id S1726792AbgHWRUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 13:20:36 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57297204FD;
-        Sun, 23 Aug 2020 17:20:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4BBF20838;
+        Sun, 23 Aug 2020 17:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598203231;
-        bh=/L8aV21PR/oxEgq5FdAkzdCJ5qV3vQLcw8E2f0y/1R8=;
+        s=default; t=1598203234;
+        bh=CqYRHo/0iH7tLsT9o8PS32qjWWTfkPRR9VIUe5p42aw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=X+/8rEMGA8Ze1W6Qn8/a+KsZ+gL+GtoiHLYcF+IBZj9Pa1ra9bv1I/X2CkdLwA6Ad
-         GCakIPb2UCBfqAn6S6tiW54kHSihWBB6/yXXH4CyiYORkgnGAFUWqXHOktUMguxlcN
-         gqD28WdlyvDRvHD5CraSQmblMe51s2FWdCHCsWxI=
+        b=KkI3pSZfqHXauZiRrXkKxXbKzIwc0VBqmxokzBy6o6Qfh8yThB3VmWvUtMkmwxMJW
+         XL1KfC6b8y+y/1cjD9QFyXL5ltFvj5q6PxLhZKStfYpMwxfZtrx6yWILkpMAhDwbSG
+         OfoVAD7/r7oNvFj54Yfbm3+hSlNLEH5Kku5K8YgU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -32,9 +32,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/5] arm64: dts: imx8mm-beacon-som: Align regulator names with schema
-Date:   Sun, 23 Aug 2020 19:20:17 +0200
-Message-Id: <20200823172019.18606-3-krzk@kernel.org>
+Subject: [PATCH 4/5] arm64: dts: imx8mm-beacon-som: Fix atmel,24c64 EEPROM compatible
+Date:   Sun, 23 Aug 2020 19:20:18 +0200
+Message-Id: <20200823172019.18606-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200823172019.18606-1-krzk@kernel.org>
 References: <20200823172019.18606-1-krzk@kernel.org>
@@ -43,119 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device tree schema expects regulator names to be lowercase.  This fixes
-dtbs_check warnings like:
+Correct the EEPROM node compatible to match device tree schema (invalid
+space, unknown ID) to fix dtbs_check warnings:
 
-    pmic@4b: regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
+  arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: eeprom@50:
+    compatible: ['microchip, at24c64d', 'atmel,24c64'] is not valid under any of the given schemas
+  arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: eeprom@50:
+    compatible:0: 'microchip, at24c64d' does not match '^[a-zA-Z][a-zA-Z0-9,+\\-._]+$'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../boot/dts/freescale/imx8mm-beacon-som.dtsi | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index 94911b1707ef..f627e82ad929 100644
+index f627e82ad929..620a124dfb5f 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -79,7 +79,7 @@
+@@ -184,7 +184,7 @@
+ 	status = "okay";
  
- 		regulators {
- 			buck1_reg: BUCK1 {
--				regulator-name = "BUCK1";
-+				regulator-name = "buck1";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1300000>;
- 				regulator-boot-on;
-@@ -88,7 +88,7 @@
- 			};
- 
- 			buck2_reg: BUCK2 {
--				regulator-name = "BUCK2";
-+				regulator-name = "buck2";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1300000>;
- 				regulator-boot-on;
-@@ -100,7 +100,7 @@
- 
- 			buck3_reg: BUCK3 {
- 				// BUCK5 in datasheet
--				regulator-name = "BUCK3";
-+				regulator-name = "buck3";
- 				regulator-min-microvolt = <700000>;
- 				regulator-max-microvolt = <1350000>;
- 				regulator-boot-on;
-@@ -109,7 +109,7 @@
- 
- 			buck4_reg: BUCK4 {
- 				// BUCK6 in datasheet
--				regulator-name = "BUCK4";
-+				regulator-name = "buck4";
- 				regulator-min-microvolt = <3000000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -118,7 +118,7 @@
- 
- 			buck5_reg: BUCK5 {
- 				// BUCK7 in datasheet
--				regulator-name = "BUCK5";
-+				regulator-name = "buck5";
- 				regulator-min-microvolt = <1605000>;
- 				regulator-max-microvolt = <1995000>;
- 				regulator-boot-on;
-@@ -127,7 +127,7 @@
- 
- 			buck6_reg: BUCK6 {
- 				// BUCK8 in datasheet
--				regulator-name = "BUCK6";
-+				regulator-name = "buck6";
- 				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <1400000>;
- 				regulator-boot-on;
-@@ -135,7 +135,7 @@
- 			};
- 
- 			ldo1_reg: LDO1 {
--				regulator-name = "LDO1";
-+				regulator-name = "ldo1";
- 				regulator-min-microvolt = <1600000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -143,7 +143,7 @@
- 			};
- 
- 			ldo2_reg: LDO2 {
--				regulator-name = "LDO2";
-+				regulator-name = "ldo2";
- 				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <900000>;
- 				regulator-boot-on;
-@@ -151,7 +151,7 @@
- 			};
- 
- 			ldo3_reg: LDO3 {
--				regulator-name = "LDO3";
-+				regulator-name = "ldo3";
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
-@@ -159,7 +159,7 @@
- 			};
- 
- 			ldo4_reg: LDO4 {
--				regulator-name = "LDO4";
-+				regulator-name = "ldo4";
- 				regulator-min-microvolt = <900000>;
- 				regulator-max-microvolt = <1800000>;
- 				regulator-boot-on;
-@@ -167,7 +167,7 @@
- 			};
- 
- 			ldo6_reg: LDO6 {
--				regulator-name = "LDO6";
-+				regulator-name = "ldo6";
- 				regulator-min-microvolt = <900000>;
- 				regulator-max-microvolt = <1800000>;
- 				regulator-boot-on;
+ 	eeprom@50 {
+-		compatible = "microchip, at24c64d", "atmel,24c64";
++		compatible = "microchip,24c64", "atmel,24c64";
+ 		pagesize = <32>;
+ 		read-only;	/* Manufacturing EEPROM programmed at factory */
+ 		reg = <0x50>;
 -- 
 2.17.1
 
