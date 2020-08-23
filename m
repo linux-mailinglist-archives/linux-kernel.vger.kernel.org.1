@@ -2,86 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB7124EBD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 08:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A407724EBD6
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 08:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgHWG2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 02:28:07 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:18256 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725648AbgHWG2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 02:28:06 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app2 (Coremail) with SMTP id by_KCgAXwJ1fDEJfRcEbAg--.21359S4;
-        Sun, 23 Aug 2020 14:27:46 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vme: ca91cx42: fix memleak in ca91cx42_dma_list_add
-Date:   Sun, 23 Aug 2020 14:27:40 +0800
-Message-Id: <20200823062743.6860-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAXwJ1fDEJfRcEbAg--.21359S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF1rZryDJr13Jr17Gw4rXwb_yoWDAFb_uF
-        13C3W2vF4DtFy2q34DCw4rZryq9398uFn3ury8K3sxGFy8Za47KFWjvFW5JryrZw40qFsF
-        qr1UCF1fur4jyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        U-J5rUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAzss
+        id S1726241AbgHWGlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 02:41:10 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18685 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgHWGlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 02:41:07 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f420f750000>; Sat, 22 Aug 2020 23:40:53 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 22 Aug 2020 23:41:07 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 22 Aug 2020 23:41:07 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 23 Aug
+ 2020 06:40:39 +0000
+Date:   Sun, 23 Aug 2020 09:40:36 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <rob.miller@broadcom.com>,
+        <lingshan.zhu@intel.com>, <eperezma@redhat.com>, <lulu@redhat.com>,
+        <shahafs@mellanox.com>, <hanand@xilinx.com>,
+        <mhabets@solarflare.com>, <gdawar@xilinx.com>,
+        <saugatm@xilinx.com>, <vmireyno@marvell.com>,
+        <zhangweining@ruijie.com.cn>, <eli@mellanox.com>
+Subject: Re: [PATCH V2 2/3] vhost: vdpa: report iova range
+Message-ID: <20200823064035.GB147797@mtl-vdi-166.wap.labs.mlnx>
+References: <20200821092813.8952-1-jasowang@redhat.com>
+ <20200821092813.8952-3-jasowang@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200821092813.8952-3-jasowang@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598164853; bh=UiD8dJXe+GsLHU8pN9btsFs9/XV7cIHrvGbnOBAFGPU=;
+        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
+         MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
+         User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=pnz8g2efLGRimNp8lVrxsQ2m5FibE80h8lYBFZALVSm1w7qPUUdqcHZfTJWkJ9/i2
+         +5UC22KO67n5pzyOgiwRwSMWLIFUoRYGceulSVqJ3MlkkCAW+TjNd6VDB69iBPLHWg
+         Kf9BqO2G0WeJEp3Yu/MTK+5z8wjztuWJbEtrZjpZQpfnj8sBNt9x9P1c6ISUuPhILh
+         xxovu8NL2v5w1za0BrZddeqyuV9kMV+VdC6f2yTlIoXeLq5ETXvF/x1wxOF+KIcnrg
+         atnjdiKMsel6dxUdn412VZXLePhEi0S+aiiInd2pq4MWSUWh79/r/Wd8/nbZHzLhiK
+         DR4gmNQ8+oUWg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we encounter invalid data width or address space,
-entry should be freed just like what we've done in the
-previous error paths.
+On Fri, Aug 21, 2020 at 05:28:12AM -0400, Jason Wang wrote:
+> This patch introduces a new ioctl for vhost-vdpa device that can
+> report the iova range by the device.
+> 
+> For device that implements get_iova_range() method, we fetch it from
+> the vDPA device. If device doesn't implement get_iova_range() but
+> depends on platform IOMMU, we will query via DOMAIN_ATTR_GEOMETRY,
+> otherwise [0, ULLONG_MAX] is assumed.
+> 
+> For safety, this patch also rules out the map request which is not in
+> the valid range.
+> 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/vhost/vdpa.c             | 41 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/vhost.h       |  4 ++++
+>  include/uapi/linux/vhost_types.h |  9 +++++++
+>  3 files changed, 54 insertions(+)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 3fab94f88894..1adb4adb0345 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -48,6 +48,7 @@ struct vhost_vdpa {
+>  	int minor;
+>  	struct eventfd_ctx *config_ctx;
+>  	int in_batch;
+> +	struct vdpa_iova_range range;
+>  };
+>  
+>  static DEFINE_IDA(vhost_vdpa_ida);
+> @@ -344,6 +345,16 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+>  	return 0;
+>  }
+>  
+> +static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
+> +{
+> +	struct vhost_vdpa_iova_range range = {
+> +		.first = v->range.first,
+> +		.last = v->range.last,
+> +	};
+> +
+> +	return copy_to_user(argp, &range, sizeof(range));
+> +}
+> +
+>  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+>  				   void __user *argp)
+>  {
+> @@ -476,6 +487,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+>  	case VHOST_VDPA_SET_CONFIG_CALL:
+>  		r = vhost_vdpa_set_config_call(v, argp);
+>  		break;
+> +	case VHOST_VDPA_GET_IOVA_RANGE:
+> +		r = vhost_vdpa_get_iova_range(v, argp);
+> +		break;
+>  	default:
+>  		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+>  		if (r == -ENOIOCTLCMD)
+> @@ -597,6 +611,10 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>  	u64 iova = msg->iova;
+>  	int ret = 0;
+>  
+> +	if (msg->iova < v->range.first ||
+> +	    msg->iova + msg->size - 1 > v->range.last)
+> +		return -EINVAL;
+> +
+>  	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+>  				    msg->iova + msg->size - 1))
+>  		return -EEXIST;
+> @@ -762,6 +780,27 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
+>  	v->domain = NULL;
+>  }
+>  
+> +static void vhost_vdpa_set_iova_range(struct vhost_vdpa *v)
+> +{
+> +	struct vdpa_iova_range *range = &v->range;
+> +	struct iommu_domain_geometry geo;
+> +	struct vdpa_device *vdpa = v->vdpa;
+> +	const struct vdpa_config_ops *ops = vdpa->config;
+> +
+> +	if (ops->get_iova_range) {
+> +		*range = ops->get_iova_range(vdpa);
+> +	} else if (v->domain &&
+> +		   !iommu_domain_get_attr(v->domain,
+> +		   DOMAIN_ATTR_GEOMETRY, &geo) &&
+> +		   geo.force_aperture) {
+> +		range->first = geo.aperture_start;
+> +		range->last = geo.aperture_end;
+> +	} else {
+> +		range->first = 0;
+> +		range->last = ULLONG_MAX;
+> +	}
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/vme/bridges/vme_ca91cx42.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Shouldn't we require drivers that publish VIRTIO_F_ACCESS_PLATFORM to
+implement get_iova_range?
 
-diff --git a/drivers/vme/bridges/vme_ca91cx42.c b/drivers/vme/bridges/vme_ca91cx42.c
-index ea938dc29c5e..1c464afd9d4e 100644
---- a/drivers/vme/bridges/vme_ca91cx42.c
-+++ b/drivers/vme/bridges/vme_ca91cx42.c
-@@ -1100,7 +1100,8 @@ static int ca91cx42_dma_list_add(struct vme_dma_list *list,
- 		break;
- 	default:
- 		dev_err(dev, "Invalid data width\n");
--		return -EINVAL;
-+		retval = -EINVAL;
-+		goto err_cycle;
- 	}
- 
- 	/* Setup address space */
-@@ -1122,8 +1123,8 @@ static int ca91cx42_dma_list_add(struct vme_dma_list *list,
- 		break;
- 	default:
- 		dev_err(dev, "Invalid address space\n");
--		return -EINVAL;
--		break;
-+		retval = -EINVAL;
-+		goto err_cycle;
- 	}
- 
- 	if (vme_attr->cycle & VME_SUPER)
--- 
-2.17.1
-
+> +}
+> +
+>  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>  {
+>  	struct vhost_vdpa *v;
+> @@ -802,6 +841,8 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>  	if (r)
+>  		goto err_init_iotlb;
+>  
+> +	vhost_vdpa_set_iova_range(v);
+> +
+>  	filep->private_data = v;
+>  
+>  	return 0;
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index 75232185324a..c998860d7bbc 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -146,4 +146,8 @@
+>  
+>  /* Set event fd for config interrupt*/
+>  #define VHOST_VDPA_SET_CONFIG_CALL	_IOW(VHOST_VIRTIO, 0x77, int)
+> +
+> +/* Get the valid iova range */
+> +#define VHOST_VDPA_GET_IOVA_RANGE	_IOR(VHOST_VIRTIO, 0x78, \
+> +					     struct vhost_vdpa_iova_range)
+>  #endif
+> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+> index 9a269a88a6ff..f7f6a3a28977 100644
+> --- a/include/uapi/linux/vhost_types.h
+> +++ b/include/uapi/linux/vhost_types.h
+> @@ -138,6 +138,15 @@ struct vhost_vdpa_config {
+>  	__u8 buf[0];
+>  };
+>  
+> +/* vhost vdpa IOVA range
+> + * @first: First address that can be mapped by vhost-vDPA
+> + * @last: Last address that can be mapped by vhost-vDPA
+> + */
+> +struct vhost_vdpa_iova_range {
+> +	__u64 first;
+> +	__u64 last;
+> +};
+> +
+>  /* Feature bits */
+>  /* Log all write descriptors. Can be changed while device is active. */
+>  #define VHOST_F_LOG_ALL 26
+> -- 
+> 2.18.1
+> 
