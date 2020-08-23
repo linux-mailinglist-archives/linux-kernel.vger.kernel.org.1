@@ -2,170 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390BF24EC34
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267B24EC38
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgHWIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 04:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgHWIlA (ORCPT
+        id S1728397AbgHWIms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 04:42:48 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:32898 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgHWImq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 04:41:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1BCC061574;
-        Sun, 23 Aug 2020 01:40:59 -0700 (PDT)
-Date:   Sun, 23 Aug 2020 08:40:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598172057;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5py+LxhKqsq41gvD/8FMrN4Y2kSbhnb76DTvPWvQIQ=;
-        b=NgJst9QMGDUH9uWtLtsETXPHtcYTjXFADBp+aFSw1VyXJHoxxGN7W8JQSdgT9QI10TxB+H
-        BDN6x0wQrMFSm6cFRLkcL3z9HymJyx/0ECfoHjhDhPv01bZHysC/i8eAeNFQqMcddsj3E4
-        O5ldEFnVy9ZR3CuGfM5gqSmAyrww59ZGCh5w4J2Fd1EvBYKOYlwUN3wq0K8QepKhBuA80m
-        Ilb8KvZMTCOhsGDu3vX2UuPi8bHjHqgAIXPJ1hEWPeYy+2duE4huw4u1wtzocWmztPIbya
-        PlLryZHmsYEKUYx1mzQCoYGbOChhcJo0rt8bIPD+Xv07N981COBkWo0i7Kaazw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598172057;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5py+LxhKqsq41gvD/8FMrN4Y2kSbhnb76DTvPWvQIQ=;
-        b=7M3MaSQM/8/Is/OGEH07ptDekGUIZlT2pz3JJn09ND8z4/PcgO5TNVMqDOvewF2wg6Sec+
-        HPDnkISbcljGJoDw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timekeeping: Utilize local_clock() for NMI safe
- timekeeper during early boot
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200814115512.041422402@linutronix.de>
-References: <20200814115512.041422402@linutronix.de>
+        Sun, 23 Aug 2020 04:42:46 -0400
+Received: by mail-wr1-f67.google.com with SMTP id o4so1679821wrn.0;
+        Sun, 23 Aug 2020 01:42:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pIEExo4zmDjRLEImoub+ih8awSkem1c2osObskHGAIM=;
+        b=kLvkCu3zJa+EnX+Hjk5nqU6JoPIrJtPT4b7v/seHAkDSBvUku7KCB4ipm+YYhELfU7
+         nyYH4iM9qRraOu1yLq5/POugdqohyZlBwY7QjhMrioT9Cjvqr2irGKLZiLr7+skoewcv
+         HDFDhyuiivBq021IvCuDjk7ptGeBU6wiQFo0JQ7rBHorfCFfmfaX1DBDied2EaYqXVCF
+         nmi4SJx4+F6AyhRyz051+3zDpp/79q1a4gla5u8iBncvZap3zDNHATZxxtiEEubItjq2
+         TKb0F2ce56ROCXaV4/mOqCO/xdmMo09kXWslpHIWBBBuzkADSN2j/tsIEVIlJkudlr6k
+         sGpw==
+X-Gm-Message-State: AOAM531xRXRXrnsMfK5V3pJ+w7pTz7zGb8o4rJoPRlEAQF2kvfLLSXAS
+        63POsXBn50vdTjA7bjJ0XpI=
+X-Google-Smtp-Source: ABdhPJwnk5UwLhacVVFi/x2XKKHRfm91exlxOzeGN6dguMsFPqbNWS8dFyQzPkOGMrHQDXIFh32vWg==
+X-Received: by 2002:adf:ba10:: with SMTP id o16mr777693wrg.100.1598172164634;
+        Sun, 23 Aug 2020 01:42:44 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id 126sm17215985wme.42.2020.08.23.01.42.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 23 Aug 2020 01:42:44 -0700 (PDT)
+Date:   Sun, 23 Aug 2020 10:42:41 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        arm@kernel.org, soc@kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH v2 1/2] arm64: defconfig: Enable USB gadget with configfs
+Message-ID: <20200823084241.GA2886@kozik-lap>
+References: <20200817065654.4419-1-krzk@kernel.org>
+ <20200823014600.GH30094@dragon>
 MIME-Version: 1.0
-Message-ID: <159817205716.389.11069569301352194455.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200823014600.GH30094@dragon>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Sun, Aug 23, 2020 at 09:46:01AM +0800, Shawn Guo wrote:
+> On Mon, Aug 17, 2020 at 08:56:53AM +0200, Krzysztof Kozlowski wrote:
+> > USB OTG connections are pretty common for embedded and development
+> > boards, for example to have networking or serial access to the device.
+> > Build as a module the USB gadget configfs options so the defconfig can
+> > be used in such development configurations.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> Applied both, thanks.
 
-Commit-ID:     71419b30cab099f7ca37e61bf41028d8b7d4984d
-Gitweb:        https://git.kernel.org/tip/71419b30cab099f7ca37e61bf41028d8b7d4984d
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 14 Aug 2020 12:19:34 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 23 Aug 2020 10:38:24 +02:00
+Thanks, although few days ago I got confirmation from patchwork that
+Olof already applied them to arm-soc.  I cannot find them in arm-soc
+or next trees, though.
 
-timekeeping: Utilize local_clock() for NMI safe timekeeper during early boot
+Dear Olof,
+Did you pick these up already?
 
-During early boot the NMI safe timekeeper returns 0 until the first
-clocksource becomes available.
+Best regards,
+Krzysztof
 
-This prevents it from being used for printk or other facilities which today
-use sched clock. sched clock can be available way before timekeeping is
-initialized.
-
-The obvious workaround for this is to utilize the early sched clock in the
-default dummy clock read function until a clocksource becomes available.
-
-After switching to the clocksource clock MONOTONIC and BOOTTIME will not
-jump because the timekeeping_init() bases clock MONOTONIC on sched clock
-and the offset between clock MONOTONIC and BOOTTIME is zero during boot.
-
-Clock REALTIME cannot provide useful timestamps during early boot up to
-the point where a persistent clock becomes available, which is either in
-timekeeping_init() or later when the RTC driver which might depend on I2C
-or other subsystems is initialized.
-
-There is a minor difference to sched_clock() vs. suspend/resume. As the
-timekeeper clock source might not be accessible during suspend, after
-timekeeping_suspend() timestamps freeze up to the point where
-timekeeping_resume() is invoked. OTOH this is true for some sched clock
-implementations as well.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Petr Mladek <pmladek@suse.com>                                                                                                                                                                                                                                      
-Link: https://lore.kernel.org/r/20200814115512.041422402@linutronix.de
-
----
- kernel/time/timekeeping.c | 33 +++++++++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 4c47f38..57d064d 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -54,6 +54,9 @@ static struct {
- 
- static struct timekeeper shadow_timekeeper;
- 
-+/* flag for if timekeeping is suspended */
-+int __read_mostly timekeeping_suspended;
-+
- /**
-  * struct tk_fast - NMI safe timekeeper
-  * @seq:	Sequence counter for protecting updates. The lowest bit
-@@ -73,28 +76,42 @@ static u64 cycles_at_suspend;
- 
- static u64 dummy_clock_read(struct clocksource *cs)
- {
--	return cycles_at_suspend;
-+	if (timekeeping_suspended)
-+		return cycles_at_suspend;
-+	return local_clock();
- }
- 
- static struct clocksource dummy_clock = {
- 	.read = dummy_clock_read,
- };
- 
-+/*
-+ * Boot time initialization which allows local_clock() to be utilized
-+ * during early boot when clocksources are not available. local_clock()
-+ * returns nanoseconds already so no conversion is required, hence mult=1
-+ * and shift=0. When the first proper clocksource is installed then
-+ * the fast time keepers are updated with the correct values.
-+ */
-+#define FAST_TK_INIT						\
-+	{							\
-+		.clock		= &dummy_clock,			\
-+		.mask		= CLOCKSOURCE_MASK(64),		\
-+		.mult		= 1,				\
-+		.shift		= 0,				\
-+	}
-+
- static struct tk_fast tk_fast_mono ____cacheline_aligned = {
- 	.seq     = SEQCNT_RAW_SPINLOCK_ZERO(tk_fast_mono.seq, &timekeeper_lock),
--	.base[0] = { .clock = &dummy_clock, },
--	.base[1] = { .clock = &dummy_clock, },
-+	.base[0] = FAST_TK_INIT,
-+	.base[1] = FAST_TK_INIT,
- };
- 
- static struct tk_fast tk_fast_raw  ____cacheline_aligned = {
- 	.seq     = SEQCNT_RAW_SPINLOCK_ZERO(tk_fast_raw.seq, &timekeeper_lock),
--	.base[0] = { .clock = &dummy_clock, },
--	.base[1] = { .clock = &dummy_clock, },
-+	.base[0] = FAST_TK_INIT,
-+	.base[1] = FAST_TK_INIT,
- };
- 
--/* flag for if timekeeping is suspended */
--int __read_mostly timekeeping_suspended;
--
- static inline void tk_normalize_xtime(struct timekeeper *tk)
- {
- 	while (tk->tkr_mono.xtime_nsec >= ((u64)NSEC_PER_SEC << tk->tkr_mono.shift)) {
