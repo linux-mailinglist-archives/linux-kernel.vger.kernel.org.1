@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE7C24EFFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 00:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E7224EFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 00:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgHWWAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 18:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
+        id S1726983AbgHWWBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 18:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgHWWAo (ORCPT
+        with ESMTP id S1726816AbgHWWAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 Aug 2020 18:00:44 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DA7C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 15:00:43 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 185so7463751ljj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 15:00:43 -0700 (PDT)
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B553C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 15:00:44 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g6so7443788ljn.11
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 15:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ggsGppVM/HntumIRYVbA+20UkKH7XXtNQQ4sB7oN2mQ=;
-        b=dN85WrfRGsTzUCZeeGEVg511kaLyqvum9uy+hMJOhW88gtwiSLkxvD/hSKIf5nmfWy
-         g70CZi2MWVyl5NyulkwZWqYKdX6/I1HN5v5WFJNPCIgBfAReMxTo81NaOwDh8Zbffj/z
-         95kgg9g7z9ciFB1dh3UNJEDGjPHTtd0VTtiA8K42A5jk3x6K9GwHQvv7+Bg3Y4n/DpG5
-         f3TkMMmFL4wHM/i+L6+INMvBrgZieKiQkqGr/47esEpObhMtdx5PU/7qaEH49nki5nt4
-         ivSAezf3LqgG0WL/VcTanunFNDBDgbm2XhWboUX93tnKRR7s+D5iGSAAEiJQj6+DhWA1
-         VcSg==
+        bh=dgUUXxG2qw0/AzpIOnX5I7nR6oDetQlhoFTeFIT/cgQ=;
+        b=Yu5yAhEB8n3eicOirM2vKYWPo9+r95YwdukywCOId/3B6XRf6x5SDdnvoaD+7vI20E
+         7rZGdJcExYomyjtBr8TZEb7fzPpqZODfahsiWNuHstU+/5rXjOqbyfvKFj6qBDcNjF6Z
+         Fs72y25T8QpYDQZ943j5oy63Shiyps29OAJrLWiwDKeJNOuFspPh4nOvEkX95lY8aT8K
+         2infE8G92NV23QfJGeuEgmJgQJ7j/3Sari9on38n+SZCHDkfDCD6VRZb7oEXxVaAV5TC
+         ZDveI8am5gMOawIVI8sj2mb7wrBEENYfJpq0SChMIAGawclkaIhVM0qRc0m6TTIDcoQJ
+         VrSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ggsGppVM/HntumIRYVbA+20UkKH7XXtNQQ4sB7oN2mQ=;
-        b=VK5j+vd7wLKe1VJBbAi68OibQSS5jEJNa3uUMQRlS+Iv3X4GKVjyDxV/L1MYxte6Y9
-         IcaytgAIIUNlx5SlzQNoQNi0/97lSDHNmeFgw27q+Y849HwP51mFcGSN7qCc6isizH4h
-         J28a5xxjeWVMhChbkSO5hR0bu7lE8lm5Ue9ddX7Z6ePlvf8EM5Dhd61O2h6Ikyx32RP4
-         uM8LHceFoAAc/BV/r1hvyJpAbINqsEJO8CHSNhCiLT4wDixs0+el/oxTMKkwugSHNcfe
-         ktUMY/YzTdlI0u0YPi9nStzwb0u8xcAXUXYeC0mtC0CnIuFDBICJxvV9kNFT/MbRSTTp
-         ZTrQ==
-X-Gm-Message-State: AOAM532jRNaVZ3MMSxpHnwcirNUszAXji6OVe3xvt5qg1ljVDqLYmOQ4
-        amZ4Nac2OKI9V90C4E4lkwc=
-X-Google-Smtp-Source: ABdhPJyQ+scBCD4od+R4avfpVimNAa0Z95s5NsyFUax2wvVPRfSxVTo+Ksh5jwN91DHVBIApoFfmyA==
-X-Received: by 2002:a2e:96d9:: with SMTP id d25mr1235311ljj.376.1598220041907;
-        Sun, 23 Aug 2020 15:00:41 -0700 (PDT)
+        bh=dgUUXxG2qw0/AzpIOnX5I7nR6oDetQlhoFTeFIT/cgQ=;
+        b=rMIExEw99/+5q/z0nj8put5nFIKGWhlN4XgJQa54Nr2LAyfkhd7KMmTZJKu/rDBaiI
+         FXURNB/bhCyWckA64gFkydHtXe0K6HfncZDnVp/7CKwURWDf3/Bn+Su6omlhvEmb82ql
+         O1tp9oMHgLTjQm4E3sHxC1QO0mPREq9hI1NeTyfAKJENr7Lzd43/Ffek2ncDa0wcqlKa
+         zek52oexg9PZNV3cmzPrAvu6Bbm9JBbQxNimQQCEEWUpxXA9suJEfG93yxbjTSx1+gCT
+         9SrIgSA/uNgo1tlG58XLSRxBk+8ELX5BwDQnWdIhnWtjeTkSJMV27bRIwBu0uyuisFCr
+         KJug==
+X-Gm-Message-State: AOAM533tOtVNcl7qO5VYutPKK56UMNFjTQo7q1mpAzqe9EyH3SmleRnv
+        dHqpi9tdribMt9BL0aNjl+Y=
+X-Google-Smtp-Source: ABdhPJw4xx+q/+/mDVhVHTECrqFGL/dJhLk0xQnlu0MZi6wfI1NGG1Z4IFDATzDxv/9VKfXRzdWS6g==
+X-Received: by 2002:a05:651c:1069:: with SMTP id y9mr1308755ljm.438.1598220042880;
+        Sun, 23 Aug 2020 15:00:42 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id g11sm1825097lfc.46.2020.08.23.15.00.40
+        by smtp.gmail.com with ESMTPSA id g11sm1825097lfc.46.2020.08.23.15.00.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 15:00:41 -0700 (PDT)
+        Sun, 23 Aug 2020 15:00:42 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 5/8] phy: lantiq: vrx200-pcie: Constify ltq_vrx200_pcie_phy_ops
-Date:   Mon, 24 Aug 2020 00:00:22 +0200
-Message-Id: <20200823220025.17588-6-rikard.falkeborn@gmail.com>
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 6/8] phy: ralink-usb: Constify ralink_usb_phy_ops
+Date:   Mon, 24 Aug 2020 00:00:23 +0200
+Message-Id: <20200823220025.17588-7-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200823220025.17588-1-rikard.falkeborn@gmail.com>
 References: <20200823220025.17588-1-rikard.falkeborn@gmail.com>
@@ -73,22 +72,22 @@ read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c | 2 +-
+ drivers/phy/ralink/phy-ralink-usb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c b/drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c
-index 2ff9a48d833e..22c5698123cf 100644
---- a/drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c
-+++ b/drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c
-@@ -349,7 +349,7 @@ static int ltq_vrx200_pcie_phy_power_off(struct phy *phy)
+diff --git a/drivers/phy/ralink/phy-ralink-usb.c b/drivers/phy/ralink/phy-ralink-usb.c
+index ba3c197fc5b0..95dfa9fd284d 100644
+--- a/drivers/phy/ralink/phy-ralink-usb.c
++++ b/drivers/phy/ralink/phy-ralink-usb.c
+@@ -142,7 +142,7 @@ static int ralink_usb_phy_power_off(struct phy *_phy)
  	return 0;
  }
  
--static struct phy_ops ltq_vrx200_pcie_phy_ops = {
-+static const struct phy_ops ltq_vrx200_pcie_phy_ops = {
- 	.init		= ltq_vrx200_pcie_phy_init,
- 	.exit		= ltq_vrx200_pcie_phy_exit,
- 	.power_on	= ltq_vrx200_pcie_phy_power_on,
+-static struct phy_ops ralink_usb_phy_ops = {
++static const struct phy_ops ralink_usb_phy_ops = {
+ 	.power_on	= ralink_usb_phy_power_on,
+ 	.power_off	= ralink_usb_phy_power_off,
+ 	.owner		= THIS_MODULE,
 -- 
 2.28.0
 
