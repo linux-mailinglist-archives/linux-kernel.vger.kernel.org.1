@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A0D24F074
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 01:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0425224F065
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 01:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgHWXGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 19:06:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10258 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726631AbgHWXG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 19:06:27 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id CEC1126AE900BB9EEA49;
-        Mon, 24 Aug 2020 07:06:25 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.214) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 24 Aug 2020 07:06:14 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>,
-        <will@kernel.org>, <ganapatrao.kulkarni@cavium.com>,
-        <catalin.marinas@arm.com>, <akpm@linux-foundation.org>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <prime.zeng@hisilicon.com>,
-        <huangdaode@huawei.com>, <linuxarm@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v8 3/3] mm: cma: use CMA_MAX_NAME to define the length of cma name array
-Date:   Mon, 24 Aug 2020 11:03:09 +1200
-Message-ID: <20200823230309.28980-4-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20200823230309.28980-1-song.bao.hua@hisilicon.com>
-References: <20200823230309.28980-1-song.bao.hua@hisilicon.com>
+        id S1726983AbgHWXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 19:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726631AbgHWXDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 19:03:47 -0400
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA1F020768
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 23:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598223827;
+        bh=jBUme/XbahWR2rDPGjnU9WIaSk+4ze9DM9lqZ4h0aBA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ix6AL38bR9EJjw8T6WO7S9w8Gp+VE+lf1u9RonhDbt6siQJCZimie0ME8T4PX+0kv
+         lQTB9sRGAqyYg2Xm0xO7xrqO74TRYHxVt1h4ZVXKXqR87KTPyj79GiOSSeBvwuayFl
+         ifkSO7bHM6+l8o81o/p9122pdTJI0qbPvAf5D0r4=
+Received: by mail-wm1-f47.google.com with SMTP id t2so6404308wma.0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 16:03:46 -0700 (PDT)
+X-Gm-Message-State: AOAM532Um4avZrdXtQ+URhGmLWjODN40pgR67GNkaLZZRceK6Q81eNJa
+        LdRc8+498V06p1VAXTKXpkC+QFPUs8Z3XsSffvvjPw==
+X-Google-Smtp-Source: ABdhPJwwETcEqsI7u36ASK9skGyItuYMl8385U6bR5uol7GO+vYuxRQIkOhDQaZ1wnO+5SV/y4PtMErADyBtBS9ENPU=
+X-Received: by 2002:a7b:c76e:: with SMTP id x14mr2884793wmk.176.1598223825437;
+ Sun, 23 Aug 2020 16:03:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.214]
-X-CFilter-Loop: Reflected
+References: <20200821093912.815135402@infradead.org> <20200821102052.851667174@infradead.org>
+In-Reply-To: <20200821102052.851667174@infradead.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 23 Aug 2020 16:03:34 -0700
+X-Gmail-Original-Message-ID: <CALCETrWN2YBd=VSiiCo40hFvaHn0uYLh=pmrO0aH6o01uVjjCg@mail.gmail.com>
+Message-ID: <CALCETrWN2YBd=VSiiCo40hFvaHn0uYLh=pmrO0aH6o01uVjjCg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] x86/debug: Sync BTF earlier
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMA_MAX_NAME should be visible to CMA's users as they might need it to set
-the name of CMA areas and avoid hardcoding the size locally.
-So this patch moves CMA_MAX_NAME from local header file to include/linux
-header file and removes the hardcode in both hugetlb.c and contiguous.c.
+On Fri, Aug 21, 2020 at 3:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Move the BTF sync near the DR6 load, as this will be the only common
+> code guaranteed to run on every #DB.
 
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- this patch is fixing the magic number issue with respect to Will's comment here:
- https://lore.kernel.org/linux-iommu/4ab78767553f48a584217063f6f24eb9@hisilicon.com/
+I don't think this code is strictly correct, but I think your change is
+still an improvement.
 
- include/linux/cma.h     | 2 ++
- kernel/dma/contiguous.c | 2 +-
- mm/cma.h                | 2 --
- mm/hugetlb.c            | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/cma.h b/include/linux/cma.h
-index 6ff79fefd01f..217999c8a762 100644
---- a/include/linux/cma.h
-+++ b/include/linux/cma.h
-@@ -18,6 +18,8 @@
- 
- #endif
- 
-+#define CMA_MAX_NAME 64
-+
- struct cma;
- 
- extern unsigned long totalcma_pages;
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index aa53384fd7dc..f4c150810fd2 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -119,7 +119,7 @@ void __init dma_pernuma_cma_reserve(void)
- 
- 	for_each_online_node(nid) {
- 		int ret;
--		char name[20];
-+		char name[CMA_MAX_NAME];
- 		struct cma **cma = &dma_contiguous_pernuma_area[nid];
- 
- 		snprintf(name, sizeof(name), "pernuma%d", nid);
-diff --git a/mm/cma.h b/mm/cma.h
-index 20f6e24bc477..42ae082cb067 100644
---- a/mm/cma.h
-+++ b/mm/cma.h
-@@ -4,8 +4,6 @@
- 
- #include <linux/debugfs.h>
- 
--#define CMA_MAX_NAME 64
--
- struct cma {
- 	unsigned long   base_pfn;
- 	unsigned long   count;
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a301c2d672bf..9eec0ea9ba68 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5683,12 +5683,12 @@ void __init hugetlb_cma_reserve(int order)
- 	reserved = 0;
- 	for_each_node_state(nid, N_ONLINE) {
- 		int res;
--		char name[20];
-+		char name[CMA_MAX_NAME];
- 
- 		size = min(per_node, hugetlb_cma_size - reserved);
- 		size = round_up(size, PAGE_SIZE << order);
- 
--		snprintf(name, 20, "hugetlb%d", nid);
-+		snprintf(name, sizeof(name), "hugetlb%d", nid);
- 		res = cma_declare_contiguous_nid(0, size, 0, PAGE_SIZE << order,
- 						 0, false, name,
- 						 &hugetlb_cma[nid], nid);
--- 
-2.27.0
-
-
+Acked-by: Andy Lutomirski <luto@kernel.org>
