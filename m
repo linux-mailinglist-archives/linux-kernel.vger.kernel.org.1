@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8AE24EBF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 09:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6901424EBF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgHWHOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 03:14:11 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:20458 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725904AbgHWHOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 03:14:09 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app2 (Coremail) with SMTP id by_KCgDn7rIjF0Jfrv0bAg--.41012S4;
-        Sun, 23 Aug 2020 15:13:42 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Krzysztof Sobota <krzysztof.sobota@nokia.com>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] watchdog: Fix double-free in watchdog_cdev_register
-Date:   Sun, 23 Aug 2020 15:13:38 +0800
-Message-Id: <20200823071338.15209-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgDn7rIjF0Jfrv0bAg--.41012S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF15GFWrArW5Jr48GFy3urg_yoW8Jw1Dpa
-        y5CrW5Zr4Utw4UWrZrJwn7ZFy8Gas5try8uF1UG3y3CFs0kry5trWFyFy5CayDG393WF15
-        Zr1UtrW0ga9xtr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUva1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxG
-        rwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjfUYMKZDUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAA3so
+        id S1728039AbgHWHST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 03:18:19 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:50526 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726371AbgHWHSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 03:18:17 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 2F7E5FB04;
+        Sun, 23 Aug 2020 09:18:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4D3AEECRzJdg; Sun, 23 Aug 2020 09:18:10 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id EF71C45869; Sun, 23 Aug 2020 09:18:08 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Li Jun <jun.li@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Olof Johansson <olof@lixom.net>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] arm64: dts: imx8mq: Add NWL DSI host controller to Librem 5 Devkit
+Date:   Sun, 23 Aug 2020 09:18:06 +0200
+Message-Id: <cover.1598166983.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When misc_register() fails, wd_data will be released by the
-release callback function watchdog_core_data_release(), so
-we don't need to free it again. But when watchdog_kworker is
-NULL, we should free wd_data to prevent memleak.
+These patches add the NWL host controller to the imx8mq and make use of it on
+the Librem 5 Devkit enabling the built in MIPI DSI LCD panel.
 
-Fixes: cb36e29bb0e4b ("watchdog: initialize device before misc_register")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/watchdog/watchdog_dev.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I opted to add imx8mq internal ports and endpoints between nwl and lcdif to the
+generic dtsi since those are SOC rather than board specific properties.
 
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index 6798addabd5a..8ee78e26feb1 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -994,8 +994,10 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
- 	wd_data->wdd = wdd;
- 	wdd->wd_data = wd_data;
- 
--	if (IS_ERR_OR_NULL(watchdog_kworker))
-+	if (IS_ERR_OR_NULL(watchdog_kworker)) {
-+		kfree(wd_data);
- 		return -ENODEV;
-+	}
- 
- 	device_initialize(&wd_data->dev);
- 	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
-@@ -1021,7 +1023,6 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
- 				pr_err("%s: a legacy watchdog module is probably present.\n",
- 					wdd->info->identity);
- 			old_wd_data = NULL;
--			kfree(wd_data);
- 			return err;
- 		}
- 	}
+Changes from v3
+- Rebase patch 3 and 4 against Shawn's imx/defconfig
+  Patches 1 an 2 got already applies, thanks!
+
+Changes from v2
+- Add Tested-by from Martin Kepplinger, thanks!
+  https://lore.kernel.org/linux-arm-kernel/cover.1597913263.git.agx@sigxcpu.org/T/#m067f2d659fcd1c0cb7792b22d0c4db06ed235815
+  https://lore.kernel.org/linux-arm-kernel/cover.1597913263.git.agx@sigxcpu.org/T/#m9aff315ee38fd9bbcd3a896876726c14b2fb7048
+
+Changes from v1
+- Add Reviewed-by from Fabio Estevam, thanks!
+  https://lore.kernel.org/linux-arm-kernel/CAOMZO5DUA5eS8apZPbte0EcSQ4Vwpg6YLK7D0YdjSUy+kdBu8Q@mail.gmail.com/
+  https://lore.kernel.org/linux-arm-kernel/CAOMZO5ANrd2JCmHyxZ0Sv0WNcU9T-q3MbaeADxbOwf+31MQ4LQ@mail.gmail.com/#t
+  https://lore.kernel.org/linux-arm-kernel/CAOMZO5Dg5NGpJ0SQkYny04Kv3ky0619J7YwT-0eE1dsK19o1-w@mail.gmail.com/
+- As per review comment by Fabio Estevam
+  Re-sync DRM related defconfig bits. I didn't resyc the whole defconfig since
+  this is pretty much kernel version dependent.
+
+Guido Günther (2):
+  arm64: defconfig: re-sync DRM related defconfig bits
+  arm64: defconfig: Enable imx8mq-librem5-devkit display stack
+
+ arch/arm64/configs/defconfig | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
 -- 
-2.17.1
+2.26.2
 
