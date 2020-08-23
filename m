@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E010C24EBD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 08:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C9024EBDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 08:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgHWGna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 02:43:30 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:6737 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgHWGn3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 02:43:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1598165009; x=1629701009;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ucEbTgYy5hKDmBPLaGPNpMSSyIVMSObKnFKACTZJ9Q4=;
-  b=i1WKUo6bcumR3dRNKRBHXy02Q1raKSQVxXV4kxw3Q66QJaHQklS/If3d
-   x5Z+4Q3eNbiry1dKZlq+hgHGeLxW+wgIKhwDsDSWMjAgS+6/wvR7s6DCC
-   +CozyjZYCT0CBT8m1Bl5vW1nKjqL8NKknIWIknXHzG3yJyFwqXB5gwePP
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.76,343,1592870400"; 
-   d="scan'208";a="49394692"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 23 Aug 2020 06:43:28 +0000
-Received: from EX13D19EUB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 7AC97A1E3D;
-        Sun, 23 Aug 2020 06:43:26 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.40) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 23 Aug 2020 06:43:21 +0000
-Subject: Re: [PATCH AUTOSEL 5.8 55/62] RDMA/efa: Add EFA 0xefa1 PCI ID
-To:     Sasha Levin <sashal@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Shadi Ammouri <sammouri@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        <linux-rdma@vger.kernel.org>
-References: <20200821161423.347071-1-sashal@kernel.org>
- <20200821161423.347071-55-sashal@kernel.org>
- <20200821194036.GB2811093@nvidia.com> <20200821195322.GC8670@sasha-vm>
- <20200821201952.GB2811871@nvidia.com> <20200821203421.GD8670@sasha-vm>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <ff34f370-66c2-6c2d-89ea-5ebaf965b37f@amazon.com>
-Date:   Sun, 23 Aug 2020 09:43:15 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        id S1726880AbgHWGyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 02:54:17 -0400
+Received: from mga18.intel.com ([134.134.136.126]:64468 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725855AbgHWGyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 02:54:15 -0400
+IronPort-SDR: nH2ICmNsAsOXVWXH85bDjkwzluQayNTl8YJRbU3cHTQREeUZGt3TLicbqFF3ChoFFj/uQBYBzY
+ KxCS4xmqNYxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9721"; a="143416653"
+X-IronPort-AV: E=Sophos;i="5.76,343,1592895600"; 
+   d="scan'208";a="143416653"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2020 23:54:15 -0700
+IronPort-SDR: yAKzVZKnxtG1XrG//rBh0HhVBuobazBb3eMJ1t0SVyhJPMMJsHGpHS66FsXpDlnjI3yFWpYkZj
+ 0xMaBbsVeQkQ==
+X-IronPort-AV: E=Sophos;i="5.76,343,1592895600"; 
+   d="scan'208";a="442804294"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2020 23:54:14 -0700
+Date:   Sat, 22 Aug 2020 23:54:14 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, y-goto@fujitsu.com
+Subject: Re: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if
+ DCACHE_REFERENCED is set
+Message-ID: <20200823065413.GA535011@iweiny-DESK2.sc.intel.com>
+References: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
+ <20200821174040.GG3142014@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200821203421.GD8670@sasha-vm>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.162.40]
-X-ClientProxiedBy: EX13D23UWA002.ant.amazon.com (10.43.160.40) To
- EX13D19EUB001.ant.amazon.com (10.43.166.229)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821174040.GG3142014@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/2020 23:34, Sasha Levin wrote:
-> On Fri, Aug 21, 2020 at 05:19:52PM -0300, Jason Gunthorpe wrote:
->> On Fri, Aug 21, 2020 at 03:53:22PM -0400, Sasha Levin wrote:
->>> On Fri, Aug 21, 2020 at 04:40:36PM -0300, Jason Gunthorpe wrote:
->>> > On Fri, Aug 21, 2020 at 12:14:16PM -0400, Sasha Levin wrote:
->>> > > From: Gal Pressman <galpress@amazon.com>
->>> > >
->>> > > [ Upstream commit d4f9cb5c5b224dca3ff752c1bb854250bf114944 ]
->>> > >
->>> > > Add support for 0xefa1 devices.
->>> > >
->>> > > Link: https://lore.kernel.org/r/20200722140312.3651-5-galpress@amazon.com
->>> > > Reviewed-by: Shadi Ammouri <sammouri@amazon.com>
->>> > > Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
->>> > > Signed-off-by: Gal Pressman <galpress@amazon.com>
->>> > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
->>> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
->>> > >  drivers/infiniband/hw/efa/efa_main.c | 6 ++++--
->>> > >  1 file changed, 4 insertions(+), 2 deletions(-)
->>> >
->>> > Wait, what? Why is this being autosel'd?
->>>
->>> Stable trees try to pick up device enablement patches (such as patches
->>> that add PCI IDs). I suppose that AUTOSEL get pretty eager to grab
->>> those.
->>
->> Is it so common that old drivers will work with new HW with just a
->> PCI_ID update?
->>
->> I would have guessed that is the minority situation
+On Fri, Aug 21, 2020 at 10:40:41AM -0700, 'Ira Weiny' wrote:
+> On Fri, Aug 21, 2020 at 09:59:53AM +0800, Hao Li wrote:
+> > Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
+> > set from being killed, so the corresponding inode can't be evicted. If
+> > the DAX policy of an inode is changed, we can't make policy changing
+> > take effects unless dropping caches manually.
+> > 
+> > This patch fixes this problem and flushes the inode to disk to prepare
+> > for evicting it.
 > 
-> So keep in mind that a lot of it is not brand new HW, but rather same
-> HW repackaged by a different vendor, or HW that received minor tweaks
-> but where the old driver still works.
+> This looks intriguing and I really hope this helps but I don't think this will
+> guarantee that the state changes immediately will it?
 > 
-> I suppose it's more common in the USB ID world these days, so I guess
-> I'll give PCI IDs a closer look next time.
+> Do you have a test case which fails before and passes after?  Perhaps one of
+> the new xfstests submitted by Xiao?
 
-FWIW, Jason is right, this patch will break without taking the rest of the series:
-https://lore.kernel.org/linux-rdma/20200722140312.3651-1-galpress@amazon.com/
+Ok I just went back and read your comment before.[1]  Sorry for being a bit
+slow on the correlation between this patch and that email.  (BTW, I think it
+would have been good to put those examples in the commit message and or
+reference that example.)  I'm assuming that with this patch example 2 from [1]
+works without a drop_cache _if_ no other task has the file open?
 
-Thanks Jason and Sasha.
+Anyway, with that explanation I think you are correct that this improves the
+situation _if_ the only references on the file is controlled by the user and
+they have indeed closed all of them.
+
+The code for DCACHE_DONTCACHE as I attempted to write it was that it should
+have prevented further caching of the inode such that the inode would evict
+sooner.  But it seems you have found a bug/optimization?
+
+In the end, however, if another user (such as a backup running by the admin)
+has a reference the DAX change may still be delayed.  So I'm thinking the
+documentation should remain largely as is?  But perhaps I am wrong.  Does this
+completely remove the need for a drop_caches or only in the example you gave?
+Since I'm not a FS expert I'm still not sure.
+
+Regardless, thanks for the fixup!  :-D
+Ira
+
+[1] https://lore.kernel.org/linux-xfs/ba98b77e-a806-048a-a0dc-ca585677daf3@cn.fujitsu.com/
+
+> 
+> Ira
+> 
+> > 
+> > Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+> > ---
+> >  fs/dcache.c | 3 ++-
+> >  fs/inode.c  | 2 +-
+> >  2 files changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/dcache.c b/fs/dcache.c
+> > index ea0485861d93..486c7409dc82 100644
+> > --- a/fs/dcache.c
+> > +++ b/fs/dcache.c
+> > @@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
+> >  	 */
+> >  	smp_rmb();
+> >  	d_flags = READ_ONCE(dentry->d_flags);
+> > -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
+> > +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
+> > +			| DCACHE_DONTCACHE;
+> >  
+> >  	/* Nothing to do? Dropping the reference was all we needed? */
+> >  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index 72c4c347afb7..5218a8aebd7f 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
+> >  	}
+> >  
+> >  	state = inode->i_state;
+> > -	if (!drop) {
+> > +	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
+> >  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
+> >  		spin_unlock(&inode->i_lock);
+> >  
+> > -- 
+> > 2.28.0
+> > 
+> > 
+> > 
