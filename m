@@ -2,368 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CB924EC30
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4510124EC36
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 10:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgHWIg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 04:36:56 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:51338 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgHWIg4 (ORCPT
+        id S1728140AbgHWIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 04:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbgHWIk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 04:36:56 -0400
-Received: from localhost.localdomain ([93.22.133.217])
-        by mwinf5d55 with ME
-        id Jwcr2300H4hbG4l03wcsbl; Sun, 23 Aug 2020 10:36:53 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 23 Aug 2020 10:36:53 +0200
-X-ME-IP: 93.22.133.217
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, leon@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] chelsio: switch from 'pci_' to 'dma_' API
-Date:   Sun, 23 Aug 2020 10:36:48 +0200
-Message-Id: <20200823083648.171858-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sun, 23 Aug 2020 04:40:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC92C061573;
+        Sun, 23 Aug 2020 01:40:59 -0700 (PDT)
+Date:   Sun, 23 Aug 2020 08:40:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598172057;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HvVqG99cnpZd2Kn++fSn80JuL9/AT14bR315w9zAXPw=;
+        b=uMcFssr8JGmznpcOnRtMmoVNVpeRuNDAV19Wj2MP2w9sYt1FbSTgmRcN5VReKsJQA4wncM
+        UQdc59/SXmv/gXHpo3xSDkbIMgFaffwe56LyyOB95i1YMmWFTGhg9L4T2Jy73TMYpv5TTu
+        lDes3g+SzhIcqxv54CfSJBb1pyf8ExSsfQ8MeO4FrFQGpF4rcfBQEFTnwx2Io3gB40uSwW
+        InmeOd7rqGsAxRpabzZENGJ57Fy3WtOE8RqRv/PkcANElWAVtKIz2ZGJVHt0vFr4Xf5ri1
+        WG2JUKNunFq2Y18sZm8PCTH+r0CIqULPsyz8CWhtC5dtmw41uX8jx6VmMk6gcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598172057;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HvVqG99cnpZd2Kn++fSn80JuL9/AT14bR315w9zAXPw=;
+        b=N5oYoQ4FARbTZrF+j7TfNtlVoNL3UZxh5gV9mtbVonMtDcjTYq68Lw1y72RrqjorEz5YFP
+        oQlI6qfvHyzgWGBw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timekeeping: Provide multi-timestamp accessor to
+ NMI safe timekeeper
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200814115512.159981360@linutronix.de>
+References: <20200814115512.159981360@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159817205568.389.4403103773258550373.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+The following commit has been merged into the timers/core branch of tip:
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Commit-ID:     e2d977c9f1abd1d199b412f8f83c1727808b794d
+Gitweb:        https://git.kernel.org/tip/e2d977c9f1abd1d199b412f8f83c1727808b794d
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 14 Aug 2020 12:19:35 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 23 Aug 2020 10:38:24 +02:00
 
-When memory is allocated in 'free_rx_resources()' and
-'alloc_tx_resources()' (sge.c) GFP_KERNEL can be used because it is
-already used in these functions.
+timekeeping: Provide multi-timestamp accessor to NMI safe timekeeper
 
-Moreover, they can only be called from a .ndo_open	function. So it is
-guarded by the 'rtnl_lock()', which is a mutex.
+printk wants to store various timestamps (MONOTONIC, REALTIME, BOOTTIME) to
+make correlation of dmesg from several systems easier.
 
-While at it, a pr_err message in 'init_one()' has been updated accordingly
-(s/consistent/coherent).
+Provide an interface to retrieve all three timestamps in one go.
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+There are some caveats:
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+1) Boot time and late sleep time injection
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+  Boot time is a racy access on 32bit systems if the sleep time injection
+  happens late during resume and not in timekeeping_resume(). That could be
+  avoided by expanding struct tk_read_base with boot offset for 32bit and
+  adding more overhead to the update. As this is a hard to observe once per
+  resume event which can be filtered with reasonable effort using the
+  accurate mono/real timestamps, it's probably not worth the trouble.
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+  Aside of that it might be possible on 32 and 64 bit to observe the
+  following when the sleep time injection happens late:
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+  CPU 0				         CPU 1
+  timekeeping_resume()
+  ktime_get_fast_timestamps()
+    mono, real = __ktime_get_real_fast()
+  					 inject_sleep_time()
+  					   update boot offset
+  	boot = mono + bootoffset;
+  
+  That means that boot time already has the sleep time adjustment, but
+  real time does not. On the next readout both are in sync again.
+  
+  Preventing this for 64bit is not really feasible without destroying the
+  careful cache layout of the timekeeper because the sequence count and
+  struct tk_read_base would then need two cache lines instead of one.
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+2) Suspend/resume timestamps
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
+   Access to the time keeper clock source is disabled accross the innermost
+   steps of suspend/resume. The accessors still work, but the timestamps
+   are frozen until time keeping is resumed which happens very early.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
+   For regular suspend/resume there is no observable difference vs. sched
+   clock, but it might affect some of the nasty low level debug printks.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
+   OTOH, access to sched clock is not guaranteed accross suspend/resume on
+   all systems either so it depends on the hardware in use.
 
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
+   If that turns out to be a real problem then this could be mitigated by
+   using sched clock in a similar way as during early boot. But it's not as
+   trivial as on early boot because it needs some careful protection
+   against the clock monotonic timestamp jumping backwards on resume.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Petr Mladek <pmladek@suse.com>                                                                                                                                                                                                                                      
+Link: https://lore.kernel.org/r/20200814115512.159981360@linutronix.de
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 10 ++--
- drivers/net/ethernet/chelsio/cxgb/sge.c   | 64 ++++++++++++-----------
- 2 files changed, 39 insertions(+), 35 deletions(-)
+ include/linux/timekeeping.h | 15 +++++++-
+ kernel/time/timekeeping.c   | 76 ++++++++++++++++++++++++++++++------
+ 2 files changed, 80 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-index 99736796e1a0..0e4a0f413960 100644
---- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-@@ -997,17 +997,17 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto out_disable_pdev;
- 	}
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index d5471d6..7f7e4a3 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -222,6 +222,18 @@ extern bool timekeeping_rtc_skipresume(void);
  
--	if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
-+	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) {
- 		pci_using_dac = 1;
+ extern void timekeeping_inject_sleeptime64(const struct timespec64 *delta);
  
--		if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64))) {
--			pr_err("%s: unable to obtain 64-bit DMA for "
--			       "consistent allocations\n", pci_name(pdev));
-+		if (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
-+			pr_err("%s: unable to obtain 64-bit DMA for coherent allocations\n",
-+			       pci_name(pdev));
- 			err = -ENODEV;
- 			goto out_disable_pdev;
- 		}
++/*
++ * struct ktime_timestanps - Simultaneous mono/boot/real timestamps
++ * @mono:	Monotonic timestamp
++ * @boot:	Boottime timestamp
++ * @real:	Realtime timestamp
++ */
++struct ktime_timestamps {
++	u64		mono;
++	u64		boot;
++	u64		real;
++};
++
+ /**
+  * struct system_time_snapshot - simultaneous raw/real time capture with
+  *				 counter value
+@@ -280,6 +292,9 @@ extern int get_device_system_crosststamp(
+  */
+ extern void ktime_get_snapshot(struct system_time_snapshot *systime_snapshot);
  
--	} else if ((err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) != 0) {
-+	} else if ((err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) != 0) {
- 		pr_err("%s: no usable DMA configuration\n", pci_name(pdev));
- 		goto out_disable_pdev;
- 	}
-diff --git a/drivers/net/ethernet/chelsio/cxgb/sge.c b/drivers/net/ethernet/chelsio/cxgb/sge.c
-index 47b5c8e2104b..21016de20b2d 100644
---- a/drivers/net/ethernet/chelsio/cxgb/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/sge.c
-@@ -509,9 +509,8 @@ static void free_freelQ_buffers(struct pci_dev *pdev, struct freelQ *q)
- 	while (q->credits--) {
- 		struct freelQ_ce *ce = &q->centries[cidx];
- 
--		pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
--				 dma_unmap_len(ce, dma_len),
--				 PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&pdev->dev, dma_unmap_addr(ce, dma_addr),
-+				 dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
- 		dev_kfree_skb(ce->skb);
- 		ce->skb = NULL;
- 		if (++cidx == q->size)
-@@ -529,8 +528,8 @@ static void free_rx_resources(struct sge *sge)
- 
- 	if (sge->respQ.entries) {
- 		size = sizeof(struct respQ_e) * sge->respQ.size;
--		pci_free_consistent(pdev, size, sge->respQ.entries,
--				    sge->respQ.dma_addr);
-+		dma_free_coherent(&pdev->dev, size, sge->respQ.entries,
-+				  sge->respQ.dma_addr);
- 	}
- 
- 	for (i = 0; i < SGE_FREELQ_N; i++) {
-@@ -542,8 +541,8 @@ static void free_rx_resources(struct sge *sge)
- 		}
- 		if (q->entries) {
- 			size = sizeof(struct freelQ_e) * q->size;
--			pci_free_consistent(pdev, size, q->entries,
--					    q->dma_addr);
-+			dma_free_coherent(&pdev->dev, size, q->entries,
-+					  q->dma_addr);
- 		}
- 	}
++/* NMI safe mono/boot/realtime timestamps */
++extern void ktime_get_fast_timestamps(struct ktime_timestamps *snap);
++
+ /*
+  * Persistent clock related interfaces
+  */
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 57d064d..ba76576 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -530,29 +530,29 @@ u64 notrace ktime_get_boot_fast_ns(void)
  }
-@@ -564,7 +563,8 @@ static int alloc_rx_resources(struct sge *sge, struct sge_params *p)
- 		q->size = p->freelQ_size[i];
- 		q->dma_offset = sge->rx_pkt_pad ? 0 : NET_IP_ALIGN;
- 		size = sizeof(struct freelQ_e) * q->size;
--		q->entries = pci_alloc_consistent(pdev, size, &q->dma_addr);
-+		q->entries = dma_alloc_coherent(&pdev->dev, size,
-+						&q->dma_addr, GFP_KERNEL);
- 		if (!q->entries)
- 			goto err_no_mem;
+ EXPORT_SYMBOL_GPL(ktime_get_boot_fast_ns);
  
-@@ -601,7 +601,8 @@ static int alloc_rx_resources(struct sge *sge, struct sge_params *p)
- 	sge->respQ.credits = 0;
- 	size = sizeof(struct respQ_e) * sge->respQ.size;
- 	sge->respQ.entries =
--		pci_alloc_consistent(pdev, size, &sge->respQ.dma_addr);
-+		dma_alloc_coherent(&pdev->dev, size, &sge->respQ.dma_addr,
-+				   GFP_KERNEL);
- 	if (!sge->respQ.entries)
- 		goto err_no_mem;
- 	return 0;
-@@ -624,9 +625,10 @@ static void free_cmdQ_buffers(struct sge *sge, struct cmdQ *q, unsigned int n)
- 	ce = &q->centries[cidx];
- 	while (n--) {
- 		if (likely(dma_unmap_len(ce, dma_len))) {
--			pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
-+			dma_unmap_single(&pdev->dev,
-+					 dma_unmap_addr(ce, dma_addr),
- 					 dma_unmap_len(ce, dma_len),
--					 PCI_DMA_TODEVICE);
-+					 DMA_TO_DEVICE);
- 			if (q->sop)
- 				q->sop = 0;
- 		}
-@@ -663,8 +665,8 @@ static void free_tx_resources(struct sge *sge)
- 		}
- 		if (q->entries) {
- 			size = sizeof(struct cmdQ_e) * q->size;
--			pci_free_consistent(pdev, size, q->entries,
--					    q->dma_addr);
-+			dma_free_coherent(&pdev->dev, size, q->entries,
-+					  q->dma_addr);
- 		}
- 	}
+-
+ /*
+  * See comment for __ktime_get_fast_ns() vs. timestamp ordering
+  */
+-static __always_inline u64 __ktime_get_real_fast_ns(struct tk_fast *tkf)
++static __always_inline u64 __ktime_get_real_fast(struct tk_fast *tkf, u64 *mono)
+ {
+ 	struct tk_read_base *tkr;
++	u64 basem, baser, delta;
+ 	unsigned int seq;
+-	u64 now;
+ 
+ 	do {
+ 		seq = raw_read_seqcount_latch(&tkf->seq);
+ 		tkr = tkf->base + (seq & 0x01);
+-		now = ktime_to_ns(tkr->base_real);
++		basem = ktime_to_ns(tkr->base);
++		baser = ktime_to_ns(tkr->base_real);
+ 
+-		now += timekeeping_delta_to_ns(tkr,
+-				clocksource_delta(
+-					tk_clock_read(tkr),
+-					tkr->cycle_last,
+-					tkr->mask));
++		delta = timekeeping_delta_to_ns(tkr,
++				clocksource_delta(tk_clock_read(tkr),
++				tkr->cycle_last, tkr->mask));
+ 	} while (read_seqcount_retry(&tkf->seq, seq));
+ 
+-	return now;
++	if (mono)
++		*mono = basem + delta;
++	return baser + delta;
  }
-@@ -689,7 +691,8 @@ static int alloc_tx_resources(struct sge *sge, struct sge_params *p)
- 		q->stop_thres = 0;
- 		spin_lock_init(&q->lock);
- 		size = sizeof(struct cmdQ_e) * q->size;
--		q->entries = pci_alloc_consistent(pdev, size, &q->dma_addr);
-+		q->entries = dma_alloc_coherent(&pdev->dev, size,
-+						&q->dma_addr, GFP_KERNEL);
- 		if (!q->entries)
- 			goto err_no_mem;
  
-@@ -837,8 +840,8 @@ static void refill_free_list(struct sge *sge, struct freelQ *q)
- 			break;
+ /**
+@@ -560,11 +560,65 @@ static __always_inline u64 __ktime_get_real_fast_ns(struct tk_fast *tkf)
+  */
+ u64 ktime_get_real_fast_ns(void)
+ {
+-	return __ktime_get_real_fast_ns(&tk_fast_mono);
++	return __ktime_get_real_fast(&tk_fast_mono, NULL);
+ }
+ EXPORT_SYMBOL_GPL(ktime_get_real_fast_ns);
  
- 		skb_reserve(skb, q->dma_offset);
--		mapping = pci_map_single(pdev, skb->data, dma_len,
--					 PCI_DMA_FROMDEVICE);
-+		mapping = dma_map_single(&pdev->dev, skb->data, dma_len,
-+					 DMA_FROM_DEVICE);
- 		skb_reserve(skb, sge->rx_pkt_pad);
- 
- 		ce->skb = skb;
-@@ -1049,15 +1052,15 @@ static inline struct sk_buff *get_packet(struct adapter *adapter,
- 			goto use_orig_buf;
- 
- 		skb_put(skb, len);
--		pci_dma_sync_single_for_cpu(pdev,
--					    dma_unmap_addr(ce, dma_addr),
--					    dma_unmap_len(ce, dma_len),
--					    PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_cpu(&pdev->dev,
-+					dma_unmap_addr(ce, dma_addr),
-+					dma_unmap_len(ce, dma_len),
-+					DMA_FROM_DEVICE);
- 		skb_copy_from_linear_data(ce->skb, skb->data, len);
--		pci_dma_sync_single_for_device(pdev,
--					       dma_unmap_addr(ce, dma_addr),
--					       dma_unmap_len(ce, dma_len),
--					       PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_device(&pdev->dev,
-+					   dma_unmap_addr(ce, dma_addr),
-+					   dma_unmap_len(ce, dma_len),
-+					   DMA_FROM_DEVICE);
- 		recycle_fl_buf(fl, fl->cidx);
- 		return skb;
- 	}
-@@ -1068,8 +1071,8 @@ static inline struct sk_buff *get_packet(struct adapter *adapter,
- 		return NULL;
- 	}
- 
--	pci_unmap_single(pdev, dma_unmap_addr(ce, dma_addr),
--			 dma_unmap_len(ce, dma_len), PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&pdev->dev, dma_unmap_addr(ce, dma_addr),
-+			 dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
- 	skb = ce->skb;
- 	prefetch(skb->data);
- 
-@@ -1091,8 +1094,9 @@ static void unexpected_offload(struct adapter *adapter, struct freelQ *fl)
- 	struct freelQ_ce *ce = &fl->centries[fl->cidx];
- 	struct sk_buff *skb = ce->skb;
- 
--	pci_dma_sync_single_for_cpu(adapter->pdev, dma_unmap_addr(ce, dma_addr),
--			    dma_unmap_len(ce, dma_len), PCI_DMA_FROMDEVICE);
-+	dma_sync_single_for_cpu(&adapter->pdev->dev,
-+				dma_unmap_addr(ce, dma_addr),
-+				dma_unmap_len(ce, dma_len), DMA_FROM_DEVICE);
- 	pr_err("%s: unexpected offload packet, cmd %u\n",
- 	       adapter->name, *skb->data);
- 	recycle_fl_buf(fl, fl->cidx);
-@@ -1209,8 +1213,8 @@ static inline void write_tx_descs(struct adapter *adapter, struct sk_buff *skb,
- 	e = e1 = &q->entries[pidx];
- 	ce = &q->centries[pidx];
- 
--	mapping = pci_map_single(adapter->pdev, skb->data,
--				 skb_headlen(skb), PCI_DMA_TODEVICE);
-+	mapping = dma_map_single(&adapter->pdev->dev, skb->data,
-+				 skb_headlen(skb), DMA_TO_DEVICE);
- 
- 	desc_mapping = mapping;
- 	desc_len = skb_headlen(skb);
--- 
-2.25.1
-
+ /**
++ * ktime_get_fast_timestamps: - NMI safe timestamps
++ * @snapshot:	Pointer to timestamp storage
++ *
++ * Stores clock monotonic, boottime and realtime timestamps.
++ *
++ * Boot time is a racy access on 32bit systems if the sleep time injection
++ * happens late during resume and not in timekeeping_resume(). That could
++ * be avoided by expanding struct tk_read_base with boot offset for 32bit
++ * and adding more overhead to the update. As this is a hard to observe
++ * once per resume event which can be filtered with reasonable effort using
++ * the accurate mono/real timestamps, it's probably not worth the trouble.
++ *
++ * Aside of that it might be possible on 32 and 64 bit to observe the
++ * following when the sleep time injection happens late:
++ *
++ * CPU 0				CPU 1
++ * timekeeping_resume()
++ * ktime_get_fast_timestamps()
++ *	mono, real = __ktime_get_real_fast()
++ *					inject_sleep_time()
++ *					   update boot offset
++ *	boot = mono + bootoffset;
++ *
++ * That means that boot time already has the sleep time adjustment, but
++ * real time does not. On the next readout both are in sync again.
++ *
++ * Preventing this for 64bit is not really feasible without destroying the
++ * careful cache layout of the timekeeper because the sequence count and
++ * struct tk_read_base would then need two cache lines instead of one.
++ *
++ * Access to the time keeper clock source is disabled accross the innermost
++ * steps of suspend/resume. The accessors still work, but the timestamps
++ * are frozen until time keeping is resumed which happens very early.
++ *
++ * For regular suspend/resume there is no observable difference vs. sched
++ * clock, but it might affect some of the nasty low level debug printks.
++ *
++ * OTOH, access to sched clock is not guaranteed accross suspend/resume on
++ * all systems either so it depends on the hardware in use.
++ *
++ * If that turns out to be a real problem then this could be mitigated by
++ * using sched clock in a similar way as during early boot. But it's not as
++ * trivial as on early boot because it needs some careful protection
++ * against the clock monotonic timestamp jumping backwards on resume.
++ */
++void ktime_get_fast_timestamps(struct ktime_timestamps *snapshot)
++{
++	struct timekeeper *tk = &tk_core.timekeeper;
++
++	snapshot->real = __ktime_get_real_fast(&tk_fast_mono, &snapshot->mono);
++	snapshot->boot = snapshot->mono + ktime_to_ns(data_race(tk->offs_boot));
++}
++
++/**
+  * halt_fast_timekeeper - Prevent fast timekeeper from accessing clocksource.
+  * @tk: Timekeeper to snapshot.
+  *
