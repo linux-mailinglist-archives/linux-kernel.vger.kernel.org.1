@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9353924EF47
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 20:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5833E24EF4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Aug 2020 20:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgHWSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 14:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48218 "EHLO mail.kernel.org"
+        id S1726693AbgHWSjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 14:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgHWSjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 14:39:25 -0400
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.9-3 tag
+        id S1726336AbgHWSjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 14:39:24 -0400
+Subject: Re: [GIT PULL] EDAC urgent for v5.9-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598207964;
-        bh=hIKoVmpC88VP1ZThEbWeQVRYJkQKluOV7vCcJ3XkcvI=;
+        bh=09n9DPXyjeVOuJISvWRvida3UAVTg7gh8CDylNsGf4s=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=J16Vx4irGTsvEoj+6w5Krxn8bXfPOXR8rzPSggBAewZUx7aTVygXGxnaRSkMD9D+C
-         Xl8zz3va8W1QUwsEzhNmfYvaKAPf9plTbairHqH0o2bLK9rnDkr68CGwWKZjiYqTe+
-         RJlvh2YZ/fW46lOXC98MeUYDRM+SmT2EkQcYnfuQ=
+        b=vNFDdXgN2fF64EuC7S/21i3CfTmwM8xM/5xDJXshWkpboxT23s0/ucjwJAWEmEdZB
+         ZrIt4rxgvPYWXAg4fDwk9JpSHkN/8gjm+aMiWaEnarpZrMF66xIJwpFCrJoPGQuIQI
+         8Tq7VHu1JUnGgw5f2QaJVsDlth02NqcqyhHB6Ils=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
-References: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20200823101203.GA27452@zn.tnic>
+References: <20200823101203.GA27452@zn.tnic>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87v9h9h6gq.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-3
-X-PR-Tracked-Commit-Id: 64ef8f2c4791940d7f3945507b6a45c20d959260
+X-PR-Tracked-Message-Id: <20200823101203.GA27452@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.9_rc2
+X-PR-Tracked-Commit-Id: 45bc6098a3e279d8e391d22428396687562797e2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cb95712138ec5e480db5160b41172bbc6f6494cc
-Message-Id: <159820796470.12134.6083209572149218193.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d9232cb79651c244f8679607b6e30c5230bcc967
+Message-Id: <159820796431.12134.18041504030184472094.pr-tracker-bot@kernel.org>
 Date:   Sun, 23 Aug 2020 18:39:24 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
+To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        aneesh.kumar@linux.ibm.com, anju@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
-        fbarrat@linux.ibm.com, hegdevasant@linux.vnet.ibm.com,
-        kjain@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
-        mdroth@linux.vnet.ibm.com, mikey@neuling.org
+        linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 23 Aug 2020 22:50:13 +1000:
+The pull request you sent on Sun, 23 Aug 2020 12:12:03 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.9_rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cb95712138ec5e480db5160b41172bbc6f6494cc
+https://git.kernel.org/torvalds/c/d9232cb79651c244f8679607b6e30c5230bcc967
 
 Thank you!
 
