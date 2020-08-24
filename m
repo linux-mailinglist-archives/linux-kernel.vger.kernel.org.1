@@ -2,56 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2FD42500B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCD72500AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgHXPQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:16:46 -0400
-Received: from verein.lst.de ([213.95.11.211]:54830 "EHLO verein.lst.de"
+        id S1726944AbgHXPP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:15:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42298 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgHXPN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:13:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 26FBD68AFE; Mon, 24 Aug 2020 17:13:01 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 17:13:00 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     syzbot <syzbot+3f86afd0b1e4bf1cb64c@syzkaller.appspotmail.com>,
-        thomas.tai@oracle.com, airlied@redhat.com, kraxel@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        dri-devel@lists.freedesktop.org, hch@lst.de,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: Is: virtio_gpu_object_shmem_init  issues? Was:Re: upstream
- boot error: general protection fault in swiotlb_map
-Message-ID: <20200824151300.GA28575@lst.de>
-References: <0000000000000c1f0005ac333382@google.com> <20200824150650.GD21321@char.us.oracle.com>
+        id S1725946AbgHXPOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:14:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AA00AABCC;
+        Mon, 24 Aug 2020 15:14:53 +0000 (UTC)
+Date:   Mon, 24 Aug 2020 17:14:25 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Mel Gorman <mgorman@suse.com>
+Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Message-ID: <20200824151425.GF4794@zn.tnic>
+References: <20200425114414.GU26573@shao2-debian>
+ <20200425130136.GA28245@zn.tnic>
+ <20200818082943.GA65567@shbuild999.sh.intel.com>
+ <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
+ <20200819020437.GA2605@shbuild999.sh.intel.com>
+ <20200821020259.GA90000@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200824150650.GD21321@char.us.oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200821020259.GA90000@shbuild999.sh.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 11:06:51AM -0400, Konrad Rzeszutek Wilk wrote:
-> So it fails at
+On Fri, Aug 21, 2020 at 10:02:59AM +0800, Feng Tang wrote:
+>   1de08dccd383 x86/mce: Add a struct mce.kflags field
+>   9554bfe403bd x86/mce: Convert the CEC to use the MCE notifier
 > 
-> 683                 dev_WARN_ONCE(dev, 1,                                           
-> 684                         "swiotlb addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
-> 685                         &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);   
-> 
-> 
-> which makes no sense to me as `dev` surely exists. I can see in the console log:
-> 
-> virtio-pci 0000:00:01.0: vgaarb: deactivate vga console
-> 
-> So what gives?
+> And strange thing is after using gcc9 and debian10 rootfs, with same commits
+> the regression turns to a improvement,
 
-Well, look at the if around the WARN_ON - dma_capable failed on the
-swiotlb buffer. This means the virtio drm thingy has a dma mask
-(either the actual one set by the driver, or bus_dma_mask), which isn't
-enough to address the swiotlb buffer.
+How so?
+
+> though the trend keeps, that if we
+> changes the kflags from __u64 to __u32, the performance will be no change.
+> 
+> Following is the comparing of regression, I also attached the perf-profile
+> for old and new commit (let me know if you need more data)
+> 
+> 
+> 9554bfe403bdfc08 1de08dccd383482a3e88845d355 
+> ---------------- --------------------------- 
+>          %stddev     %change         %stddev
+>              \          |                \  
+>     192362           -15.1%     163343        will-it-scale.287.processes
+>       0.91            +0.2%       0.92        will-it-scale.287.processes_idle
+>     669.67           -15.1%     568.50        will-it-scale.per_process_ops
+
+This is the data from your previous measurement:
+
+9554bfe403bdfc08 1de08dccd383482a3e88845d355
+---------------- ---------------------------
+         %stddev     %change         %stddev
+             \          |                \
+    668.00           -14.1%     573.75        will-it-scale.per_process_ops
+
+If I'm reading it correctly, commit
+
+1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
+
+is still the slower one vs
+
+9554bfe403bd ("x86/mce: Convert the CEC to use the MCE notifier")
+
+Or am I misreading it?
+
+In any case, this really looks like what Tony said: this enlargement of
+struct mce pushes some variable into a cacheline-misaligned placement,
+causing it to bounce.
+
+The $ 10^6 question is, which variable is that...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
