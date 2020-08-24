@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA2624F7F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A55324F818
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgHXIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        id S1728259AbgHXIxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730250AbgHXIxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:53:53 -0400
+        id S1726026AbgHXIwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:52:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDAFF207D3;
-        Mon, 24 Aug 2020 08:53:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5606C2087D;
+        Mon, 24 Aug 2020 08:52:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259232;
-        bh=gDxGAOb0qK+ueuz1Ha9bY/C+e/XGqAv2qeL00uHAwHA=;
+        s=default; t=1598259162;
+        bh=AE8yti03rs115aiXxPpM461/nXpyPDjj7zZBLLhTnlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLPon5D0uDeo5tTX8GUDxf6A7bMIYCySLRiWUfkOnpnY1PiQK8tmtz6f2v/siS9qU
-         HKkHhcYFRvCn5vrp0U95bq+LXbARRlyC8dc9Vjfte9GE2O3C0fPW5EKoaU++45jvVt
-         4wQ8GhAPb9/+F9OFAECNoVrLAjbmFCh/kGUGw+SY=
+        b=d+Bxq/5wlF0l8JtC/9EiTNUs1sRt96ph19R24A70D6ecfynoDeRNICqdL746A/2//
+         FzkCZAmtvNw675/MV+exjqjhaVfN0BZlwGHsTZelXXwBD3TVs6wHEjk/vkIwFCkVDI
+         m+M/vMS+uuZBCJLFV4bR7xJxgLvyb/WM8QIXBGBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mao Wenan <wenan.mao@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/50] virtio_ring: Avoid loop when vq is broken in virtqueue_poll
+Subject: [PATCH 4.9 32/39] ASoC: intel: Fix memleak in sst_media_open
 Date:   Mon, 24 Aug 2020 10:31:31 +0200
-Message-Id: <20200824082353.565875953@linuxfoundation.org>
+Message-Id: <20200824082350.169096931@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Wenan <wenan.mao@linux.alibaba.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 481a0d7422db26fb63e2d64f0652667a5c6d0f3e ]
+[ Upstream commit 062fa09f44f4fb3776a23184d5d296b0c8872eb9 ]
 
-The loop may exist if vq->broken is true,
-virtqueue_get_buf_ctx_packed or virtqueue_get_buf_ctx_split
-will return NULL, so virtnet_poll will reschedule napi to
-receive packet, it will lead cpu usage(si) to 100%.
+When power_up_sst() fails, stream needs to be freed
+just like when try_module_get() fails. However, current
+code is returning directly and ends up leaking memory.
 
-call trace as below:
-virtnet_poll
-	virtnet_receive
-		virtqueue_get_buf_ctx
-			virtqueue_get_buf_ctx_packed
-			virtqueue_get_buf_ctx_split
-	virtqueue_napi_complete
-		virtqueue_poll           //return true
-		virtqueue_napi_schedule //it will reschedule napi
-
-to fix this, return false if vq is broken in virtqueue_poll.
-
-Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/1596354249-96204-1-git-send-email-wenan.mao@linux.alibaba.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Fixes: 0121327c1a68b ("ASoC: Intel: mfld-pcm: add control for powering up/down dsp")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200813084112.26205-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index b82bb0b081615..51278f8bd3ab3 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -829,6 +829,9 @@ bool virtqueue_poll(struct virtqueue *_vq, unsigned last_used_idx)
- {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index e83e314a76a53..dc1b9a32c0575 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -339,7 +339,7 @@ static int sst_media_open(struct snd_pcm_substream *substream,
  
-+	if (unlikely(vq->broken))
-+		return false;
-+
- 	virtio_mb(vq->weak_barriers);
- 	return (u16)last_used_idx != virtio16_to_cpu(_vq->vdev, vq->vring.used->idx);
+ 	ret_val = power_up_sst(stream);
+ 	if (ret_val < 0)
+-		return ret_val;
++		goto out_power_up;
+ 
+ 	/* Make sure, that the period size is always even */
+ 	snd_pcm_hw_constraint_step(substream->runtime, 0,
+@@ -348,8 +348,9 @@ static int sst_media_open(struct snd_pcm_substream *substream,
+ 	return snd_pcm_hw_constraint_integer(runtime,
+ 			 SNDRV_PCM_HW_PARAM_PERIODS);
+ out_ops:
+-	kfree(stream);
+ 	mutex_unlock(&sst_lock);
++out_power_up:
++	kfree(stream);
+ 	return ret_val;
  }
+ 
 -- 
 2.25.1
 
