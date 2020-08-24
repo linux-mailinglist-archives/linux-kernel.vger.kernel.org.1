@@ -2,160 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB4C250C4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3F4250C4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgHXXYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 19:24:42 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:39253 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXXYl (ORCPT
+        id S1728244AbgHXXZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 19:25:05 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35437 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXXZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 19:24:41 -0400
-Received: by mail-il1-f195.google.com with SMTP id f12so8837729ils.6;
-        Mon, 24 Aug 2020 16:24:40 -0700 (PDT)
+        Mon, 24 Aug 2020 19:25:03 -0400
+Received: by mail-io1-f66.google.com with SMTP id s2so10601658ioo.2;
+        Mon, 24 Aug 2020 16:25:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JwCY8rswka2evtE21QF7ein3AFgooZR8ofb7Ek5G2oQ=;
-        b=hnmOt0f8Sf4ZLsXp3NS0YE01QMyIUnHFl8QO/p4VTcsCrQEAiYfDU4fOpOBGqscqQD
-         9Q5d9KnXo//QJn1oQBAq4tVvz8VAMTdY3eFImrNjhW+QkmPk8VcqElDBIW5TWPPr/GnF
-         Tapgl090S8AZmUjfGNg9KUjqGbh2OlsBrV+sbdPLl6EhkziS4izczzS1pLF+iYXBbCz3
-         dVwzGyF3RwkZtZOy8Iq5Zg6zzPvAF5qgOPPlnzS8zZOn6Lpt6/ORltZkhLFkqsoar+XN
-         dQS/GYrr/WMoSZBPZmWt97AcYVrR95Rj0Xi6ZHjH+mhaZaWPAFwu9dvjkZV3eogFXyR2
-         ZCog==
-X-Gm-Message-State: AOAM532Z1kR5nybnZ9eBpDHtxQIIbj52XJE8zwBZnfWZ0ghQeazMEBpX
-        B6Fsa5WUBSnrtPdImuzhJQ==
-X-Google-Smtp-Source: ABdhPJx7LtfsqA1qY3DyB66QRPALZplHC090bvD6c3U46iI9qD4WKEflLmoQC5seq1+YwsA9qyvLjA==
-X-Received: by 2002:a92:a188:: with SMTP id b8mr7329457ill.81.1598311480006;
-        Mon, 24 Aug 2020 16:24:40 -0700 (PDT)
+        bh=kNaUvZze9QHBkyKu+l3u3r4OB8Z9lM6mxAz5JIOkCOU=;
+        b=sBT9oJEwyW+x1isqzKDk8bO45lVxuPPId9kjLBQ934drBCxMoBKfP/aRnf/m5gh7HB
+         JPAQGdyU0DE3DxYyKirc1FQwk7ldPzW4QMx5mNxw7Nm2A1Qpafal7JriUoccH0TiNWzl
+         BCZcWEjufffniFEuG8knFXy6yHfDa2a1Ig5xfLXE7xrkbRXHK+nTuPKIKDMh1inSn58f
+         AOEeTTsh5wwt7vASz7PhLvNk8f4kf4Z0tX06nLgLYYqI5W72Nqyd5BN4zZUgLT206I5B
+         O0hDWWzgm1804Y6SK8ePFhjwtfhxRscw4TdXa/Jrz8U2erqjvtlD0RPqIqynW++q8iPh
+         GmcA==
+X-Gm-Message-State: AOAM531tDpvCQTscEi7WxCD7uw7qOmPnQ8M8bI4yg4aOhf5TvBc0Wmyx
+        qxxgdmaI1UCX3V9rfsolGA==
+X-Google-Smtp-Source: ABdhPJwrHUF3Pm7/GPTfSTtUf0hU5VDnZuOEWlWSMQlD0pf52vYKSSHVx1FMfP6ytnAY0cx1Nkecbw==
+X-Received: by 2002:a6b:f719:: with SMTP id k25mr6886530iog.22.1598311502241;
+        Mon, 24 Aug 2020 16:25:02 -0700 (PDT)
 Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id a16sm8105572ilp.23.2020.08.24.16.24.38
+        by smtp.gmail.com with ESMTPSA id m18sm8008022iln.80.2020.08.24.16.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 16:24:39 -0700 (PDT)
-Received: (nullmailer pid 3530535 invoked by uid 1000);
-        Mon, 24 Aug 2020 23:24:38 -0000
-Date:   Mon, 24 Aug 2020 17:24:38 -0600
+        Mon, 24 Aug 2020 16:25:01 -0700 (PDT)
+Received: (nullmailer pid 3531222 invoked by uid 1000);
+        Mon, 24 Aug 2020 23:25:00 -0000
+Date:   Mon, 24 Aug 2020 17:25:00 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-i3c@lists.infradead.org, devicetree@vger.kernel.org,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
-        Conor Culhane <conor.culhane@silvaco.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: i3c: Describe Silvaco master binding
-Message-ID: <20200824232438.GA3525200@bogus>
-References: <20200812141312.3331-1-miquel.raynal@bootlin.com>
- <20200812141312.3331-2-miquel.raynal@bootlin.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 1/2] dt-bindings: spi: renesas,rspi: Add r8a7742 to the
+ compatible list
+Message-ID: <20200824232500.GA3531166@bogus>
+References: <20200812150048.27721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200812150048.27721-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200812141312.3331-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20200812150048.27721-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 04:13:10PM +0200, Miquel Raynal wrote:
-> Silvaco provide a dual-role I3C master.
+On Wed, 12 Aug 2020 16:00:47 +0100, Lad Prabhakar wrote:
+> Document RZ/G1H (R8A7742) SoC specific bindings. The R8A7742 qspi module
+> is identical to R-Car Gen2 family.
 > 
-> Description is rather simple: it needs a register mapping, three
-> clocks and an interrupt.
+> No driver change is needed due to the fallback compatible value
+> "renesas,qspi".
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 > ---
+>  Documentation/devicetree/bindings/spi/renesas,rspi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes in v2:
-> * Updated Rob's tool and fixed the mistake reported.
-> * Updated the vendor prefix.
-> 
->  .../bindings/i3c/silvaco,i3c-master.yaml      | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> new file mode 100644
-> index 000000000000..63731e8a9068
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/i3c/silvaco,i3c-master.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Silvaco I3C master
-> +
-> +maintainers:
-> +  - Conor Culhane <conor.culhane@silvaco.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: silvaco,i3c-master
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    description: |
-> +      There are three clocks:
-> +        pclk:     System clock
-> +        fast_clk: Fast clock (for the bus)
-> +        slow_clk: Slow clock (for other events)
 
-You basically say this in the schema... If you want some description, do 
-it in 'clocks':
-
-clocks:
-  items:
-    - description: ...
-    - description: ...
-    - description: ...
-
-> +
-> +    items:
-> +      - const: pclk
-> +      - const: fast_clk
-> +      - const: slow_clk
-> +
-> +  clocks:
-> +    minItems: 3
-> +    maxItems: 3
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clock-names
-> +  - clocks
-
-additionalProperties: false
-
-And that will point out some errors in the example.
-
-> +
-> +examples:
-> +  - |
-> +    i3c-master@a0000000 {
-> +        compatible = "silvaco,i3c-master";
-> +        clocks = <&zynqmp_clk 71>, <&fclk>, <&sclk>;
-> +        clock-names = "pclk", "fast_clk", "slow_clk";
-> +        interrupt-parent = <&gic>;
-> +        interrupts = <0 89 4>;
-> +        reg = <0xa0000000 0x1000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +    };
-> -- 
-> 2.20.1
-> 
+Acked-by: Rob Herring <robh@kernel.org>
