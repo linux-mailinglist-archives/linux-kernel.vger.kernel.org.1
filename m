@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A7924FA3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D11424FABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgHXJya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:54:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgHXJy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:54:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30C0FACAF;
-        Mon, 24 Aug 2020 09:54:56 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com,
-        akpm@linux-foundation.org, nico@fluxnic.net
-Subject: [PATCH] Revert "vc_screen: extract vcs_read_buf_header"
-Date:   Mon, 24 Aug 2020 11:54:25 +0200
-Message-Id: <20200824095425.4376-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.28.0
+        id S1728365AbgHXJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728955AbgHXJ6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 05:58:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20061C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:58:35 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 11:58:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598263113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VBtkaB/urMRjE3KDZiHlShNfLKbL53xdqqZJYFhzB6U=;
+        b=zQK29oix1xwa06jMXLKYr+zKUzHU699aC1Y7GbINccUZlofpr3TVjS229SPdTOywDmRmKR
+        NNq9UoeBjWaX/R0F6hxFHm8jAhzoNfGfnpSw2mp7P9jQG9M97ORA3QzC/jsF8D6S6Y5e1B
+        ne7B3kt63HE45NchLkJPB+UXmLbYw80+j6TftpzTPGbjGe04I5GnFsUgkLuNb64Lb3jfiQ
+        HbgRSoBno6ntZfeDAc7O0Zsfs6uKaQJorFtdJjLx+iRcyW76iysPwWEn9vTdvdGWpIgLLU
+        HBO8tdEm3he973k81nulL2wfvZ9fWZPsghPqTMMzRVj4qbJCkzBzl3OBROYdhA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598263113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VBtkaB/urMRjE3KDZiHlShNfLKbL53xdqqZJYFhzB6U=;
+        b=2UjFVzZIp1GezRNJ7apJWJOzysrfRYWMPEkSSV724oBmU7zCnuPfW2s/wjn2aPmKMOQayW
+        BxglsF10dTFJCpAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     kernel test robot <lkp@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: {standard input}:5973: Error: operand out of range (512 is not
+ between -512 and 511)
+Message-ID: <20200824095831.5lpkmkafelnvlpi2@linutronix.de>
+References: <202008241018.RkyIlLKd%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202008241018.RkyIlLKd%lkp@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b1c32fcfadf5593ab7a63261cc8a5747c36e627e, because
-Syzkaller reports a use-after-free, a write in vcs_read:
+On 2020-08-24 10:17:19 [+0800], kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   d012a7190fc1fd72ed48911e77ca97ba4521bccd
+> commit: de8f5e4f2dc1f032b46afda0a78cab5456974f89 lockdep: Introduce wait-type checks
+> date:   5 months ago
+> config: arc-randconfig-r004-20200824 (attached as .config)
+> compiler: arc-elf-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout de8f5e4f2dc1f032b46afda0a78cab5456974f89
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    {standard input}: Assembler messages:
+> >> {standard input}:5973: Error: operand out of range (512 is not between -512 and 511)
+> 
 
-BUG: KASAN: use-after-free in vcs_read_buf drivers/tty/vt/vc_screen.c:357 [inline]
-BUG: KASAN: use-after-free in vcs_read+0xaa7/0xb40 drivers/tty/vt/vc_screen.c:449
-Write of size 2 at addr ffff8880a8014000 by task syz-executor.5/16936
-CPU: 1 PID: 16936 Comm: syz-executor.5 Not tainted 5.9.0-rc1-next-20200820-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
-...
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- vcs_read_buf drivers/tty/vt/vc_screen.c:357 [inline]
- vcs_read+0xaa7/0xb40 drivers/tty/vt/vc_screen.c:449
+I have here gcc 10 and the output is:
+|  CC      arch/arc/kernel/signal.o
+|arch/arc/include/asm/bitops.h: Assembler messages:
+|arch/arc/include/asm/bitops.h:236: Error: junk at end of line, first unrecognized character is `0'
+|arch/arc/include/asm/bitops.h:236: Error: junk at end of line, first unrecognized character is `0'
+|make[3]: *** [scripts/Makefile.build:283: arch/arc/kernel/signal.o] Error 1
+|make[2]: *** [scripts/Makefile.build:500: arch/arc/kernel] Error 2
+|make[1]: *** [Makefile:1788: arch/arc] Error 2
 
-There are two issues with the patch:
-1) vcs_read rounds the 'count' *up* to an even number. So if we read odd
-   bytes from the header (3 bytes in the reproducer), the second byte of
-   a (2-byte/ushort) write to temporary con_buf won't fit. It is because
-   with the patch applied, we only subtract the real number read (3 bytes)
-   and not the whole header (4 bytes).
+the reason is that:
+| #ifndef CONFIG_ARC_PLAT_EZNPS
+| BIT_OPS(set, |, bset)
+| BIT_OPS(clear, & ~, bclr)
+| BIT_OPS(change, ^, bxor)
+| #else
+| BIT_OPS(set, |, CTOP_INST_AOR_DI_R2_R2_R3)
+| BIT_OPS(clear, & ~, CTOP_INST_AAND_DI_R2_R2_R3)
+| BIT_OPS(change, ^, CTOP_INST_AXOR_DI_R2_R2_R3)
+| #endif
 
-2) in this scenario, we perform unaligned accesses now: there are
-   2-byte/ushort writes to odd addresses. Due to the same reason as
-   above.
+and the config supplied does not accept CTOP_INST_AAND_DI_R2_R2_R3
+(which is
+	#define CTOP_INST_AAND_DI_R2_R2_R3              0x4A664C04
+)
+and the assembler does not like that.
+After the removal CONFIG_ARC_PLAT_EZNPS I got to stage 2:
+|drivers/irqchip/irq-eznps.c:80:16: error: 'CTOP_AUX_IACK' undeclared (first use in this function)
+|   80 |  write_aux_reg(CTOP_AUX_IACK, 1 << irq);
 
-Revert this for now, re-think and retry later.
+so I removed CONFIG_EZNPS_GIC. And then I ended with:
+|  LD      vmlinux.o
+|arc-linux-ld: gcc-10.1.0-nolibc/arc-linux/bin/../lib/gcc/arc-linux/10.1.0/arc700/libgcc.a(_muldi3.o): compiled for a little endian system and target is big endian
+|arc-linux-ld: failed to merge target specific data of file gcc-10.1.0-nolibc/arc-linux/bin/../lib/gcc/arc-linux/10.1.0/arc700/libgcc.a(_muldi3.o)
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Reported-by: syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com
-Fixes: b1c32fcfadf5 ("vc_screen: extract vcs_read_buf_header")
-Cc: akpm@linux-foundation.org
-Cc: nico@fluxnic.net
----
- drivers/tty/vt/vc_screen.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+Please update CI and ARC.
 
-diff --git a/drivers/tty/vt/vc_screen.c b/drivers/tty/vt/vc_screen.c
-index 3e3a6a9a7f44..1850bacdb5b0 100644
---- a/drivers/tty/vt/vc_screen.c
-+++ b/drivers/tty/vt/vc_screen.c
-@@ -293,22 +293,6 @@ static void vcs_read_buf_noattr(const struct vc_data *vc, char *con_buf,
- 	}
- }
- 
--static unsigned int vcs_read_buf_header(const struct vc_data *vc, char *con_buf,
--		unsigned int pos, unsigned int count)
--{
--	count = min(HEADER_SIZE - pos, count);
--
--	/* clamp header values if they don't fit */
--	con_buf[0] = min(vc->vc_rows, 0xFFu);
--	con_buf[1] = min(vc->vc_cols, 0xFFu);
--	getconsxy(vc, con_buf + 2);
--
--	if (pos)
--		memmove(con_buf, con_buf + pos, count);
--
--	return count;
--}
--
- static unsigned int vcs_read_buf(const struct vc_data *vc, char *con_buf,
- 		unsigned int pos, unsigned int count, bool viewed,
- 		unsigned int *skip)
-@@ -318,11 +302,22 @@ static unsigned int vcs_read_buf(const struct vc_data *vc, char *con_buf,
- 	unsigned int filled = count;
- 
- 	if (pos < HEADER_SIZE) {
--		count -= vcs_read_buf_header(vc, con_buf, pos, count);
-+		/* clamp header values if they don't fit */
-+		con_buf[0] = min(vc->vc_rows, 0xFFu);
-+		con_buf[1] = min(vc->vc_cols, 0xFFu);
-+		getconsxy(vc, con_buf + 2);
-+
-+		*skip += pos;
-+		count += pos;
-+		if (count > CON_BUF_SIZE) {
-+			count = CON_BUF_SIZE;
-+			filled = count - pos;
-+		}
- 
-+		/* Advance state pointers and move on. */
-+		count -= min(HEADER_SIZE, count);
- 		pos = HEADER_SIZE;
- 		con_buf += HEADER_SIZE;
--
- 		/* If count >= 0, then pos is even... */
- 	} else if (pos & 1) {
- 		/*
--- 
-2.28.0
-
+Sebastian
