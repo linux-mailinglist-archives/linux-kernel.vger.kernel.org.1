@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB97F24F6E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BDF24F725
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgHXJG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728790AbgHXJGy (ORCPT
+        id S1729309AbgHXJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:09:32 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:50465 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729369AbgHXJIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:06:54 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19CDC061573;
-        Mon, 24 Aug 2020 02:06:53 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f193so4480120pfa.12;
-        Mon, 24 Aug 2020 02:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kUkHyWifMBTnLUKfuOlzPEWC4L6WTYZmfRcQtW7YpF0=;
-        b=Z7JfQloKaTjiT0H4ASAyjMkzOVg0yvKyOhrTwAaHBfJbVfCJcgfcC/td6BJwaNPz4C
-         ff9ViiFoPralIJ8iinxqg7EGJesq/N2dB6tFIsnDAyq1IwXuvT2ySJe6YoK0eLBEko46
-         0gfp6pg5DKGU5U+h2TigbaH1m/PVqGMqTfJSkcgUAduItvIzaIFLJ9uX00Yh2EHCHyBh
-         YcrWAACm2yCl8VSUoxJh+oo406KRROv9VENVUPjD/59wOX2eXxvtyBY80Y7yo6BqS4t1
-         fbMGY+0drYrqVOB04LqRnl/lgluQ/L7NZMK1/3dMZH0sBEJwYUeuJh0342DPyCrTr+I2
-         kjdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=kUkHyWifMBTnLUKfuOlzPEWC4L6WTYZmfRcQtW7YpF0=;
-        b=Z7BH/W7901IBeO8jFQIaCnkPYhpOXgrHkVlMOjOCGqoXdm65gdFUHgtHuXVjYvMGfd
-         g6trMIUw779RuyvScIJOWzjIHKsdwwo2W2GjmlaR5z63i7YhLu1mR6SswSOsYlsSG/ZJ
-         CMTRYlLQeGvT5/5feosdmPbJtLAOxcvW3xe9n626S+XCFJ+rkxLXYWvGbzma5apM9vkv
-         URhe8YeN/Fd73D7WGdyyyAGC93zuWvex/3W+4Ef/mKbWu4Dn8XmUO+oeToNg1pPnHZz/
-         gpuFv20XuJif6SNt0LoIYR7SGFy4lGSgI8oJhCuGXJ0XsVjAHBkrggZMp11R+3dTPoQt
-         Hbig==
-X-Gm-Message-State: AOAM5321WX/9h9g0JCHWwyQuAyHsJ7tM6WuMkONUol5UWXTuLznHff+2
-        DvLZ4IRexeiwpPBX8RwpQdw=
-X-Google-Smtp-Source: ABdhPJw14xcNmXa1rR9IVlAIv+z1Xu6egOA/ZqBXZ3+NIiQOsygfcNGkj27A9h4zWhIQbWn+tiZxpQ==
-X-Received: by 2002:a63:5c08:: with SMTP id q8mr2956738pgb.222.1598260013533;
-        Mon, 24 Aug 2020 02:06:53 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:484:931d:1b34:35e8:fe10:8c7a])
-        by smtp.gmail.com with ESMTPSA id c20sm9220988pjv.31.2020.08.24.02.06.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Aug 2020 02:06:53 -0700 (PDT)
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-To:     jic23@kernel.org, matthias.bgg@gmail.com
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: [PATCH v3 2/2] Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
-Date:   Mon, 24 Aug 2020 17:06:25 +0800
-Message-Id: <1598259985-12517-3-git-send-email-gene.chen.richtek@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598259985-12517-1-git-send-email-gene.chen.richtek@gmail.com>
-References: <1598259985-12517-1-git-send-email-gene.chen.richtek@gmail.com>
+        Mon, 24 Aug 2020 05:08:53 -0400
+Received: from mail-qv1-f50.google.com ([209.85.219.50]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mnqfc-1ky6PI3bY2-00pNFx for <linux-kernel@vger.kernel.org>; Mon, 24 Aug
+ 2020 11:08:51 +0200
+Received: by mail-qv1-f50.google.com with SMTP id o2so3390408qvk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:08:50 -0700 (PDT)
+X-Gm-Message-State: AOAM5316+0USBK8FHkP6DQFFYUgnqagO0YO7dB7EUWwMMxEA6V+QajnY
+        DrgFgecUBabpIENew/SYI4NVPUb56tWegl9AR+U=
+X-Google-Smtp-Source: ABdhPJwZX+cjJ6iQYsZP8QaU/HljAAPbR5R+V1AQGPTEA6x/4DhuNUmNMX30QFbj29m2jqEE9gD2C7ba4jC+Fn0bWIM=
+X-Received: by 2002:ad4:450e:: with SMTP id k14mr3691202qvu.211.1598260129733;
+ Mon, 24 Aug 2020 02:08:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
+ <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
+ <CAK8P3a13N_wNORz_3cYHTN8t29pPrY+dJ+g+1Ga_MmG1TmrUQw@mail.gmail.com>
+ <CAFmMkTGm3pMsBzEenYOsRbhOZKFhbHiZ5LxPyVmTdYTTRpKzVQ@mail.gmail.com>
+ <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
+ <CAFmMkTHqQO1Gj7VeXr4Y_Umb1KzZc2Pf=1pDQvPPpb_XeAFPqQ@mail.gmail.com>
+ <20200819065721.GA1375436@lahna.fi.intel.com> <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
+ <20200819091123.GE1375436@lahna.fi.intel.com> <CAK8P3a19MLfQARXEWzCD-ySq4t9nsyryB+con33HsQ193+muMw@mail.gmail.com>
+ <20200824082227.GU1375436@lahna.fi.intel.com>
+In-Reply-To: <20200824082227.GU1375436@lahna.fi.intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 24 Aug 2020 11:08:33 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0==cZDHwZfqvCuvUg9jfjBOBG+AAomE9eqJ2xm-xNLvQ@mail.gmail.com>
+Message-ID: <CAK8P3a0==cZDHwZfqvCuvUg9jfjBOBG+AAomE9eqJ2xm-xNLvQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI flash
+ chip writable
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:a08d9XdYqwQJRaN+BHtXnXhAQiHpBrlRf5hS48bbIwqQeXMGIkd
+ jkqUFmYvcBIOYryduDgqbs4fsWfTlP+YRHfOpKkYcmjAtTrbVqeRnfxOjPrLSTJ9nSgmznb
+ KuP4/Er5BiimTn6D22E0agGi3O93jtzKAbenOor0qWQ/J0UOqFFP7HFl3nJOMR/uQw77K9L
+ 0BJNBvgkIxWDzId4niX2g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:71mz89eH4Iw=:m7/EElm538pE15lbdd2HF1
+ 89X46zuvzeXXAv+oc932+rq6EQRPbE/3DrJTvdhmy6EJ0/eUAgZ7jfBXhnh71JsJ8dtJEZKn+
+ nNxuc+fyfc0kL2B/3L4ZY2NGNt4r/mW3yus4lThnumiSlxNJPKhltwxhMcNEhFzVHQ/pDaN5L
+ nKN8oPPPhudH/b8OzvlQtDr/j2ZJPSATHj5hvoWout2xH/vRZw9yi0INSrJ5n4dxy5WTYuzc6
+ akGC97vWB/MxFhw7TJyKarSJ6q9VeJJynFoJCELd2tlILBkTdPXZwKF9faWrj49BZ9scCwn5h
+ ntP1nrVUW9oCI10KyMx14iz5JizFThVitOeWy7PvYIG8l60xPpkNQWveOfoYMe8ouKYX6G92h
+ iRV1BtNk0cgwqtAfVHWKSaIaIYCPDjWG1dlGd2ot6ar5vU/aY/tck0FxNuIWQv8EpgWIt6ouQ
+ 1cJ6/dAnLEeYWmX+cIQGeToL/MzPJLImYBIMFCYBj88sTPGJL1xe9QktP+cFXHIYzjNfyKKTE
+ kr1DQnOWos1oS1HomhBlvmqAZFWJC4cxsgTn+qHeHDWSnKINiwALjvyejGFRtkJCeC84QWcgG
+ VWOq9dShOcfKc9HmqZiZNUOTfiPWTHr0gs1UFR7M8Zvvv3iIF3G+XzLiFfNrPbhFj21eT2jjt
+ x/gccGUwWcE2yF7b669c6IFmSbwkBUf92YEH5pBUk0qglIILSvqxM8k5H7DfumGO61gQGuBbQ
+ T7m46Ps5KA6uW1lJfuEai22BQQcfvSvjzHaQVtSz2HXMVkXjrlaiSt06LJFPPAeSumJob23eo
+ YE7xhfFzJsjlsVM/YIH32IgyN0k7mVrxUtgEZavLoE1LQ6utKN4cu6Fhke4DtE+Un8z6zmm
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gene Chen <gene_chen@richtek.com>
+On Mon, Aug 24, 2020 at 10:22 AM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+> On Sat, Aug 22, 2020 at 06:06:03PM +0200, Arnd Bergmann wrote:
+> > On Wed, Aug 19, 2020 at 11:11 AM Mika Westerberg
+> >
+> > The mtd core just checks both the permissions on the device node (which
+> > default to 0600 without any special udev rules) and the MTD_WRITEABLE
+> > on the underlying device that is controlled by the module parameter
+> > in case of intel-spi{,-platform,-pci}.c.
+>
+> OK, thanks.
+>
+> Since we cannot really get rid of the module parameter (AFAIK there are
+> users for it), I still think we should just make the "writeable" to
+> apply to the PCI part as well. That should at least make it consistent,
+> and it also solves Daniel's case.
 
-Add ABI documentation for mt6360 ADC sysfs interfaces.
+Can you explain Daniel's case then? I still don't understand what he
+actually wants.
 
-Signed-off-by: Gene Chen <gene_chen@richtek.com>
----
- Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 83 ++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+As I keep repeating, the module parameter *does* apply to the pci
+driver front-end since it determines whether the driver will disallow
+writes to the mtd device without it. The only difference is that the pci
+driver will attempt to set the hardware bit without checking the
+module parameter first, while the platform driver does not. If the
+module parameter is not set however, the state of the hardware
+bit is never checked again.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-new file mode 100644
-index 0000000..9dab17e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-@@ -0,0 +1,83 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/usbid_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 USBID ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/vbusdiv5_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 VBUS ADC with high accuracy
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/vbusdiv2_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 VBUS ADC with low accuracy
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/vsys_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 VSYS ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/vbat_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 VBAT ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/ibus_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 IBUS ADC
-+		Reading returns current in uA
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/ibat_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 IBAT ADC
-+		Reading returns current in uA
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/chg_vddp_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 CHG_VDDP ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/temp_jc_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 IC junction temperature
-+		Reading returns current temperature in degree
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/vref_ts_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 VREF_TS ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/ts_input
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 TS ADC
-+		Reading returns current voltage in uV
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/timestamp
-+KernelVersion:	5.8.0
-+Contact:	gene_chen@richtek.com
-+Description:
-+		Indicated MT6360 timestamp
-+		Reading returns current timestamp in ms
--- 
-2.7.4
-
+    Arnd
