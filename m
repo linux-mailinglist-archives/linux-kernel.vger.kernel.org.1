@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A6F250AB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DFD250ABC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgHXVVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 17:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S1727923AbgHXVVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 17:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgHXVVT (ORCPT
+        with ESMTP id S1726845AbgHXVVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:21:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A4AC061574;
-        Mon, 24 Aug 2020 14:21:18 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a15so10546069wrh.10;
-        Mon, 24 Aug 2020 14:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aEVH3KeEKImpzoTD8sOJ0HUqoecJmgA9xUt/L5UEv9Q=;
-        b=TJ7V62ZVq7GSWFy91CFPG7K6Qardtn7N0bIo9gS78kvC3AFAdgFN9k3zz09WVjfBwA
-         m6r+rwMdRJbnx2Cc5Jjw33IhpnhcVOLbb019l2IvUiI52dP4MZwbxnTsGf9O6jSZCH95
-         ao8eR1r9eXOf/uEsI+FjiOFGApD0DOBtSrvyviLhRYqdoxZT+CO7wark/zlqaqMOqoVG
-         3M7QA1cai3VKb36artZbp+GXnOHZJX0mObM0keyAcNcRsFMFpy7Xu901zQSPPgs2Y2qr
-         NMMhiSAunMG9ND1lhDX+XqV43wr71tvqcpNXZ/JQEzHUfa4Ix11Bc4006iuOTagl2/rj
-         Epng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aEVH3KeEKImpzoTD8sOJ0HUqoecJmgA9xUt/L5UEv9Q=;
-        b=gSOsKqRyOXa2mE8ZgYUaavv5e0iCeav5vUqq8X3lC3rBjbwt6M/PK8v29sDv2Fmpjo
-         OqQ2/PSu/JYfNT+tH4xncQsBRqhXjvi3ebyktK2TVgZXWIlKDptcxsyGiW6OiYG4A0PP
-         hI+eALcR/wkavpBOlEk94DuWZg+N6aNaCFHBCw3l+0xbAQTO4skl7KoWcA4yY5aUAPs2
-         E/zucZmeXuEAo4wSiRn6IhxYh3wi7uwNu78RGihXsp7tGry85MUCChE8rholdPMXlnqO
-         GhE9joIyz7A0GJHgMXTH52kUrOc9wWHOCmrO4rzTWuQP8+emV0Z9diBeIH75qUhEO5tS
-         Lv6Q==
-X-Gm-Message-State: AOAM533yHjSMHqWDL7P35RkYM9Lr4RG5JbamudTcCsDkGpFUk6e54/sH
-        eBRF4CKSrXkLtnh1da5w6KCkJpir0odQ3ZU3
-X-Google-Smtp-Source: ABdhPJwucY1j3myAwja5npvITAje1Z6NxRhzDiiW8NUuHhAtd5JRGj7sqdyXBpWsann3oSjfzMGafw==
-X-Received: by 2002:adf:e986:: with SMTP id h6mr7600816wrm.106.1598304077509;
-        Mon, 24 Aug 2020 14:21:17 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id k204sm1726281wma.21.2020.08.24.14.21.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 14:21:16 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH] ima: use kmemdup() rather than kmalloc+memcpy
-Date:   Mon, 24 Aug 2020 22:21:02 +0100
-Message-Id: <20200824212102.602559-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 24 Aug 2020 17:21:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AEFC061574;
+        Mon, 24 Aug 2020 14:21:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598304080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6NJ+kPKGl5Nf3jE9xklx6hH03TKpnofr8g96HAw8Ck=;
+        b=Pv4WTzw87H6NCx71gJqPiRampyZmRAAfWJrVk0KJysnfqzFan/ccSk8LSOb7qVVuPkbB8z
+        tGoDrp+2ju8a/cTr5MMPgifcmaB8n9M75wctO+lZ606ZWdfd053SzbNlGzcK9jw30ur2mH
+        TDbLQHXk1Dh9ueKmK3Go6nRfjv8zoHatFiZuH0z15JhWa7zd1dbxSJs0yBdpWRdSBTq9V2
+        X9XEPWc+RvXUBns4bi7L9OdG3sThW5qDimMJb9E+VvYLGZjxixChT1oUzdf/dlLTqSoUaU
+        EspLZ6f4CF2x6Rx5EjvdF4GfJ2iyzgouZQbm5KkIt6/C6cpdCkAuu4GovEYy3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598304080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6NJ+kPKGl5Nf3jE9xklx6hH03TKpnofr8g96HAw8Ck=;
+        b=cN6eYBnyeUaRAodJ5n9Kq1Of1A3DDOOMFul6xvKSp6P4/ZL9J+JfpPUvxxWGcEA5BgckeU
+        I2Edk8IuxDhtxSCg==
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [patch RFC 24/38] x86/xen: Consolidate XEN-MSI init
+In-Reply-To: <5caec213-8f56-9f12-34db-a29de8326f95@suse.com>
+References: <20200821002424.119492231@linutronix.de> <20200821002947.667887608@linutronix.de> <5caec213-8f56-9f12-34db-a29de8326f95@suse.com>
+Date:   Mon, 24 Aug 2020 23:21:19 +0200
+Message-ID: <87tuwr68q8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Issue identified with Coccinelle.
+On Mon, Aug 24 2020 at 06:59, J=C3=BCrgen Gro=C3=9F wrote:
+> On 21.08.20 02:24, Thomas Gleixner wrote:
+>> +static __init void xen_setup_pci_msi(void)
+>> +{
+>> +	if (xen_initial_domain()) {
+>> +		x86_msi.setup_msi_irqs =3D xen_initdom_setup_msi_irqs;
+>> +		x86_msi.teardown_msi_irqs =3D xen_teardown_msi_irqs;
+>> +		x86_msi.restore_msi_irqs =3D xen_initdom_restore_msi_irqs;
+>> +		pci_msi_ignore_mask =3D 1;
+>
+> This is wrong, as a PVH initial domain shouldn't do the pv settings.
+>
+> The "if (xen_initial_domain())" should be inside the pv case, like:
+>
+> if (xen_pv_domain()) {
+> 	if (xen_initial_domain()) {
+> 		...
+> 	} else {
+> 		...
+> 	}
+> } else if (xen_hvm_domain()) {
+> 	...
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- security/integrity/ima/ima_policy.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I still think it does the right thing depending on the place it is
+called from, but even if so, it's completely unreadable gunk. I'll fix
+that proper.
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index b4de33074b37..ea917a787d9d 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -284,7 +284,7 @@ static struct ima_rule_entry *ima_lsm_copy_rule(struct ima_rule_entry *entry)
- 	struct ima_rule_entry *nentry;
- 	int i;
- 
--	nentry = kmalloc(sizeof(*nentry), GFP_KERNEL);
-+	nentry = kmemdup(entry, sizeof(*nentry), GFP_KERNEL);
- 	if (!nentry)
- 		return NULL;
- 
-@@ -292,7 +292,6 @@ static struct ima_rule_entry *ima_lsm_copy_rule(struct ima_rule_entry *entry)
- 	 * Immutable elements are copied over as pointers and data; only
- 	 * lsm rules can change
- 	 */
--	memcpy(nentry, entry, sizeof(*nentry));
- 	memset(nentry->lsm, 0, sizeof_field(struct ima_rule_entry, lsm));
- 
- 	for (i = 0; i < MAX_LSM_RULES; i++) {
--- 
-2.28.0
+Thanks,
 
+        tglx
