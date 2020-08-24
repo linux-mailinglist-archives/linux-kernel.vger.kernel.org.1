@@ -2,80 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0542D250627
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C798E25051E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgHXQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:35:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50716 "EHLO mx2.suse.de"
+        id S1728381AbgHXQhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728123AbgHXQdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:33:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BB1F9AF8A;
-        Mon, 24 Aug 2020 16:33:59 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/12] MIPS: Get rid of CAVIUM_OCTEON_DCACHE_PREFETCH_WAR
-Date:   Mon, 24 Aug 2020 18:32:53 +0200
-Message-Id: <20200824163257.44533-12-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
-References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+        id S1728114AbgHXQfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:17 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70D08207CD;
+        Mon, 24 Aug 2020 16:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598286911;
+        bh=dzdvycN+vMiUHofR3jvJMXhONIaGcrfVUdqphJBV+ck=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SdkG+sUDQCwz9jH9NB45+btThmJHi+0ec+QixnGB9HtQQsAB7winb8X0iShy62z/j
+         qqeHzqgv2CdaeVURzOG3m1idjLkpIVB2OtB7wyP5qau81qw5gXbSIXvTWKMscGVvX3
+         s7XwgKf/c4qyR+BtLdGp5cNaJ5bCO9pfqGxv2b00=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
+        Andreas Dilger <adilger@whamcloud.com>,
+        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 05/63] ext4: skip non-loaded groups at cr=0/1 when scanning for good groups
+Date:   Mon, 24 Aug 2020 12:34:05 -0400
+Message-Id: <20200824163504.605538-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CAVIUM_OCTEON_DCACHE_PREFETCH_WAR is a check for Octeon model CN6XXXX.
-By using the version check we can remove the define.
+From: Alex Zhuravlev <azhuravlev@whamcloud.com>
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+[ Upstream commit c1d2c7d47e15482bb23cda83a5021e60f624a09c ]
+
+cr=0 is supposed to be an optimization to save CPU cycles, but if
+buddy data (in memory) is not initialized then all this makes no sense
+as we have to do sync IO taking a lot of cycles.  Also, at cr=0
+mballoc doesn't choose any available chunk.  cr=1 also skips groups
+using heuristic based on avg. fragment size.  It's more useful to skip
+such groups and switch to cr=2 where groups will be scanned for
+available chunks.  However, we always read the first block group in a
+flex_bg so metadata blocks will get read into the first flex_bg if
+possible.
+
+Using sparse image and dm-slow virtual device of 120TB was
+simulated, then the image was formatted and filled using debugfs to
+mark ~85% of available space as busy.  mount process w/o the patch
+couldn't complete in half an hour (according to vmstat it would take
+~10-11 hours).  With the patch applied mount took ~20 seconds.
+
+Lustre-bug-id: https://jira.whamcloud.com/browse/LU-12988
+Signed-off-by: Alex Zhuravlev <azhuravlev@whamcloud.com>
+Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/cavium-octeon/setup.c                | 2 +-
- arch/mips/include/asm/mach-cavium-octeon/war.h | 3 ---
- arch/mips/mm/uasm.c                            | 2 +-
- 3 files changed, 2 insertions(+), 5 deletions(-)
+ fs/ext4/mballoc.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-index 4f34d92b52f9..8a357cb068c2 100644
---- a/arch/mips/cavium-octeon/setup.c
-+++ b/arch/mips/cavium-octeon/setup.c
-@@ -1126,7 +1126,7 @@ EXPORT_SYMBOL(prom_putchar);
- 
- void __init prom_free_prom_memory(void)
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e2feb02..9ed108b5bd7fd 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2177,6 +2177,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
  {
--	if (CAVIUM_OCTEON_DCACHE_PREFETCH_WAR) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		/* Check for presence of Core-14449 fix.  */
- 		u32 insn;
- 		u32 *foo;
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/war.h b/arch/mips/include/asm/mach-cavium-octeon/war.h
-index 616de70e697c..ba6df0a186e9 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/war.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/war.h
-@@ -9,7 +9,4 @@
- #ifndef __ASM_MIPS_MACH_CAVIUM_OCTEON_WAR_H
- #define __ASM_MIPS_MACH_CAVIUM_OCTEON_WAR_H
+ 	struct ext4_group_info *grp = ext4_get_group_info(ac->ac_sb, group);
+ 	struct super_block *sb = ac->ac_sb;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	bool should_lock = ac->ac_flags & EXT4_MB_STRICT_CHECK;
+ 	ext4_grpblk_t free;
+ 	int ret = 0;
+@@ -2195,7 +2196,25 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
  
--#define CAVIUM_OCTEON_DCACHE_PREFETCH_WAR	\
--	OCTEON_IS_MODEL(OCTEON_CN6XXX)
--
- #endif /* __ASM_MIPS_MACH_CAVIUM_OCTEON_WAR_H */
-diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-index c56f129c9a4b..81dd226d6b6b 100644
---- a/arch/mips/mm/uasm.c
-+++ b/arch/mips/mm/uasm.c
-@@ -394,7 +394,7 @@ I_u2u1u3(_lddir)
- void uasm_i_pref(u32 **buf, unsigned int a, signed int b,
- 			    unsigned int c)
- {
--	if (CAVIUM_OCTEON_DCACHE_PREFETCH_WAR && a <= 24 && a != 5)
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX) && a <= 24 && a != 5)
- 		/*
- 		 * As per erratum Core-14449, replace prefetches 0-4,
- 		 * 6-24 with 'pref 28'.
+ 	/* We only do this if the grp has never been initialized */
+ 	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
+-		ret = ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
++		struct ext4_group_desc *gdp =
++			ext4_get_group_desc(sb, group, NULL);
++		int ret;
++
++		/* cr=0/1 is a very optimistic search to find large
++		 * good chunks almost for free.  If buddy data is not
++		 * ready, then this optimization makes no sense.  But
++		 * we never skip the first block group in a flex_bg,
++		 * since this gets used for metadata block allocation,
++		 * and we want to make sure we locate metadata blocks
++		 * in the first block group in the flex_bg if possible.
++		 */
++		if (cr < 2 &&
++		    (!sbi->s_log_groups_per_flex ||
++		     ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &&
++		    !(ext4_has_group_desc_csum(sb) &&
++		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
++			return 0;
++		ret = ext4_mb_init_group(sb, group, GFP_NOFS);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
-2.16.4
+2.25.1
 
