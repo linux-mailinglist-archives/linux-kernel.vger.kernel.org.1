@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB8224F61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2132E24F572
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbgHXI4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:56:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38130 "EHLO mail.kernel.org"
+        id S1729274AbgHXItE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:49:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729753AbgHXIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:42 -0400
+        id S1729589AbgHXIsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFB4A2072D;
-        Mon, 24 Aug 2020 08:55:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CEB721741;
+        Mon, 24 Aug 2020 08:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259342;
-        bh=2sFzfDN1X4rft1xo87I6/mJAix3xrEMTqSG8tIKT3is=;
+        s=default; t=1598258922;
+        bh=jRgIWyY0b4yL1+iU+rEN7X0YTkrV7SA7WEWwegKb4Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTs/sfWQD16nTQS5cIoMWbHW3yhJgsiPWIVC+HtlFfNyjLXMhRTfivVF+xS+b5JYh
-         tx+CeuIiLI4ObHRPsZ5mYiuHdWgcOuOItYtTD6Uos5CKf8XMdZXx1mOgD81pAKRJxh
-         0rI+iz8i6QUOdOvBZI6G7zgW213irj8V77CwbZkM=
+        b=C2CVBvgK8EgKPjWqphrXn5t1r25wMAM4aX4wG+87SkIZmwFRFP1zlWIk2Z2hbIcGH
+         r/29mpG0vAVTE3AD8wewpRjXkykWqV8gJAJqGpotsw7+U1aNThuZZnJhUm9MYH5XDa
+         HczkWczVH/pAE++bYJXZZnfGzOzYkwBqN/4Pwqns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/71] btrfs: Move free_pages_out label in inline extent handling branch in compress_file_range
-Date:   Mon, 24 Aug 2020 10:30:58 +0200
-Message-Id: <20200824082356.249587938@linuxfoundation.org>
+Subject: [PATCH 5.4 093/107] Fix build error when CONFIG_ACPI is not set/enabled:
+Date:   Mon, 24 Aug 2020 10:30:59 +0200
+Message-Id: <20200824082409.704889057@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +48,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Borisov <nborisov@suse.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit cecc8d9038d164eda61fbcd72520975a554ea63e ]
+[ Upstream commit ee87e1557c42dc9c2da11c38e11b87c311569853 ]
 
-This label is only executed if compress_file_range fails to create an
-inline extent. So move its code in the semantically related inline
-extent handling branch. No functional changes.
+../arch/x86/pci/xen.c: In function ‘pci_xen_init’:
+../arch/x86/pci/xen.c:410:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
+  acpi_noirq_set();
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 88e9ca161c13 ("xen/pci: Use acpi_noirq_set() helper to avoid #ifdef")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: xen-devel@lists.xenproject.org
+Cc: linux-pci@vger.kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/x86/pci/xen.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 1656ef0e959f0..8507192cd6449 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -628,7 +628,14 @@ cont:
- 						     PAGE_SET_WRITEBACK |
- 						     page_error_op |
- 						     PAGE_END_WRITEBACK);
--			goto free_pages_out;
-+
-+			for (i = 0; i < nr_pages; i++) {
-+				WARN_ON(pages[i]->mapping);
-+				put_page(pages[i]);
-+			}
-+			kfree(pages);
-+
-+			return;
- 		}
- 	}
+diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+index 91220cc258547..5c11ae66b5d8e 100644
+--- a/arch/x86/pci/xen.c
++++ b/arch/x86/pci/xen.c
+@@ -26,6 +26,7 @@
+ #include <asm/xen/pci.h>
+ #include <asm/xen/cpuid.h>
+ #include <asm/apic.h>
++#include <asm/acpi.h>
+ #include <asm/i8259.h>
  
-@@ -706,13 +713,6 @@ cleanup_and_bail_uncompressed:
- 	*num_added += 1;
- 
- 	return;
--
--free_pages_out:
--	for (i = 0; i < nr_pages; i++) {
--		WARN_ON(pages[i]->mapping);
--		put_page(pages[i]);
--	}
--	kfree(pages);
- }
- 
- static void free_async_extent_pages(struct async_extent *async_extent)
+ static int xen_pcifront_enable_irq(struct pci_dev *dev)
 -- 
 2.25.1
 
