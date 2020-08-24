@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F286A24F8D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633C724F93E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgHXJiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47304 "EHLO mail.kernel.org"
+        id S1728562AbgHXJnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729467AbgHXIr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:29 -0400
+        id S1728719AbgHXIoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42177204FD;
-        Mon, 24 Aug 2020 08:47:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FF272074D;
+        Mon, 24 Aug 2020 08:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258848;
-        bh=6w/oszwsnHTIdJ9mfROu3YvYwqGKZVMyT9uEp+7dW+k=;
+        s=default; t=1598258664;
+        bh=xhoqt3a3IIwjHjCqzbMOMlxPAxRbKdagGZxvB0lpQWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JC/cdr7pS5nj/0XezxbTMq5JFH3Kk8kPDFh2HYYv8jJ4S/KYqMdq5lAk9ich/xDQh
-         HY/mlKAIYjjFTjhCI9kpeTt4HO3+UXXV/xaPry5jvpTpQMoAvArFa8kTOIauOKlaye
-         VW+2RHEd1XdRCtE1ojF63trVXQIyRkeiDHHpPS9Q=
+        b=h2QtJYetFwaJTKFEDuuPGdYscxs2qedRdT9AhneBsfIJuyBhTtkn5qIztQVbHilM9
+         +oupTxbqHTujv+371TmpWs0KLqUneeKO1rmYW3cgg3jN7Tpp38B/OM7fHfI7JgD98Y
+         fJtOn33xeoRTey/q9Z6Sak5wr35JHqiSUQ0ESamo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 066/107] spi: stm32: fixes suspend/resume management
-Date:   Mon, 24 Aug 2020 10:30:32 +0200
-Message-Id: <20200824082408.390520053@linuxfoundation.org>
+Subject: [PATCH 5.7 100/124] Revert "scsi: qla2xxx: Disable T10-DIF feature with FC-NVMe during probe"
+Date:   Mon, 24 Aug 2020 10:30:34 +0200
+Message-Id: <20200824082414.339401077@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,91 +47,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit db96bf976a4fc65439be0b4524c0d41427d98814 ]
+[ Upstream commit dca93232b361d260413933903cd4bdbd92ebcc7f ]
 
-This patch adds pinctrl power management, and reconfigure spi controller
-in case of resume.
+FCP T10-PI and NVMe features are independent of each other. This patch
+allows both features to co-exist.
 
-Fixes: 038ac869c9d2 ("spi: stm32: add runtime PM support")
+This reverts commit 5da05a26b8305a625bc9d537671b981795b46dab.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-5-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200806111014.28434-12-njavali@marvell.com
+Fixes: 5da05a26b830 ("scsi: qla2xxx: Disable T10-DIF feature with FC-NVMe during probe")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ drivers/scsi/qla2xxx/qla_os.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index b222ce8d083ef..7e92ab0cc9920 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -14,6 +14,7 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of_platform.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- #include <linux/spi/spi.h>
-@@ -1986,6 +1987,8 @@ static int stm32_spi_remove(struct platform_device *pdev)
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 1120d133204c2..20e3048276a01 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -2829,10 +2829,6 @@ qla2x00_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	/* This may fail but that's ok */
+ 	pci_enable_pcie_error_reporting(pdev);
  
- 	pm_runtime_disable(&pdev->dev);
- 
-+	pinctrl_pm_select_sleep_state(&pdev->dev);
-+
- 	return 0;
- }
- 
-@@ -1997,13 +2000,18 @@ static int stm32_spi_runtime_suspend(struct device *dev)
- 
- 	clk_disable_unprepare(spi->clk);
- 
--	return 0;
-+	return pinctrl_pm_select_sleep_state(dev);
- }
- 
- static int stm32_spi_runtime_resume(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct stm32_spi *spi = spi_master_get_devdata(master);
-+	int ret;
-+
-+	ret = pinctrl_pm_select_default_state(dev);
-+	if (ret)
-+		return ret;
- 
- 	return clk_prepare_enable(spi->clk);
- }
-@@ -2033,10 +2041,23 @@ static int stm32_spi_resume(struct device *dev)
- 		return ret;
- 
- 	ret = spi_master_resume(master);
--	if (ret)
-+	if (ret) {
- 		clk_disable_unprepare(spi->clk);
-+		return ret;
-+	}
- 
--	return ret;
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret) {
-+		dev_err(dev, "Unable to power device:%d\n", ret);
-+		return ret;
-+	}
-+
-+	spi->cfg->config(spi);
-+
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
-+	return 0;
- }
- #endif
- 
+-	/* Turn off T10-DIF when FC-NVMe is enabled */
+-	if (ql2xnvmeenable)
+-		ql2xenabledif = 0;
+-
+ 	ha = kzalloc(sizeof(struct qla_hw_data), GFP_KERNEL);
+ 	if (!ha) {
+ 		ql_log_pci(ql_log_fatal, pdev, 0x0009,
 -- 
 2.25.1
 
