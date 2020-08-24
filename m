@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EC224F7C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1D124F83A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgHXJVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S1729966AbgHXIvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730196AbgHXIzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:46 -0400
+        id S1727907AbgHXIvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA6D72074D;
-        Mon, 24 Aug 2020 08:55:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 255B72072D;
+        Mon, 24 Aug 2020 08:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259345;
-        bh=yzddTpnn2h210LpLCaM7zxT/uiMjrpvCKxK9gRPQYAE=;
+        s=default; t=1598259080;
+        bh=2Vp2/EnhxOLcTnR113vhbXSIrBboasw4V+gmAafYOc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uHysMcqa+VIXYWCdOYvNY+za9/rKpFZFx0yGnv1/+6LbROIGsleVvFCkLGzU2+lZo
-         lDLvJJXdJaaGWDSyRp8bZPOkvv06M6oePgz8A3zWDVMSMQKXgRPXNtEWcEeieuA+qc
-         o07Aq//5tf5hCwAmc38Am2h+zIwIJEGXhhBp/YNs=
+        b=ATrQsv9QX675+fnzvXjEPlEBxRGePY429EUViIPSMmJ5HInABzy3Sz4wGYtIv9Bgm
+         OzQhP8XNPETdlbeGDsqjO/F+MtOAQwICkrCFE2jJbTJ9T7OQG5qwb0nm7Cim//dya0
+         ZJZCV/vcWlkNVfg7h0t1pP842srWccaWQnMJuIFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luciano Chavez <chavez@us.ibm.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/71] btrfs: inode: fix NULL pointer dereference if inode doesnt need compression
-Date:   Mon, 24 Aug 2020 10:30:59 +0200
-Message-Id: <20200824082356.292830154@linuxfoundation.org>
+        stable@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 4.9 01/39] x86/asm: Remove unnecessary \n\t in front of CC_SET() from asm templates
+Date:   Mon, 24 Aug 2020 10:31:00 +0200
+Message-Id: <20200824082348.545064159@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,108 +48,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Uros Bizjak <ubizjak@gmail.com>
 
-[ Upstream commit 1e6e238c3002ea3611465ce5f32777ddd6a40126 ]
+commit 3c52b5c64326d9dcfee4e10611c53ec1b1b20675 upstream.
 
-[BUG]
-There is a bug report of NULL pointer dereference caused in
-compress_file_extent():
+There is no need for \n\t in front of CC_SET(), as the macro already includes these two.
 
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  Workqueue: btrfs-delalloc btrfs_delalloc_helper [btrfs]
-  NIP [c008000006dd4d34] compress_file_range.constprop.41+0x75c/0x8a0 [btrfs]
-  LR [c008000006dd4d1c] compress_file_range.constprop.41+0x744/0x8a0 [btrfs]
-  Call Trace:
-  [c000000c69093b00] [c008000006dd4d1c] compress_file_range.constprop.41+0x744/0x8a0 [btrfs] (unreliable)
-  [c000000c69093bd0] [c008000006dd4ebc] async_cow_start+0x44/0xa0 [btrfs]
-  [c000000c69093c10] [c008000006e14824] normal_work_helper+0xdc/0x598 [btrfs]
-  [c000000c69093c80] [c0000000001608c0] process_one_work+0x2c0/0x5b0
-  [c000000c69093d10] [c000000000160c38] worker_thread+0x88/0x660
-  [c000000c69093db0] [c00000000016b55c] kthread+0x1ac/0x1c0
-  [c000000c69093e20] [c00000000000b660] ret_from_kernel_thread+0x5c/0x7c
-  ---[ end trace f16954aa20d822f6 ]---
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: http://lkml.kernel.org/r/20170906151808.5634-1-ubizjak@gmail.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[CAUSE]
-For the following execution route of compress_file_range(), it's
-possible to hit NULL pointer dereference:
-
- compress_file_extent()
- |- pages = NULL;
- |- start = async_chunk->start = 0;
- |- end = async_chunk = 4095;
- |- nr_pages = 1;
- |- inode_need_compress() == false; <<< Possible, see later explanation
- |  Now, we have nr_pages = 1, pages = NULL
- |- cont:
- |- 		ret = cow_file_range_inline();
- |- 		if (ret <= 0) {
- |-		for (i = 0; i < nr_pages; i++) {
- |-			WARN_ON(pages[i]->mapping);	<<< Crash
-
-To enter above call execution branch, we need the following race:
-
-    Thread 1 (chattr)     |            Thread 2 (writeback)
---------------------------+------------------------------
-                          | btrfs_run_delalloc_range
-                          | |- inode_need_compress = true
-                          | |- cow_file_range_async()
-btrfs_ioctl_set_flag()    |
-|- binode_flags |=        |
-   BTRFS_INODE_NOCOMPRESS |
-                          | compress_file_range()
-                          | |- inode_need_compress = false
-                          | |- nr_page = 1 while pages = NULL
-                          | |  Then hit the crash
-
-[FIX]
-This patch will fix it by checking @pages before doing accessing it.
-This patch is only designed as a hot fix and easy to backport.
-
-More elegant fix may make btrfs only check inode_need_compress() once to
-avoid such race, but that would be another story.
-
-Reported-by: Luciano Chavez <chavez@us.ibm.com>
-Fixes: 4d3a800ebb12 ("btrfs: merge nr_pages input and output parameter in compress_pages")
-CC: stable@vger.kernel.org # 4.14.x: cecc8d9038d16: btrfs: Move free_pages_out label in inline extent handling branch in compress_file_range
-CC: stable@vger.kernel.org # 4.14+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/archrandom.h |    8 ++++----
+ arch/x86/include/asm/bitops.h     |    8 ++++----
+ arch/x86/include/asm/percpu.h     |    2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8507192cd6449..bdfe159a60da6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -629,11 +629,18 @@ cont:
- 						     page_error_op |
- 						     PAGE_END_WRITEBACK);
+--- a/arch/x86/include/asm/archrandom.h
++++ b/arch/x86/include/asm/archrandom.h
+@@ -45,7 +45,7 @@ static inline bool rdrand_long(unsigned
+ 	bool ok;
+ 	unsigned int retry = RDRAND_RETRY_LOOPS;
+ 	do {
+-		asm volatile(RDRAND_LONG "\n\t"
++		asm volatile(RDRAND_LONG
+ 			     CC_SET(c)
+ 			     : CC_OUT(c) (ok), "=a" (*v));
+ 		if (ok)
+@@ -59,7 +59,7 @@ static inline bool rdrand_int(unsigned i
+ 	bool ok;
+ 	unsigned int retry = RDRAND_RETRY_LOOPS;
+ 	do {
+-		asm volatile(RDRAND_INT "\n\t"
++		asm volatile(RDRAND_INT
+ 			     CC_SET(c)
+ 			     : CC_OUT(c) (ok), "=a" (*v));
+ 		if (ok)
+@@ -71,7 +71,7 @@ static inline bool rdrand_int(unsigned i
+ static inline bool rdseed_long(unsigned long *v)
+ {
+ 	bool ok;
+-	asm volatile(RDSEED_LONG "\n\t"
++	asm volatile(RDSEED_LONG
+ 		     CC_SET(c)
+ 		     : CC_OUT(c) (ok), "=a" (*v));
+ 	return ok;
+@@ -80,7 +80,7 @@ static inline bool rdseed_long(unsigned
+ static inline bool rdseed_int(unsigned int *v)
+ {
+ 	bool ok;
+-	asm volatile(RDSEED_INT "\n\t"
++	asm volatile(RDSEED_INT
+ 		     CC_SET(c)
+ 		     : CC_OUT(c) (ok), "=a" (*v));
+ 	return ok;
+--- a/arch/x86/include/asm/bitops.h
++++ b/arch/x86/include/asm/bitops.h
+@@ -232,7 +232,7 @@ static __always_inline bool __test_and_s
+ {
+ 	bool oldbit;
  
--			for (i = 0; i < nr_pages; i++) {
--				WARN_ON(pages[i]->mapping);
--				put_page(pages[i]);
-+			/*
-+			 * Ensure we only free the compressed pages if we have
-+			 * them allocated, as we can still reach here with
-+			 * inode_need_compress() == false.
-+			 */
-+			if (pages) {
-+				for (i = 0; i < nr_pages; i++) {
-+					WARN_ON(pages[i]->mapping);
-+					put_page(pages[i]);
-+				}
-+				kfree(pages);
- 			}
--			kfree(pages);
+-	asm("bts %2,%1\n\t"
++	asm("bts %2,%1"
+ 	    CC_SET(c)
+ 	    : CC_OUT(c) (oldbit), ADDR
+ 	    : "Ir" (nr));
+@@ -272,7 +272,7 @@ static __always_inline bool __test_and_c
+ {
+ 	bool oldbit;
  
- 			return;
- 		}
--- 
-2.25.1
-
+-	asm volatile("btr %2,%1\n\t"
++	asm volatile("btr %2,%1"
+ 		     CC_SET(c)
+ 		     : CC_OUT(c) (oldbit), ADDR
+ 		     : "Ir" (nr));
+@@ -284,7 +284,7 @@ static __always_inline bool __test_and_c
+ {
+ 	bool oldbit;
+ 
+-	asm volatile("btc %2,%1\n\t"
++	asm volatile("btc %2,%1"
+ 		     CC_SET(c)
+ 		     : CC_OUT(c) (oldbit), ADDR
+ 		     : "Ir" (nr) : "memory");
+@@ -315,7 +315,7 @@ static __always_inline bool variable_tes
+ {
+ 	bool oldbit;
+ 
+-	asm volatile("bt %2,%1\n\t"
++	asm volatile("bt %2,%1"
+ 		     CC_SET(c)
+ 		     : CC_OUT(c) (oldbit)
+ 		     : "m" (*(unsigned long *)addr), "Ir" (nr));
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -536,7 +536,7 @@ static inline bool x86_this_cpu_variable
+ {
+ 	bool oldbit;
+ 
+-	asm volatile("bt "__percpu_arg(2)",%1\n\t"
++	asm volatile("bt "__percpu_arg(2)",%1"
+ 			CC_SET(c)
+ 			: CC_OUT(c) (oldbit)
+ 			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
 
 
