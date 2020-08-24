@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94A124F59D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3B324F5BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgHXIvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:51:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S1730093AbgHXIwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:52:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728968AbgHXIvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:51:18 -0400
+        id S1730078AbgHXIwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:52:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B799204FD;
-        Mon, 24 Aug 2020 08:51:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 733582072D;
+        Mon, 24 Aug 2020 08:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259078;
-        bh=29g9Wr5ormSMSU1CxWGIebP4jV1FGScQfXafSepgtas=;
+        s=default; t=1598259137;
+        bh=IF5nfiHipkq+Pu0fcMTYDw8w2uTN6DtQ/0OPb5Wh6Sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GjNSpcvNaID04avLTrAt8isfwDZjrTcTBewR1GEGdr+Yf/i2uTF308CB8I0qWw+Ic
-         uDDbUpMaJbrjXVtG9U2IbCrphVI+ZwRJUlHtm9TdsvW37jUquJ2k1X2jFidJWNetMu
-         M2+cCh0+ndOn8MvaUDwYGH7bAfMTtgyLWLhgQptY=
+        b=viCVitd7x1BshNUotRfHfQYjEKbKGCTWkDuLoYNkHFKw4fNgDfki1kR6Z99Qpvbw1
+         HvhEdVKE6Wssuy13sMcbs4A545bW7l/UkRSG6cF5PLLh/8D3etk68xRvPgVnqgqnAR
+         H+XXkZL363XgMm4JZNTSpiPEn/ffjATCedJ7cjhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/39] perf probe: Fix memory leakage when the probe point is not found
-Date:   Mon, 24 Aug 2020 10:31:03 +0200
-Message-Id: <20200824082348.697579083@linuxfoundation.org>
+Subject: [PATCH 4.9 05/39] tracing: Clean up the hwlat binding code
+Date:   Mon, 24 Aug 2020 10:31:04 +0200
+Message-Id: <20200824082348.745810260@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
 References: <20200824082348.445866152@linuxfoundation.org>
@@ -47,50 +44,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit 12d572e785b15bc764e956caaa8a4c846fd15694 ]
+[ Upstream commit f447c196fe7a3a92c6396f7628020cb8d564be15 ]
 
-Fix the memory leakage in debuginfo__find_trace_events() when the probe
-point is not found in the debuginfo. If there is no probe point found in
-the debuginfo, debuginfo__find_probes() will NOT return -ENOENT, but 0.
+Instead of initializing the affinity of the hwlat kthread in the thread
+itself, simply set up the initial affinity at thread creation. This
+simplifies the code.
 
-Thus the caller of debuginfo__find_probes() must check the tf.ntevs and
-release the allocated memory for the array of struct probe_trace_event.
-
-The current code releases the memory only if the debuginfo__find_probes()
-hits an error but not checks tf.ntevs. In the result, the memory allocated
-on *tevs are not released if tf.ntevs == 0.
-
-This fixes the memory leakage by checking tf.ntevs == 0 in addition to
-ret < 0.
-
-Fixes: ff741783506c ("perf probe: Introduce debuginfo to encapsulate dwarf information")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/159438668346.62703.10887420400718492503.stgit@devnote2
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/probe-finder.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_hwlat.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 7d0d44b4f3d5c..863f668a07355 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -1351,7 +1351,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- 	tf.ntevs = 0;
+diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
+index 5fe23f0ee7db6..158af5ddbc3aa 100644
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -268,24 +268,13 @@ out:
+ static struct cpumask save_cpumask;
+ static bool disable_migrate;
  
- 	ret = debuginfo__find_probes(dbg, &tf.pf);
--	if (ret < 0) {
-+	if (ret < 0 || tf.ntevs == 0) {
- 		for (i = 0; i < tf.ntevs; i++)
- 			clear_probe_trace_event(&tf.tevs[i]);
- 		zfree(tevs);
+-static void move_to_next_cpu(bool initmask)
++static void move_to_next_cpu(void)
+ {
+-	static struct cpumask *current_mask;
++	struct cpumask *current_mask = &save_cpumask;
+ 	int next_cpu;
+ 
+ 	if (disable_migrate)
+ 		return;
+-
+-	/* Just pick the first CPU on first iteration */
+-	if (initmask) {
+-		current_mask = &save_cpumask;
+-		get_online_cpus();
+-		cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
+-		put_online_cpus();
+-		next_cpu = cpumask_first(current_mask);
+-		goto set_affinity;
+-	}
+-
+ 	/*
+ 	 * If for some reason the user modifies the CPU affinity
+ 	 * of this thread, than stop migrating for the duration
+@@ -302,7 +291,6 @@ static void move_to_next_cpu(bool initmask)
+ 	if (next_cpu >= nr_cpu_ids)
+ 		next_cpu = cpumask_first(current_mask);
+ 
+- set_affinity:
+ 	if (next_cpu >= nr_cpu_ids) /* Shouldn't happen! */
+ 		goto disable;
+ 
+@@ -332,12 +320,10 @@ static void move_to_next_cpu(bool initmask)
+ static int kthread_fn(void *data)
+ {
+ 	u64 interval;
+-	bool initmask = true;
+ 
+ 	while (!kthread_should_stop()) {
+ 
+-		move_to_next_cpu(initmask);
+-		initmask = false;
++		move_to_next_cpu();
+ 
+ 		local_irq_disable();
+ 		get_sample();
+@@ -368,13 +354,27 @@ static int kthread_fn(void *data)
+  */
+ static int start_kthread(struct trace_array *tr)
+ {
++	struct cpumask *current_mask = &save_cpumask;
+ 	struct task_struct *kthread;
++	int next_cpu;
++
++	/* Just pick the first CPU on first iteration */
++	current_mask = &save_cpumask;
++	get_online_cpus();
++	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	put_online_cpus();
++	next_cpu = cpumask_first(current_mask);
+ 
+ 	kthread = kthread_create(kthread_fn, NULL, "hwlatd");
+ 	if (IS_ERR(kthread)) {
+ 		pr_err(BANNER "could not start sampling thread\n");
+ 		return -ENOMEM;
+ 	}
++
++	cpumask_clear(current_mask);
++	cpumask_set_cpu(next_cpu, current_mask);
++	sched_setaffinity(kthread->pid, current_mask);
++
+ 	hwlat_kthread = kthread;
+ 	wake_up_process(kthread);
+ 
 -- 
 2.25.1
 
