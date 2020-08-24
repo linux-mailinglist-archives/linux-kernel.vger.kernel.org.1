@@ -2,187 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACBB250A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 22:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9096D250A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 22:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgHXUsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 16:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgHXUsS (ORCPT
+        id S1726856AbgHXUyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 16:54:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34878 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbgHXUyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 16:48:18 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393CBC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 13:48:18 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id s16so7358273qtn.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 13:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kM5joqg+RHXoHRl0S6oSlj/GuNS5zs03d29CFc1FbZE=;
-        b=lsOl2RGfq8vv0g91rMtdvi4E9LrqaC0ZlTeAEmldYwBIG1DIYwKsv69yAbhNNkFgQQ
-         dprlDkbL0Of8EkEqIZhtCc7vBI9VRumfjvoi502BDMZdIjFEENVgnGx0UAsvDWBzX1/S
-         zN/tCbt5aAFwPejsPzkMhwN/TlrrUjCu9vfFppCd+WXEO5tfct4/8zgDXD3RAja/tLIC
-         5AiY/xyiJAR7ILzZlXZErppXNi3CANgysW6TWcVS86OvhFETJ5n6ZHMrsUjMBGu8t1U2
-         fV1Zt3m0Weim7Flemhb4ZM6E4w9oH4v8Lkj3EV6u+WKgo3Tmha4Z0Iut2BSQSoHl0ZaW
-         +L4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kM5joqg+RHXoHRl0S6oSlj/GuNS5zs03d29CFc1FbZE=;
-        b=OlzMsDsO/aI2/aXdcGLWyAm5sZRvzxLWLHtIlR2Hfpprhk4Hb5duFbDRd3h4w3UmmL
-         DThswwJYxisvFyI6VYx7xU3E9CFahseyQYSY4HS9Hajn/2+6yNO8akD1HIOycTgUNj6L
-         +sW8SEtUj4OY64xHaOY/vHPVaCPy11okH1W8aPK+dZk7ukNsepBvkek7xI/+VfuCVBus
-         +Ow6v1b5rUFFMJbRQoxUErzKwBXH9sCLOps1jK91hGRyn9zVPNgJFArlvqfqTRhi8/1V
-         m0Xf6XF58P68V54gTbha7clnrLCsUfgGl132dfncgr+E1QqazEGJybQqphVYxTEN4fJE
-         d60w==
-X-Gm-Message-State: AOAM5330qLLFJtUJLuHi/3dwQG7nTENEyn2Vx4WBQRpuKqgK6IGNwVJs
-        BdGsC0by8FF5rs7wOjWF8lQut1vppELJG89GrWENuA==
-X-Google-Smtp-Source: ABdhPJwcsOixxkTv5vVNuzhXuPxECYRzO2S6EH/ImCIblX+d1aHrhrEXN56+g0qRu8t4UjSaMjPITlDuPV4fCldNK6s=
-X-Received: by 2002:aed:20cb:: with SMTP id 69mr6721963qtb.106.1598302097162;
- Mon, 24 Aug 2020 13:48:17 -0700 (PDT)
+        Mon, 24 Aug 2020 16:54:33 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OKrujQ001381;
+        Mon, 24 Aug 2020 20:53:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=c4tTQwgRXwM5ARju4FlIwJfaQb8i4m5GCIC+yda2N5w=;
+ b=CK8l+vZoCA8jA222sHhZ0Au75OjAwOrDRoTPiGtlYq/KBKWS6rCy7HP9ylj0dXkUph6w
+ GA7NkbnaH77pq9iQ+h9p94W6Z3oeL1Gw5x7533nzrLWLLhrBxVkIv4BhxwijYOh70pv2
+ VqQ0GsqK+p4e9/qBYS6ah9jNRC1EkQjLUrCen0gybv6Vnqa42HjGjbcEjZ/Jw+KdlN+I
+ Uw2U2q5uo2XWNGaXjfhAZraKFhifgOrPKFQzy4c7hL5FFyAaQB3DEYvGO0M6nkVSihKG
+ eDE1JTQHn3by6DeanERTpGRwJbKRkP+OrH4uzLB6Z+I4M/tY5E5JC2tVgDKGuCYDCDvg sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 333dbrpw8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 20:53:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OKoYWA063700;
+        Mon, 24 Aug 2020 20:53:55 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 333rtx0vpx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 20:53:55 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07OKroVA009900;
+        Mon, 24 Aug 2020 20:53:50 GMT
+Received: from [192.168.0.193] (/69.207.174.138)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 13:53:50 -0700
+Subject: Re: [RFC] Design proposal for upstream core-scheduling interface
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        JulienDesfossez@google.com, jdesfossez@digitalocean.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        tglx@linutronix.de, pjt@google.com, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, vineethrp@gmail.com,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        dhaval.giani@gmail.com, paulmck@kernel.org, joshdon@google.com,
+        xii@google.com, haoluo@google.com, bsegall@google.com
+References: <20200822030155.GA414063@google.com>
+From:   chris hyser <chris.hyser@oracle.com>
+Message-ID: <6d25f0e8-9894-386e-7669-9ecbc176bd5b@oracle.com>
+Date:   Mon, 24 Aug 2020 16:53:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200824204501.1707957-1-khazhy@google.com>
-In-Reply-To: <20200824204501.1707957-1-khazhy@google.com>
-From:   Khazhismel Kumykov <khazhy@google.com>
-Date:   Mon, 24 Aug 2020 13:48:05 -0700
-Message-ID: <CACGdZYK7cEmS=WMAvo5PWv04nFBhTuFm6cbOnQ+xUXqs-9_6xA@mail.gmail.com>
-Subject: Re: [PATCH] block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Serge Hallyn <serge@hallyn.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c704f105ada5b4d9"
+In-Reply-To: <20200822030155.GA414063@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240163
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c704f105ada5b4d9
-Content-Type: text/plain; charset="UTF-8"
+On 8/21/20 11:01 PM, Joel Fernandes wrote:
+> Hello!
+> Core-scheduling aims to allow making it safe for more than 1 task that trust
+> each other to safely share hyperthreads within a CPU core [1]. This results
+> in a performance improvement for workloads that can benefit from using
+> hyperthreading safely while limiting core-sharing when it is not safe.
+> 
+> Currently no universally agreed set of interface exists and companies have
+> been hacking up their own interface to make use of the patches. This post
+> aims to list usecases which I got after talking to various people at Google
+> and Oracle. After which actual development of code to add interfaces can follow.
+> 
+> The below text uses the terms cookie and tag interchangeably. Further, cookie
+> of 0 is assumed to indicate a trusted process - such as kernel threads or
+> system daemons. By default, if nothing is tagged then everything is
+> considered trusted since the scheduler assumes all tasks are a match for each
+> other.
+> 
+> Usecase 1: Google's cloud group tags CGroups with a 32-bit integer. This
+> int32 is split into 2 parts, the color and the id. The color can only be set
+> by privileged processes and the id can be set by anyone. The CGroup structure
+> looks like:
+> 
+>     A         B
+>    / \      / \ \
+>   C   D    E  F  G
+> 
+> Here A and B are container CGroups for 2 jobs are assigned a color by a
+> privileged daemon. The job itself has more sub-CGroups within (for ex, B has
+> E, F and G). When these sub-CGroups are spawned, they inherit the color from
+> the parent. An unprivileged user can then set an id for the sub-CGroup
+> without the knowledge of the privileged daemon if it desires to add further
+> isolation. This setting of id can be an unprivileged operation because the
+> root daemon has already isolated A and B.
+> 
+> Usecase 2: Chrome browser - tagging renderers. In Chrome, each tab opened
+> spawns a renderer. A renderer is a sandboxed process and it is assumed it
+> could run arbitrary code (Javascript etc). When a renderer is created, a
+> prctl call is made to tag the renderer. Every thread that is spawned by the
+> renderer is also tagged. Essentially this turns SMT off for the renderer, but
+> still gives a performance boost due to privileged system threads being able
+> to share a core. The tagging also forbids the renderer from sharing a core
+> with privileged system processes. In the future, we plan to allow threads to
+> share a core as well (especially once we get syscall-isolation upstreamed.
+> Patches were posted recently for the same [2]).
+> 
+> Usecase 3: ChromeOS VMs - each vCPU thread that is created by the VMM is
+> tagged thus disallowing core sharing between the vCPU thread and any other
+> thread on the system. This is because such VMs may run arbitrary user code
+> and attack both the guest and the host systems sharing the core.
+> 
+> Usecase 4: Oracle - Setting a sub-CGroup as trusted (cookie 0). Chris Hyser
+> talked to me on IRC that in a CGroup hierarcy, some CGroups should be allowed
+> to not have to share its parent's CGroup tag. In fact, it should be allowed to
+> untag the child CGroup if needed thus allowing them to share a core with
+> trusted tasks. Others have had similar requirements.
+> 
+> Proposal for tagging
+> --------------------
+> We have to support both CGroup and non-CGroup users. CGroup may be overkill
+> for some and the CGroup v2 unified hierarchy may be too inflexible.
+> Regardless, we must support CGroup due its easy of use and existing users.
+> 
+> For Usecase #1
+> ----------
+> Usecase #1 requires a 2-level tagging mechanism. I propose 2 new files
+> to the CPU controller:
+> - tag : a boolean (0/1). If set, this CGroup and all sub-CGroups will be
+>    tagged.  (In the kernel, the cookie will be derived from the pointer value
+>    of a ref-counted cookie object.). If reset, then the CGroup will inherit
+>    the parent CGroup's cookie if there is one.
+> 
+> - color : The ref-counted object will be aligned say to a 256-byte boundary
+>    (for example), then the lower 8 bits of the pointer can be used to specify
+>    color. Together, the pointer with the color will form a cookie used by the
+>    scheduler.
+> 
+> Note that if 2 CGroups belong to 2 different tagged hierarchies, then setting
+> their color to be the same does not imply that the 2 groups will share a
+> core. This is key.  Also, to support usecase #4, we could add a third tag
+> value -- 2, along with the usual 0 and 1 to suggest that the CGroup can share
+> a core with cookie-0 tasks (Chris Hyser feel free to add any more comments
+> here).
 
-On Mon, Aug 24, 2020 at 1:45 PM Khazhismel Kumykov <khazhy@google.com> wrote:
->
-> CAP_SYS_ADMIN is too broad, and ionice fits into CAP_SYS_NICE's grouping.
->
-> Retain CAP_SYS_ADMIN permission for backwards compatibility.
->
-> Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
-> ---
->  block/ioprio.c                  | 2 +-
->  include/uapi/linux/capability.h | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/block/ioprio.c b/block/ioprio.c
-> index 77bcab11dce5..4572456430f9 100644
-> --- a/block/ioprio.c
-> +++ b/block/ioprio.c
-> @@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
->
->         switch (class) {
->                 case IOPRIO_CLASS_RT:
-> -                       if (!capable(CAP_SYS_ADMIN))
-> +                       if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_NICE))
-yikes, sorry for the spam
->                                 return -EPERM;
->                         /* fall through */
->                         /* rt has prio field too */
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 395dd0df8d08..c6ca33034147 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -288,6 +288,8 @@ struct vfs_ns_cap_data {
->     processes and setting the scheduling algorithm used by another
->     process. */
->  /* Allow setting cpu affinity on other processes */
-> +/* Allow setting realtime ioprio class */
-> +/* Allow setting ioprio class on other processes */
->
->  #define CAP_SYS_NICE         23
->
-> --
-> 2.28.0.297.g1956fa8f8d-goog
->
+Let em think about this. This looks like it would support delegation of a cgroup subtree, which I suppose containers are 
+going to want eventually. That seems to be the advantage over just allowing setting the entire cookie. Anyway, I look 
+forward to tomorrow and thanks for putting this together.
 
---000000000000c704f105ada5b4d9
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+-chrish
 
-MIIPBgYJKoZIhvcNAQcCoIIO9zCCDvMCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggxpMIIEkjCCA3qgAwIBAgINAewckktV4F6Q7sAtGDANBgkqhkiG9w0BAQsFADBMMSAwHgYDVQQL
-ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
-R2xvYmFsU2lnbjAeFw0xODA2MjAwMDAwMDBaFw0yODA2MjAwMDAwMDBaMEsxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSEwHwYDVQQDExhHbG9iYWxTaWduIFNNSU1FIENB
-IDIwMTgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCUeobu8FdB5oJg6Fz6SFf8YsPI
-dNcq4rBSiSDAwqMNYbeTpRrINMBdWuPqVWaBX7WHYMsKQwCOvAF1b7rkD+ROo+CCTJo76EAY25Pp
-jt7TYP/PxoLesLQ+Ld088+BeyZg9pQaf0VK4tn23fOCWbFWoM8hdnF86Mqn6xB6nLsxJcz4CUGJG
-qAhC3iedFiCfZfsIp2RNyiUhzPAqalkrtD0bZQvCgi5aSNJseNyCysS1yA58OuxEyn2e9itZJE+O
-sUeD8VFgz+nAYI5r/dmFEXu5d9npLvTTrSJjrEmw2/ynKn6r6ONueZnCfo6uLmP1SSglhI/SN7dy
-L1rKUCU7R1MjAgMBAAGjggFyMIIBbjAOBgNVHQ8BAf8EBAMCAYYwJwYDVR0lBCAwHgYIKwYBBQUH
-AwIGCCsGAQUFBwMEBggrBgEFBQcDCTASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBRMtwWJ
-1lPNI0Ci6A94GuRtXEzs0jAfBgNVHSMEGDAWgBSP8Et/qC5FJK5NUPpjmove4t0bvDA+BggrBgEF
-BQcBAQQyMDAwLgYIKwYBBQUHMAGGImh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9yb290cjMw
-NgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIzLmNybDBn
-BgNVHSAEYDBeMAsGCSsGAQQBoDIBKDAMBgorBgEEAaAyASgKMEEGCSsGAQQBoDIBXzA0MDIGCCsG
-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
-BQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wUQYIKwYBBQUHAQEE
-RTBDMEEGCCsGAQUFBzAChjVodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3Nt
-aW1lY2EyMDE4LmNydDAfBgNVHSMEGDAWgBRMtwWJ1lPNI0Ci6A94GuRtXEzs0jA/BgNVHR8EODA2
-MDSgMqAwhi5odHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2NhL2dzc21pbWVjYTIwMTguY3JsMA0G
-CSqGSIb3DQEBCwUAA4IBAQAzGsyTMuMEs+rU0JhN7+X62InoLA+QLAozxi+mmLGmfS48HalmbNSM
-50i9IOpsIW0GqjrLgilzP7b04OWA0eGsQ2PzobSd/6yLpFvdU+R52Iyu6/IVcCoEcWj11PYvmtMp
-SZrCvtwvCj+zfJSxNqLmOhITBB1uGneHUHjwTEK87WDqGVcm43pwBMHZ8qMziJdVf8MbKPm4w6a9
-1zewg0bTPT33PFWgCFIsqvTcQPEKoL3Kj8e/DBz1DgFhw4WkwfmzmnLamf93T+t9TU+iQdSESxgT
-NC8D2u/lHre/+I8qQ3tgofQC+AomdFoGhr+nQj+6O1Sv8BKB1ArDiku4umqVMYICYTCCAl0CAQEw
-XzBLMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEhMB8GA1UEAxMYR2xv
-YmFsU2lnbiBTTUlNRSBDQSAyMDE4AhABBw5QEQ1RT42XN3T1kVOEMA0GCWCGSAFlAwQCAQUAoIHU
-MC8GCSqGSIb3DQEJBDEiBCBWBKq8RqkPlI/7iXWOAUxnsI6i06kb7X3mEsafog/RKDAYBgkqhkiG
-9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMDA4MjQyMDQ4MTdaMGkGCSqGSIb3
-DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcN
-AwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAE
-ggEAkpt4H4JcBhl8DYOinmZBG6ajppMHs6OcIONbbzUL8B5DTc/F8C29kwJw8wd2cVXxn2oxvmro
-KqAtSOMqmnxiZzMoxtLfnWPPmLxN1zpWtebfBxxoBGYuWlzuU88VIYxhkzgHBwDTaySj4Od4Zc5c
-7SGAA68brkgzGXpytlAEXps4iN9r08OfwkC+Uw0WkL4xmaTk9XeQNz7gN6yo70StFpKKQk+7TVRX
-oyicYWljQU7HNZkhUJRyW2c0hW23H8/XJc4rSfafg/Yd1xlLOltO0gbPUOTfzRv5qiML63T2T/6k
-OE/eOOafIj/WJagycYPSZz5ccn/nTGB80OZBvD0wZA==
---000000000000c704f105ada5b4d9--
+
+
+> For Usecase #2
+> --------------
+> We could add an interface that Peter suggested where 2 PIDs A and B want to
+> share a core. So if A wants to share a core with B, then it issues
+> prctl(SET_CORE_SHARE, B). ptrace_may_access() can be used to restrict access.
+> For renderers though, we want to likely allow a renderer to share a core
+> exclusive with only threads within a renderer and no one else. To support
+> this, renderer A could simply issue prctl(SET_CORE_SHARE, A).
+> 
+> For Usecase #3
+> --------------
+> By default, all threads within a process will share a core. This makes the
+> most sense because threads in a process share the same virtual address space.
+> However, for virtual machines in ChromeOS, we would like vCPU threads to not
+> share a core with other vCPU threads as mentioned above. To support this,
+> when a vCPU thread is forked, a new clone flag - CLONE_NEW_CORE_TAG could be
+> introduced to cause the forked thread to not share a core with its parent.
+> This could also support usecase #2 in the future (instead of prctl, a new
+> renderer being forked can simply be passed CLONE_NEW_CORE_TAG which will tag the
+> forked process or thread even if the forking process is not tagged).
+> 
+> Other considerations:
+> - To share a core anyway even if tags don't match: If we assume that the only
+>    purpose of core-scheduling is to enforce security, then if the kernel knows
+>    that CPUs are not vulnerable then cores can be shared anyway, whether the
+>    tasks are tagged or not (Suggested-by PeterZ).
+> 
+> - Addition of a new CGroup controller: Instead of CPU controller, it may be
+>    better to add a new CGroup controller in case the CPU controller is not
+>    attached to some parts of the hierarchy and it is still desirable to use
+>    CGroup interface for core tagging.
+> 
+> - Co-existence of CGroup with prctl/clone. The prctl/clone tagging should
+>    always be made to override CGroup. For this purpose, I propose a new
+>    'tasks_no_cg_tag' or a similar file in the CGroup controller. This file
+>    will list all tasks that don't associate with the CGroup's tag. NOTE: I am not
+>    sure yet how this new file will work with prctl/clone-tagging of individual
+>    threads in a non-thread-mode CGroup v2 usage.
+> 
+> - Differences in tagging of a forked task (!CLONE_THREAD): If a process is
+>    a part of a CGroup and is forked, then the child process is automatically
+>    added to that CGroup. If such CGroup was tagged before, then the child is
+>    automatically tagged. However, it may be desired to give the child its own
+>    tag. In this case also, the earlier CLONE_NEW_CORE_TAG flag can be used to
+>    achieve this behavior. If the forking process was not a part of a CGroup
+>    but got a tag through other means before, then by default a !CLONE_THREAD
+>    fork would imply CLONE_NEW_CORE_TAG. However, to turns this off, a
+>    CLONE_CORE_TAG flag can be added (forking process's tag will be inheritted
+>    by the child).
+> 
+> Let me know your thoughts and looking forward to a good LPC MC discussion!
+> 
+> thanks,
+> 
+>   - Joel
+> 
+> [1] https://lwn.net/Articles/780703/
+> [2] https://lwn.net/Articles/828889/
+> 
