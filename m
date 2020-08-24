@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412112500D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67172500DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgHXPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:21:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        id S1726799AbgHXPXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:23:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34492 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727079AbgHXPTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:19:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBEBE206B5;
-        Mon, 24 Aug 2020 15:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598282357;
-        bh=dTNJ6f4sFfr0WRo993QckaVjaB2TOj8/mYY4GuOEL2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=avluCVyerL/x7VoZPTTQeSselXZiLn+S3dHGpKj+Y1MaZQaucpsKbgtoTrAggRGBz
-         SflAewOZ+p95msqK6r6lax6ZmNeiTFSnsANxr1fi2g3VcQC34S767R9B1YhE4QhE6s
-         sF1enDSjACba8vQ5LGsPxxWQQ4qRqHApz49tCCHI=
-Date:   Mon, 24 Aug 2020 17:19:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH stable-5.8.y backport 1/2] KVM: Pass MMU notifier range
- flags to kvm_unmap_hva_range()
-Message-ID: <20200824151933.GB435319@kroah.com>
-References: <20200824113048.24960-1-will@kernel.org>
+        id S1727011AbgHXPUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:20:02 -0400
+IronPort-SDR: BHCzELPn3sQja4Eo/UmHVIF4+Lm+MojGH+pDu4uI8zbZFI9IDUkmHpVvS91lCNgQPjiLNnc4XY
+ fSwRTPdl8+GQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="217457163"
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="217457163"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 08:19:51 -0700
+IronPort-SDR: 9P7M4eWmZxuoJaKnYyUUaMLJAsQgat8mmevfLoa+j3rkJJ9TKkyb/0L9R/+VHh6WHX22THXMOM
+ 9qGQIVoa1AYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="312222974"
+Received: from skuppusw-mobl5.amr.corp.intel.com (HELO [10.209.37.204]) ([10.209.37.204])
+  by orsmga002.jf.intel.com with ESMTP; 24 Aug 2020 08:19:50 -0700
+Subject: Re: [PATCH] lib: pldmfw: delete duplicated words
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20200823040502.26040-1-rdunlap@infradead.org>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <bccf3817-dd89-0a7d-8e4c-ce977caf1ea9@intel.com>
+Date:   Mon, 24 Aug 2020 08:19:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824113048.24960-1-will@kernel.org>
+In-Reply-To: <20200823040502.26040-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 12:30:47PM +0100, Will Deacon wrote:
-> commit fdfe7cbd58806522e799e2a50a15aee7f2cbb7b6 upstream.
-> 
-> The 'flags' field of 'struct mmu_notifier_range' is used to indicate
-> whether invalidate_range_{start,end}() are permitted to block. In the
-> case of kvm_mmu_notifier_invalidate_range_start(), this field is not
-> forwarded on to the architecture-specific implementation of
-> kvm_unmap_hva_range() and therefore the backend cannot sensibly decide
-> whether or not to block.
-> 
-> Add an extra 'flags' parameter to kvm_unmap_hva_range() so that
-> architectures are aware as to whether or not they are permitted to block.
-> 
-> Cc: <stable@vger.kernel.org> # v5.8 only
 
-This matched the 5.8 patch I had already, but I took it just to be safe,
-thanks :)
 
-greg k-h
+On 8/22/2020 9:05 PM, Randy Dunlap wrote:
+> Drop the repeated word "header".
+> 
+
+Thanks for fixing this!
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jacob Keller <jacob.e.keller@intel.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  lib/pldmfw/pldmfw.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20200730.orig/lib/pldmfw/pldmfw.c
+> +++ linux-next-20200730/lib/pldmfw/pldmfw.c
+> @@ -517,7 +517,7 @@ static int pldm_verify_header_crc(struct
+>  	u32 calculated_crc;
+>  	size_t length;
+>  
+> -	/* Calculate the 32-bit CRC of the header header contents up to but
+> +	/* Calculate the 32-bit CRC of the header contents up to but
+>  	 * not including the checksum. Note that the Linux crc32_le function
+>  	 * does not perform an expected final XOR.
+>  	 */
+> 
