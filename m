@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440D324F94B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E568024F949
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729666AbgHXJn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38570 "EHLO mail.kernel.org"
+        id S1729276AbgHXJnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729076AbgHXInq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:46 -0400
+        id S1728419AbgHXInu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:43:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15EBC2074D;
-        Mon, 24 Aug 2020 08:43:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6C0121741;
+        Mon, 24 Aug 2020 08:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258625;
-        bh=TMMB5eBADth6RpEHYshCIv0cC+3m/MrHY2nIaZf+iOg=;
+        s=default; t=1598258628;
+        bh=c9AkEOt9bcvgiy0QtcxTOZ0AT/fea3hLXHb8UK7DReg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjaVvIqrz3TVbqKa7XEMbXwzrbM3F9Ij6//e9jpFu2RD/FDEkaZAbz1VEDKzoee2s
-         TK5MbDSEjORzHUq9oCFqyo6e9jHYSdIRe/qtdxsIp/q6BYFsMju3i42eaq/IUjFL1R
-         y4s/2LAxU9zJct8ogU+szR60Qr7OZ4ZnPiH2XBKc=
+        b=ECiv4OQDot7V6A5SAVWIY9YK2eLPElhuny3vpqp2FNge5LSFqLm1rw3+SSn6MEqBX
+         yNpjYBBTp1YzXLU0J4Ye0kqZT0Ywbz4GaiNPaPfV7X4g4XzO6Cx35zFWNIkTdCipiO
+         YkDSOl1TTuSwThB/fPkjaShVIbjTHtQNry+92HNs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
+        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 113/124] net: gemini: Fix missing free_netdev() in error path of gemini_ethernet_port_probe()
-Date:   Mon, 24 Aug 2020 10:30:47 +0200
-Message-Id: <20200824082414.963718313@linuxfoundation.org>
+Subject: [PATCH 5.7 114/124] hv_netvsc: Fix the queue_mapping in netvsc_vf_xmit()
+Date:   Mon, 24 Aug 2020 10:30:48 +0200
+Message-Id: <20200824082415.012823015@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
 References: <20200824082409.368269240@linuxfoundation.org>
@@ -45,51 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
-[ Upstream commit cf96d977381d4a23957bade2ddf1c420b74a26b6 ]
+[ Upstream commit c3d897e01aef8ddc43149e4d661b86f823e3aae7 ]
 
-Replace alloc_etherdev_mq with devm_alloc_etherdev_mqs. In this way,
-when probe fails, netdev can be freed automatically.
+netvsc_vf_xmit() / dev_queue_xmit() will call VF NIC’s ndo_select_queue
+or netdev_pick_tx() again. They will use skb_get_rx_queue() to get the
+queue number, so the “skb->queue_mapping - 1” will be used. This may
+cause the last queue of VF not been used.
 
-Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Use skb_record_rx_queue() here, so that the skb_get_rx_queue() called
+later will get the correct queue number, and VF will be able to use
+all queues.
+
+Fixes: b3bf5666a510 ("hv_netvsc: defer queue selection to VF")
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cortina/gemini.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/hyperv/netvsc_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-index 5359fb40578db..e641890e9702f 100644
---- a/drivers/net/ethernet/cortina/gemini.c
-+++ b/drivers/net/ethernet/cortina/gemini.c
-@@ -2388,7 +2388,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index b8b7fc13b3dc4..016fec19063a5 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -502,7 +502,7 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
+ 	int rc;
  
- 	dev_info(dev, "probe %s ID %d\n", dev_name(dev), id);
+ 	skb->dev = vf_netdev;
+-	skb->queue_mapping = qdisc_skb_cb(skb)->slave_dev_queue_mapping;
++	skb_record_rx_queue(skb, qdisc_skb_cb(skb)->slave_dev_queue_mapping);
  
--	netdev = alloc_etherdev_mq(sizeof(*port), TX_QUEUE_NUM);
-+	netdev = devm_alloc_etherdev_mqs(dev, sizeof(*port), TX_QUEUE_NUM, TX_QUEUE_NUM);
- 	if (!netdev) {
- 		dev_err(dev, "Can't allocate ethernet device #%d\n", id);
- 		return -ENOMEM;
-@@ -2520,7 +2520,6 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 	}
- 
- 	port->netdev = NULL;
--	free_netdev(netdev);
- 	return ret;
- }
- 
-@@ -2529,7 +2528,6 @@ static int gemini_ethernet_port_remove(struct platform_device *pdev)
- 	struct gemini_ethernet_port *port = platform_get_drvdata(pdev);
- 
- 	gemini_port_remove(port);
--	free_netdev(port->netdev);
- 	return 0;
- }
- 
+ 	rc = dev_queue_xmit(skb);
+ 	if (likely(rc == NET_XMIT_SUCCESS || rc == NET_XMIT_CN)) {
 -- 
 2.25.1
 
