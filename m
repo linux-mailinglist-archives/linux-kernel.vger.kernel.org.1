@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153AA24F551
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A40C24F509
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbgHXIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
+        id S1729093AbgHXIn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729455AbgHXIrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:23 -0400
+        id S1729044AbgHXInx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:43:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45DE62075B;
-        Mon, 24 Aug 2020 08:47:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5DEC2075B;
+        Mon, 24 Aug 2020 08:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258842;
-        bh=7YDrs1oIUKwrP9elypvEo5hqcXKbslkuTGu34TR+wfA=;
+        s=default; t=1598258633;
+        bh=4Htyo/JK+OITXDYfLI/o2rmNeTy/SVpcIjbMD3leOVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AHjmKR7z3S4tVJJpmkre8c5N3lLH9Kko0gAUFRuVU2SuzHM9NJBtO9Qh0BRkBIBIO
-         /n97w95M9o6wQzucuKG+FSsCqWsfCzalgdMSYrkLYzkCnbCzEs8tBGaSC4gshzvrYz
-         l3UFPyD93pk/NSd6xf9X2LxKCj3AnV9mG94CQUJw=
+        b=MVOmmuAyCwjez5/kczUxARQtdPJpfS+qlSUTCArxw16txbp+bK+k3JoJ3atCe8kix
+         NfrBZGCDoPixbc+F+sFg9oqzfpeTO7yFhG1DvTwaRjJleC1sR5P/v4OhBF17+qe1mo
+         nKBONTRXHLRmcuPynMY7MYQn5Yj9bbjyqyELTbiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 064/107] ext4: dont allow overlapping system zones
-Date:   Mon, 24 Aug 2020 10:30:30 +0200
-Message-Id: <20200824082408.295125220@linuxfoundation.org>
+Subject: [PATCH 5.7 098/124] scsi: ufs-pci: Add quirk for broken auto-hibernate for Intel EHL
+Date:   Mon, 24 Aug 2020 10:30:32 +0200
+Message-Id: <20200824082414.239885527@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,83 +45,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit bf9a379d0980e7413d94cb18dac73db2bfc5f470 ]
+[ Upstream commit 8da76f71fef7d8a1a72af09d48899573feb60065 ]
 
-Currently, add_system_zone() just silently merges two added system zones
-that overlap. However the overlap should not happen and it generally
-suggests that some unrelated metadata overlap which indicates the fs is
-corrupted. We should have caught such problems earlier (e.g. in
-ext4_check_descriptors()) but add this check as another line of defense.
-In later patch we also use this for stricter checking of journal inode
-extent tree.
+Intel EHL UFS host controller advertises auto-hibernate capability but it
+does not work correctly. Add a quirk for that.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200728130437.7804-3-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+[mkp: checkpatch fix]
+
+Link: https://lore.kernel.org/r/20200810141024.28859-1-adrian.hunter@intel.com
+Fixes: 8c09d7527697 ("scsi: ufshdc-pci: Add Intel PCI IDs for EHL")
+Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/block_validity.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 16 ++++++++++++++--
+ drivers/scsi/ufs/ufshcd.h     |  9 ++++++++-
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index ff8e1205127ee..ceb54ccc937e9 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -68,7 +68,7 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
- 			   ext4_fsblk_t start_blk,
- 			   unsigned int count)
- {
--	struct ext4_system_zone *new_entry = NULL, *entry;
-+	struct ext4_system_zone *new_entry, *entry;
- 	struct rb_node **n = &system_blks->root.rb_node, *node;
- 	struct rb_node *parent = NULL, *new_node = NULL;
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 8f78a81514991..b220666774ce8 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -67,11 +67,23 @@ static int ufs_intel_link_startup_notify(struct ufs_hba *hba,
+ 	return err;
+ }
  
-@@ -79,30 +79,20 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
- 			n = &(*n)->rb_left;
- 		else if (start_blk >= (entry->start_blk + entry->count))
- 			n = &(*n)->rb_right;
--		else {
--			if (start_blk + count > (entry->start_blk +
--						 entry->count))
--				entry->count = (start_blk + count -
--						entry->start_blk);
--			new_node = *n;
--			new_entry = rb_entry(new_node, struct ext4_system_zone,
--					     node);
--			break;
--		}
-+		else	/* Unexpected overlap of system zones. */
-+			return -EFSCORRUPTED;
- 	}
- 
--	if (!new_entry) {
--		new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
--					     GFP_KERNEL);
--		if (!new_entry)
--			return -ENOMEM;
--		new_entry->start_blk = start_blk;
--		new_entry->count = count;
--		new_node = &new_entry->node;
--
--		rb_link_node(new_node, parent, n);
--		rb_insert_color(new_node, &system_blks->root);
--	}
-+	new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
-+				     GFP_KERNEL);
-+	if (!new_entry)
-+		return -ENOMEM;
-+	new_entry->start_blk = start_blk;
-+	new_entry->count = count;
-+	new_node = &new_entry->node;
++static int ufs_intel_ehl_init(struct ufs_hba *hba)
++{
++	hba->quirks |= UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8;
++	return 0;
++}
 +
-+	rb_link_node(new_node, parent, n);
-+	rb_insert_color(new_node, &system_blks->root);
+ static struct ufs_hba_variant_ops ufs_intel_cnl_hba_vops = {
+ 	.name                   = "intel-pci",
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
+ };
  
- 	/* Can we merge to the left? */
- 	node = rb_prev(new_node);
++static struct ufs_hba_variant_ops ufs_intel_ehl_hba_vops = {
++	.name                   = "intel-pci",
++	.init			= ufs_intel_ehl_init,
++	.link_startup_notify	= ufs_intel_link_startup_notify,
++};
++
+ #ifdef CONFIG_PM_SLEEP
+ /**
+  * ufshcd_pci_suspend - suspend power management function
+@@ -200,8 +212,8 @@ static const struct dev_pm_ops ufshcd_pci_pm_ops = {
+ static const struct pci_device_id ufshcd_pci_tbl[] = {
+ 	{ PCI_VENDOR_ID_SAMSUNG, 0xC00C, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
+ 	{ PCI_VDEVICE(INTEL, 0x9DFA), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
+-	{ PCI_VDEVICE(INTEL, 0x4B41), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
+-	{ PCI_VDEVICE(INTEL, 0x4B43), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
++	{ PCI_VDEVICE(INTEL, 0x4B41), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
++	{ PCI_VDEVICE(INTEL, 0x4B43), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
+ 	{ }	/* terminate list */
+ };
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 59ca93b64bb08..ccbeae4f8325d 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -547,6 +547,12 @@ enum ufshcd_quirks {
+ 	 * OCS FATAL ERROR with device error through sense data
+ 	 */
+ 	UFSHCD_QUIRK_BROKEN_OCS_FATAL_ERROR		= 1 << 10,
++
++	/*
++	 * This quirk needs to be enabled if the host controller has
++	 * auto-hibernate capability but it doesn't work.
++	 */
++	UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8		= 1 << 11,
+ };
+ 
+ enum ufshcd_caps {
+@@ -796,7 +802,8 @@ return true;
+ 
+ static inline bool ufshcd_is_auto_hibern8_supported(struct ufs_hba *hba)
+ {
+-	return (hba->capabilities & MASK_AUTO_HIBERN8_SUPPORT);
++	return (hba->capabilities & MASK_AUTO_HIBERN8_SUPPORT) &&
++		!(hba->quirks & UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8);
+ }
+ 
+ static inline bool ufshcd_is_auto_hibern8_enabled(struct ufs_hba *hba)
 -- 
 2.25.1
 
