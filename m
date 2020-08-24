@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01311250A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17783250A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgHXVED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 17:04:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:43080 "EHLO foss.arm.com"
+        id S1727104AbgHXVGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 17:06:12 -0400
+Received: from crapouillou.net ([89.234.176.41]:39080 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727931AbgHXVEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:04:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CED91FB;
-        Mon, 24 Aug 2020 14:04:00 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 12FB33F71F;
-        Mon, 24 Aug 2020 14:03:58 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, catalin.marinas@arm.com,
-        sudeep.holla@arm.com, will@kernel.org, valentin.schneider@arm.com
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com
-Subject: [PATCH v3 5/5] arch_topology, arm, arm64: define arch_scale_freq_invariant()
-Date:   Mon, 24 Aug 2020 22:02:52 +0100
-Message-Id: <20200824210252.27486-6-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824210252.27486-1-ionela.voinescu@arm.com>
-References: <20200824210252.27486-1-ionela.voinescu@arm.com>
+        id S1726365AbgHXVGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 17:06:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1598303169; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTOCZ5ep9UPKIO43bcq8yzYvle9hfDUlUxvCVGbgI48=;
+        b=P7uDeVjiJ1bf/KE6pQgeKnhvZvC75+r+RFz4vUwR2Q1kvlswtb05jIyFZOtf9cLu5L28K+
+        KG+QH/seOenWbSJ2tKUE/Ha4vUPWsEGKhJoGPxAtqMM5g4lDzgVF+RjO/6Pl1uWkTRAwJM
+        HHFU8HWmuz6qQjD3iUfdPVwsxpMCwcQ=
+Date:   Mon, 24 Aug 2020 23:05:58 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] lib: decompress_unzstd: Limit output size
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        od@zcrc.me
+Message-Id: <YL6LFQ.1E9SOADXFSGD2@crapouillou.net>
+In-Reply-To: <8E3C6FC0-2DF0-49B5-9885-BA4AC81A117D@fb.com>
+References: <20200821162948.146947-1-paul@crapouillou.net>
+        <8E3C6FC0-2DF0-49B5-9885-BA4AC81A117D@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
 
-arch_scale_freq_invariant() is used by schedutil to determine whether
-the scheduler's load-tracking signals are frequency invariant. Its
-definition is overridable, though by default it is hardcoded to 'true'
-if arch_scale_freq_capacity() is defined ('false' otherwise).
 
-This behaviour is not overridden on arm, arm64 and other users of the
-generic arch topology driver, which is somewhat precarious:
-arch_scale_freq_capacity() will always be defined, yet not all cpufreq
-drivers are guaranteed to drive the frequency invariance scale factor
-setting. In other words, the load-tracking signals may very well *not*
-be frequency invariant.
+Le lun. 24 ao=C3=BBt 2020 =C3=A0 20:11, Nick Terrell <terrelln@fb.com> a =
+=C3=A9crit=20
+:
+>=20
+>=20
+>>  On Aug 21, 2020, at 9:29 AM, Paul Cercueil <paul@crapouillou.net>=20
+>> wrote:
+>>=20
+>>  The zstd decompression code, as it is right now, will have internal
+>>  values overflow on 32-bit systems when the output size is LONG_MAX.
+>>=20
+>>  Until someone smarter than me can figure out how to fix the zstd=20
+>> code
+>>  properly, limit the destination buffer size to 512 MiB, which=20
+>> should be
+>>  enough for everybody, in order to make it usable on 32-bit systems.
+>=20
+> Can you bump the size up to 2GB? I suspect the problem inside of zstd
+> is an off-by-one error or something similar, so getting closer to the=20
+> limit
+> shouldn't be a problem. I=E2=80=99d feel more comfortable with 2GB, since
+> kernels can get pretty large.
 
-Now that cpufreq can be queried on whether the current driver is driving
-the Frequency Invariance (FI) scale setting, the current situation can
-be improved. This combines the query of whether cpufreq supports the
-setting of the frequency scale factor, with whether all online CPUs are
-counter-based FI enabled.
+SZ_1G is the biggest I can go to get the kernel to boot. With SZ_2G it=20
+won't boot.
 
-While cpufreq FI enablement applies at system level, for all CPUs,
-counter-based FI support could also be used for only a subset of CPUs to
-set the invariance scale factor. Therefore, if cpufreq-based FI support
-is present, we consider the system to be invariant. If missing, we
-require all online CPUs to be counter-based FI enabled in order for the
-full system to be considered invariant.
+> Hmm, zstd shouldn=E2=80=99t be overflowing that value. I=E2=80=99m curren=
+tly=20
+> preparing
+> a patch to updating the version of zstd in the kernel, and using=20
+> upstream
+> directly. I will add a test upstream in 32-bit mode to ensure that we=20
+> don=E2=80=99t
+> overflow a 32-bit size_t, so this will be fixed after the update.
 
-If the system ends up not being invariant, a new condition is needed in
-the counter initialization code that disables all scale factor setting
-based on counters.
+Great, thanks.
 
-Precedence of counters over cpufreq use is not important here. The
-invariant status is only given to the system if all CPUs have at least
-one method of setting the frequency scale factor.
+Cheers,
+-Paul
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
----
- arch/arm/include/asm/topology.h   | 1 +
- arch/arm64/include/asm/topology.h | 1 +
- arch/arm64/kernel/topology.c      | 7 +++++++
- drivers/base/arch_topology.c      | 6 ++++++
- include/linux/arch_topology.h     | 2 ++
- 5 files changed, 17 insertions(+)
+>=20
+> -Nick
+>=20
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>  lib/decompress_unzstd.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>=20
+>>  diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
+>>  index 0ad2c15479ed..e1c03b1eaa6e 100644
+>>  --- a/lib/decompress_unzstd.c
+>>  +++ b/lib/decompress_unzstd.c
+>>  @@ -77,6 +77,7 @@
+>>=20
+>>  #include <linux/decompress/mm.h>
+>>  #include <linux/kernel.h>
+>>  +#include <linux/sizes.h>
+>>  #include <linux/zstd.h>
+>>=20
+>>  /* 128MB is the maximum window size supported by zstd. */
+>>  @@ -179,7 +180,7 @@ static int INIT __unzstd(unsigned char *in_buf,=20
+>> long in_len,
+>>  	size_t ret;
+>>=20
+>>  	if (out_len =3D=3D 0)
+>>  -		out_len =3D LONG_MAX; /* no limit */
+>>  +		out_len =3D SZ_512M; /* should be big enough, right? */
+>>=20
+>>  	if (fill =3D=3D NULL && flush =3D=3D NULL)
+>>  		/*
+>>  --
+>>  2.28.0
+>>=20
+>=20
 
-diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-index e0593cf095d0..9219e67befbe 100644
---- a/arch/arm/include/asm/topology.h
-+++ b/arch/arm/include/asm/topology.h
-@@ -9,6 +9,7 @@
- 
- /* Replace task scheduler's default frequency-invariant accounting */
- #define arch_scale_freq_capacity topology_get_freq_scale
-+#define arch_scale_freq_invariant topology_scale_freq_invariant
- 
- /* Replace task scheduler's default cpu-invariant accounting */
- #define arch_scale_cpu_capacity topology_get_cpu_scale
-diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-index e042f6527981..7cb519473fbd 100644
---- a/arch/arm64/include/asm/topology.h
-+++ b/arch/arm64/include/asm/topology.h
-@@ -27,6 +27,7 @@ void topology_scale_freq_tick(void);
- 
- /* Replace task scheduler's default frequency-invariant accounting */
- #define arch_scale_freq_capacity topology_get_freq_scale
-+#define arch_scale_freq_invariant topology_scale_freq_invariant
- 
- /* Replace task scheduler's default cpu-invariant accounting */
- #define arch_scale_cpu_capacity topology_get_cpu_scale
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 9a9f2b8dedf5..4064d39bb66d 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -246,6 +246,13 @@ static int __init init_amu_fie(void)
- 		static_branch_enable(&amu_fie_key);
- 	}
- 
-+	/*
-+	 * If the system is not fully invariant after AMU init, disable
-+	 * partial use of counters for frequency invariance.
-+	 */
-+	if (!topology_scale_freq_invariant())
-+		static_branch_disable(&amu_fie_key);
-+
- free_valid_mask:
- 	free_cpumask_var(valid_cpus);
- 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 43d40822b956..3b24c31f0444 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -21,6 +21,12 @@
- #include <linux/sched.h>
- #include <linux/smp.h>
- 
-+bool topology_scale_freq_invariant(void)
-+{
-+	return cpufreq_supports_freq_invariance() ||
-+	       arch_freq_counters_available(cpu_online_mask);
-+}
-+
- __weak bool arch_freq_counters_available(const struct cpumask *cpus)
- {
- 	return false;
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index 810c83336257..083df331a3c9 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -30,6 +30,8 @@ static inline unsigned long topology_get_freq_scale(int cpu)
- 	return per_cpu(freq_scale, cpu);
- }
- 
-+bool topology_scale_freq_invariant(void);
-+
- bool arch_freq_counters_available(const struct cpumask *cpus);
- 
- DECLARE_PER_CPU(unsigned long, thermal_pressure);
--- 
-2.17.1
 
