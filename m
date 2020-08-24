@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CFA24F64C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002B624F5ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730769AbgHXI6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46268 "EHLO mail.kernel.org"
+        id S1730402AbgHXIzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730756AbgHXI6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:58:14 -0400
+        id S1730120AbgHXIzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1C0B204FD;
-        Mon, 24 Aug 2020 08:58:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF69C2072D;
+        Mon, 24 Aug 2020 08:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259493;
-        bh=t60HpLwE+ABxU3kRI1QY62eWALzA2Y88UuNatmqx9pc=;
+        s=default; t=1598259302;
+        bh=Ugp5lYXLez/YXQk+NIdZCZFpUpaFzz9EnvVK/Mz/9/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vDeMf7DEbRH8FHyShWYBuL0splf67xxQ/AKVPX7ZLsvEOGLxFcZrOf0vLPrcse8Zx
-         whIJlocXLFQnPLsUlIT9lZjNrlWNsirFA8KluuZmzRiVkiqmxb/s9oCk0QHN1XZAdS
-         JwCse5VemYpBPLVSVBHdT3e9OiExabO/1uftbZio=
+        b=EU0nfs7pUiSZwpOmu6WoTjGTJmk6FQ7XC1G9kQOKCobT8qt6Vo2MnidMbDoaU8+4u
+         0tKiSxYRaWDpkX6EX26p1adxZ9jC+CQQcKscxt0qzLI77J8nS6tn6411OPA8lZWDQ6
+         g806PAC2LAawsP9P1ZWLAxIJa9xSfYCwqKXIAAgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c1eff8205244ae7e11a6@syzkaller.appspotmail.com,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 59/71] afs: Fix NULL deref in afs_dynroot_depopulate()
+        Sarah Newman <srn@prgmr.com>, Juergen Gross <jgross@suse.com>,
+        Chris Brannon <cmb@prgmr.com>
+Subject: [PATCH 4.14 49/50] xen: dont reschedule in preemption off sections
 Date:   Mon, 24 Aug 2020 10:31:50 +0200
-Message-Id: <20200824082358.868712543@linuxfoundation.org>
+Message-Id: <20200824082354.520240610@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,88 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 5e0b17b026eb7c6de9baa9b0d45a51b05f05abe1 ]
+For support of long running hypercalls xen_maybe_preempt_hcall() is
+calling cond_resched() in case a hypercall marked as preemptible has
+been interrupted.
 
-If an error occurs during the construction of an afs superblock, it's
-possible that an error occurs after a superblock is created, but before
-we've created the root dentry.  If the superblock has a dynamic root
-(ie.  what's normally mounted on /afs), the afs_kill_super() will call
-afs_dynroot_depopulate() to unpin any created dentries - but this will
-oops if the root hasn't been created yet.
+Normally this is no problem, as only hypercalls done via some ioctl()s
+are marked to be preemptible. In rare cases when during such a
+preemptible hypercall an interrupt occurs and any softirq action is
+started from irq_exit(), a further hypercall issued by the softirq
+handler will be regarded to be preemptible, too. This might lead to
+rescheduling in spite of the softirq handler potentially having set
+preempt_disable(), leading to splats like:
 
-Fix this by skipping that bit of code if there is no root dentry.
+BUG: sleeping function called from invalid context at drivers/xen/preempt.c:37
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 20775, name: xl
+INFO: lockdep is turned off.
+CPU: 1 PID: 20775 Comm: xl Tainted: G D W 5.4.46-1_prgmr_debug.el7.x86_64 #1
+Call Trace:
+<IRQ>
+dump_stack+0x8f/0xd0
+___might_sleep.cold.76+0xb2/0x103
+xen_maybe_preempt_hcall+0x48/0x70
+xen_do_hypervisor_callback+0x37/0x40
+RIP: e030:xen_hypercall_xen_version+0xa/0x20
+Code: ...
+RSP: e02b:ffffc900400dcc30 EFLAGS: 00000246
+RAX: 000000000004000d RBX: 0000000000000200 RCX: ffffffff8100122a
+RDX: ffff88812e788000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff83ee3ad0 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000246 R12: ffff8881824aa0b0
+R13: 0000000865496000 R14: 0000000865496000 R15: ffff88815d040000
+? xen_hypercall_xen_version+0xa/0x20
+? xen_force_evtchn_callback+0x9/0x10
+? check_events+0x12/0x20
+? xen_restore_fl_direct+0x1f/0x20
+? _raw_spin_unlock_irqrestore+0x53/0x60
+? debug_dma_sync_single_for_cpu+0x91/0xc0
+? _raw_spin_unlock_irqrestore+0x53/0x60
+? xen_swiotlb_sync_single_for_cpu+0x3d/0x140
+? mlx4_en_process_rx_cq+0x6b6/0x1110 [mlx4_en]
+? mlx4_en_poll_rx_cq+0x64/0x100 [mlx4_en]
+? net_rx_action+0x151/0x4a0
+? __do_softirq+0xed/0x55b
+? irq_exit+0xea/0x100
+? xen_evtchn_do_upcall+0x2c/0x40
+? xen_do_hypervisor_callback+0x29/0x40
+</IRQ>
+? xen_hypercall_domctl+0xa/0x20
+? xen_hypercall_domctl+0x8/0x20
+? privcmd_ioctl+0x221/0x990 [xen_privcmd]
+? do_vfs_ioctl+0xa5/0x6f0
+? ksys_ioctl+0x60/0x90
+? trace_hardirqs_off_thunk+0x1a/0x20
+? __x64_sys_ioctl+0x16/0x20
+? do_syscall_64+0x62/0x250
+? entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-This leads to an oops looking like:
+Fix that by testing preempt_count() before calling cond_resched().
 
-	general protection fault, ...
-	KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-	...
-	RIP: 0010:afs_dynroot_depopulate+0x25f/0x529 fs/afs/dynroot.c:385
-	...
-	Call Trace:
-	 afs_kill_super+0x13b/0x180 fs/afs/super.c:535
-	 deactivate_locked_super+0x94/0x160 fs/super.c:335
-	 afs_get_tree+0x1124/0x1460 fs/afs/super.c:598
-	 vfs_get_tree+0x89/0x2f0 fs/super.c:1547
-	 do_new_mount fs/namespace.c:2875 [inline]
-	 path_mount+0x1387/0x2070 fs/namespace.c:3192
-	 do_mount fs/namespace.c:3205 [inline]
-	 __do_sys_mount fs/namespace.c:3413 [inline]
-	 __se_sys_mount fs/namespace.c:3390 [inline]
-	 __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
-	 do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+In kernel 5.8 this can't happen any more due to the entry code rework
+(more than 100 patches, so not a candidate for backporting).
 
-which is oopsing on this line:
+The issue was introduced in kernel 4.3, so this patch should go into
+all stable kernels in [4.3 ... 5.7].
 
-	inode_lock(root->d_inode);
-
-presumably because sb->s_root was NULL.
-
-Fixes: 0da0b7fd73e4 ("afs: Display manually added cells in dynamic root mount")
-Reported-by: syzbot+c1eff8205244ae7e11a6@syzkaller.appspotmail.com
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Sarah Newman <srn@prgmr.com>
+Fixes: 0fa2f5cb2b0ecd8 ("sched/preempt, xen: Use need_resched() instead of should_resched()")
+Cc: Sarah Newman <srn@prgmr.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Tested-by: Chris Brannon <cmb@prgmr.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/dynroot.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/xen/preempt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/afs/dynroot.c b/fs/afs/dynroot.c
-index 069273a2483f9..fc6c42eeb659c 100644
---- a/fs/afs/dynroot.c
-+++ b/fs/afs/dynroot.c
-@@ -299,15 +299,17 @@ void afs_dynroot_depopulate(struct super_block *sb)
- 		net->dynroot_sb = NULL;
- 	mutex_unlock(&net->proc_cells_lock);
- 
--	inode_lock(root->d_inode);
--
--	/* Remove all the pins for dirs created for manually added cells */
--	list_for_each_entry_safe(subdir, tmp, &root->d_subdirs, d_child) {
--		if (subdir->d_fsdata) {
--			subdir->d_fsdata = NULL;
--			dput(subdir);
-+	if (root) {
-+		inode_lock(root->d_inode);
-+
-+		/* Remove all the pins for dirs created for manually added cells */
-+		list_for_each_entry_safe(subdir, tmp, &root->d_subdirs, d_child) {
-+			if (subdir->d_fsdata) {
-+				subdir->d_fsdata = NULL;
-+				dput(subdir);
-+			}
- 		}
--	}
- 
--	inode_unlock(root->d_inode);
-+		inode_unlock(root->d_inode);
-+	}
- }
--- 
-2.25.1
-
+--- a/drivers/xen/preempt.c
++++ b/drivers/xen/preempt.c
+@@ -31,7 +31,7 @@ EXPORT_SYMBOL_GPL(xen_in_preemptible_hca
+ asmlinkage __visible void xen_maybe_preempt_hcall(void)
+ {
+ 	if (unlikely(__this_cpu_read(xen_in_preemptible_hcall)
+-		     && need_resched())) {
++		     && need_resched() && !preempt_count())) {
+ 		/*
+ 		 * Clear flag as we may be rescheduled on a different
+ 		 * cpu.
 
 
