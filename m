@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1B4250231
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F77250208
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgHXQ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58906 "EHLO mail.kernel.org"
+        id S1727992AbgHXQ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:28:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47036 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728077AbgHXQ3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:29:23 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 968582072D;
-        Mon, 24 Aug 2020 16:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286562;
-        bh=CnRSnps+AJEG/CNxkZZ3JT+RUcAXLf0eIGA4Cov4d+8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nh6hgK7lOgmW9izb+LuDJ5SUOJo34fH/EcIpkU/0ZYG4pF1uo1o36J78/CuG+K+t4
-         qgGmOJjzuiea5OHtVIhlowJCGQvlmsszKFpGttk8lcVH3x6B0kuBekleSS7+IS2r1g
-         7LwXM1sLXEhWcF0hUbBodcOCqYk9umOvq2I1qbyQ=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
-        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 19/19] arm64: dts: imx8mq-zii-ultra: Add hog suffixes to GPIO hogs
-Date:   Mon, 24 Aug 2020 18:26:52 +0200
-Message-Id: <20200824162652.21047-19-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
-References: <20200824162652.21047-1-krzk@kernel.org>
+        id S1727896AbgHXQ1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:27:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31DDFAF76;
+        Mon, 24 Aug 2020 16:28:17 +0000 (UTC)
+Subject: Re: [PATCH] x86/entry: Fix AC assertion
+To:     Andrew Cooper <andrew.cooper3@citrix.com>, peterz@infradead.org
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20200824101428.GS1362448@hirez.programming.kicks-ass.net>
+ <d2b0c6a5-19d8-f868-e092-e5c197ab0d0e@citrix.com>
+ <20200824152135.GV1362448@hirez.programming.kicks-ass.net>
+ <a79f11e4-2b9f-ea8d-a032-dee84a500f73@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <f2929b26-5321-a0cb-49af-778842ba1f82@suse.com>
+Date:   Mon, 24 Aug 2020 18:27:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <a79f11e4-2b9f-ea8d-a032-dee84a500f73@citrix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to device tree specification, device node names should be
-somewhat generic and reflecting the function of the device so add the
-"hog" suffixes to all GPIO hog nodes.
+On 24.08.20 17:58, Andrew Cooper wrote:
+> On 24/08/2020 16:21, peterz@infradead.org wrote:
+>> On Mon, Aug 24, 2020 at 03:22:06PM +0100, Andrew Cooper wrote:
+>>> On 24/08/2020 11:14, peterz@infradead.org wrote:
+>>>> The WARN added in commit 3c73b81a9164 ("x86/entry, selftests: Further
+>>>> improve user entry sanity checks") unconditionally triggers on my IVB
+>>>> machine because it does not support SMAP.
+>>>>
+>>>> For !SMAP hardware we patch out CLAC/STAC instructions and thus if
+>>>> userspace sets AC, we'll still have it set after entry.
+>>> Technically, you don't patch in, rather than patch out.
+>> True.
+>>
+>>>> Fixes: 3c73b81a9164 ("x86/entry, selftests: Further improve user entry sanity checks")
+>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>>> Acked-by: Andy Lutomirski <luto@kernel.org>
+>>>> ---
+>>>>   arch/x86/include/asm/entry-common.h |   11 +++++++++--
+>>>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>>>
+>>>> --- a/arch/x86/include/asm/entry-common.h
+>>>> +++ b/arch/x86/include/asm/entry-common.h
+>>>> @@ -18,8 +18,15 @@ static __always_inline void arch_check_u
+>>>>   		 * state, not the interrupt state as imagined by Xen.
+>>>>   		 */
+>>>>   		unsigned long flags = native_save_fl();
+>>>> -		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
+>>>> -				      X86_EFLAGS_NT));
+>>>> +		unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
+>>>> +
+>>>> +		/*
+>>>> +		 * For !SMAP hardware we patch out CLAC on entry.
+>>>> +		 */
+>>>> +		if (boot_cpu_has(X86_FEATURE_SMAP))
+>>>> +			mask |= X86_EFLAGS_AC;
+>>> The Xen PV ABI clears AC on entry for 64bit guests, because Linux is
+>>> actually running in Ring 3, and therefore susceptible to #AC's which
+>>> wouldn't occur natively.
+>> So do you then want it to be something like:
+>>
+>> 	if (boot_cpu_has(X86_FEATURE_SMAP) ||
+>> 	    (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
+>>
+>> ? Or are you fine with the proposed?
+> 
+> Dealers choice, but this option would be slightly better overall.
+> 
+> (Are there any other cases where Linux will be running in Ring 3?  I
+> haven't been paying attention to recent changes in PVOps.)
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I'm not aware of any other case running kernel code in ring 3.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-index 0d1088dcaa02..fa7a041ffcfd 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-@@ -229,28 +229,28 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_gpio3_hog>;
- 
--	usb-emulation {
-+	usb-emulation-hog {
- 		gpio-hog;
- 		gpios = <10 GPIO_ACTIVE_HIGH>;
- 		output-low;
- 		line-name = "usb-emulation";
- 	};
- 
--	usb-mode1 {
-+	usb-mode1-hog {
- 		gpio-hog;
- 		gpios = <11 GPIO_ACTIVE_HIGH>;
- 		output-high;
- 		line-name = "usb-mode1";
- 	};
- 
--	usb-pwr {
-+	usb-pwr-hog {
- 		gpio-hog;
- 		gpios = <12 GPIO_ACTIVE_LOW>;
- 		output-high;
- 		line-name = "usb-pwr-ctrl-en-n";
- 	};
- 
--	usb-mode2 {
-+	usb-mode2-hog {
- 		gpio-hog;
- 		gpios = <13 GPIO_ACTIVE_HIGH>;
- 		output-high;
--- 
-2.17.1
 
+Juergen
