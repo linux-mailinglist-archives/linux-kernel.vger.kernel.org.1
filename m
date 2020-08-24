@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41F024F484
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FB624F54E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgHXIh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50648 "EHLO mail.kernel.org"
+        id S1729435AbgHXIrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgHXIhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:21 -0400
+        id S1729421AbgHXIrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:47:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2912F207DF;
-        Mon, 24 Aug 2020 08:37:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D2CF206F0;
+        Mon, 24 Aug 2020 08:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258240;
-        bh=/VkEBIuziD8SgmNEKbfaVGxr7/U3/MYSmlfd1mWutaM=;
+        s=default; t=1598258830;
+        bh=ObB8scPObpqBxHgYAz3uByh5AW7ZXQnLWcvr0snphRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ng8VPhm+2vc2WgUfPdhkfU8ZwAUMWXsUhC6wkzJISctiMbPtuoksMfvuS1DH0Uxio
-         5EF+/lV4h8axJ0VQlldG3C4kByXNd4FrdN+069o8DKwAOWucvoYHo+ncGdJF6RIZMi
-         JFREtgDnXfxoXADXI281EMJLf2DXHLN+z5xIiepU=
+        b=P7ozp/itptqdP5+6B7EhGbKRWnGfjj32jbJc/Qh6Fx/znD1B5Tf//qUxkn+LzPSRG
+         dVnHE+Zkodsi0TvKDMV6jF41vYFK9BRPo3THk56XDo6Uvq5pEoVfmpD00BTr0Tc7D8
+         EjmPyq3S0nv3OezPV+iWCY2lSyvx0YB2cwvfvqDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Eiichi Tsukata <devel@etsukata.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 127/148] ARM64: vdso32: Install vdso32 from vdso_install
-Date:   Mon, 24 Aug 2020 10:30:25 +0200
-Message-Id: <20200824082420.098230490@linuxfoundation.org>
+Subject: [PATCH 5.4 060/107] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
+Date:   Mon, 24 Aug 2020 10:30:26 +0200
+Message-Id: <20200824082408.095577696@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,51 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Eiichi Tsukata <devel@etsukata.com>
 
-[ Upstream commit 8d75785a814241587802655cc33e384230744f0c ]
+[ Upstream commit 96cf2a2c75567ff56195fe3126d497a2e7e4379f ]
 
-Add the 32-bit vdso Makefile to the vdso_install rule so that 'make
-vdso_install' installs the 32-bit compat vdso when it is compiled.
+If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
+shows the following warning:
 
-Fixes: a7f71a2c8903 ("arm64: compat: Add vDSO")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Link: https://lore.kernel.org/r/20200818014950.42492-1-swboyd@chromium.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
+  member access within null pointer of type 'struct xfs_kobj'
+  Call Trace:
+   dump_stack+0x10e/0x195
+   ubsan_type_mismatch_common+0x241/0x280
+   __ubsan_handle_type_mismatch_v1+0x32/0x40
+   init_xfs_fs+0x12b/0x28f
+   do_one_initcall+0xdd/0x1d0
+   do_initcall_level+0x151/0x1b6
+   do_initcalls+0x50/0x8f
+   do_basic_setup+0x29/0x2b
+   kernel_init_freeable+0x19f/0x20b
+   kernel_init+0x11/0x1e0
+   ret_from_fork+0x22/0x30
+
+Fix it by checking parent_kobj before the code accesses its member.
+
+Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+[darrick: minor whitespace edits]
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/Makefile               | 1 +
- arch/arm64/kernel/vdso32/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_sysfs.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 70f5905954dde..91e377770a6b8 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -158,6 +158,7 @@ zinstall install:
- PHONY += vdso_install
- vdso_install:
- 	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso $@
-+	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso32 $@
+diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
+index e9f810fc67317..43585850f1546 100644
+--- a/fs/xfs/xfs_sysfs.h
++++ b/fs/xfs/xfs_sysfs.h
+@@ -32,9 +32,11 @@ xfs_sysfs_init(
+ 	struct xfs_kobj		*parent_kobj,
+ 	const char		*name)
+ {
++	struct kobject		*parent;
++
++	parent = parent_kobj ? &parent_kobj->kobject : NULL;
+ 	init_completion(&kobj->complete);
+-	return kobject_init_and_add(&kobj->kobject, ktype,
+-				    &parent_kobj->kobject, "%s", name);
++	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
+ }
  
- # We use MRPROPER_FILES and CLEAN_FILES now
- archclean:
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index 5139a5f192568..d6adb4677c25f 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -208,7 +208,7 @@ quiet_cmd_vdsosym = VDSOSYM $@
-       cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
- 
- # Install commands for the unstripped file
--quiet_cmd_vdso_install = INSTALL $@
-+quiet_cmd_vdso_install = INSTALL32 $@
-       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/vdso32.so
- 
- vdso.so: $(obj)/vdso.so.dbg
+ static inline void
 -- 
 2.25.1
 
