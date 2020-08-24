@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F74924F56E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E157124F494
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgHXIsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
+        id S1728499AbgHXIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729559AbgHXIsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:48:33 -0400
+        id S1728488AbgHXIiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6EBC204FD;
-        Mon, 24 Aug 2020 08:48:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E49022B47;
+        Mon, 24 Aug 2020 08:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258912;
-        bh=I2rc69Oc47pz8Ily187amhLgZCDrNoxj7kJnj5evJDg=;
+        s=default; t=1598258279;
+        bh=KfNoq6N2p+aGqJfVnuq17Kbyr3o0jWGxUz32+IgQyRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1w9tJSMa+v+JCpYVHSHYyOj6k62o57nVjHu1z1B501Vqo6cOxpDja1/GcH01+NrsV
-         9e/ypZ7iQrV8K1R/nM4OGxnqFPaKUfLD5bfVJtkwaGJvyYX/QueFxcuh05gcK1aYXN
-         nD9bENFilcKkQpZ6jKuz/dZKkfinR5hxfb09flGA=
+        b=mba/tSEzVDpp5c+q5S/hvMp4vTglCDex1s0jTTuu49MSwGhOAfO4CFpb6zqp+mwyv
+         clvuD1+mcxicV3sFIXBqFQvODvACuc1aR7Z0xiJhDmlyVld7yufpZUUWezpF15Ao/F
+         kYhak2Pk5O23Rva/cD76nWEMoy9PU+4KkUjtxn5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Henrique Figueira <henrislip@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 072/107] can: j1939: transport: add j1939_session_skb_find_by_offset() function
+        stable@vger.kernel.org, Michael Neuling <mikey@neuling.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.8 140/148] powerpc: Fix P10 PVR revision in /proc/cpuinfo for SMT4 cores
 Date:   Mon, 24 Aug 2020 10:30:38 +0200
-Message-Id: <20200824082408.687314889@linuxfoundation.org>
+Message-Id: <20200824082420.725353079@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,90 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Michael Neuling <mikey@neuling.org>
 
-[ Upstream commit 840835c9281215341d84966a8855f267a971e6a3 ]
+commit 030a2c689fb46e1690f7ded8b194bab7678efb28 upstream.
 
-Sometimes it makes no sense to search the skb by pkt.dpo, since we need
-next the skb within the transaction block. This may happen if we have an
-ETP session with CTS set to less than 255 packets.
+On POWER10 bit 12 in the PVR indicates if the core is SMT4 or SMT8.
+Bit 12 is set for SMT4.
 
-After this patch, we will be able to work with ETP sessions where the
-block size (ETP.CM_CTS byte 2) is less than 255 packets.
+Without this patch, /proc/cpuinfo on a SMT4 DD1 POWER10 looks like
+this:
+  cpu             : POWER10, altivec supported
+  revision        : 17.0 (pvr 0080 1100)
 
-Reported-by: Henrique Figueira <henrislip@gmail.com>
-Reported-by: https://github.com/linux-can/can-utils/issues/228
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-5-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a3ea40d5c736 ("powerpc: Add POWER10 architected mode")
+Cc: stable@vger.kernel.org # v5.8
+Signed-off-by: Michael Neuling <mikey@neuling.org>
+Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200803035600.1820371-1-mikey@neuling.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/can/j1939/transport.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ arch/powerpc/kernel/setup-common.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 30957c9a8eb7a..90a2baac8a4aa 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -352,17 +352,16 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 	skb_queue_tail(&session->skb_queue, skb);
- }
- 
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct
-+sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
-+					  unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
-+	struct j1939_sk_buff_cb *do_skcb;
- 	struct sk_buff *skb = NULL;
- 	struct sk_buff *do_skb;
--	struct j1939_sk_buff_cb *do_skcb;
--	unsigned int offset_start;
- 	unsigned long flags;
- 
--	offset_start = session->pkt.dpo * 7;
--
- 	spin_lock_irqsave(&session->skb_queue.lock, flags);
- 	skb_queue_walk(&session->skb_queue, do_skb) {
- 		do_skcb = j1939_skb_to_cb(do_skb);
-@@ -382,6 +381,14 @@ static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
- 	return skb;
- }
- 
-+static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+{
-+	unsigned int offset_start;
-+
-+	offset_start = session->pkt.dpo * 7;
-+	return j1939_session_skb_find_by_offset(session, offset_start);
-+}
-+
- /* see if we are receiver
-  * returns 0 for broadcasts, although we will receive them
-  */
-@@ -766,7 +773,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find(session);
-+	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -1765,7 +1772,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 			    __func__, session);
- 		goto out_session_cancel;
- 	}
--	se_skb = j1939_session_skb_find(session);
-+
-+	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
--- 
-2.25.1
-
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -311,6 +311,7 @@ static int show_cpuinfo(struct seq_file
+ 				min = pvr & 0xFF;
+ 				break;
+ 			case 0x004e: /* POWER9 bits 12-15 give chip type */
++			case 0x0080: /* POWER10 bit 12 gives SMT8/4 */
+ 				maj = (pvr >> 8) & 0x0F;
+ 				min = pvr & 0xFF;
+ 				break;
 
 
