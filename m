@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F5A24F952
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B2924FA27
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgHXJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37920 "EHLO mail.kernel.org"
+        id S1728067AbgHXJxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:53:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728510AbgHXIn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:28 -0400
+        id S1728513AbgHXIiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BCA02074D;
-        Mon, 24 Aug 2020 08:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21E3520FC3;
+        Mon, 24 Aug 2020 08:38:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258608;
-        bh=l+KKjuyv0K+3EtnedaDSTu3bi2Trkpi4G9PEyEiUh64=;
+        s=default; t=1598258290;
+        bh=5cbQV9c2lHZGlqdrGa8MUGaqrhRQfarfY4yneXqdzGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=plinFpnd/n2LPNJddUv+1k0ZYQAV2zVMvYB+2JS6p0CknPvW+Wv5KXXsINdpc/uPd
-         stiQ9SRXuCX+7xyf+uh/ifdBl/wafsf81/3E3hkAFNCZAwxpi+pcSd7n+Ci9hfSvQo
-         Ek4FOoXUA+uFTRev3DZ/M/yTl1BbzlbrjAAtNqiA=
+        b=YVBMMQbQA9mbuFlL8L2rGKq+GCOD8VQrnUaSEhJfe8auPVlQLLpjW90Hkftvy3+6r
+         uhRu7QO+MnhXMytckTeOJQsQiLqujToPrcdAEonV4Ns0IiQ53o06p52rL4J5i4wYXy
+         g8TK2isHY4uuGHWCA/9DaPkpc/MnMHeRsl/ocIhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 107/124] ARM64: vdso32: Install vdso32 from vdso_install
-Date:   Mon, 24 Aug 2020 10:30:41 +0200
-Message-Id: <20200824082414.672823482@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Li Heng <liheng40@huawei.com>, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.8 144/148] efi: add missed destroy_workqueue when efisubsys_init fails
+Date:   Mon, 24 Aug 2020 10:30:42 +0200
+Message-Id: <20200824082420.921660253@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,53 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Li Heng <liheng40@huawei.com>
 
-[ Upstream commit 8d75785a814241587802655cc33e384230744f0c ]
+commit 98086df8b70c06234a8f4290c46064e44dafa0ed upstream.
 
-Add the 32-bit vdso Makefile to the vdso_install rule so that 'make
-vdso_install' installs the 32-bit compat vdso when it is compiled.
+destroy_workqueue() should be called to destroy efi_rts_wq
+when efisubsys_init() init resources fails.
 
-Fixes: a7f71a2c8903 ("arm64: compat: Add vDSO")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Link: https://lore.kernel.org/r/20200818014950.42492-1-swboyd@chromium.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Li Heng <liheng40@huawei.com>
+Link: https://lore.kernel.org/r/1595229738-10087-1-git-send-email-liheng40@huawei.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/Makefile               | 1 +
- arch/arm64/kernel/vdso32/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/firmware/efi/efi.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 85e4149cc5d5c..d3c7ffa72902d 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -156,6 +156,7 @@ zinstall install:
- PHONY += vdso_install
- vdso_install:
- 	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso $@
-+	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso32 $@
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -381,6 +381,7 @@ static int __init efisubsys_init(void)
+ 	efi_kobj = kobject_create_and_add("efi", firmware_kobj);
+ 	if (!efi_kobj) {
+ 		pr_err("efi: Firmware registration failed.\n");
++		destroy_workqueue(efi_rts_wq);
+ 		return -ENOMEM;
+ 	}
  
- # We use MRPROPER_FILES and CLEAN_FILES now
- archclean:
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index 0433bb58ce52c..601c075f1f476 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -201,7 +201,7 @@ quiet_cmd_vdsosym = VDSOSYM $@
-       cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
+@@ -424,6 +425,7 @@ err_unregister:
+ 		generic_ops_unregister();
+ err_put:
+ 	kobject_put(efi_kobj);
++	destroy_workqueue(efi_rts_wq);
+ 	return error;
+ }
  
- # Install commands for the unstripped file
--quiet_cmd_vdso_install = INSTALL $@
-+quiet_cmd_vdso_install = INSTALL32 $@
-       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/vdso32.so
- 
- vdso.so: $(obj)/vdso.so.dbg
--- 
-2.25.1
-
 
 
