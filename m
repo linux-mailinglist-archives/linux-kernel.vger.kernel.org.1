@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B350824F8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A174124F8B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgHXJg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:36:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49692 "EHLO mail.kernel.org"
+        id S1729798AbgHXJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729344AbgHXIsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:48:30 -0400
+        id S1729338AbgHXIsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 493A2206F0;
-        Mon, 24 Aug 2020 08:48:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D4032072D;
+        Mon, 24 Aug 2020 08:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258909;
-        bh=5NLj5sKI134qWWyTgQ08KsIfccN+WZfBmPvo8KiYckE=;
+        s=default; t=1598258914;
+        bh=3eXi5Y2LlNte69Jqad2KS0TNErJYIWcHHxtcyLY6VNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oXf23BGsSzEmUbj6mQ/I2zSAmtaai1q33VCHgeedPhylHMimf1drzdgF8M8Sh7naS
-         QDMzslA34pZNsMjtP8Lk8w7MRK2b6MfdkYnKVJxdL8vOWoCtG/BfjZqQFpB/bX8ir7
-         jdjKOAFcu5b8+bGADf9KY4mIYAZMr/Dnb+SdZidk=
+        b=RPvIrkMUz2viEIg+3SzimEbA5+16Za/Bx0aWio8iZAh1Uxvrf7sm5x0cHGqW5qG1r
+         ei265xp1004bzSK8xx3ihkWgFFyt9t95mWX11q27ZoOheIX+42Mv5OSs3T0NYJS9ZY
+         9arxOFTmB0QoB/g60z0D7Lf1B7FF7iSeck5tTiEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 089/107] Revert "scsi: qla2xxx: Disable T10-DIF feature with FC-NVMe during probe"
-Date:   Mon, 24 Aug 2020 10:30:55 +0200
-Message-Id: <20200824082409.516205901@linuxfoundation.org>
+Subject: [PATCH 5.4 090/107] kconfig: qconf: do not limit the pop-up menu to the first row
+Date:   Mon, 24 Aug 2020 10:30:56 +0200
+Message-Id: <20200824082409.563072436@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
 References: <20200824082405.020301642@linuxfoundation.org>
@@ -47,41 +43,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit dca93232b361d260413933903cd4bdbd92ebcc7f ]
+[ Upstream commit fa8de0a3bf3c02e6f00b7746e7e934db522cdda9 ]
 
-FCP T10-PI and NVMe features are independent of each other. This patch
-allows both features to co-exist.
+If you right-click the first row in the option tree, the pop-up menu
+shows up, but if you right-click the second row or below, the event
+is ignored due to the following check:
 
-This reverts commit 5da05a26b8305a625bc9d537671b981795b46dab.
+  if (e->y() <= header()->geometry().bottom()) {
 
-Link: https://lore.kernel.org/r/20200806111014.28434-12-njavali@marvell.com
-Fixes: 5da05a26b830 ("scsi: qla2xxx: Disable T10-DIF feature with FC-NVMe during probe")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Perhaps, the intention was to show the pop-menu only when the tree
+header was right-clicked, but this handler is not called in that case.
+
+Since the origin of e->y() starts from the bottom of the header,
+this check is odd.
+
+Going forward, you can right-click anywhere in the tree to get the
+pop-up menu.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_os.c | 4 ----
- 1 file changed, 4 deletions(-)
+ scripts/kconfig/qconf.cc | 68 ++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index d7ec4083a0911..d91c95d9981ac 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -2804,10 +2804,6 @@ qla2x00_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	/* This may fail but that's ok */
- 	pci_enable_pcie_error_reporting(pdev);
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index 0f8c77f847114..3e7fbfae798c2 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -869,40 +869,40 @@ void ConfigList::focusInEvent(QFocusEvent *e)
  
--	/* Turn off T10-DIF when FC-NVMe is enabled */
--	if (ql2xnvmeenable)
--		ql2xenabledif = 0;
+ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
+ {
+-	if (e->y() <= header()->geometry().bottom()) {
+-		if (!headerPopup) {
+-			QAction *action;
 -
- 	ha = kzalloc(sizeof(struct qla_hw_data), GFP_KERNEL);
- 	if (!ha) {
- 		ql_log_pci(ql_log_fatal, pdev, 0x0009,
+-			headerPopup = new QMenu(this);
+-			action = new QAction("Show Name", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowName(bool)));
+-			  connect(parent(), SIGNAL(showNameChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showName);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Range", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowRange(bool)));
+-			  connect(parent(), SIGNAL(showRangeChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showRange);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Data", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowData(bool)));
+-			  connect(parent(), SIGNAL(showDataChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showData);
+-			  headerPopup->addAction(action);
+-		}
+-		headerPopup->exec(e->globalPos());
+-		e->accept();
+-	} else
+-		e->ignore();
++	if (!headerPopup) {
++		QAction *action;
++
++		headerPopup = new QMenu(this);
++		action = new QAction("Show Name", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowName(bool)));
++		connect(parent(), SIGNAL(showNameChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showName);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Range", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowRange(bool)));
++		connect(parent(), SIGNAL(showRangeChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showRange);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Data", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowData(bool)));
++		connect(parent(), SIGNAL(showDataChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showData);
++		headerPopup->addAction(action);
++	}
++
++	headerPopup->exec(e->globalPos());
++	e->accept();
+ }
+ 
+ ConfigView*ConfigView::viewList;
 -- 
 2.25.1
 
