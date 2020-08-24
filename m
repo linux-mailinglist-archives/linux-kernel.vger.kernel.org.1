@@ -2,84 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F83624FDE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEE124FDF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgHXMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 08:33:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42494 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgHXMcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 08:32:53 -0400
-Date:   Mon, 24 Aug 2020 14:32:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598272369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qr6lUHBkLuLxAPZNmigB/IH+DYgyFTNeFwwb/3iSrGU=;
-        b=E6ZKWqWp00DLUq6qhieA0ftDeXWlXvoGZp+Ms2MXHBT9cykq4O2bVe1ZFTAFq+xhHIxbsE
-        4RTPpH8VY8i3Y4neiCBBTEYGypzpAK8ZaZUwkCLV0s01pohlTwnP+vQ5gn1tZamJ7vj7XZ
-        kFVmie62X2ToAlH+1Gqgu8S+CVN1vh+G6KuvzzA+PWF70quvEDHYJHfvBTk6i7VusoHRTA
-        EGO3YcAgdG2j0mrmdppr9UEUK3GqgRHSFSo8SI0VrKUncAxostzkcwu90gHOChanM4PaT8
-        GTZu/XBUDc2UNlOqRKpQJ+P3gbxXV/yUfOT1dfwN6I8EDnorpJ9ZP2uTAHiTwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598272369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qr6lUHBkLuLxAPZNmigB/IH+DYgyFTNeFwwb/3iSrGU=;
-        b=SvhkcAV3b9DAe/L8n9ay7Sewgu+Z90tVOc5pxatliy7JT9kFlC2JIzVvEZY4GbOBMnBC9g
-        Dnxts6GdoyqYGMAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kaleshsingh@google.com,
-        calin@google.com, surenb@google.com, nnk@google.com,
-        jeffv@google.com, kernel-team@android.com,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Daniel Colascione <dancol@google.com>
-Subject: Re: [PATCH v2 1/2] Add UFFD_USER_MODE_ONLY
-Message-ID: <20200824123247.finquufqpr6i7umb@linutronix.de>
-References: <20200822014018.913868-1-lokeshgidra@google.com>
- <20200822014018.913868-2-lokeshgidra@google.com>
+        id S1726241AbgHXMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 08:41:58 -0400
+Received: from mga17.intel.com ([192.55.52.151]:23096 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725904AbgHXMl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 08:41:56 -0400
+IronPort-SDR: J6Fz7NX5z3v9XBB3cVNLbP3myR7L4pBHGsafVr/kT+4QWDN9iz6t0PPzyxipn/wKF4iiZe6O8E
+ VWluGljMGrKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="135952775"
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="135952775"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 05:41:55 -0700
+IronPort-SDR: nHxh7m7iG/L4ELDnjySrE9FkOh8ejEXHx7CCTm18bB1uWzWQyE57N3Nfldf30Gp9NLo2MuJLvu
+ J4r3IvzJavhw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="331007620"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Aug 2020 05:41:47 -0700
+Subject: Re: [PATCH 2/2] perf intel-pt: Fix corrupt data after perf inject
+ from
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Al Grant <al.grant@arm.com>
+References: <20200819084751.17686-1-leo.yan@linaro.org>
+ <20200819084751.17686-2-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b957484e-19f0-4a7c-c67e-38f9d81fa879@intel.com>
+Date:   Mon, 24 Aug 2020 15:41:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200819084751.17686-2-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200822014018.913868-2-lokeshgidra@google.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-21 18:40:17 [-0700], Lokesh Gidra wrote:
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -1966,6 +1969,7 @@ static void init_once_userfaultfd_ctx(void *mem)
->  
->  SYSCALL_DEFINE1(userfaultfd, int, flags)
->  {
-> +	static const int uffd_flags = UFFD_USER_MODE_ONLY;
->  	struct userfaultfd_ctx *ctx;
->  	int fd;
-Why?
+On 19/08/20 11:47 am, Leo Yan wrote:
+> From: Al Grant <al.grant@arm.com>
+> 
+> Commit 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> changed the format of branch stacks in perf samples. When samples use
+> this new format, a flag must be set in the corresponding event.
+> Synthesized branch stacks generated from Intel PT were using the new
+> format, but not setting the event attribute, leading to consumers
+> seeing corrupt data. This patch fixes the issue by setting the event
+> attribute to indicate use of the new format.
+> 
+> Fixes: 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> Signed-off-by: Al Grant <al.grant@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Sebastian
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  tools/perf/util/intel-pt.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+> index 2a8d245351e7..0af4e81c46e2 100644
+> --- a/tools/perf/util/intel-pt.c
+> +++ b/tools/perf/util/intel-pt.c
+> @@ -3017,8 +3017,15 @@ static int intel_pt_synth_events(struct intel_pt *pt,
+>  
+>  	if (pt->synth_opts.callchain)
+>  		attr.sample_type |= PERF_SAMPLE_CALLCHAIN;
+> -	if (pt->synth_opts.last_branch)
+> +	if (pt->synth_opts.last_branch) {
+>  		attr.sample_type |= PERF_SAMPLE_BRANCH_STACK;
+> +		/*
+> +		 * We don't use the hardware index, but the sample generation
+> +		 * code uses the new format branch_stack with this field,
+> +		 * so the event attributes must indicate that it's present.
+> +		 */
+> +		attr.branch_sample_type |= PERF_SAMPLE_BRANCH_HW_INDEX;
+> +	}
+>  
+>  	if (pt->synth_opts.instructions) {
+>  		attr.config = PERF_COUNT_HW_INSTRUCTIONS;
+> 
+
