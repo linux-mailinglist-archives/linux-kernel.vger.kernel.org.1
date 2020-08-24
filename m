@@ -2,66 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF9024FEB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED2A24FEBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgHXNU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
+        id S1726747AbgHXNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgHXNUz (ORCPT
+        with ESMTP id S1726635AbgHXNVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:20:55 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC49C061573;
-        Mon, 24 Aug 2020 06:20:55 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 00B6712824063;
-        Mon, 24 Aug 2020 06:04:07 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 06:20:52 -0700 (PDT)
-Message-Id: <20200824.062052.523630350034926727.davem@davemloft.net>
-To:     sylphrenadin@gmail.com
-Cc:     Julia.Lawall@lip6.fr, andrew@lunn.ch, sean.wang@mediatek.com,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, kuba@kernel.org,
-        matthias.bgg@gmail.com, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] net: dsa: Add of_node_put() before break and return
- statements
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200823193054.29336-1-sylphrenadin@gmail.com>
-References: <20200823193054.29336-1-sylphrenadin@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 06:04:08 -0700 (PDT)
+        Mon, 24 Aug 2020 09:21:49 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05277C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:21:49 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so11873038eje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=90su1owIcZp1qZ8W+tbpS5QP1K7qOdgVEZYDn1cZZPI=;
+        b=HmZ0L+ZO9rkNEJk5r0Ka6FMGlXEuCReREwZJyU/MzsB9S8jVOUjFNQYMNFTr4abObP
+         fVq1khF3ehL0JqKu8fdJVYpL2pp6XNDHNuG3uUUBs0Lfm+yk9/suss49FVzUcBjw/aoI
+         gkqBI6IH42fGKgFpGz3vy69QOSjGS+S1H/25Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=90su1owIcZp1qZ8W+tbpS5QP1K7qOdgVEZYDn1cZZPI=;
+        b=RNQyk8L11gs6WjGHedO5iMq257XO5y1ht6M7AZr405LWUd2oaSRSo+y8HOG1fz88Gc
+         sU143rldGQALA11UHyfn0EUkPSWXm8GyqylrxWLpCyFuVMzxyhqf81jlkwherHcThGmN
+         MIP9duymJwaznkIbOSpRrL3zgIGv30QLxti7IqthdWduU+bIFmpdj4SSjg9XSDFASmnR
+         9xFmQBr9F5CkBHshZJYmpvkIILyQQUB/01PNpX7+VSPyR3+C9cEdByI/uuUg8T31caR9
+         dtluugBV8uoa1PEpfZTjx3cHPx/+Qxo5HSctyYQWdmDiuUCTFrUzUQafFZ67k5YgzGqH
+         tcEQ==
+X-Gm-Message-State: AOAM5339h5TJf3cYBjBa5Knl1d9iuBamRCWH2qDSGfoVHfP1hRB62TYH
+        2wmZOfTNsLJM2GhdIIJHfl7Gi6fef8DKmQ==
+X-Google-Smtp-Source: ABdhPJwQChjhnc3i+Jj8DduzbytaRw+2zpSpfb7waBvrovhT7jZZNWJYCbgVeiu6Uun5ZAcprnbqVQ==
+X-Received: by 2002:a17:906:bb06:: with SMTP id jz6mr5734620ejb.248.1598275307454;
+        Mon, 24 Aug 2020 06:21:47 -0700 (PDT)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id v13sm10189263ejq.59.2020.08.24.06.21.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 06:21:46 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id x5so8325891wmi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:21:46 -0700 (PDT)
+X-Received: by 2002:a1c:5581:: with SMTP id j123mr5764243wmb.11.1598275305542;
+ Mon, 24 Aug 2020 06:21:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <CGME20200824131716eucas1p16a3fde52aa765e7cd6584d4733762047@eucas1p1.samsung.com>
+ <20200822124325.GF20423@kozik-lap> <dleftj5z98xjxs.fsf%l.stelmach@samsung.com>
+In-Reply-To: <dleftj5z98xjxs.fsf%l.stelmach@samsung.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 24 Aug 2020 15:21:34 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5ADym6YapCoJ8+fJbPjSestcD_2R8L5T8jAfO4c=GFQkA@mail.gmail.com>
+Message-ID: <CAAFQd5ADym6YapCoJ8+fJbPjSestcD_2R8L5T8jAfO4c=GFQkA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] spi: spi-s3c64xx: Ensure cur_speed holds actual
+ clock value
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumera Priyadarsini <sylphrenadin@gmail.com>
-Date: Mon, 24 Aug 2020 01:00:54 +0530
+On Mon, Aug 24, 2020 at 3:17 PM Lukasz Stelmach <l.stelmach@samsung.com> wr=
+ote:
+>
+> It was <2020-08-22 sob 14:43>, when Krzysztof Kozlowski wrote:
+> > On Fri, Aug 21, 2020 at 06:13:59PM +0200, =C5=81ukasz Stelmach wrote:
+> >> cur_speed is used to calculate transfer timeout and needs to be
+> >> set to the actual value of (half) the clock speed for precise
+> >> calculations.
+> >
+> > If you need this only for timeout calculation just divide it in
+> > s3c64xx_wait_for_dma().
+>
+> I divide it here to keep the relationship between the value the variable
+> holds and the one that is inside clk_* (See? It's multiplied 3 lines
+> above). If you look around every single clk_get_rate() call in the file i=
+s
+> divided by two.
+>
+> > Otherwise why only if (cmu) case is updated?
+>
+> You are righ I will update that too.
+>
+> However, I wonder if it is even possible that the value read from
+> S3C64XX_SPI_CLK_CFG would be different than the one written to it?
+>
 
-> ---
-> 
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> 
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+It is not possible for the register itself, but please see my other
+reply, where I explained the integer rounding error which can happen
+when calculating the value to write to the register.
 
-You only need one Signed-off-by:
+> > You are also affecting here not only timeout but
+> > s3c64xx_enable_datapath() which is not mentioned in commit log. In othe=
+r
+> > words, this looks wrong.
+>
+> Indeed, there is a reference too. I've corrected the message.
+>
 
-You must not put the signoff after the "---" otherwise GIT will remove
-it from the commit log message when I try to apply your patch.
+Thanks!
 
-Combine this with the fact that your change didn't even compile
-properly up until even V2, I wish you would put more effort and
-care into your patch submission.  It feels to reviewers like
-you are just throwing this patch onto the mailing list without
-much care or testing at all.
+Best regards,
+Tomasz
 
-Thank you.
+> >>
+> >> Cc: Tomasz Figa <tfiga@chromium.org>
+> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> >> ---
+> >>  drivers/spi/spi-s3c64xx.c | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> >> index 02de734b8ab1..89c162efe355 100644
+> >> --- a/drivers/spi/spi-s3c64xx.c
+> >> +++ b/drivers/spi/spi-s3c64xx.c
+> >> @@ -626,6 +626,7 @@ static int s3c64xx_spi_config(struct s3c64xx_spi_d=
+river_data *sdd)
+> >>              ret =3D clk_set_rate(sdd->src_clk, sdd->cur_speed * 2);
+> >>              if (ret)
+> >>                      return ret;
+> >> +            sdd->cur_speed =3D clk_get_rate(sdd->src_clk) / 2;
+> >>      } else {
+> >>              /* Configure Clock */
+> >>              val =3D readl(regs + S3C64XX_SPI_CLK_CFG);
+> >> --
+> >> 2.26.2
+> >>
+> >
+> >
+>
+> --
+> =C5=81ukasz Stelmach
+> Samsung R&D Institute Poland
+> Samsung Electronics
