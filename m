@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF93E24F45D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC2E24F4AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgHXIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
+        id S1728635AbgHXIjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:39:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgHXIf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:26 -0400
+        id S1728629AbgHXIjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB6982177B;
-        Mon, 24 Aug 2020 08:35:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73F6320FC3;
+        Mon, 24 Aug 2020 08:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258126;
-        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
+        s=default; t=1598258355;
+        bh=egZLI8/fjbloY10GvOwkNn+G+wjq30tevwSRbwaKQQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJFSsMCFh/iBFMfexXySvZ68oE02IrFOOB+Rx7nMphu+UI30IRsB+/B9hxalbXmtN
-         a1p+s5PIy6K2vOnP2IBJmlKzenUrpG86/yWXRAyCnfkVJ0y5fDv/tOWGyqeM+omHhW
-         TKscMGEgYC5brmC9b3/V1G3XITgjTKWkZyZOZ5j0=
+        b=pOo/QZbaZ9pi8egsbptWDXZkGKEc7oY5jygK84k5qDTQ9BK0lDYm+H5if8bd1fmN0
+         cEHTP0UpMAx8YgEGQic/PLQiQ3yZ7DdtoMOWY1DsHd8ME55GCOvjLPcGukkHyUaBgA
+         0M7Ch6BD97NWMwachrOO+VLQqndqtQS3N0+6L/MU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 055/148] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.7 019/124] jbd2: add the missing unlock_buffer() in the error path of jbd2_write_superblock()
 Date:   Mon, 24 Aug 2020 10:29:13 +0200
-Message-Id: <20200824082416.702919367@linuxfoundation.org>
+Message-Id: <20200824082410.364588958@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Ungerer <gerg@linux-m68k.org>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
+commit ef3f5830b859604eda8723c26d90ab23edc027a4 upstream.
 
-The Cache Control Register (CACR) of the ColdFire V3 has bits that
-control high level caching functions, and also enable/disable the use
-of the alternate stack pointer register (the EUSP bit) to provide
-separate supervisor and user stack pointer registers. The code as
-it is today will blindly clear the EUSP bit on cache actions like
-invalidation. So it is broken for this case - and that will result
-in failed booting (interrupt entry and exit processing will be
-completely hosed).
+jbd2_write_superblock() is under the buffer lock of journal superblock
+before ending that superblock write, so add a missing unlock_buffer() in
+in the error path before submitting buffer.
 
-This only affects ColdFire V3 parts that support the alternate stack
-register (like the 5329 for example) - generally speaking new parts do,
-older parts don't. It has no impact on ColdFire V3 parts with the single
-stack pointer, like the 5307 for example.
+Fixes: 742b06b5628f ("jbd2: check superblock mapped prior to committing")
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20200620061948.2049579-1-yi.zhang@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fix the cache bit defines used, so they maintain the EUSP bit when
-carrying out cache actions through the CACR register.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/include/asm/m53xxacr.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/jbd2/journal.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
-index 9138a624c5c81..692f90e7fecc1 100644
---- a/arch/m68k/include/asm/m53xxacr.h
-+++ b/arch/m68k/include/asm/m53xxacr.h
-@@ -89,9 +89,9 @@
-  * coherency though in all cases. And for copyback caches we will need
-  * to push cached data as well.
-  */
--#define CACHE_INIT	  CACR_CINVA
--#define CACHE_INVALIDATE  CACR_CINVA
--#define CACHE_INVALIDATED CACR_CINVA
-+#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
-+#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
-+#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1367,8 +1367,10 @@ static int jbd2_write_superblock(journal
+ 	int ret;
  
- #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
- 			 (0x000f0000) + \
--- 
-2.25.1
-
+ 	/* Buffer got discarded which means block device got invalidated */
+-	if (!buffer_mapped(bh))
++	if (!buffer_mapped(bh)) {
++		unlock_buffer(bh);
+ 		return -EIO;
++	}
+ 
+ 	trace_jbd2_write_superblock(journal, write_flags);
+ 	if (!(journal->j_flags & JBD2_BARRIER))
 
 
