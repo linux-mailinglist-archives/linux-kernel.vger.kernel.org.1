@@ -2,141 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D870924FCCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2E424FCBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgHXLkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726929AbgHXLh2 (ORCPT
+        id S1727816AbgHXLjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:39:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42865 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727043AbgHXLiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:37:28 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CDBC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:36:34 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id x2so1888824vkd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JV6tfVfklUu/NgG7bOgXNfj+ClShTy9jxY/fWbFwF1Q=;
-        b=SR05v7vEY5sKMrTnPQXPXjzApuQk/oa1b/hk2ngKloy/+6+cKi9GyhYUL4kt+JBbkY
-         pFsINiplBoi0Ijf2LF4x2ZBTFIlXpzah5m1eCE1AAbUdy18LYtncpit+/50yr2Bi39Ny
-         hvRSdgcNB9nMuCfwtSzRJ3WblfiSUa/jY0qujdILepfgqr9S+YVHx3xavukh/XkrBCxv
-         E5SNrxD4DJuOb8KyVzuWTGGv1qeL/evptBdSvJ/beTaeUmXX8B59rdysWiEuUI2k47r7
-         /W9m4FCDtZmVl9PidXfCiGiCOpanM1+y208zn60nqEDwUoD5RyT3KQ7KcBmpcDGMkL2G
-         SRnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JV6tfVfklUu/NgG7bOgXNfj+ClShTy9jxY/fWbFwF1Q=;
-        b=XIu0JNJDdkGoRVqdEFxpelGIrG0TjmkZzYLpJhKPKH4/Ao6+tuk/8tn9L433wbbuau
-         mi0WVqbbt3l6dZkG94U9eB3kV0sIdA87SLA7S1K/ReFTX7NO0sQwtiAnIBaWxaMRaj/l
-         TM7h1TgNQmvMaLhv1NbMMxmiiL2WMrfCLHYAkfV5nyQbkkukqnl2lQieomIIhVn7F4bT
-         40AbH1X9W8d5xjb04fk6VYkYwrP0Ee+4oWWL0SxyTfPU9l20jYyHTuLDtE+W71g8+W02
-         QsdusF6RHGn2hNMID1DG7+Pa/4Z+k/nVl1DpbO6GK1g273WDnJqpUuvvRUQ3XV0FQUT7
-         DSCQ==
-X-Gm-Message-State: AOAM530apV6ruTjy6PJkZVa3B58ectWmpTkWWiJhANFLp3VNvX6bAfzA
-        nfAtXhux9jJ4hXAciIK3nxs5SztsKcqbFu/gtj2P2A==
-X-Google-Smtp-Source: ABdhPJwV339wbAhfl6NpdVN6lNoSFp1QLhcdRK1T9FWMbikCYbOeJPxGF0aDPlZioYf/71LuBla4tnSiHVkKQV97zsY=
-X-Received: by 2002:a1f:2895:: with SMTP id o143mr2131690vko.59.1598268993288;
- Mon, 24 Aug 2020 04:36:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597831670-17401-1-git-send-email-mkshah@codeaurora.org> <1597831670-17401-2-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1597831670-17401-2-git-send-email-mkshah@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 Aug 2020 13:35:57 +0200
-Message-ID: <CAPDyKFrY=U45K6NSkoJwvYuWWzMUdZNLaQn5XmnMGkJnCLgvdQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Revert "drivers: qcom: rpmh-rsc: Use rcuidle
- tracepoints for rpmh"
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>, lsrao@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+        Mon, 24 Aug 2020 07:38:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598269120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pzjKU5jnp1RJd2a0FpfszIcQQz0Dkjh8zuJQbNIELbM=;
+        b=MjR1xAiEme6dkPdXrPxv7G9BRH2lSuLaISaeRsekYBfM2XE+ofjsRLCTsIUjKrDqVLerCg
+        6dO183afhb+OjESoYM48qNAun4EOdxO/WZLT/TSkezQvKHA9ekMc0ev1n5MvpkFaNy6Ukn
+        t/goYA2yy9CZjPoU1aEM0s6zbBigS2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-1KtA7Q0RNkaNe3byvgOyFw-1; Mon, 24 Aug 2020 07:38:38 -0400
+X-MC-Unique: 1KtA7Q0RNkaNe3byvgOyFw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93E35100746A;
+        Mon, 24 Aug 2020 11:38:36 +0000 (UTC)
+Received: from starship (unknown [10.35.206.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F8695D9DD;
+        Mon, 24 Aug 2020 11:38:03 +0000 (UTC)
+Message-ID: <53b774c8f3ae94fb5161ee6d3005ac3b04f63052.camel@redhat.com>
+Subject: Re: [PATCH v2 2/7] KVM: nSVM: rename nested 'vmcb' to vmcb12_gpa in
+ few places
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Date:   Mon, 24 Aug 2020 14:37:53 +0300
+In-Reply-To: <CALMp9eQycCn-wTUfFkqH3M7vzsRsYphO=GU8EwHt3tomnp=mng@mail.gmail.com>
+References: <20200820133339.372823-1-mlevitsk@redhat.com>
+         <20200820133339.372823-3-mlevitsk@redhat.com>
+         <CALMp9eQycCn-wTUfFkqH3M7vzsRsYphO=GU8EwHt3tomnp=mng@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 12:08, Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> This change was done based on an test results of unmerged series of
-> adding RSC power domain and using .power_off callback of genpd to
-> invoke rpmh_flush().
->
->      Call trace:
->       dump_backtrace+0x0/0x174
->       show_stack+0x20/0x2c
->       dump_stack+0xc8/0x124
->       lockdep_rcu_suspicious+0xe4/0x104
->       __tcs_buffer_write+0x230/0x2d0
->       rpmh_rsc_write_ctrl_data+0x210/0x270
->       rpmh_flush+0x84/0x24c
->       rpmh_domain_power_off+0x78/0x98
->       _genpd_power_off+0x40/0xc0
->       genpd_power_off+0x168/0x208
->
-> Later the final merged solution is to use CPU PM notification to invoke
-> rpmh_flush() and .power_off callback of genpd is not implemented in the
-> driver.
->
-> Remove this change since RCU will not be idle during CPU PM notifications
-> hence not required to use _rcuidle tracepoint. Using _rcuidle tracepoint
-> prevented rpmh driver to be loadable module as these are not exported
-> symbols.
->
-> This reverts commit efde2659b0fe835732047357b2902cca14f054d9.
->
-> Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+On Thu, 2020-08-20 at 14:00 -0700, Jim Mattson wrote:
+> On Thu, Aug 20, 2020 at 6:33 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > No functional changes.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/svm/nested.c | 10 +++++-----
+> >  arch/x86/kvm/svm/svm.c    | 13 +++++++------
+> >  arch/x86/kvm/svm/svm.h    |  2 +-
+> >  3 files changed, 13 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index fb68467e6049..f5b17920a2ca 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -431,7 +431,7 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+> For consistency, should the vmcb_gpa argument be renamed to vmcb12_gpa as well?
 
-Along with Stephen's comments, feel free to add:
+I went over all nested.c and renamed all mentions of vmcb which refer to guest's vmcb to vmcb12,
+and mentions of nested_vmcb to vmcb12 as well. I hope I didn't made this patch too much larger.
+I updated the patch subject too.
+> 
+> 
+> > @@ -579,7 +579,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+> > 
+> >         /* Exit Guest-Mode */
+> >         leave_guest_mode(&svm->vcpu);
+> > -       svm->nested.vmcb = 0;
+> > +       svm->nested.vmcb12_gpa = 0;
+> Perhaps in a follow-up change, this could be set to an illegal value
+> rather than 0?
+Or rather not reset this address at all, as I did later in the 
+caching pathes which I dropped for now.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> 
+> 
+> > @@ -1018,7 +1018,7 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
+> > 
+> >         /* First fill in the header and copy it out.  */
+> >         if (is_guest_mode(vcpu)) {
+> > -               kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb;
+> > +               kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb12_gpa;
+> It's unfortunate that we have "_pa" on the LHS on "_gpa" on the RHS. Oh, well.
+I was afraid to touch this struct since it is user visible. I noticed it.
 
-Also note, when using the PSCI OSI mode, I am proposing to use "genpd
-on/off notifiers" [1]. This may lead to similar RCU issues, but let's
-come back to adress that later on, when/if needed.
+> 
+> 
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 562a79e3e63a..d33013b9b4d7 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -1102,7 +1102,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+> >         }
+> >         svm->asid_generation = 0;
+> > 
+> > -       svm->nested.vmcb = 0;
+> > +       svm->nested.vmcb12_gpa = 0;
+> Here, too, perhaps this could be changed from 0 to an illegal value in
+> a follow-up change.
+> 
+> Reviewed-by: Jim Mattson <jmattson@google.com>
+> 
 
-Kind regards
-Uffe
+Thanks for the review,
+	Best regards,
+		Maxim Levitsky
 
-[1]
-https://www.spinics.net/lists/kernel/msg3629443.html
-
-
-> ---
->  drivers/soc/qcom/rpmh-rsc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-> index ae66757..fabe390d 100644
-> --- a/drivers/soc/qcom/rpmh-rsc.c
-> +++ b/drivers/soc/qcom/rpmh-rsc.c
-> @@ -495,7 +495,7 @@ static void __tcs_buffer_write(struct rsc_drv *drv, int tcs_id, int cmd_id,
->                 write_tcs_cmd(drv, RSC_DRV_CMD_MSGID, tcs_id, j, msgid);
->                 write_tcs_cmd(drv, RSC_DRV_CMD_ADDR, tcs_id, j, cmd->addr);
->                 write_tcs_cmd(drv, RSC_DRV_CMD_DATA, tcs_id, j, cmd->data);
-> -               trace_rpmh_send_msg_rcuidle(drv, tcs_id, j, msgid, cmd);
-> +               trace_rpmh_send_msg(drv, tcs_id, j, msgid, cmd);
->         }
->
->         write_tcs_reg(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id, cmd_complete);
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
->
