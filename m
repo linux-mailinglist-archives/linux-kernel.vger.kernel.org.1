@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9142503E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FAD2503F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbgHXQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:53:33 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55094 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbgHXQxU (ORCPT
+        id S1728914AbgHXQyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728794AbgHXQyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:53:20 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07OGrF1G102097;
-        Mon, 24 Aug 2020 11:53:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598287995;
-        bh=Js6kMsNm4ATKiNQnBPStvxyMXL9/jE2nxHz5i/lhfp0=;
-        h=From:To:Subject:Date;
-        b=tcelBRX2222nAtQlt1C6xKNRRUlIXHJLBOcPHcFM+fVkMl9ah4/y9p8n50vFQXdOn
-         hLdaHYJo3bIpvHJzca/tisU2hzTeVuq6IjrJXx84xqc5M15Thvqb9r9tthSSf+zKTa
-         XZ6RKsNL6deiDJo0tosY0aPWMjpPurvCn5ExCnXI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07OGrFwH026815
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 11:53:15 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 24
- Aug 2020 11:53:14 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 24 Aug 2020 11:53:14 -0500
-Received: from uda0868495.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07OGrEVW001473;
-        Mon, 24 Aug 2020 11:53:14 -0500
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
-        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [net v2 PATCH] net: ethernet: ti: cpsw_new: fix error handling in cpsw_ndo_vlan_rx_kill_vid()
-Date:   Mon, 24 Aug 2020 12:53:14 -0400
-Message-ID: <20200824165314.21148-1-m-karicheri2@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 24 Aug 2020 12:54:04 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA393C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:54:03 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id md23so12055519ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=0uKjMYWuYAujWnSg0hg9hJ906KGrfrt9C0Xq2qVWWBw=;
+        b=tlwRO3/avN3/y8Dt5oXbOA4sQqC8uIkMaJoX9i8TcBOe1PhxrRaaRmEjq3IMypQomS
+         B+GSbOO3zZjwBbFKfQuueICivw6uHcQsWxSMinXJBo/K+tyCPaou8QXGf5lxEVjA+wwB
+         Mgl6lL93uVspCjb6n9xmMDC3OIl9b0lHBJ7TXAyjoDbG+Tnqk6LcPpJn89KA7ZlzDy79
+         8GhYyqeUttiUv3G+4wLM+dfGNVxsulK7VbKegXLG3jbeftXX6pgSkChoPZLDh+gArLbR
+         2f8E+OswgHPpwDuv19HC703WQZpHZxUj0MAN5eZ+Y+t/xwXL5DamLGp5xhfp+Fz0B7aZ
+         RHCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=0uKjMYWuYAujWnSg0hg9hJ906KGrfrt9C0Xq2qVWWBw=;
+        b=L11i6uwCuMyQ8zxcHT6OsMDkq/1YCUippXU2eNJmfNfEl5pbyIERlayhMfdaPrM/wL
+         urI+uDXlTHPFauLJVJ4+gR1BIRvO5SLwT++RR85FLuZE1+gqLX1QGXVvowlfewheAcrK
+         ZvW17G36pFjdE8cDi8d4l+Gw3wSMeJ9erYUgAIrimSpHHbZW/IqWWTWc2UfKb4KsiBvG
+         wyGhQzHIZJ4oGcqtNJKG/Keyw3ufVyDKYKIOSxcT0UtXYsob/hhgNu030y973UorHFOC
+         aZgw3ibw2fWqJX4/3r4yq1A8iQXidIHVecn7HyOSRoyMj9xohxhw/6w4pzYfMIW21P3G
+         jwXQ==
+X-Gm-Message-State: AOAM531zlc8jEDBp4gnySnFA8FdBqWkKodBJvrf28g6ge0eXmrwIYLtO
+        4zLFmyVpVcherZFZd+ns8eX63+5ayEn2cw==
+X-Google-Smtp-Source: ABdhPJzKJcQdHcx+JPKfNsV1KM+gdAwAQLmmRMW40KpcWPv8KtJVxxVucvB/UQbVh7aZBWk8dl0OGA==
+X-Received: by 2002:a17:906:3390:: with SMTP id v16mr6229139eja.106.1598288038253;
+        Mon, 24 Aug 2020 09:53:58 -0700 (PDT)
+Received: from steffpad (p200300e34f08686ed692311cd92fa27d.dip0.t-ipconnect.de. [2003:e3:4f08:686e:d692:311c:d92f:a27d])
+        by smtp.gmail.com with ESMTPSA id p16sm10563359ejw.110.2020.08.24.09.53.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 09:53:57 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 18:53:56 +0200
+From:   Steff Richards <steff.richards.the.third@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wlan-ng: fix alignment to match open parentheses
+Message-ID: <20200824165356.GA5204@steffpad>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a bunch of issues in cpsw_ndo_vlan_rx_kill_vid()
+Indent a number of arguments so that they align with the opening
+parentheses of the function calls. Issues found by checkpatch.
 
- - pm_runtime_get_sync() returns non zero value. This results in
-   non zero value return to caller which will be interpreted as error.
-   So overwrite ret with zero.
- - Currently when VLAN interface is deleted, all of the VLAN mc addresses
-   are removed from ALE table, however the return values from ale function
-   calls are not checked. These functions can return error code -ENOENT.
-   But that shouldn't happen in a normal case. So add error print to
-   catch the situations so that these can be investigated and addressed.
-   return zero in these cases as these are not real error case, but only
-   serve to catch ALE table update related issues and help address the
-   same in the driver.
-
-Fixes: ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+Signed-off-by: Steff Richards <steff.richards.the.third@gmail.com>
 ---
- v2 - updated based on comments from Grygorii.
- drivers/net/ethernet/ti/cpsw_new.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+ drivers/staging/wlan-ng/prism2mgmt.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 8d0a2bc7128d..61fa5063d751 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1032,19 +1032,35 @@ static int cpsw_ndo_vlan_rx_kill_vid(struct net_device *ndev,
- 		return ret;
- 	}
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+index a8860d2aee68..a908ff301707 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.c
++++ b/drivers/staging/wlan-ng/prism2mgmt.c
+@@ -228,8 +228,8 @@ int prism2mgmt_scan(struct wlandevice *wlandev, void *msgp)
+ 		__le16 wordbuf[17];
  
-+	/* reset the return code as pm_runtime_get_sync() can return
-+	 * non zero values as well.
-+	 */
-+	ret = 0;
- 	for (i = 0; i < cpsw->data.slaves; i++) {
- 		if (cpsw->slaves[i].ndev &&
--		    vid == cpsw->slaves[i].port_vlan)
-+		    vid == cpsw->slaves[i].port_vlan) {
-+			ret = -EINVAL;
- 			goto err;
-+		}
- 	}
+ 		result = hfa384x_drvr_setconfig16(hw,
+-					HFA384x_RID_CNFROAMINGMODE,
+-					HFA384x_ROAMMODE_HOSTSCAN_HOSTROAM);
++						  HFA384x_RID_CNFROAMINGMODE,
++						  HFA384x_ROAMMODE_HOSTSCAN_HOSTROAM);
+ 		if (result) {
+ 			netdev_err(wlandev->netdev,
+ 				   "setconfig(ROAMINGMODE) failed. result=%d\n",
+@@ -275,8 +275,8 @@ int prism2mgmt_scan(struct wlandevice *wlandev, void *msgp)
+ 		}
+ 		/* ibss options */
+ 		result = hfa384x_drvr_setconfig16(hw,
+-					HFA384x_RID_CREATEIBSS,
+-					HFA384x_CREATEIBSS_JOINCREATEIBSS);
++						  HFA384x_RID_CREATEIBSS,
++						  HFA384x_CREATEIBSS_JOINCREATEIBSS);
+ 		if (result) {
+ 			netdev_err(wlandev->netdev,
+ 				   "Failed to set CREATEIBSS.\n");
+@@ -1167,8 +1167,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 		if (hw->presniff_port_type != 0) {
+ 			word = hw->presniff_port_type;
+ 			result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFPORTTYPE,
+-						  word);
++							  HFA384x_RID_CNFPORTTYPE,
++							  word);
+ 			if (result) {
+ 				netdev_dbg
+ 				    (wlandev->netdev,
+@@ -1209,8 +1209,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 				}
+ 				/* Save the wepflags state */
+ 				result = hfa384x_drvr_getconfig16(hw,
+-						  HFA384x_RID_CNFWEPFLAGS,
+-						  &hw->presniff_wepflags);
++								  HFA384x_RID_CNFWEPFLAGS,
++								  &hw->presniff_wepflags);
+ 				if (result) {
+ 					netdev_dbg
+ 					(wlandev->netdev,
+@@ -1259,8 +1259,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 			/* Set the port type to pIbss */
+ 			word = HFA384x_PORTTYPE_PSUEDOIBSS;
+ 			result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFPORTTYPE,
+-						  word);
++							  HFA384x_RID_CNFPORTTYPE,
++							  word);
+ 			if (result) {
+ 				netdev_dbg
+ 				    (wlandev->netdev,
+@@ -1276,8 +1276,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 				    HFA384x_WEPFLAGS_DISABLE_RXCRYPT;
+ 				result =
+ 				    hfa384x_drvr_setconfig16(hw,
+-						     HFA384x_RID_CNFWEPFLAGS,
+-						     word);
++							     HFA384x_RID_CNFWEPFLAGS,
++							     word);
+ 			}
  
- 	dev_dbg(priv->dev, "removing vlanid %d from vlan filter\n", vid);
--	cpsw_ale_del_vlan(cpsw->ale, vid, 0);
--	cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
--			   HOST_PORT_NUM, ALE_VLAN, vid);
--	cpsw_ale_del_mcast(cpsw->ale, priv->ndev->broadcast,
--			   0, ALE_VLAN, vid);
-+	ret = cpsw_ale_del_vlan(cpsw->ale, vid, 0);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
-+	ret = cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
-+				 HOST_PORT_NUM, ALE_VLAN, vid);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
-+	ret = cpsw_ale_del_mcast(cpsw->ale, priv->ndev->broadcast,
-+				 0, ALE_VLAN, vid);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
- 	cpsw_ale_flush_multicast(cpsw->ale, ALE_PORT_HOST, vid);
-+	ret = 0;
- err:
- 	pm_runtime_put(cpsw->dev);
- 	return ret;
+ 			if (result) {
 -- 
-2.17.1
+2.25.1
 
