@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360BD24F45C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D0324F4C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgHXIfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:35:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
+        id S1728770AbgHXIkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726766AbgHXIfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:11 -0400
+        id S1728751AbgHXIkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:40:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67176207D3;
-        Mon, 24 Aug 2020 08:35:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C16EF20FC3;
+        Mon, 24 Aug 2020 08:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258111;
-        bh=1KZTkyyQvb4ak/RXe1qfPICijwZ/tYPNPs68qQFUQUg=;
+        s=default; t=1598258425;
+        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uv0X2y9J4UBwgd7rl0Vc5+ZplUgvIGXPPdpJnVZxagHzypzuQYDzTR25nQzDzxF9r
-         gO8uxD1+D1je9nWxwmhqg3RHl9VMrYLA51faQa8M1HX6JTI9DbHYktfDjOb47LuACZ
-         nXF1UqGD/sEmLQBdv0534KJkAU2BtVZ1f1OKAqi0=
+        b=0BLNR9C48ReMQmbwtg62NLBpMww2myyMsIE/rH8NBK1kXPjWLx8vGFFegevbYNwJ2
+         xqRtlfsTyKmM9FQORLEpYpqCmRDGKZUN8ARV03MpPI4bdselfgjx2xFj+Z6NOdDa3v
+         nY8n7N80B9CjJh9oXf7SHQurVN+KSVL+vDq1JkHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 078/148] ASoC: q6afe-dai: mark all widgets registers as SND_SOC_NOPM
-Date:   Mon, 24 Aug 2020 10:29:36 +0200
-Message-Id: <20200824082417.812359407@linuxfoundation.org>
+Subject: [PATCH 5.7 043/124] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Date:   Mon, 24 Aug 2020 10:29:37 +0200
+Message-Id: <20200824082411.544537405@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,347 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-[ Upstream commit 56235e4bc5ae58cb8fcd9314dba4e9ab077ddda8 ]
+[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
 
-Looks like the q6afe-dai dapm widget registers are set as "0",
-which is a not correct.
+The Cache Control Register (CACR) of the ColdFire V3 has bits that
+control high level caching functions, and also enable/disable the use
+of the alternate stack pointer register (the EUSP bit) to provide
+separate supervisor and user stack pointer registers. The code as
+it is today will blindly clear the EUSP bit on cache actions like
+invalidation. So it is broken for this case - and that will result
+in failed booting (interrupt entry and exit processing will be
+completely hosed).
 
-As this registers will be read by ASoC core during startup
-which will throw up errors, Fix this by making the registers
-as SND_SOC_NOPM as these should be never used.
+This only affects ColdFire V3 parts that support the alternate stack
+register (like the 5329 for example) - generally speaking new parts do,
+older parts don't. It has no impact on ColdFire V3 parts with the single
+stack pointer, like the 5307 for example.
 
-With recent changes to ASoC core, every register read/write
-failures are reported very verbosely. Prior to this fails to reads
-are totally ignored, so we never saw any error messages.
+Fix the cache bit defines used, so they maintain the EUSP bit when
+carrying out cache actions through the CACR register.
 
-Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200811120205.21805-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 210 +++++++++++++++----------------
- 1 file changed, 105 insertions(+), 105 deletions(-)
+ arch/m68k/include/asm/m53xxacr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 2a5302f1db98a..0168af8492727 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1150,206 +1150,206 @@ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
- }
+diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
+index 9138a624c5c81..692f90e7fecc1 100644
+--- a/arch/m68k/include/asm/m53xxacr.h
++++ b/arch/m68k/include/asm/m53xxacr.h
+@@ -89,9 +89,9 @@
+  * coherency though in all cases. And for copyback caches we will need
+  * to push cached data as well.
+  */
+-#define CACHE_INIT	  CACR_CINVA
+-#define CACHE_INVALIDATE  CACR_CINVA
+-#define CACHE_INVALIDATED CACR_CINVA
++#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
++#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
++#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
  
- static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
--	SND_SOC_DAPM_AIF_IN("HDMI_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_0_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_1_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_2_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_3_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_4_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_5_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("SLIMBUS_6_RX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_TX", NULL, 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_TX", NULL, 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("HDMI_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_0_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_1_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_2_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_3_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_4_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_5_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_6_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_TX", NULL, 0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_MI2S_RX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_TX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_MI2S_RX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_MI2S_TX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_MI2S_RX", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_TX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_MI2S_RX_SD1",
- 			"Secondary MI2S Playback SD1",
--			0, 0, 0, 0),
-+			0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRI_MI2S_RX", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_TX", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_0", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_1", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_2", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_3", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_4", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_5", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_6", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_7", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_0", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_1", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_2", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_3", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_4", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_5", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_6", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_7", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_0", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_1", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_2", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_3", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_4", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_5", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_6", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_7", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_0", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_1", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_2", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_3", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_4", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_5", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_6", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_7", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_0", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_1", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_2", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_3", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_4", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_5", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_6", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_7", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_0", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_1", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_2", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_3", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_4", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_5", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_6", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_7", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_0", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_1", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_2", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_3", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_4", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_5", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_6", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_7", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_0", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_1", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_2", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_3", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_4", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_5", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_6", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_7", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_0", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_1", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_2", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_3", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_4", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_5", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_6", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_7", NULL,
--			     0, 0, 0, 0),
-+			     0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_0", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_1", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_2", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_3", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_4", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_5", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_6", NULL,
--						0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_7", NULL,
--						0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
-+						0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, SND_SOC_NOPM, 0, 0),
- };
- 
- static const struct snd_soc_component_driver q6afe_dai_component = {
+ #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
+ 			 (0x000f0000) + \
 -- 
 2.25.1
 
