@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3822024F7F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3A624F6C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgHXJX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:23:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33746 "EHLO mail.kernel.org"
+        id S1730573AbgHXJEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:04:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730261AbgHXIx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:53:58 -0400
+        id S1730565AbgHXI4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:56:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEA8A207D3;
-        Mon, 24 Aug 2020 08:53:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6640E2224D;
+        Mon, 24 Aug 2020 08:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259237;
-        bh=sKzyCTVQt3yNjcURrQLuKLdMEI//B2JxQ9HvMAck5Os=;
+        s=default; t=1598259394;
+        bh=5BZ8NaNfRXsUTXEg1HAAkIKizPGe7lnHm+Ys6g+xwLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DvRR03Okbq8ILESWgoP1fmQjBMvI5K4qFhHR+z/GovmP0CbX5W9Dlhpc0FJXXEjD4
-         dasnD0vPsivwOMkEZsdPx/aCMdQ2wpyjCTQ88B1dr/0M957mOndeCFSeBx21RIm5OV
-         uTwyBohwV5v0+EIM3ZW7KZ1/hs69sSj5l6xo1KPk=
+        b=BxaUD3Plz93OoY91TO5tpk40+ZzubnhHabOcuOKo9YDH0WoVhYQE1TiwBVDmjRHgU
+         Q8+Rs9oEEhu8Xa3p1DNxXcsswHz+0LJHFVqa64eAUVYZFmi/la+Ire6Hyb6uQfDzX8
+         9V2o68fhRzLQJsOn43d+Mj7jJo50jbusAM9nTElA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/50] alpha: fix annotation of io{read,write}{16,32}be()
+Subject: [PATCH 4.19 42/71] i40e: Set RX_ONLY mode for unicast promiscuous on VLAN
 Date:   Mon, 24 Aug 2020 10:31:33 +0200
-Message-Id: <20200824082353.666647767@linuxfoundation.org>
+Message-Id: <20200824082357.982443960@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,55 +48,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+From: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
 
-[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
+[ Upstream commit 4bd5e02a2ed1575c2f65bd3c557a077dd399f0e8 ]
 
-These accessors must be used to read/write a big-endian bus.  The value
-returned or written is native-endian.
+Trusted VF with unicast promiscuous mode set, could listen to TX
+traffic of other VFs.
+Set unicast promiscuous mode to RX traffic, if VSI has port VLAN
+configured. Rename misleading I40E_AQC_SET_VSI_PROMISC_TX bit to
+I40E_AQC_SET_VSI_PROMISC_RX_ONLY. Aligned unicast promiscuous with
+VLAN to the one without VLAN.
 
-However, these accessors are defined using be{16,32}_to_cpu() or
-cpu_to_be{16,32}() to make the endian conversion but these expect a
-__be{16,32} when none is present.  Keeping them would need a force cast
-that would solve nothing at all.
-
-So, do the conversion using swab{16,32}, like done in asm-generic for
-similar situations.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6c41a7606967 ("i40e: Add promiscuous on VLAN support")
+Fixes: 3b1200891b7f ("i40e: When in promisc mode apply promisc mode to Tx Traffic as well")
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/alpha/include/asm/io.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../net/ethernet/intel/i40e/i40e_adminq_cmd.h |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_common.c | 35 ++++++++++++++-----
+ 2 files changed, 28 insertions(+), 9 deletions(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index d123ff90f7a83..9995bed6e92e2 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -493,10 +493,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+index 80e3eec6134ee..a5e5e7e14e6c5 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+@@ -1206,7 +1206,7 @@ struct i40e_aqc_set_vsi_promiscuous_modes {
+ #define I40E_AQC_SET_VSI_PROMISC_BROADCAST	0x04
+ #define I40E_AQC_SET_VSI_DEFAULT		0x08
+ #define I40E_AQC_SET_VSI_PROMISC_VLAN		0x10
+-#define I40E_AQC_SET_VSI_PROMISC_TX		0x8000
++#define I40E_AQC_SET_VSI_PROMISC_RX_ONLY	0x8000
+ 	__le16	seid;
+ #define I40E_AQC_VSI_PROM_CMD_SEID_MASK		0x3FF
+ 	__le16	vlan_tag;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
+index eb0ae6ab01e26..e75b4c4872c09 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
+@@ -1970,6 +1970,21 @@ i40e_status i40e_aq_set_phy_debug(struct i40e_hw *hw, u8 cmd_flags,
+ 	return status;
  }
- #endif
  
--#define ioread16be(p) be16_to_cpu(ioread16(p))
--#define ioread32be(p) be32_to_cpu(ioread32(p))
--#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
--#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
-+#define ioread16be(p) swab16(ioread16(p))
-+#define ioread32be(p) swab32(ioread32(p))
-+#define iowrite16be(v,p) iowrite16(swab16(v), (p))
-+#define iowrite32be(v,p) iowrite32(swab32(v), (p))
++/**
++ * i40e_is_aq_api_ver_ge
++ * @aq: pointer to AdminQ info containing HW API version to compare
++ * @maj: API major value
++ * @min: API minor value
++ *
++ * Assert whether current HW API version is greater/equal than provided.
++ **/
++static bool i40e_is_aq_api_ver_ge(struct i40e_adminq_info *aq, u16 maj,
++				  u16 min)
++{
++	return (aq->api_maj_ver > maj ||
++		(aq->api_maj_ver == maj && aq->api_min_ver >= min));
++}
++
+ /**
+  * i40e_aq_add_vsi
+  * @hw: pointer to the hw struct
+@@ -2095,18 +2110,16 @@ i40e_status i40e_aq_set_vsi_unicast_promiscuous(struct i40e_hw *hw,
  
- #define inb_p		inb
- #define inw_p		inw
+ 	if (set) {
+ 		flags |= I40E_AQC_SET_VSI_PROMISC_UNICAST;
+-		if (rx_only_promisc &&
+-		    (((hw->aq.api_maj_ver == 1) && (hw->aq.api_min_ver >= 5)) ||
+-		     (hw->aq.api_maj_ver > 1)))
+-			flags |= I40E_AQC_SET_VSI_PROMISC_TX;
++		if (rx_only_promisc && i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
++			flags |= I40E_AQC_SET_VSI_PROMISC_RX_ONLY;
+ 	}
+ 
+ 	cmd->promiscuous_flags = cpu_to_le16(flags);
+ 
+ 	cmd->valid_flags = cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_UNICAST);
+-	if (((hw->aq.api_maj_ver >= 1) && (hw->aq.api_min_ver >= 5)) ||
+-	    (hw->aq.api_maj_ver > 1))
+-		cmd->valid_flags |= cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_TX);
++	if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
++		cmd->valid_flags |=
++			cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_RX_ONLY);
+ 
+ 	cmd->seid = cpu_to_le16(seid);
+ 	status = i40e_asq_send_command(hw, &desc, NULL, 0, cmd_details);
+@@ -2203,11 +2216,17 @@ enum i40e_status_code i40e_aq_set_vsi_uc_promisc_on_vlan(struct i40e_hw *hw,
+ 	i40e_fill_default_direct_cmd_desc(&desc,
+ 					  i40e_aqc_opc_set_vsi_promiscuous_modes);
+ 
+-	if (enable)
++	if (enable) {
+ 		flags |= I40E_AQC_SET_VSI_PROMISC_UNICAST;
++		if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
++			flags |= I40E_AQC_SET_VSI_PROMISC_RX_ONLY;
++	}
+ 
+ 	cmd->promiscuous_flags = cpu_to_le16(flags);
+ 	cmd->valid_flags = cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_UNICAST);
++	if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
++		cmd->valid_flags |=
++			cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_RX_ONLY);
+ 	cmd->seid = cpu_to_le16(seid);
+ 	cmd->vlan_tag = cpu_to_le16(vid | I40E_AQC_SET_VSI_VLAN_VALID);
+ 
 -- 
 2.25.1
 
