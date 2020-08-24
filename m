@@ -2,145 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AE824FCA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB39E24FCA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHXLc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726956AbgHXLa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:30:56 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5B442078D;
-        Mon, 24 Aug 2020 11:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598268655;
-        bh=waSTTYzg5/r4WTVD2fzV10nNsbDbLr11xhip36gAXZo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ldws+s10u8AwSM2AaNckYXIlIwN/+Z1FP26tB0Bi9dY0N2vvSdXohIwOmRlHFZ7hn
-         9W7ZnFotfBEoviDJBF+J2jfL85fxelwIEuSOjMCqiotm2eubQ6ahCMhWve8nEDZgAS
-         ZSFnbuOrv95YcS0JsBVPx/Uvxry0SOsenG5yrr+w=
-From:   Will Deacon <will@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
-        kernel-team@android.com, Will Deacon <will@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH stable-5.8.y backport 2/2] KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set
-Date:   Mon, 24 Aug 2020 12:30:48 +0100
-Message-Id: <20200824113048.24960-2-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200824113048.24960-1-will@kernel.org>
-References: <20200824113048.24960-1-will@kernel.org>
+        id S1727097AbgHXLdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgHXLc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:32:26 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F49C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:32:18 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s20so2940433wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9DiUHolhkNru49P23XOkyQDXz+EeQP5GDOxo76bpdxo=;
+        b=N82OtXxzEv7KNfxea1kKJyIvBhm6oAmVu1OS5Zx6ff698tfVJnjMBvLrwkHPg2N11q
+         evTXJg1xx9TRBnSvInQ1x96tb+1cutj/8oblHmVH3fegXDvsgZoNElu6kNtiDMNeaQ8K
+         KfbiHbU2w+hAzzPOrJaSpMOl5jpUKbdH/w9T7RSRQ3bQbNBFOl8HC8V62qr/x/w2qF0X
+         VMZU5KwuxEuxxmOKrOks2kFswyx3rFmGEHhc0beu8fKirt6s5m9cdkqE06PudufJ9Dwl
+         MOUovMDINJzRGFcGj+n1Dg+CVsjEuVCedvQCpLR4A8TL1QTux1FEN0t15UHvam+d9Hnj
+         e1SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9DiUHolhkNru49P23XOkyQDXz+EeQP5GDOxo76bpdxo=;
+        b=KkGzbsucXQvhOMuOxfBjpZr786S6meyh6D1aJFz+zl3Zb5VQpSwBi9hW6a+2RFEXbN
+         fMIUVuMFRtzbtEWq9jQUazxhUfppg9LQB/j+qFJavddNPnI47DSlsynxv5GdxQ1MZkIF
+         QpCUc/G3wRMaCbkE4vGpp+Dw7aSBy/rTh+fQLgBES8WtIkN6Q8MH3DqZqIGJEkp/u7w+
+         gaNDWDD9RBGGXyBGzCR6RsFqV9LBrhQjg2X6YmFXh4LZQ/88DY1zk/4X5mwbAfrQH8Zh
+         PqC4N5IDfpkGM8aOj+WuXzbZVjHNES0RFVe7nGBZr1t8nolq4yZ4vlu/e0SR2bV+om0e
+         TySw==
+X-Gm-Message-State: AOAM530ncshJAe1e8aLwftQ8SkzPif5sLm+EhHpsbkCthAJ8/O7shOrh
+        xOGgBCCVjNeGil77hETVw/4FBQ9T9fWDI8mqHeU=
+X-Google-Smtp-Source: ABdhPJwaRwEDNW7PLgfF+M/JTI1lLafL7iDUVoIPMhVR0TW1sx5S+xdg3n8hqtmbwfoOfRyAItpXWkz4g86yNi/HzJ4=
+X-Received: by 2002:a1c:f70e:: with SMTP id v14mr5248986wmh.74.1598268737042;
+ Mon, 24 Aug 2020 04:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200822030155.GA414063@google.com>
+In-Reply-To: <20200822030155.GA414063@google.com>
+From:   Vineeth Pillai <vineethrp@gmail.com>
+Date:   Mon, 24 Aug 2020 07:32:05 -0400
+Message-ID: <CAOBnfPjG9=XPCYOP6Hau5rZaKAEb4rYHG=5oORJt36X1_nFPOg@mail.gmail.com>
+Subject: Re: [RFC] Design proposal for upstream core-scheduling interface
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        JulienDesfossez@google.com,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Turner <pjt@google.com>, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        chris hyser <chris.hyser@oracle.com>, dhaval.giani@gmail.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, joshdon@google.com,
+        xii@google.com, haoluo@google.com, bsegall@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b5331379bc62611d1026173a09c73573384201d9 upstream.
+> Let me know your thoughts and looking forward to a good LPC MC discussion=
+!
+>
 
-When an MMU notifier call results in unmapping a range that spans multiple
-PGDs, we end up calling into cond_resched_lock() when crossing a PGD boundary,
-since this avoids running into RCU stalls during VM teardown. Unfortunately,
-if the VM is destroyed as a result of OOM, then blocking is not permitted
-and the call to the scheduler triggers the following BUG():
+Nice write up Joel, thanks for taking time to compile this with great detai=
+l!
 
- | BUG: sleeping function called from invalid context at arch/arm64/kvm/mmu.c:394
- | in_atomic(): 1, irqs_disabled(): 0, non_block: 1, pid: 36, name: oom_reaper
- | INFO: lockdep is turned off.
- | CPU: 3 PID: 36 Comm: oom_reaper Not tainted 5.8.0 #1
- | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
- | Call trace:
- |  dump_backtrace+0x0/0x284
- |  show_stack+0x1c/0x28
- |  dump_stack+0xf0/0x1a4
- |  ___might_sleep+0x2bc/0x2cc
- |  unmap_stage2_range+0x160/0x1ac
- |  kvm_unmap_hva_range+0x1a0/0x1c8
- |  kvm_mmu_notifier_invalidate_range_start+0x8c/0xf8
- |  __mmu_notifier_invalidate_range_start+0x218/0x31c
- |  mmu_notifier_invalidate_range_start_nonblock+0x78/0xb0
- |  __oom_reap_task_mm+0x128/0x268
- |  oom_reap_task+0xac/0x298
- |  oom_reaper+0x178/0x17c
- |  kthread+0x1e4/0x1fc
- |  ret_from_fork+0x10/0x30
+After going through the details of interface proposal using cgroup v2
+controllers,
+and based on our discussion offline, would like to note down this idea
+about a new
+pseudo filesystem interface for core scheduling.  We could include
+this also for the
+API discussion during core scheduler MC.
 
-Use the new 'flags' argument to kvm_unmap_hva_range() to ensure that we
-only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is set in the notifier
-flags.
+coreschedfs: pseudo filesystem interface for Core Scheduling
+---------------------------------------------------------------------------=
+-------
 
-Cc: <stable@vger.kernel.org> # v5.8 only
-Fixes: 8b3405e345b5 ("kvm: arm/arm64: Fix locking for kvm_free_stage2_pgd")
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Message-Id: <20200811102725.7121-3-will@kernel.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kvm/mmu.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+The basic requirement of core scheduling is simple - we need to group a set
+of tasks into a trust group that can share a core. So we don=E2=80=99t real=
+ly
+need a nested
+hierarchy for the trust groups. Cgroups v2 follow a unified nested
+hierarchy model
+that causes a considerable confusion if the trusted tasks are in
+different levels of the
+hierarchy and we need to allow them to share the core. Cgroup v2's
+single hierarchy
+model makes it difficult to regroup tasks in different levels of
+nesting for core scheduling.
+As noted in this mail, we could use multi-file approach and other
+interfaces like prctl to
+overcome this limitation.
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 5f6b35c33618..bd47f06739d6 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -365,7 +365,8 @@ static void unmap_stage2_p4ds(struct kvm *kvm, pgd_t *pgd,
-  * destroying the VM), otherwise another faulting VCPU may come in and mess
-  * with things behind our backs.
-  */
--static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+static void __unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size,
-+				 bool may_block)
- {
- 	pgd_t *pgd;
- 	phys_addr_t addr = start, end = start + size;
-@@ -390,11 +391,16 @@ static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
- 		 * If the range is too large, release the kvm->mmu_lock
- 		 * to prevent starvation and lockup detector warnings.
- 		 */
--		if (next != end)
-+		if (may_block && next != end)
- 			cond_resched_lock(&kvm->mmu_lock);
- 	} while (pgd++, addr = next, addr != end);
- }
- 
-+static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+{
-+	__unmap_stage2_range(kvm, start, size, true);
-+}
-+
- static void stage2_flush_ptes(struct kvm *kvm, pmd_t *pmd,
- 			      phys_addr_t addr, phys_addr_t end)
- {
-@@ -2198,7 +2204,10 @@ static int handle_hva_to_gpa(struct kvm *kvm,
- 
- static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
- {
--	unmap_stage2_range(kvm, gpa, size);
-+	unsigned flags = *(unsigned *)data;
-+	bool may_block = flags & MMU_NOTIFIER_RANGE_BLOCKABLE;
-+
-+	__unmap_stage2_range(kvm, gpa, size, may_block);
- 	return 0;
- }
- 
-@@ -2209,7 +2218,7 @@ int kvm_unmap_hva_range(struct kvm *kvm,
- 		return 0;
- 
- 	trace_kvm_unmap_hva_range(start, end);
--	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, NULL);
-+	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, &flags);
- 	return 0;
- }
- 
--- 
-2.28.0.297.g1956fa8f8d-goog
+The idea proposed here to overcome the above limitation is to come up with =
+a new
+pseudo filesystem - =E2=80=9Ccoreschedfs=E2=80=9D. This filesystem is basic=
+ally a flat
+filesystem with
+maximum nesting level of 1. That means, root directory can have
+sub-directories for
+sub-groups, but those sub-directories cannot have more sub-directories
+representing
+trust groups. Root directory is to represent the system wide trust
+group and sub-directories
+represent trusted groups. Each directory including the root directory
+has the following set
+of files/directories:
 
+- cookie_id: User exposed id for a cookie. This can be compared to a
+file descriptor.
+             This could be used in programmatic API to join/leave a group
+
+- properties: This is an interface to specify how child tasks of this
+group should behave.
+              Can be used for specifying future flag requirements as well.
+              Current list of properties include:
+              NEW_COOKIE_FOR_CHILD: All fork() for tasks in this group
+will result in
+                                    creation of a new trust group
+              SAME_COOKIE_FOR_CHILD: All fork() for tasks in this
+group will end up in
+                                     this same group
+              ROOT_COOKIE_FOR_CHILD: All fork() for tasks in this
+group goes to the root group
+
+- tasks: Lists the tasks in this group. Main interface for adding
+removing tasks in a group
+
+- <pid>: A directory per task who is am member of this trust group.
+- <pid>/properties: This file is same as the parent properties file
+but this is to override
+                    the group setting.
+
+This pseudo filesystem can be mounted any where in the root
+filesystem, I propose the default
+to be in =E2=80=9C/sys/kernel/coresched=E2=80=9D
+
+When coresched is enabled, kernel internally creates the framework for
+this filesystem.
+The filesystem gets mounted to the default location and admin can
+change this if needed.
+All tasks by default are in the root group. The admin or programs can
+then create trusted
+groups on top of this filesystem.
+
+Hooks will be placed in fork() and exit() to make sure that the
+filesystem=E2=80=99s view of tasks is
+up-to-date with the system. Also, APIs manipulating core scheduling
+trusted groups should
+also make sure that the filesystem's view is updated.
+
+Note: The above idea is very similar to cgroups v1. Since there is no
+unified hierarchy
+in cgroup v1, most of the features of coreschedfs could be implemented
+as a cgroup v1
+controller. As no new v1 controllers are allowed, I feel the best
+alternative to have
+a simple API is to come up with a new filesystem - coreschedfs.
+
+The advantages of this approach is:
+
+- Detached from cgroup unified hierarchy and hence the very simple requirem=
+ent
+   of core scheduling can be easily materialized.
+- Admin can have fine-grained control of groups using shell and scripting
+- Can have programmatic access to this using existing APIs like mkdir,rmdir=
+,
+   write, read. Or can come up with new APIs using the cookie_id which can =
+wrap
+  t he above linux apis or use a new systemcall for core scheduling.
+- Fine grained permission control using linux filesystem permissions and AC=
+Ls
+
+Disadvantages are
+- yet another psuedo filesystem.
+- very similar to  cgroup v1 and might be re-implementing features
+that are already
+  provided by cgroups v1.
+
+Use Cases
+-----------------
+
+Usecase 1: Google cloud
+---------------------------------
+
+Since we no longer depend on cgroup v2 hierarchies, there will not be
+any issue of
+nesting and sharing. The main daemon can create trusted groups in the
+fileystem and
+provide required permissions for the group. Then the init processes
+for each job can
+be added to respective groups for them to create children tasks as
+needed. Multiple
+jobs under the same customer which needs to share the core can be
+housed in one group.
+
+
+Usecase 2: Chrome browser
+------------------------
+
+We start with one group for the first task and then set properties to
+NEW_COOKIE_FOR_CHILD.
+
+Usecase 3: chrome VMs
+---------------------
+
+Similar to chrome browser, the VM task can make each vcpu on its own group.
+
+Usecase 4: Oracle use case
+--------------------------
+This is also similar to use case 1 with this interface. All tasks that need=
+ to
+be in the root group can be easily added by the admin.
+
+Use case 5: General virtualization
+----------------------------------
+
+The requirement is each VM should be isolated. This can be easily done
+by creating a
+new group per VM
+
+
+Please have a look at the above proposal and let us know your
+thoughts. We shall include
+this also during the interface discussion at core scheduling MC.
+
+
+Thanks,
+Vineeth
