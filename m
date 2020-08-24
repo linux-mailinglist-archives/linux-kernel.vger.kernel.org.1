@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC1424F7E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2391024F686
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgHXIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
+        id S1730787AbgHXJA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:00:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgHXIyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:54:31 -0400
+        id S1730641AbgHXI5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:57:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 247EF2087D;
-        Mon, 24 Aug 2020 08:54:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB0352072D;
+        Mon, 24 Aug 2020 08:57:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259270;
-        bh=xOX+SwTOlNIxhk6gQijcKh/CkN51KLIb4w/T9XLKpJA=;
+        s=default; t=1598259429;
+        bh=G5jUKukagXKkOLJ4BybzKWHms8rDfx8sUQRQ+hdxnbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c7csoRdzS5IGFSoCPjOVM28C/C1r7AGflGBGnSBiYmNWVZw+ybAwo1ebAqu84QZXS
-         6tNdc+uMZLiBv71QDvcd44h91MWMQ9LbESEcLVjwhVyxjf7P5bTMUoqHk+fXb/qkCC
-         uZUU8qG0JiDOTUQC+9mzAb5DZ/QEf4I/NmbKHFjc=
+        b=JsPpGv6WgfIvuTe1F0zlcaELFTn1h+Q+UFv5dbwmawNjyqUrgJRN4k3hg//U5Pd/O
+         cWVewum0cWb+NCKMbihzwJTMNi4IIsxdhF48lgcxGC4TtvD74NdiczSNyxGEY5IDFO
+         fTqa7HotMB+2VlohCPEIuHeRyL91zPsYLlzqaRDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 16/50] ext4: fix checking of directory entry validity for inline directories
+        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 26/71] Input: psmouse - add a newline when printing proto by sysfs
 Date:   Mon, 24 Aug 2020 10:31:17 +0200
-Message-Id: <20200824082352.813159011@linuxfoundation.org>
+Message-Id: <20200824082357.197272472@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-commit 7303cb5bfe845f7d43cd9b2dbd37dbb266efda9b upstream.
+[ Upstream commit 4aec14de3a15cf9789a0e19c847f164776f49473 ]
 
-ext4_search_dir() and ext4_generic_delete_entry() can be called both for
-standard director blocks and for inline directories stored inside inode
-or inline xattr space. For the second case we didn't call
-ext4_check_dir_entry() with proper constraints that could result in
-accepting corrupted directory entry as well as false positive filesystem
-errors like:
+When I cat parameter 'proto' by sysfs, it displays as follows. It's
+better to add a newline for easy reading.
 
-EXT4-fs error (device dm-0): ext4_search_dir:1395: inode #28320400:
-block 113246792: comm dockerd: bad entry in directory: directory entry too
-close to block end - offset=0, inode=28320403, rec_len=32, name_len=8,
-size=4096
+root@syzkaller:~# cat /sys/module/psmouse/parameters/proto
+autoroot@syzkaller:~#
 
-Fix the arguments passed to ext4_check_dir_entry().
-
-Fixes: 109ba779d6cc ("ext4: check for directory entries too close to block end")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200731162135.8080-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200720073846.120724-1-wangxiongfeng2@huawei.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/input/mouse/psmouse-base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1308,8 +1308,8 @@ int ext4_search_dir(struct buffer_head *
- 		    ext4_match(fname, de)) {
- 			/* found a match - just to be sure, do
- 			 * a full check */
--			if (ext4_check_dir_entry(dir, NULL, de, bh, bh->b_data,
--						 bh->b_size, offset))
-+			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
-+						 buf_size, offset))
- 				return -1;
- 			*res_dir = de;
- 			return 1;
-@@ -2353,7 +2353,7 @@ int ext4_generic_delete_entry(handle_t *
- 	de = (struct ext4_dir_entry_2 *)entry_buf;
- 	while (i < buf_size - csum_size) {
- 		if (ext4_check_dir_entry(dir, NULL, de, bh,
--					 bh->b_data, bh->b_size, i))
-+					 entry_buf, buf_size, i))
- 			return -EFSCORRUPTED;
- 		if (de == de_del)  {
- 			if (pde)
+diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
+index d3ff1fc09af71..a9040c0fb4c3f 100644
+--- a/drivers/input/mouse/psmouse-base.c
++++ b/drivers/input/mouse/psmouse-base.c
+@@ -2044,7 +2044,7 @@ static int psmouse_get_maxproto(char *buffer, const struct kernel_param *kp)
+ {
+ 	int type = *((unsigned int *)kp->arg);
+ 
+-	return sprintf(buffer, "%s", psmouse_protocol_by_type(type)->name);
++	return sprintf(buffer, "%s\n", psmouse_protocol_by_type(type)->name);
+ }
+ 
+ static int __init psmouse_init(void)
+-- 
+2.25.1
+
 
 
