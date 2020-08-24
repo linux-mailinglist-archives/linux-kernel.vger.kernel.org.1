@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A7F24FD02
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F72224FD0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgHXLyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:54:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55548 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726075AbgHXLyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:54:21 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6905211FDBEEEEE5F66E;
-        Mon, 24 Aug 2020 19:54:16 +0800 (CST)
-Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.102.173) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 24 Aug 2020 19:54:09 +0800
-From:   Guohua Zhong <zhongguohua1@huawei.com>
-To:     <segher@kernel.crashing.org>
-CC:     <christophe.leroy@csgroup.eu>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <nixiaoming@huawei.com>, <paulus@samba.org>,
-        <stable@vger.kernel.org>, <wangle6@huawei.com>,
-        <zhongguohua1@huawei.com>
-Subject: =?UTF-8?q?Re=3A=20Re=EF=BC=9ARe=3A=20=5BPATCH=5D=20powerpc=3A=20Fix=20a=20bug=20in=20=5F=5Fdiv64=5F32=20if=20divisor=20is=20zero?=
-Date:   Mon, 24 Aug 2020 19:54:07 +0800
-Message-ID: <20200824115407.55896-1-zhongguohua1@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20200823001101.GO28786@gate.crashing.org>
-References: <20200823001101.GO28786@gate.crashing.org>
+        id S1726903AbgHXL4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:56:06 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:28102 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgHXLz7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598270152;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=GZsU9e2keGEulN7Q2uhW/1WGOldQIzqQqKxKK8QK8Ws=;
+        b=V3WlrKRQ3OepeA3WOhgc2+4oB7GQ1kqhEuCmOfd3SgSWG8jw31JCTHaYrSq/WhB6Lx
+        /37AAo7YGl+Z7TsCk3dsEriaui/yVRHrskaXzAqlpYnRRQW/0PnPkoat5fxmFBk7y1Ui
+        ZEmuZ7L648RkKzvSrMq6/kWnTkEkmIYW+3HUIJJd/NUEogRwoAqCznZvmzsLQ+bjJw95
+        uXK55WjL/csYRsQaJwjWdcIshWMy/Dof0kdZgpGDYGxBy7dALyTEw4XTVEoq1BmZDL90
+        ZBljS7l9HewdebArabOiN7P274IETwDIrGjddE+uE4E2fI6pTLWUYCtqPUXWGlLLtVCF
+        TWJQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/MbIo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id g0b6c1w7OBtoWv4
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 24 Aug 2020 13:55:50 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 13:55:49 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [RFC PATCH 3/3] opp: Power on (virtual) power domains managed by
+ the OPP core
+Message-ID: <20200824115549.GB208090@gerhold.net>
+References: <20200730080146.25185-1-stephan@gerhold.net>
+ <20200730080146.25185-4-stephan@gerhold.net>
+ <20200824112744.jsyaxrfbybyjpwex@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.173]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824112744.jsyaxrfbybyjpwex@vireshk-i7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Yet, I have noticed that there is no checking of 'base' in these functions.
->> But I am not sure how to check is better.As we know that the result is 
->> undefined when divisor is zero. It maybe good to print error and dump stack.
->>  Let the process to know that the divisor is zero by sending SIGFPE. 
+On Mon, Aug 24, 2020 at 04:57:44PM +0530, Viresh Kumar wrote:
+> On 30-07-20, 10:01, Stephan Gerhold wrote:
+> > dev_pm_opp_attach_genpd() allows attaching an arbitrary number of
+> > power domains to an OPP table. In that case, the genpd core will
+> > create a virtual device for each of the power domains.
+> > 
+> > At the moment, the OPP core only calls
+> > dev_pm_genpd_set_performance_state() on these virtual devices.
+> > It does not attempt to power on the power domains. Therefore
+> > the required power domain might never get turned on.
+> > 
+> > So far, dev_pm_opp_attach_genpd() is only used in qcom-cpufreq-nvmem.c
+> > to attach the CPR power domain to the CPU OPP table. The CPR driver
+> > does not check if it was actually powered on so this did not cause
+> > any problems. However, other drivers (e.g. rpmpd) might ignore the
+> > performance state until the power domain is actually powered on.
+> > 
+> > Since these virtual devices are managed exclusively by the OPP core,
+> > I would say that it should also be responsible to ensure they are
+> > enabled. A similar approach is already used for regulators, see
+> > commit 8d45719caaf5 ("opp: core: add regulators enable and disable").
+> > 
+> > This commit implements similar functionality for the virtual genpd
+> > devices managed by the OPP core. The power domains are turned on
+> > the first time dev_pm_opp_set_rate() is called. They are turned off
+> > again when dev_pm_opp_set_rate(dev, 0) is called.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> > Related discussion: https://lore.kernel.org/linux-arm-msm/20200426123140.GA190483@gerhold.net/
+> > 
+> > There would be also other ways to implement this, e.g. device links,
+> > assuming that the device using the OPP table also makes use of runtime PM.
+> > My first thought was that it would be most consistent to handle this like
+> > regulators, bandwidth votes etc. RFC :)
+> 
+> This stuff was done ages back and I am starting to forget almost
+> everything now :)
+> 
+> Ulf, why doesn't pm_runtime_get(dev) take care of enabling multiple
+> power domain case ? RFP (request for patience) :)
+> 
 
-> That is now what the PowerPC integer divide insns do: they just leave
-> the result undefined (and they can set the overflow flag then, but no
-> one uses that).
+So I'm really not an expert for power domains, but here is my
+understanding:
 
-OK ,So just keep the patch as below. If this patch looks good for you, please
-help to review. I will send the new patch later.
+We attach the power domains in dev_pm_opp_attach_genpd(opp_dev, names),
+where opp_dev is the device the OPP table belongs to.
 
-Thanks for your reply.
+To do that, the genpd core creates a set of virtual devices. These
+virtual devices are not related to opp_dev in any way. Therefore, the
+power domains stay off until we run pm_runtime_get(virt_dev) for each of
+the virtual devices. (Which is what is implemented in this patch...)
 
-diff --git a/arch/powerpc/boot/div64.S b/arch/powerpc/boot/div64.S
-index 4354928ed62e..1d3561cf16fa 100644
---- a/arch/powerpc/boot/div64.S
-+++ b/arch/powerpc/boot/div64.S
-@@ -13,8 +13,10 @@
+If I understand correctly, what you would like to do is to have a single
+pm_runtime_get(opp_dev) call also enable all the virtual devices?
 
-        .globl __div64_32
-        .globl __div64_32
- __div64_32:
-+ cmplwi      r4,0    # check if divisor r4 is zero
-        lwz     r5,0(r3)        # get the dividend into r5/r6
-        lwz     r6,4(r3)
-+ beq 5f                      # jump to label 5 if r4(divisor) is zero
-        cmplw   r5,r4
-        li      r7,0
-        li      r8,0
-@@ -52,7 +54,7 @@ __div64_32:
- 4:     stw     r7,0(r3)        # return the quotient in *r3
-        stw     r8,4(r3)
-        mr      r3,r6           # return the remainder in r3
--   blr
-+5:   blr                             # return if divisor r4 is zero
+As far as I understand, this can be done by adding "device links"
+between opp_dev and the virtual devices, e.g.
 
- /*
-  * Extended precision shifts.
-diff --git a/arch/powerpc/lib/div64.S b/arch/powerpc/lib/div64.S
-index 3d5426e7dcc4..570774d9782d 100644
---- a/arch/powerpc/lib/div64.S
-+++ b/arch/powerpc/lib/div64.S
-@@ -13,8 +13,10 @@
- #include <asm/processor.h>
+	device_link_add(opp_dev, virt_dev, DL_FLAG_PM_RUNTIME);
 
- _GLOBAL(__div64_32)
-+ cmplwi      r4,0    # check if divisor r4 is zero
-        lwz     r5,0(r3)        # get the dividend into r5/r6
-        lwz     r6,4(r3)
-+ beq 5f                      # jump to label 5 if r4(divisor) is zero
-        cmplw   r5,r4
-        li      r7,0
-        li      r8,0
-@@ -52,4 +54,4 @@ _GLOBAL(__div64_32)
- 4:     stw     r7,0(r3)        # return the quotient in *r3
-        stw     r8,4(r3)
-        mr      r3,r6           # return the remainder in r3
--   blr
-+5:   blr                             # return if divisor r4 is zero
+for each of the virtual devices.
 
-Guohua
+But the problem with that approach is that it assumes that someone
+actually calls pm_runtime_get(opp_dev), i.e. we assume that opp_dev is
+managed by runtime PM. As far as I know, this isn't the case for the CPU
+OPP table for example.
 
+Maybe Ulf can correct me if I'm wrong :)
+
+Thanks!
+Stephan
