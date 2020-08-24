@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C847824F679
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA26024F665
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgHXJAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:00:39 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53066 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730516AbgHXJAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:00:32 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O8xGgL108162;
-        Mon, 24 Aug 2020 09:00:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=50Jbb+FZDBmchEzeKcBDaq35Jtp/5qrQQQ+5JWM9qFE=;
- b=Wlfq3RmSrQAIAthguqvPDfG7sBdRY3N7DDHb44Uv8sSseK1oVipq12+fD9zca/i2EMxT
- wa4cdpSgjgCpbgHcj4QQca+ZoK96OXlhzGFeeKmv7aVOuHFQ4XD8smrY+r8deFTdAi3H
- GHL6N4uaUL1Gp8Q3YIQ1BCIErgJcImPHFw3vm/3ENHc2lHVop5USXbJE8RLtmBCOX+XF
- 6hezLKuD7o05jq165EULFaO7wLWzlcdDkYzUMwOcf+zmyPS8eRumXhIdtwAuwQpJPkku
- GERC5tZ+DhICby+R1blzCFzP1YwCHl6NKo09//aXctT1QifRmgMoqvZJ69uUsJN5HRZe SQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 333w6thw1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 09:00:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O8o7OI015269;
-        Mon, 24 Aug 2020 08:58:19 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 333ru480n4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 08:58:19 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07O8wIct009724;
-        Mon, 24 Aug 2020 08:58:18 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 01:58:18 -0700
-Date:   Mon, 24 Aug 2020 11:58:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] afs: Fix a use after free in afs_xattr_get_acl()
-Message-ID: <20200824085812.GB208317@mwanda>
+        id S1730828AbgHXI7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730394AbgHXI7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:59:24 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C64A204FD;
+        Mon, 24 Aug 2020 08:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598259564;
+        bh=Vqjvv0EIOi2U2s6t+0Q1CQ/3Q2B1knKJsv8HWv4/b7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gC9uclQcI+xfmyA0tytJMAz6h+WcavQVvf+IgdXjo7ei64BR9302c9yfFxXVqkKBl
+         ACD9DLqnKm9gK1okGw9Byuy1Ve6AXbld5fu4WruKcksBRQ5+JtQrS5M/AoGTCAzquK
+         OeFGLZnnbq1f4En3cwiFlIxk5e47K9N4PMDb9Et4=
+Date:   Mon, 24 Aug 2020 10:59:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 137/232] USB: serial: ftdi_sio: fix break and sysrq
+ handling
+Message-ID: <20200824085905.GA405532@kroah.com>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091619.460392380@linuxfoundation.org>
+ <CAMgPeKX54WqE0Wc56u6W3M2JwttV=E7sBKmM5eRa5_Mu7m+okg@mail.gmail.com>
+ <20200820095652.GA1266907@kroah.com>
+ <20200824085424.GB21288@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008240068
+In-Reply-To: <20200824085424.GB21288@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "op" pointer is freed earlier when we call afs_put_operation().
+On Mon, Aug 24, 2020 at 10:54:24AM +0200, Johan Hovold wrote:
+> On Thu, Aug 20, 2020 at 11:56:52AM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Aug 20, 2020 at 11:51:56AM +0200, Johan Hovold wrote:
+> > > This was never intended for stable as it is not a critical fix and has
+> > > never worked properly in the first place. Please drop this one and the
+> > > preparatory clean ups from all stable trees.
+> > 
+> > Ok, but the "fix this thing" and the "Fixes:" tag really did imply this
+> > was actually fixing something :)
+> 
+> Sure and it is indeed a fix, just not for a regression or something
+> critical (oops, etc), and therefore the stable-cc tag was omitted.
+> 
+> > I'll drop it from everywhere, thanks.
+> 
+> Looks like you never dropped the preparatory clean ups. Should be ok.
 
-Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/afs/xattr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
-index 84f3c4f57531..38884d6c57cd 100644
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -85,7 +85,7 @@ static int afs_xattr_get_acl(const struct xattr_handler *handler,
- 			if (acl->size <= size)
- 				memcpy(buffer, acl->data, acl->size);
- 			else
--				op->error = -ERANGE;
-+				ret = -ERANGE;
- 		}
- 	}
- 
--- 
-2.28.0
-
+Ah, sorry about that, shouldn't be a problem :)
