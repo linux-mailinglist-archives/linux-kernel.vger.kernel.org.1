@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0305724F587
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598ED24F5E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgHXIuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:50:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53550 "EHLO mail.kernel.org"
+        id S1730352AbgHXIym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728148AbgHXIuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:50:13 -0400
+        id S1728932AbgHXIyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:54:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8580D204FD;
-        Mon, 24 Aug 2020 08:50:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30962207D3;
+        Mon, 24 Aug 2020 08:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259012;
-        bh=c2JzkfZP4N0nxD4BIiuifQG9PoFroCZt0vwqyLLUyMw=;
+        s=default; t=1598259273;
+        bh=HQffJ2Pn9vxDua6M0lEdt3wiTIc8vlMpCHt4/DZucdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eimtQGgbp7k+kwjwJUMN6+t/ew5t87UokjOOOivmCFGMx6vOVr5Vy2cHqcMhNumQJ
-         ztjra58A/mHCEUBXUhBzcYdM6lAYbBVPgVtIhKzXG6N4T52hz95ShkAno1wg9M6JIn
-         Ied9M9adYXVJadGOCKfGp6cfdDpVI+6kfX1pV4gs=
+        b=Q7Z6cGGXVUSgWJz3DLs+rUvGUJKrx6Kj+x16UvhpO3lcfJ4FEYlxxTA+Gj7F4jbl6
+         RHTufWwppwuRpiObFRGL1v34OFihyU9j5IxPb/ZyK9130bEjICQewwMV25FMVaZFbK
+         sF57sS8vg4KHdpiXyfPFvZYeZIWYJR9og/DkwIrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/33] jffs2: fix UAF problem
-Date:   Mon, 24 Aug 2020 10:31:17 +0200
-Message-Id: <20200824082347.601627477@linuxfoundation.org>
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.14 17/50] jbd2: add the missing unlock_buffer() in the error path of jbd2_write_superblock()
+Date:   Mon, 24 Aug 2020 10:31:18 +0200
+Message-Id: <20200824082352.863997095@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhe Li <lizhe67@huawei.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-[ Upstream commit 798b7347e4f29553db4b996393caf12f5b233daf ]
+commit ef3f5830b859604eda8723c26d90ab23edc027a4 upstream.
 
-The log of UAF problem is listed below.
-BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
-Read of size 4 by task rm/8283
-=============================================================================
-BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
------------------------------------------------------------------------------
+jbd2_write_superblock() is under the buffer lock of journal superblock
+before ending that superblock write, so add a missing unlock_buffer() in
+in the error path before submitting buffer.
 
-INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
-        0xb0bba6ef
-        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
-        __slab_alloc.isra.21.constprop.25+0x2c/0x44
-        __kmalloc+0x1dc/0x370
-        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
-        jffs2_do_unlink+0x328/0x5fc [jffs2]
-        jffs2_rmdir+0x110/0x1cc [jffs2]
-        vfs_rmdir+0x180/0x268
-        do_rmdir+0x2cc/0x300
-        ret_from_syscall+0x0/0x3c
-INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
-        0x2e9173
-        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
-        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
-        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
-        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
-        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
-        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
-        kthread+0x1a8/0x1b0
-        ret_from_kernel_thread+0x5c/0x64
-Call Trace:
-[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
-[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
-[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
-[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
-[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
+Fixes: 742b06b5628f ("jbd2: check superblock mapped prior to committing")
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20200620061948.2049579-1-yi.zhang@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The root cause is that we don't get "jffs2_inode_info.sem" before
-we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
-This patch add codes to get "jffs2_inode_info.sem" before we scan
-"jffs2_inode_info.dents" to slove the UAF problem.
-
-Signed-off-by: Zhe Li <lizhe67@huawei.com>
-Reviewed-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jffs2/dir.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/jbd2/journal.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index e273171696972..7a3368929245d 100644
---- a/fs/jffs2/dir.c
-+++ b/fs/jffs2/dir.c
-@@ -588,10 +588,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1356,8 +1356,10 @@ static int jbd2_write_superblock(journal
  	int ret;
- 	uint32_t now = get_seconds();
  
-+	mutex_lock(&f->sem);
- 	for (fd = f->dents ; fd; fd = fd->next) {
--		if (fd->ino)
-+		if (fd->ino) {
-+			mutex_unlock(&f->sem);
- 			return -ENOTEMPTY;
-+		}
- 	}
-+	mutex_unlock(&f->sem);
+ 	/* Buffer got discarded which means block device got invalidated */
+-	if (!buffer_mapped(bh))
++	if (!buffer_mapped(bh)) {
++		unlock_buffer(bh);
+ 		return -EIO;
++	}
  
- 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
- 			      dentry->d_name.len, f, now);
--- 
-2.25.1
-
+ 	trace_jbd2_write_superblock(journal, write_flags);
+ 	if (!(journal->j_flags & JBD2_BARRIER))
 
 
