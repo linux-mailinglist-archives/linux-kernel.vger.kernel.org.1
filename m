@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D265324F9D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7B324F926
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgHXJti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
+        id S1728403AbgHXJlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:41:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728755AbgHXIki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:40:38 -0400
+        id S1728464AbgHXIpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:45:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A955021741;
-        Mon, 24 Aug 2020 08:40:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF4D42075B;
+        Mon, 24 Aug 2020 08:45:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258438;
-        bh=Nsx1/QnVpUDV33+SrioDmlhfg5tkM9R+Pa91bvw0w0Q=;
+        s=default; t=1598258703;
+        bh=GUcQ59NfnXbMNVFyQ/W0frB3t2MHlmxFmSsrO9JQPPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HivRY4Fx1E3HkX8wPbNYeIAOosKK24dMkgK4ONykfZZycq8q8+Dl/efB+LyqdhNE/
-         Ol/03JA8BGtyy49/GTKw6tiPUKL7YQF4cLBgQDu8+xeVpMqJORtUu3KDZXng0BhHEa
-         f5wheSZmgqMTy57QV60jZaO4BCwD7Ys1PNtyFoPU=
+        b=NADHID1xNl2yg5qPU6kp5H7+rleFSktAS4YSqg197ynh5Jd0/YAeD4KBf9VcGb/rt
+         enwVg6SkJxF+rSmIAUxFVfAFwj2yB6cOMHAyoZzGJ0ta1FukQp0Nhw29+w3DqKpFkS
+         x82q3vwoKOyTdQWmJeI6OunbCMeeY7oDLRoFLHg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 048/124] jffs2: fix UAF problem
+        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        Ken Raeburn <raeburn@redhat.com>
+Subject: [PATCH 5.4 016/107] bcache: avoid nr_stripes overflow in bcache_device_init()
 Date:   Mon, 24 Aug 2020 10:29:42 +0200
-Message-Id: <20200824082411.790486836@linuxfoundation.org>
+Message-Id: <20200824082405.873298452@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhe Li <lizhe67@huawei.com>
+From: Coly Li <colyli@suse.de>
 
-[ Upstream commit 798b7347e4f29553db4b996393caf12f5b233daf ]
+[ Upstream commit 65f0f017e7be8c70330372df23bcb2a407ecf02d ]
 
-The log of UAF problem is listed below.
-BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
-Read of size 4 by task rm/8283
-=============================================================================
-BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
------------------------------------------------------------------------------
+For some block devices which large capacity (e.g. 8TB) but small io_opt
+size (e.g. 8 sectors), in bcache_device_init() the stripes number calcu-
+lated by,
+	DIV_ROUND_UP_ULL(sectors, d->stripe_size);
+might be overflow to the unsigned int bcache_device->nr_stripes.
 
-INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
-        0xb0bba6ef
-        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
-        __slab_alloc.isra.21.constprop.25+0x2c/0x44
-        __kmalloc+0x1dc/0x370
-        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
-        jffs2_do_unlink+0x328/0x5fc [jffs2]
-        jffs2_rmdir+0x110/0x1cc [jffs2]
-        vfs_rmdir+0x180/0x268
-        do_rmdir+0x2cc/0x300
-        ret_from_syscall+0x0/0x3c
-INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
-        0x2e9173
-        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
-        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
-        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
-        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
-        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
-        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
-        kthread+0x1a8/0x1b0
-        ret_from_kernel_thread+0x5c/0x64
-Call Trace:
-[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
-[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
-[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
-[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
-[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
+This patch uses the uint64_t variable to store DIV_ROUND_UP_ULL()
+and after the value is checked to be available in unsigned int range,
+sets it to bache_device->nr_stripes. Then the overflow is avoided.
 
-The root cause is that we don't get "jffs2_inode_info.sem" before
-we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
-This patch add codes to get "jffs2_inode_info.sem" before we scan
-"jffs2_inode_info.dents" to slove the UAF problem.
-
-Signed-off-by: Zhe Li <lizhe67@huawei.com>
-Reviewed-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Reported-and-tested-by: Ken Raeburn <raeburn@redhat.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1783075
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jffs2/dir.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/md/bcache/super.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index f20cff1194bb6..776493713153f 100644
---- a/fs/jffs2/dir.c
-+++ b/fs/jffs2/dir.c
-@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
- 	int ret;
- 	uint32_t now = JFFS2_NOW();
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 25ad64a3919f6..2cbfcd99b7ee7 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -816,19 +816,19 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
+ 	struct request_queue *q;
+ 	const size_t max_stripes = min_t(size_t, INT_MAX,
+ 					 SIZE_MAX / sizeof(atomic_t));
+-	size_t n;
++	uint64_t n;
+ 	int idx;
  
-+	mutex_lock(&f->sem);
- 	for (fd = f->dents ; fd; fd = fd->next) {
--		if (fd->ino)
-+		if (fd->ino) {
-+			mutex_unlock(&f->sem);
- 			return -ENOTEMPTY;
-+		}
+ 	if (!d->stripe_size)
+ 		d->stripe_size = 1 << 31;
+ 
+-	d->nr_stripes = DIV_ROUND_UP_ULL(sectors, d->stripe_size);
+-
+-	if (!d->nr_stripes || d->nr_stripes > max_stripes) {
+-		pr_err("nr_stripes too large or invalid: %u (start sector beyond end of disk?)",
+-			(unsigned int)d->nr_stripes);
++	n = DIV_ROUND_UP_ULL(sectors, d->stripe_size);
++	if (!n || n > max_stripes) {
++		pr_err("nr_stripes too large or invalid: %llu (start sector beyond end of disk?)\n",
++			n);
+ 		return -ENOMEM;
  	}
-+	mutex_unlock(&f->sem);
++	d->nr_stripes = n;
  
- 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
- 			      dentry->d_name.len, f, now);
+ 	n = d->nr_stripes * sizeof(atomic_t);
+ 	d->stripe_sectors_dirty = kvzalloc(n, GFP_KERNEL);
 -- 
 2.25.1
 
