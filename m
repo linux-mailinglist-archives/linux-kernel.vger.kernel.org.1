@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D1924F5B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F110E24F5D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgHXIwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:52:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
+        id S1729746AbgHXIxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:53:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729840AbgHXIwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:52:20 -0400
+        id S1730202AbgHXIxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:53:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CA6F204FD;
-        Mon, 24 Aug 2020 08:52:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2609207D3;
+        Mon, 24 Aug 2020 08:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259139;
-        bh=YpO6n/hx+XryrWAOxjzu0xvCNugcUj0aDwhi0NSNc6w=;
+        s=default; t=1598259216;
+        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PDQRGBR2y32yXYDSaYnFUv61TOyEK04bxGyFnkCwUXhMqZ21pCVAOzukiYy4MSUPl
-         vWVxcSrWEifexIreRgQRtKl7gkL1ai05J/6xLD3LzkY863U8dWZNtckqOg1Bs39UiB
-         JuS3o/yam4BG0WU8496avwiTW7vKgw3xCwNQGCdc=
+        b=sZdK6fcF9cFzkwWrLZJkAMZ0tHMCqx7w1Ixp9LuemxieGxkLLtjvJ2qAP1gV5DEXN
+         IyRXIGoFrD9i9RfSJUNcytb7Hx8LzaueDM3pd8vRgpzbZCgjcIe7AUuFq4GS5t1nJ4
+         GhmqA18y1YOdVEOlwTSdreTgdMv08fbkTWkJBZLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eiichi Tsukata <devel@etsukata.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 27/39] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
+Subject: [PATCH 4.14 25/50] m68knommu: fix overwriting of bits in ColdFire V3 cache control
 Date:   Mon, 24 Aug 2020 10:31:26 +0200
-Message-Id: <20200824082349.928063821@linuxfoundation.org>
+Message-Id: <20200824082353.314436934@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
-References: <20200824082348.445866152@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eiichi Tsukata <devel@etsukata.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-[ Upstream commit 96cf2a2c75567ff56195fe3126d497a2e7e4379f ]
+[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
 
-If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
-shows the following warning:
+The Cache Control Register (CACR) of the ColdFire V3 has bits that
+control high level caching functions, and also enable/disable the use
+of the alternate stack pointer register (the EUSP bit) to provide
+separate supervisor and user stack pointer registers. The code as
+it is today will blindly clear the EUSP bit on cache actions like
+invalidation. So it is broken for this case - and that will result
+in failed booting (interrupt entry and exit processing will be
+completely hosed).
 
-  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
-  member access within null pointer of type 'struct xfs_kobj'
-  Call Trace:
-   dump_stack+0x10e/0x195
-   ubsan_type_mismatch_common+0x241/0x280
-   __ubsan_handle_type_mismatch_v1+0x32/0x40
-   init_xfs_fs+0x12b/0x28f
-   do_one_initcall+0xdd/0x1d0
-   do_initcall_level+0x151/0x1b6
-   do_initcalls+0x50/0x8f
-   do_basic_setup+0x29/0x2b
-   kernel_init_freeable+0x19f/0x20b
-   kernel_init+0x11/0x1e0
-   ret_from_fork+0x22/0x30
+This only affects ColdFire V3 parts that support the alternate stack
+register (like the 5329 for example) - generally speaking new parts do,
+older parts don't. It has no impact on ColdFire V3 parts with the single
+stack pointer, like the 5307 for example.
 
-Fix it by checking parent_kobj before the code accesses its member.
+Fix the cache bit defines used, so they maintain the EUSP bit when
+carrying out cache actions through the CACR register.
 
-Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-[darrick: minor whitespace edits]
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_sysfs.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/m68k/include/asm/m53xxacr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
-index d04637181ef21..980c9429abec5 100644
---- a/fs/xfs/xfs_sysfs.h
-+++ b/fs/xfs/xfs_sysfs.h
-@@ -44,9 +44,11 @@ xfs_sysfs_init(
- 	struct xfs_kobj		*parent_kobj,
- 	const char		*name)
- {
-+	struct kobject		*parent;
-+
-+	parent = parent_kobj ? &parent_kobj->kobject : NULL;
- 	init_completion(&kobj->complete);
--	return kobject_init_and_add(&kobj->kobject, ktype,
--				    &parent_kobj->kobject, "%s", name);
-+	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
- }
+diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
+index 9138a624c5c81..692f90e7fecc1 100644
+--- a/arch/m68k/include/asm/m53xxacr.h
++++ b/arch/m68k/include/asm/m53xxacr.h
+@@ -89,9 +89,9 @@
+  * coherency though in all cases. And for copyback caches we will need
+  * to push cached data as well.
+  */
+-#define CACHE_INIT	  CACR_CINVA
+-#define CACHE_INVALIDATE  CACR_CINVA
+-#define CACHE_INVALIDATED CACR_CINVA
++#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
++#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
++#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
  
- static inline void
+ #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
+ 			 (0x000f0000) + \
 -- 
 2.25.1
 
