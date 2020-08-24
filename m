@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E60824F567
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E099224F50B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgHXIsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
+        id S1728619AbgHXIoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729103AbgHXIsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:48:12 -0400
+        id S1729044AbgHXIn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:43:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6382A206F0;
-        Mon, 24 Aug 2020 08:48:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F4BC20FC3;
+        Mon, 24 Aug 2020 08:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258891;
-        bh=riN4z/mrdo2qC42KeSPF/qU3Hm3H0TkNahjQu/VUgaU=;
+        s=default; t=1598258638;
+        bh=ngj6WiQUPERZ5q4EO+GD7YhTNCR/Src7jBSoABAThGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YYIOwxs7+suwmTbpilYtysyiGgE9R+qipgiW1p0tdoET8OdiAdGzzZI7M6eja692M
-         N62T9a/WI7Fk1k9SsRB/DZNgw8sLJvW0+SQAGJJcX6yRzYTP4YCNpAaM+VTaSph8Us
-         YpFV0ZEaOvqwl/t2xL0sa9pUamFdmKBb+YjZJqJk=
+        b=oBUR2ilJzx0nBLWbsJXi6YtUwpa0PZTnW/mI4g+Zby7vZJvyf2mjEMFhSBJCxsBNx
+         kmPiOeW3P9rVnl1oImiihLIaB/rCrf8plSE48MQhAeTLcLIgBf5d3hUxK+kBKFclDP
+         vDOKV0OsC5P1kTb+JcR8ax3Ff2EBpt84TORifj4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/107] s390/runtime_instrumentation: fix storage key handling
-Date:   Mon, 24 Aug 2020 10:30:48 +0200
-Message-Id: <20200824082409.180331733@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.7 117/124] powerpc/pseries: Do not initiate shutdown when system is running on UPS
+Date:   Mon, 24 Aug 2020 10:30:51 +0200
+Message-Id: <20200824082415.161754479@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
 
-[ Upstream commit 9eaba29c7985236e16468f4e6a49cc18cf01443e ]
+commit 90a9b102eddf6a3f987d15f4454e26a2532c1c98 upstream.
 
-The key member of the runtime instrumentation control block contains
-only the access key, not the complete storage key. Therefore the value
-must be shifted by four bits.
-Note: this is only relevant for debugging purposes in case somebody
-compiles a kernel with a default storage access key set to a value not
-equal to zero.
+As per PAPR we have to look for both EPOW sensor value and event
+modifier to identify the type of event and take appropriate action.
 
-Fixes: e4b8b3f33fca ("s390: add support for runtime instrumentation")
-Reported-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In LoPAPR v1.1 section 10.2.2 includes table 136 "EPOW Action Codes":
+
+  SYSTEM_SHUTDOWN 3
+
+  The system must be shut down. An EPOW-aware OS logs the EPOW error
+  log information, then schedules the system to be shut down to begin
+  after an OS defined delay internal (default is 10 minutes.)
+
+Then in section 10.3.2.2.8 there is table 146 "Platform Event Log
+Format, Version 6, EPOW Section", which includes the "EPOW Event
+Modifier":
+
+  For EPOW sensor value = 3
+  0x01 = Normal system shutdown with no additional delay
+  0x02 = Loss of utility power, system is running on UPS/Battery
+  0x03 = Loss of system critical functions, system should be shutdown
+  0x04 = Ambient temperature too high
+  All other values = reserved
+
+We have a user space tool (rtas_errd) on LPAR to monitor for
+EPOW_SHUTDOWN_ON_UPS. Once it gets an event it initiates shutdown
+after predefined time. It also starts monitoring for any new EPOW
+events. If it receives "Power restored" event before predefined time
+it will cancel the shutdown. Otherwise after predefined time it will
+shutdown the system.
+
+Commit 79872e35469b ("powerpc/pseries: All events of
+EPOW_SYSTEM_SHUTDOWN must initiate shutdown") changed our handling of
+the "on UPS/Battery" case, to immediately shutdown the system. This
+breaks existing setups that rely on the userspace tool to delay
+shutdown and let the system run on the UPS.
+
+Fixes: 79872e35469b ("powerpc/pseries: All events of EPOW_SYSTEM_SHUTDOWN must initiate shutdown")
+Cc: stable@vger.kernel.org # v4.0+
+Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+[mpe: Massage change log and add PAPR references]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200820061844.306460-1-hegdevasant@linux.vnet.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/kernel/runtime_instr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/ras.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/s390/kernel/runtime_instr.c b/arch/s390/kernel/runtime_instr.c
-index 125c7f6e87150..1788a5454b6fc 100644
---- a/arch/s390/kernel/runtime_instr.c
-+++ b/arch/s390/kernel/runtime_instr.c
-@@ -57,7 +57,7 @@ static void init_runtime_instr_cb(struct runtime_instr_cb *cb)
- 	cb->k = 1;
- 	cb->ps = 1;
- 	cb->pc = 1;
--	cb->key = PAGE_DEFAULT_KEY;
-+	cb->key = PAGE_DEFAULT_KEY >> 4;
- 	cb->v = 1;
- }
+--- a/arch/powerpc/platforms/pseries/ras.c
++++ b/arch/powerpc/platforms/pseries/ras.c
+@@ -184,7 +184,6 @@ static void handle_system_shutdown(char
+ 	case EPOW_SHUTDOWN_ON_UPS:
+ 		pr_emerg("Loss of system power detected. System is running on"
+ 			 " UPS/battery. Check RTAS error log for details\n");
+-		orderly_poweroff(true);
+ 		break;
  
--- 
-2.25.1
-
+ 	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
 
 
