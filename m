@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9D124F546
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB98824F472
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729162AbgHXIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
+        id S1728273AbgHXIgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728981AbgHXIqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:33 -0400
+        id S1726806AbgHXIgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA54E204FD;
-        Mon, 24 Aug 2020 08:46:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96B6C207DF;
+        Mon, 24 Aug 2020 08:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258792;
-        bh=Ge1Fv6LAeKyYdapeduUL5sLIMyaq4MqgxEoN828ffQ4=;
+        s=default; t=1598258196;
+        bh=3nDsga2bpnQ7gibh7J1sl5vVziLsJsa7Ai2+ydM4siQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Spk5AdKlrkPhECphUtU8JhqPcTOswTM5U8mJaCM9XguZ7m1Ew5Atikh/x4hltROK7
-         KO6ekfGsy8y52p9dqyJZgVPczl636NlBy8m60/XqsGvhtM6kKLLOISz6I6Cl16/rtg
-         Q44BFA5v3p5Y2LdTcWrHkQMI6EsVokK+dctUtDbY=
+        b=PJjR3cbU36JRG/Y95BBa8wwyZ3XAThzFJ5LRRxZnkP/SHJaMI9/Tgqccw7H1F5Clr
+         JbQkwZHA/h4SEQgBjOixsAI6jBBLRC5h19MMOD7oaZ42yDQi8fBryQwERu82MKYit0
+         IEMFfz+fDfCmAOvtxRJlpoL9xuwOcKunR2xzCSj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liang Chen <cl@rock-chips.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Chanho Park <chanho61.park@samsung.com>
-Subject: [PATCH 5.4 039/107] kthread: Do not preempt current task if it is going to call schedule()
-Date:   Mon, 24 Aug 2020 10:30:05 +0200
-Message-Id: <20200824082407.058908921@linuxfoundation.org>
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 109/148] scsi: ufs: ti-j721e-ufs: Fix error return in ti_j721e_ufs_probe()
+Date:   Mon, 24 Aug 2020 10:30:07 +0200
+Message-Id: <20200824082419.239966938@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liang Chen <cl@rock-chips.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-commit 26c7295be0c5e6da3fa45970e9748be983175b1b upstream.
+[ Upstream commit 2138d1c918246e3d8193c3cb8b6d22d0bb888061 ]
 
-when we create a kthread with ktrhead_create_on_cpu(),the child thread
-entry is ktread.c:ktrhead() which will be preempted by the parent after
-call complete(done) while schedule() is not called yet,then the parent
-will call wait_task_inactive(child) but the child is still on the runqueue,
-so the parent will schedule_hrtimeout() for 1 jiffy,it will waste a lot of
-time,especially on startup.
+Fix to return error code PTR_ERR() from the error handling case instead of
+0.
 
-  parent                             child
-ktrhead_create_on_cpu()
-  wait_fo_completion(&done) -----> ktread.c:ktrhead()
-                             |----- complete(done);--wakeup and preempted by parent
- kthread_bind() <------------|  |-> schedule();--dequeue here
-  wait_task_inactive(child)     |
-   schedule_hrtimeout(1 jiffy) -|
-
-So we hope the child just wakeup parent but not preempted by parent, and the
-child is going to call schedule() soon,then the parent will not call
-schedule_hrtimeout(1 jiffy) as the child is already dequeue.
-
-The same issue for ktrhead_park()&&kthread_parkme().
-This patch can save 120ms on rk312x startup with CONFIG_HZ=300.
-
-Signed-off-by: Liang Chen <cl@rock-chips.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://lkml.kernel.org/r/20200306070133.18335-2-cl@rock-chips.com
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200806070135.67797-1-jingxiangfeng@huawei.com
+Fixes: 22617e216331 ("scsi: ufs: ti-j721e-ufs: Fix unwinding of pm_runtime changes")
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kthread.c |   17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ti-j721e-ufs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -199,8 +199,15 @@ static void __kthread_parkme(struct kthr
- 		if (!test_bit(KTHREAD_SHOULD_PARK, &self->flags))
- 			break;
- 
-+		/*
-+		 * Thread is going to call schedule(), do not preempt it,
-+		 * or the caller of kthread_park() may spend more time in
-+		 * wait_task_inactive().
-+		 */
-+		preempt_disable();
- 		complete(&self->parked);
--		schedule();
-+		schedule_preempt_disabled();
-+		preempt_enable();
+diff --git a/drivers/scsi/ufs/ti-j721e-ufs.c b/drivers/scsi/ufs/ti-j721e-ufs.c
+index 46bb905b4d6a9..eafe0db98d542 100644
+--- a/drivers/scsi/ufs/ti-j721e-ufs.c
++++ b/drivers/scsi/ufs/ti-j721e-ufs.c
+@@ -38,6 +38,7 @@ static int ti_j721e_ufs_probe(struct platform_device *pdev)
+ 	/* Select MPHY refclk frequency */
+ 	clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(clk)) {
++		ret = PTR_ERR(clk);
+ 		dev_err(dev, "Cannot claim MPHY clock.\n");
+ 		goto clk_err;
  	}
- 	__set_current_state(TASK_RUNNING);
- }
-@@ -245,8 +252,14 @@ static int kthread(void *_create)
- 	/* OK, tell user we're spawned, wait for stop or wakeup */
- 	__set_current_state(TASK_UNINTERRUPTIBLE);
- 	create->result = current;
-+	/*
-+	 * Thread is going to call schedule(), do not preempt it,
-+	 * or the creator may spend more time in wait_task_inactive().
-+	 */
-+	preempt_disable();
- 	complete(done);
--	schedule();
-+	schedule_preempt_disabled();
-+	preempt_enable();
- 
- 	ret = -EINTR;
- 	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
+-- 
+2.25.1
+
 
 
