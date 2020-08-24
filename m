@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74B324FC81
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1996124FC7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgHXL1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:27:47 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44774 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgHXL1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:27:21 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OBKDwV173250;
-        Mon, 24 Aug 2020 11:27:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=c/kQiaid73GkfCTdczWEw0RoSId+E3XOoY0+VehU8DQ=;
- b=wIFk6o7nyQwq0H7Ud0tBD0s/nFkyOmYG38tkvigfCu91KZSmIdhnWEbffaZXnn3VNg26
- 5bgnPGEcqTu0t7cVSyjuQo3+97KQh6W5KTuTJ7LywL6gAkbdQ3ZQQVwhbaoJeHZWuaEP
- 0ZMS3Z8orWMdfyUqlCmLpm/LjuwlVK2NmqfEyUUxf3BcQBMbMxuEpu7kXXLVWv2inf/f
- e7enbRvy5rDI8OwLfhbbbu/FMxe5OUAe3zPdUUK1YmbRXjplWbFVEE2Hz9714ktc2+hi
- Mll0PFS42KEu2CKV1iSK3jeYV/j32eMpDuQ+mQBwOT4yUeOTTzFRhAA+3RA7fqXxiuLV Uw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 333dbrkyuw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 11:27:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OBK8M7152312;
-        Mon, 24 Aug 2020 11:25:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 333ru4h5tu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 11:25:08 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07OBP7u6001496;
-        Mon, 24 Aug 2020 11:25:08 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 04:25:07 -0700
-Date:   Mon, 24 Aug 2020 14:24:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Tomer Samara <tomersamara98@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Riley Andrews <riandrews@android.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Hridya Valsaraju <hridya@google.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v4 2/2] staging: android: Remove BUG from
- ion_system_heap.c
-Message-ID: <20200824112457.GI1793@kadam>
-References: <cover.1598023523.git.tomersamara98@gmail.com>
- <a39407f84031eaeed5e65a7aab515a079edf5fcc.1598023524.git.tomersamara98@gmail.com>
- <3eba90dc-128f-49da-41a6-81494653d535@infradead.org>
+        id S1726466AbgHXLZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:25:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgHXLZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:25:39 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 159412074D;
+        Mon, 24 Aug 2020 11:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598268339;
+        bh=7GIaKetwytFVVmGuqF6J4EWX1T8qm6Wcdr0mF9j04Kk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uOZuujobGhwvWq01HJ+H0LzcafLeyO6owoL6H/+IFI8PIwGNOnIBXJEYDWjQqvW7k
+         5stVhA1JHelmI3dKgmIkXPpvpdqCeNQ8SHdzFBUEE7s0ZF0jfGiFVRYj/pFtMbQjYA
+         OzozzQ4bKX8ySmmFfQ33dcD4xQ+vj+tmzDjiGWn0=
+Date:   Mon, 24 Aug 2020 12:25:05 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Kuldip Dwivedi <kuldip.dwivedi@puresoftware.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Tanveer Alam <tanveer.alam@puresoftware.com>
+Subject: Re: [PATCH] spi: spi-fsl-dspi: Add ACPI support
+Message-ID: <20200824112505.GD4676@sirena.org.uk>
+References: <20200821131029.11440-1-kuldip.dwivedi@puresoftware.com>
+ <20200821140718.GH4870@sirena.org.uk>
+ <c810740d75f64e308fd362e6c6a5f437@mail.gmail.com>
+ <20200822152118.rlwbcgfk4abjldtg@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
 Content-Disposition: inline
-In-Reply-To: <3eba90dc-128f-49da-41a6-81494653d535@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240090
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240090
+In-Reply-To: <20200822152118.rlwbcgfk4abjldtg@skbuf>
+X-Cookie: Weekend, where are you?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 09:25:26AM -0700, Randy Dunlap wrote:
-> On 8/21/20 8:28 AM, Tomer Samara wrote:
-> > Remove BUG() from ion_sytem_heap.c
-> > 
-> > this fix the following checkpatch issue:
-> > Avoid crashing the kernel - try using WARN_ON &
-> > recovery code ratherthan BUG() or BUG_ON().
-> > 
-> > Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
-> > ---
-> >  drivers/staging/android/ion/ion_system_heap.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/android/ion/ion_system_heap.c b/drivers/staging/android/ion/ion_system_heap.c
-> > index eac0632ab4e8..00d6154aec34 100644
-> > --- a/drivers/staging/android/ion/ion_system_heap.c
-> > +++ b/drivers/staging/android/ion/ion_system_heap.c
-> > @@ -30,7 +30,7 @@ static int order_to_index(unsigned int order)
-> >  	for (i = 0; i < NUM_ORDERS; i++)
-> >  		if (order == orders[i])
-> >  			return i;
-> > -	BUG();
-> > +	/* This is impossible. */
-> >  	return -1;
-> >  }
-> 
-> Hi,
-> Please explain why this is impossible.
-> 
-> If some caller calls order_to_index(5), it will return -1, yes?
-> 
 
-I was happy enough with the comment as-is given that I suggested it.
-But an alternative comment could be "/* This is impossible.
-We always pass valid values to this function. */
+--DiL7RhKs8rK9YGuF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-regards,
-dan carpenter
+On Sat, Aug 22, 2020 at 06:21:18PM +0300, Vladimir Oltean wrote:
+> On Sat, Aug 22, 2020 at 07:37:25PM +0530, Kuldip Dwivedi wrote:
 
+> > > The whole point with the device property API is that it works with
+> > > both DT and ACPI without needing separate parsing, though in this
+> > > case I'm wondering why we'd need to specify this in an ACPI system
+> > > at all?
+
+> > Understood. Will take care in v2 PATCH
+
+> IMO there is zero reason for the existence of the "spi-num-chipselects"
+> property even for DT. We should deprecate it (start ignoring it in
+> existing device tree deployments) and populate struct
+> fsl_dspi_devtype_data with that info based on SoC compatible string.
+
+Yes, it's a legacy from bad board file conversions and shouldn't be used
+at all.
+
+--DiL7RhKs8rK9YGuF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Do5AACgkQJNaLcl1U
+h9A8PQf/cEQl3VktlE6c6lvsovpm3nRjF6qrRNor+1Py6I3IJ+oNYlQjbyPbSY1f
+s8SEca4akE5en6X7+xDjSSVVML1D3ztxlmfQLYk2qb+k3YZEYxIAIrN7O0/4dFAn
+3kat8f7Zzmh8m1fCvX+z48aJ1cqUhi0pYknPO7yndjrBBM4Y6M8yjlctThXc7vLA
+rd+iOr4geg9teG4z8N60LBeMpHUJetUJEC3S7ZN22TiecSaQbKeppjsmbKfroQp3
+52wGck6h7k6mQXtSicZg2OdEyyNMjy6dKx1qxkbUL0aHr10Boao+iX865bDqrAGU
+NVsNfIiTRLTYJ/6mcnBDmK+gWqNe+g==
+=KhPu
+-----END PGP SIGNATURE-----
+
+--DiL7RhKs8rK9YGuF--
