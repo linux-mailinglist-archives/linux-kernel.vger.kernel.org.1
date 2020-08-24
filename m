@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766A524FA7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B214624F9DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgHXJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:56:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
+        id S1729306AbgHXJtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:49:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728089AbgHXIfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:32 -0400
+        id S1727889AbgHXIj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BD0A206F0;
-        Mon, 24 Aug 2020 08:35:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CB6920FC3;
+        Mon, 24 Aug 2020 08:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258132;
-        bh=aGAVE7dUlLLoJZfcZXaEkseQizeF/7cuRvfQAW6y5Xw=;
+        s=default; t=1598258366;
+        bh=83LRrZrC4LInnS5Myvxnbeok5E3I28f+ZTEuGCIFQTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TrfDvVozbPDU2bEuF8/z7MlCaIX/GUoYdDJwByvQbjyKcVmlGU3R5gnYOJ5qYP9Rk
-         tgMXh3QNhbrIAWqjsPuqGAph22iIYokOdMq98+qT2lTtnqTajNZbEPSVnD6F9nsbIS
-         85f8meGdiYxxgFTFklGPTszIKA255twnb/HR4c54=
+        b=twt840eeclLi3CT4e3t7W8smeH46sQoGacvHuxTLeOt4ztENfboPxBYNC0F806CW4
+         kg1GMmmGUY+nJ8B04a0bvEOvP/l3mc74mEF4b5rAV6WX+aA7V6tVbVs1fzlyyBqS3S
+         JGBkmtVM+ZJblVri7zfndMPh7o0cWNqYU00rS/0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Allison Collins <allison.henderson@oracle.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 057/148] xfs: fix inode quota reservation checks
-Date:   Mon, 24 Aug 2020 10:29:15 +0200
-Message-Id: <20200824082416.799697353@linuxfoundation.org>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Xu Yu <xuyu@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Yang Shi <shy828301@gmail.com>
+Subject: [PATCH 5.7 022/124] mm/memory.c: skip spurious TLB flush for retried page fault
+Date:   Mon, 24 Aug 2020 10:29:16 +0200
+Message-Id: <20200824082410.510847956@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,56 +48,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Yang Shi <shy828301@gmail.com>
 
-[ Upstream commit f959b5d037e71a4d69b5bf71faffa065d9269b4a ]
+commit b7333b58f358f38d90d78e00c1ee5dec82df10ad upstream.
 
-xfs_trans_dqresv is the function that we use to make reservations
-against resource quotas.  Each resource contains two counters: the
-q_core counter, which tracks resources allocated on disk; and the dquot
-reservation counter, which tracks how much of that resource has either
-been allocated or reserved by threads that are working on metadata
-updates.
+Recently we found regression when running will_it_scale/page_fault3 test
+on ARM64.  Over 70% down for the multi processes cases and over 20% down
+for the multi threads cases.  It turns out the regression is caused by
+commit 89b15332af7c ("mm: drop mmap_sem before calling
+balance_dirty_pages() in write fault").
 
-For disk blocks, we compare the proposed reservation counter against the
-hard and soft limits to decide if we're going to fail the operation.
-However, for inodes we inexplicably compare against the q_core counter,
-not the incore reservation count.
+The test mmaps a memory size file then write to the mapping, this would
+make all memory dirty and trigger dirty pages throttle, that upstream
+commit would release mmap_sem then retry the page fault.  The retried
+page fault would see correct PTEs installed then just fall through to
+spurious TLB flush.  The regression is caused by the excessive spurious
+TLB flush.  It is fine on x86 since x86's spurious TLB flush is no-op.
 
-Since the q_core counter is always lower than the reservation count and
-we unlock the dquot between reservation and transaction commit, this
-means that multiple threads can reserve the last inode count before we
-hit the hard limit, and when they commit, we'll be well over the hard
-limit.
+We could just skip the spurious TLB flush to mitigate the regression.
 
-Fix this by checking against the incore inode reservation counter, since
-we would appear to maintain that correctly (and that's what we report in
-GETQUOTA).
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Xu Yu <xuyu@linux.alibaba.com>
+Debugged-by: Xu Yu <xuyu@linux.alibaba.com>
+Tested-by: Xu Yu <xuyu@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Allison Collins <allison.henderson@oracle.com>
-Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_trans_dquot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memory.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/xfs/xfs_trans_dquot.c b/fs/xfs/xfs_trans_dquot.c
-index c0f73b82c0551..ed0ce8b301b40 100644
---- a/fs/xfs/xfs_trans_dquot.c
-+++ b/fs/xfs/xfs_trans_dquot.c
-@@ -647,7 +647,7 @@ xfs_trans_dqresv(
- 			}
- 		}
- 		if (ninos > 0) {
--			total_count = be64_to_cpu(dqp->q_core.d_icount) + ninos;
-+			total_count = dqp->q_res_icount + ninos;
- 			timer = be32_to_cpu(dqp->q_core.d_itimer);
- 			warns = be16_to_cpu(dqp->q_core.d_iwarns);
- 			warnlimit = defq->iwarnlimit;
--- 
-2.25.1
-
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4237,6 +4237,9 @@ static vm_fault_t handle_pte_fault(struc
+ 				vmf->flags & FAULT_FLAG_WRITE)) {
+ 		update_mmu_cache(vmf->vma, vmf->address, vmf->pte);
+ 	} else {
++		/* Skip spurious TLB flush for retried page fault */
++		if (vmf->flags & FAULT_FLAG_TRIED)
++			goto unlock;
+ 		/*
+ 		 * This is needed only for protection faults but the arch code
+ 		 * is not yet telling us if this is a protection fault or not.
 
 
