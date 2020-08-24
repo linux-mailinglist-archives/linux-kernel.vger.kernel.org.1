@@ -2,60 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE48250897
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4AB250899
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgHXS4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 14:56:50 -0400
-Received: from smtprelay0176.hostedemail.com ([216.40.44.176]:37484 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725904AbgHXS4u (ORCPT
+        id S1726719AbgHXS5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 14:57:19 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33743 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHXS5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 14:56:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A9BF7180A7FDC;
-        Mon, 24 Aug 2020 18:56:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2691:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3868:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8985:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21811:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: unit14_481660627055
-X-Filterd-Recvd-Size: 1562
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 24 Aug 2020 18:56:47 +0000 (UTC)
-Message-ID: <1365f4ab2a833d2cdb089064b10570dcc6e8b985.camel@perches.com>
-Subject: Re: [GIT PULL] fallthrough pseudo-keyword macro conversions for
- 5.9-rc3
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 24 Aug 2020 11:56:46 -0700
-In-Reply-To: <CAHk-=wh8a8crLw5Lbs7C2Mz34fAUQn1tTHWqqOXCxbXF1bc_WA@mail.gmail.com>
-References: <20200824034841.GA29995@embeddedor>
-         <CAHk-=wh8a8crLw5Lbs7C2Mz34fAUQn1tTHWqqOXCxbXF1bc_WA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 24 Aug 2020 14:57:18 -0400
+Received: by mail-wr1-f67.google.com with SMTP id o4so5979601wrn.0;
+        Mon, 24 Aug 2020 11:57:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xQhiydvyZvtI4AkndXV4Ei79Fq7h8nBWuDS5mk8A+F0=;
+        b=rIfwo9rhRRh0g5TN0OIVYNVVOttzUd7Jq90/ISM444eZs5fza10r8PczEXRgs37lL6
+         NLZXai9JeVYeuuqNWk181SEbnPdEi+07aytCQUQ8seYf0EeyvhMODvb8y3YRB/eM5Im0
+         50Nh8bEVdEdSN/DGcO566VGeDpagcJ4ti2SuQMoZ8u4eHFvlnZg9tIhYGsvtIhsjr2IT
+         Eo0TPchi3f46rswZiT2gF92cEh0WjhCD+aMKUUUnLwDmKVAEO2BIvxicbQchTbE2zZ0m
+         ADmUAJFlkHFloi8962o56UMtH/I92DOHB2OB4dZgBcb89U9S1PMenBgQ7S4wKQlDaJWb
+         9n+g==
+X-Gm-Message-State: AOAM530FCdIFJBZANIwZs1wqg57yUTowHGVbKAyY4pjbqFLYagc74d9o
+        EQvGyHatV7W+nrFvdeEEmN0=
+X-Google-Smtp-Source: ABdhPJzfd8aU7PxeJTRxSoLO5DZQkOjQHVGDoK1JE/cVAtjHK+Y5r0t7NKDaj92geT9C2ktgFrgvjg==
+X-Received: by 2002:adf:fecc:: with SMTP id q12mr7302692wrs.374.1598295436385;
+        Mon, 24 Aug 2020 11:57:16 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id t14sm29090484wrg.38.2020.08.24.11.57.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Aug 2020 11:57:15 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 20:57:13 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 3/4] arm64: dts: imx8mm-var-som: Add Variscite
+ VAR-SOM-MX8MM System on Module
+Message-ID: <20200824185713.GA5343@kozik-lap>
+References: <20200824160247.19032-1-krzk@kernel.org>
+ <20200824160247.19032-3-krzk@kernel.org>
+ <CAOMZO5DquPR9BmQP0kZfTqNJmRabPe1Vtc801M9CVCPFCd1usQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5DquPR9BmQP0kZfTqNJmRabPe1Vtc801M9CVCPFCd1usQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-24 at 11:46 -0700, Linus Torvalds wrote:
-> I think I'd have preferred to get this as a couple of scripts that do
-> the obvious 1:1 direct conversion of the simple cases that cover 90%
-> of it all, so then the manual fixups separately.
+On Mon, Aug 24, 2020 at 03:33:50PM -0300, Fabio Estevam wrote:
+> Hi Krzysztof,
+> 
+> On Mon, Aug 24, 2020 at 1:03 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> 
+> > +&ecspi1 {
+> > +       pinctrl-names = "default";
+> > +       pinctrl-0 = <&pinctrl_ecspi1>;
+> > +       cs-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>,
+> > +                  <&gpio1  0 GPIO_ACTIVE_HIGH>;
+> 
+> These should be active low as 'spi-cs-high' is not passed.
 
-I created a script and sent it directly to you last year.
+True, I'll fix it up, thanks.
 
-https://lore.kernel.org/lkml/9fe980f7e28242c2835ffae34914c5f68e8268a7.camel@perches.com/
+Any comments for the Symphony DTS before v4?
 
-I believe that Gustavo uses a different script and some
-manual fixups.
-
-It would be good if Gustavo's script was public somewhere.
+Best regards,
+Krzysztof
 
