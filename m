@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D9924F74E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F224F82B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgHXJL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40444 "EHLO mail.kernel.org"
+        id S1729913AbgHXJ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730504AbgHXI4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:56:14 -0400
+        id S1730101AbgHXIwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:52:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1095206F0;
-        Mon, 24 Aug 2020 08:56:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 220C020FC3;
+        Mon, 24 Aug 2020 08:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259374;
-        bh=APaZWR8dp4pm9OJV+km8jzu4nmbPaHhaC0PDHDJ+Elc=;
+        s=default; t=1598259152;
+        bh=4hK1erPQRlP1+oL9gdRiB7F0rzjISyPy6USi40HgIjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B3AX2tXWWV6VPRyukm6xUQ/PVawqGUtVbyl9+nguDNAV6zSRiKOFk/iWwScMmy5bi
-         Y3VMgAmN6GNkQBfted0hhbYCG2TgbfcBGRKIfp7TdtnYWNEmRpDyGp7buuUVY3oFiY
-         SomswgOuF32CswJQYzrf71JmsmXqO+GMlfA757WM=
+        b=0CQDzscgn1P3sfLLVJDl9VoIJZ7NJ7Kz7gfVne8C5rCLI04X1zhCiRsXlT5JFQzh0
+         pGx7f1opQzqGq1DplT3W83Vjt453te5OzNd1jZBK0ZL8kpc6EH6xcNS0IohbWH9oQ2
+         /MC3oKdVwYDAOU4znPdgvXcSSPVX2MXhE+kSqFyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gaurav Singh <gaurav1086@gmail.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Michal Koutn <mkoutny@suse.com>, Roman Gushchin <guro@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Chris Down <chris@chrisdown.name>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 35/71] tools/testing/selftests/cgroup/cgroup_util.c: cg_read_strcmp: fix null pointer dereference
-Date:   Mon, 24 Aug 2020 10:31:26 +0200
-Message-Id: <20200824082357.640632967@linuxfoundation.org>
+Subject: [PATCH 4.9 28/39] alpha: fix annotation of io{read,write}{16,32}be()
+Date:   Mon, 24 Aug 2020 10:31:27 +0200
+Message-Id: <20200824082349.976616110@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,41 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Singh <gaurav1086@gmail.com>
+From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 
-[ Upstream commit d830020656c5b68ced962ed3cb51a90e0a89d4c4 ]
+[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
 
-Haven't reproduced this issue. This PR is does a minor code cleanup.
+These accessors must be used to read/write a big-endian bus.  The value
+returned or written is native-endian.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+However, these accessors are defined using be{16,32}_to_cpu() or
+cpu_to_be{16,32}() to make the endian conversion but these expect a
+__be{16,32} when none is present.  Keeping them would need a force cast
+that would solve nothing at all.
+
+So, do the conversion using swab{16,32}, like done in asm-generic for
+similar situations.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Michal Koutn <mkoutny@suse.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Chris Down <chris@chrisdown.name>
-Link: http://lkml.kernel.org/r/20200726013808.22242-1-gaurav1086@gmail.com
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/alpha/include/asm/io.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 075cb0c730149..90418d79ef676 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -95,7 +95,7 @@ int cg_read_strcmp(const char *cgroup, const char *control,
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index ff4049155c840..355aec0867f4d 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -491,10 +491,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
+ }
+ #endif
  
- 	/* Handle the case of comparing against empty string */
- 	if (!expected)
--		size = 32;
-+		return -1;
- 	else
- 		size = strlen(expected) + 1;
+-#define ioread16be(p) be16_to_cpu(ioread16(p))
+-#define ioread32be(p) be32_to_cpu(ioread32(p))
+-#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
+-#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
++#define ioread16be(p) swab16(ioread16(p))
++#define ioread32be(p) swab32(ioread32(p))
++#define iowrite16be(v,p) iowrite16(swab16(v), (p))
++#define iowrite32be(v,p) iowrite32(swab32(v), (p))
  
+ #define inb_p		inb
+ #define inw_p		inw
 -- 
 2.25.1
 
