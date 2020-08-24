@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E110D24F902
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9306524F956
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgHXIqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
+        id S1729031AbgHXInQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:43:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729104AbgHXIqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:11 -0400
+        id S1727932AbgHXInH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:43:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F0B3204FD;
-        Mon, 24 Aug 2020 08:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 038EB2087D;
+        Mon, 24 Aug 2020 08:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258770;
-        bh=PytyJQyEU46vyyqpShlG43bv0cszxenOGURoWaVe4Oc=;
+        s=default; t=1598258586;
+        bh=Un0jkfdEzqoS7mtwb6Y8qjOb2BUnF5ehMVkAyDM176I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t6I5P1Py7ZU3CgvrnzQ14lxyaMZzpsMdX4dcGdBGZl4e7Kig5Yj/shfXgG3dA3HLM
-         3xSnhXjiMUdaGzVbXHIGmdT5VC4spJEnyqpCdhyOCT03Wy7LAfYL7+u7ULPqNOBikv
-         XUQrdXuCXgQLIcG4+ltwVtHTueqDzGUgKqvg5vHw=
+        b=O6SBXQiehh/5WvpAg1V/JgHgid6NABk85JdtLaGJwkoQt0dGfwhVNKYOwoqf/iuwf
+         rfB7XdCNN8F5j6zyDktJMNZZlHtSRnLz1aHKKUno3e96Mhbi5+E5rZwAvWYfoUNFN7
+         B0cSlVydXbx4ZHCA7g/m9Gzr83ZUrrO/ZvrAWCvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stylon Wang <stylon.wang@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 037/107] drm/amd/display: Fix EDID parsing after resume from suspend
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 069/124] bpf: sock_ops sk access may stomp registers when dst_reg = src_reg
 Date:   Mon, 24 Aug 2020 10:30:03 +0200
-Message-Id: <20200824082406.960304366@linuxfoundation.org>
+Message-Id: <20200824082412.805157874@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +46,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stylon Wang <stylon.wang@amd.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-commit b24bdc37d03a0478189e20a50286092840f414fa upstream.
+[ Upstream commit 84f44df664e9f0e261157e16ee1acd77cc1bb78d ]
 
-[Why]
-Resuming from suspend, CEA blocks from EDID are not parsed and no video
-modes can support YUV420. When this happens, output bpc cannot go over
-8-bit with 4K modes on HDMI.
+Similar to patch ("bpf: sock_ops ctx access may stomp registers") if the
+src_reg = dst_reg when reading the sk field of a sock_ops struct we
+generate xlated code,
 
-[How]
-In amdgpu_dm_update_connector_after_detect(), drm_add_edid_modes() is
-called after drm_connector_update_edid_property() to fully parse EDID
-and update display info.
+  53: (61) r9 = *(u32 *)(r9 +28)
+  54: (15) if r9 == 0x0 goto pc+3
+  56: (79) r9 = *(u64 *)(r9 +0)
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Stylon Wang <stylon.wang@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This stomps on the r9 reg to do the sk_fullsock check and then when
+reading the skops->sk field instead of the sk pointer we get the
+sk_fullsock. To fix use similar pattern noted in the previous fix
+and use the temp field to save/restore a register used to do
+sk_fullsock check.
 
+After the fix the generated xlated code reads,
+
+  52: (7b) *(u64 *)(r9 +32) = r8
+  53: (61) r8 = *(u32 *)(r9 +28)
+  54: (15) if r9 == 0x0 goto pc+3
+  55: (79) r8 = *(u64 *)(r9 +32)
+  56: (79) r9 = *(u64 *)(r9 +0)
+  57: (05) goto pc+1
+  58: (79) r8 = *(u64 *)(r9 +32)
+
+Here r9 register was in-use so r8 is chosen as the temporary register.
+In line 52 r8 is saved in temp variable and at line 54 restored in case
+fullsock != 0. Finally we handle fullsock == 0 case by restoring at
+line 58.
+
+This adds a new macro SOCK_OPS_GET_SK it is almost possible to merge
+this with SOCK_OPS_GET_FIELD, but I found the extra branch logic a
+bit more confusing than just adding a new macro despite a bit of
+duplicating code.
+
+Fixes: 1314ef561102e ("bpf: export bpf_sock for BPF_PROG_TYPE_SOCK_OPS prog type")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/159718349653.4728.6559437186853473612.stgit@john-Precision-5820-Tower
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/core/filter.c | 49 ++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 38 insertions(+), 11 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1434,6 +1434,7 @@ amdgpu_dm_update_connector_after_detect(
+diff --git a/net/core/filter.c b/net/core/filter.c
+index dcc06e510ec5d..9c03702600128 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8107,6 +8107,43 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
+ 		}							      \
+ 	} while (0)
  
- 			drm_connector_update_edid_property(connector,
- 							   aconnector->edid);
-+			drm_add_edid_modes(connector, aconnector->edid);
++#define SOCK_OPS_GET_SK()							      \
++	do {								      \
++		int fullsock_reg = si->dst_reg, reg = BPF_REG_9, jmp = 1;     \
++		if (si->dst_reg == reg || si->src_reg == reg)		      \
++			reg--;						      \
++		if (si->dst_reg == reg || si->src_reg == reg)		      \
++			reg--;						      \
++		if (si->dst_reg == si->src_reg) {			      \
++			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, reg,	      \
++					  offsetof(struct bpf_sock_ops_kern,  \
++					  temp));			      \
++			fullsock_reg = reg;				      \
++			jmp += 2;					      \
++		}							      \
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
++						struct bpf_sock_ops_kern,     \
++						is_fullsock),		      \
++				      fullsock_reg, si->src_reg,	      \
++				      offsetof(struct bpf_sock_ops_kern,      \
++					       is_fullsock));		      \
++		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
++		if (si->dst_reg == si->src_reg)				      \
++			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
++				      offsetof(struct bpf_sock_ops_kern,      \
++				      temp));				      \
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
++						struct bpf_sock_ops_kern, sk),\
++				      si->dst_reg, si->src_reg,		      \
++				      offsetof(struct bpf_sock_ops_kern, sk));\
++		if (si->dst_reg == si->src_reg)	{			      \
++			*insn++ = BPF_JMP_A(1);				      \
++			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
++				      offsetof(struct bpf_sock_ops_kern,      \
++				      temp));				      \
++		}							      \
++	} while (0)
++
+ #define SOCK_OPS_GET_TCP_SOCK_FIELD(FIELD) \
+ 		SOCK_OPS_GET_FIELD(FIELD, FIELD, struct tcp_sock)
  
- 			if (aconnector->dc_link->aux_mode)
- 				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
+@@ -8391,17 +8428,7 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
+ 		SOCK_OPS_GET_TCP_SOCK_FIELD(bytes_acked);
+ 		break;
+ 	case offsetof(struct bpf_sock_ops, sk):
+-		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
+-						struct bpf_sock_ops_kern,
+-						is_fullsock),
+-				      si->dst_reg, si->src_reg,
+-				      offsetof(struct bpf_sock_ops_kern,
+-					       is_fullsock));
+-		*insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 1);
+-		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
+-						struct bpf_sock_ops_kern, sk),
+-				      si->dst_reg, si->src_reg,
+-				      offsetof(struct bpf_sock_ops_kern, sk));
++		SOCK_OPS_GET_SK();
+ 		break;
+ 	}
+ 	return insn - insn_buf;
+-- 
+2.25.1
+
 
 
