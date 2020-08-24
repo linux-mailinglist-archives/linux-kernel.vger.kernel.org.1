@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF8924F4DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F01924F4C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgHXIlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60744 "EHLO mail.kernel.org"
+        id S1728230AbgHXIkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728259AbgHXIlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:41:50 -0400
+        id S1726645AbgHXIkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:40:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1F4F2075B;
-        Mon, 24 Aug 2020 08:41:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62D4D22B49;
+        Mon, 24 Aug 2020 08:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258509;
-        bh=ybOUb89fkrUvjtMnzkgUH+fW2ofcoZCFyNis0q60XQ0=;
+        s=default; t=1598258419;
+        bh=8ZfPDjBednZIPM4jhBpxyi85ckrUlCtixwY+7Murw8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rPRY0Ez9cu+hUd5Z1HwmpovGLoyrraXEC7xqaaoIKHz2urwU3XNE0u9RuK/Q6x/gr
-         eq2efWPzMeorVBu+eIBRbFdMrc2Jvcgg2a3RNgoUn1AYK6Ea6Ne4zqlcWDBQG+RXLI
-         Ea/wn6JJjZ6jsgopo+GfDMfoxhngOY2mGWFW1Zqg=
+        b=fe7TPdhXQH7uOIMjXKaUnWJ1zVckJvCA09eV3tuBNu+py6EA541Krb3IkwgrtYTZP
+         vc16egeTbjA1WpSARULDs2uhBJFJcOX3JGmgrHLQqs6Wb2+20tN+AhHMj7uX+urRzI
+         U/oLANdnRw3opUWaBrEZvdqDr7WJfbmdrNBNfvcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sajida Bhanu <sbhanu@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
+        stable@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 032/124] opp: Enable resources again if they were disabled earlier
-Date:   Mon, 24 Aug 2020 10:29:26 +0200
-Message-Id: <20200824082410.996214352@linuxfoundation.org>
+Subject: [PATCH 5.7 033/124] opp: Reorder the code for !target_freq case
+Date:   Mon, 24 Aug 2020 10:29:27 +0200
+Message-Id: <20200824082411.048028270@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
 References: <20200824082409.368269240@linuxfoundation.org>
@@ -48,56 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <rnayak@codeaurora.org>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit a4501bac0e553bed117b7e1b166d49731caf7260 ]
+[ Upstream commit b23dfa3543f31fbb8c0098925bf90fc23193d17a ]
 
-dev_pm_opp_set_rate() can now be called with freq = 0 in order
-to either drop performance or bandwidth votes or to disable
-regulators on platforms which support them.
+Reorder the code a bit to make it more readable. Add additional comment
+as well.
 
-In such cases, a subsequent call to dev_pm_opp_set_rate() with
-the same frequency ends up returning early because 'old_freq == freq'
-
-Instead make it fall through and put back the dropped performance
-and bandwidth votes and/or enable back the regulators.
-
-Cc: v5.3+ <stable@vger.kernel.org> # v5.3+
-Fixes: cd7ea582866f ("opp: Make dev_pm_opp_set_rate() handle freq = 0 to drop performance votes")
-Reported-by: Sajida Bhanu <sbhanu@codeaurora.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Reported-by: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-[ Viresh: Don't skip clk_set_rate() and massaged changelog ]
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Clément Péron <peron.clem@gmail.com>
+Tested-by: Clément Péron <peron.clem@gmail.com>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/opp/core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/opp/core.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index e4f01e7771a22..195fcaff18448 100644
+index 195fcaff18448..2d3880b3d6ee0 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -845,10 +845,12 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 
- 	/* Return early if nothing to do */
- 	if (old_freq == freq) {
--		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
--			__func__, freq);
--		ret = 0;
--		goto put_opp_table;
-+		if (!opp_table->required_opp_tables && !opp_table->regulators) {
-+			dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
-+				__func__, freq);
-+			ret = 0;
-+			goto put_opp_table;
-+		}
+@@ -817,15 +817,21 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
  	}
  
- 	/*
+ 	if (unlikely(!target_freq)) {
+-		if (opp_table->required_opp_tables) {
+-			ret = _set_required_opps(dev, opp_table, NULL);
+-		} else if (!_get_opp_count(opp_table)) {
++		/*
++		 * Some drivers need to support cases where some platforms may
++		 * have OPP table for the device, while others don't and
++		 * opp_set_rate() just needs to behave like clk_set_rate().
++		 */
++		if (!_get_opp_count(opp_table))
+ 			return 0;
+-		} else {
++
++		if (!opp_table->required_opp_tables) {
+ 			dev_err(dev, "target frequency can't be 0\n");
+ 			ret = -EINVAL;
++			goto put_opp_table;
+ 		}
+ 
++		ret = _set_required_opps(dev, opp_table, NULL);
+ 		goto put_opp_table;
+ 	}
+ 
 -- 
 2.25.1
 
