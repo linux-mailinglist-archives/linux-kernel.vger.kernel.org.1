@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB9D24F82E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E7524F7AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgHXIwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57834 "EHLO mail.kernel.org"
+        id S1726747AbgHXJTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730039AbgHXIwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:52:04 -0400
+        id S1730324AbgHXIzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 076B92075B;
-        Mon, 24 Aug 2020 08:52:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53643207DF;
+        Mon, 24 Aug 2020 08:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259124;
-        bh=uWAVItaEtN1KbR+X2t+2V6dYQWvx+SdeH4DwBSc9XsQ=;
+        s=default; t=1598259352;
+        bh=mUdn7UuU3nwJp2IY9r4db0B/5TkIdr3gT2nHsWEQrW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rC0tJ4XyniN45EvVCsZveOk9+9J+ewcU2LCQoufTuO0Ju3eghmgXvAIWFrA+95Z1e
-         K93VY4N8dV+rgHxfQl3S3yrqkQSeBydOv2CSb2FhXJj/gp1YhBLjfrv4YVw1Ji9bae
-         hnjzHof05Yz2PGLFZgsaASJ0b2W8ptdLNwE7UuuE=
+        b=lHFNMf1HAUNmXIFe1Y1M6EdA/jM+ABPi7HV2Yy8O9taVxJB4xOQ9Sy8VmyFKqUM1g
+         ciChUsuJbawMLadqQi8K9A5W3bfW2dnXksWho9BmnMkB8pJZJm4OkW60AD7xjPgolK
+         3YGPvJVKCh5R8Y9BdEM82UgO2lZ55L9yd2uFac9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Murphy <chris@colorremedies.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 10/39] btrfs: dont show full path of bind mounts in subvol=
-Date:   Mon, 24 Aug 2020 10:31:09 +0200
-Message-Id: <20200824082348.996775982@linuxfoundation.org>
+        stable@vger.kernel.org, Liang Chen <cl@rock-chips.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH 4.19 19/71] kthread: Do not preempt current task if it is going to call schedule()
+Date:   Mon, 24 Aug 2020 10:31:10 +0200
+Message-Id: <20200824082356.854382859@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
-References: <20200824082348.445866152@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Liang Chen <cl@rock-chips.com>
 
-[ Upstream commit 3ef3959b29c4a5bd65526ab310a1a18ae533172a ]
+commit 26c7295be0c5e6da3fa45970e9748be983175b1b upstream.
 
-Chris Murphy reported a problem where rpm ostree will bind mount a bunch
-of things for whatever voodoo it's doing.  But when it does this
-/proc/mounts shows something like
+when we create a kthread with ktrhead_create_on_cpu(),the child thread
+entry is ktread.c:ktrhead() which will be preempted by the parent after
+call complete(done) while schedule() is not called yet,then the parent
+will call wait_task_inactive(child) but the child is still on the runqueue,
+so the parent will schedule_hrtimeout() for 1 jiffy,it will waste a lot of
+time,especially on startup.
 
-  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
-  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo/bar 0 0
+  parent                             child
+ktrhead_create_on_cpu()
+  wait_fo_completion(&done) -----> ktread.c:ktrhead()
+                             |----- complete(done);--wakeup and preempted by parent
+ kthread_bind() <------------|  |-> schedule();--dequeue here
+  wait_task_inactive(child)     |
+   schedule_hrtimeout(1 jiffy) -|
 
-Despite subvolid=256 being subvol=/foo.  This is because we're just
-spitting out the dentry of the mount point, which in the case of bind
-mounts is the source path for the mountpoint.  Instead we should spit
-out the path to the actual subvol.  Fix this by looking up the name for
-the subvolid we have mounted.  With this fix the same test looks like
-this
+So we hope the child just wakeup parent but not preempted by parent, and the
+child is going to call schedule() soon,then the parent will not call
+schedule_hrtimeout(1 jiffy) as the child is already dequeue.
 
-  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
-  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
+The same issue for ktrhead_park()&&kthread_parkme().
+This patch can save 120ms on rk312x startup with CONFIG_HZ=300.
 
-Reported-by: Chris Murphy <chris@colorremedies.com>
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Liang Chen <cl@rock-chips.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/20200306070133.18335-2-cl@rock-chips.com
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/super.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ kernel/kthread.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index af5be060c651f..3a0cb745164f8 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1225,6 +1225,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
- 	struct btrfs_root *root = info->tree_root;
- 	char *compress_type;
-+	const char *subvol_name;
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -190,8 +190,15 @@ static void __kthread_parkme(struct kthr
+ 		if (!test_bit(KTHREAD_SHOULD_PARK, &self->flags))
+ 			break;
  
- 	if (btrfs_test_opt(info, DEGRADED))
- 		seq_puts(seq, ",degraded");
-@@ -1311,8 +1312,13 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- #endif
- 	seq_printf(seq, ",subvolid=%llu",
- 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
--	seq_puts(seq, ",subvol=");
--	seq_dentry(seq, dentry, " \t\n\\");
-+	subvol_name = btrfs_get_subvol_name_from_objectid(info,
-+			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
-+	if (!IS_ERR(subvol_name)) {
-+		seq_puts(seq, ",subvol=");
-+		seq_escape(seq, subvol_name, " \t\n\\");
-+		kfree(subvol_name);
-+	}
- 	return 0;
++		/*
++		 * Thread is going to call schedule(), do not preempt it,
++		 * or the caller of kthread_park() may spend more time in
++		 * wait_task_inactive().
++		 */
++		preempt_disable();
+ 		complete(&self->parked);
+-		schedule();
++		schedule_preempt_disabled();
++		preempt_enable();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
  }
+@@ -236,8 +243,14 @@ static int kthread(void *_create)
+ 	/* OK, tell user we're spawned, wait for stop or wakeup */
+ 	__set_current_state(TASK_UNINTERRUPTIBLE);
+ 	create->result = current;
++	/*
++	 * Thread is going to call schedule(), do not preempt it,
++	 * or the creator may spend more time in wait_task_inactive().
++	 */
++	preempt_disable();
+ 	complete(done);
+-	schedule();
++	schedule_preempt_disabled();
++	preempt_enable();
  
--- 
-2.25.1
-
+ 	ret = -EINTR;
+ 	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
 
 
