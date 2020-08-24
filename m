@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8A825045E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A0B2504A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgHXRBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:01:40 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:42544 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgHXRBI (ORCPT
+        id S1726813AbgHXRFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgHXRE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:01:08 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07OH12k0100866;
-        Mon, 24 Aug 2020 12:01:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598288462;
-        bh=DT3PA1/IKDqSXW15ng6SPivLr45yGQeLTmDSIfcQkho=;
-        h=From:To:Subject:Date;
-        b=C4u2oJBkCwWBuWEgNB3FaDbjnXaCPiJOt9a+jPpmMl1A0oItgXWtmfYVzCxheiqDc
-         5MtGCZgGsfEwbRTcd58tnyMvg+2v8GyIYb7VjOvELRFX9dSsHrrFYpYW6mW+N+QH8H
-         tYTp6bTr+FK9zkDwuNEPWIFkVPT7t8XKWjHcjteU=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07OH1297035999
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 12:01:02 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 24
- Aug 2020 12:01:01 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 24 Aug 2020 12:01:01 -0500
-Received: from uda0868495.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07OH103g005955;
-        Mon, 24 Aug 2020 12:01:00 -0500
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
-        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [net v3 PATCH] net: ethernet: ti: cpsw_new: fix error handling in cpsw_ndo_vlan_rx_kill_vid()
-Date:   Mon, 24 Aug 2020 13:01:00 -0400
-Message-ID: <20200824170100.21319-1-m-karicheri2@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 24 Aug 2020 13:04:56 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4B3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 10:04:55 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id b16so9449147ioj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 10:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fgZwZCIujuxzzLKMoK4XwDwGpdA2x4tRAfT7RbGfEyE=;
+        b=aRAELLILR7Gs8V4eWNB5DkiYJqrocT3AqS8Ka1bV4Lunz/lpBe3Q/4QBC2lSVFQoOF
+         5gT0i3tjDPI/8YDJDT1Tnd/Jqq3UuVfHh7a0GpqfoATt3p6OKIzOb68H9KfZ3dSBcWLj
+         YL17yEVwNe2Ewm76W1ny8icHTAXNFuYgOHh1LMrlKaF767Xpxro52LA+Ag2/fSL/fkI3
+         JBKkduITmseGjItU/x66Re4EF06ascn5lIVigOIH5ftzgNKeRmWO/2UnVVY3nTQ9ZQoZ
+         aGh5T093QSyYTiTVk+xC7rWQ54FtV3MZo1Gw173JUG8s34BT3HMgAeCkirvYvnMme0VX
+         JWlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fgZwZCIujuxzzLKMoK4XwDwGpdA2x4tRAfT7RbGfEyE=;
+        b=FhGMNhZ42BYo92JfV0aglTKQpCCouIb/9S9FhIq7iQNWIlF3fU6PQfKe6kGfPSjh/X
+         nybe8g3uMLP8kFFHR5UMsUbyqVYma9XUsr+dVJcCH1zn7FeBv+iThxxeGcK7ZTIwv4q2
+         1mpSO2XjA+6QJogv0olsrgPLdX43DBxOuuqSV9lcVD0+8jOI/2T1IafTrEbb5z4oA3oY
+         NLQQeT/Qnxd+xVBdWO3tv1ndNkU/xWS3H1+JBDuECU3zghPaVmKWsxgY+3nXuN7FprDL
+         pRE5WmTzmy3imnbNO26DxbAhs8unMb425FdgCFa7ZYfSGu2CLr8mVAOFfATr/bEsrUJj
+         3Xyg==
+X-Gm-Message-State: AOAM533/8qQegWpN6cGe3oBEaqZQtm4Y+bQKPAyxOlciidWPA6qJyw60
+        bhAOC3ITbauhVx3yGk/bRnerdwbI1R87jqU+OSFYVQ==
+X-Google-Smtp-Source: ABdhPJzyv5i/pTPasEP6mPwaAemka1mfGrbTgakxsiJNgGVH64HPjPguQKB4K7RAeE/vYSrfjmU1nVmoS7ByFsfu7+M=
+X-Received: by 2002:a6b:9256:: with SMTP id u83mr5748173iod.194.1598288694363;
+ Mon, 24 Aug 2020 10:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200820164753.3256899-1-jackmanb@chromium.org>
+ <42fb4180-772c-5579-ef3e-b4003e2b784b@schaufler-ca.com> <CA+i-1C09YZ8aCr6p5NOA2e3Ji5TKwdET=qAy=M328NK--L=0RA@mail.gmail.com>
+ <66a35f25-53be-17c3-8ab3-7cb32b0bc77a@schaufler-ca.com>
+In-Reply-To: <66a35f25-53be-17c3-8ab3-7cb32b0bc77a@schaufler-ca.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 24 Aug 2020 19:04:43 +0200
+Message-ID: <CA+i-1C1GwgYJAfaUofzv47nyryQ15znE6OLWhAN-gsscm6mMoA@mail.gmail.com>
+Subject: Re: [RFC] security: replace indirect calls with static calls
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Brendan Jackman <jackmanb@chromium.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rafael.j.wysocki@intel.com, Kees Cook <keescook@chromium.org>,
+        thgarnie@chromium.org, KP Singh <kpsingh@google.com>,
+        paul.renauld.epfl@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a bunch of issues in cpsw_ndo_vlan_rx_kill_vid()
+On Mon, 24 Aug 2020 at 18:43, Casey Schaufler <casey@schaufler-ca.com> wrote:
+>
+> On 8/24/2020 8:20 AM, Brendan Jackman wrote:
+> > On Fri, 21 Aug 2020 at 00:46, Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 8/20/2020 9:47 AM, Brendan Jackman wrote:
+> > [...]
+> >> What does NOP really look like?
+> > The NOP is the same as a regular function call but the CALL
+> > instruction is replaced with a NOP instruction. The code that sets up
+> > the call parameters is unchanged, and so is the code that expects to
+> > get the return value in eax or whatever.
+>
+> Right. Are you saying that NOP is in-line assembler in your switch?
 
- - pm_runtime_get_sync() returns non zero value. This results in
-   non zero value return to caller which will be interpreted as error.
-   So overwrite ret with zero.
- - If VID matches with port VLAN VID, then set error code.
- - Currently when VLAN interface is deleted, all of the VLAN mc addresses
-   are removed from ALE table, however the return values from ale function
-   calls are not checked. These functions can return error code -ENOENT.
-   But that shouldn't happen in a normal case. So add error print to
-   catch the situations so that these can be investigated and addressed.
-   return zero in these cases as these are not real error case, but only
-   serve to catch ALE table update related issues and help address the
-   same in the driver.
+That's right - although it's behind the static_call API that the patch
+depends on ([5] in the original mail).
 
-Fixes: ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
----
- v3 - updated commit description to describe error check related to
-      port vlan VID
- v2 - updated comments from Grygorii, also return error code if VID
- match with port_vlan vid.
- drivers/net/ethernet/ti/cpsw_new.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+> > That means we cannot actually
+> > call the static_calls for NULL slots, we'd get undefined behaviour
+> > (except for void hooks) - this is what Peter is talking about in the
+> > sibling thread.
+>
+> Referring to the "sibling thread" is kinda confusing, and
+> assumes everyone is one all the right mailing lists, and knows
+> which other thread you're talking about.
 
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 8d0a2bc7128d..61fa5063d751 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1032,19 +1032,35 @@ static int cpsw_ndo_vlan_rx_kill_vid(struct net_device *ndev,
- 		return ret;
- 	}
- 
-+	/* reset the return code as pm_runtime_get_sync() can return
-+	 * non zero values as well.
-+	 */
-+	ret = 0;
- 	for (i = 0; i < cpsw->data.slaves; i++) {
- 		if (cpsw->slaves[i].ndev &&
--		    vid == cpsw->slaves[i].port_vlan)
-+		    vid == cpsw->slaves[i].port_vlan) {
-+			ret = -EINVAL;
- 			goto err;
-+		}
- 	}
- 
- 	dev_dbg(priv->dev, "removing vlanid %d from vlan filter\n", vid);
--	cpsw_ale_del_vlan(cpsw->ale, vid, 0);
--	cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
--			   HOST_PORT_NUM, ALE_VLAN, vid);
--	cpsw_ale_del_mcast(cpsw->ale, priv->ndev->broadcast,
--			   0, ALE_VLAN, vid);
-+	ret = cpsw_ale_del_vlan(cpsw->ale, vid, 0);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
-+	ret = cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
-+				 HOST_PORT_NUM, ALE_VLAN, vid);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
-+	ret = cpsw_ale_del_mcast(cpsw->ale, priv->ndev->broadcast,
-+				 0, ALE_VLAN, vid);
-+	if (ret)
-+		dev_err(priv->dev, "%s: failed %d: ret %d\n",
-+			__func__, __LINE__, ret);
- 	cpsw_ale_flush_multicast(cpsw->ale, ALE_PORT_HOST, vid);
-+	ret = 0;
- err:
- 	pm_runtime_put(cpsw->dev);
- 	return ret;
--- 
-2.17.1
+Sure, sorry - here's the Lore link for future reference:
 
+https://lore.kernel.org/lkml/20200820164753.3256899-1-jackmanb@chromium.org/T/#m5a6fb3f10141049ce43e18a41f154796090ae1d5
+
+> >
+> > For this reason, there are _no gaps_ in the callback table. For a
+> > given LSM hook, all the slots after base_slot_idx are filled,
+>
+> Why go to all the trouble of maintaining the base_slot_idx
+> if NOP is so cheap? Why not fill all unused slots with NOP?
+> Worst case would be a hook with no users, in which case you
+> have 11 NOPS in the void hook case and 11 "if (ret != DEFAULT_RET)"
+> and 11 NOPS in the int case. No switch magic required. Even
+> better, in the int case you have two calls/slot, the first is the
+> module supplied function (or NOP) and the second is
+>         int isit(int ret) { return (ret != DEFAULT_RET) ? ret : 0; }
+> (or NOP).
+>
+> The no security module case degenerates to 22 NOP instructions
+> and no if checks of any sort. I'm not the performance guy, but
+> that seems better than maintaining and checking base_slot_idx
+> to me.
+
+The switch trick is not really motivated by performance.
+
+I think all the focus on the NOPs themselves is a bit misleading here
+- we _can't_ execute the NOPs for the int hooks, because there are
+instructions after them that expect a function to have just returned a
+value, which NOP doesn't do. When there is a NOP in the slot instead
+of a CALL, it would appear to "return" whatever value is leftover in
+the return register. At the C level, this is why the static_call API
+doesn't allow static_call_cond to return a value (which is what PeterZ
+is referring to in the thread I linked above).
+
+So, we could drop the switch trick for void hooks and just use
+static_call_cond, but this doesn't work for int hooks. IMO that
+variation between the two hook types would just add confusion.
+
+> >>> +#define __UNROLL_MACRO_LOOP_20(MACRO, ...) \
+> >>> + __UNROLL_MACRO_LOOP_19(MACRO, __VA_ARGS__) \
+> >>> + MACRO(19, __VA_ARGS__)
+> >>> +
+> >> Where does "20" come from? Why are you unrolling beyond 11?
+> > It's just an arbitrary limit on the unrolling macro implementation, we
+> > aren't actually unrolling beyond 11 where the macro is used (N is set
+> > to 11).
+>
+> I'm not a fan of including macros you can't use, especially
+> when they're just obvious variants of other macros.
+
+Not sure what you mean here - is there already a macro that does what
+UNROLL_MACRO_LOOP does?
