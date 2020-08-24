@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9826924FB98
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB5D24FB94
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgHXKgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        id S1727066AbgHXKgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgHXKfn (ORCPT
+        with ESMTP id S1726532AbgHXKfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Aug 2020 06:35:43 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA5CC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 03:35:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703B2C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 03:35:43 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1598265341;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Xr2BRdoawTl4w5dFYbUaenmePmf0VtSg3PloqhjxBFI=;
-        b=Cg67DwcSCdHgU/RAN47A6w73ocQcSRfsNzZgSarrp3pg/jQqeOYVZyObhGTEw0NX6GYMwE
-        KuHE/eByvB3H0mzy8HOsdFN8H/vRN7EAPqPxEXBl7tvMPaOwOPtzf1M6L18J3O5ZW8TSAN
-        WtsowXlLLwRrsm2m/E47323SPNm+xVX2B7ObfI+CeZ7GGwCIKmOvom/TgN3LmAG14gujrM
-        GPUNSSSlBvpCAVNy9a2bwdSGMM1m8V3ES+vGCh7p32TnteGD2cJMf7J1aORLJvOGozFUic
-        KlG1bIcogaxPiWTesG7phtalD8/zwfDZtEuYnsBunhAZou8EO3Dpycxk8k1B8g==
+        bh=7qBP8mmWkvKuTNguVhsDchkqDWevBokkKvaPeHZTFrE=;
+        b=X1JW4t1UAc/fUXJx+g/zlltH4C62N3jgFDflSBAU58PtuzDLpt8pnbc8ehAsSekiusEozC
+        HBQhVIFUSF2944OWtfvBwnZFMn5DHJai2SFXJpr8fIYgqTz8KWIRAl7/NH4EIJeiO581/N
+        Wzd27YZh9hbehvq0e2AO2DYOG7qiEnl5YheRypovsH2cHPeLaxVhTKo0fAUxqWD9ayVcJA
+        hzerh25mbcYSdMIjFDU+WoJcIWb2THVErdm8OufWyxx9EwPIqt3PPTMWYL3eLDUfYVZ7Ao
+        R2qt9Y2G3R2RYOhZWdWGchQHkAH0rz6AVqNwuzIatqlo+1X2j8gcTsAZAksnmw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1598265341;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Xr2BRdoawTl4w5dFYbUaenmePmf0VtSg3PloqhjxBFI=;
-        b=X1GDLG1KOyA1IPuXfpRDQ6qpCmEu1JmJ1/V3LagUqhPR1y8FuPYvCPp8rrIm1CusyQTaLG
-        1I0ksym4rGXqJXCg==
+        bh=7qBP8mmWkvKuTNguVhsDchkqDWevBokkKvaPeHZTFrE=;
+        b=jql7Y59qEEOmbpMOiRZ7vOCBSJlQV9hJkmw2Ho82WeNxvyx4I/0Bk997HWxOE2nzf+3CBG
+        Nxk2xyjuUUjD5PBA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -48,9 +48,9 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Andrea Parri <parri.andrea@gmail.com>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/7][next] printk: ringbuffer: relocate get_data()
-Date:   Mon, 24 Aug 2020 12:41:34 +0206
-Message-Id: <20200824103538.31446-4-john.ogness@linutronix.de>
+Subject: [PATCH v2 4/7][next] printk: ringbuffer: add BLK_DATALESS() macro
+Date:   Mon, 24 Aug 2020 12:41:35 +0206
+Message-Id: <20200824103538.31446-5-john.ogness@linutronix.de>
 In-Reply-To: <20200824103538.31446-1-john.ogness@linutronix.de>
 References: <20200824103538.31446-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -60,148 +60,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the internal get_data() function as-is above prb_reserve() so
-that a later change can make use of the static function.
+Rather than continually needing to explicitly check @begin and @next
+to identify a dataless block, introduce and use a BLK_DATALESS()
+macro.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk_ringbuffer.c | 116 +++++++++++++++---------------
- 1 file changed, 58 insertions(+), 58 deletions(-)
+ kernel/printk/printk_ringbuffer.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index d339ff7647da..86af38c2cf77 100644
+index 86af38c2cf77..d66718e74aae 100644
 --- a/kernel/printk/printk_ringbuffer.c
 +++ b/kernel/printk/printk_ringbuffer.c
-@@ -1038,6 +1038,64 @@ static unsigned int space_used(struct prb_data_ring *data_ring,
- 		DATA_SIZE(data_ring) - DATA_INDEX(data_ring, blk_lpos->begin));
- }
+@@ -266,6 +266,8 @@
  
-+/*
-+ * Given @blk_lpos, return a pointer to the writer data from the data block
-+ * and calculate the size of the data part. A NULL pointer is returned if
-+ * @blk_lpos specifies values that could never be legal.
-+ *
-+ * This function (used by readers) performs strict validation on the lpos
-+ * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
-+ * triggered if an internal error is detected.
-+ */
-+static const char *get_data(struct prb_data_ring *data_ring,
-+			    struct prb_data_blk_lpos *blk_lpos,
-+			    unsigned int *data_size)
-+{
-+	struct prb_data_block *db;
-+
-+	/* Data-less data block description. */
-+	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
-+		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
-+			*data_size = 0;
-+			return "";
-+		}
-+		return NULL;
-+	}
-+
-+	/* Regular data block: @begin less than @next and in same wrap. */
-+	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
-+	    blk_lpos->begin < blk_lpos->next) {
-+		db = to_block(data_ring, blk_lpos->begin);
-+		*data_size = blk_lpos->next - blk_lpos->begin;
-+
-+	/* Wrapping data block: @begin is one wrap behind @next. */
-+	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
-+		   DATA_WRAPS(data_ring, blk_lpos->next)) {
-+		db = to_block(data_ring, 0);
-+		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
-+
-+	/* Illegal block description. */
-+	} else {
-+		WARN_ON_ONCE(1);
-+		return NULL;
-+	}
-+
-+	/* A valid data block will always be aligned to the ID size. */
-+	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
-+	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
-+		return NULL;
-+	}
-+
-+	/* A valid data block will always have at least an ID. */
-+	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
-+		return NULL;
-+
-+	/* Subtract block ID space from size to reflect data size. */
-+	*data_size -= sizeof(db->id);
-+
-+	return &db->data[0];
-+}
-+
- /**
-  * prb_reserve() - Reserve space in the ringbuffer.
-  *
-@@ -1192,64 +1250,6 @@ void prb_commit(struct prb_reserved_entry *e)
- 	local_irq_restore(e->irqflags);
- }
+ /* Determine if a logical position refers to a data-less block. */
+ #define LPOS_DATALESS(lpos)		((lpos) & 1UL)
++#define BLK_DATALESS(blk)		(LPOS_DATALESS((blk)->begin) && \
++					 LPOS_DATALESS((blk)->next))
  
--/*
-- * Given @blk_lpos, return a pointer to the writer data from the data block
-- * and calculate the size of the data part. A NULL pointer is returned if
-- * @blk_lpos specifies values that could never be legal.
-- *
-- * This function (used by readers) performs strict validation on the lpos
-- * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
-- * triggered if an internal error is detected.
-- */
--static const char *get_data(struct prb_data_ring *data_ring,
--			    struct prb_data_blk_lpos *blk_lpos,
--			    unsigned int *data_size)
--{
--	struct prb_data_block *db;
--
--	/* Data-less data block description. */
+ /* Get the logical position at index 0 of the current wrap. */
+ #define DATA_THIS_WRAP_START_LPOS(data_ring, lpos) \
+@@ -1021,7 +1023,7 @@ static unsigned int space_used(struct prb_data_ring *data_ring,
+ 			       struct prb_data_blk_lpos *blk_lpos)
+ {
+ 	/* Data-less blocks take no space. */
+-	if (LPOS_DATALESS(blk_lpos->begin))
++	if (BLK_DATALESS(blk_lpos))
+ 		return 0;
+ 
+ 	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next)) {
+@@ -1054,7 +1056,7 @@ static const char *get_data(struct prb_data_ring *data_ring,
+ 	struct prb_data_block *db;
+ 
+ 	/* Data-less data block description. */
 -	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
--		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
--			*data_size = 0;
--			return "";
--		}
--		return NULL;
--	}
--
--	/* Regular data block: @begin less than @next and in same wrap. */
--	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
--	    blk_lpos->begin < blk_lpos->next) {
--		db = to_block(data_ring, blk_lpos->begin);
--		*data_size = blk_lpos->next - blk_lpos->begin;
--
--	/* Wrapping data block: @begin is one wrap behind @next. */
--	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
--		   DATA_WRAPS(data_ring, blk_lpos->next)) {
--		db = to_block(data_ring, 0);
--		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
--
--	/* Illegal block description. */
--	} else {
--		WARN_ON_ONCE(1);
--		return NULL;
--	}
--
--	/* A valid data block will always be aligned to the ID size. */
--	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
--	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
--		return NULL;
--	}
--
--	/* A valid data block will always have at least an ID. */
--	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
--		return NULL;
--
--	/* Subtract block ID space from size to reflect data size. */
--	*data_size -= sizeof(db->id);
--
--	return &db->data[0];
--}
--
- /*
-  * Count the number of lines in provided text. All text has at least 1 line
-  * (even if @text_size is 0). Each '\n' processed is counted as an additional
++	if (BLK_DATALESS(blk_lpos)) {
+ 		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
+ 			*data_size = 0;
+ 			return "";
 -- 
 2.20.1
 
