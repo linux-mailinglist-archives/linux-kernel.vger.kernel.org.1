@@ -2,47 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2D724F9C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3982724FABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbgHXIkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56418 "EHLO mail.kernel.org"
+        id S1728755AbgHXJ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728073AbgHXIkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:40:00 -0400
+        id S1727043AbgHXIda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:33:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D747C2177B;
-        Mon, 24 Aug 2020 08:39:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87AE0206F0;
+        Mon, 24 Aug 2020 08:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258399;
-        bh=tOaViDPcAlbFFhlCe2v6AH43I/cQ+cScArTjcJLcswM=;
+        s=default; t=1598258010;
+        bh=vjHuSnYuW2muaJkLr+PczCtUfX2N8/c0OZkrLi6/es8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q06LqRk1TpG7X/n2ZjWFhcyiYgGZ6FHAmV1ALqQTmlDkny1W6ru++TVsVq95ssDzW
-         yOyDlvnm+EbtncYL3oHujFpR0DtftVG/edlXJO6aoB1p3+I95Q6QaVfE5y0IoOeP3r
-         +HU+HuaMEDX4Na5D4Yg7CexkdeJDEHZeU5s9uQQg=
+        b=TBLnqu324m7xC87Kr5QOYroRBX9BNuMWjwv4oRJAJTr8ocg6CknzOZEuGM8nZqc4G
+         gC7B414fBiHEtUrtrVM9gGruR2zAXgmbNcxWrZvl3c4eyXQOKUAUw6AY8nhA/Wm6S2
+         SXLGz8r3QnY5XpppvGg0kSUZTsiLR1WrizVornlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 004/124] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
+        stable@vger.kernel.org, Jaehyun Chung <jaehyun.chung@amd.com>,
+        Alvin Lee <Alvin.Lee2@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.8 040/148] drm/amd/display: Blank stream before destroying HDCP session
 Date:   Mon, 24 Aug 2020 10:28:58 +0200
-Message-Id: <20200824082409.605505185@linuxfoundation.org>
+Message-Id: <20200824082415.969006363@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,51 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Jaehyun Chung <jaehyun.chung@amd.com>
 
-[ Upstream commit f3f99d63a8156c7a4a6b20aac22b53c5579c7dc1 ]
+commit 79940e4d10df9c737a394630968471c632246ee0 upstream.
 
-syzbot crashes on the VM_BUG_ON_MM(khugepaged_test_exit(mm), mm) in
-__khugepaged_enter(): yes, when one thread is about to dump core, has set
-core_state, and is waiting for others, another might do something calling
-__khugepaged_enter(), which now crashes because I lumped the core_state
-test (known as "mmget_still_valid") into khugepaged_test_exit().  I still
-think it's best to lump them together, so just in this exceptional case,
-check mm->mm_users directly instead of khugepaged_test_exit().
+[Why]
+Stream disable sequence incorretly destroys HDCP session while stream is
+not blanked and while audio is not muted. This sequence causes a flash
+of corruption during mode change and an audio click.
 
-Fixes: bbe98f9cadff ("khugepaged: khugepaged_test_exit() check mmget_still_valid()")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Yang Shi <shy828301@gmail.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: <stable@vger.kernel.org>	[4.8+]
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008141503370.18085@eggly.anvils
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[How]
+Change sequence to blank stream before destroying HDCP session. Audio will
+also be muted by blanking the stream.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Jaehyun Chung <jaehyun.chung@amd.com>
+Reviewed-by: Alvin Lee <Alvin.Lee2@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- mm/khugepaged.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 9e7cec2840927..cb17091d0a202 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -435,7 +435,7 @@ int __khugepaged_enter(struct mm_struct *mm)
- 		return -ENOMEM;
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -3265,12 +3265,11 @@ void core_link_disable_stream(struct pip
+ 		core_link_set_avmute(pipe_ctx, true);
+ 	}
  
- 	/* __khugepaged_exit() must not run from under us */
--	VM_BUG_ON_MM(khugepaged_test_exit(mm), mm);
-+	VM_BUG_ON_MM(atomic_read(&mm->mm_users) == 0, mm);
- 	if (unlikely(test_and_set_bit(MMF_VM_HUGEPAGE, &mm->flags))) {
- 		free_mm_slot(mm_slot);
- 		return 0;
--- 
-2.25.1
-
++	dc->hwss.blank_stream(pipe_ctx);
+ #if defined(CONFIG_DRM_AMD_DC_HDCP)
+ 	update_psp_stream_config(pipe_ctx, true);
+ #endif
+ 
+-	dc->hwss.blank_stream(pipe_ctx);
+-
+ 	if (pipe_ctx->stream->signal == SIGNAL_TYPE_DISPLAY_PORT_MST)
+ 		deallocate_mst_payload(pipe_ctx);
+ 
 
 
