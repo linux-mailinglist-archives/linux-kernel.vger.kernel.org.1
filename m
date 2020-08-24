@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190C224FB99
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC1624FB9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgHXKgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbgHXKfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:35:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA155C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 03:35:44 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598265343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=prA/vLQEsiZ7uXnqSNXvQyzJMtp7/FtGt3ot4cMtouU=;
-        b=uhizln0etLKA9/yJP5n4CIoLs9zLj0ecov1nHHqQ7aZLPizs59y2pk5J3uorGrDRoZpI6m
-        WTsMRIQllFt4Q8dJwB4Ryu1n/n6CT0Qq7gxmN9QE4D3eykdVwde9mtgTf3QvLXxRMcTJUF
-        R4IoApYtYoLHVKWh89NfqbxHHZDeUIIeI0HlDFReedKmQHrJ4+aZcRQ2ebbdvaXdFVvn25
-        qZFrixDPmgt9jpgA4n8gPcfSTHhrMHZP3jsakVxI3f2fP3zoAOHiffi7rEok2V8WZNTRn7
-        W1GhZpcTe+cfyYLUjBX30/+YTkxAyZC0Ozh2PqMBwBEEUnwaDrkPcDOdYjDg7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598265343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=prA/vLQEsiZ7uXnqSNXvQyzJMtp7/FtGt3ot4cMtouU=;
-        b=9nyzqCGYU3Ir1Q/GMCBYaqxo7BcmPn6KBbEg95s76/6I2cmFM02y4b6BOstJjE8PWS3wAu
-        TMPx4PIzf7KdwuAQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7][next] scripts/gdb: support printk finalized records
-Date:   Mon, 24 Aug 2020 12:41:38 +0206
-Message-Id: <20200824103538.31446-8-john.ogness@linutronix.de>
-In-Reply-To: <20200824103538.31446-1-john.ogness@linutronix.de>
-References: <20200824103538.31446-1-john.ogness@linutronix.de>
+        id S1727822AbgHXKhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:37:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:16332 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727037AbgHXKgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:36:09 -0400
+IronPort-SDR: XJDUzDJFnIlLLFCVFikzgo9lIyvN/4Ewst2p/epp9WTj7OFcrnTZ8+ZwcTMmwKHGuijBOl2chT
+ JijkPNgpMKBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="217408727"
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="217408727"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 03:36:08 -0700
+IronPort-SDR: osPngUDB3K/p+N6QSIx9oQkxtBxKiK17qxip9wQLUxEhfbD9F7NUITjA95AHvGSomG6cd7PlGl
+ RA+MQ7hIQkQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="298659142"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 24 Aug 2020 03:36:08 -0700
+Received: from [10.255.145.126] (vramuthx-MOBL1.gar.corp.intel.com [10.255.145.126])
+        by linux.intel.com (Postfix) with ESMTP id 4F27D5805EB;
+        Mon, 24 Aug 2020 03:36:06 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v2 00/13] extcon: ptn5150: Improvements and fixes
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20200817070009.4631-1-krzk@kernel.org>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <2879914d-7ad6-4d98-8b9c-a7646719f766@linux.intel.com>
+Date:   Mon, 24 Aug 2020 18:36:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200817070009.4631-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit ("printk: ringbuffer: add finalization/extension support")
-a new state bit for finalized records was added. This not only changed
-the bit representation of committed records, but also reduced the size
-for record IDs.
+Hi,
 
-Update the gdb scripts to correctly interpret the state variable.
+  Thank you for the patches and optimized the code as well.
+  I have applied your patches and tested, it's working fine
+  with few minor changes as per Intel's LGM board.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- Documentation/admin-guide/kdump/gdbmacros.txt | 10 +++++++---
- scripts/gdb/linux/dmesg.py                    | 10 ++++++----
- 2 files changed, 13 insertions(+), 7 deletions(-)
+  can I send the patches along with patches or we need to wait until
+  your patch get merge?
 
-diff --git a/Documentation/admin-guide/kdump/gdbmacros.txt b/Documentation/admin-guide/kdump/gdbmacros.txt
-index 6025534c6c14..1ccc811c82ad 100644
---- a/Documentation/admin-guide/kdump/gdbmacros.txt
-+++ b/Documentation/admin-guide/kdump/gdbmacros.txt
-@@ -295,8 +295,11 @@ document dump_record
- end
- 
- define dmesg
--	set var $desc_committed = 1UL << ((sizeof(long) * 8) - 1)
--	set var $flags_mask = 3UL << ((sizeof(long) * 8) - 2)
-+	# definitions from kernel/printk/printk_ringbuffer.h
-+	set var $desc_commit = 1UL << ((sizeof(long) * 8) - 1)
-+	set var $desc_final = 1UL << ((sizeof(long) * 8) - 2)
-+	set var $desc_reuse = 1UL << ((sizeof(long) * 8) - 3)
-+	set var $flags_mask = $desc_commit | $desc_final | $desc_reuse
- 	set var $id_mask = ~$flags_mask
- 
- 	set var $desc_count = 1U << prb->desc_ring.count_bits
-@@ -309,7 +312,8 @@ define dmesg
- 		set var $desc = &prb->desc_ring.descs[$id % $desc_count]
- 
- 		# skip non-committed record
--		if (($desc->state_var.counter & $flags_mask) == $desc_committed)
-+		# (note that commit+!final records will be displayed)
-+		if (($desc->state_var.counter & $desc_commit) == $desc_commit)
- 			dump_record $desc $prev_flags
- 			set var $prev_flags = $desc->info.flags
- 		end
-diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
-index 6c6022012ea8..367523c5c270 100644
---- a/scripts/gdb/linux/dmesg.py
-+++ b/scripts/gdb/linux/dmesg.py
-@@ -79,9 +79,10 @@ class LxDmesg(gdb.Command):
- 
-         # definitions from kernel/printk/printk_ringbuffer.h
-         desc_sv_bits = utils.get_long_type().sizeof * 8
--        desc_committed_mask = 1 << (desc_sv_bits - 1)
--        desc_reuse_mask = 1 << (desc_sv_bits - 2)
--        desc_flags_mask = desc_committed_mask | desc_reuse_mask
-+        desc_commit_mask = 1 << (desc_sv_bits - 1)
-+        desc_final_mask = 1 << (desc_sv_bits - 2)
-+        desc_reuse_mask = 1 << (desc_sv_bits - 3)
-+        desc_flags_mask = desc_commit_mask | desc_final_mask | desc_reuse_mask
-         desc_id_mask = ~desc_flags_mask
- 
-         # read in tail and head descriptor ids
-@@ -96,8 +97,9 @@ class LxDmesg(gdb.Command):
-             desc_off = desc_sz * ind
- 
-             # skip non-committed record
-+            # (note that commit+!final records will be displayed)
-             state = utils.read_u64(descs, desc_off + sv_off + counter_off) & desc_flags_mask
--            if state != desc_committed_mask:
-+            if state & desc_commit_mask != desc_commit_mask:
-                 if did == head_id:
-                     break
-                 did = (did + 1) & desc_id_mask
--- 
-2.20.1
+  Please suggest to me go further, Thanks!
 
+On 17/8/2020 2:59 pm, Krzysztof Kozlowski wrote:
+> Hi,
+> 
+> Changes since v1:
+> 1. Mutex unlock fix in patch 8/13.
+> 
+> Best regards,
+> Krzysztof
+> 
