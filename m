@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9C5250881
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE39250885
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgHXSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 14:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
+        id S1726839AbgHXSy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 14:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgHXSyI (ORCPT
+        with ESMTP id S1725963AbgHXSy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 14:54:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37ECC061573;
-        Mon, 24 Aug 2020 11:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/RZ8lu4GLqWgx2SJy7gstpvyOrfX+P6Ib1IzLL5uMvU=; b=r4GUC126jrVcHWcAK7iDriIIMT
-        xQQdHj1FiRNXVRnXsSD5TnlV5iKg0relX2TxVrk5gKJfT+iz/+PelC7p5NpgeOhKHPK4UKVPdj0/1
-        GUO9GYv2mQ9+x0RQ6kElcjX4wwgs8J+qm2KROL3HH2GDwNlQZfghoaGk94YF9b+9a1G2yRa2rKn1H
-        y8OB50lIr/isEArR1LHELITcDAwYBB+aJWzDAphJ64foh07hSD9sdklDUBA4Tbs3Xb5ueEno8/IJK
-        vA1p4/W5ihT0FpBgEYptG6cvRIfeFYw0CSupxEcgVmeG9AfKtWS2YhvdGbdVJBY6jg6Xm+if97dVK
-        3cPWSzDA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kAHbU-0002Xb-SQ; Mon, 24 Aug 2020 18:54:00 +0000
-Date:   Mon, 24 Aug 2020 19:54:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] fs/ceph: use pipe_get_pages_alloc() for pipe
-Message-ID: <20200824185400.GE17456@casper.infradead.org>
-References: <20200822042059.1805541-1-jhubbard@nvidia.com>
- <20200822042059.1805541-6-jhubbard@nvidia.com>
- <048e78f2b440820d936eb67358495cc45ba579c3.camel@kernel.org>
- <c943337b-1c1e-9c85-4ded-39931986c6a3@nvidia.com>
- <af70d334271913a6b09bfd818bc3d81eef5a19b2.camel@kernel.org>
+        Mon, 24 Aug 2020 14:54:28 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C458DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 11:54:28 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id k2so1641843ots.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 11:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tLCBtT+QFa7w4jD6QdulIiBj+RkSmBuMJhEuHYSYoXo=;
+        b=GF/j83PJDd1yGIUw42yBZ0PXGbWAtwTGiRA9C/KcAVqBAD+D4DfxIsPXr+T4U8Fb/O
+         /XRMrO7pAw+wWkOvPo+XmfmCKSC1XczvnDns8aMT4dU+DJ8GTT8TjsacZvjuI4EYZ9Po
+         hWVS4+T//lcA5d/WRMSK5v2pHFEBc9JDWgu0aLcYwPHB9D91g5PClESBqcVVDcHgBfZk
+         qUfrctsy1tDcp8Q1u27TPKgqklv538O73X8GrtcAxcfJ1cTieExs4jHY3/4asP7A1fnz
+         gnRvWwRddtYBj4Kf0ZrLPMYztNHc39JekvnKvKxTzf0GGBaxV9Vejk30osP+PumiPRos
+         rM+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tLCBtT+QFa7w4jD6QdulIiBj+RkSmBuMJhEuHYSYoXo=;
+        b=VkHyiIksuEANbn09dQ4+rtkq/VEU/wSqBB18ikqvs0Fc0yUKktX4J3ih0OEJxt38pa
+         uw6BaQ6IZCQeaQgVbbF54jpBIgWOsSbJpERKK+5WIcMSUIACSL2KZaIzJ/9aPHWikMnC
+         nzeI58DVUWNH0Jpw9rnp8nG4Xw3B2HveQxA7h77ai8v5DljACICBacj2Wj0/9wqmD6ga
+         CeZVhEuFDxzPTiZr5eB7JP48qyTWWZf7PgESelu3vz7yf+SYlUEsP0T7Hd6NqMmo9lZ0
+         w7/sTjoU3Fpas0OGDJKGKCLyaUxfqr17ncljnO+mxbaMQhKsP3TVNKWX54EVU6Qj39DZ
+         ZiZA==
+X-Gm-Message-State: AOAM530lZg4TliSNVvY1tNAt/yeZAD5knF1HcOG6ss7A9sCaawmRS5uT
+        zKnBn5wQerku8sBLb7y1FMg=
+X-Google-Smtp-Source: ABdhPJxrwoCZoT60BW8EJ18KPb6V266hDQdfBPoRQl/C0fgRDIrFZnKJM/wSRn5quS9UxpBX5/X0Gw==
+X-Received: by 2002:a05:6830:4b7:: with SMTP id l23mr4782325otd.35.1598295268188;
+        Mon, 24 Aug 2020 11:54:28 -0700 (PDT)
+Received: from frodo.hsd1.co.comcast.net ([2601:284:8203:5970::b30e])
+        by smtp.googlemail.com with ESMTPSA id b188sm2112414oif.19.2020.08.24.11.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 11:54:27 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 0/3] dynamic-debug fixups for 5.9
+Date:   Mon, 24 Aug 2020 12:54:09 -0600
+Message-Id: <20200824185412.1617174-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af70d334271913a6b09bfd818bc3d81eef5a19b2.camel@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 02:47:53PM -0400, Jeff Layton wrote:
-> Ok, I'll plan to pick it up providing no one has issues with exporting that symbol.
+ - fix new export name, with a wrapper for more utility.
+ - parse format="foo bar" like "format" "foo bar"
+ - pretty-print
+ 
+Jim Cromie (3):
+  dyndbg: give %3u width in pr-format, cosmetic only
+  dyndbg: refine export, rename to dynamic_debug_exec_queries()
+  dyndbg: fix problem parsing format="foo bar"
 
-_GPL, perhaps?
+ include/linux/dynamic_debug.h | 20 +++++++++---
+ lib/dynamic_debug.c           | 59 ++++++++++++++++++++++-------------
+ 2 files changed, 53 insertions(+), 26 deletions(-)
+
+-- 
+2.26.2
+
