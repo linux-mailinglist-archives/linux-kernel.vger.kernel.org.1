@@ -2,144 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE8924FFA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F2D24FFB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgHXOOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 10:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S1726337AbgHXOUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 10:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgHXOOl (ORCPT
+        with ESMTP id S1725780AbgHXOUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 10:14:41 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65116C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n1MFUZtSNnD68NOJIn4Ii8T2Lxsm8QPQOoQduHaUuow=; b=b30ORC/V2ydNehF8gl2ylP9w7G
-        R5+Tgaxjr/f79pUpDvYCFZNUeG4zZUeNcI0hpjLA/DSb+tND0Cvd8gRNvDdRtjbigOkrPdDsznHJq
-        rIkIdc6HwyDhjlFlkmtWYYuSj8mGTTnX6DQLrSZIFoOV0m2AY/wD+ijpe2XwrDwhzfKXR6bczxdOU
-        f/aCTOEizppqBZs0aS8nlgYBBa9dpSvP6bz/nvuLGfbVbeiWqQ48heLLkwJO2yRJqqPiuRPQO6GkD
-        SeSwBTPbeIv5/bcJ0cWYMNqyWO3JxmL2CT9hEeFksuiMHHJFdIo64Qp5fuBsxDXzCbUYNrA1v9gO2
-        +Kuirwnw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kADF3-0000Md-5b; Mon, 24 Aug 2020 14:14:33 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CCB7D980DF9; Mon, 24 Aug 2020 16:14:29 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 16:14:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
- entry is not optimized (trigger by int3 breakpoint)
-Message-ID: <20200824141429.GA3982@worktop.programming.kicks-ass.net>
-References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 24 Aug 2020 10:20:53 -0400
+Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D20C061573;
+        Mon, 24 Aug 2020 07:20:51 -0700 (PDT)
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4BZvRg5Lbbzvjc1; Mon, 24 Aug 2020 16:20:47 +0200 (CEST)
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH bpf] bpf, sysctl: let bpf_stats_handler take a kernel pointer buffer
+Date:   Mon, 24 Aug 2020 16:20:47 +0200
+Message-Id: <20200824142047.22043-1-tklauser@distanz.ch>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 12:02:58PM +0000, Eddy_Wu@trendmicro.com wrote:
-> After bisecting, I found this behavior seems to introduce by this
-> commit: (5.8-rc1) 0d00449c7a28a1514595630735df383dec606812 x86:
-> Replace ist_enter() with nmi_enter() This make kprobe_int3_handler()
-> effectively running as NMI context, which pre_handler_kretprobe()
-> explicitly checked to prevent recursion.
-> 
-> (in_nmi() check appears from v3.17)
-> f96f56780ca584930bb3a2769d73fd9a101bcbbe kprobes: Skip kretprobe hit
-> in NMI context to avoid deadlock
-> 
-> To make kretprobe work again with int3 breakpoint, I think we can
-> replace the in_nmi() check with in_nmi() == (1 << NMI_SHIFT) at
-> kprobe_int3_handler() and skip kretprobe if nested NMI.  Did a quick
-> test on 5.9-rc2 and it seems to be working.  I'm not sure if it is the
-> best way to do since it may also require change to other architecture
-> as well, any thought?
+Commit 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
+changed ctl_table.proc_handler to take a kernel pointer. Adjust the
+signature of bpf_stats_handler to match ctl_table.proc_handler which
+fixes the following sparse warning:
 
-Masami, would it be possible to have a kretprobe specific recursion
-count here?
+kernel/sysctl.c:226:49: warning: incorrect type in argument 3 (different address spaces)
+kernel/sysctl.c:226:49:    expected void *
+kernel/sysctl.c:226:49:    got void [noderef] __user *buffer
+kernel/sysctl.c:2640:35: warning: incorrect type in initializer (incompatible argument 3 (different address spaces))
+kernel/sysctl.c:2640:35:    expected int ( [usertype] *proc_handler )( ... )
+kernel/sysctl.c:2640:35:    got int ( * )( ... )
 
-I did the below, but i'm not at all sure that isn't horrible broken. I
-can't really find many rp->lock sites and this might break things by
-limiting contention.
-
+Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 ---
+ kernel/sysctl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 9be1bff4f586..0bff314cc800 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -153,6 +153,7 @@ struct kretprobe {
- 	size_t data_size;
- 	struct hlist_head free_instances;
- 	raw_spinlock_t lock;
-+	atomic_t recursion;
- };
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 287862f91717..09e70ee2332e 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -204,8 +204,7 @@ static int max_extfrag_threshold = 1000;
  
- struct kretprobe_instance {
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 287b263c9cb9..27fd096bcb9a 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1934,22 +1934,17 @@ unsigned long __weak arch_deref_entry_point(void *entry)
- static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_SYSCTL)
+ static int bpf_stats_handler(struct ctl_table *table, int write,
+-			     void __user *buffer, size_t *lenp,
+-			     loff_t *ppos)
++			     void *buffer, size_t *lenp, loff_t *ppos)
  {
- 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
--	unsigned long hash, flags = 0;
- 	struct kretprobe_instance *ri;
--
--	/*
--	 * To avoid deadlocks, prohibit return probing in NMI contexts,
--	 * just skip the probe and increase the (inexact) 'nmissed'
--	 * statistical counter, so that the user is informed that
--	 * something happened:
--	 */
--	if (unlikely(in_nmi())) {
--		rp->nmissed++;
--		return 0;
--	}
-+	unsigned long hash, flags;
-+	int rec;
- 
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
-+	rec = atomic_fetch_inc_acquire(&rp->recursion);
-+	if (rec) {
-+		rp->nmissed++;
-+		goto out;
-+	}
- 	raw_spin_lock_irqsave(&rp->lock, flags);
- 	if (!hlist_empty(&rp->free_instances)) {
- 		ri = hlist_entry(rp->free_instances.first,
-@@ -1964,7 +1959,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 			raw_spin_lock_irqsave(&rp->lock, flags);
- 			hlist_add_head(&ri->hlist, &rp->free_instances);
- 			raw_spin_unlock_irqrestore(&rp->lock, flags);
--			return 0;
-+			goto out;
- 		}
- 
- 		arch_prepare_kretprobe(ri, regs);
-@@ -1978,6 +1973,8 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 		rp->nmissed++;
- 		raw_spin_unlock_irqrestore(&rp->lock, flags);
- 	}
-+out:
-+	atomic_dec(&rp->recursion);
- 	return 0;
- }
- NOKPROBE_SYMBOL(pre_handler_kretprobe);
+ 	struct static_key *key = (struct static_key *)table->data;
+ 	static int saved_val;
+-- 
+2.27.0
 
