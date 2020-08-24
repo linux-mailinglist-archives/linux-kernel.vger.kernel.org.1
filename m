@@ -2,104 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B7B25067D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2D5250667
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgHXRdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56840 "EHLO mail.kernel.org"
+        id S1728554AbgHXRcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:32:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50642 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbgHXQ1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:27:45 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84EEC207CD;
-        Mon, 24 Aug 2020 16:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286454;
-        bh=xV9upgJFUdWJViQpTgljw0h9O9Oy/nU6sRG9fJrRqIA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rbb5Xsxg/cfMuBlbOhmadtnzMEI+gV19eqcQz5I6FbgH9EE9d9S8KhzNKQoMQL/KP
-         UnqVKL7CBXxTmSlJC5S4xiX7r8RilT3hhfyDXF6IB/0wiSM/RJhVZB0jeyLvmP4DFa
-         8I3AJahzpeTvWZTFk/XhSw6z8DAu5DHFfokfQOiM=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
-        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 03/19] dt-bindings: gpio: fsl-imx-gpio: Add parsing of hogs
-Date:   Mon, 24 Aug 2020 18:26:36 +0200
-Message-Id: <20200824162652.21047-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824162652.21047-1-krzk@kernel.org>
-References: <20200824162652.21047-1-krzk@kernel.org>
+        id S1728095AbgHXQd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:33:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41B68AF7E;
+        Mon, 24 Aug 2020 16:33:50 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 04/12] MIPS: Remove MIPS4K_ICACHE_REFILL_WAR and MIPS_CACHE_SYNC_WAR
+Date:   Mon, 24 Aug 2020 18:32:46 +0200
+Message-Id: <20200824163257.44533-5-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow parsing GPIO controller children nodes with GPIO hogs to fix
-warning:
+Neither MIPS4K_ICACHE_REFILL_WAR nor MIPS_CACHE_SYNC_WAR are implemented,
+so removing defines for it won't change anything.
 
-  arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: gpio@30240000: 'wl-reg-on' does not match any of the regexes: 'pinctrl-[0-9]+'
-    From schema: Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- .../devicetree/bindings/gpio/fsl-imx-gpio.yaml  | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/mips/include/asm/mach-cavium-octeon/war.h |  2 --
+ arch/mips/include/asm/mach-generic/war.h       |  2 --
+ arch/mips/include/asm/mach-ip22/war.h          |  2 --
+ arch/mips/include/asm/mach-ip27/war.h          |  2 --
+ arch/mips/include/asm/mach-ip28/war.h          |  2 --
+ arch/mips/include/asm/mach-ip30/war.h          |  2 --
+ arch/mips/include/asm/mach-ip32/war.h          |  2 --
+ arch/mips/include/asm/mach-malta/war.h         |  2 --
+ arch/mips/include/asm/mach-rc32434/war.h       |  2 --
+ arch/mips/include/asm/mach-rm/war.h            |  2 --
+ arch/mips/include/asm/mach-sibyte/war.h        |  2 --
+ arch/mips/include/asm/mach-tx49xx/war.h        |  2 --
+ arch/mips/include/asm/war.h                    | 35 --------------------------
+ 13 files changed, 59 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-index dffd9171ea66..620a52f944e8 100644
---- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-+++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-@@ -53,6 +53,23 @@ properties:
+diff --git a/arch/mips/include/asm/mach-cavium-octeon/war.h b/arch/mips/include/asm/mach-cavium-octeon/war.h
+index 4bc396d0fdd9..5826fbf4d3a2 100644
+--- a/arch/mips/include/asm/mach-cavium-octeon/war.h
++++ b/arch/mips/include/asm/mach-cavium-octeon/war.h
+@@ -11,8 +11,6 @@
  
-   gpio-ranges: true
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-generic/war.h b/arch/mips/include/asm/mach-generic/war.h
+index 4d46a880b832..11b1f5e41af0 100644
+--- a/arch/mips/include/asm/mach-generic/war.h
++++ b/arch/mips/include/asm/mach-generic/war.h
+@@ -10,8 +10,6 @@
  
-+patternProperties:
-+  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
-+    type: object
-+    properties:
-+      gpio-hog: true
-+      gpios: true
-+      input: true
-+      output-high: true
-+      output-low: true
-+      line-name: true
-+
-+    required:
-+      - gpio-hog
-+      - gpios
-+
-+    additionalProperties: false
-+
- required:
-   - compatible
-   - reg
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-ip22/war.h b/arch/mips/include/asm/mach-ip22/war.h
+index a5a1c41df74e..e47a7e186ed2 100644
+--- a/arch/mips/include/asm/mach-ip22/war.h
++++ b/arch/mips/include/asm/mach-ip22/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-ip27/war.h b/arch/mips/include/asm/mach-ip27/war.h
+index 5891d506cffd..f3c5cc8ff2bc 100644
+--- a/arch/mips/include/asm/mach-ip27/war.h
++++ b/arch/mips/include/asm/mach-ip27/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			1
+diff --git a/arch/mips/include/asm/mach-ip28/war.h b/arch/mips/include/asm/mach-ip28/war.h
+index 346fc567ebb3..f867697a1793 100644
+--- a/arch/mips/include/asm/mach-ip28/war.h
++++ b/arch/mips/include/asm/mach-ip28/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			1
+diff --git a/arch/mips/include/asm/mach-ip30/war.h b/arch/mips/include/asm/mach-ip30/war.h
+index f887a0a53e18..acda1ee3fb62 100644
+--- a/arch/mips/include/asm/mach-ip30/war.h
++++ b/arch/mips/include/asm/mach-ip30/war.h
+@@ -7,8 +7,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #ifdef CONFIG_CPU_R10000
+diff --git a/arch/mips/include/asm/mach-ip32/war.h b/arch/mips/include/asm/mach-ip32/war.h
+index 980dbd34355c..ca381798f6ab 100644
+--- a/arch/mips/include/asm/mach-ip32/war.h
++++ b/arch/mips/include/asm/mach-ip32/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	1
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-malta/war.h b/arch/mips/include/asm/mach-malta/war.h
+index 29f56803e3e5..d22ca4a3ec72 100644
+--- a/arch/mips/include/asm/mach-malta/war.h
++++ b/arch/mips/include/asm/mach-malta/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	1
+-#define MIPS_CACHE_SYNC_WAR		1
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	1
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-rc32434/war.h b/arch/mips/include/asm/mach-rc32434/war.h
+index 749787bb6c8e..fccf25dcc26f 100644
+--- a/arch/mips/include/asm/mach-rc32434/war.h
++++ b/arch/mips/include/asm/mach-rc32434/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	1
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-rm/war.h b/arch/mips/include/asm/mach-rm/war.h
+index aded634ccb01..556e0223e60b 100644
+--- a/arch/mips/include/asm/mach-rm/war.h
++++ b/arch/mips/include/asm/mach-rm/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-sibyte/war.h b/arch/mips/include/asm/mach-sibyte/war.h
+index 78fd2ad4930b..0e18f0753407 100644
+--- a/arch/mips/include/asm/mach-sibyte/war.h
++++ b/arch/mips/include/asm/mach-sibyte/war.h
+@@ -24,8 +24,6 @@ extern int sb1250_m3_workaround_needed(void);
+ 
+ #endif
+ 
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	0
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/mach-tx49xx/war.h b/arch/mips/include/asm/mach-tx49xx/war.h
+index 0b1666e0391a..7019ddc4c68d 100644
+--- a/arch/mips/include/asm/mach-tx49xx/war.h
++++ b/arch/mips/include/asm/mach-tx49xx/war.h
+@@ -10,8 +10,6 @@
+ 
+ #define BCM1250_M3_WAR			0
+ #define SIBYTE_1956_WAR			0
+-#define MIPS4K_ICACHE_REFILL_WAR	0
+-#define MIPS_CACHE_SYNC_WAR		0
+ #define TX49XX_ICACHE_INDEX_INV_WAR	1
+ #define ICACHE_REFILLS_WORKAROUND_WAR	0
+ #define R10000_LLSC_WAR			0
+diff --git a/arch/mips/include/asm/war.h b/arch/mips/include/asm/war.h
+index 37092c2c68e1..590bf2b16b33 100644
+--- a/arch/mips/include/asm/war.h
++++ b/arch/mips/include/asm/war.h
+@@ -93,41 +93,6 @@
+ #error Check setting of SIBYTE_1956_WAR for your platform
+ #endif
+ 
+-/*
+- * Fill buffers not flushed on CACHE instructions
+- *
+- * Hit_Invalidate_I cacheops invalidate an icache line but the refill
+- * for that line can get stale data from the fill buffer instead of
+- * accessing memory if the previous icache miss was also to that line.
+- *
+- * Workaround: generate an icache refill from a different line
+- *
+- * Affects:
+- *  MIPS 4K		RTL revision <3.0, PRID revision <4
+- */
+-#ifndef MIPS4K_ICACHE_REFILL_WAR
+-#error Check setting of MIPS4K_ICACHE_REFILL_WAR for your platform
+-#endif
+-
+-/*
+- * Missing implicit forced flush of evictions caused by CACHE
+- * instruction
+- *
+- * Evictions caused by a CACHE instructions are not forced on to the
+- * bus. The BIU gives higher priority to fetches than to the data from
+- * the eviction buffer and no collision detection is performed between
+- * fetches and pending data from the eviction buffer.
+- *
+- * Workaround: Execute a SYNC instruction after the cache instruction
+- *
+- * Affects:
+- *   MIPS 5Kc,5Kf	RTL revision <2.3, PRID revision <8
+- *   MIPS 20Kc		RTL revision <4.0, PRID revision <?
+- */
+-#ifndef MIPS_CACHE_SYNC_WAR
+-#error Check setting of MIPS_CACHE_SYNC_WAR for your platform
+-#endif
+-
+ /*
+  * From TX49/H2 manual: "If the instruction (i.e. CACHE) is issued for
+  * the line which this instruction itself exists, the following
 -- 
-2.17.1
+2.16.4
 
