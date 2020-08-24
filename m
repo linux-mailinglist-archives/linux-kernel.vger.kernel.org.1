@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598ED24F5E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C5824F5A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgHXIym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35256 "EHLO mail.kernel.org"
+        id S1729987AbgHXIvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728932AbgHXIyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:54:33 -0400
+        id S1728863AbgHXIvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30962207D3;
-        Mon, 24 Aug 2020 08:54:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D5192072D;
+        Mon, 24 Aug 2020 08:51:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259273;
-        bh=HQffJ2Pn9vxDua6M0lEdt3wiTIc8vlMpCHt4/DZucdE=;
+        s=default; t=1598259097;
+        bh=n1+9m2n7172uOMg3lvseFpnMd+Ks2CYysIdtH0BAK0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q7Z6cGGXVUSgWJz3DLs+rUvGUJKrx6Kj+x16UvhpO3lcfJ4FEYlxxTA+Gj7F4jbl6
-         RHTufWwppwuRpiObFRGL1v34OFihyU9j5IxPb/ZyK9130bEjICQewwMV25FMVaZFbK
-         sF57sS8vg4KHdpiXyfPFvZYeZIWYJR9og/DkwIrA=
+        b=YsVjxSUif+c6NwgkHMcn2fmr9oFLNaoWYQAO44JkV5EOnXJOIbK5WwEBiT5r1kV3C
+         BQlFBEm72K/yAbWENvScbDHLHUlYAhOnX/LXEKjE+YibZQ8bO8W0J1JWBpdj3W4Mgs
+         3bdrpXD2s1/FZGY/Rv0Uy63HIRgDPkygfn6FaEsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 17/50] jbd2: add the missing unlock_buffer() in the error path of jbd2_write_superblock()
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 19/39] media: budget-core: Improve exception handling in budget_register()
 Date:   Mon, 24 Aug 2020 10:31:18 +0200
-Message-Id: <20200824082352.863997095@linuxfoundation.org>
+Message-Id: <20200824082349.528490857@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-commit ef3f5830b859604eda8723c26d90ab23edc027a4 upstream.
+[ Upstream commit fc0456458df8b3421dba2a5508cd817fbc20ea71 ]
 
-jbd2_write_superblock() is under the buffer lock of journal superblock
-before ending that superblock write, so add a missing unlock_buffer() in
-in the error path before submitting buffer.
+budget_register() has no error handling after its failure.
+Add the missed undo functions for error handling to fix it.
 
-Fixes: 742b06b5628f ("jbd2: check superblock mapped prior to committing")
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20200620061948.2049579-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/journal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/pci/ttpci/budget-core.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1356,8 +1356,10 @@ static int jbd2_write_superblock(journal
- 	int ret;
+diff --git a/drivers/media/pci/ttpci/budget-core.c b/drivers/media/pci/ttpci/budget-core.c
+index 6d42dcfd4825b..e7bdfc4e4aa83 100644
+--- a/drivers/media/pci/ttpci/budget-core.c
++++ b/drivers/media/pci/ttpci/budget-core.c
+@@ -386,20 +386,25 @@ static int budget_register(struct budget *budget)
+ 	ret = dvbdemux->dmx.add_frontend(&dvbdemux->dmx, &budget->hw_frontend);
  
- 	/* Buffer got discarded which means block device got invalidated */
--	if (!buffer_mapped(bh))
-+	if (!buffer_mapped(bh)) {
-+		unlock_buffer(bh);
- 		return -EIO;
-+	}
+ 	if (ret < 0)
+-		return ret;
++		goto err_release_dmx;
  
- 	trace_jbd2_write_superblock(journal, write_flags);
- 	if (!(journal->j_flags & JBD2_BARRIER))
+ 	budget->mem_frontend.source = DMX_MEMORY_FE;
+ 	ret = dvbdemux->dmx.add_frontend(&dvbdemux->dmx, &budget->mem_frontend);
+ 	if (ret < 0)
+-		return ret;
++		goto err_release_dmx;
+ 
+ 	ret = dvbdemux->dmx.connect_frontend(&dvbdemux->dmx, &budget->hw_frontend);
+ 	if (ret < 0)
+-		return ret;
++		goto err_release_dmx;
+ 
+ 	dvb_net_init(&budget->dvb_adapter, &budget->dvb_net, &dvbdemux->dmx);
+ 
+ 	return 0;
++
++err_release_dmx:
++	dvb_dmxdev_release(&budget->dmxdev);
++	dvb_dmx_release(&budget->demux);
++	return ret;
+ }
+ 
+ static void budget_unregister(struct budget *budget)
+-- 
+2.25.1
+
 
 
