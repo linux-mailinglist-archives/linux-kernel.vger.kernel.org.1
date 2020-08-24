@@ -2,171 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CE124F251
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 08:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E0724F27A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 08:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgHXGRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 02:17:49 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:35258 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725817AbgHXGRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:17:49 -0400
-X-IronPort-AV: E=Sophos;i="5.76,347,1592841600"; 
-   d="scan'208";a="98447864"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 24 Aug 2020 14:17:43 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 2F58148990D2;
-        Mon, 24 Aug 2020 14:17:42 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 24 Aug 2020 14:17:44 +0800
-Subject: Re: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if
- DCACHE_REFERENCED is set
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <y-goto@fujitsu.com>
-References: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
- <20200821174040.GG3142014@iweiny-DESK2.sc.intel.com>
- <20200823065413.GA535011@iweiny-DESK2.sc.intel.com>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <66cbc944-064f-01e9-e282-fd4a4ec99ad0@cn.fujitsu.com>
-Date:   Mon, 24 Aug 2020 14:17:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.1
+        id S1725963AbgHXGVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 02:21:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgHXGVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:21:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C1123AC3F;
+        Mon, 24 Aug 2020 06:21:36 +0000 (UTC)
+Subject: Re: [patch RFC 26/38] x86/xen: Wrap XEN MSI management into irqdomain
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20200821002424.119492231@linutronix.de>
+ <20200821002947.868727656@linutronix.de>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <8860c7bc-67ab-ce64-0340-1458d2483a39@suse.com>
+Date:   Mon, 24 Aug 2020 08:21:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200823065413.GA535011@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200821002947.868727656@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: 2F58148990D2.AADA1
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/23 14:54, Ira Weiny wrote:
-> On Fri, Aug 21, 2020 at 10:40:41AM -0700, 'Ira Weiny' wrote:
->> On Fri, Aug 21, 2020 at 09:59:53AM +0800, Hao Li wrote:
->>> Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
->>> set from being killed, so the corresponding inode can't be evicted. If
->>> the DAX policy of an inode is changed, we can't make policy changing
->>> take effects unless dropping caches manually.
->>>
->>> This patch fixes this problem and flushes the inode to disk to prepare
->>> for evicting it.
->> This looks intriguing and I really hope this helps but I don't think this will
->> guarantee that the state changes immediately will it?
->>
->> Do you have a test case which fails before and passes after?  Perhaps one of
->> the new xfstests submitted by Xiao?
-> Ok I just went back and read your comment before.[1]  Sorry for being a bit
-> slow on the correlation between this patch and that email.  (BTW, I think it
-> would have been good to put those examples in the commit message and or
-> reference that example.)
+On 21.08.20 02:24, Thomas Gleixner wrote:
+> To allow utilizing the irq domain pointer in struct device it is necessary
+> to make XEN/MSI irq domain compatible.
+> 
+> While the right solution would be to truly convert XEN to irq domains, this
+> is an exercise which is not possible for mere mortals with limited XENology.
+> 
+> Provide a plain irqdomain wrapper around XEN. While this is blatant
+> violation of the irqdomain design, it's the only solution for a XEN igorant
+> person to make progress on the issue which triggered this change.
+> 
+> Signed-off-by: Thomas Gleixner<tglx@linutronix.de>
+> Cc:linux-pci@vger.kernel.org
+> Cc:xen-devel@lists.xenproject.org
 
-Thanks for your advice. I will add those examples in v2 after further
-discussion of this patch.
+Acked-by: Juergen Gross <jgross@suse.com>
 
-> I'm assuming that with this patch example 2 from [1]
-> works without a drop_cache _if_ no other task has the file open?
+Looking into https://www.kernel.org/doc/Documentation/IRQ-domain.txt (is
+this still valid?) I believe Xen should be able to use the "No Map"
+approach, as Xen only ever uses software IRQs (at least those are the
+only ones visible to any driver). The (virtualized) hardware interrupts
+are Xen events after all.
 
-Yes. If no other task is opening the file, the inode and page cache of this
-file will be dropped during xfs_io exiting process. There is no need to run
-echo 2 > drop_caches.
-
-> Anyway, with that explanation I think you are correct that this improves the
-> situation _if_ the only references on the file is controlled by the user and
-> they have indeed closed all of them.
->
-> The code for DCACHE_DONTCACHE as I attempted to write it was that it should
-> have prevented further caching of the inode such that the inode would evict
-> sooner.  But it seems you have found a bug/optimization?
-
-Yes. This patch is an optimization and can also be treated as a bugfix.
-On the other side, even though this patch can make DCACHE_DONTCACHE more
-reasonable, I am not quite sure if my approach is safe and doesn't impact
-the fs performance. I hope the community can give me more advice.
-
-> In the end, however, if another user (such as a backup running by the admin)
-> has a reference the DAX change may still be delayed.
-
-Yes. In this situation, neither drop_caches approach nor this patch can make
-the DAX change take effects soon.
-Moreover, things are different if the backup task exits, this patch
-will make sure the inode and page cache of the file can be dropped
-_automatically_ without manual intervention. By contrast, the original
-approach needs a manual cache dropping.
-
-> So I'm thinking the
-> documentation should remain largely as is?  But perhaps I am wrong.  Does this
-> completely remove the need for a drop_caches or only in the example you gave?
-
-I think the contents related to drop_caches in documentation can be removed
-if this patch's approach is acceptable.
-
-> Since I'm not a FS expert I'm still not sure.
-
-Frankly, I'm not an expert either, so I hope this patch can be discussed
-further in case it has side effects.
-
-Thanks,
-Hao Li
-
->
-> Regardless, thanks for the fixup!  :-D
-> Ira
->
-> [1] https://lore.kernel.org/linux-xfs/ba98b77e-a806-048a-a0dc-ca585677daf3@cn.fujitsu.com/
->
->> Ira
->>
->>> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
->>> ---
->>>  fs/dcache.c | 3 ++-
->>>  fs/inode.c  | 2 +-
->>>  2 files changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/dcache.c b/fs/dcache.c
->>> index ea0485861d93..486c7409dc82 100644
->>> --- a/fs/dcache.c
->>> +++ b/fs/dcache.c
->>> @@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
->>>  	 */
->>>  	smp_rmb();
->>>  	d_flags = READ_ONCE(dentry->d_flags);
->>> -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
->>> +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
->>> +			| DCACHE_DONTCACHE;
->>>  
->>>  	/* Nothing to do? Dropping the reference was all we needed? */
->>>  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
->>> diff --git a/fs/inode.c b/fs/inode.c
->>> index 72c4c347afb7..5218a8aebd7f 100644
->>> --- a/fs/inode.c
->>> +++ b/fs/inode.c
->>> @@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
->>>  	}
->>>  
->>>  	state = inode->i_state;
->>> -	if (!drop) {
->>> +	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
->>>  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
->>>  		spin_unlock(&inode->i_lock);
->>>  
->>> -- 
->>> 2.28.0
->>>
->>>
->>>
->
+So maybe morphing Xen into supporting irqdomains in a sane way isn't
+that complicated. Maybe I'm missing the main complexities, though.
 
 
+Juergen
+
+> ---
+> Note: This is completely untested, but it compiles so it must be perfect.
+> ---
+>   arch/x86/pci/xen.c |   63 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 63 insertions(+)
+> 
+> --- a/arch/x86/pci/xen.c
+> +++ b/arch/x86/pci/xen.c
+> @@ -406,6 +406,63 @@ static void xen_teardown_msi_irq(unsigne
+>   	WARN_ON_ONCE(1);
+>   }
+>   
+> +static int xen_msi_domain_alloc_irqs(struct irq_domain *domain,
+> +				     struct device *dev,  int nvec)
+> +{
+> +	int type;
+> +
+> +	if (WARN_ON_ONCE(!dev_is_pci(dev)))
+> +		return -EINVAL;
+> +
+> +	if (first_msi_entry(dev)->msi_attrib.is_msix)
+> +		type = PCI_CAP_ID_MSIX;
+> +	else
+> +		type = PCI_CAP_ID_MSI;
+> +
+> +	return x86_msi.setup_msi_irqs(to_pci_dev(dev), nvec, type);
+> +}
+> +
+> +static void xen_msi_domain_free_irqs(struct irq_domain *domain,
+> +				     struct device *dev)
+> +{
+> +	if (WARN_ON_ONCE(!dev_is_pci(dev)))
+> +		return;
+> +
+> +	x86_msi.teardown_msi_irqs(to_pci_dev(dev));
+> +}
+> +
+> +static struct msi_domain_ops xen_pci_msi_domain_ops = {
+> +	.domain_alloc_irqs	= xen_msi_domain_alloc_irqs,
+> +	.domain_free_irqs	= xen_msi_domain_free_irqs,
+> +};
+> +
+> +static struct msi_domain_info xen_pci_msi_domain_info = {
+> +	.ops			= &xen_pci_msi_domain_ops,
+> +};
+> +
+> +/*
+> + * This irq domain is a blatant violation of the irq domain design, but
+> + * distangling XEN into real irq domains is not a job for mere mortals with
+> + * limited XENology. But it's the least dangerous way for a mere mortal to
+> + * get rid of the arch_*_msi_irqs() hackery in order to store the irq
+> + * domain pointer in struct device. This irq domain wrappery allows to do
+> + * that without breaking XEN terminally.
+> + */
+> +static __init struct irq_domain *xen_create_pci_msi_domain(void)
+> +{
+> +	struct irq_domain *d = NULL;
+> +	struct fwnode_handle *fn;
+> +
+> +	fn = irq_domain_alloc_named_fwnode("XEN-MSI");
+> +	if (fn)
+> +		d = msi_create_irq_domain(fn, &xen_pci_msi_domain_info, NULL);
+> +
+> +	/* FIXME: No idea how to survive if this fails */
+> +	BUG_ON(!d);
+> +
+> +	return d;
+> +}
+> +
+>   static __init void xen_setup_pci_msi(void)
+>   {
+>   	if (xen_initial_domain()) {
+> @@ -426,6 +483,12 @@ static __init void xen_setup_pci_msi(voi
+>   	}
+>   
+>   	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
+> +
+> +	/*
+> +	 * Override the PCI/MSI irq domain init function. No point
+> +	 * in allocating the native domain and never use it.
+> +	 */
+> +	x86_init.irqs.create_pci_msi_domain = xen_create_pci_msi_domain;
+>   }
+>   
+>   #else /* CONFIG_PCI_MSI */
+> 
 
