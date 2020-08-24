@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E325C24F45F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570D524F4B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgHXIff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46238 "EHLO mail.kernel.org"
+        id S1728652AbgHXIjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:39:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbgHXIfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:30 -0400
+        id S1727902AbgHXIjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16826204FD;
-        Mon, 24 Aug 2020 08:35:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 872762177B;
+        Mon, 24 Aug 2020 08:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258129;
-        bh=TDK2CWXv9VIzmd0uFJf8Vwj/ZVwsjQ9xuND2ihko3c4=;
+        s=default; t=1598258364;
+        bh=lVVAh9Z9McLW3SoXxl5P+4DwQWEYitbI4AmCQQ3aerw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZA5D3tIULahvUIEEcBFrTSUe9pWooJdwr6IDfo9ZPa9S+ncZCq3sQFa67jYu2b0q6
-         x70kShYs7nJZKo+l7Ky78UCO8kcVQcwVQGfdI8YwAZ7tFQgPhOJFAHdlidn02TflUS
-         oFjmZZs7UGImnKypZO1oWNP3uJJNl9GqwWnSddoU=
+        b=W+Eupww3+KqMvt4UTtKmTwLpOT+EUbUaiJzrMicBAaxqdz9h9wFdB87/E6ot+EUnO
+         5expdivR/CwdQWRtuQ96ZKqbe+isgZ1P6jtR2Ds9OWiqh5entt5Pr1dOEgvZbbTIT4
+         XNHVA/hyZAPuBbgNabNgnRnreWYghEp6Xwo24ss8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 056/148] svcrdma: Fix another Receive buffer leak
-Date:   Mon, 24 Aug 2020 10:29:14 +0200
-Message-Id: <20200824082416.752092929@linuxfoundation.org>
+        stable@vger.kernel.org, Yang Weijiang <weijiang.yang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.7 021/124] selftests: kvm: Use a shorter encoding to clear RAX
+Date:   Mon, 24 Aug 2020 10:29:15 +0200
+Message-Id: <20200824082410.462355707@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Yang Weijiang <weijiang.yang@intel.com>
 
-[ Upstream commit 64d26422516b2e347b32e6d9b1d40b3c19a62aae ]
+commit 98b0bf02738004829d7e26d6cb47b2e469aaba86 upstream.
 
-During a connection tear down, the Receive queue is flushed before
-the device resources are freed. Typically, all the Receives flush
-with IB_WR_FLUSH_ERR.
+If debug_regs.c is built with newer binutils, the resulting binary is "optimized"
+by the assembler:
 
-However, any pending successful Receives flush with IB_WR_SUCCESS,
-and the server automatically posts a fresh Receive to replace the
-completing one. This happens even after the connection has closed
-and the RQ is drained. Receives that are posted after the RQ is
-drained appear never to complete, causing a Receive resource leak.
-The leaked Receive buffer is left DMA-mapped.
+asm volatile("ss_start: "
+             "xor %%rax,%%rax\n\t"
+             "cpuid\n\t"
+             "movl $0x1a0,%%ecx\n\t"
+             "rdmsr\n\t"
+             : : : "rax", "ecx");
 
-To prevent these late-posted recv_ctxt's from leaking, block new
-Receive posting after XPT_CLOSE is set.
+is translated to :
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  000000000040194e <ss_start>:
+  40194e:       31 c0                   xor    %eax,%eax     <----- rax->eax?
+  401950:       0f a2                   cpuid
+  401952:       b9 a0 01 00 00          mov    $0x1a0,%ecx
+  401957:       0f 32                   rdmsr
+
+As you can see rax is replaced with eax in target binary code.
+This causes a difference is the length of xor instruction (2 Byte vs 3 Byte),
+and makes the hard-coded instruction length check fail:
+
+        /* Instruction lengths starting at ss_start */
+        int ss_size[4] = {
+                3,              /* xor */   <-------- 2 or 3?
+                2,              /* cpuid */
+                5,              /* mov */
+                2,              /* rdmsr */
+        };
+
+Encode the shorter version directly and, while at it, fix the "clobbers"
+of the asm.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/kvm/x86_64/debug_regs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index e426fedb9524f..ac16d83f2d26c 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -265,6 +265,8 @@ static int svc_rdma_post_recv(struct svcxprt_rdma *rdma)
- {
- 	struct svc_rdma_recv_ctxt *ctxt;
+--- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
++++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
+@@ -40,11 +40,11 @@ static void guest_code(void)
  
-+	if (test_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags))
-+		return 0;
- 	ctxt = svc_rdma_recv_ctxt_get(rdma);
- 	if (!ctxt)
- 		return -ENOMEM;
--- 
-2.25.1
-
+ 	/* Single step test, covers 2 basic instructions and 2 emulated */
+ 	asm volatile("ss_start: "
+-		     "xor %%rax,%%rax\n\t"
++		     "xor %%eax,%%eax\n\t"
+ 		     "cpuid\n\t"
+ 		     "movl $0x1a0,%%ecx\n\t"
+ 		     "rdmsr\n\t"
+-		     : : : "rax", "ecx");
++		     : : : "eax", "ebx", "ecx", "edx");
+ 
+ 	/* DR6.BD test */
+ 	asm volatile("bd_start: mov %%dr0, %%rax" : : : "rax");
 
 
