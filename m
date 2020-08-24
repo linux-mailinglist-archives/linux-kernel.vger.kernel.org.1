@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF7A24F511
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D30424F513
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbgHXIoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39510 "EHLO mail.kernel.org"
+        id S1729129AbgHXIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729113AbgHXIoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:44:10 -0400
+        id S1729117AbgHXIoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F7A720FC3;
-        Mon, 24 Aug 2020 08:44:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 033E62075B;
+        Mon, 24 Aug 2020 08:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258649;
-        bh=isQXeN4Kjqa46COgWlJ4jwfTuzmKFsO5k3hpGO/mHW4=;
+        s=default; t=1598258652;
+        bh=JxS5Yum/Z+HeSk5UjQ1CcxVIHQelmqRDGOtO0+oaPj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZPFdNtP5eUCDYu3gKaKXeidatLt8liruT+BHwHhk+68QqgdRE9Yw/Y26dLupx0FEW
-         xZE0OpnQ+wbO8G911PaCQ65/E5qT8Q8UMwpp3KbH1xEW26OP+YeR9ckIsIFz6vK/Yp
-         gnijQ3XX2d1+i+D7PBoh6+TEfrD/fSgIvKks8DF4=
+        b=QSBisL9NUs0jPEHz6wADhXMevpPQMRRw1C/OizZw1zoE9THExnlY/MdvXS1xVpUA+
+         q/WAsd1zHd1hkWF+bXZT/fV65MrH84Z/QJk9+s4MxRhndQBTUXWZX/lfvvIWIryaLQ
+         AJQINFSkQbWULLCA1wgqJY7wjHAijxhsB4T5nOfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.7 121/124] efi/libstub: Stop parsing arguments at "--"
-Date:   Mon, 24 Aug 2020 10:30:55 +0200
-Message-Id: <20200824082415.357813730@linuxfoundation.org>
+Subject: [PATCH 5.7 122/124] efi/libstub: Handle NULL cmdline
+Date:   Mon, 24 Aug 2020 10:30:56 +0200
+Message-Id: <20200824082415.405906791@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
 References: <20200824082409.368269240@linuxfoundation.org>
@@ -45,30 +45,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arvind Sankar <nivedita@alum.mit.edu>
 
-commit 1fd9717d75df68e3c3509b8e7b1138ca63472f88 upstream.
+commit a37ca6a2af9df2972372b918f09390c9303acfbd upstream.
 
-Arguments after "--" are arguments for init, not for the kernel.
+Treat a NULL cmdline the same as empty. Although this is unlikely to
+happen in practice, the x86 kernel entry does check for NULL cmdline and
+handles it, so do it here as well.
 
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Link: https://lore.kernel.org/r/20200725155916.1376773-1-nivedita@alum.mit.edu
+Link: https://lore.kernel.org/r/20200729193300.598448-1-nivedita@alum.mit.edu
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/libstub/efi-stub-helper.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/firmware/efi/libstub/efi-stub-helper.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
 +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -87,6 +87,8 @@ efi_status_t efi_parse_options(char cons
- 		char *param, *val;
+@@ -73,10 +73,14 @@ void efi_printk(char *str)
+  */
+ efi_status_t efi_parse_options(char const *cmdline)
+ {
+-	size_t len = strlen(cmdline) + 1;
++	size_t len;
+ 	efi_status_t status;
+ 	char *str, *buf;
  
- 		str = next_arg(str, &param, &val);
-+		if (!val && !strcmp(param, "--"))
-+			break;
- 
- 		if (!strcmp(param, "nokaslr")) {
- 			efi_nokaslr = true;
++	if (!cmdline)
++		return EFI_SUCCESS;
++
++	len = strlen(cmdline) + 1;
+ 	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, len, (void **)&buf);
+ 	if (status != EFI_SUCCESS)
+ 		return status;
 
 
