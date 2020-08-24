@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFB224FA21
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FCC24F9F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgHXJxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:53:11 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:34620 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728271AbgHXJw7 (ORCPT
+        id S1728824AbgHXJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729577AbgHXJvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:52:59 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9nAJn189449;
-        Mon, 24 Aug 2020 09:52:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=Ww/d3IUbFL+bGXtX95YfELstyo8GnB/9kJBk/e0Gx8s=;
- b=MBYlbK+P8G+ZDmi1DzhBHkCHRCma9SZCEJ4P2kLej2CFXFsQpCGZ4M8CX7Ir+oxt0e+8
- PBKRyrRS8kT34FxTEyN6kLqaJbYytJ57/vkEHRLzNKFlzNrLceQH6aFa22fh4fP9L5oc
- k2aTMmGDZ2/Z4DjoDC/tKM+2Lh2sseXM7R6YyqlMomZs/BA1jJSyvIYGCeLWWu9dmN5a
- z/+fRhMwIk0WU8ZdA+Gw8kqbTE9SHj+54oURR25DwCShw+JGZkgHVzyGww+vw/70ehHG
- aInYhNPc9QjqiojYwt4uITJBwEiCdV1rQK4HaylF6XYiq8kFP6JbuqBqAN9cI4sqIDE0 wg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 333w6tj4hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 09:52:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9jD2c118769;
-        Mon, 24 Aug 2020 09:50:51 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 333r9gy74n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 09:50:51 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07O9oo07023975;
-        Mon, 24 Aug 2020 09:50:50 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 02:50:49 -0700
-Date:   Mon, 24 Aug 2020 12:50:42 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 01/12] staging: wfx: fix BA when device is AP and MFP is
- enabled
-Message-ID: <20200824095042.GZ1793@kadam>
-References: <20200820155858.351292-1-Jerome.Pouiller@silabs.com>
+        Mon, 24 Aug 2020 05:51:21 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D86C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:20 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id p186so1357312vsa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tQVuDdH8Zvj1M8HLAuvz5oG4f0c+4DnopFb9nohLKXM=;
+        b=viaSbKYkt3Ve8bKIQEqECLhqvB8aKO+ihxIs+NH5lCkzHixhocn/PB4nGT/XA599s/
+         Q+TA0g/qbcuLiUHw6XpMggqiZ1vdsV8KqQaft0CEheeblOkjGrWAGw+6CJ8Qr8bOtMpW
+         FpZQzLT3i1eRllSVw3osF8yeNE1P/B8EHnKLB0O/JY0ljpRogF6Uj1k8GDipwqxAcmpZ
+         qlBCpsL22zcCK7Eb6u7eF6tRgtS15PT/bP57r1LCYR6ZgYWa164KtOyT3Begp5KvRos1
+         TDzO2DlrGkkQS83WnUyDpS7uLvPh+tpXuFD6EY9i2Kf4tyvEIrahvH+dCXW2jDpa/8MQ
+         LX+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tQVuDdH8Zvj1M8HLAuvz5oG4f0c+4DnopFb9nohLKXM=;
+        b=kRrn/djkTXvbNn7t5oe1KMGsToJXjVkRW2ivxWnnt4Azk8YWwWU6ZJKyTVBlp0uyuk
+         zXnKp+37ygphs/NOkceok3xJO5tqIKbG2ui0NoRzy1/S9KSAUOmGoNchZQYjnmrHckat
+         Fh4ZfYwQAmhURMmH5RnT4zSni3i1euNNt6MljXqGIWacRkz/Ps0sRumkf+H2m9pFrSSi
+         avFLL8Dd0+PxEn1Jd1uOua91NqOchcJTSx0tBxhg4jjpQUT6PihiNrHEFMRXYEqt4Ymb
+         JP6ykPub8v+TQzdDRI810AfgyzRkgAJ4B1U3fn/212gEX4MJ00kF5OmOYnTUQJhS1XNN
+         nQoQ==
+X-Gm-Message-State: AOAM533ebG8o9AseNYHrqKvUq+Nitoyf2NO3CPFNB36aqjMdhWFoP2Ih
+        TFlmA9+58E3AYP0e7K0JqEmZeUL5dX/NmqHT3Mw4uw==
+X-Google-Smtp-Source: ABdhPJz1ej/yqCDXyFjyLy7ZlP1cm49cSWXutwlzE1D8OKP6S+DBPfEDkJzgXFbDyWrfWa93Ar32IMcM2cb1jLVp9Zs=
+X-Received: by 2002:a67:2f06:: with SMTP id v6mr1293230vsv.34.1598262680151;
+ Mon, 24 Aug 2020 02:51:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820155858.351292-1-Jerome.Pouiller@silabs.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008240076
+References: <20200814014346.6496-1-wenbin.mei@mediatek.com> <20200814014346.6496-3-wenbin.mei@mediatek.com>
+In-Reply-To: <20200814014346.6496-3-wenbin.mei@mediatek.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 24 Aug 2020 11:50:43 +0200
+Message-ID: <CAPDyKFpt6-a+pkTXb2RZdx=yTONetugSCKbtSsRD2xQ3PRPhDQ@mail.gmail.com>
+Subject: Re: [v5,2/3] arm64: dts: mt7622: add reset node for mmc device
+To:     Wenbin Mei <wenbin.mei@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "# 4.0+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 05:58:47PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> The protection of the management frames is mainly done by mac80211.
-> However, frames for the management of the BlockAck sessions are directly
-> sent by the device. These frames have to be protected if MFP is in use.
-> So the driver has to pass the MFP configuration to the device.
-> 
-> Until now, the BlockAck management frames were completely unprotected
-> whatever the status of the MFP negotiation. So, some devices dropped
-> these frames.
-> 
-> The device has two knobs to control the MFP. One global and one per
-> station. Normally, the driver should always enable global MFP. Then it
-> should enable MFP on every station with which MFP was successfully
-> negotiated. Unfortunately, the older firmwares only provide the
-> global control.
-> 
-> So, this patch enable global MFP as it is exposed in the beacon. Then it
-> marks every station with which the MFP is effective.
-> 
-> Thus, the support for the old firmwares is not so bad. It may only
-> encounter some difficulties to negotiate BA sessions when the local
-> device (the AP) is MFP capable (ieee80211w=1) but the station is not.
-> The only solution for this case is to upgrade the firmware.
-> 
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+On Fri, 14 Aug 2020 at 03:44, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>
+> This commit adds reset node for mmc device.
+>
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+
+I can pick this for my fixes branch, together with the other changes,
+however deferring that until Matthias acks it.
+
+Kind regards
+Uffe
+
+
+
 > ---
->  drivers/staging/wfx/sta.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-> index ad63332f690c..9c1c8223a49f 100644
-> --- a/drivers/staging/wfx/sta.c
-> +++ b/drivers/staging/wfx/sta.c
-> @@ -434,7 +434,7 @@ int wfx_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
->  	wvif->link_id_map |= BIT(sta_priv->link_id);
->  	WARN_ON(!sta_priv->link_id);
->  	WARN_ON(sta_priv->link_id >= HIF_LINK_ID_MAX);
-> -	hif_map_link(wvif, sta->addr, 0, sta_priv->link_id);
-> +	hif_map_link(wvif, sta->addr, sta->mfp ? 2 : 0, sta_priv->link_id);
->  
->  	return 0;
->  }
-> @@ -474,6 +474,25 @@ static int wfx_upload_ap_templates(struct wfx_vif *wvif)
->  	return 0;
->  }
->  
-> +static void wfx_set_mfp_ap(struct wfx_vif *wvif)
-> +{
-> +	struct sk_buff *skb = ieee80211_beacon_get(wvif->wdev->hw, wvif->vif);
-> +	const int ieoffset = offsetof(struct ieee80211_mgmt, u.beacon.variable);
-> +	const u16 *ptr = (u16 *)cfg80211_find_ie(WLAN_EID_RSN,
-> +						 skb->data + ieoffset,
-> +						 skb->len - ieoffset);
-> +	const int pairwise_cipher_suite_count_offset = 8 / sizeof(u16);
-> +	const int pairwise_cipher_suite_size = 4 / sizeof(u16);
-> +	const int akm_suite_size = 4 / sizeof(u16);
-> +
-> +	if (ptr) {
-> +		ptr += pairwise_cipher_suite_count_offset;
-> +		ptr += 1 + pairwise_cipher_suite_size * *ptr;
-
-The value of "*ptr" comes from skb->data.  How do we know that it
-doesn't point to something beyond the end of the skb->data buffer?
-
-> +		ptr += 1 + akm_suite_size * *ptr;
-> +		hif_set_mfp(wvif, *ptr & BIT(7), *ptr & BIT(6));
-> +	}
-> +}
-
-regards,
-dan carpenter
-
+>  arch/arm64/boot/dts/mediatek/mt7622.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> index 1a39e0ef776b..5b9ec032ce8d 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> @@ -686,6 +686,8 @@
+>                 clocks = <&pericfg CLK_PERI_MSDC30_0_PD>,
+>                          <&topckgen CLK_TOP_MSDC50_0_SEL>;
+>                 clock-names = "source", "hclk";
+> +               resets = <&pericfg MT7622_PERI_MSDC0_SW_RST>;
+> +               reset-names = "hrst";
+>                 status = "disabled";
+>         };
+>
+> --
+> 2.18.0
