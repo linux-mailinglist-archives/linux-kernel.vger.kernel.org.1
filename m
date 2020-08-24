@@ -2,333 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0F52501A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066E12501A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgHXQD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:03:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgHXQDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:03:15 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727098AbgHXQD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:03:27 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45432 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726727AbgHXQC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:02:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598284975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GOOvGMjNbf5XtLNCKd9ysNRuyAgV0fQgbTvlhMQq8xI=;
+        b=DhR4iTc47y+ZBv2Yb0yNRGx26eVpZAbahIMo1FqqP+1ecPzgzFs/MSxB5P+m+doz4kk75H
+        jbrK++sBKQtgLrlvTXKrkvmm7yOLfcEmAxOtRGyetmzgCjhPWDgBAaoDTCCN+b4WDC6dqL
+        Za5fT+WODCbKQumsb6sY4ZjqcfyQdrk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-FWvG5sP1NauODAXLjclCsQ-1; Mon, 24 Aug 2020 12:02:52 -0400
+X-MC-Unique: FWvG5sP1NauODAXLjclCsQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0909E2078D;
-        Mon, 24 Aug 2020 16:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598284994;
-        bh=oxiPQdkztN80WChKxcDoYQFkQmBR5YzM8E55XqOosEs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XIB7/GZUEj7ULdHdv8zDT0FM3RwOcgp2X35TZCuHesZjczQSBO+YybpxBCgs6tPAn
-         fUzS1gNlKNA/s29IDbXPn0iBgnO3CKNnj6NvnSWzShQCEHwRkHHBieZ0CUcTHCqtRW
-         V17Y2xO6fx3974pMapm8BFJGqdOXkMrFnau7Yl5E=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 4/4] arm64: dts: imx8mm-var-som-symphony: Add Variscite Symphony board with VAR-SOM-MX8MM
-Date:   Mon, 24 Aug 2020 18:02:47 +0200
-Message-Id: <20200824160247.19032-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824160247.19032-1-krzk@kernel.org>
-References: <20200824160247.19032-1-krzk@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2DC710ABDA5;
+        Mon, 24 Aug 2020 16:02:49 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-212.rdu2.redhat.com [10.10.112.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94F411002382;
+        Mon, 24 Aug 2020 16:02:48 +0000 (UTC)
+Subject: Re: [PATCH 3/3] mm/memcg: Unify swap and memsw page counters
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200820130350.3211-1-longman@redhat.com>
+ <20200820130350.3211-4-longman@redhat.com>
+ <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <18d02675-0c2a-bfc3-6953-42dcd10396b1@redhat.com>
+Date:   Mon, 24 Aug 2020 12:02:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a DTS for Variscite Symphony evaluation kit with VAR-SOM-MX8MM
-System on Module.
+On 8/20/20 11:46 AM, Shakeel Butt wrote:
+> On Thu, Aug 20, 2020 at 6:04 AM Waiman Long <longman@redhat.com> wrote:
+>> The swap page counter is v2 only while memsw is v1 only. As v1 and v2
+>> controllers cannot be active at the same time, there is no point to keep
+>> both swap and memsw page counters in mem_cgroup. The previous patch has
+>> made sure that memsw page counter is updated and accessed only when in
+>> v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
+>> swap page counter. This saves 14 long's in the size of mem_cgroup. This
+>> is a saving of 112 bytes for 64-bit archs.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/memcontrol.h | 3 +--
+>>   mm/memcontrol.c            | 8 +++++---
+>>   2 files changed, 6 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index d0b036123c6a..d2a819d7db70 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -216,10 +216,9 @@ struct mem_cgroup {
+>>
+>>          /* Accounted resources */
+>>          struct page_counter memory;
+>> -       struct page_counter swap;
+>> +       struct page_counter swap;       /* memsw (memory+swap) for v1 */
+>>
+>>          /* Legacy consumer-oriented counters */
+>> -       struct page_counter memsw;
+>>          struct page_counter kmem;
+>>          struct page_counter tcpmem;
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index d219dca5239f..04c3794cdc98 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -68,6 +68,11 @@
+>>
+>>   #include <trace/events/vmscan.h>
+>>
+>> +/*
+>> + * The v1 memsw page counter is aliased to the v2 swap page counter.
+>> + */
+>> +#define memsw  swap
+>> +
+> Personally I would prefer a union instead of #define.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Yes, that is also what I am thinking about in the v2.
 
----
+Cheers,
+Longman
 
-Changes since v2:
-1. Use 'led' as node name to be generic,
-2. Remove orphaned pinctrl-names.
-3. Use more specific regulator node names.
-
-Changes since v1:
-1. Remove duplicated "leds" node,
-2. Fix heartbeat to active low,
-3. Add nxp,ptn5150 extcon.
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx8mm-var-som-symphony.dts | 246 ++++++++++++++++++
- 2 files changed, 247 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 903c0eb61290..a1656f483c29 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -30,6 +30,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
- 
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-new file mode 100644
-index 000000000000..0bca737964d5
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-@@ -0,0 +1,246 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mm-var-som.dtsi"
-+
-+/ {
-+	model = "Variscite VAR-SOM-MX8MM Symphony evaluation board";
-+	compatible = "variscite,var-som-mx8mm-symphony", "variscite,var-som-mx8mm", "fsl,imx8mm";
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_usb_otg2_vbus: regulator-usb-otg2-vbus {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usb_otg2_vbus>;
-+		regulator-name = "usb_otg2_vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio5 1 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		back {
-+			label = "Back";
-+			gpios = <&pca9534 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_BACK>;
-+		};
-+
-+		home {
-+			label = "Home";
-+			gpios = <&pca9534 2 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_HOME>;
-+		};
-+
-+		menu {
-+			label = "Menu";
-+			gpios = <&pca9534 3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_MENU>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led {
-+			label = "Heartbeat";
-+			gpios = <&pca9534 0 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+};
-+
-+&ethphy {
-+	reset-gpios = <&pca9534 5 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9534>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		#gpio-cells = <2>;
-+		wakeup-source;
-+
-+		/* USB 3.0 OTG (usbotg1) / SATA port switch, set to USB 3.0 */
-+		usb3-sata-sel-hog {
-+			gpio-hog;
-+			gpios = <4 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "usb3_sata_sel";
-+		};
-+
-+		som-vselect-hog {
-+			gpio-hog;
-+			gpios = <6 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "som_vselect";
-+		};
-+
-+		enet-sel-hog {
-+			gpio-hog;
-+			gpios = <7 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "enet_sel";
-+		};
-+	};
-+
-+	extcon_usbotg1: typec@3d {
-+		compatible = "nxp,ptn5150";
-+		reg = <0x3d>;
-+		int-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_ptn5150>;
-+		status = "okay";
-+	};
-+};
-+
-+&i2c3 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	/* Capacitive touch controller */
-+	ft5x06_ts: touchscreen@38 {
-+		compatible = "edt,edt-ft5406";
-+		reg = <0x38>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_captouch>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <4 GPIO_ACTIVE_HIGH>;
-+
-+		touchscreen-size-x = <800>;
-+		touchscreen-size-y = <480>;
-+		touchscreen-inverted-x;
-+		touchscreen-inverted-y;
-+	};
-+
-+	rtc@68 {
-+		compatible = "dallas,ds1337";
-+		reg = <0x68>;
-+		wakeup-source;
-+	};
-+};
-+
-+/* Header */
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* Header */
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	disable-over-current;
-+	extcon = <&extcon_usbotg1>, <&extcon_usbotg1>;
-+};
-+
-+&usbotg2 {
-+	dr_mode = "host";
-+	vbus-supply = <&reg_usb_otg2_vbus>;
-+	srp-disable;
-+	hnp-disable;
-+	adp-disable;
-+	disable-over-current;
-+	/delete-property/ usb-role-switch;
-+	/*
-+	 * FIXME: having USB2 enabled hangs the boot just after:
-+	 * [    1.943365] ci_hdrc ci_hdrc.1: EHCI Host Controller
-+	 * [    1.948287] ci_hdrc ci_hdrc.1: new USB bus registered, assigned bus number 1
-+	 * [    1.971006] ci_hdrc ci_hdrc.1: USB 2.0 started, EHCI 1.00
-+	 * [    1.977203] hub 1-0:1.0: USB hub found
-+	 * [    1.980987] hub 1-0:1.0: 1 port detected
-+	 */
-+	status = "disabled";
-+};
-+
-+&iomuxc {
-+	pinctrl_captouch: captouchgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SPDIF_RX_GPIO5_IO4		0x16
-+		>;
-+	};
-+
-+	pinctrl_gpio_led: gpioledgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16	0x19
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
-+			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_pca9534: pca9534grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x16
-+		>;
-+	};
-+
-+	pinctrl_ptn5150: ptn5150grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO11_GPIO1_IO11	0x16
-+		>;
-+	};
-+
-+	pinctrl_reg_usb_otg2_vbus: regusbotg2vbusgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1		0x16
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_UART1_RXD_UART1_DCE_RX	0x140
-+			MX8MM_IOMUXC_UART1_TXD_UART1_DCE_TX	0x140
-+		>;
-+	};
-+
-+	pinctrl_uart3: uart3grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
-+			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
-+		>;
-+	};
-+};
--- 
-2.17.1
 
