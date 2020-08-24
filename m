@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC9924FA67
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31DB24F981
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbgHXJ4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48436 "EHLO mail.kernel.org"
+        id S1728904AbgHXJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:46:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728246AbgHXIgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:36:12 -0400
+        id S1728944AbgHXImZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F9D6208E4;
-        Mon, 24 Aug 2020 08:36:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 784BF2075B;
+        Mon, 24 Aug 2020 08:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258171;
-        bh=I1h3UZs3n7sc8Sn7+l5lYEgxuLjycEX+cCEnYirlE5E=;
+        s=default; t=1598258545;
+        bh=9HAS2loCHxQ24PIAcghVs2Z0hXa2Wx19xvuumM0vtFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IoOFBgBAhpEBjd3CsKbxuYTksUcqj6yLADgvPofXZ+lOWdYQZqrQpFspFOAooU1/Z
-         a/fqJ9FjAZf+21tNJEZ9tuqyZT2c3YwMCIQL/UsEAkDhhHhKFforwvRELYff7G7bUz
-         nvyCJhyF7P3yAnJg57gIhJ4++GNu9hx+5ssDXQ34=
+        b=gTWTq7V9SlXGmnoi1/4GDGzxvNIFACaEWJbyJtIRVv8W5l/6xy3QqdpAui8HAhb9V
+         LEZG5kCuNorXazsa2FVx/H7opZQRUJyb8ZSwqHpcwJNvAmNfO5HgKBq3sV6JECleCY
+         v39Q7SSCj9+lZUovxYblJ4qUbfWu3D4XncbcYHtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 101/148] ASoC: intel: Fix memleak in sst_media_open
-Date:   Mon, 24 Aug 2020 10:29:59 +0200
-Message-Id: <20200824082418.868974178@linuxfoundation.org>
+Subject: [PATCH 5.7 066/124] ASoC: q6routing: add dummy register read/write function
+Date:   Mon, 24 Aug 2020 10:30:00 +0200
+Message-Id: <20200824082412.663970116@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 062fa09f44f4fb3776a23184d5d296b0c8872eb9 ]
+[ Upstream commit 796a58fe2b8c9b6668db00d92512ec84be663027 ]
 
-When power_up_sst() fails, stream needs to be freed
-just like when try_module_get() fails. However, current
-code is returning directly and ends up leaking memory.
+Most of the DAPM widgets for DSP ASoC components reuse reg field
+of the widgets for its internal calculations, however these are not
+real registers. So read/writes to these numbers are not really
+valid. However ASoC core will read these registers to get default
+state during startup.
 
-Fixes: 0121327c1a68b ("ASoC: Intel: mfld-pcm: add control for powering up/down dsp")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200813084112.26205-1-dinghao.liu@zju.edu.cn
+With recent changes to ASoC core, every register read/write
+failures are reported very verbosely. Prior to this fails to reads
+are totally ignored, so we never saw any error messages.
+
+To fix this add dummy read/write function to return default value.
+
+Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
+Reported-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200811120205.21805-2-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 8817eaae6bb7a..b520e3aeaf3de 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -331,7 +331,7 @@ static int sst_media_open(struct snd_pcm_substream *substream,
- 
- 	ret_val = power_up_sst(stream);
- 	if (ret_val < 0)
--		return ret_val;
-+		goto out_power_up;
- 
- 	/* Make sure, that the period size is always even */
- 	snd_pcm_hw_constraint_step(substream->runtime, 0,
-@@ -340,8 +340,9 @@ static int sst_media_open(struct snd_pcm_substream *substream,
- 	return snd_pcm_hw_constraint_integer(runtime,
- 			 SNDRV_PCM_HW_PARAM_PERIODS);
- out_ops:
--	kfree(stream);
- 	mutex_unlock(&sst_lock);
-+out_power_up:
-+	kfree(stream);
- 	return ret_val;
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 46e50612b92c1..750e6a30444eb 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -973,6 +973,20 @@ static int msm_routing_probe(struct snd_soc_component *c)
+ 	return 0;
  }
  
++static unsigned int q6routing_reg_read(struct snd_soc_component *component,
++				       unsigned int reg)
++{
++	/* default value */
++	return 0;
++}
++
++static int q6routing_reg_write(struct snd_soc_component *component,
++			       unsigned int reg, unsigned int val)
++{
++	/* dummy */
++	return 0;
++}
++
+ static const struct snd_soc_component_driver msm_soc_routing_component = {
+ 	.probe = msm_routing_probe,
+ 	.name = DRV_NAME,
+@@ -981,6 +995,8 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
+ 	.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
+ 	.dapm_routes = intercon,
+ 	.num_dapm_routes = ARRAY_SIZE(intercon),
++	.read = q6routing_reg_read,
++	.write = q6routing_reg_write,
+ };
+ 
+ static int q6pcm_routing_probe(struct platform_device *pdev)
 -- 
 2.25.1
 
