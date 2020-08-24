@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BB1250B77
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 00:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BFA250B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 00:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgHXWMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 18:12:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3448 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726532AbgHXWMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 18:12:39 -0400
-IronPort-SDR: wAl+ZIMXW9en4/d/cUJCTos3EvSWmp4nmZY62R5FiRUk81RlE8gsORn1f9LFnPa8B8dRga8x0M
- NoRsbEMCVybA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="136062341"
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="136062341"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 15:12:38 -0700
-IronPort-SDR: lgrhczaWqd6JCh539gfdqjZ8/Jc022Fq7wThT/t1fmhusRoQW1eFJKTiC72mq7++zOQ2cmy5SY
- tlHE0xjEK0jg==
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="474093508"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 15:12:38 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH] x86/mce: Delay clearing IA32_MCG_STATUS to the end of do_machine_check()
-Date:   Mon, 24 Aug 2020 15:12:37 -0700
-Message-Id: <20200824221237.5397-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
+        id S1727073AbgHXWPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 18:15:01 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:28880 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726519AbgHXWPA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 18:15:00 -0400
+Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07OMBwlX003004;
+        Mon, 24 Aug 2020 22:14:43 GMT
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0b-002e3701.pphosted.com with ESMTP id 333d3543rs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Aug 2020 22:14:43 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id DEFA04F;
+        Mon, 24 Aug 2020 22:14:41 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.214.32.129])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 7823A46;
+        Mon, 24 Aug 2020 22:14:40 +0000 (UTC)
+Date:   Mon, 24 Aug 2020 17:14:39 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] MAINTAINERS: Add entry for HPE Superdome Flex (UV)
+ maintainers
+Message-ID: <20200824221439.GA52810@swahl-home.5wahls.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240175
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A long time ago, Linux cleared IA32_MCG_STATUS at the very end of machine
-check processing.
+Add an entry and email addresses for people at HPE who are supporting
+linux on the Superdome Flex (a.k.a) UV platform.
 
-Then we added some fancy recovery and IST manipulation in:
-
-commit d4812e169de4 ("x86, mce: Get rid of TIF_MCE_NOTIFY and associated mce tricks")
-
-and clearing IA32_MCG_STATUS was pulled earlier in the function.
-
-Next change moved the actual recovery out of do_machine_check() and just
-used task_work_add() to schedule it later (before returning to the user):
-
-commit 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
-
-Most recently the fancy IST footwork was removed as no longer needed:
-
-commit b052df3da821 ("x86/entry: Get rid of ist_begin/end_non_atomic()")
-
-At this point there is no reason remaining to clear IA32_MCG_STATUS early.
-It can move back to the very end of the function.
-
-Also moved sync_core(). The comments for this function say that it should
-only be called when instructions have been changed/re-mapped. Recovery for
-an instruction fetch may change the physical address. But that doesn't happen
-until the scheduled work runs (which could be on another CPU).
-
-Reported-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
 ---
- arch/x86/kernel/cpu/mce/core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index f43a78bde670..0ba24dfffdb2 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1190,6 +1190,7 @@ static void kill_me_maybe(struct callback_head *cb)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index deaafb617361..4c2143d8ae45 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18874,6 +18874,15 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+ F:	arch/x86/platform
  
- 	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags)) {
- 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
-+		sync_core();
- 		return;
- 	}
- 
-@@ -1330,12 +1331,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 	if (worst > 0)
- 		irq_work_queue(&mce_irq_work);
- 
--	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
--
--	sync_core();
--
- 	if (worst != MCE_AR_SEVERITY && !kill_it)
--		return;
-+		goto out;
- 
- 	/* Fault was in user mode and we need to take some action */
- 	if ((m.cs & 3) == 3) {
-@@ -1364,6 +1361,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 				mce_panic("Failed kernel mode recovery", &m, msg);
- 		}
- 	}
-+out:
-+	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
- }
- EXPORT_SYMBOL_GPL(do_machine_check);
- 
++X86 PLATFORM UV HPE SUPERDOME FLEX
++M:	Steve Wahl <steve.wahl@hpe.com>
++R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
++R:	Russ Anderson <russ.anderson@hpe.com>
++S:	Supported
++F:	arch/x86/include/asm/uv/
++F:	arch/x86/kernel/apic/x2apic_uv_x.c
++F:	arch/x86/platform/uv/
++
+ X86 VDSO
+ M:	Andy Lutomirski <luto@kernel.org>
+ L:	linux-kernel@vger.kernel.org
 -- 
-2.21.1
+2.12.3
 
