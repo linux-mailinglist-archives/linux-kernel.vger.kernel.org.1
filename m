@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E032501E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62332501F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgHXQWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:22:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43672 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgHXQWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:22:31 -0400
-Date:   Mon, 24 Aug 2020 16:22:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598286148;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aU6nrsbVrPhbNwxpDNiAxzaxHk6gDD++MMmQJ8cUbSQ=;
-        b=pV2tIk2iklR1jXVfeC0cJPcqoh1DbiCmdDMkq853UpTeZoAZ2VW5oxCf3ixo2M4iT6BkB5
-        8UZH7wSYedxoe23fUtdR9C0uvdncxF2mt732o1wpZH0yGogJmRSQAT7VRqQWhGRjX3ydkr
-        u9eQU5FXWcM4AoQmQE99gNbeezk2pwNf+udnY6RkY8imp99ycBpL5SO9eQjN+Vwong60Hz
-        UGYb81FG7W5LUxkSgfgqcrxbXyCvWVkU0NP03Xfipc4iHjx6ioCYPKtCrzLn7r5nKUW0nx
-        vO4vXDJniyAUKUn3v8pfjsXKIb3LZh8bQEMBWRIauDyz/No6Y7LjpEEtMHJG1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598286148;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aU6nrsbVrPhbNwxpDNiAxzaxHk6gDD++MMmQJ8cUbSQ=;
-        b=eLV4a7ucMRouolD/LwYXGZF0plZGEDY50gaIb3sWaNKKQflu8FqiDunFvDxD12ItGVl3PL
-        0mTSWL7XxlSPELBA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] x86/fsgsbase: Replace static_cpu_has() with
- boot_cpu_has()
-Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200818103715.32736-1-bp@alien8.de>
-References: <20200818103715.32736-1-bp@alien8.de>
-MIME-Version: 1.0
-Message-ID: <159828614748.389.3888049416727618189.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1727036AbgHXQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725780AbgHXQ1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:27:17 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7E5F2072D;
+        Mon, 24 Aug 2020 16:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598286437;
+        bh=lnBHoUXioLOrOWNKvWtcrwmt13u6QaY0trxOTodHtew=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Znz4cKVrnSCgYw35MMVSPppJ5hjlovEHC0R/6Thnt26/cwLk2AL+Vy0L/Q8VJDg2z
+         0YaNbOuluJaThIJ/UdVJU13Pvd1GJutNSYP8bKDyNdneetH6PEX0IKFOEeU0GmtueK
+         tTgVmwEG0W5wMKi6KelLbGhNcQGJlRHl+mt+/mRA=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
+        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 01/19] dt-bindings: gpio: fsl-imx-gpio: Add i.MX 8 compatibles
+Date:   Mon, 24 Aug 2020 18:26:34 +0200
+Message-Id: <20200824162652.21047-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fsgsbase branch of tip:
+DTSes with new i.MX 8 SoCs introduce their own compatibles so add them
+to fix dtbs_check warnings like:
 
-Commit-ID:     5f1dd4dda5c8796c405e856aaa11e187f6885924
-Gitweb:        https://git.kernel.org/tip/5f1dd4dda5c8796c405e856aaa11e187f6885924
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 18 Aug 2020 12:28:31 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 24 Aug 2020 18:18:32 +02:00
+  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
+    compatible:0: 'fsl,imx8mm-gpio' is not one of ['fsl,imx1-gpio', 'fsl,imx21-gpio', 'fsl,imx31-gpio', 'fsl,imx35-gpio', 'fsl,imx7d-gpio']
+    From schema: Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
 
-x86/fsgsbase: Replace static_cpu_has() with boot_cpu_has()
+  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
+    compatible: ['fsl,imx8mm-gpio', 'fsl,imx35-gpio'] is too long
 
-ptrace and prctl() are not really fast paths to warrant the use of
-static_cpu_has() and cause alternatives patching for no good reason.
-Replace with boot_cpu_has() which is simple and fast enough.
+  arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000:
+    compatible: Additional items are not allowed ('fsl,imx35-gpio' was unexpected)
 
-No functional changes.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200818103715.32736-1-bp@alien8.de
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/x86/include/asm/fsgsbase.h | 4 ++--
- arch/x86/kernel/process_64.c    | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ .../bindings/gpio/fsl-imx-gpio.yaml           | 21 +++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
-index d552646..35cff5f 100644
---- a/arch/x86/include/asm/fsgsbase.h
-+++ b/arch/x86/include/asm/fsgsbase.h
-@@ -57,7 +57,7 @@ static inline unsigned long x86_fsbase_read_cpu(void)
- {
- 	unsigned long fsbase;
+diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+index 0b223abe8cfb..454db20c2d1a 100644
+--- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+@@ -11,12 +11,21 @@ maintainers:
  
--	if (static_cpu_has(X86_FEATURE_FSGSBASE))
-+	if (boot_cpu_has(X86_FEATURE_FSGSBASE))
- 		fsbase = rdfsbase();
- 	else
- 		rdmsrl(MSR_FS_BASE, fsbase);
-@@ -67,7 +67,7 @@ static inline unsigned long x86_fsbase_read_cpu(void)
+ properties:
+   compatible:
+-    enum:
+-      - fsl,imx1-gpio
+-      - fsl,imx21-gpio
+-      - fsl,imx31-gpio
+-      - fsl,imx35-gpio
+-      - fsl,imx7d-gpio
++    oneOf:
++      - enum:
++          - fsl,imx1-gpio
++          - fsl,imx21-gpio
++          - fsl,imx31-gpio
++          - fsl,imx35-gpio
++          - fsl,imx7d-gpio
++      - items:
++          - enum:
++              - fsl,imx8mm-gpio
++              - fsl,imx8mn-gpio
++              - fsl,imx8mp-gpio
++              - fsl,imx8mq-gpio
++              - fsl,imx8qxp-gpio
++          - const: fsl,imx35-gpio
  
- static inline void x86_fsbase_write_cpu(unsigned long fsbase)
- {
--	if (static_cpu_has(X86_FEATURE_FSGSBASE))
-+	if (boot_cpu_has(X86_FEATURE_FSGSBASE))
- 		wrfsbase(fsbase);
- 	else
- 		wrmsrl(MSR_FS_BASE, fsbase);
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 9afefe3..df342be 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -407,7 +407,7 @@ unsigned long x86_gsbase_read_cpu_inactive(void)
- {
- 	unsigned long gsbase;
- 
--	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-+	if (boot_cpu_has(X86_FEATURE_FSGSBASE)) {
- 		unsigned long flags;
- 
- 		local_irq_save(flags);
-@@ -422,7 +422,7 @@ unsigned long x86_gsbase_read_cpu_inactive(void)
- 
- void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
- {
--	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-+	if (boot_cpu_has(X86_FEATURE_FSGSBASE)) {
- 		unsigned long flags;
- 
- 		local_irq_save(flags);
-@@ -439,7 +439,7 @@ unsigned long x86_fsbase_read_task(struct task_struct *task)
- 
- 	if (task == current)
- 		fsbase = x86_fsbase_read_cpu();
--	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
-+	else if (boot_cpu_has(X86_FEATURE_FSGSBASE) ||
- 		 (task->thread.fsindex == 0))
- 		fsbase = task->thread.fsbase;
- 	else
-@@ -454,7 +454,7 @@ unsigned long x86_gsbase_read_task(struct task_struct *task)
- 
- 	if (task == current)
- 		gsbase = x86_gsbase_read_cpu_inactive();
--	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
-+	else if (boot_cpu_has(X86_FEATURE_FSGSBASE) ||
- 		 (task->thread.gsindex == 0))
- 		gsbase = task->thread.gsbase;
- 	else
+   reg:
+     maxItems: 1
+-- 
+2.17.1
+
