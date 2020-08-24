@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5CE24FAEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467D524FAE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgHXIcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38758 "EHLO mail.kernel.org"
+        id S1726718AbgHXKBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgHXIcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:32:09 -0400
+        id S1726086AbgHXIcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:32:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48F592074D;
-        Mon, 24 Aug 2020 08:32:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FB5A206F0;
+        Mon, 24 Aug 2020 08:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598257928;
-        bh=2FKLRsp/q4hCpwXTaY8+6NDt7k4ARIDqnPQJhxEo6BY=;
+        s=default; t=1598257940;
+        bh=hwaAYTxU9ShV0QTbj+Oo85m5JIPfVll379yiha5uFyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o1T7CkykaxA0ieOGgtps0HycJ9sVwcKeUAh1hc/q/RPG5jHTgrkyEnaSImBkjKwxJ
-         y/5WLOi7ENqGLqt5vxigla+7hnCiqTEoXPEix2PMRzl1f1o6uEx3dOof2N33h+I/IG
-         jySxa8IId3oLNijzxcxhsZq2KylHK7+oHP72zO9U=
+        b=ZamW+jDLFb6u9SMvVXRwHegeT6XlZyE+1i7qlh+q9miQGB4d55d5rn5qV1jTBgk14
+         RrQxnMqPH5psW+v5yFNSge2I4dneX3eLXd/Ke8fAg3rJLGNHUA47ODs9U5eRs4Tpyl
+         JI7E51PvCRwvJhJrtMCQ5pAYsfgQNp6X90o54RJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.8 012/148] io_uring: find and cancel head link async work on files exit
-Date:   Mon, 24 Aug 2020 10:28:30 +0200
-Message-Id: <20200824082414.547922920@linuxfoundation.org>
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.8 016/148] uprobes: __replace_page() avoid BUG in munlock_vma_page()
+Date:   Mon, 24 Aug 2020 10:28:34 +0200
+Message-Id: <20200824082414.746586028@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
 References: <20200824082413.900489417@linuxfoundation.org>
@@ -43,77 +49,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Hugh Dickins <hughd@google.com>
 
-commit b711d4eaf0c408a811311ee3e94d6e9e5a230a9a upstream.
+commit c17c3dc9d08b9aad9a55a1e53f205187972f448e upstream.
 
-Commit f254ac04c874 ("io_uring: enable lookup of links holding inflight files")
-only handled 2 out of the three head link cases we have, we also need to
-lookup and cancel work that is blocked in io-wq if that work has a link
-that's holding a reference to the files structure.
+syzbot crashed on the VM_BUG_ON_PAGE(PageTail) in munlock_vma_page(), when
+called from uprobes __replace_page().  Which of many ways to fix it?
+Settled on not calling when PageCompound (since Head and Tail are equals
+in this context, PageCompound the usual check in uprobes.c, and the prior
+use of FOLL_SPLIT_PMD will have cleared PageMlocked already).
 
-Put the "cancel head links that hold this request pending" logic into
-io_attempt_cancel(), which will to through the motions of finding and
-canceling head links that hold the current inflight files stable request
-pending.
-
-Cc: stable@vger.kernel.org
-Reported-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 5a52c9df62b4 ("uprobe: use FOLL_SPLIT_PMD instead of FOLL_SPLIT")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: <stable@vger.kernel.org>	[5.4+]
+Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008161338360.20413@eggly.anvils
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |   33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ kernel/events/uprobes.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7609,6 +7609,33 @@ static bool io_timeout_remove_link(struc
- 	return found;
- }
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -205,7 +205,7 @@ static int __replace_page(struct vm_area
+ 		try_to_free_swap(old_page);
+ 	page_vma_mapped_walk_done(&pvmw);
  
-+static bool io_cancel_link_cb(struct io_wq_work *work, void *data)
-+{
-+	return io_match_link(container_of(work, struct io_kiocb, work), data);
-+}
-+
-+static void io_attempt_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
-+{
-+	enum io_wq_cancel cret;
-+
-+	/* cancel this particular work, if it's running */
-+	cret = io_wq_cancel_work(ctx->io_wq, &req->work);
-+	if (cret != IO_WQ_CANCEL_NOTFOUND)
-+		return;
-+
-+	/* find links that hold this pending, cancel those */
-+	cret = io_wq_cancel_cb(ctx->io_wq, io_cancel_link_cb, req, true);
-+	if (cret != IO_WQ_CANCEL_NOTFOUND)
-+		return;
-+
-+	/* if we have a poll link holding this pending, cancel that */
-+	if (io_poll_remove_link(ctx, req))
-+		return;
-+
-+	/* final option, timeout link is holding this req pending */
-+	io_timeout_remove_link(ctx, req);
-+}
-+
- static void io_uring_cancel_files(struct io_ring_ctx *ctx,
- 				  struct files_struct *files)
- {
-@@ -7665,10 +7692,8 @@ static void io_uring_cancel_files(struct
- 				continue;
- 			}
- 		} else {
--			io_wq_cancel_work(ctx->io_wq, &cancel_req->work);
--			/* could be a link, check and remove if it is */
--			if (!io_poll_remove_link(ctx, cancel_req))
--				io_timeout_remove_link(ctx, cancel_req);
-+			/* cancel this request, or head link requests */
-+			io_attempt_cancel(ctx, cancel_req);
- 			io_put_req(cancel_req);
- 		}
+-	if (vma->vm_flags & VM_LOCKED)
++	if ((vma->vm_flags & VM_LOCKED) && !PageCompound(old_page))
+ 		munlock_vma_page(old_page);
+ 	put_page(old_page);
  
 
 
