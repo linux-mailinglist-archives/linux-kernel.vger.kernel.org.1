@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5CD24F850
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC1424F7E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgHXJ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56766 "EHLO mail.kernel.org"
+        id S1729665AbgHXIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:54:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729947AbgHXIvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:51:36 -0400
+        id S1728586AbgHXIyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:54:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C332D207D3;
-        Mon, 24 Aug 2020 08:51:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 247EF2087D;
+        Mon, 24 Aug 2020 08:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259095;
-        bh=ib3ov4ByJ2KzNtKTgGjw5zSsvyIJbB/3U+DgfprOU6E=;
+        s=default; t=1598259270;
+        bh=xOX+SwTOlNIxhk6gQijcKh/CkN51KLIb4w/T9XLKpJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QP2WetXphjtEAWvebVDTBZAl2LTXHaVRoEKc6phxuhRVKtgEOFn65PiHCGXNTfCJE
-         mLpQ3mJhMhySRsDE7nMLpegocwrKqduqUCznTS+gg5Mq9xkC2xzOfDr2OZQ/LjRSj1
-         RICFVj8U18Efn/pWkpnx9OQP0MYxEFrU6zboAGno=
+        b=c7csoRdzS5IGFSoCPjOVM28C/C1r7AGflGBGnSBiYmNWVZw+ybAwo1ebAqu84QZXS
+         6tNdc+uMZLiBv71QDvcd44h91MWMQ9LbESEcLVjwhVyxjf7P5bTMUoqHk+fXb/qkCC
+         uZUU8qG0JiDOTUQC+9mzAb5DZ/QEf4I/NmbKHFjc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 18/39] scsi: ufs: Add DELAY_BEFORE_LPM quirk for Micron devices
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.14 16/50] ext4: fix checking of directory entry validity for inline directories
 Date:   Mon, 24 Aug 2020 10:31:17 +0200
-Message-Id: <20200824082349.435003610@linuxfoundation.org>
+Message-Id: <20200824082352.813159011@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
-References: <20200824082348.445866152@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chu <stanley.chu@mediatek.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit c0a18ee0ce78d7957ec1a53be35b1b3beba80668 ]
+commit 7303cb5bfe845f7d43cd9b2dbd37dbb266efda9b upstream.
 
-It is confirmed that Micron device needs DELAY_BEFORE_LPM quirk to have a
-delay before VCC is powered off. Sdd Micron vendor ID and this quirk for
-Micron devices.
+ext4_search_dir() and ext4_generic_delete_entry() can be called both for
+standard director blocks and for inline directories stored inside inode
+or inline xattr space. For the second case we didn't call
+ext4_check_dir_entry() with proper constraints that could result in
+accepting corrupted directory entry as well as false positive filesystem
+errors like:
 
-Link: https://lore.kernel.org/r/20200612012625.6615-2-stanley.chu@mediatek.com
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+EXT4-fs error (device dm-0): ext4_search_dir:1395: inode #28320400:
+block 113246792: comm dockerd: bad entry in directory: directory entry too
+close to block end - offset=0, inode=28320403, rec_len=32, name_len=8,
+size=4096
+
+Fix the arguments passed to ext4_check_dir_entry().
+
+Fixes: 109ba779d6cc ("ext4: check for directory entries too close to block end")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200731162135.8080-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/ufs/ufs_quirks.h | 1 +
- drivers/scsi/ufs/ufshcd.c     | 2 ++
- 2 files changed, 3 insertions(+)
+ fs/ext4/namei.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs_quirks.h b/drivers/scsi/ufs/ufs_quirks.h
-index 71f73d1d1ad1f..6c944fbefd40a 100644
---- a/drivers/scsi/ufs/ufs_quirks.h
-+++ b/drivers/scsi/ufs/ufs_quirks.h
-@@ -21,6 +21,7 @@
- #define UFS_ANY_VENDOR 0xFFFF
- #define UFS_ANY_MODEL  "ANY_MODEL"
- 
-+#define UFS_VENDOR_MICRON      0x12C
- #define UFS_VENDOR_TOSHIBA     0x198
- #define UFS_VENDOR_SAMSUNG     0x1CE
- #define UFS_VENDOR_SKHYNIX     0x1AD
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index af4b0a2021d6c..a7f520581cb0f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -178,6 +178,8 @@ ufs_get_pm_lvl_to_link_pwr_state(enum ufs_pm_level lvl)
- 
- static struct ufs_dev_fix ufs_fixups[] = {
- 	/* UFS cards deviations table */
-+	UFS_FIX(UFS_VENDOR_MICRON, UFS_ANY_MODEL,
-+		UFS_DEVICE_QUIRK_DELAY_BEFORE_LPM),
- 	UFS_FIX(UFS_VENDOR_SAMSUNG, UFS_ANY_MODEL,
- 		UFS_DEVICE_QUIRK_DELAY_BEFORE_LPM),
- 	UFS_FIX(UFS_VENDOR_SAMSUNG, UFS_ANY_MODEL, UFS_DEVICE_NO_VCCQ),
--- 
-2.25.1
-
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1308,8 +1308,8 @@ int ext4_search_dir(struct buffer_head *
+ 		    ext4_match(fname, de)) {
+ 			/* found a match - just to be sure, do
+ 			 * a full check */
+-			if (ext4_check_dir_entry(dir, NULL, de, bh, bh->b_data,
+-						 bh->b_size, offset))
++			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
++						 buf_size, offset))
+ 				return -1;
+ 			*res_dir = de;
+ 			return 1;
+@@ -2353,7 +2353,7 @@ int ext4_generic_delete_entry(handle_t *
+ 	de = (struct ext4_dir_entry_2 *)entry_buf;
+ 	while (i < buf_size - csum_size) {
+ 		if (ext4_check_dir_entry(dir, NULL, de, bh,
+-					 bh->b_data, bh->b_size, i))
++					 entry_buf, buf_size, i))
+ 			return -EFSCORRUPTED;
+ 		if (de == de_del)  {
+ 			if (pde)
 
 
