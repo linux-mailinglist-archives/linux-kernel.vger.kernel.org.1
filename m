@@ -2,136 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BED924FF1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D622824FF15
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgHXNka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:40:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13596 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727859AbgHXNik (ORCPT
+        id S1727889AbgHXNkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:40:16 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:41294 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727869AbgHXNil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:38:40 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07ODWAun037927;
-        Mon, 24 Aug 2020 09:38:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=J6snxcYbQgYaI1dLzLSaJ+5USc2AXUnB6IShN2cfXmU=;
- b=jC40hn4mTYC5ra28Pn3LuGL/MNVFMZ3H3vO9T+UpSly+BYV7i/QrGwihLczp09CkrloW
- 84DbDqNjdPUBHKoo666FdNfe4TdZu/AxXBbSsxNlPIrURWlFeOVMThj7jH1P7LMCDPZT
- il6Bpep98ZARYgKOHj/4cZqUtw3DVNjhaD/SEirzd5FUIud6QGA3t7+nXm+yCyWa2uj1
- E1KTnE767U9PkUz+16bQouc0lARrQLAebfJz2ghhGQ00Rw1CU8VwvnxHNbS9nXo3Hbfb
- /N5QSPff02znXT7wsGGpIoeG0uTISjyLnaT5OJhgv12x/42Km00ahtmS+6pLYooWfqdc tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 334eamgmcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Aug 2020 09:38:27 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07ODWGbi038571;
-        Mon, 24 Aug 2020 09:38:27 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 334eamgmbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Aug 2020 09:38:27 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07ODbKH6008980;
-        Mon, 24 Aug 2020 13:38:25 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 332ujjsfj9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Aug 2020 13:38:25 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07ODcMhu25756104
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 13:38:22 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B46194C04A;
-        Mon, 24 Aug 2020 13:38:22 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4376A4C040;
-        Mon, 24 Aug 2020 13:38:21 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 24 Aug 2020 13:38:21 +0000 (GMT)
-Date:   Mon, 24 Aug 2020 19:08:20 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Fix wrong cpu selecting from isolated domain
-Message-ID: <20200824133820.GA31355@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
+        Mon, 24 Aug 2020 09:38:41 -0400
+Received: from 89-64-88-199.dynamic.chello.pl (89.64.88.199) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
+ id 650310ffad508e13; Mon, 24 Aug 2020 15:38:39 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] PM: sleep: core: Fix the handling of pending runtime resume requests
+Date:   Mon, 24 Aug 2020 15:38:39 +0200
+Message-ID: <2486532.D7zGhtygOF@kreacher>
+In-Reply-To: <20200824083452.GX1375436@lahna.fi.intel.com>
+References: <7969920.MVx1BpXlEM@kreacher> <20200821193442.GA264863@rowland.harvard.edu> <20200824083452.GX1375436@lahna.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 spamscore=0
- suspectscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240104
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Xunlei Pang <xlpang@linux.alibaba.com> [2020-08-24 20:30:19]:
-
-> We've met problems that occasionally tasks with full cpumask
-> (e.g. by putting it into a cpuset or setting to full affinity)
-> were migrated to our isolated cpus in production environment.
+On Monday, August 24, 2020 10:34:52 AM CEST Mika Westerberg wrote:
+> Hi,
 > 
-> After some analysis, we found that it is due to the current
-> select_idle_smt() not considering the sched_domain mask.
+> On Fri, Aug 21, 2020 at 03:34:42PM -0400, Alan Stern wrote:
+> > This means that the code could be simplified to just:
+> > 
+> > 	pm_runtime_barrier(dev);
+> > 
+> > Will this fix the reported bug?  It seems likely to me that the actual 
+> > problem with the failure scenario in the patch description was that 
+> > turning on an ACPI power resource causes runtime-resume requests to be 
+> > queued for all devices sharing that resource.  Wouldn't it make more 
+> > sense to resume only the device that requested it and leave the others 
+> > in runtime suspend?
 > 
-> Fix it by checking the valid domain mask in select_idle_smt().
-> 
-> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
-> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-> ---
->  kernel/sched/fair.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1a68a05..fa942c4 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
->  /*
->   * Scan the local SMT mask for idle CPUs.
->   */
-> -static int select_idle_smt(struct task_struct *p, int target)
-> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->  	int cpu;
->  
-> @@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
->  		return -1;
->  
->  	for_each_cpu(cpu, cpu_smt_mask(target)) {
-> -		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-> +		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-> +		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
->  			continue;
+> The problem with at least PCIe devices that share ACPI power resources
+> is that once you turn on the power resource all the devices that shared
+> it will go into D0uninitialized power state and that means they lose all
+> wake configuration etc. so they need to be re-initialized by their
+> driver before they can go back to D3(cold) in order for their wakes to
+> still work.
 
-Don't think this is right thing to do.  What if this task had set a cpumask
-that doesn't cover all the cpus in this sched_domain_span(sd)
+Plus devices in D0uninitialized may prevent the SoC from allowing package
+C-states to be used for the processor AFAICS.
 
-cpu_smt_mask(target) would already limit to the sched_domain_span(sd) so I
-am not sure how this can help?
+BTW, does the patch make the issue at hand go away?
 
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+
