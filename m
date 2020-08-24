@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0E1251A0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C8B251A00
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgHYNq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:46:26 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34451 "EHLO
+        id S1726673AbgHYNpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:45:53 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48387 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726444AbgHYNll (ORCPT
+        by vger.kernel.org with ESMTP id S1726222AbgHYNll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Aug 2020 09:41:41 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A4ED0580423;
-        Tue, 25 Aug 2020 09:35:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:43 -0400
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9AB6E58042E;
+        Tue, 25 Aug 2020 09:35:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=PmDVIe/cKeDetXNk9iFyeUHXQ64
-        mnfoc1lt/FVJ93Kg=; b=X32HTzXX6hzMZOlCQdx3uRION0txh8adS788wtjhJCv
-        XrAXuwhHPmApReZaDY44F+HBCD03wMRGtqwn/lm2pqAlEP6UtyWqpgPH7txcBNtM
-        d9lcAonE54F4BpSoZBIuD9ggWRcJcJgPdfRa8n52RebrVlyJrrgBgtLwGf74f1x2
-        Pqc58r09XWZNcTESHOb40y/qIAtn+V45sAKvEAliERnutsrp+fsJRZES8n5Z5cKh
-        X48329FkI3v+E6mx3ERAM5BiXnlxvZJCuaQn6Zp11hSd+okQH1bD4eAFVO9lC35P
-        PUT6LnKy9AXAa/6juamnEcxAqNtFkdKjQ/YAz0QrQ7w==
+        :content-type:in-reply-to; s=fm3; bh=ojmseEKHzxoiGqB788p1XAtMfVn
+        G9Y87jZdv0bH8iWE=; b=MCRsTNJnWzXk9w8vclVSRjI++JPspgkJnMOA7vlbc3n
+        2BGrls9MO4acqbXQq3avMJLWlJbyeykiadgy+pA4CFkpN2plJmY5vupBbsXEwWbY
+        3V6CTg4yDI9Ha9R2qoYYjnmrMWvw/iogG7iufUAjz4I+CO3sPkI0Ew8R6tbwGAnr
+        5JcY7bs2dSJnivpEGc1ArzJ/qLhkiL/ROmcHCtg7vsT9EcEdRmi5YtXXKur7dui8
+        BES1GXueKXi02W3hGBouwDJ/ypXJTzAKr7yqyseInqGsbXgg0ZwbUQjMgniCNeOR
+        C+IdsOHpsAO+XX/mQERWIQMsnNX4ugUY9lNESKYNORg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PmDVIe
-        /cKeDetXNk9iFyeUHXQ64mnfoc1lt/FVJ93Kg=; b=J25fnVd3koC27dFAJuxA94
-        QDsZaTn+vf9BNu78XVcgPW2DEiYLxDUZeYMHSw4zP8duokB1/cQbpBkNvlN0RxJ+
-        3DXgYWvrFAl2uPLr80foBTV6nr+v9hoTXzX2/THO/zohTP40WGPX6TqfHue4ON4U
-        tkFOJCHjMHmR5KcJKu+6pUm31U/EUgvgcazRcHquI6icGxYqF6URihAVs8RsX26z
-        ardMTrXQ4KQYYF6ENmMUFM/vtPvwH/qOR9ZC5bYG/Ma1699PL1b7W/3vwNhJ59xY
-        jYJG8tmaQD+enTfZI4aNpPR+ldsvsamOfxETzc/uwNA6Dsbow7Y4b/0AOEi73vwQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ojmseE
+        KHzxoiGqB788p1XAtMfVnG9Y87jZdv0bH8iWE=; b=rKqjw58rqy7uCIb+DDNORU
+        olRXuwt/cUxRQj+RlZvtrFH0gPWq51xcpRN4aJl7MyOtvbQqaMEBNsFcfhr6Ayjf
+        h1By9naU3BkTTuxJwOt8JzacwJftRvDPRfJLV/g6jg9BLxxAHKyi9XA52KjSJVzf
+        6X6I77fSxvdnfNhHgYoaf+roZMDx5m4cXMMRV3cPyn6d56zyp3Krq2cwjev0Ukcu
+        sNcvvubJpnbYgnKy23DvluNTOh1uh/zd2OFnmFo/wq+0uzbOMIoXUksWMrILBpbs
+        CRAow3ee/0/Gh+jpKue7nGTZ/riCtaEzDqgdKYck2lV5LoUiRlXoftickV8LJ8xw
         ==
-X-ME-Sender: <xms:rhNFX95GPxJbTI8kFKQK923jm3zfdRT0o1TCXr8Tw7d3THgV5iAtpw>
+X-ME-Sender: <xms:thNFX_6NlrgGqglkP6kcrUyexVbFsV7qHokZLVxCxe4zwngaDeAIBg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
-    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:rhNFX668Or-y4nGx90j8S1txwhfE5SXl_EoJ2_Oozc4hrTRZc8CoEg>
-    <xmx:rhNFX0cCT_0JYPsIWtXo0APvSdiaonXlu2M5OuFiJqJSTg_PdZuDKQ>
-    <xmx:rhNFX2IuB8eQoRuYd4tBthm9szkmLn6G91cIjeP7k-Y6ua8SlFg1OQ>
-    <xmx:rxNFX-BKqYeSOUTRUX4Nij72zzm39kR7RJiUclNgqF3ccD6lJI7tQA>
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:thNFX07Fyk2e9VROTjTBQzUNe7VeVyRlJI4nkosjP-XeHGD3kkWSeA>
+    <xmx:thNFX2du4subVK53IYoS_Arv2LfhpedppmYFebGKSNLyCPP0y38HZg>
+    <xmx:thNFXwL4cJympLRTlTvvA5a3vJBVzambWHD-RG7ezuxGkCKd1N-1Kw>
+    <xmx:thNFX0UdnNiY7WlVSzZjw-yksRmZALcOET-BwHw3cekgzqOSAJnfJA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A38AA3280063;
-        Tue, 25 Aug 2020 09:35:42 -0400 (EDT)
-Date:   Mon, 24 Aug 2020 16:03:34 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id B826A3060067;
+        Tue, 25 Aug 2020 09:35:49 -0400 (EDT)
+Date:   Mon, 24 Aug 2020 18:52:44 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/7] Allwinner A64 digital audio codec fixes
-Message-ID: <20200824140334.6gflonflqju6g5ea@gilmour.lan>
-References: <20200726012557.38282-1-samuel@sholland.org>
- <159776961932.56094.2705667823777375165.b4-ty@kernel.org>
+To:     =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>
+Cc:     linux-media@vger.kernel.org, mchehab@kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, wens@csie.org,
+        yong.deng@magewell.com, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        paul.kocialkowski@bootlin.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH 0/7] Support of MIPI CSI-2 for A83T and OV8865 camera
+Message-ID: <20200824165244.x5rnon47kmtxojg2@gilmour.lan>
+References: <20200821145935.20346-1-kevin.lhopital@bootlin.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="457356sm2td7eqkr"
+        protocol="application/pgp-signature"; boundary="6inilh36kvmcvg6m"
 Content-Disposition: inline
-In-Reply-To: <159776961932.56094.2705667823777375165.b4-ty@kernel.org>
+In-Reply-To: <20200821145935.20346-1-kevin.lhopital@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---457356sm2td7eqkr
-Content-Type: text/plain; charset=us-ascii
+--6inilh36kvmcvg6m
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Mark,
+Hi,
 
-On Tue, Aug 18, 2020 at 05:54:50PM +0100, Mark Brown wrote:
-> On Sat, 25 Jul 2020 20:25:50 -0500, Samuel Holland wrote:
-> > This series fixes a couple of issues with the digital audio codec in the
-> > Allwinner A64 SoC:
-> >   1) Left/right channels were swapped when playing/recording audio
-> >   2) DAPM topology was wrong, breaking some kcontrols
-> >=20
-> > This is the minimum set of changes necessary to fix these issues in a
-> > backward-compatible way. For that reason, some DAPM widgets still have
-> > incorrect or confusing names; those and other issues will be fixed in
-> > later patch sets.
-> >=20
-> > [...]
+On Fri, Aug 21, 2020 at 04:59:28PM +0200, K=E9vin L'h=F4pital wrote:
 >=20
-> Applied to
->=20
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-=
-next
->=20
-> Thanks!
->=20
-> [1/7] ASoC: dt-bindings: Add a new compatible for the A64 codec
->       commit: cef305d4eb0733f25215793ed30b056a7db9bb62
-> [2/7] ASoC: sun8i-codec: Fix DAPM to match the hardware topology
->       commit: 90cac932976e93b17203b4216ba83bdcd68e0ed0
-> [3/7] ASoC: sun8i-codec: Add missing mixer routes
->       commit: e47d2dcd88fc3e6837f8aa0060ce820ec9001e26
-> [4/7] ASoC: sun8i-codec: Add a quirk for LRCK inversion
->       commit: 7518805fb636308909a6a7953e9fdb194abb15f8
-> [5/7] ARM: dts: sun8i: a33: Update codec widget names
->       (no commit info)
-> [6/7] arm64: dts: allwinner: a64: Update codec widget names
->       (no commit info)
-> [7/7] arm64: dts: allwinner: a64: Update the audio codec compatible
->       (no commit info)
+> K=E9vin L'h=F4pital (7):
+>   media: sun6i-csi: Fix the bpp for 10-bit bayer formats
+>   dt-bindings: media: i2c: Add documentation for ov8865
+>   media: i2c: Add support for the OV8865 image sensor
+>   media: sunxi: sun6i-csi: Move the sun6i_csi_dev structure to the
+>     common header
+>   media: sunxi: sun6i-csi: Add support of MIPI CSI-2 for A83T
+>   ARM: dts: sun8i: a83t: Add support for the MIPI CSI-2 in CSI node
+>   [NOT FOR MERGE] ARM: dts: sun8i: a83t: bananapi-m3: Enable OV8865
+>     camera
 
-Ideally we should get the DT patches through arm-soc, can you drop the
-patches 5 to 7?
+You should have a cover letter here to provide some context.
 
-Thanks!
+There's a bunch of things that would need to be explained and / or
+argued for here, in particular:
+  - Why did you need to plumb it into sun6i-csi?
+  - You're naming the CSI part as the A83t CSI, while MIPI-CSI has been
+    supported since the A31(?), is there a reason for that?
+  - This is not documented anywhere, what did you base this work on?
+
+Also, I think that documenting the general challenges you faced (which
+were likely because of the first bullet point above) and how you solved
+them here would be great to start a discussion if needed.
+
+Finally, iirc, Hans requires a v4l2-compliance run for any new driver,
+which isn't strictly the case for this driver, but isn't really *not*
+the case either.
+
 Maxime
 
---457356sm2td7eqkr
+--6inilh36kvmcvg6m
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0PItgAKCRDj7w1vZxhR
-xYPZAPsGRq4e2tB/N6+ZuohoedI67bQ5p+8oauiJ2kg8IjdAyQEA636KGr9JLm41
-S1l3gUGjHSbGcPV8mGftLJRybQl7QwU=
-=i8pn
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0PwXAAKCRDj7w1vZxhR
+xVcYAQDaPS4QQ1Gi24DL+makRUO9jaKTktQUPcL9pxgsiF10fwEAit94g5iWgJcy
+Au+vTT0bokw+qv26aQbdeHa5l3a/4Qc=
+=LI1/
 -----END PGP SIGNATURE-----
 
---457356sm2td7eqkr--
+--6inilh36kvmcvg6m--
