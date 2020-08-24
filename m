@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1F024FDD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F83624FDE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgHXMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 08:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726993AbgHXMbU (ORCPT
+        id S1727039AbgHXMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 08:33:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42494 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgHXMcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 08:31:20 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C1EC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:31:20 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s20so3116750wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=oyXzsgWOgUSKqh7OmCxpMIN54jigix4a16FwR8oV1Jc=;
-        b=PJT2i7oNvHTb8GIY3pbdq0CKqaYt9NAekVdTmH3v3/3onYeUE/NnOkyeVQk7zQxOTw
-         OCirfXd3t3tTgOXCy3wmga+o2LzoqRGR+mlUiLXAbmWvKVAJCRYBMW1fcUGR3IZBG+H0
-         Eo3XgVXOujSZ7x0hRe6VNl5CBNOzlLQRDT9YqMcOcQ5g7rwiy28NyTkrUfa+dqpfGNJL
-         xpcZjRQ5iPGm5fI1eR8WGCtxBdPBSEJyepuDiM5n6wK1jUDsIkNnPSPKPPJ/CCotBeNr
-         tooMxB1l1uSoZzBcPexlK5hlHt48rIGToAfGYQqHfWN/IqU20mb1N+L3vXfFoKG6G27+
-         qsLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oyXzsgWOgUSKqh7OmCxpMIN54jigix4a16FwR8oV1Jc=;
-        b=HtbdXoLKPCjcgHZyQbd0ROIoqCya8V9yC5OdfnaCu7eN6BtT7nkS1AZ4JH+1DVz2PE
-         saDGmfAniWXl5qmPo9pPFQe4IWN1edsCdb8AxMWDpGUFEgISe8ojmRvMOAtSaVBkfOMv
-         /khGJku4f8YHwIA/1cn3EBiYzL1V3BcBr/hSn3WspEGqNRie9aVG8dHjKKZAj3HG3jGW
-         8GgyTUPhbxarvOZDTXj7GuFbEjXH6EU8DpOaWUXNlpvm0SlYqu9Kc07r3Z0evBwJSm02
-         GwSJLIHJcU5+FYNdgwpLK019opYi30TZ3tZ27PZLrPcC8PCpcJI4ksVc7hvaOwUdxUS5
-         tivw==
-X-Gm-Message-State: AOAM530j9Ys93irxVhccN+/58sUW349q8fT1TAL0BaH8zLCoiJ5qgJoR
-        vq/d02g6sLvxYULb0TrTOAU=
-X-Google-Smtp-Source: ABdhPJzCG8ZeDcWVct1PS4h/Vf1ItylB7hBVwzVNHzXGcW19wknoM4zUvaEth3ZoSDxUERetRqAPGA==
-X-Received: by 2002:a7b:cf07:: with SMTP id l7mr1519763wmg.93.1598272279039;
-        Mon, 24 Aug 2020 05:31:19 -0700 (PDT)
-Received: from [192.168.0.16] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id x8sm20292007wrq.42.2020.08.24.05.31.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 05:31:18 -0700 (PDT)
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book Ion
- 15 inches
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     adrien.crivelli@gmail.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, tiwai@suse.com
-References: <7210c752-0a1f-3985-91f0-b70facf0293c@gmail.com>
-Message-ID: <30693624-744d-6971-1dc8-8ffe4df6082c@gmail.com>
-Date:   Mon, 24 Aug 2020 13:31:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 24 Aug 2020 08:32:53 -0400
+Date:   Mon, 24 Aug 2020 14:32:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598272369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qr6lUHBkLuLxAPZNmigB/IH+DYgyFTNeFwwb/3iSrGU=;
+        b=E6ZKWqWp00DLUq6qhieA0ftDeXWlXvoGZp+Ms2MXHBT9cykq4O2bVe1ZFTAFq+xhHIxbsE
+        4RTPpH8VY8i3Y4neiCBBTEYGypzpAK8ZaZUwkCLV0s01pohlTwnP+vQ5gn1tZamJ7vj7XZ
+        kFVmie62X2ToAlH+1Gqgu8S+CVN1vh+G6KuvzzA+PWF70quvEDHYJHfvBTk6i7VusoHRTA
+        EGO3YcAgdG2j0mrmdppr9UEUK3GqgRHSFSo8SI0VrKUncAxostzkcwu90gHOChanM4PaT8
+        GTZu/XBUDc2UNlOqRKpQJ+P3gbxXV/yUfOT1dfwN6I8EDnorpJ9ZP2uTAHiTwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598272369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qr6lUHBkLuLxAPZNmigB/IH+DYgyFTNeFwwb/3iSrGU=;
+        b=SvhkcAV3b9DAe/L8n9ay7Sewgu+Z90tVOc5pxatliy7JT9kFlC2JIzVvEZY4GbOBMnBC9g
+        Dnxts6GdoyqYGMAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kaleshsingh@google.com,
+        calin@google.com, surenb@google.com, nnk@google.com,
+        jeffv@google.com, kernel-team@android.com,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Daniel Colascione <dancol@google.com>
+Subject: Re: [PATCH v2 1/2] Add UFFD_USER_MODE_ONLY
+Message-ID: <20200824123247.finquufqpr6i7umb@linutronix.de>
+References: <20200822014018.913868-1-lokeshgidra@google.com>
+ <20200822014018.913868-2-lokeshgidra@google.com>
 MIME-Version: 1.0
-In-Reply-To: <7210c752-0a1f-3985-91f0-b70facf0293c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200822014018.913868-2-lokeshgidra@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My mistake -- I didn't read your changelog properly. Sorry!
+On 2020-08-21 18:40:17 [-0700], Lokesh Gidra wrote:
+> --- a/fs/userfaultfd.c
+> +++ b/fs/userfaultfd.c
+> @@ -1966,6 +1969,7 @@ static void init_once_userfaultfd_ctx(void *mem)
+>  
+>  SYSCALL_DEFINE1(userfaultfd, int, flags)
+>  {
+> +	static const int uffd_flags = UFFD_USER_MODE_ONLY;
+>  	struct userfaultfd_ctx *ctx;
+>  	int fd;
+Why?
 
-On 24/08/2020 13:30, Alex Dewar wrote:
-> There's a mistake in this. The ID numbers are the wrong way round.
->
-> Alex
-
+Sebastian
