@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F0824F4F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9D124F546
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgHXInD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:43:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
+        id S1729162AbgHXIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728561AbgHXImz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:42:55 -0400
+        id S1728981AbgHXIqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FEAB2074D;
-        Mon, 24 Aug 2020 08:42:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA54E204FD;
+        Mon, 24 Aug 2020 08:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258574;
-        bh=wjpowUP7dx0cGLzUNx9C8EZ8qkL6/g1Hxp1R20UAaC8=;
+        s=default; t=1598258792;
+        bh=Ge1Fv6LAeKyYdapeduUL5sLIMyaq4MqgxEoN828ffQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZfnhWYv3uDnG9sRiwnFK0CN74KAlBJzzpl5MWR7FxukbxW464Kj3X6+w4gcRgFhZ
-         VaCFV2LowxtPGrcJpSWaXRT8bD/nq3+xRGVotjkj+cXkvAKl1dGnNWMs0xikhZcg5T
-         qUhoem37xnWK5l1SYzDag7Z0NfD4WjLfR11NJds4=
+        b=Spk5AdKlrkPhECphUtU8JhqPcTOswTM5U8mJaCM9XguZ7m1Ew5Atikh/x4hltROK7
+         KO6ekfGsy8y52p9dqyJZgVPczl636NlBy8m60/XqsGvhtM6kKLLOISz6I6Cl16/rtg
+         Q44BFA5v3p5Y2LdTcWrHkQMI6EsVokK+dctUtDbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 067/124] tools/bpftool: Make skeleton code C++17-friendly by dropping typeof()
-Date:   Mon, 24 Aug 2020 10:30:01 +0200
-Message-Id: <20200824082412.715248898@linuxfoundation.org>
+        stable@vger.kernel.org, Liang Chen <cl@rock-chips.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH 5.4 039/107] kthread: Do not preempt current task if it is going to call schedule()
+Date:   Mon, 24 Aug 2020 10:30:05 +0200
+Message-Id: <20200824082407.058908921@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Liang Chen <cl@rock-chips.com>
 
-[ Upstream commit 8faf7fc597d59b142af41ddd4a2d59485f75f88a ]
+commit 26c7295be0c5e6da3fa45970e9748be983175b1b upstream.
 
-Seems like C++17 standard mode doesn't recognize typeof() anymore. This can
-be tested by compiling test_cpp test with -std=c++17 or -std=c++1z options.
-The use of typeof in skeleton generated code is unnecessary, all types are
-well-known at the time of code generation, so remove all typeof()'s to make
-skeleton code more future-proof when interacting with C++ compilers.
+when we create a kthread with ktrhead_create_on_cpu(),the child thread
+entry is ktread.c:ktrhead() which will be preempted by the parent after
+call complete(done) while schedule() is not called yet,then the parent
+will call wait_task_inactive(child) but the child is still on the runqueue,
+so the parent will schedule_hrtimeout() for 1 jiffy,it will waste a lot of
+time,especially on startup.
 
-Fixes: 985ead416df3 ("bpftool: Add skeleton codegen command")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20200812025907.1371956-1-andriin@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  parent                             child
+ktrhead_create_on_cpu()
+  wait_fo_completion(&done) -----> ktread.c:ktrhead()
+                             |----- complete(done);--wakeup and preempted by parent
+ kthread_bind() <------------|  |-> schedule();--dequeue here
+  wait_task_inactive(child)     |
+   schedule_hrtimeout(1 jiffy) -|
+
+So we hope the child just wakeup parent but not preempted by parent, and the
+child is going to call schedule() soon,then the parent will not call
+schedule_hrtimeout(1 jiffy) as the child is already dequeue.
+
+The same issue for ktrhead_park()&&kthread_parkme().
+This patch can save 120ms on rk312x startup with CONFIG_HZ=300.
+
+Signed-off-by: Liang Chen <cl@rock-chips.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/20200306070133.18335-2-cl@rock-chips.com
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/bpf/bpftool/gen.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/kthread.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 5ff951e08c740..52ebe400e9ca4 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -402,7 +402,7 @@ static int do_skeleton(int argc, char **argv)
- 		{							    \n\
- 			struct %1$s *obj;				    \n\
- 									    \n\
--			obj = (typeof(obj))calloc(1, sizeof(*obj));	    \n\
-+			obj = (struct %1$s *)calloc(1, sizeof(*obj));	    \n\
- 			if (!obj)					    \n\
- 				return NULL;				    \n\
- 			if (%1$s__create_skeleton(obj))			    \n\
-@@ -466,7 +466,7 @@ static int do_skeleton(int argc, char **argv)
- 		{							    \n\
- 			struct bpf_object_skeleton *s;			    \n\
- 									    \n\
--			s = (typeof(s))calloc(1, sizeof(*s));		    \n\
-+			s = (struct bpf_object_skeleton *)calloc(1, sizeof(*s));\n\
- 			if (!s)						    \n\
- 				return -1;				    \n\
- 			obj->skeleton = s;				    \n\
-@@ -484,7 +484,7 @@ static int do_skeleton(int argc, char **argv)
- 				/* maps */				    \n\
- 				s->map_cnt = %zu;			    \n\
- 				s->map_skel_sz = sizeof(*s->maps);	    \n\
--				s->maps = (typeof(s->maps))calloc(s->map_cnt, s->map_skel_sz);\n\
-+				s->maps = (struct bpf_map_skeleton *)calloc(s->map_cnt, s->map_skel_sz);\n\
- 				if (!s->maps)				    \n\
- 					goto err;			    \n\
- 			",
-@@ -520,7 +520,7 @@ static int do_skeleton(int argc, char **argv)
- 				/* programs */				    \n\
- 				s->prog_cnt = %zu;			    \n\
- 				s->prog_skel_sz = sizeof(*s->progs);	    \n\
--				s->progs = (typeof(s->progs))calloc(s->prog_cnt, s->prog_skel_sz);\n\
-+				s->progs = (struct bpf_prog_skeleton *)calloc(s->prog_cnt, s->prog_skel_sz);\n\
- 				if (!s->progs)				    \n\
- 					goto err;			    \n\
- 			",
--- 
-2.25.1
-
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -199,8 +199,15 @@ static void __kthread_parkme(struct kthr
+ 		if (!test_bit(KTHREAD_SHOULD_PARK, &self->flags))
+ 			break;
+ 
++		/*
++		 * Thread is going to call schedule(), do not preempt it,
++		 * or the caller of kthread_park() may spend more time in
++		 * wait_task_inactive().
++		 */
++		preempt_disable();
+ 		complete(&self->parked);
+-		schedule();
++		schedule_preempt_disabled();
++		preempt_enable();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ }
+@@ -245,8 +252,14 @@ static int kthread(void *_create)
+ 	/* OK, tell user we're spawned, wait for stop or wakeup */
+ 	__set_current_state(TASK_UNINTERRUPTIBLE);
+ 	create->result = current;
++	/*
++	 * Thread is going to call schedule(), do not preempt it,
++	 * or the creator may spend more time in wait_task_inactive().
++	 */
++	preempt_disable();
+ 	complete(done);
+-	schedule();
++	schedule_preempt_disabled();
++	preempt_enable();
+ 
+ 	ret = -EINTR;
+ 	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
 
 
