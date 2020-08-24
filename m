@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DE124F879
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C406D24F88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729927AbgHXJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:32:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53113 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728544AbgHXJcl (ORCPT
+        id S1728932AbgHXJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728196AbgHXJeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:32:41 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kA8q5-0007of-NZ; Mon, 24 Aug 2020 09:32:30 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     yhchuang@realtek.com, kvalo@codeaurora.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER
-        (rtw88)), netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] rtw88: pci: Power cycle device during shutdown
-Date:   Mon, 24 Aug 2020 17:32:25 +0800
-Message-Id: <20200824093225.13689-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 24 Aug 2020 05:34:25 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32519C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:34:25 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id p17so2283716wrj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oQFrC1o3Nda9YLxSbgopWEOdNnQxrkWudyF2nTbVXVU=;
+        b=iI4wNU1gyMDP3WOfbrMsV5PNzotxiKE+bg3HG4dL4ZNpFQ5QXR1VjF7EaZVhqM5pbR
+         /apqB/5NXnbQO/3QcPmJa2ymAJrRdh3q+VNx0a0WUjVrqorgAvwGbIygf/nWdu0FJnlR
+         2VF43WNvEHWPrUMPWGcStgXCXrQu0Wt4FMh6t/B7KsM4x98lcwZjW40VVfETqRVT7u+B
+         YNLoQECf0W2p2wXdHaMUWqr7ZK7KKqGr2dI98GzCd0Gk03gAkK+va2bB9KNnzETyhrA4
+         SKMppU9b3ulLFxpyUTLBv1CO7H+HQ/8rLi1gdJkfeb+dDWshGrYd+KTB+cB2lMYgNSoL
+         4qeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oQFrC1o3Nda9YLxSbgopWEOdNnQxrkWudyF2nTbVXVU=;
+        b=eZavSEE9WycvU4wP5q63FQiUJJQlCk+erFXy9xpMCPr/TECFLrJGnjoioDo0pSrBNw
+         5dJ84x+8nCuEOlGJ+8i3qQJ+H261UsY9x8WWvpxqiE+bOA9BTZ7LCjbR6Tybr8D6CvdT
+         9/nK3JjF+u3oRDn0NYXtpXDR3IDqUjR4mDpynZ1dOZKOlDlUtr99jQQDARdE/+udA0iT
+         uEPlYImhCk0AXFBTU3NnCD82qF39zvoxKVyZ3KuaXJkey2ZNHjdys8vpjaIEPDzPIxba
+         O7X/7+OB6n8ujR3CmvA3KnWXpp6stcM7I8fSIkAA26rNh0zhDPuUevBP9t/0OjZqqwkH
+         sc/A==
+X-Gm-Message-State: AOAM532CyjUrsLGIkHIFSVHk1Y2wlUOJ/tDQvxA58C4j2FT+Cg6kKtcn
+        RZ+85qRMRwDhV+ICYoR/YYwNfnQf06adUw==
+X-Google-Smtp-Source: ABdhPJzfp+hZthOM0E1QMoXJyd50y7e6J2eC0nSOR2g0GL2084Jm9DgaEpMukZ1glzmBjUeTo56zoQ==
+X-Received: by 2002:a5d:630b:: with SMTP id i11mr5231552wru.95.1598261663543;
+        Mon, 24 Aug 2020 02:34:23 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
+        by smtp.googlemail.com with ESMTPSA id y17sm5682961wma.17.2020.08.24.02.34.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 02:34:23 -0700 (PDT)
+Subject: Re: [PATCH v2] thermal: core: Fix use-after-free in
+ thermal_zone_device_unregister()
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200817235854.26816-1-digetx@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <84ecfc78-bbe7-b4e0-a815-46b6225eca09@linaro.org>
+Date:   Mon, 24 Aug 2020 11:34:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200817235854.26816-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes system freeze on cold/warm boot when rtw88 is probing.
+On 18/08/2020 01:58, Dmitry Osipenko wrote:
+> The user-after-free bug in thermal_zone_device_unregister() is reported by
+> KASAN. It happens because struct thermal_zone_device is released during of
+> device_unregister() invocation, and hence the "tz" variable shouldn't be
+> touched by thermal_notify_tz_delete(tz->id).
+> 
+> Fixes: 55cdf0a283b8 ("thermal: core: Add notifications call in the framework")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-According to [1], platform firmware may not properly power manage the
-device during shutdown. I did some expirements and putting the device to
-D3 can workaround the issue.
+Applied, thanks !
 
-So let's power cycle the device by putting the device to D3 at shutdown
-to prevent the issue from happening.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=206411#c9
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/net/wireless/realtek/rtw88/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
-index 3413973bc475..7f1f5073b9f4 100644
---- a/drivers/net/wireless/realtek/rtw88/pci.c
-+++ b/drivers/net/wireless/realtek/rtw88/pci.c
-@@ -1599,6 +1599,8 @@ void rtw_pci_shutdown(struct pci_dev *pdev)
- 
- 	if (chip->ops->shutdown)
- 		chip->ops->shutdown(rtwdev);
-+
-+	pci_set_power_state(pdev, PCI_D3hot);
- }
- EXPORT_SYMBOL(rtw_pci_shutdown);
- 
 -- 
-2.17.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
