@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D30424F513
+	by mail.lfdr.de (Postfix) with ESMTP id D457724F514
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgHXIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:44:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
+        id S1728870AbgHXIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729117AbgHXIoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:44:12 -0400
+        id S1729121AbgHXIoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 033E62075B;
-        Mon, 24 Aug 2020 08:44:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 073292074D;
+        Mon, 24 Aug 2020 08:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258652;
-        bh=JxS5Yum/Z+HeSk5UjQ1CcxVIHQelmqRDGOtO0+oaPj8=;
+        s=default; t=1598258655;
+        bh=z9X8XAf5pNu5xFYsewaUK9xluow/ICaWKL8M9zLZUyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QSBisL9NUs0jPEHz6wADhXMevpPQMRRw1C/OizZw1zoE9THExnlY/MdvXS1xVpUA+
-         q/WAsd1zHd1hkWF+bXZT/fV65MrH84Z/QJk9+s4MxRhndQBTUXWZX/lfvvIWIryaLQ
-         AJQINFSkQbWULLCA1wgqJY7wjHAijxhsB4T5nOfo=
+        b=uH7+wHZKGgk2+76z6yO/ApNzBBq9+die6sfZxl6isAdNMFiU3Cvi+lrGqlY/6Odq8
+         gwNWYjNAlkvVsikx9NhzIbWUwwLovB0dJ4cl/NK/HQnk/CY4mYzBa6Ma2HhC7/ZqJe
+         jxfzevcEAwXJwn70B1j0b41EcN9naAHRx+IMDJFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.7 122/124] efi/libstub: Handle NULL cmdline
-Date:   Mon, 24 Aug 2020 10:30:56 +0200
-Message-Id: <20200824082415.405906791@linuxfoundation.org>
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.7 123/124] do_epoll_ctl(): clean the failure exits up a bit
+Date:   Mon, 24 Aug 2020 10:30:57 +0200
+Message-Id: <20200824082415.455961148@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
 References: <20200824082409.368269240@linuxfoundation.org>
@@ -43,41 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit a37ca6a2af9df2972372b918f09390c9303acfbd upstream.
+commit 52c479697c9b73f628140dcdfcd39ea302d05482 upstream.
 
-Treat a NULL cmdline the same as empty. Although this is unlikely to
-happen in practice, the x86 kernel entry does check for NULL cmdline and
-handles it, so do it here as well.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Link: https://lore.kernel.org/r/20200729193300.598448-1-nivedita@alum.mit.edu
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/libstub/efi-stub-helper.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/eventpoll.c |   19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -73,10 +73,14 @@ void efi_printk(char *str)
-  */
- efi_status_t efi_parse_options(char const *cmdline)
- {
--	size_t len = strlen(cmdline) + 1;
-+	size_t len;
- 	efi_status_t status;
- 	char *str, *buf;
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -2203,29 +2203,22 @@ int do_epoll_ctl(int epfd, int op, int f
+ 			full_check = 1;
+ 			if (is_file_epoll(tf.file)) {
+ 				error = -ELOOP;
+-				if (ep_loop_check(ep, tf.file) != 0) {
+-					clear_tfile_check_list();
++				if (ep_loop_check(ep, tf.file) != 0)
+ 					goto error_tgt_fput;
+-				}
+ 			} else {
+ 				get_file(tf.file);
+ 				list_add(&tf.file->f_tfile_llink,
+ 							&tfile_check_list);
+ 			}
+ 			error = epoll_mutex_lock(&ep->mtx, 0, nonblock);
+-			if (error) {
+-out_del:
+-				list_del(&tf.file->f_tfile_llink);
+-				if (!is_file_epoll(tf.file))
+-					fput(tf.file);
++			if (error)
+ 				goto error_tgt_fput;
+-			}
+ 			if (is_file_epoll(tf.file)) {
+ 				tep = tf.file->private_data;
+ 				error = epoll_mutex_lock(&tep->mtx, 1, nonblock);
+ 				if (error) {
+ 					mutex_unlock(&ep->mtx);
+-					goto out_del;
++					goto error_tgt_fput;
+ 				}
+ 			}
+ 		}
+@@ -2246,8 +2239,6 @@ out_del:
+ 			error = ep_insert(ep, epds, tf.file, fd, full_check);
+ 		} else
+ 			error = -EEXIST;
+-		if (full_check)
+-			clear_tfile_check_list();
+ 		break;
+ 	case EPOLL_CTL_DEL:
+ 		if (epi)
+@@ -2270,8 +2261,10 @@ out_del:
+ 	mutex_unlock(&ep->mtx);
  
-+	if (!cmdline)
-+		return EFI_SUCCESS;
-+
-+	len = strlen(cmdline) + 1;
- 	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, len, (void **)&buf);
- 	if (status != EFI_SUCCESS)
- 		return status;
+ error_tgt_fput:
+-	if (full_check)
++	if (full_check) {
++		clear_tfile_check_list();
+ 		mutex_unlock(&epmutex);
++	}
+ 
+ 	fdput(tf);
+ error_fput:
 
 
