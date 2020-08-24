@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6EA24F960
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9C924FA5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgHXInK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36612 "EHLO mail.kernel.org"
+        id S1729087AbgHXJzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:55:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729009AbgHXInF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:05 -0400
+        id S1728258AbgHXIgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A4872074D;
-        Mon, 24 Aug 2020 08:43:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 262F4206F0;
+        Mon, 24 Aug 2020 08:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258584;
-        bh=NcCJpwC/mok/7nMe5D6wgpi8QMHvHt3QH/ZjaUgc8iU=;
+        s=default; t=1598258182;
+        bh=bgTmsYHvGs3ntpuCwcRjLQ5BevUI8JP4aY4CVC7BZwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nmlCPg4OR+SoSQsFxcFVGKr9LsHNcm7bsfCd/99WCCL3SYWA0LGpv9Kn3yAsywX6v
-         6aqmSTQK4iqy5agiIpGBE3UXjU3zIpO/ZiHnZyUXF6/Am2O9dCz/HlQFl0EY/wbNyx
-         Z1rC84APo0rXU359HVEoUu45x6JSoYZFJ3RX8NM4=
+        b=ShK50+x47lw7TnXU8KOjC0HjTx5GoaAXVjPafBZQdORUsX5Akw+sCs2KyyP1jKd3Z
+         L5xsQDIG0tlGPae+9lf5sbqParWH5CVf17P4Fq4mWmM6w6WryP5zBhA9D+y9yEW3Ds
+         aHCTNFo9XOAzJwhBzec8nGXkTotQhfsiE0b9Y1yE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+        stable@vger.kernel.org, Zhiyi Guo <zhguo@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 068/124] bpf: sock_ops ctx access may stomp registers in corner case
+Subject: [PATCH 5.8 104/148] vfio/type1: Add proper error unwind for vfio_iommu_replay()
 Date:   Mon, 24 Aug 2020 10:30:02 +0200
-Message-Id: <20200824082412.755960625@linuxfoundation.org>
+Message-Id: <20200824082419.007370794@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,225 +45,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-[ Upstream commit fd09af010788a884de1c39537c288830c3d305db ]
+[ Upstream commit aae7a75a821a793ed6b8ad502a5890fb8e8f172d ]
 
-I had a sockmap program that after doing some refactoring started spewing
-this splat at me:
+The vfio_iommu_replay() function does not currently unwind on error,
+yet it does pin pages, perform IOMMU mapping, and modify the vfio_dma
+structure to indicate IOMMU mapping.  The IOMMU mappings are torn down
+when the domain is destroyed, but the other actions go on to cause
+trouble later.  For example, the iommu->domain_list can be empty if we
+only have a non-IOMMU backed mdev attached.  We don't currently check
+if the list is empty before getting the first entry in the list, which
+leads to a bogus domain pointer.  If a vfio_dma entry is erroneously
+marked as iommu_mapped, we'll attempt to use that bogus pointer to
+retrieve the existing physical page addresses.
 
-[18610.807284] BUG: unable to handle kernel NULL pointer dereference at 0000000000000001
-[...]
-[18610.807359] Call Trace:
-[18610.807370]  ? 0xffffffffc114d0d5
-[18610.807382]  __cgroup_bpf_run_filter_sock_ops+0x7d/0xb0
-[18610.807391]  tcp_connect+0x895/0xd50
-[18610.807400]  tcp_v4_connect+0x465/0x4e0
-[18610.807407]  __inet_stream_connect+0xd6/0x3a0
-[18610.807412]  ? __inet_stream_connect+0x5/0x3a0
-[18610.807417]  inet_stream_connect+0x3b/0x60
-[18610.807425]  __sys_connect+0xed/0x120
+This is the scenario that uncovered this issue, attempting to hot-add
+a vfio-pci device to a container with an existing mdev device and DMA
+mappings, one of which could not be pinned, causing a failure adding
+the new group to the existing container and setting the conditions
+for a subsequent attempt to explode.
 
-After some debugging I was able to build this simple reproducer,
+To resolve this, we can first check if the domain_list is empty so
+that we can reject replay of a bogus domain, should we ever encounter
+this inconsistent state again in the future.  The real fix though is
+to add the necessary unwind support, which means cleaning up the
+current pinning if an IOMMU mapping fails, then walking back through
+the r-b tree of DMA entries, reading from the IOMMU which ranges are
+mapped, and unmapping and unpinning those ranges.  To be able to do
+this, we also defer marking the DMA entry as IOMMU mapped until all
+entries are processed, in order to allow the unwind to know the
+disposition of each entry.
 
- __section("sockops/reproducer_bad")
- int bpf_reproducer_bad(struct bpf_sock_ops *skops)
- {
-        volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-        return 0;
- }
-
-And along the way noticed that below program ran without splat,
-
-__section("sockops/reproducer_good")
-int bpf_reproducer_good(struct bpf_sock_ops *skops)
-{
-        volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-        volatile __maybe_unused __u32 family;
-
-        compiler_barrier();
-
-        family = skops->family;
-        return 0;
-}
-
-So I decided to check out the code we generate for the above two
-programs and noticed each generates the BPF code you would expect,
-
-0000000000000000 <bpf_reproducer_bad>:
-;       volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-       0:       r1 = *(u32 *)(r1 + 96)
-       1:       *(u32 *)(r10 - 4) = r1
-;       return 0;
-       2:       r0 = 0
-       3:       exit
-
-0000000000000000 <bpf_reproducer_good>:
-;       volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-       0:       r2 = *(u32 *)(r1 + 96)
-       1:       *(u32 *)(r10 - 4) = r2
-;       family = skops->family;
-       2:       r1 = *(u32 *)(r1 + 20)
-       3:       *(u32 *)(r10 - 8) = r1
-;       return 0;
-       4:       r0 = 0
-       5:       exit
-
-So we get reasonable assembly, but still something was causing the null
-pointer dereference. So, we load the programs and dump the xlated version
-observing that line 0 above 'r* = *(u32 *)(r1 +96)' is going to be
-translated by the skops access helpers.
-
-int bpf_reproducer_bad(struct bpf_sock_ops * skops):
-; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-   0: (61) r1 = *(u32 *)(r1 +28)
-   1: (15) if r1 == 0x0 goto pc+2
-   2: (79) r1 = *(u64 *)(r1 +0)
-   3: (61) r1 = *(u32 *)(r1 +2340)
-; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-   4: (63) *(u32 *)(r10 -4) = r1
-; return 0;
-   5: (b7) r0 = 0
-   6: (95) exit
-
-int bpf_reproducer_good(struct bpf_sock_ops * skops):
-; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-   0: (61) r2 = *(u32 *)(r1 +28)
-   1: (15) if r2 == 0x0 goto pc+2
-   2: (79) r2 = *(u64 *)(r1 +0)
-   3: (61) r2 = *(u32 *)(r2 +2340)
-; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
-   4: (63) *(u32 *)(r10 -4) = r2
-; family = skops->family;
-   5: (79) r1 = *(u64 *)(r1 +0)
-   6: (69) r1 = *(u16 *)(r1 +16)
-; family = skops->family;
-   7: (63) *(u32 *)(r10 -8) = r1
-; return 0;
-   8: (b7) r0 = 0
-   9: (95) exit
-
-Then we look at lines 0 and 2 above. In the good case we do the zero
-check in r2 and then load 'r1 + 0' at line 2. Do a quick cross-check
-into the bpf_sock_ops check and we can confirm that is the 'struct
-sock *sk' pointer field. But, in the bad case,
-
-   0: (61) r1 = *(u32 *)(r1 +28)
-   1: (15) if r1 == 0x0 goto pc+2
-   2: (79) r1 = *(u64 *)(r1 +0)
-
-Oh no, we read 'r1 +28' into r1, this is skops->fullsock and then in
-line 2 we read the 'r1 +0' as a pointer. Now jumping back to our spat,
-
-[18610.807284] BUG: unable to handle kernel NULL pointer dereference at 0000000000000001
-
-The 0x01 makes sense because that is exactly the fullsock value. And
-its not a valid dereference so we splat.
-
-To fix we need to guard the case when a program is doing a sock_ops field
-access with src_reg == dst_reg. This is already handled in the load case
-where the ctx_access handler uses a tmp register being careful to
-store the old value and restore it. To fix the get case test if
-src_reg == dst_reg and in this case do the is_fullsock test in the
-temporary register. Remembering to restore the temporary register before
-writing to either dst_reg or src_reg to avoid smashing the pointer into
-the struct holding the tmp variable.
-
-Adding this inline code to test_tcpbpf_kern will now be generated
-correctly from,
-
-  9: r2 = *(u32 *)(r2 + 96)
-
-to xlated code,
-
-  12: (7b) *(u64 *)(r2 +32) = r9
-  13: (61) r9 = *(u32 *)(r2 +28)
-  14: (15) if r9 == 0x0 goto pc+4
-  15: (79) r9 = *(u64 *)(r2 +32)
-  16: (79) r2 = *(u64 *)(r2 +0)
-  17: (61) r2 = *(u32 *)(r2 +2348)
-  18: (05) goto pc+1
-  19: (79) r9 = *(u64 *)(r2 +32)
-
-And in the normal case we keep the original code, because really this
-is an edge case. From this,
-
-  9: r2 = *(u32 *)(r6 + 96)
-
-to xlated code,
-
-  22: (61) r2 = *(u32 *)(r6 +28)
-  23: (15) if r2 == 0x0 goto pc+2
-  24: (79) r2 = *(u64 *)(r6 +0)
-  25: (61) r2 = *(u32 *)(r2 +2348)
-
-So three additional instructions if dst == src register, but I scanned
-my current code base and did not see this pattern anywhere so should
-not be a big deal. Further, it seems no one else has hit this or at
-least reported it so it must a fairly rare pattern.
-
-Fixes: 9b1f3d6e5af29 ("bpf: Refactor sock_ops_convert_ctx_access")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/159718347772.4728.2781381670567919577.stgit@john-Precision-5820-Tower
+Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
+Reported-by: Zhiyi Guo <zhguo@redhat.com>
+Tested-by: Zhiyi Guo <zhguo@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c | 71 ++++++++++++++++++++++++++++++---
+ 1 file changed, 66 insertions(+), 5 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index cebbb6ba9ed92..dcc06e510ec5d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8066,15 +8066,31 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
- /* Helper macro for adding read access to tcp_sock or sock fields. */
- #define SOCK_OPS_GET_FIELD(BPF_FIELD, OBJ_FIELD, OBJ)			      \
- 	do {								      \
-+		int fullsock_reg = si->dst_reg, reg = BPF_REG_9, jmp = 2;     \
- 		BUILD_BUG_ON(sizeof_field(OBJ, OBJ_FIELD) >		      \
- 			     sizeof_field(struct bpf_sock_ops, BPF_FIELD));   \
-+		if (si->dst_reg == reg || si->src_reg == reg)		      \
-+			reg--;						      \
-+		if (si->dst_reg == reg || si->src_reg == reg)		      \
-+			reg--;						      \
-+		if (si->dst_reg == si->src_reg) {			      \
-+			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, reg,	      \
-+					  offsetof(struct bpf_sock_ops_kern,  \
-+					  temp));			      \
-+			fullsock_reg = reg;				      \
-+			jmp += 2;					      \
-+		}							      \
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
- 						struct bpf_sock_ops_kern,     \
- 						is_fullsock),		      \
--				      si->dst_reg, si->src_reg,		      \
-+				      fullsock_reg, si->src_reg,	      \
- 				      offsetof(struct bpf_sock_ops_kern,      \
- 					       is_fullsock));		      \
--		*insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 2);	      \
-+		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
-+		if (si->dst_reg == si->src_reg)				      \
-+			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-+				      offsetof(struct bpf_sock_ops_kern,      \
-+				      temp));				      \
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
- 						struct bpf_sock_ops_kern, sk),\
- 				      si->dst_reg, si->src_reg,		      \
-@@ -8083,6 +8099,12 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
- 						       OBJ_FIELD),	      \
- 				      si->dst_reg, si->dst_reg,		      \
- 				      offsetof(OBJ, OBJ_FIELD));	      \
-+		if (si->dst_reg == si->src_reg)	{			      \
-+			*insn++ = BPF_JMP_A(1);				      \
-+			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-+				      offsetof(struct bpf_sock_ops_kern,      \
-+				      temp));				      \
-+		}							      \
- 	} while (0)
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 5e556ac9102a5..f48f0db908a46 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -1422,13 +1422,16 @@ static int vfio_bus_type(struct device *dev, void *data)
+ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 			     struct vfio_domain *domain)
+ {
+-	struct vfio_domain *d;
++	struct vfio_domain *d = NULL;
+ 	struct rb_node *n;
+ 	unsigned long limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+ 	int ret;
  
- #define SOCK_OPS_GET_TCP_SOCK_FIELD(FIELD) \
+ 	/* Arbitrarily pick the first domain in the list for lookups */
+-	d = list_first_entry(&iommu->domain_list, struct vfio_domain, next);
++	if (!list_empty(&iommu->domain_list))
++		d = list_first_entry(&iommu->domain_list,
++				     struct vfio_domain, next);
++
+ 	n = rb_first(&iommu->dma_list);
+ 
+ 	for (; n; n = rb_next(n)) {
+@@ -1446,6 +1449,11 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 				phys_addr_t p;
+ 				dma_addr_t i;
+ 
++				if (WARN_ON(!d)) { /* mapped w/o a domain?! */
++					ret = -EINVAL;
++					goto unwind;
++				}
++
+ 				phys = iommu_iova_to_phys(d->domain, iova);
+ 
+ 				if (WARN_ON(!phys)) {
+@@ -1475,7 +1483,7 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 				if (npage <= 0) {
+ 					WARN_ON(!npage);
+ 					ret = (int)npage;
+-					return ret;
++					goto unwind;
+ 				}
+ 
+ 				phys = pfn << PAGE_SHIFT;
+@@ -1484,14 +1492,67 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 
+ 			ret = iommu_map(domain->domain, iova, phys,
+ 					size, dma->prot | domain->prot);
+-			if (ret)
+-				return ret;
++			if (ret) {
++				if (!dma->iommu_mapped)
++					vfio_unpin_pages_remote(dma, iova,
++							phys >> PAGE_SHIFT,
++							size >> PAGE_SHIFT,
++							true);
++				goto unwind;
++			}
+ 
+ 			iova += size;
+ 		}
++	}
++
++	/* All dmas are now mapped, defer to second tree walk for unwind */
++	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
++		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
++
+ 		dma->iommu_mapped = true;
+ 	}
++
+ 	return 0;
++
++unwind:
++	for (; n; n = rb_prev(n)) {
++		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
++		dma_addr_t iova;
++
++		if (dma->iommu_mapped) {
++			iommu_unmap(domain->domain, dma->iova, dma->size);
++			continue;
++		}
++
++		iova = dma->iova;
++		while (iova < dma->iova + dma->size) {
++			phys_addr_t phys, p;
++			size_t size;
++			dma_addr_t i;
++
++			phys = iommu_iova_to_phys(domain->domain, iova);
++			if (!phys) {
++				iova += PAGE_SIZE;
++				continue;
++			}
++
++			size = PAGE_SIZE;
++			p = phys + size;
++			i = iova + size;
++			while (i < dma->iova + dma->size &&
++			       p == iommu_iova_to_phys(domain->domain, i)) {
++				size += PAGE_SIZE;
++				p += PAGE_SIZE;
++				i += PAGE_SIZE;
++			}
++
++			iommu_unmap(domain->domain, iova, size);
++			vfio_unpin_pages_remote(dma, iova, phys >> PAGE_SHIFT,
++						size >> PAGE_SHIFT, true);
++		}
++	}
++
++	return ret;
+ }
+ 
+ /*
 -- 
 2.25.1
 
