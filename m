@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA4124FC94
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6521124FCA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgHXLa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgHXLaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:30:14 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CA55207D3;
-        Mon, 24 Aug 2020 11:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598268613;
-        bh=xuX8D9gUJwqTbw6eARuvzy+mxcEUw7Akfi6UQb+XbIw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEtgZZMNhiW67nz6/+hYFTtL5TFEz5Iyv5/lw38HJlon1Bs2L7ESM4bXb44Nl8hoA
-         k8V5AMZiszqgBX3ZVFdRdFD99UELB8MNlLzVL5pL2aZrAiJw5qGDhIgqA3+3csoxx8
-         AikEmwpfZGmUMP8PB2FIWZTiyFBUOGwgRzMKwcH4=
-From:   Will Deacon <will@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
-        kernel-team@android.com, Will Deacon <will@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH stable-4.19.y backport 2/2] KVM: arm64: Only reschedule if 'blockable'
-Date:   Mon, 24 Aug 2020 12:30:06 +0100
-Message-Id: <20200824113006.24806-2-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200824113006.24806-1-will@kernel.org>
-References: <20200824113006.24806-1-will@kernel.org>
+        id S1727821AbgHXLfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:35:23 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:13489 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgHXLal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:30:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598268623;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=LNrpIGVjKdlFFg7JrV48iDL/9D5btHkuQx1faS/GNEU=;
+        b=MdmzlP1FocVEqd05o+I0ToPylCOtIS6VLYqpWPGuqLgzYwMMxdDcPhkLJ/GMU/6XE0
+        7h3x3SU7tC1fHdA6zLYLI8O+KmbNT++Dvl52SclXHSJoU7nhc4kgXaxZYOFTzpyxsyU2
+        qM3FkngAxR3goZPpBIDzLkiSjBsgi2Xx9KjFGFDQTd+GuD+CYWwti3gcSGkWJO7uisQG
+        aw3TIomsglInr/qMpKc4owMnymEmEC97tpa6O8QLegh4KG/WtYFUkaIxQgt/rwkXTO7I
+        g5keka+Aqwi+Qw8zHT13OV7OxCSvoj4xx8ENlrkH2VVqqU6vqG1mUjBUgd2WuTsLRZvH
+        tlBg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/MbIo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id g0b6c1w7OBULWmA
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 24 Aug 2020 13:30:21 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 13:30:16 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [RFC PATCH 1/3] opp: Reduce code duplication in
+ _set_required_opps()
+Message-ID: <20200824113016.GA131681@gerhold.net>
+References: <20200730080146.25185-1-stephan@gerhold.net>
+ <20200730080146.25185-2-stephan@gerhold.net>
+ <20200824111820.rcaingohxw3wozgd@vireshk-i7>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824111820.rcaingohxw3wozgd@vireshk-i7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b5331379bc62611d1026173a09c73573384201d9 upstream.
+On Mon, Aug 24, 2020 at 04:48:20PM +0530, Viresh Kumar wrote:
+> On 30-07-20, 10:01, Stephan Gerhold wrote:
+> > Move call to dev_pm_genpd_set_performance_state() to a separate
+> > function so we can avoid duplicating the code for the single and
+> > multiple genpd case.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> >  drivers/opp/core.c | 40 +++++++++++++++++++++-------------------
+> >  1 file changed, 21 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > index 9d7fb45b1786..f7a476b55069 100644
+> > --- a/drivers/opp/core.c
+> > +++ b/drivers/opp/core.c
+> > @@ -781,6 +781,21 @@ static int _set_opp_custom(const struct opp_table *opp_table,
+> >  	return opp_table->set_opp(data);
+> >  }
+> >  
+> > +static int _set_required_opp(struct device *dev, struct device *pd_dev,
+> > +			     struct dev_pm_opp *opp, int i)
+> > +{
+> > +	unsigned int pstate = likely(opp) ? opp->required_opps[i]->pstate : 0;
+> > +	int ret;
+> > +
+> > +	ret = dev_pm_genpd_set_performance_state(pd_dev, pstate);
+> > +	if (ret) {
+> > +		dev_err(dev, "Failed to set performance rate of %s: %d (%d)\n",
+> > +			dev_name(pd_dev), pstate, ret);
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  /* This is only called for PM domain for now */
+> >  static int _set_required_opps(struct device *dev,
+> >  			      struct opp_table *opp_table,
+> > @@ -788,22 +803,15 @@ static int _set_required_opps(struct device *dev,
+> >  {
+> >  	struct opp_table **required_opp_tables = opp_table->required_opp_tables;
+> >  	struct device **genpd_virt_devs = opp_table->genpd_virt_devs;
+> > -	unsigned int pstate;
+> > +	struct device *pd_dev;
+> >  	int i, ret = 0;
+> >  
+> >  	if (!required_opp_tables)
+> >  		return 0;
+> >  
+> >  	/* Single genpd case */
+> > -	if (!genpd_virt_devs) {
+> > -		pstate = likely(opp) ? opp->required_opps[0]->pstate : 0;
+> > -		ret = dev_pm_genpd_set_performance_state(dev, pstate);
+> > -		if (ret) {
+> > -			dev_err(dev, "Failed to set performance state of %s: %d (%d)\n",
+> > -				dev_name(dev), pstate, ret);
+> > -		}
+> > -		return ret;
+> > -	}
+> > +	if (!genpd_virt_devs)
+> > +		return _set_required_opp(dev, dev, opp, 0);
+> >  
+> >  	/* Multiple genpd case */
+> >  
+> > @@ -814,17 +822,11 @@ static int _set_required_opps(struct device *dev,
+> >  	mutex_lock(&opp_table->genpd_virt_dev_lock);
+> >  
+> >  	for (i = 0; i < opp_table->required_opp_count; i++) {
+> > -		pstate = likely(opp) ? opp->required_opps[i]->pstate : 0;
+> > -
+> > -		if (!genpd_virt_devs[i])
+> > -			continue;
+> 
+> Don't we need this check anymore ?
+> 
 
-When an MMU notifier call results in unmapping a range that spans multiple
-PGDs, we end up calling into cond_resched_lock() when crossing a PGD boundary,
-since this avoids running into RCU stalls during VM teardown. Unfortunately,
-if the VM is destroyed as a result of OOM, then blocking is not permitted
-and the call to the scheduler triggers the following BUG():
+You're right. Not sure why I removed it.
 
- | BUG: sleeping function called from invalid context at arch/arm64/kvm/mmu.c:394
- | in_atomic(): 1, irqs_disabled(): 0, non_block: 1, pid: 36, name: oom_reaper
- | INFO: lockdep is turned off.
- | CPU: 3 PID: 36 Comm: oom_reaper Not tainted 5.8.0 #1
- | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
- | Call trace:
- |  dump_backtrace+0x0/0x284
- |  show_stack+0x1c/0x28
- |  dump_stack+0xf0/0x1a4
- |  ___might_sleep+0x2bc/0x2cc
- |  unmap_stage2_range+0x160/0x1ac
- |  kvm_unmap_hva_range+0x1a0/0x1c8
- |  kvm_mmu_notifier_invalidate_range_start+0x8c/0xf8
- |  __mmu_notifier_invalidate_range_start+0x218/0x31c
- |  mmu_notifier_invalidate_range_start_nonblock+0x78/0xb0
- |  __oom_reap_task_mm+0x128/0x268
- |  oom_reap_task+0xac/0x298
- |  oom_reaper+0x178/0x17c
- |  kthread+0x1e4/0x1fc
- |  ret_from_fork+0x10/0x30
+I suspect I had it in _set_required_opp() at some point, but I moved
+code around several times until I was happy with the result.
 
-Use the new 'blockable' argument to kvm_unmap_hva_range() to ensure that
-we only reschedule if blocking is permitted by the MMU notifier call.
+We should just add it back.
+Should I send a v2 with it fixed or would you like to handle it?
 
-Cc: <stable@vger.kernel.org> # v4.19 only
-Fixes: 8b3405e345b5 ("kvm: arm/arm64: Fix locking for kvm_free_stage2_pgd")
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Message-Id: <20200811102725.7121-3-will@kernel.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[will: Backport to 4.19; use 'blockable' instead of non-existent MMU_NOTIFIER_RANGE_BLOCKABLE flag]
-Signed-off-by: Will Deacon <will@kernel.org>
----
- virt/kvm/arm/mmu.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Thanks,
+Stephan
 
-diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-index 3957ff0ecda5..41d6285c3da9 100644
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -323,7 +323,8 @@ static void unmap_stage2_puds(struct kvm *kvm, pgd_t *pgd,
-  * destroying the VM), otherwise another faulting VCPU may come in and mess
-  * with things behind our backs.
-  */
--static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+static void __unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size,
-+				 bool may_block)
- {
- 	pgd_t *pgd;
- 	phys_addr_t addr = start, end = start + size;
-@@ -348,11 +349,16 @@ static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
- 		 * If the range is too large, release the kvm->mmu_lock
- 		 * to prevent starvation and lockup detector warnings.
- 		 */
--		if (next != end)
-+		if (may_block && next != end)
- 			cond_resched_lock(&kvm->mmu_lock);
- 	} while (pgd++, addr = next, addr != end);
- }
- 
-+static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+{
-+	__unmap_stage2_range(kvm, start, size, true);
-+}
-+
- static void stage2_flush_ptes(struct kvm *kvm, pmd_t *pmd,
- 			      phys_addr_t addr, phys_addr_t end)
- {
-@@ -1820,7 +1826,9 @@ static int handle_hva_to_gpa(struct kvm *kvm,
- 
- static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
- {
--	unmap_stage2_range(kvm, gpa, size);
-+	bool may_block = *(bool *)data;
-+
-+	__unmap_stage2_range(kvm, gpa, size, may_block);
- 	return 0;
- }
- 
-@@ -1831,7 +1839,7 @@ int kvm_unmap_hva_range(struct kvm *kvm,
- 		return 0;
- 
- 	trace_kvm_unmap_hva_range(start, end);
--	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, NULL);
-+	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, &blockable);
- 	return 0;
- }
- 
--- 
-2.28.0.297.g1956fa8f8d-goog
-
+> > +		pd_dev = genpd_virt_devs[i];
+> >  
+> > -		ret = dev_pm_genpd_set_performance_state(genpd_virt_devs[i], pstate);
+> > -		if (ret) {
+> > -			dev_err(dev, "Failed to set performance rate of %s: %d (%d)\n",
+> > -				dev_name(genpd_virt_devs[i]), pstate, ret);
+> > +		ret = _set_required_opp(dev, pd_dev, opp, i);
+> > +		if (ret)
+> >  			break;
+> > -		}
+> >  	}
+> >  	mutex_unlock(&opp_table->genpd_virt_dev_lock);
+> >  
+> > -- 
+> > 2.27.0
