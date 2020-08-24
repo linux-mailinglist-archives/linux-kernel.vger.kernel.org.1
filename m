@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A55424F455
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B155A24F4E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgHXIfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:35:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:23150 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728030AbgHXIe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:34:57 -0400
-IronPort-SDR: Fi8/nuCJfTynplYK4d+NpXldSoLCN/8BHO1oLEsVv+8457aWDXzQavuKZbYw3NZ6ruNuDbbw76
- e5kCeSsclEFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="173902240"
-X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
-   d="scan'208";a="173902240"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 01:34:56 -0700
-IronPort-SDR: i4VuZti8JNghZZaHsaTSIbsR6me8+5YPBVVnqF/G99dTyy2pCzsPuWAfrFUEFWAAFtEGoG+f6b
- 4+jynUUE52Eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
-   d="scan'208";a="402248684"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001.fm.intel.com with SMTP; 24 Aug 2020 01:34:53 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 24 Aug 2020 11:34:52 +0300
-Date:   Mon, 24 Aug 2020 11:34:52 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] PM: sleep: core: Fix the handling of pending runtime
- resume requests
-Message-ID: <20200824083452.GX1375436@lahna.fi.intel.com>
-References: <7969920.MVx1BpXlEM@kreacher>
- <20200821193442.GA264863@rowland.harvard.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821193442.GA264863@rowland.harvard.edu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1728916AbgHXImI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728902AbgHXImA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F35FC061573;
+        Mon, 24 Aug 2020 01:42:00 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id b2so7308333edw.5;
+        Mon, 24 Aug 2020 01:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=voyHwITvq0wBrEVy8zw4YRZx8e/OMXcyqakQHvKeh/0=;
+        b=ermSDjEORxns3jhdPPECRpUY4VjiYyjh8zO6N8AMfuuBeGJg3j99euRppSQLVxs/dw
+         8kgXi0mzu/qkUDmYgW9YF5E/I5si611wq/vMMv7MDUhaNGtZCqxPrnHYoQsE5dbFSGO3
+         tBMakxKoQtoqEswQq7IHzRHirRI8Vsux04uu7dUYVh8i+tGRgYsx1Kz7wuDg5r/jrjWz
+         PPLYoRErbe+xmTj0TEcA/sKd3gnX1IE93yzDFDU9qcMfKSdWK0lJulc0wBot6oHiI9P+
+         7EJdHiGbxauhLFUqUhyk5uA40IWnpWS8EW7NpnDBiIkudWCG6aslw1I2wHtw5sbo1wPR
+         e7iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=voyHwITvq0wBrEVy8zw4YRZx8e/OMXcyqakQHvKeh/0=;
+        b=qM82Q+ZAZNuKStmEkeAaRoh8OpyYh0oq+52MvlXjvb9qAVkW8fpiYOOs7TNc6zrVmj
+         YvnM7U5ek1T9G4drLeM9F2cWg2ziMTCrja9K7gFflTV3Qc+77SCyBNfUhCFitXnJo6tw
+         gpQeFGP+vWChwU/AcKJpbuYhwoIT4sA69HeQEkCk8GrK18sJHaXhJB5eGTLyeg/k/2Cw
+         5T05prt4Rft9czrSKqc03iV2aYebNd6s1HfXoirzYeudG0P+qD2SOz7nB3tW7Y9r4YB5
+         IWbAEeMQWCPdOuMgA77sMqpLvAGu3TtsaaMGYqF08MfrGSsqr+h+nCxIlWNEyy7PDgd9
+         gnww==
+X-Gm-Message-State: AOAM532e1O3ahti0e2w2Lz7ueMmFsSHPJj1xIU0mZ1upzC5e/i99keOc
+        N7ouKYYUuNbLjBfEZK4tQpwUvHwkwPk=
+X-Google-Smtp-Source: ABdhPJw6lViolyBYiuU6fE0J2sX1K/TXzR7Bu+m8X17rLlN7OTdukidPQF+5yeKTubWw25iOt0FfJw==
+X-Received: by 2002:a05:6402:6da:: with SMTP id n26mr4452755edy.262.1598258519203;
+        Mon, 24 Aug 2020 01:41:59 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:898a:234e:1d41:83f0:a723:a7e3])
+        by smtp.googlemail.com with ESMTPSA id f10sm6987edr.18.2020.08.24.01.41.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Aug 2020 01:41:58 -0700 (PDT)
+Message-ID: <6a4c297fba9a393c3f472ab443f8cb59b800e2b0.camel@gmail.com>
+Subject: Re: [PATCH v2] scsi: ufs: Remove an unpaired
+ ufshcd_scsi_unblock_requests() in err_handler()
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Mon, 24 Aug 2020 10:41:50 +0200
+In-Reply-To: <1597798958-24322-1-git-send-email-cang@codeaurora.org>
+References: <1597798958-24322-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Aug 21, 2020 at 03:34:42PM -0400, Alan Stern wrote:
-> This means that the code could be simplified to just:
+On Tue, 2020-08-18 at 18:02 -0700, Can Guo wrote:
+> Commit 5586dd8ea250 ("scsi: ufs: Fix a race condition between error
+> handler
+> and runtime PM ops") moves the ufshcd_scsi_block_requests() inside
+> err_handler(), but forgets to remove the
+> ufshcd_scsi_unblock_requests() in
+> the early return path. Correct the coding mistake.
 > 
-> 	pm_runtime_barrier(dev);
-> 
-> Will this fix the reported bug?  It seems likely to me that the actual 
-> problem with the failure scenario in the patch description was that 
-> turning on an ACPI power resource causes runtime-resume requests to be 
-> queued for all devices sharing that resource.  Wouldn't it make more 
-> sense to resume only the device that requested it and leave the others 
-> in runtime suspend?
+> Fixes: 5586dd8ea250 ("scsi: ufs: Fix a race condition between error
+> handler and runtime PM ops")
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+> Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
 
-The problem with at least PCIe devices that share ACPI power resources
-is that once you turn on the power resource all the devices that shared
-it will go into D0uninitialized power state and that means they lose all
-wake configuration etc. so they need to be re-initialized by their
-driver before they can go back to D3(cold) in order for their wakes to
-still work.
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+
+
+
