@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CB524FA2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1224F933
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729572AbgHXJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51760 "EHLO mail.kernel.org"
+        id S1728874AbgHXIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728046AbgHXIhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:54 -0400
+        id S1728427AbgHXIod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5423322B43;
-        Mon, 24 Aug 2020 08:37:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AADA72075B;
+        Mon, 24 Aug 2020 08:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258273;
-        bh=aiRh9XyYF6dfGQtKNR2Jle8UKz4fP5jc8wiQswXz8yk=;
+        s=default; t=1598258673;
+        bh=fIHeNq+fwaVaSWsFR5chX7jTNDuNYdyTKVPJb18KZRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L8foEBWZvwkAfb2u5bGfLRmjL4OJ+bBzr0Kmfd+UF/uuNNf+guKH7QMWV0pCSQGXG
-         m7tnc7v4hEQHL1InZo2SCxB7lzp54rYEmfrX6SkssomZxVXXNqbYEwTsPgVdnGwGj/
-         PfHTi2tEK8MNsMuBotEvViMZ5s1tHaNMTUyUSB1s=
+        b=qyHvJ9eRuyGxrOiG5xsrXgCrGrWyZ+r4t9cVqluFBLEkuQsqmZjNlWr8bvoYaX6aG
+         9Ce/fsulH4gvmf5jKUTt1u/AWGykouhgHdaOFqirqsmJX9G3yLUdAGjAbP88aX30tC
+         +I9qwYVptpBFgQuQePAKJBvLsK7Mr+NtZI+OsPwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 138/148] net: dsa: b53: check for timeout
-Date:   Mon, 24 Aug 2020 10:30:36 +0200
-Message-Id: <20200824082420.627962740@linuxfoundation.org>
+Subject: [PATCH 5.7 103/124] efi: avoid error message when booting under Xen
+Date:   Mon, 24 Aug 2020 10:30:37 +0200
+Message-Id: <20200824082414.485788191@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 774d977abfd024e6f73484544b9abe5a5cd62de7 ]
+[ Upstream commit 6163a985e50cb19d5bdf73f98e45b8af91a77658 ]
 
-clang static analysis reports this problem
+efifb_probe() will issue an error message in case the kernel is booted
+as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
+that message by calling efi_mem_desc_lookup() only if EFI_MEMMAP is set.
 
-b53_common.c:1583:13: warning: The left expression of the compound
-  assignment is an uninitialized value. The computed value will
-  also be garbage
-        ent.port &= ~BIT(port);
-        ~~~~~~~~ ^
-
-ent is set by a successful call to b53_arl_read().  Unsuccessful
-calls are caught by an switch statement handling specific returns.
-b32_arl_read() calls b53_arl_op_wait() which fails with the
-unhandled -ETIMEDOUT.
-
-So add -ETIMEDOUT to the switch statement.  Because
-b53_arl_op_wait() already prints out a message, do not add another
-one.
-
-Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 38ac0287b7f4 ("fbdev/efifb: Honour UEFI memory map attributes when mapping the FB")
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/video/fbdev/efifb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 1df05841ab6b1..86869337223a8 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1555,6 +1555,8 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
- 		return ret;
+diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+index 65491ae74808d..e57c00824965c 100644
+--- a/drivers/video/fbdev/efifb.c
++++ b/drivers/video/fbdev/efifb.c
+@@ -453,7 +453,7 @@ static int efifb_probe(struct platform_device *dev)
+ 	info->apertures->ranges[0].base = efifb_fix.smem_start;
+ 	info->apertures->ranges[0].size = size_remap;
  
- 	switch (ret) {
-+	case -ETIMEDOUT:
-+		return ret;
- 	case -ENOSPC:
- 		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
- 			addr, vid);
+-	if (efi_enabled(EFI_BOOT) &&
++	if (efi_enabled(EFI_MEMMAP) &&
+ 	    !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
+ 		if ((efifb_fix.smem_start + efifb_fix.smem_len) >
+ 		    (md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT))) {
 -- 
 2.25.1
 
