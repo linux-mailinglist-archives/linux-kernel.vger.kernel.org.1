@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE2824F48A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153AA24F551
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgHXIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51108 "EHLO mail.kernel.org"
+        id S1729462AbgHXIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728433AbgHXIhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:35 -0400
+        id S1729455AbgHXIrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:47:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 476872177B;
-        Mon, 24 Aug 2020 08:37:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45DE62075B;
+        Mon, 24 Aug 2020 08:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258254;
-        bh=efTXhLA1Wenoo87S0O0Fb0+ibbIN/NCes9dGiWbG7gs=;
+        s=default; t=1598258842;
+        bh=7YDrs1oIUKwrP9elypvEo5hqcXKbslkuTGu34TR+wfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H3TWumbRmXoMt/F2vFjNHSVy6kSZu48qx0kZzGKBpd5IX5Fy3dThtLCf9WtUIubS0
-         ALhCGoR6PnPRxjFOk3difi14wqA0CXlYxmpjegyUH6z0mYfaTQeY/8ocR26Fh3GhCH
-         ar6KnYqxGo7RYoJueXxu6ZHem0t98D2+fWD0lm6k=
+        b=AHjmKR7z3S4tVJJpmkre8c5N3lLH9Kko0gAUFRuVU2SuzHM9NJBtO9Qh0BRkBIBIO
+         /n97w95M9o6wQzucuKG+FSsCqWsfCzalgdMSYrkLYzkCnbCzEs8tBGaSC4gshzvrYz
+         l3UFPyD93pk/NSd6xf9X2LxKCj3AnV9mG94CQUJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Wiesner <jwiesner@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 132/148] bonding: fix active-backup failover for current ARP slave
+Subject: [PATCH 5.4 064/107] ext4: dont allow overlapping system zones
 Date:   Mon, 24 Aug 2020 10:30:30 +0200
-Message-Id: <20200824082420.339995079@linuxfoundation.org>
+Message-Id: <20200824082408.295125220@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,88 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Wiesner <jwiesner@suse.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 0410d07190961ac526f05085765a8d04d926545b ]
+[ Upstream commit bf9a379d0980e7413d94cb18dac73db2bfc5f470 ]
 
-When the ARP monitor is used for link detection, ARP replies are
-validated for all slaves (arp_validate=3) and fail_over_mac is set to
-active, two slaves of an active-backup bond may get stuck in a state
-where both of them are active and pass packets that they receive to
-the bond. This state makes IPv6 duplicate address detection fail. The
-state is reached thus:
-1. The current active slave goes down because the ARP target
-   is not reachable.
-2. The current ARP slave is chosen and made active.
-3. A new slave is enslaved. This new slave becomes the current active
-   slave and can reach the ARP target.
-As a result, the current ARP slave stays active after the enslave
-action has finished and the log is littered with "PROBE BAD" messages:
-> bond0: PROBE: c_arp ens10 && cas ens11 BAD
-The workaround is to remove the slave with "going back" status from
-the bond and re-enslave it. This issue was encountered when DPDK PMD
-interfaces were being enslaved to an active-backup bond.
+Currently, add_system_zone() just silently merges two added system zones
+that overlap. However the overlap should not happen and it generally
+suggests that some unrelated metadata overlap which indicates the fs is
+corrupted. We should have caught such problems earlier (e.g. in
+ext4_check_descriptors()) but add this check as another line of defense.
+In later patch we also use this for stricter checking of journal inode
+extent tree.
 
-I would be possible to fix the issue in bond_enslave() or
-bond_change_active_slave() but the ARP monitor was fixed instead to
-keep most of the actions changing the current ARP slave in the ARP
-monitor code. The current ARP slave is set as inactive and backup
-during the commit phase. A new state, BOND_LINK_FAIL, has been
-introduced for slaves in the context of the ARP monitor. This allows
-administrators to see how slaves are rotated for sending ARP requests
-and attempts are made to find a new active slave.
-
-Fixes: b2220cad583c9 ("bonding: refactor ARP active-backup monitor")
-Signed-off-by: Jiri Wiesner <jwiesner@suse.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200728130437.7804-3-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ fs/ext4/block_validity.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index f438e20fcda1f..500aa3e19a4c7 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2825,6 +2825,9 @@ static int bond_ab_arp_inspect(struct bonding *bond)
- 			if (bond_time_in_interval(bond, last_rx, 1)) {
- 				bond_propose_link_state(slave, BOND_LINK_UP);
- 				commit++;
-+			} else if (slave->link == BOND_LINK_BACK) {
-+				bond_propose_link_state(slave, BOND_LINK_FAIL);
-+				commit++;
- 			}
- 			continue;
- 		}
-@@ -2933,6 +2936,19 @@ static void bond_ab_arp_commit(struct bonding *bond)
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index ff8e1205127ee..ceb54ccc937e9 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -68,7 +68,7 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+ 			   ext4_fsblk_t start_blk,
+ 			   unsigned int count)
+ {
+-	struct ext4_system_zone *new_entry = NULL, *entry;
++	struct ext4_system_zone *new_entry, *entry;
+ 	struct rb_node **n = &system_blks->root.rb_node, *node;
+ 	struct rb_node *parent = NULL, *new_node = NULL;
  
- 			continue;
- 
-+		case BOND_LINK_FAIL:
-+			bond_set_slave_link_state(slave, BOND_LINK_FAIL,
-+						  BOND_SLAVE_NOTIFY_NOW);
-+			bond_set_slave_inactive_flags(slave,
-+						      BOND_SLAVE_NOTIFY_NOW);
-+
-+			/* A slave has just been enslaved and has become
-+			 * the current active slave.
-+			 */
-+			if (rtnl_dereference(bond->curr_active_slave))
-+				RCU_INIT_POINTER(bond->current_arp_slave, NULL);
-+			continue;
-+
- 		default:
- 			slave_err(bond->dev, slave->dev,
- 				  "impossible: link_new_state %d on slave\n",
-@@ -2983,8 +2999,6 @@ static bool bond_ab_arp_probe(struct bonding *bond)
- 			return should_notify_rtnl;
+@@ -79,30 +79,20 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+ 			n = &(*n)->rb_left;
+ 		else if (start_blk >= (entry->start_blk + entry->count))
+ 			n = &(*n)->rb_right;
+-		else {
+-			if (start_blk + count > (entry->start_blk +
+-						 entry->count))
+-				entry->count = (start_blk + count -
+-						entry->start_blk);
+-			new_node = *n;
+-			new_entry = rb_entry(new_node, struct ext4_system_zone,
+-					     node);
+-			break;
+-		}
++		else	/* Unexpected overlap of system zones. */
++			return -EFSCORRUPTED;
  	}
  
--	bond_set_slave_inactive_flags(curr_arp_slave, BOND_SLAVE_NOTIFY_LATER);
+-	if (!new_entry) {
+-		new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
+-					     GFP_KERNEL);
+-		if (!new_entry)
+-			return -ENOMEM;
+-		new_entry->start_blk = start_blk;
+-		new_entry->count = count;
+-		new_node = &new_entry->node;
 -
- 	bond_for_each_slave_rcu(bond, slave, iter) {
- 		if (!found && !before && bond_slave_is_up(slave))
- 			before = slave;
+-		rb_link_node(new_node, parent, n);
+-		rb_insert_color(new_node, &system_blks->root);
+-	}
++	new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
++				     GFP_KERNEL);
++	if (!new_entry)
++		return -ENOMEM;
++	new_entry->start_blk = start_blk;
++	new_entry->count = count;
++	new_node = &new_entry->node;
++
++	rb_link_node(new_node, parent, n);
++	rb_insert_color(new_node, &system_blks->root);
+ 
+ 	/* Can we merge to the left? */
+ 	node = rb_prev(new_node);
 -- 
 2.25.1
 
