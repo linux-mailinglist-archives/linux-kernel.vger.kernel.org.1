@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AAD24FA39
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1116624F963
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgHXIhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
+        id S1729330AbgHXJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728404AbgHXIh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:26 -0400
+        id S1729002AbgHXIm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99F47207DF;
-        Mon, 24 Aug 2020 08:37:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 721F32074D;
+        Mon, 24 Aug 2020 08:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258246;
-        bh=wmsXOHB3I553rPukhSo64W5A/2l1xab5G6GT+DI8iYc=;
+        s=default; t=1598258578;
+        bh=+qRo7EazDkIauatNccwvEEaYm1kUYDmMfILi5Oc7xuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejLFyxFnVez3K2a4VRhvJi5c7JCtUTLXR2OBWGHyIK8E8QsU0vfZSTxeDANBMrBCf
-         tn8XZoTa7OD4Dwq6TlBXlu1alxJM3GiSsJTXuNO1evpdtG3eY495NXe+PVutjAiBBP
-         yh6jV+pBy4SQW9uMrGTf4bkSRdwfbln6Z+vN84B0=
+        b=aH2g/mQaHm76oRtEkwb9tC620SBz0mjgJEFZvlu7YENeyCKrMBm3ONsHqzq3C+1T8
+         Ilcx+mVXdUfki7onsw1QM6zdrzFJdsRf5ZeTxsx4ZiS9oPyQbUBH9/KZGNKmIDk8bC
+         zz4w4yhaAkFxphOnTCo5Oj7/ZkZs5r0WqC5eUsXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Seungwon Jeon <essuuj@gmail.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 129/148] powerpc/fixmap: Fix the size of the early debug area
-Date:   Mon, 24 Aug 2020 10:30:27 +0200
-Message-Id: <20200824082420.195347477@linuxfoundation.org>
+Subject: [PATCH 5.7 094/124] scsi: ufs: Add quirk to disallow reset of interrupt aggregation
+Date:   Mon, 24 Aug 2020 10:30:28 +0200
+Message-Id: <20200824082414.030173227@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Alim Akhtar <alim.akhtar@samsung.com>
 
-[ Upstream commit fdc6edbb31fba76fd25d7bd016b675a92908d81e ]
+[ Upstream commit b638b5eb624bd5d0766683b6181d578f414585e9 ]
 
-Commit ("03fd42d458fb powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when
-page size is 256k") reworked the setup of the early debug area and
-mistakenly replaced 128 * 1024 by SZ_128.
+Some host controllers support interrupt aggregation but don't allow
+resetting counter and timer in software.
 
-Change to SZ_128K to restore the original 128 kbytes size of the area.
-
-Fixes: 03fd42d458fb ("powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when page size is 256k")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/996184974d674ff984643778cf1cdd7fe58cc065.1597644194.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/20200528011658.71590-3-alim.akhtar@samsung.com
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Seungwon Jeon <essuuj@gmail.com>
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/fixmap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 3 ++-
+ drivers/scsi/ufs/ufshcd.h | 6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/fixmap.h b/arch/powerpc/include/asm/fixmap.h
-index 925cf89cbf4ba..6bfc87915d5db 100644
---- a/arch/powerpc/include/asm/fixmap.h
-+++ b/arch/powerpc/include/asm/fixmap.h
-@@ -52,7 +52,7 @@ enum fixed_addresses {
- 	FIX_HOLE,
- 	/* reserve the top 128K for early debugging purposes */
- 	FIX_EARLY_DEBUG_TOP = FIX_HOLE,
--	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128, PAGE_SIZE)/PAGE_SIZE)-1,
-+	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128K, PAGE_SIZE)/PAGE_SIZE)-1,
- #ifdef CONFIG_HIGHMEM
- 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
- 	FIX_KMAP_END = FIX_KMAP_BEGIN+(KM_TYPE_NR*NR_CPUS)-1,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 9e31f9569bf78..acd8fb4981142 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -4889,7 +4889,8 @@ static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
+ 	 * false interrupt if device completes another request after resetting
+ 	 * aggregation and before reading the DB.
+ 	 */
+-	if (ufshcd_is_intr_aggr_allowed(hba))
++	if (ufshcd_is_intr_aggr_allowed(hba) &&
++	    !(hba->quirks & UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR))
+ 		ufshcd_reset_intr_aggr(hba);
+ 
+ 	tr_doorbell = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index ceadbd548e06d..5b1acdd83d5c1 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -523,6 +523,12 @@ enum ufshcd_quirks {
+ 	 * Clear handling for transfer/task request list is just opposite.
+ 	 */
+ 	UFSHCI_QUIRK_BROKEN_REQ_LIST_CLR		= 1 << 6,
++
++	/*
++	 * This quirk needs to be enabled if host controller doesn't allow
++	 * that the interrupt aggregation timer and counter are reset by s/w.
++	 */
++	UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR		= 1 << 7,
+ };
+ 
+ enum ufshcd_caps {
 -- 
 2.25.1
 
