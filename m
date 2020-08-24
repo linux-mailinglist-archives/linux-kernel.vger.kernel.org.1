@@ -2,635 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52CF2519FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E8A251A0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgHYNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:44:17 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57653 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726580AbgHYNll (ORCPT
+        id S1726682AbgHYNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:46:25 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34071 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726351AbgHYNll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Aug 2020 09:41:41 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id BF02FC3B;
-        Tue, 25 Aug 2020 09:35:32 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 25E955800F9;
+        Tue, 25 Aug 2020 09:35:39 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:33 -0400
+  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=wnFngmVxQe9ellAXLU5CQNGZLaT
-        U205LKAOzn3wlRqU=; b=HBK6tJJms/969m5VWNmWqcVVYMLeyty5RDjESPuZYhD
-        SGqcE9pCrYcmja+5EpLc4wgIVOzC7aB7gU/ExidvY5JXTXKeGb17VYt3HwNl1iq2
-        GiIi6/wtFKjvECLBobvovK8iIQPEWbbaz8pEfYCBT3Q9QUALbEEuQqNWhyYIWyFK
-        QsFJZ4qqE/unHRFbPPDOwfM1gYIn2uQyg4etN3j+WuQ/nLZlMg3T+zVl3KXaSzP6
-        gfR7aknu/67jQ9zyM8JeuTn7wrLOz5gwF+jXREi8yqvzwPn8MOs1ABRuEnDLCtKz
-        0eQx0DWRlVMa9X+CVNHdd9SCvi00uC1ktWwr5yWLHtw==
+        :content-type:in-reply-to; s=fm3; bh=BD5bjXAobBCo9yTevZ5BZkrhVrV
+        sqNpdHQCkmUriY40=; b=kuV2RCaEiK33UvZoHu5zDowvk+1jn3Yo0s+6FrDTG4T
+        vkpluoU5hENDRI3Dh30C6mvULk9bTrGgyZwXQuIAlTeX/9JWKUK/WQE2dkUzMvgQ
+        M4LkeCSOw0a6YRIYoOrPMjMh5UvJyWa9dc5yqktipM77D/3Asz+SPqU+5ePwS60s
+        O1XjVAmAvv7FJtrlUyiJtchoqBaHD0bJ6+NAiCTA9Pjt/zCERA5EN6R7h9OsOLaY
+        fqoqRwuP/8MqJV0fIeHlHkrdoRmyf3jO60Sz2vrUo9KN2Efug87QhFh+8ERF+XC9
+        7ZLn4TthxylC8UbRqMsCQpeGNByMuOCH3h7r9x2qv5A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=wnFngm
-        VxQe9ellAXLU5CQNGZLaTU205LKAOzn3wlRqU=; b=iyeW5BON3G1yMIUwb1DJM1
-        em61RHNn1c3w3plXRzoT1uaA/jHHy748vB7B2c4CdhKe108WQZLn2tiHL/uYakjM
-        lYxnHrzy8/QgTOgJWP+c9aa6vyyVTYvPM5buRhXNn8uzTO6I7znAKUXrOAo8cN3d
-        FrmkmAMJCFAgI8pTHTO+tOk/H/MCwfMN6u87/iY4YMdhbSiyLGG65xbICtcNnZXD
-        vU3PxPu9jNdzeYImER0lcyZVIOvLQqfVaI2AQqYx/baDxhgPI7t8oXW++T994/so
-        CSPwEBqQ6jZ3CHg77rkCgg+sn/xMuJ+PAo+y0XqwG16yUNVJAEtkkgOQBqVvev3w
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=BD5bjX
+        AobBCo9yTevZ5BZkrhVrVsqNpdHQCkmUriY40=; b=BqNzfJk9idLMcxnAJ3vfsf
+        +ZUuvY9k2OeVrrgatSXhQ7leyf2HWpge8QmJYMjBmR7xbdRg02NzuvEpYi9hEO7a
+        G9qeMgzfoNqzYXORpMUuqOUC4k/J7ahp4OB9o+wfddjmr12ANDgMd7G8xo3BZDNz
+        IZO6+oRwEnmTauNTmZETu6cQVAin9XSJDtqdK77c5V0zRDyVbbcfbfNUhPsmoPB4
+        dDuJonGD7lRzU53k2AdaxO3u0/wjcwzr+mWgP3BGZurekknd2LVT1KQnmcpbdv2E
+        3EcNoOoToPiM2r9CoWgR0Id5ejn3fhArslG9hyyBAExlcXWIhcAwNNbL2+Ji7yOQ
         ==
-X-ME-Sender: <xms:pBNFXxgeeWF0pBjAzCFgUYAdBerZ7OVz2TyfjXZLbWlTK5OVaT7O1w>
+X-ME-Sender: <xms:qhNFXzOpmuQP1n_ZBDvo8EYhCmcSFDeNC84gEqTrZy3zIujHkjqTrg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeettdeigedttddvuddvheduieefue
-    dugfefieelkeetvdektdfhheehhfetvdehjeenucffohhmrghinhephigrmhhlrdhimhen
-    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:pBNFX2B8sSeTlHDuy7xUSPGWOnM5969nfLRIvIkg5FpowhqDijqwTw>
-    <xmx:pBNFXxGNMDzIqRCYJAzJlF5cx7cPx8RO8RhFBzQgKUDIGDuj8X9rxA>
-    <xmx:pBNFX2TC-E1tC63w4W1hH0o8IDtM5phiRv7DE3TiHEj2wdnbxxd4uQ>
-    <xmx:pBNFXy9aa_mGl2V3wCvQamrjXfg-jXDKuCAOOVEEP8aKRjCsRVrsig>
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnheptdejfeekvdffhffhffehjeevjefhfeffffdvieevtdeghfelveeuuddtffei
+    gfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhpihhnihgtshdrnhgvthdpfi
+    hhihhtvghquhgrrhhkrdhorhhgnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvg
+    hrnhhordhtvggthh
+X-ME-Proxy: <xmx:qhNFX9_418Z59Wk0Kr4eooCWpDW8MTOqqJiyJV4NvTmY-CYrUK_Jhw>
+    <xmx:qhNFXySpgXqXKBjYIHUNPOiCh932i_hiwGtBHqOaqM4aplZfCAEEDA>
+    <xmx:qhNFX3vIPhFRDfg3IYr9Limzm3QXoWQ_7zDiSditLNiVJhKHPFrPuw>
+    <xmx:qxNFX_79UvOw9T7WNzjnEvscx8-QeKJcvTNKUW7_p-HYl8EbiS0ajA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E2C143060067;
-        Tue, 25 Aug 2020 09:35:31 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 11:39:52 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id 46C0930600A6;
+        Tue, 25 Aug 2020 09:35:38 -0400 (EDT)
+Date:   Mon, 24 Aug 2020 15:11:33 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     stulluk@gmail.com
-Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: arm: dts: allwinner: a20: Add Drejo DS167 initial support
-Message-ID: <20200818093952.77ilfvgw2nzcwrme@gilmour.lan>
-References: <20200802202924.5166-1-stulluk@gmail.com>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v2 13/14] [DO NOT MERGE] arm64: dts: allwinner: h6: Add
+ GPU OPP table
+Message-ID: <20200824131133.hp3resve6c3r3xqq@gilmour.lan>
+References: <20200704102535.189647-1-peron.clem@gmail.com>
+ <20200704102535.189647-14-peron.clem@gmail.com>
+ <20200704121301.jfd3m3jnlghmddg4@gilmour.lan>
+ <CAJiuCceMS__bNVO54E2OYnqnaOAL9pGkxRo4XAABiyqagaEtmw@mail.gmail.com>
+ <CAJiuCce58Gaxf_Qg2cnMwvOgUqYU__eKb3MDX1Fe_+47htg2bA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fesncdsf7l56tltx"
+        protocol="application/pgp-signature"; boundary="ssjrkcbupbbjduka"
 Content-Disposition: inline
-In-Reply-To: <20200802202924.5166-1-stulluk@gmail.com>
+In-Reply-To: <CAJiuCce58Gaxf_Qg2cnMwvOgUqYU__eKb3MDX1Fe_+47htg2bA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fesncdsf7l56tltx
-Content-Type: text/plain; charset=us-ascii
+--ssjrkcbupbbjduka
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Clement,
 
-On Sun, Aug 02, 2020 at 11:29:24PM +0300, stulluk@gmail.com wrote:
-> From: Sertac TULLUK <stulluk@gmail.com>
+On Mon, Aug 03, 2020 at 09:54:05AM +0200, Cl=E9ment P=E9ron wrote:
+> Hi Maxime and All,
 >=20
-> Drejo DS167 is an Allwinner A20 based IoT device, which support=20
+> On Sat, 4 Jul 2020 at 16:56, Cl=E9ment P=E9ron <peron.clem@gmail.com> wro=
+te:
+> >
+> > Hi Maxime,
+> >
+> > On Sat, 4 Jul 2020 at 14:13, Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Sat, Jul 04, 2020 at 12:25:34PM +0200, Cl=E9ment P=E9ron wrote:
+> > > > Add an Operating Performance Points table for the GPU to
+> > > > enable Dynamic Voltage & Frequency Scaling on the H6.
+> > > >
+> > > > The voltage range is set with minival voltage set to the target
+> > > > and the maximal voltage set to 1.2V. This allow DVFS framework to
+> > > > work properly on board with fixed regulator.
+> > > >
+> > > > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> > >
+> > > That patch seems reasonable, why shouldn't we merge it?
+> >
+> > I didn't test it a lot and last time I did, some frequencies looked uns=
+table.
+> > https://lore.kernel.org/patchwork/cover/1239739/
+> >
+> > This series adds regulator support to Panfrost devfreq, I will send a
+> > new one if DVFS on the H6 GPU is stable.
+> >
+> > I got this running glmark2 last time
+> > # glmark2-es2-drm
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >     glmark2 2017.07
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >     OpenGL Information
+> >     GL_VENDOR:     Panfrost
+> >     GL_RENDERER:   Mali T720 (Panfrost)
+> >     GL_VERSION:    OpenGL ES 2.0 Mesa 20.0.5
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >
+> > [   93.550063] panfrost 1800000.gpu: GPU Fault 0x00000088 (UNKNOWN) at
+> > 0x0000000080117100
+> > [   94.045401] panfrost 1800000.gpu: gpu sched timeout, js=3D0,
+> > config=3D0x3700, status=3D0x8, head=3D0x21d6c00, tail=3D0x21d6c00,
+> > sched_job=3D00000000e3c2132f
+> >
+> > [  328.871070] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA
+> > 0x0000000000000000
+> > [  328.871070] Reason: TODO
+> > [  328.871070] raw fault status: 0xAA0003C2
+> > [  328.871070] decoded fault status: SLAVE FAULT
+> > [  328.871070] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
+> > [  328.871070] access type 0x3: WRITE
+> > [  328.871070] source id 0xAA00
+> > [  329.373327] panfrost 1800000.gpu: gpu sched timeout, js=3D1,
+> > config=3D0x3700, status=3D0x8, head=3D0xa1a4900, tail=3D0xa1a4900,
+> > sched_job=3D000000007ac31097
+> > [  329.386527] panfrost 1800000.gpu: js fault, js=3D0,
+> > status=3DDATA_INVALID_FAULT, head=3D0xa1a4c00, tail=3D0xa1a4c00
+> > [  329.396293] panfrost 1800000.gpu: gpu sched timeout, js=3D0,
+> > config=3D0x3700, status=3D0x58, head=3D0xa1a4c00, tail=3D0xa1a4c00,
+> > sched_job=3D0000000004c90381
+> > [  329.411521] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA
+> > 0x0000000000000000
+> > [  329.411521] Reason: TODO
+> > [  329.411521] raw fault status: 0xAA0003C2
+> > [  329.411521] decoded fault status: SLAVE FAULT
+> > [  329.411521] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
+> > [  329.411521] access type 0x3: WRITE
+> > [  329.411521] source id 0xAA00
 >=20
-> - Allwinner A20 Cortex-A7
-> - Mali-400MP2 GPU
-> - AXP209 PMIC
-> - 1GB DDR3 RAM
-> - 8GB eMMC
-> - 10/100M Ethernet
-> - SATA
-> - HDMI
-> - 10.1inch and 7.0inch LVDS LCD and Touch screens
-> - CSI: OV5640 sensor
-> - USB OTG
-> - 2x USB2.0
-> - builtin KNX Transceiver
-> - 3x Dry Contact Input
-> - 3x Relay output
-> - IR
-> - UART3
-> - SPI1
-> - RTC Battery
-> - 8x GPIO
-> - Analogue + Digital Microphone
-> - PAM8620 speaker Amplifier
-> - 12V DC power supply
-> - 3.7V Battery Operable
+> Just to keep a track of this issue.
 >=20
-> Signed-off-by: Sertac TULLUK <stulluk@gmail.com>
-> ---
->  arch/arm/boot/dts/Makefile                    |   2 +
->  .../boot/dts/sun7i-a20-drejo-ds167-emmc.dts   |  69 ++++
->  arch/arm/boot/dts/sun7i-a20-drejo-ds167.dts   | 361 ++++++++++++++++++
->  3 files changed, 432 insertions(+)
->  create mode 100644 arch/arm/boot/dts/sun7i-a20-drejo-ds167-emmc.dts
->  create mode 100644 arch/arm/boot/dts/sun7i-a20-drejo-ds167.dts
+> Piotr Oniszczuk give more test and seems to be software related:
+> https://www.spinics.net/lists/dri-devel/msg264279.html
 >=20
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 3823090d0..574305522 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1115,6 +1115,8 @@ dtb-$(CONFIG_MACH_SUN7I) +=3D \
->  	sun7i-a20-olinuxino-lime2-emmc.dtb \
->  	sun7i-a20-olinuxino-micro.dtb \
->  	sun7i-a20-olinuxino-micro-emmc.dtb \
-> +	sun7i-a20-drejo-ds167.dtb \
-> +	sun7i-a20-drejo-ds167-emmc.dtb \
+> Ondrej gave a great explanation about a possible origin of this issue:
+> https://freenode.irclog.whitequark.org/linux-sunxi/2020-07-11
+>=20
+> 20:12 <megi> looks like gpu pll on H6 is NKMP clock, and those are
+> implemented in such a way in mainline that they are prone to
+> overshooting the frequency during output divider reduction
+> 20:13 <megi> so disabling P divider may help
+> 20:13 <megi> or fixing the dividers
+> 20:14 <megi> and just allowing N to change
+> 20:22 <megi> hmm, I haven't looked at this for quite some time, but H6
+> BSP way of setting PLL factors actually makes the most sense out of
+> everything I've seen/tested so far
+> 20:23 <megi> it waits for lock not after setting NK factors, but after
+> reducing the M factor (pre-divider)
+> 20:24 <megi> I might as well re-run my CPU PLL tester with this
+> algorithm, to see if it fixes the lockups
+> 20:26 <megi> it makes sense to wait for PLL to stabilize "after"
+> changing all the factors that actually affect the VCO, and not just
+> some of them
+> 20:27 <megi> warpme_: ^
+> 20:28 <megi> it may be the same thing that plagues the CPU PLL rate
+> changes at runtime
 
-Why do you need an emmc variant here?
+I guess it's one of the bugs we never heard of...
 
->  	sun7i-a20-orangepi.dtb \
->  	sun7i-a20-orangepi-mini.dtb \
->  	sun7i-a20-pcduino3.dtb \
-> diff --git a/arch/arm/boot/dts/sun7i-a20-drejo-ds167-emmc.dts b/arch/arm/=
-boot/dts/sun7i-a20-drejo-ds167-emmc.dts
-> new file mode 100644
-> index 000000000..b6147eb01
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sun7i-a20-drejo-ds167-emmc.dts
-> @@ -0,0 +1,69 @@
-> +/*
-> + * Copyright 2020 Sertac TULLUK
-> + *
-> + * Sertac TULLUK <stulluk@gmail.com>
-> + *
-> + * This file is dual-licensed: you can use it either under the terms
-> + * of the GPL or the X11 license, at your option. Note that this dual
-> + * licensing only applies to this file, and not this project as a
-> + * whole.
-> + *
-> + *  a) This file is free software; you can redistribute it and/or
-> + *     modify it under the terms of the GNU General Public License as
-> + *     published by the Free Software Foundation; either version 2 of the
-> + *     License, or (at your option) any later version.
-> + *
-> + *     This file is distributed in the hope that it will be useful,
-> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *     GNU General Public License for more details.
-> + *
-> + * Or, alternatively,
-> + *
-> + *  b) Permission is hereby granted, free of charge, to any person
-> + *     obtaining a copy of this software and associated documentation
-> + *     files (the "Software"), to deal in the Software without
-> + *     restriction, including without limitation the rights to use,
-> + *     copy, modify, merge, publish, distribute, sublicense, and/or
-> + *     sell copies of the Software, and to permit persons to whom the
-> + *     Software is furnished to do so, subject to the following
-> + *     conditions:
-> + *
-> + *     The above copyright notice and this permission notice shall be
-> + *     included in all copies or substantial portions of the Software.
-> + *
-> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + *     OTHER DEALINGS IN THE SOFTWARE.
-> + */
+It would be a good idea to test it on another platform (like Rockchip?)
+to rule out any driver issue?
 
-You should use an SPDX tag here instead
-
-> +#include "sun7i-a20-drejo-ds167.dts"
-> +
-> +/ {
-> +	model =3D "drejo DS167-eMMC";
-
-What is the casing of the vendor name? You use an uppercase in the
-commit title, but a lowercase letter here
-
-> +	compatible =3D "drejo,sun7i-a20-drejo-ds167-emmc", "allwinner,sun7i-a20=
-";
-
-The vendor prefix must be documented in vendor-prefixes.yaml, and
-similarly the board compatible must be documented in arm/sunxi.yaml.
-
-I'm not really sure why you'd need a compatible so complicated. If the
-DS167 ships only with an A20, then you can simply use drejo,ds167-emmc.
-Also, adding the base board compatible would make sense here.
-
-> +
-> +	mmc2_pwrseq: pwrseq {
-> +		compatible =3D "mmc-pwrseq-emmc";
-> +		reset-gpios =3D <&pio 2 24 GPIO_ACTIVE_LOW>;
-> +	};
-> +};
-> +
-> +&mmc2 {
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-> +	bus-width =3D <4>;
-> +	non-removable;
-> +	mmc-pwrseq =3D <&mmc2_pwrseq>;
-> +	status =3D "okay";
-> +
-> +	emmc: emmc@0 {
-> +		reg =3D <0>;
-> +		compatible =3D "mmc-card";
-> +		broken-hpi;
-> +	};
-> +};
-> diff --git a/arch/arm/boot/dts/sun7i-a20-drejo-ds167.dts b/arch/arm/boot/=
-dts/sun7i-a20-drejo-ds167.dts
-> new file mode 100644
-> index 000000000..1103a6082
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sun7i-a20-drejo-ds167.dts
-> @@ -0,0 +1,361 @@
-> +/*
-> + * Copyright 2020 Sertac TULLUK
-> + *
-> + * Sertac TULLUK <stulluk@gmail.com>
-> + *
-> + * This file is dual-licensed: you can use it either under the terms
-> + * of the GPL or the X11 license, at your option. Note that this dual
-> + * licensing only applies to this file, and not this project as a
-> + * whole.
-> + *
-> + *  a) This file is free software; you can redistribute it and/or
-> + *     modify it under the terms of the GNU General Public License as
-> + *     published by the Free Software Foundation; either version 2 of the
-> + *     License, or (at your option) any later version.
-> + *
-> + *     This file is distributed in the hope that it will be useful,
-> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *     GNU General Public License for more details.
-> + *
-> + * Or, alternatively,
-> + *
-> + *  b) Permission is hereby granted, free of charge, to any person
-> + *     obtaining a copy of this software and associated documentation
-> + *     files (the "Software"), to deal in the Software without
-> + *     restriction, including without limitation the rights to use,
-> + *     copy, modify, merge, publish, distribute, sublicense, and/or
-> + *     sell copies of the Software, and to permit persons to whom the
-> + *     Software is furnished to do so, subject to the following
-> + *     conditions:
-> + *
-> + *     The above copyright notice and this permission notice shall be
-> + *     included in all copies or substantial portions of the Software.
-> + *
-> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + *     OTHER DEALINGS IN THE SOFTWARE.
-> + */
-> +
-> +/dts-v1/;
-> +#include "sun7i-a20.dtsi"
-> +#include "sunxi-common-regulators.dtsi"
-
-If you have the PMIC regulators support, then you don't really need that
-DTSI.
-
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/ {
-> +	model =3D "drejo DS167";
-> +	compatible =3D "drejo,sun7i-a20-drejo-ds167", "allwinner,sun7i-a20";
-> +
-> +	aliases {
-> +		serial0 =3D &uart0;
-> +		serial1 =3D &uart3;
-> +
-> +		spi0 =3D &spi1;
-> +		spi1 =3D &spi2;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +
-> +        backlight: backlight {
-
-The indentation is off here.
-
-> +                compatible =3D "pwm-backlight";
-> +
-> +                brightness-levels =3D <0 1 2 4 8 16 32 64 128 255>;
-> +                default-brightness-level =3D <9>;
-> +        };
-
-You're missing the pwm attached to the backlight.
-
-> +
-> +        panel {
-> +                compatible =3D "drejo,ds167-10inch-panel", "panel-lvds";
-> +                backlight =3D <&backlight>;
-> +
-> +                width-mm =3D <220>;
-> +                height-mm =3D <132>;
-> +                data-mapping =3D "vesa-24";
-> +
-> +                panel-timing {
-> +                        /* 1280x800 @60Hz */
-> +                        clock-frequency =3D <69000000>;
-> +                        hactive =3D <1280>;
-> +                        vactive =3D <800>;
-> +                        hsync-len =3D <1>; /* hs */
-> +                        hfront-porch =3D <118>; /* ri */
-> +                        hback-porch =3D <19>; /* le */
-> +                        vfront-porch =3D <6>; /* lo */
-> +                        vback-porch =3D <9>; /* up */
-> +                        vsync-len =3D <1>; /* vs */
-
-The clock frequency doesn't match the timing you've set (it's supposed
-to be 69425280 Hz).
-
-Those comments are also fairly redundant with the name of the
-properties.
-
-> +                };
-> +
-> +                port {
-> +                        panel_input: endpoint {
-> +                                remote-endpoint =3D <&tcon0_out_lcd>;
-> +                        };
-> +                };
-> +        };
-> +=09
-> +
-> +	hdmi-connector {
-> +		compatible =3D "hdmi-connector";
-> +		type =3D "a";
-> +
-> +		port {
-> +			hdmi_con_in: endpoint {
-> +				remote-endpoint =3D <&hdmi_out_con>;
-> +			};
-> +		};
-> +	};
-> +
-> +	leds {
-> +		compatible =3D "gpio-leds";
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&led_pins_ds167>;
-
-You don't need the pinctrl properties here.
-
-> +
-> +		red {
-> +			label =3D "ds167-status";
-
-That's not the proper format for leds labels, see
-Documentation/leds/leds-class.rst
-
-> +			gpios =3D <&pio 8 9 GPIO_ACTIVE_LOW>;  /* PI9 STATUS LED NEAR A20 */
-> +			default-state =3D "on";
-> +		};
-> +	};
-> +};
-> +
-> +&ahci {
-> +	target-supply =3D <&reg_ahci_5v>;
-> +	status =3D "okay";
-> +};
-> +
-> +&codec {
-> +	status =3D "okay";
-> +};
-> +
-> +&cpu0 {
-> +	cpu-supply =3D <&reg_dcdc2>;
-> +};
-> +
-> +&de {
-> +	status =3D "okay";
-> +};
-> +
-> +&ehci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ehci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +&gmac {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&gmac_mii_pins>, <&gmac_txerr>;
-> +	phy-handle =3D <&phy1>;
-> +	phy-mode =3D "mii";
-> +	status =3D "okay";
-> +};
-> +
-> +&mali {
-> +	status =3D "okay";
-> +};
-
-The mali is always enabled
-
-> +&hdmi {
-> +	status =3D "okay";
-> +};
-> +
-> +&hdmi_out {
-> +	hdmi_out_con: endpoint {
-> +		remote-endpoint =3D <&hdmi_con_in>;
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	status =3D "okay";
-> +
-> +	axp209: pmic@34 {
-> +		reg =3D <0x34>;
-> +		interrupt-parent =3D <&nmi_intc>;
-> +		interrupts =3D <0 IRQ_TYPE_LEVEL_LOW>;
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	status =3D "okay";
-> +};
-
-What is connected to i2c1?
-
-> +
-> +
-
-There's an extra new line here
-
-> +&i2c2 {
-> +	status =3D "okay";
-> +
-> +   	clock-frequency =3D <400000>;
-> +        polytouch: edt-ft5x06@38 {
-
-I'm not sure why you need a label, and the node name should be the class
-of the device, not its model, so touchscreen
-
-> +              compatible =3D "edt,edt-ft5406", "edt,edt-ft5x06";
-> +              reg =3D <0x38>;
-> +	      interrupt-parent =3D <&pio>;
-> +	      interrupts =3D <7 21 IRQ_TYPE_EDGE_FALLING>; /* PH21 */
-> +	      wake-gpios =3D <&pio 1 13 GPIO_ACTIVE_HIGH>; /* PB13 */
-> +              touchscreen-size-x =3D <1200>;
-> +              touchscreen-size-y =3D <800>;
-> +       };
-
-The indentation is off here too
-
-> +};
-> +
-> +&i2c3 {
-> +	status =3D "okay";
-> +};
-
-What is connected to i2c3?
-
-> +
-> +
-
-Extra new line
-
-> +&lradc {
-> +	vref-supply =3D <&reg_vcc3v0>;
-> +	status =3D "okay";
-> +};
-> +
-> +&gmac_mdio {
-> +	phy1: ethernet-phy@1 {
-> +		reg =3D <1>;
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply =3D <&reg_vcc3v3>;
-
-I guess it's a regulator supplied by the PMIC too?
-
-> +	bus-width =3D <4>;
-> +	cd-gpios =3D <&pio 7 1 GPIO_ACTIVE_LOW>; /* PH1 */
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +&otg_sram {
-> +	status =3D "okay";
-> +};
-> +
-> +&pio {
-> +	gmac_txerr: gmac-txerr-pin {
-> +		pins =3D "PA17";
-> +		function =3D "gmac";
-> +	};
-
-This should be in the DTSI
-
-> +	led_pins_ds167: led-pins { =20
-> +		pins =3D "PI9";   /* Status led, on schematic, this is LED_EN */
-> +		function =3D "gpio_out";
-> +		drive-strength =3D <20>;
-> +	};
-> +};
-> +
-> +&pwm {
-> +      pinctrl-names =3D "default";
-> +      pinctrl-0 =3D <&pwm0_pin>, <&pwm1_pin>;
-> +      status =3D "okay";
-> +};
-> +
-> +#include "axp209.dtsi"
-> +
-> +&ac_power_supply {
-> +	status =3D "okay";
-> +};
-> +
-> +&battery_power_supply {
-> +	status =3D "okay";
-> +};
-> +
-> +&reg_dcdc2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <1000000>;
-> +	regulator-max-microvolt =3D <1400000>;
-> +	regulator-name =3D "vdd-cpu";
-> +};
-> +
-> +&reg_dcdc3 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <1000000>;
-> +	regulator-max-microvolt =3D <1400000>;
-> +	regulator-name =3D "vdd-int-dll";
-> +};
-> +
-> +&reg_ldo2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt =3D <3000000>;
-> +	regulator-max-microvolt =3D <3000000>;
-> +	regulator-name =3D "avcc";
-> +};
-> +
-> +&reg_ahci_5v {
-> +	status =3D "okay";
-> +};
-> +
-> +&reg_usb0_vbus {
-> +	status =3D "okay";
-> +};
-> +
-> +&reg_usb1_vbus {
-> +	status =3D "okay";
-> +};
-> +
-> +&reg_usb2_vbus {
-> +	status =3D "okay";
-> +};
-> +
-> +&spi1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&spi1_pi_pins>,
-> +		    <&spi1_cs0_pi_pin>;
-> +	status =3D "okay";
-> +};
-> +
-> +&spi2 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&spi2_pc_pins>,
-> +		    <&spi2_cs0_pc_pin>;
-> +	status =3D "okay";
-> +};
-
-What is connected to the two SPI busses?
-
-> +&tcon0 {
-> +        pinctrl-names =3D "default";
-> +        pinctrl-0 =3D <&lcd_lvds0_pins>;
-> +};
-> +
-> +&tcon0_out {
-> +        tcon0_out_lcd: endpoint {
-> +                remote-endpoint =3D <&panel_input>;
-> +        };
-> +};
-> +
-> +
-
-Extra new line here
+What do you think?
 
 Maxime
 
---fesncdsf7l56tltx
+--ssjrkcbupbbjduka
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXzuh6AAKCRDj7w1vZxhR
-xY9LAQDNrLAdnbnNJFQdXd229JtQYCiff89NdQ00HvEqcXJfSAD9HCNPUUd/mop9
-h+Cac+RCHfqNvgOq366iHoimMkcNDwI=
-=xW3f
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0O8hQAKCRDj7w1vZxhR
+xYVDAQDDudJ6bCiXmHhPMijhyU+WqByi72nw3zyKM0R1vtKqHAEA09BJDULh+d1r
+DAOm2fiobSXmAHKe46f2he9tBkh/KgM=
+=/QwQ
 -----END PGP SIGNATURE-----
 
---fesncdsf7l56tltx--
+--ssjrkcbupbbjduka--
