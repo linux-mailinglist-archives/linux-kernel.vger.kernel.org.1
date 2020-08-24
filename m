@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA80324F162
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C539224F182
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgHXDMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 23:12:51 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:24088 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726635AbgHXDMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 23:12:51 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app3 (Coremail) with SMTP id cC_KCgC30d0fMENfP8QbAw--.23170S4;
-        Mon, 24 Aug 2020 11:12:34 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Krzysztof Sobota <krzysztof.sobota@nokia.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] watchdog: Use put_device on error
-Date:   Mon, 24 Aug 2020 11:12:30 +0800
-Message-Id: <20200824031230.31050-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgC30d0fMENfP8QbAw--.23170S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFyxWFW8Cw47Xw1UCFWDCFg_yoWfuwc_ur
-        1xtr9xWr1DGrnaga4Yqa1fZrW0vF10qF4xAr10qFyxA393Xr98WrZ7Xry09w1Dua4UArn8
-        Jryqgrsa9FyDKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUjQBMtUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUCBlZdtPpD7wADsp
+        id S1727079AbgHXD1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 23:27:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:54060 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726684AbgHXD1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 23:27:11 -0400
+IronPort-SDR: SC9BCE1OJp0/5pzzQ+Prs6+hVwRI5Fa3NG8yKmNWiugxIshY2Kd4th9SHLTVxcSLNBP00sjUHF
+ Ag+6NrJmIRBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="240652813"
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="240652813"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2020 20:27:09 -0700
+IronPort-SDR: K+fZ6JLXSmksjbeNCGf+l7l5S9udUDS7ZP6MfHpEr3qjEgheL81KEtWSpCouTUfT+vCyrPFruo
+ DQM/5lLAG3UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="322006007"
+Received: from ipu5-build.bj.intel.com (HELO [10.238.232.196]) ([10.238.232.196])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Aug 2020 20:27:07 -0700
+Subject: Re: [PATCH] media: staging/intel-ipu3: css: Correctly reset some
+ memory
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, yong.zhi@intel.com
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20200822131124.157917-1-christophe.jaillet@wanadoo.fr>
+From:   Bingbu Cao <bingbu.cao@linux.intel.com>
+Message-ID: <5ae34514-13dc-671f-35a6-75c0343ddd68@linux.intel.com>
+Date:   Mon, 24 Aug 2020 11:26:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200822131124.157917-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should use put_device() instead of freeing device
-directly after device_initialize().
+Thanks for the patch.
 
-Fixes: cb36e29bb0e4b ("watchdog: initialize device before misc_register")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+On 8/22/20 9:11 PM, Christophe JAILLET wrote:
+> The intent here is to reset the whole 'scaler_coeffs_luma' array, not just
+> the first element.
+> 
+> Fixes: 	e11110a5b744 ("media: staging/intel-ipu3: css: Compute and program ccs")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/staging/media/ipu3/ipu3-css-params.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/ipu3-css-params.c b/drivers/staging/media/ipu3/ipu3-css-params.c
+> index fbd53d7c097c..e9d6bd9e9332 100644
+> --- a/drivers/staging/media/ipu3/ipu3-css-params.c
+> +++ b/drivers/staging/media/ipu3/ipu3-css-params.c
+> @@ -159,7 +159,7 @@ imgu_css_scaler_calc(u32 input_width, u32 input_height, u32 target_width,
+>  
+>  	memset(&cfg->scaler_coeffs_chroma, 0,
+>  	       sizeof(cfg->scaler_coeffs_chroma));
+> -	memset(&cfg->scaler_coeffs_luma, 0, sizeof(*cfg->scaler_coeffs_luma));
+> +	memset(&cfg->scaler_coeffs_luma, 0, sizeof(cfg->scaler_coeffs_luma));
+>  	do {
+>  		phase_step_correction++;
+>  
+> 
+Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
 
-Changelog:
-
-v2: - Use put_device() instead of just removing kfree.
-      Move the memleak part to a separate patch.
----
- drivers/watchdog/watchdog_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index 6798addabd5a..b0fa7f31b1b6 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -1021,7 +1021,7 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
- 				pr_err("%s: a legacy watchdog module is probably present.\n",
- 					wdd->info->identity);
- 			old_wd_data = NULL;
--			kfree(wd_data);
-+			put_device(&wd_data->dev);
- 			return err;
- 		}
- 	}
 -- 
-2.17.1
-
+Best regards,
+Bingbu Cao
