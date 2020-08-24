@@ -2,103 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6AD24F9E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D1624F9F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbgHXIjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:04 -0400
-Received: from relay.sw.ru ([185.231.240.75]:58058 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726825AbgHXIjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:03 -0400
-Received: from [192.168.15.190]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kA7zr-000xMS-Oh; Mon, 24 Aug 2020 11:38:31 +0300
-Subject: Re: [PATCH 0/4] mm: Simplfy cow handling
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200821234958.7896-1-peterx@redhat.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <6ebc0bfa-5afe-1114-876e-39e89143eb6d@virtuozzo.com>
-Date:   Mon, 24 Aug 2020 11:38:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729492AbgHXJvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:51:10 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:36982 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727797AbgHXIit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:49 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200824083847euoutp01d6426e091e9f8b7b5f2a44e43f51b383~uJ3skE5Gb2296422964euoutp01O
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 08:38:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200824083847euoutp01d6426e091e9f8b7b5f2a44e43f51b383~uJ3skE5Gb2296422964euoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598258327;
+        bh=d5zBGNTG09qN8oq9xk3yatQT12ck2KU9/T4te3OQtH0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=BUhVbI0FHNxXyKji/uyGzOrPdJsVp4vzOvXUCdlFmvPIdlFQbmJk4BUZY6jfDLqTq
+         jOgyoapzxeCIk3f+M3jPC/T0urPvR3kJg421ZnL3a+2Lk/Ivydwlf00y4BjYEbrTkL
+         dygrZb9bKhZeUpTVnN9SvdU4sGtYRp1V49FF2iGw=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200824083847eucas1p2b193f5d4689865e807b13c9785e1ef94~uJ3saXGlY2165121651eucas1p2c;
+        Mon, 24 Aug 2020 08:38:47 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 2A.F4.05997.79C734F5; Mon, 24
+        Aug 2020 09:38:47 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe~uJ3sG3mJ80453004530eucas1p2o;
+        Mon, 24 Aug 2020 08:38:47 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200824083847eusmtrp11aa7259a91c28ce5e12d66362cb4d44e~uJ3sGRkuy2978629786eusmtrp1m;
+        Mon, 24 Aug 2020 08:38:47 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-8b-5f437c97fcdf
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 3E.41.06017.69C734F5; Mon, 24
+        Aug 2020 09:38:47 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200824083846eusmtip2fc26e13e305b763d92ee4941eb445d4a~uJ3rzVv2m1261712617eusmtip2j;
+        Mon, 24 Aug 2020 08:38:46 +0000 (GMT)
+Subject: Re: [PATCH v1] mfd: core: Fix double-free in
+ mfd_remove_devices_fn()
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <ac27b0cc-6ede-c7ed-19ee-2472f87f93f7@samsung.com>
+Date:   Mon, 24 Aug 2020 10:38:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200821234958.7896-1-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200817235048.24577-1-digetx@gmail.com>
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplleLIzCtJLcpLzFFi42LZduznOd3pNc7xBqfeiFms/viY0eL+16OM
+        Fpd3zWFzYPbYOesuu8eda3vYPD5vkgtgjuKySUnNySxLLdK3S+DKeH9tNlvBee6KpjtbmRoY
+        z3B2MXJySAiYSLw+NJ29i5GLQ0hgBaNE59HrUM4XRokzbQvYIJzPjBJTHt1mhWl59fUAK0Ri
+        OaPEzt7JzBDOe0aJVedvMIJUCQv4S6yfcJUFxBYR8JCYPbOVCcRmFlCQ+HVvE9gkNgFDia63
+        XWwgNq+AncSP9gdANRwcLAKqEgvvxICERQXiJLYev8oEUSIocXLmE7CRnAJmEvd/7WKFGCkv
+        sf3tHGYIW1zi1pP5TCD3SAi0s0u86P7ACHG1i8TrU8eYIWxhiVfHt7BD2DISpyf3sEA0NDNK
+        PDy3lh3C6WGUuNw0A6rbWuLOuV9sINcxC2hKrN+lDxF2lHjTAnG0hACfxI23ghBH8ElM2jad
+        GSLMK9HRJgRRrSYx6/g6uLUHL1xinsCoNAvJa7OQvDMLyTuzEPYuYGRZxSieWlqcm55abJSX
+        Wq5XnJhbXJqXrpecn7uJEZhITv87/mUH464/SYcYBTgYlXh4fxyyjxdiTSwrrsw9xCjBwawk
+        wut09nScEG9KYmVValF+fFFpTmrxIUZpDhYlcV7jRS9jhQTSE0tSs1NTC1KLYLJMHJxSDYyl
+        BlM/uShmc/X6urPf116osY3hD2fxlGX/i5a+m/6SxcJZuCHvucvno7xMs9XmC4U+O7PM9EvA
+        r+IvxRssf3w7eJujcaGgFuO2FYubjxTNWfOiL11m+Xv9vpj8IxvlTS5f+yR8Yqo2a9ixmVdC
+        K7j3fz18e+Lb5nn8ya4XZhucqdhWflE01dxbiaU4I9FQi7moOBEACQ0PbiADAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsVy+t/xe7rTa5zjDb60MVqs/viY0eL+16OM
+        Fpd3zWFzYPbYOesuu8eda3vYPD5vkgtgjtKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0
+        No+1MjJV0rezSUnNySxLLdK3S9DLeH9tNlvBee6KpjtbmRoYz3B2MXJySAiYSLz6eoC1i5GL
+        Q0hgKaPEiRuv2CESMhInpzWwQtjCEn+udbFBFL1llFhwaAZQgp1DWMBXotkNpEREwENi9sxW
+        JhCbWUBB4te9TWCtQgKmEveuTQGLswkYSnS9BRnDycErYCfxo/0BUJyDg0VAVWLhnRiQsKhA
+        nMTj3v/MECWCEidnPmEBsTkFzCTu/9rFCjHeTGLe5ofMELa8xPa3c6BscYlbT+YzTWAUmoWk
+        fRaSlllIWmYhaVnAyLKKUSS1tDg3PbfYSK84Mbe4NC9dLzk/dxMjMGa2Hfu5ZQdj17vgQ4wC
+        HIxKPLw/DtnHC7EmlhVX5h5ilOBgVhLhdTp7Ok6INyWxsiq1KD++qDQntfgQoynQbxOZpUST
+        84HxnFcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgdFH7VXJ1GNa
+        q742hmud0Fq0u0nFR4vJ5eO1j7tv5Up3pU3hjNJQXm58re2TMN+9WRsO57Ee3ymxfv6fvC2z
+        L7pcdWF9yaNj9W9jpNuzGOaLeZtdw8OeZZ24mGLkZuDTbmj35Gr0yd+5qzj3n/yekhXTeH2Z
+        0QX/kIXVF/39fi+WYlOZ1GF1WEeJpTgj0VCLuag4EQDdGaGkrwIAAA==
+X-CMS-MailID: 20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe
+References: <20200817235048.24577-1-digetx@gmail.com>
+        <CGME20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2020 02:49, Peter Xu wrote:
-> This is a small series that I picked up from Linus's suggestion [0] to simplify
-> cow handling (and also more strict) by checking against page refcounts rather
-> than mapcounts.
-> 
-> I'm CCing the author and reviewer of commit 52d1e606ee73 on ksm ("mm: reuse
-> only-pte-mapped KSM page in do_wp_page()", 2019-03-05).  Please shoot if
-> there's any reason to keep the logic, or it'll be removed in this series.  For
-> more information, please refer to [3,4].
+Hi
 
-I'm not sure I understand the reasons to remove that. But the reason to add was
-to avoid excess page copying, when it is not needed in real.
- 
-> The new mm counter in the last patch can be seen as RFC, depending on whether
-> anyone dislikes it... I used it majorly for observing the page reuses, so it is
-> kind of optional.
-> 
-> Two tests I did:
-> 
->   - Run a busy loop dirty program [1] that uses 6G of memory, restrict to 1G
->     RAM + 5G swap (cgroup).  A few hours later, all things still look good.
->     Make sure to observe (still massive) correct page reuses using the new
->     counter using the last patch, probably when swapping in.
-> 
->   - Run umapsort [2] to make sure uffd-wp will work again after applying this
->     series upon master 5.9-rc1 (5.9-rc1 is broken).
-> 
-> In all cases, I must confess it's quite pleased to post a series with diffstat
-> like this...  Hopefully this won't break anyone but only to make everything
-> better.
-> 
-> Please review, thanks.
-> 
-> [0] https://lore.kernel.org/lkml/CAHk-=wjn90-=s6MBerxTuP=-FVEZtR-LpoH9eenEQ3A-QfKTZw@mail.gmail.com
-> [1] https://github.com/xzpeter/clibs/blob/master/bsd/mig_mon/mig_mon.c
-> [2] https://github.com/LLNL/umap-apps/blob/develop/src/umapsort/umapsort.cpp
-> [3] https://lore.kernel.org/lkml/CAHk-=wh0syDtNzt9jGyHRV0r1pVX5gkdJWdenwmvy=dq0AL5mA@mail.gmail.com
-> [4] https://lore.kernel.org/lkml/CAHk-=wj5Oyg0LeAxSw_vizerm=sLd=sHfcVecZMKPZn6kNbbXA@mail.gmail.com
-> 
-> Linus Torvalds (1):
->   mm: Trial do_wp_page() simplification
-> 
-> Peter Xu (3):
->   mm/ksm: Remove reuse_ksm_page()
->   mm/gup: Remove enfornced COW mechanism
->   mm: Add PGREUSE counter
-> 
->  drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  8 ---
->  include/linux/ksm.h                         |  7 ---
->  include/linux/vm_event_item.h               |  1 +
->  mm/gup.c                                    | 40 ++------------
->  mm/huge_memory.c                            |  7 +--
->  mm/ksm.c                                    | 25 ---------
->  mm/memory.c                                 | 60 +++++++--------------
->  mm/vmstat.c                                 |  1 +
->  8 files changed, 29 insertions(+), 120 deletions(-)
-> 
+On 18.08.2020 01:50, Dmitry Osipenko wrote:
+> The pdev.mfd_cell is released by platform_device_release(), which is
+> invoked by platform_device_unregister(). Hence mfd_remove_devices_fn()
+> shouldn't release the cell variable. The double-free bug is reported KASAN
+> during of MFD driver module removal.
+>
+> Fixes: 466a62d7642f ("mfd: core: Make a best effort attempt to match devices with the correct of_nodes")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+
+I've reported that almost a week earlier and got information that it 
+will be dropped:
+
+https://lore.kernel.org/lkml/79bcd1b5-2247-5e00-7d49-2f94f9b40744@samsung.com/
+
+https://lore.kernel.org/lkml/20200813080100.GI4354@dell/
+
+Sadly it finally landed in v5.9-rc1. Would be nice to mention this in 
+the revert:
+
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+>   drivers/mfd/mfd-core.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> index c3651f06684f..c50718e3db58 100644
+> --- a/drivers/mfd/mfd-core.c
+> +++ b/drivers/mfd/mfd-core.c
+> @@ -370,8 +370,6 @@ static int mfd_remove_devices_fn(struct device *dev, void *data)
+>   	regulator_bulk_unregister_supply_alias(dev, cell->parent_supplies,
+>   					       cell->num_parent_supplies);
+>   
+> -	kfree(cell);
+> -
+>   	platform_device_unregister(pdev);
+>   	return 0;
+>   }
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
