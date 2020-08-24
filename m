@@ -2,154 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7792507E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850F22507ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgHXSgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 14:36:51 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3053 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgHXSgn (ORCPT
+        id S1726473AbgHXSln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 14:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgHXSlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 14:36:43 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4408ad0000>; Mon, 24 Aug 2020 11:36:29 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 24 Aug 2020 11:36:43 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 11:36:43 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 24 Aug
- 2020 18:36:43 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 24 Aug 2020 18:36:43 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.58.8]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f4408ba0007>; Mon, 24 Aug 2020 11:36:42 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     <jens.wiklander@linaro.org>
-CC:     <arm@kernel.org>, <jhubbard@nvidia.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <olof@lixom.net>, <soc@kernel.org>,
-        <tee-dev@lists.linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>
-Subject: [PATCH v2] tee: convert convert get_user_pages() --> pin_user_pages()
-Date:   Mon, 24 Aug 2020 11:36:41 -0700
-Message-ID: <20200824183641.632126-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <CAHUa44FrxidzSUOM_JchOTa5pF6P+j8uZJA5DpKfGLWaS6tCcw@mail.gmail.com>
-References: <CAHUa44FrxidzSUOM_JchOTa5pF6P+j8uZJA5DpKfGLWaS6tCcw@mail.gmail.com>
+        Mon, 24 Aug 2020 14:41:42 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B3DC061573;
+        Mon, 24 Aug 2020 11:41:42 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o5so4994776pgb.2;
+        Mon, 24 Aug 2020 11:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wwv5QKlsYiPcoZ9vuO+QxOYhnZeQ6Dx6D5HJLYXehes=;
+        b=E0O3WnxBUF8L78zXaQX1nHHjeYMnDVtuXZ847oZjQHo9f0XLrALQtjPg7Rjpc9y5Iw
+         pbkIZ4q4RgOEK77v7CajdPP+URT8FsWP5hcUXALDIcFkZ0hsI9D+8Hb2e8+dWg4Fj//U
+         S7LHP8JGG71C39udDFnxxAZNzA+o4EBnd4Ol8yzlTQt9A7R9mldsjPQuPJbY15rR3Ni5
+         Hb0FfBlLANPR353rWiPT04EpH0axTMftxyJdiv87UmgU1cVBat8U1n4j9Izs83AYhj/a
+         HPFwwi+vwJk01Dmf5Aix2d13Mi0JziqhRPB7aSo29uhP1Qzn3/U7vnIA6sxoMMQWkfER
+         p16g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wwv5QKlsYiPcoZ9vuO+QxOYhnZeQ6Dx6D5HJLYXehes=;
+        b=gDMFFBBxuAYWGdxFmTSHoTncIMdk0u5V+Z/fcuXsEY+twfCF+I2/ntyIngVY39ttU/
+         zZ8veB74agq5/8GLWSaxKnZQ+dQUntqDPiBHX4qD3r5SFb75r1hgxj1AWNejyCvwtZbU
+         4Df5HjptWkK2bUEsseVSrfiFlZF3SZqf17pu4xJCXy7Qbj7CsysLXi+nNZcb2iJ55Ef5
+         ALgTRf7VllH8u5QN1RkwMvmCFlmMmJ6Df4xZW+bWQK/MWZ2VprjfthEPlpDn7XrS4bZi
+         uy4WYU/WoPFYgrxoqIDfqeqwkzfxblHbrG+c+Se99NsHnr5gy5Lw5C8B2NtTL/h7MRk3
+         m2YQ==
+X-Gm-Message-State: AOAM530B5npNdV4I4UJw9wwRxZGHTLuVmlVlPWLGvEwHTQX1+6ZRJlGI
+        HAgu9tgWQBphRI0a1kM6NRU=
+X-Google-Smtp-Source: ABdhPJzsprqvPOwIzpdx45JzScr/fZFSXcCrXiO3cj1RrrDFYs9Qjo68cCESjsDQav2IZ7FV1xTYeQ==
+X-Received: by 2002:a62:1b0e:: with SMTP id b14mr5116111pfb.281.1598294501572;
+        Mon, 24 Aug 2020 11:41:41 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id y7sm3144209pgk.73.2020.08.24.11.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 11:41:40 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Brian Masney <masneyb@onstation.org>,
+        Eric Anholt <eric@anholt.net>, Joerg Roedel <jroedel@suse.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Emil Velikov <emil.velikov@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hanna Hawa <hannah@marvell.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        linux-kernel@vger.kernel.org (open list),
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>, Takashi Iwai <tiwai@suse.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Subject: [PATCH 00/20] iommu/arm-smmu + drm/msm: per-process GPU pgtables
+Date:   Mon, 24 Aug 2020 11:37:34 -0700
+Message-Id: <20200824183825.1778810-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598294189; bh=z82gApoeMO2LnErU5mpg0j+Kb/ttabmSFcmdgse888w=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=iVS8/GaDU9zmT9vo7ZZLTFMXFYqgCxX40+piNePuEsBesRbJOWSE/xX0l4lnN63zP
-         rNulwOpHj0jxO0UYPRpWWnbbpBRRtjZ7Ad2Pr0Lr6Td2u5c4uA8uU/k3j/5ATc7Ldl
-         ja2qEbIIh2G8Y00MsTl++oOV4QF+2L8NxS/wYDSAu2cOMojYwGP7fRx8PV1S+PPhJf
-         eMwcpYjy4wLfip8pV0ZTrqAxTpQUf9P82fZY4js6G6bozNcuy7tmm5Q/Qm/FKQkGgz
-         bn8l+gIiliISNvEyIeLS1tvUTztwBZWDlm9e7/nwvteVcBcutQNfuKhQ6LX2q0j+XR
-         LrbSFl0y4fPnQ==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages*(), in a "Case 2" scenario
-(DMA/RDMA), using the categorization from [1]. That means that it's
-time to convert the get_user_pages*() + put_page() calls to
-pin_user_pages*() + unpin_user_pages() calls.
+From: Rob Clark <robdclark@chromium.org>
 
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
+This series adds an Adreno SMMU implementation to arm-smmu to allow GPU hardware
+pagetable switching.
 
-[1] Documentation/core-api/pin_user_pages.rst
+The Adreno GPU has built in capabilities to switch the TTBR0 pagetable during
+runtime to allow each individual instance or application to have its own
+pagetable.  In order to take advantage of the HW capabilities there are certain
+requirements needed of the SMMU hardware.
 
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
+This series adds support for an Adreno specific arm-smmu implementation. The new
+implementation 1) ensures that the GPU domain is always assigned context bank 0,
+2) enables split pagetable support (TTBR1) so that the instance specific
+pagetable can be swapped while the global memory remains in place and 3) shares
+the current pagetable configuration with the GPU driver to allow it to create
+its own io-pgtable instances.
 
-Cc: Jens Wiklander <jens.wiklander@linaro.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: tee-dev@lists.linaro.org
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linaro-mm-sig@lists.linaro.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
+The series then adds the drm/msm code to enable these features. For targets that
+support it allocate new pagetables using the io-pgtable configuration shared by
+the arm-smmu driver and swap them in during runtime.
 
-OK, this should be indentical to v1 [1], but now rebased against
-Linux 5.9-rc2.
+This version of the series merges the previous patchset(s) [1] and [2]
+with the following improvements:
 
-As before, I've compile-tested it again with a cross compiler, but that's
-the only testing I'm set up for with CONFIG_TEE.
+v15: (Respin by Rob)
+  - Adjust dt bindings to keep SoC specific compatible (Doug)
+  - Add dts workaround for cheza fw limitation
+  - Add missing 'select IOMMU_IO_PGTABLE' (Guenter)
+v14: (Respin by Rob)
+  - Minor update to 16/20 (only force ASID to zero in one place)
+  - Addition of sc7180 dtsi patch.
+v13: (Respin by Rob)
+  - Switch to a private interface between adreno-smmu and GPU driver,
+    dropping the custom domain attr (Will Deacon)
+  - Rework the SCTLR.HUPCF patch to add new fields in smmu_domain->cfg
+    rather than adding new impl hook (Will Deacon)
+  - Drop for_each_cfg_sme() in favor of plain for() loop (Will Deacon)
+  - Fix context refcnt'ing issue which was causing problems with GPU
+    crash recover stress testing.
+  - Spiff up $debugfs/gem to show process information associated with
+    VMAs
+v12:
+  - Nitpick cleanups in gpu/drm/msm/msm_iommu.c (Rob Clark)
+  - Reorg in gpu/drm/msm/msm_gpu.c (Rob Clark)
+  - Use the default asid for the context bank so that iommu_tlb_flush_all works
+  - Flush the UCHE after a page switch
+  - Add the SCTLR.HUPCF patch at the end of the series
+v11:
+  - Add implementation specific get_attr/set_attr functions (per Rob Clark)
+  - Fix context bank allocation (per Bjorn Andersson)
+v10:
+  - arm-smmu: add implementation hook to allocate context banks
+  - arm-smmu: Match the GPU domain by stream ID instead of compatible string
+  - arm-smmu: Make DOMAIN_ATTR_PGTABLE_CFG bi-directional. The leaf driver
+    queries the configuration to create a pagetable and then sends the newly
+    created configuration back to the smmu-driver to enable TTBR0
+  - drm/msm: Add context reference counting for submissions
+  - drm/msm: Use dummy functions to skip TLB operations on per-instance
+    pagetables
 
-[1] https://lore.kernel.org/r/20200519051850.2845561-1-jhubbard@nvidia.com
+[1] https://lists.linuxfoundation.org/pipermail/iommu/2020-June/045653.html
+[2] https://lists.linuxfoundation.org/pipermail/iommu/2020-June/045659.html
 
-thanks,
-John Hubbard
-NVIDIA
+Jordan Crouse (12):
+  iommu/arm-smmu: Pass io-pgtable config to implementation specific
+    function
+  iommu/arm-smmu: Add support for split pagetables
+  iommu/arm-smmu: Prepare for the adreno-smmu implementation
+  iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
+  dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
+  drm/msm: Add a context pointer to the submitqueue
+  drm/msm: Drop context arg to gpu->submit()
+  drm/msm: Set the global virtual address range from the IOMMU domain
+  drm/msm: Add support to create a local pagetable
+  drm/msm: Add support for private address space instances
+  drm/msm/a6xx: Add support for per-instance pagetables
+  arm: dts: qcom: sm845: Set the compatible string for the GPU SMMU
 
- drivers/tee/tee_shm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Rob Clark (8):
+  drm/msm: remove dangling submitqueue references
+  iommu: add private interface for adreno-smmu
+  drm/msm/gpu: add dev_to_gpu() helper
+  drm/msm: set adreno_smmu as gpu's drvdata
+  iommu/arm-smmu: constify some helpers
+  arm: dts: qcom: sc7180: Set the compatible string for the GPU SMMU
+  iommu/arm-smmu: add a way for implementations to influence SCTLR
+  drm/msm: show process names in gem_describe
 
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index 827ac3d0fea9..3c29e6c3ebe8 100644
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -32,16 +32,13 @@ static void tee_shm_release(struct tee_shm *shm)
-=20
- 		poolm->ops->free(poolm, shm);
- 	} else if (shm->flags & TEE_SHM_REGISTER) {
--		size_t n;
- 		int rc =3D teedev->desc->ops->shm_unregister(shm->ctx, shm);
-=20
- 		if (rc)
- 			dev_err(teedev->dev.parent,
- 				"unregister shm %p failed: %d", shm, rc);
-=20
--		for (n =3D 0; n < shm->num_pages; n++)
--			put_page(shm->pages[n]);
--
-+		unpin_user_pages(shm->pages, shm->num_pages);
- 		kfree(shm->pages);
- 	}
-=20
-@@ -228,7 +225,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ct=
-x, unsigned long addr,
- 	}
-=20
- 	if (flags & TEE_SHM_USER_MAPPED) {
--		rc =3D get_user_pages_fast(start, num_pages, FOLL_WRITE,
-+		rc =3D pin_user_pages_fast(start, num_pages, FOLL_WRITE,
- 					 shm->pages);
- 	} else {
- 		struct kvec *kiov;
-@@ -292,16 +289,13 @@ struct tee_shm *tee_shm_register(struct tee_context *=
-ctx, unsigned long addr,
- 	return shm;
- err:
- 	if (shm) {
--		size_t n;
--
- 		if (shm->id >=3D 0) {
- 			mutex_lock(&teedev->mutex);
- 			idr_remove(&teedev->idr, shm->id);
- 			mutex_unlock(&teedev->mutex);
- 		}
- 		if (shm->pages) {
--			for (n =3D 0; n < shm->num_pages; n++)
--				put_page(shm->pages[n]);
-+			unpin_user_pages(shm->pages, shm->num_pages);
- 			kfree(shm->pages);
- 		}
- 	}
---=20
-2.28.0
+ .../devicetree/bindings/iommu/arm,smmu.yaml   |   9 +-
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |   2 +-
+ arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi    |   9 +
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |   2 +-
+ drivers/gpu/drm/msm/Kconfig                   |   1 +
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c         |  12 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c         |  68 +++++-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h         |   1 +
+ drivers/gpu/drm/msm/adreno/adreno_device.c    |  12 +-
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c       |  18 +-
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h       |   3 +-
+ drivers/gpu/drm/msm/msm_drv.c                 |  16 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |  25 +++
+ drivers/gpu/drm/msm/msm_gem.c                 |  25 ++-
+ drivers/gpu/drm/msm/msm_gem.h                 |   6 +
+ drivers/gpu/drm/msm/msm_gem_submit.c          |   8 +-
+ drivers/gpu/drm/msm/msm_gem_vma.c             |  10 +
+ drivers/gpu/drm/msm/msm_gpu.c                 |  41 +++-
+ drivers/gpu/drm/msm/msm_gpu.h                 |  21 +-
+ drivers/gpu/drm/msm/msm_gpummu.c              |   2 +-
+ drivers/gpu/drm/msm/msm_iommu.c               | 206 +++++++++++++++++-
+ drivers/gpu/drm/msm/msm_mmu.h                 |  16 +-
+ drivers/gpu/drm/msm/msm_ringbuffer.h          |   1 +
+ drivers/gpu/drm/msm/msm_submitqueue.c         |   7 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-impl.c    |   6 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    | 155 ++++++++++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         | 102 ++++-----
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |  87 +++++++-
+ include/linux/adreno-smmu-priv.h              |  36 +++
+ 29 files changed, 772 insertions(+), 135 deletions(-)
+ create mode 100644 include/linux/adreno-smmu-priv.h
+
+-- 
+2.26.2
 
