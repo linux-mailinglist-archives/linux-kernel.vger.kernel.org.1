@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161D924F573
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BD324F496
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgHXItK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
+        id S1728506AbgHXIiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729646AbgHXItB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:49:01 -0400
+        id S1728495AbgHXIiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10725206F0;
-        Mon, 24 Aug 2020 08:48:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B40FD22B43;
+        Mon, 24 Aug 2020 08:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258940;
-        bh=QNVWbAZiTvpsphCnHYP9QoATRu4Jsu+332M3z6WLy7k=;
+        s=default; t=1598258282;
+        bh=ngj6WiQUPERZ5q4EO+GD7YhTNCR/Src7jBSoABAThGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iwhyEqnYPMYqnfCGoSLEcQtOY4/eT9xLAM+bj5S6z7sEk2evOhsbvodrC8A3NZVml
-         pBpNFlyPGW/J6YckoX/iA2XCg7Is6JJMYxyT4TkZXqUgvdjmjTRTG+S7mASY0xfDEs
-         xFImEu9NG5jTikx2elZ0mblxydWCAqeBm+aYf10w=
+        b=Ch3omN4yJlqc3mT+MOg2OPPzyLfzr8inQH8i0KiMz7FowDz9XSOS/4cUGZ8YRQ9LL
+         +G1k/MPdn8A439ghw2CCjtNoJl7nINc15sAFGZ1UePagbrKXNVxn2RXhneQpfeHcxU
+         6plIJlZ3dgpv0jMqTJ1JiwmTP1gIXfP9jbYF7NA0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/107] i40e: Set RX_ONLY mode for unicast promiscuous on VLAN
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.8 141/148] powerpc/pseries: Do not initiate shutdown when system is running on UPS
 Date:   Mon, 24 Aug 2020 10:30:39 +0200
-Message-Id: <20200824082408.734556714@linuxfoundation.org>
+Message-Id: <20200824082420.773511688@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,114 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
 
-[ Upstream commit 4bd5e02a2ed1575c2f65bd3c557a077dd399f0e8 ]
+commit 90a9b102eddf6a3f987d15f4454e26a2532c1c98 upstream.
 
-Trusted VF with unicast promiscuous mode set, could listen to TX
-traffic of other VFs.
-Set unicast promiscuous mode to RX traffic, if VSI has port VLAN
-configured. Rename misleading I40E_AQC_SET_VSI_PROMISC_TX bit to
-I40E_AQC_SET_VSI_PROMISC_RX_ONLY. Aligned unicast promiscuous with
-VLAN to the one without VLAN.
+As per PAPR we have to look for both EPOW sensor value and event
+modifier to identify the type of event and take appropriate action.
 
-Fixes: 6c41a7606967 ("i40e: Add promiscuous on VLAN support")
-Fixes: 3b1200891b7f ("i40e: When in promisc mode apply promisc mode to Tx Traffic as well")
-Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In LoPAPR v1.1 section 10.2.2 includes table 136 "EPOW Action Codes":
+
+  SYSTEM_SHUTDOWN 3
+
+  The system must be shut down. An EPOW-aware OS logs the EPOW error
+  log information, then schedules the system to be shut down to begin
+  after an OS defined delay internal (default is 10 minutes.)
+
+Then in section 10.3.2.2.8 there is table 146 "Platform Event Log
+Format, Version 6, EPOW Section", which includes the "EPOW Event
+Modifier":
+
+  For EPOW sensor value = 3
+  0x01 = Normal system shutdown with no additional delay
+  0x02 = Loss of utility power, system is running on UPS/Battery
+  0x03 = Loss of system critical functions, system should be shutdown
+  0x04 = Ambient temperature too high
+  All other values = reserved
+
+We have a user space tool (rtas_errd) on LPAR to monitor for
+EPOW_SHUTDOWN_ON_UPS. Once it gets an event it initiates shutdown
+after predefined time. It also starts monitoring for any new EPOW
+events. If it receives "Power restored" event before predefined time
+it will cancel the shutdown. Otherwise after predefined time it will
+shutdown the system.
+
+Commit 79872e35469b ("powerpc/pseries: All events of
+EPOW_SYSTEM_SHUTDOWN must initiate shutdown") changed our handling of
+the "on UPS/Battery" case, to immediately shutdown the system. This
+breaks existing setups that rely on the userspace tool to delay
+shutdown and let the system run on the UPS.
+
+Fixes: 79872e35469b ("powerpc/pseries: All events of EPOW_SYSTEM_SHUTDOWN must initiate shutdown")
+Cc: stable@vger.kernel.org # v4.0+
+Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+[mpe: Massage change log and add PAPR references]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200820061844.306460-1-hegdevasant@linux.vnet.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../net/ethernet/intel/i40e/i40e_adminq_cmd.h |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_common.c | 35 ++++++++++++++-----
- 2 files changed, 28 insertions(+), 9 deletions(-)
+ arch/powerpc/platforms/pseries/ras.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-index 69a2daaca5c56..d7684ac2522ef 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-@@ -1211,7 +1211,7 @@ struct i40e_aqc_set_vsi_promiscuous_modes {
- #define I40E_AQC_SET_VSI_PROMISC_BROADCAST	0x04
- #define I40E_AQC_SET_VSI_DEFAULT		0x08
- #define I40E_AQC_SET_VSI_PROMISC_VLAN		0x10
--#define I40E_AQC_SET_VSI_PROMISC_TX		0x8000
-+#define I40E_AQC_SET_VSI_PROMISC_RX_ONLY	0x8000
- 	__le16	seid;
- #define I40E_AQC_VSI_PROM_CMD_SEID_MASK		0x3FF
- 	__le16	vlan_tag;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
-index 3160b5bbe6728..66f7deaf46ae2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_common.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
-@@ -1949,6 +1949,21 @@ i40e_status i40e_aq_set_phy_debug(struct i40e_hw *hw, u8 cmd_flags,
- 	return status;
- }
+--- a/arch/powerpc/platforms/pseries/ras.c
++++ b/arch/powerpc/platforms/pseries/ras.c
+@@ -184,7 +184,6 @@ static void handle_system_shutdown(char
+ 	case EPOW_SHUTDOWN_ON_UPS:
+ 		pr_emerg("Loss of system power detected. System is running on"
+ 			 " UPS/battery. Check RTAS error log for details\n");
+-		orderly_poweroff(true);
+ 		break;
  
-+/**
-+ * i40e_is_aq_api_ver_ge
-+ * @aq: pointer to AdminQ info containing HW API version to compare
-+ * @maj: API major value
-+ * @min: API minor value
-+ *
-+ * Assert whether current HW API version is greater/equal than provided.
-+ **/
-+static bool i40e_is_aq_api_ver_ge(struct i40e_adminq_info *aq, u16 maj,
-+				  u16 min)
-+{
-+	return (aq->api_maj_ver > maj ||
-+		(aq->api_maj_ver == maj && aq->api_min_ver >= min));
-+}
-+
- /**
-  * i40e_aq_add_vsi
-  * @hw: pointer to the hw struct
-@@ -2074,18 +2089,16 @@ i40e_status i40e_aq_set_vsi_unicast_promiscuous(struct i40e_hw *hw,
- 
- 	if (set) {
- 		flags |= I40E_AQC_SET_VSI_PROMISC_UNICAST;
--		if (rx_only_promisc &&
--		    (((hw->aq.api_maj_ver == 1) && (hw->aq.api_min_ver >= 5)) ||
--		     (hw->aq.api_maj_ver > 1)))
--			flags |= I40E_AQC_SET_VSI_PROMISC_TX;
-+		if (rx_only_promisc && i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
-+			flags |= I40E_AQC_SET_VSI_PROMISC_RX_ONLY;
- 	}
- 
- 	cmd->promiscuous_flags = cpu_to_le16(flags);
- 
- 	cmd->valid_flags = cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_UNICAST);
--	if (((hw->aq.api_maj_ver >= 1) && (hw->aq.api_min_ver >= 5)) ||
--	    (hw->aq.api_maj_ver > 1))
--		cmd->valid_flags |= cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_TX);
-+	if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
-+		cmd->valid_flags |=
-+			cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_RX_ONLY);
- 
- 	cmd->seid = cpu_to_le16(seid);
- 	status = i40e_asq_send_command(hw, &desc, NULL, 0, cmd_details);
-@@ -2182,11 +2195,17 @@ enum i40e_status_code i40e_aq_set_vsi_uc_promisc_on_vlan(struct i40e_hw *hw,
- 	i40e_fill_default_direct_cmd_desc(&desc,
- 					  i40e_aqc_opc_set_vsi_promiscuous_modes);
- 
--	if (enable)
-+	if (enable) {
- 		flags |= I40E_AQC_SET_VSI_PROMISC_UNICAST;
-+		if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
-+			flags |= I40E_AQC_SET_VSI_PROMISC_RX_ONLY;
-+	}
- 
- 	cmd->promiscuous_flags = cpu_to_le16(flags);
- 	cmd->valid_flags = cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_UNICAST);
-+	if (i40e_is_aq_api_ver_ge(&hw->aq, 1, 5))
-+		cmd->valid_flags |=
-+			cpu_to_le16(I40E_AQC_SET_VSI_PROMISC_RX_ONLY);
- 	cmd->seid = cpu_to_le16(seid);
- 	cmd->vlan_tag = cpu_to_le16(vid | I40E_AQC_SET_VSI_VLAN_VALID);
- 
--- 
-2.25.1
-
+ 	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
 
 
