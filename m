@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ECE24F912
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D4A24F99F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgHXIpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42506 "EHLO mail.kernel.org"
+        id S1728149AbgHXIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729134AbgHXIp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:27 -0400
+        id S1728809AbgHXIlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:41:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 719102072D;
-        Mon, 24 Aug 2020 08:45:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0EB22075B;
+        Mon, 24 Aug 2020 08:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258727;
-        bh=gYZjOG+RhGYnfjsq3qWn7jd/mSGHDgkxsezz2+QisPo=;
+        s=default; t=1598258465;
+        bh=ObB8scPObpqBxHgYAz3uByh5AW7ZXQnLWcvr0snphRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GB/U1vaYUK0SRd19hC6b5V6Hqu5fOMGr6o9IRul2ECYpncQl2m6zjdqh+Ez4UqShG
-         GNErq4XKPR3U2jaxQosAbTfWAFBXAXzChdxm/esgO98jTY9L0GtULqqC5h7Df9Fukt
-         auoVZRCTbb+T9exRiUtUs/wDo6sNIQMy28CwKUQ8=
+        b=wEgEjEj2qEuBGOH1vyrJnowK2DAUIp/lS5McX5nVB00MNOB+8Oiqn83j3AXLnVoSj
+         3gMm/S0zHsfplSGaGx4g9S0eKqbFwU05OXDZrSGh0gk8uEU/LYkPbCPWEpiWFw6RQ8
+         dCyqQfppDMWHN7HCtKfl8pmBLwhHOqMLR1HxdzvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.4 024/107] can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
+        stable@vger.kernel.org, Eiichi Tsukata <devel@etsukata.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 056/124] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
 Date:   Mon, 24 Aug 2020 10:29:50 +0200
-Message-Id: <20200824082406.286863477@linuxfoundation.org>
+Message-Id: <20200824082412.177863021@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Eiichi Tsukata <devel@etsukata.com>
 
-commit af804b7826350d5af728dca4715e473338fbd7e5 upstream.
+[ Upstream commit 96cf2a2c75567ff56195fe3126d497a2e7e4379f ]
 
-This patch adds check to ensure that the struct net_device::ml_priv is
-allocated, as it is used later by the j1939 stack.
+If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
+shows the following warning:
 
-The allocation is done by all mainline CAN network drivers, but when using
-bond or team devices this is not the case.
+  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
+  member access within null pointer of type 'struct xfs_kobj'
+  Call Trace:
+   dump_stack+0x10e/0x195
+   ubsan_type_mismatch_common+0x241/0x280
+   __ubsan_handle_type_mismatch_v1+0x32/0x40
+   init_xfs_fs+0x12b/0x28f
+   do_one_initcall+0xdd/0x1d0
+   do_initcall_level+0x151/0x1b6
+   do_initcalls+0x50/0x8f
+   do_basic_setup+0x29/0x2b
+   kernel_init_freeable+0x19f/0x20b
+   kernel_init+0x11/0x1e0
+   ret_from_fork+0x22/0x30
 
-Bail out if no ml_priv is allocated.
+Fix it by checking parent_kobj before the code accesses its member.
 
-Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-4-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+[darrick: minor whitespace edits]
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/socket.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/xfs/xfs_sysfs.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -466,6 +466,14 @@ static int j1939_sk_bind(struct socket *
- 			goto out_release_sock;
- 		}
- 
-+		if (!ndev->ml_priv) {
-+			netdev_warn_once(ndev,
-+					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
-+			dev_put(ndev);
-+			ret = -ENODEV;
-+			goto out_release_sock;
-+		}
+diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
+index e9f810fc67317..43585850f1546 100644
+--- a/fs/xfs/xfs_sysfs.h
++++ b/fs/xfs/xfs_sysfs.h
+@@ -32,9 +32,11 @@ xfs_sysfs_init(
+ 	struct xfs_kobj		*parent_kobj,
+ 	const char		*name)
+ {
++	struct kobject		*parent;
 +
- 		priv = j1939_netdev_start(ndev);
- 		dev_put(ndev);
- 		if (IS_ERR(priv)) {
++	parent = parent_kobj ? &parent_kobj->kobject : NULL;
+ 	init_completion(&kobj->complete);
+-	return kobject_init_and_add(&kobj->kobject, ktype,
+-				    &parent_kobj->kobject, "%s", name);
++	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
+ }
+ 
+ static inline void
+-- 
+2.25.1
+
 
 
