@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929F524F64F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFC524F658
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730536AbgHXI6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730771AbgHXI6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:58:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29221204FD;
-        Mon, 24 Aug 2020 08:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259500;
-        bh=MlJ44rehLSPaJUGChKnzLkZMd/wcW1D2ek38r9QI/p8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iQoFk1hEPIycH6uvZnb6VQY5N8y5Q4wF2KotBVBfTw4Ld3c4RRAawn3DrFWbwqdYn
-         e6RCVfW7DOX61v//zMbh+8Mvel8hvYb1AvKy3bM7s/pVnlxnbF1BjUAXBomGMNiDAz
-         f4DQsO2cphJ9wmNYH6WwxaGmlsz/IvbnyqXcZVoM=
-Date:   Mon, 24 Aug 2020 10:57:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qiwu Huang <yanziily@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qiwu Huang <huangqiwu@xiaomi.com>
-Subject: Re: [PATCH v8 1/4] power: supply: core: add quick charge type
- property
-Message-ID: <20200824085715.GB402243@kroah.com>
-References: <cover.1597376585.git.huangqiwu@xiaomi.com>
- <ced256ea8ac2f3e54c33677facc4c2ef04dee643.1597376585.git.huangqiwu@xiaomi.com>
- <20200814060909.GD1409566@kroah.com>
- <CAPtXDt1e3fi7ymW0-FSknUAYCQ80aL=4btbeA2e4Xre7+e7OtA@mail.gmail.com>
- <20200818060707.GB1742213@kroah.com>
- <CAPtXDt26DdOi6JG7x3mTrR5YwArjkAeXY2TogRnK_xkSabhL2g@mail.gmail.com>
- <20200824074357.GB4133866@kroah.com>
- <CAPtXDt0yW7Kh6a9JGfXaha_wKVjae7U74m6K=631Ofh8_m4uvg@mail.gmail.com>
+        id S1730798AbgHXI7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:59:08 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51148 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730725AbgHXI56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:57:58 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O8tULY092460;
+        Mon, 24 Aug 2020 08:57:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=X3DAykUVn3cBni5mmT6BElwNQ4x1lMO6Npp2yRLlpV4=;
+ b=LDc1UPXac3uJKxCNI8StZLNxGMHxFSUOGoKukFVF71GDJT61yrVIGUAom6DFOmn+HYgp
+ ueKRys103jantFgV0cqvy6HnGhg3JNcCKi/tfzoV4l5xz+70UaAm5Iz5oAU/QrWjvUfg
+ GO3RSBEa5ZcEUI/yZ6maL/NZ7h1W8waFa+g0ECgFpeBFOKdmFOTzVUq5TTiRva635t35
+ TKnDGAe98eCdqIIFfEVIenj6qIIBrdNufBUNIG2tn2HOoz68DEBVa+8sSexQcjNvkJAd
+ 89LZV6AQ1WnfAtuPQsndeN4ThIoU/uVQBChkQF2q8Yfn1M71k5sLAjap+2J/jRyjn60z AQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 333w6thvmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 08:57:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O8pDRa107785;
+        Mon, 24 Aug 2020 08:57:43 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 333r9gwkg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 08:57:43 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07O8vgt2005803;
+        Mon, 24 Aug 2020 08:57:42 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 01:57:42 -0700
+Date:   Mon, 24 Aug 2020 11:57:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Stefan Achatz <erazor_de@users.sourceforge.net>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] HID: roccat: add bounds checking in
+ kone_sysfs_write_settings()
+Message-ID: <20200824085735.GA208317@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPtXDt0yW7Kh6a9JGfXaha_wKVjae7U74m6K=631Ofh8_m4uvg@mail.gmail.com>
+In-Reply-To: <1597819984.4101.16.camel@web.de>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240067
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008240067
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 04:42:06PM +0800, Qiwu Huang wrote:
-> On Mon, Aug 24, 2020 at 3:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 08:54:56AM +0800, Qiwu Huang wrote:
-> > > On Tue, Aug 18, 2020 at 2:07 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Tue, Aug 18, 2020 at 09:56:28AM +0800, Qiwu Huang wrote:
-> > > > > On Fri, Aug 14, 2020 at 2:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Fri, Aug 14, 2020 at 11:46:54AM +0800, Qiwu Huang wrote:
-> > > > > > > From: Qiwu Huang <huangqiwu@xiaomi.com>
-> > > > > > >
-> > > > > > > Reports the kind of quick charge type based on
-> > > > > > > different adapter power.
-> > > > > > >
-> > > > > > > Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
-> > > > > > > ---
-> > > > > > >  Documentation/ABI/testing/sysfs-class-power | 21 +++++++++
-> > > > > > >  drivers/power/supply/power_supply_sysfs.c   |  1 +
-> > > > > > >  drivers/power/supply/qcom_smbb.c            | 51 +++++++++++++++++++++
-> > > > > > >  include/linux/power_supply.h                | 14 ++++++
-> > > > > > >  4 files changed, 87 insertions(+)
-> > > > > >
-> > > > > > You should also submit your driver that uses these new attributes at the
-> > > > > > same time.  What happened to that request?  Otherwise no one really
-> > > > > > knows how these are being used, or if they even are used by anyone.
-> > > > > >
-> > > > >
-> > > > > I don't think I can submit the whole driver because our drivers are
-> > > > > divided into three parts, the first part is in ADSP, the second part
-> > > > > is in kernel and the third part is in Android Hal.This is the second
-> > > > > part.
-> > > >
-> > > > WHat is "ADSP"?
-> > >
-> > > ADSP: advanced digital signal processor
-> >
-> > Ok, then just send the kernel driver.
-> >
-> > > > Just submit your kernel driver code, that's all we care about here.
-> > > > Userspace code is not anything we can do anything with :)
-> > >
-> > > If we ported the full driver, we would break the existing driver
-> > > structure because we would introduce more Qualcomm code. I think
-> > > that's an unreasonable change.
-> >
-> > That doesn't make much sense.  You have a working driver for these apis,
-> > just submit it for inclusion, it should never break any existing
-> > drivers, otherwise your code wouldn't work either.
-> 
-> We're an Android device, we're working on a Qualcomm based code, and
-> from the current code tree, the current code tree is missing the QTI
-> Charger code
+This code doesn't check if "settings->startup_profile" is within bounds
+and that could result in an out of bounds array access.  What the code
+does do is it checks if the settings can be written to the firmware, so
+it's possible that the firmware has a bounds check?  It's safer and
+easier to verify when the bounds checking is done in the kernel.
 
-I don't know what that means, sorry.  Just submit your driver, and any
-needed dependencies as well.  There's no other way to evaluate this api
-addition without that, right?
+Fixes: 14bf62cde794 ("HID: add driver for Roccat Kone gaming mouse")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  In the v1 patch I added a check against settings->size but that's
+potentially too strict so it was removed.
 
-thanks,
+ drivers/hid/hid-roccat-kone.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-greg k-h
+diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
+index 2ff4c8e366ff..1ca64481145e 100644
+--- a/drivers/hid/hid-roccat-kone.c
++++ b/drivers/hid/hid-roccat-kone.c
+@@ -294,31 +294,40 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
+ 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
+ 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
+ 	int retval = 0, difference, old_profile;
++	struct kone_settings *settings = (struct kone_settings *)buf;
+ 
+ 	/* I need to get my data in one piece */
+ 	if (off != 0 || count != sizeof(struct kone_settings))
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&kone->kone_lock);
+-	difference = memcmp(buf, &kone->settings, sizeof(struct kone_settings));
++	difference = memcmp(settings, &kone->settings,
++			    sizeof(struct kone_settings));
+ 	if (difference) {
+-		retval = kone_set_settings(usb_dev,
+-				(struct kone_settings const *)buf);
+-		if (retval) {
+-			mutex_unlock(&kone->kone_lock);
+-			return retval;
++		if (settings->startup_profile < 1 ||
++		    settings->startup_profile > 5) {
++			retval = -EINVAL;
++			goto unlock;
+ 		}
+ 
++		retval = kone_set_settings(usb_dev, settings);
++		if (retval)
++			goto unlock;
++
+ 		old_profile = kone->settings.startup_profile;
+-		memcpy(&kone->settings, buf, sizeof(struct kone_settings));
++		memcpy(&kone->settings, settings, sizeof(struct kone_settings));
+ 
+ 		kone_profile_activated(kone, kone->settings.startup_profile);
+ 
+ 		if (kone->settings.startup_profile != old_profile)
+ 			kone_profile_report(kone, kone->settings.startup_profile);
+ 	}
++unlock:
+ 	mutex_unlock(&kone->kone_lock);
+ 
++	if (retval)
++		return retval;
++
+ 	return sizeof(struct kone_settings);
+ }
+ static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
+-- 
+2.28.0
+
