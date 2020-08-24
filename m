@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D71224F481
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4FF24F464
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbgHXIhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:37:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
+        id S1726924AbgHXIfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:35:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728044AbgHXIhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:10 -0400
+        id S1728129AbgHXIfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:35:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E091F221E2;
-        Mon, 24 Aug 2020 08:37:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 677A8206F0;
+        Mon, 24 Aug 2020 08:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258230;
-        bh=Ri/RBWj/xKdkdllwX2uawEFqyQBCuL7mbEJLEbn/lvg=;
+        s=default; t=1598258145;
+        bh=H4PJW85OSbOIF1DQ4hnrfqyHQL20ozcmuZlOID6RNzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Po93oY2s8DBD5u9sTkr8O4T76p70lU4qAstX+vuQKCh/+u4XTaGf2htQIb2bO6gu6
-         p/yWj1NP8FFmcak6z1rJV20Wv6ziyWX+r5D3fboz1OmkaVg2CzHyX6e0L7KrKFjiyb
-         wNZio1fr9dQowuYaAlqjoUDK406JWMiRQ4OFul2M=
+        b=FpuQrlMTk43qtgwAWeRKtEXYVv+189LwW771Xe31sCVnq1wmAA//iF7bSQ2lkp5jD
+         wEv6+vLZ+bDPU58CWu3Bw6OPsVTUVOiKcFdWA0I+MHT4c9+Wht0oHsL8oegc+jN4OA
+         BV/Ko8VWOcPIc0bHYT7ZBmsvctQNPUitu32SUalE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 083/148] libbpf: Fix BTF-defined map-in-map initialization on 32-bit host arches
-Date:   Mon, 24 Aug 2020 10:29:41 +0200
-Message-Id: <20200824082418.030867573@linuxfoundation.org>
+Subject: [PATCH 5.8 084/148] can: j1939: fix kernel-infoleak in j1939_sk_sock2sockaddr_can()
+Date:   Mon, 24 Aug 2020 10:29:42 +0200
+Message-Id: <20200824082418.078240784@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
 References: <20200824082413.900489417@linuxfoundation.org>
@@ -44,72 +48,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 15728ad3e71c120278105f20fa65b3735e715e0f ]
+[ Upstream commit 38ba8b9241f5848a49b80fddac9ab5f4692e434e ]
 
-Libbpf built in 32-bit mode should be careful about not conflating 64-bit BPF
-pointers in BPF ELF file and host architecture pointers. This patch fixes
-issue of incorrect initializating of map-in-map inner map slots due to such
-difference.
+syzbot found that at least 2 bytes of kernel information
+were leaked during getsockname() on AF_CAN CAN_J1939 socket.
 
-Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200813204945.1020225-4-andriin@fb.com
+Since struct sockaddr_can has in fact two holes, simply
+clear the whole area before filling it with useful data.
+
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+CPU: 0 PID: 8466 Comm: syz-executor511 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
+ kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+ instrument_copy_to_user include/linux/instrumented.h:91 [inline]
+ _copy_to_user+0x18e/0x260 lib/usercopy.c:39
+ copy_to_user include/linux/uaccess.h:186 [inline]
+ move_addr_to_user+0x3de/0x670 net/socket.c:237
+ __sys_getsockname+0x407/0x5e0 net/socket.c:1909
+ __do_sys_getsockname net/socket.c:1920 [inline]
+ __se_sys_getsockname+0x91/0xb0 net/socket.c:1917
+ __x64_sys_getsockname+0x4a/0x70 net/socket.c:1917
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440219
+Code: Bad RIP value.
+RSP: 002b:00007ffe5ee150c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440219
+RDX: 0000000020000240 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a20
+R13: 0000000000401ab0 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----address@__sys_getsockname created at:
+ __sys_getsockname+0x91/0x5e0 net/socket.c:1894
+ __sys_getsockname+0x91/0x5e0 net/socket.c:1894
+
+Bytes 2-3 of 24 are uninitialized
+Memory access of size 24 starts at ffff8880ba2c7de8
+Data copied to user address 0000000020000100
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Cc: Robin van der Gracht <robin@protonic.nl>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20200813161834.4021638-1-edumazet@google.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ net/can/j1939/socket.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 11e4725b8b1c0..e7642a6e39f9e 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5025,7 +5025,8 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
- static int bpf_object__collect_map_relos(struct bpf_object *obj,
- 					 GElf_Shdr *shdr, Elf_Data *data)
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 11d566c70a944..1b7dc1a8547f3 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -561,6 +561,11 @@ static int j1939_sk_connect(struct socket *sock, struct sockaddr *uaddr,
+ static void j1939_sk_sock2sockaddr_can(struct sockaddr_can *addr,
+ 				       const struct j1939_sock *jsk, int peer)
  {
--	int i, j, nrels, new_sz, ptr_sz = sizeof(void *);
-+	const int bpf_ptr_sz = 8, host_ptr_sz = sizeof(void *);
-+	int i, j, nrels, new_sz;
- 	const struct btf_var_secinfo *vi = NULL;
- 	const struct btf_type *sec, *var, *def;
- 	const struct btf_member *member;
-@@ -5074,7 +5075,7 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
- 
- 			vi = btf_var_secinfos(sec) + map->btf_var_idx;
- 			if (vi->offset <= rel.r_offset &&
--			    rel.r_offset + sizeof(void *) <= vi->offset + vi->size)
-+			    rel.r_offset + bpf_ptr_sz <= vi->offset + vi->size)
- 				break;
- 		}
- 		if (j == obj->nr_maps) {
-@@ -5110,17 +5111,20 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
- 			return -EINVAL;
- 
- 		moff = rel.r_offset - vi->offset - moff;
--		if (moff % ptr_sz)
-+		/* here we use BPF pointer size, which is always 64 bit, as we
-+		 * are parsing ELF that was built for BPF target
-+		 */
-+		if (moff % bpf_ptr_sz)
- 			return -EINVAL;
--		moff /= ptr_sz;
-+		moff /= bpf_ptr_sz;
- 		if (moff >= map->init_slots_sz) {
- 			new_sz = moff + 1;
--			tmp = realloc(map->init_slots, new_sz * ptr_sz);
-+			tmp = realloc(map->init_slots, new_sz * host_ptr_sz);
- 			if (!tmp)
- 				return -ENOMEM;
- 			map->init_slots = tmp;
- 			memset(map->init_slots + map->init_slots_sz, 0,
--			       (new_sz - map->init_slots_sz) * ptr_sz);
-+			       (new_sz - map->init_slots_sz) * host_ptr_sz);
- 			map->init_slots_sz = new_sz;
- 		}
- 		map->init_slots[moff] = targ_map;
++	/* There are two holes (2 bytes and 3 bytes) to clear to avoid
++	 * leaking kernel information to user space.
++	 */
++	memset(addr, 0, J1939_MIN_NAMELEN);
++
+ 	addr->can_family = AF_CAN;
+ 	addr->can_ifindex = jsk->ifindex;
+ 	addr->can_addr.j1939.pgn = jsk->addr.pgn;
 -- 
 2.25.1
 
