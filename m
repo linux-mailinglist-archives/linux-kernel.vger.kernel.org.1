@@ -2,348 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0A25066A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389CA25065D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgHXRci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:32:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50592 "EHLO mx2.suse.de"
+        id S1727080AbgHXRcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728020AbgHXQd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:33:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3377AF86;
-        Mon, 24 Aug 2020 16:33:54 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/12] MIPS: Convert R10000_LLSC_WAR info a config option
-Date:   Mon, 24 Aug 2020 18:32:49 +0200
-Message-Id: <20200824163257.44533-8-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
-References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+        id S1728088AbgHXQfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:08 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA71A2177B;
+        Mon, 24 Aug 2020 16:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598286907;
+        bh=BgjkH+en7+kW2CLN1WT3ryTGuJJpA+Dy/5tLtJauIiM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FmraTbNcYWga7aSQ2tYsevXIlLTHhfGhTml+9F0Mb8+EkWct6QnEbXAEu5hyoqo7P
+         V3/lWR19ledDfihTGzgT7q4/J7epnerARyT5OWWakweH/0Z+draRhKqlKprFXrnEtN
+         HK85hONFq/J2TlM+cgvfKCSdZyzZ6EDVdjXSoHSM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 02/63] jbd2: make sure jh have b_transaction set in refile/unfile_buffer
+Date:   Mon, 24 Aug 2020 12:34:02 -0400
+Message-Id: <20200824163504.605538-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a new config option to enabel R1000_LLSC workaound and remove
-define from different war.h files.
+From: Lukas Czerner <lczerner@redhat.com>
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+[ Upstream commit 24dc9864914eb5813173cfa53313fcd02e4aea7d ]
+
+Callers of __jbd2_journal_unfile_buffer() and
+__jbd2_journal_refile_buffer() assume that the b_transaction is set. In
+fact if it's not, we can end up with journal_head refcounting errors
+leading to crash much later that might be very hard to track down. Add
+asserts to make sure that is the case.
+
+We also make sure that b_next_transaction is NULL in
+__jbd2_journal_unfile_buffer() since the callers expect that as well and
+we should not get into that stage in this state anyway, leading to
+problems later on if we do.
+
+Tested with fstests.
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200617092549.6712-1-lczerner@redhat.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig                              | 8 ++++++++
- arch/mips/include/asm/futex.h                  | 4 ++--
- arch/mips/include/asm/llsc.h                   | 2 +-
- arch/mips/include/asm/local.h                  | 4 ++--
- arch/mips/include/asm/mach-cavium-octeon/war.h | 1 -
- arch/mips/include/asm/mach-generic/war.h       | 1 -
- arch/mips/include/asm/mach-ip22/war.h          | 1 -
- arch/mips/include/asm/mach-ip27/war.h          | 1 -
- arch/mips/include/asm/mach-ip28/war.h          | 1 -
- arch/mips/include/asm/mach-ip30/war.h          | 5 -----
- arch/mips/include/asm/mach-ip32/war.h          | 1 -
- arch/mips/include/asm/mach-malta/war.h         | 1 -
- arch/mips/include/asm/mach-rc32434/war.h       | 1 -
- arch/mips/include/asm/mach-rm/war.h            | 1 -
- arch/mips/include/asm/mach-sibyte/war.h        | 1 -
- arch/mips/include/asm/mach-tx49xx/war.h        | 1 -
- arch/mips/include/asm/war.h                    | 8 --------
- arch/mips/kernel/syscall.c                     | 2 +-
- arch/mips/mm/tlbex.c                           | 2 +-
- 19 files changed, 15 insertions(+), 31 deletions(-)
+ fs/jbd2/transaction.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c32f6160f854..acb790b556a8 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -669,6 +669,7 @@ config SGI_IP27
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_NUMA
- 	select SYS_SUPPORTS_SMP
-+	select WAR_R10000_LLSC
- 	select MIPS_L1_CACHE_SHIFT_7
- 	select NUMA
- 	help
-@@ -704,6 +705,7 @@ config SGI_IP28
- 	select SYS_HAS_EARLY_PRINTK
- 	select SYS_SUPPORTS_64BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
-+	select WAR_R10000_LLSC
- 	select MIPS_L1_CACHE_SHIFT_7
- 	help
- 	  This is the SGI Indigo2 with R10000 processor.  To compile a Linux
-@@ -730,6 +732,7 @@ config SGI_IP30
- 	select SYS_SUPPORTS_64BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_SMP
-+	select WAR_R10000_LLSC
- 	select MIPS_L1_CACHE_SHIFT_7
- 	select ARC_MEMORY
- 	help
-@@ -2675,6 +2678,11 @@ config WAR_TX49XX_ICACHE_INDEX_INV
- config WAR_ICACHE_REFILLS
- 	bool
- 
-+# On the R10000 up to version 2.6 (not sure about 2.7) there is a bug that
-+# may cause ll / sc and lld / scd sequences to execute non-atomically.
-+config WAR_R10000_LLSC
-+	bool
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index e91aad3637a23..e65e0aca28261 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2026,6 +2026,9 @@ static void __jbd2_journal_temp_unlink_buffer(struct journal_head *jh)
+  */
+ static void __jbd2_journal_unfile_buffer(struct journal_head *jh)
+ {
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
 +
- #
- # - Highmem only makes sense for the 32-bit kernel.
- # - The current highmem code will only work properly on physically indexed
-diff --git a/arch/mips/include/asm/futex.h b/arch/mips/include/asm/futex.h
-index 2bf8f6014579..d85248404c52 100644
---- a/arch/mips/include/asm/futex.h
-+++ b/arch/mips/include/asm/futex.h
-@@ -21,7 +21,7 @@
- 
- #define __futex_atomic_op(insn, ret, oldval, uaddr, oparg)		\
- {									\
--	if (cpu_has_llsc && R10000_LLSC_WAR) {				\
-+	if (cpu_has_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {	\
- 		__asm__ __volatile__(					\
- 		"	.set	push				\n"	\
- 		"	.set	noat				\n"	\
-@@ -133,7 +133,7 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 	if (!access_ok(uaddr, sizeof(u32)))
- 		return -EFAULT;
- 
--	if (cpu_has_llsc && R10000_LLSC_WAR) {
-+	if (cpu_has_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
- 		__asm__ __volatile__(
- 		"# futex_atomic_cmpxchg_inatomic			\n"
- 		"	.set	push					\n"
-diff --git a/arch/mips/include/asm/llsc.h b/arch/mips/include/asm/llsc.h
-index c49738bc3bda..ec09fe5d6d6c 100644
---- a/arch/mips/include/asm/llsc.h
-+++ b/arch/mips/include/asm/llsc.h
-@@ -28,7 +28,7 @@
-  * works around a bug present in R10000 CPUs prior to revision 3.0 that could
-  * cause ll-sc sequences to execute non-atomically.
-  */
--#if R10000_LLSC_WAR
-+#ifdef CONFIG_WAR_R10000_LLSC
- # define __SC_BEQZ "beqzl	"
- #elif MIPS_ISA_REV >= 6
- # define __SC_BEQZ "beqzc	"
-diff --git a/arch/mips/include/asm/local.h b/arch/mips/include/asm/local.h
-index fef0fda8f82f..ecda7295ddcd 100644
---- a/arch/mips/include/asm/local.h
-+++ b/arch/mips/include/asm/local.h
-@@ -31,7 +31,7 @@ static __inline__ long local_add_return(long i, local_t * l)
- {
- 	unsigned long result;
- 
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {
-+	if (kernel_uses_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
- 		unsigned long temp;
- 
- 		__asm__ __volatile__(
-@@ -80,7 +80,7 @@ static __inline__ long local_sub_return(long i, local_t * l)
- {
- 	unsigned long result;
- 
--	if (kernel_uses_llsc && R10000_LLSC_WAR) {
-+	if (kernel_uses_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
- 		unsigned long temp;
- 
- 		__asm__ __volatile__(
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/war.h b/arch/mips/include/asm/mach-cavium-octeon/war.h
-index 1061917152c6..52be3785e3e2 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/war.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/war.h
-@@ -11,7 +11,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #define CAVIUM_OCTEON_DCACHE_PREFETCH_WAR	\
-diff --git a/arch/mips/include/asm/mach-generic/war.h b/arch/mips/include/asm/mach-generic/war.h
-index 966f40aedf16..2229c8377288 100644
---- a/arch/mips/include/asm/mach-generic/war.h
-+++ b/arch/mips/include/asm/mach-generic/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MACH_GENERIC_WAR_H */
-diff --git a/arch/mips/include/asm/mach-ip22/war.h b/arch/mips/include/asm/mach-ip22/war.h
-index 99f6531e5b9b..f10efe589f93 100644
---- a/arch/mips/include/asm/mach-ip22/war.h
-+++ b/arch/mips/include/asm/mach-ip22/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_IP22_WAR_H */
-diff --git a/arch/mips/include/asm/mach-ip27/war.h b/arch/mips/include/asm/mach-ip27/war.h
-index d8dfa7258bea..0a07cf6731c0 100644
---- a/arch/mips/include/asm/mach-ip27/war.h
-+++ b/arch/mips/include/asm/mach-ip27/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			1
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_IP27_WAR_H */
-diff --git a/arch/mips/include/asm/mach-ip28/war.h b/arch/mips/include/asm/mach-ip28/war.h
-index f252df761ec8..9fdc6425c22c 100644
---- a/arch/mips/include/asm/mach-ip28/war.h
-+++ b/arch/mips/include/asm/mach-ip28/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			1
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_IP28_WAR_H */
-diff --git a/arch/mips/include/asm/mach-ip30/war.h b/arch/mips/include/asm/mach-ip30/war.h
-index 58ff9ca345b7..8a8ec5578083 100644
---- a/arch/mips/include/asm/mach-ip30/war.h
-+++ b/arch/mips/include/asm/mach-ip30/war.h
-@@ -7,11 +7,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#ifdef CONFIG_CPU_R10000
--#define R10000_LLSC_WAR			1
--#else
--#define R10000_LLSC_WAR			0
--#endif
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_IP30_WAR_H */
-diff --git a/arch/mips/include/asm/mach-ip32/war.h b/arch/mips/include/asm/mach-ip32/war.h
-index ca3efe457ae0..9e8c0c2a4c26 100644
---- a/arch/mips/include/asm/mach-ip32/war.h
-+++ b/arch/mips/include/asm/mach-ip32/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_IP32_WAR_H */
-diff --git a/arch/mips/include/asm/mach-malta/war.h b/arch/mips/include/asm/mach-malta/war.h
-index b7827eb09375..76f7de21b7dd 100644
---- a/arch/mips/include/asm/mach-malta/war.h
-+++ b/arch/mips/include/asm/mach-malta/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_MIPS_WAR_H */
-diff --git a/arch/mips/include/asm/mach-rc32434/war.h b/arch/mips/include/asm/mach-rc32434/war.h
-index b7827eb09375..76f7de21b7dd 100644
---- a/arch/mips/include/asm/mach-rc32434/war.h
-+++ b/arch/mips/include/asm/mach-rc32434/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_MIPS_WAR_H */
-diff --git a/arch/mips/include/asm/mach-rm/war.h b/arch/mips/include/asm/mach-rm/war.h
-index fe04d059dd0c..dcb80b558321 100644
---- a/arch/mips/include/asm/mach-rm/war.h
-+++ b/arch/mips/include/asm/mach-rm/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_RM_WAR_H */
-diff --git a/arch/mips/include/asm/mach-sibyte/war.h b/arch/mips/include/asm/mach-sibyte/war.h
-index 7c376f6eee9b..0cf25eea846f 100644
---- a/arch/mips/include/asm/mach-sibyte/war.h
-+++ b/arch/mips/include/asm/mach-sibyte/war.h
-@@ -24,7 +24,6 @@ extern int sb1250_m3_workaround_needed(void);
- 
- #endif
- 
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_SIBYTE_WAR_H */
-diff --git a/arch/mips/include/asm/mach-tx49xx/war.h b/arch/mips/include/asm/mach-tx49xx/war.h
-index 5768889c20a7..8e572d7d2b6e 100644
---- a/arch/mips/include/asm/mach-tx49xx/war.h
-+++ b/arch/mips/include/asm/mach-tx49xx/war.h
-@@ -10,7 +10,6 @@
- 
- #define BCM1250_M3_WAR			0
- #define SIBYTE_1956_WAR			0
--#define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
- #endif /* __ASM_MIPS_MACH_TX49XX_WAR_H */
-diff --git a/arch/mips/include/asm/war.h b/arch/mips/include/asm/war.h
-index a0942821d67d..d405ecb78cbd 100644
---- a/arch/mips/include/asm/war.h
-+++ b/arch/mips/include/asm/war.h
-@@ -93,14 +93,6 @@
- #error Check setting of SIBYTE_1956_WAR for your platform
- #endif
- 
--/*
-- * On the R10000 up to version 2.6 (not sure about 2.7) there is a bug that
-- * may cause ll / sc and lld / scd sequences to execute non-atomically.
-- */
--#ifndef R10000_LLSC_WAR
--#error Check setting of R10000_LLSC_WAR for your platform
--#endif
--
- /*
-  * 34K core erratum: "Problems Executing the TLBR Instruction"
-  */
-diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-index c333e5788664..2afa3eef486a 100644
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -106,7 +106,7 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
- 	if (unlikely(!access_ok((const void __user *)addr, 4)))
- 		return -EINVAL;
- 
--	if (cpu_has_llsc && R10000_LLSC_WAR) {
-+	if (cpu_has_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
- 		__asm__ __volatile__ (
- 		"	.set	push					\n"
- 		"	.set	arch=r4000				\n"
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 14f8ba93367f..e931eb06af57 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -90,7 +90,7 @@ static inline int __maybe_unused bcm1250_m3_war(void)
- 
- static inline int __maybe_unused r10000_llsc_war(void)
- {
--	return R10000_LLSC_WAR;
-+	return IS_ENABLED(CONFIG_WAR_R10000_LLSC);
+ 	__jbd2_journal_temp_unlink_buffer(jh);
+ 	jh->b_transaction = NULL;
  }
+@@ -2572,6 +2575,13 @@ bool __jbd2_journal_refile_buffer(struct journal_head *jh)
  
- static int use_bbit_insns(void)
+ 	was_dirty = test_clear_buffer_jbddirty(bh);
+ 	__jbd2_journal_temp_unlink_buffer(jh);
++
++	/*
++	 * b_transaction must be set, otherwise the new b_transaction won't
++	 * be holding jh reference
++	 */
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++
+ 	/*
+ 	 * We set b_transaction here because b_next_transaction will inherit
+ 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
 -- 
-2.16.4
+2.25.1
 
