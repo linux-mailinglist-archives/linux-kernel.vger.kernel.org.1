@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0237D24FFDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EC424FFE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgHXOfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 10:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgHXOfP (ORCPT
+        id S1726718AbgHXOgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 10:36:05 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:50890 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgHXOgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 10:35:15 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF2FC061573;
-        Mon, 24 Aug 2020 07:35:15 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07f000b1b49965430c1c10.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:f000:b1b4:9965:430c:1c10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8B2601EC01A8;
-        Mon, 24 Aug 2020 16:35:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598279712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nH6JxYKkLy9Kr2gBQqL9SmNvqMEUYVecW8js1CIex3c=;
-        b=XmZMWR3oYsrKFToD1jenecjVxz8XYJT81N2Wh2h+aBHJ8K2rkYSg5ql5BZxjynuEovDUIe
-        jJI0uVDIXtw7qWdBvQJ8745fCDF8TeICr6GyPkc8Yf9nPKz5vA7t7A5ojIchS3C8fmcG5T
-        C54weZYwKS+cxu3L0vT+bmVSpFsyRjQ=
-Date:   Mon, 24 Aug 2020 16:35:14 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS, edac: Calxeda Highbank, handover
- maintenance to Andre Przywara
-Message-ID: <20200824143514.GC4732@zn.tnic>
-References: <20200824124931.2933-1-rric@kernel.org>
+        Mon, 24 Aug 2020 10:36:00 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D2DDB20B4908;
+        Mon, 24 Aug 2020 07:35:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D2DDB20B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1598279760;
+        bh=f2HxVa6n2reQW84zOhm8zec3Ry0ai0OWbaiF8IC5tb4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UGjSnPsYB1Y242uKVWWJ8KFGrfyDE6bedytPq8IseIJX45Alkj7H0JB4JSrI1y/EY
+         +wB270AESurzpju7ISCUH8K8y1e2Pu7gACR7mYmOIDs72bL5WDcheD5lrou5oGUO50
+         tLjWRTnOcagdWUADhaTwqqEMh/95XTk6Cd01ES1Y=
+Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        tusharsu@linux.microsoft.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200822010018.19453-1-nramas@linux.microsoft.com>
+ <CAEjxPJ5Kok-TBfS=XQ+NUC5tuaZRkyLBOawG4UDky51_bsMnGw@mail.gmail.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <4eec93aa-2c32-8422-f62b-b101a0d0028a@linux.microsoft.com>
+Date:   Mon, 24 Aug 2020 07:35:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200824124931.2933-1-rric@kernel.org>
+In-Reply-To: <CAEjxPJ5Kok-TBfS=XQ+NUC5tuaZRkyLBOawG4UDky51_bsMnGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 02:49:31PM +0200, Robert Richter wrote:
-> I do not have hardware anymore, nor there is ongoing development. So
-> handover maintenance to Andre who already maintains the last
-> remainings of Calxeda.
+On 8/24/20 7:00 AM, Stephen Smalley wrote:
+> On Fri, Aug 21, 2020 at 9:00 PM Lakshmi Ramasubramanian
+
 > 
-> Cc: Andre Przywara <andre.przywara@arm.com>
-> Signed-off-by: Robert Richter <rric@kernel.org>
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> +int security_read_policy_kernel(struct selinux_state *state,
+>> +                               void **data, size_t *len)
+>> +{
+>> +       int rc;
+>> +
+>> +       rc = security_read_policy_len(state, len);
+>> +       if (rc)
+>> +               return rc;
+>> +
+>> +       *data = vmalloc(*len);
+>> +       if (!*data)
+>> +               return -ENOMEM;
+>>
+>> +       return security_read_selinux_policy(state, data, len);
+>>   }
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1b7b0c1a24c8..6ed56e1a7d28 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6148,7 +6148,7 @@ S:	Supported
->  F:	drivers/edac/bluefield_edac.c
->  
->  EDAC-CALXEDA
-> -M:	Robert Richter <rric@kernel.org>
-> +M:	Andre Przywara <andre.przywara@arm.com>
->  L:	linux-edac@vger.kernel.org
->  S:	Maintained
->  F:	drivers/edac/highbank*
-> -- 
+> See the discussion here:
+> https://lore.kernel.org/selinux/20200824113015.1375857-1-omosnace@redhat.com/T/#t
+> 
+> In order for this to be safe, you need to ensure that all callers of
+> security_read_policy_kernel() have taken fsi->mutex in selinuxfs and
+> any use of security_read_policy_len() occurs while holding the mutex.
+> Otherwise, the length can change between security_read_policy_len()
+> and security_read_selinux_policy() if policy is reloaded.
+> 
 
-Applied, thanks.
+Thanks. I'll make this change.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+  -lakshmi
