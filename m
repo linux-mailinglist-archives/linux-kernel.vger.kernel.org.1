@@ -2,185 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52551250159
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6948825015E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgHXPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:43:46 -0400
-Received: from relay.sw.ru ([185.231.240.75]:54606 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727081AbgHXPid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:38:33 -0400
-Received: from [192.168.15.190]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kAEXY-00105K-KD; Mon, 24 Aug 2020 18:37:44 +0300
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Jan Kara <jack@suse.cz>
-Cc:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200821234958.7896-1-peterx@redhat.com>
- <20200821234958.7896-2-peterx@redhat.com>
- <42bc9a68-ef9e-2542-0b21-392a7f47bd74@virtuozzo.com>
- <20200824143010.GG24877@quack2.suse.cz>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <dd6eb3e6-2797-1cf3-e1af-62a809ce83f2@virtuozzo.com>
-Date:   Mon, 24 Aug 2020 18:37:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728068AbgHXPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727913AbgHXPh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:37:59 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C59920866;
+        Mon, 24 Aug 2020 15:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598283475;
+        bh=/FLQGPNihRgUzCMuWceWJqcQ7JwsYoFqRHQ31NibAt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JSE6t9BzN9VILdf0Ss+Hl8LkVU/0+tKXQNpTYe3NLtuonDEZa0rRNiPYyj3HYRRm5
+         kwNn63LW3PyvW+kdizD3KZu28C308WNzSyKOaMU4hRwPlhccAluBgOMiC2jz1PX2I1
+         TdeObO90uUKh4MYdNWcYtm6WuMucVxIsHF01+E/0=
+Date:   Mon, 24 Aug 2020 17:38:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: Re: [PATCH 4.9 15/39] jbd2: add the missing unlock_buffer() in the
+ error path of jbd2_write_superblock()
+Message-ID: <20200824153811.GC435319@kroah.com>
+References: <20200824082348.445866152@linuxfoundation.org>
+ <20200824082349.270439673@linuxfoundation.org>
+ <72009693-6c2a-df4f-f93a-31b5924e7790@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200824143010.GG24877@quack2.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72009693-6c2a-df4f-f93a-31b5924e7790@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.08.2020 17:30, Jan Kara wrote:
-> On Mon 24-08-20 11:36:22, Kirill Tkhai wrote:
->> On 22.08.2020 02:49, Peter Xu wrote:
->>> From: Linus Torvalds <torvalds@linux-foundation.org>
->>>
->>> How about we just make sure we're the only possible valid user fo the
->>> page before we bother to reuse it?
->>>
->>> Simplify, simplify, simplify.
->>>
->>> And get rid of the nasty serialization on the page lock at the same time.
->>>
->>> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
->>> [peterx: add subject prefix]
->>> Signed-off-by: Peter Xu <peterx@redhat.com>
->>> ---
->>>  mm/memory.c | 59 +++++++++++++++--------------------------------------
->>>  1 file changed, 17 insertions(+), 42 deletions(-)
->>>
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index 602f4283122f..cb9006189d22 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -2927,50 +2927,25 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
->>>  	 * not dirty accountable.
->>>  	 */
->>>  	if (PageAnon(vmf->page)) {
->>> -		int total_map_swapcount;
->>> -		if (PageKsm(vmf->page) && (PageSwapCache(vmf->page) ||
->>> -					   page_count(vmf->page) != 1))
->>> +		struct page *page = vmf->page;
->>> +
->>> +		/* PageKsm() doesn't necessarily raise the page refcount */
->>
->> No, this is wrong. PageKSM() always raises refcount.
+On Mon, Aug 24, 2020 at 07:15:25PM +0800, zhangyi (F) wrote:
+> Hi，Greg
 > 
-> OK, then I'm confused. The comment before get_ksm_page() states:
-> 
->  * get_ksm_page: checks if the page indicated by the stable node
->  * is still its ksm page, despite having held no reference to it.
->  * In which case we can trust the content of the page, and it
->  * returns the gotten page; but if the page has now been zapped,
->  * remove the stale node from the stable tree and return NULL.
-> ...
->  * You would expect the stable_node to hold a reference to the ksm page.
->  * But if it increments the page's count, swapping out has to wait for
->  * ksmd to come around again before it can free the page, which may take
->  * seconds or even minutes: much too unresponsive.  So instead we use a
->  * "keyhole reference": access to the ksm page from the stable node peeps
->  * out through its keyhole to see if that page still holds the right key,
->  * pointing back to this stable node.
-> 
-> So this all seems to indicate that KSM doesn't hold a proper page reference
-> and relies on anyone making page writeable to change page->mapping so that
-> KSM notices this and doesn't use the page anymore... Am I missing
-> something?
+> The problem this patch want to fix only exists on the kernel both
+> 538bcaa6261b and 742b06b5628f these two upstream patches were merged,
+> but 538bcaa6261b was not merged to 4.9, so we don't need this patch
+> for 4.9.
 
-Sure, KSM does not increment page counter, when a page becomes PageKsm().
-Is patch comment about that? Even if so, I don't understand what this
-comment is about. "PageKsm() does not take additional counter" is not
-a reason the page can't be reused there. The reason is that readers
-of this page may increase a counter without taking the lock, so
-this page_count() == 1 under the lock does not guarantee anything.
+Ok, thanks, but that wasn't obvious at all :)
 
->> There was another
->> problem: KSM may raise refcount without lock_page(), and only then it
->> takes the lock.  See get_ksm_page(GET_KSM_PAGE_NOLOCK) for the details.
->>
->> So, reliable protection against parallel access requires to freeze page
->> counter, which is made in reuse_ksm_page().
-> 
-> OK, this as well.
-> 
-> 								Honza
-> 
->>
->>> +		if (PageKsm(page) || page_count(page) != 1)
->>> +			goto copy;
->>> +		if (!trylock_page(page))
->>> +			goto copy;
->>> +		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
->>> +			unlock_page(page);
->>>  			goto copy;
->>> -		if (!trylock_page(vmf->page)) {
->>> -			get_page(vmf->page);
->>> -			pte_unmap_unlock(vmf->pte, vmf->ptl);
->>> -			lock_page(vmf->page);
->>> -			vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
->>> -					vmf->address, &vmf->ptl);
->>> -			if (!pte_same(*vmf->pte, vmf->orig_pte)) {
->>> -				update_mmu_tlb(vma, vmf->address, vmf->pte);
->>> -				unlock_page(vmf->page);
->>> -				pte_unmap_unlock(vmf->pte, vmf->ptl);
->>> -				put_page(vmf->page);
->>> -				return 0;
->>> -			}
->>> -			put_page(vmf->page);
->>> -		}
->>> -		if (PageKsm(vmf->page)) {
->>> -			bool reused = reuse_ksm_page(vmf->page, vmf->vma,
->>> -						     vmf->address);
->>> -			unlock_page(vmf->page);
->>> -			if (!reused)
->>> -				goto copy;
->>> -			wp_page_reuse(vmf);
->>> -			return VM_FAULT_WRITE;
->>> -		}
->>> -		if (reuse_swap_page(vmf->page, &total_map_swapcount)) {
->>> -			if (total_map_swapcount == 1) {
->>> -				/*
->>> -				 * The page is all ours. Move it to
->>> -				 * our anon_vma so the rmap code will
->>> -				 * not search our parent or siblings.
->>> -				 * Protected against the rmap code by
->>> -				 * the page lock.
->>> -				 */
->>> -				page_move_anon_rmap(vmf->page, vma);
->>> -			}
->>> -			unlock_page(vmf->page);
->>> -			wp_page_reuse(vmf);
->>> -			return VM_FAULT_WRITE;
->>>  		}
->>> -		unlock_page(vmf->page);
->>> +		/*
->>> +		 * Ok, we've got the only map reference, and the only
->>> +		 * page count reference, and the page is locked,
->>> +		 * it's dark out, and we're wearing sunglasses. Hit it.
->>> +		 */
->>> +		wp_page_reuse(vmf);
->>> +		unlock_page(page);
->>> +		return VM_FAULT_WRITE;
->>>  	} else if (unlikely((vma->vm_flags & (VM_WRITE|VM_SHARED)) ==
->>>  					(VM_WRITE|VM_SHARED))) {
->>>  		return wp_page_shared(vmf);
->>>
->>
+I'll go drop this from 4.9.y now...
 
+greg k-h
