@@ -2,167 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EDF24F6A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7D724F7BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730765AbgHXJCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:02:09 -0400
-Received: from 8bytes.org ([81.169.241.247]:39014 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729805AbgHXI4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:56:40 -0400
-Received: from cap.home.8bytes.org (p4ff2bb8d.dip0.t-ipconnect.de [79.242.187.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 7614E7D9;
-        Mon, 24 Aug 2020 10:56:32 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Kees Cook <keescook@chromium.org>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v6 76/76] x86/sev-es: Check required CPU features for SEV-ES
-Date:   Mon, 24 Aug 2020 10:55:11 +0200
-Message-Id: <20200824085511.7553-77-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824085511.7553-1-joro@8bytes.org>
-References: <20200824085511.7553-1-joro@8bytes.org>
+        id S1729274AbgHXJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730222AbgHXIzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:46 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116C1C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 01:55:46 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id x69so6712128qkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 01:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4+DPdTdqNuyBoVS4RbQIr9UMaA1D5lYrJkHWf4GkHBQ=;
+        b=MH1x+F6HuXwDNwXoyQJcunv0GP2bLigkIo02yDGCp7PNi8rBk8ujHLvQ40AyCg0Ish
+         bVOgBrCJBjKQDAsN2axhHWiMVDLlNaLSa4jVdTFGsyD1bxAY7bAUKWfGLCh66oKH7HXm
+         r5S1vNkuLKXbrXt+Kkx8kg+ZOzUiA+qTnK9115FlM3dbVxZ8wwd8Ws+FCr/iWe8iYcmQ
+         fioom413+yIGdKEYzOfAOqEv5jVs4G9hm7XluPo+/08F33geafgjLLW0u30RPSJoxMNR
+         JkPRvuciD+M1L7XY/rePVkakQNglMsQgKBXPRfN203c5Q8bcg3/dsDr8ij0k3buKaSDp
+         uaww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4+DPdTdqNuyBoVS4RbQIr9UMaA1D5lYrJkHWf4GkHBQ=;
+        b=bMW07/Un1MB6Bo9F1fUZ0vpc8aK0fSdGs1DRfShw+H9Q/OkiWcAUnmpUopPQXfKCvw
+         XHsdaOefvQfM6HzboiKvV59WorSmD+2gFQIDqQ58AcPk2ODKc1O4UqnY2kyIeVmW1wEi
+         D0S0dMFMy8+i5IptaTBZgTVmE4LgTRROGvdTTNWEJVmtlXxjWqJMUmMslNzaB8EQZjRc
+         wQsEFLhQL7BawVfTif1IdFkeJsc3CTNrI0PurbkEBw0GcxaUAeTZaInuBR6l1JmLrYoD
+         yWeshnjTQ5T3GLxkQ3y6B2vE6w/JpP/KDrFnOqkkgMMOfKOMoJas5ziawDK+siD4wlc3
+         s22g==
+X-Gm-Message-State: AOAM532EdNoTu8eWyjtm8OnoISD23cr4/iagGbm/mioU5VkdzENqBiF0
+        +++OGmBs5ScB6aH8tbCYs/bRp6fRqjaY0ht7O3kR8w==
+X-Google-Smtp-Source: ABdhPJweKUqUpQomWynHHhtNTqvLsvrsIrDv2Gk4h+l3xzPB0RswtWfNznQ1EDCUE/qCzmGdN7Zdxc63Y4doRjkGvHY=
+X-Received: by 2002:a05:620a:134b:: with SMTP id c11mr1857358qkl.256.1598259339701;
+ Mon, 24 Aug 2020 01:55:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200823082042.20816-1-himadrispandya@gmail.com>
+ <CACT4Y+Y1TpqYowNXj+OTcQwH-7T4n6PtPPa4gDWkV-np5KhKAQ@mail.gmail.com>
+ <20200823101924.GA3078429@kroah.com> <CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com>
+ <20200823105808.GB87391@kroah.com>
+In-Reply-To: <20200823105808.GB87391@kroah.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 24 Aug 2020 10:55:28 +0200
+Message-ID: <CACT4Y+ZiZQK8WBre9E4777NPaRK4UDOeZOeMZOQC=5tDsDu23A@mail.gmail.com>
+Subject: Re: [PATCH] net: usb: Fix uninit-was-stored issue in asix_read_cmd()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Himadri Pandya <himadrispandya@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        USB list <linux-usb@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Radev <martin.b.radev@gmail.com>
+On Sun, Aug 23, 2020 at 12:57 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Aug 23, 2020 at 12:31:03PM +0200, Dmitry Vyukov wrote:
+> > On Sun, Aug 23, 2020 at 12:19 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Sun, Aug 23, 2020 at 11:26:27AM +0200, Dmitry Vyukov wrote:
+> > > > On Sun, Aug 23, 2020 at 10:21 AM Himadri Pandya
+> > > > <himadrispandya@gmail.com> wrote:
+> > > > >
+> > > > > Initialize the buffer before passing it to usb_read_cmd() function(s) to
+> > > > > fix the uninit-was-stored issue in asix_read_cmd().
+> > > > >
+> > > > > Fixes: KMSAN: kernel-infoleak in raw_ioctl
+> > > > > Reported by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
+> > > > >
+> > > > > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> > > > > ---
+> > > > >  drivers/net/usb/asix_common.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
+> > > > > index e39f41efda3e..a67ea1971b78 100644
+> > > > > --- a/drivers/net/usb/asix_common.c
+> > > > > +++ b/drivers/net/usb/asix_common.c
+> > > > > @@ -17,6 +17,8 @@ int asix_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+> > > > >
+> > > > >         BUG_ON(!dev);
+> > > > >
+> > > > > +       memset(data, 0, size);
+> > > >
+> > > > Hi Himadri,
+> > > >
+> > > > I think the proper fix is to check
+> > > > usbnet_read_cmd/usbnet_read_cmd_nopm return value instead.
+> > > > Memsetting data helps to fix the warning at hand, but the device did
+> > > > not send these 0's and we use them as if the device did send them.
+> > >
+> > > But, for broken/abusive devices, that really is the safest thing to do
+> > > here.  They are returning something that is obviously not correct, so
+> > > either all callers need to check the size received really is the size
+> > > they asked for, or we just plod onward with a 0 value like this.  Or we
+> > > could pick some other value, but that could cause other problems if it
+> > > is treated as an actual value.
+> >
+> > Do we want callers to do at least some error check (e.g. device did
+> > not return anything at all, broke, hang)?
+> > If yes, then with a separate helper function that fails on short
+> > reads, we can get both benefits at no additional cost. User code will
+> > say "I want 4 bytes, anything that is not 4 bytes is an error" and
+> > then 1 error check will do. In fact, it seems that that was the
+> > intention of whoever wrote this code (they assumed no short reads),
+> > it's just they did not actually implement that "anything that is not 4
+> > bytes is an error" part.
+> >
+> >
+> > > > Perhaps we need a separate helper function (of a bool flag) that will
+> > > > fail on incomplete reads. Maybe even in the common USB layer because I
+> > > > think we've seen this type of bug lots of times and I guess there are
+> > > > dozens more.
+> > >
+> > > It's not always a failure, some devices have protocols that are "I could
+> > > return up to a max X bytes but could be shorter" types of messages, so
+> > > it's up to the caller to check that they got what they really asked for.
+> >
+> > Yes, that's why I said _separate_ helper function. There seems to be
+> > lots of callers that want exactly this -- "I want 4 bytes, anything
+> > else is an error". With the current API it's harder to do - you need
+> > additional checks, additional code, maybe even additional variables to
+> > store the required size. APIs should make correct code easy to write.
+>
+> I guess I already answered both of these in my previous email...
+>
+> > > Yes, it's more work to do this checking.  However converting the world
+> > > over to a "give me an error value if you don't read X number of bytes"
+> > > function would also be the same amount of work, right?
+> >
+> > Should this go into the common USB layer then?
+> > It's weird to have such a special convention on the level of a single
+> > driver. Why are rules for this single driver so special?...
+>
+> They aren't special at all, so yes, we should be checking for a short
+> read everywhere.  That would be the "correct" thing to do, I was just
+> suggesting a "quick fix" here, sorry.
 
-Make sure the machine supports RDRAND, otherwise there is no trusted
-source of of randomness in the system.
+Re quick fix, I guess it depends on the amount of work for the larger
+fix and if we can find volunteers (thanks Himadri!). We need to be
+practical as well.
 
-To also check this in the pre-decompression stage, make has_cpuflag
-not depend on CONFIG_RANDOMIZE_BASE anymore.
+Re:
+        retval = usb_control_msg(....., data, data_size, ...);
+        if (retval < buf_size) {
 
-Signed-off-by: Martin Radev <martin.b.radev@gmail.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20200724160336.5435-76-joro@8bytes.org
----
- arch/x86/boot/compressed/cpuflags.c |  4 ----
- arch/x86/boot/compressed/misc.h     |  5 +++--
- arch/x86/boot/compressed/sev-es.c   |  3 +++
- arch/x86/kernel/sev-es-shared.c     | 15 +++++++++++++++
- arch/x86/kernel/sev-es.c            |  3 +++
- 5 files changed, 24 insertions(+), 6 deletions(-)
+There may be a fine line between interfaces and what code they
+provoke. Let me describe my reasoning.
 
-diff --git a/arch/x86/boot/compressed/cpuflags.c b/arch/x86/boot/compressed/cpuflags.c
-index 6448a8196d32..0cc1323896d1 100644
---- a/arch/x86/boot/compressed/cpuflags.c
-+++ b/arch/x86/boot/compressed/cpuflags.c
-@@ -1,6 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
--#ifdef CONFIG_RANDOMIZE_BASE
--
- #include "../cpuflags.c"
- 
- bool has_cpuflag(int flag)
-@@ -9,5 +7,3 @@ bool has_cpuflag(int flag)
- 
- 	return test_bit(flag, cpu.flags);
- }
--
--#endif
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index c0e0ffeee50a..6d31f1b4c4d1 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -85,8 +85,6 @@ void choose_random_location(unsigned long input,
- 			    unsigned long *output,
- 			    unsigned long output_size,
- 			    unsigned long *virt_addr);
--/* cpuflags.c */
--bool has_cpuflag(int flag);
- #else
- static inline void choose_random_location(unsigned long input,
- 					  unsigned long input_size,
-@@ -97,6 +95,9 @@ static inline void choose_random_location(unsigned long input,
- }
- #endif
- 
-+/* cpuflags.c */
-+bool has_cpuflag(int flag);
-+
- #ifdef CONFIG_X86_64
- extern int set_page_decrypted(unsigned long address);
- extern int set_page_encrypted(unsigned long address);
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index b522c18c0588..eb1a8b5cc753 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -145,6 +145,9 @@ void sev_es_shutdown_ghcb(void)
- 	if (!boot_ghcb)
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		error("SEV-ES CPU Features missing.");
-+
- 	/*
- 	 * GHCB Page must be flushed from the cache and mapped encrypted again.
- 	 * Otherwise the running kernel will see strange cache effects when
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 92d77b725ccb..ce86d2c9ca7b 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -9,6 +9,21 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#ifndef __BOOT_COMPRESSED
-+#define error(v)	pr_err(v)
-+#define has_cpuflag(f)	boot_cpu_has(f)
-+#endif
-+
-+static bool __init sev_es_check_cpu_features(void)
-+{
-+	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
-+		error("RDRAND instruction not supported - no trusted source of randomness available\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static void sev_es_terminate(unsigned int reason)
- {
- 	u64 val = GHCB_SEV_TERMINATE;
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 2d73f5abe04b..6eadd678d1c6 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -670,6 +670,9 @@ void __init sev_es_init_vc_handling(void)
- 	if (!sev_es_active())
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		panic("SEV-ES CPU Features missing");
-+
- 	/* Enable SEV-ES special handling */
- 	static_branch_enable(&sev_es_enable_key);
- 
--- 
-2.28.0
+Yes, the current interface allows writing correct code with moderate
+amount of effort. Yet we see cases where it's used incorrectly, maybe
+people were just a little bit lazy, or maybe they did not understand
+how to use it properly (nobody reads the docs, and it's also
+reasonable to assume that if you ask for N bytes and the function does
+not fail, then you get N bytes).
 
+Currently to write correct code (1) we need a bit of duplication,
+which gets worse if data_size is actually some lengthy expression
+(X+Y*Z), maybe one will need an additional variable to use it
+correctly.
+(2) one needs to understand the contract;
+(3) may be subject to the following class of bugs (after some copy-paste:
+        retval = usb_control_msg(....., data, 4, ...);
+        if (retval < 2) {
+This class of bugs won't be necessary immediately caught by kernel
+testing systems (can have long life-time).
+
+I would add a "default" function (with shorter name) that does full read:
+
+if (!usb_control_msg(, ...., data, 4))
+
+and a function with longer name to read variable-size data:
+
+n = usb_control_msg_variable_length(, ...., data, sizeof(data)));
+
+The full read should be "the default" (shorter name), because if you
+need full read and use the wrong function, it won't be caught by
+testing (most likely long-lived bug). Whereas if you use full read for
+lengthy variable size data read, this will be immediately caught
+during any testing (even manual) -- you ask for 4K, you get fewer
+bytes, all your reads fail.
+So having "full read" easier to spell will lead to fewer bugs by design.
