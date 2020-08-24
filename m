@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727BC24F9B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271EB24F984
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729652AbgHXJsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
+        id S1727108AbgHXJqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728763AbgHXIkl (ORCPT
+        with ESMTP id S1728937AbgHXImU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:40:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E49C061573;
-        Mon, 24 Aug 2020 01:40:40 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 08:40:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598258431;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oi/gwlF9UK0Dj6KRXzgzltwh1bdA+sQUViRUrZHY+us=;
-        b=e+FZ645cd6LWZaO7VwD/zzo7QB6pxc2qPdp59/DCjgQbWRy01pZhvh6HRG26aXG8wA0y1Y
-        dh4UzG9XZB/bfbPpNpos0BW0yt70tpew2rRK7goJrJKV/hUuj1JxkCENj0HTqNVib0c4Au
-        qW6MjqHX4Dm6jtFhgkEwKDLpPRMjVoPsv1Xpx9iObrfaBdOMpYuqQouUqWgrgVuaJ6zCS1
-        Gpg8F5Jhc3h4nhC9ShjlkihdgGpPuO7dTrCVlXraf0w2b9UZHALom3+bCs4Yhxiv6l5Rg8
-        jUkd43dsXtKdhuX2a4cXYiaCnGfSjoEABMZF7v5hfntidl179bFhJS7RjLB/ZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598258431;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oi/gwlF9UK0Dj6KRXzgzltwh1bdA+sQUViRUrZHY+us=;
-        b=LeesnAIKOWqiZTpc1slbnxt20lb2DgEyxCGdI7DlF6wLeYyoebq8gowR8XUeF/crZggwoT
-        4TIT3dkWg0XgyWCg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] x86/entry/64: Correct the comment over
- SAVE_AND_SET_GSBASE
-Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200821090710.GE12181@zn.tnic>
-References: <20200821090710.GE12181@zn.tnic>
+        Mon, 24 Aug 2020 04:42:20 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436DDC061573;
+        Mon, 24 Aug 2020 01:42:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a5so7812800wrm.6;
+        Mon, 24 Aug 2020 01:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FbqblzJhgrxr4jZgi3Lq34QqMg+Ttkj3vGhG8H42MbE=;
+        b=QP3WPu9b1QKlz3sDPT/E0l4eLPgQXgf9j16xq2ixoEUc4YlJj12mlVBgfq9loGF/TJ
+         inbamtbamkfPkYT3SfI0Eh4mq32N8+pl52ApN5zilY94tGLgqlZnZYGEg3vBl30ec3Rc
+         lRekNLBhwn7fVnXk6ocbZNYwxvicu0x1ikJHlNCEtv/eZmpH0IShjDQNXnVLqgCSsCM7
+         66JACXsjbYo5b75KtgOu33NpuUIcU/PsrlkUQ72cIXvlI+CtvFNRiFB0TS50tEk2t43h
+         PbfgiKOCWJRUf+GNeUadfRHUmsRxLBN0hqYkbF0TzgTh2NrcqM1Yw3UzBJbNiIaHD2Hi
+         WuiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FbqblzJhgrxr4jZgi3Lq34QqMg+Ttkj3vGhG8H42MbE=;
+        b=ZQ18iiHRs/prN1Ei63AtBQJJL//DQBzTxXkw2fXaI4AlVfHCMxAlnx9UG5DljWnDzv
+         gaqewKYe1YZWpUmKTsnDKmIoPhUfCeXh5dr8xc6S17j9z4wnsrjnRucBfw8QrFnHNjzX
+         xsAtz17ZubqtTHe57JU6BW6+ly0EI6hWTRfHP8+2I7IRGuRolJcP4XBNiMlS9KTt4ZT2
+         jMUum3FS2riayoYtIEOVpHK9CdqTx/Mxz5nEKfY1cWvF7bW1yK7OqFjH8CTI/q700cdZ
+         mrv5I2JuzY6/wkUhbsGTJRxLWA/flNJ4DpgBzf6Npc9XRqWh13j4ZSO2vtYbwarJCP9w
+         q1Hg==
+X-Gm-Message-State: AOAM532BI97XU5AVvURpGpNSiwCUGiAFcoSXByA0NPYoHH+cFGSNfruz
+        D/v2dSYZqvUrkWSzmDvarlF80vJ8rTOckKUFJVJzirDaJE3fQA==
+X-Google-Smtp-Source: ABdhPJzAg8uQC8Mrf0XcBKdIu2nrOS4XC7CNiYSaA3zhrvxiaasEP+kVaYJgjFUamKAVfjf08TugaCoK1jLRBUkbid8=
+X-Received: by 2002:adf:9283:: with SMTP id 3mr4718276wrn.70.1598258537988;
+ Mon, 24 Aug 2020 01:42:17 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159825843012.389.11997668879998573740.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <cover.1597376585.git.huangqiwu@xiaomi.com> <ced256ea8ac2f3e54c33677facc4c2ef04dee643.1597376585.git.huangqiwu@xiaomi.com>
+ <20200814060909.GD1409566@kroah.com> <CAPtXDt1e3fi7ymW0-FSknUAYCQ80aL=4btbeA2e4Xre7+e7OtA@mail.gmail.com>
+ <20200818060707.GB1742213@kroah.com> <CAPtXDt26DdOi6JG7x3mTrR5YwArjkAeXY2TogRnK_xkSabhL2g@mail.gmail.com>
+ <20200824074357.GB4133866@kroah.com>
+In-Reply-To: <20200824074357.GB4133866@kroah.com>
+From:   Qiwu Huang <yanziily@gmail.com>
+Date:   Mon, 24 Aug 2020 16:42:06 +0800
+Message-ID: <CAPtXDt0yW7Kh6a9JGfXaha_wKVjae7U74m6K=631Ofh8_m4uvg@mail.gmail.com>
+Subject: Re: [PATCH v8 1/4] power: supply: core: add quick charge type property
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Qiwu Huang <huangqiwu@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fsgsbase branch of tip:
+On Mon, Aug 24, 2020 at 3:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Aug 24, 2020 at 08:54:56AM +0800, Qiwu Huang wrote:
+> > On Tue, Aug 18, 2020 at 2:07 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Aug 18, 2020 at 09:56:28AM +0800, Qiwu Huang wrote:
+> > > > On Fri, Aug 14, 2020 at 2:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Fri, Aug 14, 2020 at 11:46:54AM +0800, Qiwu Huang wrote:
+> > > > > > From: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > > > >
+> > > > > > Reports the kind of quick charge type based on
+> > > > > > different adapter power.
+> > > > > >
+> > > > > > Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > > > > ---
+> > > > > >  Documentation/ABI/testing/sysfs-class-power | 21 +++++++++
+> > > > > >  drivers/power/supply/power_supply_sysfs.c   |  1 +
+> > > > > >  drivers/power/supply/qcom_smbb.c            | 51 +++++++++++++++++++++
+> > > > > >  include/linux/power_supply.h                | 14 ++++++
+> > > > > >  4 files changed, 87 insertions(+)
+> > > > >
+> > > > > You should also submit your driver that uses these new attributes at the
+> > > > > same time.  What happened to that request?  Otherwise no one really
+> > > > > knows how these are being used, or if they even are used by anyone.
+> > > > >
+> > > >
+> > > > I don't think I can submit the whole driver because our drivers are
+> > > > divided into three parts, the first part is in ADSP, the second part
+> > > > is in kernel and the third part is in Android Hal.This is the second
+> > > > part.
+> > >
+> > > WHat is "ADSP"?
+> >
+> > ADSP: advanced digital signal processor
+>
+> Ok, then just send the kernel driver.
+>
+> > > Just submit your kernel driver code, that's all we care about here.
+> > > Userspace code is not anything we can do anything with :)
+> >
+> > If we ported the full driver, we would break the existing driver
+> > structure because we would introduce more Qualcomm code. I think
+> > that's an unreasonable change.
+>
+> That doesn't make much sense.  You have a working driver for these apis,
+> just submit it for inclusion, it should never break any existing
+> drivers, otherwise your code wouldn't work either.
 
-Commit-ID:     0b2c605fa4ee3117c00b97b7af67791576b28f88
-Gitweb:        https://git.kernel.org/tip/0b2c605fa4ee3117c00b97b7af67791576b28f88
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Thu, 20 Aug 2020 11:10:15 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 24 Aug 2020 10:23:40 +02:00
+We're an Android device, we're working on a Qualcomm based code, and
+from the current code tree, the current code tree is missing the QTI
+Charger code
 
-x86/entry/64: Correct the comment over SAVE_AND_SET_GSBASE
+>
+> thanks,
+>
+> greg k-h
 
-Add the proper explanation why an LFENCE is not needed in the FSGSBASE
-case.
 
-Fixes: c82965f9e530 ("x86/entry/64: Handle FSGSBASE enabled paranoid entry/exit")
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200821090710.GE12181@zn.tnic
----
- arch/x86/entry/entry_64.S | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 70dea93..bf78de4 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -840,8 +840,9 @@ SYM_CODE_START_LOCAL(paranoid_entry)
- 	 * retrieve and set the current CPUs kernel GSBASE. The stored value
- 	 * has to be restored in paranoid_exit unconditionally.
- 	 *
--	 * The MSR write ensures that no subsequent load is based on a
--	 * mispredicted GSBASE. No extra FENCE required.
-+	 * The unconditional write to GS base below ensures that no subsequent
-+	 * loads based on a mispredicted GS base can happen, therefore no LFENCE
-+	 * is needed here.
- 	 */
- 	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
- 	ret
+-- 
+Thanks
+
+Qiwu
