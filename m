@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49B324F4AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF93E24F45D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgHXIjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54758 "EHLO mail.kernel.org"
+        id S1728115AbgHXIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726825AbgHXIjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:13 -0400
+        id S1728098AbgHXIf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:35:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA27E20FC3;
-        Mon, 24 Aug 2020 08:39:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB6982177B;
+        Mon, 24 Aug 2020 08:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258352;
-        bh=rtC3OLtXYHuMs7YIrJ/3veZpLifW/r675BNRatgvRZI=;
+        s=default; t=1598258126;
+        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t5uMMe09lq9Q9uwrLb/++L2NnI9fVvLTVStWuqs7LDJpyokrDfUlilFoZtbxvzxsS
-         w1IyqfgeocjDaE/hGe2w+j56t5s8KldwjtI9lmC279TPTdV7ub2imAIEJaOAmGql6K
-         +SkSRRtT8H0HLY8tJEolO14hOoNzMZS7fXINaUa0=
+        b=WJFSsMCFh/iBFMfexXySvZ68oE02IrFOOB+Rx7nMphu+UI30IRsB+/B9hxalbXmtN
+         a1p+s5PIy6K2vOnP2IBJmlKzenUrpG86/yWXRAyCnfkVJ0y5fDv/tOWGyqeM+omHhW
+         TKscMGEgYC5brmC9b3/V1G3XITgjTKWkZyZOZ5j0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.7 018/124] ext4: fix checking of directory entry validity for inline directories
-Date:   Mon, 24 Aug 2020 10:29:12 +0200
-Message-Id: <20200824082410.316371981@linuxfoundation.org>
+        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 055/148] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Date:   Mon, 24 Aug 2020 10:29:13 +0200
+Message-Id: <20200824082416.702919367@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-commit 7303cb5bfe845f7d43cd9b2dbd37dbb266efda9b upstream.
+[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
 
-ext4_search_dir() and ext4_generic_delete_entry() can be called both for
-standard director blocks and for inline directories stored inside inode
-or inline xattr space. For the second case we didn't call
-ext4_check_dir_entry() with proper constraints that could result in
-accepting corrupted directory entry as well as false positive filesystem
-errors like:
+The Cache Control Register (CACR) of the ColdFire V3 has bits that
+control high level caching functions, and also enable/disable the use
+of the alternate stack pointer register (the EUSP bit) to provide
+separate supervisor and user stack pointer registers. The code as
+it is today will blindly clear the EUSP bit on cache actions like
+invalidation. So it is broken for this case - and that will result
+in failed booting (interrupt entry and exit processing will be
+completely hosed).
 
-EXT4-fs error (device dm-0): ext4_search_dir:1395: inode #28320400:
-block 113246792: comm dockerd: bad entry in directory: directory entry too
-close to block end - offset=0, inode=28320403, rec_len=32, name_len=8,
-size=4096
+This only affects ColdFire V3 parts that support the alternate stack
+register (like the 5329 for example) - generally speaking new parts do,
+older parts don't. It has no impact on ColdFire V3 parts with the single
+stack pointer, like the 5307 for example.
 
-Fix the arguments passed to ext4_check_dir_entry().
+Fix the cache bit defines used, so they maintain the EUSP bit when
+carrying out cache actions through the CACR register.
 
-Fixes: 109ba779d6cc ("ext4: check for directory entries too close to block end")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200731162135.8080-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c |    6 +++---
+ arch/m68k/include/asm/m53xxacr.h | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1396,8 +1396,8 @@ int ext4_search_dir(struct buffer_head *
- 		    ext4_match(dir, fname, de)) {
- 			/* found a match - just to be sure, do
- 			 * a full check */
--			if (ext4_check_dir_entry(dir, NULL, de, bh, bh->b_data,
--						 bh->b_size, offset))
-+			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
-+						 buf_size, offset))
- 				return -1;
- 			*res_dir = de;
- 			return 1;
-@@ -2472,7 +2472,7 @@ int ext4_generic_delete_entry(handle_t *
- 	de = (struct ext4_dir_entry_2 *)entry_buf;
- 	while (i < buf_size - csum_size) {
- 		if (ext4_check_dir_entry(dir, NULL, de, bh,
--					 bh->b_data, bh->b_size, i))
-+					 entry_buf, buf_size, i))
- 			return -EFSCORRUPTED;
- 		if (de == de_del)  {
- 			if (pde)
+diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
+index 9138a624c5c81..692f90e7fecc1 100644
+--- a/arch/m68k/include/asm/m53xxacr.h
++++ b/arch/m68k/include/asm/m53xxacr.h
+@@ -89,9 +89,9 @@
+  * coherency though in all cases. And for copyback caches we will need
+  * to push cached data as well.
+  */
+-#define CACHE_INIT	  CACR_CINVA
+-#define CACHE_INVALIDATE  CACR_CINVA
+-#define CACHE_INVALIDATED CACR_CINVA
++#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
++#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
++#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
+ 
+ #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
+ 			 (0x000f0000) + \
+-- 
+2.25.1
+
 
 
