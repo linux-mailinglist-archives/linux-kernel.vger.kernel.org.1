@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC262500DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412112500D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727912AbgHXPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbgHXPWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:22:07 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19633C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 08:22:07 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so8746167wmi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 08:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=41TxyHICC+s6aQeo0YedfhOUY4gGQOiE3/gzLfTmhK8=;
-        b=UPZAHY3aoz5wOk5QeAlrKi4lHHftgu9RkgR4o5Ya9tKmdXZ5uBTVvic6ApMuVDqhyB
-         XR68EpCvZpY4FuaAZxe9b83xADELgF314JDi4j9vwEaC9F7Aztuff0iAx3Hk8HOmVG1q
-         4F5/cr83HCraOS/Zj/RsLDTYZ5R137s/z7gAXSeuyMD7PZc/tHHAywxp0Ze6/J+tv78S
-         gvw0ZaXBMg3urwDUFTmw7oawTx/teDC7UYe9e0O+lWAhKF4Luf/UYk9lMUv7AeqEyrR0
-         KU8/yMYTs+s89yq1xx0RhHJ1c1g+ORsrPhq/BltLM1EOAyK5See4M7vf8kJZrJHyhW1U
-         rD9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=41TxyHICC+s6aQeo0YedfhOUY4gGQOiE3/gzLfTmhK8=;
-        b=lIXCXv13BnjbDInh/uIFp65CmBh+VjQXn8UMCgL7mH8CnTTgN8S6GheJkFcKK/8fyT
-         vOPrK66Oh5j6/jEVhaAdHuyEVpJi5TH4u/bgVVNNYZc/JOxYDurkXRJgPy+m+x6i9oXa
-         KMAVBE/K5NS03Rub05Tjn2XLOLWPu8h2F9uJNuYV0w7+x9PHTdc7Mymhku+ly4ZKs3YE
-         HvaugQTMjNvrTv4pt6BG2D+V1e/13zfi76idHMW7XNyTWiWft71oyueKfDd845L/y4kY
-         jW5rCJvicGpDjLU0UnKPiQYGd83RwxioEW37mmpbj4vX8Mv6mKvSbxCdqUY4PyjOzy0H
-         VLKQ==
-X-Gm-Message-State: AOAM533tVBtQEdX8cApWiOU0bmSbEYeFwlpPysIqkK00ofGeBGsOQLpD
-        4YM1pdCehdMRA07vRC4kvQWoH9pbSfGeGn2r
-X-Google-Smtp-Source: ABdhPJwaPewrMNTaq5Qrv5GNb5FK9hQRs4NjNir76JWm9MAnYpHF5q6XegcWvQM597rRBLoVeX1WyA==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr6315877wml.126.1598282525798;
-        Mon, 24 Aug 2020 08:22:05 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id l7sm23730928wmh.15.2020.08.24.08.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 08:22:05 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     dan.carpenter@oracle.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        "Javier F. Arias" <jarias.linux@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
-        Saiyam Doshi <saiyamdoshi.in@gmail.com>,
-        Magnus Damm <damm+renesas@opensource.se>,
-        Simon Horman <horms+renesas@verge.net.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: emxx_udc: Fix passing of NULL to dma_alloc_coherent()
-Date:   Mon, 24 Aug 2020 16:19:17 +0100
-Message-Id: <20200824151920.251446-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824142118.GA223827@mwanda>
-References: <20200824142118.GA223827@mwanda>
+        id S1727964AbgHXPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727079AbgHXPTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:19:17 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBEBE206B5;
+        Mon, 24 Aug 2020 15:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598282357;
+        bh=dTNJ6f4sFfr0WRo993QckaVjaB2TOj8/mYY4GuOEL2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=avluCVyerL/x7VoZPTTQeSselXZiLn+S3dHGpKj+Y1MaZQaucpsKbgtoTrAggRGBz
+         SflAewOZ+p95msqK6r6lax6ZmNeiTFSnsANxr1fi2g3VcQC34S767R9B1YhE4QhE6s
+         sF1enDSjACba8vQ5LGsPxxWQQ4qRqHApz49tCCHI=
+Date:   Mon, 24 Aug 2020 17:19:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH stable-5.8.y backport 1/2] KVM: Pass MMU notifier range
+ flags to kvm_unmap_hva_range()
+Message-ID: <20200824151933.GB435319@kroah.com>
+References: <20200824113048.24960-1-will@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824113048.24960-1-will@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nbu2ss_eq_queue() memory is allocated with dma_alloc_coherent(),
-though, strangely, NULL is passed as the struct device* argument. Pass
-the UDC's device instead.
+On Mon, Aug 24, 2020 at 12:30:47PM +0100, Will Deacon wrote:
+> commit fdfe7cbd58806522e799e2a50a15aee7f2cbb7b6 upstream.
+> 
+> The 'flags' field of 'struct mmu_notifier_range' is used to indicate
+> whether invalidate_range_{start,end}() are permitted to block. In the
+> case of kvm_mmu_notifier_invalidate_range_start(), this field is not
+> forwarded on to the architecture-specific implementation of
+> kvm_unmap_hva_range() and therefore the backend cannot sensibly decide
+> whether or not to block.
+> 
+> Add an extra 'flags' parameter to kvm_unmap_hva_range() so that
+> architectures are aware as to whether or not they are permitted to block.
+> 
+> Cc: <stable@vger.kernel.org> # v5.8 only
 
-Build-tested on x86 only.
+This matched the 5.8 patch I had already, but I took it just to be safe,
+thanks :)
 
-Fixes: 33aa8d45a4fe ("staging: emxx_udc: Add Emma Mobile USB Gadget driver")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
-
-So I *think* this is the right fix, but I don't have the hardware so
-I've only been able to build-test it. My worry is that I could be
-passing in the wrong struct device* here, which would squelch the
-warning without fixing the breakage.
-
-Can someone cleverer than me tell me if this makes sense?
-
-- Alex
----
- drivers/staging/emxx_udc/emxx_udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 03929b9d3a8b..09e91449c08c 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2593,7 +2593,7 @@ static int nbu2ss_ep_queue(struct usb_ep *_ep,
- 
- 	if (req->unaligned) {
- 		if (!ep->virt_buf)
--			ep->virt_buf = dma_alloc_coherent(NULL, PAGE_SIZE,
-+			ep->virt_buf = dma_alloc_coherent(udc->dev, PAGE_SIZE,
- 							  &ep->phys_buf,
- 							  GFP_ATOMIC | GFP_DMA);
- 		if (ep->epnum > 0)  {
--- 
-2.28.0
-
+greg k-h
