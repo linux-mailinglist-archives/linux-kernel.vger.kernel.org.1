@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7130B24F57B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1000F24F49C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgHXIt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:49:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
+        id S1727107AbgHXIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729696AbgHXItT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:49:19 -0400
+        id S1727029AbgHXIiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1718E206F0;
-        Mon, 24 Aug 2020 08:49:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E01B722B47;
+        Mon, 24 Aug 2020 08:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258958;
-        bh=NSM0kikoMYd4CitRmeGSudrfPq2pKTmsMTIAOfWWzhc=;
+        s=default; t=1598258298;
+        bh=68+uDGRHiR1o4sreSUC+OlMMQwX6A8IQY+k1l9Klt4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hAVeuyauxz4ohbt7cLv4D3+oxfQHLdMlTlOvPgCD+eo8j6Tvexdy/Tv8O9TnoNVeF
-         KpMblvtCXFzQz/yScYPI961gs8j5cSBgWXADbwoxfOO+Sk8xcriPDqb8eXXljnWnow
-         PIUPPvrM6wDECdUbtk2JNsguXswAG7XhpwJhjnrk=
+        b=Gf6CI+qWcRocvSmHUqeKc4dmLq7Jg1whnZYG98+eB9wpcs32YrH0sjkudByeVk3q1
+         ZYhAwXNMIQbH08gV1FEwx+Xw05+7yLOB918bvbzUynVZLPBNeiwQkBTIu3PYSX5VpL
+         WjKyL0wv7kPvWtKe/Zfj2JUA489HNio3gzVcI8w0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 078/107] can: j1939: cancel rxtimer on multipacket broadcast session complete
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.8 146/148] efi/libstub: Handle NULL cmdline
 Date:   Mon, 24 Aug 2020 10:30:44 +0200
-Message-Id: <20200824082408.981713342@linuxfoundation.org>
+Message-Id: <20200824082421.017949583@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,37 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit e8b17653088f28a87c81845fa41a2d295a3b458c ]
+commit a37ca6a2af9df2972372b918f09390c9303acfbd upstream.
 
-If j1939_xtp_rx_dat_one() receive last frame of multipacket broadcast message,
-j1939_session_timers_cancel() should be called to cancel rxtimer.
+Treat a NULL cmdline the same as empty. Although this is unlikely to
+happen in practice, the x86 kernel entry does check for NULL cmdline and
+handles it, so do it here as well.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1596599425-5534-3-git-send-email-zhangchangzhong@huawei.com
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Link: https://lore.kernel.org/r/20200729193300.598448-1-nivedita@alum.mit.edu
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/can/j1939/transport.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/firmware/efi/libstub/efi-stub-helper.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 67189b4c482c5..d1a9adde677b0 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1811,6 +1811,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	}
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -187,10 +187,14 @@ int efi_printk(const char *fmt, ...)
+  */
+ efi_status_t efi_parse_options(char const *cmdline)
+ {
+-	size_t len = strlen(cmdline) + 1;
++	size_t len;
+ 	efi_status_t status;
+ 	char *str, *buf;
  
- 	if (final) {
-+		j1939_session_timers_cancel(session);
- 		j1939_session_completed(session);
- 	} else if (do_cts_eoma) {
- 		j1939_tp_set_rxtimeout(session, 1250);
--- 
-2.25.1
-
++	if (!cmdline)
++		return EFI_SUCCESS;
++
++	len = strlen(cmdline) + 1;
+ 	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, len, (void **)&buf);
+ 	if (status != EFI_SUCCESS)
+ 		return status;
 
 
