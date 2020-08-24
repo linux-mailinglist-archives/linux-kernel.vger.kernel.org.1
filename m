@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D94E2502DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901DF2502BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgHXQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:37:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50666 "EHLO mx2.suse.de"
+        id S1728266AbgHXQfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:35:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50612 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728078AbgHXQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728107AbgHXQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Aug 2020 12:33:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3508CAF85;
-        Mon, 24 Aug 2020 16:33:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 76960AF6E;
+        Mon, 24 Aug 2020 16:33:56 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/12] MIPS: Convert ICACHE_REFILLS_WORKAROUND_WAR into a config option
-Date:   Mon, 24 Aug 2020 18:32:48 +0200
-Message-Id: <20200824163257.44533-7-tsbogend@alpha.franken.de>
+Subject: [PATCH 08/12] MIPS: Convert MIPS34K_MISSED_ITLB_WAR into a config option
+Date:   Mon, 24 Aug 2020 18:32:50 +0200
+Message-Id: <20200824163257.44533-9-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
 References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
@@ -28,253 +28,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a new config option to enable I-cache refill workaround and remove
+Use a new config option to enable MIPS 34K ITLB workaround and remove
 define from different war.h files.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- arch/mips/Kconfig                              |  9 +++++++++
- arch/mips/include/asm/mach-cavium-octeon/war.h |  1 -
- arch/mips/include/asm/mach-generic/war.h       |  1 -
- arch/mips/include/asm/mach-ip22/war.h          |  1 -
- arch/mips/include/asm/mach-ip27/war.h          |  1 -
- arch/mips/include/asm/mach-ip28/war.h          |  1 -
- arch/mips/include/asm/mach-ip30/war.h          |  1 -
- arch/mips/include/asm/mach-ip32/war.h          |  1 -
- arch/mips/include/asm/mach-malta/war.h         |  1 -
- arch/mips/include/asm/mach-rc32434/war.h       |  1 -
- arch/mips/include/asm/mach-rm/war.h            |  1 -
- arch/mips/include/asm/mach-sibyte/war.h        |  1 -
- arch/mips/include/asm/mach-tx49xx/war.h        |  1 -
- arch/mips/include/asm/war.h                    | 10 ----------
- arch/mips/kernel/signal.c                      |  8 +++++++-
- 15 files changed, 16 insertions(+), 23 deletions(-)
+ arch/mips/Kconfig                              | 4 ++++
+ arch/mips/include/asm/mach-cavium-octeon/war.h | 1 -
+ arch/mips/include/asm/mach-generic/war.h       | 1 -
+ arch/mips/include/asm/mach-ip22/war.h          | 1 -
+ arch/mips/include/asm/mach-ip27/war.h          | 1 -
+ arch/mips/include/asm/mach-ip28/war.h          | 1 -
+ arch/mips/include/asm/mach-ip30/war.h          | 1 -
+ arch/mips/include/asm/mach-ip32/war.h          | 1 -
+ arch/mips/include/asm/mach-malta/war.h         | 1 -
+ arch/mips/include/asm/mach-rc32434/war.h       | 1 -
+ arch/mips/include/asm/mach-rm/war.h            | 1 -
+ arch/mips/include/asm/mach-sibyte/war.h        | 2 --
+ arch/mips/include/asm/mach-tx49xx/war.h        | 1 -
+ arch/mips/include/asm/mipsregs.h               | 4 ++--
+ arch/mips/include/asm/war.h                    | 7 -------
+ 15 files changed, 6 insertions(+), 22 deletions(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 7db9611d7800..c32f6160f854 100644
+index acb790b556a8..7991a04274da 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -568,6 +568,7 @@ config MIPS_MALTA
- 	select SYS_SUPPORTS_VPE_LOADER
- 	select SYS_SUPPORTS_ZBOOT
- 	select USE_OF
-+	select WAR_ICACHE_REFILLS
- 	select ZONE_DMA32 if 64BIT
- 	help
- 	  This enables support for the MIPS Technologies Malta evaluation
-@@ -756,6 +757,7 @@ config SGI_IP32
- 	select SYS_HAS_CPU_NEVADA
- 	select SYS_SUPPORTS_64BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
-+	select WAR_ICACHE_REFILLS
- 	help
- 	  If you want this kernel to run on SGI O2 workstation, say Y here.
- 
-@@ -2666,6 +2668,13 @@ config WAR_R4600_V2_HIT_CACHEOP
- config WAR_TX49XX_ICACHE_INDEX_INV
+@@ -2683,6 +2683,10 @@ config WAR_ICACHE_REFILLS
+ config WAR_R10000_LLSC
  	bool
  
-+# The RM7000 processors and the E9000 cores have a bug (though PMC-Sierra
-+# opposes it being called that) where invalid instructions in the same
-+# I-cache line worth of instructions being fetched may case spurious
-+# exceptions.
-+config WAR_ICACHE_REFILLS
++# 34K core erratum: "Problems Executing the TLBR Instruction"
++config WAR_MIPS34K_MISSED_ITLB
 +	bool
 +
  #
  # - Highmem only makes sense for the 32-bit kernel.
  # - The current highmem code will only work properly on physically indexed
 diff --git a/arch/mips/include/asm/mach-cavium-octeon/war.h b/arch/mips/include/asm/mach-cavium-octeon/war.h
-index 1cb30485dc94..1061917152c6 100644
+index 52be3785e3e2..9aa4ea5522a9 100644
 --- a/arch/mips/include/asm/mach-cavium-octeon/war.h
 +++ b/arch/mips/include/asm/mach-cavium-octeon/war.h
 @@ -11,7 +11,6 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #define CAVIUM_OCTEON_DCACHE_PREFETCH_WAR	\
+ 	OCTEON_IS_MODEL(OCTEON_CN6XXX)
 diff --git a/arch/mips/include/asm/mach-generic/war.h b/arch/mips/include/asm/mach-generic/war.h
-index 79530836cc79..966f40aedf16 100644
+index 2229c8377288..4f25636661d5 100644
 --- a/arch/mips/include/asm/mach-generic/war.h
 +++ b/arch/mips/include/asm/mach-generic/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MACH_GENERIC_WAR_H */
 diff --git a/arch/mips/include/asm/mach-ip22/war.h b/arch/mips/include/asm/mach-ip22/war.h
-index 35286ba3ec57..99f6531e5b9b 100644
+index f10efe589f93..09169cfbf932 100644
 --- a/arch/mips/include/asm/mach-ip22/war.h
 +++ b/arch/mips/include/asm/mach-ip22/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_IP22_WAR_H */
 diff --git a/arch/mips/include/asm/mach-ip27/war.h b/arch/mips/include/asm/mach-ip27/war.h
-index a18293c16ade..d8dfa7258bea 100644
+index 0a07cf6731c0..1c81d5464235 100644
 --- a/arch/mips/include/asm/mach-ip27/war.h
 +++ b/arch/mips/include/asm/mach-ip27/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			1
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_IP27_WAR_H */
 diff --git a/arch/mips/include/asm/mach-ip28/war.h b/arch/mips/include/asm/mach-ip28/war.h
-index 1a6092e5c7b3..f252df761ec8 100644
+index 9fdc6425c22c..ff66adbaaae5 100644
 --- a/arch/mips/include/asm/mach-ip28/war.h
 +++ b/arch/mips/include/asm/mach-ip28/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			1
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_IP28_WAR_H */
 diff --git a/arch/mips/include/asm/mach-ip30/war.h b/arch/mips/include/asm/mach-ip30/war.h
-index 031c7b9c5236..58ff9ca345b7 100644
+index 8a8ec5578083..b00469a39835 100644
 --- a/arch/mips/include/asm/mach-ip30/war.h
 +++ b/arch/mips/include/asm/mach-ip30/war.h
-@@ -7,7 +7,6 @@
+@@ -7,6 +7,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #ifdef CONFIG_CPU_R10000
- #define R10000_LLSC_WAR			1
- #else
+-#define MIPS34K_MISSED_ITLB_WAR		0
+ 
+ #endif /* __ASM_MIPS_MACH_IP30_WAR_H */
 diff --git a/arch/mips/include/asm/mach-ip32/war.h b/arch/mips/include/asm/mach-ip32/war.h
-index 25552158fa3a..ca3efe457ae0 100644
+index 9e8c0c2a4c26..c57a9cd2e50b 100644
 --- a/arch/mips/include/asm/mach-ip32/war.h
 +++ b/arch/mips/include/asm/mach-ip32/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	1
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_IP32_WAR_H */
 diff --git a/arch/mips/include/asm/mach-malta/war.h b/arch/mips/include/asm/mach-malta/war.h
-index 9b0803537bce..b7827eb09375 100644
+index 76f7de21b7dd..73c9e6d84a8f 100644
 --- a/arch/mips/include/asm/mach-malta/war.h
 +++ b/arch/mips/include/asm/mach-malta/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	1
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_MIPS_WAR_H */
 diff --git a/arch/mips/include/asm/mach-rc32434/war.h b/arch/mips/include/asm/mach-rc32434/war.h
-index 924b51b9a340..b7827eb09375 100644
+index 76f7de21b7dd..73c9e6d84a8f 100644
 --- a/arch/mips/include/asm/mach-rc32434/war.h
 +++ b/arch/mips/include/asm/mach-rc32434/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_MIPS_WAR_H */
 diff --git a/arch/mips/include/asm/mach-rm/war.h b/arch/mips/include/asm/mach-rm/war.h
-index 0536972b24c8..fe04d059dd0c 100644
+index dcb80b558321..c396a31706ac 100644
 --- a/arch/mips/include/asm/mach-rm/war.h
 +++ b/arch/mips/include/asm/mach-rm/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_RM_WAR_H */
 diff --git a/arch/mips/include/asm/mach-sibyte/war.h b/arch/mips/include/asm/mach-sibyte/war.h
-index 9e006fdcf38a..7c376f6eee9b 100644
+index 0cf25eea846f..fa9bbc228dd7 100644
 --- a/arch/mips/include/asm/mach-sibyte/war.h
 +++ b/arch/mips/include/asm/mach-sibyte/war.h
-@@ -24,7 +24,6 @@ extern int sb1250_m3_workaround_needed(void);
+@@ -24,6 +24,4 @@ extern int sb1250_m3_workaround_needed(void);
  
  #endif
  
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
- 
+-#define MIPS34K_MISSED_ITLB_WAR		0
+-
+ #endif /* __ASM_MIPS_MACH_SIBYTE_WAR_H */
 diff --git a/arch/mips/include/asm/mach-tx49xx/war.h b/arch/mips/include/asm/mach-tx49xx/war.h
-index 9293c5f9ffb2..5768889c20a7 100644
+index 8e572d7d2b6e..7213d9334f3f 100644
 --- a/arch/mips/include/asm/mach-tx49xx/war.h
 +++ b/arch/mips/include/asm/mach-tx49xx/war.h
-@@ -10,7 +10,6 @@
+@@ -10,6 +10,5 @@
  
  #define BCM1250_M3_WAR			0
  #define SIBYTE_1956_WAR			0
--#define ICACHE_REFILLS_WORKAROUND_WAR	0
- #define R10000_LLSC_WAR			0
- #define MIPS34K_MISSED_ITLB_WAR		0
+-#define MIPS34K_MISSED_ITLB_WAR		0
  
+ #endif /* __ASM_MIPS_MACH_TX49XX_WAR_H */
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 1a03fdc2c74a..3a7379b8f31c 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -2716,7 +2716,7 @@ static inline void tlb_probe(void)
+ 
+ static inline void tlb_read(void)
+ {
+-#if MIPS34K_MISSED_ITLB_WAR
++#ifdef CONFIG_WAR_MIPS34K_MISSED_ITLB
+ 	int res = 0;
+ 
+ 	__asm__ __volatile__(
+@@ -2738,7 +2738,7 @@ static inline void tlb_read(void)
+ 		"tlbr\n\t"
+ 		".set reorder");
+ 
+-#if MIPS34K_MISSED_ITLB_WAR
++#ifdef CONFIG_WAR_MIPS34K_MISSED_ITLB
+ 	if ((res & _ULCAST_(1)))
+ 		__asm__ __volatile__(
+ 		"	.set	push				\n"
 diff --git a/arch/mips/include/asm/war.h b/arch/mips/include/asm/war.h
-index 7a69641de57b..a0942821d67d 100644
+index d405ecb78cbd..4f4d37b3dd07 100644
 --- a/arch/mips/include/asm/war.h
 +++ b/arch/mips/include/asm/war.h
-@@ -93,16 +93,6 @@
+@@ -93,11 +93,4 @@
  #error Check setting of SIBYTE_1956_WAR for your platform
  #endif
  
 -/*
-- * The RM7000 processors and the E9000 cores have a bug (though PMC-Sierra
-- * opposes it being called that) where invalid instructions in the same
-- * I-cache line worth of instructions being fetched may case spurious
-- * exceptions.
+- * 34K core erratum: "Problems Executing the TLBR Instruction"
 - */
--#ifndef ICACHE_REFILLS_WORKAROUND_WAR
--#error Check setting of ICACHE_REFILLS_WORKAROUND_WAR for your platform
+-#ifndef MIPS34K_MISSED_ITLB_WAR
+-#error Check setting of MIPS34K_MISSED_ITLB_WAR for your platform
 -#endif
 -
- /*
-  * On the R10000 up to version 2.6 (not sure about 2.7) there is a bug that
-  * may cause ll / sc and lld / scd sequences to execute non-atomically.
-diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index a0262729cd4c..f44265025281 100644
---- a/arch/mips/kernel/signal.c
-+++ b/arch/mips/kernel/signal.c
-@@ -545,6 +545,12 @@ int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
- 	return err ?: protected_restore_fp_context(sc);
- }
- 
-+#ifdef CONFIG_WAR_ICACHE_REFILLS
-+#define SIGMASK		~(cpu_icache_line_size()-1)
-+#else
-+#define SIGMASK		ALMASK
-+#endif
-+
- void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
- 			  size_t frame_size)
- {
-@@ -565,7 +571,7 @@ void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
- 
- 	sp = sigsp(sp, ksig);
- 
--	return (void __user *)((sp - frame_size) & (ICACHE_REFILLS_WORKAROUND_WAR ? ~(cpu_icache_line_size()-1) : ALMASK));
-+	return (void __user *)((sp - frame_size) & SIGMASK);
- }
- 
- /*
+ #endif /* _ASM_WAR_H */
 -- 
 2.16.4
 
