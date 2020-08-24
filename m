@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32A024F44C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD5E24F520
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgHXIex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:34:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43754 "EHLO mail.kernel.org"
+        id S1729190AbgHXIou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727990AbgHXIem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:34:42 -0400
+        id S1729170AbgHXIoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5552207D3;
-        Mon, 24 Aug 2020 08:34:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E03321741;
+        Mon, 24 Aug 2020 08:44:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258082;
-        bh=9Qb0N9+6E/GV3ZEmAcr2/EdtRX3yuWtlrYKP2CZhivA=;
+        s=default; t=1598258683;
+        bh=cfJ/wl3Q6Tz/kU5IIQ94z2KrXjhUYlSznnxxbWllU0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n7tgNKK0Wd74p1evXcZ1HDzPvQOdCVgCH2FA1S1z+wmrtberJ2g+jtCO25mix50VH
-         hlIVarjhrU3Z/3qelZx7H4aq7kBgLfO6vYo3CvaH63YS+lQUZ1dMNHTBAKzMGU8npX
-         vw7fs3EL6sZiHdw/pL7FVu7PdCH8OXDx1xmKcH2o=
+        b=g1qNwc14+PWdA57RGMl+WihRTU1p9wAZIJwgWxMvTcNsJUYGQ0q5bZc3TKrxdWAT2
+         Lf0jTiQPG8DzncKspZODHj9QqDv7iFu0Ix6eRkKkLHLzKIsYa4i2iefeBJSvaZFyMf
+         rlPCclszfJ9g4sa6Awtjg2AVcgVpMnjMB+YeZciY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 069/148] alpha: fix annotation of io{read,write}{16,32}be()
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.4 001/107] Documentation/llvm: add documentation on building w/ Clang/LLVM
 Date:   Mon, 24 Aug 2020 10:29:27 +0200
-Message-Id: <20200824082417.383396991@linuxfoundation.org>
+Message-Id: <20200824082405.100195347@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -50,57 +48,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
+commit fcf1b6a35c16ac500fa908a4022238e5d666eabf upstream.
 
-These accessors must be used to read/write a big-endian bus.  The value
-returned or written is native-endian.
+added to kbuild documentation. Provides more official info on building
+kernels with Clang and LLVM than our wiki.
 
-However, these accessors are defined using be{16,32}_to_cpu() or
-cpu_to_be{16,32}() to make the endian conversion but these expect a
-__be{16,32} when none is present.  Keeping them would need a force cast
-that would solve nothing at all.
-
-So, do the conversion using swab{16,32}, like done in asm-generic for
-similar situations.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Suggested-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/alpha/include/asm/io.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/kbuild/index.rst |    1 
+ Documentation/kbuild/llvm.rst  |   80 +++++++++++++++++++++++++++++++++++++++++
+ MAINTAINERS                    |    1 
+ 3 files changed, 82 insertions(+)
+ create mode 100644 Documentation/kbuild/llvm.rst
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index a4d0c19f1e796..640e1a2f57b42 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -489,10 +489,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
- }
- #endif
+--- a/Documentation/kbuild/index.rst
++++ b/Documentation/kbuild/index.rst
+@@ -19,6 +19,7 @@ Kernel Build System
  
--#define ioread16be(p) be16_to_cpu(ioread16(p))
--#define ioread32be(p) be32_to_cpu(ioread32(p))
--#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
--#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
-+#define ioread16be(p) swab16(ioread16(p))
-+#define ioread32be(p) swab32(ioread32(p))
-+#define iowrite16be(v,p) iowrite16(swab16(v), (p))
-+#define iowrite32be(v,p) iowrite32(swab32(v), (p))
+     issues
+     reproducible-builds
++    llvm
  
- #define inb_p		inb
- #define inw_p		inw
--- 
-2.25.1
-
+ .. only::  subproject and html
+ 
+--- /dev/null
++++ b/Documentation/kbuild/llvm.rst
+@@ -0,0 +1,80 @@
++==============================
++Building Linux with Clang/LLVM
++==============================
++
++This document covers how to build the Linux kernel with Clang and LLVM
++utilities.
++
++About
++-----
++
++The Linux kernel has always traditionally been compiled with GNU toolchains
++such as GCC and binutils. Ongoing work has allowed for `Clang
++<https://clang.llvm.org/>`_ and `LLVM <https://llvm.org/>`_ utilities to be
++used as viable substitutes. Distributions such as `Android
++<https://www.android.com/>`_, `ChromeOS
++<https://www.chromium.org/chromium-os>`_, and `OpenMandriva
++<https://www.openmandriva.org/>`_ use Clang built kernels.  `LLVM is a
++collection of toolchain components implemented in terms of C++ objects
++<https://www.aosabook.org/en/llvm.html>`_. Clang is a front-end to LLVM that
++supports C and the GNU C extensions required by the kernel, and is pronounced
++"klang," not "see-lang."
++
++Clang
++-----
++
++The compiler used can be swapped out via `CC=` command line argument to `make`.
++`CC=` should be set when selecting a config and during a build.
++
++	make CC=clang defconfig
++
++	make CC=clang
++
++Cross Compiling
++---------------
++
++A single Clang compiler binary will typically contain all supported backends,
++which can help simplify cross compiling.
++
++	ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
++
++`CROSS_COMPILE` is not used to prefix the Clang compiler binary, instead
++`CROSS_COMPILE` is used to set a command line flag: `--target <triple>`. For
++example:
++
++	clang --target aarch64-linux-gnu foo.c
++
++LLVM Utilities
++--------------
++
++LLVM has substitutes for GNU binutils utilities. These can be invoked as
++additional parameters to `make`.
++
++	make CC=clang AS=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
++	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-objsize \\
++	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
++	  HOSTLD=ld.lld
++
++Getting Help
++------------
++
++- `Website <https://clangbuiltlinux.github.io/>`_
++- `Mailing List <https://groups.google.com/forum/#!forum/clang-built-linux>`_: <clang-built-linux@googlegroups.com>
++- `Issue Tracker <https://github.com/ClangBuiltLinux/linux/issues>`_
++- IRC: #clangbuiltlinux on chat.freenode.net
++- `Telegram <https://t.me/ClangBuiltLinux>`_: @ClangBuiltLinux
++- `Wiki <https://github.com/ClangBuiltLinux/linux/wiki>`_
++- `Beginner Bugs <https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22>`_
++
++Getting LLVM
++-------------
++
++- http://releases.llvm.org/download.html
++- https://github.com/llvm/llvm-project
++- https://llvm.org/docs/GettingStarted.html
++- https://llvm.org/docs/CMake.html
++- https://apt.llvm.org/
++- https://www.archlinux.org/packages/extra/x86_64/llvm/
++- https://github.com/ClangBuiltLinux/tc-build
++- https://github.com/ClangBuiltLinux/linux/wiki/Building-Clang-from-source
++- https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4028,6 +4028,7 @@ B:	https://github.com/ClangBuiltLinux/li
+ C:	irc://chat.freenode.net/clangbuiltlinux
+ S:	Supported
+ K:	\b(?i:clang|llvm)\b
++F:	Documentation/kbuild/llvm.rst
+ 
+ CLEANCACHE API
+ M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 
 
