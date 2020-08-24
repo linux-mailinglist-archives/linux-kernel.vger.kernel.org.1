@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6968824FBD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6E924FBE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgHXKp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgHXKps (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:45:48 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71427C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 03:45:47 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a15so8159090wrh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 03:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X8bdXVUd2ZafGrZsydrb9Z2SDYX2iihTQNdU7gM/cJc=;
-        b=djzw2pFL0sp4R2OU4tnnwlDJLAAGiiLxvawtf/pn6iCIU6rKtkt8eaf+BO9jA5tE2W
-         HZovWyr/D7Ev8X3iAu7c+3MY4uzodttKCiscrln/O2s/iYqiN9YbWpUN4FyV4nGzBjg9
-         Do35p2yVIlrImH/KJctjLq2ogKxPgGIZeBKnMc+TspcSiWZOExXE41sQDtBBlRuHaz6a
-         XmI+4kdnLPo5RHDZnS4V1DlhaO2+G1oWBmVUvkplQ9h8RurrZRW5GakuTOQFrmqktkfX
-         ZzwwzpzXtTHBsetSZT4X3vJEMR66UvXTTL2O4Jh1ApfFSG6mYBIkW0Vs8orRt2G65qIq
-         bHHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X8bdXVUd2ZafGrZsydrb9Z2SDYX2iihTQNdU7gM/cJc=;
-        b=t2hrBkAKqwGRwn+6nf61j5Yr/rRrS9F1KRGdUoGk7jNC1t9abQGJV8nH1niuJi4LbM
-         uZhJrIoRmd+rDLKrfsc6a/jr43QnSZZsEvtPkZfjkUWjPOurmkkECxEZM06KyDpDGtFG
-         hFfnz7I4NwxkpmR6f0DqfxkGGNMWTywXZIoEPzu5XlWRmH6q2yeZ6dLrARgK4B5y1V/2
-         7jrdoObaZr/C6dvaUr2cUNUvwi+YNJwZAF/u+gqjdPf6vZxosMr7lMKGtxz9Du7v85P1
-         1PlpcWVqHpdBIhDY+FC3rL2hJl0TAi5/dFJfoXMRap0atpGokGqpYYm+syQuQRhniSih
-         /k3w==
-X-Gm-Message-State: AOAM531ZhgXm4ItION8mTPM2kZaY5SXNJCOKvj/y/5nNykPfs2L7IZPw
-        lbHfF3MtX2QN4UZA0iIHTgxHUA==
-X-Google-Smtp-Source: ABdhPJwJNM3y0nTcF+wtJ6Cz0O5X4b7N5G51v7E2SaMTd8WX5GsGNsYigj8nrXHBthl9cvaB+mDhtg==
-X-Received: by 2002:adf:fe50:: with SMTP id m16mr5499738wrs.27.1598265946046;
-        Mon, 24 Aug 2020 03:45:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
-        by smtp.googlemail.com with ESMTPSA id j7sm10146855wmj.38.2020.08.24.03.45.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 03:45:45 -0700 (PDT)
-Subject: Re: [PATCH] thermal: ti-soc-thermal: Fix bogus thermal shutdowns for
- omap4430
-To:     Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>
-Cc:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20200706183338.25622-1-tony@atomide.com>
- <20200823211204.zerldmljfd6rrk7g@duo.ucw.cz>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d359b309-7fa2-5089-df14-e27eafed96d1@linaro.org>
-Date:   Mon, 24 Aug 2020 12:45:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727112AbgHXKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:47:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbgHXKrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:47:35 -0400
+Received: from dragon (unknown [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF57F2071E;
+        Mon, 24 Aug 2020 10:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598266054;
+        bh=G1EuT7WRdVE2XHuuoDboS9gTa7E+TX7S2m2v/JaoZTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c/6rJ9cDMEh8WN0Di+Ss8+wulQMZcrXJZ0RtbJ2Vrqj5eS7W1BzvgoSEphYrUwT6g
+         ovdc8a8Scnywli4DYjN6NP+FsiIvAf0m4qROJ2f25yKKjb6HBg4B4XZjUFfeFYgCBm
+         1681B+Y0+T30BwX6IYJJ4CqYVscfn7ZLEeKU5dAc=
+Date:   Mon, 24 Aug 2020 18:47:19 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: imx8mm-var-som-symphony: Add
+ Variscite Symphony board with VAR-SOM-MX8MM
+Message-ID: <20200824104718.GC12776@dragon>
+References: <20200817070120.4937-1-krzk@kernel.org>
+ <20200817070120.4937-4-krzk@kernel.org>
+ <20200823020051.GJ30094@dragon>
+ <20200823085847.GC2886@kozik-lap>
 MIME-Version: 1.0
-In-Reply-To: <20200823211204.zerldmljfd6rrk7g@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200823085847.GC2886@kozik-lap>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2020 23:12, Pavel Machek wrote:
-> Hi!
+On Sun, Aug 23, 2020 at 10:58:47AM +0200, Krzysztof Kozlowski wrote:
+> On Sun, Aug 23, 2020 at 10:00:51AM +0800, Shawn Guo wrote:
+> > On Mon, Aug 17, 2020 at 09:01:20AM +0200, Krzysztof Kozlowski wrote:
+> > > Add a DTS for Variscite Symphony evaluation kit with VAR-SOM-MX8MM
+> > > System on Module.
+> > > 
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > 
+> > > ---
+> > > 
+> > > Changes since v1:
+> > > 1. Remove duplicated "leds" node,
+> > > 2. Fix heartbeat to active low,
+> > > 3. Add nxp,ptn5150 extcon.
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+> > >  .../dts/freescale/imx8mm-var-som-symphony.dts | 248 ++++++++++++++++++
+> > >  2 files changed, 249 insertions(+)
+> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> > > index a39f0a1723e0..dcfb8750cd78 100644
+> > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
+> > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
+> > >  
+> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+> > > +dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
+> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > new file mode 100644
+> > > index 000000000000..2d3c30ac5e04
+> > > --- /dev/null
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > @@ -0,0 +1,248 @@
+> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > +/*
+> > > + * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
+> > > + */
+> > > +
+> > > +/dts-v1/;
+> > > +
+> > > +#include "imx8mm-var-som.dtsi"
+> > > +
+> > > +/ {
+> > > +	model = "Variscite VAR-SOM-MX8MM Symphony evaluation board";
+> > > +	compatible = "variscite,var-som-mx8mm-symphony", "variscite,var-som-mx8mm", "fsl,imx8mm";
+> > > +
+> > > +	reg_usdhc2_vmmc: regulator-1 {
+> > 
+> > regulator-usdhc2-vmmc
 > 
->> We can sometimes get bogus thermal shutdowns on omap4430 at least with
->> droid4 running idle with a battery charger connected:
->>
->> thermal thermal_zone0: critical temperature reached (143 C), shutting down
->>
->> Dumping out the register values shows we can occasionally get a 0x7f value
->> that is outside the TRM listed values in the ADC conversion table. And then
->> we get a normal value when reading again after that. Reading the register
->> multiple times does not seem help avoiding the bogus values as they stay
->> until the next sample is ready.
->>
->> Looking at the TRM chapter "18.4.10.2.3 ADC Codes Versus Temperature", we
->> should have values from 13 to 107 listed with a total of 95 values. But
->> looking at the omap4430_adc_to_temp array, the values are off, and the
->> end values are missing. And it seems that the 4430 ADC table is similar
->> to omap3630 rather than omap4460.
->>
->> Let's fix the issue by using values based on the omap3630 table and just
->> ignoring invalid values. Compared to the 4430 TRM, the omap3630 table has
->> the missing values added while the TRM table only shows every second
->> value.
->>
->> Note that sometimes the ADC register values within the valid table can
->> also be way off for about 1 out of 10 values. But it seems that those
->> just show about 25 C too low values rather than too high values. So those
->> do not cause a bogus thermal shutdown.
+> You mean the node name? If so, it's not correct with device tree
+> specification:
+> "The node-name (...) should describe the general class of device.:
+> If appropriate, the name should be one of the following choices:
+> (...)
+>  - regulator"
 > 
-> This does not seem to be in recent -next. Ping?
+> Adding specific function/type/usage to the name of the node is a
+> opposite choice to "general class".
 
-Pong.
+Well, the node is named in general class, i.e. regulator-xxx, and we
+would like the suffix to be a bit more specific.  We have been using
+this name schema for fixed-regulator on i.MX platforms for long time.
 
-Going back from vacation. Will be in next very soon.
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Shawn
