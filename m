@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69F324F4BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0D424F42F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgHXIkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        id S1727110AbgHXIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727095AbgHXIkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:40:06 -0400
+        id S1727086AbgHXIdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:33:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F16422B4D;
-        Mon, 24 Aug 2020 08:40:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3B1B206F0;
+        Mon, 24 Aug 2020 08:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258405;
-        bh=HLMAsXt1RVcl9qu5BXO6Mz/mvjPSCnG4BohMGqYDItA=;
+        s=default; t=1598258018;
+        bh=Vf6JYvAkcH4kNBevz0hjVEvvg8GA3A+d4JKJx0Mgyjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULMCTzJ3dz47XIHYgEaZ21w0ddhzCGWscen/W187lqhCfViG+zzOhy9Ba2UAmniLQ
-         AO26silPVzJkgQBxWHjt1XLbkRD1HUYXYZirzcpFmda7+HmzhjcqnrrQHmMXUXNtjd
-         XrG93y7nOtgTImnq3vp1UbaHm6jHt0t1wvBwOSRs=
+        b=QOYVLR1Eo2/Ocnu5P9L+NvdpwD6GcZGa8aR3n07QxeVSzFyRHm6gCLBAUygAhcQhi
+         mpXzqR1SHmNeaX4dI5VheQIGPoyI3MgFaYF3H7+ArBwPoPcPSXxVdEfH3s7w2yN8Yv
+         P8jn/3DfJ8JeHKxN5krZXEySMeNp6idKcFG06Yi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Pozulp <pozulp.kernel@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 006/124] ALSA: hda/realtek: Add quirk for Samsung Galaxy Flex Book
-Date:   Mon, 24 Aug 2020 10:29:00 +0200
-Message-Id: <20200824082409.706165512@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 043/148] drm/i915/pmu: Prefer drm_WARN_ON over WARN_ON
+Date:   Mon, 24 Aug 2020 10:29:01 +0200
+Message-Id: <20200824082416.120303800@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Pozulp <pozulp.kernel@gmail.com>
+From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
 
-commit f70fff83cda63bbf596f99edc131b9daaba07458 upstream.
+[ Upstream commit bf07f6ebffefce2bbf3c318f9ce2f987774ea983 ]
 
-The Flex Book uses the same ALC298 codec as other Samsung laptops which
-have the no headphone sound bug, like my Samsung Notebook. The Flex Book
-owner used Early Patching to confirm that this quirk fixes the bug.
+struct drm_device specific drm_WARN* macros include device information
+in the backtrace, so we know what device the warnings originate from.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
-Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200814045346.645367-1-pozulp.kernel@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Prefer drm_WARN_ON over WARN_ON.
 
+Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200504181600.18503-8-pankaj.laxminarayan.bharadiya@intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/i915/i915_pmu.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7666,6 +7666,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
-+	SND_PCI_QUIRK(0x144d, 0xc189, "Samsung Galaxy Flex Book (NT950QCG-X716)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
- 	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+diff --git a/drivers/gpu/drm/i915/i915_pmu.c b/drivers/gpu/drm/i915/i915_pmu.c
+index 962ded9ce73fd..802837de1767c 100644
+--- a/drivers/gpu/drm/i915/i915_pmu.c
++++ b/drivers/gpu/drm/i915/i915_pmu.c
+@@ -441,7 +441,11 @@ static u64 count_interrupts(struct drm_i915_private *i915)
+ 
+ static void i915_pmu_event_destroy(struct perf_event *event)
+ {
+-	WARN_ON(event->parent);
++	struct drm_i915_private *i915 =
++		container_of(event->pmu, typeof(*i915), pmu.base);
++
++	drm_WARN_ON(&i915->drm, event->parent);
++
+ 	module_put(THIS_MODULE);
+ }
+ 
+@@ -1058,8 +1062,10 @@ static int i915_pmu_register_cpuhp_state(struct i915_pmu *pmu)
+ 
+ static void i915_pmu_unregister_cpuhp_state(struct i915_pmu *pmu)
+ {
+-	WARN_ON(pmu->cpuhp.slot == CPUHP_INVALID);
+-	WARN_ON(cpuhp_state_remove_instance(pmu->cpuhp.slot, &pmu->cpuhp.node));
++	struct drm_i915_private *i915 = container_of(pmu, typeof(*i915), pmu);
++
++	drm_WARN_ON(&i915->drm, pmu->cpuhp.slot == CPUHP_INVALID);
++	drm_WARN_ON(&i915->drm, cpuhp_state_remove_instance(pmu->cpuhp.slot, &pmu->cpuhp.node));
+ 	cpuhp_remove_multi_state(pmu->cpuhp.slot);
+ 	pmu->cpuhp.slot = CPUHP_INVALID;
+ }
+-- 
+2.25.1
+
 
 
