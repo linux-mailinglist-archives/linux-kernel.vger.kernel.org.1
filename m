@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64201250ABA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42636250AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgHXVVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 17:21:30 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:55088 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgHXVVU (ORCPT
+        id S1727995AbgHXVUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 17:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXVT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:21:20 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OLJC6H023009;
-        Mon, 24 Aug 2020 21:21:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fpRDC2bHPNF6m/pB8XIxeOQ3WPtTDRkGmvzUK9xLqGE=;
- b=hrKzx0vaQAcliZjQUlO+QnsL9u/LZuZD93HwLF6LVBoJ6ju5M0Xmv53S3WP9Y0BW4PTJ
- zbZPoreVAQOs+6zHMpxEQjsUhnC8+B90ygGBKVt4W+OQMnPZAysSSY1lN02fXbJbpUBV
- L72ZEzKz2ezbDjAqmTVE5jOWm82lbuScjRs1ryVGxwuUjrcK5RL5NLIJlFYvU/9yXeNq
- wZytV/aYpjjsqQx4G0jBrKCM8f1X1lRFCP8OMWDXuHVjmN93/+sjoOrAQJXhfeSYW23T
- eL9g3glZcf5EXpTSRbVqlISB7F5FKobngrjia7PL5X5B+0VwXYAj90DWTJYVzcv/OHae GQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 333w6tnhp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 21:21:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OLAYsY146623;
-        Mon, 24 Aug 2020 21:19:10 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 333rtx1gcb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 21:19:10 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07OLJ8Hn023370;
-        Mon, 24 Aug 2020 21:19:08 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 14:19:08 -0700
-Subject: Re: [PATCH] mm/hugetlb: Fix a race between hugetlb sysctl handlers
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     npiggin@suse.de, agl@us.ibm.com, ak@linux.intel.com,
-        nacc@us.ibm.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200822095328.61306-1-songmuchun@bytedance.com>
- <20200824135924.b485e000d358cee817c4f05c@linux-foundation.org>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <79800508-54c9-4cda-02de-29b1a6912e75@oracle.com>
-Date:   Mon, 24 Aug 2020 14:19:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200824135924.b485e000d358cee817c4f05c@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240166
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008240167
+        Mon, 24 Aug 2020 17:19:56 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6B5C061574;
+        Mon, 24 Aug 2020 14:19:56 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id g6so105692pjl.0;
+        Mon, 24 Aug 2020 14:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ubn8Ygt3LOORDEBZIqrY09E37xtge/HiuDXDH6cz5po=;
+        b=JVBFGmcGmSWsz9bYllOKTJ2ZeE9TP2Kw+25wP3wiTjEs/w8rXBS3cY6HAo7tZ9b6qq
+         z9d2tviGGmc+rYAsiIH/YXjcOj2TeuM4TFih4RDUGQ2fORwBCTHGhNbp51SdUgxpvV5j
+         hBqlWgYC5NZO+wsKW7oWPKBersSSzu9iZIQn0MOUJunMyllfdzD65zkVQ7mYC4Y9Ax3P
+         tuzsTK6IZ4ccnYcvd5o1+XIGRWxeuHjsmcwbKj5GB/5Ep2/rcPTRNesCfGQxPSQ2L7kT
+         1sZZ9ggD3o+v72/YOlmVz6AH6PAqiHsO+q+d/5o+saMWqoitT6AN9JkTeNy8/ND+fiR4
+         UZYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ubn8Ygt3LOORDEBZIqrY09E37xtge/HiuDXDH6cz5po=;
+        b=PZuPxghQ4jUZa3nLP5s/Z2+Qt5IzPQ4xSIqN6JWDUiZAvqDtGxKz5/Si/W+LM3v+YU
+         YxwiaCNuce5ur6M115Km3APYJTFzMTkuYmMUcqY13iestxrs9SskQtts76TZxgYeddw5
+         GHSdej7Xnam6qlqIwM+tDspt0FSFhF8Pfwz1NmKKwr7144vlnkuWXOA/h87zVlHK7rYm
+         II36LN07z16ntHVWikS+Xphzgunk+SvQqe5VpMH45y5lSTXm7/WVM5g3a7+oStEamoqF
+         w6hMYmauUhDkR+55KVjOpk0FUCf+IW+3wrUozT2c8UyRvyYsoVxZpFvyiT2iLRKvdSKT
+         cXYg==
+X-Gm-Message-State: AOAM530I0R7xz7wtZJnDJYR9QquTgFGrwk+L8RbRPimj8xGEFOXKht/v
+        xeA5r9syanH2HKTS+BVk42K57rs2tHWrFZkc
+X-Google-Smtp-Source: ABdhPJxg+9Q3F3q7vivl+srkbNQE74Bxef4gWwHaXun2cCyrH8AN+9ABF5qNI94MyZFjOgkAml3BMQ==
+X-Received: by 2002:a17:90a:ccd:: with SMTP id 13mr915003pjt.123.1598303995731;
+        Mon, 24 Aug 2020 14:19:55 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id t10sm97788pfq.77.2020.08.24.14.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 14:19:55 -0700 (PDT)
+From:   rentao.bupt@gmail.com
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, taoren@fb.com
+Cc:     Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH 0/5] ARM: dts: aspeed: Add Facebook Wedge400 (AST2500) BMC
+Date:   Mon, 24 Aug 2020 14:19:43 -0700
+Message-Id: <20200824211948.12852-1-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/20 1:59 PM, Andrew Morton wrote:
-> On Sat, 22 Aug 2020 17:53:28 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
-> 
->> There is a race between the assignment of `table->data` and write value
->> to the pointer of `table->data` in the __do_proc_doulongvec_minmax().
-> 
-> Where does __do_proc_doulongvec_minmax() write to table->data?
-> 
-> I think you're saying that there is a race between the assignment of
-> ctl_table->table in hugetlb_sysctl_handler_common() and the assignment
-> of the same ctl_table->table in hugetlb_overcommit_handler()?
-> 
-> Or not, maybe I'm being thick.  Can you please describe the race more
-> carefully and completely?
-> 
+From: Tao Ren <rentao.bupt@gmail.com>
 
-I too am looking at this now and do not completely understand the race.
-It could be that:
+The patch series adds Facebook Wedge400 (AST2500) BMC device tree, and
+FMC flash layout is re-structured because flash size and layout varies
+across different Facebook AST2500 OpenBMC platforms.
 
-hugetlb_sysctl_handler_common
-...
-	table->data = &tmp;
+Patch #1 removes flash layout from ast2500-facebook-netbmc-common.dtsi
+because now we have 32MB, 64MB an 128MB flashes on different Facebook
+AST2500 OpenBMC platforms.
 
-and, do_proc_doulongvec_minmax()
-...
-	return __do_proc_doulongvec_minmax(table->data, table, write, ...
-with __do_proc_doulongvec_minmax(void *data, struct ctl_table *table, ...
-...
-	i = (unsigned long *) data;
-	...
-		*i = val;
-	
-So, __do_proc_doulongvec_minmax can be dereferencing and writing to the pointer
-in one thread when hugetlb_sysctl_handler_common is setting it in another?
+Patch #2, #3 and #4 sets FMC flash layout in CMM, Yamp and Minipack
+device tree explicitly because the original layout settings were removed
+from ast2500-facebook-netbmc-common.dtsi (in patch #1).
 
-Another confusing part of the message is the stack trace which includes
-...
-     ? set_max_huge_pages+0x3da/0x4f0
-     ? alloc_pool_huge_page+0x150/0x150
+Patch #5 adds Facebook Wedge400 AST2500 BMC device tree.
 
-which are 'downstream' from these routines.  I don't understand why these
-are in the trace.
 
-If the race is with the pointer set and dereference/write, then this type of
-fix is OK.  However, if you really have two 'sysadmin type' global operations
-racing then one or both are not going to get what they expected.  Instead of
-changing the code to 'handle the race', I think it might be acceptable to just
-put a big semaphore around it.
+Tao Ren (5):
+  ARM: dts: aspeed: Remove flash layout from Facebook AST2500 Common
+    dtsi
+  ARM: dts: aspeed: cmm: Set 32MB FMC flash layout
+  ARM: dts: aspeed: yamp: Set 32MB FMC flash layout
+  ARM: dts: aspeed: minipack: Update 64MB FMC flash layout
+  ARM: dts: aspeed: Add Facebook Wedge400 BMC
+
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/aspeed-bmc-facebook-cmm.dts |  17 +
+ .../boot/dts/aspeed-bmc-facebook-minipack.dts |  47 +-
+ .../boot/dts/aspeed-bmc-facebook-wedge400.dts | 420 ++++++++++++++++++
+ .../arm/boot/dts/aspeed-bmc-facebook-yamp.dts |  17 +
+ .../dts/ast2500-facebook-netbmc-common.dtsi   |  13 -
+ 6 files changed, 500 insertions(+), 15 deletions(-)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts
+
 -- 
-Mike Kravetz
+2.17.1
+
