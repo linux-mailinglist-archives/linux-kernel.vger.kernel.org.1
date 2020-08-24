@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D0924FE05
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4245924FE0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgHXMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 08:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgHXMsO (ORCPT
+        id S1726950AbgHXMtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 08:49:53 -0400
+Received: from goliath.siemens.de ([192.35.17.28]:53242 "EHLO
+        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHXMts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 08:48:14 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BB7C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:48:13 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id d11so11518486ejt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S2IPXzmn+OKMcrQgf/hKHvn8I9Z5eUqBH1sKWLhEHkw=;
-        b=BfRVfTBXcVbti1Hpi5XfJ9bPtCpd/H+Yoa8sWOaAvxUonJ76O0Lea7kGjVAGJmOCJ5
-         Jtzcdpw5goa/kbBky0td2syRYGONm0uqruHTKboQap+xTpY+GFD2x+Dni+qkmvc+Wwsm
-         4pkeX4wFxnnIeItQwxZPhFji88v7JFVl0CoGU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S2IPXzmn+OKMcrQgf/hKHvn8I9Z5eUqBH1sKWLhEHkw=;
-        b=nYRBON3Kdkw7GSASHGXiGZMGH0DD1ffcaY5TYZqSwqOYhnOEGb8JGZ9vjvLm2sneRr
-         IZeYWVMqoEFXzy+zh80naeoM7Wt4QGBX5BKDsgYQwpQzJo91YBNOEtVAlkjezM7ZLvfr
-         x8h2TIaIM9cphlKfQxSUDQpkrQvHqymnkC6wozzZB0XKrF+sDEZt7IEnNFwHPLlohYH5
-         NHsXxS+DYHP+8e5z4/5INPdgwq4V4+Z2eP0O7B0Zv38RVnrg26I3Q+YA5EcntWv6SQUH
-         evxL8l94Q6oGTyvR4sj2g6VTufOeUQHhqvp9QnYmT/wEbU2YhH91NVmM17/tL/g/IazN
-         GXeg==
-X-Gm-Message-State: AOAM532ZnbP6t2nnNTun4B4bv/x/+/Re6xuMZ8aM7QU9rtkr6V7xRh6/
-        Yvb2efKGvwMHXlJCp4LK609j23Ffs5ZUI+9hEfccaA==
-X-Google-Smtp-Source: ABdhPJyFg7kN9mhul11wEbcYUGJAB7HYhA8U9EnjCXIxa2cNqHKznAI3idzFu6PpASOAq35nSzcCZMhWbHxQmvz1enI=
-X-Received: by 2002:a17:907:94ca:: with SMTP id dn10mr5328702ejc.110.1598273292348;
- Mon, 24 Aug 2020 05:48:12 -0700 (PDT)
+        Mon, 24 Aug 2020 08:49:48 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 07OCnNt2009655
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 14:49:24 +0200
+Received: from [167.87.131.75] ([167.87.131.75])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 07OCnIUn004790;
+        Mon, 24 Aug 2020 14:49:20 +0200
+Subject: Re: [RESEND PATCH v3 5/8] mtd: spi-nor: cadence-quadspi: Handle probe
+ deferral while requesting DMA channel
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Jin, Le (RC-CN DF FA R&D)" <le.jin@siemens.com>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, marex@denx.de
+References: <20200601070444.16923-1-vigneshr@ti.com>
+ <20200601070444.16923-6-vigneshr@ti.com>
+ <6c8d9bff-3a67-0e6c-d4d1-36b7ed5007b9@web.de>
+ <8cebd31a-2366-4584-b1d1-faa30c18ed6a@ti.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <dbba9f0c-4621-2d58-8fb8-4cbe788558f9@siemens.com>
+Date:   Mon, 24 Aug 2020 14:49:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200812161452.3086303-1-balsini@android.com> <CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com>
- <20200813132809.GA3414542@google.com> <CAG48ez0jkU7iwdLYPA0=4PdH0SL8wpEPrYvpSztKG3JEhkeHag@mail.gmail.com>
- <20200818135313.GA3074431@google.com> <877dtvb2db.fsf@vostro.rath.org> <CAOQ4uxhRzkpg2_JA2MCXe6Hjc1XaA=s3L_4Q298dW3OxxE2nFg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhRzkpg2_JA2MCXe6Hjc1XaA=s3L_4Q298dW3OxxE2nFg@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 24 Aug 2020 14:48:01 +0200
-Message-ID: <CAJfpegs2LHv4xfb5KPzSRPSAVg3eZEvZKk46SjgwGcgq==qNzw@mail.gmail.com>
-Subject: Re: [PATCH v6] fuse: Add support for passthrough read/write
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Nikhilesh Reddy <reddyn@codeaurora.org>,
-        Akilesh Kailash <akailash@google.com>,
-        David Anderson <dvander@google.com>,
-        Eric Yan <eric.yan@oneplus.com>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8cebd31a-2366-4584-b1d1-faa30c18ed6a@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 11:25 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On 24.08.20 13:45, Vignesh Raghavendra wrote:
+> 
+> 
+> On 8/22/20 11:35 PM, Jan Kiszka wrote:
+>> On 01.06.20 09:04, Vignesh Raghavendra wrote:
+>>> dma_request_chan_by_mask() can throw EPROBE_DEFER if DMA provider
+>>> is not yet probed. Currently driver just falls back to using PIO mode
+>>> (which is less efficient) in this case. Instead return probe deferral
+>>> error as is so that driver will be re probed once DMA provider is
+>>> available.
+>>>
+>>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>> ---
+> [...]
+>>>
+>>>  static const struct spi_nor_controller_ops cqspi_controller_ops = {
+>>> @@ -1269,8 +1274,11 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+>>>  			dev_dbg(nor->dev, "using direct mode for %s\n",
+>>>  				mtd->name);
+>>>
+>>> -			if (!cqspi->rx_chan)
+>>> -				cqspi_request_mmap_dma(cqspi);
+>>> +			if (!cqspi->rx_chan) {
+>>> +				ret = cqspi_request_mmap_dma(cqspi);
+>>> +				if (ret == -EPROBE_DEFER)
+>>> +					goto err;
+>>> +			}
+>>>  		}
+>>>  	}
+>>>
+>>>
+>>
+>> This seem to break reading the SPI flash on our IOT2050 [1] (didn't test
+>> the eval board yet).
+>>
+>> Without that commit, read happens via PIO, and that works. With the
+>> commit, the pattern
+>>
+>> with open("out.bin", "wb") as out:
+>>     pos = 0
+>>     while pos < 2:
+>>         with open("/dev/mtd0", "rb") as mtd:
+>>            mtd.seek(pos * 0x10000)
+>>            out.write(mtd.read(0x10000))
+>>         pos += 1
+>>
+>> gives the wrong result for the second block while
+> 
+> Interesting... Could you please explain wrong result? Is the data move
+> around or completely garbage?
 
-> > What I have in mind is things like not coupling the setup of the
-> > passthrough fds to open(), but having a separate notification message for
-> > this (like what we use for invalidation of cache), and adding not just
-> > an "fd" field but also "offset" and "length" fields (which would
-> > currently be required to be both zero to get the "full file" semantics).
-> >
->
-> You mean like this?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/commit/?h=fuse2
+It looks like some stripes contain data from other parts of the flash or
+kernel RAM. It's not just garbage, there are readable strings included.
 
-Look specifically at fuse_file_map_iter():
+> 
+> Does this fail even on AM654 EVM? Could you share full script for me to
+> test locally?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/tree/fs/fuse2/file.c?h=fuse2#n582
+The scripts are complete (python). Just binary-diff the outputs.
 
-and fudev_map_ioctl():
+I'll try on the EVM later.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/tree/fs/fuse2/fudev.c?h=fuse2#n601
+> 
+> What is the flash on the board?
 
-This avoids the security issue Jann mentioned as well as allowing
-arbitrary mapping of file ranges.  E.g. it could also  be used by a
-block based filesystem to map I/O directly into the block device.
-
-What the implementation lacks is any kind of caching.  Since your
-usecase involves just one map extent per file, special casing that
-would be trivial.  We can revisit general caching later.
+Le, could you answer that more precisely than I could?
 
 Thanks,
-Miklos
+Jan
+
+> 
+>>
+>> with open("out2.bin", "wb") as out:
+>>     with open("/dev/mtd0", "rb") as mtd:
+>>         out.write(mtd.read(0x20000))
+>>
+>> (or "mtd_debug read") is fine.
+>>
+>> What could be the reason? Our DTBs and k3-am654-base-board.dtb had some
+>> deviations /wrt the ospi node, but aligning ours to the base board made
+>> no difference.
+>>
+>> Jan
+>>
+>> [1] https://github.com/siemens/linux/commits/jan/iot2050
+>>
+
+-- 
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
