@@ -2,93 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC9E24FCDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5A424FCEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgHXLnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:43:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:60374 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgHXLnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:43:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F21631063;
-        Mon, 24 Aug 2020 04:43:36 -0700 (PDT)
-Received: from [10.37.12.65] (unknown [10.37.12.65])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9399D3F66B;
-        Mon, 24 Aug 2020 04:43:35 -0700 (PDT)
-Subject: Re: [PATCH 2/3] memory: samsung: exynos5422-dmc: remove unused
- exynos5_dmc members
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200822163218.21857-1-krzk@kernel.org>
- <20200822163218.21857-2-krzk@kernel.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <6c61572d-ef7a-ca0a-2253-7a3c0736f0a5@arm.com>
-Date:   Mon, 24 Aug 2020 12:43:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727047AbgHXLp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:45:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10315 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726624AbgHXLp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:45:57 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A1A3FB96423F246E1225;
+        Mon, 24 Aug 2020 19:45:54 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 24 Aug 2020
+ 19:45:45 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Use helper macro RT_TOS() in __icmp_send()
+Date:   Mon, 24 Aug 2020 07:44:37 -0400
+Message-ID: <20200824114437.58332-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20200822163218.21857-2-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Use helper macro RT_TOS() to get tos in __icmp_send().
 
-On 8/22/20 5:32 PM, Krzysztof Kozlowski wrote:
-> The struct exynos5_dmc members bypass_rate, mx_mspll_ccore_phy,
-> mout_mx_mspll_ccore_phy and opp_bypass are not actually used.
-> 
-> Apparently there was a plan to store the OPP for the bypass mode in
-> opp_bypass member, but drivers fails to do it and instead always sets
-> target voltage during bypass mode.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->   drivers/memory/samsung/exynos5422-dmc.c | 9 ---------
->   1 file changed, 9 deletions(-)
-> 
-> diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-> index 31864ce59b25..df02afa8aa90 100644
-> --- a/drivers/memory/samsung/exynos5422-dmc.c
-> +++ b/drivers/memory/samsung/exynos5422-dmc.c
-> @@ -123,9 +123,7 @@ struct exynos5_dmc {
->   	struct mutex lock;
->   	unsigned long curr_rate;
->   	unsigned long curr_volt;
-> -	unsigned long bypass_rate;
->   	struct dmc_opp_table *opp;
-> -	struct dmc_opp_table opp_bypass;
->   	int opp_count;
->   	u32 timings_arr_size;
->   	u32 *timing_row;
-> @@ -143,8 +141,6 @@ struct exynos5_dmc {
->   	struct clk *mout_bpll;
->   	struct clk *mout_mclk_cdrex;
->   	struct clk *mout_mx_mspll_ccore;
-> -	struct clk *mx_mspll_ccore_phy;
-> -	struct clk *mout_mx_mspll_ccore_phy;
->   	struct devfreq_event_dev **counter;
->   	int num_counters;
->   	u64 last_overflow_ts[2];
-> @@ -455,9 +451,6 @@ static int exynos5_dmc_align_bypass_voltage(struct exynos5_dmc *dmc,
->   					    unsigned long target_volt)
->   {
->   	int ret = 0;
-> -	unsigned long bypass_volt = dmc->opp_bypass.volt_uv;
-> -
-> -	target_volt = max(bypass_volt, target_volt);
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/ipv4/icmp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index cf36f955bfe6..3b387dc3864f 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -690,9 +690,9 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
+ 		rcu_read_unlock();
+ 	}
+ 
+-	tos = icmp_pointers[type].error ? ((iph->tos & IPTOS_TOS_MASK) |
++	tos = icmp_pointers[type].error ? (RT_TOS(iph->tos) |
+ 					   IPTOS_PREC_INTERNETCONTROL) :
+-					  iph->tos;
++					   iph->tos;
+ 	mark = IP4_REPLY_MARK(net, skb_in->mark);
+ 
+ 	if (__ip_options_echo(net, &icmp_param.replyopts.opt.opt, skb_in, opt))
+-- 
+2.19.1
 
-Could you explain which use cases you considered when you decided to
-remove these lines?
-
-Regards,
-Lukasz
