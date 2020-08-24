@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCD72500AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3848B2500E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgHXPP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:15:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgHXPOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:14:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AA00AABCC;
-        Mon, 24 Aug 2020 15:14:53 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 17:14:25 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Mel Gorman <mgorman@suse.com>
-Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
- -14.1% regression
-Message-ID: <20200824151425.GF4794@zn.tnic>
-References: <20200425114414.GU26573@shao2-debian>
- <20200425130136.GA28245@zn.tnic>
- <20200818082943.GA65567@shbuild999.sh.intel.com>
- <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
- <20200819020437.GA2605@shbuild999.sh.intel.com>
- <20200821020259.GA90000@shbuild999.sh.intel.com>
+        id S1728006AbgHXPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727836AbgHXPR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:17:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DFEC061799;
+        Mon, 24 Aug 2020 08:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=vg63jAHJfG2SzXwAA4F8u4EABDJK8kFbtsgiuvgE/iE=; b=O4ub1tEVsA9kU09ZzyqjnYqLiE
+        qd3Ogz447N5q6xe5QqJS6PetMeBFjPO8xP+KShjzwd1fzVYDV5AxzmXJ2pZNJbaMyNX8vto74+uEK
+        cf0Fy7D0KkJe38ALG6R99zIFxNQHnKdG1FCEXgGVfyoKHrHt/oBmeVmO5rmIFU1WDzmck7Qzjz7ZB
+        hLDNe1ccAKsDBIq3z5d08YmyqEnWEC7g+OhGVVrKgshg9aSK0pVTV+OrnwCM7ssLztd7swOuJ/3HT
+        Rgx+o/1FRjyEKjjwSGvGeEvWOt8uyfl3atffNAhwVuMon7a8+hOuLJBonyWCRmc/BdzF7+QOwogOm
+        Hg7OajcA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAEDW-0004CN-5w; Mon, 24 Aug 2020 15:17:02 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/11] iomap/fs/block patches for 5.11
+Date:   Mon, 24 Aug 2020 16:16:49 +0100
+Message-Id: <20200824151700.16097-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200821020259.GA90000@shbuild999.sh.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 10:02:59AM +0800, Feng Tang wrote:
->   1de08dccd383 x86/mce: Add a struct mce.kflags field
->   9554bfe403bd x86/mce: Convert the CEC to use the MCE notifier
-> 
-> And strange thing is after using gcc9 and debian10 rootfs, with same commits
-> the regression turns to a improvement,
+As promised earlier [1], here are the patches which I would like to
+merge into 5.11 to support THPs.  They depend on that earlier series.
+If there's anything in here that you'd like to see pulled out and added
+to that earlier series, let me know.
 
-How so?
+There are a couple of pieces in here which aren't exactly part of
+iomap, but I think make sense to take through the iomap tree.
 
-> though the trend keeps, that if we
-> changes the kflags from __u64 to __u32, the performance will be no change.
-> 
-> Following is the comparing of regression, I also attached the perf-profile
-> for old and new commit (let me know if you need more data)
-> 
-> 
-> 9554bfe403bdfc08 1de08dccd383482a3e88845d355 
-> ---------------- --------------------------- 
->          %stddev     %change         %stddev
->              \          |                \  
->     192362           -15.1%     163343        will-it-scale.287.processes
->       0.91            +0.2%       0.92        will-it-scale.287.processes_idle
->     669.67           -15.1%     568.50        will-it-scale.per_process_ops
+[1] https://lore.kernel.org/linux-fsdevel/20200824145511.10500-1-willy@infradead.org/
 
-This is the data from your previous measurement:
+Matthew Wilcox (Oracle) (11):
+  fs: Make page_mkwrite_check_truncate thp-aware
+  mm: Support THPs in zero_user_segments
+  mm: Zero the head page, not the tail page
+  block: Add bio_for_each_thp_segment_all
+  iomap: Support THPs in iomap_adjust_read_range
+  iomap: Support THPs in invalidatepage
+  iomap: Support THPs in read paths
+  iomap: Change iomap_write_begin calling convention
+  iomap: Support THPs in write paths
+  iomap: Inline data shouldn't see THPs
+  iomap: Handle tail pages in iomap_page_mkwrite
 
-9554bfe403bdfc08 1de08dccd383482a3e88845d355
----------------- ---------------------------
-         %stddev     %change         %stddev
-             \          |                \
-    668.00           -14.1%     573.75        will-it-scale.per_process_ops
-
-If I'm reading it correctly, commit
-
-1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
-
-is still the slower one vs
-
-9554bfe403bd ("x86/mce: Convert the CEC to use the MCE notifier")
-
-Or am I misreading it?
-
-In any case, this really looks like what Tony said: this enlargement of
-struct mce pushes some variable into a cacheline-misaligned placement,
-causing it to bounce.
-
-The $ 10^6 question is, which variable is that...
+ fs/iomap/buffered-io.c  | 178 ++++++++++++++++++++++++----------------
+ include/linux/bio.h     |  13 +++
+ include/linux/bvec.h    |  27 ++++++
+ include/linux/highmem.h |  15 +++-
+ include/linux/pagemap.h |  10 +--
+ mm/highmem.c            |  62 +++++++++++++-
+ mm/shmem.c              |   7 ++
+ mm/truncate.c           |   7 ++
+ 8 files changed, 236 insertions(+), 83 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.28.0
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
