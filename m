@@ -2,50 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC19D24FF2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755D324FF37
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgHXNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
+        id S1728036AbgHXNmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727970AbgHXNlE (ORCPT
+        with ESMTP id S1728014AbgHXNmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:41:04 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DA9C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:41:04 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 963F6128286FD;
-        Mon, 24 Aug 2020 06:24:17 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 06:41:03 -0700 (PDT)
-Message-Id: <20200824.064103.1912127912340710662.davem@davemloft.net>
-To:     linmiaohe@huawei.com
-Cc:     johannes.berg@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netlink: remove duplicated
- nla_need_padding_for_64bit() check
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <51bd2b4c5f4549488de08bdcf6daae23@huawei.com>
-References: <51bd2b4c5f4549488de08bdcf6daae23@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 06:24:17 -0700 (PDT)
+        Mon, 24 Aug 2020 09:42:05 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CCBC061573;
+        Mon, 24 Aug 2020 06:42:04 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id f26so9666999ljc.8;
+        Mon, 24 Aug 2020 06:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u/tcJcoNjBd65aqyixuPMYO1EjOL24DArTaKRcQSR00=;
+        b=BiZxRmOE+xC12DVhSxL3FViWBFtWVsV9ckYM1zZpmO2F4R4pYhAywA5QdYcVbJG/Ek
+         zy2Sd77F/NlVe767uNCBSSvCNi7PobDSlucyhApkqvpjIVxb6wEexBeARyugignsEuuz
+         MyJUv+RROyabcFliRWNawnSVSQCcXxrWJDpB/I4DAN1Xou/DcS4vwJ/olsUJ/mUGLdVY
+         WaJgcjnmBE4SNUm56xIzeWNT2rZRW3fLwhisypEvwzIMfBMPIX388LJwP+WTUbj+roY1
+         KKoa1PkXj6KtofZAl2OgoomKTu3SBSE9rKaa1VvA7NyMwrrwSqxcxnBq/x5H5OJXV2OY
+         XFkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u/tcJcoNjBd65aqyixuPMYO1EjOL24DArTaKRcQSR00=;
+        b=T8BtSo+P7h9EBi/l5SrcgYHxI+Zx59MzAFD8vY/sBOkzXnHEWD0KkH+qsrCq4ZnvBr
+         cLMgw1MEGkvt1ApjVlyXPO/I47faWtxHLvq3OoH9FwLgrUv76WprlfOWBv1R+Dos1iWS
+         xv0E2rj60f1bE2SKXKClj9GyqLytALMcqQBMZYmfmXJG+6/HdFJdEXoMmOl6EMvZ7fZ5
+         POW2GJrvx766lh2oZ558RxE/ywiyKeF5gwSZlIav77O/0P2Y0P8jWFrdC4onjbk6qS+h
+         qG+irloh3uM0FaynDUpCnyYPScs5oVAL4k23a9Ql3rPOL+XCl/tY+EBKImrx29Rkk4bN
+         FrKA==
+X-Gm-Message-State: AOAM530zujV/JfrEFuJUzockq37UFP7MlPixFXbxQrYKG0l0Lb3g636R
+        ttJeouINONiLtezEDjIcEiUH94mdIBqf+lM+u8Y7TGgA
+X-Google-Smtp-Source: ABdhPJy99YCtFNmjhnje+8maJuYGXldM7qWMOvONoQmUneZSH8j64uwO12iXneGBihZRrBZ82TAwjMcXSKVjMwftwfs=
+X-Received: by 2002:a2e:5cc9:: with SMTP id q192mr2690924ljb.452.1598276520241;
+ Mon, 24 Aug 2020 06:42:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <1598255439-1193-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1598255439-1193-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 24 Aug 2020 10:41:48 -0300
+Message-ID: <CAOMZO5B74eiCH0bf-Dr3T8tNVm8wZzPAUaAn858HtVRQ0fUWGg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Add headphone detection for sound card
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: linmiaohe <linmiaohe@huawei.com>
-Date: Mon, 24 Aug 2020 11:58:24 +0000
+Hi Wang,
 
-> friendly ping :)
+On Mon, Aug 24, 2020 at 4:56 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> Add headphone detection for sound card
+> and add audio sound card node for imx6sll.
+>
+> Shengjiu Wang (3):
+>   ARM: dts: imx6sx-sdb: Add headphone detection for sound card
+>   ARM: dts: imx6sl-evk: Add headphone detection for sound card
+>   ARM: dts: imx6sll-evk: Add audio sound card node
+>
+> changes in v2
+> - add pinctrl_hp, don't add headphone detect GPIO in hog group
 
-Networking patches must be posted to netdev@vger.kernel.org, so please
-resubmit this properly.
+Series looks good now:
 
-Thank you.
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
