@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F049250733
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8967725073C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 20:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgHXSN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 14:13:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35444 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgHXSNz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 14:13:55 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9A34520B4908;
-        Mon, 24 Aug 2020 11:13:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9A34520B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1598292834;
-        bh=I33zGzGKrY5OD+f93g2K2Tof22XbwMMm4oJvhkCRjyQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=nkEbESeIREk6peaARbVfOFLHskhh+FVeAgvpLv49vmfLWN8dF5+vMlZrPt3vBqnrS
-         jDK32p1NdgaRUBU5GkDKFUhWfoYYqlIYDTsvI7Etl3dx623IDvcpcw2udkvJAy8B+S
-         JKO3wTUBhq66QhbGuui2GKpS9B5E0Yu7/oC7XdXA=
-Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        tusharsu@linux.microsoft.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200822010018.19453-1-nramas@linux.microsoft.com>
- <CAEjxPJ5Kok-TBfS=XQ+NUC5tuaZRkyLBOawG4UDky51_bsMnGw@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <418618c4-a0c6-6b28-6718-2726a29b83c5@linux.microsoft.com>
-Date:   Mon, 24 Aug 2020 11:13:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAEjxPJ5Kok-TBfS=XQ+NUC5tuaZRkyLBOawG4UDky51_bsMnGw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1726718AbgHXSPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 14:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbgHXSPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 14:15:08 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC31320702;
+        Mon, 24 Aug 2020 18:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598292907;
+        bh=S4JVlPgfHuMmBXtrcQ9GAG3QkqAnOokvBVoiTEifj0g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ySjPI4oojhsWZ4NwQz0/3hu2T6AcFmAvSQlwl+QQEMSSrMaw+sDUDDqouLviwUAVc
+         Txnnf1e3Q6G1JHXQfEmfHHIWnH+VnhAP1chNeu++i4iT8IFPbhT+WhVEM9kfTBQtKl
+         vgstHdB3QDp9L3I6gqC5byVJGX6h0b7HqlLxYAUg=
+Date:   Tue, 25 Aug 2020 03:15:03 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
+ entry is not optimized (trigger by int3 breakpoint)
+Message-Id: <20200825031503.57d08355bf44900af7d70536@kernel.org>
+In-Reply-To: <20200824141429.GA3982@worktop.programming.kicks-ass.net>
+References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
+        <20200824141429.GA3982@worktop.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/20 7:00 AM, Stephen Smalley wrote:
+Hi Peter,
 
->> +int security_read_policy_kernel(struct selinux_state *state,
->> +                               void **data, size_t *len)
->> +{
->> +       int rc;
->> +
->> +       rc = security_read_policy_len(state, len);
->> +       if (rc)
->> +               return rc;
->> +
->> +       *data = vmalloc(*len);
->> +       if (!*data)
->> +               return -ENOMEM;
->>
->> +       return security_read_selinux_policy(state, data, len);
->>   }
+On Mon, 24 Aug 2020 16:14:29 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Mon, Aug 24, 2020 at 12:02:58PM +0000, Eddy_Wu@trendmicro.com wrote:
+> > After bisecting, I found this behavior seems to introduce by this
+> > commit: (5.8-rc1) 0d00449c7a28a1514595630735df383dec606812 x86:
+> > Replace ist_enter() with nmi_enter() This make kprobe_int3_handler()
+> > effectively running as NMI context, which pre_handler_kretprobe()
+> > explicitly checked to prevent recursion.
+> > 
+> > (in_nmi() check appears from v3.17)
+> > f96f56780ca584930bb3a2769d73fd9a101bcbbe kprobes: Skip kretprobe hit
+> > in NMI context to avoid deadlock
+> > 
+> > To make kretprobe work again with int3 breakpoint, I think we can
+> > replace the in_nmi() check with in_nmi() == (1 << NMI_SHIFT) at
+> > kprobe_int3_handler() and skip kretprobe if nested NMI.  Did a quick
+> > test on 5.9-rc2 and it seems to be working.  I'm not sure if it is the
+> > best way to do since it may also require change to other architecture
+> > as well, any thought?
 > 
-> See the discussion here:
-> https://lore.kernel.org/selinux/20200824113015.1375857-1-omosnace@redhat.com/T/#t
+> Masami, would it be possible to have a kretprobe specific recursion
+> count here?
+
+Hmm, good point. As I commented in f96f56780ca5 ("kprobes: Skip kretprobe
+hit in NMI context to avoid deadlock"), this check is for avoiding the
+deadlock with kretprobe_table_lock which is used in pre_handler *and*
+kretprobe trampoline handler.
+
 > 
-> In order for this to be safe, you need to ensure that all callers of
-> security_read_policy_kernel() have taken fsi->mutex in selinuxfs and
-> any use of security_read_policy_len() occurs while holding the mutex.
-> Otherwise, the length can change between security_read_policy_len()
-> and security_read_selinux_policy() if policy is reloaded.
+> I did the below, but i'm not at all sure that isn't horrible broken. I
+> can't really find many rp->lock sites and this might break things by
+> limiting contention.
+
+This is not enough. For checking the recursion of kretprobes, we might
+need kretprobe_table_trylock() or kretprobe_table_busy() (but both
+can be false positive)
+
+Note that rp->lock shouldn't matter unless we will support recursive
+kprobe itself. (even though, we can use raw_spin_trylock_irqsave())
+
+Thank you,
+
+> 
+> ---
+> 
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index 9be1bff4f586..0bff314cc800 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -153,6 +153,7 @@ struct kretprobe {
+>  	size_t data_size;
+>  	struct hlist_head free_instances;
+>  	raw_spinlock_t lock;
+> +	atomic_t recursion;
+>  };
+>  
+>  struct kretprobe_instance {
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 287b263c9cb9..27fd096bcb9a 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1934,22 +1934,17 @@ unsigned long __weak arch_deref_entry_point(void *entry)
+>  static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  {
+>  	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
+> -	unsigned long hash, flags = 0;
+>  	struct kretprobe_instance *ri;
+> -
+> -	/*
+> -	 * To avoid deadlocks, prohibit return probing in NMI contexts,
+> -	 * just skip the probe and increase the (inexact) 'nmissed'
+> -	 * statistical counter, so that the user is informed that
+> -	 * something happened:
+> -	 */
+> -	if (unlikely(in_nmi())) {
+> -		rp->nmissed++;
+> -		return 0;
+> -	}
+> +	unsigned long hash, flags;
+> +	int rec;
+>  
+>  	/* TODO: consider to only swap the RA after the last pre_handler fired */
+>  	hash = hash_ptr(current, KPROBE_HASH_BITS);
+> +	rec = atomic_fetch_inc_acquire(&rp->recursion);
+> +	if (rec) {
+> +		rp->nmissed++;
+> +		goto out;
+> +	}
+>  	raw_spin_lock_irqsave(&rp->lock, flags);
+>  	if (!hlist_empty(&rp->free_instances)) {
+>  		ri = hlist_entry(rp->free_instances.first,
+> @@ -1964,7 +1959,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  			raw_spin_lock_irqsave(&rp->lock, flags);
+>  			hlist_add_head(&ri->hlist, &rp->free_instances);
+>  			raw_spin_unlock_irqrestore(&rp->lock, flags);
+> -			return 0;
+> +			goto out;
+>  		}
+>  
+>  		arch_prepare_kretprobe(ri, regs);
+> @@ -1978,6 +1973,8 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  		rp->nmissed++;
+>  		raw_spin_unlock_irqrestore(&rp->lock, flags);
+>  	}
+> +out:
+> +	atomic_dec(&rp->recursion);
+>  	return 0;
+>  }
+>  NOKPROBE_SYMBOL(pre_handler_kretprobe);
 > 
 
-"struct selinux_fs_info" is available when calling 
-security_read_policy_kernel() - currently in measure.c.
-Only "struct selinux_state" is.
 
-Is Ondrej's re-try approach I need to use to workaround policy reload issue?
-
-thanks,
-  -lakshmi
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
