@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047D624F558
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1006024F519
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbgHXIrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
+        id S1728238AbgHXIoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729358AbgHXIri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:38 -0400
+        id S1729145AbgHXIo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43EA2206F0;
-        Mon, 24 Aug 2020 08:47:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED11B2075B;
+        Mon, 24 Aug 2020 08:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258857;
-        bh=3Ej3eCQIkCDj0Or2d/txWft1A60P9a7pdqb2Z6788GU=;
+        s=default; t=1598258667;
+        bh=tQlFm5xToFGY2NUN7rgjiGp/qwq9MrJn5wWFr1gWNu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jbhUijaQbEhA4gG1b1QvJQ48COVzkXkQEBrJSA6dvxbsPUVQ98QEjQ6qF19kfnI7Y
-         Ma1aEHr9wvtgOz/8nGdWbsJ2UnQeU8SNiTv1oJBmBFBfrehNm77bYx5SfYbdKN1Uph
-         CZIcdHgK3KH3zGgsl6F79sXo3jAnPs6VNe5IKgco=
+        b=C3bQc86KUr7oSGW8StjBdxAGtYK2E22QmtVQFPTNrO5i32dOut50FfS8TPC/v89Kg
+         6TdqTk0gPAsyjnlLju2bgY3ny1pwIX/u1DOB6Yg1LvEJjYz8we/ZRzP6CQZFYFJo5Q
+         +hcH9VXSWKtbK7yuiw9BtIpH4Fy1i4pmPP6u6jBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 068/107] ASoC: q6routing: add dummy register read/write function
-Date:   Mon, 24 Aug 2020 10:30:34 +0200
-Message-Id: <20200824082408.492073736@linuxfoundation.org>
+Subject: [PATCH 5.7 101/124] kconfig: qconf: do not limit the pop-up menu to the first row
+Date:   Mon, 24 Aug 2020 10:30:35 +0200
+Message-Id: <20200824082414.387622814@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +43,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 796a58fe2b8c9b6668db00d92512ec84be663027 ]
+[ Upstream commit fa8de0a3bf3c02e6f00b7746e7e934db522cdda9 ]
 
-Most of the DAPM widgets for DSP ASoC components reuse reg field
-of the widgets for its internal calculations, however these are not
-real registers. So read/writes to these numbers are not really
-valid. However ASoC core will read these registers to get default
-state during startup.
+If you right-click the first row in the option tree, the pop-up menu
+shows up, but if you right-click the second row or below, the event
+is ignored due to the following check:
 
-With recent changes to ASoC core, every register read/write
-failures are reported very verbosely. Prior to this fails to reads
-are totally ignored, so we never saw any error messages.
+  if (e->y() <= header()->geometry().bottom()) {
 
-To fix this add dummy read/write function to return default value.
+Perhaps, the intention was to show the pop-menu only when the tree
+header was right-clicked, but this handler is not called in that case.
 
-Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200811120205.21805-2-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Since the origin of e->y() starts from the bottom of the header,
+this check is odd.
+
+Going forward, you can right-click anywhere in the tree to get the
+pop-up menu.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ scripts/kconfig/qconf.cc | 68 ++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index ddcd9978cf57b..745cc9dd14f38 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -996,6 +996,20 @@ static int msm_routing_probe(struct snd_soc_component *c)
- 	return 0;
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index c0ac8f7b5f1ab..e7e201d261f78 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -881,40 +881,40 @@ void ConfigList::focusInEvent(QFocusEvent *e)
+ 
+ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
+ {
+-	if (e->y() <= header()->geometry().bottom()) {
+-		if (!headerPopup) {
+-			QAction *action;
+-
+-			headerPopup = new QMenu(this);
+-			action = new QAction("Show Name", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowName(bool)));
+-			  connect(parent(), SIGNAL(showNameChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showName);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Range", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowRange(bool)));
+-			  connect(parent(), SIGNAL(showRangeChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showRange);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Data", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowData(bool)));
+-			  connect(parent(), SIGNAL(showDataChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showData);
+-			  headerPopup->addAction(action);
+-		}
+-		headerPopup->exec(e->globalPos());
+-		e->accept();
+-	} else
+-		e->ignore();
++	if (!headerPopup) {
++		QAction *action;
++
++		headerPopup = new QMenu(this);
++		action = new QAction("Show Name", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowName(bool)));
++		connect(parent(), SIGNAL(showNameChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showName);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Range", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowRange(bool)));
++		connect(parent(), SIGNAL(showRangeChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showRange);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Data", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowData(bool)));
++		connect(parent(), SIGNAL(showDataChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showData);
++		headerPopup->addAction(action);
++	}
++
++	headerPopup->exec(e->globalPos());
++	e->accept();
  }
  
-+static unsigned int q6routing_reg_read(struct snd_soc_component *component,
-+				       unsigned int reg)
-+{
-+	/* default value */
-+	return 0;
-+}
-+
-+static int q6routing_reg_write(struct snd_soc_component *component,
-+			       unsigned int reg, unsigned int val)
-+{
-+	/* dummy */
-+	return 0;
-+}
-+
- static const struct snd_soc_component_driver msm_soc_routing_component = {
- 	.ops = &q6pcm_routing_ops,
- 	.probe = msm_routing_probe,
-@@ -1004,6 +1018,8 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
- 	.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
- 	.dapm_routes = intercon,
- 	.num_dapm_routes = ARRAY_SIZE(intercon),
-+	.read = q6routing_reg_read,
-+	.write = q6routing_reg_write,
- };
- 
- static int q6pcm_routing_probe(struct platform_device *pdev)
+ ConfigView*ConfigView::viewList;
 -- 
 2.25.1
 
