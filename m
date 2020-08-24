@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA85C24F945
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F2224F8BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgHXJnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:43:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39202 "EHLO mail.kernel.org"
+        id S1729812AbgHXJhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:37:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728816AbgHXIoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:44:01 -0400
+        id S1729551AbgHXIs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA2C421741;
-        Mon, 24 Aug 2020 08:44:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA0A3204FD;
+        Mon, 24 Aug 2020 08:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258641;
-        bh=Nv0ZlxUL9h0hYla9KnlDJLL4zcpnRj1q4g8kfSDWpuY=;
+        s=default; t=1598258907;
+        bh=wZ6Ga9/LK8jl4Ht/RtyD0Avy0rx8x0tBexNUgy5gQrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FgIwuFPc/KxpnnUwTiKqRNrVMeWVZrfssQhE4vtg0XGTMNuM19OwrbbljrH3pMFNC
-         5/Gr933s/kuuFdNZ9bgxorU7xUNbx+e7GcYncO1SzUoaphb59ahg/r/1q4Wg2ThExv
-         j9FNMBx4Vbi4RmLhge435pi5E1JCfLvCd0ZPbikk=
+        b=GcjwL5B9OoErqj160p6MdYJ1jyOaPvB2awIwzTfhs+c5xlKVjLf5vrqVOSxzbkOL3
+         zESRI4oNeLG46AMhL9BRBuHRmqG+ugmJKkOTnhG49GkJsiHrT0MAq02FVaBZKd5feb
+         3n+aeujjP/otQ4EwtvCMisEjLGHJ686xUrVDvpBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.7 118/124] EDAC/{i7core,sb,pnd2,skx}: Fix error event severity
-Date:   Mon, 24 Aug 2020 10:30:52 +0200
-Message-Id: <20200824082415.209791272@linuxfoundation.org>
+        stable@vger.kernel.org, Huaitong Han <huaitong.han@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 088/107] kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode
+Date:   Mon, 24 Aug 2020 10:30:54 +0200
+Message-Id: <20200824082409.468704123@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Luck <tony.luck@intel.com>
+From: Jim Mattson <jmattson@google.com>
 
-commit 45bc6098a3e279d8e391d22428396687562797e2 upstream.
+[ Upstream commit cb957adb4ea422bd758568df5b2478ea3bb34f35 ]
 
-IA32_MCG_STATUS.RIPV indicates whether the return RIP value pushed onto
-the stack as part of machine check delivery is valid or not.
+See the SDM, volume 3, section 4.4.1:
 
-Various drivers copied a code fragment that uses the RIPV bit to
-determine the severity of the error as either HW_EVENT_ERR_UNCORRECTED
-or HW_EVENT_ERR_FATAL, but this check is reversed (marking errors where
-RIPV is set as "FATAL").
+If PAE paging would be in use following an execution of MOV to CR0 or
+MOV to CR4 (see Section 4.1.1) and the instruction is modifying any of
+CR0.CD, CR0.NW, CR0.PG, CR4.PAE, CR4.PGE, CR4.PSE, or CR4.SMEP; then
+the PDPTEs are loaded from the address in CR3.
 
-Reverse the tests so that the error is marked fatal when RIPV is not set.
-
-Reported-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200707194324.14884-1-tony.luck@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: b9baba8614890 ("KVM, pkeys: expose CPUID/CR4 to guest")
+Cc: Huaitong Han <huaitong.han@intel.com>
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+Reviewed-by: Oliver Upton <oupton@google.com>
+Message-Id: <20200817181655.3716509-1-jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/i7core_edac.c |    4 ++--
- drivers/edac/pnd2_edac.c   |    2 +-
- drivers/edac/sb_edac.c     |    4 ++--
- drivers/edac/skx_common.c  |    4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ arch/x86/kvm/x86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/edac/i7core_edac.c
-+++ b/drivers/edac/i7core_edac.c
-@@ -1710,9 +1710,9 @@ static void i7core_mce_output_error(stru
- 	if (uncorrected_error) {
- 		core_err_cnt = 1;
- 		if (ripv)
--			tp_event = HW_EVENT_ERR_FATAL;
--		else
- 			tp_event = HW_EVENT_ERR_UNCORRECTED;
-+		else
-+			tp_event = HW_EVENT_ERR_FATAL;
- 	} else {
- 		tp_event = HW_EVENT_ERR_CORRECTED;
- 	}
---- a/drivers/edac/pnd2_edac.c
-+++ b/drivers/edac/pnd2_edac.c
-@@ -1155,7 +1155,7 @@ static void pnd2_mce_output_error(struct
- 	u32 optypenum = GET_BITFIELD(m->status, 4, 6);
- 	int rc;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 1721a8c8eb26c..8920ee7b28811 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -972,7 +972,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+ {
+ 	unsigned long old_cr4 = kvm_read_cr4(vcpu);
+ 	unsigned long pdptr_bits = X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE |
+-				   X86_CR4_SMEP | X86_CR4_PKE;
++				   X86_CR4_SMEP;
  
--	tp_event = uc_err ? (ripv ? HW_EVENT_ERR_FATAL : HW_EVENT_ERR_UNCORRECTED) :
-+	tp_event = uc_err ? (ripv ? HW_EVENT_ERR_UNCORRECTED : HW_EVENT_ERR_FATAL) :
- 						 HW_EVENT_ERR_CORRECTED;
- 
- 	/*
---- a/drivers/edac/sb_edac.c
-+++ b/drivers/edac/sb_edac.c
-@@ -2982,9 +2982,9 @@ static void sbridge_mce_output_error(str
- 	if (uncorrected_error) {
- 		core_err_cnt = 1;
- 		if (ripv) {
--			tp_event = HW_EVENT_ERR_FATAL;
--		} else {
- 			tp_event = HW_EVENT_ERR_UNCORRECTED;
-+		} else {
-+			tp_event = HW_EVENT_ERR_FATAL;
- 		}
- 	} else {
- 		tp_event = HW_EVENT_ERR_CORRECTED;
---- a/drivers/edac/skx_common.c
-+++ b/drivers/edac/skx_common.c
-@@ -494,9 +494,9 @@ static void skx_mce_output_error(struct
- 	if (uncorrected_error) {
- 		core_err_cnt = 1;
- 		if (ripv) {
--			tp_event = HW_EVENT_ERR_FATAL;
--		} else {
- 			tp_event = HW_EVENT_ERR_UNCORRECTED;
-+		} else {
-+			tp_event = HW_EVENT_ERR_FATAL;
- 		}
- 	} else {
- 		tp_event = HW_EVENT_ERR_CORRECTED;
+ 	if (kvm_valid_cr4(vcpu, cr4))
+ 		return 1;
+-- 
+2.25.1
+
 
 
