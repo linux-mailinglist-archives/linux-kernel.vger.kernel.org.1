@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B87624F7FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C6824F6D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgHXJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33510 "EHLO mail.kernel.org"
+        id S1729325AbgHXJGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730244AbgHXIxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:53:50 -0400
+        id S1730549AbgHXI4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:56:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68030204FD;
-        Mon, 24 Aug 2020 08:53:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DF53206F0;
+        Mon, 24 Aug 2020 08:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259229;
-        bh=s6qr3pBHDicYElbR0M0Yvr0h47oarzRdFZZA1GnplWE=;
+        s=default; t=1598259389;
+        bh=74F5MkyewlBKyOZLP5uivaOmS0bftJ/MiCzuXqFjmag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OaKG13vPDKnwxPe5lNK+mT91I0RU7OHioE5Urys4KjeXc4HQggpZf7ilnz1Dw12Xw
-         LmdoI+y/fzmjNQCiu6EqD/Qsy/2z058WlfLmjkXQXyAY3MrGQzwgItkYsBOGiwKOAw
-         PuqJXXWfGh7Z3AI9TGhr93S9VGtSJ4nzs5PDndoU=
+        b=mTLouSRx7xTgY4aLzpziNW3kS4RJZZcKKHKHtL7BHK7mc+rxc51C2yPtZjSNlm+7n
+         BbRjCcMcuQZRbwxWp9qSqUkG+PJl2IU+9zsOShrZ60e1JiN+rAi/8fZeii9QwW9RX5
+         09pzO/jvZc221UCUWl45yfeq2xJTbVlWf1KJAozI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
-        Santosh Vernekar <svernekar@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Shyam Sundar <ssundar@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 29/50] scsi: libfc: Free skb in fc_disc_gpn_id_resp() for valid cases
-Date:   Mon, 24 Aug 2020 10:31:30 +0200
-Message-Id: <20200824082353.513985817@linuxfoundation.org>
+Subject: [PATCH 4.19 40/71] ext4: dont allow overlapping system zones
+Date:   Mon, 24 Aug 2020 10:31:31 +0200
+Message-Id: <20200824082357.893019120@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,64 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit ec007ef40abb6a164d148b0dc19789a7a2de2cc8 ]
+[ Upstream commit bf9a379d0980e7413d94cb18dac73db2bfc5f470 ]
 
-In fc_disc_gpn_id_resp(), skb is supposed to get freed in all cases except
-for PTR_ERR. However, in some cases it didn't.
+Currently, add_system_zone() just silently merges two added system zones
+that overlap. However the overlap should not happen and it generally
+suggests that some unrelated metadata overlap which indicates the fs is
+corrupted. We should have caught such problems earlier (e.g. in
+ext4_check_descriptors()) but add this check as another line of defense.
+In later patch we also use this for stricter checking of journal inode
+extent tree.
 
-This fix is to call fc_frame_free(fp) before function returns.
-
-Link: https://lore.kernel.org/r/20200729081824.30996-2-jhasan@marvell.com
-Reviewed-by: Girish Basrur <gbasrur@marvell.com>
-Reviewed-by: Santosh Vernekar <svernekar@marvell.com>
-Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
-Reviewed-by: Shyam Sundar <ssundar@marvell.com>
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200728130437.7804-3-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_disc.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ fs/ext4/block_validity.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
-index 28b50ab2fbb01..62f83cc151b22 100644
---- a/drivers/scsi/libfc/fc_disc.c
-+++ b/drivers/scsi/libfc/fc_disc.c
-@@ -605,8 +605,12 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index d203cc935ff83..552164034d340 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -68,7 +68,7 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+ 			   ext4_fsblk_t start_blk,
+ 			   unsigned int count)
+ {
+-	struct ext4_system_zone *new_entry = NULL, *entry;
++	struct ext4_system_zone *new_entry, *entry;
+ 	struct rb_node **n = &system_blks->root.rb_node, *node;
+ 	struct rb_node *parent = NULL, *new_node = NULL;
  
- 	if (PTR_ERR(fp) == -FC_EX_CLOSED)
- 		goto out;
--	if (IS_ERR(fp))
--		goto redisc;
-+	if (IS_ERR(fp)) {
-+		mutex_lock(&disc->disc_mutex);
-+		fc_disc_restart(disc);
-+		mutex_unlock(&disc->disc_mutex);
-+		goto out;
-+	}
- 
- 	cp = fc_frame_payload_get(fp, sizeof(*cp));
- 	if (!cp)
-@@ -633,7 +637,7 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
- 				new_rdata->disc_id = disc->disc_id;
- 				fc_rport_login(new_rdata);
- 			}
--			goto out;
-+			goto free_fp;
- 		}
- 		rdata->disc_id = disc->disc_id;
- 		mutex_unlock(&rdata->rp_mutex);
-@@ -650,6 +654,8 @@ redisc:
- 		fc_disc_restart(disc);
- 		mutex_unlock(&disc->disc_mutex);
+@@ -79,30 +79,20 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+ 			n = &(*n)->rb_left;
+ 		else if (start_blk >= (entry->start_blk + entry->count))
+ 			n = &(*n)->rb_right;
+-		else {
+-			if (start_blk + count > (entry->start_blk +
+-						 entry->count))
+-				entry->count = (start_blk + count -
+-						entry->start_blk);
+-			new_node = *n;
+-			new_entry = rb_entry(new_node, struct ext4_system_zone,
+-					     node);
+-			break;
+-		}
++		else	/* Unexpected overlap of system zones. */
++			return -EFSCORRUPTED;
  	}
-+free_fp:
-+	fc_frame_free(fp);
- out:
- 	kref_put(&rdata->kref, fc_rport_destroy);
- 	if (!IS_ERR(fp))
+ 
+-	if (!new_entry) {
+-		new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
+-					     GFP_KERNEL);
+-		if (!new_entry)
+-			return -ENOMEM;
+-		new_entry->start_blk = start_blk;
+-		new_entry->count = count;
+-		new_node = &new_entry->node;
+-
+-		rb_link_node(new_node, parent, n);
+-		rb_insert_color(new_node, &system_blks->root);
+-	}
++	new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
++				     GFP_KERNEL);
++	if (!new_entry)
++		return -ENOMEM;
++	new_entry->start_blk = start_blk;
++	new_entry->count = count;
++	new_node = &new_entry->node;
++
++	rb_link_node(new_node, parent, n);
++	rb_insert_color(new_node, &system_blks->root);
+ 
+ 	/* Can we merge to the left? */
+ 	node = rb_prev(new_node);
 -- 
 2.25.1
 
