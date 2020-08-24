@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADFE24F52B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A1824F47F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbgHXIpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42420 "EHLO mail.kernel.org"
+        id S1728385AbgHXIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbgHXIpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:24 -0400
+        id S1727917AbgHXIhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC76F2075B;
-        Mon, 24 Aug 2020 08:45:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9014A207DF;
+        Mon, 24 Aug 2020 08:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258723;
-        bh=1I0FJfJlkGo4/bQRz+yIbSTD2q6adynUdm/vCXmFolc=;
+        s=default; t=1598258228;
+        bh=Szw6jA3d8Pxqmf1JA6WaAVW8AEfSzqqzAAso5Yu42xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=osLuVs6S/+Wpt4LKG0tREforHAVZWa8r8spvAiSdZIpRr1hrojCF59g8HPqu7EoLS
-         UHc3ttLtpVnj2b6+M4tzK/sl0M1cqR5SwwCyFaYuoITBMe6aEYVP6EiHRo10Vxvf+l
-         ciLQ/CXoGTZ5aaP7nYlbnY+Dlb6pGattNIFnkBMQ=
+        b=lNXWp9MmqoCFO4+S0pJqmyayntlFVIjNPVYLMPM3eakXEY62iMh2DRQeYm3SsOJiG
+         9gNvox+UKBduvYZW4/0EAU0/v8FJr+5LcYy3f2xuLH7Y3pzlXW2U13QlHX7BbBF1NA
+         h6sBVQU8q6V9Tu7xeMnd0bVBxhU1AHw0kcAuXOpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.4 023/107] can: j1939: transport: j1939_session_tx_dat(): fix use-after-free read in j1939_tp_txtimer()
-Date:   Mon, 24 Aug 2020 10:29:49 +0200
-Message-Id: <20200824082406.227876409@linuxfoundation.org>
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 092/148] can: j1939: fix support for multipacket broadcast message
+Date:   Mon, 24 Aug 2020 10:29:50 +0200
+Message-Id: <20200824082418.452898742@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +46,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit cd3b3636c99fcac52c598b64061f3fe4413c6a12 upstream.
+[ Upstream commit f4fd77fd87e9b214c26bb2ebd4f90055eaea5ade ]
 
-The current stack implementation do not support ECTS requests of not
-aligned TP sized blocks.
+Currently j1939_tp_im_involved_anydir() in j1939_tp_recv() check the previously
+set flags J1939_ECU_LOCAL_DST and J1939_ECU_LOCAL_SRC of incoming skb, thus
+multipacket broadcast message was aborted by receive side because it may come
+from remote ECUs and have no exact dst address. Similarly, j1939_tp_cmd_recv()
+and j1939_xtp_rx_dat() didn't process broadcast message.
 
-If ECTS will request a block with size and offset spanning two TP
-blocks, this will cause memcpy() to read beyond the queued skb (which
-does only contain one TP sized block).
+So fix it by checking and process broadcast message in j1939_tp_recv(),
+j1939_tp_cmd_recv() and j1939_xtp_rx_dat().
 
-Sometimes KASAN will detect this read if the memory region beyond the
-skb was previously allocated and freed. In other situations it will stay
-undetected. The ETP transfer in any case will be corrupted.
-
-This patch adds a sanity check to avoid this kind of read and abort the
-session with error J1939_XTP_ABORT_ECTS_TOO_BIG.
-
-Reported-by: syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-3-o.rempel@pengutronix.de
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1596599425-5534-2-git-send-email-zhangchangzhong@huawei.com
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/transport.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ net/can/j1939/transport.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 90a2baac8a4aa..67189b4c482c5 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -787,6 +787,18 @@ static int j1939_session_tx_dat(struct j
- 		if (len > 7)
- 			len = 7;
+@@ -1673,8 +1673,12 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
+ 			return;
+ 		}
+ 		session = j1939_xtp_rx_rts_session_new(priv, skb);
+-		if (!session)
++		if (!session) {
++			if (cmd == J1939_TP_CMD_BAM && j1939_sk_recv_match(priv, skcb))
++				netdev_info(priv->ndev, "%s: failed to create TP BAM session\n",
++					    __func__);
+ 			return;
++		}
+ 	} else {
+ 		if (j1939_xtp_rx_rts_session_active(session, skb)) {
+ 			j1939_session_put(session);
+@@ -1852,6 +1856,13 @@ static void j1939_xtp_rx_dat(struct j1939_priv *priv, struct sk_buff *skb)
+ 		else
+ 			j1939_xtp_rx_dat_one(session, skb);
+ 	}
++
++	if (j1939_cb_is_broadcast(skcb)) {
++		session = j1939_session_get_by_addr(priv, &skcb->addr, false,
++						    false);
++		if (session)
++			j1939_xtp_rx_dat_one(session, skb);
++	}
+ }
  
-+		if (offset + len > se_skb->len) {
-+			netdev_err_once(priv->ndev,
-+					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
-+					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
-+			return -EOVERFLOW;
-+		}
-+
-+		if (!len) {
-+			ret = -ENOBUFS;
-+			break;
-+		}
-+
- 		memcpy(&dat[1], &tpdat[offset], len);
- 		ret = j1939_tp_tx_dat(session, dat, len + 1);
- 		if (ret < 0) {
-@@ -1120,6 +1132,9 @@ static enum hrtimer_restart j1939_tp_txt
- 		 * cleanup including propagation of the error to user space.
- 		 */
+ /* j1939 main intf */
+@@ -1943,7 +1954,7 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 		if (j1939_tp_im_transmitter(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, true);
+ 
+-		if (j1939_tp_im_receiver(skcb))
++		if (j1939_tp_im_receiver(skcb) || j1939_cb_is_broadcast(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, false);
+ 
  		break;
-+	case -EOVERFLOW:
-+		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
-+		break;
- 	case 0:
- 		session->tx_retry = 0;
- 		break;
+@@ -2007,7 +2018,7 @@ int j1939_tp_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ {
+ 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
+ 
+-	if (!j1939_tp_im_involved_anydir(skcb))
++	if (!j1939_tp_im_involved_anydir(skcb) && !j1939_cb_is_broadcast(skcb))
+ 		return 0;
+ 
+ 	switch (skcb->addr.pgn) {
+-- 
+2.25.1
+
 
 
