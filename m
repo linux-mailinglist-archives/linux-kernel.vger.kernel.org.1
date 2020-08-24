@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0D824FFDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3806924FFE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 16:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgHXOeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 10:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgHXOeA (ORCPT
+        id S1726593AbgHXOfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 10:35:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43092 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725916AbgHXOfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 10:34:00 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57EFC061573;
-        Mon, 24 Aug 2020 07:33:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5TRjc06cjrAIo1ZfkhKU/1+DTjwdh2i/eNpjyD9I8Vk=; b=NErKgbZ/Bz82zy/5ueiDeI2Npx
-        ooHQfo1FKSEOsbBLrU/oArD5Yg/aR4AU/Uk37kR9ODYzLl5HbVBkTBeuQmGvHz+jaGsTkzm6ZdBFB
-        rRWNOTIVHriKms4E/79tlYjPJbLdPCqz33MIRsWrQOHJsRbxP3au1l2iiTvp5XDyUn8VjXeyHsIqh
-        BLP1q6DW5sA1nxT8kVw+02umkVPt5i6XpHo7p+c/0h5xPsQoweanQJwSbpMMUaHCZfr4hfgPL/OrB
-        Kwjk3eiW7HPz6+dvVPikbUnu5x5Dy0GA8f1j++5dgy5E920dmQOS23dMMSlRKI2fSr5ZGb6wEdVUP
-        lPuaPrhg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kADXd-0002ut-Vt; Mon, 24 Aug 2020 14:33:46 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4FC6B980DCC; Mon, 24 Aug 2020 16:33:44 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 16:33:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Paul Renauld <renauld@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, pjt@google.com,
-        Jann Horn <jannh@google.com>, rafael.j.wysocki@intel.com,
-        thgarnie@chromium.org, KP Singh <kpsingh@google.com>,
-        paul.renauld.epfl@gmail.com
-Subject: Re: [RFC] security: replace indirect calls with static calls
-Message-ID: <20200824143344.GB3982@worktop.programming.kicks-ass.net>
-References: <20200820164753.3256899-1-jackmanb@chromium.org>
- <202008201435.97CF8296@keescook>
- <CA+i-1C0XEuWWRm5nMPWCzEPUao7rp5346Eotpt1A_S3Za3Wysw@mail.gmail.com>
+        Mon, 24 Aug 2020 10:35:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598279718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P7czuGX0a61xYHDRfRoXX+/7/pFB5lc7BVVK0c9Yptk=;
+        b=MFmVm/cpXW6Xj005eJbD4z7Tfvw4W5pNn6+GpQEgXMHbW5tiRqgkPbHc8MmkNyb2NrKJRI
+        8zVNgOEe+2X/gDPEmObKajKlbXnbawE2RaeSWoKHkuzB9xWFo07m8VY28EBTlH0cXMz35R
+        ZDBFqC7a2COYCh11xYnLYZXpmj8lsMk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-FKpisqmEO7ydMbA66lYidQ-1; Mon, 24 Aug 2020 10:35:16 -0400
+X-MC-Unique: FKpisqmEO7ydMbA66lYidQ-1
+Received: by mail-ej1-f70.google.com with SMTP id o18so2588430ejr.14
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:35:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P7czuGX0a61xYHDRfRoXX+/7/pFB5lc7BVVK0c9Yptk=;
+        b=K9EaWQ8UkpeWgVte55BAvj2hM8pvt1ig+KJvZLSDaMpp7t+HnRZNckZJUf+do9cBWZ
+         FDGx4/3tQIPe0oN53j5pZCGfkDNmJzw7pYMN10VHJT93ZAv7tCPrmMj46pwbV2SEL3V2
+         7HfbUlo7qCXQdrSjYcvY/kro7vz8gKlHS0jHdpv9G2RjsCbroc8e5XhneZpAsfRrZSAr
+         zwqiWZ7Zp8Knd5U6IcFomI1JFZI8pHtbfXJRa6x4S7sME9SAXlDhpbiKBakXcHy9XUaO
+         sldi7zllTFaKngATnJW1uv423IJcX1jotidl1gHARCxFR+9JyI1sRltXLmNASo88MX6u
+         6ZCA==
+X-Gm-Message-State: AOAM532dDNBmGNw9KZayPZeQ04gU5arFUkTkYSVy9XC6RGq4Jon2r5AZ
+        jzgP0G5UkjRhNAmiRmySq1FhZkdHm1ct2dmXc5EZ17sM/a5yQOhujFSXVltYRqiDQG8WpO4yI4R
+        eQsPOyjkvKH66VWqlq2KVB/js
+X-Received: by 2002:aa7:c60a:: with SMTP id h10mr1711531edq.140.1598279715104;
+        Mon, 24 Aug 2020 07:35:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwylH32+YN+PEJDvCkB+BRg8BdP+9sh8RH0QPKLMm+4We8vu00g3ojtbnGxtl+ukiOByRYm/Q==
+X-Received: by 2002:aa7:c60a:: with SMTP id h10mr1711515edq.140.1598279714936;
+        Mon, 24 Aug 2020 07:35:14 -0700 (PDT)
+Received: from x1.localdomain ([78.108.130.193])
+        by smtp.gmail.com with ESMTPSA id c18sm10239445eja.13.2020.08.24.07.35.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 07:35:14 -0700 (PDT)
+Subject: Re: [PATCH] virt: vbox: Use current_uid() in
+ vbg_misc_device_requestor()
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+References: <20200824125330.487083-1-efremov@linux.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <4f9ecef2-4ab1-e2c3-b8d4-0f24e999bd23@redhat.com>
+Date:   Mon, 24 Aug 2020 16:35:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+i-1C0XEuWWRm5nMPWCzEPUao7rp5346Eotpt1A_S3Za3Wysw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200824125330.487083-1-efremov@linux.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 04:09:09PM +0200, Brendan Jackman wrote:
+Hi,
 
-> > > Why this trick with a switch statement? The table of static call is defined
-> > > at compile time. The number of hook callbacks that will be defined is
-> > > unknown at that time, and the table cannot be resized at runtime.  Static
-> > > calls do not define a conditional execution for a non-void function, so the
-> > > executed slots must be non-empty.  With this use of the table and the
-> > > switch, it is possible to jump directly to the first used slot and execute
-> > > all of the slots after. This essentially makes the entry point of the table
-> > > dynamic. Instead, it would also be possible to start from 0 and break after
-> > > the final populated slot, but that would require an additional conditional
-> > > after each slot.
-> >
-> > Instead of just "NOP", having the static branches perform a jump would
-> > solve this pretty cleanly, yes? Something like:
-> >
-> >         ret = DEFAULT_RET;
-> >
-> >         ret = A(args); <--- direct call, no retpoline
-> >         if ret != 0:
-> >                 goto out;
-> >
-> >         ret = B(args); <--- direct call, no retpoline
-> >         if ret != 0:
-> >                 goto out;
-> >
-> >         goto out;
-> >         if ret != 0:
-> >                 goto out;
-> >
-> > out:
-> >         return ret;
+On 8/24/20 2:53 PM, Denis Efremov wrote:
+> Modify vbg_misc_device_requestor() to use current_uid() wrapper.
 > 
-> Hmm yeah that's a cool idea. This would either need to be implemented
-> with custom code-modification logic for the LSM hooks, or we'd need to
-> think of a way to express it in a sensible addition to the static_call
-> API. I do wonder if the latter could take the form of a generic system
-> for arrays of static calls.
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-So you basically want something like:
+Thank you, patch looks good to me:
 
-	if (A[0] && (ret = static_call(A[0])(...)))
-		return ret;
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-	if (A[1] && (ret = static_call(A[1])(...)))
-		return ret;
+Regards,
 
-	....
-
-	return ret;
-
-Right? The problem with static_call_cond() is that we don't know what to
-do with the return value when !func, which is why it's limited to void
-return type.
-
-You can however construct something like the above with a combination of
-static_branch() and static_call() though. It'll not be pretty, but it
-ought to work:
-
-	if (static_branch_likely(A[0].key)) {
-		ret = static_call(A[0].call)(...);
-		if (ret)
-			return ret;
-	}
-
-	...
-
-	return ret;
+Hans
 
 
-> It would also need to handle the fact that IIUC at the moment the last
-> static_call may be a tail call, so we'd be patching an existing jump
-> into a jump to a different target, I don't know if we can do that
-> atomically.
-
-Of course we can, the static_call() series supports tail-calls just
-fine. In fact, patching jumps is far easier, it was patching call that
-was the real problem because it mucks about with the stack.
+> ---
+>   drivers/virt/vboxguest/vboxguest_linux.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
+> index 32c2c52f7e84..6215a688edaf 100644
+> --- a/drivers/virt/vboxguest/vboxguest_linux.c
+> +++ b/drivers/virt/vboxguest/vboxguest_linux.c
+> @@ -35,7 +35,7 @@ static u32 vbg_misc_device_requestor(struct inode *inode)
+>   			VMMDEV_REQUESTOR_CON_DONT_KNOW |
+>   			VMMDEV_REQUESTOR_TRUST_NOT_GIVEN;
+>   
+> -	if (from_kuid(current_user_ns(), current->cred->uid) == 0)
+> +	if (from_kuid(current_user_ns(), current_uid()) == 0)
+>   		requestor |= VMMDEV_REQUESTOR_USR_ROOT;
+>   	else
+>   		requestor |= VMMDEV_REQUESTOR_USR_USER;
+> 
 
