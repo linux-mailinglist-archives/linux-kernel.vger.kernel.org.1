@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABE724F5F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AE924F584
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgHXIzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:55:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        id S1729401AbgHXIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:50:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729908AbgHXIzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:17 -0400
+        id S1729811AbgHXIuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:50:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F2F6208E4;
-        Mon, 24 Aug 2020 08:55:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88B00207D3;
+        Mon, 24 Aug 2020 08:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259316;
-        bh=CS9yBYvOyCspT8lvpjzMasnEsr4lb4jrjYWhggxhOWI=;
+        s=default; t=1598259002;
+        bh=zKQ8ZtWYpiM4WvCVnO7PZSUwlvnZhnWf8oE8kLvil2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QThR91gM6BroE889NeE3p7/y9Z0WvIckLWOo7LcLxMLZFCS9xrDHFWamMs5jLqQl+
-         ZPgerQNuWg8VwNG7GXL/g8UJBtFyAfKYe32O/i8bctt4baCKt5jzZRZZ4p7IF9qdbm
-         h70rDwoSV3gQrEbRv1c+hMtYzi6ds4DaVBKZ6SL8=
+        b=qj8YaQTjSrNrnv3fhi5zYT4DWd1eoEvAsrGqA8CDq2sKGrB1nAF8pz9apUmtolR6w
+         690vRqdOom6wuJi+YMlC6moQ7IZ+o0vUheT9pbnCeiZb0BZZo2u6k6yRHTDsQx/YeP
+         KitZUeyKqzLiKKzUZpA1W+fYHaAuuifqZSN7nkV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 13/71] mm, page_alloc: fix core hung in free_pcppages_bulk()
-Date:   Mon, 24 Aug 2020 10:31:04 +0200
-Message-Id: <20200824082356.557329090@linuxfoundation.org>
+        stable@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/33] btrfs: export helpers for subvolume name/id resolution
+Date:   Mon, 24 Aug 2020 10:31:05 +0200
+Message-Id: <20200824082346.992358892@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
+References: <20200824082346.498653578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,100 +44,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charan Teja Reddy <charante@codeaurora.org>
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-commit 88e8ac11d2ea3acc003cf01bb5a38c8aa76c3cfd upstream.
+[ Upstream commit c0c907a47dccf2cf26251a8fb4a8e7a3bf79ce84 ]
 
-The following race is observed with the repeated online, offline and a
-delay between two successive online of memory blocks of movable zone.
+The functions will be used outside of export.c and super.c to allow
+resolving subvolume name from a given id, eg. for subvolume deletion by
+id ioctl.
 
-P1						P2
-
-Online the first memory block in
-the movable zone. The pcp struct
-values are initialized to default
-values,i.e., pcp->high = 0 &
-pcp->batch = 1.
-
-					Allocate the pages from the
-					movable zone.
-
-Try to Online the second memory
-block in the movable zone thus it
-entered the online_pages() but yet
-to call zone_pcp_update().
-					This process is entered into
-					the exit path thus it tries
-					to release the order-0 pages
-					to pcp lists through
-					free_unref_page_commit().
-					As pcp->high = 0, pcp->count = 1
-					proceed to call the function
-					free_pcppages_bulk().
-Update the pcp values thus the
-new pcp values are like, say,
-pcp->high = 378, pcp->batch = 63.
-					Read the pcp's batch value using
-					READ_ONCE() and pass the same to
-					free_pcppages_bulk(), pcp values
-					passed here are, batch = 63,
-					count = 1.
-
-					Since num of pages in the pcp
-					lists are less than ->batch,
-					then it will stuck in
-					while(list_empty(list)) loop
-					with interrupts disabled thus
-					a core hung.
-
-Avoid this by ensuring free_pcppages_bulk() is called with proper count of
-pcp list pages.
-
-The mentioned race is some what easily reproducible without [1] because
-pcp's are not updated for the first memory block online and thus there is
-a enough race window for P2 between alloc+free and pcp struct values
-update through onlining of second memory block.
-
-With [1], the race still exists but it is very narrow as we update the pcp
-struct values for the first memory block online itself.
-
-This is not limited to the movable zone, it could also happen in cases
-with the normal zone (e.g., hotplug to a node that only has DMA memory, or
-no other memory yet).
-
-[1]: https://patchwork.kernel.org/patch/11696389/
-
-Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into one-list-per-migrate-type")
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: <stable@vger.kernel.org> [2.6+]
-Link: http://lkml.kernel.org/r/1597150703-19003-1-git-send-email-charante@codeaurora.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+[ split from the next patch ]
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_alloc.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ fs/btrfs/ctree.h  | 2 ++
+ fs/btrfs/export.c | 8 ++++----
+ fs/btrfs/export.h | 5 +++++
+ fs/btrfs/super.c  | 8 ++++----
+ 4 files changed, 15 insertions(+), 8 deletions(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1115,6 +1115,11 @@ static void free_pcppages_bulk(struct zo
- 	struct page *page, *tmp;
- 	LIST_HEAD(head);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 0b06d4942da77..8fb9a1e0048be 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -4096,6 +4096,8 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size);
+ /* super.c */
+ int btrfs_parse_options(struct btrfs_root *root, char *options);
+ int btrfs_sync_fs(struct super_block *sb, int wait);
++char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
++					  u64 subvol_objectid);
  
-+	/*
-+	 * Ensure proper count is passed which otherwise would stuck in the
-+	 * below while (list_empty(list)) loop.
-+	 */
-+	count = min(pcp->count, count);
- 	while (count) {
- 		struct list_head *list;
+ #ifdef CONFIG_PRINTK
+ __printf(2, 3)
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index 2513a7f533342..92f80ed642194 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -55,9 +55,9 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
+ 	return type;
+ }
  
+-static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
+-				       u64 root_objectid, u32 generation,
+-				       int check_generation)
++struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
++				u64 root_objectid, u32 generation,
++				int check_generation)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+ 	struct btrfs_root *root;
+@@ -150,7 +150,7 @@ static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
+ 	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
+ }
+ 
+-static struct dentry *btrfs_get_parent(struct dentry *child)
++struct dentry *btrfs_get_parent(struct dentry *child)
+ {
+ 	struct inode *dir = d_inode(child);
+ 	struct btrfs_root *root = BTRFS_I(dir)->root;
+diff --git a/fs/btrfs/export.h b/fs/btrfs/export.h
+index 074348a95841f..7a305e5549991 100644
+--- a/fs/btrfs/export.h
++++ b/fs/btrfs/export.h
+@@ -16,4 +16,9 @@ struct btrfs_fid {
+ 	u64 parent_root_objectid;
+ } __attribute__ ((packed));
+ 
++struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
++				u64 root_objectid, u32 generation,
++				int check_generation);
++struct dentry *btrfs_get_parent(struct dentry *child);
++
+ #endif
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 404051bf5cba9..540e6f141745a 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -843,8 +843,8 @@ out:
+ 	return error;
+ }
+ 
+-static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+-					   u64 subvol_objectid)
++char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
++					  u64 subvol_objectid)
+ {
+ 	struct btrfs_root *root = fs_info->tree_root;
+ 	struct btrfs_root *fs_root;
+@@ -1323,8 +1323,8 @@ static struct dentry *mount_subvol(const char *subvol_name, u64 subvol_objectid,
+ 				goto out;
+ 			}
+ 		}
+-		subvol_name = get_subvol_name_from_objectid(btrfs_sb(mnt->mnt_sb),
+-							    subvol_objectid);
++		subvol_name = btrfs_get_subvol_name_from_objectid(
++					btrfs_sb(mnt->mnt_sb), subvol_objectid);
+ 		if (IS_ERR(subvol_name)) {
+ 			root = ERR_CAST(subvol_name);
+ 			subvol_name = NULL;
+-- 
+2.25.1
+
 
 
