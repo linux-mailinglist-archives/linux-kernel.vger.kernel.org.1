@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DABB24FA64
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B513624F91E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgHXJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48694 "EHLO mail.kernel.org"
+        id S1729285AbgHXJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgHXIgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:36:18 -0400
+        id S1727921AbgHXIpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:45:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EA0F2224D;
-        Mon, 24 Aug 2020 08:36:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D42920FC3;
+        Mon, 24 Aug 2020 08:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258177;
-        bh=D+Vmybzmzen28AV30V9SfoitNCjmhrlbMMUqq2jVhw8=;
+        s=default; t=1598258709;
+        bh=TkjjmI4vznJkdg4lBTfckMqQi81x67cY+0PbtkEHWus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpNylCI5guRHNajXSQFloxpJtZb1RzeYKoUfzNuPN8t3Sp76Q/47Drf759UIqmJ7g
-         9tvONp5zBG4xnZkr3IHvgByD5RYWfkj175v8pvY49YMKbWYfgJdFinwx2yoFs/B5V8
-         2FkaX80dyDTa32o5xRsKIl6hMkUTrh/S9Vfk3SSg=
+        b=PQ8mZKT7DKZfbO3w6s5fbjBoqzyy+icajwWVVlbItpahmQo1gJhZDY4/C+mPNgYkP
+         WnHJAtUpc2bwiGMa6GUH1YhZYAdFQZmXcJGG6Q8Rxv4Mfppko79YVpIOhg5tq/NmCG
+         dpJ6sZfo/6Qex/GiM5HZj5Xg7beqg6YnckjFbPtk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Chris Murphy <chris@colorremedies.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 085/148] can: j1939: transport: j1939_simple_recv(): ignore local J1939 messages send not by J1939 stack
-Date:   Mon, 24 Aug 2020 10:29:43 +0200
-Message-Id: <20200824082418.127157572@linuxfoundation.org>
+Subject: [PATCH 5.4 018/107] btrfs: dont show full path of bind mounts in subvol=
+Date:   Mon, 24 Aug 2020 10:29:44 +0200
+Message-Id: <20200824082405.980681611@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit b43e3a82bc432c1caaed8950e7662c143470c54c ]
+[ Upstream commit 3ef3959b29c4a5bd65526ab310a1a18ae533172a ]
 
-In current J1939 stack implementation, we process all locally send
-messages as own messages. Even if it was send by CAN_RAW socket.
+Chris Murphy reported a problem where rpm ostree will bind mount a bunch
+of things for whatever voodoo it's doing.  But when it does this
+/proc/mounts shows something like
 
-To reproduce it use following commands:
-testj1939 -P -r can0:0x80 &
-cansend can0 18238040#0123
+  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
+  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo/bar 0 0
 
-This step will trigger false positive not critical warning:
-j1939_simple_recv: Received already invalidated message
+Despite subvolid=256 being subvol=/foo.  This is because we're just
+spitting out the dentry of the mount point, which in the case of bind
+mounts is the source path for the mountpoint.  Instead we should spit
+out the path to the actual subvol.  Fix this by looking up the name for
+the subvolid we have mounted.  With this fix the same test looks like
+this
 
-With this patch we add additional check to make sure, related skb is own
-echo message.
+  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
+  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-2-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-by: Chris Murphy <chris@colorremedies.com>
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/socket.c    | 1 +
- net/can/j1939/transport.c | 4 ++++
- 2 files changed, 5 insertions(+)
+ fs/btrfs/super.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 1b7dc1a8547f3..bf9fd6ee88fe0 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -398,6 +398,7 @@ static int j1939_sk_init(struct sock *sk)
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
- 	sk->sk_destruct = j1939_sk_sock_destruct;
-+	sk->sk_protocol = CAN_J1939;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 32c36821cc7b4..e21cae80c6d58 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1291,6 +1291,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ {
+ 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
+ 	const char *compress_type;
++	const char *subvol_name;
  
+ 	if (btrfs_test_opt(info, DEGRADED))
+ 		seq_puts(seq, ",degraded");
+@@ -1375,8 +1376,13 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ 		seq_puts(seq, ",ref_verify");
+ 	seq_printf(seq, ",subvolid=%llu",
+ 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
+-	seq_puts(seq, ",subvol=");
+-	seq_dentry(seq, dentry, " \t\n\\");
++	subvol_name = btrfs_get_subvol_name_from_objectid(info,
++			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
++	if (!IS_ERR(subvol_name)) {
++		seq_puts(seq, ",subvol=");
++		seq_escape(seq, subvol_name, " \t\n\\");
++		kfree(subvol_name);
++	}
  	return 0;
  }
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 5bfe6bf15a999..30957c9a8eb7a 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -2032,6 +2032,10 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 	if (!skb->sk)
- 		return;
  
-+	if (skb->sk->sk_family != AF_CAN ||
-+	    skb->sk->sk_protocol != CAN_J1939)
-+		return;
-+
- 	j1939_session_list_lock(priv);
- 	session = j1939_session_get_simple(priv, skb);
- 	j1939_session_list_unlock(priv);
 -- 
 2.25.1
 
