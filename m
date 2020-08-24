@@ -2,87 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABE424FCDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF2424FCE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgHXLnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:43:11 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:9933 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbgHXLnI (ORCPT
+        id S1726952AbgHXLoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:44:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44642 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726862AbgHXLoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598269386;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=L8FpAL/QNc5PlqFAg2tSEIydb3LWy4d4tNr31Xlb1hQ=;
-        b=tv1pHU3MHv1Mrz4JHi/uE2Uv2FBEHTAoFa5fgL9RD9aoZb0srjDvyE4mGws8oI5z97
-        Uy6sGLFNjNgAseyLCKQ0TIjYDfvv9qSPY631y0J1WKwetGFjqtgVc6hh/F+CmAA9wSv3
-        DLYIgvd4FjvxLOJsm228zPBMp0/7Imop2muOxVYZurbmeDprMsaqYsaGYbUCYfR+7eOj
-        rGc/TgyyuXWybVITNWrk+HUI4S5JBoBUY+hW1XGd75Ac6r2lQ16P6EQpITtO0nstIeEQ
-        6+USbti05nUucoxo4xqoZMSigOf5CWMVcY6X2LvWcoROpABTHi9B0QXQBePStKJvwZwI
-        mkUw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/MbIo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7OBh4WqW
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 24 Aug 2020 13:43:04 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 13:42:54 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Niklas Cassel <nks@flawful.org>
-Subject: Re: [RFC PATCH 2/3] opp: Set required OPPs in reverse order when
- scaling down
-Message-ID: <20200824114254.GA208090@gerhold.net>
-References: <20200730080146.25185-1-stephan@gerhold.net>
- <20200730080146.25185-3-stephan@gerhold.net>
- <20200821163152.GA3422@gerhold.net>
- <20200824113027.lzh6fp4bottjl6cc@vireshk-i7>
+        Mon, 24 Aug 2020 07:44:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598269457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MfpV3F203s4Q5WIfbp3LWTnnzoF+cnouMwo8pG1/1kU=;
+        b=RG0osOb6C7KFTNUFoNb3QMxxPSqJWMtOIRDNENX8i888eLz/4mPwtD7Kg3fzJpQsHVUprZ
+        wtz7C67ESUGN/sFIQdY9Mk63jFfKYEF6nAXYbjWsU1CZ0czZO2KTHHJg2gOBM2jdX4Stsj
+        ZO4Frg7TyC/fKtyDh/CYgOhaU4KgmUc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-8vo1trLeOMSDM4ElnaAnTA-1; Mon, 24 Aug 2020 07:44:15 -0400
+X-MC-Unique: 8vo1trLeOMSDM4ElnaAnTA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35CCD807331;
+        Mon, 24 Aug 2020 11:44:14 +0000 (UTC)
+Received: from starship (unknown [10.35.206.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D53E42BFBF;
+        Mon, 24 Aug 2020 11:43:31 +0000 (UTC)
+Message-ID: <4858fb924edbda58b6c46bdd4ed803bda0ceebbb.camel@redhat.com>
+Subject: Re: [PATCH v2 3/7] KVM: SVM: refactor msr permission bitmap
+ allocation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Date:   Mon, 24 Aug 2020 14:43:22 +0300
+In-Reply-To: <CALMp9eRoYLqFEGqcVf2tExGvG4bJwy6CURrHiAnYqQ9TrS4eDg@mail.gmail.com>
+References: <20200820133339.372823-1-mlevitsk@redhat.com>
+         <20200820133339.372823-4-mlevitsk@redhat.com>
+         <CALMp9eRoYLqFEGqcVf2tExGvG4bJwy6CURrHiAnYqQ9TrS4eDg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824113027.lzh6fp4bottjl6cc@vireshk-i7>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 05:00:27PM +0530, Viresh Kumar wrote:
-> On 21-08-20, 18:31, Stephan Gerhold wrote:
-> > This patch does not apply anymore after the cleanup you pushed to
-> > opp/linux-next. I would be happy to send a v2 with that fixed.
+On Thu, 2020-08-20 at 14:26 -0700, Jim Mattson wrote:
+> On Thu, Aug 20, 2020 at 6:34 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > Replace svm_vcpu_init_msrpm with svm_vcpu_alloc_msrpm, that also allocates
+> > the msr bitmap and add svm_vcpu_free_msrpm to free it.
 > > 
-> > On my other OPP patch set you mentioned that you might apply these
-> > directly with some of your own changes - would you also prefer to do it
-> > yourself in this case or should I send a v2?
+> > This will be used later to move the nested msr permission bitmap allocation
+> > to nested.c
+> > 
+> > No functional change intended.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/svm/svm.c | 45 +++++++++++++++++++++---------------------
+> >  1 file changed, 23 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index d33013b9b4d7..7bb094bf6494 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -609,18 +609,29 @@ static void set_msr_interception(u32 *msrpm, unsigned msr,
+> >         msrpm[offset] = tmp;
+> >  }
+> > 
+> > -static void svm_vcpu_init_msrpm(u32 *msrpm)
+> > +static u32 *svm_vcpu_alloc_msrpm(void)
 > 
-> I will pick the first 2 myself, that's fine. Lets see where we go with
-> the third one :)
+> I prefer the original name, since this function does more than allocation.
+But it also allocates it. I don't mind using the old name though.
+> 
+> >  {
+> >         int i;
+> > +       u32 *msrpm;
+> > +       struct page *pages = alloc_pages(GFP_KERNEL_ACCOUNT, MSRPM_ALLOC_ORDER);
+> > +
+> > +       if (!pages)
+> > +               return NULL;
+> > 
+> > +       msrpm = page_address(pages);
+> >         memset(msrpm, 0xff, PAGE_SIZE * (1 << MSRPM_ALLOC_ORDER));
+> > 
+> >         for (i = 0; direct_access_msrs[i].index != MSR_INVALID; i++) {
+> >                 if (!direct_access_msrs[i].always)
+> >                         continue;
+> > -
+> >                 set_msr_interception(msrpm, direct_access_msrs[i].index, 1, 1);
+> >         }
+> > +       return msrpm;
+> > +}
+> > +
+> > +static void svm_vcpu_free_msrpm(u32 *msrpm)
+> > +{
+> > +       __free_pages(virt_to_page(msrpm), MSRPM_ALLOC_ORDER);
+> >  }
+> > 
+> >  static void add_msr_offset(u32 offset)
+> > @@ -1172,9 +1183,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+> >  {
+> >         struct vcpu_svm *svm;
+> >         struct page *vmcb_page;
+> > -       struct page *msrpm_pages;
+> >         struct page *hsave_page;
+> > -       struct page *nested_msrpm_pages;
+> >         int err;
+> > 
+> >         BUILD_BUG_ON(offsetof(struct vcpu_svm, vcpu) != 0);
+> > @@ -1185,21 +1194,13 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+> >         if (!vmcb_page)
+> >                 goto out;
+> > 
+> > -       msrpm_pages = alloc_pages(GFP_KERNEL_ACCOUNT, MSRPM_ALLOC_ORDER);
+> > -       if (!msrpm_pages)
+> > -               goto free_page1;
+> > -
+> > -       nested_msrpm_pages = alloc_pages(GFP_KERNEL_ACCOUNT, MSRPM_ALLOC_ORDER);
+> > -       if (!nested_msrpm_pages)
+> > -               goto free_page2;
+> > -
+> 
+> Reordering the allocations does seem like a functional change to me,
+> albeit one that should (hopefully) be benign. For example, if the
+> MSRPM_ALLOC_ORDER allocations fail, in the new version of the code,
+> the hsave_page will be cleared, but in the old version of the code, no
+> page would be cleared.
+Noted.
+> 
+> >         hsave_page = alloc_page(GFP_KERNEL_ACCOUNT);
+> 
+> Speaking of clearing pages, why not add __GFP_ZERO to the flags above
+> and skip the clear_page() call below?
+I haven't thought about it, I don't see a reason to not use __GFP_ZERO,
+but this is how the old code was.
+
+> 
+> >         if (!hsave_page)
+> > -               goto free_page3;
+> > +               goto free_page1;
+> > 
+> >         err = avic_init_vcpu(svm);
+> >         if (err)
+> > -               goto free_page4;
+> > +               goto free_page2;
+> > 
+> >         /* We initialize this flag to true to make sure that the is_running
+> >          * bit would be set the first time the vcpu is loaded.
+> > @@ -1210,11 +1211,13 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+> >         svm->nested.hsave = page_address(hsave_page);
+> >         clear_page(svm->nested.hsave);
+> > 
+> > -       svm->msrpm = page_address(msrpm_pages);
+> > -       svm_vcpu_init_msrpm(svm->msrpm);
+> > +       svm->msrpm = svm_vcpu_alloc_msrpm();
+> > +       if (!svm->msrpm)
+> > +               goto free_page2;
+> > 
+> > -       svm->nested.msrpm = page_address(nested_msrpm_pages);
+> > -       svm_vcpu_init_msrpm(svm->nested.msrpm);
+> > +       svm->nested.msrpm = svm_vcpu_alloc_msrpm();
+> > +       if (!svm->nested.msrpm)
+> > +               goto free_page3;
+> > 
+> >         svm->vmcb = page_address(vmcb_page);
+> >         clear_page(svm->vmcb);
+> > @@ -1227,12 +1230,10 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+> > 
+> >         return 0;
+> > 
+> > -free_page4:
+> > -       __free_page(hsave_page);
+> >  free_page3:
+> > -       __free_pages(nested_msrpm_pages, MSRPM_ALLOC_ORDER);
+> > +       svm_vcpu_free_msrpm(svm->msrpm);
+> >  free_page2:
+> > -       __free_pages(msrpm_pages, MSRPM_ALLOC_ORDER);
+> > +       __free_page(hsave_page);
+> >  free_page1:
+> >         __free_page(vmcb_page);
+> >  out:
+> 
+> While you're here, could you improve these labels? Coding-style.rst says:
+> 
+> Choose label names which say what the goto does or why the goto exists.  An
+> example of a good name could be ``out_free_buffer:`` if the goto frees
+> ``buffer``.
+> Avoid using GW-BASIC names like ``err1:`` and ``err2:``, as you would have to
+> renumber them if you ever add or remove exit paths, and they make correctness
+> difficult to verify anyway.
+I noticed that and I agree. I'll do this in follow up patch.
+
+Thanks for review,
+	Best regards,
+		Maxim Levitsky
+
+
 > 
 
-OK, please ignore my question in my reply to PATCH 1/3 then. I replied
-before I read this one. Just add back the NULL checks and it should be
-fine :)
 
-> > Still looking for your feedback on both patch sets by the way! :)
-> 
-> Sorry about the delay, I was on vacation for over a week in between and
-> this and the other patchset was a bit tricky (which you may have not
-> realized, not sure, as I wondered if something will not work within
-> the OPP core for v1 binding, but it did finally I believe) :)
-> 
-
-No problem! I guess I did indeed not realize potential problems for the
-v1 bindings, all this compatibility code is quite confusing. :)
-
-Thanks!
-Stephan
