@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EE824F823
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3822024F7F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgHXJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59306 "EHLO mail.kernel.org"
+        id S1730307AbgHXJX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:23:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729656AbgHXIwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:52:45 -0400
+        id S1730261AbgHXIx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:53:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BDBE204FD;
-        Mon, 24 Aug 2020 08:52:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEA8A207D3;
+        Mon, 24 Aug 2020 08:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259165;
-        bh=Okk13ya5vY/zxAdaG1dG8uTrUbWIRUGPqbRNUa/aJjw=;
+        s=default; t=1598259237;
+        bh=sKzyCTVQt3yNjcURrQLuKLdMEI//B2JxQ9HvMAck5Os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TIT6kKsNqB95VWbaYvVEK2YwGRzUXmzAHwqx00blmOzFlSjKspr8g8+qalhtBByFY
-         K6qq1nKhD7Lv9xqnEJrnByrxJvNoXwrrTQFzMTKpjFjmyZyQ2GptGyNtdLkYpY/yp1
-         ukpcb+U8McWC4bWunnYO51X1xXwqT6ttHxHvi1fM=
+        b=DvRR03Okbq8ILESWgoP1fmQjBMvI5K4qFhHR+z/GovmP0CbX5W9Dlhpc0FJXXEjD4
+         dasnD0vPsivwOMkEZsdPx/aCMdQ2wpyjCTQ88B1dr/0M957mOndeCFSeBx21RIm5OV
+         uTwyBohwV5v0+EIM3ZW7KZ1/hs69sSj5l6xo1KPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 33/39] net: dsa: b53: check for timeout
-Date:   Mon, 24 Aug 2020 10:31:32 +0200
-Message-Id: <20200824082350.220310354@linuxfoundation.org>
+Subject: [PATCH 4.14 32/50] alpha: fix annotation of io{read,write}{16,32}be()
+Date:   Mon, 24 Aug 2020 10:31:33 +0200
+Message-Id: <20200824082353.666647767@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
-References: <20200824082348.445866152@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 
-[ Upstream commit 774d977abfd024e6f73484544b9abe5a5cd62de7 ]
+[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
 
-clang static analysis reports this problem
+These accessors must be used to read/write a big-endian bus.  The value
+returned or written is native-endian.
 
-b53_common.c:1583:13: warning: The left expression of the compound
-  assignment is an uninitialized value. The computed value will
-  also be garbage
-        ent.port &= ~BIT(port);
-        ~~~~~~~~ ^
+However, these accessors are defined using be{16,32}_to_cpu() or
+cpu_to_be{16,32}() to make the endian conversion but these expect a
+__be{16,32} when none is present.  Keeping them would need a force cast
+that would solve nothing at all.
 
-ent is set by a successful call to b53_arl_read().  Unsuccessful
-calls are caught by an switch statement handling specific returns.
-b32_arl_read() calls b53_arl_op_wait() which fails with the
-unhandled -ETIMEDOUT.
+So, do the conversion using swab{16,32}, like done in asm-generic for
+similar situations.
 
-So add -ETIMEDOUT to the switch statement.  Because
-b53_arl_op_wait() already prints out a message, do not add another
-one.
-
-Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/alpha/include/asm/io.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 060f9b1769298..c387be5c926b7 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1175,6 +1175,8 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
- 		return ret;
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index d123ff90f7a83..9995bed6e92e2 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -493,10 +493,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
+ }
+ #endif
  
- 	switch (ret) {
-+	case -ETIMEDOUT:
-+		return ret;
- 	case -ENOSPC:
- 		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
- 			addr, vid);
+-#define ioread16be(p) be16_to_cpu(ioread16(p))
+-#define ioread32be(p) be32_to_cpu(ioread32(p))
+-#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
+-#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
++#define ioread16be(p) swab16(ioread16(p))
++#define ioread32be(p) swab32(ioread32(p))
++#define iowrite16be(v,p) iowrite16(swab16(v), (p))
++#define iowrite32be(v,p) iowrite32(swab32(v), (p))
+ 
+ #define inb_p		inb
+ #define inw_p		inw
 -- 
 2.25.1
 
