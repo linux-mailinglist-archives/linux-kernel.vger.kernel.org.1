@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA8A24F89F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5F824F872
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgHXIs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
+        id S1729899AbgHXJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:32:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729574AbgHXIsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:48:37 -0400
+        id S1729809AbgHXIuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:50:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 968EF204FD;
-        Mon, 24 Aug 2020 08:48:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 343EC20FC3;
+        Mon, 24 Aug 2020 08:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258917;
-        bh=zPyi0lwUhPMnBc/9pj7LVqMKNRCt13Zbze66ujo7f6M=;
+        s=default; t=1598258999;
+        bh=TYRNxJgDF1sQxxuNs8NuMg2bvxa6NkRqH6CyUWD6aeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bCWThFmGevj4VzaUzHtQEWngJsbHYhk4n1xUFLEW4r30DWuoDYMm8Iww9Unh61fvD
-         Ie6oRRKbxOW1QFegDrNEjFgU6GOaLhtsTkalxlLVSmvh3/SgIiqR9GtzEebKWOHilc
-         CyEVXvWLEMWdxPnQXBTOraGEPQKq9/iBsN6unPmE=
+        b=z+l717PU5uUgOsd6ux1GA43CjKXQIoqDK2Fmn7F5cxMlrvuBJnctXivjFkb+e2zIi
+         rqliD5v5yiWAz2WZS08oi8P4u5hW/8kw6Zr++OR2b7xNfubFrj1UfXJ+F0uky3r+If
+         Nty8WbDx5MBzgS/R0jnd2L1E4MjkQsfpeTDBSP9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/107] kconfig: qconf: fix signal connection to invalid slots
+        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Liu Ying <victor.liu@nxp.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 01/33] drm/imx: imx-ldb: Disable both channels for split mode in enc->disable()
 Date:   Mon, 24 Aug 2020 10:30:57 +0200
-Message-Id: <20200824082409.611267844@linuxfoundation.org>
+Message-Id: <20200824082346.580405012@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
+References: <20200824082346.498653578@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,73 +48,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Liu Ying <victor.liu@nxp.com>
 
-[ Upstream commit d85de3399f97467baa2026fbbbe587850d01ba8a ]
+[ Upstream commit 3b2a999582c467d1883716b37ffcc00178a13713 ]
 
-If you right-click in the ConfigList window, you will see the following
-messages in the console:
+Both of the two LVDS channels should be disabled for split mode
+in the encoder's ->disable() callback, because they are enabled
+in the encoder's ->enable() callback.
 
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:888
-QObject::connect:  (sender name:   'config')
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:897
-QObject::connect:  (sender name:   'config')
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:906
-QObject::connect:  (sender name:   'config')
-
-Right, there is no such slot in QAction. I think this is a typo of
-setChecked.
-
-Due to this bug, when you toggled the menu "Option->Show Name/Range/Data"
-the state of the context menu was not previously updated. Fix this.
-
-Fixes: d5d973c3f8a9 ("Port xconfig to Qt5 - Put back some of the old implementation(part 2)")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: 6556f7f82b9c ("drm: imx: Move imx-drm driver out of staging")
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/qconf.cc | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/imx/imx-ldb.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 3e7fbfae798c2..a94909ad9a53a 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -878,7 +878,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowName(bool)));
- 		connect(parent(), SIGNAL(showNameChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showName);
- 		headerPopup->addAction(action);
+diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
+index 31ca56e593f58..b9dc2ef64ed88 100644
+--- a/drivers/gpu/drm/imx/imx-ldb.c
++++ b/drivers/gpu/drm/imx/imx-ldb.c
+@@ -305,6 +305,7 @@ static void imx_ldb_encoder_disable(struct drm_encoder *encoder)
+ {
+ 	struct imx_ldb_channel *imx_ldb_ch = enc_to_imx_ldb_ch(encoder);
+ 	struct imx_ldb *ldb = imx_ldb_ch->ldb;
++	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+ 	int mux, ret;
  
-@@ -887,7 +887,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowRange(bool)));
- 		connect(parent(), SIGNAL(showRangeChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showRange);
- 		headerPopup->addAction(action);
+ 	/*
+@@ -321,14 +322,14 @@ static void imx_ldb_encoder_disable(struct drm_encoder *encoder)
  
-@@ -896,7 +896,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowData(bool)));
- 		connect(parent(), SIGNAL(showDataChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showData);
- 		headerPopup->addAction(action);
+ 	drm_panel_disable(imx_ldb_ch->panel);
+ 
+-	if (imx_ldb_ch == &ldb->channel[0])
++	if (imx_ldb_ch == &ldb->channel[0] || dual)
+ 		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
+-	else if (imx_ldb_ch == &ldb->channel[1])
++	if (imx_ldb_ch == &ldb->channel[1] || dual)
+ 		ldb->ldb_ctrl &= ~LDB_CH1_MODE_EN_MASK;
+ 
+ 	regmap_write(ldb->regmap, IOMUXC_GPR2, ldb->ldb_ctrl);
+ 
+-	if (ldb->ldb_ctrl & LDB_SPLIT_MODE_EN) {
++	if (dual) {
+ 		clk_disable_unprepare(ldb->clk[0]);
+ 		clk_disable_unprepare(ldb->clk[1]);
  	}
-@@ -1228,7 +1228,7 @@ QMenu* ConfigInfoView::createStandardContextMenu(const QPoint & pos)
- 
- 	action->setCheckable(true);
- 	connect(action, SIGNAL(toggled(bool)), SLOT(setShowDebug(bool)));
--	connect(this, SIGNAL(showDebugChanged(bool)), action, SLOT(setOn(bool)));
-+	connect(this, SIGNAL(showDebugChanged(bool)), action, SLOT(setChecked(bool)));
- 	action->setChecked(showDebug());
- 	popup->addSeparator();
- 	popup->addAction(action);
 -- 
 2.25.1
 
