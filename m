@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FEC24FEDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647E624FF3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgHXNah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54752 "EHLO mail.kernel.org"
+        id S1728057AbgHXNme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:42:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgHXNaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:30:23 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1727080AbgHXNcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 09:32:11 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACAAB206B5;
-        Mon, 24 Aug 2020 13:30:21 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 09:30:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     dianders@chromium.org, groeck@chromium.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Will Deacon <will@kernel.org>, Yue Hu <huyue2@yulong.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] kernel/trace: Add DISALLOW_TRACE_PRINTK make option
-Message-ID: <20200824093020.073ae8d8@oasis.local.home>
-In-Reply-To: <20200824105852.v5.1.I4feb11d34ce7a0dd5ee2c3327fb5a1a9a646be30@changeid>
-References: <20200824105852.v5.1.I4feb11d34ce7a0dd5ee2c3327fb5a1a9a646be30@changeid>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D4F721775;
+        Mon, 24 Aug 2020 13:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598275931;
+        bh=kQqPOp5ZCYfc0mhvDYZD0wZbCw7iw9QkX4jllZTFUSI=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=eCklyBpBial1yRqp01SYpxNYkhwfj/NIYL96JuW77mjEGx35i2/NZPCwfnryUfF1D
+         fbmxsdpz8xFmdyUTemS9FlsbzZel+3JWmtqVjpKOWN+rOD/tilQ/2/lPtxuUT1wDgz
+         Y+9T6EyLbOgrJdWqXdJfR04934FWBFLCDkeOXFII=
+Date:   Mon, 24 Aug 2020 14:31:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, perex@perex.cz
+In-Reply-To: <1598190877-9213-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1598190877-9213-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: ak5558: Add power supply property
+Message-Id: <159827589162.47809.9128717521868705111.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 10:59:13 +0800
-Nicolas Boichat <drinkcat@chromium.org> wrote:
+On Sun, 23 Aug 2020 21:54:36 +0800, Shengjiu Wang wrote:
+> AVDD-supply is for Analog power supply
+> DVDD-supply is for Digital power supply
 
-> ---
-> 
-> Changes since v4:
->  - Turns this into a make option, instead of a config
->    option, as suggested by Steven Rostedt <rostedt@goodmis.org>.
-> 
-> Changes since v2/v3:
->  - Rebase only, v3 didn't exist as I just split out the other
->    necessary patches.
->  - Added patch 3/3 to fix atomisp_compat_css20.c
-> 
-> Changes since v1:
->  - Use static_assert instead of __static_assert (Jason Gunthorpe)
->  - Fix issues that can be detected by this patch (running some
->    randconfig in a loop, kernel test robot, or manual inspection),
->    by:
->    - Making some debug config options that use trace_printk depend
->      on the new config option.
->    - Adding 3 patches before this one.
-> 
->  Makefile               | 14 ++++++++++++++
->  include/linux/kernel.h | 17 ++++++++++++++++-
->  2 files changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index c4470a4e131f2ce..fb8b0d7fb4b2df7 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -100,6 +100,16 @@ endif
->  
->  export quiet Q KBUILD_VERBOSE
->  
-> +# Disallow use of trace_printk. Can be used by production kernels.
-> +ifeq ("$(origin DISALLOW_TRACE_PRINTK)", "command line")
-> +  KBUILD_DISALLOW_TRACE_PRINTK = $(DISALLOW_TRACE_PRINTK)
-> +endif
-> +ifndef KBUILD_DISALLOW_TRACE_PRINTK
-> +  KBUILD_DISALLOW_TRACE_PRINTK = 0
-> +endif
-> +
-> +export KBUILD_DISALLOW_TRACE_PRINTK
-> +
->  # Kbuild will save output files in the current working directory.
->  # This does not need to match to the root of the kernel source tree.
->  #
-> @@ -838,6 +848,10 @@ KBUILD_AFLAGS	+= -gz=zlib
->  KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
->  endif
->  
-> +ifeq ($(KBUILD_DISALLOW_TRACE_PRINTK),1)
-> +KBUILD_CFLAGS += -DDISALLOW_TRACE_PRINTK
-> +endif
-> +
->  KBUILD_CFLAGS += $(DEBUG_CFLAGS)
->  export DEBUG_CFLAGS
->  
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-There's one more thing we need to do, is if you build without this option
-then build with it, you should trigger a full kernel rebuild.
-Otherwise, if you build without the option, then build with it, and it
-doesn't rebuild the tree, it wont catch anything.
+Thanks!
 
--- Steve
+[1/2] ASoC: dt-bindings: ak5558: Add power supply property
+      commit: 5edc8c4fe019b920ae9bd1e3413d66f6e8adf29b
+[2/2] ASoC: ak5558: Add regulator support
+      commit: 2ff6d5a108c6b7c07d1093c38e0def015edd325d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
