@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4FF24F464
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B285224F4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgHXIfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:35:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
+        id S1728415AbgHXIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728129AbgHXIfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:45 -0400
+        id S1728775AbgHXIko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:40:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 677A8206F0;
-        Mon, 24 Aug 2020 08:35:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99C1D2075B;
+        Mon, 24 Aug 2020 08:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258145;
-        bh=H4PJW85OSbOIF1DQ4hnrfqyHQL20ozcmuZlOID6RNzg=;
+        s=default; t=1598258444;
+        bh=/S/5fcNXp1qF0dj5Sh7EBvrVNQQbog7E1B1vZS/c6vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FpuQrlMTk43qtgwAWeRKtEXYVv+189LwW771Xe31sCVnq1wmAA//iF7bSQ2lkp5jD
-         wEv6+vLZ+bDPU58CWu3Bw6OPsVTUVOiKcFdWA0I+MHT4c9+Wht0oHsL8oegc+jN4OA
-         BV/Ko8VWOcPIc0bHYT7ZBmsvctQNPUitu32SUalE=
+        b=vE9HDkEzhbQHrWq2zTEXrcSZLZIoUSDtowyAyy997HUnsH305p50bzboYWQLsjJvL
+         N4SUsJwtwyf8HsomWMBlYWlo+2oZACjqY5rVVZjeWLZ94nS4xxQwzlHwGCsdw6oQzH
+         8L8yd7zuAkBmPXHHLjtEwQo6QFjdMa7Z2ogs7yuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        Roman Shaposhnik <roman@zededa.com>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 084/148] can: j1939: fix kernel-infoleak in j1939_sk_sock2sockaddr_can()
-Date:   Mon, 24 Aug 2020 10:29:42 +0200
-Message-Id: <20200824082418.078240784@linuxfoundation.org>
+Subject: [PATCH 5.7 050/124] swiotlb-xen: use vmalloc_to_page on vmalloc virt addresses
+Date:   Mon, 24 Aug 2020 10:29:44 +0200
+Message-Id: <20200824082411.881127143@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,83 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
-[ Upstream commit 38ba8b9241f5848a49b80fddac9ab5f4692e434e ]
+[ Upstream commit 8b1e868f66076490189a36d984fcce286cdd6295 ]
 
-syzbot found that at least 2 bytes of kernel information
-were leaked during getsockname() on AF_CAN CAN_J1939 socket.
+xen_alloc_coherent_pages might return pages for which virt_to_phys and
+virt_to_page don't work, e.g. ioremap'ed pages.
 
-Since struct sockaddr_can has in fact two holes, simply
-clear the whole area before filling it with useful data.
+So in xen_swiotlb_free_coherent we can't assume that virt_to_page works.
+Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
+virt addresses.
 
-BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
-CPU: 0 PID: 8466 Comm: syz-executor511 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
- kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
- instrument_copy_to_user include/linux/instrumented.h:91 [inline]
- _copy_to_user+0x18e/0x260 lib/usercopy.c:39
- copy_to_user include/linux/uaccess.h:186 [inline]
- move_addr_to_user+0x3de/0x670 net/socket.c:237
- __sys_getsockname+0x407/0x5e0 net/socket.c:1909
- __do_sys_getsockname net/socket.c:1920 [inline]
- __se_sys_getsockname+0x91/0xb0 net/socket.c:1917
- __x64_sys_getsockname+0x4a/0x70 net/socket.c:1917
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440219
-Code: Bad RIP value.
-RSP: 002b:00007ffe5ee150c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440219
-RDX: 0000000020000240 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a20
-R13: 0000000000401ab0 R14: 0000000000000000 R15: 0000000000000000
+This patch fixes the following crash at boot on RPi4 (the underlying
+issue is not RPi4 specific):
+https://marc.info/?l=xen-devel&m=158862573216800
 
-Local variable ----address@__sys_getsockname created at:
- __sys_getsockname+0x91/0x5e0 net/socket.c:1894
- __sys_getsockname+0x91/0x5e0 net/socket.c:1894
-
-Bytes 2-3 of 24 are uninitialized
-Memory access of size 24 starts at ffff8880ba2c7de8
-Data copied to user address 0000000020000100
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Cc: Robin van der Gracht <robin@protonic.nl>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200813161834.4021638-1-edumazet@google.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Tested-by: Corey Minyard <cminyard@mvista.com>
+Tested-by: Roman Shaposhnik <roman@zededa.com>
+Link: https://lore.kernel.org/r/20200710223427.6897-1-sstabellini@kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/socket.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/xen/swiotlb-xen.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 11d566c70a944..1b7dc1a8547f3 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -561,6 +561,11 @@ static int j1939_sk_connect(struct socket *sock, struct sockaddr *uaddr,
- static void j1939_sk_sock2sockaddr_can(struct sockaddr_can *addr,
- 				       const struct j1939_sock *jsk, int peer)
- {
-+	/* There are two holes (2 bytes and 3 bytes) to clear to avoid
-+	 * leaking kernel information to user space.
-+	 */
-+	memset(addr, 0, J1939_MIN_NAMELEN);
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index b6d27762c6f8c..5fbadd07819bd 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	int order = get_order(size);
+ 	phys_addr_t phys;
+ 	u64 dma_mask = DMA_BIT_MASK(32);
++	struct page *page;
+ 
+ 	if (hwdev && hwdev->coherent_dma_mask)
+ 		dma_mask = hwdev->coherent_dma_mask;
+@@ -346,9 +347,14 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	/* Convert the size to actually allocated. */
+ 	size = 1UL << (order + XEN_PAGE_SHIFT);
+ 
++	if (is_vmalloc_addr(vaddr))
++		page = vmalloc_to_page(vaddr);
++	else
++		page = virt_to_page(vaddr);
 +
- 	addr->can_family = AF_CAN;
- 	addr->can_ifindex = jsk->ifindex;
- 	addr->can_addr.j1939.pgn = jsk->addr.pgn;
+ 	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
+ 		     range_straddles_page_boundary(phys, size)) &&
+-	    TestClearPageXenRemapped(virt_to_page(vaddr)))
++	    TestClearPageXenRemapped(page))
+ 		xen_destroy_contiguous_region(phys, order);
+ 
+ 	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
 -- 
 2.25.1
 
