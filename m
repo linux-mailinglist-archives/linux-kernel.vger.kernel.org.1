@@ -2,243 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F5424F0C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 02:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D199124F0C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 02:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgHXAsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 20:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S1726945AbgHXAzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 20:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgHXAsm (ORCPT
+        with ESMTP id S1726480AbgHXAzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 20:48:42 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D3AC061573;
-        Sun, 23 Aug 2020 17:48:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CB42A574;
-        Mon, 24 Aug 2020 02:48:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598230115;
-        bh=ryNzcXvNsJKYK/OQb++1UxH4IT6WEkYbalwybh0p+gE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UIys7+tZMa/i/2BGw+7Bqfa9MDCJUNdU9Y6zjFKg5+enEVMLEO686OANUZrs6cluq
-         GSBSH0LWBq3eWNE53eBoCefFf9xJk37PYwDZ5RmyBeodCuV9LUpNzdPB9oa22OMUWH
-         x2wrZAQN+QYT9OFhr+PY9Sd9YkY/knX66S1hMLyE=
-Date:   Mon, 24 Aug 2020 03:48:16 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
-Message-ID: <20200824004816.GS6002@pendragon.ideasonboard.com>
-References: <20200813140041.5082-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Sun, 23 Aug 2020 20:55:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7CFC061573;
+        Sun, 23 Aug 2020 17:55:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u18so6744934wmc.3;
+        Sun, 23 Aug 2020 17:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pTP1LhQi+PG1kh5LGM9fOBVMY91Y4hCDBdK8fW0QTLM=;
+        b=TjM+qDElmui8wfc2Mjkz6wHFsnuL0Zb/oJL2iv58J5pTseMU6FWy7nvlHs/2QRUQsx
+         A6SIcxlcHjfHXccgTBu8+NhQSkfVUeXW9sdkob3qngVWN1Dbf1errfwvu0hSoxeJimnZ
+         0gCVh3MV04U61GujlkjXkx+ybEQMiGNwLAF6FijYMfbPrN95xAhiTlPmr9pCY2boBISg
+         tu+WXI1BLkTlJCCvYvmu7R0IkSiUBbWbUkw07hAZdxLOxfWyWh8gQjYY2wcSMZTWyXp5
+         0k1KldNTtjZE6z/D7Es5anbmrASTeGcqFuRgdx/nXRB7kKtit6zqqw+jC5Mtb/xONW8U
+         d+lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pTP1LhQi+PG1kh5LGM9fOBVMY91Y4hCDBdK8fW0QTLM=;
+        b=mTKofqD5VRPyy14BpoH+QUV+RQOgSjX5TNLFnqd4/Zqr57gNBK/uFG7zPTRAmVCwNz
+         JAVo7NMr/nccVJZpIOfHiOh/HbtPJKzzUeIyHpFn+CjYR5bPAuJMYKGOiXdiYBs3WjDh
+         hlu9LiEsD6TIxH6s8kNHmvENiBET0s0rMo0xtGZjx23IIRDQYTL5jWb02FyzC5PRQnXN
+         L97LqnPBIEyCwN+rwxD7Sg7xa4TY0IWyPO1FPEEfQWI5jIUVEBynFF7vFHTn0UoLCrhX
+         ONcE+ZpGPvVdkr42ngbz4ROFUkNKsIO4Mk14sVRUoUHW7NwRiM0Qt4MLG4zmtr2joJ9O
+         Gh4g==
+X-Gm-Message-State: AOAM531Cytqqf7aH5Htut+hbNOHcjEjBEJ7oZi05LQC8LAZUocIAT7xn
+        vaT1LI4/jPdFL/5g5q6oEComqbV+yKr4Clko/J8=
+X-Google-Smtp-Source: ABdhPJz9xVFRPPPglq+S9Oc+3t71RsEDQthYP3Iei15wM1d5CPr3QJ0ORtI5uvT/5KqnY/KYBYsNbqU+gH5SAmCDKng=
+X-Received: by 2002:a1c:f30f:: with SMTP id q15mr3255220wmq.60.1598230508092;
+ Sun, 23 Aug 2020 17:55:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200813140041.5082-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <cover.1597376585.git.huangqiwu@xiaomi.com> <ced256ea8ac2f3e54c33677facc4c2ef04dee643.1597376585.git.huangqiwu@xiaomi.com>
+ <20200814060909.GD1409566@kroah.com> <CAPtXDt1e3fi7ymW0-FSknUAYCQ80aL=4btbeA2e4Xre7+e7OtA@mail.gmail.com>
+ <20200818060707.GB1742213@kroah.com>
+In-Reply-To: <20200818060707.GB1742213@kroah.com>
+From:   Qiwu Huang <yanziily@gmail.com>
+Date:   Mon, 24 Aug 2020 08:54:56 +0800
+Message-ID: <CAPtXDt26DdOi6JG7x3mTrR5YwArjkAeXY2TogRnK_xkSabhL2g@mail.gmail.com>
+Subject: Re: [PATCH v8 1/4] power: supply: core: add quick charge type property
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Qiwu Huang <huangqiwu@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Tue, Aug 18, 2020 at 2:07 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Aug 18, 2020 at 09:56:28AM +0800, Qiwu Huang wrote:
+> > On Fri, Aug 14, 2020 at 2:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Fri, Aug 14, 2020 at 11:46:54AM +0800, Qiwu Huang wrote:
+> > > > From: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > >
+> > > > Reports the kind of quick charge type based on
+> > > > different adapter power.
+> > > >
+> > > > Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > > ---
+> > > >  Documentation/ABI/testing/sysfs-class-power | 21 +++++++++
+> > > >  drivers/power/supply/power_supply_sysfs.c   |  1 +
+> > > >  drivers/power/supply/qcom_smbb.c            | 51 +++++++++++++++++++++
+> > > >  include/linux/power_supply.h                | 14 ++++++
+> > > >  4 files changed, 87 insertions(+)
+> > >
+> > > You should also submit your driver that uses these new attributes at the
+> > > same time.  What happened to that request?  Otherwise no one really
+> > > knows how these are being used, or if they even are used by anyone.
+> > >
+> >
+> > I don't think I can submit the whole driver because our drivers are
+> > divided into three parts, the first part is in ADSP, the second part
+> > is in kernel and the third part is in Android Hal.This is the second
+> > part.
+>
+> WHat is "ADSP"?
 
-Thank you for the patch.
+ADSP: advanced digital signal processor
 
-On Thu, Aug 13, 2020 at 03:00:41PM +0100, Lad Prabhakar wrote:
-> The iwg21d comes with a 7" capacitive touch screen, therefore
-> add support for it.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> Just submit your kernel driver code, that's all we care about here.
+> Userspace code is not anything we can do anything with :)
 
-Everything seems to match the schematics :-)
+If we ported the full driver, we would break the existing driver
+structure because we would introduce more Qualcomm code. I think
+that's an unreasonable change.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> thanks,
+>
+> greg k-h
 
-> ---
-> v1->v2
-> * This patch is part of series [1] (rest of the patches have be accepted
->   by Geert [2]).
-> * Added regulator for lvds
-> * Added reset pin for touchpanel
-> * This patch is based on series [3]
-> 
-> [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/
->     ?series=330277
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
->     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
-> [3] https://patchwork.kernel.org/project/linux-renesas-soc/list/
->     ?series=330957
-> ---
->  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 99 +++++++++++++++++++++++++
->  1 file changed, 99 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> index b3461a61a4bf..9bf4fbd9c736 100644
-> --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> @@ -30,6 +30,7 @@
->  
->  /dts-v1/;
->  #include "r8a7742-iwg21m.dtsi"
-> +#include <dt-bindings/pwm/pwm.h>
->  
->  / {
->  	model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
-> @@ -52,6 +53,51 @@
->  		clock-frequency = <26000000>;
->  	};
->  
-> +	lcd_backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&tpu 2 5000000 0>;
-> +		brightness-levels = <0 4 8 16 32 64 128 255>;
-> +		pinctrl-0 = <&backlight_pins>;
-> +		pinctrl-names = "default";
-> +		default-brightness-level = <7>;
-> +		enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	lvds-receiver {
-> +		compatible = "ti,ds90cf384a", "lvds-decoder";
-> +		vcc-supply = <&vcc_3v3_tft1>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				lvds_receiver_in: endpoint {
-> +					remote-endpoint = <&lvds0_out>;
-> +				};
-> +			};
-> +			port@1 {
-> +				reg = <1>;
-> +				lvds_receiver_out: endpoint {
-> +					remote-endpoint = <&panel_in>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +
-> +	panel {
-> +		compatible = "edt,etm0700g0dh6";
-> +		backlight = <&lcd_backlight>;
-> +		power-supply = <&vcc_3v3_tft1>;
-> +
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&lvds_receiver_out>;
-> +			};
-> +		};
-> +	};
-> +
->  	reg_1p5v: 1p5v {
->  		compatible = "regulator-fixed";
->  		regulator-name = "1P5V";
-> @@ -75,6 +121,17 @@
->  		};
->  	};
->  
-> +	vcc_3v3_tft1: regulator-panel {
-> +		compatible = "regulator-fixed";
-> +
-> +		regulator-name = "vcc-3v3-tft1";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		enable-active-high;
-> +		startup-delay-us = <500>;
-> +		gpio = <&gpio5 28 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
->  	vcc_sdhi2: regulator-vcc-sdhi2 {
->  		compatible = "regulator-fixed";
->  
-> @@ -129,12 +186,34 @@
->  		VDDIO-supply = <&reg_3p3v>;
->  		VDDD-supply = <&reg_1p5v>;
->  	};
-> +
-> +	touch: touchpanel@38 {
-> +		compatible = "edt,edt-ft5406";
-> +		reg = <0x38>;
-> +		interrupt-parent = <&gpio0>;
-> +		interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
-> +		/* GP1_29 is also shared with audio codec reset pin */
-> +		reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
-> +		vcc-supply = <&vcc_3v3_tft1>;
-> +	};
->  };
->  
->  &cmt0 {
->  	status = "okay";
->  };
->  
-> +&du {
-> +	status = "okay";
-> +};
-> +
-> +&gpio0 {
-> +	touch-interrupt {
-> +		gpio-hog;
-> +		gpios = <24 GPIO_ACTIVE_LOW>;
-> +		input;
-> +	};
-> +};
-> +
->  &hsusb {
->  	pinctrl-0 = <&usb0_pins>;
->  	pinctrl-names = "default";
-> @@ -165,6 +244,11 @@
->  		function = "avb";
->  	};
->  
-> +	backlight_pins: backlight {
-> +		groups = "tpu0_to2";
-> +		function = "tpu0";
-> +	};
-> +
->  	i2c2_pins: i2c2 {
->  		groups = "i2c2_b";
->  		function = "i2c2";
-> @@ -208,6 +292,17 @@
->  	};
->  };
->  
-> +&lvds0 {
-> +	status = "okay";
-> +	ports {
-> +		port@1 {
-> +			lvds0_out: endpoint {
-> +				remote-endpoint = <&lvds_receiver_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &rcar_sound {
->  	pinctrl-0 = <&sound_pins>;
->  	pinctrl-names = "default";
-> @@ -261,6 +356,10 @@
->  	shared-pin;
->  };
->  
-> +&tpu {
-> +	status = "okay";
-> +};
-> +
->  &usbphy {
->  	status = "okay";
->  };
+
 
 -- 
-Regards,
+Thanks
 
-Laurent Pinchart
+Qiwu
