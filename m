@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BF524F861
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF72F24F860
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgHXIug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:50:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
+        id S1729542AbgHXJbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:31:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729588AbgHXIuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:50:24 -0400
+        id S1729345AbgHXIuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:50:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5E85204FD;
-        Mon, 24 Aug 2020 08:50:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B612A2075B;
+        Mon, 24 Aug 2020 08:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259024;
-        bh=V6CCTp/Wp/CXuMiLrUt3VZ1YD9/ED1Sm6WtunPeO/dE=;
+        s=default; t=1598259037;
+        bh=6CWT5yFJGbIhKo0odsI5tP10yt8cR+KoeyWEK6OjVoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnA5e2Rm5ExRYhtXwEbgw4Cj/UJvqwWzTmj8fLM2qYSOOk51YZj1lQQvX5q96okok
-         VO8LT0VhbbuzWIGiF07bSvd/dsRrIJOanwUdrdTqAoMI7B0x+yUzHc1kXzzGOD0H/I
-         uoeKrRMHZFL/5Asr2N5efE0nQxQEwyAqO1dMALhc=
+        b=KGBsNAsQsNoZHA27Zj50RSev44yX+5B+4JEVx8XEfI0nDK341tWveSkYU2gcFKxn7
+         NL4FsAQ17rZoP58OmPEusDKys9Hs5noByZ8cg0bVQuT76E0MkenwaWfAP/CF62uCG9
+         FeuhIStSBptY3GGrbDfVWwnF0ILDk4htPKR/qc5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 26/33] ext4: fix potential negative array index in do_split()
-Date:   Mon, 24 Aug 2020 10:31:22 +0200
-Message-Id: <20200824082347.846753613@linuxfoundation.org>
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.4 30/33] do_epoll_ctl(): clean the failure exits up a bit
+Date:   Mon, 24 Aug 2020 10:31:26 +0200
+Message-Id: <20200824082348.042955499@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
 References: <20200824082346.498653578@linuxfoundation.org>
@@ -44,68 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Sandeen <sandeen@redhat.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 5872331b3d91820e14716632ebb56b1399b34fe1 ]
+commit 52c479697c9b73f628140dcdfcd39ea302d05482 upstream.
 
-If for any reason a directory passed to do_split() does not have enough
-active entries to exceed half the size of the block, we can end up
-iterating over all "count" entries without finding a split point.
-
-In this case, count == move, and split will be zero, and we will
-attempt a negative index into map[].
-
-Guard against this by detecting this case, and falling back to
-split-to-half-of-count instead; in this case we will still have
-plenty of space (> half blocksize) in each split block.
-
-Fixes: ef2b02d3e617 ("ext34: ensure do_split leaves enough free space in both blocks")
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/namei.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ fs/eventpoll.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index faf142a6fa8bb..061b026e464c5 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1730,7 +1730,7 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 			     blocksize, hinfo, map);
- 	map -= count;
- 	dx_sort_map(map, count);
--	/* Split the existing block in the middle, size-wise */
-+	/* Ensure that neither split block is over half full */
- 	size = 0;
- 	move = 0;
- 	for (i = count-1; i >= 0; i--) {
-@@ -1740,8 +1740,18 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 		size += map[i].size;
- 		move++;
- 	}
--	/* map index at which we will split */
--	split = count - move;
-+	/*
-+	 * map index at which we will split
-+	 *
-+	 * If the sum of active entries didn't exceed half the block size, just
-+	 * split it in half by count; each resulting block will have at least
-+	 * half the space free.
-+	 */
-+	if (i > 0)
-+		split = count - move;
-+	else
-+		split = count/2;
-+
- 	hash2 = map[split].hash;
- 	continued = hash2 == map[split - 1].hash;
- 	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
--- 
-2.25.1
-
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1905,10 +1905,8 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+ 			mutex_lock(&epmutex);
+ 			if (is_file_epoll(tf.file)) {
+ 				error = -ELOOP;
+-				if (ep_loop_check(ep, tf.file) != 0) {
+-					clear_tfile_check_list();
++				if (ep_loop_check(ep, tf.file) != 0)
+ 					goto error_tgt_fput;
+-				}
+ 			} else {
+ 				get_file(tf.file);
+ 				list_add(&tf.file->f_tfile_llink,
+@@ -1937,8 +1935,6 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+ 			error = ep_insert(ep, &epds, tf.file, fd, full_check);
+ 		} else
+ 			error = -EEXIST;
+-		if (full_check)
+-			clear_tfile_check_list();
+ 		break;
+ 	case EPOLL_CTL_DEL:
+ 		if (epi)
+@@ -1959,8 +1955,10 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+ 	mutex_unlock(&ep->mtx);
+ 
+ error_tgt_fput:
+-	if (full_check)
++	if (full_check) {
++		clear_tfile_check_list();
+ 		mutex_unlock(&epmutex);
++	}
+ 
+ 	fdput(tf);
+ error_fput:
 
 
