@@ -2,198 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC1924F7CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E6C24F799
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgHXJWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:22:04 -0400
-Received: from smtp73.iad3a.emailsrvr.com ([173.203.187.73]:47919 "EHLO
-        smtp73.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728634AbgHXJVu (ORCPT
+        id S1730337AbgHXJRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:17:42 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36345 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729770AbgHXJRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:21:50 -0400
-X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Aug 2020 05:21:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1598260560;
-        bh=uNN8RH7yD1tX56e4Kxpu5Me0wrJfDcdmUMAuerB8/Ik=;
-        h=Subject:To:From:Date:From;
-        b=xVA4KtesSPRHbx4Zmp1oT2kJsLYbtmYhBzmL2gmH245/S0dOupAxHQbSWKbqQuMim
-         PNxhjhdpJkjrhYHRMMdi24Ucy4WYpJ1YzL9YsuqWw34wXxkJyuUmJDwF/6tNzO461j
-         9e1g1mV8TMaxTvmNaiB2XMKDebAjwP45LJxSDhR4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1598260560;
-        bh=uNN8RH7yD1tX56e4Kxpu5Me0wrJfDcdmUMAuerB8/Ik=;
-        h=Subject:To:From:Date:From;
-        b=kn5ejahn1loWVmHP9ZxdMhiJB3U5V3F5ejOE/ui337q4NWpfKPWR64GSGkdC6wZrj
-         8v2RzdtCqHKJEp058oo+HuaWuWShoFzQFCId9xSGRwldgFTz2aUxFPcq19n74feQ8s
-         iJ/qUzhyQwg/KxcIDoBxBv7hLofCq9PzmnQKTZTA=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp34.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id AA51D22A40;
-        Mon, 24 Aug 2020 05:15:59 -0400 (EDT)
-Subject: Re: [PATCH] drivers: staging: comedi: fixed duplicate words from
- checkpatch
-To:     Ethan Edwards <ethancarteredwards@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, hsweeten@visionengravers.com,
-        devel@driverdev.osuosl.org
-References: <20200822202131.53kpj2gg35af6vud@archlaptop.localdomain>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <5ede8454-31d8-25d7-c01a-7b2c94fc499e@mev.co.uk>
-Date:   Mon, 24 Aug 2020 10:15:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 24 Aug 2020 05:17:30 -0400
+Received: by mail-wr1-f68.google.com with SMTP id x7so1838496wro.3;
+        Mon, 24 Aug 2020 02:17:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=piFoeKFrUJtBI57BDIALP5epFRujdzh3bH9V8VDZYAo=;
+        b=GZFVbseRjfzRmeYXFX0EmDZgoFijYc9/oWlgTjr1qb3y1gWhSj062+vqjo0XQHsKvZ
+         rT/uE7jzYeGTiQId2VtFzRakfIp+s5E3/q2ofYEFSwR8vz9i30nPz+jPbnQCKJ/Fszzg
+         hTUxIan7Idq2mQighRB7F3qdaWkfu07luZJAv4fREbQUwMb/lQlGSLN26Um5/yupQd/P
+         RloQRNiw8OxcfDDtBfHIeB0uo4rHYpAuX5lad1X6l9GVySCF/vnuqO8iBo3pitodgRKa
+         fFM+9S+gHfzADpUPBk6OERZdjVeSKXwMScrXFUrOAPvd22AOPvDWBE/JlNX8lEQB6ly9
+         0AYQ==
+X-Gm-Message-State: AOAM530au0AWrCR9k4K55GfIL0C6KB7BVdsybT+PxWfY8FTVN3YFPA2B
+        JMz424n7lhB5AQkxmmSJrXU=
+X-Google-Smtp-Source: ABdhPJzySf+UXQLxcG9X2DZIMX9284mRLw4G7ickfby9Bst4b2X7s+cUhUsK3Zq0OPsQTu9d2qfDhQ==
+X-Received: by 2002:a05:6000:d0:: with SMTP id q16mr4847868wrx.389.1598260647712;
+        Mon, 24 Aug 2020 02:17:27 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id u7sm22138521wrq.89.2020.08.24.02.17.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Aug 2020 02:17:27 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 11:17:24 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20200824091724.GB20819@kozik-lap>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200822202131.53kpj2gg35af6vud@archlaptop.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 3ebe9e8a-bc3c-4e53-b469-784198286fc4-1-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2020 21:21, Ethan Edwards wrote:
-> Fixed various different checkpatch duplicate word warnings, the TODO
-> file said to fix checkpatch warnings.
+On Mon, Aug 24, 2020 at 02:39:32PM +0530, Viresh Kumar wrote:
+> From: Stephan Gerhold <stephan@gerhold.net>
 > 
-> My old email didn't CC the mailing lists, ignore the old one, sorry.
-
-Everything above the '---' line ends up in the git commit message 
-(unless edited out manually, and Greg hates that).  The comment about 
-CC'ing email lists doesn't belong in the commit message.  Could you send 
-a '[PATCH v2]' with that line edited out and place a description of the 
-v2 changes just below the '---' line?
-
-Thanks.
-
+> The OPP core manages various resources, e.g. clocks or interconnect paths.
+> These resources are looked up when the OPP table is allocated once
+> dev_pm_opp_get_opp_table() is called the first time (either directly
+> or indirectly through one of the many helper functions).
 > 
-> Signed-off-by: Ethan Edwards <ethancarteredwards@gmail.com>
+> At this point, the resources may not be available yet, i.e. looking them
+> up will result in -EPROBE_DEFER. Unfortunately, dev_pm_opp_get_opp_table()
+> is currently unable to propagate this error code since it only returns
+> the allocated OPP table or NULL.
+> 
+> This means that all consumers of the OPP core are required to make sure
+> that all necessary resources are available. Usually this happens by
+> requesting them, checking the result and releasing them immediately after.
+> 
+> For example, we have added "dev_pm_opp_of_find_icc_paths(dev, NULL)" to
+> several drivers now just to make sure the interconnect providers are
+> ready before the OPP table is allocated. If this call is missing,
+> the OPP core will only warn about this and then attempt to continue
+> without interconnect. This will eventually fail horribly, e.g.:
+> 
+>     cpu cpu0: _allocate_opp_table: Error finding interconnect paths: -517
+>     ... later ...
+>     of: _read_bw: Mismatch between opp-peak-kBps and paths (1 0)
+>     cpu cpu0: _opp_add_static_v2: opp key field not found
+>     cpu cpu0: _of_add_opp_table_v2: Failed to add OPP, -22
+> 
+> This example happens when trying to use interconnects for a CPU OPP
+> table together with qcom-cpufreq-nvmem.c. qcom-cpufreq-nvmem calls
+> dev_pm_opp_set_supported_hw(), which ends up allocating the OPP table
+> early. To fix the problem with the current approach we would need to add
+> yet another call to dev_pm_opp_of_find_icc_paths(dev, NULL).
+> But actually qcom-cpufreq-nvmem.c has nothing to do with interconnects...
+> 
+> This commit attempts to make this more robust by allowing
+> dev_pm_opp_get_opp_table() to return an error pointer. Fixing all
+> the usages is trivial because the function is usually used indirectly
+> through another helper (e.g. dev_pm_opp_set_supported_hw() above).
+> These other helpers already return an error pointer.
+> 
+> The example above then works correctly because set_supported_hw() will
+> return -EPROBE_DEFER, and qcom-cpufreq-nvmem.c already propagates that
+> error. It should also be possible to remove the remaining usages of
+> "dev_pm_opp_of_find_icc_paths(dev, NULL)" from other drivers as well.
+> 
+> Note that this commit currently only handles -EPROBE_DEFER for the
+> clock/interconnects within _allocate_opp_table(). Other errors are just
+> ignored as before. Eventually those should be propagated as well.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> [ Viresh: skip checking return value of dev_pm_opp_get_opp_table() for
+> 	  EPROBE_DEFER in domain.c, fix NULL return value and reorder
+> 	  code a bit in core.c, and update exynos-asv.c ]
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->   drivers/staging/comedi/comedi.h                  | 4 ++--
->   drivers/staging/comedi/comedidev.h               | 2 +-
->   drivers/staging/comedi/drivers/addi_apci_1564.c  | 4 ++--
->   drivers/staging/comedi/drivers/comedi_8255.c     | 2 +-
->   drivers/staging/comedi/drivers/ni_tiocmd.c       | 2 +-
->   drivers/staging/comedi/drivers/pcmuio.c          | 2 +-
->   drivers/staging/comedi/drivers/quatech_daqp_cs.c | 2 +-
->   7 files changed, 9 insertions(+), 9 deletions(-)
+> Stephan, I have made some changes to the code. Please try it again and
+> lemme know if it works fine.
 > 
-> diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
-> index 09a940066c0e..b5d00a006dbb 100644
-> --- a/drivers/staging/comedi/comedi.h
-> +++ b/drivers/staging/comedi/comedi.h
-> @@ -680,7 +680,7 @@ struct comedi_rangeinfo {
->    * value of 1 volt.
->    *
->    * The only defined flag value is %RF_EXTERNAL (%0x100), indicating that the
-> - * the range needs to be multiplied by an external reference.
-> + * range needs to be multiplied by an external reference.
->    */
->   struct comedi_krange {
->   	int min;
-> @@ -970,7 +970,7 @@ enum i8254_mode {
->    *   major reasons exist why this caused major confusion for users:
->    *   1) The register values are _NOT_ in user documentation, but rather in
->    *     arcane locations, such as a few register programming manuals that are
-> - *     increasingly hard to find and the NI MHDDK (comments in in example code).
-> + *     increasingly hard to find and the NI MHDDK (comments in example code).
->    *     There is no one place to find the various valid values of the registers.
->    *   2) The register values are _NOT_ completely consistent.  There is no way to
->    *     gain any sense of intuition of which values, or even enums one should use
-> diff --git a/drivers/staging/comedi/comedidev.h b/drivers/staging/comedi/comedidev.h
-> index 0dff1ac057cd..0e1b95ef9a4d 100644
-> --- a/drivers/staging/comedi/comedidev.h
-> +++ b/drivers/staging/comedi/comedidev.h
-> @@ -627,7 +627,7 @@ extern const struct comedi_lrange range_unknown;
->    * @range: Array of &struct comedi_krange, one for each range.
->    *
->    * Each element of @range[] describes the minimum and maximum physical range
-> - * range and the type of units.  Typically, the type of unit is %UNIT_volt
-> + * and the type of units.  Typically, the type of unit is %UNIT_volt
->    * (i.e. volts) and the minimum and maximum are in millionths of a volt.
->    * There may also be a flag that indicates the minimum and maximum are merely
->    * scale factors for an unknown, external reference.
-> diff --git a/drivers/staging/comedi/drivers/addi_apci_1564.c b/drivers/staging/comedi/drivers/addi_apci_1564.c
-> index fadefcb5c237..06fc7ed96200 100644
-> --- a/drivers/staging/comedi/drivers/addi_apci_1564.c
-> +++ b/drivers/staging/comedi/drivers/addi_apci_1564.c
-> @@ -544,7 +544,7 @@ static int apci1564_timer_insn_write(struct comedi_device *dev,
->   {
->   	struct apci1564_private *devpriv = dev->private;
->   
-> -	/* just write the last last to the reload register */
-> +	/* just write the last to the reload register */
->   	if (insn->n) {
->   		unsigned int val = data[insn->n - 1];
->   
-> @@ -628,7 +628,7 @@ static int apci1564_counter_insn_write(struct comedi_device *dev,
->   	unsigned int chan = CR_CHAN(insn->chanspec);
->   	unsigned long iobase = devpriv->counters + APCI1564_COUNTER(chan);
->   
-> -	/* just write the last last to the reload register */
-> +	/* just write the last to the reload register */
->   	if (insn->n) {
->   		unsigned int val = data[insn->n - 1];
->   
-> diff --git a/drivers/staging/comedi/drivers/comedi_8255.c b/drivers/staging/comedi/drivers/comedi_8255.c
-> index 3298725b9ba5..b7ca465933ee 100644
-> --- a/drivers/staging/comedi/drivers/comedi_8255.c
-> +++ b/drivers/staging/comedi/drivers/comedi_8255.c
-> @@ -248,7 +248,7 @@ EXPORT_SYMBOL_GPL(subdev_8255_mm_init);
->    * subdev_8255_regbase - get offset of 8255 registers or call-back context
->    * @s: comedi subdevice
->    *
-> - * Returns the 'regbase' parameter that was previously passed to to
-> + * Returns the 'regbase' parameter that was previously passed to
->    * subdev_8255_init() or subdev_8255_mm_init() to set up the subdevice.
->    * Only valid if the subdevice was set up successfully.
->    */
-> diff --git a/drivers/staging/comedi/drivers/ni_tiocmd.c b/drivers/staging/comedi/drivers/ni_tiocmd.c
-> index 2a9f7e9821a7..ab6d9e8269f3 100644
-> --- a/drivers/staging/comedi/drivers/ni_tiocmd.c
-> +++ b/drivers/staging/comedi/drivers/ni_tiocmd.c
-> @@ -286,7 +286,7 @@ int ni_tio_cmdtest(struct comedi_device *dev,
->   		 * This should be done, but we don't yet know the actual
->   		 * register values.  These should be tested and then documented
->   		 * in the ni_route_values/ni_*.csv files, with indication of
-> -		 * who/when/which/how these these were tested.
-> +		 * who/when/which/how these were tested.
->   		 * When at least a e/m/660x series have been tested, this code
->   		 * should be uncommented:
->   		 *
-> diff --git a/drivers/staging/comedi/drivers/pcmuio.c b/drivers/staging/comedi/drivers/pcmuio.c
-> index 7e1fc6ffb48c..b299d648a0eb 100644
-> --- a/drivers/staging/comedi/drivers/pcmuio.c
-> +++ b/drivers/staging/comedi/drivers/pcmuio.c
-> @@ -48,7 +48,7 @@
->    *
->    * In the 48-channel version:
->    *
-> - * On subdev 0, the first 24 channels channels are edge-detect channels.
-> + * On subdev 0, the first 24 channels are edge-detect channels.
->    *
->    * In the 96-channel board you have the following channels that can do edge
->    * detection:
-> diff --git a/drivers/staging/comedi/drivers/quatech_daqp_cs.c b/drivers/staging/comedi/drivers/quatech_daqp_cs.c
-> index 1b1efa4d31f6..fe4408ebf6b3 100644
-> --- a/drivers/staging/comedi/drivers/quatech_daqp_cs.c
-> +++ b/drivers/staging/comedi/drivers/quatech_daqp_cs.c
-> @@ -164,7 +164,7 @@ static int daqp_clear_events(struct comedi_device *dev, int loops)
->   
->   	/*
->   	 * Reset any pending interrupts (my card has a tendency to require
-> -	 * require multiple reads on the status register to achieve this).
-> +	 * multiple reads on the status register to achieve this).
->   	 */
->   	while (--loops) {
->   		status = inb(dev->iobase + DAQP_STATUS_REG);
-> 
+>  drivers/base/power/domain.c      | 14 +++++----
+>  drivers/opp/core.c               | 53 +++++++++++++++++++-------------
+>  drivers/opp/of.c                 |  8 ++---
+>  drivers/soc/samsung/exynos-asv.c |  2 +-
+>  4 files changed, 44 insertions(+), 33 deletions(-)
 
+For Samsung:
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
--=( MEV Ltd. is a company registered in England & Wales. )=-
--=( Registered number: 02862268.  Registered address:    )=-
--=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
+Best regards,
+Krzysztof
