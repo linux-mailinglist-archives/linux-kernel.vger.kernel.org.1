@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF31524F57D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D631524F674
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgHXIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
+        id S1730816AbgHXJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729208AbgHXIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:49:26 -0400
+        id S1730113AbgHXI5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:57:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E6AD2074D;
-        Mon, 24 Aug 2020 08:49:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 398E22087D;
+        Mon, 24 Aug 2020 08:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258966;
-        bh=fJ8NNjH3ZkCW8nghxtzb5HVti5kIN+YwOf4V+x2XJF0=;
+        s=default; t=1598259434;
+        bh=X1Jc6HRrlX3sT+03uEUsKl4ouu4xw5betJQxvtle9D8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCpS4JM7IegswO2TLHHOpJzuWTGk0+2J7hf4E4vVlv7VPaWnj1ipktORiNEhnAiNE
-         2xoo0wCxCGcOj4tNcOqe7LNNqBJn8Gct2HvzkllI+ysvEB+HeotQqIXAWuS7kZ7c2R
-         B6fXr2teN3KuhLz/WZ9reADAlmjEKmtYGUvsx7Ak=
+        b=wXQ+yKOSqdsyVNNl5fuMd7+VW4Syytb1CSaxNv48UzO9dYdZ0CIQ2jqoKFajM7QxQ
+         yGjF64Nvf4m13wOrv432saX75YP7PdmlEfO8osPA1ICODLQXmO11IzqwMRyl8AzLOS
+         dszkDhbWHewgzPvC4gSF7qzIwC1vUJ93cFPKK9G0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Li Heng <liheng40@huawei.com>, Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.4 103/107] efi: add missed destroy_workqueue when efisubsys_init fails
+        stable@vger.kernel.org, Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 4.19 18/71] drm/amd/display: fix pow() crashing when given base 0
 Date:   Mon, 24 Aug 2020 10:31:09 +0200
-Message-Id: <20200824082410.193518492@linuxfoundation.org>
+Message-Id: <20200824082356.805578788@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Heng <liheng40@huawei.com>
+From: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
 
-commit 98086df8b70c06234a8f4290c46064e44dafa0ed upstream.
+commit d2e59d0ff4c44d1f6f8ed884a5bea7d1bb7fd98c upstream.
 
-destroy_workqueue() should be called to destroy efi_rts_wq
-when efisubsys_init() init resources fails.
+[Why&How]
+pow(a,x) is implemented as exp(x*log(a)). log(0) will crash.
+So return 0^x = 0, unless x=0, convention seems to be 0^0 = 1.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Li Heng <liheng40@huawei.com>
-Link: https://lore.kernel.org/r/1595229738-10087-1-git-send-email-liheng40@huawei.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
+Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/efi.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/display/include/fixed31_32.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -345,6 +345,7 @@ static int __init efisubsys_init(void)
- 	efi_kobj = kobject_create_and_add("efi", firmware_kobj);
- 	if (!efi_kobj) {
- 		pr_err("efi: Firmware registration failed.\n");
-+		destroy_workqueue(efi_rts_wq);
- 		return -ENOMEM;
- 	}
- 
-@@ -381,6 +382,7 @@ err_unregister:
- 	generic_ops_unregister();
- err_put:
- 	kobject_put(efi_kobj);
-+	destroy_workqueue(efi_rts_wq);
- 	return error;
- }
- 
+--- a/drivers/gpu/drm/amd/display/include/fixed31_32.h
++++ b/drivers/gpu/drm/amd/display/include/fixed31_32.h
+@@ -431,6 +431,9 @@ struct fixed31_32 dc_fixpt_log(struct fi
+  */
+ static inline struct fixed31_32 dc_fixpt_pow(struct fixed31_32 arg1, struct fixed31_32 arg2)
+ {
++	if (arg1.value == 0)
++		return arg2.value == 0 ? dc_fixpt_one : dc_fixpt_zero;
++
+ 	return dc_fixpt_exp(
+ 		dc_fixpt_mul(
+ 			dc_fixpt_log(arg1),
 
 
