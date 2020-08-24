@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C4224F2DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 08:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ED924F2EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 09:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgHXG6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 02:58:12 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:45823 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgHXG6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:58:11 -0400
-Received: from [2001:67c:670:100:1d::c0] (helo=ptx.hi.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kA6Qc-00039e-ED; Mon, 24 Aug 2020 08:58:02 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kA6Qb-0006nF-2p; Mon, 24 Aug 2020 08:58:01 +0200
-Date:   Mon, 24 Aug 2020 08:58:01 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Anson Huang <Anson.Huang@nxp.com>
-Subject: Re: [PATCH 02/22] dt-bindings: gpio: fsl-imx-gpio: Add gpio-ranges
- property
-Message-ID: <20200824065801.GH13023@pengutronix.de>
-References: <20200823161550.3981-1-krzk@kernel.org>
- <20200823161550.3981-2-krzk@kernel.org>
- <20200824052446.GE13023@pengutronix.de>
- <20200824063806.GA2497@kozik-lap>
+        id S1726241AbgHXHIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 03:08:12 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:6899 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgHXHIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 03:08:11 -0400
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 07O6JUei008190
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 14:19:30 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX07-IDC.srv.huawei-3com.com ([10.8.0.70])
+        by h3cspam01-ex.h3c.com with ESMTPS id 07O6IVg6006414
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 14:18:31 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 24 Aug 2020 14:18:33 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Mon, 24 Aug 2020 14:18:33 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Jens Axboe <axboe@kernel.dk>, "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>, "andriin@fb.com" <andriin@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] blk-mq: use BLK_MQ_NO_TAG for no tag
+Thread-Topic: [PATCH] blk-mq: use BLK_MQ_NO_TAG for no tag
+Thread-Index: AQHWeWVPz3S1M1hkw0a6Ze6ZxO8+NalFp1wAgADlO5A=
+Date:   Mon, 24 Aug 2020 06:18:33 +0000
+Message-ID: <19b0d8969dde4e20b1e6a076e48ba716@h3c.com>
+References: <20200823154459.40731-1-tian.xianting@h3c.com>
+ <1b85d18e-b0ae-a925-bb84-0a1eb8942099@kernel.dk>
+In-Reply-To: <1b85d18e-b0ae-a925-bb84-0a1eb8942099@kernel.dk>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824063806.GA2497@kozik-lap>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:53:51 up 186 days, 14:24, 148 users,  load average: 0.09, 0.16,
- 0.18
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 07O6IVg6006414
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 08:38:06AM +0200, Krzysztof Kozlowski wrote:
-> On Mon, Aug 24, 2020 at 07:24:46AM +0200, Sascha Hauer wrote:
-> > On Sun, Aug 23, 2020 at 06:15:30PM +0200, Krzysztof Kozlowski wrote:
-> > > The GPIO controller node can have gpio-ranges property.  This fixes
-> > > dtbs_check warnings like:
-> > > 
-> > >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: gpio@30200000: 'gpio-ranges' does not match any of the regexes: 'pinctrl-[0-9]+'
-> > >     From schema: Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> > > 
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > ---
-> > >  .../devicetree/bindings/gpio/fsl-imx-gpio.yaml    | 15 +++++++++++++++
-> > >  1 file changed, 15 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> > > index 454db20c2d1a..1fac69573bb9 100644
-> > > --- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> > > +++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> > > @@ -51,6 +51,9 @@ properties:
-> > >  
-> > >    gpio-controller: true
-> > >  
-> > > +  gpio-ranges:
-> > > +    maxItems: 1
-> > > +
-> > >  required:
-> > >    - compatible
-> > >    - reg
-> > > @@ -62,6 +65,18 @@ required:
-> > >  
-> > >  additionalProperties: false
-> > >  
-> > > +allOf:
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: fsl,imx8mp-gpio
-> > > +    then:
-> > > +      properties:
-> > > +        gpio-ranges:
-> > > +          minItems: 1
-> > > +          maxItems: 2
-> > 
-> > Why do you limit this to fsl,imx8mp-gpio? The i.MX5,6,7 dtsi files use
-> > gpio-ranges as well and other i.MX dtsi files could also use it.
-> 
-> All other cases use maximum one element in gpio-ranges, so they are
-> covered so I assumed they are continuous. But if it not the case, I can
-> make all them maximum 2.
-
-I misread this, I thought you allow gpio-ranges only for imx8mp, but
-it's only the maxItems you set differently for that SoC. Anyway,
-arch/arm/boot/dts/imx6dl.dtsi has this:
-
-&gpio1 {
-        gpio-ranges = <&iomuxc  0 131 2>, <&iomuxc  2 137 8>, <&iomuxc 10 189 2>,
-                      <&iomuxc 12 194 1>, <&iomuxc 13 193 1>, <&iomuxc 14 192 1>,
-                      <&iomuxc 15 191 1>, <&iomuxc 16 185 2>, <&iomuxc 18 184 1>,
-                      <&iomuxc 19 187 1>, <&iomuxc 20 183 1>, <&iomuxc 21 188 1>,
-                      <&iomuxc 22 123 3>, <&iomuxc 25 121 1>, <&iomuxc 26 127 1>,
-                      <&iomuxc 27 126 1>, <&iomuxc 28 128 1>, <&iomuxc 29 130 1>,
-                      <&iomuxc 30 129 1>, <&iomuxc 31 122 1>;
-};
-
-I don't think it makes sense to specify maxItems.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+SGkgSmVucw0KU29ycnkgdG8gdHJvdWJsZSB5b3UsIEkgYW0gdmVyeSBzb3JyeSBmb3IgdGFraW5n
+IGl0IGZvciBncmFudGVkIGZvciB0aGUgcGF0Y2ggY29tcGlsZS4NCg0KSSBjaGVja2VkLCBjb21w
+aWxlIGZvciB0aGUgdHdvIGNoYW5nZWQgZmlsZXMgYXJlIE9LOg0KYmxvY2svYmxrLWNvcmUuYw0K
+YmxvY2svYmxrLW1xLXNjaGVkLmMNCg0KQ29tcGlsZSBmYWlsZWQgZm9yIHRoZSBmdW5jdGlvbiBp
+biBiZWxvdyBoZWFkZXIgZmlsZToNCmluY2x1ZGUvbGludXgvYmxrLW1xLmg6IHJlcXVlc3RfdG9f
+cWNfdCgpDQotICAgICAgIGlmIChycS0+dGFnICE9IC0xKQ0KKyAgICAgICBpZiAocnEtPnRhZyAh
+PSBCTEtfTVFfTk9fVEFHKQ0KDQpCTEtfTVFfTk9fVEFHIGlzIGRlZmluZWQgaW4gJ2Jsb2NrL2Js
+ay1tcS10YWcuaCcsICBpZiBJIGluY2x1ZGUgdGhpcyBoZWFkZXIgZmlsZSBpbiAnaW5jbHVkZS9s
+aW51eC9ibGstbXEuaCcgdmlhICcjaW5jbHVkZSAiLi4vLi4vYmxvY2svYmxrLW1xLXRhZy5oIics
+IA0KTWFueSBvdGhlciBzaW1pbGFyIGNvbXBpbGUgZmFpbGVkIGhhcHBlbiwgZm9yIGV4YW1wbGU6
+DQpJbiBmaWxlIGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL2xpbnV4Ly4uLy4uL2Jsb2NrL2Jsay1t
+cS10YWcuaDo1OjAsDQogICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2Jsay1t
+cS5oOjgsDQogICAgICAgICAgICAgICAgIGZyb20gYmxvY2svYmxrLmg6NiwNCiAgICAgICAgICAg
+ICAgICAgZnJvbSBibG9jay9iaW8uYzoyNDoNCi4vaW5jbHVkZS9saW51eC8uLi8uLi9ibG9jay9i
+bGstbXEuaDoyMToyOTogZXJyb3I6IOKAmEhDVFhfTUFYX1RZUEVT4oCZIHVuZGVjbGFyZWQgaGVy
+ZSAobm90IGluIGEgZnVuY3Rpb24pOyBkaWQgeW91IG1lYW4g4oCYS09CSl9OU19UWVBFU+KAmT8N
+CiAgIHN0cnVjdCBsaXN0X2hlYWQgcnFfbGlzdHNbSENUWF9NQVhfVFlQRVNdOw0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fg0KSWYgSSBtb3ZlZCBiZWxvdyBCTEtf
+TVFfTk9fVEFHIGRlZmluaXRpb24gdG8gJ2luY2x1ZGUvbGludXgvYmxrLW1xLmgnLCBhbGwga2Vy
+bmVsIGNvbXBpbGVzIGFyZSBvayB3aXRoIHRoZSBwYXRjaC4NCmVudW0gew0KICAgICAgICBCTEtf
+TVFfTk9fVEFHICAgICAgICAgICA9IC0xVSwNCiAgICAgICAgQkxLX01RX1RBR19NSU4gICAgICAg
+ICAgPSAxLA0KICAgICAgICBCTEtfTVFfVEFHX01BWCAgICAgICAgICA9IEJMS19NUV9OT19UQUcg
+LSAxLA0KfTsNCldpbGwgeW91IGFjY2VwdCBhYm92ZSBtb3Zpbmcgb2YgQkxLX01RX05PX1RBRyB0
+byAnaW5jbHVkZS9saW51eC9ibGstbXEuaCc/ICAgDQpUaGFua3MNCg0KLS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCkZyb206IEplbnMgQXhib2UgW21haWx0bzpheGJvZUBrZXJuZWwuZGtdIA0K
+U2VudDogTW9uZGF5LCBBdWd1c3QgMjQsIDIwMjAgNDo1OCBBTQ0KVG86IHRpYW54aWFudGluZyAo
+UkQpIDx0aWFuLnhpYW50aW5nQGgzYy5jb20+OyBhc3RAa2VybmVsLm9yZzsgZGFuaWVsQGlvZ2Vh
+cmJveC5uZXQ7IGthZmFpQGZiLmNvbTsgc29uZ2xpdWJyYXZpbmdAZmIuY29tOyB5aHNAZmIuY29t
+OyBhbmRyaWluQGZiLmNvbTsgam9obi5mYXN0YWJlbmRAZ21haWwuY29tOyBrcHNpbmdoQGNocm9t
+aXVtLm9yZw0KQ2M6IGxpbnV4LWJsb2NrQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFtQQVRDSF0gYmxrLW1xOiB1c2UgQkxLX01RX05P
+X1RBRyBmb3Igbm8gdGFnDQoNCk9uIDgvMjMvMjAgOTo0NCBBTSwgWGlhbnRpbmcgVGlhbiB3cm90
+ZToNCj4gUmVwbGFjZSB2YXJpb3VzIG1hZ2ljIC0xIGNvbnN0YW50cyBmb3IgdGFncyB3aXRoIEJM
+S19NUV9OT19UQUcuDQoNCkRvZXNuJ3QgbG9vayBsaWtlIHRoaXMgcGF0Y2ggd2FzIGV2ZW4gY29t
+cGlsZWQuLi4NCg0KLS0gDQpKZW5zIEF4Ym9lDQoNCg==
