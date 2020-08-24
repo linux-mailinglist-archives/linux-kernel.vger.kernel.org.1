@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED1024F9A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2ECE24F912
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgHXJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58668 "EHLO mail.kernel.org"
+        id S1728781AbgHXIpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728804AbgHXIlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:41:02 -0400
+        id S1729134AbgHXIp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:45:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BA6A2074D;
-        Mon, 24 Aug 2020 08:41:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 719102072D;
+        Mon, 24 Aug 2020 08:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258461;
-        bh=DaLrVr7gb8fmO/aKLBWZESC8SZ7KeLFUyl9HyttA2JA=;
+        s=default; t=1598258727;
+        bh=gYZjOG+RhGYnfjsq3qWn7jd/mSGHDgkxsezz2+QisPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SSPx597SMSxItswlCreYAYkJUsEtL/cL2mavykUeb1pvcuzkf0Viv8R3TazLnHWUp
-         6o4GfNeU0OPLPW801PBnx3zQEIZgqyVprLmT4mu8d7yXkm+k+m15+W4kORcgZVH8qL
-         K2yoEveYse+Dxlwwb9otxx0rG+djhU8QU3879mDg=
+        b=GB/U1vaYUK0SRd19hC6b5V6Hqu5fOMGr6o9IRul2ECYpncQl2m6zjdqh+Ez4UqShG
+         GNErq4XKPR3U2jaxQosAbTfWAFBXAXzChdxm/esgO98jTY9L0GtULqqC5h7Df9Fukt
+         auoVZRCTbb+T9exRiUtUs/wDo6sNIQMy28CwKUQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gaurav Singh <gaurav1086@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Michal Koutn <mkoutny@suse.com>, Roman Gushchin <guro@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 055/124] tools/testing/selftests/cgroup/cgroup_util.c: cg_read_strcmp: fix null pointer dereference
-Date:   Mon, 24 Aug 2020 10:29:49 +0200
-Message-Id: <20200824082412.128308690@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 024/107] can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
+Date:   Mon, 24 Aug 2020 10:29:50 +0200
+Message-Id: <20200824082406.286863477@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,43 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Singh <gaurav1086@gmail.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit d830020656c5b68ced962ed3cb51a90e0a89d4c4 ]
+commit af804b7826350d5af728dca4715e473338fbd7e5 upstream.
 
-Haven't reproduced this issue. This PR is does a minor code cleanup.
+This patch adds check to ensure that the struct net_device::ml_priv is
+allocated, as it is used later by the j1939 stack.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Michal Koutn <mkoutny@suse.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Chris Down <chris@chrisdown.name>
-Link: http://lkml.kernel.org/r/20200726013808.22242-1-gaurav1086@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The allocation is done by all mainline CAN network drivers, but when using
+bond or team devices this is not the case.
+
+Bail out if no ml_priv is allocated.
+
+Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20200807105200.26441-4-o.rempel@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/j1939/socket.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 8a637ca7d73a4..05853b0b88318 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -106,7 +106,7 @@ int cg_read_strcmp(const char *cgroup, const char *control,
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -466,6 +466,14 @@ static int j1939_sk_bind(struct socket *
+ 			goto out_release_sock;
+ 		}
  
- 	/* Handle the case of comparing against empty string */
- 	if (!expected)
--		size = 32;
-+		return -1;
- 	else
- 		size = strlen(expected) + 1;
- 
--- 
-2.25.1
-
++		if (!ndev->ml_priv) {
++			netdev_warn_once(ndev,
++					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
++			dev_put(ndev);
++			ret = -ENODEV;
++			goto out_release_sock;
++		}
++
+ 		priv = j1939_netdev_start(ndev);
+ 		dev_put(ndev);
+ 		if (IS_ERR(priv)) {
 
 
