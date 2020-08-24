@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495D624F4F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B909524F49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgHXImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        id S1727776AbgHXIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728936AbgHXImU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:42:20 -0400
+        id S1728059AbgHXIiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9991E2075B;
-        Mon, 24 Aug 2020 08:42:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBE992177B;
+        Mon, 24 Aug 2020 08:38:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258539;
-        bh=zX+PYRXhtE6PMjXkgX4sI3tpbql86gUJVBN/7PV38+0=;
+        s=default; t=1598258293;
+        bh=9W0Ya6Gt65VYCcjU3mitmvFQa1ldn5Bt82bw6ASrcjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h05dBi2DdgInvTjNNDrYgX6ONg4k3Id/7bhfkiMA7JD8lWSqvIezl8BvksHCkibq/
-         J9A9NqYl3DmsyM5rcI3/HgIG79JVHBdbPgdRt2ZeMZs2+ovv3Qlh6VC5Fk+JsXs7fJ
-         JvpcxoWncmKReZx+ZcoLPlGspxNPuZVdk6aZUna8=
+        b=yscEc30mbCA4jLtRWDdoYM9k+lQHnNP57VnrCVi0LYc9nQUKDl2aXJspzBBhhQGXV
+         zpJ4H9eEWoZQeNFDLVZiunnqBsmzfbhI8cd4zqhmb95tF7v0JVN4Btf3DH05J3FlS6
+         J45z5Z9uyhqv+aHIpatHkWqX8nQGsaV6ZI0aUoEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+af23e7f3e0a7e10c8b67@syzkaller.appspotmail.com,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 082/124] bonding: fix a potential double-unregister
+Subject: [PATCH 5.8 118/148] kconfig: qconf: do not limit the pop-up menu to the first row
 Date:   Mon, 24 Aug 2020 10:30:16 +0200
-Message-Id: <20200824082413.444005717@linuxfoundation.org>
+Message-Id: <20200824082419.664536136@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,46 +43,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 832707021666411d04795c564a4adea5d6b94f17 ]
+[ Upstream commit fa8de0a3bf3c02e6f00b7746e7e934db522cdda9 ]
 
-When we tear down a network namespace, we unregister all
-the netdevices within it. So we may queue a slave device
-and a bonding device together in the same unregister queue.
+If you right-click the first row in the option tree, the pop-up menu
+shows up, but if you right-click the second row or below, the event
+is ignored due to the following check:
 
-If the only slave device is non-ethernet, it would
-automatically unregister the bonding device as well. Thus,
-we may end up unregistering the bonding device twice.
+  if (e->y() <= header()->geometry().bottom()) {
 
-Workaround this special case by checking reg_state.
+Perhaps, the intention was to show the pop-menu only when the tree
+header was right-clicked, but this handler is not called in that case.
 
-Fixes: 9b5e383c11b0 ("net: Introduce unregister_netdevice_many()")
-Reported-by: syzbot+af23e7f3e0a7e10c8b67@syzkaller.appspotmail.com
-Cc: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Since the origin of e->y() starts from the bottom of the header,
+this check is odd.
+
+Going forward, you can right-click anywhere in the tree to get the
+pop-up menu.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ scripts/kconfig/qconf.cc | 68 ++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 7abb3e2cc9926..02f2428cbc3ba 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2084,7 +2084,8 @@ static int bond_release_and_destroy(struct net_device *bond_dev,
- 	int ret;
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index 23d1cb01a41ae..be67e74237d22 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -864,40 +864,40 @@ void ConfigList::focusInEvent(QFocusEvent *e)
  
- 	ret = __bond_release_one(bond_dev, slave_dev, false, true);
--	if (ret == 0 && !bond_has_slaves(bond)) {
-+	if (ret == 0 && !bond_has_slaves(bond) &&
-+	    bond_dev->reg_state != NETREG_UNREGISTERING) {
- 		bond_dev->priv_flags |= IFF_DISABLE_NETPOLL;
- 		netdev_info(bond_dev, "Destroying bond\n");
- 		bond_remove_proc_entry(bond);
+ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
+ {
+-	if (e->y() <= header()->geometry().bottom()) {
+-		if (!headerPopup) {
+-			QAction *action;
+-
+-			headerPopup = new QMenu(this);
+-			action = new QAction("Show Name", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowName(bool)));
+-			  connect(parent(), SIGNAL(showNameChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showName);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Range", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowRange(bool)));
+-			  connect(parent(), SIGNAL(showRangeChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showRange);
+-			  headerPopup->addAction(action);
+-			action = new QAction("Show Data", this);
+-			  action->setCheckable(true);
+-			  connect(action, SIGNAL(toggled(bool)),
+-				  parent(), SLOT(setShowData(bool)));
+-			  connect(parent(), SIGNAL(showDataChanged(bool)),
+-				  action, SLOT(setOn(bool)));
+-			  action->setChecked(showData);
+-			  headerPopup->addAction(action);
+-		}
+-		headerPopup->exec(e->globalPos());
+-		e->accept();
+-	} else
+-		e->ignore();
++	if (!headerPopup) {
++		QAction *action;
++
++		headerPopup = new QMenu(this);
++		action = new QAction("Show Name", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowName(bool)));
++		connect(parent(), SIGNAL(showNameChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showName);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Range", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowRange(bool)));
++		connect(parent(), SIGNAL(showRangeChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showRange);
++		headerPopup->addAction(action);
++
++		action = new QAction("Show Data", this);
++		action->setCheckable(true);
++		connect(action, SIGNAL(toggled(bool)),
++			parent(), SLOT(setShowData(bool)));
++		connect(parent(), SIGNAL(showDataChanged(bool)),
++			action, SLOT(setOn(bool)));
++		action->setChecked(showData);
++		headerPopup->addAction(action);
++	}
++
++	headerPopup->exec(e->globalPos());
++	e->accept();
+ }
+ 
+ ConfigView*ConfigView::viewList;
 -- 
 2.25.1
 
