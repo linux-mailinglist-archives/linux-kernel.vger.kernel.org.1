@@ -2,70 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D269C250103
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82002250117
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgHXPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:25:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727068AbgHXPZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:25:45 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14D362074D;
-        Mon, 24 Aug 2020 15:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598282745;
-        bh=h/eWFUJbDecOwUmYbRcUg7wCcODJSkDc2uqwxuWoDs4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VsVitkJ8X5Xrono7pwVoh15fECApnoBcFBaYf3C/OH/MxDLBu++oCa+yImiA1FtuD
-         ov4x9wqCghljgiQhGl9jB7081vQT+uOkE0o9LgwRVwFtTXLiNi7a0c5ou0A2pU/rY9
-         Dv/5mZHWZhWHur5/VcTTQyN9LpaoC3luLH0RhHUc=
-Date:   Mon, 24 Aug 2020 11:25:44 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/148] 5.8.4-rc1 review
-Message-ID: <20200824152544.GG8670@sasha-vm>
-References: <20200824082413.900489417@linuxfoundation.org>
- <20200824134027.GA86241@roeck-us.net>
+        id S1726697AbgHXP1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgHXP1J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:27:09 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC1C061573;
+        Mon, 24 Aug 2020 08:27:08 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so10118610ljg.13;
+        Mon, 24 Aug 2020 08:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sZNoB46D8/M/M2PgyVIiT6V2NCFpqgPFmRkE3BbQYY0=;
+        b=sFvK/cjqd0IY2FPppcw4ggSbTyzS+/bWDuEn6APnjzaEMODweGr843dqvGmIuZ+7+l
+         gh06YDRForm905ZwwSXfCS10xvIyJHfBRec0N9sQKOlmpvcQiDXtyT/bqdhRpw7tZUNu
+         UEt8sEEUrr11VVRAa01f+JHkf5pvNVeBCA7po2V2tGY66x0vz7fDMP2/dIH8JrUq37HC
+         8bfccDyUTlVyGazDcn+uLQRca/72M8adtNfMbKh3TutR5L2eUnXkaE1OEV1wT1R0bjyc
+         7Ir8HxkHJ7jEa/cc/qgxI3W57DzAosbcngWFKAECdSjK8/+4rinCdsDecBnH4RjzY/1q
+         m2Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sZNoB46D8/M/M2PgyVIiT6V2NCFpqgPFmRkE3BbQYY0=;
+        b=gGRWGha3WcfILFzg2rb2LW8XxMEg1iMfsXG/iR/0/4sT+iJ/tG3o7xZXyobYoqzMyd
+         aSlPAP3eTM52Yu1MBKKjL4alqscKJKLn4Q9Lh77WT1xOb+Uhus1AESL7jMytx8OKtPiS
+         +m7Q+b/wZtLo9YfJkHirxdGUL1hw6PpxetPl+2o0sukiWSSnc0qCI38Uh/fZH87QugCe
+         tF/LxxCMGJQ5DopjVysOE7WTfv6Re9BH4g6UacM/uGoUXz/ULsVva8VlHSVwas9Gmk/j
+         Ug5wy5UXaWKbaYt4KzRrBLI2+mGOtKoZ+0E73lt/8+tB99JxrgVxl3E9cwyNlkrY0hxM
+         qmCA==
+X-Gm-Message-State: AOAM530UWit5etDGObjrMvo7RV5hh8UXG9DQHwJVpFJSLfCpVQUNoq0/
+        klZ/GqYQRnMyG2FFR+iAy24xniYdYmk=
+X-Google-Smtp-Source: ABdhPJwS3dpy3Zm6zjcqPm81pjWD00BirHl7L/nEzT8MmwndTfEiqXTyjQEML9iDc7lMLRZgUCDamw==
+X-Received: by 2002:a2e:2c0e:: with SMTP id s14mr3038795ljs.28.1598282826933;
+        Mon, 24 Aug 2020 08:27:06 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id z3sm2239976ljz.109.2020.08.24.08.27.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 08:27:06 -0700 (PDT)
+Subject: Re: [PATCH v1] brcmfmac: increase F2 watermark for BCM4329
+To:     Arend Van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200823142004.21990-1-digetx@gmail.com>
+ <93536fd4-8abc-e167-a184-5a5e36d4205a@broadcom.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1ac6d0f3-d639-e947-4108-17ecc0220a1e@gmail.com>
+Date:   Mon, 24 Aug 2020 18:27:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200824134027.GA86241@roeck-us.net>
+In-Reply-To: <93536fd4-8abc-e167-a184-5a5e36d4205a@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 06:40:27AM -0700, Guenter Roeck wrote:
->On Mon, Aug 24, 2020 at 10:28:18AM +0200, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.8.4 release.
->> There are 148 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
+24.08.2020 11:28, Arend Van Spriel пишет:
+> 
+> 
+> On 8/23/2020 4:20 PM, Dmitry Osipenko wrote:
+>> This patch fixes SDHCI CRC errors during of RX throughput testing on
+>> BCM4329 chip if SDIO BUS is clocked above 25MHz. In particular the
+>> checksum problem is observed on NVIDIA Tegra20 SoCs. The good watermark
+>> value is borrowed from downstream BCMDHD driver and it's the same as the
+>> value used for the BCM4339 chip, hence let's re-use it for BCM4329.
+> 
+> one comment, but when fixed you can add my....
+> 
+> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
+>>   1 file changed, 1 insertion(+)
 >>
->> Responses should be made by Wed, 26 Aug 2020 08:23:34 +0000.
->> Anything received after that time might be too late.
->>
->
->Building powerpc:defconfig ... failed
->--------------
->Error log:
->powerpc64-linux-ld: arch/powerpc/kernel/cputable.o:(.init.data+0xd78): undefined reference to `__machine_check_early_realmode_p10'
->make[1]: *** [vmlinux] Error 1
->make: *** [__sub-make] Error 2
->
->The problem affects several builds.
+>> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>> b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>> index 3c07d1bbe1c6..ac3ee93a2378 100644
+>> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>> @@ -4278,6 +4278,7 @@ static void brcmf_sdio_firmware_callback(struct
+>> device *dev, int err,
+>>               brcmf_sdiod_writeb(sdiod, SBSDIO_FUNC1_MESBUSYCTRL,
+>>                          CY_43012_MESBUSYCTRL, &err);
+>>               break;
+>> +        case SDIO_DEVICE_ID_BROADCOM_4329:
+>>           case SDIO_DEVICE_ID_BROADCOM_4339:
+>>               brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes for
+>> 4339\n",
+> 
+> Maybe better to drop the chip id from the debug message. The chip id is
+> printed elsewhere already so it does not add info here and could only
+> cause confusion. Maybe you can also remove it from the 43455 message a
+> bit below.
 
-I think that I've fixed it, thanks!
-
--- 
-Thanks,
-Sasha
+Hello, Arend! Thank you for the review! I'll prepare v2 with the cleaned
+debug messages and couple more small changes!
