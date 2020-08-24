@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F16250C53
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52B1250C56
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgHXXZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 19:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXXZd (ORCPT
+        id S1728268AbgHXXZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 19:25:39 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:33022 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXXZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 19:25:33 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2461AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 16:25:31 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c10so9594458edk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 16:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D6fyUi7UpuGuaaGv222CmWf0CmSV4DfN3hMK/FUDMnE=;
-        b=TfTGk3Fyl1leaExjHKc5dMhxnOZ5q7clsynXlpAU7WxodTYB4T3VAMvTom1LXgnurF
-         9EkGP4MmxcX4uRFgOdOmEtnkldcljulGuwETEFKDw5IzaFvStmpx4M0KHlLrihorGPLd
-         1S1eE8kvSHJwf/fWUUzd0vPQYmIxZl03C6rRP2O5vfFbAuUzbpLgdjI8hDhJrzdLO8ib
-         RM33KTTW56gEqLYJWO/k+idupSmRwk1HOAFoPTlH9AW/jK2D7lrhfvvZ6cXwVEE32ZWr
-         4/sDnd/ttfjxyaeJpbGlAcMRo+5TkhmaHcWkPrYerTxSVrpHJKMCvFow23DnBs7k359s
-         n2YA==
+        Mon, 24 Aug 2020 19:25:37 -0400
+Received: by mail-io1-f68.google.com with SMTP id g14so10587550iom.0;
+        Mon, 24 Aug 2020 16:25:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D6fyUi7UpuGuaaGv222CmWf0CmSV4DfN3hMK/FUDMnE=;
-        b=eTyyHvliUdmcAz/tE6jXuQOb3eOr35//aZ1nRI8ko85REiKa9msbB2aK+LjF4AG3fh
-         mq4JoSXHmiIv7ObPz09GwnDo3JOtibRsj5FmOEQiP/PdMnM1ErvbMf8on0djHBkhS5p7
-         NOXuMmftJzyIeyqTMKVGCUM5YqbMFgSe8LaUikwtoyUncgfxh3ck5aHtkOL3pZyTfDrh
-         ppqGbx64lqnLOJkGwACxiDMfk4ao0ns5p9FXN6jIZu3kZ4lsSYffAx+ZJ4pnhnW9BJRa
-         kq+yeMPhxR9NrNiJSQLs6S9RaHcjA2K7zs6YIPkgYnTZOpE9+GKKrAKObXr+Ly2SwRJq
-         Ug0Q==
-X-Gm-Message-State: AOAM532G+NluNICNDjgKbuyWcF/jS90HAQMyZbxx0kttSiQTmdadu4Co
-        FEcQlkReT78Dt/bee/JG5WU=
-X-Google-Smtp-Source: ABdhPJwlwTtjsaag34bDwZ8YholYlrv9kL4SAq3KPCZh8lrrDfc1/K3oycgviSXv+WvUyII2DmhgHg==
-X-Received: by 2002:a50:9e4c:: with SMTP id z70mr7482896ede.384.1598311529889;
-        Mon, 24 Aug 2020 16:25:29 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:a7fb:e200:cc20:f2c0:9426:e440])
-        by smtp.gmail.com with ESMTPSA id w22sm11262634edx.80.2020.08.24.16.25.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3DyabqqkVJXgJh7HlmxLLOBa4fdlMTVhCi8DsvyDOPQ=;
+        b=ViuBARhWqSgw7qkffvxK6O9YPusp7dhU+1waOwaYNo6QEtWQIHiefjHx+jxDy1sE+L
+         E5ZgOYKI39MMVysDycsw6/v2UwVSZqcuikQvBgcVkbALaRnjA26Y5h1UTwWXlcCl6nW7
+         LFjYbEjcCisggNvB6rQOtFFi3Squ6LsyW7lzEGSyHJ0atJF+pOgRod5k5l144w8vTYUO
+         rkZnPy9VvkcfGq8ypXpb/0ZVVpdhSnBeyiEQYdO1UOoc17oFtT5R131C2QQjuXME3NbH
+         8OivNNS0dCEh83QZCcOMwOF25Mz73tDR5doBkzWACM/KBW9pJhXEMjsfv41okI7sXJfZ
+         4TOg==
+X-Gm-Message-State: AOAM533dac+D4gffL/7wHVtgMFmOspNgCPVrWmqfq1TjdGUTKxYoZ3bt
+        pFSlMedwmSUaGVT5TAKSr/Y+1dw8zA==
+X-Google-Smtp-Source: ABdhPJysLH3RCzdnu0Wm63sVDNX9LiUm7l4X4vY8q10iw9HmYPUPuDvmazAs1jULAOWfa7J23/NPzQ==
+X-Received: by 2002:a6b:e806:: with SMTP id f6mr3681139ioh.98.1598311536543;
+        Mon, 24 Aug 2020 16:25:36 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id q133sm4068533iod.38.2020.08.24.16.25.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 16:25:29 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH] fix comment concerning GCC 4.6
-Date:   Tue, 25 Aug 2020 01:25:26 +0200
-Message-Id: <20200824232526.16534-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 24 Aug 2020 16:25:35 -0700 (PDT)
+Received: (nullmailer pid 3532221 invoked by uid 1000);
+        Mon, 24 Aug 2020 23:25:34 -0000
+Date:   Mon, 24 Aug 2020 17:25:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     linux-leds@vger.kernel.org, pavel@ucw.cz,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt: bindings: lp55xx: Updte yaml examples with new color
+ ID
+Message-ID: <20200824232534.GA3532166@bogus>
+References: <20200812193248.11325-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812193248.11325-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC 4.6 is not supported anymore, so remove a reference to it,
-leaving just the part about version prior GCC 5.
+On Wed, 12 Aug 2020 14:32:48 -0500, Dan Murphy wrote:
+> Update the binding examples for the color ID to LED_COLOR_ID_RGB
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  Documentation/devicetree/bindings/leds/leds-lp55xx.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- include/linux/compiler_attributes.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index af7a58c19e20..ea7b756b1c8f 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -22,7 +22,7 @@
- 
- /*
-  * __has_attribute is supported on gcc >= 5, clang >= 2.9 and icc >= 17.
-- * In the meantime, to support 4.6 <= gcc < 5, we implement __has_attribute
-+ * In the meantime, to support gcc < 5, we implement __has_attribute
-  * by hand.
-  */
- #ifndef __has_attribute
--- 
-2.28.0
-
+Acked-by: Rob Herring <robh@kernel.org>
