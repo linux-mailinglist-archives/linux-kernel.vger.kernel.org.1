@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591CD24F7CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A32124F84E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730413AbgHXIzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
+        id S1729725AbgHXJ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:29:24 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60120 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729505AbgHXIzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 405D7204FD;
-        Mon, 24 Aug 2020 08:54:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259299;
-        bh=9fAn6yvTNYRybXEOoUFrVTBvErh/xKIBcFay/eU4W7w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PCVTJoJg1CCxzXhIrMosXTbpS4Q2QmcOSM2R9HJJABjOhe254xY3pTFLb4e7QBcDH
-         qRZtDUCIx/zCbv4rqcUt1Mjy85QFLPtSatHZ9L1Bf9jiJUWelX+ZmbWbXTC0Rh6Wt4
-         a3UeN8jO0K+qaiIZKQcKyqeTgXTVFpoZDK+5rf1g=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 48/50] mm/hugetlb: fix calculation of adjust_range_if_pmd_sharing_possible
-Date:   Mon, 24 Aug 2020 10:31:49 +0200
-Message-Id: <20200824082354.469722286@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727122AbgHXIvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:02 -0400
+IronPort-SDR: vw7163l3gBejpmsPbYAHA1Hvsms0cy5vUs7WarctqQw1Isvqg+AT2z5Te0OWZzMxrYAmCSww6Y
+ 6kTRlOoqtFdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="156918464"
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="156918464"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 01:51:01 -0700
+IronPort-SDR: Z/QlW50JtdUITuzynkBomeNe0c4gFDUznebeKbjj0IoTwNFJW5Tt9DqQKMyfwoTP3wgwM02tCd
+ QoVhhZ+f5esg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="402253300"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 24 Aug 2020 01:50:58 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 24 Aug 2020 11:50:58 +0300
+Date:   Mon, 24 Aug 2020 11:50:57 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Kenneth R. Crudup" <kenny@panix.com>
+Subject: Re: [PATCH] ACPI: OSL: Prevent acpi_release_memory() from returning
+ too early
+Message-ID: <20200824085057.GA189773@kuha.fi.intel.com>
+References: <6142241.0H6QnnlUA7@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6142241.0H6QnnlUA7@kreacher>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+On Fri, Aug 21, 2020 at 07:42:55PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> After commit 1757659d022b ("ACPI: OSL: Implement deferred unmapping
+> of ACPI memory") in some cases acpi_release_memory() may return
+> before the target memory mappings actually go away, because they
+> are released asynchronously now.
+> 
+> Prevent it from returning prematurely by making it wait for the next
+> RCU grace period to elapse, for all of the RCU callbacks to complete
+> and for all of the scheduled work items to be flushed before
+> returning.
+> 
+> Fixes: 1757659d022b ("ACPI: OSL: Implement deferred unmapping of ACPI memory")
+> Reported-by: Kenneth R. Crudup <kenny@panix.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 75802ca66354a39ab8e35822747cd08b3384a99a upstream.
+FWIW:
 
-This is found by code observation only.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Firstly, the worst case scenario should assume the whole range was covered
-by pmd sharing.  The old algorithm might not work as expected for ranges
-like (1g-2m, 1g+2m), where the adjusted range should be (0, 1g+2m) but the
-expected range should be (0, 2g).
+> ---
+>  drivers/acpi/osl.c |   19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/osl.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/osl.c
+> +++ linux-pm/drivers/acpi/osl.c
+> @@ -1575,11 +1575,26 @@ static acpi_status acpi_deactivate_mem_r
+>  acpi_status acpi_release_memory(acpi_handle handle, struct resource *res,
+>  				u32 level)
+>  {
+> +	acpi_status status;
+> +
+>  	if (!(res->flags & IORESOURCE_MEM))
+>  		return AE_TYPE;
+>  
+> -	return acpi_walk_namespace(ACPI_TYPE_REGION, handle, level,
+> -				   acpi_deactivate_mem_region, NULL, res, NULL);
+> +	status = acpi_walk_namespace(ACPI_TYPE_REGION, handle, level,
+> +				     acpi_deactivate_mem_region, NULL,
+> +				     res, NULL);
+> +	if (ACPI_FAILURE(status))
+> +		return status;
+> +
+> +	/*
+> +	 * Wait for all of the mappings queued up for removal by
+> +	 * acpi_deactivate_mem_region() to actually go away.
+> +	 */
+> +	synchronize_rcu();
+> +	rcu_barrier();
+> +	flush_scheduled_work();
+> +
+> +	return AE_OK;
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_release_memory);
 
-Since at it, remove the loop since it should not be required.  With that,
-the new code should be faster too when the invalidating range is huge.
+thanks,
 
-Mike said:
-
-: With range (1g-2m, 1g+2m) within a vma (0, 2g) the existing code will only
-: adjust to (0, 1g+2m) which is incorrect.
-:
-: We should cc stable.  The original reason for adjusting the range was to
-: prevent data corruption (getting wrong page).  Since the range is not
-: always adjusted correctly, the potential for corruption still exists.
-:
-: However, I am fairly confident that adjust_range_if_pmd_sharing_possible
-: is only gong to be called in two cases:
-:
-: 1) for a single page
-: 2) for range == entire vma
-:
-: In those cases, the current code should produce the correct results.
-:
-: To be safe, let's just cc stable.
-
-Fixes: 017b1660df89 ("mm: migration: fix migration of huge PMD shared pages")
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200730201636.74778-1-peterx@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- mm/hugetlb.c |   24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
-
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4575,25 +4575,21 @@ static bool vma_shareable(struct vm_area
- void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end)
- {
--	unsigned long check_addr = *start;
-+	unsigned long a_start, a_end;
- 
- 	if (!(vma->vm_flags & VM_MAYSHARE))
- 		return;
- 
--	for (check_addr = *start; check_addr < *end; check_addr += PUD_SIZE) {
--		unsigned long a_start = check_addr & PUD_MASK;
--		unsigned long a_end = a_start + PUD_SIZE;
-+	/* Extend the range to be PUD aligned for a worst case scenario */
-+	a_start = ALIGN_DOWN(*start, PUD_SIZE);
-+	a_end = ALIGN(*end, PUD_SIZE);
- 
--		/*
--		 * If sharing is possible, adjust start/end if necessary.
--		 */
--		if (range_in_vma(vma, a_start, a_end)) {
--			if (a_start < *start)
--				*start = a_start;
--			if (a_end > *end)
--				*end = a_end;
--		}
--	}
-+	/*
-+	 * Intersect the range with the vma range, since pmd sharing won't be
-+	 * across vma after all
-+	 */
-+	*start = max(vma->vm_start, a_start);
-+	*end = min(vma->vm_end, a_end);
- }
- 
- /*
-
-
+-- 
+heikki
