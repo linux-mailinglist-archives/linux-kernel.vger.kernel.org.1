@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1083F24F5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B225324F64B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgHXIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:55:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
+        id S1730775AbgHXI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730381AbgHXIy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:54:57 -0400
+        id S1730320AbgHXI6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:58:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF9762087D;
-        Mon, 24 Aug 2020 08:54:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72CE2208E4;
+        Mon, 24 Aug 2020 08:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259297;
-        bh=XynIETpFBJyfNYOI+DLKuFJ47Du3R3yp87gOvnBoRlE=;
+        s=default; t=1598259491;
+        bh=EDnv/XnL0MJacWiTODYRVvo+m/BqQm2xWEw0QsSVgk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C+XY4dnr9/wbJSYyggjqc9bXU3zLjyJRGJNDdbjWfCJXOz1GoUZh+OyhHfnNgMFA5
-         R9Rc66Yamfzz6SH/ZRJWwHhgh9fQi7dMxy5Ngg/bpXkyGJfYsxdPiVPi0ijOfMp6tR
-         daf6N9pA4EQYhb+iwFM3kPk7mGAiY6abed9/XzSY=
+        b=CgRJPzuvaM98Nag9sQhW6rEAxEBn1CzF2vw4G/Q/wfPi6lABV6guoB+SbinSjW2FR
+         LUIqPjTMQ9qsR02s7AYNGqvqhCBle79yaOnWzi+hIs5JZ3wXbb+q95qWmUfYQJGRay
+         9OHmd/oc8JDDL28zhGch4pZZoCSKlqdwChi0n7Ws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.14 47/50] do_epoll_ctl(): clean the failure exits up a bit
-Date:   Mon, 24 Aug 2020 10:31:48 +0200
-Message-Id: <20200824082354.423369557@linuxfoundation.org>
+        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 58/71] RDMA/bnxt_re: Do not add user qps to flushlist
+Date:   Mon, 24 Aug 2020 10:31:49 +0200
+Message-Id: <20200824082358.815977982@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-commit 52c479697c9b73f628140dcdfcd39ea302d05482 upstream.
+[ Upstream commit a812f2d60a9fb7818f9c81f967180317b52545c0 ]
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Driver shall add only the kernel qps to the flush list for clean up.
+During async error events from the HW, driver is adding qps to this list
+without checking if the qp is kernel qp or not.
+
+Add a check to avoid user qp addition to the flush list.
+
+Fixes: 942c9b6ca8de ("RDMA/bnxt_re: Avoid Hard lockup during error CQE processing")
+Fixes: c50866e2853a ("bnxt_re: fix the regression due to changes in alloc_pbl")
+Link: https://lore.kernel.org/r/1596689148-4023-1-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/eventpoll.c |   10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -2099,10 +2099,8 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
- 			mutex_lock(&epmutex);
- 			if (is_file_epoll(tf.file)) {
- 				error = -ELOOP;
--				if (ep_loop_check(ep, tf.file) != 0) {
--					clear_tfile_check_list();
-+				if (ep_loop_check(ep, tf.file) != 0)
- 					goto error_tgt_fput;
--				}
- 			} else {
- 				get_file(tf.file);
- 				list_add(&tf.file->f_tfile_llink,
-@@ -2131,8 +2129,6 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
- 			error = ep_insert(ep, &epds, tf.file, fd, full_check);
- 		} else
- 			error = -EEXIST;
--		if (full_check)
--			clear_tfile_check_list();
- 		break;
- 	case EPOLL_CTL_DEL:
- 		if (epi)
-@@ -2155,8 +2151,10 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
- 	mutex_unlock(&ep->mtx);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 589b0d4677d52..f1b666c80f368 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -753,7 +753,8 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 	struct ib_event event;
+ 	unsigned int flags;
  
- error_tgt_fput:
--	if (full_check)
-+	if (full_check) {
-+		clear_tfile_check_list();
- 		mutex_unlock(&epmutex);
-+	}
- 
- 	fdput(tf);
- error_fput:
+-	if (qp->qplib_qp.state == CMDQ_MODIFY_QP_NEW_STATE_ERR) {
++	if (qp->qplib_qp.state == CMDQ_MODIFY_QP_NEW_STATE_ERR &&
++	    rdma_is_kernel_res(&qp->ib_qp.res)) {
+ 		flags = bnxt_re_lock_cqs(qp);
+ 		bnxt_qplib_add_flush_qp(&qp->qplib_qp);
+ 		bnxt_re_unlock_cqs(qp, flags);
+-- 
+2.25.1
+
 
 
