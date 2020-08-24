@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AE924F584
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146F524F5A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgHXIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53140 "EHLO mail.kernel.org"
+        id S1729469AbgHXIvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729811AbgHXIuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:50:03 -0400
+        id S1728691AbgHXIvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88B00207D3;
-        Mon, 24 Aug 2020 08:50:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27E2C204FD;
+        Mon, 24 Aug 2020 08:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259002;
-        bh=zKQ8ZtWYpiM4WvCVnO7PZSUwlvnZhnWf8oE8kLvil2E=;
+        s=default; t=1598259083;
+        bh=4KseAYN34Oerdw2wOngkRfwMGt6nynk4gFwPTNo3+vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qj8YaQTjSrNrnv3fhi5zYT4DWd1eoEvAsrGqA8CDq2sKGrB1nAF8pz9apUmtolR6w
-         690vRqdOom6wuJi+YMlC6moQ7IZ+o0vUheT9pbnCeiZb0BZZo2u6k6yRHTDsQx/YeP
-         KitZUeyKqzLiKKzUZpA1W+fYHaAuuifqZSN7nkV0=
+        b=eCEogbRnVUViC4wCzzsKTBQsPkvWDTnycJ9md+noj2sbsMS+GS3b20nhYBoLmzJSF
+         be1SrhdLAwQzpG98pv9HMRKF0OVRZUfe6LRCQVyAxv01eIl2Yi9z1XtcLS6oCZeuTb
+         RXqJjJ9NHrNaQxnVUf8ujYcIsfhJd9EA7zSKw/k0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/33] btrfs: export helpers for subvolume name/id resolution
+Subject: [PATCH 4.9 06/39] tracing/hwlat: Honor the tracing_cpumask
 Date:   Mon, 24 Aug 2020 10:31:05 +0200
-Message-Id: <20200824082346.992358892@linuxfoundation.org>
+Message-Id: <20200824082348.800713951@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,105 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+From: Kevin Hao <haokexin@gmail.com>
 
-[ Upstream commit c0c907a47dccf2cf26251a8fb4a8e7a3bf79ce84 ]
+[ Upstream commit 96b4833b6827a62c295b149213c68b559514c929 ]
 
-The functions will be used outside of export.c and super.c to allow
-resolving subvolume name from a given id, eg. for subvolume deletion by
-id ioctl.
+In calculation of the cpu mask for the hwlat kernel thread, the wrong
+cpu mask is used instead of the tracing_cpumask, this causes the
+tracing/tracing_cpumask useless for hwlat tracer. Fixes it.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ split from the next patch ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Link: https://lkml.kernel.org/r/20200730082318.42584-2-haokexin@gmail.com
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 0330f7aa8ee6 ("tracing: Have hwlat trace migrate across tracing_cpumask CPUs")
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/ctree.h  | 2 ++
- fs/btrfs/export.c | 8 ++++----
- fs/btrfs/export.h | 5 +++++
- fs/btrfs/super.c  | 8 ++++----
- 4 files changed, 15 insertions(+), 8 deletions(-)
+ kernel/trace/trace_hwlat.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0b06d4942da77..8fb9a1e0048be 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -4096,6 +4096,8 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size);
- /* super.c */
- int btrfs_parse_options(struct btrfs_root *root, char *options);
- int btrfs_sync_fs(struct super_block *sb, int wait);
-+char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-+					  u64 subvol_objectid);
- 
- #ifdef CONFIG_PRINTK
- __printf(2, 3)
-diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-index 2513a7f533342..92f80ed642194 100644
---- a/fs/btrfs/export.c
-+++ b/fs/btrfs/export.c
-@@ -55,9 +55,9 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- 	return type;
- }
- 
--static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
--				       u64 root_objectid, u32 generation,
--				       int check_generation)
-+struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-+				u64 root_objectid, u32 generation,
-+				int check_generation)
+diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
+index 158af5ddbc3aa..d1e007c729235 100644
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -271,6 +271,7 @@ static bool disable_migrate;
+ static void move_to_next_cpu(void)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
- 	struct btrfs_root *root;
-@@ -150,7 +150,7 @@ static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
- 	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
- }
+ 	struct cpumask *current_mask = &save_cpumask;
++	struct trace_array *tr = hwlat_trace;
+ 	int next_cpu;
  
--static struct dentry *btrfs_get_parent(struct dentry *child)
-+struct dentry *btrfs_get_parent(struct dentry *child)
- {
- 	struct inode *dir = d_inode(child);
- 	struct btrfs_root *root = BTRFS_I(dir)->root;
-diff --git a/fs/btrfs/export.h b/fs/btrfs/export.h
-index 074348a95841f..7a305e5549991 100644
---- a/fs/btrfs/export.h
-+++ b/fs/btrfs/export.h
-@@ -16,4 +16,9 @@ struct btrfs_fid {
- 	u64 parent_root_objectid;
- } __attribute__ ((packed));
+ 	if (disable_migrate)
+@@ -284,7 +285,7 @@ static void move_to_next_cpu(void)
+ 		goto disable;
  
-+struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-+				u64 root_objectid, u32 generation,
-+				int check_generation);
-+struct dentry *btrfs_get_parent(struct dentry *child);
-+
- #endif
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 404051bf5cba9..540e6f141745a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -843,8 +843,8 @@ out:
- 	return error;
- }
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	next_cpu = cpumask_next(smp_processor_id(), current_mask);
+ 	put_online_cpus();
  
--static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
--					   u64 subvol_objectid)
-+char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-+					  u64 subvol_objectid)
- {
- 	struct btrfs_root *root = fs_info->tree_root;
- 	struct btrfs_root *fs_root;
-@@ -1323,8 +1323,8 @@ static struct dentry *mount_subvol(const char *subvol_name, u64 subvol_objectid,
- 				goto out;
- 			}
- 		}
--		subvol_name = get_subvol_name_from_objectid(btrfs_sb(mnt->mnt_sb),
--							    subvol_objectid);
-+		subvol_name = btrfs_get_subvol_name_from_objectid(
-+					btrfs_sb(mnt->mnt_sb), subvol_objectid);
- 		if (IS_ERR(subvol_name)) {
- 			root = ERR_CAST(subvol_name);
- 			subvol_name = NULL;
+@@ -361,7 +362,7 @@ static int start_kthread(struct trace_array *tr)
+ 	/* Just pick the first CPU on first iteration */
+ 	current_mask = &save_cpumask;
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	put_online_cpus();
+ 	next_cpu = cpumask_first(current_mask);
+ 
 -- 
 2.25.1
 
