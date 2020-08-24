@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795CD250110
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766D02500C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgHXP0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S1727776AbgHXPTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgHXPG4 (ORCPT
+        with ESMTP id S1726697AbgHXPG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:06:56 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E8FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:55:10 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c19so6316849wmd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nhgjcGDiszmemLXRD4pV8iiEXCU7SaZcnWn1+uyj7dA=;
-        b=u4nFtsVYYLdNR+pErZEZECWTnFSvE3O3DCzrqMuh8reuj9NQ/nCMZAkjiFnFFpRr/o
-         7FvO+w2VmWyHOAxj5aNO+F34jF7R+zheD7iHJu+zUHnl6rYJdIqyDePWlgXUNmFr3UWs
-         xqNY3r9yO1as69MM2n9kWCCp1OCVoxZBnqiBShqcVYTkpTt2iakcOH2ennn0fyMU4tsc
-         Pvfx1qO4ZRMMKMdSWQRJ1Y4xyr7rLFmGO60h5j6UA7XA2X62enGHooY2rCHXPI413AFA
-         WtnSpK0waO1zvPf5swCYTTDL94erIKmbKTuEhGduVrrDXiKasgtqKUR+OC08HqX4mH6G
-         i43A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nhgjcGDiszmemLXRD4pV8iiEXCU7SaZcnWn1+uyj7dA=;
-        b=ah4y6NBMY3w2bznFT6Ht095xtifn66giuN4TDb/7he5ffm/pJ8YqKXnBaZs+ynjFQt
-         cd8zuQ9HmW90oyURwcfuHEQObRR8LpI876WxYxMkA8xqfbStKxTy01ODPnmPSEvdE9SK
-         joYntHNSALIXopSrI2l8wgKRqxeU43+bh8ZQzpAWNhlBEh1ATcrPPV7yoyeyMf2PiohZ
-         bqE/0z5w8j+d8DaoulcyPUlP8j79NmCEp9hI2SyP5pZoAbtnMRvBks/H0YMShY+rahEF
-         o2+RYXRfWhhNjvHu+DsT2r0Vznx4vJE4Vmi0E5VT98YWOORRx+f2X1HDABFG1TKj3rkr
-         v6qA==
-X-Gm-Message-State: AOAM532R0B/3Lteljlz74otbt+ZT0/atMbO1FRVC9iygH075K7DpoIcz
-        S2nq9Mi9LV44y9kIEBUBRQo5Hq3P/dCIBSykKqpzmM2T
-X-Google-Smtp-Source: ABdhPJy+o0pSEX67YJFDALr/uKsAz7GjoWM/46FnxnObEN6n0CVfQB0jnjTYCfcivpI2EUL4og7c2zcHY7f127ZJddQ=
-X-Received: by 2002:a1c:bc85:: with SMTP id m127mr5905233wmf.70.1598280909545;
- Mon, 24 Aug 2020 07:55:09 -0700 (PDT)
+        Mon, 24 Aug 2020 11:06:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83E8C06179A;
+        Mon, 24 Aug 2020 07:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=rtPWePEP2e2MrA1B6+d56D/W6SCtPdzXjGVhB68Hm9E=; b=mYU+Wo1zHLWgAf8PtstxsMTzeM
+        l89zOmYzJ4RAebFtunciW1qLOccTUYbRyCdTC0HFhRUaFysVsGgifHdVuV+nAICugexygDYupVHqV
+        Pgx88p5wQgJt3gvzhQmSRhuRsWVxpyeb3EOAahpwBmkUxMJssYiXiFutGNnBlHme91mw0lrufX/dt
+        bx5Jm4KquFZu8cyiMXr7xv+0CHqsS7c/CnzDPyx3OGlyMbSVg+plp6m2GJXAthNPGuz3oVbU9HsFS
+        C9b1dq1AShibohWaSk/lWESu2oP6BM+zNJFGDBsrG1QOBj4Tc/Kwcp9qKnijfzIHWXVdM+9wKdOXa
+        ZIB2/1BA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kADsO-0002lr-Li; Mon, 24 Aug 2020 14:55:12 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] THP iomap patches for 5.10
+Date:   Mon, 24 Aug 2020 15:55:01 +0100
+Message-Id: <20200824145511.10500-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-References: <1598084843-32270-1-git-send-email-tangyouling@loongson.cn>
-In-Reply-To: <1598084843-32270-1-git-send-email-tangyouling@loongson.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Aug 2020 10:54:58 -0400
-Message-ID: <CADnq5_MUkcTk1Mzh+22MRBoYEZnHDzhNkWNBD1XHZaPhYyXOHQ@mail.gmail.com>
-Subject: Re: [PATCH] gpu: amd: Remove duplicate semicolons at the end of line
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 5:02 AM Youling Tang <tangyouling@loongson.cn> wrote:
->
-> Remove duplicate semicolons at the end of line.
->
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+These patches are carefully plucked from the THP series.  I would like
+them to hit 5.10 to make the THP patchset merge easier.  Some of these
+are just generic improvements that make sense on their own terms, but
+the overall intent is to support THPs in iomap.
 
-Applied.  Thanks!
+I'll send another patch series later today which are the changes to
+iomap which don't pay their own way until we actually have THPs in the
+page cache.  I would like those to be reviewed with an eye to merging
+them into 5.11.
 
-Alex
+Matthew Wilcox (Oracle) (9):
+  iomap: Fix misplaced page flushing
+  fs: Introduce i_blocks_per_page
+  iomap: Use kzalloc to allocate iomap_page
+  iomap: Use bitmap ops to set uptodate bits
+  iomap: Support arbitrarily many blocks per page
+  iomap: Convert read_count to byte count
+  iomap: Convert write_count to byte count
+  iomap: Convert iomap_write_end types
+  iomap: Change calling convention for zeroing
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c                 | 2 +-
->  drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-> index e99bef6..8603a26 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-> @@ -1108,7 +1108,7 @@ static int vcn_v2_5_mmsch_start(struct amdgpu_device *adev,
->  {
->         uint32_t data = 0, loop = 0, size = 0;
->         uint64_t addr = table->gpu_addr;
-> -       struct mmsch_v1_1_init_header *header = NULL;;
-> +       struct mmsch_v1_1_init_header *header = NULL;
->
->         header = (struct mmsch_v1_1_init_header *)table->cpu_addr;
->         size = header->total_size;
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c b/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
-> index afdd4f0..b320931 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
-> @@ -467,7 +467,7 @@ static void fetch_pipe_params(struct display_mode_lib *mode_lib)
->                 mode_lib->vba.AudioSampleLayout[mode_lib->vba.NumberOfActivePlanes] =
->                         1;
->                 mode_lib->vba.DRAMClockChangeLatencyOverride = 0.0;
-> -               mode_lib->vba.DSCEnabled[mode_lib->vba.NumberOfActivePlanes] = dout->dsc_enable;;
-> +               mode_lib->vba.DSCEnabled[mode_lib->vba.NumberOfActivePlanes] = dout->dsc_enable;
->                 mode_lib->vba.DSCEnable[mode_lib->vba.NumberOfActivePlanes] = dout->dsc_enable;
->                 mode_lib->vba.NumberOfDSCSlices[mode_lib->vba.NumberOfActivePlanes] =
->                                 dout->dsc_slices;
-> --
-> 2.1.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+ fs/dax.c                |  13 ++--
+ fs/iomap/buffered-io.c  | 145 ++++++++++++++++------------------------
+ fs/jfs/jfs_metapage.c   |   2 +-
+ fs/xfs/xfs_aops.c       |   2 +-
+ include/linux/dax.h     |   3 +-
+ include/linux/pagemap.h |  16 +++++
+ 6 files changed, 83 insertions(+), 98 deletions(-)
+
+-- 
+2.28.0
+
