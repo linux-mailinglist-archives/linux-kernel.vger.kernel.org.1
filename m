@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD7524F4B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED46424F446
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgHXIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
+        id S1727917AbgHXIee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728665AbgHXIjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:39 -0400
+        id S1727912AbgHXIeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:34:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D946A22B49;
-        Mon, 24 Aug 2020 08:39:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DE05206F0;
+        Mon, 24 Aug 2020 08:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258378;
-        bh=axrNnX8tt3YCR1/f6ugFOlCWrbE2ylmJgM32F8pJ0so=;
+        s=default; t=1598258064;
+        bh=/S/5fcNXp1qF0dj5Sh7EBvrVNQQbog7E1B1vZS/c6vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZAy1sheceBcStlEEkIT5Jd8wp0NbLs6H8lbglFxzbWzvjY82+zkeuJAFezR7sYva
-         FiH/Yo0tgdHy+C3DRF3mq7uORpNuzmkH30TsOvEZaWS2uzliJL3cZD/0GkpsAWzIC0
-         g766AZ8Blxc4BJhPcqilShad1LQjnZwGouw4AMxo=
+        b=Vt+otLZRZtwDOZFRAjcN85nhbvYQi2LscemcqtCnSWKzCiFMqWiCumvN0L0eDITh5
+         fGYLsPWRGcGNLcOenR7TS5r3en412Cvvq8hnhOK0FoG+Q1jNNsKdk9z0se65DNraJ6
+         cmgwu/w7yx50BaGTfuyGiAgW3Cp2lygvtDnaGVBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Hsieh <paul.hsieh@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.7 026/124] drm/amd/display: Fix DFPstate hang due to view port changed
+        stable@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        Roman Shaposhnik <roman@zededa.com>,
+        Juergen Gross <jgross@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 062/148] swiotlb-xen: use vmalloc_to_page on vmalloc virt addresses
 Date:   Mon, 24 Aug 2020 10:29:20 +0200
-Message-Id: <20200824082410.708270050@linuxfoundation.org>
+Message-Id: <20200824082417.041872160@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +48,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Hsieh <paul.hsieh@amd.com>
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
-commit 8e80d482608a4e6a97c75272ef8b4bcfc5d0c490 upstream.
+[ Upstream commit 8b1e868f66076490189a36d984fcce286cdd6295 ]
 
-[Why]
-Place the cursor in the center of screen between two pipes then
-adjusting the viewport but cursour doesn't update cause DFPstate hang.
+xen_alloc_coherent_pages might return pages for which virt_to_phys and
+virt_to_page don't work, e.g. ioremap'ed pages.
 
-[How]
-If viewport changed, update cursor as well.
+So in xen_swiotlb_free_coherent we can't assume that virt_to_page works.
+Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
+virt addresses.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Paul Hsieh <paul.hsieh@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch fixes the following crash at boot on RPi4 (the underlying
+issue is not RPi4 specific):
+https://marc.info/?l=xen-devel&m=158862573216800
 
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Tested-by: Corey Minyard <cminyard@mvista.com>
+Tested-by: Roman Shaposhnik <roman@zededa.com>
+Link: https://lore.kernel.org/r/20200710223427.6897-1-sstabellini@kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/xen/swiotlb-xen.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -1386,8 +1386,8 @@ static void dcn20_update_dchubp_dpp(
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index b6d27762c6f8c..5fbadd07819bd 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	int order = get_order(size);
+ 	phys_addr_t phys;
+ 	u64 dma_mask = DMA_BIT_MASK(32);
++	struct page *page;
  
- 	/* Any updates are handled in dc interface, just need to apply existing for plane enable */
- 	if ((pipe_ctx->update_flags.bits.enable || pipe_ctx->update_flags.bits.opp_changed ||
--			pipe_ctx->update_flags.bits.scaler || pipe_ctx->update_flags.bits.viewport)
--			&& pipe_ctx->stream->cursor_attributes.address.quad_part != 0) {
-+			pipe_ctx->update_flags.bits.scaler || viewport_changed == true) &&
-+			pipe_ctx->stream->cursor_attributes.address.quad_part != 0) {
- 		dc->hwss.set_cursor_position(pipe_ctx);
- 		dc->hwss.set_cursor_attribute(pipe_ctx);
+ 	if (hwdev && hwdev->coherent_dma_mask)
+ 		dma_mask = hwdev->coherent_dma_mask;
+@@ -346,9 +347,14 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	/* Convert the size to actually allocated. */
+ 	size = 1UL << (order + XEN_PAGE_SHIFT);
  
++	if (is_vmalloc_addr(vaddr))
++		page = vmalloc_to_page(vaddr);
++	else
++		page = virt_to_page(vaddr);
++
+ 	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
+ 		     range_straddles_page_boundary(phys, size)) &&
+-	    TestClearPageXenRemapped(virt_to_page(vaddr)))
++	    TestClearPageXenRemapped(page))
+ 		xen_destroy_contiguous_region(phys, order);
+ 
+ 	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
+-- 
+2.25.1
+
 
 
