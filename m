@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0789A24F444
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAA624F4A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgHXIeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        id S1728156AbgHXIjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:39:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727897AbgHXIeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:34:19 -0400
+        id S1726825AbgHXIjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC66421741;
-        Mon, 24 Aug 2020 08:34:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 598252177B;
+        Mon, 24 Aug 2020 08:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258059;
-        bh=U3/ZBaHYO/v3cl833Rr/LLMeh0E43V8IkoRMGx8wbCM=;
+        s=default; t=1598258346;
+        bh=BUqh9hxrrhfBSUuYGJs7qbkTVzJ4kaDSPrSOfKiy10g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n1zD32rzXI1ML+NHhydhLJddoiocXJEgbzNmfalDkRL0u8uPMAGZWe4DgigsZBeaX
-         Zt4jTmXxlQXIKGD57uK9c2SzB3VbFbiYm4vu1CFSejevnS8XPzzuERcI6W+rTR0mpd
-         pUg+OxJXcGd9k2ZqBWKAfGWOj69nM3+wJmCLDQow=
+        b=LIs69x84Hoj7aqfcIGHnI6k/7JX/zSntDf/9agUM1XFGQZ2B9CFacjM0J7rA/gx9m
+         Y9JS6+cd6/5EzfBx6Rx4Ah+85frh8fPU7t37Cm0JH8ZyMpofpIMSIE1/aYFagMwcMP
+         F+r6lklOF4Kgg5/TI6zhP8RRqQ1CJ5vShSQZ04H0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhiguo Niu <Zhiguo.Niu@unisoc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 052/148] f2fs: should avoid inode eviction in synchronous path
+        stable@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.7 016/124] RDMA/hfi1: Correct an interlock issue for TID RDMA WRITE request
 Date:   Mon, 24 Aug 2020 10:29:10 +0200
-Message-Id: <20200824082416.560602391@linuxfoundation.org>
+Message-Id: <20200824082410.212338668@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +46,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Kaike Wan <kaike.wan@intel.com>
 
-[ Upstream commit b0f3b87fb3abc42c81d76c6c5795f26dbdb2f04b ]
+commit b25e8e85e75a61af1ddc88c4798387dd3132dd43 upstream.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=208565
+The following message occurs when running an AI application with TID RDMA
+enabled:
 
-PID: 257    TASK: ecdd0000  CPU: 0   COMMAND: "init"
-  #0 [<c0b420ec>] (__schedule) from [<c0b423c8>]
-  #1 [<c0b423c8>] (schedule) from [<c0b459d4>]
-  #2 [<c0b459d4>] (rwsem_down_read_failed) from [<c0b44fa0>]
-  #3 [<c0b44fa0>] (down_read) from [<c044233c>]
-  #4 [<c044233c>] (f2fs_truncate_blocks) from [<c0442890>]
-  #5 [<c0442890>] (f2fs_truncate) from [<c044d408>]
-  #6 [<c044d408>] (f2fs_evict_inode) from [<c030be18>]
-  #7 [<c030be18>] (evict) from [<c030a558>]
-  #8 [<c030a558>] (iput) from [<c047c600>]
-  #9 [<c047c600>] (f2fs_sync_node_pages) from [<c0465414>]
- #10 [<c0465414>] (f2fs_write_checkpoint) from [<c04575f4>]
- #11 [<c04575f4>] (f2fs_sync_fs) from [<c0441918>]
- #12 [<c0441918>] (f2fs_do_sync_file) from [<c0441098>]
- #13 [<c0441098>] (f2fs_sync_file) from [<c0323fa0>]
- #14 [<c0323fa0>] (vfs_fsync_range) from [<c0324294>]
- #15 [<c0324294>] (do_fsync) from [<c0324014>]
- #16 [<c0324014>] (sys_fsync) from [<c0108bc0>]
+hfi1 0000:7f:00.0: hfi1_0: [QP74] hfi1_tid_timeout 4084
+hfi1 0000:7f:00.0: hfi1_0: [QP70] hfi1_tid_timeout 4084
 
-This can be caused by flush_dirty_inode() in f2fs_sync_node_pages() where
-iput() requires f2fs_lock_op() again resulting in livelock.
+The issue happens when TID RDMA WRITE request is followed by an
+IB_WR_RDMA_WRITE_WITH_IMM request, the latter could be completed first on
+the responder side. As a result, no ACK packet for the latter could be
+sent because the TID RDMA WRITE request is still being processed on the
+responder side.
 
-Reported-by: Zhiguo Niu <Zhiguo.Niu@unisoc.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When the TID RDMA WRITE request is eventually completed, the requester
+will wait for the IB_WR_RDMA_WRITE_WITH_IMM request to be acknowledged.
+
+If the next request is another TID RDMA WRITE request, no TID RDMA WRITE
+DATA packet could be sent because the preceding IB_WR_RDMA_WRITE_WITH_IMM
+request is not completed yet.
+
+Consequently the IB_WR_RDMA_WRITE_WITH_IMM will be retried but it will be
+ignored on the responder side because the responder thinks it has already
+been completed. Eventually the retry will be exhausted and the qp will be
+put into error state on the requester side. On the responder side, the TID
+resource timer will eventually expire because no TID RDMA WRITE DATA
+packets will be received for the second TID RDMA WRITE request.  There is
+also risk of a write-after-write memory corruption due to the issue.
+
+Fix by adding a requester side interlock to prevent any potential data
+corruption and TID RDMA protocol error.
+
+Fixes: a0b34f75ec20 ("IB/hfi1: Add interlock between a TID RDMA request and other requests")
+Link: https://lore.kernel.org/r/20200811174931.191210.84093.stgit@awfm-01.aw.intel.com
+Cc: <stable@vger.kernel.org> # 5.4.x+
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/f2fs/node.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hfi1/tid_rdma.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 03e24df1c84f5..e61ce7fb0958b 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1924,8 +1924,12 @@ continue_unlock:
- 				goto continue_unlock;
- 			}
- 
--			/* flush inline_data, if it's async context. */
--			if (do_balance && is_inline_node(page)) {
-+			/* flush inline_data/inode, if it's async context. */
-+			if (!do_balance)
-+				goto write_node;
-+
-+			/* flush inline_data */
-+			if (is_inline_node(page)) {
- 				clear_inline_node(page);
- 				unlock_page(page);
- 				flush_inline_data(sbi, ino_of_node(page));
-@@ -1938,7 +1942,7 @@ continue_unlock:
- 				if (flush_dirty_inode(page))
- 					goto lock_node;
- 			}
--
-+write_node:
- 			f2fs_wait_on_page_writeback(page, NODE, true, true);
- 
- 			if (!clear_page_dirty_for_io(page))
--- 
-2.25.1
-
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -3215,6 +3215,7 @@ bool hfi1_tid_rdma_wqe_interlock(struct
+ 	case IB_WR_ATOMIC_CMP_AND_SWP:
+ 	case IB_WR_ATOMIC_FETCH_AND_ADD:
+ 	case IB_WR_RDMA_WRITE:
++	case IB_WR_RDMA_WRITE_WITH_IMM:
+ 		switch (prev->wr.opcode) {
+ 		case IB_WR_TID_RDMA_WRITE:
+ 			req = wqe_to_tid_req(prev);
 
 
