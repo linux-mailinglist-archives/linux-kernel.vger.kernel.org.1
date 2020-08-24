@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F102C24FE8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C930624FE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgHXNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:07:19 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:43639 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgHXNHR (ORCPT
+        id S1726723AbgHXNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgHXNHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:07:17 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id A30383C0579;
-        Mon, 24 Aug 2020 15:07:13 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rS9E865DscdH; Mon, 24 Aug 2020 15:07:08 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 920423C0016;
-        Mon, 24 Aug 2020 15:07:08 +0200 (CEST)
-Received: from lxhi-065.adit-jv.com (10.72.94.3) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 24 Aug
- 2020 15:07:08 +0200
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Dongli Zhang <dongli.zhang@oracle.com>
-CC:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
-        <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>
-Subject: [PATCH v2] mm: slub: fix conversion of freelist_corrupted()
-Date:   Mon, 24 Aug 2020 15:06:43 +0200
-Message-ID: <20200824130643.10291-1-erosca@de.adit-jv.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 24 Aug 2020 09:07:49 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB1FC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:07:48 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id l63so4915461edl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=++wVUAAL3FCIdU3Q7RBNPjfei0JC7QKDqs3d4gqLkD8=;
+        b=PuPOlDaS3kto3atocjIDkePSCIXXIRpoKpPyuqY5As+lkPNxkYEIQAP9a/Nn2cf/ec
+         zaFf5NNaSgVhzUZzGa4jT0EjXhrn3xTBWwhYneS2DFlEwstp+iof/WuOGObTgk2w8lW+
+         cljb0Y9Qi3MmisyXxw2zwe8hcu0J00jevDGQsZ5Vec6b3SmGNOhiu0mujwKUpkoDGR87
+         Sl5LHDc7XtsFWO/JUWqiA0gGgJ3A7tljnA1y0ltBpKiAg22PHAD56l8cejbAXvw9RAOK
+         dwRkIuhsCAcYD0Rjth+QWS9fNGlDwFJlPb3RtgULuRw46wLEZ5oJELovinbtoaNvIcT4
+         xZ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=++wVUAAL3FCIdU3Q7RBNPjfei0JC7QKDqs3d4gqLkD8=;
+        b=dr50WBuotTKyojnHwVg1VN/AnGqfiVGeK6zC37Q1OZn+l+dWmpHMTKhTz6gwPSAPNN
+         Mmki/y8c1u6ZrGb2W4uZY5YRUgXfJQZQ5WSnGD84/LjtDLt0j37lp3w8EeAp/EcDNJAo
+         U875/t9Dj+xE67ZeZgFBpG19rkfr2LlIUAOY4IH6CI4OZPwLfgReDhpl3wzzFtUVnUf8
+         uydnrYbZF/7L0b88OCFWUW9F8VYp09NgD0R4rveRoWHrH0WxuZgFKQgq2Ujs85+rq5js
+         s6I7VLj4HUI8wD813cgdy/+3BDrhfcur2Sq/ujlJlu9pvLODFMYJOFd8kt55/4spQhgV
+         ueaQ==
+X-Gm-Message-State: AOAM5325B8SAWR0VpgUNsoClxA87wHl9zlgywXPbVFWpAGEKL0D3ahoB
+        IvMvgdODOUzbHD+bcshfVjpbfIVfLNgMZ8L7QhuwxvDleLeY
+X-Google-Smtp-Source: ABdhPJwvkn1F/xNYp0KGduUPe7dAvQCo8OrTtHv27xZTH9XHSiNh4240+VtyTkIu/D5pi9/aoxporbUNR2gCrGL2wZ4=
+X-Received: by 2002:aa7:ca46:: with SMTP id j6mr2684340edt.128.1598274467311;
+ Mon, 24 Aug 2020 06:07:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.72.94.3]
+References: <20200807165134.3913-1-rdunlap@infradead.org> <CAHC9VhQW-8pem59QHQctx9UNhMNLEAjNwDiOU1ODz9wX5B_tdQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhQW-8pem59QHQctx9UNhMNLEAjNwDiOU1ODz9wX5B_tdQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 24 Aug 2020 09:07:36 -0400
+Message-ID: <CAHC9VhT4EG3qs76=nfQ7sLW9t9V-jXymmczV9Ygq+9T+Qz4Pfg@mail.gmail.com>
+Subject: Re: [PATCH] security: selinux: delete repeated words in comments
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 52f23478081ae0 ("mm/slub.c: fix corrupted freechain in
-deactivate_slab()") suffered an update when picked up from LKML [1].
+On Fri, Aug 7, 2020 at 2:09 PM Paul Moore <paul@paul-moore.com> wrote:
+> On Fri, Aug 7, 2020 at 12:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >
+> > Drop a repeated word in comments.
+> > {open, is, then}
+> >
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Paul Moore <paul@paul-moore.com>
+> > Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > Cc: Eric Paris <eparis@parisplace.org>
+> > Cc: selinux@vger.kernel.org
+> > Cc: James Morris <jmorris@namei.org>
+> > Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> > Cc: linux-security-module@vger.kernel.org
+> > ---
+> >  security/selinux/hooks.c |    6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> This obviously looks fine, but it will need to wait until after the
+> merge window closes.  I'll send another reply once it is merged.
 
-Specifically, relocating 'freelist = NULL' into 'freelist_corrupted()'
-created a no-op statement. Fix it by sticking to the behavior intended
-in the original patch [1]. In addition, make freelist_corrupted()
-immune to passing NULL instead of &freelist.
+Hi Randy, this got buried a bit due to vacations and other patches but
+I just merged it into selinux/next.  Thanks for your patience.
 
-The issue has been spotted via static analysis and code review.
-
-[1] https://lore.kernel.org/linux-mm/20200331031450.12182-1-dongli.zhang@oracle.com/
-
-Fixes: 52f23478081ae0 ("mm/slub.c: fix corrupted freechain in deactivate_slab()")
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
----
-
-v2:
- - Address the review finding from Dongli Zhang in:
-   https://lore.kernel.org/linux-mm/f93a9f06-8608-6f28-27c0-b17f86dca55b@oracle.com/
-
-   -------8<-------
-   This is good to me.
-   However, this would confuse people when CONFIG_SLUB_DEBUG is not defined.
-   While reading the source code, people may be curious why to reset freelist when
-   CONFIG_SLUB_DEBUG is even not defined.
-   -------8<-------
-
-v1:
- - https://lore.kernel.org/linux-mm/20200811124656.10308-1-erosca@de.adit-jv.com/
-
- mm/slub.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 68c02b2eecd9..d4177aecedf6 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -672,12 +672,12 @@ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
- }
- 
- static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
--			       void *freelist, void *nextfree)
-+			       void **freelist, void *nextfree)
- {
- 	if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
--	    !check_valid_pointer(s, page, nextfree)) {
--		object_err(s, page, freelist, "Freechain corrupt");
--		freelist = NULL;
-+	    !check_valid_pointer(s, page, nextfree) && freelist) {
-+		object_err(s, page, *freelist, "Freechain corrupt");
-+		*freelist = NULL;
- 		slab_fix(s, "Isolate corrupted freechain");
- 		return true;
- 	}
-@@ -1494,7 +1494,7 @@ static inline void dec_slabs_node(struct kmem_cache *s, int node,
- 							int objects) {}
- 
- static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
--			       void *freelist, void *nextfree)
-+			       void **freelist, void *nextfree)
- {
- 	return false;
- }
-@@ -2184,7 +2184,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 		 * 'freelist' is already corrupted.  So isolate all objects
- 		 * starting at 'freelist'.
- 		 */
--		if (freelist_corrupted(s, page, freelist, nextfree))
-+		if (freelist_corrupted(s, page, &freelist, nextfree))
- 			break;
- 
- 		do {
 -- 
-2.28.0
-
+paul moore
+www.paul-moore.com
