@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BD324F496
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045F224F498
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgHXIiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
+        id S1728010AbgHXIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728495AbgHXIiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:38:02 -0400
+        id S1727972AbgHXIiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B40FD22B43;
-        Mon, 24 Aug 2020 08:38:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF8D82177B;
+        Mon, 24 Aug 2020 08:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258282;
-        bh=ngj6WiQUPERZ5q4EO+GD7YhTNCR/Src7jBSoABAThGI=;
+        s=default; t=1598258285;
+        bh=f3fVCrnyd6RLjHqgwPzYJEygHegsH91uj0rO+tkdHCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ch3omN4yJlqc3mT+MOg2OPPzyLfzr8inQH8i0KiMz7FowDz9XSOS/4cUGZ8YRQ9LL
-         +G1k/MPdn8A439ghw2CCjtNoJl7nINc15sAFGZ1UePagbrKXNVxn2RXhneQpfeHcxU
-         6plIJlZ3dgpv0jMqTJ1JiwmTP1gIXfP9jbYF7NA0=
+        b=Q9EFd6OXbTCstxHn2QifuczQRELL9YNBwBlW78gQGEWb0rigfWBn+e6A/LgSkK6Dp
+         Km9RUVxujhXLirK2dJSrP5IT+nY+gmqXoJQMuEvs9Bwj+E26TiZ97wr1X22lZyQJyh
+         W/BeN2IX78wrM+pR/YWKXZYUKr65gJCmyYwCON8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.8 141/148] powerpc/pseries: Do not initiate shutdown when system is running on UPS
-Date:   Mon, 24 Aug 2020 10:30:39 +0200
-Message-Id: <20200824082420.773511688@linuxfoundation.org>
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.8 142/148] EDAC/{i7core,sb,pnd2,skx}: Fix error event severity
+Date:   Mon, 24 Aug 2020 10:30:40 +0200
+Message-Id: <20200824082420.823306113@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
 References: <20200824082413.900489417@linuxfoundation.org>
@@ -44,66 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+From: Tony Luck <tony.luck@intel.com>
 
-commit 90a9b102eddf6a3f987d15f4454e26a2532c1c98 upstream.
+commit 45bc6098a3e279d8e391d22428396687562797e2 upstream.
 
-As per PAPR we have to look for both EPOW sensor value and event
-modifier to identify the type of event and take appropriate action.
+IA32_MCG_STATUS.RIPV indicates whether the return RIP value pushed onto
+the stack as part of machine check delivery is valid or not.
 
-In LoPAPR v1.1 section 10.2.2 includes table 136 "EPOW Action Codes":
+Various drivers copied a code fragment that uses the RIPV bit to
+determine the severity of the error as either HW_EVENT_ERR_UNCORRECTED
+or HW_EVENT_ERR_FATAL, but this check is reversed (marking errors where
+RIPV is set as "FATAL").
 
-  SYSTEM_SHUTDOWN 3
+Reverse the tests so that the error is marked fatal when RIPV is not set.
 
-  The system must be shut down. An EPOW-aware OS logs the EPOW error
-  log information, then schedules the system to be shut down to begin
-  after an OS defined delay internal (default is 10 minutes.)
-
-Then in section 10.3.2.2.8 there is table 146 "Platform Event Log
-Format, Version 6, EPOW Section", which includes the "EPOW Event
-Modifier":
-
-  For EPOW sensor value = 3
-  0x01 = Normal system shutdown with no additional delay
-  0x02 = Loss of utility power, system is running on UPS/Battery
-  0x03 = Loss of system critical functions, system should be shutdown
-  0x04 = Ambient temperature too high
-  All other values = reserved
-
-We have a user space tool (rtas_errd) on LPAR to monitor for
-EPOW_SHUTDOWN_ON_UPS. Once it gets an event it initiates shutdown
-after predefined time. It also starts monitoring for any new EPOW
-events. If it receives "Power restored" event before predefined time
-it will cancel the shutdown. Otherwise after predefined time it will
-shutdown the system.
-
-Commit 79872e35469b ("powerpc/pseries: All events of
-EPOW_SYSTEM_SHUTDOWN must initiate shutdown") changed our handling of
-the "on UPS/Battery" case, to immediately shutdown the system. This
-breaks existing setups that rely on the userspace tool to delay
-shutdown and let the system run on the UPS.
-
-Fixes: 79872e35469b ("powerpc/pseries: All events of EPOW_SYSTEM_SHUTDOWN must initiate shutdown")
-Cc: stable@vger.kernel.org # v4.0+
-Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-[mpe: Massage change log and add PAPR references]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200820061844.306460-1-hegdevasant@linux.vnet.ibm.com
+Reported-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200707194324.14884-1-tony.luck@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/pseries/ras.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/edac/i7core_edac.c |    4 ++--
+ drivers/edac/pnd2_edac.c   |    2 +-
+ drivers/edac/sb_edac.c     |    4 ++--
+ drivers/edac/skx_common.c  |    4 ++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
---- a/arch/powerpc/platforms/pseries/ras.c
-+++ b/arch/powerpc/platforms/pseries/ras.c
-@@ -184,7 +184,6 @@ static void handle_system_shutdown(char
- 	case EPOW_SHUTDOWN_ON_UPS:
- 		pr_emerg("Loss of system power detected. System is running on"
- 			 " UPS/battery. Check RTAS error log for details\n");
--		orderly_poweroff(true);
- 		break;
+--- a/drivers/edac/i7core_edac.c
++++ b/drivers/edac/i7core_edac.c
+@@ -1710,9 +1710,9 @@ static void i7core_mce_output_error(stru
+ 	if (uncorrected_error) {
+ 		core_err_cnt = 1;
+ 		if (ripv)
+-			tp_event = HW_EVENT_ERR_FATAL;
+-		else
+ 			tp_event = HW_EVENT_ERR_UNCORRECTED;
++		else
++			tp_event = HW_EVENT_ERR_FATAL;
+ 	} else {
+ 		tp_event = HW_EVENT_ERR_CORRECTED;
+ 	}
+--- a/drivers/edac/pnd2_edac.c
++++ b/drivers/edac/pnd2_edac.c
+@@ -1155,7 +1155,7 @@ static void pnd2_mce_output_error(struct
+ 	u32 optypenum = GET_BITFIELD(m->status, 4, 6);
+ 	int rc;
  
- 	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
+-	tp_event = uc_err ? (ripv ? HW_EVENT_ERR_FATAL : HW_EVENT_ERR_UNCORRECTED) :
++	tp_event = uc_err ? (ripv ? HW_EVENT_ERR_UNCORRECTED : HW_EVENT_ERR_FATAL) :
+ 						 HW_EVENT_ERR_CORRECTED;
+ 
+ 	/*
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -2982,9 +2982,9 @@ static void sbridge_mce_output_error(str
+ 	if (uncorrected_error) {
+ 		core_err_cnt = 1;
+ 		if (ripv) {
+-			tp_event = HW_EVENT_ERR_FATAL;
+-		} else {
+ 			tp_event = HW_EVENT_ERR_UNCORRECTED;
++		} else {
++			tp_event = HW_EVENT_ERR_FATAL;
+ 		}
+ 	} else {
+ 		tp_event = HW_EVENT_ERR_CORRECTED;
+--- a/drivers/edac/skx_common.c
++++ b/drivers/edac/skx_common.c
+@@ -493,9 +493,9 @@ static void skx_mce_output_error(struct
+ 	if (uncorrected_error) {
+ 		core_err_cnt = 1;
+ 		if (ripv) {
+-			tp_event = HW_EVENT_ERR_FATAL;
+-		} else {
+ 			tp_event = HW_EVENT_ERR_UNCORRECTED;
++		} else {
++			tp_event = HW_EVENT_ERR_FATAL;
+ 		}
+ 	} else {
+ 		tp_event = HW_EVENT_ERR_CORRECTED;
 
 
