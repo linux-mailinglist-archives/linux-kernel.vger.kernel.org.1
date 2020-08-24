@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B412250286
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55801250292
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgHXQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35014 "EHLO mail.kernel.org"
+        id S1728148AbgHXQdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:33:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50544 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728145AbgHXQcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:32:16 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E8902067C;
-        Mon, 24 Aug 2020 16:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286735;
-        bh=JWw68BuVJ7xfLohloWh48lvCAxIed5C9r3jJcJyxoFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y+9T9DDdaJQxrm+zCaoyAUMyqLdeyuK0qOA+cQzh+mMxS41Bv8U+rmlEuVsrkVvGw
-         v9T2hfFFPIeGCAOD2/nhQS5SvGDVtpEeC13I06nqHVJYs1m8Q2JYslDw/NiOUG9GRB
-         UkP89VXdr0z4pAX8KrTtN8anYDfYxYgeaWa6l96g=
-Date:   Mon, 24 Aug 2020 17:32:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>
-Subject: Re: [PATCH stable v4.9 v2] arm64: entry: Place an SB sequence
- following an ERET instruction
-Message-ID: <20200824163208.GA25316@willie-the-truck>
-References: <20200709195034.15185-1-f.fainelli@gmail.com>
- <20200720130411.GB494210@kroah.com>
- <df1de420-ac59-3647-3b81-a0c163783225@gmail.com>
- <9c29080e-8b3a-571c-3296-e0487fa473fa@gmail.com>
- <20200807131429.GB664450@kroah.com>
- <20200821160316.GE21517@willie-the-truck>
- <7480435b-355d-b9f7-3a42-b72a9c4b6f63@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7480435b-355d-b9f7-3a42-b72a9c4b6f63@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727906AbgHXQdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:33:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4F101AF6E;
+        Mon, 24 Aug 2020 16:33:44 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH 00/12] Convert WAR defines to config options
+Date:   Mon, 24 Aug 2020 18:32:42 +0200
+Message-Id: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+This patches convert workaround (WAR) defines into config options and
+gets rid of mach-*/war.h files.
 
-On Fri, Aug 21, 2020 at 10:16:23AM -0700, Florian Fainelli wrote:
-> On 8/21/20 9:03 AM, Will Deacon wrote:
-> > On Fri, Aug 07, 2020 at 03:14:29PM +0200, Greg KH wrote:
-> >> On Thu, Aug 06, 2020 at 01:00:54PM -0700, Florian Fainelli wrote:
-> >>> Greg, did you have a chance to queue those changes for 4.9, 4.14 and 4.19?
-> >>>
-> >>> https://lore.kernel.org/linux-arm-kernel/20200720182538.13304-1-f.fainelli@gmail.com/
-> >>> https://lore.kernel.org/linux-arm-kernel/20200720182937.14099-1-f.fainelli@gmail.com/
-> >>> https://lore.kernel.org/linux-arm-kernel/20200709195034.15185-1-f.fainelli@gmail.com/
-> >>
-> >> Nope, I was waiting for Will's "ack" for these.
-> > 
-> > This patch doesn't even build for me (the 'sb' macro is not defined in 4.9),
-> > and I really wonder why we bother backporting it at all. Nobody's ever shown
-> > it to be a problem in practice, and it's clear that this is just being
-> > submitted to tick a box rather than anything else (otherwise it would build,
-> > right?).
-> 
-> Doh, I completely missed submitting the patch this depended on that's
-> why I did not notice the build failure locally, sorry about that, what a
-> shame.
-> 
-> Would not be the same "tick a box" argument be used against your
-> original submission then? Sure, I have not been able to demonstrate in
-> real life this was a problem, however the same can be said about a lot
-> security related fixes.
+Thomas Bogendoerfer (12):
+  MIPS: Convert R4600_V1_INDEX_ICACHEOP into a config option
+  MIPS: Convert R4600_V1_HIT_CACHEOP into a config option
+  MIPS: Convert R4600_V2_HIT_CACHEOP into a config option
+  MIPS: Remove MIPS4K_ICACHE_REFILL_WAR and MIPS_CACHE_SYNC_WAR
+  MIPS: Convert TX49XX_ICACHE_INDEX_INV into a config option
+  MIPS: Convert ICACHE_REFILLS_WORKAROUND_WAR into a config option
+  MIPS: Convert R10000_LLSC_WAR info a config option
+  MIPS: Convert MIPS34K_MISSED_ITLB_WAR into a config option
+  MIPS: Replace SIBYTE_1956_WAR by CONFIG_SB1_PASS_2_WORKAROUNDS
+  MIPS: Get rid of BCM1250_M3_WAR
+  MIPS: Get rid of CAVIUM_OCTEON_DCACHE_PREFETCH_WAR
+  MIPS: Remove mach-*/war.h
 
-Sort of, although I wrote the original patch because it was dead easy to do
-and saved having to think too much about the problem, whereas the complexity
-of backporting largerly diminishes that imo.
+ arch/mips/Kconfig                              |  80 +++++++++++++
+ arch/mips/cavium-octeon/setup.c                |   2 +-
+ arch/mips/include/asm/futex.h                  |   4 +-
+ arch/mips/include/asm/llsc.h                   |   2 +-
+ arch/mips/include/asm/local.h                  |   4 +-
+ arch/mips/include/asm/mach-cavium-octeon/war.h |  27 -----
+ arch/mips/include/asm/mach-generic/war.h       |  23 ----
+ arch/mips/include/asm/mach-ip22/war.h          |  27 -----
+ arch/mips/include/asm/mach-ip27/war.h          |  23 ----
+ arch/mips/include/asm/mach-ip28/war.h          |  23 ----
+ arch/mips/include/asm/mach-ip30/war.h          |  24 ----
+ arch/mips/include/asm/mach-ip32/war.h          |  23 ----
+ arch/mips/include/asm/mach-malta/war.h         |  23 ----
+ arch/mips/include/asm/mach-rc32434/war.h       |  23 ----
+ arch/mips/include/asm/mach-rm/war.h            |  27 -----
+ arch/mips/include/asm/mach-sibyte/war.h        |  38 -------
+ arch/mips/include/asm/mach-tx49xx/war.h        |  23 ----
+ arch/mips/include/asm/mipsregs.h               |   4 +-
+ arch/mips/include/asm/war.h                    | 150 -------------------------
+ arch/mips/kernel/signal.c                      |   8 +-
+ arch/mips/kernel/syscall.c                     |   2 +-
+ arch/mips/mm/c-r4k.c                           |  17 +--
+ arch/mips/mm/page.c                            |  16 ++-
+ arch/mips/mm/tlbex.c                           |   8 +-
+ arch/mips/mm/uasm.c                            |   2 +-
+ drivers/tty/serial/sb1250-duart.c              |   9 +-
+ 26 files changed, 127 insertions(+), 485 deletions(-)
+ delete mode 100644 arch/mips/include/asm/mach-cavium-octeon/war.h
+ delete mode 100644 arch/mips/include/asm/mach-generic/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip22/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip27/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip28/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip30/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip32/war.h
+ delete mode 100644 arch/mips/include/asm/mach-malta/war.h
+ delete mode 100644 arch/mips/include/asm/mach-rc32434/war.h
+ delete mode 100644 arch/mips/include/asm/mach-rm/war.h
+ delete mode 100644 arch/mips/include/asm/mach-sibyte/war.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/war.h
 
-> What if it becomes exploitable in the future, would not it be nice to
-> have it in a 6 year LTS kernel?
+-- 
+2.16.4
 
-Even if people are stuck on an old LTS, they should still be taking the
-regular updates for it, and we would obviously need to backport the fix if
-it turned out to be exploitable (and hey, we could even test it then!).
-
-> > So I'm not going to Ack any of them. As with a lot of this side-channel
-> > stuff the cure is far worse than the disease.
-> Assuming that my v3 does build correctly, which it will, would you be
-> keen on changing your position?
-
-Note that I'm not trying to block this patch from going in, I'm just saying
-that I'm not supportive of it. Perhaps somebody from Arm can review it if
-they think it's worth the effort.
-
-Will
