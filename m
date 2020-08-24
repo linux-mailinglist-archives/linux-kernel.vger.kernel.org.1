@@ -2,52 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED5725092B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCB225092D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgHXTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 15:22:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725976AbgHXTV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:21:59 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.9-rc3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598296919;
-        bh=HQYIhDEJFQHKLSfJOitcmoFKB9nF0wPzPT9kJIALLnU=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=bmy4pv8VwKj5DcdfYhQ52d2i0UoNjpWDXsDLqmYbAi7Z2W3f4yi6hjTywnIHDjFJH
-         iq6Fbds+85Yk6NX43WjYL427y9EKFYlueQGhwPOcUjlal5x/7rZHPc9EoynJj0J6rg
-         jOWz/hJbVPWned7sy1MDrK81u3oJOrcS/lY6+UgY=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1598283719.git.dsterba@suse.com>
-References: <cover.1598283719.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1598283719.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc2-tag
-X-PR-Tracked-Commit-Id: a84d5d429f9eb56f81b388609841ed993f0ddfca
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9907ab371426da8b3cffa6cc3e4ae54829559207
-Message-Id: <159829691929.31349.7697841057318029219.pr-tracker-bot@kernel.org>
-Date:   Mon, 24 Aug 2020 19:21:59 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1727831AbgHXTWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 15:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727093AbgHXTWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 15:22:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9BAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 12:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kYjuOG42Pf1wUxE3HuOUosmUkIHVzXaCDeTnguR2S+w=; b=hB78woS93z82XwwFsV7G/ATAG8
+        C0SM1mmWjKAl/yzV/7UkikVcMgxdHFKOo8uWwYoxDOIfynZUuCOokRpnyKKvJa4O/hujdcFNx/3zt
+        Plkq6oRbJJclVBQ2UyfXi9SMfWhr4hNk7sCQITVQJwJ4Vq4tlXnA9/aIwhySYtzTksla+ts0CJOcl
+        ZdUghgSdZpdoEycIpMHVX2zx1CISvNY5h6JHi72L3T3pmgGjgufMNiio6WB7bQUTO0IjyboPmc0VR
+        zaCm1ojsYb4PYufBWQ/n1h2WQtwtImtjmPmg8YZ/WZCZP9boCKoGhm6SOGpbvsDn0DK/mexegKk4d
+        LVI4TQfw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAI2o-0004PU-M2; Mon, 24 Aug 2020 19:22:14 +0000
+Date:   Mon, 24 Aug 2020 20:22:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/mempool: Add 'else' to split mutually exclusive case
+Message-ID: <20200824192214.GF17456@casper.infradead.org>
+References: <20200824115354.7879-1-linmiaohe@huawei.com>
+ <20200824121840.4cd7eb3dce03e8e1473221b3@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824121840.4cd7eb3dce03e8e1473221b3@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 24 Aug 2020 18:43:43 +0200:
+On Mon, Aug 24, 2020 at 12:18:40PM -0700, Andrew Morton wrote:
+> On Mon, 24 Aug 2020 07:53:54 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
+> 
+> > Add else to split mutually exclusive case and avoid some unnecessary check.
+> > 
+> > --- a/mm/mempool.c
+> > +++ b/mm/mempool.c
+> > @@ -60,9 +60,8 @@ static void check_element(mempool_t *pool, void *element)
+> >  	/* Mempools backed by slab allocator */
+> >  	if (pool->free == mempool_free_slab || pool->free == mempool_kfree)
+> >  		__check_element(pool, element, ksize(element));
+> > -
+> >  	/* Mempools backed by page allocator */
+> > -	if (pool->free == mempool_free_pages) {
+> > +	else if (pool->free == mempool_free_pages) {
+> >  		int order = (int)(long)pool->pool_data;
+> >  		void *addr = kmap_atomic((struct page *)element);
+> >  
+> 
+> It doesn't seem to change code generation (compiler is smart), but I
+> think it helps readability.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc2-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9907ab371426da8b3cffa6cc3e4ae54829559207
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Not with the comments where they are
