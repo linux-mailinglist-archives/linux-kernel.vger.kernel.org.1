@@ -2,97 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B9E24F116
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1793D24F127
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgHXC1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 22:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgHXC1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 22:27:48 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C463AC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:27:48 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d22so4044790pfn.5
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3L3z0BK/0uzC9bSt47v3W+rJZ7YzTzBC3wZRD43cnA4=;
-        b=OFMl3Uthl4B0LUygzKyBFNvaulTy/jC3i1c4+bTDhS+JfVlE1Ot+7iTaSa7A0cYIgC
-         ngIdFA0oW+svhPsqZrzb30umSCe5MWJMkhJS4yjbld3ED9HzFpX1nGlrsvbiR4B+wJXx
-         eCNugCTCDvK3W4/59qg2vF7rS4nqF08H7WjKS9KinevEvXDrvdy8PVTPpEna0Ldlyw+x
-         e8YuQQkrobDgmC03rbF1/IA6tX7xWkZz1iclvw+skdbzzyQB0rZNTxDIUWPK4+1ST4dy
-         tuablQUHXJWoNUOGsPFkT3AfZx74sJ4A8Va7o3gzQd0mDKx3UGK8jbzUic764wd8LV89
-         UesQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3L3z0BK/0uzC9bSt47v3W+rJZ7YzTzBC3wZRD43cnA4=;
-        b=bS9lXR33Zo/EdhC7snkI1YP0Z9hGtutg30pRy/iK1QPZpg6U31QA2aEL/gsI56sV4d
-         n7XJOYJR8XFqHYqRqV6kenAsjTUP7xyEk8SSkSemWA5YduDD9MjyW5nuiYf3W6s+qFD4
-         jD8TtwcWEpdmxNfrBjDQ/5vHy9n0jtDTyv3Q2Vk66HjbEU2D44qHJaBJgN9LNc1gOuYu
-         naQYM7PIb3scixKqO7k9/BxMPwNQlDnG6x2l38fHQPXtZk+kkrwrT5eQMkmN3EYBQOAr
-         Nq+ipzISV8XGwut1lJcw0CJR/vxqxmmC5d2Cj/erNgB+P0pkMpOsipoLOI067BWPhrcq
-         xwKQ==
-X-Gm-Message-State: AOAM530nFIaud54SZ0Xvb3dmOtHbiUx+36w/BtXl820NKIgiIEAE+9Xb
-        naNwuzIWvKB+mMNvq2JbCGY=
-X-Google-Smtp-Source: ABdhPJyb9yhrzs/jrFLLEvgIMxZj0ZMSN8gXD4KQBV3v3y6+nmtMh7UY7CMcC9THd5nxMtDyrs57Cg==
-X-Received: by 2002:a63:b24b:: with SMTP id t11mr2123373pgo.233.1598236068198;
-        Sun, 23 Aug 2020 19:27:48 -0700 (PDT)
-Received: from thinkpad.teksavvy.com (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id g15sm9413260pfh.70.2020.08.23.19.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 19:27:47 -0700 (PDT)
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     anton@tuxera.com, linux-ntfs-dev@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH] ntfs: add check for mft record size in superblock
-Date:   Sun, 23 Aug 2020 19:28:04 -0700
-Message-Id: <20200824022804.226242-1-rkovhaev@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728083AbgHXCcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 22:32:25 -0400
+Received: from mga17.intel.com ([192.55.52.151]:18536 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726832AbgHXCcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 22:32:25 -0400
+IronPort-SDR: x/9t3r3A/qcJE/MOhpNwI0naORS+vPBWHWKWPQGmFCPOF1S628gDFPNPRkqXDG/5JDSDzklZXN
+ sP4kKUG6U8yw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="135894700"
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="135894700"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2020 19:32:24 -0700
+IronPort-SDR: f8BfuEqWTP5sF+vKPqyqpugwW/EVHkAZhhuLHBcpA3DRmizcxLRTSVlya3D5U3ZfZjHj3ZMp/x
+ CN0wybww5fwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
+   d="scan'208";a="402122343"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 23 Aug 2020 19:32:21 -0700
+Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>, Wu Hao <hao.wu@intel.com>
+Subject: Re: [PATCH v2 4/9] iommu/ioasid: Add reference couting functions
+To:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1598070918-21321-5-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <31af38ba-5cda-5d60-237e-f98cfc87da1b@linux.intel.com>
+Date:   Mon, 24 Aug 2020 10:26:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1598070918-21321-5-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-number of bytes allocated for mft record should be equal to the mft
-record size stored in ntfs superblock
-as reported by syzbot, userspace might trigger out-of-bounds read by
-dereferencing ctx->attr in ntfs_attr_find()
+Hi Jacob,
 
-Reported-and-tested-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=aed06913f36eff9b544e
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Acked-by: Anton Altaparmakov <anton@tuxera.com>
----
- fs/ntfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On 8/22/20 12:35 PM, Jacob Pan wrote:
+> There can be multiple users of an IOASID, each user could have hardware
+> contexts associated with the IOASID. In order to align lifecycles,
+> reference counting is introduced in this patch. It is expected that when
+> an IOASID is being freed, each user will drop a reference only after its
+> context is cleared.
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>   drivers/iommu/ioasid.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/ioasid.h |   4 ++
+>   2 files changed, 117 insertions(+)
+> 
+> diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
+> index f73b3dbfc37a..5f31d63c75b1 100644
+> --- a/drivers/iommu/ioasid.c
+> +++ b/drivers/iommu/ioasid.c
+> @@ -717,6 +717,119 @@ int ioasid_set_for_each_ioasid(struct ioasid_set *set,
+>   EXPORT_SYMBOL_GPL(ioasid_set_for_each_ioasid);
+>   
+>   /**
+> + * IOASID refcounting rules
+> + * - ioasid_alloc() set initial refcount to 1
+> + *
+> + * - ioasid_free() decrement and test refcount.
+> + *     If refcount is 0, ioasid will be freed. Deleted from the system-wide
+> + *     xarray as well as per set xarray. The IOASID will be returned to the
+> + *     pool and available for new allocations.
+> + *
+> + *     If recount is non-zero, mark IOASID as IOASID_STATE_FREE_PENDING.
+> + *     No new reference can be added. The IOASID is not returned to the pool
+> + *     for reuse.
+> + *     After free, ioasid_get() will return error but ioasid_find() and other
+> + *     non refcount adding APIs will continue to work until the last reference
+> + *     is dropped
+> + *
+> + * - ioasid_get() get a reference on an active IOASID
+> + *
+> + * - ioasid_put() decrement and test refcount of the IOASID.
+> + *     If refcount is 0, ioasid will be freed. Deleted from the system-wide
+> + *     xarray as well as per set xarray. The IOASID will be returned to the
+> + *     pool and available for new allocations.
+> + *     Do nothing if refcount is non-zero.
+> + *
+> + * - ioasid_find() does not take reference, caller must hold reference
+> + *
+> + * ioasid_free() can be called multiple times without error until all refs are
+> + * dropped.
+> + */
+> +
+> +int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid)
+> +{
+> +	struct ioasid_data *data;
+> +
+> +	data = xa_load(&active_allocator->xa, ioasid);
+> +	if (!data) {
+> +		pr_err("Trying to get unknown IOASID %u\n", ioasid);
+> +		return -EINVAL;
+> +	}
+> +	if (data->state == IOASID_STATE_FREE_PENDING) {
+> +		pr_err("Trying to get IOASID being freed%u\n", ioasid);
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (set && data->set != set) {
+> +		pr_err("Trying to get IOASID not in set%u\n", ioasid);
+> +		/* data found but does not belong to the set */
+> +		return -EACCES;
+> +	}
+> +	refcount_inc(&data->users);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_get_locked);
+> +
+> +/**
+> + * ioasid_get - Obtain a reference of an ioasid
+> + * @set
+> + * @ioasid
+> + *
+> + * Check set ownership if @set is non-null.
+> + */
+> +int ioasid_get(struct ioasid_set *set, ioasid_t ioasid)
+> +{
+> +	int ret = 0;
+> +
+> +	spin_lock(&ioasid_allocator_lock);
+> +	ret = ioasid_get_locked(set, ioasid);
+> +	spin_unlock(&ioasid_allocator_lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_get);
+> +
+> +void ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid)
+> +{
+> +	struct ioasid_data *data;
+> +
+> +	data = xa_load(&active_allocator->xa, ioasid);
+> +	if (!data) {
+> +		pr_err("Trying to put unknown IOASID %u\n", ioasid);
+> +		return;
+> +	}
+> +
+> +	if (set && data->set != set) {
+> +		pr_err("Trying to drop IOASID not in the set %u\n", ioasid);
+> +		return;
+> +	}
+> +
+> +	if (!refcount_dec_and_test(&data->users)) {
+> +		pr_debug("%s: IOASID %d has %d remainning users\n",
+> +			__func__, ioasid, refcount_read(&data->users));
+> +		return;
+> +	}
+> +	ioasid_do_free(data);
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_put_locked);
+> +
+> +/**
+> + * ioasid_put - Drop a reference of an ioasid
+> + * @set
+> + * @ioasid
+> + *
+> + * Check set ownership if @set is non-null.
+> + */
+> +void ioasid_put(struct ioasid_set *set, ioasid_t ioasid)
+> +{
+> +	spin_lock(&ioasid_allocator_lock);
+> +	ioasid_put_locked(set, ioasid);
+> +	spin_unlock(&ioasid_allocator_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_put);
+> +
+> +/**
+>    * ioasid_find - Find IOASID data
+>    * @set: the IOASID set
+>    * @ioasid: the IOASID to find
 
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index 9bb9f0952b18..caf563981532 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -1810,6 +1810,12 @@ int ntfs_read_inode_mount(struct inode *vi)
- 		brelse(bh);
- 	}
- 
-+	if (le32_to_cpu(m->bytes_allocated) != vol->mft_record_size) {
-+		ntfs_error(sb, "Incorrect mft record size %u in superblock, should be %u.",
-+				le32_to_cpu(m->bytes_allocated), vol->mft_record_size);
-+		goto err_out;
-+	}
-+
- 	/* Apply the mst fixups. */
- 	if (post_read_mst_fixup((NTFS_RECORD*)m, vol->mft_record_size)) {
- 		/* FIXME: Try to use the $MFTMirr now. */
--- 
-2.28.0
+Do you need to increase the refcount of the found ioasid and ask the
+caller to drop it after use? Otherwise, the ioasid might be freed
+elsewhere.
 
+Best regards,
+baolu
+
+> diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
+> index 412d025d440e..310abe4187a3 100644
+> --- a/include/linux/ioasid.h
+> +++ b/include/linux/ioasid.h
+> @@ -76,6 +76,10 @@ int ioasid_attach_data(ioasid_t ioasid, void *data);
+>   int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
+>   void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
+>   void ioasid_is_in_set(struct ioasid_set *set, ioasid_t ioasid);
+> +int ioasid_get(struct ioasid_set *set, ioasid_t ioasid);
+> +int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid);
+> +void ioasid_put(struct ioasid_set *set, ioasid_t ioasid);
+> +void ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid);
+>   int ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
+>   			       void (*fn)(ioasid_t id, void *data),
+>   			       void *data);
+> 
