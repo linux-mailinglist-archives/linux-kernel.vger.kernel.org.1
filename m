@@ -2,62 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8628250927
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883DE25092A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgHXTSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 15:18:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
+        id S1726585AbgHXTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 15:22:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727073AbgHXTSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:18:41 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02AC120578;
-        Mon, 24 Aug 2020 19:18:40 +0000 (UTC)
+        id S1725946AbgHXTV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 15:21:58 -0400
+Subject: Re: [GIT PULL] fallthrough pseudo-keyword macro conversions for 5.9-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598296721;
-        bh=ruAaLHXCUgvFAIHtl74jpOBw0Y8uv95WYxQPoUYU1cY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NedftIdrJSSiWqFW1zJ5dFmP61Pu/QmDrouLYmttdGPY33KM++6Saxqxq+SmyfGfN
-         Qh64t3Q9lqnThGaAwsG1e0Jkjk86fDm6q0F0h4UOyEcyWd0zGGFzg9U9foXOGdeXjP
-         DJURi9DXi/CdIz1nILadUy+sbGVFU+bu6aoUF0Fo=
-Date:   Mon, 24 Aug 2020 12:18:40 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/mempool: Add 'else' to split mutually exclusive case
-Message-Id: <20200824121840.4cd7eb3dce03e8e1473221b3@linux-foundation.org>
-In-Reply-To: <20200824115354.7879-1-linmiaohe@huawei.com>
-References: <20200824115354.7879-1-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1598296918;
+        bh=COupIEk61+4T4DjyfKwXZdkrCvi7S2vcD0S2s5/NhTE=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=a4505DOONMHrDQhzRJr83aOVlgKJkiZeCe3J3ZaZ1mu+hXD5Rh5tr8NtK4zlka2Bg
+         vDOuDVwssVI7p0JOkEEiOSGrymI0Yp3b6xYtw33wd3GRvQb3J4SWEdt8MNnmNIxgZh
+         framtiFNFWstzPv1uQCBH8qI5ObeJ4kb28rZtZtk=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200824034841.GA29995@embeddedor>
+References: <20200824034841.GA29995@embeddedor>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200824034841.GA29995@embeddedor>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-pseudo-keyword-5.9-rc3
+X-PR-Tracked-Commit-Id: df561f6688fef775baa341a0f5d960becd248b11
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2bf74771ca5610b10c3ac4cd17aacc389e6927ca
+Message-Id: <159829691816.31349.245632158352966440.pr-tracker-bot@kernel.org>
+Date:   Mon, 24 Aug 2020 19:21:58 +0000
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 07:53:54 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
+The pull request you sent on Sun, 23 Aug 2020 22:48:41 -0500:
 
-> Add else to split mutually exclusive case and avoid some unnecessary check.
-> 
-> --- a/mm/mempool.c
-> +++ b/mm/mempool.c
-> @@ -60,9 +60,8 @@ static void check_element(mempool_t *pool, void *element)
->  	/* Mempools backed by slab allocator */
->  	if (pool->free == mempool_free_slab || pool->free == mempool_kfree)
->  		__check_element(pool, element, ksize(element));
-> -
->  	/* Mempools backed by page allocator */
-> -	if (pool->free == mempool_free_pages) {
-> +	else if (pool->free == mempool_free_pages) {
->  		int order = (int)(long)pool->pool_data;
->  		void *addr = kmap_atomic((struct page *)element);
->  
+> git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-pseudo-keyword-5.9-rc3
 
-It doesn't seem to change code generation (compiler is smart), but I
-think it helps readability.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2bf74771ca5610b10c3ac4cd17aacc389e6927ca
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
