@@ -2,132 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361DF24FC5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF1A24FC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgHXLPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:15:42 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:53919 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHXLO4 (ORCPT
+        id S1726673AbgHXL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726624AbgHXL1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:14:56 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200824111447epoutp03bd05d20eb5cb5b452b6451c07a8cfe8e~uL-52EmqR2867628676epoutp039
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 11:14:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200824111447epoutp03bd05d20eb5cb5b452b6451c07a8cfe8e~uL-52EmqR2867628676epoutp039
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598267687;
-        bh=8WDpye9ll5Rw3/XZ5sZwXTyq5y6EIcg6tb3iQpuN7nQ=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=LcfH3zh1rVVHhyJ1biTKfoMiSbJf0dd7GKnFBApXDT5E/g2F9a2DkXYJttlL/8e1M
-         dWqKi/Flh6E6gFaDAAF9ONIfiB/F0RcjgHuAmvt4jeA/zRAwTQrmtiWl7F3Lj7h9tp
-         0EL5I69Gbv8QkC49aLccXfzAGqAdc6pUreFSbMBE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200824111446epcas1p26f0d23ab5f2ed77e5d10ceeb84d978c7~uL-41-DtW1227812278epcas1p2d;
-        Mon, 24 Aug 2020 11:14:46 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4BZqJz2vKczMqYkf; Mon, 24 Aug
-        2020 11:14:43 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E4.A5.29173.321A34F5; Mon, 24 Aug 2020 20:14:43 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200824111442epcas1p44030022c3b9f5efba6e4613b45d6b1aa~uL-1HRWfa0548505485epcas1p4E;
-        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200824111442epsmtrp2db6ed69b9c84d0021aa06bc8da1ddfdc~uL-1GnnZi2446424464epsmtrp28;
-        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
-X-AuditID: b6c32a37-9cdff700000071f5-0e-5f43a12387e8
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        74.00.08382.221A34F5; Mon, 24 Aug 2020 20:14:42 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200824111442epsmtip2035faacd7f7c3884733c992f84b486e1~uL-08yOxs2184021840epsmtip2M;
-        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
-Subject: Re: [PATCH v2 00/13] extcon: ptn5150: Improvements and fixes
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <028fb879-dc74-b822-c399-7f3c9628ec47@samsung.com>
-Date:   Mon, 24 Aug 2020 20:27:10 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Mon, 24 Aug 2020 07:27:47 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5487EC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:27:47 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y6so4065363plk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=baquQjNt6PFNzFAsQ0kh01MX49ZmJ/9Yg6dF7IDX3SI=;
+        b=XDcppkVsrS82tADPSlchfl+fIh7vjbha2AfE+pdlL+dJ4n9F9wb1id39Ttudz+OTBs
+         cFU9iqWtUav7j6WClzSX/OhkCoe1H1Y+cYGgH6+22Q/bqMxYaNG5gRYq8fYPrCjBefGA
+         e6GF5Wz440cGa9dudTTei2vce+57RSDFLiPk1KFZnF7Au0jzS9njjNGoVc0P0j7JcrGH
+         OdZr7uFAbOavvmBxm7gywnOXW29xYh/jqHEdNnawVNDoo2dlqw8WgG1sEDDhzfkFqKye
+         k420NbCI+aCLYLnAv9aFcQhYfS3JRz7+TZ0K9FO6EZoQfMsl2v2VNV2uoyWikZR9FOJ5
+         5nwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=baquQjNt6PFNzFAsQ0kh01MX49ZmJ/9Yg6dF7IDX3SI=;
+        b=Z6LyqFV9+8pJVpAikGF+Q/Qg799cZ7vQHX3joLGZOA5dTLqHS7HEkPD5QM75ygoU8x
+         cUlRMuOOZz9AXWX4XnZv9ycLk9TkliaNeQXMf3zWIa5VELy4WiY/vemDS4DuqIyzYZU8
+         STsat6Zt6wLr031+fSHzWsHCy/o8EDG0ihPTizby5QF4i/3d/hTyM7sY5bNmb62nJVYb
+         5pSMaa+H8ZJaFv2qG5+MVFtew1GCg63AqtqxUXd6DrZWcU7f2xLeBQIO/vU4krhVAq+S
+         /58IZh0vklC3fktsoNn3iNwE8m9zwtET5h9m0JPstgM+hZ0cKuqOb3/istDKZSE2cDBH
+         BlAA==
+X-Gm-Message-State: AOAM532R8P57Senac1MThFh2PtDd8BotV0DPk0LqNU9udwxe6R5Smwhz
+        h2dG+LTn0OlW32j14kzfrWyzXg==
+X-Google-Smtp-Source: ABdhPJxwW1lXpSca83U1QtZjsMBccasNeRma6uXMIzqn9tVduIk2Swl1So0zZQR6DP5Sviepgt2TFA==
+X-Received: by 2002:a17:90a:1f8c:: with SMTP id x12mr4384709pja.186.1598268466779;
+        Mon, 24 Aug 2020 04:27:46 -0700 (PDT)
+Received: from localhost ([122.172.43.13])
+        by smtp.gmail.com with ESMTPSA id k20sm5925428pfu.197.2020.08.24.04.27.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 04:27:46 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 16:57:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [RFC PATCH 3/3] opp: Power on (virtual) power domains managed by
+ the OPP core
+Message-ID: <20200824112744.jsyaxrfbybyjpwex@vireshk-i7>
+References: <20200730080146.25185-1-stephan@gerhold.net>
+ <20200730080146.25185-4-stephan@gerhold.net>
 MIME-Version: 1.0
-In-Reply-To: <20200817070009.4631-1-krzk@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTV1d5oXO8waefAhbzj5xjtTh/fgO7
-        xeVdc9gsbjeuYLNo3XuE3eLl/umsDmweO2fdZffYtKqTzaNvyypGj8+b5AJYorJtMlITU1KL
-        FFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4CWKymUJeaUAoUCEouL
-        lfTtbIryS0tSFTLyi0tslVILUnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM05PXsVa0MxU
-        sWP3AZYGxn2MXYycHBICJhKLVs5lA7GFBHYwSpyaU93FyAVkf2KUeD7jPSuE841R4vKrZeww
-        He17nrBDJPYySsx8d44RwnnPKLGw5QkrSJWwgKvEsW//wKpEBJ4xSjTfvsIMkmAT0JLY/+IG
-        2EJ+AUWJqz8egx3CK2An8evhQyYQm0VAVeLJsVlg60QFwiRObmuBqhGUODnzCQuIzQl0xvzH
-        F8BqmAXEJW49mc8EYctLbH87hxlksYRAI4fElbebWSDudpE4u/Yt1A/CEq+Ob4GypSQ+v9vL
-        BmFXS6w8eYQNormDUWLL/gusEAljif1LJwNt4ADaoCmxfpc+RFhRYufvuYwQi/kk3n3tYQUp
-        kRDglehoE4IoUZa4/OAuE4QtKbG4vRNqlYfE5+8XmCYwKs5C8tosJO/MQvLOLITFCxhZVjGK
-        pRYU56anFhsWGCNH9yZGcMrUMt/BOO3tB71DjEwcjIcYJTiYlUR4b2+yjxfiTUmsrEotyo8v
-        Ks1JLT7EaAoM7InMUqLJ+cCknVcSb2hqZGxsbGFiaGZqaKgkzvvwlkK8kEB6YklqdmpqQWoR
-        TB8TB6dUA9O17rVbrL4sfVjmlLL1UPCdiObz12ftbFD9/NwgKIl1wu5r1af3r0gs/2tbm23B
-        I5SzLF7pUPXb84p+wmbuQibLJmfzrM+P3tRinVI06y/jBFd1fUbh5in8j3+8nzWHxXtpf+/5
-        iAWz1647eF9uTv5JK+bo2qbV5d5TJMOSj8x4szlvs1kuh+Edx4bvTucCuF7ukkoJcf8/QfHj
-        g9dflx7Vc+NK3dZs8PrWv8r65MRgvfQHeSn/GV4/7slg2jX9SSWzd0t3jeNFuchszsCEGSsa
-        t376ITBZzTExnWedutuU1kkF8Y9NXqtufPeNQ1IiougK3/4ZdmFuF3085CJLOKZurZSVd6ix
-        TZASabjlq8RSnJFoqMVcVJwIAK0BwX0iBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsWy7bCSvK7SQud4g3WtShbzj5xjtTh/fgO7
-        xeVdc9gsbjeuYLNo3XuE3eLl/umsDmweO2fdZffYtKqTzaNvyypGj8+b5AJYorhsUlJzMstS
-        i/TtErgyTk9exVrQzFSxY/cBlgbGfYxdjJwcEgImEu17nrB3MXJxCAnsZpQ48+giE0RCUmLa
-        xaPMXYwcQLawxOHDxRA1bxklrrX+YAWpERZwlTj27R9Ys4jAM0aJ01NuQU1qZ5T4umk3M0gV
-        m4CWxP4XN9hAbH4BRYmrPx6DreYVsJP49fAh2DYWAVWJJ8dmsYPYogJhEjuXPGaCqBGUODnz
-        CQuIzQl06vzHF8BqmAXUJf7Mu8QMYYtL3HoynwnClpfY/nYO8wRGoVlI2mchaZmFpGUWkpYF
-        jCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCo0RLcwfj9lUf9A4xMnEwHmKU4GBW
-        EuG9vck+Xog3JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC6YklqdmpqQWpRTBZJg5OqQam
-        Etun2Ut+K74XVRKLqRaYVv/sTuT5M7E1CZtmrTl1fYb1hKO1L6+YnGLs+xX68eNmhZdeDp1x
-        bjvc27yzF5xR5DrYcNaXQ2/5vMtNCrlN624pesycUbXjxdXusoDVC9PyNjoKM5eddbZeK1X9
-        tzC6gu399usvQzU/ighz3TPk3N/x7pbgglNqAS+/n36beWV/9q2ZJx+3Kdw4820ao90qLdYD
-        paoLX/BpJrNPX2q7NUvqrvDjLHf7pjl/0sK4pjxX7vfPbG38u2TWxs/T0+ezXCpi1XJ328m6
-        2FZeq389D2vN7XMXb1WJzvp7cb9S9yX9lsLzOs80GnYuWRihOP+q9xrlMM9Osx2rP1oGLZvG
-        p8RSnJFoqMVcVJwIAO7Mx8kBAwAA
-X-CMS-MailID: 20200824111442epcas1p44030022c3b9f5efba6e4613b45d6b1aa
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200817070046epcas1p4c047a86ccef2e5604f31e674782c9c6c
-References: <CGME20200817070046epcas1p4c047a86ccef2e5604f31e674782c9c6c@epcas1p4.samsung.com>
-        <20200817070009.4631-1-krzk@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200730080146.25185-4-stephan@gerhold.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On 30-07-20, 10:01, Stephan Gerhold wrote:
+> dev_pm_opp_attach_genpd() allows attaching an arbitrary number of
+> power domains to an OPP table. In that case, the genpd core will
+> create a virtual device for each of the power domains.
+> 
+> At the moment, the OPP core only calls
+> dev_pm_genpd_set_performance_state() on these virtual devices.
+> It does not attempt to power on the power domains. Therefore
+> the required power domain might never get turned on.
+> 
+> So far, dev_pm_opp_attach_genpd() is only used in qcom-cpufreq-nvmem.c
+> to attach the CPR power domain to the CPU OPP table. The CPR driver
+> does not check if it was actually powered on so this did not cause
+> any problems. However, other drivers (e.g. rpmpd) might ignore the
+> performance state until the power domain is actually powered on.
+> 
+> Since these virtual devices are managed exclusively by the OPP core,
+> I would say that it should also be responsible to ensure they are
+> enabled. A similar approach is already used for regulators, see
+> commit 8d45719caaf5 ("opp: core: add regulators enable and disable").
+> 
+> This commit implements similar functionality for the virtual genpd
+> devices managed by the OPP core. The power domains are turned on
+> the first time dev_pm_opp_set_rate() is called. They are turned off
+> again when dev_pm_opp_set_rate(dev, 0) is called.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Related discussion: https://lore.kernel.org/linux-arm-msm/20200426123140.GA190483@gerhold.net/
+> 
+> There would be also other ways to implement this, e.g. device links,
+> assuming that the device using the OPP table also makes use of runtime PM.
+> My first thought was that it would be most consistent to handle this like
+> regulators, bandwidth votes etc. RFC :)
 
-On 8/17/20 3:59 PM, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> Changes since v1:
-> 1. Mutex unlock fix in patch 8/13.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+This stuff was done ages back and I am starting to forget almost
+everything now :)
 
-Applied them. Thanks.
+Ulf, why doesn't pm_runtime_get(dev) take care of enabling multiple
+power domain case ? RFP (request for patience) :)
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+viresh
