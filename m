@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB2C24F4A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7177924F42A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbgHXIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
+        id S1726964AbgHXId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728571AbgHXIiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:38:46 -0400
+        id S1726158AbgHXIdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:33:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9344722B47;
-        Mon, 24 Aug 2020 08:38:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCDBE206F0;
+        Mon, 24 Aug 2020 08:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258326;
-        bh=EPajKXHFjc0YAhYJMrssrhINBvBrhqjSvgk0uwagryY=;
+        s=default; t=1598257999;
+        bh=RTZlpJtWR9dCMfe8rD/njmwdfqkcm8EYx/e7gU4wJaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JMQaW0fKBDdraQfyTeb74O3Qz3IQ+8kQf07SlOEXdFkfLO1jnCOt2sP2h9y/htaOF
-         BJ6QN0rBelxcyZtEFVLPH4D9Iz83aw8GSgtdBs49MbIo7f2DG66r+A9iVY3+CGfrb6
-         6C3eF4AhSIEJZ3RjLUqPEBUI6Z8mOZSRAQTNyoQs=
+        b=vfb/BDOo8t34rL3hO8W6BzRchug750M2MwVBlWqUafd9GABCsdkuC+DOZQSWwYePZ
+         qMKHJjldLGcQk4AvgLTAav1zHKwOkgp4sFYYBBuBxyuLvFEvSeyTsSL0p2i4HJYpoq
+         zTkq7EBFyB/O2VkL903HAfXxSS7EN69nlR/sRC8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 001/124] drm/vgem: Replace opencoded version of drm_gem_dumb_map_offset()
+        stable@vger.kernel.org, Daniel Kolesa <daniel@octaforge.org>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.8 037/148] drm/amdgpu/display: use GFP_ATOMIC in dcn20_validate_bandwidth_internal
 Date:   Mon, 24 Aug 2020 10:28:55 +0200
-Message-Id: <20200824082409.446011665@linuxfoundation.org>
+Message-Id: <20200824082415.827200041@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,83 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Daniel Kolesa <daniel@octaforge.org>
 
-[ Upstream commit 119c53d2d4044c59c450c4f5a568d80b9d861856 ]
+commit f41ed88cbd6f025f7a683a11a74f901555fba11c upstream.
 
-drm_gem_dumb_map_offset() now exists and does everything
-vgem_gem_dump_map does and *ought* to do.
+GFP_KERNEL may and will sleep, and this is being executed in
+a non-preemptible context; this will mess things up since it's
+called inbetween DC_FP_START/END, and rescheduling will result
+in the DC_FP_END later being called in a different context (or
+just crashing if any floating point/vector registers/instructions
+are used after the call is resumed in a different context).
 
-In particular, vgem_gem_dumb_map() was trying to reject mmapping an
-imported dmabuf by checking the existence of obj->filp. Unfortunately,
-we always allocated an obj->filp, even if unused for an imported dmabuf.
-Instead, the drm_gem_dumb_map_offset(), since commit 90378e589192
-("drm/gem: drm_gem_dumb_map_offset(): reject dma-buf"), uses the
-obj->import_attach to reject such invalid mmaps.
+Signed-off-by: Daniel Kolesa <daniel@octaforge.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This prevents vgem from allowing userspace mmapping the dumb handle and
-attempting to incorrectly fault in remote pages belonging to another
-device, where there may not even be a struct page.
-
-v2: Use the default drm_gem_dumb_map_offset() callback
-
-Fixes: af33a9190d02 ("drm/vgem: Enable dmabuf import interfaces")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: <stable@vger.kernel.org> # v4.13+
-Link: https://patchwork.freedesktop.org/patch/msgid/20200708154911.21236-1-chris@chris-wilson.co.uk
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vgem/vgem_drv.c | 27 ---------------------------
- 1 file changed, 27 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-index 909eba43664a2..204d1df5a21d1 100644
---- a/drivers/gpu/drm/vgem/vgem_drv.c
-+++ b/drivers/gpu/drm/vgem/vgem_drv.c
-@@ -229,32 +229,6 @@ static int vgem_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
- 	return 0;
- }
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -3097,7 +3097,7 @@ static bool dcn20_validate_bandwidth_int
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
+-	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_KERNEL);
++	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
  
--static int vgem_gem_dumb_map(struct drm_file *file, struct drm_device *dev,
--			     uint32_t handle, uint64_t *offset)
--{
--	struct drm_gem_object *obj;
--	int ret;
--
--	obj = drm_gem_object_lookup(file, handle);
--	if (!obj)
--		return -ENOENT;
--
--	if (!obj->filp) {
--		ret = -EINVAL;
--		goto unref;
--	}
--
--	ret = drm_gem_create_mmap_offset(obj);
--	if (ret)
--		goto unref;
--
--	*offset = drm_vma_node_offset_addr(&obj->vma_node);
--unref:
--	drm_gem_object_put_unlocked(obj);
--
--	return ret;
--}
--
- static struct drm_ioctl_desc vgem_ioctls[] = {
- 	DRM_IOCTL_DEF_DRV(VGEM_FENCE_ATTACH, vgem_fence_attach_ioctl, DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(VGEM_FENCE_SIGNAL, vgem_fence_signal_ioctl, DRM_RENDER_ALLOW),
-@@ -448,7 +422,6 @@ static struct drm_driver vgem_driver = {
- 	.fops				= &vgem_driver_fops,
- 
- 	.dumb_create			= vgem_gem_dumb_create,
--	.dumb_map_offset		= vgem_gem_dumb_map,
- 
- 	.prime_handle_to_fd = drm_gem_prime_handle_to_fd,
- 	.prime_fd_to_handle = drm_gem_prime_fd_to_handle,
--- 
-2.25.1
-
+ 	BW_VAL_TRACE_COUNT();
 
 
