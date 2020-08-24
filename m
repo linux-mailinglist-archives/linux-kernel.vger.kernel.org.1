@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD63624F0F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D9824F0FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727912AbgHXCBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 22:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
+        id S1727943AbgHXCFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 22:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727882AbgHXCBL (ORCPT
+        with ESMTP id S1726852AbgHXCFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 22:01:11 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5BAC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:01:10 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d22so4019363pfn.5
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:01:10 -0700 (PDT)
+        Sun, 23 Aug 2020 22:05:41 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DCCC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:05:40 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id h5so988737plt.6
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 19:05:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/EPwsOjNAOJnCAlukSWZN+FIBKRBbYip6lL2WUYmrb4=;
-        b=X4fLhJpuYLT9HBTn0MCHAO23k+DOxUoepGCYCLJcNCdkw+2uo7fXEY2BA340MEwfCB
-         d7ehL2aAhL9p7UzcVSCa/KI+OtxPiIGcHErN1yKPlmoLaZ6JHwHpQv2vcsZ+PkhRQTpI
-         QAvDmyLsOe56m9Oi9rNodzo3h6xmKIWMx76q4O7F47NpfdMRMvgxZqwTlgWceDZALmEq
-         Pwk9ImMaYtalMkB9TCaYwDXh947gnkugHtsHtH5OFaiXi/nqm7TvgzBU9OEhbldHvpoG
-         ABJ70gaXptcBtQYXwkH4Cc8dj8kSy0DBXjfEp/4dNUcGYanJ/nqJeUBNCxyrJgCG8Nxj
-         Ma/w==
+        h=from:to:cc:subject:date:message-id;
+        bh=WogHqAqohDBHZ8SUM7HEIVaDNX8B2UknmY2OcVCsXPE=;
+        b=o9NsVDnZyYih3aUpV2+sdu1OBb4z5PNnzSEDumKLwQwCcv6LBTju/dLmzHGF7fQjbn
+         uBOlztxu3XhGZRLwTmK7ujQglCUpIBEslwjYyD19exZLl55IFOk7fmTite4bh4hIhYA1
+         N84Yr6yy+PvNyAvX5eNh5JI+ZcgaC3isPhn+XtDL5Ege27AbhcJgCFlcFpG5qNIt1wkP
+         CKhAQmBbrRR4d5GQ9isIcDTAovrkd8uf4Cx1g2xlEtnFfaKzlxquLhdvfZA68U2dHcZW
+         ejPW3N1LItW6EajHqVweQEqQjSqdc3pPM5YkdykZ8ezaycfhcNENvRmp0vbxk+sWk+02
+         yGqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/EPwsOjNAOJnCAlukSWZN+FIBKRBbYip6lL2WUYmrb4=;
-        b=OBW1Ph4lSn7c9xXe+jiUMxKZNfF+jcCWPYdsw+ES0XAo2N/intqEfODpVDc7ClLZmo
-         /QzY8rlNtd54iZe0pWaGOPrjHZMlG5ERyNHz1il/TklIcsn7x6zyC1I1uYfFYCH9ARot
-         zHnmStZ4k4zzbJMsUDWpSYtiWtMvgJmBJb7f4ALuKTtWCxOlPK4bvYdcXZk9ZASL3NpO
-         ORi0F2rqr0wN1+vnscWBAJt2poVtZzrZKk0O2Oz3s0JyT50SQVUP8awjtG4LmdRFjsN4
-         cWZ9eZ72TvrQibSgT8nQOs7mokM/7RAFhs0bVCD7w1kf5F7ecprD6jEVPrEV7Diypogy
-         NSlQ==
-X-Gm-Message-State: AOAM530INAupJjg8vSOEzMRXoh6/oV5+oLz0hpD4PmZqNavB6ZUtewyC
-        0CEnJrOgWSBW5xnvrMXC8lA=
-X-Google-Smtp-Source: ABdhPJxFfBdTcZQPgJcrxm+oQh/zQtDnzfKaFDqAVIatruFMa4d8yl7DsgEe6TtRST/nV59dfqRmlg==
-X-Received: by 2002:a63:6a47:: with SMTP id f68mr2052164pgc.170.1598234469821;
-        Sun, 23 Aug 2020 19:01:09 -0700 (PDT)
-Received: from thinkpad (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id y72sm9584176pfg.58.2020.08.23.19.01.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 19:01:09 -0700 (PDT)
-Date:   Sun, 23 Aug 2020 19:01:46 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ntfs: add check for mft record size in superblock
-Message-ID: <20200824020146.GA209078@thinkpad>
-References: <20200823152147.55766-1-rkovhaev@gmail.com>
- <F206DE99-102C-475D-9129-5B9ACBAED8E6@tuxera.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F206DE99-102C-475D-9129-5B9ACBAED8E6@tuxera.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WogHqAqohDBHZ8SUM7HEIVaDNX8B2UknmY2OcVCsXPE=;
+        b=EW6F8Sg+tlhEVaNRtEXevh6miy6Rv625D2g92fz6z3Z3qUz5eET5pD8idTv0OYuDsw
+         YkKMrkCpfD7rCi5qnVq7xFkvS4z1pu1rJKmJGNJOt97FnEcsUDvRjwrp3+C7Lj0Ndn2s
+         zA+UyHVuWapZp+tkpydR9GNJboiVHoTIePI2zXvuRD8QmU1VdAJAvgwTJPOC/CWaoajt
+         pGv2lqtSLImdHeYsj0h/dRX/Us/ZMqjSxTs8BpbyeAX4aFQwks6Is5k6Ab5dsE7aDOf9
+         3CPjemvID5xBI2r6RNDgyVU+lnzSM+2N8K9/cpdrQzaOfaI3lVrt7xp/z/g09sGHKb6y
+         Ut8g==
+X-Gm-Message-State: AOAM530iKC5NQ+wvGqMuTckyuY5CodXhuq2VHy8GbFytcsm45jK6I1p3
+        +QfvZOPofd7ir5vGQNMqm6Q=
+X-Google-Smtp-Source: ABdhPJzZgzY6R3x2cwUI4pX/w0pWVj0snEF3TYtFBvqQrRj/8pzlkrNuSBm4bVElg6O310tiiGHl+A==
+X-Received: by 2002:a17:90b:1216:: with SMTP id gl22mr2772437pjb.98.1598234740105;
+        Sun, 23 Aug 2020 19:05:40 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:578:1a23:7d27:569f:8e65:12c9])
+        by smtp.gmail.com with ESMTPSA id p5sm3580854pgm.66.2020.08.23.19.05.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 23 Aug 2020 19:05:39 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org
+Cc:     cy_huang@richtek.com, gene_chen@richtek.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
+Date:   Mon, 24 Aug 2020 10:05:13 +0800
+Message-Id: <1598234713-8532-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 01:44:06AM +0000, Anton Altaparmakov wrote:
-> Hi Rustam,
-> 
-> Thank you for the patch but it introduces an endianness bug - you have to us le32_to_cpu(m->bytes_allocated) both when doing the comparison and then printing the message.
-> 
-> Also, please drop the square brackets.  Wherever the driver prints such things it never uses brackets around the numbers and it would be better to have this consistent throughout.
-> 
-> Can you please resend with the above issues addressed?  You can then also add to the commit message:
-> 
-> 	Acked-by: Anton Altaparmakov <anton@tuxera.com>
-> 
-> Thanks!
-> 
-> Best regards,
-> 
-> 	Anton
-> 
-hi Anton,
-thank you for the review, my bad, i'll get it fixed and i'll resend the patch
+From: ChiYuan Huang <cy_huang@richtek.com>
+
+Fix below warning when CONFIG_OF=n:
+
+drivers/regulator/rt4801-regulator.c:206:34: warning: unused variable 'rt4801_of_id' [-Wunused-const-variable]
+  206 | static const struct of_device_id rt4801_of_id[] = {
+      |                                  ^~~~~~~~~~~~
+
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/regulator/rt4801-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/rt4801-regulator.c b/drivers/regulator/rt4801-regulator.c
+index 0ddc670..2055a9c 100644
+--- a/drivers/regulator/rt4801-regulator.c
++++ b/drivers/regulator/rt4801-regulator.c
+@@ -203,7 +203,7 @@ static int rt4801_probe(struct i2c_client *i2c)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id rt4801_of_id[] = {
++static const struct of_device_id __maybe_unused rt4801_of_id[] = {
+ 	{ .compatible = "richtek,rt4801", },
+ 	{ },
+ };
+-- 
+2.7.4
+
