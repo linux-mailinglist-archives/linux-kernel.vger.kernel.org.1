@@ -2,95 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0367D24F8A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792B824F8BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgHXJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgHXJgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:36:00 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB620C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:35:59 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x5so7660663wmi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a+qBqva1TzYQ5RnHnuZAT29wnXZU/+xs6tKfmNJfO0E=;
-        b=yIT/7UWxUOXMSG5UryvbaY1Ck/9X1LWrS3GIdFRp7f9jKp1MojafFO7SlcdTqycmN9
-         YOkAdQNb6x3hxaPpMyoC6HBnpKa+TPMoPrX4v5Bx8e/0rcQzz3rwDAwlVJ9ySDjdHa8P
-         gxl+Alxxd3oh++LTDkXFX07MCvPy9AOHsxRLS33TQLbbJK98OjqhxguOU8kmCKbfGl+i
-         SZFZAy1V1zlQbTGkiwk+ZVCmCR7cij4liuYQ5vCKnbkQeQdxp0gb3tZq9i0Cc0HS+JK3
-         MvIYTmlkUcRDJSLOk1loa7GDDg3VUqTL4VEyL5Wu1q2wZdV4rpTx19Z4K0IQWg7MxPGC
-         D+ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a+qBqva1TzYQ5RnHnuZAT29wnXZU/+xs6tKfmNJfO0E=;
-        b=p6prSnFklY9/aSyOQASKB5DWfKUVxrNrPSlhe2AjpZTDP2DLz9i2290AhxK70FvY7R
-         uuZrscT3lgaeYZAqA+wMOSt2Lude6CEl36wadkPxU8HApWrcmjyp7g6OArzwOcirEE2I
-         K6HMNZJP9YFvglEoOvFAR+VFABulW5WAvxnYA++3GvbDE9HkWQPQ8e6+5BTEwykXinI7
-         hfb/XfvTF6ILOEJTFMalCN2EUmLt9L3KAftm+jgAHYO86Sjt+WR015OcypQrlZ/dydaC
-         IedSuvDKcUAXoBlDfnMOVhc+cG1nz8YPms5IqRjJ+a+7h4iteyE7hSWX+DY9edojq5Xl
-         +YVw==
-X-Gm-Message-State: AOAM530fyzTZNpDyypPydeCwgZgWJNe1RUDLfD0mlMIqYnszeTcHdhPl
-        C1uawMg9NhtW+fLCNtOJ0vSx9A==
-X-Google-Smtp-Source: ABdhPJzIc6QSoUS9oxZsc9VLLMmsA6P6cy+Q5aHgP/cOCZLdV9bKWS8FvvqVA6WEuOaSKYKDEZPY4A==
-X-Received: by 2002:a1c:f017:: with SMTP id a23mr4668754wmb.164.1598261758453;
-        Mon, 24 Aug 2020 02:35:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
-        by smtp.googlemail.com with ESMTPSA id f6sm30504901wme.32.2020.08.24.02.35.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 02:35:58 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/drivers/timer-gx6605s: Fixup counter reload
-To:     guoren@kernel.org
-Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <1597735877-71115-1-git-send-email-guoren@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8fae0fad-4211-61fa-b687-0eca4bffbdaf@linaro.org>
-Date:   Mon, 24 Aug 2020 11:35:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729826AbgHXJhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:37:12 -0400
+Received: from mga12.intel.com ([192.55.52.136]:16464 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726825AbgHXJgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 05:36:54 -0400
+IronPort-SDR: rFHxpNYUpeyJ5Q+HoqLM0A6ZwifP0W4U+6P8oOML0fvpp1qJG5rT0sDYylIS/Uezs40dBoaEEf
+ rrAeUHiWIyTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="135412726"
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="135412726"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 02:36:52 -0700
+IronPort-SDR: 67MvChZQtMHeJGcLdFvFwsT6bbMTvuekf5QhyOcXeEmCSDtpZWY29mFmWCA+/rewHoWu7cSXQ4
+ 2loCMKTHXHMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="279608953"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 24 Aug 2020 02:36:52 -0700
+Received: from [10.249.74.159] (rtanwar-MOBL.gar.corp.intel.com [10.249.74.159])
+        by linux.intel.com (Postfix) with ESMTP id 403425805B5;
+        Mon, 24 Aug 2020 02:36:48 -0700 (PDT)
+Subject: Re: [PATCH v10 2/2] Add PWM fan controller driver for LGM SoC
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+References: <cover.1598240097.git.rahul.tanwar@linux.intel.com>
+ <05b664b961e37c1c35fa7d5d1cfc9ae244bc86bc.1598240097.git.rahul.tanwar@linux.intel.com>
+ <20200824081715.GA1891694@smile.fi.intel.com>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <ed7affbb-b95d-cf42-b9bc-71addf908ffc@linux.intel.com>
+Date:   Mon, 24 Aug 2020 17:36:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <1597735877-71115-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <20200824081715.GA1891694@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2020 09:31, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> When the timer counts to the upper limit, an overflow interrupt is
-> generated, and the count is reset with the value in the TIME_INI
-> register. But the software expects to start counting from 0 when
-> the count overflows, so it forces TIME_INI to 0 to solve the
-> potential interrupt storm problem.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Tested-by: Xu Kai <xukai@nationalchip.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
 
-Applied, thanks
+Hi Andy,
 
+On 24/8/2020 4:17 pm, Andy Shevchenko wrote:
+> On Mon, Aug 24, 2020 at 11:36:37AM +0800, Rahul Tanwar wrote:
+>> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+>> This PWM controller does not have any other consumer, it is a
+>> dedicated PWM controller for fan attached to the system. Add
+>> driver for this PWM fan controller.
+> ...
+>
+>> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
+>> +	if (IS_ERR(pc->regmap)) {
+>> +		ret = PTR_ERR(pc->regmap);
+>> +		if (ret != -EPROBE_DEFER)
+>> +			dev_err_probe(dev, ret, "failed to init register map\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	pc->clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(pc->clk)) {
+>> +		ret = PTR_ERR(pc->clk);
+>> +		if (ret != -EPROBE_DEFER)
+>> +			dev_err_probe(dev, ret, "failed to get clock\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
+>> +	if (IS_ERR(pc->rst)) {
+>> +		ret = PTR_ERR(pc->rst);
+>> +		if (ret != -EPROBE_DEFER)
+>> +			dev_err_probe(dev, ret, "failed to get reset control\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = reset_control_deassert(pc->rst);
+>> +	if (ret) {
+>> +		if (ret != -EPROBE_DEFER)
+>> +			dev_err_probe(dev, ret, "cannot deassert reset control\n");
+>> +		return ret;
+>> +	}
+> Please, spend a bit of time to understand the changes you are doing. There are
+> already few examples how to use dev_err_probe() properly.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+I guess your point is that the check of (ret !- -EPROBE_DEFER) is not needed
+when using dev_err_probe() as it encapsulates it. Sorry, i missed it. Will
+fix it. I am not able to find any other missing point after referring to
+two driver examples which uses dev_err_probe() ?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>> +	ret = clk_prepare_enable(pc->clk);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to enable clock\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = devm_add_action_or_reset(dev, lgm_pwm_action, pc);
+>> +	if (ret)
+>> +		return ret;
+> You have also ordering issues here.
+>
+> So, what I can see about implementation is that
+>
+>
+> 	static void ..._clk_disable(void *data)
+> 	{
+> 		clk_disable_unprepare(data);
+> 	}
+>
+> 	static int ..._clk_enable(...)
+> 	{
+> 		int ret;
+>
+> 		ret = clk_preare_enable(...);
+> 		if (ret)
+> 			return ret;
+> 		return devm_add_action_or_reset(..., ..._clk_disable);
+> 	}
+>
+>
+> Similar for reset control.
+>
+> Then in the ->probe() something like this:
+>
+> 	ret = devm_reset_control_get...;
+> 	if (ret)
+> 		return ret;
+>
+> 	ret = ..._reset_deassert(...);
+> 	if (ret)
+> 		return ret;
+>
+> followed by similar section for the clock.
+>
+
+Regarding ordering: In early rounds of review, feedback about ordering was that
+it is recommended to be reverse of the sequence in probe i.e.
+if in probe:
+1. reset_control_deassert()
+2. clk_prepare_enable()
+then in remove:
+1. clk_disable_uprepare()
+2. reset_control_assert()
+
+That's the reason i added a generic action() which reverses order.
+
+I understand your suggested way as explained above but not sure if that would
+ensure reverse ordering during unwind.
+
+Thanks.
+
+Regards,
+Rahul
