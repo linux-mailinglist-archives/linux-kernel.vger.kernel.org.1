@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1171724FAA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B57B24F9E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgHXIeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+        id S1728953AbgHXJuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727824AbgHXId7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:33:59 -0400
+        id S1728150AbgHXIjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D82AA206F0;
-        Mon, 24 Aug 2020 08:33:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C18620FC3;
+        Mon, 24 Aug 2020 08:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258039;
-        bh=YDZpUwQqgrjca26/YxEEBcLteZJTIimiUUrp879M/e0=;
+        s=default; t=1598258342;
+        bh=+enRfgXiI/OaQokOgb8ZaIHeS5lhV4M56TfBP9Oz3s8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dVOP3WOyn4HrhXYHaQrrvHfgy2FcH+HZUXJb4I9I95sMSQIheOYMHRUfFnF6W1bSo
-         LXwK/ohTg5S8sjbJwqK5eUcaBw20nk56VSggYW42gVAXiKpHPhvx8KGdQzgrRDrPoI
-         CE2uhii/W0gGuTcZ3Zm9iG2kIykbH8DGLG2x5FWQ=
+        b=ILRap5rVP9ooojLLIW9NSe6Q8+V8cBmZKwVDCqFUDUOHtrjmlKeYWViwBqZB4uvts
+         yxmwzO0HSunb8PpKNJQSSjeqPLYbHwvnoOyUpp2GIiPf1vJryPFutZ3TCG+SBF5ukA
+         yffr0hdd31DanxGpjYnNWpTJMqG9He3+kAAIWNbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 050/148] rtc: goldfish: Enable interrupt in set_alarm() when necessary
-Date:   Mon, 24 Aug 2020 10:29:08 +0200
-Message-Id: <20200824082416.469326102@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 015/124] mm, page_alloc: fix core hung in free_pcppages_bulk()
+Date:   Mon, 24 Aug 2020 10:29:09 +0200
+Message-Id: <20200824082410.161378037@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +50,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Charan Teja Reddy <charante@codeaurora.org>
 
-[ Upstream commit 22f8d5a1bf230cf8567a4121fc3789babb46336d ]
+commit 88e8ac11d2ea3acc003cf01bb5a38c8aa76c3cfd upstream.
 
-When use goldfish rtc, the "hwclock" command fails with "select() to
-/dev/rtc to wait for clock tick timed out". This is because "hwclock"
-need the set_alarm() hook to enable interrupt when alrm->enabled is
-true. This operation is missing in goldfish rtc (but other rtc drivers,
-such as cmos rtc, enable interrupt here), so add it.
+The following race is observed with the repeated online, offline and a
+delay between two successive online of memory blocks of movable zone.
 
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/1592654683-31314-1-git-send-email-chenhc@lemote.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+P1						P2
+
+Online the first memory block in
+the movable zone. The pcp struct
+values are initialized to default
+values,i.e., pcp->high = 0 &
+pcp->batch = 1.
+
+					Allocate the pages from the
+					movable zone.
+
+Try to Online the second memory
+block in the movable zone thus it
+entered the online_pages() but yet
+to call zone_pcp_update().
+					This process is entered into
+					the exit path thus it tries
+					to release the order-0 pages
+					to pcp lists through
+					free_unref_page_commit().
+					As pcp->high = 0, pcp->count = 1
+					proceed to call the function
+					free_pcppages_bulk().
+Update the pcp values thus the
+new pcp values are like, say,
+pcp->high = 378, pcp->batch = 63.
+					Read the pcp's batch value using
+					READ_ONCE() and pass the same to
+					free_pcppages_bulk(), pcp values
+					passed here are, batch = 63,
+					count = 1.
+
+					Since num of pages in the pcp
+					lists are less than ->batch,
+					then it will stuck in
+					while(list_empty(list)) loop
+					with interrupts disabled thus
+					a core hung.
+
+Avoid this by ensuring free_pcppages_bulk() is called with proper count of
+pcp list pages.
+
+The mentioned race is some what easily reproducible without [1] because
+pcp's are not updated for the first memory block online and thus there is
+a enough race window for P2 between alloc+free and pcp struct values
+update through onlining of second memory block.
+
+With [1], the race still exists but it is very narrow as we update the pcp
+struct values for the first memory block online itself.
+
+This is not limited to the movable zone, it could also happen in cases
+with the normal zone (e.g., hotplug to a node that only has DMA memory, or
+no other memory yet).
+
+[1]: https://patchwork.kernel.org/patch/11696389/
+
+Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into one-list-per-migrate-type")
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Vinayak Menon <vinmenon@codeaurora.org>
+Cc: <stable@vger.kernel.org> [2.6+]
+Link: http://lkml.kernel.org/r/1597150703-19003-1-git-send-email-charante@codeaurora.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/rtc/rtc-goldfish.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/page_alloc.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
-index 27797157fcb3f..6349d2cd36805 100644
---- a/drivers/rtc/rtc-goldfish.c
-+++ b/drivers/rtc/rtc-goldfish.c
-@@ -73,6 +73,7 @@ static int goldfish_rtc_set_alarm(struct device *dev,
- 		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
- 		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
- 		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
-+		writel(1, base + TIMER_IRQ_ENABLED);
- 	} else {
- 		/*
- 		 * if this function was called with enabled=0
--- 
-2.25.1
-
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1308,6 +1308,11 @@ static void free_pcppages_bulk(struct zo
+ 	struct page *page, *tmp;
+ 	LIST_HEAD(head);
+ 
++	/*
++	 * Ensure proper count is passed which otherwise would stuck in the
++	 * below while (list_empty(list)) loop.
++	 */
++	count = min(pcp->count, count);
+ 	while (count) {
+ 		struct list_head *list;
+ 
 
 
