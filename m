@@ -2,301 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAA624F92A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E67C24F92B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729624AbgHXJmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:42:13 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:18790 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729441AbgHXJlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:41:40 -0400
-IronPort-SDR: 43iumKkGatQ9DSLXCWrjGnJtzNUYK+FXkBrKXwFAaOxtP7FxXFlyAEIhAy4kAAz1oM7Tj5eNPp
- 11xuxhkJ0qzITd+5/3Yiqds27cacwJsrtozeP1iGr2oOcArmJxuSwuO6BO+cGTfIsiVii/b5XZ
- ty9amjmCagnruSu+zaUOlsTWWHpSErJt96NNVfOvG6Qf62o34/P4KiNXFNzqWchTJ0cm0FZnh6
- 53rMJ1RymJDEo88urogW+9mH6h4ffgWFv+BvbRSJQobWV1WK78WaLnD4cHldK0V3mp1yCsHk/o
- HCU=
-X-IronPort-AV: E=Sophos;i="5.76,348,1592863200"; 
-   d="scan'208";a="13570930"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 24 Aug 2020 11:41:37 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 24 Aug 2020 11:41:37 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 24 Aug 2020 11:41:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598262097; x=1629798097;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GybxSl2AJ1rlYcmMGQnA8jxjW1BooVuZAWjnxmbzF1s=;
-  b=S8fEnJ4yIQWO5X4mw6ZG93cFqR8bDK+cvy8z3Aaw7Pu8GAZCtyCOArNn
-   VrALdmM9ZYnbcrR+xpwQj57m48p3HSHCX1cndiJkj7kRJ6d2Y9BqPN2wx
-   TkZIZ34DzIwPRiVFdb1aA+oX1O+9JnNOf0KPJQ6xbzl95HVxhZxV+6SUY
-   exSkgMUpK/TUDtSnS4uO3J+HVDweHUWYoT5fjorkrrU2FNy8p8okN+ikw
-   6M+wJRFfK8va+nniQ7lOGlEEuiEFmxJ1O8acVhT+sXL3ovn2HQ1pXtUYU
-   PsIE1KUQ3TnioVdSMjcAfYbirJEQPOZX5CH470UdlLW6wtkN7MgBgOG0w
-   g==;
-IronPort-SDR: WdBU2jvens77plO1dgYp+YibVFj75kUA4ViV6s6aaZLOc1uSJ8g3JRAWwipqstCtB94qc5ewv2
- 8+DkB4B5eNnEGR7SVJe+p8SE8PjBDyKvuAAMp1qUhSFlCQyqlRU+2YHlrUymRQqRfC2Z1787gf
- iZiWZu1wQ47ozLw050Gr6C9lxqW4xaN0DtgEJuDcCBui1yixbk0IeuQEBvxDx9U1NTgP2i4BKp
- Fh/VEisI8hCbSQYTsVRsiMtmpNtanX5tmxfnzGGtz2/nI1N4pQCmZE1hykNlko+Fk5n+6lRV+b
- qrs=
-X-IronPort-AV: E=Sophos;i="5.76,348,1592863200"; 
-   d="scan'208";a="13570929"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Aug 2020 11:41:37 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id BE31E280065;
-        Mon, 24 Aug 2020 11:41:37 +0200 (CEST)
-Message-ID: <8ee3e4d5843e2dc28c845388620d7ac34d64058b.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: [PATCH mmc-next v2] mmc: allow setting slot index via
- device tree alias
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 Aug 2020 11:41:37 +0200
-In-Reply-To: <CAPDyKFp1uwkmFVWXbCG32bRtu2kkUq_Vog646c=evmTixW6adA@mail.gmail.com>
-References: <20200820075949.19133-1-matthias.schiffer@ew.tq-group.com>
-         <CAPDyKFp1uwkmFVWXbCG32bRtu2kkUq_Vog646c=evmTixW6adA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729587AbgHXJmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:42:20 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55816 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729201AbgHXJmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 05:42:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9dCqS169057;
+        Mon, 24 Aug 2020 09:42:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=KfuuX0ksOpod8cUGK1VDYEIVywgUnLQvnvXblib2BjA=;
+ b=zaCZ6k97YzVizbQax7KPKxfj6DR8KhM0/XJaw779zd4tE7aU2o8vnj9UutB/zRYgOcAR
+ Nyrn1tJwb3y/vOfkJPO6XtjgP7+Np3RctTQS+LqCrC3SBQFaUnohszMYGjHNJ7zOn0al
+ IoVghnyoSSxohvPgWKnk1bDiLCT3Uz8NAfe7QUPT5/OjJt8Bd3mpfbD6lmvYVzl7q6BZ
+ Fq6/v+fjkklcDqNqSxWFYTRLOixFtQ/KRasCjWYWQKTnLdD7315G7XV/Jyk8r20i07R0
+ 2AmfK4FAKI3pOtCjswY6gIyR6bLCuEfDoVtJB0f1+f612AP7yCBtgFhVVy5M5TfKzl3t 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 333w6tj382-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 09:42:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9eirH040516;
+        Mon, 24 Aug 2020 09:41:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 333r9hcyv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 09:41:59 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07O9fut1020170;
+        Mon, 24 Aug 2020 09:41:56 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 02:41:55 -0700
+Date:   Mon, 24 Aug 2020 12:41:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Alex Elder <elder@kernel.org>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging: greybus: fix warnings detected by sparse
+Message-ID: <20200824094148.GY1793@kadam>
+References: <20200824025100.1068350-1-coiby.xu@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824025100.1068350-1-coiby.xu@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008240075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008240075
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 13:39 +0200, Ulf Hansson wrote:
-> On Thu, 20 Aug 2020 at 09:59, Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
-> > 
-> > As with GPIO, UART and others, allow specifying the device index
-> > via the
-> > aliases node in the device tree.
-> > 
-> > On embedded devices, there is often a combination of removable
-> > (e.g.
-> > SD card) and non-removable MMC devices (e.g. eMMC).
-> > Therefore the index might change depending on
-> > 
-> > * host of removable device
-> > * removable card present or not
-> > 
-> > This makes it difficult to hardcode the root device, if it is on
-> > the
-> > non-removable device. E.g. if SD card is present eMMC will be
-> > mmcblk1,
-> > if SD card is not present at boot, eMMC will be mmcblk0.
+On Mon, Aug 24, 2020 at 10:50:59AM +0800, Coiby Xu wrote:
+> This patch fix the following warnings from sparse,
 > 
-> Can you please add some information why Part-UUID/labels don't work
-> well to solve this problem on some embedded systems?
+> $ make C=2 drivers/staging/greybus/
+> drivers/staging/greybus/audio_codec.c:691:36: warning: incorrect type in initializer (different base types)
+> drivers/staging/greybus/audio_codec.c:691:36:    expected unsigned long long [usertype] formats
+> drivers/staging/greybus/audio_codec.c:691:36:    got restricted snd_pcm_format_t [usertype]
+> drivers/staging/greybus/audio_codec.c:701:36: warning: incorrect type in initializer (different base types)
+> drivers/staging/greybus/audio_codec.c:701:36:    expected unsigned long long [usertype] formats
+> drivers/staging/greybus/audio_codec.c:701:36:    got restricted snd_pcm_format_t [usertype]
+> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:691:41:    expected unsigned int access
+> drivers/staging/greybus/audio_topology.c:691:41:    got restricted __le32 [usertype] access
+> drivers/staging/greybus/audio_topology.c:746:44: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:746:44:    expected unsigned int
+> drivers/staging/greybus/audio_topology.c:746:44:    got restricted __le32
+> drivers/staging/greybus/audio_topology.c:748:52: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:748:52:    expected unsigned int
+> drivers/staging/greybus/audio_topology.c:748:52:    got restricted __le32
+> drivers/staging/greybus/audio_topology.c:802:42: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:805:50: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:805:50:    expected restricted __le32
+> drivers/staging/greybus/audio_topology.c:805:50:    got unsigned int
+> drivers/staging/greybus/audio_topology.c:814:50: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:817:58: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:817:58:    expected restricted __le32
+> drivers/staging/greybus/audio_topology.c:817:58:    got unsigned int
+> drivers/staging/greybus/audio_topology.c:889:25: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:889:25:    expected unsigned int access
+> drivers/staging/greybus/audio_topology.c:889:25:    got restricted __le32 [usertype] access
 > 
-> I think that deserves to be in the changelog, after all the long
-> discussions we had in the history around this.
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/staging/greybus/audio_codec.c    |  4 ++--
+>  drivers/staging/greybus/audio_module.c   |  2 +-
+>  drivers/staging/greybus/audio_topology.c | 18 +++++++++---------
+>  3 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+> index 74538f8c5fa4..494aa823e998 100644
+> --- a/drivers/staging/greybus/audio_codec.c
+> +++ b/drivers/staging/greybus/audio_codec.c
+> @@ -688,7 +688,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
+>  		.playback = {
+>  			.stream_name = "I2S 0 Playback",
+>  			.rates = SNDRV_PCM_RATE_48000,
+> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
+> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+>  			.rate_max = 48000,
+>  			.rate_min = 48000,
+>  			.channels_min = 1,
+> @@ -698,7 +698,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
+>  		.capture = {
+>  			.stream_name = "I2S 0 Capture",
+>  			.rates = SNDRV_PCM_RATE_48000,
+> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
+> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+>  			.rate_max = 48000,
+>  			.rate_min = 48000,
+>  			.channels_min = 1,
 
-Makes sense. I'll wait for your review before I send a v3 with an
-updated description.
+These changes need to be explained better.  We're changing formats from
+2 to 1 << 2.
 
-Matthias
+When you're writing commit messages, please imagine me as the target
+audience.  I have a fairly decent understanding of the kernel and C, but
+I don't know very much about the sound subsystem.
 
+This code used to work, right?  How was it that changing a 2 to a 4
+makes it better?  It needs to be explained in the commit message.  This
+change probably needs to be split into a separate commit because it
+seems different from the rest of the patch.
 
-> 
-> I will continue to review the code in a separate email, in a while.
-> 
-> Kind regards
-> Uffe
-> 
-> > 
-> > All indices defined in the aliases node will be reserved for use by
-> > the
-> > respective MMC device, moving the indices of devices that don't
-> > have an
-> > alias up into the non-reserved range. If the aliases node is not
-> > found,
-> > the driver will act as before.
-> > 
-> > This is a rebased and slightly cleaned up version of
-> > https://www.spinics.net/lists/linux-mmc/msg26588.html .
-> > 
-> > Based-on-patch-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > Link: https://lkml.org/lkml/2020/8/5/194
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
-> > >
-> > ---
-> > 
-> > v2: fix missing symbols for modular mmcblock
-> > 
-> >  drivers/mmc/core/block.c | 13 +++++++++++--
-> >  drivers/mmc/core/core.c  | 40
-> > ++++++++++++++++++++++++++++++++++++++++
-> >  drivers/mmc/core/core.h  |  3 +++
-> >  drivers/mmc/core/host.c  | 15 +++++++++++++--
-> >  4 files changed, 67 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > index 7896952de1ac..4620afaf0e50 100644
-> > --- a/drivers/mmc/core/block.c
-> > +++ b/drivers/mmc/core/block.c
-> > @@ -38,6 +38,7 @@
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/idr.h>
-> >  #include <linux/debugfs.h>
-> > +#include <linux/of.h>
-> > 
-> >  #include <linux/mmc/ioctl.h>
-> >  #include <linux/mmc/card.h>
-> > @@ -2260,9 +2261,17 @@ static struct mmc_blk_data
-> > *mmc_blk_alloc_req(struct mmc_card *card,
-> >                                               int area_type)
-> >  {
-> >         struct mmc_blk_data *md;
-> > -       int devidx, ret;
-> > +       int rsvidx, devidx = -1, ret;
-> > +
-> > +       rsvidx = mmc_get_reserved_index(card->host);
-> > +       if (rsvidx >= 0)
-> > +               devidx = ida_simple_get(&mmc_blk_ida, rsvidx,
-> > rsvidx + 1,
-> > +                                       GFP_KERNEL);
-> > +       if (devidx < 0)
-> > +               devidx = ida_simple_get(&mmc_blk_ida,
-> > +                                       mmc_first_nonreserved_index
-> > (),
-> > +                                       max_devices, GFP_KERNEL);
-> 
-> 
-> 
-> > 
-> > -       devidx = ida_simple_get(&mmc_blk_ida, 0, max_devices,
-> > GFP_KERNEL);
-> >         if (devidx < 0) {
-> >                 /*
-> >                  * We get -ENOSPC because there are no more any
-> > available
-> > diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> > index 8ccae6452b9c..5bce281a5faa 100644
-> > --- a/drivers/mmc/core/core.c
-> > +++ b/drivers/mmc/core/core.c
-> > @@ -2419,10 +2419,50 @@ void mmc_unregister_pm_notifier(struct
-> > mmc_host *host)
-> >  }
-> >  #endif
-> > 
-> > +static int mmc_max_reserved_idx = -1;
-> > +
-> > +/**
-> > + * mmc_first_nonreserved_index() - get the first index that is not
-> > reserved
-> > + */
-> > +int mmc_first_nonreserved_index(void)
-> > +{
-> > +       return mmc_max_reserved_idx + 1;
-> > +}
-> > +EXPORT_SYMBOL(mmc_first_nonreserved_index);
-> > +
-> > +/**
-> > + * mmc_get_reserved_index() - get the index reserved for this MMC
-> > host
-> > + *
-> > + * Returns:
-> > + *   The index reserved for this host on success,
-> > + *   negative error if no index is reserved for this host
-> > + */
-> > +int mmc_get_reserved_index(struct mmc_host *host)
-> > +{
-> > +       return of_alias_get_id(host->parent->of_node, "mmc");
-> > +}
-> > +EXPORT_SYMBOL(mmc_get_reserved_index);
-> > +
-> > +static void __init mmc_of_reserve_idx(void)
-> > +{
-> > +       int max;
-> > +
-> > +       max = of_alias_get_highest_id("mmc");
-> > +       if (max < 0)
-> > +               return;
-> > +
-> > +       mmc_max_reserved_idx = max;
-> > +
-> > +       pr_debug("MMC: reserving %d slots for OF aliases\n",
-> > +                mmc_max_reserved_idx + 1);
-> > +}
-> > +
-> >  static int __init mmc_init(void)
-> >  {
-> >         int ret;
-> > 
-> > +       mmc_of_reserve_idx();
-> > +
-> >         ret = mmc_register_bus();
-> >         if (ret)
-> >                 return ret;
-> > diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
-> > index 575ac0257af2..6aef6cf4e90f 100644
-> > --- a/drivers/mmc/core/core.h
-> > +++ b/drivers/mmc/core/core.h
-> > @@ -79,6 +79,9 @@ int mmc_attach_mmc(struct mmc_host *host);
-> >  int mmc_attach_sd(struct mmc_host *host);
-> >  int mmc_attach_sdio(struct mmc_host *host);
-> > 
-> > +int mmc_first_nonreserved_index(void);
-> > +int mmc_get_reserved_index(struct mmc_host *host);
-> > +
-> >  /* Module parameters */
-> >  extern bool use_spi_crc;
-> > 
-> > diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> > index ce43f7573d80..386e15afde83 100644
-> > --- a/drivers/mmc/core/host.c
-> > +++ b/drivers/mmc/core/host.c
-> > @@ -387,6 +387,7 @@ struct mmc_host *mmc_alloc_host(int extra,
-> > struct device *dev)
-> >  {
-> >         int err;
-> >         struct mmc_host *host;
-> > +       int alias_id, min_idx, max_idx;
-> > 
-> >         host = kzalloc(sizeof(struct mmc_host) + extra,
-> > GFP_KERNEL);
-> >         if (!host)
-> > @@ -395,7 +396,18 @@ struct mmc_host *mmc_alloc_host(int extra,
-> > struct device *dev)
-> >         /* scanning will be enabled when we're ready */
-> >         host->rescan_disable = 1;
-> > 
-> > -       err = ida_simple_get(&mmc_host_ida, 0, 0, GFP_KERNEL);
-> > +       host->parent = dev;
-> > +
-> > +       alias_id = mmc_get_reserved_index(host);
-> > +       if (alias_id >= 0) {
-> > +               min_idx = alias_id;
-> > +               max_idx = alias_id + 1;
-> > +       } else {
-> > +               min_idx = mmc_first_nonreserved_index();
-> > +               max_idx = 0;
-> > +       }
-> > +
-> > +       err = ida_simple_get(&mmc_host_ida, min_idx, max_idx,
-> > GFP_KERNEL);
-> >         if (err < 0) {
-> >                 kfree(host);
-> >                 return NULL;
-> > @@ -406,7 +418,6 @@ struct mmc_host *mmc_alloc_host(int extra,
-> > struct device *dev)
-> >         dev_set_name(&host->class_dev, "mmc%d", host->index);
-> >         host->ws = wakeup_source_register(NULL, dev_name(&host-
-> > >class_dev));
-> > 
-> > -       host->parent = dev;
-> >         host->class_dev.parent = dev;
-> >         host->class_dev.class = &mmc_host_class;
-> >         device_initialize(&host->class_dev);
-> > --
-> > 2.17.1
-> > 
+(Presumably the rest of the patch doesn't affect runtime on little
+endian systems.  This is the part which affects runtime so it is
+different from the rest).
+
+> diff --git a/drivers/staging/greybus/audio_module.c b/drivers/staging/greybus/audio_module.c
+> index 16f60256adb2..00848b84b022 100644
+> --- a/drivers/staging/greybus/audio_module.c
+> +++ b/drivers/staging/greybus/audio_module.c
+> @@ -219,7 +219,7 @@ static int gb_audio_add_data_connection(struct gbaudio_module_info *gbmodule,
+>  
+>  	greybus_set_drvdata(bundle, gbmodule);
+>  	dai->id = 0;
+> -	dai->data_cport = connection->intf_cport_id;
+> +	dai->data_cport = cpu_to_le16(connection->intf_cport_id);
+>  	dai->connection = connection;
+>  	list_add(&dai->list, &gbmodule->data_list);
+>  
+
+This is correct, but I think you should change the two places which
+print the data_cport to print the CPU endian value.
+
+   327          list_for_each_entry(dai, &gbmodule->data_list, list) {
+   328                  ret = gb_connection_enable(dai->connection);
+   329                  if (ret) {
+   330                          dev_err(dev,
+   331                                  "%d:Error while enabling %d:data connection\n",
+   332                                  ret, dai->data_cport);
+   333                          goto disable_data_connection;
+   334                  }
+   335          }
+
+   449          list_for_each_entry(dai, &gbmodule->data_list, list) {
+   450                  ret = gb_connection_enable(dai->connection);
+   451                  if (ret) {
+   452                          dev_err(dev,
+   453                                  "%d:Error while enabling %d:data connection\n",
+   454                                  ret, dai->data_cport);
+   455                          return ret;
+   456                  }
+   457          }
+
+Otherwise it's slightly confusing to mix the values.
+
+The rest of the patch seems fine to me.
+
+regards,
+dan carpenter
 
