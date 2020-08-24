@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E67C24F92B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8EE24F940
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgHXJmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:42:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:55816 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729201AbgHXJmL (ORCPT
+        id S1728515AbgHXJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:43:18 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38337 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgHXJnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:42:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9dCqS169057;
-        Mon, 24 Aug 2020 09:42:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=KfuuX0ksOpod8cUGK1VDYEIVywgUnLQvnvXblib2BjA=;
- b=zaCZ6k97YzVizbQax7KPKxfj6DR8KhM0/XJaw779zd4tE7aU2o8vnj9UutB/zRYgOcAR
- Nyrn1tJwb3y/vOfkJPO6XtjgP7+Np3RctTQS+LqCrC3SBQFaUnohszMYGjHNJ7zOn0al
- IoVghnyoSSxohvPgWKnk1bDiLCT3Uz8NAfe7QUPT5/OjJt8Bd3mpfbD6lmvYVzl7q6BZ
- Fq6/v+fjkklcDqNqSxWFYTRLOixFtQ/KRasCjWYWQKTnLdD7315G7XV/Jyk8r20i07R0
- 2AmfK4FAKI3pOtCjswY6gIyR6bLCuEfDoVtJB0f1+f612AP7yCBtgFhVVy5M5TfKzl3t 0Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 333w6tj382-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 09:42:00 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07O9eirH040516;
-        Mon, 24 Aug 2020 09:41:59 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 333r9hcyv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 09:41:59 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07O9fut1020170;
-        Mon, 24 Aug 2020 09:41:56 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 02:41:55 -0700
-Date:   Mon, 24 Aug 2020 12:41:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Alex Elder <elder@kernel.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging: greybus: fix warnings detected by sparse
-Message-ID: <20200824094148.GY1793@kadam>
-References: <20200824025100.1068350-1-coiby.xu@gmail.com>
+        Mon, 24 Aug 2020 05:43:11 -0400
+Received: by mail-lf1-f68.google.com with SMTP id k10so1144093lfm.5;
+        Mon, 24 Aug 2020 02:43:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B+sPpbAS75cGxaYopa1UoLFzKyaPQjVAHOZZ21i/IqI=;
+        b=fu8wQ7QFQpFE0Uv2l3IpS1bvMo4pYxj6hnQyCsNhWJEHS6xKmP3Pdb8U6boyiSO1+3
+         oEdFS0jFXaQg15GC2JLhH7X+0Su15vp1Ar+T6V8VRqpgEYPwRkjJwbfbpBfanUizjXXg
+         rEvL6PUa4uQuwf/ilWe6prBafDVa6WNRHqRc2sqNii5WY7Ny3lEO//dGxFOwyBoIhBVU
+         fZPYHzaayXTDViJ0IV4bg875Q+OKBG5lGQqKtXTyNaq9xWs0UtbClqya/MSH2LHjGYTI
+         iKmSyNS8W/EmB5k8DkU9DWjbXqLXF+ickzVv7vfyKXw280CFgoQAWpdp9jdWGevG2WUV
+         vP8w==
+X-Gm-Message-State: AOAM533uasoIZKqtN5k0W/FOJXUh62mXSbPB+ZKy1gKD3l5LfgabZkWO
+        WWJMt6ADvcrm2UtuM9xPrbM=
+X-Google-Smtp-Source: ABdhPJwRaluAeFEm/kpc6gnTtpSDh+hopLCqZnp2vTegFRD1V8+piLnV+XMyENeg6g7FhPNgvxjnqw==
+X-Received: by 2002:ac2:5235:: with SMTP id i21mr2251097lfl.96.1598262188023;
+        Mon, 24 Aug 2020 02:43:08 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id b17sm2105269ljp.9.2020.08.24.02.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 02:43:07 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kA90N-0007A7-1V; Mon, 24 Aug 2020 11:43:07 +0200
+Date:   Mon, 24 Aug 2020 11:43:07 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     "Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW)" 
+        <shenglong.wang.ext@siemens.com>, Johan Hovold <johan@kernel.org>,
+        Sheng Long Wang <china_shenglong@163.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] usb-serial:cp210x: add support to software flow
+ control
+Message-ID: <20200824094307.GE21288@localhost>
+References: <20200820075240.13321-1-china_shenglong@163.com>
+ <97836b78-740b-cf70-4803-27305b6e0a4d@siemens.com>
+ <20200824090948.GC21288@localhost>
+ <f21d4cc8b12d4ec6870623472ca7df09@siemens.com>
+ <faddf44e-db1d-46e5-b6db-88168b0cc808@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200824025100.1068350-1-coiby.xu@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008240075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008240075
+In-Reply-To: <faddf44e-db1d-46e5-b6db-88168b0cc808@siemens.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:50:59AM +0800, Coiby Xu wrote:
-> This patch fix the following warnings from sparse,
+On Mon, Aug 24, 2020 at 11:36:50AM +0200, Jan Kiszka wrote:
+> On 24.08.20 11:28, Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW) wrote:
+> > Hi Johan,
+> > 
+> >     Thanks for your reminding. I am adjusting patch according to the latest Linux Master branch.
 > 
-> $ make C=2 drivers/staging/greybus/
-> drivers/staging/greybus/audio_codec.c:691:36: warning: incorrect type in initializer (different base types)
-> drivers/staging/greybus/audio_codec.c:691:36:    expected unsigned long long [usertype] formats
-> drivers/staging/greybus/audio_codec.c:691:36:    got restricted snd_pcm_format_t [usertype]
-> drivers/staging/greybus/audio_codec.c:701:36: warning: incorrect type in initializer (different base types)
-> drivers/staging/greybus/audio_codec.c:701:36:    expected unsigned long long [usertype] formats
-> drivers/staging/greybus/audio_codec.c:701:36:    got restricted snd_pcm_format_t [usertype]
-> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
-> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
-> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
-> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:691:41:    expected unsigned int access
-> drivers/staging/greybus/audio_topology.c:691:41:    got restricted __le32 [usertype] access
-> drivers/staging/greybus/audio_topology.c:746:44: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:746:44:    expected unsigned int
-> drivers/staging/greybus/audio_topology.c:746:44:    got restricted __le32
-> drivers/staging/greybus/audio_topology.c:748:52: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:748:52:    expected unsigned int
-> drivers/staging/greybus/audio_topology.c:748:52:    got restricted __le32
-> drivers/staging/greybus/audio_topology.c:802:42: warning: restricted __le32 degrades to integer
-> drivers/staging/greybus/audio_topology.c:805:50: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:805:50:    expected restricted __le32
-> drivers/staging/greybus/audio_topology.c:805:50:    got unsigned int
-> drivers/staging/greybus/audio_topology.c:814:50: warning: restricted __le32 degrades to integer
-> drivers/staging/greybus/audio_topology.c:817:58: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:817:58:    expected restricted __le32
-> drivers/staging/greybus/audio_topology.c:817:58:    got unsigned int
-> drivers/staging/greybus/audio_topology.c:889:25: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_topology.c:889:25:    expected unsigned int access
-> drivers/staging/greybus/audio_topology.c:889:25:    got restricted __le32 [usertype] access
+> Use git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git, branch
+> is likely usb-linus, as Johan requested - just in case there is another
+> conflict due to a patch not yet in Linux master but in that tree.
+
+The usb-next is used for new features like this one, but again,
+currently Linus's master branch works as well.
+
+> > -----Original Message-----
+> > From: Johan Hovold <johan@kernel.org> 
+> > Sent: Monday, August 24, 2020 5:10 PM
+> > To: Kiszka, Jan (CT RDA IOT SES-DE) <jan.kiszka@siemens.com>
+> > Cc: Sheng Long Wang <china_shenglong@163.com>; Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW) <shenglong.wang.ext@siemens.com>; johan@kernel.org; gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH v3] usb-serial:cp210x: add support to software flow control
+> > 
+> > On Fri, Aug 21, 2020 at 07:32:58AM +0200, Jan Kiszka wrote:
+> >> On 20.08.20 09:52, Sheng Long Wang wrote:
+> >>> From: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> >>>
+> >>> When data is transmitted between two serial ports, the phenomenon of 
+> >>> data loss often occurs. The two kinds of flow control commonly used 
+> >>> in serial communication are hardware flow control and software flow 
+> >>> control.
+> >>>
+> >>> In serial communication, If you only use RX/TX/GND Pins, you can't 
+> >>> do hardware flow. So we often used software flow control and prevent 
+> >>> data loss. The user sets the software flow control through the 
+> >>> application program, and the application program sets the software 
+> >>> flow control mode for the serial port chip through the driver.
+> >>>
+> >>> For the cp210 serial port chip, its driver lacks the software flow 
+> >>> control setting code, so the user cannot set the software flow 
+> >>> control function through the application program. This adds the 
+> >>> missing software flow control.
+> >>>
+> >>> Signed-off-by: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> >>>
+> >>> Changes in v3:
+> >>> -fixed code style, It mainly adjusts the code style acccording  to 
+> >>> kernel specification.
+> >>
+> >> Patch does not apply. You forgot to rebase over latest tty/tty-next or 
+> >> linux master.
+> > 
+> > That should be the usb-next branch of the usb-serial tree:
+> > 
+> > 	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/
+> > 
+> > or linux-next (or, currently, Linus's master branch).
+> > 
+> > You can use "scripts/get_maintainer.sh --scm" to determine which tree to base your work against.
 > 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> ---
->  drivers/staging/greybus/audio_codec.c    |  4 ++--
->  drivers/staging/greybus/audio_module.c   |  2 +-
->  drivers/staging/greybus/audio_topology.c | 18 +++++++++---------
->  3 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index 74538f8c5fa4..494aa823e998 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -688,7 +688,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  		.playback = {
->  			.stream_name = "I2S 0 Playback",
->  			.rates = SNDRV_PCM_RATE_48000,
-> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  			.rate_max = 48000,
->  			.rate_min = 48000,
->  			.channels_min = 1,
-> @@ -698,7 +698,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  		.capture = {
->  			.stream_name = "I2S 0 Capture",
->  			.rates = SNDRV_PCM_RATE_48000,
-> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  			.rate_max = 48000,
->  			.rate_min = 48000,
->  			.channels_min = 1,
+> Thanks for correcting! But it's scripts/get_maintainer.pl. ;)
 
-These changes need to be explained better.  We're changing formats from
-2 to 1 << 2.
+Heh. Thanks for catching that.
 
-When you're writing commit messages, please imagine me as the target
-audience.  I have a fairly decent understanding of the kernel and C, but
-I don't know very much about the sound subsystem.
-
-This code used to work, right?  How was it that changing a 2 to a 4
-makes it better?  It needs to be explained in the commit message.  This
-change probably needs to be split into a separate commit because it
-seems different from the rest of the patch.
-
-(Presumably the rest of the patch doesn't affect runtime on little
-endian systems.  This is the part which affects runtime so it is
-different from the rest).
-
-> diff --git a/drivers/staging/greybus/audio_module.c b/drivers/staging/greybus/audio_module.c
-> index 16f60256adb2..00848b84b022 100644
-> --- a/drivers/staging/greybus/audio_module.c
-> +++ b/drivers/staging/greybus/audio_module.c
-> @@ -219,7 +219,7 @@ static int gb_audio_add_data_connection(struct gbaudio_module_info *gbmodule,
->  
->  	greybus_set_drvdata(bundle, gbmodule);
->  	dai->id = 0;
-> -	dai->data_cport = connection->intf_cport_id;
-> +	dai->data_cport = cpu_to_le16(connection->intf_cport_id);
->  	dai->connection = connection;
->  	list_add(&dai->list, &gbmodule->data_list);
->  
-
-This is correct, but I think you should change the two places which
-print the data_cport to print the CPU endian value.
-
-   327          list_for_each_entry(dai, &gbmodule->data_list, list) {
-   328                  ret = gb_connection_enable(dai->connection);
-   329                  if (ret) {
-   330                          dev_err(dev,
-   331                                  "%d:Error while enabling %d:data connection\n",
-   332                                  ret, dai->data_cport);
-   333                          goto disable_data_connection;
-   334                  }
-   335          }
-
-   449          list_for_each_entry(dai, &gbmodule->data_list, list) {
-   450                  ret = gb_connection_enable(dai->connection);
-   451                  if (ret) {
-   452                          dev_err(dev,
-   453                                  "%d:Error while enabling %d:data connection\n",
-   454                                  ret, dai->data_cport);
-   455                          return ret;
-   456                  }
-   457          }
-
-Otherwise it's slightly confusing to mix the values.
-
-The rest of the patch seems fine to me.
-
-regards,
-dan carpenter
-
+Johan
