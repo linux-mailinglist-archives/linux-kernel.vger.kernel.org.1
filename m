@@ -2,174 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70B924F62B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A0D24F5E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbgHXI46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730446AbgHXI4A (ORCPT
+        id S1730358AbgHXIyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:54:45 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42373 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730330AbgHXIyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:56:00 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCE6C061575;
-        Mon, 24 Aug 2020 01:55:59 -0700 (PDT)
-Received: from cap.home.8bytes.org (p4ff2bb8d.dip0.t-ipconnect.de [79.242.187.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 3285598F;
-        Mon, 24 Aug 2020 10:55:55 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Kees Cook <keescook@chromium.org>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v6 17/76] x86/boot/compressed/64: Don't pre-map memory in KASLR code
-Date:   Mon, 24 Aug 2020 10:54:12 +0200
-Message-Id: <20200824085511.7553-18-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824085511.7553-1-joro@8bytes.org>
-References: <20200824085511.7553-1-joro@8bytes.org>
+        Mon, 24 Aug 2020 04:54:31 -0400
+Received: by mail-lf1-f68.google.com with SMTP id c8so4043199lfh.9;
+        Mon, 24 Aug 2020 01:54:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LaVue5RwtmgkAnddefWKALJdn/bQBbjIItjnFY5oPlY=;
+        b=JZbmIsMYytG0w1wKqsBUs9VO3are4U4EPGrAvtgmniMbD4Gka2evEaOKFnBnRew0va
+         0y7kb1mfKrbPKguke9/CoGSPBhbAXm/DF2kii7ml6Xbte6bnbrybG4xJEa4hldcvt+UU
+         i5Tlrkyv3892yPn0TtZBr03TVi0gJId92oQxlte1WjXuevClaU20Wx1pwcqh1X7cO5w4
+         ZIgTtgqxLyqn1XNro1OcWjozcOEAjpjIJwTkDHE47IGxVqVptkWB1HHx8yxWRnXalsqD
+         cbc9qkCZ0EBja4HO8g5EoMx9Ht2yEKDd5uzuY8B4DBumVxxrssDf94nYIq3fBj0x8j/P
+         FnPw==
+X-Gm-Message-State: AOAM530YcFnS1FpY0VfkdRbOD1TfJfXlFfLADWrxPvQnRbTMpKtMQqSh
+        9ZOp/iDfwSQM7d3u1O4aVPM=
+X-Google-Smtp-Source: ABdhPJyhNc80MZicMYsowMdF6QWL9vuM/rf/AYpQF4xqCVSLiEfxkiJjphMZ943rBguzXc3EKaHLkg==
+X-Received: by 2002:a19:480b:: with SMTP id v11mr2171612lfa.130.1598259266779;
+        Mon, 24 Aug 2020 01:54:26 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id z18sm2046998lji.107.2020.08.24.01.54.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 01:54:26 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kA8FE-0006oj-Ij; Mon, 24 Aug 2020 10:54:25 +0200
+Date:   Mon, 24 Aug 2020 10:54:24 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 137/232] USB: serial: ftdi_sio: fix break and sysrq
+ handling
+Message-ID: <20200824085424.GB21288@localhost>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091619.460392380@linuxfoundation.org>
+ <CAMgPeKX54WqE0Wc56u6W3M2JwttV=E7sBKmM5eRa5_Mu7m+okg@mail.gmail.com>
+ <20200820095652.GA1266907@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820095652.GA1266907@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Thu, Aug 20, 2020 at 11:56:52AM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Aug 20, 2020 at 11:51:56AM +0200, Johan Hovold wrote:
+> > This was never intended for stable as it is not a critical fix and has
+> > never worked properly in the first place. Please drop this one and the
+> > preparatory clean ups from all stable trees.
+> 
+> Ok, but the "fix this thing" and the "Fixes:" tag really did imply this
+> was actually fixing something :)
 
-With the page-fault handler in place the identity mapping can be built
-on-demand. So remove the code which manually creates the mappings and
-unexport/remove the functions used for it.
+Sure and it is indeed a fix, just not for a regression or something
+critical (oops, etc), and therefore the stable-cc tag was omitted.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20200724160336.5435-17-joro@8bytes.org
----
- arch/x86/boot/compressed/ident_map_64.c |  6 ++----
- arch/x86/boot/compressed/kaslr.c        | 24 +-----------------------
- arch/x86/boot/compressed/misc.h         | 10 ----------
- 3 files changed, 3 insertions(+), 37 deletions(-)
+> I'll drop it from everywhere, thanks.
 
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index ecf9353b064d..c63257bf8373 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -87,11 +87,9 @@ phys_addr_t physical_mask = (1ULL << __PHYSICAL_MASK_SHIFT) - 1;
- static struct x86_mapping_info mapping_info;
- 
- /*
-- * Adds the specified range to what will become the new identity mappings.
-- * Once all ranges have been added, the new mapping is activated by calling
-- * finalize_identity_maps() below.
-+ * Adds the specified range to the identity mappings.
-  */
--void add_identity_map(unsigned long start, unsigned long size)
-+static void add_identity_map(unsigned long start, unsigned long size)
- {
- 	unsigned long end = start + size;
- 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 9016f2268aa7..371b19a6357d 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -397,8 +397,6 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- 	 */
- 	mem_avoid[MEM_AVOID_ZO_RANGE].start = input;
- 	mem_avoid[MEM_AVOID_ZO_RANGE].size = (output + init_size) - input;
--	add_identity_map(mem_avoid[MEM_AVOID_ZO_RANGE].start,
--			 mem_avoid[MEM_AVOID_ZO_RANGE].size);
- 
- 	/* Avoid initrd. */
- 	initrd_start  = (u64)boot_params->ext_ramdisk_image << 32;
-@@ -416,15 +414,11 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- 		cmd_line_size = strnlen((char *)cmd_line, COMMAND_LINE_SIZE-1) + 1;
- 		mem_avoid[MEM_AVOID_CMDLINE].start = cmd_line;
- 		mem_avoid[MEM_AVOID_CMDLINE].size = cmd_line_size;
--		add_identity_map(mem_avoid[MEM_AVOID_CMDLINE].start,
--				 mem_avoid[MEM_AVOID_CMDLINE].size);
- 	}
- 
- 	/* Avoid boot parameters. */
- 	mem_avoid[MEM_AVOID_BOOTPARAMS].start = (unsigned long)boot_params;
- 	mem_avoid[MEM_AVOID_BOOTPARAMS].size = sizeof(*boot_params);
--	add_identity_map(mem_avoid[MEM_AVOID_BOOTPARAMS].start,
--			 mem_avoid[MEM_AVOID_BOOTPARAMS].size);
- 
- 	/* We don't need to set a mapping for setup_data. */
- 
-@@ -433,11 +427,6 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- 
- 	/* Enumerate the immovable memory regions */
- 	num_immovable_mem = count_immovable_mem_regions();
--
--#ifdef CONFIG_X86_VERBOSE_BOOTUP
--	/* Make sure video RAM can be used. */
--	add_identity_map(0, PMD_SIZE);
--#endif
- }
- 
- /*
-@@ -884,19 +873,8 @@ void choose_random_location(unsigned long input,
- 		warn("Physical KASLR disabled: no suitable memory region!");
- 	} else {
- 		/* Update the new physical address location. */
--		if (*output != random_addr) {
--			add_identity_map(random_addr, output_size);
-+		if (*output != random_addr)
- 			*output = random_addr;
--		}
--
--		/*
--		 * This loads the identity mapping page table.
--		 * This should only be done if a new physical address
--		 * is found for the kernel, otherwise we should keep
--		 * the old page table to make it be like the "nokaslr"
--		 * case.
--		 */
--		finalize_identity_maps();
- 	}
- 
- 
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index f0e199174c5f..9840c82a39f1 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -98,17 +98,7 @@ static inline void choose_random_location(unsigned long input,
- #endif
- 
- #ifdef CONFIG_X86_64
--void initialize_identity_maps(void);
--void add_identity_map(unsigned long start, unsigned long size);
--void finalize_identity_maps(void);
- extern unsigned char _pgtable[];
--#else
--static inline void initialize_identity_maps(void)
--{ }
--static inline void add_identity_map(unsigned long start, unsigned long size)
--{ }
--static inline void finalize_identity_maps(void)
--{ }
- #endif
- 
- #ifdef CONFIG_EARLY_PRINTK
--- 
-2.28.0
+Looks like you never dropped the preparatory clean ups. Should be ok.
 
+Johan
