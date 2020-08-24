@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854FB24FA44
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EB224F8FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgHXJzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50440 "EHLO mail.kernel.org"
+        id S1728285AbgHXJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbgHXIhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:37:13 -0400
+        id S1728629AbgHXIqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 919D9207DF;
-        Mon, 24 Aug 2020 08:37:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1EEC206F0;
+        Mon, 24 Aug 2020 08:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258233;
-        bh=ku/z8qYLkIM9eEL4YUUwvaQZEet4R35N8mWyYHjbq10=;
+        s=default; t=1598258798;
+        bh=DDo9rlJ1vGfTkw3ErVmo14AXqfaIcHBATRLU97RdBrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/iWwBKoGKYUCeuwWHmMtvFDJX5MSxNhhQuibiyQuTfKQBD551cCJuEaS2nOVS+a7
-         E8FS/dwEELD3nmKzdq6tdgjHCh0bsq+lSyJWMR7AAgkOMt8Wf4P9zOCMqO5Bbenmkt
-         kH/NWSV6/c/UYvReth/Lm9l90WPReIzuJddueom4=
+        b=rLiTzXKm0byPvH8aGkhVE75AiSgcDOkymwGCcq7eAcEdNd+U+AwYl68e+Do7xJOkY
+         66Ed9CghMg3+n4ssqk49Ex3YJk1SqoiC0mnzqYF6gNkSHlkGGn/KzxLQVj+i5Td9VF
+         y5BVzk4Za1T+lfMF6HYmByQTsK6iODdxKkOBWEOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 116/148] scsi: ufs: Fix interrupt error message for shared interrupts
-Date:   Mon, 24 Aug 2020 10:30:14 +0200
-Message-Id: <20200824082419.568091081@linuxfoundation.org>
+Subject: [PATCH 5.4 049/107] svcrdma: Fix another Receive buffer leak
+Date:   Mon, 24 Aug 2020 10:30:15 +0200
+Message-Id: <20200824082407.562717573@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 6337f58cec030b34ced435b3d9d7d29d63c96e36 ]
+[ Upstream commit 64d26422516b2e347b32e6d9b1d40b3c19a62aae ]
 
-The interrupt might be shared, in which case it is not an error for the
-interrupt handler to be called when the interrupt status is zero, so don't
-print the message unless there was enabled interrupt status.
+During a connection tear down, the Receive queue is flushed before
+the device resources are freed. Typically, all the Receives flush
+with IB_WR_FLUSH_ERR.
 
-Link: https://lore.kernel.org/r/20200811133936.19171-1-adrian.hunter@intel.com
-Fixes: 9333d7757348 ("scsi: ufs: Fix irq return code")
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+However, any pending successful Receives flush with IB_WR_SUCCESS,
+and the server automatically posts a fresh Receive to replace the
+completing one. This happens even after the connection has closed
+and the RQ is drained. Receives that are posted after the RQ is
+drained appear never to complete, causing a Receive resource leak.
+The leaked Receive buffer is left DMA-mapped.
+
+To prevent these late-posted recv_ctxt's from leaking, block new
+Receive posting after XPT_CLOSE is set.
+
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 69c7c039b5fac..136b863bc1d45 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6013,7 +6013,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
- 	} while (intr_status && --retries);
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+index 0ce4e75b29812..d803d814a03ad 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+@@ -265,6 +265,8 @@ static int svc_rdma_post_recv(struct svcxprt_rdma *rdma)
+ {
+ 	struct svc_rdma_recv_ctxt *ctxt;
  
--	if (retval == IRQ_NONE) {
-+	if (enabled_intr_status && retval == IRQ_NONE) {
- 		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
- 					__func__, intr_status);
- 		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
++	if (test_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags))
++		return 0;
+ 	ctxt = svc_rdma_recv_ctxt_get(rdma);
+ 	if (!ctxt)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
