@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2DC24F0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 03:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A190724F0DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 03:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgHXBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 21:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
+        id S1727937AbgHXBFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 21:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgHXBEt (ORCPT
+        with ESMTP id S1725648AbgHXBFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 21:04:49 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D94BC061573;
-        Sun, 23 Aug 2020 18:04:49 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z22so6840940oid.1;
-        Sun, 23 Aug 2020 18:04:49 -0700 (PDT)
+        Sun, 23 Aug 2020 21:05:30 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A7BC061573;
+        Sun, 23 Aug 2020 18:05:30 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w25so7692323ljo.12;
+        Sun, 23 Aug 2020 18:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mKKnJmnZ3+RfGwqeM9N9qLBBL6CS47leSje6BwF1paY=;
-        b=PjifuIqsEUJwD4cLSnr55oO8o/owcAPWr0mPItui1NH2Yn8A5ZUCzb8VavEn/XskYm
-         FtIHZlz1Pc6VfejrRQxVbsO5LvKimiLmDrGz8HJP7Xdk0M84HDM8GZfsKMjv+439W9E2
-         qkdCDrjK9p14e/En0+AHgVrHru00Ek/MXsfPBUKSNB5UAZ22/ec2Pw0v7Tsg0toWyOQu
-         F+NrPuj6huFTUVjiRRAm7uTxMO2VLOq496CdOkYfLVaoesLu/60pF1axoUWjRtcEZi5A
-         3Rb3IjkFT73XgiSpHn7R5FZjCXh0sL3orvgi2ycVCJtTV08DETqz2oUHdY73uWpkMgYu
-         uZhw==
+        bh=CWX7H96L0UTSs7SYWnb0yF+ExzD4uVWoQtXpHGhYPt4=;
+        b=GFudpDFpSrYMwmzlITIl19n5T/kkMisz1fhJcgcOgqnpNg9y0ujEezi16yBjUtEn7h
+         v3ghDXydog9dH867lgOA8hVSqAb4PvC5JLkZ79W0tklnTUgK4/04aTCM4x0K0jF9yctK
+         8O2i7um8E2y7Preo/FeoutVMvbERGWpyD/Hao5PHgECHqihw37avi/jrE/RS2dRqmqlK
+         kBOvnOfnRpdxu4yET4LkBS040mT7tMOdrjSaMhiH8So8MQ8xgMKr5SuoI+CuLMpk+cLk
+         Wrvwsw1OIx1+OAuUafFuW4Mjdcc5d5o9BMyRsnR6w3KqteXLNqEuPSI7Y9eKwYyqEHI2
+         Drng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mKKnJmnZ3+RfGwqeM9N9qLBBL6CS47leSje6BwF1paY=;
-        b=ZXBPL9MNgNoz6b1vNX4u6dhi0LPB0PLBlYe++tT/7z/CYmI32FnlqIg2kSfWp9E7IZ
-         MNORGmL4XPRFh+AFwbhwm4QRpCm1nF9DkHMz6gipre6AgqPdxNmU1usDaGfan8IP7+Yf
-         45Gie/H1r7fbQK+5/TLnP9g2NPG7IJROniosfSX2awyoy6FBQ2qv7uqOIO1ObkIMkUrt
-         1HZN0EcYbgUsLKIVorPUJ5aQ73okUi436lQD1DeuAYDFx1Av3UD3ZZlSb5x/bKhmrxAR
-         oBvg0pMq3WO5Xb+sJzD6IWPzNj11/TRLeuwcjquarvKTAqs1QIo8RptDAi/jwbVJkA1E
-         Xe2Q==
-X-Gm-Message-State: AOAM531UYZPQQjQ6Q6GTROXCnAgR7qeJtw4CLVwi40kZQMBuZpZy4sCM
-        rE+aQU4/h0JyyiREejpUYNLM8gBbZfUDsI81qGuz2ExE
-X-Google-Smtp-Source: ABdhPJxTS2egXZnQG45E/UMLmB1PekQ2898Oe9Yij0mWTr5u9tpaxZ01bOUFiStnKGlwMRoAydZdjtGtL3aAPknp7lc=
-X-Received: by 2002:a05:6808:b:: with SMTP id u11mr1863885oic.33.1598231088494;
- Sun, 23 Aug 2020 18:04:48 -0700 (PDT)
+        bh=CWX7H96L0UTSs7SYWnb0yF+ExzD4uVWoQtXpHGhYPt4=;
+        b=o7ylhAxGnqwO+Bj6Bq+HyjQ25TzlvL6SBtngxf4YPxX8qO3NvWibIRxsTUZrLcJOa3
+         enKuPfdWa/OdI4iq/adSUEvZ9ORs2UD0fWSUY6OjUkllnbTPxxGfdBU8HTpIdV6vhqrO
+         RbEgBXCgUSkDjEpZsmRm7rfcsNvRSFW3pEMXbTRYFLu89x2cnLfrVD5p5VcCcRvcmayz
+         tGLGKAPP8t10E0NgE/fzjsAIoTbF31wzcMLjG4fA1nIMnpr2jmQd1HdCWT3bM7hsBZ6p
+         kW3T8cOmLkmSLs8ea5F5wcNSIX1hnVxotR03s4HYSs2QW3h/WmQ8g6w62oznE/vehgGd
+         qDdQ==
+X-Gm-Message-State: AOAM530hx0bvjMhvKYnVlE4k03tlMfP90MTs/6WaUaTm1ejQysME22//
+        yWShL5IVe+DTyPScHgD7m2RQosuVmFBd2wB65co=
+X-Google-Smtp-Source: ABdhPJyG2Vg2PXqp7FOp39Jr1qK75EubaBHR6KMuQHTqCBcIyTzbOFJir/nGZH+p88lYL12I5LDwRyDaPl2sD28gY+Q=
+X-Received: by 2002:a2e:9c8b:: with SMTP id x11mr1397465lji.218.1598231128750;
+ Sun, 23 Aug 2020 18:05:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <1597213838-8847-1-git-send-email-wanpengli@tencent.com> <1597213838-8847-2-git-send-email-wanpengli@tencent.com>
-In-Reply-To: <1597213838-8847-2-git-send-email-wanpengli@tencent.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Mon, 24 Aug 2020 09:04:37 +0800
-Message-ID: <CANRm+CzzJuffAfcR9KyZ6Yv1sSQJyM+H2V19=OuU=jJON6iVXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] KVM: LAPIC: Guarantee the timer is in tsc-deadline
- mode when setting
-To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
+References: <20200823022505.196825-1-cphealy@gmail.com>
+In-Reply-To: <20200823022505.196825-1-cphealy@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 23 Aug 2020 22:05:18 -0300
+Message-ID: <CAOMZO5CgEa2ZkNL5wNwwhon=ssSC7ot40G-GO6Z7R+tpeh_ttw@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: imx7d-zii-rmu2: fix rgmii phy-mode for
+ ksz9031 phy
+To:     Chris Healy <cphealy@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        davidjoshuasim@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping :)
-On Wed, 12 Aug 2020 at 14:30, Wanpeng Li <kernellwp@gmail.com> wrote:
+Hi Chris,
+
+On Sat, Aug 22, 2020 at 11:25 PM Chris Healy <cphealy@gmail.com> wrote:
 >
-> From: Wanpeng Li <wanpengli@tencent.com>
+> From: Chris Healy <cphealy@gmail.com>
 >
-> Check apic_lvtt_tscdeadline() mode directly instead of apic_lvtt_oneshot()
-> and apic_lvtt_period() to guarantee the timer is in tsc-deadline mode when
-> wrmsr MSR_IA32_TSCDEADLINE.
+> Since commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
+> KSZ9031 PHY") the networking is broken on the imx7d-zii-rmu2 board.
 >
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v1 -> v2:
->  * fix indentation
+> The end result is that network receive behaviour is marginal with lots of
+> RX CRC errors experienced and NFS frequently failing.
 >
->  arch/x86/kvm/lapic.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Quoting the explanation from Andrew Lunn in commit 0672d22a19244
+> ("ARM: dts: imx: Fix the AR803X phy-mode"):
 >
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 79599af..abaf48e 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2193,8 +2193,7 @@ void kvm_set_lapic_tscdeadline_msr(struct kvm_vcpu *vcpu, u64 data)
->  {
->         struct kvm_lapic *apic = vcpu->arch.apic;
+> "The problem here is, all the DTs were broken since day 0. However,
+> because the PHY driver was also broken, nobody noticed and it
+> worked. Now that the PHY driver has been fixed, all the bugs in the
+> DTs now become an issue"
 >
-> -       if (!kvm_apic_present(vcpu) || apic_lvtt_oneshot(apic) ||
-> -                       apic_lvtt_period(apic))
-> +       if (!kvm_apic_present(vcpu) || !apic_lvtt_tscdeadline(apic))
->                 return;
+> Fix it by switching to phy-mode = "rgmii-id".
 >
->         hrtimer_cancel(&apic->lapic_timer.timer);
-> --
-> 2.7.4
->
+> Fixes: bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
+> Signed-off-by: Chris Healy <cphealy@gmail.com>
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
