@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A15024FA4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB47424F9AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgHXIgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
+        id S1726818AbgHXJsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728290AbgHXIgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:36:47 -0400
+        id S1728791AbgHXIkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:40:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59E3C208E4;
-        Mon, 24 Aug 2020 08:36:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D2502075B;
+        Mon, 24 Aug 2020 08:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258206;
-        bh=I2rc69Oc47pz8Ily187amhLgZCDrNoxj7kJnj5evJDg=;
+        s=default; t=1598258453;
+        bh=lnxsdBh+zE47m4uo4Po/DXympUpbxUrHQw2OAbpZ/no=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiPtqUdt1SUlvb2P2at8ngdcPMy9h2shYD1SoqgLm7z7FwfKrf3poUqPZvRl/P/CH
-         jI6IhUzH2gIHNaEKRqxLUGIOUH2xvFyg/SaHvWsZCmTcJCZ5dh+Lq9/5Etj/GZauwC
-         7vvoYc9D4WhghSxK+eAur6NQNR3q5Ugi89nAOtF4=
+        b=cUIDcLH7rUitLJphbpMS9AiESb6Z0+vv2nXKI6CjMXGzpBd3eVC5y/l91WzrZCs8w
+         HdCgJbJV5WkeeM204bKwhWa56hxssd4wjKowbkA/7HqeenhXDUf1UUzUBz64ZiCafw
+         D+hoW7Td7m1Sb+DC1OOBVTq2i48/DMBONE6I1kIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Henrique Figueira <henrislip@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
+        Santosh Vernekar <svernekar@marvell.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Shyam Sundar <ssundar@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 086/148] can: j1939: transport: add j1939_session_skb_find_by_offset() function
-Date:   Mon, 24 Aug 2020 10:29:44 +0200
-Message-Id: <20200824082418.175733660@linuxfoundation.org>
+Subject: [PATCH 5.7 052/124] scsi: libfc: Free skb in fc_disc_gpn_id_resp() for valid cases
+Date:   Mon, 24 Aug 2020 10:29:46 +0200
+Message-Id: <20200824082411.979792996@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,88 +48,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 840835c9281215341d84966a8855f267a971e6a3 ]
+[ Upstream commit ec007ef40abb6a164d148b0dc19789a7a2de2cc8 ]
 
-Sometimes it makes no sense to search the skb by pkt.dpo, since we need
-next the skb within the transaction block. This may happen if we have an
-ETP session with CTS set to less than 255 packets.
+In fc_disc_gpn_id_resp(), skb is supposed to get freed in all cases except
+for PTR_ERR. However, in some cases it didn't.
 
-After this patch, we will be able to work with ETP sessions where the
-block size (ETP.CM_CTS byte 2) is less than 255 packets.
+This fix is to call fc_frame_free(fp) before function returns.
 
-Reported-by: Henrique Figueira <henrislip@gmail.com>
-Reported-by: https://github.com/linux-can/can-utils/issues/228
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-5-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20200729081824.30996-2-jhasan@marvell.com
+Reviewed-by: Girish Basrur <gbasrur@marvell.com>
+Reviewed-by: Santosh Vernekar <svernekar@marvell.com>
+Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
+Reviewed-by: Shyam Sundar <ssundar@marvell.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/transport.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/scsi/libfc/fc_disc.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 30957c9a8eb7a..90a2baac8a4aa 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -352,17 +352,16 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 	skb_queue_tail(&session->skb_queue, skb);
- }
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index 2b865c6423e29..e00dc4693fcbd 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -581,8 +581,12 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
  
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct
-+sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
-+					  unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
-+	struct j1939_sk_buff_cb *do_skcb;
- 	struct sk_buff *skb = NULL;
- 	struct sk_buff *do_skb;
--	struct j1939_sk_buff_cb *do_skcb;
--	unsigned int offset_start;
- 	unsigned long flags;
+ 	if (PTR_ERR(fp) == -FC_EX_CLOSED)
+ 		goto out;
+-	if (IS_ERR(fp))
+-		goto redisc;
++	if (IS_ERR(fp)) {
++		mutex_lock(&disc->disc_mutex);
++		fc_disc_restart(disc);
++		mutex_unlock(&disc->disc_mutex);
++		goto out;
++	}
  
--	offset_start = session->pkt.dpo * 7;
--
- 	spin_lock_irqsave(&session->skb_queue.lock, flags);
- 	skb_queue_walk(&session->skb_queue, do_skb) {
- 		do_skcb = j1939_skb_to_cb(do_skb);
-@@ -382,6 +381,14 @@ static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
- 	return skb;
- }
- 
-+static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+{
-+	unsigned int offset_start;
-+
-+	offset_start = session->pkt.dpo * 7;
-+	return j1939_session_skb_find_by_offset(session, offset_start);
-+}
-+
- /* see if we are receiver
-  * returns 0 for broadcasts, although we will receive them
-  */
-@@ -766,7 +773,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find(session);
-+	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -1765,7 +1772,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 			    __func__, session);
- 		goto out_session_cancel;
+ 	cp = fc_frame_payload_get(fp, sizeof(*cp));
+ 	if (!cp)
+@@ -609,7 +613,7 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 				new_rdata->disc_id = disc->disc_id;
+ 				fc_rport_login(new_rdata);
+ 			}
+-			goto out;
++			goto free_fp;
+ 		}
+ 		rdata->disc_id = disc->disc_id;
+ 		mutex_unlock(&rdata->rp_mutex);
+@@ -626,6 +630,8 @@ redisc:
+ 		fc_disc_restart(disc);
+ 		mutex_unlock(&disc->disc_mutex);
  	}
--	se_skb = j1939_session_skb_find(session);
-+
-+	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
++free_fp:
++	fc_frame_free(fp);
+ out:
+ 	kref_put(&rdata->kref, fc_rport_destroy);
+ 	if (!IS_ERR(fp))
 -- 
 2.25.1
 
