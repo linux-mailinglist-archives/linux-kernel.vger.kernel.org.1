@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A2024F630
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929F524F64F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgHXI5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:57:15 -0400
-Received: from 8bytes.org ([81.169.241.247]:38758 "EHLO theia.8bytes.org"
+        id S1730536AbgHXI6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729024AbgHXI4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:56:36 -0400
-Received: from cap.home.8bytes.org (p4ff2bb8d.dip0.t-ipconnect.de [79.242.187.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S1730771AbgHXI6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:58:21 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id C475112DF;
-        Mon, 24 Aug 2020 10:56:26 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v6 66/76] x86/kvm: Add KVM specific VMMCALL handling under SEV-ES
-Date:   Mon, 24 Aug 2020 10:55:01 +0200
-Message-Id: <20200824085511.7553-67-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824085511.7553-1-joro@8bytes.org>
-References: <20200824085511.7553-1-joro@8bytes.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 29221204FD;
+        Mon, 24 Aug 2020 08:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598259500;
+        bh=MlJ44rehLSPaJUGChKnzLkZMd/wcW1D2ek38r9QI/p8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iQoFk1hEPIycH6uvZnb6VQY5N8y5Q4wF2KotBVBfTw4Ld3c4RRAawn3DrFWbwqdYn
+         e6RCVfW7DOX61v//zMbh+8Mvel8hvYb1AvKy3bM7s/pVnlxnbF1BjUAXBomGMNiDAz
+         f4DQsO2cphJ9wmNYH6WwxaGmlsz/IvbnyqXcZVoM=
+Date:   Mon, 24 Aug 2020 10:57:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qiwu Huang <yanziily@gmail.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Qiwu Huang <huangqiwu@xiaomi.com>
+Subject: Re: [PATCH v8 1/4] power: supply: core: add quick charge type
+ property
+Message-ID: <20200824085715.GB402243@kroah.com>
+References: <cover.1597376585.git.huangqiwu@xiaomi.com>
+ <ced256ea8ac2f3e54c33677facc4c2ef04dee643.1597376585.git.huangqiwu@xiaomi.com>
+ <20200814060909.GD1409566@kroah.com>
+ <CAPtXDt1e3fi7ymW0-FSknUAYCQ80aL=4btbeA2e4Xre7+e7OtA@mail.gmail.com>
+ <20200818060707.GB1742213@kroah.com>
+ <CAPtXDt26DdOi6JG7x3mTrR5YwArjkAeXY2TogRnK_xkSabhL2g@mail.gmail.com>
+ <20200824074357.GB4133866@kroah.com>
+ <CAPtXDt0yW7Kh6a9JGfXaha_wKVjae7U74m6K=631Ofh8_m4uvg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPtXDt0yW7Kh6a9JGfXaha_wKVjae7U74m6K=631Ofh8_m4uvg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+On Mon, Aug 24, 2020 at 04:42:06PM +0800, Qiwu Huang wrote:
+> On Mon, Aug 24, 2020 at 3:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Aug 24, 2020 at 08:54:56AM +0800, Qiwu Huang wrote:
+> > > On Tue, Aug 18, 2020 at 2:07 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Tue, Aug 18, 2020 at 09:56:28AM +0800, Qiwu Huang wrote:
+> > > > > On Fri, Aug 14, 2020 at 2:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Fri, Aug 14, 2020 at 11:46:54AM +0800, Qiwu Huang wrote:
+> > > > > > > From: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > > > > >
+> > > > > > > Reports the kind of quick charge type based on
+> > > > > > > different adapter power.
+> > > > > > >
+> > > > > > > Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+> > > > > > > ---
+> > > > > > >  Documentation/ABI/testing/sysfs-class-power | 21 +++++++++
+> > > > > > >  drivers/power/supply/power_supply_sysfs.c   |  1 +
+> > > > > > >  drivers/power/supply/qcom_smbb.c            | 51 +++++++++++++++++++++
+> > > > > > >  include/linux/power_supply.h                | 14 ++++++
+> > > > > > >  4 files changed, 87 insertions(+)
+> > > > > >
+> > > > > > You should also submit your driver that uses these new attributes at the
+> > > > > > same time.  What happened to that request?  Otherwise no one really
+> > > > > > knows how these are being used, or if they even are used by anyone.
+> > > > > >
+> > > > >
+> > > > > I don't think I can submit the whole driver because our drivers are
+> > > > > divided into three parts, the first part is in ADSP, the second part
+> > > > > is in kernel and the third part is in Android Hal.This is the second
+> > > > > part.
+> > > >
+> > > > WHat is "ADSP"?
+> > >
+> > > ADSP: advanced digital signal processor
+> >
+> > Ok, then just send the kernel driver.
+> >
+> > > > Just submit your kernel driver code, that's all we care about here.
+> > > > Userspace code is not anything we can do anything with :)
+> > >
+> > > If we ported the full driver, we would break the existing driver
+> > > structure because we would introduce more Qualcomm code. I think
+> > > that's an unreasonable change.
+> >
+> > That doesn't make much sense.  You have a working driver for these apis,
+> > just submit it for inclusion, it should never break any existing
+> > drivers, otherwise your code wouldn't work either.
+> 
+> We're an Android device, we're working on a Qualcomm based code, and
+> from the current code tree, the current code tree is missing the QTI
+> Charger code
 
-Implement the callbacks to copy the processor state required by KVM to
-the GHCB.
+I don't know what that means, sorry.  Just submit your driver, and any
+needed dependencies as well.  There's no other way to evaluate this api
+addition without that, right?
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[ jroedel@suse.de: - Split out of a larger patch
-                   - Adapt to different callback functions ]
-Co-developed-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20200724160336.5435-66-joro@8bytes.org
----
- arch/x86/kernel/kvm.c | 35 +++++++++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 6 deletions(-)
+thanks,
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 08320b0b2b27..0f9597275e9c 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -36,6 +36,8 @@
- #include <asm/hypervisor.h>
- #include <asm/tlb.h>
- #include <asm/cpuidle_haltpoll.h>
-+#include <asm/ptrace.h>
-+#include <asm/svm.h>
- 
- DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
- 
-@@ -746,13 +748,34 @@ static void __init kvm_init_platform(void)
- 	x86_platform.apic_post_init = kvm_apic_init;
- }
- 
-+#if defined(CONFIG_AMD_MEM_ENCRYPT)
-+static void kvm_sev_es_hcall_prepare(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* RAX and CPL are already in the GHCB */
-+	ghcb_set_rbx(ghcb, regs->bx);
-+	ghcb_set_rcx(ghcb, regs->cx);
-+	ghcb_set_rdx(ghcb, regs->dx);
-+	ghcb_set_rsi(ghcb, regs->si);
-+}
-+
-+static bool kvm_sev_es_hcall_finish(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* No checking of the return state needed */
-+	return true;
-+}
-+#endif
-+
- const __initconst struct hypervisor_x86 x86_hyper_kvm = {
--	.name			= "KVM",
--	.detect			= kvm_detect,
--	.type			= X86_HYPER_KVM,
--	.init.guest_late_init	= kvm_guest_init,
--	.init.x2apic_available	= kvm_para_available,
--	.init.init_platform	= kvm_init_platform,
-+	.name				= "KVM",
-+	.detect				= kvm_detect,
-+	.type				= X86_HYPER_KVM,
-+	.init.guest_late_init		= kvm_guest_init,
-+	.init.x2apic_available		= kvm_para_available,
-+	.init.init_platform		= kvm_init_platform,
-+#if defined(CONFIG_AMD_MEM_ENCRYPT)
-+	.runtime.sev_es_hcall_prepare	= kvm_sev_es_hcall_prepare,
-+	.runtime.sev_es_hcall_finish	= kvm_sev_es_hcall_finish,
-+#endif
- };
- 
- static __init int activate_jump_labels(void)
--- 
-2.28.0
-
+greg k-h
