@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEC224F4BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668AB24F447
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgHXIjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55908 "EHLO mail.kernel.org"
+        id S1727959AbgHXIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728665AbgHXIjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:45 -0400
+        id S1727923AbgHXIea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:34:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B14F5221E2;
-        Mon, 24 Aug 2020 08:39:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2643D206F0;
+        Mon, 24 Aug 2020 08:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258384;
-        bh=f+eJYYMbONiJeb1v9bjRb1whw7sxNoF7XtF8OaQ7S1U=;
+        s=default; t=1598258069;
+        bh=lnxsdBh+zE47m4uo4Po/DXympUpbxUrHQw2OAbpZ/no=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xv2k2z9CxQutNGp9smaH7MdRjaWVplTtKzfijkc5VtoSH1FiUa+g2RxjlYS9eGeV2
-         10kHlercUfHgeZVU22+gtfcD7nPfdeDIjo/0m+DnnCkOoTevHasvesqq1rGR/dCzEM
-         k+S+yhDcdxL6XNklQZ1N5Pi98TVDAmzD7JkS7o64=
+        b=Zr+f8rBEV/KRPZWC99XUMyQPNaRfpOcyoEue3zyU0GkN/adxO32rtj8OveUviThx8
+         kEsYicq/gmHDPjRSUEUp/xuhy/67EWkQ24tfTtq96nCRRxbqUzILOTFBgpDoO1ia2v
+         3SHAm91h3kDH3ckGrEx7WoRXMyNGlNLctSBeW+p8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 028/124] io-wq: reorder cancellation pending -> running
+        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
+        Santosh Vernekar <svernekar@marvell.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Shyam Sundar <ssundar@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 064/148] scsi: libfc: Free skb in fc_disc_gpn_id_resp() for valid cases
 Date:   Mon, 24 Aug 2020 10:29:22 +0200
-Message-Id: <20200824082410.797298921@linuxfoundation.org>
+Message-Id: <20200824082417.139100903@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,118 +48,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit f4c2665e33f48904f2766d644df33fb3fd54b5ec ]
+[ Upstream commit ec007ef40abb6a164d148b0dc19789a7a2de2cc8 ]
 
-Go all over all pending lists and cancel works there, and only then
-try to match running requests. No functional changes here, just a
-preparation for bulk cancellation.
+In fc_disc_gpn_id_resp(), skb is supposed to get freed in all cases except
+for PTR_ERR. However, in some cases it didn't.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This fix is to call fc_frame_free(fp) before function returns.
+
+Link: https://lore.kernel.org/r/20200729081824.30996-2-jhasan@marvell.com
+Reviewed-by: Girish Basrur <gbasrur@marvell.com>
+Reviewed-by: Santosh Vernekar <svernekar@marvell.com>
+Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
+Reviewed-by: Shyam Sundar <ssundar@marvell.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c | 54 ++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 22 deletions(-)
+ drivers/scsi/libfc/fc_disc.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 4023c98468608..3283f8c5b5a18 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -931,19 +931,14 @@ static bool io_wq_worker_cancel(struct io_worker *worker, void *data)
- 	return ret;
- }
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index 2b865c6423e29..e00dc4693fcbd 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -581,8 +581,12 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
  
--static enum io_wq_cancel io_wqe_cancel_work(struct io_wqe *wqe,
--					    struct io_cb_cancel_data *match)
-+static bool io_wqe_cancel_pending_work(struct io_wqe *wqe,
-+				       struct io_cb_cancel_data *match)
- {
- 	struct io_wq_work_node *node, *prev;
- 	struct io_wq_work *work;
- 	unsigned long flags;
- 	bool found = false;
- 
--	/*
--	 * First check pending list, if we're lucky we can just remove it
--	 * from there. CANCEL_OK means that the work is returned as-new,
--	 * no completion will be posted for it.
--	 */
- 	spin_lock_irqsave(&wqe->lock, flags);
- 	wq_list_for_each(node, prev, &wqe->work_list) {
- 		work = container_of(node, struct io_wq_work, list);
-@@ -956,21 +951,20 @@ static enum io_wq_cancel io_wqe_cancel_work(struct io_wqe *wqe,
- 	}
- 	spin_unlock_irqrestore(&wqe->lock, flags);
- 
--	if (found) {
-+	if (found)
- 		io_run_cancel(work, wqe);
--		return IO_WQ_CANCEL_OK;
--	}
-+	return found;
-+}
-+
-+static bool io_wqe_cancel_running_work(struct io_wqe *wqe,
-+				       struct io_cb_cancel_data *match)
-+{
-+	bool found;
- 
--	/*
--	 * Now check if a free (going busy) or busy worker has the work
--	 * currently running. If we find it there, we'll return CANCEL_RUNNING
--	 * as an indication that we attempt to signal cancellation. The
--	 * completion will run normally in this case.
--	 */
- 	rcu_read_lock();
- 	found = io_wq_for_each_worker(wqe, io_wq_worker_cancel, match);
- 	rcu_read_unlock();
--	return found ? IO_WQ_CANCEL_RUNNING : IO_WQ_CANCEL_NOTFOUND;
-+	return found;
- }
- 
- enum io_wq_cancel io_wq_cancel_cb(struct io_wq *wq, work_cancel_fn *cancel,
-@@ -980,18 +974,34 @@ enum io_wq_cancel io_wq_cancel_cb(struct io_wq *wq, work_cancel_fn *cancel,
- 		.fn	= cancel,
- 		.data	= data,
- 	};
--	enum io_wq_cancel ret = IO_WQ_CANCEL_NOTFOUND;
- 	int node;
- 
-+	/*
-+	 * First check pending list, if we're lucky we can just remove it
-+	 * from there. CANCEL_OK means that the work is returned as-new,
-+	 * no completion will be posted for it.
-+	 */
- 	for_each_node(node) {
- 		struct io_wqe *wqe = wq->wqes[node];
- 
--		ret = io_wqe_cancel_work(wqe, &match);
--		if (ret != IO_WQ_CANCEL_NOTFOUND)
--			break;
-+		if (io_wqe_cancel_pending_work(wqe, &match))
-+			return IO_WQ_CANCEL_OK;
- 	}
- 
--	return ret;
-+	/*
-+	 * Now check if a free (going busy) or busy worker has the work
-+	 * currently running. If we find it there, we'll return CANCEL_RUNNING
-+	 * as an indication that we attempt to signal cancellation. The
-+	 * completion will run normally in this case.
-+	 */
-+	for_each_node(node) {
-+		struct io_wqe *wqe = wq->wqes[node];
-+
-+		if (io_wqe_cancel_running_work(wqe, &match))
-+			return IO_WQ_CANCEL_RUNNING;
+ 	if (PTR_ERR(fp) == -FC_EX_CLOSED)
+ 		goto out;
+-	if (IS_ERR(fp))
+-		goto redisc;
++	if (IS_ERR(fp)) {
++		mutex_lock(&disc->disc_mutex);
++		fc_disc_restart(disc);
++		mutex_unlock(&disc->disc_mutex);
++		goto out;
 +	}
-+
-+	return IO_WQ_CANCEL_NOTFOUND;
- }
  
- static bool io_wq_io_cb_cancel_data(struct io_wq_work *work, void *data)
+ 	cp = fc_frame_payload_get(fp, sizeof(*cp));
+ 	if (!cp)
+@@ -609,7 +613,7 @@ static void fc_disc_gpn_id_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 				new_rdata->disc_id = disc->disc_id;
+ 				fc_rport_login(new_rdata);
+ 			}
+-			goto out;
++			goto free_fp;
+ 		}
+ 		rdata->disc_id = disc->disc_id;
+ 		mutex_unlock(&rdata->rp_mutex);
+@@ -626,6 +630,8 @@ redisc:
+ 		fc_disc_restart(disc);
+ 		mutex_unlock(&disc->disc_mutex);
+ 	}
++free_fp:
++	fc_frame_free(fp);
+ out:
+ 	kref_put(&rdata->kref, fc_rport_destroy);
+ 	if (!IS_ERR(fp))
 -- 
 2.25.1
 
