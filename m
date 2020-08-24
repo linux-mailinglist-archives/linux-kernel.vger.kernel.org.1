@@ -2,164 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5356E24FC69
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B386224FC6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgHXLTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        id S1726783AbgHXLUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgHXLSY (ORCPT
+        with ESMTP id S1726187AbgHXLT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:18:24 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3435EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:18:24 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id nv17so4115472pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:18:24 -0700 (PDT)
+        Mon, 24 Aug 2020 07:19:58 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB88C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:19:58 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id h2so4073082plr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=924oG4r/zA6EzR8f8iU/QlmiDvBYHOesbZuQXAnUB10=;
-        b=Zxdfow5V0kAcBrq4HyfZh+a/jeM8RuH/QWWl4uQWICbgi4ozmRA63KsdSAHLhF8RiC
-         TPVWAZUuoiA39AUM4rVBi11nop10GYFklMD5p7kB7eRSosa+GwNpILRbnbjMv2tEt0WD
-         0gUgg4C1UMHcvbANDr33grnpH/zGnvxn5Edm/iukgbIqhVVH1pCA6MpSFxzyc53pawLI
-         25AO2othQE3ahdOwe9X7uX2mv2bxFKxzn/u3W8vmofOE125InZArTR7yNS+1uWgYWSVS
-         rGXDf5/i9TkwffvnmwUadm2zSXnyyqJwoy7nhsZq1N1N7NrMKdK7wsJJfLMW5WcnJkh9
-         0Bvg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2g3JRsf/PKzig8v/7OjH4THY5xjYwC1a2FsdQmpvMQ8=;
+        b=G1m+8znhMcg31IaZZwCkHg9c/a9YCnCWU0t9gKHOeVu2+2cqBfkhEoLIxSqOsnHBzg
+         GATzFuVnfjjmMcO4NOezcDypI1urXfjzM8HgYwp39103gTtUHynFPlv+FPZwboQqAORD
+         LbgwAVr/IbQE75LCeEqK1IMmFC0f5ofpt3wbpBQB/p37pOWusMepDK4fH3E4vqWEGPlp
+         1+w05tCICJh81N6zJya73aEIGfnrQuABDkL+9O/UyPg2Jk31Td2W0aHKkn3c1Z49kRzV
+         X7e9IJgvu47kJ6LmG3rNDobSbR1acWAIFjxDMsY9w46u7ClSB9LBE+OBeG0DWe2oCQYK
+         QhZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=924oG4r/zA6EzR8f8iU/QlmiDvBYHOesbZuQXAnUB10=;
-        b=lxI3KQtV7pi4ARFrbyG+7tJZNT6uz7gQdMYyoLr4z81JsEGeFySaUBF+PvnSg44AXz
-         +9F3O14AJrPMn7zN3/BHd5s/WqDwXrkXUpBGufleO5T2UqpSSoqnAD9aRF3fAnhS/KTR
-         f7irVstUQs8k/fgU9ITr0oe44R122+T7xq0G/R6pfrlxpFcL+nbLn+RS8JfrjngbC6Nb
-         uuJ/vfvYbPw1LyqNzDz1DsPz7vUEt2MfqiIBv+pDK418YgEwYFtKINp3N+fYpcqHR/Zb
-         jNpquAhLWvlsKSV1GVEOMpytC4E//TywbZl2sGWbIJBaogx5gU6v/Emdcmdc4Whp9Vjy
-         9w7A==
-X-Gm-Message-State: AOAM531MRP3/4REUa6lHVSIB2JFp25aCKnb5mVi2PZsULg4NgJGaW2CQ
-        1mAxUcWfWjmx2jswg/92AyHybA==
-X-Google-Smtp-Source: ABdhPJw9nAi06D5xVylFBDMZzBl0YAscU8qmQ45LkHNjgXXHlWA3I00bTnYySLilETWRcKxo2mlI8g==
-X-Received: by 2002:a17:90a:4fe2:: with SMTP id q89mr4578766pjh.70.1598267903407;
-        Mon, 24 Aug 2020 04:18:23 -0700 (PDT)
-Received: from localhost ([122.172.43.13])
-        by smtp.gmail.com with ESMTPSA id 5sm11527604pfw.25.2020.08.24.04.18.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2g3JRsf/PKzig8v/7OjH4THY5xjYwC1a2FsdQmpvMQ8=;
+        b=oa8gTc1DBWKamuc8YQIbfHa2wkOl4um45GRAtIeBWLddNy1et6jcSwkxrokCDxkrQh
+         CcOz+0cnwa1dc/RZnwDDO7XBRWUyribw/yRlJ6Rc6O+bZoaG9mp2dBeXH1+tjXD4WEhf
+         G1BB96y+qAp0CaHNbYtN7/3QHhezGDfrbFSBjhvdC6cnSbQV5sASSZZWpCSSQUDGjIRS
+         yx1lcSxdf2agKpEtdqlHohs1P7k0ShRvPD6qLmzMoR1XqazA/KiTxgx82HhLJmyeF4d3
+         FYEQVXEoh4M6A1z1MxI/BSOECHgY6c0MuLQCOnpP8RXKmhSQEYA3yMt5NJw9zjhJwFt2
+         fFrQ==
+X-Gm-Message-State: AOAM531QZCZsFu5V1EyU6KwqD02NXLCQRAnoxuMWjPmPXv+WKmInWG/i
+        k8Rz3SBffsLBDpKvp89eMco=
+X-Google-Smtp-Source: ABdhPJwk8e6D4k/zcB9i/bzBJbjcIEvQVgR9nSFgoOFEd+TvsZ6Mi+gUyyNyG2o8w67VUE5logb4tA==
+X-Received: by 2002:a17:902:8a93:: with SMTP id p19mr3500563plo.320.1598267997884;
+        Mon, 24 Aug 2020 04:19:57 -0700 (PDT)
+Received: from builder-PowerEdge-R730xd.mioffice.cn ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id 193sm11447084pfu.169.2020.08.24.04.19.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Aug 2020 04:18:22 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 16:48:20 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Niklas Cassel <nks@flawful.org>
-Subject: Re: [RFC PATCH 1/3] opp: Reduce code duplication in
- _set_required_opps()
-Message-ID: <20200824111820.rcaingohxw3wozgd@vireshk-i7>
-References: <20200730080146.25185-1-stephan@gerhold.net>
- <20200730080146.25185-2-stephan@gerhold.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730080146.25185-2-stephan@gerhold.net>
-User-Agent: NeoMutt/20180716-391-311a52
+        Mon, 24 Aug 2020 04:19:57 -0700 (PDT)
+From:   Qianli Zhao <zhaoqianligood@gmail.com>
+To:     tj@kernel.org, jiangshanlai@gmail.com
+Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+Subject: [PATCH] workqueue: Warning when work try to flush own workqueue
+Date:   Mon, 24 Aug 2020 19:19:50 +0800
+Message-Id: <fd24b0a495da7658481925548183eaa22a57351f.1598266402.git.zhaoqianli@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-07-20, 10:01, Stephan Gerhold wrote:
-> Move call to dev_pm_genpd_set_performance_state() to a separate
-> function so we can avoid duplicating the code for the single and
-> multiple genpd case.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  drivers/opp/core.c | 40 +++++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 9d7fb45b1786..f7a476b55069 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -781,6 +781,21 @@ static int _set_opp_custom(const struct opp_table *opp_table,
->  	return opp_table->set_opp(data);
->  }
->  
-> +static int _set_required_opp(struct device *dev, struct device *pd_dev,
-> +			     struct dev_pm_opp *opp, int i)
-> +{
-> +	unsigned int pstate = likely(opp) ? opp->required_opps[i]->pstate : 0;
-> +	int ret;
-> +
-> +	ret = dev_pm_genpd_set_performance_state(pd_dev, pstate);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to set performance rate of %s: %d (%d)\n",
-> +			dev_name(pd_dev), pstate, ret);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  /* This is only called for PM domain for now */
->  static int _set_required_opps(struct device *dev,
->  			      struct opp_table *opp_table,
-> @@ -788,22 +803,15 @@ static int _set_required_opps(struct device *dev,
->  {
->  	struct opp_table **required_opp_tables = opp_table->required_opp_tables;
->  	struct device **genpd_virt_devs = opp_table->genpd_virt_devs;
-> -	unsigned int pstate;
-> +	struct device *pd_dev;
->  	int i, ret = 0;
->  
->  	if (!required_opp_tables)
->  		return 0;
->  
->  	/* Single genpd case */
-> -	if (!genpd_virt_devs) {
-> -		pstate = likely(opp) ? opp->required_opps[0]->pstate : 0;
-> -		ret = dev_pm_genpd_set_performance_state(dev, pstate);
-> -		if (ret) {
-> -			dev_err(dev, "Failed to set performance state of %s: %d (%d)\n",
-> -				dev_name(dev), pstate, ret);
-> -		}
-> -		return ret;
-> -	}
-> +	if (!genpd_virt_devs)
-> +		return _set_required_opp(dev, dev, opp, 0);
->  
->  	/* Multiple genpd case */
->  
-> @@ -814,17 +822,11 @@ static int _set_required_opps(struct device *dev,
->  	mutex_lock(&opp_table->genpd_virt_dev_lock);
->  
->  	for (i = 0; i < opp_table->required_opp_count; i++) {
-> -		pstate = likely(opp) ? opp->required_opps[i]->pstate : 0;
-> -
-> -		if (!genpd_virt_devs[i])
-> -			continue;
+From: Qianli Zhao <zhaoqianli@xiaomi.com>
 
-Don't we need this check anymore ?
+In a work process context,flush own workqueue or work self
+will cause process blocked(enter state D),leading to a
+deadlock,catch this wrong use,warn when the issue happened
 
-> +		pd_dev = genpd_virt_devs[i];
->  
-> -		ret = dev_pm_genpd_set_performance_state(genpd_virt_devs[i], pstate);
-> -		if (ret) {
-> -			dev_err(dev, "Failed to set performance rate of %s: %d (%d)\n",
-> -				dev_name(genpd_virt_devs[i]), pstate, ret);
-> +		ret = _set_required_opp(dev, pd_dev, opp, i);
-> +		if (ret)
->  			break;
-> -		}
->  	}
->  	mutex_unlock(&opp_table->genpd_virt_dev_lock);
->  
-> -- 
-> 2.27.0
+crash> ps 10856
+PID    PPID  CPU       TASK       ST   COMM
+10856    2   2  ffffffc873428080  UN  [kworker/u16:15]
+crash> bt 10856
+PID: 10856  TASK: ffffffc873428080  CPU: 2   COMMAND: "kworker/u16:15"
+ #0 [ffffff80270cb9a0] __switch_to at ffffff99bba8533c
+ #1 [ffffff80270cba30] __schedule at ffffff99bcda18dc
+ #2 [ffffff80270cba50] schedule at ffffff99bcda1cdc
+ #3 [ffffff80270cbaf0] schedule_timeout at ffffff99bcda6674
+ #4 [ffffff80270cbb70] wait_for_common at ffffff99bcda2c68
+ #5 [ffffff80270cbb80] wait_for_completion at ffffff99bcda2b60
+ #6 [ffffff80270cbc30] flush_workqueue at ffffff99bbad7a60
+ #7 [ffffff80270cbc90] drain_workqueue at ffffff99bbad80fc
+ #8 [ffffff80270cbcb0] destroy_workqueue at ffffff99bbad92f8
+ #9 [ffffff80270cbda0] dfc_svc_init at ffffff99bbfbfb6c
+ #10 [ffffff80270cbdf0] process_one_work at ffffff99bbadc478
+ #11 [ffffff80270cbe50] worker_thread at ffffff99bbadc9dc
+ #12 [ffffff80270cbeb0] kthread at ffffff99bbae1f84
 
+Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+---
+ kernel/workqueue.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 3f5d4bf..759280d 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -2585,6 +2585,8 @@ static int rescuer_thread(void *__rescuer)
+  * @target_work: work item being flushed (NULL for workqueue flushes)
+  *
+  * %current is trying to flush the whole @target_wq or @target_work on it.
++ * If a work try to flush own workqueue or itself will cause process blocked,
++ * leading to a dealock.
+  * If @target_wq doesn't have %WQ_MEM_RECLAIM, verify that %current is not
+  * reclaiming memory or running on a workqueue which doesn't have
+  * %WQ_MEM_RECLAIM as that can break forward-progress guarantee leading to
+@@ -2594,13 +2596,16 @@ static void check_flush_dependency(struct workqueue_struct *target_wq,
+ 				   struct work_struct *target_work)
+ {
+ 	work_func_t target_func = target_work ? target_work->func : NULL;
+-	struct worker *worker;
++	struct worker *worker = current_wq_worker();
++
++	WARN_ONCE(worker && worker->current_pwq->wq == target_wq &&
++		  worker->task == current,
++		  "workqueue: current work function:%ps is flushing own workqueue:%s",
++		  worker->current_func, target_wq->name);
+ 
+ 	if (target_wq->flags & WQ_MEM_RECLAIM)
+ 		return;
+ 
+-	worker = current_wq_worker();
+-
+ 	WARN_ONCE(current->flags & PF_MEMALLOC,
+ 		  "workqueue: PF_MEMALLOC task %d(%s) is flushing !WQ_MEM_RECLAIM %s:%ps",
+ 		  current->pid, current->comm, target_wq->name, target_func);
 -- 
-viresh
+2.7.4
+
