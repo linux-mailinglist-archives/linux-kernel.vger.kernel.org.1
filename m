@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF66824F62E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F80824F58F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgHXI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
+        id S1729852AbgHXIum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730485AbgHXI4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:56:12 -0400
+        id S1729848AbgHXIuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:50:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6539322BF5;
-        Mon, 24 Aug 2020 08:56:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A808204FD;
+        Mon, 24 Aug 2020 08:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259371;
-        bh=fcu9tkV638RyO4qXm29ePKUITiCHaZxHndRULWlEA/o=;
+        s=default; t=1598259034;
+        bh=/MhY6KOjYV5UQvfUwKDgkfVxzvA4mJRDHMCk6YPmWPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CCo5Vn56ObMEqAaHN59pV9Ur3SPwQWk2JF3GvGlGALkBQwPpEKu4Ug+W9y+SmBYkK
-         Jcdd7YyO/7Byu4TzI93T1sToYTRlVV9yHTUOoFJTqRczXwmdcg1m6Sj4Wyysy6iIVB
-         XoajMSPQxPrw0KSlChvWdyjsWoplUbsUhx9UI0fU=
+        b=MRJ6dWezHAJGibmMMlJSpoesqwBiyaCIkuc6ZzLizY8Xk0Rk7MWGQ1r+nPJHJeLOq
+         2k4ugAFMZQ5N/+Z5Tuem5ghee5Ip/zBfLxaoN84fW7eejvsZX2i/9RTzuqRtYqvb6T
+         qmhIGXfL8Qr5F7IBFs/LYToFGwrEZs9qk2VEgGjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mao Wenan <wenan.mao@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 34/71] virtio_ring: Avoid loop when vq is broken in virtqueue_poll
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.4 29/33] epoll: Keep a reference on files added to the check list
 Date:   Mon, 24 Aug 2020 10:31:25 +0200
-Message-Id: <20200824082357.590278239@linuxfoundation.org>
+Message-Id: <20200824082348.000514221@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
+References: <20200824082346.498653578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Wenan <wenan.mao@linux.alibaba.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 481a0d7422db26fb63e2d64f0652667a5c6d0f3e ]
+commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682 upstream.
 
-The loop may exist if vq->broken is true,
-virtqueue_get_buf_ctx_packed or virtqueue_get_buf_ctx_split
-will return NULL, so virtnet_poll will reschedule napi to
-receive packet, it will lead cpu usage(si) to 100%.
+When adding a new fd to an epoll, and that this new fd is an
+epoll fd itself, we recursively scan the fds attached to it
+to detect cycles, and add non-epool files to a "check list"
+that gets subsequently parsed.
 
-call trace as below:
-virtnet_poll
-	virtnet_receive
-		virtqueue_get_buf_ctx
-			virtqueue_get_buf_ctx_packed
-			virtqueue_get_buf_ctx_split
-	virtqueue_napi_complete
-		virtqueue_poll           //return true
-		virtqueue_napi_schedule //it will reschedule napi
+However, this check list isn't completely safe when deletions
+can happen concurrently. To sidestep the issue, make sure that
+a struct file placed on the check list sees its f_count increased,
+ensuring that a concurrent deletion won't result in the file
+disapearing from under our feet.
 
-to fix this, return false if vq is broken in virtqueue_poll.
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/1596354249-96204-1-git-send-email-wenan.mao@linux.alibaba.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/eventpoll.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 6228b48d1e127..df7980aef927a 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -828,6 +828,9 @@ bool virtqueue_poll(struct virtqueue *_vq, unsigned last_used_idx)
- {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
- 
-+	if (unlikely(vq->broken))
-+		return false;
-+
- 	virtio_mb(vq->weak_barriers);
- 	return (u16)last_used_idx != virtio16_to_cpu(_vq->vdev, vq->vring.used->idx);
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1719,9 +1719,11 @@ static int ep_loop_check_proc(void *priv
+ 			 * not already there, and calling reverse_path_check()
+ 			 * during ep_insert().
+ 			 */
+-			if (list_empty(&epi->ffd.file->f_tfile_llink))
++			if (list_empty(&epi->ffd.file->f_tfile_llink)) {
++				get_file(epi->ffd.file);
+ 				list_add(&epi->ffd.file->f_tfile_llink,
+ 					 &tfile_check_list);
++			}
+ 		}
+ 	}
+ 	mutex_unlock(&ep->mtx);
+@@ -1765,6 +1767,7 @@ static void clear_tfile_check_list(void)
+ 		file = list_first_entry(&tfile_check_list, struct file,
+ 					f_tfile_llink);
+ 		list_del_init(&file->f_tfile_llink);
++		fput(file);
+ 	}
+ 	INIT_LIST_HEAD(&tfile_check_list);
  }
--- 
-2.25.1
-
+@@ -1906,9 +1909,11 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+ 					clear_tfile_check_list();
+ 					goto error_tgt_fput;
+ 				}
+-			} else
++			} else {
++				get_file(tf.file);
+ 				list_add(&tf.file->f_tfile_llink,
+ 							&tfile_check_list);
++			}
+ 			mutex_lock_nested(&ep->mtx, 0);
+ 			if (is_file_epoll(tf.file)) {
+ 				tep = tf.file->private_data;
 
 
