@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D2B24F604
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF31524F57D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgHXIz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37534 "EHLO mail.kernel.org"
+        id S1728228AbgHXIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730417AbgHXIz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:27 -0400
+        id S1729208AbgHXIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:49:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCAD3204FD;
-        Mon, 24 Aug 2020 08:55:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E6AD2074D;
+        Mon, 24 Aug 2020 08:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259327;
-        bh=LehtCaV42rdQFo3R1F6wlwdqE9D0Rqqwrku+qzm3Gnk=;
+        s=default; t=1598258966;
+        bh=fJ8NNjH3ZkCW8nghxtzb5HVti5kIN+YwOf4V+x2XJF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EgLFu0qlzv/2bbLhlK98J54rISIAPYcbdSzXK7sg9hopUJt+0+tL0hU+AuzJeHF4/
-         LoHMlK+f9awrnzDlAc75TtwgDQ7PmNvkr7mbwwDY15IsRobCVaF7j35CSmsi+FUG5o
-         SSpF9gUzuvYtSEVPNq1jELk4+f6GkJF/K9nDkxEk=
+        b=nCpS4JM7IegswO2TLHHOpJzuWTGk0+2J7hf4E4vVlv7VPaWnj1ipktORiNEhnAiNE
+         2xoo0wCxCGcOj4tNcOqe7LNNqBJn8Gct2HvzkllI+ysvEB+HeotQqIXAWuS7kZ7c2R
+         B6fXr2teN3KuhLz/WZ9reADAlmjEKmtYGUvsx7Ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Xu Yu <xuyu@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Yang Shi <shy828301@gmail.com>
-Subject: [PATCH 4.19 17/71] mm/memory.c: skip spurious TLB flush for retried page fault
-Date:   Mon, 24 Aug 2020 10:31:08 +0200
-Message-Id: <20200824082356.758044582@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Li Heng <liheng40@huawei.com>, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.4 103/107] efi: add missed destroy_workqueue when efisubsys_init fails
+Date:   Mon, 24 Aug 2020 10:31:09 +0200
+Message-Id: <20200824082410.193518492@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,52 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <shy828301@gmail.com>
+From: Li Heng <liheng40@huawei.com>
 
-commit b7333b58f358f38d90d78e00c1ee5dec82df10ad upstream.
+commit 98086df8b70c06234a8f4290c46064e44dafa0ed upstream.
 
-Recently we found regression when running will_it_scale/page_fault3 test
-on ARM64.  Over 70% down for the multi processes cases and over 20% down
-for the multi threads cases.  It turns out the regression is caused by
-commit 89b15332af7c ("mm: drop mmap_sem before calling
-balance_dirty_pages() in write fault").
+destroy_workqueue() should be called to destroy efi_rts_wq
+when efisubsys_init() init resources fails.
 
-The test mmaps a memory size file then write to the mapping, this would
-make all memory dirty and trigger dirty pages throttle, that upstream
-commit would release mmap_sem then retry the page fault.  The retried
-page fault would see correct PTEs installed then just fall through to
-spurious TLB flush.  The regression is caused by the excessive spurious
-TLB flush.  It is fine on x86 since x86's spurious TLB flush is no-op.
-
-We could just skip the spurious TLB flush to mitigate the regression.
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Xu Yu <xuyu@linux.alibaba.com>
-Debugged-by: Xu Yu <xuyu@linux.alibaba.com>
-Tested-by: Xu Yu <xuyu@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Li Heng <liheng40@huawei.com>
+Link: https://lore.kernel.org/r/1595229738-10087-1-git-send-email-liheng40@huawei.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/memory.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/firmware/efi/efi.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4062,6 +4062,9 @@ static vm_fault_t handle_pte_fault(struc
- 				vmf->flags & FAULT_FLAG_WRITE)) {
- 		update_mmu_cache(vmf->vma, vmf->address, vmf->pte);
- 	} else {
-+		/* Skip spurious TLB flush for retried page fault */
-+		if (vmf->flags & FAULT_FLAG_TRIED)
-+			goto unlock;
- 		/*
- 		 * This is needed only for protection faults but the arch code
- 		 * is not yet telling us if this is a protection fault or not.
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -345,6 +345,7 @@ static int __init efisubsys_init(void)
+ 	efi_kobj = kobject_create_and_add("efi", firmware_kobj);
+ 	if (!efi_kobj) {
+ 		pr_err("efi: Firmware registration failed.\n");
++		destroy_workqueue(efi_rts_wq);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -381,6 +382,7 @@ err_unregister:
+ 	generic_ops_unregister();
+ err_put:
+ 	kobject_put(efi_kobj);
++	destroy_workqueue(efi_rts_wq);
+ 	return error;
+ }
+ 
 
 
