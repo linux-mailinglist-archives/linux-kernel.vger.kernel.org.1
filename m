@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8789724FE64
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6D524FE16
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgHXM7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 08:59:09 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:57185 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725904AbgHXMzS (ORCPT
+        id S1726964AbgHXMyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 08:54:53 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38061 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHXMyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 08:55:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04392;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U6k9-bl_1598273712;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6k9-bl_1598273712)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 24 Aug 2020 20:55:13 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-Cc:     Michal Hocko <mhocko@kernel.org>
-Subject: [PATCH v18 01/32] mm/memcg: warning on !memcg after readahead page charged
-Date:   Mon, 24 Aug 2020 20:54:34 +0800
-Message-Id: <1598273705-69124-2-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+        Mon, 24 Aug 2020 08:54:52 -0400
+Received: by mail-lf1-f65.google.com with SMTP id k10so1434336lfm.5;
+        Mon, 24 Aug 2020 05:54:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SfkQJO0WX7QYvcvwyypgBXvjdOGetP3yae225kbDPA0=;
+        b=OjwtheQlj2je4vqPGpUnKbo8Nk9Er2JZnzMOQPWbAYMaHqsHzkb/rhZYKzsybwKj9I
+         HfncScfOwRDOyYELReLPAF3TmWYUAD+ZPbubTe9c/UPN9GthSxPpapZyTN5Lr3E326WX
+         hDdj2SBaufTdIFkSD+8sXifnDU+hlL/C4/ujHQtermMKju2eDvpm6Q2Mhm66t94xMoAK
+         mW9AfLjj5cECSlwayNI9XBTI2hV61QjAa4m4RFgldOS45VsMhFg0KvQfhytQAtc8UOyo
+         Bj4VzJxmKw5ESGyOp1GdBNvQsA7xUH3xAY8XcwbGqLr+5ovieR6/ZMfZQ4CoUkGC304y
+         p8QA==
+X-Gm-Message-State: AOAM533cYqJgJzmlqbPsDdcVeNHPjakK8W2aCaCHEwtykTFUB2xCqY8B
+        SLfckJv8xGFFnlME5TEtfig=
+X-Google-Smtp-Source: ABdhPJwyAl2uc3oyptrluwFV1MiM+VwGe1DqD+6Z1SICiQM/MTtZ2Ox39NlC1Wchh/4jnEE/Sv9NkA==
+X-Received: by 2002:a19:4290:: with SMTP id p138mr1743951lfa.187.1598273689854;
+        Mon, 24 Aug 2020 05:54:49 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.147.111])
+        by smtp.googlemail.com with ESMTPSA id e17sm2177112ljg.85.2020.08.24.05.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 05:54:49 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+Cc:     Denis Efremov <efremov@linux.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] integrity: Use current_uid() in integrity_audit_message()
+Date:   Mon, 24 Aug 2020 15:54:35 +0300
+Message-Id: <20200824125435.487194-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since readahead page is charged on memcg too, in theory we don't have to
-check this exception now. Before safely remove them all, add a warning
-for the unexpected !memcg.
+Modify integrity_audit_message() to use current_uid().
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- include/linux/mmdebug.h | 13 +++++++++++++
- mm/memcontrol.c         | 15 ++++++++-------
- 2 files changed, 21 insertions(+), 7 deletions(-)
+ security/integrity/integrity_audit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
-index 2ad72d2c8cc5..4ed52879ce55 100644
---- a/include/linux/mmdebug.h
-+++ b/include/linux/mmdebug.h
-@@ -37,6 +37,18 @@
- 			BUG();						\
- 		}							\
- 	} while (0)
-+#define VM_WARN_ON_ONCE_PAGE(cond, page)	({			\
-+	static bool __section(.data.once) __warned;			\
-+	int __ret_warn_once = !!(cond);					\
-+									\
-+	if (unlikely(__ret_warn_once && !__warned)) {			\
-+		dump_page(page, "VM_WARN_ON_ONCE_PAGE(" __stringify(cond)")");\
-+		__warned = true;					\
-+		WARN_ON(1);						\
-+	}								\
-+	unlikely(__ret_warn_once);					\
-+})
-+
- #define VM_WARN_ON(cond) (void)WARN_ON(cond)
- #define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
- #define VM_WARN_ONCE(cond, format...) (void)WARN_ONCE(cond, format)
-@@ -48,6 +60,7 @@
- #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
- #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
-+#define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
- #endif
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b807952b4d43..ffdc622e5828 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1322,10 +1322,8 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
- 	}
- 
- 	memcg = page->mem_cgroup;
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
-+	/* Readahead page is charged too, to see if other page uncharged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
-@@ -6906,8 +6904,9 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
- 	if (newpage->mem_cgroup)
- 		return;
- 
--	/* Swapcache readahead pages can get replaced before being charged */
- 	memcg = oldpage->mem_cgroup;
-+	/* Readahead page is charged too, to see if other page uncharged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
- 	if (!memcg)
- 		return;
- 
-@@ -7104,7 +7103,8 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
- 
- 	memcg = page->mem_cgroup;
- 
--	/* Readahead page, never charged */
-+	/* Readahead page is charged too, to see if other page uncharged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		return;
- 
-@@ -7168,7 +7168,8 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 
- 	memcg = page->mem_cgroup;
- 
--	/* Readahead page, never charged */
-+	/* Readahead page is charged too, to see if other page uncharged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		return 0;
- 
+diff --git a/security/integrity/integrity_audit.c b/security/integrity/integrity_audit.c
+index f25e7df099c8..29220056207f 100644
+--- a/security/integrity/integrity_audit.c
++++ b/security/integrity/integrity_audit.c
+@@ -47,7 +47,7 @@ void integrity_audit_message(int audit_msgno, struct inode *inode,
+ 	ab = audit_log_start(audit_context(), GFP_KERNEL, audit_msgno);
+ 	audit_log_format(ab, "pid=%d uid=%u auid=%u ses=%u",
+ 			 task_pid_nr(current),
+-			 from_kuid(&init_user_ns, current_cred()->uid),
++			 from_kuid(&init_user_ns, current_uid()),
+ 			 from_kuid(&init_user_ns, audit_get_loginuid(current)),
+ 			 audit_get_sessionid(current));
+ 	audit_log_task_context(ab);
 -- 
-1.8.3.1
+2.26.2
 
