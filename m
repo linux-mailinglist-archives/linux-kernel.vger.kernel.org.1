@@ -2,180 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2224F9EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5879A24F9F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgHXJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        id S1729441AbgHXJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728603AbgHXJui (ORCPT
+        with ESMTP id S1728738AbgHXJvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:50:38 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE1BC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:50:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 83so7678453wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:50:38 -0700 (PDT)
+        Mon, 24 Aug 2020 05:51:13 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7413C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:12 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id v24so686560uaj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GN0bzIf92cLXxdNm0copsKALAFMVqgJeFRySzwdh4c8=;
-        b=jnEdpSxgilYeo+nXQZMsXl/6xVjkVCPzaHgymM3NtwujgMb9nEHmftycU+C07g2drD
-         FJE4n2krbcNLMcsyB50ENW1P+uZUBeqiOQMyzIQg6SmM9PGFsDeACpRsCbEYJR5dKzwH
-         khNveRrdINmQbLd1b+aYdxI6azLk/YnOCvodAAnI8Wdq8/wV4eEpviME3c+absrLUAbt
-         tpWKPmG0IMRu8k5sMh+0/IburKqM44f5FajorxOD5phdS/w7HHVDaV8UDlEivoEqNLAk
-         j7bBO+N4m2Nom5/uH5Km3DcBczle49cNSav0u8McffL/CEKfeScPXGibm1tHZQ2/WVFg
-         G7UQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yz4RpUPjXN0rEe+NPaAYtjgKBt6C1RIGXkmwJF5jkgs=;
+        b=gwrOQjkEr8mU7KaaAvaiAAA8NJOEM2J2XPF4XkiF+0H6mxM41bqjeC1vPUm2mW9IJz
+         KOT9xeXVIyu378YvF2B9Rs93IfbrxYXfv1oayDOFnZMkvzT4x6Kfc/m/o8grcb/8HbAM
+         eyclKodQAUqKuqfmsZxu4VUXIpwYETjjukZB0rdaJ36LcEwXMyg4drimpgUfcNlTWSga
+         bfCkhvAynwO/2Ski6Zv5OAneGpSfq9VM4NSg/6W5pRnXItzF8JgWkAkt2FAlA2VeVst7
+         OjhIro8DJJrNScCsMmkYGkj88TE2ZesRBFAumz3N32QjeJIy85KLWfzLeGjOlTyl60gg
+         G1bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GN0bzIf92cLXxdNm0copsKALAFMVqgJeFRySzwdh4c8=;
-        b=Fu5zcUrIerHh9VXf2oPKzpychaEMIoPNpqpMUPz2KdRUzSg3pN1b/LhOHjvmQQHlGE
-         jaERmy8iPFZ8bmVmNDlZHeqC2slwzeNdQ62YL/QBsZGtIqZ3whLTyzOlhgCYf+rOZS73
-         m58DUk2+cR3LTX0J4Qm5oKvfZmx5OLmlUO0YpwGo0oCI43oUyIM1wy/4kgQl5qc1Xx6F
-         Ci8lQBXQkjZ6HyHGtbvSYKaNrcbDPJuEQoSfhjjXM/dozs3ZS+YBRStBDxwuvtIwD4MH
-         2bz71TMUOTe1k2vpfTkGIzDxOELHv9fEGes6ghPN+31lHXfurk7Kyknv95QBoJf7PZtD
-         ZPPg==
-X-Gm-Message-State: AOAM531O+gI42XFkvhhdvxFJZQz5qRdLfYBMSxZ+Ig49W+VBcdzAzvXH
-        O7iLMLZNTA+TY4AXm1DwoBlczg==
-X-Google-Smtp-Source: ABdhPJwUuWot06jk0vQROx/nE2H4dDyaxUfVX8TWUJFmH1DEgMFHDwooH3IZCO8Ogthwgm7ZnfTiUg==
-X-Received: by 2002:a05:600c:28c1:: with SMTP id h1mr5037278wmd.174.1598262637102;
-        Mon, 24 Aug 2020 02:50:37 -0700 (PDT)
-Received: from [10.1.2.12] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id d10sm10360947wrg.3.2020.08.24.02.50.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 02:50:36 -0700 (PDT)
-Subject: Re: [PATCH 6/6] drm: bridge: dw-hdmi: Get output bus format when
- dw-hdmi is the only bridge
-To:     Algea Cao <algea.cao@rock-chips.com>, a.hajda@samsung.com,
-        kuankuan.y@gmail.com, hjc@rock-chips.com, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org, sam@ravnborg.org,
-        airlied@linux.ie, heiko@sntech.de, jernej.skrabec@siol.net,
-        Laurent.pinchart@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
-        mripard@kernel.org, darekm@google.com,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
-        linux-kernel@vger.kernel.org, jbrunet@baylibre.com,
-        maarten.lankhorst@linux.intel.com, daniel@ffwll.ch
-References: <20200812083120.743-1-algea.cao@rock-chips.com>
- <20200812083631.4411-1-algea.cao@rock-chips.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <61c3860a-6e35-b90a-2c4f-6caca96c5db9@baylibre.com>
-Date:   Mon, 24 Aug 2020 11:50:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yz4RpUPjXN0rEe+NPaAYtjgKBt6C1RIGXkmwJF5jkgs=;
+        b=icvtM3XWmr7lI/O4+B8ba602q88GyKTIJci88gH0HBp1HNM9MZ2Dw2TO6rlwenFQBi
+         DPUpLrlsh36/CgVr6DXNZ14/Uromjry0jYZ8O4/65Lr9zG1A1e+fYqClEYcHzLPSEWRE
+         lxabAPUI90HaGkQzWXZqF3AseW2+AWMJdHyPXSfeQHSDXbmAA++bk5OkcPP3O8JLSJrM
+         t+gr6FfW+C0MMl53wslOd2pNLRIrKD9wczQ6f/N85epwsMEcfoCaBvjnDzs1ImGvHStr
+         9gDySXMYgXowlLHEicXuGYN+0WUnguJIZapMpyfXoAlSYc8Q/S26gzgVtFzdBU5th7vb
+         hAEA==
+X-Gm-Message-State: AOAM533cQtBFvPVrfYbRKDkHwZIeYZrUO+SKleo+8XA3uGqc7TZMpv/r
+        2r43XOXU2/+xIx7Nx+QwMI2lTfyBBxQCEygLz+O49A==
+X-Google-Smtp-Source: ABdhPJxyr5RXxg7nVYL9oxZZLdid026evyd0F8roxZTLNu3CVL/h1TKDQxL9idB3zXmgept7Yeod85ZsHcTA6BpWWHk=
+X-Received: by 2002:a9f:2190:: with SMTP id 16mr1745320uac.19.1598262670146;
+ Mon, 24 Aug 2020 02:51:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200812083631.4411-1-algea.cao@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200814014346.6496-1-wenbin.mei@mediatek.com> <20200814014346.6496-2-wenbin.mei@mediatek.com>
+In-Reply-To: <20200814014346.6496-2-wenbin.mei@mediatek.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 24 Aug 2020 11:50:33 +0200
+Message-ID: <CAPDyKFoTi91bqvosSvk4ALB7HobVf4aOjDoKkP9GgyteMfOQuw@mail.gmail.com>
+Subject: Re: [v5,1/3] mmc: dt-bindings: Add resets/reset-names for Mediatek
+ MMC bindings
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "# 4.0+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 14 Aug 2020 at 03:44, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>
+> Add description for resets/reset-names.
+>
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Tested-by: Frank Wunderlich <frank-w@public-files.de>
 
-On 12/08/2020 10:36, Algea Cao wrote:
-> If plat_data->get_output_bus_format() is exist, we can
-> use it to get hdmi output bus format when dw-hdmi is the
-> only bridge. The hdmi output bus format can be set by vendor
-> properties.
-> 
-> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+Applied for fixes, thanks!
+
+Kind regards
+Uffe
+
+
 > ---
-> 
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index 1eb4736b9b59..878e9e506963 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -2644,6 +2644,8 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
->  					unsigned int *num_output_fmts)
->  {
->  	struct drm_connector *conn = conn_state->connector;
-> +	struct dw_hdmi *hdmi = bridge->driver_private;
-> +	void *data = hdmi->plat_data->phy_data;
->  	struct drm_display_info *info = &conn->display_info;
->  	struct drm_display_mode *mode = &crtc_state->mode;
->  	u8 max_bpc = conn_state->max_requested_bpc;
-> @@ -2662,7 +2664,11 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
->  	/* If dw-hdmi is the only bridge, avoid negociating with ourselves */
->  	if (list_is_singular(&bridge->encoder->bridge_chain)) {
->  		*num_output_fmts = 1;
-> -		output_fmts[0] = MEDIA_BUS_FMT_FIXED;
-> +		if (hdmi->plat_data->get_output_bus_format)
-> +			output_fmts[0] =
-> +				hdmi->plat_data->get_output_bus_format(data);
-
-
-The whole bus format negociation was introduced to actually avoid using such get_output_bus_format()
-callback, please implement proper bus format negociation.
-
-Neil
-
-> +		else
-> +			output_fmts[0] = MEDIA_BUS_FMT_FIXED;
->  
->  		return output_fmts;
->  	}
-> 
-
+>  Documentation/devicetree/bindings/mmc/mtk-sd.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.txt b/Documentation/devicetree/bindings/mmc/mtk-sd.txt
+> index 8a532f4453f2..09aecec47003 100644
+> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.txt
+> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.txt
+> @@ -49,6 +49,8 @@ Optional properties:
+>                      error caused by stop clock(fifo full)
+>                      Valid range = [0:0x7]. if not present, default value is 0.
+>                      applied to compatible "mediatek,mt2701-mmc".
+> +- resets: Phandle and reset specifier pair to softreset line of MSDC IP.
+> +- reset-names: Should be "hrst".
+>
+>  Examples:
+>  mmc0: mmc@11230000 {
+> --
+> 2.18.0
