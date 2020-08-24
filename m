@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C7024FF02
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AA724FEFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgHXNfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:35:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
+        id S1727813AbgHXNeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbgHXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727769AbgHXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Aug 2020 09:32:38 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 134BD2065F;
-        Mon, 24 Aug 2020 13:32:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA123206B5;
+        Mon, 24 Aug 2020 13:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598275947;
-        bh=L8KDTgoqa6Rk0gELQzO81+l0O3LH5zmLEgt6iWlP4DA=;
+        s=default; t=1598275953;
+        bh=OkM1CgobEPEgoXlFv1ir40pY8SmpwF/0RPyzxTAy2fY=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=HnGV+hGbGoHAsl/D02nLKokpz+Qg0uJk07vdVxhFlzwcYZ1cou5dHKpbD/dEnTsWB
-         L2/QDcaFx/1WE54P+h+qyimTr7Lv5ysRT42opWU0P8wn4cGziA6SXWxHsMwJf4yvBY
-         uHg2evRpQziMR55EX46TqDcMwNvlEahjdkUAJ8tk=
-Date:   Mon, 24 Aug 2020 14:31:53 +0100
+        b=zzU2yVPEyJ3hJVbI9BbeilshR37bgjIEFj9+eNsYOGjWshVoXHQmHwv1gCbJBm5Os
+         ZLzeIO6t0XFExymqIbR4M2DgMyFaHU0l7YF5WR3/AHviUHiq7GmHJ+P26PWuhNw/AC
+         WJHZU//vCnVxmkc+Fp7XATPcNLsL0dsIn8fkPlu8=
+Date:   Mon, 24 Aug 2020 14:31:58 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, cy_huang <u0084500@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, gene_chen@richtek.com,
-        cy_huang@richtek.com
-In-Reply-To: <1598234713-8532-1-git-send-email-u0084500@gmail.com>
-References: <1598234713-8532-1-git-send-email-u0084500@gmail.com>
-Subject: Re: [PATCH] regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
-Message-Id: <159827590802.48129.16240965662426470036.b4-ty@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+In-Reply-To: <20200821213753.3143632-1-olteanv@gmail.com>
+References: <20200821213753.3143632-1-olteanv@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add myself as maintainer for spi-fsl-dspi driver
+Message-Id: <159827591891.48232.12411148869647579934.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 10:05:13 +0800, cy_huang wrote:
-> Fix below warning when CONFIG_OF=n:
-> 
-> drivers/regulator/rt4801-regulator.c:206:34: warning: unused variable 'rt4801_of_id' [-Wunused-const-variable]
->   206 | static const struct of_device_id rt4801_of_id[] = {
->       |                                  ^~~~~~~~~~~~
+On Sat, 22 Aug 2020 00:37:53 +0300, Vladimir Oltean wrote:
+> Since I've introduced a fairly large diff to this driver since tag v5.4,
+> I would like to avoid breakage for my use cases by getting a chance to
+> be copied on newly submitted patches.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
-      commit: c8b2c8949c45b01d75237331fc1387036b952d58
+[1/1] MAINTAINERS: add myself as maintainer for spi-fsl-dspi driver
+      commit: 3cb5fcf1f3a5dfb7bc0305bb15971db04a0e51d4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
