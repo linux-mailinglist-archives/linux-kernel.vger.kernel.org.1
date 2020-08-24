@@ -2,122 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6FB24FBFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E1D24FC09
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgHXKxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:53:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
+        id S1727122AbgHXKzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:55:06 -0400
+Received: from 8bytes.org ([81.169.241.247]:39226 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727022AbgHXKxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:53:38 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726239AbgHXKyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:54:19 -0400
+Received: from cap.home.8bytes.org (p4ff2bb8d.dip0.t-ipconnect.de [79.242.187.141])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCF082071E;
-        Mon, 24 Aug 2020 10:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598266416;
-        bh=qH9tu8/66AnvcmnbDrUOe52jE1Smh8r+3XYyB4XlwpE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HqjPVk4t1jp1MayrpuV57WmBoGVegaoD8GrQl82u/Vio8K/GP/BCgrbESv+PT51ur
-         wu4x1lBLs17gp9cWFVnCtWfwZvtiJCI6bokKbwMD2upcCCNi9Sw7eEBKS8BFbYRQCx
-         BOo0ClFbxA7dS2oWLRAo1OC7wqhkSTeCI39L6tmg=
-Message-ID: <048e78f2b440820d936eb67358495cc45ba579c3.camel@kernel.org>
-Subject: Re: [PATCH 5/5] fs/ceph: use pipe_get_pages_alloc() for pipe
-From:   Jeff Layton <jlayton@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 Aug 2020 06:53:34 -0400
-In-Reply-To: <20200822042059.1805541-6-jhubbard@nvidia.com>
-References: <20200822042059.1805541-1-jhubbard@nvidia.com>
-         <20200822042059.1805541-6-jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        by theia.8bytes.org (Postfix) with ESMTPSA id 4380AF3;
+        Mon, 24 Aug 2020 12:54:17 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     iommu@lists.linux-foundation.org
+Cc:     Joerg Roedel <joro@8bytes.org>, jroedel@suse.de,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Alexander.Deucher@amd.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] iommu/amd: Fix IOMMUv2 devices when SME is active
+Date:   Mon, 24 Aug 2020 12:54:13 +0200
+Message-Id: <20200824105415.21000-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 21:20 -0700, John Hubbard wrote:
-> This reduces, by one, the number of callers of iov_iter_get_pages().
-> That's helpful because these calls are being audited and converted over
-> to use iov_iter_pin_user_pages(), where applicable. And this one here is
-> already known by the caller to be only for ITER_PIPE, so let's just
-> simplify it now.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  fs/ceph/file.c      | 3 +--
->  include/linux/uio.h | 3 ++-
->  lib/iov_iter.c      | 6 +++---
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index d51c3f2fdca0..d3d7dd957390 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -879,8 +879,7 @@ static ssize_t ceph_sync_read(struct kiocb *iocb, struct iov_iter *to,
->  		more = len < iov_iter_count(to);
->  
->  		if (unlikely(iov_iter_is_pipe(to))) {
-> -			ret = iov_iter_get_pages_alloc(to, &pages, len,
-> -						       &page_off);
-> +			ret = pipe_get_pages_alloc(to, &pages, len, &page_off);
->  			if (ret <= 0) {
->  				ceph_osdc_put_request(req);
->  				ret = -ENOMEM;
-> diff --git a/include/linux/uio.h b/include/linux/uio.h
-> index 62bcf5e45f2b..76cd47ab3dfd 100644
-> --- a/include/linux/uio.h
-> +++ b/include/linux/uio.h
-> @@ -227,7 +227,8 @@ ssize_t iov_iter_get_pages(struct iov_iter *i, struct page **pages,
->  ssize_t iov_iter_get_pages_alloc(struct iov_iter *i, struct page ***pages,
->  			size_t maxsize, size_t *start);
->  int iov_iter_npages(const struct iov_iter *i, int maxpages);
-> -
-> +ssize_t pipe_get_pages_alloc(struct iov_iter *i, struct page ***pages,
-> +			     size_t maxsize, size_t *start);
->  const void *dup_iter(struct iov_iter *new, struct iov_iter *old, gfp_t flags);
->  
->  ssize_t iov_iter_pin_user_pages(struct bio *bio, struct iov_iter *i, struct page **pages,
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index a4bc1b3a3fda..f571fe3ddbe8 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1396,9 +1396,8 @@ static struct page **get_pages_array(size_t n)
->  	return kvmalloc_array(n, sizeof(struct page *), GFP_KERNEL);
->  }
->  
-> -static ssize_t pipe_get_pages_alloc(struct iov_iter *i,
-> -		   struct page ***pages, size_t maxsize,
-> -		   size_t *start)
-> +ssize_t pipe_get_pages_alloc(struct iov_iter *i, struct page ***pages,
-> +			     size_t maxsize, size_t *start)
->  {
->  	struct page **p;
->  	unsigned int iter_head, npages;
-> @@ -1428,6 +1427,7 @@ static ssize_t pipe_get_pages_alloc(struct iov_iter *i,
->  		kvfree(p);
->  	return n;
->  }
-> +EXPORT_SYMBOL(pipe_get_pages_alloc);
->  
->  ssize_t iov_iter_pin_user_pages_alloc(struct bio *bio, struct iov_iter *i,
->  		   struct page ***pages, size_t maxsize,
+From: Joerg Roedel <jroedel@suse.de>
 
+Hi,
 
-This looks fine to me. Let me know if you need this merged via the ceph
-tree. Thanks!
+Some IOMMUv2 capable devices do not work correctly when SME is
+active, because their DMA mask does not include the encryption bit, so
+that they can not DMA to encrypted memory directly.
 
-Acked-by: Jeff Layton <jlayton@kernel.org>
+The IOMMU can jump in here, but the AMD IOMMU driver puts IOMMUv2
+capable devices into an identity mapped domain. Fix that by not
+forcing an identity mapped domain on devices when SME is active and
+forbid using their IOMMUv2 functionality.
+
+Please review.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (2):
+  iommu/amd: Do not force direct mapping when SME is active
+  iommu/amd: Do not use IOMMUv2 functionality when SME is active
+
+ drivers/iommu/amd/iommu.c    | 7 ++++++-
+ drivers/iommu/amd/iommu_v2.c | 7 +++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+-- 
+2.28.0
 
