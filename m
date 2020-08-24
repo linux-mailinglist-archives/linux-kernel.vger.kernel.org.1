@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E7D24F8F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854FB24FA44
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgHXIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
+        id S1728545AbgHXJzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729362AbgHXIqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:35 -0400
+        id S1726803AbgHXIhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A2DA206F0;
-        Mon, 24 Aug 2020 08:46:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 919D9207DF;
+        Mon, 24 Aug 2020 08:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258795;
-        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
+        s=default; t=1598258233;
+        bh=ku/z8qYLkIM9eEL4YUUwvaQZEet4R35N8mWyYHjbq10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ClHfQH1n9v4PQTs+Uqrdq6MeIuxox9RoN5CaAG5LXvslLJeVBnBCVGciHUZBTScr6
-         vyxkWK3YXoo76at0qCmt5Hq3oRKQZNpVBpZnS0ZwalQMwLnnhgpgm234r5/+/yi2FW
-         C10/6Fdx2u4AN4gFWkFYH2mURoxxTYd/9KabeLRs=
+        b=j/iWwBKoGKYUCeuwWHmMtvFDJX5MSxNhhQuibiyQuTfKQBD551cCJuEaS2nOVS+a7
+         E8FS/dwEELD3nmKzdq6tdgjHCh0bsq+lSyJWMR7AAgkOMt8Wf4P9zOCMqO5Bbenmkt
+         kH/NWSV6/c/UYvReth/Lm9l90WPReIzuJddueom4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 048/107] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Subject: [PATCH 5.8 116/148] scsi: ufs: Fix interrupt error message for shared interrupts
 Date:   Mon, 24 Aug 2020 10:30:14 +0200
-Message-Id: <20200824082407.512298026@linuxfoundation.org>
+Message-Id: <20200824082419.568091081@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Ungerer <gerg@linux-m68k.org>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
+[ Upstream commit 6337f58cec030b34ced435b3d9d7d29d63c96e36 ]
 
-The Cache Control Register (CACR) of the ColdFire V3 has bits that
-control high level caching functions, and also enable/disable the use
-of the alternate stack pointer register (the EUSP bit) to provide
-separate supervisor and user stack pointer registers. The code as
-it is today will blindly clear the EUSP bit on cache actions like
-invalidation. So it is broken for this case - and that will result
-in failed booting (interrupt entry and exit processing will be
-completely hosed).
+The interrupt might be shared, in which case it is not an error for the
+interrupt handler to be called when the interrupt status is zero, so don't
+print the message unless there was enabled interrupt status.
 
-This only affects ColdFire V3 parts that support the alternate stack
-register (like the 5329 for example) - generally speaking new parts do,
-older parts don't. It has no impact on ColdFire V3 parts with the single
-stack pointer, like the 5307 for example.
-
-Fix the cache bit defines used, so they maintain the EUSP bit when
-carrying out cache actions through the CACR register.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Link: https://lore.kernel.org/r/20200811133936.19171-1-adrian.hunter@intel.com
+Fixes: 9333d7757348 ("scsi: ufs: Fix irq return code")
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/include/asm/m53xxacr.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
-index 9138a624c5c81..692f90e7fecc1 100644
---- a/arch/m68k/include/asm/m53xxacr.h
-+++ b/arch/m68k/include/asm/m53xxacr.h
-@@ -89,9 +89,9 @@
-  * coherency though in all cases. And for copyback caches we will need
-  * to push cached data as well.
-  */
--#define CACHE_INIT	  CACR_CINVA
--#define CACHE_INVALIDATE  CACR_CINVA
--#define CACHE_INVALIDATED CACR_CINVA
-+#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
-+#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
-+#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 69c7c039b5fac..136b863bc1d45 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6013,7 +6013,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
+ 		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+ 	} while (intr_status && --retries);
  
- #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
- 			 (0x000f0000) + \
+-	if (retval == IRQ_NONE) {
++	if (enabled_intr_status && retval == IRQ_NONE) {
+ 		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+ 					__func__, intr_status);
+ 		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
 -- 
 2.25.1
 
