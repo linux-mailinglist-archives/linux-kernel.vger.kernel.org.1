@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8383A24F4F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C4524F54C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgHXImr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
+        id S1729410AbgHXIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728974AbgHXIme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:42:34 -0400
+        id S1729399AbgHXIqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BDBE2074D;
-        Mon, 24 Aug 2020 08:42:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9935B206F0;
+        Mon, 24 Aug 2020 08:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258553;
-        bh=CiB2JlYzRRv4NoLy9qj+dbZcYvJL+2KWQ7TFKK68R+k=;
+        s=default; t=1598258815;
+        bh=dCAY1/5cj0Mc5sodwYE/kMvFDeBX4kjWx8QWkQtuaLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kF+ixayF+GuQIiEE75rLfBrBOyurkQx8A/p9g4SN236o08CGMvJxkvZf/jVf3dCkY
-         ru0gxs3iXGLi55UtDwR5Zo+ENWw4zeRl50EaldYqY/3aJfAdLDuZwnE00QAu/EwRu/
-         GuP7UxUb91J94h5OikCYNYZGPRYuUCdZoeREhyi0=
+        b=tdggkBmVmuGrLtAXogNZT2uPyazUN7i/uA7/4sQCPs6ft+y322zNUs6D1K0Mk8HFo
+         jBSKy3tK7ai9Ths1tCeDJREAKiVkcOZ+BABGq3itqCHFHnfaTev2quwWsGpxYURbm/
+         +lJdP4di/51g0WyANLomOw0uk2fKXsOb8BypivjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 086/124] ASoC: msm8916-wcd-analog: fix register Interrupt offset
-Date:   Mon, 24 Aug 2020 10:30:20 +0200
-Message-Id: <20200824082413.643295308@linuxfoundation.org>
+Subject: [PATCH 5.4 055/107] cpufreq: intel_pstate: Fix cpuinfo_max_freq when MSR_TURBO_RATIO_LIMIT is 0
+Date:   Mon, 24 Aug 2020 10:30:21 +0200
+Message-Id: <20200824082407.847242860@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-[ Upstream commit ff69c97ef84c9f7795adb49e9f07c9adcdd0c288 ]
+[ Upstream commit 4daca379c703ff55edc065e8e5173dcfeecf0148 ]
 
-For some reason interrupt set and clear register offsets are
-not set correctly.
-This patch corrects them!
+The MSR_TURBO_RATIO_LIMIT can be 0. This is not an error. User can update
+this MSR via BIOS settings on some systems or can use msr tools to update.
+Also some systems boot with value = 0.
 
-Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200811103452.20448-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This results in display of cpufreq/cpuinfo_max_freq wrong. This value
+will be equal to cpufreq/base_frequency, even though turbo is enabled.
+
+But platform will still function normally in HWP mode as we get max
+1-core frequency from the MSR_HWP_CAPABILITIES. This MSR is already used
+to calculate cpu->pstate.turbo_freq, which is used for to set
+policy->cpuinfo.max_freq. But some other places cpu->pstate.turbo_pstate
+is used. For example to set policy->max.
+
+To fix this, also update cpu->pstate.turbo_pstate when updating
+cpu->pstate.turbo_freq.
+
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/cpufreq/intel_pstate.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 85bc7ae4d2671..26cf372ccda6f 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -19,8 +19,8 @@
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index d3d7c4ef7d045..53dc0fd6f6d3c 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1571,6 +1571,7 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
  
- #define CDC_D_REVISION1			(0xf000)
- #define CDC_D_PERPH_SUBTYPE		(0xf005)
--#define CDC_D_INT_EN_SET		(0x015)
--#define CDC_D_INT_EN_CLR		(0x016)
-+#define CDC_D_INT_EN_SET		(0xf015)
-+#define CDC_D_INT_EN_CLR		(0xf016)
- #define MBHC_SWITCH_INT			BIT(7)
- #define MBHC_MIC_ELECTRICAL_INS_REM_DET	BIT(6)
- #define MBHC_BUTTON_PRESS_DET		BIT(5)
+ 		intel_pstate_get_hwp_max(cpu->cpu, &phy_max, &current_max);
+ 		cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
++		cpu->pstate.turbo_pstate = phy_max;
+ 	} else {
+ 		cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
+ 	}
 -- 
 2.25.1
 
