@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B60D24F957
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D48224FA58
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgHXInX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        id S1729339AbgHXJzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728467AbgHXInJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:09 -0400
+        id S1726578AbgHXIg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B6E42075B;
-        Mon, 24 Aug 2020 08:43:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CCAD221E2;
+        Mon, 24 Aug 2020 08:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258589;
-        bh=H4PJW85OSbOIF1DQ4hnrfqyHQL20ozcmuZlOID6RNzg=;
+        s=default; t=1598258187;
+        bh=iUJ2I1PSDJozj4df0o/d24M5aifiUAleMXYNG4RuEIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQ1CvTDdHwd7MuaCd2bufMXCs53MznyM5AOn2fly/gLq7whFimNZcKTbTOi9UvNID
-         12fCFP9zCc12BHyzXwen1PrYCLbvjIzaXGI61mgM0vC55Lj7estrmv0FJqDdKUURKi
-         kvaBgZSPK5hj6wsHTGv5+TxXv0QLoGegCT84B7Kc=
+        b=tsQbjq8NwBWPIn+1+c0fMV2GRUOoa5viu00jC9U1ss9RAtxQxMTTR4O1LtUW6OiVG
+         gp0YTbcPOqEYO2rcuindno7H1w82+auF84/aNcOgUf6LN7b4XYYUiIBSZ5jnRpFIoK
+         awyfKbc/ni0ycSlVg+8mMu6p3t/ISZYtSidqSgAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Xiao Guangrong <guangrong.xiao@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 070/124] can: j1939: fix kernel-infoleak in j1939_sk_sock2sockaddr_can()
+Subject: [PATCH 5.8 106/148] kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode
 Date:   Mon, 24 Aug 2020 10:30:04 +0200
-Message-Id: <20200824082412.855998880@linuxfoundation.org>
+Message-Id: <20200824082419.102450837@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,83 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jim Mattson <jmattson@google.com>
 
-[ Upstream commit 38ba8b9241f5848a49b80fddac9ab5f4692e434e ]
+[ Upstream commit 427890aff8558eb4326e723835e0eae0e6fe3102 ]
 
-syzbot found that at least 2 bytes of kernel information
-were leaked during getsockname() on AF_CAN CAN_J1939 socket.
+See the SDM, volume 3, section 4.4.1:
 
-Since struct sockaddr_can has in fact two holes, simply
-clear the whole area before filling it with useful data.
+If PAE paging would be in use following an execution of MOV to CR0 or
+MOV to CR4 (see Section 4.1.1) and the instruction is modifying any of
+CR0.CD, CR0.NW, CR0.PG, CR4.PAE, CR4.PGE, CR4.PSE, or CR4.SMEP; then
+the PDPTEs are loaded from the address in CR3.
 
-BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
-CPU: 0 PID: 8466 Comm: syz-executor511 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
- kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
- instrument_copy_to_user include/linux/instrumented.h:91 [inline]
- _copy_to_user+0x18e/0x260 lib/usercopy.c:39
- copy_to_user include/linux/uaccess.h:186 [inline]
- move_addr_to_user+0x3de/0x670 net/socket.c:237
- __sys_getsockname+0x407/0x5e0 net/socket.c:1909
- __do_sys_getsockname net/socket.c:1920 [inline]
- __se_sys_getsockname+0x91/0xb0 net/socket.c:1917
- __x64_sys_getsockname+0x4a/0x70 net/socket.c:1917
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440219
-Code: Bad RIP value.
-RSP: 002b:00007ffe5ee150c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440219
-RDX: 0000000020000240 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a20
-R13: 0000000000401ab0 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----address@__sys_getsockname created at:
- __sys_getsockname+0x91/0x5e0 net/socket.c:1894
- __sys_getsockname+0x91/0x5e0 net/socket.c:1894
-
-Bytes 2-3 of 24 are uninitialized
-Memory access of size 24 starts at ffff8880ba2c7de8
-Data copied to user address 0000000020000100
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Cc: Robin van der Gracht <robin@protonic.nl>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200813161834.4021638-1-edumazet@google.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 0be0226f07d14 ("KVM: MMU: fix SMAP virtualization")
+Cc: Xiao Guangrong <guangrong.xiao@linux.intel.com>
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+Reviewed-by: Oliver Upton <oupton@google.com>
+Message-Id: <20200817181655.3716509-2-jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/socket.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/kvm/x86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 11d566c70a944..1b7dc1a8547f3 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -561,6 +561,11 @@ static int j1939_sk_connect(struct socket *sock, struct sockaddr *uaddr,
- static void j1939_sk_sock2sockaddr_can(struct sockaddr_can *addr,
- 				       const struct j1939_sock *jsk, int peer)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4fe976c2495ea..a70156b9b72e5 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -967,7 +967,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
  {
-+	/* There are two holes (2 bytes and 3 bytes) to clear to avoid
-+	 * leaking kernel information to user space.
-+	 */
-+	memset(addr, 0, J1939_MIN_NAMELEN);
-+
- 	addr->can_family = AF_CAN;
- 	addr->can_ifindex = jsk->ifindex;
- 	addr->can_addr.j1939.pgn = jsk->addr.pgn;
+ 	unsigned long old_cr4 = kvm_read_cr4(vcpu);
+ 	unsigned long pdptr_bits = X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE |
+-				   X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE;
++				   X86_CR4_SMEP | X86_CR4_PKE;
+ 
+ 	if (kvm_valid_cr4(vcpu, cr4))
+ 		return 1;
 -- 
 2.25.1
 
