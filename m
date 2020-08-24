@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4299024F845
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFBE24F80F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgHXIvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:51:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55734 "EHLO mail.kernel.org"
+        id S1730180AbgHXIxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729896AbgHXIvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:51:08 -0400
+        id S1729855AbgHXIxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:53:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19B182072D;
-        Mon, 24 Aug 2020 08:51:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3532E204FD;
+        Mon, 24 Aug 2020 08:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259067;
-        bh=oO0dZwfGj4Y6n706qO+SnIlv1vaIK4Y+d8ortXkuYlc=;
+        s=default; t=1598259183;
+        bh=VyrxVLT2B6bAeYKclJpDgYcMOjJOkTXF9Q4q0rVyOAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IH20dnCfe7vbNzFvXFvwDCaULXBx6fXLQVyZvpT8gy/NXJE2gLiPO6Wi6DRvfDyk/
-         eCNJUSL3fZtD5dFfyaGczDMI1oAduYTkKc9J2q9EOPVjIWnX14Yp7vwIjlU2eBnSB6
-         zY0itd1LhUay03b9AeX/uEvwStuzqs4nJfpmUqig=
+        b=yX8kjW86cFZM46qRn8pYhRHM/KFp/L28eeqpIaSIOLAPxN5z3K6rbLr7ammMTI4gs
+         II9kqGBV5faP+BPKbriKdjktCeVjIhNNuecAFs2mtcv6IWoFi0MUTmbMsImfOyvnEI
+         /lep17Z8jAh/uy5AYLq0z2shUnaGPdbBXvDGFvRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Eric Dumazet <edumazet@google.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/33] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
-Date:   Mon, 24 Aug 2020 10:31:04 +0200
-Message-Id: <20200824082346.936562325@linuxfoundation.org>
+Subject: [PATCH 4.14 04/50] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
+Date:   Mon, 24 Aug 2020 10:31:05 +0200
+Message-Id: <20200824082352.096703729@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,14 +79,14 @@ Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008141503370.18085@eggly.anvils
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/huge_memory.c | 2 +-
+ mm/khugepaged.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 1c4d7d2f53d22..f38d24bb8a1bc 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2149,7 +2149,7 @@ int __khugepaged_enter(struct mm_struct *mm)
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index a1b7475c05d04..9dfe364d4c0d1 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -407,7 +407,7 @@ int __khugepaged_enter(struct mm_struct *mm)
  		return -ENOMEM;
  
  	/* __khugepaged_exit() must not run from under us */
