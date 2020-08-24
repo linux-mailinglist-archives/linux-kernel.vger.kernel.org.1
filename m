@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5285C24F535
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C07324F46F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgHXIqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
+        id S1726466AbgHXIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729079AbgHXIp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:57 -0400
+        id S1728253AbgHXIgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F125204FD;
-        Mon, 24 Aug 2020 08:45:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BA1C206F0;
+        Mon, 24 Aug 2020 08:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258756;
-        bh=mBeOa4SRx67XTNcoe0BRkGKjMe1gqbKUzmkxf6mBJiM=;
+        s=default; t=1598258174;
+        bh=TMcgGpj0HK5jtl7J2jbGq1Bs+4VVnmcgR1udoAv4ziQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SGl+80ij4tMa02IierZEMhvd3168/5AuisX4QWd5il5MYI5vkNbGqbaFLtGfNb3VA
-         tbsoycLWdCIgYiJeaA7d7nxmT5DbX/hQXdDyMJU40lgH32ekTcIVy3ZxGDpA5/fHyq
-         6WgeiyhaEjyV151X/g+QbrdUxMBjZE0uM0NbjnFQ=
+        b=TO4XS+GqaP2sMJvZYDLFTuY2+QvtPHMX+ERdJQxuQZsJhiHZnhXG0+m6FSYOzgdWf
+         t/zjBZQ4hUI1+FJPIDJmFcJw26D+b6VCy7ARtwJhipp9wEl7PF0wq2bOoBNtBgMwXk
+         zHMrcmCEbfAQ2AeDCYYl4kRPs0ucGSNqOpxR0xA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 033/107] jbd2: add the missing unlock_buffer() in the error path of jbd2_write_superblock()
-Date:   Mon, 24 Aug 2020 10:29:59 +0200
-Message-Id: <20200824082406.755576216@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 102/148] watch_queue: Limit the number of watches a user can hold
+Date:   Mon, 24 Aug 2020 10:30:00 +0200
+Message-Id: <20200824082418.916968691@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +46,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: David Howells <dhowells@redhat.com>
 
-commit ef3f5830b859604eda8723c26d90ab23edc027a4 upstream.
+[ Upstream commit 29e44f4535faa71a70827af3639b5e6762d8f02a ]
 
-jbd2_write_superblock() is under the buffer lock of journal superblock
-before ending that superblock write, so add a missing unlock_buffer() in
-in the error path before submitting buffer.
+Impose a limit on the number of watches that a user can hold so that
+they can't use this mechanism to fill up all the available memory.
 
-Fixes: 742b06b5628f ("jbd2: check superblock mapped prior to committing")
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20200620061948.2049579-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is done by putting a counter in user_struct that's incremented when
+a watch is allocated and decreased when it is released.  If the number
+exceeds the RLIMIT_NOFILE limit, the watch is rejected with EAGAIN.
 
+This can be tested by the following means:
+
+ (1) Create a watch queue and attach it to fd 5 in the program given - in
+     this case, bash:
+
+	keyctl watch_session /tmp/nlog /tmp/gclog 5 bash
+
+ (2) In the shell, set the maximum number of files to, say, 99:
+
+	ulimit -n 99
+
+ (3) Add 200 keyrings:
+
+	for ((i=0; i<200; i++)); do keyctl newring a$i @s || break; done
+
+ (4) Try to watch all of the keyrings:
+
+	for ((i=0; i<200; i++)); do echo $i; keyctl watch_add 5 %:a$i || break; done
+
+     This should fail when the number of watches belonging to the user hits
+     99.
+
+ (5) Remove all the keyrings and all of those watches should go away:
+
+	for ((i=0; i<200; i++)); do keyctl unlink %:a$i; done
+
+ (6) Kill off the watch queue by exiting the shell spawned by
+     watch_session.
+
+Fixes: c73be61cede5 ("pipe: Add general notification queue support")
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/journal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/sched/user.h | 3 +++
+ kernel/watch_queue.c       | 8 ++++++++
+ 2 files changed, 11 insertions(+)
 
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1348,8 +1348,10 @@ static int jbd2_write_superblock(journal
- 	int ret;
+diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
+index 917d88edb7b9d..a8ec3b6093fcb 100644
+--- a/include/linux/sched/user.h
++++ b/include/linux/sched/user.h
+@@ -36,6 +36,9 @@ struct user_struct {
+     defined(CONFIG_NET) || defined(CONFIG_IO_URING)
+ 	atomic_long_t locked_vm;
+ #endif
++#ifdef CONFIG_WATCH_QUEUE
++	atomic_t nr_watches;	/* The number of watches this user currently has */
++#endif
  
- 	/* Buffer got discarded which means block device got invalidated */
--	if (!buffer_mapped(bh))
-+	if (!buffer_mapped(bh)) {
-+		unlock_buffer(bh);
- 		return -EIO;
+ 	/* Miscellaneous per-user rate limit */
+ 	struct ratelimit_state ratelimit;
+diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
+index f74020f6bd9d5..0ef8f65bd2d71 100644
+--- a/kernel/watch_queue.c
++++ b/kernel/watch_queue.c
+@@ -393,6 +393,7 @@ static void free_watch(struct rcu_head *rcu)
+ 	struct watch *watch = container_of(rcu, struct watch, rcu);
+ 
+ 	put_watch_queue(rcu_access_pointer(watch->queue));
++	atomic_dec(&watch->cred->user->nr_watches);
+ 	put_cred(watch->cred);
+ }
+ 
+@@ -452,6 +453,13 @@ int add_watch_to_object(struct watch *watch, struct watch_list *wlist)
+ 	watch->cred = get_current_cred();
+ 	rcu_assign_pointer(watch->watch_list, wlist);
+ 
++	if (atomic_inc_return(&watch->cred->user->nr_watches) >
++	    task_rlimit(current, RLIMIT_NOFILE)) {
++		atomic_dec(&watch->cred->user->nr_watches);
++		put_cred(watch->cred);
++		return -EAGAIN;
 +	}
- 
- 	trace_jbd2_write_superblock(journal, write_flags);
- 	if (!(journal->j_flags & JBD2_BARRIER))
++
+ 	spin_lock_bh(&wqueue->lock);
+ 	kref_get(&wqueue->usage);
+ 	kref_get(&watch->usage);
+-- 
+2.25.1
+
 
 
