@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C482508B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB1D2508BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgHXTEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 15:04:23 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:47578 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726985AbgHXTEV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:04:21 -0400
-X-IronPort-AV: E=Sophos;i="5.76,349,1592838000"; 
-   d="scan'208";a="55179457"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 25 Aug 2020 04:04:20 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 55E6340CDD5F;
-        Tue, 25 Aug 2020 04:04:18 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH v3 2/2] media: i2c: ov772x: Add test pattern control
-Date:   Mon, 24 Aug 2020 20:04:06 +0100
-Message-Id: <20200824190406.27478-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726704AbgHXTHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 15:07:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725904AbgHXTHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 15:07:16 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF8FC2074D;
+        Mon, 24 Aug 2020 19:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598296035;
+        bh=D49DFnKwX3H2+4/JHutRBjl6onsdr+JMHUvotdX4JOA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xroCTR8eKxl6V1lvgh/HrBdL5yumIzn+QzqCpV0HmoTNHLBcd3BOlUqvYqiQ83PtV
+         +jE0X2cY7O73uflWwXcWluqNlVZ9SdesRA885D2C0dd3UtzB5zoCx2kjOhk6I+djzV
+         DXQeTZZ+iNeRWQbKb9Y2vaA8SQNF3ozNUVvJU0vc=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Robin Gong <yibin.gong@nxp.com>, Li Jun <jun.li@nxp.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 01/16] dt-bindings: mfd: rohm,bd71847-pmic: Correct clock properties requirements
+Date:   Mon, 24 Aug 2020 21:06:46 +0200
+Message-Id: <20200824190701.8447-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for test pattern control supported by the sensor.
+The input clock and number of clock provider cells are not required for
+the PMIC to operate.  They are needed only for the optional bd718x7
+clock driver.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Add also clock-output-names as driver takes use of it.
+
+This fixes dtbs_check warnings like:
+
+    arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b: 'clocks' is a required property
+    arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b: '#clock-cells' is a required property
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/media/i2c/ov772x.c | 25 ++++++++++++++++++++++++-
- include/media/i2c/ov772x.h |  1 +
- 2 files changed, 25 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mfd/rohm,bd71847-pmic.yaml       | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-index 67764d647526..f267d8abd742 100644
---- a/drivers/media/i2c/ov772x.c
-+++ b/drivers/media/i2c/ov772x.c
-@@ -227,7 +227,7 @@
+diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
+index 77bcca2d414f..5d531051a153 100644
+--- a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
++++ b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
+@@ -38,6 +38,9 @@ properties:
+   "#clock-cells":
+     const: 0
  
- /* COM3 */
- #define SWAP_MASK       (SWAP_RGB | SWAP_YUV | SWAP_ML)
--#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG)
-+#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG | SCOLOR_TEST)
- 
- #define VFLIP_IMG       0x80	/* Vertical flip image ON/OFF selection */
- #define HFLIP_IMG       0x40	/* Horizontal mirror image ON/OFF selection */
-@@ -425,6 +425,7 @@ struct ov772x_priv {
- 	const struct ov772x_win_size     *win;
- 	struct v4l2_ctrl		 *vflip_ctrl;
- 	struct v4l2_ctrl		 *hflip_ctrl;
-+	unsigned int			  test_pattern;
- 	/* band_filter = COM8[5] ? 256 - BDBASE : 0 */
- 	struct v4l2_ctrl		 *band_filter_ctrl;
- 	unsigned int			  fps;
-@@ -540,6 +541,11 @@ static const struct ov772x_win_size ov772x_win_sizes[] = {
- 	},
- };
- 
-+static const char * const ov772x_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bar Type 1",
-+};
++  clock-output-names:
++    maxItems: 1
 +
- /*
-  * frame rate settings lists
-  */
-@@ -762,6 +768,13 @@ static int ov772x_s_frame_interval(struct v4l2_subdev *sd,
- 	return ret;
- }
+ # The BD71847 abd BD71850 support two different HW states as reset target
+ # states. States are called as SNVS and READY. At READY state all the PMIC
+ # power outputs go down and OTP is reload. At the SNVS state all other logic
+@@ -116,12 +119,14 @@ required:
+   - compatible
+   - reg
+   - interrupts
+-  - clocks
+-  - "#clock-cells"
+   - regulators
  
-+static int ov772x_enable_test_pattern(struct ov772x_priv *priv, u32 pattern)
-+{
-+	priv->test_pattern = pattern;
-+	return regmap_update_bits(priv->regmap, COM3, SCOLOR_TEST,
-+				  pattern ? SCOLOR_TEST : 0x00);
-+}
+ additionalProperties: false
+ 
++dependencies:
++  '#clock-cells': [clocks]
++  clocks: ['#clock-cells']
 +
- static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct ov772x_priv *priv = container_of(ctrl->handler,
-@@ -809,6 +822,8 @@ static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- 		}
- 
- 		return ret;
-+	case V4L2_CID_TEST_PATTERN:
-+		return ov772x_enable_test_pattern(priv, ctrl->val);
- 	}
- 
- 	return -EINVAL;
-@@ -1103,10 +1118,14 @@ static int ov772x_set_params(struct ov772x_priv *priv,
- 		val |= VFLIP_IMG;
- 	if (priv->info && (priv->info->flags & OV772X_FLAG_HFLIP))
- 		val |= HFLIP_IMG;
-+	if (priv->info && (priv->info->flags & OV772X_FLAG_TEST_PATTERN))
-+		val |= SCOLOR_TEST;
- 	if (priv->vflip_ctrl->val)
- 		val ^= VFLIP_IMG;
- 	if (priv->hflip_ctrl->val)
- 		val ^= HFLIP_IMG;
-+	if (priv->test_pattern)
-+		val ^= SCOLOR_TEST;
- 
- 	ret = regmap_update_bits(priv->regmap, COM3, SWAP_MASK | IMG_MASK, val);
- 	if (ret < 0)
-@@ -1404,6 +1423,10 @@ static int ov772x_probe(struct i2c_client *client)
- 	priv->band_filter_ctrl = v4l2_ctrl_new_std(&priv->hdl, &ov772x_ctrl_ops,
- 						   V4L2_CID_BAND_STOP_FILTER,
- 						   0, 256, 1, 0);
-+	v4l2_ctrl_new_std_menu_items(&priv->hdl, &ov772x_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(ov772x_test_pattern_menu) - 1,
-+				     0, 0, ov772x_test_pattern_menu);
- 	priv->subdev.ctrl_handler = &priv->hdl;
- 	if (priv->hdl.error) {
- 		ret = priv->hdl.error;
-diff --git a/include/media/i2c/ov772x.h b/include/media/i2c/ov772x.h
-index a1702d420087..65e6f8d2f4bb 100644
---- a/include/media/i2c/ov772x.h
-+++ b/include/media/i2c/ov772x.h
-@@ -12,6 +12,7 @@
- /* for flags */
- #define OV772X_FLAG_VFLIP	(1 << 0) /* Vertical flip image */
- #define OV772X_FLAG_HFLIP	(1 << 1) /* Horizontal flip image */
-+#define OV772X_FLAG_TEST_PATTERN	(1 << 2) /* Test pattern */
- 
- /*
-  * for Edge ctrl
+ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/irq.h>
 -- 
 2.17.1
 
