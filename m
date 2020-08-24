@@ -2,113 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDE324FA03
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1402024FA2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgHXJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S1728935AbgHXJxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728697AbgHXJvy (ORCPT
+        with ESMTP id S1728728AbgHXJxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:51:54 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369FAC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:54 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id i20so1838135vkk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:54 -0700 (PDT)
+        Mon, 24 Aug 2020 05:53:37 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF862C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:53:36 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a15so8002359wrh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2q1ajbiErRira53HKKXrYklVG3PnlJgLsr24GKSESBE=;
-        b=fW+0mduXAJo6I00usVYLd80593zek0anWPHqMWg2M/w3DLXpOueIhU9HKiJQoHH6CB
-         7RMHX9FGdi13UNc+JEJTIWt/J/udbr+B5Nt25R6/0Kf+mojenLe6j15NWCGTmxFJYJvq
-         q9F/aTh7r33Rn15GzhOXIOgW3oLefqKm0t9N1yNSe7hhHsaKdJYx2ob+sb0oBS49Zdvb
-         80WyA+2ttjZt0IDoqVYtfhGIFEC/+RUgkRpc4k+pz1vbXfto7qDZPAL2JziGVGw44F+Q
-         Yl7GgcXkvIKeQWWCC9OxELndNMl5N63p0PLHj6Eko+s9i8AS3wOL5LddhkyxYEgPRSYq
-         VEVw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:autocrypt:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e5XKNJgSnPPuqTFxU2qq9xdRZvRb9N1c3AxvSMq4xzI=;
+        b=Vp6UDytzYtsyr7GZJoLYyabnbY3b9NR6EXX6cpEGEFcnibXyIzOqd/1jLNQl6kWlvv
+         KneMyhoarCyH5lIZHorvTyB6lztAobfPANUTlM464bckXpiYR8P3hk3JNITQmffCtI2g
+         RAxvST2c1GcpEoBukkfFNQ5J91HLHZ0xkbS+ggLcJvx4BunIbGRXOWQ9jFPgsQcC4Ik2
+         BJTEMh8uRW/dtRcXZvHdzjCPNWPDgWEv0oBZw1NigWjBvCOs9ksQ0vqpxktvk87RwrVl
+         wI06MnjMBGi+j2xcxeUkDSsY6P/Zt6n6GHflAET9qWCw21vQUF1zT4ZZzfv1aTaUoY5t
+         coDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2q1ajbiErRira53HKKXrYklVG3PnlJgLsr24GKSESBE=;
-        b=e6g6cpggaCFxY5dcn8tafYy5CZYTlAYPKbpVJQrKKJUdBiuRuPQJRd8OsA4vhxd1Om
-         YV5p8kTyxO7t9m3gOO0/RxLRbxl24LuHN5KiZSD0KEIRBnOv40mDZLm0ykGlv3QNL5AA
-         8hOxtJM0ISBSmggwsphximUIFUDkRtK4+XnJJu3Hog418KAPrLX/tx6mwdIb2ivvH3v3
-         l84E4k5BKmZ/CCLSF5pu3os+US+GjQXIo0BikX4Uyef+1xqSbxgMncK4qEj63AhAmp8H
-         ikd8kE1ojov7DLm19NcKwHWQmc9rDJ4zZ2TYIsKnMbL+1vcEJ9/Av5Q+aqZ3mQpQaknz
-         upKQ==
-X-Gm-Message-State: AOAM5308CpTAKjNqlNvatQkSk+UwLTUjI0GBTOfCyiks6H/O6ca1eom8
-        LghdacT415IX5mEFNmk+JoIoAB2vQRnEMvfQiKpda+J3CLMOLA==
-X-Google-Smtp-Source: ABdhPJyroNBl9bu8cbvuTbtyDsOW3xnOs02H7+FfHBFmEDiB/7+UTI/z2QyyFgKHQXBMWQMkSGOzbbHpaTNuTkxV6Zw=
-X-Received: by 2002:a1f:7c45:: with SMTP id x66mr1996597vkc.53.1598262713413;
- Mon, 24 Aug 2020 02:51:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=e5XKNJgSnPPuqTFxU2qq9xdRZvRb9N1c3AxvSMq4xzI=;
+        b=l0zC+LpwaRWgsYtJTIP6+RqAxFx6l6K0tCy+HxxkwVi9z4TBnt6b6p+kJU4bf5+pnS
+         nRE1dLP1UrlCX0K2IKObhIMi5dECE4OxfXKyVOBpVlMCY/IhZFmmfLXjlLX9eLMd8svO
+         SYykc6zEOyxyo9pvgS+CTBFdQ4/Ah4yU5yVsqkcbfbBYer+47V56NIqVbGA8PRdOG10M
+         rwJNnkl7k7XQLZaeXNxqsg3Ttx8fbgCrwBc2jK3LtPM00TXJE8EsarKhTMLMHKFebFp8
+         YfFxf26ayHTnVNR1g2JWtWiAWUqfvd90DAbYrxpTiapR7WNzkoFc6F6IrBrNPjicEB8l
+         lOhA==
+X-Gm-Message-State: AOAM5330iRJug6+o668HofGOyHIZbeocBiEmtePFq5YsvWiObMRFYPaG
+        zVpEoZ/o+klSwYQ7KTa2JYXB+g==
+X-Google-Smtp-Source: ABdhPJyEVB6G8coYF0MZc2X/fqrlEfSPckB2U18sLiFLQxpVx0dg1wcEMubAwIK0bX1FydoWw0NleQ==
+X-Received: by 2002:a5d:43ca:: with SMTP id v10mr4983620wrr.299.1598262815147;
+        Mon, 24 Aug 2020 02:53:35 -0700 (PDT)
+Received: from [10.1.2.12] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id u3sm22073632wml.44.2020.08.24.02.53.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 02:53:34 -0700 (PDT)
+Subject: Re: [PATCH 3/6] drm: bridge: dw-hdmi: Introduce
+ previous_pixelclock/previous_tmdsclock
+To:     Algea Cao <algea.cao@rock-chips.com>, a.hajda@samsung.com,
+        kuankuan.y@gmail.com, hjc@rock-chips.com, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org, sam@ravnborg.org,
+        airlied@linux.ie, heiko@sntech.de, jernej.skrabec@siol.net,
+        Laurent.pinchart@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
+        mripard@kernel.org, darekm@google.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
+        linux-kernel@vger.kernel.org, jbrunet@baylibre.com,
+        maarten.lankhorst@linux.intel.com, daniel@ffwll.ch
+References: <20200812083120.743-1-algea.cao@rock-chips.com>
+ <20200812083459.989-1-algea.cao@rock-chips.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT7CwHsEEwEKACUC
+ GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
+ RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
+ NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
+ 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
+ ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
+ YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIXOwU0EVid/pAEQAND7AFhr
+ 5faf/EhDP9FSgYd/zgmb7JOpFPje3uw7jz9wFb28Cf0Y3CcncdElYoBNbRlesKvjQRL8mozV
+ 9RN+IUMHdUx1akR/A4BPXNdL7StfzKWOCxZHVS+rIQ/fE3Qz/jRmT6t2ZkpplLxVBpdu95qJ
+ YwSZjuwFXdC+A7MHtQXYi3UfCgKiflj4+/ITcKC6EF32KrmIRqamQwiRsDcUUKlAUjkCLcHL
+ CQvNsDdm2cxdHxC32AVm3Je8VCsH7/qEPMQ+cEZk47HOR3+Ihfn1LEG5LfwsyWE8/JxsU2a1
+ q44LQM2lcK/0AKAL20XDd7ERH/FCBKkNVzi+svYJpyvCZCnWT0TRb72mT+XxLWNwfHTeGALE
+ +1As4jIS72IglvbtONxc2OIid3tR5rX3k2V0iud0P7Hnz/JTdfvSpVj55ZurOl2XAXUpGbq5
+ XRk5CESFuLQV8oqCxgWAEgFyEapI4GwJsvfl/2Er8kLoucYO1Id4mz6N33+omPhaoXfHyLSy
+ dxD+CzNJqN2GdavGtobdvv/2V0wukqj86iKF8toLG2/Fia3DxMaGUxqI7GMOuiGZjXPt/et/
+ qeOySghdQ7Sdpu6fWc8CJXV2mOV6DrSzc6ZVB4SmvdoruBHWWOR6YnMz01ShFE49pPucyU1h
+ Av4jC62El3pdCrDOnWNFMYbbon3vABEBAAHCwn4EGAECAAkFAlYnf6QCGwICKQkQFpq3saTP
+ +K7BXSAEGQECAAYFAlYnf6QACgkQd9zb2sjISdGToxAAkOjSfGxp0ulgHboUAtmxaU3viucV
+ e2Hl1BVDtKSKmbIVZmEUvx9D06IijFaEzqtKD34LXD6fjl4HIyDZvwfeaZCbJbO10j3k7FJE
+ QrBtpdVqkJxme/nYlGOVzcOiKIepNkwvnHVnuVDVPcXyj2wqtsU7VZDDX41z3X4xTQwY3SO1
+ 9nRO+f+i4RmtJcITgregMa2PcB0LvrjJlWroI+KAKCzoTHzSTpCXMJ1U/dEqyc87bFBdc+DI
+ k8mWkPxsccdbs4t+hH0NoE3Kal9xtAl56RCtO/KgBLAQ5M8oToJVatxAjO1SnRYVN1EaAwrR
+ xkHdd97qw6nbg9BMcAoa2NMc0/9MeiaQfbgW6b0reIz/haHhXZ6oYSCl15Knkr4t1o3I2Bqr
+ Mw623gdiTzotgtId8VfLB2Vsatj35OqIn5lVbi2ua6I0gkI6S7xJhqeyrfhDNgzTHdQVHB9/
+ 7jnM0ERXNy1Ket6aDWZWCvM59dTyu37g3VvYzGis8XzrX1oLBU/tTXqo1IFqqIAmvh7lI0Se
+ gCrXz7UanxCwUbQBFjzGn6pooEHJYRLuVGLdBuoApl/I4dLqCZij2AGa4CFzrn9W0cwm3HCO
+ lR43gFyz0dSkMwNUd195FrvfAz7Bjmmi19DnORKnQmlvGe/9xEEfr5zjey1N9+mt3//geDP6
+ clwKBkq0JggA+RTEAELzkgPYKJ3NutoStUAKZGiLOFMpHY6KpItbbHjF2ZKIU1whaRYkHpB2
+ uLQXOzZ0d7x60PUdhqG3VmFnzXSztA4vsnDKk7x2xw0pMSTKhMafpxaPQJf494/jGnwBHyi3
+ h3QGG1RjfhQ/OMTX/HKtAUB2ct3Q8/jBfF0hS5GzT6dYtj0Ci7+8LUsB2VoayhNXMnaBfh+Q
+ pAhaFfRZWTjUFIV4MpDdFDame7PB50s73gF/pfQbjw5Wxtes/0FnqydfId95s+eej+17ldGp
+ lMv1ok7K0H/WJSdr7UwDAHEYU++p4RRTJP6DHWXcByVlpNQ4SSAiivmWiwOt490+Ac7ATQRN
+ WQbPAQgAvIoM384ZRFocFXPCOBir5m2J+96R2tI2XxMgMfyDXGJwFilBNs+fpttJlt2995A8
+ 0JwPj8SFdm6FBcxygmxBBCc7i/BVQuY8aC0Z/w9Vzt3Eo561r6pSHr5JGHe8hwBQUcNPd/9l
+ 2ynP57YTSE9XaGJK8gIuTXWo7pzIkTXfN40Wh5jeCCspj4jNsWiYhljjIbrEj300g8RUT2U0
+ FcEoiV7AjJWWQ5pi8lZJX6nmB0lc69Jw03V6mblgeZ/1oTZmOepkagwy2zLDXxihf0GowUif
+ GphBDeP8elWBNK+ajl5rmpAMNRoKxpN/xR4NzBg62AjyIvigdywa1RehSTfccQARAQABwsBf
+ BBgBAgAJBQJNWQbPAhsMAAoJEBaat7Gkz/iuteIH+wZuRDqK0ysAh+czshtG6JJlLW6eXJJR
+ Vi7dIPpgFic2LcbkSlvB8E25Pcfz/+tW+04Urg4PxxFiTFdFCZO+prfd4Mge7/OvUcwoSub7
+ ZIPo8726ZF5/xXzajahoIu9/hZ4iywWPAHRvprXaim5E/vKjcTeBMJIqZtS4u/UK3EpAX59R
+ XVxVpM8zJPbk535ELUr6I5HQXnihQm8l6rt9TNuf8p2WEDxc8bPAZHLjNyw9a/CdeB97m2Tr
+ zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <fd42150f-45fc-1664-eeab-7b8e9e99ed60@baylibre.com>
+Date:   Mon, 24 Aug 2020 11:53:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200822061528.7035-1-madhuparnabhowmik10@gmail.com>
-In-Reply-To: <20200822061528.7035-1-madhuparnabhowmik10@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 Aug 2020 11:51:16 +0200
-Message-ID: <CAPDyKFqEtSuODBNSgt26gn9k=mHfnCcbN=LjR1BeCmgAM2SXwQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers: mmc: host: via-sdmmc: Fix data race bug
-To:     madhuparnabhowmik10@gmail.com
-Cc:     Bruce Chang <brucechang@via.com.tw>,
-        Harald Welte <HaraldWelte@viatech.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        andrianov@ispras.ru, ldv-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200812083459.989-1-algea.cao@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 Aug 2020 at 08:15, <madhuparnabhowmik10@gmail.com> wrote:
->
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->
-> via_save_pcictrlreg() should be called with host->lock held
-> as it writes to pm_pcictrl_reg, otherwise there can be a race
-> condition between via_sd_suspend() and via_sdc_card_detect().
-> The same pattern is used in the function via_reset_pcictrl()
-> as well, where via_save_pcictrlreg() is called with host->lock
-> held.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-
-Applied for next, thanks!
-
-Kind regards
-Uffe
-
-
+On 12/08/2020 10:34, Algea Cao wrote:
+> Introduce previous_pixelclock/previous_tmdsclock to
+> determine whether PHY needs initialization. If phy is power off,
+> or mpixelclock/mtmdsclock is different to previous value, phy is
+> neet to be reinitialized.
+> 
+> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
 > ---
-> v2: Rebase v5.9-rc1
->
->  drivers/mmc/host/via-sdmmc.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-> index 49dab9f42b6d..9b755ea0fa03 100644
-> --- a/drivers/mmc/host/via-sdmmc.c
-> +++ b/drivers/mmc/host/via-sdmmc.c
-> @@ -1257,11 +1257,14 @@ static void __maybe_unused via_init_sdc_pm(struct via_crdr_mmc_host *host)
->  static int __maybe_unused via_sd_suspend(struct device *dev)
->  {
->         struct via_crdr_mmc_host *host;
-> +       unsigned long flags;
->
->         host = dev_get_drvdata(dev);
->
-> +       spin_lock_irqsave(&host->lock, flags);
->         via_save_pcictrlreg(host);
->         via_save_sdcreg(host);
-> +       spin_unlock_irqrestore(&host->lock, flags);
->
->         device_wakeup_enable(dev);
->
-> --
-> 2.17.1
->
+> 
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 50 +++++++++++++++++++----
+>  1 file changed, 43 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index a1a81fc768c2..1eb4736b9b59 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -101,6 +101,8 @@ static const u16 csc_coeff_rgb_full_to_rgb_limited[3][4] = {
+>  struct hdmi_vmode {
+>  	bool mdataenablepolarity;
+>  
+> +	unsigned int previous_pixelclock;
+> +	unsigned int previous_tmdsclock;
+>  	unsigned int mpixelclock;
+>  	unsigned int mpixelrepetitioninput;
+>  	unsigned int mpixelrepetitionoutput;
+> @@ -890,6 +892,32 @@ static int hdmi_bus_fmt_color_depth(unsigned int bus_format)
+>  	}
+>  }
+>  
+> +static unsigned int
+> +hdmi_get_tmdsclock(struct dw_hdmi *hdmi, unsigned long mpixelclock)
+> +{
+> +	unsigned int tmdsclock = mpixelclock;
+> +	unsigned int depth =
+> +		hdmi_bus_fmt_color_depth(hdmi->hdmi_data.enc_out_bus_format);
+> +
+> +	if (!hdmi_bus_fmt_is_yuv422(hdmi->hdmi_data.enc_out_bus_format)) {
+> +		switch (depth) {
+> +		case 16:
+> +			tmdsclock = mpixelclock * 2;
+> +			break;
+> +		case 12:
+> +			tmdsclock = mpixelclock * 3 / 2;
+> +			break;
+> +		case 10:
+> +			tmdsclock = mpixelclock * 5 / 4;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+
+
+Where does this come from ? Please introduce this on another patch.
+
+Neil
+
+> +
+> +	return tmdsclock;
+> +}
+> +
+>  /*
+>   * this submodule is responsible for the video data synchronization.
+>   * for example, for RGB 4:4:4 input, the data map is defined as
+> @@ -1861,11 +1889,13 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+>  	int hblank, vblank, h_de_hs, v_de_vs, hsync_len, vsync_len;
+>  	unsigned int vdisplay, hdisplay;
+>  
+> +	vmode->previous_pixelclock = vmode->mpixelclock;
+>  	vmode->mpixelclock = mode->clock * 1000;
+>  
+>  	dev_dbg(hdmi->dev, "final pixclk = %d\n", vmode->mpixelclock);
+>  
+> -	vmode->mtmdsclock = vmode->mpixelclock;
+> +	vmode->previous_tmdsclock = vmode->mtmdsclock;
+> +	vmode->mtmdsclock = hdmi_get_tmdsclock(hdmi, vmode->mpixelclock);
+>  
+>  	if (!hdmi_bus_fmt_is_yuv422(hdmi->hdmi_data.enc_out_bus_format)) {
+>  		switch (hdmi_bus_fmt_color_depth(
+> @@ -2172,12 +2202,18 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi,
+>  	hdmi_av_composer(hdmi, &connector->display_info, mode);
+>  
+>  	/* HDMI Initializateion Step B.2 */
+> -	ret = hdmi->phy.ops->init(hdmi, hdmi->phy.data,
+> -				  &connector->display_info,
+> -				  &hdmi->previous_mode);
+> -	if (ret)
+> -		return ret;
+> -	hdmi->phy.enabled = true;
+> +	if (!hdmi->phy.enabled ||
+> +	    hdmi->hdmi_data.video_mode.previous_pixelclock !=
+> +	    hdmi->hdmi_data.video_mode.mpixelclock ||
+> +	    hdmi->hdmi_data.video_mode.previous_tmdsclock !=
+> +	    hdmi->hdmi_data.video_mode.mtmdsclock) {
+> +		ret = hdmi->phy.ops->init(hdmi, hdmi->phy.data,
+> +					  &connector->display_info,
+> +					  &hdmi->previous_mode);
+> +		if (ret)
+> +			return ret;
+> +		hdmi->phy.enabled = true;
+> +	}
+>  
+>  	/* HDMI Initialization Step B.3 */
+>  	dw_hdmi_enable_video_path(hdmi);
+> 
+
