@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1049424FAE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF1B24FAED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgHXKBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:01:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
+        id S1726542AbgHXIcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgHXIcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:32:33 -0400
+        id S1725601AbgHXIcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:32:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EA772087D;
-        Mon, 24 Aug 2020 08:32:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8346207D3;
+        Mon, 24 Aug 2020 08:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598257952;
-        bh=djItqV/kV6AW66PqnX49nw1rlTBXTbemxJL4FdlGbQI=;
+        s=default; t=1598257926;
+        bh=sTDj6tq+HN2wll79e4raXCRY8XbX4Md6sOVXV9rrXZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yyT+xGh26f8Zv+mDO3mfriNWGawKhbmzQhThwPOBtE66dlB+4Fa5ybuyeaIULgI5w
-         Ic6AX4E4PdnG8yDXTaN+DbmNSpWRgfGKJQIWKItxR9fVOwW4FDIQ7TLZeGWlHLZ4zn
-         Na1y2IAYsVxHeI3uzasgn+4hNs6Bvj91huuuT0BM=
+        b=qfvOGSZwFCXC/SNJLrXvFrKCtkSRUBlTyp9D6u/Gt/7xQ/XF5+9nOti7MpmZPLgC2
+         6TG/huoJnU1X3lWlSH8wgbdNeJ1mdCkX8cFf92peL5B1PrE1ArFtUd2lxJs7HeNpOX
+         RD+RiqjmHOflZm8YrD+78TBKMwPHJqb73Q/4rLfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 003/148] drm/ast: Remove unused code paths for AST 1180
-Date:   Mon, 24 Aug 2020 10:28:21 +0200
-Message-Id: <20200824082414.106228049@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Octavian Purdila <octavian.purdila@intel.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.8 011/148] spi: Prevent adding devices below an unregistering controller
+Date:   Mon, 24 Aug 2020 10:28:29 +0200
+Message-Id: <20200824082414.497192453@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
 References: <20200824082413.900489417@linuxfoundation.org>
@@ -45,241 +46,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 05f13f5b5996d20a9819e0c6fd0cda4956c8aff9 ]
+commit ddf75be47ca748f8b12d28ac64d624354fddf189 upstream.
 
-The ast driver contains code paths for AST 1180 chips. The chip is not
-supported and the rsp code has never been tested. Simplify the driver by
-removing the AST 1180 code.
+CONFIG_OF_DYNAMIC and CONFIG_ACPI allow adding SPI devices at runtime
+using a DeviceTree overlay or DSDT patch.  CONFIG_SPI_SLAVE allows the
+same via sysfs.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200617080340.29584-2-tzimmermann@suse.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But there are no precautions to prevent adding a device below a
+controller that's being removed.  Such a device is unusable and may not
+even be able to unbind cleanly as it becomes inaccessible once the
+controller has been torn down.  E.g. it is then impossible to quiesce
+the device's interrupt.
+
+of_spi_notify() and acpi_spi_notify() do hold a ref on the controller,
+but otherwise run lockless against spi_unregister_controller().
+
+Fix by holding the spi_add_lock in spi_unregister_controller() and
+bailing out of spi_add_device() if the controller has been unregistered
+concurrently.
+
+Fixes: ce79d54ae447 ("spi/of: Add OF notifier handler")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v3.19+
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Octavian Purdila <octavian.purdila@intel.com>
+Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Link: https://lore.kernel.org/r/a8c3205088a969dc8410eec1eba9aface60f36af.1596451035.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/ast/ast_drv.c  |  1 -
- drivers/gpu/drm/ast/ast_drv.h  |  2 -
- drivers/gpu/drm/ast/ast_main.c | 89 +++++++++++++++-------------------
- drivers/gpu/drm/ast/ast_mode.c | 11 +----
- drivers/gpu/drm/ast/ast_post.c | 10 ++--
- 5 files changed, 43 insertions(+), 70 deletions(-)
+ drivers/spi/Kconfig |    3 +++
+ drivers/spi/spi.c   |   21 ++++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
-index b7ba22dddcad9..83509106f3ba9 100644
---- a/drivers/gpu/drm/ast/ast_drv.c
-+++ b/drivers/gpu/drm/ast/ast_drv.c
-@@ -59,7 +59,6 @@ static struct drm_driver driver;
- static const struct pci_device_id pciidlist[] = {
- 	AST_VGA_DEVICE(PCI_CHIP_AST2000, NULL),
- 	AST_VGA_DEVICE(PCI_CHIP_AST2100, NULL),
--	/*	AST_VGA_DEVICE(PCI_CHIP_AST1180, NULL), - don't bind to 1180 for now */
- 	{0, 0, 0},
- };
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -999,4 +999,7 @@ config SPI_SLAVE_SYSTEM_CONTROL
  
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
-index 656d591b154b3..09f2659e29118 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -52,7 +52,6 @@
+ endif # SPI_SLAVE
  
- #define PCI_CHIP_AST2000 0x2000
- #define PCI_CHIP_AST2100 0x2010
--#define PCI_CHIP_AST1180 0x1180
++config SPI_DYNAMIC
++	def_bool ACPI || OF_DYNAMIC || SPI_SLAVE
++
+ endif # SPI
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -475,6 +475,12 @@ static LIST_HEAD(spi_controller_list);
+  */
+ static DEFINE_MUTEX(board_lock);
  
- 
- enum ast_chip {
-@@ -64,7 +63,6 @@ enum ast_chip {
- 	AST2300,
- 	AST2400,
- 	AST2500,
--	AST1180,
- };
- 
- enum ast_tx_chip {
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index e5398e3dabe70..f48a9f62368c0 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -142,50 +142,42 @@ static int ast_detect_chip(struct drm_device *dev, bool *need_post)
- 	ast_detect_config_mode(dev, &scu_rev);
- 
- 	/* Identify chipset */
--	if (dev->pdev->device == PCI_CHIP_AST1180) {
--		ast->chip = AST1100;
--		DRM_INFO("AST 1180 detected\n");
--	} else {
--		if (dev->pdev->revision >= 0x40) {
--			ast->chip = AST2500;
--			DRM_INFO("AST 2500 detected\n");
--		} else if (dev->pdev->revision >= 0x30) {
--			ast->chip = AST2400;
--			DRM_INFO("AST 2400 detected\n");
--		} else if (dev->pdev->revision >= 0x20) {
--			ast->chip = AST2300;
--			DRM_INFO("AST 2300 detected\n");
--		} else if (dev->pdev->revision >= 0x10) {
--			switch (scu_rev & 0x0300) {
--			case 0x0200:
--				ast->chip = AST1100;
--				DRM_INFO("AST 1100 detected\n");
--				break;
--			case 0x0100:
--				ast->chip = AST2200;
--				DRM_INFO("AST 2200 detected\n");
--				break;
--			case 0x0000:
--				ast->chip = AST2150;
--				DRM_INFO("AST 2150 detected\n");
--				break;
--			default:
--				ast->chip = AST2100;
--				DRM_INFO("AST 2100 detected\n");
--				break;
--			}
--			ast->vga2_clone = false;
--		} else {
--			ast->chip = AST2000;
--			DRM_INFO("AST 2000 detected\n");
-+	if (dev->pdev->revision >= 0x40) {
-+		ast->chip = AST2500;
-+		DRM_INFO("AST 2500 detected\n");
-+	} else if (dev->pdev->revision >= 0x30) {
-+		ast->chip = AST2400;
-+		DRM_INFO("AST 2400 detected\n");
-+	} else if (dev->pdev->revision >= 0x20) {
-+		ast->chip = AST2300;
-+		DRM_INFO("AST 2300 detected\n");
-+	} else if (dev->pdev->revision >= 0x10) {
-+		switch (scu_rev & 0x0300) {
-+		case 0x0200:
-+			ast->chip = AST1100;
-+			DRM_INFO("AST 1100 detected\n");
-+			break;
-+		case 0x0100:
-+			ast->chip = AST2200;
-+			DRM_INFO("AST 2200 detected\n");
-+			break;
-+		case 0x0000:
-+			ast->chip = AST2150;
-+			DRM_INFO("AST 2150 detected\n");
-+			break;
-+		default:
-+			ast->chip = AST2100;
-+			DRM_INFO("AST 2100 detected\n");
-+			break;
- 		}
-+		ast->vga2_clone = false;
-+	} else {
-+		ast->chip = AST2000;
-+		DRM_INFO("AST 2000 detected\n");
++/*
++ * Prevents addition of devices with same chip select and
++ * addition of devices below an unregistering controller.
++ */
++static DEFINE_MUTEX(spi_add_lock);
++
+ /**
+  * spi_alloc_device - Allocate a new SPI device
+  * @ctlr: Controller to which device is connected
+@@ -554,7 +560,6 @@ static int spi_dev_check(struct device *
+  */
+ int spi_add_device(struct spi_device *spi)
+ {
+-	static DEFINE_MUTEX(spi_add_lock);
+ 	struct spi_controller *ctlr = spi->controller;
+ 	struct device *dev = ctlr->dev.parent;
+ 	int status;
+@@ -582,6 +587,13 @@ int spi_add_device(struct spi_device *sp
+ 		goto done;
  	}
  
- 	/* Check if we support wide screen */
- 	switch (ast->chip) {
--	case AST1180:
--		ast->support_wide_screen = true;
--		break;
- 	case AST2000:
- 		ast->support_wide_screen = false;
- 		break;
-@@ -469,15 +461,13 @@ int ast_driver_load(struct drm_device *dev, unsigned long flags)
- 	if (need_post)
- 		ast_post_gpu(dev);
- 
--	if (ast->chip != AST1180) {
--		ret = ast_get_dram_info(dev);
--		if (ret)
--			goto out_free;
--		ast->vram_size = ast_get_vram_info(dev);
--		DRM_INFO("dram MCLK=%u Mhz type=%d bus_width=%d size=%08x\n",
--			 ast->mclk, ast->dram_type,
--			 ast->dram_bus_width, ast->vram_size);
--	}
-+	ret = ast_get_dram_info(dev);
-+	if (ret)
-+		goto out_free;
-+	ast->vram_size = ast_get_vram_info(dev);
-+	DRM_INFO("dram MCLK=%u Mhz type=%d bus_width=%d size=%08x\n",
-+		 ast->mclk, ast->dram_type,
-+		 ast->dram_bus_width, ast->vram_size);
- 
- 	ret = ast_mm_init(ast);
- 	if (ret)
-@@ -496,8 +486,7 @@ int ast_driver_load(struct drm_device *dev, unsigned long flags)
- 	    ast->chip == AST2200 ||
- 	    ast->chip == AST2300 ||
- 	    ast->chip == AST2400 ||
--	    ast->chip == AST2500 ||
--	    ast->chip == AST1180) {
-+	    ast->chip == AST2500) {
- 		dev->mode_config.max_width = 1920;
- 		dev->mode_config.max_height = 2048;
- 	} else {
-diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_mode.c
-index 3a3a511670c9c..73fd76cec5120 100644
---- a/drivers/gpu/drm/ast/ast_mode.c
-+++ b/drivers/gpu/drm/ast/ast_mode.c
-@@ -769,9 +769,6 @@ static void ast_crtc_dpms(struct drm_crtc *crtc, int mode)
- {
- 	struct ast_private *ast = crtc->dev->dev_private;
- 
--	if (ast->chip == AST1180)
--		return;
--
- 	/* TODO: Maybe control display signal generation with
- 	 *       Sync Enable (bit CR17.7).
- 	 */
-@@ -793,16 +790,10 @@ static void ast_crtc_dpms(struct drm_crtc *crtc, int mode)
- static int ast_crtc_helper_atomic_check(struct drm_crtc *crtc,
- 					struct drm_crtc_state *state)
- {
--	struct ast_private *ast = crtc->dev->dev_private;
- 	struct ast_crtc_state *ast_state;
- 	const struct drm_format_info *format;
- 	bool succ;
- 
--	if (ast->chip == AST1180) {
--		DRM_ERROR("AST 1180 modesetting not supported\n");
--		return -EINVAL;
--	}
--
- 	if (!state->enable)
- 		return 0; /* no mode checks if CRTC is being disabled */
- 
-@@ -1044,7 +1035,7 @@ static enum drm_mode_status ast_mode_valid(struct drm_connector *connector,
- 
- 		if ((ast->chip == AST2100) || (ast->chip == AST2200) ||
- 		    (ast->chip == AST2300) || (ast->chip == AST2400) ||
--		    (ast->chip == AST2500) || (ast->chip == AST1180)) {
-+		    (ast->chip == AST2500)) {
- 			if ((mode->hdisplay == 1920) && (mode->vdisplay == 1080))
- 				return MODE_OK;
- 
-diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
-index 2d1b186197432..af0c8ebb009a1 100644
---- a/drivers/gpu/drm/ast/ast_post.c
-+++ b/drivers/gpu/drm/ast/ast_post.c
-@@ -58,13 +58,9 @@ bool ast_is_vga_enabled(struct drm_device *dev)
- 	struct ast_private *ast = dev->dev_private;
- 	u8 ch;
- 
--	if (ast->chip == AST1180) {
--		/* TODO 1180 */
--	} else {
--		ch = ast_io_read8(ast, AST_IO_VGA_ENABLE_PORT);
--		return !!(ch & 0x01);
--	}
--	return false;
-+	ch = ast_io_read8(ast, AST_IO_VGA_ENABLE_PORT);
++	/* Controller may unregister concurrently */
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC) &&
++	    !device_is_registered(&ctlr->dev)) {
++		status = -ENODEV;
++		goto done;
++	}
 +
-+	return !!(ch & 0x01);
- }
+ 	/* Descriptors take precedence */
+ 	if (ctlr->cs_gpiods)
+ 		spi->cs_gpiod = ctlr->cs_gpiods[spi->chip_select];
+@@ -2764,6 +2776,10 @@ void spi_unregister_controller(struct sp
+ 	struct spi_controller *found;
+ 	int id = ctlr->bus_num;
  
- static const u8 extreginfo[] = { 0x0f, 0x04, 0x1c, 0xff };
--- 
-2.25.1
-
++	/* Prevent addition of new devices, unregister existing ones */
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
++		mutex_lock(&spi_add_lock);
++
+ 	device_for_each_child(&ctlr->dev, NULL, __unregister);
+ 
+ 	/* First make sure that this controller was ever added */
+@@ -2784,6 +2800,9 @@ void spi_unregister_controller(struct sp
+ 	if (found == ctlr)
+ 		idr_remove(&spi_master_idr, id);
+ 	mutex_unlock(&board_lock);
++
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
++		mutex_unlock(&spi_add_lock);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_controller);
+ 
 
 
