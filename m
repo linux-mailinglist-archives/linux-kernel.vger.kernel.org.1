@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C34824F884
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4B924F89A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbgHXJdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
+        id S1729658AbgHXItF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:49:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728661AbgHXItr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:49:47 -0400
+        id S1729599AbgHXIsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 425C02075B;
-        Mon, 24 Aug 2020 08:49:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE531204FD;
+        Mon, 24 Aug 2020 08:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258986;
-        bh=f75tl17vxQarEIOmbQCAPyjN44tFzQmDBYKWO4ULK34=;
+        s=default; t=1598258925;
+        bh=VW/CwsuVrwl6ReYbARigPDF/SbJ5qUjDCXEj9WHndn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cw6H7NrDuXldc+a4TguUiUtyEP5UBwc3MCf9gpfiikW8O/Q7PzdWb7H4V1x41ugvD
-         u9z3ZaLwbwPkuB58ch/pawMYK1l2cCZ0zreqBZWr/84EPymeZmOfKO+/yvHzWDpz9O
-         CpvgHXJwhaQR8JsSwsaqOUUnAin6oWUy1L7IhCjg=
+        b=Hp4dCIONELk9xKjq6DKhfbvoPt7C6vy0UMrp0UgBUuwMy9RPdZ2tZvJARq1yCSkxI
+         ztqaNTuranVh0wLZQkhkE6VarWpPLTV8zBtaxlfdwtaObq8rdIXnXm5WKt/sanNkmX
+         1AkPGRIc8XEKDp1Tg0VPRWHjksbjW2IWAUo0pQSg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 03/33] net/compat: Add missing sock updates for SCM_RIGHTS
-Date:   Mon, 24 Aug 2020 10:30:59 +0200
-Message-Id: <20200824082346.694200004@linuxfoundation.org>
+Subject: [PATCH 5.4 094/107] RDMA/bnxt_re: Do not add user qps to flushlist
+Date:   Mon, 24 Aug 2020 10:31:00 +0200
+Message-Id: <20200824082409.750402349@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,95 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-[ Upstream commit d9539752d23283db4692384a634034f451261e29 ]
+[ Upstream commit a812f2d60a9fb7818f9c81f967180317b52545c0 ]
 
-Add missed sock updates to compat path via a new helper, which will be
-used more in coming patches. (The net/core/scm.c code is left as-is here
-to assist with -stable backports for the compat path.)
+Driver shall add only the kernel qps to the flush list for clean up.
+During async error events from the HW, driver is adding qps to this list
+without checking if the qp is kernel qp or not.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Sargun Dhillon <sargun@sargun.me>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: stable@vger.kernel.org
-Fixes: 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
-Fixes: d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Add a check to avoid user qp addition to the flush list.
+
+Fixes: 942c9b6ca8de ("RDMA/bnxt_re: Avoid Hard lockup during error CQE processing")
+Fixes: c50866e2853a ("bnxt_re: fix the regression due to changes in alloc_pbl")
+Link: https://lore.kernel.org/r/1596689148-4023-1-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sock.h |  4 ++++
- net/compat.c       |  1 +
- net/core/sock.c    | 21 +++++++++++++++++++++
- 3 files changed, 26 insertions(+)
+ drivers/infiniband/hw/bnxt_re/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 426a57874964c..31198b32d9122 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -779,6 +779,8 @@ static inline int sk_memalloc_socks(void)
- {
- 	return static_key_false(&memalloc_socks);
- }
-+
-+void __receive_sock(struct file *file);
- #else
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 27e2df44d043d..cfe5f47d9890e 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -789,7 +789,8 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 	struct ib_event event;
+ 	unsigned int flags;
  
- static inline int sk_memalloc_socks(void)
-@@ -786,6 +788,8 @@ static inline int sk_memalloc_socks(void)
- 	return 0;
- }
- 
-+static inline void __receive_sock(struct file *file)
-+{ }
- #endif
- 
- static inline gfp_t sk_gfp_atomic(const struct sock *sk, gfp_t gfp_mask)
-diff --git a/net/compat.c b/net/compat.c
-index d676840104556..20c5e5f215f23 100644
---- a/net/compat.c
-+++ b/net/compat.c
-@@ -284,6 +284,7 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
- 			break;
- 		}
- 		/* Bump the usage count and install the file. */
-+		__receive_sock(fp[i]);
- 		fd_install(new_fd, get_file(fp[i]));
- 	}
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 120d5058d81ae..82f9a7dbea6fe 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2275,6 +2275,27 @@ int sock_no_mmap(struct file *file, struct socket *sock, struct vm_area_struct *
- }
- EXPORT_SYMBOL(sock_no_mmap);
- 
-+/*
-+ * When a file is received (via SCM_RIGHTS, etc), we must bump the
-+ * various sock-based usage counts.
-+ */
-+void __receive_sock(struct file *file)
-+{
-+	struct socket *sock;
-+	int error;
-+
-+	/*
-+	 * The resulting value of "error" is ignored here since we only
-+	 * need to take action when the file is a socket and testing
-+	 * "sock" for NULL is sufficient.
-+	 */
-+	sock = sock_from_file(file, &error);
-+	if (sock) {
-+		sock_update_netprioidx(sock->sk);
-+		sock_update_classid(sock->sk);
-+	}
-+}
-+
- ssize_t sock_no_sendpage(struct socket *sock, struct page *page, int offset, size_t size, int flags)
- {
- 	ssize_t res;
+-	if (qp->qplib_qp.state == CMDQ_MODIFY_QP_NEW_STATE_ERR) {
++	if (qp->qplib_qp.state == CMDQ_MODIFY_QP_NEW_STATE_ERR &&
++	    rdma_is_kernel_res(&qp->ib_qp.res)) {
+ 		flags = bnxt_re_lock_cqs(qp);
+ 		bnxt_qplib_add_flush_qp(&qp->qplib_qp);
+ 		bnxt_re_unlock_cqs(qp, flags);
 -- 
 2.25.1
 
