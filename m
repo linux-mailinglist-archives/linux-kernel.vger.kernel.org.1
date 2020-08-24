@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D166C24FF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFA624FF32
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgHXNfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgHXNfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:35:19 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54449C061573;
-        Mon, 24 Aug 2020 06:35:19 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id d11so11729408ejt.13;
-        Mon, 24 Aug 2020 06:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qBlPQKIK+Sf7xnyBmBOxFqnfqkDGJ7ZbBkjJFcCppis=;
-        b=myGAulX+pUpcUtuzXi8/ExHy7RBGxysvvhPJAYGx1lH5EEqh9Cnme9j3kPo5dMV6h2
-         /bwQ7L37JAHRCg5FrBZ1t1bJICI7yIpgMcUO1QcPtYSZitZjpbTS3McvwiD4IuX8YhGn
-         OweCm0GoVCaAQKXr25YzIi9fmNAHU9tJRGivXBDxXAg6VYiMRpAS+MVDTH1/9DgAyfSO
-         5UcyeaVNjlPc4GlTR4FIQqb6SV69PN+kMACyCYLf7iE8wtWkwWe4eSaBcVoMtamqbQ/7
-         533jc/8Cn+gkrWqb/C4B3oZtt6M57HKQKhc+YiZyUT/4vAX/XWFqH/GOvy9YW6Uo+20Y
-         sMLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qBlPQKIK+Sf7xnyBmBOxFqnfqkDGJ7ZbBkjJFcCppis=;
-        b=TaEVN8zDfn0Jp2e48XX3egAoT+C6X8nB3RUqYLpnS6BqmYvMeot0sznftmZ4+VgsWG
-         ysjYg7MqghIA/ixWCIBYzfeEtnxx15NneJlY3HPAMt03F2vAG1kYjMLL3rDhM3orTlDF
-         wr5lPwq5PA3tQhUgyQMhT9F20lp+mh05UtZBYaicWXbIHt2+StT5l4mGwE4WkKXgAWqb
-         rOSEzNPqbZTeFPcxPeBZn0JASbPvU/sM6a7i/jeagUzaeRBBOUfk+szx33WsWKp6QS6J
-         kxmKhs6v6goQl56kianjZyRid3R8r8bORrQmKpdiNVNS0b6Ry3b0na/7enIsYiDlJjQC
-         I2gQ==
-X-Gm-Message-State: AOAM532OJFoznYsnOcvEFy5OvNNO6PHq+Fa95aZitxlJbfnE9vcBgkks
-        Otb0gaonumGgzNY81pE3JHE=
-X-Google-Smtp-Source: ABdhPJy65pU8bdTG9sbTEPvCuA2gIvTWDt31MWk9H33q/YltEelKWAmDpJ8s5mvLZNd5HPHZsDgBzw==
-X-Received: by 2002:a17:906:359b:: with SMTP id o27mr5890797ejb.103.1598276117958;
-        Mon, 24 Aug 2020 06:35:17 -0700 (PDT)
-Received: from skbuf ([86.126.22.216])
-        by smtp.gmail.com with ESMTPSA id ay5sm9590726edb.2.2020.08.24.06.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 06:35:17 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 16:35:15 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     davem@davemloft.net, Julia.Lawall@lip6.fr, andrew@lunn.ch,
-        sean.wang@mediatek.com, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, kuba@kernel.org, matthias.bgg@gmail.com,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] net: dsa: Add of_node_put() before break and return
- statements
-Message-ID: <20200824133515.j6ujfm2tl2hqjo5u@skbuf>
-References: <20200823193054.29336-1-sylphrenadin@gmail.com>
+        id S1728010AbgHXNmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:42:02 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:53898 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726967AbgHXNfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 09:35:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 673CAFB03;
+        Mon, 24 Aug 2020 15:35:22 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aJ1hfcJNSXF6; Mon, 24 Aug 2020 15:35:20 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 4E43A45869; Mon, 24 Aug 2020 15:35:20 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 15:35:20 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Li Jun <jun.li@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Olof Johansson <olof@lixom.net>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] arm64: dts: imx8mq: Add NWL DSI host controller
+ to Librem 5 Devkit
+Message-ID: <20200824133520.GA20386@bogon.m.sigxcpu.org>
+References: <cover.1598166983.git.agx@sigxcpu.org>
+ <20200824124635.GE12776@dragon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200823193054.29336-1-sylphrenadin@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200824124635.GE12776@dragon>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 01:00:54AM +0530, Sumera Priyadarsini wrote:
-> Every iteration of for_each_child_of_node() decrements
-> the reference count of the previous node, however when control
-> is transferred from the middle of the loop, as in the case of
-> a return or break or goto, there is no decrement thus ultimately
-> resulting in a memory leak.
+Hi,
+On Mon, Aug 24, 2020 at 08:46:36PM +0800, Shawn Guo wrote:
+> On Sun, Aug 23, 2020 at 09:18:06AM +0200, Guido Günther wrote:
+> > These patches add the NWL host controller to the imx8mq and make use of it on
+> > the Librem 5 Devkit enabling the built in MIPI DSI LCD panel.
+> > 
+> > I opted to add imx8mq internal ports and endpoints between nwl and lcdif to the
+> > generic dtsi since those are SOC rather than board specific properties.
+> > 
+> > Changes from v3
+> > - Rebase patch 3 and 4 against Shawn's imx/defconfig
+> >   Patches 1 an 2 got already applies, thanks!
+> > 
+> > Changes from v2
+> > - Add Tested-by from Martin Kepplinger, thanks!
+> >   https://lore.kernel.org/linux-arm-kernel/cover.1597913263.git.agx@sigxcpu.org/T/#m067f2d659fcd1c0cb7792b22d0c4db06ed235815
+> >   https://lore.kernel.org/linux-arm-kernel/cover.1597913263.git.agx@sigxcpu.org/T/#m9aff315ee38fd9bbcd3a896876726c14b2fb7048
+> > 
+> > Changes from v1
+> > - Add Reviewed-by from Fabio Estevam, thanks!
+> >   https://lore.kernel.org/linux-arm-kernel/CAOMZO5DUA5eS8apZPbte0EcSQ4Vwpg6YLK7D0YdjSUy+kdBu8Q@mail.gmail.com/
+> >   https://lore.kernel.org/linux-arm-kernel/CAOMZO5ANrd2JCmHyxZ0Sv0WNcU9T-q3MbaeADxbOwf+31MQ4LQ@mail.gmail.com/#t
+> >   https://lore.kernel.org/linux-arm-kernel/CAOMZO5Dg5NGpJ0SQkYny04Kv3ky0619J7YwT-0eE1dsK19o1-w@mail.gmail.com/
+> > - As per review comment by Fabio Estevam
+> >   Re-sync DRM related defconfig bits. I didn't resyc the whole defconfig since
+> >   this is pretty much kernel version dependent.
+> > 
+> > Guido Günther (2):
+> >   arm64: defconfig: re-sync DRM related defconfig bits
+> >   arm64: defconfig: Enable imx8mq-librem5-devkit display stack
 > 
-> Fix a potential memory leak in mt7530.c by inserting of_node_put()
-> before the break and return statements.
-> 
-> Issue found with Coccinelle.
-> 
-> ---
-> Changes in v2:
-> 	Add another of_node_put() in for_each_child_of_node() as pointed
-> out by Andrew.
-> 
-> Changes in v3:
-> 	- Correct syntax errors
-> 	- Modify commit message
-> 
-> ---
-> 
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> 
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> ---
+> Applied both, thanks.
 
-If you need to resend anyway, can we please have a proper commit prefix?
-A patch on mt7530.c shouldn't be "net: dsa: " but "net: dsa: mt7530: "
-as "git log" will tell you. The difference is relevant because "net:
-dsa: " typically refers to the generic code in net/dsa/.
-
->  drivers/net/dsa/mt7530.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index 8dcb8a49ab67..4b4701c69fe1 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -1326,14 +1326,17 @@ mt7530_setup(struct dsa_switch *ds)
->  
->  			if (phy_node->parent == priv->dev->of_node->parent) {
->  				ret = of_get_phy_mode(mac_np, &interface);
-> -				if (ret && ret != -ENODEV)
-> +				if (ret && ret != -ENODEV) {
-> +					of_node_put(mac_np);
->  					return ret;
-> +				}
->  				id = of_mdio_parse_addr(ds->dev, phy_node);
->  				if (id == 0)
->  					priv->p5_intf_sel = P5_INTF_SEL_PHY_P0;
->  				if (id == 4)
->  					priv->p5_intf_sel = P5_INTF_SEL_PHY_P4;
->  			}
-> +			of_node_put(mac_np);
->  			of_node_put(phy_node);
->  			break;
->  		}
-> -- 
-> 2.17.1
-> 
-
-Thanks,
--Vladimir
+Thanks!
+ -- Guido
