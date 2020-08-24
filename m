@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B513624F91E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A15024FA4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgHXJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:41:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
+        id S1728034AbgHXIgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727921AbgHXIpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:09 -0400
+        id S1728290AbgHXIgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D42920FC3;
-        Mon, 24 Aug 2020 08:45:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59E3C208E4;
+        Mon, 24 Aug 2020 08:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258709;
-        bh=TkjjmI4vznJkdg4lBTfckMqQi81x67cY+0PbtkEHWus=;
+        s=default; t=1598258206;
+        bh=I2rc69Oc47pz8Ily187amhLgZCDrNoxj7kJnj5evJDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PQ8mZKT7DKZfbO3w6s5fbjBoqzyy+icajwWVVlbItpahmQo1gJhZDY4/C+mPNgYkP
-         WnHJAtUpc2bwiGMa6GUH1YhZYAdFQZmXcJGG6Q8Rxv4Mfppko79YVpIOhg5tq/NmCG
-         dpJ6sZfo/6Qex/GiM5HZj5Xg7beqg6YnckjFbPtk=
+        b=QiPtqUdt1SUlvb2P2at8ngdcPMy9h2shYD1SoqgLm7z7FwfKrf3poUqPZvRl/P/CH
+         jI6IhUzH2gIHNaEKRqxLUGIOUH2xvFyg/SaHvWsZCmTcJCZ5dh+Lq9/5Etj/GZauwC
+         7vvoYc9D4WhghSxK+eAur6NQNR3q5Ugi89nAOtF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Murphy <chris@colorremedies.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Henrique Figueira <henrislip@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/107] btrfs: dont show full path of bind mounts in subvol=
+Subject: [PATCH 5.8 086/148] can: j1939: transport: add j1939_session_skb_find_by_offset() function
 Date:   Mon, 24 Aug 2020 10:29:44 +0200
-Message-Id: <20200824082405.980681611@linuxfoundation.org>
+Message-Id: <20200824082418.175733660@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,65 +45,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 3ef3959b29c4a5bd65526ab310a1a18ae533172a ]
+[ Upstream commit 840835c9281215341d84966a8855f267a971e6a3 ]
 
-Chris Murphy reported a problem where rpm ostree will bind mount a bunch
-of things for whatever voodoo it's doing.  But when it does this
-/proc/mounts shows something like
+Sometimes it makes no sense to search the skb by pkt.dpo, since we need
+next the skb within the transaction block. This may happen if we have an
+ETP session with CTS set to less than 255 packets.
 
-  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
-  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo/bar 0 0
+After this patch, we will be able to work with ETP sessions where the
+block size (ETP.CM_CTS byte 2) is less than 255 packets.
 
-Despite subvolid=256 being subvol=/foo.  This is because we're just
-spitting out the dentry of the mount point, which in the case of bind
-mounts is the source path for the mountpoint.  Instead we should spit
-out the path to the actual subvol.  Fix this by looking up the name for
-the subvolid we have mounted.  With this fix the same test looks like
-this
-
-  /dev/sda /mnt/test btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
-  /dev/sda /mnt/test/baz btrfs rw,relatime,subvolid=256,subvol=/foo 0 0
-
-Reported-by: Chris Murphy <chris@colorremedies.com>
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: Henrique Figueira <henrislip@gmail.com>
+Reported-by: https://github.com/linux-can/can-utils/issues/228
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20200807105200.26441-5-o.rempel@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/super.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ net/can/j1939/transport.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 32c36821cc7b4..e21cae80c6d58 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1291,6 +1291,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- {
- 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
- 	const char *compress_type;
-+	const char *subvol_name;
- 
- 	if (btrfs_test_opt(info, DEGRADED))
- 		seq_puts(seq, ",degraded");
-@@ -1375,8 +1376,13 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 		seq_puts(seq, ",ref_verify");
- 	seq_printf(seq, ",subvolid=%llu",
- 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
--	seq_puts(seq, ",subvol=");
--	seq_dentry(seq, dentry, " \t\n\\");
-+	subvol_name = btrfs_get_subvol_name_from_objectid(info,
-+			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
-+	if (!IS_ERR(subvol_name)) {
-+		seq_puts(seq, ",subvol=");
-+		seq_escape(seq, subvol_name, " \t\n\\");
-+		kfree(subvol_name);
-+	}
- 	return 0;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 30957c9a8eb7a..90a2baac8a4aa 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -352,17 +352,16 @@ void j1939_session_skb_queue(struct j1939_session *session,
+ 	skb_queue_tail(&session->skb_queue, skb);
  }
  
+-static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
++static struct
++sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
++					  unsigned int offset_start)
+ {
+ 	struct j1939_priv *priv = session->priv;
++	struct j1939_sk_buff_cb *do_skcb;
+ 	struct sk_buff *skb = NULL;
+ 	struct sk_buff *do_skb;
+-	struct j1939_sk_buff_cb *do_skcb;
+-	unsigned int offset_start;
+ 	unsigned long flags;
+ 
+-	offset_start = session->pkt.dpo * 7;
+-
+ 	spin_lock_irqsave(&session->skb_queue.lock, flags);
+ 	skb_queue_walk(&session->skb_queue, do_skb) {
+ 		do_skcb = j1939_skb_to_cb(do_skb);
+@@ -382,6 +381,14 @@ static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
+ 	return skb;
+ }
+ 
++static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
++{
++	unsigned int offset_start;
++
++	offset_start = session->pkt.dpo * 7;
++	return j1939_session_skb_find_by_offset(session, offset_start);
++}
++
+ /* see if we are receiver
+  * returns 0 for broadcasts, although we will receive them
+  */
+@@ -766,7 +773,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
+ 	int ret = 0;
+ 	u8 dat[8];
+ 
+-	se_skb = j1939_session_skb_find(session);
++	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
+ 	if (!se_skb)
+ 		return -ENOBUFS;
+ 
+@@ -1765,7 +1772,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 			    __func__, session);
+ 		goto out_session_cancel;
+ 	}
+-	se_skb = j1939_session_skb_find(session);
++
++	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
+ 	if (!se_skb) {
+ 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
+ 			    session);
 -- 
 2.25.1
 
