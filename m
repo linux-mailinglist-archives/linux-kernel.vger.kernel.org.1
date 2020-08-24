@@ -2,374 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C259024FCCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDDD24FCD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgHXLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:40:40 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:20125 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgHXLjf (ORCPT
+        id S1727906AbgHXLlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:41:02 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:35679 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbgHXLkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:39:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598269159;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=OgBWb5/e0fM6FSTpD6xUNkpmwto7nNXyjiyffYP56y0=;
-        b=ehIdmOpwoahmSfgofKnAwuV8TnfYfAqulJqqeJyWgBzjyy4fqvBbVvYJc+rlX6M+Ec
-        Xh/m8mSkqODqRVyNiUWDpQ1xCNaFVkpXCS6vM3cIB883VaJDWZbZ4F1nThakBI7Gxqdj
-        V8J7dumkbMA0/D6hO/MbL3lHvSsKTzzGvUi0Zw7rwatFxndycmrUUjAA7YRia64g6mEC
-        7y5jCJbDWNNQTfZY4A87hHo5XiikTtSOBoVYtlPH73gPEanLFK9Vkgkoy1pu6fHUpfYp
-        3JWFvzcsIyj0YtbYqK6f0O8D3+1Tpj0+lf4j9QJ6+6K4nzUM1goU+GwcH+Z+K9C65ugF
-        JGwA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/MbIo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7OBdBWpE
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 24 Aug 2020 13:39:11 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 13:39:10 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
-        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org,
+        Mon, 24 Aug 2020 07:40:53 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200824114050euoutp02587d6fa55a0da3219275789a8b39fd83~uMWplvc7h1898018980euoutp02F
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 11:40:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200824114050euoutp02587d6fa55a0da3219275789a8b39fd83~uMWplvc7h1898018980euoutp02F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598269250;
+        bh=ba4YL16aB6a2EgaaQucW8uhtGVOy2S8TT7bz8yWdugc=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=KLAl8/rj3via+ICyNo0UrZsfOePBv8yAnKLfFFNZkRLpi1AUovjtx1hj+gFec6B+F
+         Uw0S26HFxG8sI6Xskt//PtxLlFnriEo6WuSpR09wfCWN7QsPgwc/brB4gFx9cblYxC
+         4OyoWvO9wtyzaoJmBtjXOxcqRSp+SCHpjVL+Gz/g=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200824114050eucas1p22a241e6d641aab84d27b1ef438e39c3f~uMWpJBJnF2495524955eucas1p2m;
+        Mon, 24 Aug 2020 11:40:50 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 2E.25.05997.247A34F5; Mon, 24
+        Aug 2020 12:40:50 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200824114049eucas1p13aea77bc609874909fed72db8f8b9cc5~uMWok_7LR0700207002eucas1p10;
+        Mon, 24 Aug 2020 11:40:49 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200824114049eusmtrp164506cbb2e6fd6c17cfe4ae606e3d8f6~uMWokBqNW1930519305eusmtrp18;
+        Mon, 24 Aug 2020 11:40:49 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-cd-5f43a742d9db
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 2A.FE.06017.147A34F5; Mon, 24
+        Aug 2020 12:40:49 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200824114048eusmtip189507904f024364f3e302a180a26ef55~uMWnEiCIc2041620416eusmtip1J;
+        Mon, 24 Aug 2020 11:40:48 +0000 (GMT)
+Subject: Re: [PATCH 00/18] Convert arch/arm to use iommu-dma
+To:     Robin Murphy <robin.murphy@arm.com>, hch@lst.de, joro@8bytes.org,
+        linux@armlinux.org.uk
+Cc:     will@kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com,
+        kyungmin.park@samsung.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, vdumpa@nvidia.com, digetx@gmail.com,
+        matthias.bgg@gmail.com, yong.wu@mediatek.com,
+        geert+renesas@glider.be, magnus.damm@gmail.com, t-kristo@ti.com,
+        s-anna@ti.com, laurent.pinchart@ideasonboard.com,
         linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20200824113910.GB131681@gerhold.net>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+        iommu@lists.linux-foundation.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <bf32cdea-ee5b-1431-3b97-c0889acdacc6@samsung.com>
+Date:   Mon, 24 Aug 2020 13:40:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+In-Reply-To: <cover.1597931875.git.robin.murphy@arm.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUxTZxjNe+/b29u66qVAeOLMTKoucYsyhiaviB+oPy7RH+qyhJgo6+QG
+        DB+aVhT8obVUUwoitBKxxWK0BgdYCSCwDqhUS6OkIKIVFYIKumFERDGRauZorzr+nec557zn
+        OcnL0so+Zj67J2e/oMlRZ6kYOW7umu5dtqF6Y+pPZouC9Ix8wKTb/QqT2skRRO6+m2DIWZsZ
+        kT9qvRQxD5dics69mhis5zEptNVLiV//UkoKyxxS0jASkJAyt19K+l2VDCmuvyoh/QV9iFT0
+        dlCkcMrKEE95OyKPa8cZojfEk87XoxLSHuyQkArLGEMcz4wMmXbZMSlp304MgyvJsLkRr/+O
+        H+20U3ydvQ7x/YE+mi/zL+P/tA5JeZvxjIRvqClk+MFAG8MPF/kovtFxhLcMVCP+rwc6hjfc
+        dGP+RMErhi9pqkG8b6CF2hqxQ56YJmTtOSBoYtf+Js9wX39A7TNE5XlL4nToLGdCMha4FfDO
+        9gabkJxVcpcQ3PB2UOIwhaBg4thn5i2C+/90Ml8srheVEpGoRvB8rOjzMIGg6eEtKqSK5BLB
+        2/c3HcJR3E4Itn6UhkQ01yYBnXkYhwiGiwPTuCn8rIJbC5/8z1AIY24JOI8+DpujuV1w1XeP
+        EjURcPPMaNgr4wgM9kyGMc0thJbxSlrEMfBwtCpcArgqGbx2BGnx7k1Qe2kKizgSXviapCJe
+        AN2WYiwaChA86bksFYdiBP36CiSqVs/EBWdOZWcilsIVV6y4TgLvUFt4DdxcGBiPEI+YC+bm
+        07S4VoDxuFJUfw9Wn/NrbOftO3QpUllnVbPOqmOdVcf6f+45hGtQjJCrzU4XtD/nCAeXa9XZ
+        2tyc9OW792Y3oJmP3v2vb6oVuT7+7kEci1TfKN571qUqJeoD2vxsDwKWVkUpNvi7dykVaer8
+        Q4Jmb6omN0vQetC3LFbFKOLPj+1Ucunq/UKmIOwTNF9YipXN16HE9PpgXnxK5q3mDF1R/uno
+        4Dpn1jxZS8K2wK+O66d+TLavMToXX3iTNNmkwAknUlKuRUeWP5Lnrm9ddfHYo5f2tJOZeQnJ
+        8+oG3UweozPp50QcKTfaPmx2Hr5WarIUbVmUjJPuxfyiPzQZO625/bS08Ulg6GiXxq/+9Pzw
+        wd6uQJIKazPUcT/QGq36P1600WDkAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0xTWRSGs8+txdh4bFE3ZKKmBjRGiqdYWTgM6mjIeVBjrHHG8YJHPSlG
+        Sk1PMeporNIHWoWhEA0WrDe04SLpgMKIQIciImIxBENEIaitMRqLOlEjOkGBasLbl/3/315Z
+        yZKTymd0rHxPtkU0ZwtZamYK1TXaMZiw0rMqY/GN0gXQHfxCQZdvmIKqd0EEDz68YeBsaRGC
+        iqp2AoqGCik47/sZbK6LFNhLvTIIHH8tA7uzXAa1wT4anL6ADHobyxg46b1OQ29uD4KS+y0E
+        2N+7GPCfakbwpCrMwHFbErS+DdHQ/LmFhpLilwyUP89jYKTRTUFB8wawDehgqKiOWjGbD7W6
+        Cb7aXY343r4ekncGEvgbrkEZX5p3huZrK+0MP9DXxPBDJzoIvq78KF/80IP4m/1Whrd1+ig+
+        P3eY4QuuVSK+42EDsX76H5pUsynHIs7NNEmWX9RbONBquBTQaJekaLik5G3LtDp1YlrqbjFr
+        z37RnJi2Q5Ppa+sn9tmiD7QXcFZ0lnWgKDlml+DGV2W0A02RK9nLCHv/vkpEgp9w52krHWEV
+        /r/PwURKYYRHa/6lxgMVm4rbe16Q4xzNbsPvPVXMOJNsE40vh2MjwgmEB+/a0HjAsBx2hB0T
+        JQWbhr8Gnk+8U2wcrjn2ZOKjGex2HMz/SkY603HnmdDEsCgW8ED3OyoyYCl21z0lIzwHN4TL
+        vvMs/Ch0jihEStck3TVJcU1SXJOU84iqRNFijmQ0GCWtRhKMUk62QbPLZKxFY/dVf3vk2j/I
+        Maz3I1aO1FMVn/zLM5S0sF86aPQjLCfV0YpfA13blYrdwsFDotmUYc7JEiU/0o0t5yRjZ+wy
+        jV1rtiWD03HJkMIlJyUnLQX1LEUe27pVyRoEi7hXFPeJ5h8eIY+KtaLa0JHC9Hq9p2XTxq3C
+        zPSY4BG9HA7HXInbHN8W415lcspu/rfuBcy7Uxd3UbtW2bawJGGntfrkomfOR4nejyvnT9Ov
+        LjoMHTohX1+/tyX9nuHP1DXF1F+HVPaK0fAFqPH0L172OP63pks74k9fmDliaPJefXmrW1X9
+        e1aFWpXekKumpEyBW0iaJeEbK502LHUDAAA=
+X-CMS-MailID: 20200824114049eucas1p13aea77bc609874909fed72db8f8b9cc5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57
+References: <CGME20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57@eucas1p1.samsung.com>
+        <cover.1597931875.git.robin.murphy@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 02:39:32PM +0530, Viresh Kumar wrote:
-> From: Stephan Gerhold <stephan@gerhold.net>
-> 
-> The OPP core manages various resources, e.g. clocks or interconnect paths.
-> These resources are looked up when the OPP table is allocated once
-> dev_pm_opp_get_opp_table() is called the first time (either directly
-> or indirectly through one of the many helper functions).
-> 
-> At this point, the resources may not be available yet, i.e. looking them
-> up will result in -EPROBE_DEFER. Unfortunately, dev_pm_opp_get_opp_table()
-> is currently unable to propagate this error code since it only returns
-> the allocated OPP table or NULL.
-> 
-> This means that all consumers of the OPP core are required to make sure
-> that all necessary resources are available. Usually this happens by
-> requesting them, checking the result and releasing them immediately after.
-> 
-> For example, we have added "dev_pm_opp_of_find_icc_paths(dev, NULL)" to
-> several drivers now just to make sure the interconnect providers are
-> ready before the OPP table is allocated. If this call is missing,
-> the OPP core will only warn about this and then attempt to continue
-> without interconnect. This will eventually fail horribly, e.g.:
-> 
->     cpu cpu0: _allocate_opp_table: Error finding interconnect paths: -517
->     ... later ...
->     of: _read_bw: Mismatch between opp-peak-kBps and paths (1 0)
->     cpu cpu0: _opp_add_static_v2: opp key field not found
->     cpu cpu0: _of_add_opp_table_v2: Failed to add OPP, -22
-> 
-> This example happens when trying to use interconnects for a CPU OPP
-> table together with qcom-cpufreq-nvmem.c. qcom-cpufreq-nvmem calls
-> dev_pm_opp_set_supported_hw(), which ends up allocating the OPP table
-> early. To fix the problem with the current approach we would need to add
-> yet another call to dev_pm_opp_of_find_icc_paths(dev, NULL).
-> But actually qcom-cpufreq-nvmem.c has nothing to do with interconnects...
-> 
-> This commit attempts to make this more robust by allowing
-> dev_pm_opp_get_opp_table() to return an error pointer. Fixing all
-> the usages is trivial because the function is usually used indirectly
-> through another helper (e.g. dev_pm_opp_set_supported_hw() above).
-> These other helpers already return an error pointer.
-> 
-> The example above then works correctly because set_supported_hw() will
-> return -EPROBE_DEFER, and qcom-cpufreq-nvmem.c already propagates that
-> error. It should also be possible to remove the remaining usages of
-> "dev_pm_opp_of_find_icc_paths(dev, NULL)" from other drivers as well.
-> 
-> Note that this commit currently only handles -EPROBE_DEFER for the
-> clock/interconnects within _allocate_opp_table(). Other errors are just
-> ignored as before. Eventually those should be propagated as well.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> [ Viresh: skip checking return value of dev_pm_opp_get_opp_table() for
-> 	  EPROBE_DEFER in domain.c, fix NULL return value and reorder
-> 	  code a bit in core.c, and update exynos-asv.c ]
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> Stephan, I have made some changes to the code. Please try it again and
-> lemme know if it works fine.
-> 
+Hi Robin,
 
-I tested the problem I described in the commit message above
-(qcom-cpufreq-nvmem with interconnects) and it works fine
-with this patch.
+On 20.08.2020 17:08, Robin Murphy wrote:
+> Hi all,
+>
+> After 5 years or so of intending to get round to this, finally the
+> time comes! The changes themselves actualy turn out to be relatively
+> mechanical; the bigger concern appears to be how to get everything
+> merged across about 5 diffferent trees given the dependencies.
+>
+> I've lightly boot-tested things on Rockchip RK3288 and Exynos 4412
+> (Odroid-U3), to the degree that their display drivers should be using
+> IOMMU-backed buffers and don't explode (the Odroid doesn't manage to
+> send a working HDMI signal to the one monitor I have that it actually
+> detects, but that's a pre-existing condition...) Confirmation that the
+> Mediatek, OMAP and Tegra changes work will be most welcome.
+>
+> Patches are based on 5.9-rc1, branch available here:
+>
+>    git://linux-arm.org/linux-rm arm/dma
 
-I also tested probe deferal with interconnects with just cpufreq-dt
-(second patch), and that works fine as well.
+Well, my first proposal for the ARM and ARM64 DMA-mapping unification 
+has been posted long time ago: https://lkml.org/lkml/2016/2/19/79
 
-And the changes look good to me too. :)
+Thanks for resurrecting it! :)
 
-Thank you!
-Stephan
+I've tested this patchset on various ARM32bit Exynos based boards (not 
+only Exynos4412) and most of them works fine after your conversion. 
+However there are issues you cannot learn from the code.
 
->  drivers/base/power/domain.c      | 14 +++++----
->  drivers/opp/core.c               | 53 +++++++++++++++++++-------------
->  drivers/opp/of.c                 |  8 ++---
->  drivers/soc/samsung/exynos-asv.c |  2 +-
->  4 files changed, 44 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 2cb5e04cf86c..b92bb61550d3 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2044,8 +2044,9 @@ int of_genpd_add_provider_simple(struct device_node *np,
->  	if (genpd->set_performance_state) {
->  		ret = dev_pm_opp_of_add_table(&genpd->dev);
->  		if (ret) {
-> -			dev_err(&genpd->dev, "Failed to add OPP table: %d\n",
-> -				ret);
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(&genpd->dev, "Failed to add OPP table: %d\n",
-> +					ret);
->  			goto unlock;
->  		}
->  
-> @@ -2054,7 +2055,7 @@ int of_genpd_add_provider_simple(struct device_node *np,
->  		 * state.
->  		 */
->  		genpd->opp_table = dev_pm_opp_get_opp_table(&genpd->dev);
-> -		WARN_ON(!genpd->opp_table);
-> +		WARN_ON(IS_ERR(genpd->opp_table));
->  	}
->  
->  	ret = genpd_add_provider(np, genpd_xlate_simple, genpd);
-> @@ -2111,8 +2112,9 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->  		if (genpd->set_performance_state) {
->  			ret = dev_pm_opp_of_add_table_indexed(&genpd->dev, i);
->  			if (ret) {
-> -				dev_err(&genpd->dev, "Failed to add OPP table for index %d: %d\n",
-> -					i, ret);
-> +				if (ret != -EPROBE_DEFER)
-> +					dev_err(&genpd->dev, "Failed to add OPP table for index %d: %d\n",
-> +						i, ret);
->  				goto error;
->  			}
->  
-> @@ -2121,7 +2123,7 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->  			 * performance state.
->  			 */
->  			genpd->opp_table = dev_pm_opp_get_opp_table_indexed(&genpd->dev, i);
-> -			WARN_ON(!genpd->opp_table);
-> +			WARN_ON(IS_ERR(genpd->opp_table));
->  		}
->  
->  		genpd->provider = &np->fwnode;
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 6978b9218c6e..8c69a764d0a4 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1068,7 +1068,7 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  	 */
->  	opp_table = kzalloc(sizeof(*opp_table), GFP_KERNEL);
->  	if (!opp_table)
-> -		return NULL;
-> +		return ERR_PTR(-ENOMEM);
->  
->  	mutex_init(&opp_table->lock);
->  	mutex_init(&opp_table->genpd_virt_dev_lock);
-> @@ -1079,8 +1079,8 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  
->  	opp_dev = _add_opp_dev(dev, opp_table);
->  	if (!opp_dev) {
-> -		kfree(opp_table);
-> -		return NULL;
-> +		ret = -ENOMEM;
-> +		goto err;
->  	}
->  
->  	_of_init_opp_table(opp_table, dev, index);
-> @@ -1089,16 +1089,21 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  	opp_table->clk = clk_get(dev, NULL);
->  	if (IS_ERR(opp_table->clk)) {
->  		ret = PTR_ERR(opp_table->clk);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_dbg(dev, "%s: Couldn't find clock: %d\n", __func__,
-> -				ret);
-> +		if (ret == -EPROBE_DEFER)
-> +			goto err;
-> +
-> +		dev_dbg(dev, "%s: Couldn't find clock: %d\n", __func__, ret);
->  	}
->  
->  	/* Find interconnect path(s) for the device */
->  	ret = dev_pm_opp_of_find_icc_paths(dev, opp_table);
-> -	if (ret)
-> +	if (ret) {
-> +		if (ret == -EPROBE_DEFER)
-> +			goto err;
-> +
->  		dev_warn(dev, "%s: Error finding interconnect paths: %d\n",
->  			 __func__, ret);
-> +	}
->  
->  	BLOCKING_INIT_NOTIFIER_HEAD(&opp_table->head);
->  	INIT_LIST_HEAD(&opp_table->opp_list);
-> @@ -1107,6 +1112,10 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  	/* Secure the device table modification */
->  	list_add(&opp_table->node, &opp_tables);
->  	return opp_table;
-> +
-> +err:
-> +	kfree(opp_table);
-> +	return ERR_PTR(ret);
->  }
->  
->  void _get_opp_table_kref(struct opp_table *opp_table)
-> @@ -1129,7 +1138,7 @@ static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
->  	if (opp_table) {
->  		if (!_add_opp_dev_unlocked(dev, opp_table)) {
->  			dev_pm_opp_put_opp_table(opp_table);
-> -			opp_table = NULL;
-> +			opp_table = ERR_PTR(-ENOMEM);
->  		}
->  		goto unlock;
->  	}
-> @@ -1573,8 +1582,8 @@ struct opp_table *dev_pm_opp_set_supported_hw(struct device *dev,
->  	struct opp_table *opp_table;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/* Make sure there are no concurrent readers while updating opp_table */
->  	WARN_ON(!list_empty(&opp_table->opp_list));
-> @@ -1632,8 +1641,8 @@ struct opp_table *dev_pm_opp_set_prop_name(struct device *dev, const char *name)
->  	struct opp_table *opp_table;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/* Make sure there are no concurrent readers while updating opp_table */
->  	WARN_ON(!list_empty(&opp_table->opp_list));
-> @@ -1725,8 +1734,8 @@ struct opp_table *dev_pm_opp_set_regulators(struct device *dev,
->  	int ret, i;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/* This should be called before OPPs are initialized */
->  	if (WARN_ON(!list_empty(&opp_table->opp_list))) {
-> @@ -1833,8 +1842,8 @@ struct opp_table *dev_pm_opp_set_clkname(struct device *dev, const char *name)
->  	int ret;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/* This should be called before OPPs are initialized */
->  	if (WARN_ON(!list_empty(&opp_table->opp_list))) {
-> @@ -1901,8 +1910,8 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
->  		return ERR_PTR(-EINVAL);
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (!IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/* This should be called before OPPs are initialized */
->  	if (WARN_ON(!list_empty(&opp_table->opp_list))) {
-> @@ -1982,8 +1991,8 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
->  	const char **name = names;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
->  
->  	/*
->  	 * If the genpd's OPP table isn't already initialized, parsing of the
-> @@ -2153,8 +2162,8 @@ int dev_pm_opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
->  	int ret;
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return -ENOMEM;
-> +	if (IS_ERR(opp_table))
-> +		return PTR_ERR(opp_table);
->  
->  	/* Fix regulator count for dynamic OPPs */
->  	opp_table->regulator_count = 1;
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index 7d9d4455a59e..e39ddcc779af 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -947,8 +947,8 @@ int dev_pm_opp_of_add_table(struct device *dev)
->  	int ret;
->  
->  	opp_table = dev_pm_opp_get_opp_table_indexed(dev, 0);
-> -	if (!opp_table)
-> -		return -ENOMEM;
-> +	if (IS_ERR(opp_table))
-> +		return PTR_ERR(opp_table);
->  
->  	/*
->  	 * OPPs have two version of bindings now. Also try the old (v1)
-> @@ -1002,8 +1002,8 @@ int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
->  	}
->  
->  	opp_table = dev_pm_opp_get_opp_table_indexed(dev, index);
-> -	if (!opp_table)
-> -		return -ENOMEM;
-> +	if (IS_ERR(opp_table))
-> +		return PTR_ERR(opp_table);
->  
->  	ret = _of_add_opp_table_v2(dev, opp_table);
->  	if (ret)
-> diff --git a/drivers/soc/samsung/exynos-asv.c b/drivers/soc/samsung/exynos-asv.c
-> index 30bb7b7cc769..8abf4dfaa5c5 100644
-> --- a/drivers/soc/samsung/exynos-asv.c
-> +++ b/drivers/soc/samsung/exynos-asv.c
-> @@ -93,7 +93,7 @@ static int exynos_asv_update_opps(struct exynos_asv *asv)
->  			continue;
->  
->  		opp_table = dev_pm_opp_get_opp_table(cpu);
-> -		if (IS_ERR_OR_NULL(opp_table))
-> +		if (IS_ERR(opp_table))
->  			continue;
->  
->  		if (!last_opp_table || opp_table != last_opp_table) {
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
+Conversion of the Exynos DRM was straightforward (thanks!), but there 
+are other Exynos drivers that depends on the old ARM implementation. The 
+S5P-MFC (only for the v5 hardware) and Exynos4 FIMC-ISP drivers depends 
+on the first-fit IOVA allocation algorithm in the old ARM DMA-mapping. 
+This was the main reason I've didn't continue my initial conversion attempt.
+
+Both drivers allocate a buffer for their firmware and then in the 
+hardware registers address video buffers as an offset from the 
+begginning of the firmware. This doesn't work when underlying 
+DMA-mapping allocates IOVA with the last-fit algorithm, what the 
+drivers/iommu/dma-iommu.c does. So far I didn't find a good solution for 
+that issue.
+
+I'm open for suggestions. One more limitation for the S5P-MFC driver is 
+that the hardware is capable only for addressing 128MiB. They will 
+probably need to call IOMMU API directly, but I would like to keep as 
+much from the IOMMU/DMA-mapping code as possible.
+
+
+Anyway, we need to move ARM 32bit forward, so for the ARM DMA-mapping 
+and Exynos DRM changes, feel free to add:
+
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
