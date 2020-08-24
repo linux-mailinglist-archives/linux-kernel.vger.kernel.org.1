@@ -2,129 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959BB250072
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA40D250074
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgHXPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
+        id S1727792AbgHXPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgHXPIk (ORCPT
+        with ESMTP id S1727030AbgHXPIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:08:40 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35EAC0617A3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:58:59 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so6358629qtp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:58:59 -0700 (PDT)
+        Mon, 24 Aug 2020 11:08:37 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B37C0617A5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:59:58 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id y3so9007854wrl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 07:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kudzu-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3Lg6YN2Ry/B5cxDee3oV4xQ+pmJ7iBF1X2dnFCrvvkA=;
-        b=HSIPxwRf2cj+mLRl/bMncRav861xPU7xirpyGDdcZzeGCQ18GX0gjOFJDJUvvBJ01X
-         mXn0okC8WSrTDdcdNbb0MmzveDNRAx8zeIeAS7etWrAxP+tjTJZbYGsvNcgocUxSk606
-         uVOfgqVIWoz2fUyc8y8GDps5uWnGfp6slUikvhjSwNg1LWij5sQwNLYJYdQVl8VE0alF
-         22XLEDv+j4gCu4LCHxWK8rUEbj+WTLYLqSjgWGHfgIzw525qo5KdSgkBx/LKySxvR+Ox
-         1wxc9myaGhu2iO2/PnkPVOfLanlgVbfzjVaNrH66qEKz6mWedwWDodSxpmuvsw9rAfNC
-         kM+Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ECIS0WvUxPFVgMktd3Czk1dDXzjjTjHRcV5bwp6ngFM=;
+        b=j/kO8WW7gObqi+5HMo+buADm2a+ih9UengrJgOL337n5w/QcYEKWJwJeubXbEMtiKN
+         CVRXlXaD3Jg6gon3qEW20iuBmhjk98hPdRzD7tIEvkfL2a54/QhHZxaepO1uL59JplHQ
+         5myoJF1ALxkCmikteTDObYZkb8JLR7i0sJ9kURl8MLaBZ4DfVAun0eNeBz6FXO4xkQQg
+         bXNzjLeljviOdI0ywe9TbFzpUeS5/P1aUzNd/f8KAXbJZbjyiu00AR8/1BVF6ic36dn1
+         ywT8qGFhc7b5soVlklRQYH8zafaQCy07MALVx3l+55ZOGqWX0VN0c1lvgsZM3gqjM58o
+         QoQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3Lg6YN2Ry/B5cxDee3oV4xQ+pmJ7iBF1X2dnFCrvvkA=;
-        b=lrUUK+eG2CSVyUACKb3AoSlxeLTC7ADI7gKkTv4TTUIX/qHX5xZ8hirmbGqEegLNNA
-         7tQrJDNclvilKWLuerTrNa9md06Tak/J3cqOZqIPlGyLMigZhPEGoeUx3DzLdowXy/FB
-         HXip1rOuX2DAKtWMVikid91A9VQ8sRTjnsA+PiHXEUIKekP2LSyxCGotOoXlaThsyxO2
-         sEeA3LWrfYDXecwhIofvV0QwLlPCVqNx1atn6vV7GtQ1ewHk3zTrloIJLvCJFZyFcDq5
-         AIlZFbm/bfT8pp3W/IC+f/Rhl7q5Dk03bXxjoJrFmXNf48/ctyi3uSF/fSD+ThmHK8sd
-         682Q==
-X-Gm-Message-State: AOAM530ClUUcHPmED6WC5GYw2NEdVmexWQ4tnTTu5i+ouoaOKsh0CArD
-        EbpzuuU7q7lDd8fDwIb5O3I2mQ==
-X-Google-Smtp-Source: ABdhPJwmfntPXsJuVNbDUL1LameP8x7EbRZjYAxcwYutvx9sd1nwCRgn3ABmJZFqHMeBqePurct+vA==
-X-Received: by 2002:ac8:5685:: with SMTP id h5mr5281977qta.378.1598281139023;
-        Mon, 24 Aug 2020 07:58:59 -0700 (PDT)
-Received: from kudzu.us ([136.56.1.171])
-        by smtp.gmail.com with ESMTPSA id m66sm9472178qkf.86.2020.08.24.07.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 07:58:58 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 10:58:38 -0400
-From:   Jon Mason <jdmason@kudzu.us>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH][next] NTB: Use struct_size() helper in devm_kzalloc()
-Message-ID: <20200824145837.GC27238@kudzu.us>
-References: <20200619172514.GA1074@embeddedor>
- <268330b2-e42b-4d62-1ff0-8462d68e498e@deltatee.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ECIS0WvUxPFVgMktd3Czk1dDXzjjTjHRcV5bwp6ngFM=;
+        b=cxtUJP17dzbWd76QUN0/CTFP72YPn2Z38MN51eM0/Lh30Kn6fMl+Nuc/kCgqyYhrix
+         iZAFGRrEBCbhSfIBarFXPmR1WVIHN1kAbZpqA8YPEG6B5iJcfawvLNquvjRJcMkbd0Nr
+         CM25uR9zMnNg9ueFMO+n5lMtixNuOuvzrx/hf2+nJIZxLCIQxD3JQTeaJpAXIkoyleFi
+         /d/8w8qs5pFdjFrV1CijB+M0uSXM7VFWznRYRXjtrVU98oJv9PEHfbPyxsL0N7VF37C7
+         gCKSSlEl5H4/EGHVEh3g1QxurOn/Sq13H7WtRMIYfOUczqr+ZukXzoQ8R7l27unG7Omh
+         6gww==
+X-Gm-Message-State: AOAM532ah5eoICRj0v8o4DNZqxvrHjRTvfiPTtNm+R+V8lB5XpZUL2VD
+        zo5o5nAYZCZfmtdCOMuxhD+luCeFCybMK5QZ7PA=
+X-Google-Smtp-Source: ABdhPJxCuqKgX0AFTlWxXp2R3Wly05aExi3+NuRrzLBuuUo4hIBiE2jI2dPZrZMyJusG1E1ajD5TG3Fa5oWOUZIlgiI=
+X-Received: by 2002:adf:fecc:: with SMTP id q12mr6445535wrs.374.1598281197086;
+ Mon, 24 Aug 2020 07:59:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <268330b2-e42b-4d62-1ff0-8462d68e498e@deltatee.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <88d43daf-f29b-0fbe-cf58-930e8caca0e7@infradead.org> <DM6PR12MB261924212A1791B949B43903E4560@DM6PR12MB2619.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB261924212A1791B949B43903E4560@DM6PR12MB2619.namprd12.prod.outlook.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 24 Aug 2020 10:59:46 -0400
+Message-ID: <CADnq5_M7TA_w5vNctfC2vCDwxZAsGcagjsS8WNUWQGFiS--s+A@mail.gmail.com>
+Subject: Re: [PATCH -next] amdgpu: fix Documentation builds for pm/ file movement
+To:     "Quan, Evan" <Evan.Quan@amd.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 01:10:55PM -0600, Logan Gunthorpe wrote:
-> 
-> 
-> On 2020-06-19 11:25 a.m., Gustavo A. R. Silva wrote:
-> > Make use of the struct_size() helper instead of an open-coded version
-> > in order to avoid any potential type mistakes. Also, remove unnecessary
-> > variable _struct_size_.
-> > 
-> > This code was detected with the help of Coccinelle and, audited and
-> > fixed manually.
-> > 
-> > Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Cool, I didn't know that existed! Thanks!
-> 
-> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Applied.  Thanks!
 
-Added to the ntb-next branch.
+Alex
 
-Thanks,
-Jon
-
-
-> 
-> > ---
-> >  drivers/ntb/test/ntb_msi_test.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-> > index 99d826ed9c34..7095ecd6223a 100644
-> > --- a/drivers/ntb/test/ntb_msi_test.c
-> > +++ b/drivers/ntb/test/ntb_msi_test.c
-> > @@ -319,7 +319,6 @@ static void ntb_msit_remove_dbgfs(struct ntb_msit_ctx *nm)
-> >  static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
-> >  {
-> >  	struct ntb_msit_ctx *nm;
-> > -	size_t struct_size;
-> >  	int peers;
-> >  	int ret;
-> >  
-> > @@ -352,9 +351,7 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
-> >  		return ret;
-> >  	}
-> >  
-> > -	struct_size = sizeof(*nm) + sizeof(*nm->peers) * peers;
-> > -
-> > -	nm = devm_kzalloc(&ntb->dev, struct_size, GFP_KERNEL);
-> > +	nm = devm_kzalloc(&ntb->dev, struct_size(nm, peers, peers), GFP_KERNEL);
-> >  	if (!nm)
-> >  		return -ENOMEM;
-> >  
-> > 
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "linux-ntb" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-ntb+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/linux-ntb/268330b2-e42b-4d62-1ff0-8462d68e498e%40deltatee.com.
+On Sun, Aug 23, 2020 at 11:00 PM Quan, Evan <Evan.Quan@amd.com> wrote:
+>
+> [AMD Official Use Only - Internal Distribution Only]
+>
+> Thanks for fixing this. The patch is reviewed-by: Evan Quan <evan.quan@amd.com>
+>
+> BR
+> Evan
+> -----Original Message-----
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Sent: Monday, August 24, 2020 6:36 AM
+> To: dri-devel <dri-devel@lists.freedesktop.org>; LKML <linux-kernel@vger.kernel.org>; amd-gfx@lists.freedesktop.org; Deucher, Alexander <Alexander.Deucher@amd.com>
+> Cc: Quan, Evan <Evan.Quan@amd.com>; Stephen Rothwell <sfr@canb.auug.org.au>
+> Subject: [PATCH -next] amdgpu: fix Documentation builds for pm/ file movement
+>
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix Documentation errors for amdgpu.rst due to file rename (moved to another subdirectory).
+>
+> Error: Cannot open file ../drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -function hwmon ../drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c' failed with return code 1
+>
+> Fixes: e098bc9612c2 ("drm/amd/pm: optimize the power related source code layout")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> ---
+>  Documentation/gpu/amdgpu.rst |   24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> --- linux-next-20200821.orig/Documentation/gpu/amdgpu.rst
+> +++ linux-next-20200821/Documentation/gpu/amdgpu.rst
+> @@ -153,7 +153,7 @@ This section covers hwmon and power/ther  HWMON Interfaces
+>  ----------------
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: hwmon
+>
+>  GPU sysfs Power State Interfaces
+> @@ -164,52 +164,52 @@ GPU power controls are exposed via sysfs  power_dpm_state  ~~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: power_dpm_state
+>
+>  power_dpm_force_performance_level
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: power_dpm_force_performance_level
+>
+>  pp_table
+>  ~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: pp_table
+>
+>  pp_od_clk_voltage
+>  ~~~~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: pp_od_clk_voltage
+>
+>  pp_dpm_*
+>  ~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: pp_dpm_sclk pp_dpm_mclk pp_dpm_socclk pp_dpm_fclk pp_dpm_dcefclk pp_dpm_pcie
+>
+>  pp_power_profile_mode
+>  ~~~~~~~~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: pp_power_profile_mode
+>
+>  *_busy_percent
+>  ~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: gpu_busy_percent
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: mem_busy_percent
+>
+>  gpu_metrics
+>  ~~~~~~~~~~~~~~~~~~~~~
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: gpu_metrics
+>
+>  GPU Product Information
+> @@ -239,7 +239,7 @@ serial_number
+>  unique_id
+>  ---------
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: unique_id
+>
+>  GPU Memory Usage Information
+> @@ -289,7 +289,7 @@ PCIe Accounting Information  pcie_bw
+>  -------
+>
+> -.. kernel-doc:: drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> +.. kernel-doc:: drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>     :doc: pcie_bw
+>
+>  pcie_replay_count
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
