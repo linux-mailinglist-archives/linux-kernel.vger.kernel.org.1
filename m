@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D457724F514
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB8224F61D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbgHXIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39768 "EHLO mail.kernel.org"
+        id S1730521AbgHXI4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729121AbgHXIoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:44:16 -0400
+        id S1729753AbgHXIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 073292074D;
-        Mon, 24 Aug 2020 08:44:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFB4A2072D;
+        Mon, 24 Aug 2020 08:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258655;
-        bh=z9X8XAf5pNu5xFYsewaUK9xluow/ICaWKL8M9zLZUyo=;
+        s=default; t=1598259342;
+        bh=2sFzfDN1X4rft1xo87I6/mJAix3xrEMTqSG8tIKT3is=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uH7+wHZKGgk2+76z6yO/ApNzBBq9+die6sfZxl6isAdNMFiU3Cvi+lrGqlY/6Odq8
-         gwNWYjNAlkvVsikx9NhzIbWUwwLovB0dJ4cl/NK/HQnk/CY4mYzBa6Ma2HhC7/ZqJe
-         jxfzevcEAwXJwn70B1j0b41EcN9naAHRx+IMDJFQ=
+        b=FTs/sfWQD16nTQS5cIoMWbHW3yhJgsiPWIVC+HtlFfNyjLXMhRTfivVF+xS+b5JYh
+         tx+CeuIiLI4ObHRPsZ5mYiuHdWgcOuOItYtTD6Uos5CKf8XMdZXx1mOgD81pAKRJxh
+         0rI+iz8i6QUOdOvBZI6G7zgW213irj8V77CwbZkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.7 123/124] do_epoll_ctl(): clean the failure exits up a bit
-Date:   Mon, 24 Aug 2020 10:30:57 +0200
-Message-Id: <20200824082415.455961148@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 07/71] btrfs: Move free_pages_out label in inline extent handling branch in compress_file_range
+Date:   Mon, 24 Aug 2020 10:30:58 +0200
+Message-Id: <20200824082356.249587938@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Nikolay Borisov <nborisov@suse.com>
 
-commit 52c479697c9b73f628140dcdfcd39ea302d05482 upstream.
+[ Upstream commit cecc8d9038d164eda61fbcd72520975a554ea63e ]
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This label is only executed if compress_file_range fails to create an
+inline extent. So move its code in the semantically related inline
+extent handling branch. No functional changes.
 
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/eventpoll.c |   19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ fs/btrfs/inode.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -2203,29 +2203,22 @@ int do_epoll_ctl(int epfd, int op, int f
- 			full_check = 1;
- 			if (is_file_epoll(tf.file)) {
- 				error = -ELOOP;
--				if (ep_loop_check(ep, tf.file) != 0) {
--					clear_tfile_check_list();
-+				if (ep_loop_check(ep, tf.file) != 0)
- 					goto error_tgt_fput;
--				}
- 			} else {
- 				get_file(tf.file);
- 				list_add(&tf.file->f_tfile_llink,
- 							&tfile_check_list);
- 			}
- 			error = epoll_mutex_lock(&ep->mtx, 0, nonblock);
--			if (error) {
--out_del:
--				list_del(&tf.file->f_tfile_llink);
--				if (!is_file_epoll(tf.file))
--					fput(tf.file);
-+			if (error)
- 				goto error_tgt_fput;
--			}
- 			if (is_file_epoll(tf.file)) {
- 				tep = tf.file->private_data;
- 				error = epoll_mutex_lock(&tep->mtx, 1, nonblock);
- 				if (error) {
- 					mutex_unlock(&ep->mtx);
--					goto out_del;
-+					goto error_tgt_fput;
- 				}
- 			}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1656ef0e959f0..8507192cd6449 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -628,7 +628,14 @@ cont:
+ 						     PAGE_SET_WRITEBACK |
+ 						     page_error_op |
+ 						     PAGE_END_WRITEBACK);
+-			goto free_pages_out;
++
++			for (i = 0; i < nr_pages; i++) {
++				WARN_ON(pages[i]->mapping);
++				put_page(pages[i]);
++			}
++			kfree(pages);
++
++			return;
  		}
-@@ -2246,8 +2239,6 @@ out_del:
- 			error = ep_insert(ep, epds, tf.file, fd, full_check);
- 		} else
- 			error = -EEXIST;
--		if (full_check)
--			clear_tfile_check_list();
- 		break;
- 	case EPOLL_CTL_DEL:
- 		if (epi)
-@@ -2270,8 +2261,10 @@ out_del:
- 	mutex_unlock(&ep->mtx);
+ 	}
  
- error_tgt_fput:
--	if (full_check)
-+	if (full_check) {
-+		clear_tfile_check_list();
- 		mutex_unlock(&epmutex);
-+	}
+@@ -706,13 +713,6 @@ cleanup_and_bail_uncompressed:
+ 	*num_added += 1;
  
- 	fdput(tf);
- error_fput:
+ 	return;
+-
+-free_pages_out:
+-	for (i = 0; i < nr_pages; i++) {
+-		WARN_ON(pages[i]->mapping);
+-		put_page(pages[i]);
+-	}
+-	kfree(pages);
+ }
+ 
+ static void free_async_extent_pages(struct async_extent *async_extent)
+-- 
+2.25.1
+
 
 
