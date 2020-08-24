@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301B924FC2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FDB24FC29
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbgHXLBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:01:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgHXLBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:01:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 560C2206B5;
-        Mon, 24 Aug 2020 11:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598266879;
-        bh=6SZzRMN5GGlyh79co29gSLTZO76H+8JYL5VE28sGF20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e23Bob6o6Xo0hBCl442jnXgXQlakT98GnZpvR/3dAMkOWhgYz0m51RsIAvILsTzlg
-         1qScDMQv4rSd6Go0kH9xUQkOIomoMoFi6WN0w2dPPPhCgmOPc0yvIWeU2vNQ8w2qfJ
-         vRNQJmC6J0WQWl1hlDoM4WBydqnrrehLjrrRhP2Y=
-Date:   Mon, 24 Aug 2020 12:00:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] regulator: Add regulator driver for ATC260x PMICs
-Message-ID: <20200824110045.GA4676@sirena.org.uk>
-References: <cover.1598043782.git.cristian.ciocaltea@gmail.com>
- <8da70f0b19de17fb8edead7ff06461ae2451b0e9.1598043782.git.cristian.ciocaltea@gmail.com>
+        id S1727061AbgHXLBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726673AbgHXLBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:01:03 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A58C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:01:02 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so8248450wrw.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vJ1eNEFLaB8nJQQFgwghGU2wabwAkxn1KgMf6hL5Xh8=;
+        b=sTMfmVTwLeCOxUYP0/k8SSgTjJs9jk9DQarL7xUBCbYbtS7PLGpK4BOOxSzsUPouFh
+         /+dcD4qNa1NDz8hZ36wc0aHERmx8lVLKxVGbLchsAMyDFaxFQPXGGhqrJGZrdmNCZq51
+         GjNtFOlLkVfnufZ9Qws82+UOiJFfCTeqQOp1eLQU78+kKoOuLV9C9b+nguzrXEmpTwsI
+         pQwE2u/MRLkzuDT/fu5YhVew1acgk1FfLLkJLTorupCAT6n2dlH8hXN/GfFVKRdnGP6b
+         8CyE0TlrlGuCDRd8tINbMXV8ISCBAu7PyU/IfY16jC/c3LOz9KwK8dxmIfOQCO9hfnmN
+         x3zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vJ1eNEFLaB8nJQQFgwghGU2wabwAkxn1KgMf6hL5Xh8=;
+        b=OMFPUYRv/aRuyxK6vDWu4T55LBc99jRPnczeCMAy1PEe5zQoKRFk+iaMmrwM8aWTJR
+         laAA+LkjoiqlsrvEM5aKwPHCfSlSs+ElSqaX3QXAuZ4i36LF9WCKu62JFU7rIernRcYt
+         sy7v8K+MQxSbvOK4sXeyQs0PvjMyJ6hvZ691PVG/2yp3kNigGFvfb3vtAYkpoR3JK3h9
+         0JjSSlxEvItnw5DeRJOuI1rjZXAFkSpjH4hMOaePMXdxgf0RR7ANEMAUXJ0nJ15hoCU5
+         lsEZaaSDSlglPsVZgNQM6br8hkWnWZ8/Wp/wtVCZp9NCN/wlFDrdl+skVSXcS/65oPsD
+         +xLw==
+X-Gm-Message-State: AOAM532y6EG8fYq3Ju2UL/fya+hQael4TS2BPQ83K6eivZzfqS2pHwDm
+        umjBu/vv55fuJm6Hf+Qz8xjxHQ==
+X-Google-Smtp-Source: ABdhPJybWoKbzrnXY1ZEEs5uOne0Za2Q/iVEnEp5VoqZtSurpnQJ6PCFjrJAQOjeOulEsHmjz+NiVw==
+X-Received: by 2002:adf:f64f:: with SMTP id x15mr5717930wrp.180.1598266861232;
+        Mon, 24 Aug 2020 04:01:01 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
+        by smtp.googlemail.com with ESMTPSA id c4sm22629929wrt.41.2020.08.24.04.01.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 04:01:00 -0700 (PDT)
+Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Do reset before enable
+To:     Tony Lindgren <tony@atomide.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200817092428.6176-1-tony@atomide.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <1e43fb86-df5b-88e0-aa54-8cc3336ce97a@linaro.org>
+Date:   Mon, 24 Aug 2020 13:00:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
-Content-Disposition: inline
-In-Reply-To: <8da70f0b19de17fb8edead7ff06461ae2451b0e9.1598043782.git.cristian.ciocaltea@gmail.com>
-X-Cookie: Weekend, where are you?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200817092428.6176-1-tony@atomide.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/08/2020 11:24, Tony Lindgren wrote:
+> Commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and
+> resume for am3 and am4") exposed a new issue for type2 dual mode timers
+> on at least omap5 where the clockevent will stop when the SoC starts
+> entering idle states during the boot.
+> 
+> Turns out we are wrongly first enabling the system timer and then
+> resetting it, while we must also re-enable it after reset. The current
+> sequence leaves the timer module in a partially initialized state. This
+> issue went unnoticed earlier with ti-sysc driver reconfiguring the timer
+> module until we fixed the issue of ti-sysc reconfiguring system timers.
+> 
+> Let's fix the issue by calling dmtimer_systimer_enable() from reset for
+> both type1 and type2 timers, and switch the order of reset and enable in
+> dmtimer_systimer_setup(). Let's also move dmtimer_systimer_enable() and
+> dmtimer_systimer_disable() to do this without adding forward declarations.
+> 
+> Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
+> Reported-by: H. Nikolaus Schaller" <hns@goldelico.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied, thanks
 
-On Sat, Aug 22, 2020 at 01:19:49AM +0300, Cristian Ciocaltea wrote:
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> +static int atc260x_set_voltage_time_sel(struct regulator_dev *rdev,
-> +					unsigned int old_selector,
-> +					unsigned int new_selector)
-> +{
-> +	struct atc260x_regulator_data *data = rdev_get_drvdata(rdev);
-> +	int id = rdev_get_id(rdev);
-> +
-> +	if (new_selector > old_selector)
-> +		return id > data->last_dcdc_reg_id ? data->voltage_time_ldo
-> +						   : data->voltage_time_dcdc;
-
-Please write normal conditional statements to make things easier to
-read.  It also looks like this would be more robustly written by just
-having separate ops for DCDCs and LDOs, this could easily break if
-another device is supported in the driver.
-
-> +static const struct of_device_id atc260x_regulator_of_match[] = {
-> +	{ .compatible = "actions,atc2603c-regulator" },
-> +	{ .compatible = "actions,atc2609a-regulator" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, atc260x_regulator_of_match);
-
-We don't need compatibles here, this is just reflecting the current
-Linux device model into the OS neutral DT bindings.  Another OS may
-choose to split regulators up differently.  We should just instantiate
-the regulator device from the MFD based on identifying the chip overall.
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9DndwACgkQJNaLcl1U
-h9CXoAf6AzUFwxgd0S5ClrLwTuv/z8XNl93mNAnQI+Lgte0VWytWqrO+qCtOPcAq
-sQgGC4jUOMfZR2vcx+UGMuCCoYjDO75ApLLyN4Z79wUeNApY/VVVoSpMCy1/yvtf
-wneUL9d6TNL0S/Po6/RBm0kII2vbhPcRXdJxGo1JAefjao0cc6OC7ep6OtxsnQF9
-sr9aCXfvloI95sl6bc/QVaWqd5/dP7WuPINxzY6Xd20TJ4bL9gVmwv87uBdZXLZZ
-8jjoAg+/7ma13fxdt7CuaGJLuXZNW+WusMKy/Bx5CqFwqpDkEPuRpA5zXXPI8/5c
-axFmXEOlJ7MAB8WZg4fNbeBHCsbekg==
-=H2HJ
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
