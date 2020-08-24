@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7863E24F958
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E946224F8EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgHXInZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37086 "EHLO mail.kernel.org"
+        id S1729790AbgHXJix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729016AbgHXInM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:12 -0400
+        id S1729203AbgHXIrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:47:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BB3221741;
-        Mon, 24 Aug 2020 08:43:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70377206F0;
+        Mon, 24 Aug 2020 08:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258591;
-        bh=D+Vmybzmzen28AV30V9SfoitNCjmhrlbMMUqq2jVhw8=;
+        s=default; t=1598258823;
+        bh=dUx0qD/z7/HwADZR3jb0ffXxjN6iWVAbQsmZ3q0AI9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3bykwWlFVOoC48iN1If2QjnLxya5V/gr4W9mFN8TKzGfEigcZaO3mnLMtUe6ihfl
-         hi9CE2IFHUMbTjHwXZCwmchdsZBK5HeUCuOsSqvAjj/U9jwjBXvYqz6Mfgh4VoFe6E
-         cc4tN9oK6Jfd7zwmTuEerljDd0rp3ljN0xuGbNZo=
+        b=l2GvOj3zNihDrdMBrrASmsPVDtS2IP23jOOMd044DX9GV7S6qV8LF2nVyQ+wfKGc6
+         s7bMynwyUv6PqR3REJa2/8y5dIIeY3Hachbq3Sj0+76MptHXz7E2OUipkOwd0zdY3Q
+         TRIXGoyKU+rySkFyiMLh02diEKVPG9i0srGSFfZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Sajida Bhanu <sbhanu@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 071/124] can: j1939: transport: j1939_simple_recv(): ignore local J1939 messages send not by J1939 stack
-Date:   Mon, 24 Aug 2020 10:30:05 +0200
-Message-Id: <20200824082412.907099546@linuxfoundation.org>
+Subject: [PATCH 5.4 040/107] opp: Enable resources again if they were disabled earlier
+Date:   Mon, 24 Aug 2020 10:30:06 +0200
+Message-Id: <20200824082407.113561188@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +48,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Rajendra Nayak <rnayak@codeaurora.org>
 
-[ Upstream commit b43e3a82bc432c1caaed8950e7662c143470c54c ]
+[ Upstream commit a4501bac0e553bed117b7e1b166d49731caf7260 ]
 
-In current J1939 stack implementation, we process all locally send
-messages as own messages. Even if it was send by CAN_RAW socket.
+dev_pm_opp_set_rate() can now be called with freq = 0 in order
+to either drop performance or bandwidth votes or to disable
+regulators on platforms which support them.
 
-To reproduce it use following commands:
-testj1939 -P -r can0:0x80 &
-cansend can0 18238040#0123
+In such cases, a subsequent call to dev_pm_opp_set_rate() with
+the same frequency ends up returning early because 'old_freq == freq'
 
-This step will trigger false positive not critical warning:
-j1939_simple_recv: Received already invalidated message
+Instead make it fall through and put back the dropped performance
+and bandwidth votes and/or enable back the regulators.
 
-With this patch we add additional check to make sure, related skb is own
-echo message.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-2-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: v5.3+ <stable@vger.kernel.org> # v5.3+
+Fixes: cd7ea582866f ("opp: Make dev_pm_opp_set_rate() handle freq = 0 to drop performance votes")
+Reported-by: Sajida Bhanu <sbhanu@codeaurora.org>
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+Reported-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+[ Viresh: Don't skip clk_set_rate() and massaged changelog ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/socket.c    | 1 +
- net/can/j1939/transport.c | 4 ++++
- 2 files changed, 5 insertions(+)
+ drivers/opp/core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 1b7dc1a8547f3..bf9fd6ee88fe0 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -398,6 +398,7 @@ static int j1939_sk_init(struct sock *sk)
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
- 	sk->sk_destruct = j1939_sk_sock_destruct;
-+	sk->sk_protocol = CAN_J1939;
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 9ff0538ee83a0..7b057c32e11b1 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -843,10 +843,12 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
  
- 	return 0;
- }
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 5bfe6bf15a999..30957c9a8eb7a 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -2032,6 +2032,10 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 	if (!skb->sk)
- 		return;
+ 	/* Return early if nothing to do */
+ 	if (old_freq == freq) {
+-		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
+-			__func__, freq);
+-		ret = 0;
+-		goto put_opp_table;
++		if (!opp_table->required_opp_tables && !opp_table->regulators) {
++			dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
++				__func__, freq);
++			ret = 0;
++			goto put_opp_table;
++		}
+ 	}
  
-+	if (skb->sk->sk_family != AF_CAN ||
-+	    skb->sk->sk_protocol != CAN_J1939)
-+		return;
-+
- 	j1939_session_list_lock(priv);
- 	session = j1939_session_get_simple(priv, skb);
- 	j1939_session_list_unlock(priv);
+ 	temp_freq = old_freq;
 -- 
 2.25.1
 
