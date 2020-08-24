@@ -2,148 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B63B250137
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C2625013F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgHXPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:33:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35414 "EHLO mga06.intel.com"
+        id S1727095AbgHXPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:35:35 -0400
+Received: from mx01-sz.bfs.de ([194.94.69.67]:39291 "EHLO mx01-sz.bfs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726967AbgHXPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:33:04 -0400
-IronPort-SDR: +TfmPyKfnLsVBdlZ2mIoKaaNi4FNh123ZPXYVD3Es6Z7nDfljAytBSJXmtptHfE32ag77VLU6Z
- yhLwk9l3qRTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="217461720"
-X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
-   d="scan'208";a="217461720"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 08:33:03 -0700
-IronPort-SDR: XranTRhlsgif1t8PbWVtUWdDHysa3lN/NNOzmc+ORXTYfgdNHmQT5wZzi3oUlNTzOY15r8ehgH
- GOEwBRyWJCLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
-   d="scan'208";a="443253444"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by orsmga004.jf.intel.com with ESMTP; 24 Aug 2020 08:33:01 -0700
-Date:   Mon, 24 Aug 2020 23:33:00 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Mel Gorman <mgorman@suse.com>
-Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
- -14.1% regression
-Message-ID: <20200824153300.GA56944@shbuild999.sh.intel.com>
-References: <20200425114414.GU26573@shao2-debian>
- <20200425130136.GA28245@zn.tnic>
- <20200818082943.GA65567@shbuild999.sh.intel.com>
- <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
- <20200819020437.GA2605@shbuild999.sh.intel.com>
- <20200821020259.GA90000@shbuild999.sh.intel.com>
- <20200824151425.GF4794@zn.tnic>
+        id S1727030AbgHXPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:35:32 -0400
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx01-sz.bfs.de (Postfix) with ESMTPS id 3A1CF20443;
+        Mon, 24 Aug 2020 17:35:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1598283317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eRzgFGh9/BntiqGMWEsiZTSABhsVMBDixd2/cOXtNic=;
+        b=W883IKrtXCl6w24SgX1GtliiAQSPPfxD61Ue1YMCpYT7W9I2Ep5YG1gAV+J1xnilaIf2Ar
+        XJjsMTikvD/ac7kWw89AyKu9Ihm6UNS3gMi6M0Pv1vnd+s552ytTNSzlH16TxEzn2s6gdD
+        z6sXmOhy3LJmpYtIXC55Swei+FHkDkYvv9sODLyj/Ym29ZWRsHla7AXz2Fn2iQ+pvM3etF
+        dHb/QF9G7N983wJcDFtF2EJ4eV0A8ApeoMA58t0nhGfWkLaenozj0wWugs+Hwl6xPzTpsw
+        5yg83Bwcwn8KjZu09fUVTLZ/AYE2tz8UKOEjq5q3985B91cgYqBIADtpemd8iA==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Mon, 24 Aug
+ 2020 17:35:16 +0200
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
+ 15.01.2044.004; Mon, 24 Aug 2020 17:35:16 +0200
+From:   Walter Harms <wharms@bfs.de>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>
+CC:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: AW: [PATCH v2] HID: roccat: add bounds checking in
+ kone_sysfs_write_settings()
+Thread-Topic: [PATCH v2] HID: roccat: add bounds checking in
+ kone_sysfs_write_settings()
+Thread-Index: AQHWefToEl9avbae1kGQ4FmFDoAFsalHYb09
+Date:   Mon, 24 Aug 2020 15:35:16 +0000
+Message-ID: <ab4625b2b2ea41dd83ff9e192a027f41@bfs.de>
+References: <1597819984.4101.16.camel@web.de>,<20200824085735.GA208317@mwanda>
+In-Reply-To: <20200824085735.GA208317@mwanda>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.40]
+x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25624.000
+x-tm-as-result: No-10--8.314400-5.000000
+x-tmase-matchedrid: 7icOwTYiHK3RubRCcrbc5pzEHTUOuMX33dCmvEa6IiG4eDpiBrUciGr4
+        /y/RCSUy0Hoi1fEaP4qN5vNGwyZ1KF1McTGy89+ei82UiskMqcwwQTzTIFJCzoxRWJphhsrcQT3
+        oROdvH1vQftcvF9LRG8ZHJ++jFzpIIjM2rMmDTQPHsv3gEadaxCHxHXwnWAXc13GjbR1NJrEmgo
+        5BSqf/niJoNo9EQ2Zq4zBrQSJZSTkfKML5AJtfLQLiZxZUfodHp2Uv2mII684IFWSswluXgnWCd
+        6QvVzbex2BEc3TqpBiIZm0VEEWEK3J+EgEMl5xOKSfEqVU/Tv8GchEhVwJY30oPLn6eZ90+i836
+        2cmVmYBGjk/QOKmZVVvy4imyA8gdbu8QqMQjwvLC0TXpqtexIkq4gufanRIyzKXGJgSfagbQGFl
+        KOB0iJEqna2uFlro8j0IvV7jlqDhyPzMTUSO1JIph1hAtvKZN7VGXkoWCELlzORjGZHjERrZUKC
+        nFEZZuZx0Cdo1A6e9ftuJwrFEhTY2j49Ftap9EOwBXM346/+wf23iD7YgwEwwq4Etiqzo8+GDOl
+        f6Gop5k2MZOGWKdRA3k+0LX9UYI
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--8.314400-5.000000
+x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25624.000
+x-tm-snts-smtp: 2D30FE7C49BE24CBF31F0FC3A7CCC177A453A6351CC867F95BC01E273150AA3A2000:9
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824151425.GF4794@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Spam-Status: No, score=-0.00
+Authentication-Results: mx01-sz.bfs.de;
+        none
+X-Spamd-Result: default: False [-0.00 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         NEURAL_HAM(-0.00)[-1.033];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.00)[19.08%]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 05:14:25PM +0200, Borislav Petkov wrote:
-> On Fri, Aug 21, 2020 at 10:02:59AM +0800, Feng Tang wrote:
-> >   1de08dccd383 x86/mce: Add a struct mce.kflags field
-> >   9554bfe403bd x86/mce: Convert the CEC to use the MCE notifier
-> > 
-> > And strange thing is after using gcc9 and debian10 rootfs, with same commits
-> > the regression turns to a improvement,
-> 
-> How so?
- 
-My understanding is microbenchmark like will-it-scale is sensitive to the
-alignments (text/data), we've found other simliar cases that with this 0day's
-update (compiler, kernel config, rootfs), some other reported regression
-can not be reproduced.
+hello Dan,=20
 
-> > though the trend keeps, that if we
-> > changes the kflags from __u64 to __u32, the performance will be no change.
-> > 
-> > Following is the comparing of regression, I also attached the perf-profile
-> > for old and new commit (let me know if you need more data)
-> > 
-> > 
-> > 9554bfe403bdfc08 1de08dccd383482a3e88845d355 
-> > ---------------- --------------------------- 
-> >          %stddev     %change         %stddev
-> >              \          |                \  
-> >     192362           -15.1%     163343        will-it-scale.287.processes
-> >       0.91            +0.2%       0.92        will-it-scale.287.processes_idle
-> >     669.67           -15.1%     568.50        will-it-scale.per_process_ops
-> 
-> This is the data from your previous measurement:
-> 
-> 9554bfe403bdfc08 1de08dccd383482a3e88845d355
-> ---------------- ---------------------------
->          %stddev     %change         %stddev
->              \          |                \
->     668.00           -14.1%     573.75        will-it-scale.per_process_ops
-> 
-> If I'm reading it correctly, commit
-> 
-> 1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
-> 
-> is still the slower one vs
->
-> 9554bfe403bd ("x86/mce: Convert the CEC to use the MCE notifier")
-> 
-> Or am I misreading it?
+i notice that you can shorten the line to:
+(line above checks for count=3D=3Dsizeof(struct kone_settings))
 
-Your reading is correct. With the original kernel (built back in April)
-and old rootfs, the regression persists, just a small drift between 14.1%
-and 15.1% (which is normal for will-it-scale), while the 15.1% was just
-retested last week.
+difference =3D memcmp(settings, &kone->settings, count);
 
-> 
-> In any case, this really looks like what Tony said: this enlargement of
-> struct mce pushes some variable into a cacheline-misaligned placement,
-> causing it to bounce.
+nothing special just to shorten the line and make use of count.
 
-Yes, that's what we suspected. And I just did another try to force the
-percpu mce structure aligned. And the regression seems to be gone (reduced
-from 14.1% to 2%), which further proved it.
+and just to save one indent level and because its  readabel nicely:
+    if ( ! difference )=20
+          goto unlock;
 
-patch is:
+hope that helps
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 43b1519..2c020ef 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -95,7 +95,7 @@ struct mca_config mca_cfg __read_mostly = {
- 	.monarch_timeout = -1
- };
- 
--static DEFINE_PER_CPU(struct mce, mces_seen);
-+static DEFINE_PER_CPU_ALIGNED(struct mce, mces_seen);
- static unsigned long mce_need_notify;
- static int cpu_missing;
- 
-@@ -148,7 +148,7 @@ void mce_setup(struct mce *m)
- 	m->microcode = boot_cpu_data.microcode;
+re,
+ wh
+________________________________________
+Von: kernel-janitors-owner@vger.kernel.org [kernel-janitors-owner@vger.kern=
+el.org] im Auftrag von Dan Carpenter [dan.carpenter@oracle.com]
+Gesendet: Montag, 24. August 2020 10:57
+An: Stefan Achatz
+Cc: Jiri Kosina; Benjamin Tissoires; linux-input@vger.kernel.org; linux-ker=
+nel@vger.kernel.org; kernel-janitors@vger.kernel.org
+Betreff: [PATCH v2] HID: roccat: add bounds checking in kone_sysfs_write_se=
+ttings()
+
+This code doesn't check if "settings->startup_profile" is within bounds
+and that could result in an out of bounds array access.  What the code
+does do is it checks if the settings can be written to the firmware, so
+it's possible that the firmware has a bounds check?  It's safer and
+easier to verify when the bounds checking is done in the kernel.
+
+Fixes: 14bf62cde794 ("HID: add driver for Roccat Kone gaming mouse")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  In the v1 patch I added a check against settings->size but that's
+potentially too strict so it was removed.
+
+ drivers/hid/hid-roccat-kone.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
+index 2ff4c8e366ff..1ca64481145e 100644
+--- a/drivers/hid/hid-roccat-kone.c
++++ b/drivers/hid/hid-roccat-kone.c
+@@ -294,31 +294,40 @@ static ssize_t kone_sysfs_write_settings(struct file =
+*fp, struct kobject *kobj,
+        struct kone_device *kone =3D hid_get_drvdata(dev_get_drvdata(dev));
+        struct usb_device *usb_dev =3D interface_to_usbdev(to_usb_interface=
+(dev));
+        int retval =3D 0, difference, old_profile;
++       struct kone_settings *settings =3D (struct kone_settings *)buf;
+
+        /* I need to get my data in one piece */
+        if (off !=3D 0 || count !=3D sizeof(struct kone_settings))
+                return -EINVAL;
+
+        mutex_lock(&kone->kone_lock);
+-       difference =3D memcmp(buf, &kone->settings, sizeof(struct kone_sett=
+ings));
++       difference =3D memcmp(settings, &kone->settings,
++                           sizeof(struct kone_settings));
+        if (difference) {
+-               retval =3D kone_set_settings(usb_dev,
+-                               (struct kone_settings const *)buf);
+-               if (retval) {
+-                       mutex_unlock(&kone->kone_lock);
+-                       return retval;
++               if (settings->startup_profile < 1 ||
++                   settings->startup_profile > 5) {
++                       retval =3D -EINVAL;
++                       goto unlock;
+                }
+
++               retval =3D kone_set_settings(usb_dev, settings);
++               if (retval)
++                       goto unlock;
++
+                old_profile =3D kone->settings.startup_profile;
+-               memcpy(&kone->settings, buf, sizeof(struct kone_settings));
++               memcpy(&kone->settings, settings, sizeof(struct kone_settin=
+gs));
+
+                kone_profile_activated(kone, kone->settings.startup_profile=
+);
+
+                if (kone->settings.startup_profile !=3D old_profile)
+                        kone_profile_report(kone, kone->settings.startup_pr=
+ofile);
+        }
++unlock:
+        mutex_unlock(&kone->kone_lock);
+
++       if (retval)
++               return retval;
++
+        return sizeof(struct kone_settings);
  }
- 
--DEFINE_PER_CPU(struct mce, injectm);
-+DEFINE_PER_CPU_ALIGNED(struct mce, injectm);
- EXPORT_PER_CPU_SYMBOL_GPL(injectm);
- 
-> The $ 10^6 question is, which variable is that...
+ static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
+--
+2.28.0
 
-:)  Right, this is what I'm doing right now. Some test job is queued on
-the test box, and it may needs some iterations of new patch. Hopefully we
-can isolate some specific variable given some luck. 
-
-Thanks,
-Feng
