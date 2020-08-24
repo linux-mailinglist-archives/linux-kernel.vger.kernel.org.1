@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A6224F547
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E7424F4A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgHXIqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
+        id S1727923AbgHXIif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:38:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729350AbgHXIql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:41 -0400
+        id S1727896AbgHXIiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:38:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B8E72074D;
-        Mon, 24 Aug 2020 08:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 843672177B;
+        Mon, 24 Aug 2020 08:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258800;
-        bh=ldyMiwBbRauUHe1SIjQNGlhy0uoQPyGhgSory7/YRWg=;
+        s=default; t=1598258304;
+        bh=fIHeNq+fwaVaSWsFR5chX7jTNDuNYdyTKVPJb18KZRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n/ElQ8x4W3PjfUink2TAmBXg3HmmRhQ2GK82j3yxYqZDq9wF1tWjziurP62tP8Qc1
-         6wTnxDiNx83c8nx966fkLgGcEFhNtTHpPzlev4ypWrs3bQSjiBdSOEdLXrydlm6wcu
-         mtdqoXWzmv4rYLc/1IRVIbRZJ4Wr3N4sHAJuVxPo=
+        b=R3Y+gGNW8FODD0WfBjqTyZfQ+m7q75ERiu6N6/IB1I8eYv4bdBJstbQcCK+kmc2wW
+         iFUsgkxnMHtbd0o38QHOQtU973fjQICc+2j0BbiX2jQgQsM9skg1qe1mZ4naQaZFgR
+         P1/dpZRXzlzFGWa1WmRLdQnF9hGzPjaoQtQBx/90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Allison Collins <allison.henderson@oracle.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/107] xfs: fix inode quota reservation checks
-Date:   Mon, 24 Aug 2020 10:30:16 +0200
-Message-Id: <20200824082407.611833855@linuxfoundation.org>
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 120/148] efi: avoid error message when booting under Xen
+Date:   Mon, 24 Aug 2020 10:30:18 +0200
+Message-Id: <20200824082419.760265781@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit f959b5d037e71a4d69b5bf71faffa065d9269b4a ]
+[ Upstream commit 6163a985e50cb19d5bdf73f98e45b8af91a77658 ]
 
-xfs_trans_dqresv is the function that we use to make reservations
-against resource quotas.  Each resource contains two counters: the
-q_core counter, which tracks resources allocated on disk; and the dquot
-reservation counter, which tracks how much of that resource has either
-been allocated or reserved by threads that are working on metadata
-updates.
+efifb_probe() will issue an error message in case the kernel is booted
+as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
+that message by calling efi_mem_desc_lookup() only if EFI_MEMMAP is set.
 
-For disk blocks, we compare the proposed reservation counter against the
-hard and soft limits to decide if we're going to fail the operation.
-However, for inodes we inexplicably compare against the q_core counter,
-not the incore reservation count.
-
-Since the q_core counter is always lower than the reservation count and
-we unlock the dquot between reservation and transaction commit, this
-means that multiple threads can reserve the last inode count before we
-hit the hard limit, and when they commit, we'll be well over the hard
-limit.
-
-Fix this by checking against the incore inode reservation counter, since
-we would appear to maintain that correctly (and that's what we report in
-GETQUOTA).
-
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Allison Collins <allison.henderson@oracle.com>
-Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Fixes: 38ac0287b7f4 ("fbdev/efifb: Honour UEFI memory map attributes when mapping the FB")
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_trans_dquot.c | 2 +-
+ drivers/video/fbdev/efifb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_trans_dquot.c b/fs/xfs/xfs_trans_dquot.c
-index 16457465833ba..904780dd74aa3 100644
---- a/fs/xfs/xfs_trans_dquot.c
-+++ b/fs/xfs/xfs_trans_dquot.c
-@@ -646,7 +646,7 @@ xfs_trans_dqresv(
- 			}
- 		}
- 		if (ninos > 0) {
--			total_count = be64_to_cpu(dqp->q_core.d_icount) + ninos;
-+			total_count = dqp->q_res_icount + ninos;
- 			timer = be32_to_cpu(dqp->q_core.d_itimer);
- 			warns = be16_to_cpu(dqp->q_core.d_iwarns);
- 			warnlimit = dqp->q_mount->m_quotainfo->qi_iwarnlimit;
+diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+index 65491ae74808d..e57c00824965c 100644
+--- a/drivers/video/fbdev/efifb.c
++++ b/drivers/video/fbdev/efifb.c
+@@ -453,7 +453,7 @@ static int efifb_probe(struct platform_device *dev)
+ 	info->apertures->ranges[0].base = efifb_fix.smem_start;
+ 	info->apertures->ranges[0].size = size_remap;
+ 
+-	if (efi_enabled(EFI_BOOT) &&
++	if (efi_enabled(EFI_MEMMAP) &&
+ 	    !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
+ 		if ((efifb_fix.smem_start + efifb_fix.smem_len) >
+ 		    (md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT))) {
 -- 
 2.25.1
 
