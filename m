@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C9324F975
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502CC24F8AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbgHXJpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
+        id S1729586AbgHXIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729087AbgHXIn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:56 -0400
+        id S1729533AbgHXIsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 811582074D;
-        Mon, 24 Aug 2020 08:43:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FDEA204FD;
+        Mon, 24 Aug 2020 08:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258636;
-        bh=v1rV0+cSpDxIvN/6ZeU7yyZcDQgDMvN6tAWvb4P70Wo=;
+        s=default; t=1598258896;
+        bh=z9qJERk+rz4S9JTr03dtu5yW0gbFENdJav6UqTG0m8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kz/JQWRqdovfRF+r7b3cnr1IGJpzQGsVEBx4DrqYAcfhqX58yZo4RZQ+95OBDnWme
-         5qYKbVxHcXJNdx7DMPMiaX1z6PLCHOtsFBVNRKcdoPSzrvBzFstto8spZE89SDT9W0
-         qOOWV7A9G0aH6KUoS6XS105tSeP00T4cUI5fP/3I=
+        b=2Ce0EzGUDKek8Chyot5pbM502erDG2SQ20IzFPn3kXTHS9MyVBDGQ3oo+iY59hGtS
+         UXdXTG9wTdQ2XA++LLmGzFU7cFfU7l+m2lbYZoTe6/uUN2J6hPuWPRZSnEV3vJsu74
+         sZrDVrVMxzC1ZeXXF0DG4mr21fjaATDna6EOmAX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.7 116/124] epoll: Keep a reference on files added to the check list
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/107] ASoC: msm8916-wcd-analog: fix register Interrupt offset
 Date:   Mon, 24 Aug 2020 10:30:50 +0200
-Message-Id: <20200824082415.113654028@linuxfoundation.org>
+Message-Id: <20200824082409.277439159@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682 upstream.
+[ Upstream commit ff69c97ef84c9f7795adb49e9f07c9adcdd0c288 ]
 
-When adding a new fd to an epoll, and that this new fd is an
-epoll fd itself, we recursively scan the fds attached to it
-to detect cycles, and add non-epool files to a "check list"
-that gets subsequently parsed.
+For some reason interrupt set and clear register offsets are
+not set correctly.
+This patch corrects them!
 
-However, this check list isn't completely safe when deletions
-can happen concurrently. To sidestep the issue, make sure that
-a struct file placed on the check list sees its f_count increased,
-ensuring that a concurrent deletion won't result in the file
-disapearing from under our feet.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Tested-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20200811103452.20448-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/eventpoll.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1994,9 +1994,11 @@ static int ep_loop_check_proc(void *priv
- 			 * not already there, and calling reverse_path_check()
- 			 * during ep_insert().
- 			 */
--			if (list_empty(&epi->ffd.file->f_tfile_llink))
-+			if (list_empty(&epi->ffd.file->f_tfile_llink)) {
-+				get_file(epi->ffd.file);
- 				list_add(&epi->ffd.file->f_tfile_llink,
- 					 &tfile_check_list);
-+			}
- 		}
- 	}
- 	mutex_unlock(&ep->mtx);
-@@ -2040,6 +2042,7 @@ static void clear_tfile_check_list(void)
- 		file = list_first_entry(&tfile_check_list, struct file,
- 					f_tfile_llink);
- 		list_del_init(&file->f_tfile_llink);
-+		fput(file);
- 	}
- 	INIT_LIST_HEAD(&tfile_check_list);
- }
-@@ -2204,13 +2207,17 @@ int do_epoll_ctl(int epfd, int op, int f
- 					clear_tfile_check_list();
- 					goto error_tgt_fput;
- 				}
--			} else
-+			} else {
-+				get_file(tf.file);
- 				list_add(&tf.file->f_tfile_llink,
- 							&tfile_check_list);
-+			}
- 			error = epoll_mutex_lock(&ep->mtx, 0, nonblock);
- 			if (error) {
- out_del:
- 				list_del(&tf.file->f_tfile_llink);
-+				if (!is_file_epoll(tf.file))
-+					fput(tf.file);
- 				goto error_tgt_fput;
- 			}
- 			if (is_file_epoll(tf.file)) {
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 84289ebeae872..337bddb7c2a49 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -19,8 +19,8 @@
+ 
+ #define CDC_D_REVISION1			(0xf000)
+ #define CDC_D_PERPH_SUBTYPE		(0xf005)
+-#define CDC_D_INT_EN_SET		(0x015)
+-#define CDC_D_INT_EN_CLR		(0x016)
++#define CDC_D_INT_EN_SET		(0xf015)
++#define CDC_D_INT_EN_CLR		(0xf016)
+ #define MBHC_SWITCH_INT			BIT(7)
+ #define MBHC_MIC_ELECTRICAL_INS_REM_DET	BIT(6)
+ #define MBHC_BUTTON_PRESS_DET		BIT(5)
+-- 
+2.25.1
+
 
 
