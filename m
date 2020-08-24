@@ -2,82 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E73924FBF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A789A24FBFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgHXKvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 06:51:42 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44038 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgHXKvj (ORCPT
+        id S1726912AbgHXKxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:53:16 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:36687 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgHXKxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:51:39 -0400
-Received: by mail-oi1-f193.google.com with SMTP id h3so7818320oie.11;
-        Mon, 24 Aug 2020 03:51:39 -0700 (PDT)
+        Mon, 24 Aug 2020 06:53:08 -0400
+Received: by mail-wm1-f67.google.com with SMTP id b66so5443230wmb.1;
+        Mon, 24 Aug 2020 03:53:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QaesU/GdkZ04DU8qNrExZBjXz/BjdlAj4TsHXCHc50Q=;
-        b=Utrs4989nVltPQByCkEyBckGlzXqxKPOSATeoPdH6+K5HTYEmng0+5+Nse5CbFNqjL
-         9l0lfWOd54RHAuCRIjUScJDxZ3sGpZHaOvDWGbmppvOnrmZlDiae+N+Q/iEU1FhdjUqd
-         roUGX3RPvpiDgRZSU4zWvTzVoep0yQDv4sqhoCXA3XapvtyXBsG6bk81MryJ6iKXlx/I
-         G+gV/biCns1XBR2pW0Om5g+Ngs6r8k07upmsS0hzZWgwaJPla9OiO5Lb/2p0HrmSO9Wa
-         uc1Rm0SGHqqr/1/RZ7K/aXxNrqt/Y8QhhwPZAwwNgXgx3D0rxYJo/lfmYlTBARUE1RYo
-         1CUA==
-X-Gm-Message-State: AOAM530oK/cfywFYkaB6QJPZJ+8rIaFVEe3Vs2DuQlfMsEMSlwJ7ncid
-        anYZQbJVhF1dv7Pg7h8AdwCVCKOK8mRB23NBxN6o3muk
-X-Google-Smtp-Source: ABdhPJxheq8dscielSi+i+foFrT2RVXUDgrUjkbPIgiOw/7dUEIf9Qqksn3nOw9GLkBaC2CCyXFOauj/B4K0r3DvK3Q=
-X-Received: by 2002:a05:6808:3d5:: with SMTP id o21mr2872157oie.110.1598266299068;
- Mon, 24 Aug 2020 03:51:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8tUXtK9Uo1WfECoGzPEeRZ8dUOgvco4xZiJV1j3yK2Y=;
+        b=KJfa5XMoviMpfpxHxveMMsX1Z/NCgcZ0qRXS8U1RX+CqqsC49enqGycEGlBzHFiLD6
+         bCsTi5y8k7H/EWkL0W+YQ2wMYKSijA5FOwZdJ3CHGGdQx7gSo4DHciN4dWkn+o7qdSzR
+         1KDDZivwgkKxYUeO+Z1hB2NY8BrR8KwidZYZTLOD8sPMkrx+35feHNHt79eavZCax4Zi
+         KF1NpV2XyppC7+bKcbDDcorzi0nm65/3l0XAdrWEnq3dEvgxeRYLgMZGZarnBRwUiwDU
+         i751KbwWbhirN32eyTDt7lmljmlJMkExX1iD3CXM7zALw4dYFfzjLQDtug214viVT+Xw
+         n8CQ==
+X-Gm-Message-State: AOAM531kS1MoxmDEDZfOIFtXsa8o+mdtNKfLg5cvbmKzse0C4FFpDQ6I
+        mCOKDjUIF67Wu+zsRzKGLXs=
+X-Google-Smtp-Source: ABdhPJxWWIX9hAxIRnMQN/xNYUKKY4EpLDyOC668+DgpUXg2I6pfWXrVb3ipIlX9lnWcCo3YPXiVDQ==
+X-Received: by 2002:a7b:c1c1:: with SMTP id a1mr5187679wmj.137.1598266386477;
+        Mon, 24 Aug 2020 03:53:06 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id m1sm22881072wmc.28.2020.08.24.03.53.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Aug 2020 03:53:05 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 12:53:03 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: imx8mm-var-som-symphony: Add
+ Variscite Symphony board with VAR-SOM-MX8MM
+Message-ID: <20200824105303.GA32211@kozik-lap>
+References: <20200817070120.4937-1-krzk@kernel.org>
+ <20200817070120.4937-4-krzk@kernel.org>
+ <20200823020051.GJ30094@dragon>
+ <20200823085847.GC2886@kozik-lap>
+ <20200824104718.GC12776@dragon>
 MIME-Version: 1.0
-References: <884e2ee2-7426-cda1-aae2-676062c67f10@infradead.org>
-In-Reply-To: <884e2ee2-7426-cda1-aae2-676062c67f10@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 24 Aug 2020 12:51:23 +0200
-Message-ID: <CAJZ5v0jJqRb2FTSL6OpK+jh+=SKMfw8UTKhjbEyoHm5dBcswzA@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: fix pm/intel_pstate build warning and wording
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200824104718.GC12776@dragon>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 1:04 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> Fix documentation build warning and sentence wording:
->
-> Documentation/admin-guide/pm/intel_pstate.rst:568: WARNING: Unexpected indentation.
->
-> Fixes: f473bf398bf1 ("cpufreq: intel_pstate: Allow raw energy performance preference value")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  Documentation/admin-guide/pm/intel_pstate.rst |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> --- lnx-59-rc2.orig/Documentation/admin-guide/pm/intel_pstate.rst
-> +++ lnx-59-rc2/Documentation/admin-guide/pm/intel_pstate.rst
-> @@ -564,8 +564,8 @@ Energy-Performance Preference (EPP) knob
->  Energy-Performance Bias (EPB) knob. It is also possible to write a positive
->  integer value between 0 to 255, if the EPP feature is present. If the EPP
->  feature is not present, writing integer value to this attribute is not
-> -supported. In this case, user can use
-> - "/sys/devices/system/cpu/cpu*/power/energy_perf_bias" interface.
-> +supported. In this case, user can use the
-> +"/sys/devices/system/cpu/cpu*/power/energy_perf_bias" interface.
->
->  [Note that tasks may by migrated from one CPU to another by the scheduler's
->  load-balancing algorithm and if different energy vs performance hints are
+On Mon, Aug 24, 2020 at 06:47:19PM +0800, Shawn Guo wrote:
+> On Sun, Aug 23, 2020 at 10:58:47AM +0200, Krzysztof Kozlowski wrote:
+> > On Sun, Aug 23, 2020 at 10:00:51AM +0800, Shawn Guo wrote:
+> > > On Mon, Aug 17, 2020 at 09:01:20AM +0200, Krzysztof Kozlowski wrote:
+> > > > Add a DTS for Variscite Symphony evaluation kit with VAR-SOM-MX8MM
+> > > > System on Module.
+> > > > 
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > 
+> > > > ---
+> > > > 
+> > > > Changes since v1:
+> > > > 1. Remove duplicated "leds" node,
+> > > > 2. Fix heartbeat to active low,
+> > > > 3. Add nxp,ptn5150 extcon.
+> > > > ---
+> > > >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+> > > >  .../dts/freescale/imx8mm-var-som-symphony.dts | 248 ++++++++++++++++++
+> > > >  2 files changed, 249 insertions(+)
+> > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> > > > index a39f0a1723e0..dcfb8750cd78 100644
+> > > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > > @@ -29,6 +29,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
+> > > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
+> > > >  
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+> > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > > new file mode 100644
+> > > > index 000000000000..2d3c30ac5e04
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+> > > > @@ -0,0 +1,248 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > +/*
+> > > > + * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
+> > > > + */
+> > > > +
+> > > > +/dts-v1/;
+> > > > +
+> > > > +#include "imx8mm-var-som.dtsi"
+> > > > +
+> > > > +/ {
+> > > > +	model = "Variscite VAR-SOM-MX8MM Symphony evaluation board";
+> > > > +	compatible = "variscite,var-som-mx8mm-symphony", "variscite,var-som-mx8mm", "fsl,imx8mm";
+> > > > +
+> > > > +	reg_usdhc2_vmmc: regulator-1 {
+> > > 
+> > > regulator-usdhc2-vmmc
+> > 
+> > You mean the node name? If so, it's not correct with device tree
+> > specification:
+> > "The node-name (...) should describe the general class of device.:
+> > If appropriate, the name should be one of the following choices:
+> > (...)
+> >  - regulator"
+> > 
+> > Adding specific function/type/usage to the name of the node is a
+> > opposite choice to "general class".
+> 
+> Well, the node is named in general class, i.e. regulator-xxx, and we
+> would like the suffix to be a bit more specific.  We have been using
+> this name schema for fixed-regulator on i.MX platforms for long time.
 
-Applied as 5.9-rc material, thanks!
+Name "regulator-usdhc2-vmmc" is not general, it is specific. The DT
+specification gives the example of generic name and it is "regulator".
+
+It is the same with CPU nodes having names "cpu@0", not "cpu-a53@0" or
+whatever other suffix. It is the same reason why I2C is "i2c@12345678",
+not "i2c_1@" or "i2c_for_abcd".
+
+The suffix is not needed as Linux does not use it (instead uses
+regulator-name which is specific). Humans on the other hand can
+understand the specifics from the label and from the regulator name.
+Therefore they also do not need the suffix.
+
+I know that other i.MX DTSes follow this pattern but it is still not the
+recommended one. It's a pattern which should be replaced.
+
+Anyway, if the names of regulators stop this patch from being applied, I
+will change them to expected.
+
+Best regards,
+Krzysztof
+
