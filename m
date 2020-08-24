@@ -2,251 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB39E24FCA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D45724FCB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHXLdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727031AbgHXLc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:32:26 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F49C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:32:18 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s20so2940433wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9DiUHolhkNru49P23XOkyQDXz+EeQP5GDOxo76bpdxo=;
-        b=N82OtXxzEv7KNfxea1kKJyIvBhm6oAmVu1OS5Zx6ff698tfVJnjMBvLrwkHPg2N11q
-         evTXJg1xx9TRBnSvInQ1x96tb+1cutj/8oblHmVH3fegXDvsgZoNElu6kNtiDMNeaQ8K
-         KfbiHbU2w+hAzzPOrJaSpMOl5jpUKbdH/w9T7RSRQ3bQbNBFOl8HC8V62qr/x/w2qF0X
-         VMZU5KwuxEuxxmOKrOks2kFswyx3rFmGEHhc0beu8fKirt6s5m9cdkqE06PudufJ9Dwl
-         MOUovMDINJzRGFcGj+n1Dg+CVsjEuVCedvQCpLR4A8TL1QTux1FEN0t15UHvam+d9Hnj
-         e1SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9DiUHolhkNru49P23XOkyQDXz+EeQP5GDOxo76bpdxo=;
-        b=KkGzbsucXQvhOMuOxfBjpZr786S6meyh6D1aJFz+zl3Zb5VQpSwBi9hW6a+2RFEXbN
-         fMIUVuMFRtzbtEWq9jQUazxhUfppg9LQB/j+qFJavddNPnI47DSlsynxv5GdxQ1MZkIF
-         QpCUc/G3wRMaCbkE4vGpp+Dw7aSBy/rTh+fQLgBES8WtIkN6Q8MH3DqZqIGJEkp/u7w+
-         gaNDWDD9RBGGXyBGzCR6RsFqV9LBrhQjg2X6YmFXh4LZQ/88DY1zk/4X5mwbAfrQH8Zh
-         PqC4N5IDfpkGM8aOj+WuXzbZVjHNES0RFVe7nGBZr1t8nolq4yZ4vlu/e0SR2bV+om0e
-         TySw==
-X-Gm-Message-State: AOAM530ncshJAe1e8aLwftQ8SkzPif5sLm+EhHpsbkCthAJ8/O7shOrh
-        xOGgBCCVjNeGil77hETVw/4FBQ9T9fWDI8mqHeU=
-X-Google-Smtp-Source: ABdhPJwaRwEDNW7PLgfF+M/JTI1lLafL7iDUVoIPMhVR0TW1sx5S+xdg3n8hqtmbwfoOfRyAItpXWkz4g86yNi/HzJ4=
-X-Received: by 2002:a1c:f70e:: with SMTP id v14mr5248986wmh.74.1598268737042;
- Mon, 24 Aug 2020 04:32:17 -0700 (PDT)
+        id S1726863AbgHXLhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:37:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:60190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727114AbgHXLeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:34:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECC4E1063;
+        Mon, 24 Aug 2020 04:34:12 -0700 (PDT)
+Received: from [10.37.12.65] (unknown [10.37.12.65])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D50583F66B;
+        Mon, 24 Aug 2020 04:34:09 -0700 (PDT)
+Subject: Re: [PATCH 2/2] ARM: dts: exynos: Remove interrupts from DMC
+ controller in Exynos5422
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, willy.mh.wolff.ml@gmail.com,
+        k.konieczny@samsung.com, Chanwoo Choi <cw00.choi@samsung.com>,
+        =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= 
+        <b.zolnierkie@samsung.com>, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        s.nawrocki@samsung.com, kgene@kernel.org
+References: <20200708153420.29484-1-lukasz.luba@arm.com>
+ <20200708153420.29484-3-lukasz.luba@arm.com>
+ <20200817155021.GC15887@kozik-lap>
+ <2099aea9-5a63-6e5b-d7f9-4e6476584461@arm.com>
+ <CAJKOXPc063m_YcouAO2Q9piJ_GV1Fh9XeS3ZZ3KR=ZyMxPKZ5w@mail.gmail.com>
+ <CAJKOXPcfo+1UY2wmy0WhyNRo_KqS7sGb9d8bDskDTOehFZoN5Q@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <7a531591-83e5-2c93-ef61-4154635f761e@arm.com>
+Date:   Mon, 24 Aug 2020 12:34:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20200822030155.GA414063@google.com>
-In-Reply-To: <20200822030155.GA414063@google.com>
-From:   Vineeth Pillai <vineethrp@gmail.com>
-Date:   Mon, 24 Aug 2020 07:32:05 -0400
-Message-ID: <CAOBnfPjG9=XPCYOP6Hau5rZaKAEb4rYHG=5oORJt36X1_nFPOg@mail.gmail.com>
-Subject: Re: [RFC] Design proposal for upstream core-scheduling interface
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        JulienDesfossez@google.com,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        chris hyser <chris.hyser@oracle.com>, dhaval.giani@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, joshdon@google.com,
-        xii@google.com, haoluo@google.com, bsegall@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJKOXPcfo+1UY2wmy0WhyNRo_KqS7sGb9d8bDskDTOehFZoN5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Let me know your thoughts and looking forward to a good LPC MC discussion=
-!
->
-
-Nice write up Joel, thanks for taking time to compile this with great detai=
-l!
-
-After going through the details of interface proposal using cgroup v2
-controllers,
-and based on our discussion offline, would like to note down this idea
-about a new
-pseudo filesystem interface for core scheduling.  We could include
-this also for the
-API discussion during core scheduler MC.
-
-coreschedfs: pseudo filesystem interface for Core Scheduling
----------------------------------------------------------------------------=
--------
-
-The basic requirement of core scheduling is simple - we need to group a set
-of tasks into a trust group that can share a core. So we don=E2=80=99t real=
-ly
-need a nested
-hierarchy for the trust groups. Cgroups v2 follow a unified nested
-hierarchy model
-that causes a considerable confusion if the trusted tasks are in
-different levels of the
-hierarchy and we need to allow them to share the core. Cgroup v2's
-single hierarchy
-model makes it difficult to regroup tasks in different levels of
-nesting for core scheduling.
-As noted in this mail, we could use multi-file approach and other
-interfaces like prctl to
-overcome this limitation.
-
-The idea proposed here to overcome the above limitation is to come up with =
-a new
-pseudo filesystem - =E2=80=9Ccoreschedfs=E2=80=9D. This filesystem is basic=
-ally a flat
-filesystem with
-maximum nesting level of 1. That means, root directory can have
-sub-directories for
-sub-groups, but those sub-directories cannot have more sub-directories
-representing
-trust groups. Root directory is to represent the system wide trust
-group and sub-directories
-represent trusted groups. Each directory including the root directory
-has the following set
-of files/directories:
-
-- cookie_id: User exposed id for a cookie. This can be compared to a
-file descriptor.
-             This could be used in programmatic API to join/leave a group
-
-- properties: This is an interface to specify how child tasks of this
-group should behave.
-              Can be used for specifying future flag requirements as well.
-              Current list of properties include:
-              NEW_COOKIE_FOR_CHILD: All fork() for tasks in this group
-will result in
-                                    creation of a new trust group
-              SAME_COOKIE_FOR_CHILD: All fork() for tasks in this
-group will end up in
-                                     this same group
-              ROOT_COOKIE_FOR_CHILD: All fork() for tasks in this
-group goes to the root group
-
-- tasks: Lists the tasks in this group. Main interface for adding
-removing tasks in a group
-
-- <pid>: A directory per task who is am member of this trust group.
-- <pid>/properties: This file is same as the parent properties file
-but this is to override
-                    the group setting.
-
-This pseudo filesystem can be mounted any where in the root
-filesystem, I propose the default
-to be in =E2=80=9C/sys/kernel/coresched=E2=80=9D
-
-When coresched is enabled, kernel internally creates the framework for
-this filesystem.
-The filesystem gets mounted to the default location and admin can
-change this if needed.
-All tasks by default are in the root group. The admin or programs can
-then create trusted
-groups on top of this filesystem.
-
-Hooks will be placed in fork() and exit() to make sure that the
-filesystem=E2=80=99s view of tasks is
-up-to-date with the system. Also, APIs manipulating core scheduling
-trusted groups should
-also make sure that the filesystem's view is updated.
-
-Note: The above idea is very similar to cgroups v1. Since there is no
-unified hierarchy
-in cgroup v1, most of the features of coreschedfs could be implemented
-as a cgroup v1
-controller. As no new v1 controllers are allowed, I feel the best
-alternative to have
-a simple API is to come up with a new filesystem - coreschedfs.
-
-The advantages of this approach is:
-
-- Detached from cgroup unified hierarchy and hence the very simple requirem=
-ent
-   of core scheduling can be easily materialized.
-- Admin can have fine-grained control of groups using shell and scripting
-- Can have programmatic access to this using existing APIs like mkdir,rmdir=
-,
-   write, read. Or can come up with new APIs using the cookie_id which can =
-wrap
-  t he above linux apis or use a new systemcall for core scheduling.
-- Fine grained permission control using linux filesystem permissions and AC=
-Ls
-
-Disadvantages are
-- yet another psuedo filesystem.
-- very similar to  cgroup v1 and might be re-implementing features
-that are already
-  provided by cgroups v1.
-
-Use Cases
------------------
-
-Usecase 1: Google cloud
----------------------------------
-
-Since we no longer depend on cgroup v2 hierarchies, there will not be
-any issue of
-nesting and sharing. The main daemon can create trusted groups in the
-fileystem and
-provide required permissions for the group. Then the init processes
-for each job can
-be added to respective groups for them to create children tasks as
-needed. Multiple
-jobs under the same customer which needs to share the core can be
-housed in one group.
 
 
-Usecase 2: Chrome browser
-------------------------
+On 8/21/20 7:32 AM, Krzysztof Kozlowski wrote:
+> On Fri, 21 Aug 2020 at 08:31, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>
+>> On Mon, 17 Aug 2020 at 19:17, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>
+>>> Hi Krzysztof,
+>>>
+>>> On 8/17/20 4:50 PM, Krzysztof Kozlowski wrote:
+>>>> On Wed, Jul 08, 2020 at 04:34:20PM +0100, Lukasz Luba wrote:
+>>>>> The interrupts in Dynamic Memory Controller in Exynos5422 and Odroid
+>>>>> XU3-family boards are no longer needed. They have been used in order
+>>>>> to workaround some issues in scheduled work in devfreq. Now when the
+>>>>> devfreq framework design is improved, remove the interrupt driven
+>>>>> approach and rely on devfreq monitoring mechanism with fixed intervals.
+>>>>>
+>>>>> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
+>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>>>> ---
+>>>>>    arch/arm/boot/dts/exynos5420.dtsi | 3 ---
+>>>>>    1 file changed, 3 deletions(-)
+>>>>
+>>>> I think the dependencies were merged so this can be safely applied
+>>>> without bisectability problems?
+>>>
+>>> I have created v2 of that fix and it got merged
+>>> via Chanwoo's tree, the commit 4fc9a0470d2dc37028
+>>> https://lkml.org/lkml/2020/7/10/1048
+>>>
+>>> That commit switched the driver default mode from 'irq driven' to
+>>> new devfreq monitoring mechanism. Furthermore, when the driver is
+>>> built as a module, you can try to use the 'irq mode', but for this
+>>> you would need the DT IRQs description (this $subject tries to remove).
+>>>
+>>> I would like to keep this IRQ mode for experimentation, as I
+>>> described in answers to Bartek's questions:
+>>> https://lkml.org/lkml/2020/7/14/315
+>>>
+>>> Unfortunately, I am quite busy and won't make any progress before the
+>>> LPC.
+>>
+>> None of these were the actual answer to my question, unless by "v2 of
+>> that fix and it got merged" means the dependencies?
+>>
+>> I'll drop it from the queue. Please resend if it is valid.
+> 
+> Agh, not drop, I mean postpone for the next cycle (this is v5.11).
+> 
 
-We start with one group for the first task and then set properties to
-NEW_COOKIE_FOR_CHILD.
+Fair enough
 
-Usecase 3: chrome VMs
----------------------
-
-Similar to chrome browser, the VM task can make each vcpu on its own group.
-
-Usecase 4: Oracle use case
---------------------------
-This is also similar to use case 1 with this interface. All tasks that need=
- to
-be in the root group can be easily added by the admin.
-
-Use case 5: General virtualization
-----------------------------------
-
-The requirement is each VM should be isolated. This can be easily done
-by creating a
-new group per VM
-
-
-Please have a look at the above proposal and let us know your
-thoughts. We shall include
-this also during the interface discussion at core scheduling MC.
-
-
-Thanks,
-Vineeth
+Regards,
+Lukasz
