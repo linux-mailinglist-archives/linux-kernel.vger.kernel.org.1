@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540AD24F4A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E60824F567
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgHXIir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53498 "EHLO mail.kernel.org"
+        id S1729570AbgHXIsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728006AbgHXIil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:38:41 -0400
+        id S1729103AbgHXIsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BF3A20FC3;
-        Mon, 24 Aug 2020 08:38:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6382A206F0;
+        Mon, 24 Aug 2020 08:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258321;
-        bh=z9X8XAf5pNu5xFYsewaUK9xluow/ICaWKL8M9zLZUyo=;
+        s=default; t=1598258891;
+        bh=riN4z/mrdo2qC42KeSPF/qU3Hm3H0TkNahjQu/VUgaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Se2ZnQanC6n0qXQVjDAG7hhvFBneca7hSwM04pvkh5Bz6snz7hWz+rDgzpaUmP1CK
-         yFd87uwN46i5MPRctrAYX/ByVlaueA+I7VrtQ8Bi1j/ug9zU/WHbroJu5t86W9iFeE
-         10v3erO5tQHwEpdFUShZ/7hDKB0bMMBZyIMMPGvM=
+        b=YYIOwxs7+suwmTbpilYtysyiGgE9R+qipgiW1p0tdoET8OdiAdGzzZI7M6eja692M
+         N62T9a/WI7Fk1k9SsRB/DZNgw8sLJvW0+SQAGJJcX6yRzYTP4YCNpAaM+VTaSph8Us
+         YpFV0ZEaOvqwl/t2xL0sa9pUamFdmKBb+YjZJqJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.8 148/148] do_epoll_ctl(): clean the failure exits up a bit
-Date:   Mon, 24 Aug 2020 10:30:46 +0200
-Message-Id: <20200824082421.115891566@linuxfoundation.org>
+        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 082/107] s390/runtime_instrumentation: fix storage key handling
+Date:   Mon, 24 Aug 2020 10:30:48 +0200
+Message-Id: <20200824082409.180331733@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit 52c479697c9b73f628140dcdfcd39ea302d05482 upstream.
+[ Upstream commit 9eaba29c7985236e16468f4e6a49cc18cf01443e ]
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The key member of the runtime instrumentation control block contains
+only the access key, not the complete storage key. Therefore the value
+must be shifted by four bits.
+Note: this is only relevant for debugging purposes in case somebody
+compiles a kernel with a default storage access key set to a value not
+equal to zero.
 
+Fixes: e4b8b3f33fca ("s390: add support for runtime instrumentation")
+Reported-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/eventpoll.c |   19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ arch/s390/kernel/runtime_instr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -2203,29 +2203,22 @@ int do_epoll_ctl(int epfd, int op, int f
- 			full_check = 1;
- 			if (is_file_epoll(tf.file)) {
- 				error = -ELOOP;
--				if (ep_loop_check(ep, tf.file) != 0) {
--					clear_tfile_check_list();
-+				if (ep_loop_check(ep, tf.file) != 0)
- 					goto error_tgt_fput;
--				}
- 			} else {
- 				get_file(tf.file);
- 				list_add(&tf.file->f_tfile_llink,
- 							&tfile_check_list);
- 			}
- 			error = epoll_mutex_lock(&ep->mtx, 0, nonblock);
--			if (error) {
--out_del:
--				list_del(&tf.file->f_tfile_llink);
--				if (!is_file_epoll(tf.file))
--					fput(tf.file);
-+			if (error)
- 				goto error_tgt_fput;
--			}
- 			if (is_file_epoll(tf.file)) {
- 				tep = tf.file->private_data;
- 				error = epoll_mutex_lock(&tep->mtx, 1, nonblock);
- 				if (error) {
- 					mutex_unlock(&ep->mtx);
--					goto out_del;
-+					goto error_tgt_fput;
- 				}
- 			}
- 		}
-@@ -2246,8 +2239,6 @@ out_del:
- 			error = ep_insert(ep, epds, tf.file, fd, full_check);
- 		} else
- 			error = -EEXIST;
--		if (full_check)
--			clear_tfile_check_list();
- 		break;
- 	case EPOLL_CTL_DEL:
- 		if (epi)
-@@ -2270,8 +2261,10 @@ out_del:
- 	mutex_unlock(&ep->mtx);
+diff --git a/arch/s390/kernel/runtime_instr.c b/arch/s390/kernel/runtime_instr.c
+index 125c7f6e87150..1788a5454b6fc 100644
+--- a/arch/s390/kernel/runtime_instr.c
++++ b/arch/s390/kernel/runtime_instr.c
+@@ -57,7 +57,7 @@ static void init_runtime_instr_cb(struct runtime_instr_cb *cb)
+ 	cb->k = 1;
+ 	cb->ps = 1;
+ 	cb->pc = 1;
+-	cb->key = PAGE_DEFAULT_KEY;
++	cb->key = PAGE_DEFAULT_KEY >> 4;
+ 	cb->v = 1;
+ }
  
- error_tgt_fput:
--	if (full_check)
-+	if (full_check) {
-+		clear_tfile_check_list();
- 		mutex_unlock(&epmutex);
-+	}
- 
- 	fdput(tf);
- error_fput:
+-- 
+2.25.1
+
 
 
