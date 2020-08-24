@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD98124F8E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F0224FA3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbgHXIrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46464 "EHLO mail.kernel.org"
+        id S1729131AbgHXJyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729399AbgHXIrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:08 -0400
+        id S1727821AbgHXIhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A95D2072D;
-        Mon, 24 Aug 2020 08:47:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20575221E2;
+        Mon, 24 Aug 2020 08:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258828;
-        bh=njMCN4wfeEu0obOdjp8oNlijF2KTgbRN8fh42Towaew=;
+        s=default; t=1598258243;
+        bh=2WqdaqYNLMI3GI7UkDLyVTeint5ew7zR2IiT361LbKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UN/WZp24vnxQP9cbeHs0c1tfE24Z8JnqltU7XfccycI+Z1155GXc2KDXFzZT6G1+G
-         rlbqUvkULCzge4bIEKrLX0ewoKhLLRJOE2M8zuDeW5fgsHMU5MGVQePObaAqdPh+qT
-         lLz4ncD27SKUMKAEC5hvl4Xz9Fw70oQ8ocBMObWc=
+        b=cuN1RAoT+MRTzSfI+tR3qQHj1wELBoODBNsLk3hdVPbVeLNPE0k6761nsa4oFf3y3
+         o288VnZbA/YF1Dn6zDJUN4zyZpDAZM8FMEnAnbf+GNJg2t86omAo5SSwXfDklpu9f3
+         DX6TZvCI8sehX07MstiEq31LuX0SOZFIstfvhWLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gaurav Singh <gaurav1086@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Michal Koutn <mkoutny@suse.com>, Roman Gushchin <guro@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/107] tools/testing/selftests/cgroup/cgroup_util.c: cg_read_strcmp: fix null pointer dereference
-Date:   Mon, 24 Aug 2020 10:30:25 +0200
-Message-Id: <20200824082408.043082197@linuxfoundation.org>
+Subject: [PATCH 5.8 128/148] powerpc: Add POWER10 raw mode cputable entry
+Date:   Mon, 24 Aug 2020 10:30:26 +0200
+Message-Id: <20200824082420.146914546@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,41 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Singh <gaurav1086@gmail.com>
+From: Madhavan Srinivasan <maddy@linux.ibm.com>
 
-[ Upstream commit d830020656c5b68ced962ed3cb51a90e0a89d4c4 ]
+[ Upstream commit 327da008e65a25b8206b36b7fc0c9e4edbb36a58 ]
 
-Haven't reproduced this issue. This PR is does a minor code cleanup.
+Add a raw mode cputable entry for POWER10. Copies most of the fields
+from commit a3ea40d5c736 ("powerpc: Add POWER10 architected mode")
+except for oprofile_cpu_type, machine_check_early, pvr_mask and
+pvr_mask fields. On bare metal systems we use DT CPU features, which
+doesn't need a cputable entry. But in VMs we still rely on the raw
+cputable entry to set the correct values for the PMU related fields.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Michal Koutn <mkoutny@suse.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Chris Down <chris@chrisdown.name>
-Link: http://lkml.kernel.org/r/20200726013808.22242-1-gaurav1086@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a3ea40d5c736 ("powerpc: Add POWER10 architected mode")
+Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+[mpe: Reorder vs cleanup patch and add Fixes tag]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200817005618.3305028-2-maddy@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/cputable.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index bdb69599c4bdc..5e939ff1e3f95 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -105,7 +105,7 @@ int cg_read_strcmp(const char *cgroup, const char *control,
- 
- 	/* Handle the case of comparing against empty string */
- 	if (!expected)
--		size = 32;
-+		return -1;
- 	else
- 		size = strlen(expected) + 1;
- 
+diff --git a/arch/powerpc/kernel/cputable.c b/arch/powerpc/kernel/cputable.c
+index b4066354f0730..bb0c7f43a8283 100644
+--- a/arch/powerpc/kernel/cputable.c
++++ b/arch/powerpc/kernel/cputable.c
+@@ -75,6 +75,7 @@ extern void __restore_cpu_power10(void);
+ extern long __machine_check_early_realmode_p7(struct pt_regs *regs);
+ extern long __machine_check_early_realmode_p8(struct pt_regs *regs);
+ extern long __machine_check_early_realmode_p9(struct pt_regs *regs);
++extern long __machine_check_early_realmode_p10(struct pt_regs *regs);
+ #endif /* CONFIG_PPC64 */
+ #if defined(CONFIG_E500)
+ extern void __setup_cpu_e5500(unsigned long offset, struct cpu_spec* spec);
+@@ -541,6 +542,25 @@ static struct cpu_spec __initdata cpu_specs[] = {
+ 		.machine_check_early	= __machine_check_early_realmode_p9,
+ 		.platform		= "power9",
+ 	},
++	{	/* Power10 */
++		.pvr_mask		= 0xffff0000,
++		.pvr_value		= 0x00800000,
++		.cpu_name		= "POWER10 (raw)",
++		.cpu_features		= CPU_FTRS_POWER10,
++		.cpu_user_features	= COMMON_USER_POWER10,
++		.cpu_user_features2	= COMMON_USER2_POWER10,
++		.mmu_features		= MMU_FTRS_POWER10,
++		.icache_bsize		= 128,
++		.dcache_bsize		= 128,
++		.num_pmcs		= 6,
++		.pmc_type		= PPC_PMC_IBM,
++		.oprofile_cpu_type	= "ppc64/power10",
++		.oprofile_type		= PPC_OPROFILE_INVALID,
++		.cpu_setup		= __setup_cpu_power10,
++		.cpu_restore		= __restore_cpu_power10,
++		.machine_check_early	= __machine_check_early_realmode_p10,
++		.platform		= "power10",
++	},
+ 	{	/* Cell Broadband Engine */
+ 		.pvr_mask		= 0xffff0000,
+ 		.pvr_value		= 0x00700000,
 -- 
 2.25.1
 
