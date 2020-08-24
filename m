@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4898C24F847
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DA924F7CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgHXJ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:29:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55986 "EHLO mail.kernel.org"
+        id S1730415AbgHXIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729910AbgHXIvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:51:13 -0400
+        id S1730211AbgHXIzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66851204FD;
-        Mon, 24 Aug 2020 08:51:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F2FD2087D;
+        Mon, 24 Aug 2020 08:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259072;
-        bh=xFp7gwbTyvsc4dzlDY9Vyfn/LmD4ZGwMaD/AQ8FfRu4=;
+        s=default; t=1598259312;
+        bh=MdqGIJpCx/+wgQQjrkGUNZbwGiGXF25VfSr3JxxELIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vYqVQmkdfI4zYp9oCkNH6h7bm4oTqG4xIEEuyNl5arUQQICUS3Z7QYOFTzI6SyD3A
-         opRy4/e+ZTWxcbQhbc23BeV25BxGlf6Y2ZcmBKkTQcfqix6TNlkNoThzfIWTiuxPkT
-         EbdfqtcYBbRzeU2DvJ6cJnhE/sPJ6Z2uBv5vYRa0=
+        b=AOQQvdBvv8wej/kPWzY0DRs8oCeNtU1GG+m/ANDEt6ofZnYQheiO5R8mRRcnQiiFI
+         GzI0p8710D1Nf4ckDXeQ9ISyVdmymlQytSkl5AU8oi1KLjPrtc39OTq3PwH9MsCn/t
+         0UGmga/6YkV4j0sP8gIWNAIsISgx0LS4GEx3Wk0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.9 02/39] x86/asm: Add instruction suffixes to bitops
-Date:   Mon, 24 Aug 2020 10:31:01 +0200
-Message-Id: <20200824082348.596398460@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Akash Goel <akash.goel@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 11/71] kernel/relay.c: fix memleak on destroy relay channel
+Date:   Mon, 24 Aug 2020 10:31:02 +0200
+Message-Id: <20200824082356.454106164@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
-References: <20200824082348.445866152@linuxfoundation.org>
+In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
+References: <20200824082355.848475917@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,158 +53,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <JBeulich@suse.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit 22636f8c9511245cb3c8412039f1dd95afb3aa59 upstream.
+commit 71e843295c680898959b22dc877ae3839cc22470 upstream.
 
-Omitting suffixes from instructions in AT&T mode is bad practice when
-operand size cannot be determined by the assembler from register
-operands, and is likely going to be warned about by upstream gas in the
-future (mine does already). Add the missing suffixes here. Note that for
-64-bit this means some operations change from being 32-bit to 64-bit.
+kmemleak report memory leak as follows:
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/5A93F98702000078001ABACC@prv-mh.provo.novell.com
+  unreferenced object 0x607ee4e5f948 (size 8):
+  comm "syz-executor.1", pid 2098, jiffies 4295031601 (age 288.468s)
+  hex dump (first 8 bytes):
+  00 00 00 00 00 00 00 00 ........
+  backtrace:
+     relay_open kernel/relay.c:583 [inline]
+     relay_open+0xb6/0x970 kernel/relay.c:563
+     do_blk_trace_setup+0x4a8/0xb20 kernel/trace/blktrace.c:557
+     __blk_trace_setup+0xb6/0x150 kernel/trace/blktrace.c:597
+     blk_trace_ioctl+0x146/0x280 kernel/trace/blktrace.c:738
+     blkdev_ioctl+0xb2/0x6a0 block/ioctl.c:613
+     block_ioctl+0xe5/0x120 fs/block_dev.c:1871
+     vfs_ioctl fs/ioctl.c:48 [inline]
+     __do_sys_ioctl fs/ioctl.c:753 [inline]
+     __se_sys_ioctl fs/ioctl.c:739 [inline]
+     __x64_sys_ioctl+0x170/0x1ce fs/ioctl.c:739
+     do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+'chan->buf' is malloced in relay_open() by alloc_percpu() but not free
+while destroy the relay channel.  Fix it by adding free_percpu() before
+return from relay_destroy_channel().
+
+Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Daniel Axtens <dja@axtens.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Akash Goel <akash.goel@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200817122826.48518-1-weiyongjun1@huawei.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/bitops.h |   29 ++++++++++++++++-------------
- arch/x86/include/asm/percpu.h |    2 +-
- 2 files changed, 17 insertions(+), 14 deletions(-)
+ kernel/relay.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/include/asm/bitops.h
-+++ b/arch/x86/include/asm/bitops.h
-@@ -77,7 +77,7 @@ set_bit(long nr, volatile unsigned long
- 			: "iq" ((u8)CONST_MASK(nr))
- 			: "memory");
- 	} else {
--		asm volatile(LOCK_PREFIX "bts %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
- 			: BITOP_ADDR(addr) : "Ir" (nr) : "memory");
- 	}
- }
-@@ -93,7 +93,7 @@ set_bit(long nr, volatile unsigned long
-  */
- static __always_inline void __set_bit(long nr, volatile unsigned long *addr)
+--- a/kernel/relay.c
++++ b/kernel/relay.c
+@@ -197,6 +197,7 @@ free_buf:
+ static void relay_destroy_channel(struct kref *kref)
  {
--	asm volatile("bts %1,%0" : ADDR : "Ir" (nr) : "memory");
-+	asm volatile(__ASM_SIZE(bts) " %1,%0" : ADDR : "Ir" (nr) : "memory");
+ 	struct rchan *chan = container_of(kref, struct rchan, kref);
++	free_percpu(chan->buf);
+ 	kfree(chan);
  }
  
- /**
-@@ -114,7 +114,7 @@ clear_bit(long nr, volatile unsigned lon
- 			: CONST_MASK_ADDR(nr, addr)
- 			: "iq" ((u8)~CONST_MASK(nr)));
- 	} else {
--		asm volatile(LOCK_PREFIX "btr %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
- 			: BITOP_ADDR(addr)
- 			: "Ir" (nr));
- 	}
-@@ -136,7 +136,7 @@ static __always_inline void clear_bit_un
- 
- static __always_inline void __clear_bit(long nr, volatile unsigned long *addr)
- {
--	asm volatile("btr %1,%0" : ADDR : "Ir" (nr));
-+	asm volatile(__ASM_SIZE(btr) " %1,%0" : ADDR : "Ir" (nr));
- }
- 
- /*
-@@ -168,7 +168,7 @@ static __always_inline void __clear_bit_
-  */
- static __always_inline void __change_bit(long nr, volatile unsigned long *addr)
- {
--	asm volatile("btc %1,%0" : ADDR : "Ir" (nr));
-+	asm volatile(__ASM_SIZE(btc) " %1,%0" : ADDR : "Ir" (nr));
- }
- 
- /**
-@@ -187,7 +187,7 @@ static __always_inline void change_bit(l
- 			: CONST_MASK_ADDR(nr, addr)
- 			: "iq" ((u8)CONST_MASK(nr)));
- 	} else {
--		asm volatile(LOCK_PREFIX "btc %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(btc) " %1,%0"
- 			: BITOP_ADDR(addr)
- 			: "Ir" (nr));
- 	}
-@@ -203,7 +203,8 @@ static __always_inline void change_bit(l
-  */
- static __always_inline bool test_and_set_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "bts", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(bts),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- /**
-@@ -232,7 +233,7 @@ static __always_inline bool __test_and_s
- {
- 	bool oldbit;
- 
--	asm("bts %2,%1"
-+	asm(__ASM_SIZE(bts) " %2,%1"
- 	    CC_SET(c)
- 	    : CC_OUT(c) (oldbit), ADDR
- 	    : "Ir" (nr));
-@@ -249,7 +250,8 @@ static __always_inline bool __test_and_s
-  */
- static __always_inline bool test_and_clear_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "btr", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btr),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- /**
-@@ -272,7 +274,7 @@ static __always_inline bool __test_and_c
- {
- 	bool oldbit;
- 
--	asm volatile("btr %2,%1"
-+	asm volatile(__ASM_SIZE(btr) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit), ADDR
- 		     : "Ir" (nr));
-@@ -284,7 +286,7 @@ static __always_inline bool __test_and_c
- {
- 	bool oldbit;
- 
--	asm volatile("btc %2,%1"
-+	asm volatile(__ASM_SIZE(btc) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit), ADDR
- 		     : "Ir" (nr) : "memory");
-@@ -302,7 +304,8 @@ static __always_inline bool __test_and_c
-  */
- static __always_inline bool test_and_change_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "btc", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btc),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
-@@ -315,7 +318,7 @@ static __always_inline bool variable_tes
- {
- 	bool oldbit;
- 
--	asm volatile("bt %2,%1"
-+	asm volatile(__ASM_SIZE(bt) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit)
- 		     : "m" (*(unsigned long *)addr), "Ir" (nr));
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -536,7 +536,7 @@ static inline bool x86_this_cpu_variable
- {
- 	bool oldbit;
- 
--	asm volatile("bt "__percpu_arg(2)",%1"
-+	asm volatile("btl "__percpu_arg(2)",%1"
- 			CC_SET(c)
- 			: CC_OUT(c) (oldbit)
- 			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
 
 
