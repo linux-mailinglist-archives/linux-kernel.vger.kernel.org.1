@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B512C24F58B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D54224F5CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729549AbgHXIub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54064 "EHLO mail.kernel.org"
+        id S1730219AbgHXIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729598AbgHXIu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:50:27 -0400
+        id S1728534AbgHXIx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:53:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 504C72072D;
-        Mon, 24 Aug 2020 08:50:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3D5E207D3;
+        Mon, 24 Aug 2020 08:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259026;
-        bh=x5F7IjBgqjr5XyOvgzFUeapYKvzEV3FY3+JG9qMLxwI=;
+        s=default; t=1598259208;
+        bh=nG/68UkyJbPFo39KSSnnMAkMSDLG37DYiU7yZfHaGPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=17JSYySolUTS8ak0H6qdqztt284ShcgHN09ohestAsDr8AARF47+sUi4VjR0tAs5/
-         Bd7Hharr/7VpgwOk7+OAxElWUki6CuX2cUnGxDzDUOMxQZMF7uGfiFOkib5OCzTzMX
-         gD7FHzNKFZYeMfwWWWK67vsuoAbzqtEg1jkqn/BY=
+        b=Xxi4EQf/Hqnu//gHsW4VwgwMHDgu83D4EYu8iTyusifzVwzv6mF7/Klec4Yc4Ukht
+         YsF5/HF2U6zRwUd4hFj9o8K2dZnSPuHLj7Ha0Y4SVsW2KmuDKstX4KQKZ6ZUqB2XFQ
+         xlvv6qPm1sPkWdhq/WBg5+M+oTbzLyqtg1HyrM3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 27/33] ASoC: intel: Fix memleak in sst_media_open
+Subject: [PATCH 4.14 22/50] rtc: goldfish: Enable interrupt in set_alarm() when necessary
 Date:   Mon, 24 Aug 2020 10:31:23 +0200
-Message-Id: <20200824082347.900951093@linuxfoundation.org>
+Message-Id: <20200824082353.148146093@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
+References: <20200824082351.823243923@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Huacai Chen <chenhc@lemote.com>
 
-[ Upstream commit 062fa09f44f4fb3776a23184d5d296b0c8872eb9 ]
+[ Upstream commit 22f8d5a1bf230cf8567a4121fc3789babb46336d ]
 
-When power_up_sst() fails, stream needs to be freed
-just like when try_module_get() fails. However, current
-code is returning directly and ends up leaking memory.
+When use goldfish rtc, the "hwclock" command fails with "select() to
+/dev/rtc to wait for clock tick timed out". This is because "hwclock"
+need the set_alarm() hook to enable interrupt when alrm->enabled is
+true. This operation is missing in goldfish rtc (but other rtc drivers,
+such as cmos rtc, enable interrupt here), so add it.
 
-Fixes: 0121327c1a68b ("ASoC: Intel: mfld-pcm: add control for powering up/down dsp")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200813084112.26205-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1592654683-31314-1-git-send-email-chenhc@lemote.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-goldfish.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 1d9dfb92b3b48..edb244331e6e9 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -338,7 +338,7 @@ static int sst_media_open(struct snd_pcm_substream *substream,
- 
- 	ret_val = power_up_sst(stream);
- 	if (ret_val < 0)
--		return ret_val;
-+		goto out_power_up;
- 
- 	/* Make sure, that the period size is always even */
- 	snd_pcm_hw_constraint_step(substream->runtime, 0,
-@@ -347,8 +347,9 @@ static int sst_media_open(struct snd_pcm_substream *substream,
- 	return snd_pcm_hw_constraint_integer(runtime,
- 			 SNDRV_PCM_HW_PARAM_PERIODS);
- out_ops:
--	kfree(stream);
- 	mutex_unlock(&sst_lock);
-+out_power_up:
-+	kfree(stream);
- 	return ret_val;
- }
- 
+diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
+index a1c44d0c85578..30cbe22c57a8e 100644
+--- a/drivers/rtc/rtc-goldfish.c
++++ b/drivers/rtc/rtc-goldfish.c
+@@ -87,6 +87,7 @@ static int goldfish_rtc_set_alarm(struct device *dev,
+ 		rtc_alarm64 = rtc_alarm * NSEC_PER_SEC;
+ 		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
+ 		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
++		writel(1, base + TIMER_IRQ_ENABLED);
+ 	} else {
+ 		/*
+ 		 * if this function was called with enabled=0
 -- 
 2.25.1
 
