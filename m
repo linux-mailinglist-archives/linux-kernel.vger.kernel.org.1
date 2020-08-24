@@ -2,99 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6045524FA04
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF45724F9F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgHXJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728603AbgHXJv3 (ORCPT
+        id S1728814AbgHXJvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:51:21 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:30820 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728603AbgHXJvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:51:29 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80398C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:28 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id n12so1833557vkk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3hW+1aw5Oeh6pgOwck0y4yo/HRz1hOBxqvF5QhQOhfA=;
-        b=Tyi4ZHVVjVzwqW9yZS2CGb5VIFwkQ4QTO47BzShFY9qAaUl7/0Tb/z8UOLqYQYxFQ3
-         NWKzwyU9iDMKu2lo8rVy0o23kY2MFRYzaoJv6WiIjd6o2psu24GN82nPCBKWX/tWJMRO
-         PpKGMTl72L8ogYEtjkL0Z+eH1qfs3L6BbIBcSX7k8w3NLAtN7iFmn0ST2BMMqZ0uuBpr
-         SkVRJ9fDkNYyzC6d5Kb9eqkxzXzZvVHtU7tpelDyM15z2+mqHUUf6wmbt7WNy7DDhoNj
-         FIYA9Irkgdb7oUWHK+I5dDAh7OTjagIIkHR9dcYWKDkVkmxGA2eEldPw0KGgJKBDN9du
-         gYwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3hW+1aw5Oeh6pgOwck0y4yo/HRz1hOBxqvF5QhQOhfA=;
-        b=PH23KU0dLBbAlfGFmQNZjZHNrwKxmcNiYqn8GrpfcyOEFZ+hpRM5tQ6i1HbrqICtEU
-         geveCansbP48HooM0ztYnx1jJWWdlEhbUnW+HZdbtisa7YhkXYDCXbG3v8dENgj8sYzN
-         RdHiksNUvnBpCakC0DMz0dw4q/ZvuNUH1lLLMYHsKjF11dzGKdR0dtYGVsjDJve5i7fY
-         xw7/nbOI3LAHgIYuGhL6jhN6nvdkl9xWiuS3orW2n4902XxqJ6je3TeIrHdLLsue0Zyz
-         ahspsrc8CgT23tTk1hGXDpP4qo2WbtQKd3bwWA2pAIGatNC7FOEuN826QA3TBZs2u4C7
-         sp0Q==
-X-Gm-Message-State: AOAM5301cvdETf8HSG+vT+UJ9AzRwTLBNMJeQoaTxq/4gOmb/8kaJ+mu
-        W92FZedvuT7WvvLcSaYzFRQTOmsNxDiAXrBsOGSMXw==
-X-Google-Smtp-Source: ABdhPJwXWApawg9i+eOmnZgucXcp/gc+rjQ1KDPLPjawInjvQEnTiAThjuEQkek7/NLrzTZjrx+U7ZCQM0btQNcqieI=
-X-Received: by 2002:a1f:9d85:: with SMTP id g127mr1986688vke.101.1598262687548;
- Mon, 24 Aug 2020 02:51:27 -0700 (PDT)
+        Mon, 24 Aug 2020 05:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598262660;
+        s=strato-dkim-0002; d=jm0.eu;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=cT+w4ffwQseXwB4MhjMMrc+FYpF3qz3QtjFI9bCTwU8=;
+        b=Um8ebRNo0fuVEQyHMtI3Xzpp4Ei0mtg1CXV324MLccRUUzfoe0wfWdrG+61SZMVu3W
+        fx1Um7qdFJ3/vAifTTy/xay5RdRFfIzgXPcXUG1V/EF97USfWsAkwPTUSyU7YTyPsTnh
+        Q0G1tGAGqy43mvANXUQbaRMbUNu21nZbxz91JGpzHprkkcfkkbh4DcKZ1v2ByNtWGxoI
+        hKNCYSfF96WmFlrHMuffxkHQSlt4wPEHppwJAUJDDcIu7nHxxNGfkF7ydaFv8q/FsIXj
+        ZOPU8FBjmeWtwM/9fTm7BscjaMkWiYXfc03CYbW7KemjMrUwJ56GoI85QZsEh6oHz6iY
+        +KFg==
+X-RZG-AUTH: ":JmMXYEHmdv4HaV2cbPh7iS0wbr/uKIfGM0EPXvQCbXgI7t69COvnl6LERsNcX+38fzXJ1XO/JvLGWj59ag=="
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain
+        by smtp.strato.de (RZmta 46.10.7 AUTH)
+        with ESMTPSA id e0624aw7O9owNil
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 24 Aug 2020 11:50:58 +0200 (CEST)
+Subject: Re: [PATCH v2] drm/etnaviv: fix external abort seen on GC600 rev 0x19
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+References: <20200823190924.6437-1-christian.gmeiner@gmail.com>
+From:   "Ing. Josua Mayer" <josua.mayer@jm0.eu>
+Autocrypt: addr=josua.mayer@jm0.eu; prefer-encrypt=mutual; keydata=
+ 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
+ Si21CLNeIbliI0CNR5kPUY1ntw1JCOmOjKZm
+Message-ID: <568154e9-b065-dbd3-eee9-0176a46999c6@jm0.eu>
+Date:   Mon, 24 Aug 2020 11:50:58 +0200
 MIME-Version: 1.0
-References: <20200814185011.3252020-1-t.schramm@manjaro.org>
-In-Reply-To: <20200814185011.3252020-1-t.schramm@manjaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 Aug 2020 11:50:51 +0200
-Message-ID: <CAPDyKFoLV1bKSmEfthoLsJR76Mdb2dbdGC2y6vNYAKE2u6YAaQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmc_spi: fix timeout calculation
-To:     Tobias Schramm <t.schramm@manjaro.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200823190924.6437-1-christian.gmeiner@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Aug 2020 at 20:50, Tobias Schramm <t.schramm@manjaro.org> wrote:
->
-> Previously the cycle timeout was converted to a microsecond value but
-> then incorrectly treated as a nanosecond timeout. This patch changes
-> the code to convert both the nanosecond timeout and the cycle timeout
-> to a microsecond value and use that directly.
->
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+Verified that it works as intended on 5.7.10. Thank you very much :)
+Feel free to add my tested-by ...
 
-Applied for next, thanks!
-
-Kind regards
-Uffe
-
-
+Am 23.08.20 um 21:09 schrieb Christian Gmeiner:
+> It looks like that this GPU core triggers an abort when
+> reading VIVS_HI_CHIP_PRODUCT_ID and/or VIVS_HI_CHIP_ECO_ID.
+> 
+> I looked at different versions of Vivante's kernel driver and did
+> not found anything about this issue or what feature flag can be
+> used. So go the simplest route and do not read these two registers
+> on the affected GPU core.
+> 
+> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> Reported-by: Josua Mayer <josua.mayer@jm0.eu>
+> Fixes: 815e45bbd4d3 ("drm/etnaviv: determine product, customer and eco id")
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/mmc/host/mmc_spi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-> index 39bb1e30c2d7..f85e0ad896a9 100644
-> --- a/drivers/mmc/host/mmc_spi.c
-> +++ b/drivers/mmc/host/mmc_spi.c
-> @@ -882,9 +882,9 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
->         else
->                 clock_rate = spi->max_speed_hz;
->
-> -       timeout = data->timeout_ns +
-> +       timeout = data->timeout_ns / 1000 +
->                   data->timeout_clks * 1000000 / clock_rate;
-> -       timeout = usecs_to_jiffies((unsigned int)(timeout / 1000)) + 1;
-> +       timeout = usecs_to_jiffies((unsigned int)timeout) + 1;
->
->         /* Handle scatterlist segments one at a time, with synch for
->          * each 512-byte block
-> --
-> 2.28.0
->
+> Changelog:
+> 
+> V2:
+>  - use correct register for conditional reads.
+> 
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> index d5a4cd85a0f6..c6404b8d067f 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> @@ -337,9 +337,16 @@ static void etnaviv_hw_identify(struct etnaviv_gpu *gpu)
+>  
+>  		gpu->identity.model = gpu_read(gpu, VIVS_HI_CHIP_MODEL);
+>  		gpu->identity.revision = gpu_read(gpu, VIVS_HI_CHIP_REV);
+> -		gpu->identity.product_id = gpu_read(gpu, VIVS_HI_CHIP_PRODUCT_ID);
+>  		gpu->identity.customer_id = gpu_read(gpu, VIVS_HI_CHIP_CUSTOMER_ID);
+> -		gpu->identity.eco_id = gpu_read(gpu, VIVS_HI_CHIP_ECO_ID);
+> +
+> +		/*
+> +		 * Reading these two registers on GC600 rev 0x19 result in a
+> +		 * unhandled fault: external abort on non-linefetch
+> +		 */
+> +		if (!etnaviv_is_model_rev(gpu, GC600, 0x19)) {
+> +			gpu->identity.product_id = gpu_read(gpu, VIVS_HI_CHIP_PRODUCT_ID);
+> +			gpu->identity.eco_id = gpu_read(gpu, VIVS_HI_CHIP_ECO_ID);
+> +		}
+>  
+>  		/*
+>  		 * !!!! HACK ALERT !!!!
+> 
