@@ -2,59 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6948825015E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A75725014E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgHXPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:44:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S1728021AbgHXPml convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Aug 2020 11:42:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4738 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727913AbgHXPh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:37:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C59920866;
-        Mon, 24 Aug 2020 15:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598283475;
-        bh=/FLQGPNihRgUzCMuWceWJqcQ7JwsYoFqRHQ31NibAt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JSE6t9BzN9VILdf0Ss+Hl8LkVU/0+tKXQNpTYe3NLtuonDEZa0rRNiPYyj3HYRRm5
-         kwNn63LW3PyvW+kdizD3KZu28C308WNzSyKOaMU4hRwPlhccAluBgOMiC2jz1PX2I1
-         TdeObO90uUKh4MYdNWcYtm6WuMucVxIsHF01+E/0=
-Date:   Mon, 24 Aug 2020 17:38:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: Re: [PATCH 4.9 15/39] jbd2: add the missing unlock_buffer() in the
- error path of jbd2_write_superblock()
-Message-ID: <20200824153811.GC435319@kroah.com>
-References: <20200824082348.445866152@linuxfoundation.org>
- <20200824082349.270439673@linuxfoundation.org>
- <72009693-6c2a-df4f-f93a-31b5924e7790@huawei.com>
+        id S1726473AbgHXPj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:39:27 -0400
+IronPort-SDR: Wn9zzGXdoQaIbuan1iLH5Ja1D550aM7G/T48IjjAK4ebNw7f+aKWRzsydQhk7mMFzRUMumPVEv
+ zJoJddDux0Og==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="155911950"
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="155911950"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 08:38:59 -0700
+IronPort-SDR: OXGKpCExxzOcDnP+9+nDPRBYDX0Rz4GWrLd/kIgqZv6PvbbvIW34Ae6s3iWxcqtqzN9OqskkrV
+ xaBwVtfE/QSw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="499513514"
+Received: from fmsmsx601-2.cps.intel.com (HELO fmsmsx601.amr.corp.intel.com) ([10.18.84.211])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2020 08:38:59 -0700
+Received: from shsmsx604.ccr.corp.intel.com (10.109.6.214) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 24 Aug 2020 08:38:57 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ SHSMSX604.ccr.corp.intel.com (10.109.6.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 24 Aug 2020 23:38:55 +0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Mon, 24 Aug 2020 08:38:53 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Tang, Feng" <feng.tang@intel.com>, Borislav Petkov <bp@suse.de>
+CC:     "Chen, Rong A" <rong.a.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        "Mel Gorman" <mgorman@suse.com>
+Subject: RE: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Thread-Topic: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Thread-Index: AQHWdTm7eFqn4vHQO0+vfjZnMLG+/6k+S8yAgADZR4CAAyQ1gIAFlB6AgAAFMQD//4tJoA==
+Date:   Mon, 24 Aug 2020 15:38:53 +0000
+Message-ID: <6e996ad05e434a6fb13f069ee72b876b@intel.com>
+References: <20200425114414.GU26573@shao2-debian>
+ <20200425130136.GA28245@zn.tnic>
+ <20200818082943.GA65567@shbuild999.sh.intel.com>
+ <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
+ <20200819020437.GA2605@shbuild999.sh.intel.com>
+ <20200821020259.GA90000@shbuild999.sh.intel.com>
+ <20200824151425.GF4794@zn.tnic>
+ <20200824153300.GA56944@shbuild999.sh.intel.com>
+In-Reply-To: <20200824153300.GA56944@shbuild999.sh.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72009693-6c2a-df4f-f93a-31b5924e7790@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 07:15:25PM +0800, zhangyi (F) wrote:
-> Hi，Greg
-> 
-> The problem this patch want to fix only exists on the kernel both
-> 538bcaa6261b and 742b06b5628f these two upstream patches were merged,
-> but 538bcaa6261b was not merged to 4.9, so we don't need this patch
-> for 4.9.
+> Yes, that's what we suspected. And I just did another try to force the
+> percpu mce structure aligned. And the regression seems to be gone (reduced
+> from 14.1% to 2%), which further proved it.
 
-Ok, thanks, but that wasn't obvious at all :)
+I wonder whether it would be useful for bisection of performance issues
+for you to change the global definition of DEFINE_PER_CPU() to make
+all per CPU definitions aligned. Just like you switch compiler flags to make
+all functions aligned.
 
-I'll go drop this from 4.9.y now...
-
-greg k-h
+-Tony
