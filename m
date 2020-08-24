@@ -2,80 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446BF2508B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505DE2508BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 21:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHXTEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 15:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgHXTEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:04:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBD7C061573;
-        Mon, 24 Aug 2020 12:04:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so10916919ljg.13;
-        Mon, 24 Aug 2020 12:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=USWdSH85MLPCvRv3jIctUSCKGBhD/KP3Vil/oo0Sdlo=;
-        b=dzAfXB96+Fj8h140QgfMjRnhKd5SULprrzZjn/ElG10SRsaNP6UF3yncDmw75rqGK0
-         3evZq0txNSdfXl2ZDqtrITg9KbNyXUEnZJEIXcUg09S95tjK+JXVlqjXeD8/FMXvVYG9
-         TEe4sjaHHnKmPzoZD6BmmT72TVFxVZjLxS09Qexbv3pwEDCj8b19rCFVKvtrQbUPiFLD
-         o6kgOXcZz1Yl2znZfW0McFtfjiA3+pl8LfiMHDm6vIbv4ztq6VCrJq7xQ18idk5wo/Is
-         01IMqHexmpWp3zrlUw1RcUgp0mNUhGNdl64cpmt0dTO1E1ZG0eTpDqkXcqv6JiTS7VMP
-         gRwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=USWdSH85MLPCvRv3jIctUSCKGBhD/KP3Vil/oo0Sdlo=;
-        b=eJ7uDqi8gxfvIzUmgw1SltNtW3/Co75LWBFGYwWuJe85B8wFNTD/YpD3UebpXT8I3B
-         Lh0NUIkLz9uww1W4f1dPs3YFCvnNomO9Tx79OoZY8fW1q0OwwJi1voEGBddNbwViG7N2
-         Tj3To6srkrELdRbHmnh/Q5iM3c6uKrtqZi6+LyX/D9SziavlmnrxxWRQnxcBczz3n4wd
-         xKfdcK+vsyc7UTsOTNL6I3aTIP85a/dMwRoJl12ZkvNb0KrZNYS9pebfpEmfH3/1Nhqh
-         4pyoHOjVBo7ZGyYQNfCT/hZvqFQ6TSc5HmHjeaT4XR6VplIADOPNkAI0alVc3AMYBxA7
-         FMbg==
-X-Gm-Message-State: AOAM530Bouoxi0WkAsRwMIKmaEPyOM5UrZTSsN0imeSLAK6r+lS1H2BG
-        WD2b4aVGHX5aDBSaJEqtLC41VV+hnG2h2+P2br2MNccgYzE=
-X-Google-Smtp-Source: ABdhPJx5LoVa80DFxxsFAsqtTu9yB7rSnKi9LAMKmcVHEEEScaLV3pqtzL2kf2xsjzm64BZcniPy73W9Ucj/aU74FbA=
-X-Received: by 2002:a2e:5cc9:: with SMTP id q192mr3262548ljb.452.1598295844638;
- Mon, 24 Aug 2020 12:04:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200824160247.19032-1-krzk@kernel.org> <20200824160247.19032-3-krzk@kernel.org>
- <CAOMZO5DquPR9BmQP0kZfTqNJmRabPe1Vtc801M9CVCPFCd1usQ@mail.gmail.com> <20200824185713.GA5343@kozik-lap>
-In-Reply-To: <20200824185713.GA5343@kozik-lap>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 24 Aug 2020 16:03:53 -0300
-Message-ID: <CAOMZO5B71L7+d_bUY2D=fjhhg5QFEnTsq=U84+7k9nhhmxV04g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] arm64: dts: imx8mm-var-som: Add Variscite
- VAR-SOM-MX8MM System on Module
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726985AbgHXTE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 15:04:58 -0400
+Received: from comms.puri.sm ([159.203.221.185]:38226 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726413AbgHXTE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 15:04:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id A8C79DFB28;
+        Mon, 24 Aug 2020 12:04:26 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nZAS46TPgg2p; Mon, 24 Aug 2020 12:04:24 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     stern@rowland.harvard.edu, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH] scsi: add expecting_media_change flag to error path
+Date:   Mon, 24 Aug 2020 21:04:00 +0200
+Message-Id: <20200824190400.12339-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 3:57 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+SD Cardreaders (especially) sometimes lose the state during suspend
+and deliver a "media changed" unit attention when really only a
+(runtime) suspend/resume cycle has been done.
 
-> True, I'll fix it up, thanks.
->
-> Any comments for the Symphony DTS before v4?
+Add a flag for drivers to use when this is expected. It's handled in the
+scsi core error path and allows to use (runtime) PM when it has
+no been possible before on said hardware.
 
-It looks good.
+The "downside" is that we rely more on users not to really change
+the medium (SD card) *during* a simple suspend/resume, i.e. when not
+unmounting.
 
-One suggestion is to remove pinctrl_pcie0 for now and add it when PCI
-support is in place.
+How to *use* this flag remains an open problem but for testing (if you
+get "media changed" UA errors when runtime PM enabled as described below),
+simply do to /drivers/scsi/sd.c
+
+@@ -3648,6 +3648,8 @@ static int sd_resume(struct device *dev)
+	if (!sdkp)      /* E.g.: runtime resume at the start of sd_probe() */
+		return 0;
+
++       sdkp->device->expecting_media_change = 1;
++
+	if (!sdkp->device->manage_start_stop)
+		return 0;
+
+To enable runtime PM for SD cardreader (here, device number 0:0:0:0),
+do the following:
+
+echo 0 > /sys/module/block/parameters/events_dfl_poll_msecs
+echo 1000 > /sys/bus/scsi/devices/0:0:0:0/power/autosuspend_delay_ms
+echo auto > /sys/bus/scsi/devices/0:0:0:0/power/control
+
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+
+
+If you don't want to merge a flag without any user, I understand that
+but we can add a user (sysfs setting to opt-in?) once we agree on
+what it does, right?
+
+Since this patch solves my specific problem, I'd appreciate any more
+feedback and hope we can find a solution that works for everyone.
+
+thanks a lot,
+                               martin
+
+
+ drivers/scsi/scsi_error.c  | 31 ++++++++++++++++++++++++++++---
+ include/scsi/scsi_device.h |  1 +
+ 2 files changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 7d3571a2bd89..c99390a5dc31 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -565,6 +565,18 @@ int scsi_check_sense(struct scsi_cmnd *scmd)
+ 				return NEEDS_RETRY;
+ 			}
+ 		}
++		if (scmd->device->expecting_media_change) {
++			if (sshdr.asc == 0x28 && sshdr.ascq == 0x00) {
++				/*
++				 * clear the expecting_media_change in
++				 * scsi_decide_disposition() because we
++				 * need to catch possible "fail fast" overrides
++				 * that block readahead can cause.
++				 */
++				return NEEDS_RETRY;
++			}
++		}
++
+ 		/*
+ 		 * we might also expect a cc/ua if another LUN on the target
+ 		 * reported a UA with an ASC/ASCQ of 3F 0E -
+@@ -1944,9 +1956,22 @@ int scsi_decide_disposition(struct scsi_cmnd *scmd)
+ 	 * the request was not marked fast fail.  Note that above,
+ 	 * even if the request is marked fast fail, we still requeue
+ 	 * for queue congestion conditions (QUEUE_FULL or BUSY) */
+-	if ((++scmd->retries) <= scmd->allowed
+-	    && !scsi_noretry_cmd(scmd)) {
+-		return NEEDS_RETRY;
++	if ((++scmd->retries) <= scmd->allowed) {
++		/* but scsi_noretry_cmd() cannot override the
++		 * expecting_media_change flag.
++		 */
++		if (!scsi_noretry_cmd(scmd) ||
++		    scmd->device->expecting_media_change) {
++			scmd->device->expecting_media_change = 0;
++			return NEEDS_RETRY;
++		} else {
++			/* Not marked fail fast, or marked but not expected.
++			 * Clear the flag too because it's meant for the
++			 * next UA only.
++			 */
++			scmd->device->expecting_media_change = 0;
++			return SUCCESS;
++		}
+ 	} else {
+ 		/*
+ 		 * no more retries - report this one back to upper level.
+diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+index bc5909033d13..4a67b06742ba 100644
+--- a/include/scsi/scsi_device.h
++++ b/include/scsi/scsi_device.h
+@@ -169,6 +169,7 @@ struct scsi_device {
+ 				 * this device */
+ 	unsigned expecting_cc_ua:1; /* Expecting a CHECK_CONDITION/UNIT_ATTN
+ 				     * because we did a bus reset. */
++	unsigned expecting_media_change:1; /* Expecting "media changed" UA */
+ 	unsigned use_10_for_rw:1; /* first try 10-byte read / write */
+ 	unsigned use_10_for_ms:1; /* first try 10-byte mode sense/select */
+ 	unsigned set_dbd_for_ms:1; /* Set "DBD" field in mode sense */
+-- 
+2.20.1
+
