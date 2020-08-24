@@ -2,276 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110CC2505FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1118E250567
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgHXRZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:25:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728270AbgHXQfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:35:41 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4691D22BED;
-        Mon, 24 Aug 2020 16:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286940;
-        bh=Plwn9+PtEhypVPu9A4Uepi4cmZZJ8AR2GDq/yp++gJM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SmM9UuELcZlBDDuvhJygMh2d9qRClfVVnfYSB78THYpWwyEpg/s+EVOzFdHP8Pz3P
-         Bb/i4YrO/E/Mqlux8TVz6gdULPvfPUXPy7HKjHLH/eY3P4SxAqxwo5lLRbTv8zd6e9
-         BQbvQeVf0msJ+c/Awm4sIdJz9h3XiquweBspnHrw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 26/63] selftest/bpf: Fix compilation warnings in 32-bit mode
-Date:   Mon, 24 Aug 2020 12:34:26 -0400
-Message-Id: <20200824163504.605538-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
-References: <20200824163504.605538-1-sashal@kernel.org>
+        id S1728351AbgHXQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbgHXQe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:34:29 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4669C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v16so4494872plo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sJRzEKxQslNUvlgLwatGfusZhkWsuQ/eLz0nCOLU88U=;
+        b=WHXuMrr+DrJsG5ydYqMywzOTNF0xboE3NYuEaGBrglNd4z3mFnPcURJW1XjqONdE02
+         jEd3johpV7asGvtVa+ez8MfBRQ87rUHVp7CmI3ahiaW8mamMuaI8qLNBlRmHIN8qIRqs
+         TFjcjDUxevJ7NY3H2b9PAQBUOWcIP8vFY1z/g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sJRzEKxQslNUvlgLwatGfusZhkWsuQ/eLz0nCOLU88U=;
+        b=F4XGw/wvFcNJhEyvv1BQ6HMYKe+VwjfEqvfVk6QskcE/29QbR5uHDKUeUcR/4da7Zz
+         UTLaLHeEQ7AYuL92LdrPrky9Zma8JqzNEd+7RQwZ8A2YybNI94G9CEz56VJ0E+ctXL9O
+         GANNsNCQOCfQe62sj97X7XXkp/sXuTFe+xh+IfYjO1F/Kdl09+rGfhj6rgXpYHkZ3t0g
+         8e5P+Ao9KyAnmSH/FQJJVZsy9PI2p2AVq0k1eSZ10K0kz59SLAggSnAPNPH/KdkweRUe
+         r0njrFvfb1FhP14fkF6toJ/MHf8vLhmVyCLwToDrbc/7/wAWO+nRLNZ2G3/TvJv7qF8i
+         0zhg==
+X-Gm-Message-State: AOAM533xTfXr0A1BC6Z9idTNBmggO/AzJXtGEhq2JIYVVpoMi5zRpG9Q
+        mtq115Y3IAoct6hpWVP1vuZ2Avf5cpTpbg==
+X-Google-Smtp-Source: ABdhPJyworV0/Dr0sI3KHDP2uuvn/VCt9Dk9wQf/9i50LZ8rfttmW34/1Rr/04C4VJQlwHUH/o6Tlg==
+X-Received: by 2002:a17:902:9a93:: with SMTP id w19mr4173622plp.297.1598286869071;
+        Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q16sm12747047pfg.153.2020.08.24.09.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 09:34:28 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 09:34:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] seccomp: Use current_pt_regs()
+Message-ID: <202008240929.8DDED2B90@keescook>
+References: <20200824125921.488311-1-efremov@linux.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824125921.488311-1-efremov@linux.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+On Mon, Aug 24, 2020 at 03:59:21PM +0300, Denis Efremov wrote:
+> Modify seccomp_do_user_notification(), __seccomp_filter(),
+> __secure_computing() to use current_pt_regs().
 
-[ Upstream commit 9028bbcc3e12510cac13a9554f1a1e39667a4387 ]
+This looks okay. It seems some architectures have a separate
+define for current_pt_regs(), though it's overlapped directly with
+task_pt_regs(). I'm curious what the benefit of the change is?
 
-Fix compilation warnings emitted when compiling selftests for 32-bit platform
-(x86 in my case).
+-Kees
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200813204945.1020225-3-andriin@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c     | 8 ++++----
- tools/testing/selftests/bpf/prog_tests/core_extern.c    | 4 ++--
- tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 6 +++---
- tools/testing/selftests/bpf/prog_tests/flow_dissector.c | 2 +-
- tools/testing/selftests/bpf/prog_tests/global_data.c    | 6 +++---
- tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c | 2 +-
- tools/testing/selftests/bpf/prog_tests/skb_ctx.c        | 2 +-
- tools/testing/selftests/bpf/test_btf.c                  | 8 ++++----
- tools/testing/selftests/bpf/test_progs.h                | 5 +++++
- 9 files changed, 24 insertions(+), 19 deletions(-)
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>  kernel/seccomp.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 3ee59ce0a323..dc4eaa1d6002 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -910,7 +910,7 @@ static int seccomp_do_user_notification(int this_syscall,
+>  	if (flags & SECCOMP_USER_NOTIF_FLAG_CONTINUE)
+>  		return 0;
+>  
+> -	syscall_set_return_value(current, task_pt_regs(current),
+> +	syscall_set_return_value(current, current_pt_regs(),
+>  				 err, ret);
+>  	return -1;
+>  }
+> @@ -943,13 +943,13 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  		/* Set low-order bits as an errno, capped at MAX_ERRNO. */
+>  		if (data > MAX_ERRNO)
+>  			data = MAX_ERRNO;
+> -		syscall_set_return_value(current, task_pt_regs(current),
+> +		syscall_set_return_value(current, current_pt_regs(),
+>  					 -data, 0);
+>  		goto skip;
+>  
+>  	case SECCOMP_RET_TRAP:
+>  		/* Show the handler the original registers. */
+> -		syscall_rollback(current, task_pt_regs(current));
+> +		syscall_rollback(current, current_pt_regs());
+>  		/* Let the filter pass back 16 bits of data. */
+>  		seccomp_send_sigsys(this_syscall, data);
+>  		goto skip;
+> @@ -962,7 +962,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  		/* ENOSYS these calls if there is no tracer attached. */
+>  		if (!ptrace_event_enabled(current, PTRACE_EVENT_SECCOMP)) {
+>  			syscall_set_return_value(current,
+> -						 task_pt_regs(current),
+> +						 current_pt_regs(),
+>  						 -ENOSYS, 0);
+>  			goto skip;
+>  		}
+> @@ -982,7 +982,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  		if (fatal_signal_pending(current))
+>  			goto skip;
+>  		/* Check if the tracer forced the syscall to be skipped. */
+> -		this_syscall = syscall_get_nr(current, task_pt_regs(current));
+> +		this_syscall = syscall_get_nr(current, current_pt_regs());
+>  		if (this_syscall < 0)
+>  			goto skip;
+>  
+> @@ -1025,7 +1025,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  			kernel_siginfo_t info;
+>  
+>  			/* Show the original registers in the dump. */
+> -			syscall_rollback(current, task_pt_regs(current));
+> +			syscall_rollback(current, current_pt_regs());
+>  			/* Trigger a manual coredump since do_exit skips it. */
+>  			seccomp_init_siginfo(&info, this_syscall, data);
+>  			do_coredump(&info);
+> @@ -1060,7 +1060,7 @@ int __secure_computing(const struct seccomp_data *sd)
+>  		return 0;
+>  
+>  	this_syscall = sd ? sd->nr :
+> -		syscall_get_nr(current, task_pt_regs(current));
+> +		syscall_get_nr(current, current_pt_regs());
+>  
+>  	switch (mode) {
+>  	case SECCOMP_MODE_STRICT:
+> -- 
+> 2.26.2
+> 
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-index 7afa4160416f6..284d5921c3458 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-@@ -159,15 +159,15 @@ void test_bpf_obj_id(void)
- 		/* Check getting link info */
- 		info_len = sizeof(struct bpf_link_info) * 2;
- 		bzero(&link_infos[i], info_len);
--		link_infos[i].raw_tracepoint.tp_name = (__u64)&tp_name;
-+		link_infos[i].raw_tracepoint.tp_name = ptr_to_u64(&tp_name);
- 		link_infos[i].raw_tracepoint.tp_name_len = sizeof(tp_name);
- 		err = bpf_obj_get_info_by_fd(bpf_link__fd(links[i]),
- 					     &link_infos[i], &info_len);
- 		if (CHECK(err ||
- 			  link_infos[i].type != BPF_LINK_TYPE_RAW_TRACEPOINT ||
- 			  link_infos[i].prog_id != prog_infos[i].id ||
--			  link_infos[i].raw_tracepoint.tp_name != (__u64)&tp_name ||
--			  strcmp((char *)link_infos[i].raw_tracepoint.tp_name,
-+			  link_infos[i].raw_tracepoint.tp_name != ptr_to_u64(&tp_name) ||
-+			  strcmp(u64_to_ptr(link_infos[i].raw_tracepoint.tp_name),
- 				 "sys_enter") ||
- 			  info_len != sizeof(struct bpf_link_info),
- 			  "get-link-info(fd)",
-@@ -178,7 +178,7 @@ void test_bpf_obj_id(void)
- 			  link_infos[i].type, BPF_LINK_TYPE_RAW_TRACEPOINT,
- 			  link_infos[i].id,
- 			  link_infos[i].prog_id, prog_infos[i].id,
--			  (char *)link_infos[i].raw_tracepoint.tp_name,
-+			  (const char *)u64_to_ptr(link_infos[i].raw_tracepoint.tp_name),
- 			  "sys_enter"))
- 			goto done;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_extern.c b/tools/testing/selftests/bpf/prog_tests/core_extern.c
-index b093787e94489..1931a158510e0 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_extern.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_extern.c
-@@ -159,8 +159,8 @@ void test_core_extern(void)
- 		exp = (uint64_t *)&t->data;
- 		for (j = 0; j < n; j++) {
- 			CHECK(got[j] != exp[j], "check_res",
--			      "result #%d: expected %lx, but got %lx\n",
--			       j, exp[j], got[j]);
-+			      "result #%d: expected %llx, but got %llx\n",
-+			       j, (__u64)exp[j], (__u64)got[j]);
- 		}
- cleanup:
- 		test_core_extern__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index a895bfed55db0..197d0d217b56b 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -16,7 +16,7 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 	__u32 duration = 0, retval;
- 	struct bpf_map *data_map;
- 	const int zero = 0;
--	u64 *result = NULL;
-+	__u64 *result = NULL;
- 
- 	err = bpf_prog_load(target_obj_file, BPF_PROG_TYPE_UNSPEC,
- 			    &pkt_obj, &pkt_fd);
-@@ -29,7 +29,7 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 
- 	link = calloc(sizeof(struct bpf_link *), prog_cnt);
- 	prog = calloc(sizeof(struct bpf_program *), prog_cnt);
--	result = malloc((prog_cnt + 32 /* spare */) * sizeof(u64));
-+	result = malloc((prog_cnt + 32 /* spare */) * sizeof(__u64));
- 	if (CHECK(!link || !prog || !result, "alloc_memory",
- 		  "failed to alloc memory"))
- 		goto close_prog;
-@@ -72,7 +72,7 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 		goto close_prog;
- 
- 	for (i = 0; i < prog_cnt; i++)
--		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %ld\n",
-+		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %llu\n",
- 			  result[i]))
- 			goto close_prog;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index f11f187990e95..cd6dc80edf18e 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -591,7 +591,7 @@ void test_flow_dissector(void)
- 		CHECK_ATTR(tattr.data_size_out != sizeof(flow_keys) ||
- 			   err || tattr.retval != 1,
- 			   tests[i].name,
--			   "err %d errno %d retval %d duration %d size %u/%lu\n",
-+			   "err %d errno %d retval %d duration %d size %u/%zu\n",
- 			   err, errno, tattr.retval, tattr.duration,
- 			   tattr.data_size_out, sizeof(flow_keys));
- 		CHECK_FLOW_KEYS(tests[i].name, flow_keys, tests[i].keys);
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data.c b/tools/testing/selftests/bpf/prog_tests/global_data.c
-index e3cb62b0a110e..9efa7e50eab27 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data.c
-@@ -5,7 +5,7 @@
- static void test_global_data_number(struct bpf_object *obj, __u32 duration)
- {
- 	int i, err, map_fd;
--	uint64_t num;
-+	__u64 num;
- 
- 	map_fd = bpf_find_map(__func__, obj, "result_number");
- 	if (CHECK_FAIL(map_fd < 0))
-@@ -14,7 +14,7 @@ static void test_global_data_number(struct bpf_object *obj, __u32 duration)
- 	struct {
- 		char *name;
- 		uint32_t key;
--		uint64_t num;
-+		__u64 num;
- 	} tests[] = {
- 		{ "relocate .bss reference",     0, 0 },
- 		{ "relocate .data reference",    1, 42 },
-@@ -32,7 +32,7 @@ static void test_global_data_number(struct bpf_object *obj, __u32 duration)
- 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
- 		err = bpf_map_lookup_elem(map_fd, &tests[i].key, &num);
- 		CHECK(err || num != tests[i].num, tests[i].name,
--		      "err %d result %lx expected %lx\n",
-+		      "err %d result %llx expected %llx\n",
- 		      err, num, tests[i].num);
- 	}
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c b/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-index dde2b7ae7bc9e..935a294f049a2 100644
---- a/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-@@ -28,7 +28,7 @@ void test_prog_run_xattr(void)
- 	      "err %d errno %d retval %d\n", err, errno, tattr.retval);
- 
- 	CHECK_ATTR(tattr.data_size_out != sizeof(pkt_v4), "data_size_out",
--	      "incorrect output size, want %lu have %u\n",
-+	      "incorrect output size, want %zu have %u\n",
- 	      sizeof(pkt_v4), tattr.data_size_out);
- 
- 	CHECK_ATTR(buf[5] != 0, "overflow",
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-index 7021b92af3134..c61b2b69710a9 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-@@ -80,7 +80,7 @@ void test_skb_ctx(void)
- 
- 	CHECK_ATTR(tattr.ctx_size_out != sizeof(skb),
- 		   "ctx_size_out",
--		   "incorrect output size, want %lu have %u\n",
-+		   "incorrect output size, want %zu have %u\n",
- 		   sizeof(skb), tattr.ctx_size_out);
- 
- 	for (i = 0; i < 5; i++)
-diff --git a/tools/testing/selftests/bpf/test_btf.c b/tools/testing/selftests/bpf/test_btf.c
-index 305fae8f80a98..c75fc6447186a 100644
---- a/tools/testing/selftests/bpf/test_btf.c
-+++ b/tools/testing/selftests/bpf/test_btf.c
-@@ -3883,7 +3883,7 @@ static int test_big_btf_info(unsigned int test_num)
- 	info_garbage.garbage = 0;
- 	err = bpf_obj_get_info_by_fd(btf_fd, info, &info_len);
- 	if (CHECK(err || info_len != sizeof(*info),
--		  "err:%d errno:%d info_len:%u sizeof(*info):%lu",
-+		  "err:%d errno:%d info_len:%u sizeof(*info):%zu",
- 		  err, errno, info_len, sizeof(*info))) {
- 		err = -1;
- 		goto done;
-@@ -4094,7 +4094,7 @@ static int do_test_get_info(unsigned int test_num)
- 	if (CHECK(err || !info.id || info_len != sizeof(info) ||
- 		  info.btf_size != raw_btf_size ||
- 		  (ret = memcmp(raw_btf, user_btf, expected_nbytes)),
--		  "err:%d errno:%d info.id:%u info_len:%u sizeof(info):%lu raw_btf_size:%u info.btf_size:%u expected_nbytes:%u memcmp:%d",
-+		  "err:%d errno:%d info.id:%u info_len:%u sizeof(info):%zu raw_btf_size:%u info.btf_size:%u expected_nbytes:%u memcmp:%d",
- 		  err, errno, info.id, info_len, sizeof(info),
- 		  raw_btf_size, info.btf_size, expected_nbytes, ret)) {
- 		err = -1;
-@@ -4730,7 +4730,7 @@ ssize_t get_pprint_expected_line(enum pprint_mapv_kind_t mapv_kind,
- 
- 		nexpected_line = snprintf(expected_line, line_size,
- 					  "%s%u: {%u,0,%d,0x%x,0x%x,0x%x,"
--					  "{%lu|[%u,%u,%u,%u,%u,%u,%u,%u]},%s,"
-+					  "{%llu|[%u,%u,%u,%u,%u,%u,%u,%u]},%s,"
- 					  "%u,0x%x,[[%d,%d],[%d,%d]]}\n",
- 					  percpu_map ? "\tcpu" : "",
- 					  percpu_map ? cpu : next_key,
-@@ -4738,7 +4738,7 @@ ssize_t get_pprint_expected_line(enum pprint_mapv_kind_t mapv_kind,
- 					  v->unused_bits2a,
- 					  v->bits28,
- 					  v->unused_bits2b,
--					  v->ui64,
-+					  (__u64)v->ui64,
- 					  v->ui8a[0], v->ui8a[1],
- 					  v->ui8a[2], v->ui8a[3],
- 					  v->ui8a[4], v->ui8a[5],
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index b809246039181..b5670350e3263 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -133,6 +133,11 @@ static inline __u64 ptr_to_u64(const void *ptr)
- 	return (__u64) (unsigned long) ptr;
- }
- 
-+static inline void *u64_to_ptr(__u64 ptr)
-+{
-+	return (void *) (unsigned long) ptr;
-+}
-+
- int bpf_find_map(const char *test, struct bpf_object *obj, const char *name);
- int compare_map_keys(int map1_fd, int map2_fd);
- int compare_stack_ips(int smap_fd, int amap_fd, int stack_trace_len);
 -- 
-2.25.1
-
+Kees Cook
