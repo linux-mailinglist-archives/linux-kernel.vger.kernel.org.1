@@ -2,180 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F8B250B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2009F250B07
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 23:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgHXVpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 17:45:11 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:51012 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXVpL (ORCPT
+        id S1726752AbgHXVmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 17:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXVmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:45:11 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OLiZwJ109477;
-        Mon, 24 Aug 2020 21:44:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- references : message-id : date : mime-version : in-reply-to : content-type
- : content-transfer-encoding; s=corp-2020-01-29;
- bh=5ftygo4Ee5xu8FJ3Seecngj6CY7Jpdmg1p+RhDMqHss=;
- b=x1F19B8DJ72ef3WNDvH0pxbvintrtRug+OTw7RiM3R6MiaSCUTv3siJijWFfgEhLBOrb
- h1T0O1EltwbAAmKkR4NNMWVXnqllbIcn1288Q4lL0bTCLWulUIJQG7u4hga+9KqeoXX7
- BEoBPhkBzmUcythJHL92iiAsUSngwfBQuPMk0mxPHO4g4LNaHAQjzqPx2AkDAOzytj4L
- YTwfgSIbYlHeY+EZ1mUQXOCLZolS8VojBShviuSSYmYsSM9RZCpNZZcCkdlp92mVxIrR
- fZCJuNOQ7YA7x4Qvs//HC51Rbef5Hhny7FbNIXKOrEJWYD4Pgive0wM6y3k9NlhMrfHk gA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 333cshy559-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 21:44:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OLZG7w117747;
-        Mon, 24 Aug 2020 21:42:34 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 333r9hst68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 21:42:34 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07OLgV7l003277;
-        Mon, 24 Aug 2020 21:42:31 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 14:42:31 -0700
-Subject: Re: [RFC] Design proposal for upstream core-scheduling interface
-From:   chris hyser <chris.hyser@oracle.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        JulienDesfossez@google.com, jdesfossez@digitalocean.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
-        tglx@linutronix.de, pjt@google.com, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, keescook@chromium.org,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>, vineethrp@gmail.com,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        dhaval.giani@gmail.com, paulmck@kernel.org, joshdon@google.com,
-        xii@google.com, haoluo@google.com, bsegall@google.com
-References: <20200822030155.GA414063@google.com>
- <6d25f0e8-9894-386e-7669-9ecbc176bd5b@oracle.com>
-Message-ID: <cb5432d1-9909-1f16-5e26-ea77efbee713@oracle.com>
-Date:   Mon, 24 Aug 2020 17:42:28 -0400
+        Mon, 24 Aug 2020 17:42:52 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB60DC061574;
+        Mon, 24 Aug 2020 14:42:51 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o4so6570950wrn.0;
+        Mon, 24 Aug 2020 14:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=hkARozwEXZJVRsmCa4FsWOarTsVSbx9L2pp/ThDbffw=;
+        b=knIBq9oV5ZdXmHcbgn/kURoApVFwIuY5ZXEgUVupmzKeR/GzaQsx/D1AgoW9iM2AZo
+         E0vOqcjTp4MrN7Dx0Q+cZFPrvDSUambr75qx592tyS+81bWVoYWeKiIdA4AU5Rlg2Rc2
+         USAKOtDY+OfzBVI6oWLHFjPDzQ6lyX0uLPYfy+78kwZLlhC9PtlyT1U7Gf35G+3XkPFt
+         G3VMH05l+l0OO8A7tJr1OsLbUBXexkeRXmieu+oKk1sDL4YdVk3ZmfK2YHdH6Ns0JIW7
+         0/sK3VZkF5RfnfNXuyGCe18l4r4aVDmY8EGuZwKOLmOPG58hauBf8QXrsrj6HHofVZBT
+         0Q/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hkARozwEXZJVRsmCa4FsWOarTsVSbx9L2pp/ThDbffw=;
+        b=AcOctC1teTby5FgcmXuJ4KBOudlffVlKE2y4QR8ddqAnHIgkzbEZmWgv9GbeW/jaww
+         WzBLrXqU1ElsR+tNmH9IEwPtB5FfxGcHyIWOJTaRvHZt8INqS5P2+We1sRJdNww4Emkl
+         tCFyMs+NWO0XlyrfNJ5bB0PDOkxbQfQYMch0uvX9P8zXV0sYRNs5dUIIwfgJjteljSox
+         KNqTW/QtZQf4wpDnPLbPt8QVReL4oinxomlm+ZdKExSOms0T5CZqv6BX7wmDzAn88vBg
+         YiXbx1sAIdn3RSyKIGYBz3xA0nZBmjTdpfD9c0AFmBXXSR5hMkQH5mZ5S1ftCmdtz4FU
+         wy4A==
+X-Gm-Message-State: AOAM530oFKujTjTTcurIPGTI1sKggoikZF0sPmvdCOWuvZbJO4IqcrXU
+        p6v5PDplneniqdeS0chXOJex9/Ugt3ytIRlf
+X-Google-Smtp-Source: ABdhPJyj3e46TgMt/sLQrGzqR+7Yrt9u/xxxCUdaD7yGd+UoWdKmYEquZ5Ai38Bl4okVH5SiX6yOag==
+X-Received: by 2002:adf:83c5:: with SMTP id 63mr7441486wre.321.1598305369981;
+        Mon, 24 Aug 2020 14:42:49 -0700 (PDT)
+Received: from [192.168.0.18] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id b14sm26542424wrj.93.2020.08.24.14.42.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 14:42:49 -0700 (PDT)
+Subject: Re: [PATCH] scsi: qla2xxx: Remove unnecessary call to memset
+To:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200820185149.932178-1-alex.dewar90@gmail.com>
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Message-ID: <c6f52893-6fa4-f5f8-42a8-9a2482f16c45@gmail.com>
+Date:   Mon, 24 Aug 2020 22:42:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <6d25f0e8-9894-386e-7669-9ecbc176bd5b@oracle.com>
+In-Reply-To: <20200820185149.932178-1-alex.dewar90@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240170
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240171
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/20 4:53 PM, chris hyser wrote:
-> On 8/21/20 11:01 PM, Joel Fernandes wrote:
->> Hello!
->> Core-scheduling aims to allow making it safe for more than 1 task that trust
->> each other to safely share hyperthreads within a CPU core [1]. This results
->> in a performance improvement for workloads that can benefit from using
->> hyperthreading safely while limiting core-sharing when it is not safe.
->>
->> Currently no universally agreed set of interface exists and companies have
->> been hacking up their own interface to make use of the patches. This post
->> aims to list usecases which I got after talking to various people at Google
->> and Oracle. After which actual development of code to add interfaces can follow.
->>
->> The below text uses the terms cookie and tag interchangeably. Further, cookie
->> of 0 is assumed to indicate a trusted process - such as kernel threads or
->> system daemons. By default, if nothing is tagged then everything is
->> considered trusted since the scheduler assumes all tasks are a match for each
->> other.
->>
->> Usecase 1: Google's cloud group tags CGroups with a 32-bit integer. This
->> int32 is split into 2 parts, the color and the id. The color can only be set
->> by privileged processes and the id can be set by anyone. The CGroup structure
->> looks like:
->>
->>     A         B
->>    / \      / \ \
->>   C   D    E  F  G
->>
->> Here A and B are container CGroups for 2 jobs are assigned a color by a
->> privileged daemon. The job itself has more sub-CGroups within (for ex, B has
->> E, F and G). When these sub-CGroups are spawned, they inherit the color from
->> the parent. An unprivileged user can then set an id for the sub-CGroup
->> without the knowledge of the privileged daemon if it desires to add further
->> isolation. This setting of id can be an unprivileged operation because the
->> root daemon has already isolated A and B.
->>
->> Usecase 2: Chrome browser - tagging renderers. In Chrome, each tab opened
->> spawns a renderer. A renderer is a sandboxed process and it is assumed it
->> could run arbitrary code (Javascript etc). When a renderer is created, a
->> prctl call is made to tag the renderer. Every thread that is spawned by the
->> renderer is also tagged. Essentially this turns SMT off for the renderer, but
->> still gives a performance boost due to privileged system threads being able
->> to share a core. The tagging also forbids the renderer from sharing a core
->> with privileged system processes. In the future, we plan to allow threads to
->> share a core as well (especially once we get syscall-isolation upstreamed.
->> Patches were posted recently for the same [2]).
->>
->> Usecase 3: ChromeOS VMs - each vCPU thread that is created by the VMM is
->> tagged thus disallowing core sharing between the vCPU thread and any other
->> thread on the system. This is because such VMs may run arbitrary user code
->> and attack both the guest and the host systems sharing the core.
->>
->> Usecase 4: Oracle - Setting a sub-CGroup as trusted (cookie 0). Chris Hyser
->> talked to me on IRC that in a CGroup hierarcy, some CGroups should be allowed
->> to not have to share its parent's CGroup tag. In fact, it should be allowed to
->> untag the child CGroup if needed thus allowing them to share a core with
->> trusted tasks. Others have had similar requirements.
->>
->> Proposal for tagging
->> --------------------
->> We have to support both CGroup and non-CGroup users. CGroup may be overkill
->> for some and the CGroup v2 unified hierarchy may be too inflexible.
->> Regardless, we must support CGroup due its easy of use and existing users.
->>
->> For Usecase #1
->> ----------
->> Usecase #1 requires a 2-level tagging mechanism. I propose 2 new files
->> to the CPU controller:
->> - tag : a boolean (0/1). If set, this CGroup and all sub-CGroups will be
->>    tagged.  (In the kernel, the cookie will be derived from the pointer value
->>    of a ref-counted cookie object.). If reset, then the CGroup will inherit
->>    the parent CGroup's cookie if there is one.
->>
->> - color : The ref-counted object will be aligned say to a 256-byte boundary
->>    (for example), then the lower 8 bits of the pointer can be used to specify
->>    color. Together, the pointer with the color will form a cookie used by the
->>    scheduler.
->>
->> Note that if 2 CGroups belong to 2 different tagged hierarchies, then setting
->> their color to be the same does not imply that the 2 groups will share a
->> core. This is key.  Also, to support usecase #4, we could add a third tag
->> value -- 2, along with the usual 0 and 1 to suggest that the CGroup can share
->> a core with cookie-0 tasks (Chris Hyser feel free to add any more comments
->> here).
-> 
-> Let em think about this. This looks like it would support delegation of a cgroup subtree, which I suppose containers are 
-
-s/em/me/
+On 2020-08-20 19:51, Alex Dewar wrote:
+> In qla25xx_set_els_cmds_supported(), a call is made to
+> dma_alloc_coherent() followed by zeroing the memory with memset. This is
+> unnecessary as dma_alloc_coherent() already zeros memory. Remove.
+>
+> Issue identified with Coccinelle.
+>
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+Gentle ping?
+> ---
+>   drivers/scsi/qla2xxx/qla_mbx.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+> index 226f1428d3e5..e00f604bbf7a 100644
+> --- a/drivers/scsi/qla2xxx/qla_mbx.c
+> +++ b/drivers/scsi/qla2xxx/qla_mbx.c
+> @@ -4925,8 +4925,6 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
+>   		return QLA_MEMORY_ALLOC_FAILED;
+>   	}
+>   
+> -	memset(els_cmd_map, 0, ELS_CMD_MAP_SIZE);
+> -
+>   	/* List of Purex ELS */
+>   	cmd_opcode[0] = ELS_FPIN;
+>   	cmd_opcode[1] = ELS_RDP;
 
