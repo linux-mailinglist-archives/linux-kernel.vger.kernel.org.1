@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAB624F516
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E601C24F490
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgHXIoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39992 "EHLO mail.kernel.org"
+        id S1728476AbgHXIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729121AbgHXIoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:44:21 -0400
+        id S1728460AbgHXIhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFE302074D;
-        Mon, 24 Aug 2020 08:44:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDE0F22B43;
+        Mon, 24 Aug 2020 08:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258661;
-        bh=y+cdlWwnxSVfXPsP98WjNJycz7BCmcmnk0m4iUv16Bw=;
+        s=default; t=1598258265;
+        bh=uaWNLW9XVYMCb9Z1ayLAd98CimdrdQ6Rhy0Jm6kCvyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNXRJzHo/VKdAoV/t0sAZ2cIiEVtryDO5hpoLbV2o7HUL+TldR+62eTnFP7wxyWy0
-         B8YGSo3BaGmLATujMxypGAbRxWH7SWbuK6IITAAymm4H563vm1nHClCoGv017V1m7w
-         WCddLTZaJChiXneZJecKZ7euzdc2VukJ3ewt7ME4=
+        b=GWgntPEP/JKYGHdQ66slak2maieLnaPIsOJ7j4nri29jXMIF16pG3w0O3A/oPh3hh
+         0ULICZ0VI2b49FZ6H0+lt0BzqdzKjQguvF9rUQF2hJJh+EJ9NBGrMV2TUsiOQCp3TT
+         aTlCQCp2MaOEEU3fh6lQC8Ax2l6plIUkP6ypEkeo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 099/124] scsi: ufs: Fix interrupt error message for shared interrupts
+Subject: [PATCH 5.8 135/148] net: gemini: Fix missing free_netdev() in error path of gemini_ethernet_port_probe()
 Date:   Mon, 24 Aug 2020 10:30:33 +0200
-Message-Id: <20200824082414.287581819@linuxfoundation.org>
+Message-Id: <20200824082420.485692703@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 6337f58cec030b34ced435b3d9d7d29d63c96e36 ]
+[ Upstream commit cf96d977381d4a23957bade2ddf1c420b74a26b6 ]
 
-The interrupt might be shared, in which case it is not an error for the
-interrupt handler to be called when the interrupt status is zero, so don't
-print the message unless there was enabled interrupt status.
+Replace alloc_etherdev_mq with devm_alloc_etherdev_mqs. In this way,
+when probe fails, netdev can be freed automatically.
 
-Link: https://lore.kernel.org/r/20200811133936.19171-1-adrian.hunter@intel.com
-Fixes: 9333d7757348 ("scsi: ufs: Fix irq return code")
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/cortina/gemini.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 7298adbcdec85..3b80d692dd2e7 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5803,7 +5803,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
- 	} while (intr_status && --retries);
+diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
+index 66e67b24a887c..62e271aea4a50 100644
+--- a/drivers/net/ethernet/cortina/gemini.c
++++ b/drivers/net/ethernet/cortina/gemini.c
+@@ -2389,7 +2389,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
  
--	if (retval == IRQ_NONE) {
-+	if (enabled_intr_status && retval == IRQ_NONE) {
- 		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
- 					__func__, intr_status);
- 		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+ 	dev_info(dev, "probe %s ID %d\n", dev_name(dev), id);
+ 
+-	netdev = alloc_etherdev_mq(sizeof(*port), TX_QUEUE_NUM);
++	netdev = devm_alloc_etherdev_mqs(dev, sizeof(*port), TX_QUEUE_NUM, TX_QUEUE_NUM);
+ 	if (!netdev) {
+ 		dev_err(dev, "Can't allocate ethernet device #%d\n", id);
+ 		return -ENOMEM;
+@@ -2521,7 +2521,6 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	port->netdev = NULL;
+-	free_netdev(netdev);
+ 	return ret;
+ }
+ 
+@@ -2530,7 +2529,6 @@ static int gemini_ethernet_port_remove(struct platform_device *pdev)
+ 	struct gemini_ethernet_port *port = platform_get_drvdata(pdev);
+ 
+ 	gemini_port_remove(port);
+-	free_netdev(port->netdev);
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
