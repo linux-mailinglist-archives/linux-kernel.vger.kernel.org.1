@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D29250547
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400D525057E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgHXRNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59472 "EHLO
+        id S1728059AbgHXRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgHXRNT (ORCPT
+        with ESMTP id S1728431AbgHXRQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:13:19 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A77C061573;
-        Mon, 24 Aug 2020 10:13:18 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id o12so3433971qki.13;
-        Mon, 24 Aug 2020 10:13:18 -0700 (PDT)
+        Mon, 24 Aug 2020 13:16:22 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA6AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 10:16:11 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id s1so9470575iot.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 10:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GaHc2bZckrs8e79oDtFVB7aLWMuGUzPJWwj4xMv5ZQ0=;
-        b=sACWAqxr/VwqSbPYqQIyY1frS1wWBS77a9KLyRsBUtLvjhHrsnouo257CI/pZAU3NE
-         HUToM7TEMwjOrJ5fQ8PE7xoK3iL68yjtoax+Fn1Bz/MIMoK1Pmdg1aWH2M5Zx5gbc5Nj
-         vHMMGR6V44/vv023nXAYwemwySEZ1tzxw8Iu9QY/xZQ03pWZPdrL1LZGRv6aMAHv8dY8
-         cWv9WjHc10HWc9Rjgfnt8zBZcMgIUFhQRNTFt/LqcqxFq3Anq8QSqkS+FSrTGsYc6/1J
-         n438QmKE/gclk0V8c6ow5eP7xWRsU4Ldw1v/6UpgJvn//xaVZG2cTGULug7GOI42Ee+l
-         bBTg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wl71a8cghqkJSR267P9P0mVn6KDAwl29z7WcXnWApbw=;
+        b=CVkUGe4wi7xJpIXZZjM4CDM2kUZqeM9SAA3oVUlDitCdrBc2e7Xoif2L0s0narbqp6
+         rT8cIz+pJWuOfi+8YRApNDUn7x4k5tU3f50o8jSGlSLwRUADB/KEbZhXucNgiTaVkO9e
+         9yoqk+xs2Jhp969r7l0mrYSWSgcOu7ANi7gbs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GaHc2bZckrs8e79oDtFVB7aLWMuGUzPJWwj4xMv5ZQ0=;
-        b=nssSjNSsugSR5DIcYKKGA49UO2GzPm8rqFM7qjPdz090Zc3qry6CvZkj0IONAZ3PHn
-         YLpDZEuQeQK2Ri1BfyaceDcTghTlah6Cg0waxJ5S6V+d/d8GUBMZjLl3zMrVIlFeulij
-         IBqC34ow7ck+FheEqdhvWuT4P90Ch241JIwf3/qM7cVFQFHidTZtzy1jg8TPZDbQeoyO
-         pvKsu2CPg+kOoyiCxT3kuyOtYqGdReyn4S3Mm1JsTRr9ccQcK1kArRXEgKs0psByEB/3
-         GOTcFArpsl9Q/h8i5LO4j44ad3qMu5sSCW8WvSyjHPYIqH34ithfQz56LEbyUqaFvhs9
-         0IFg==
-X-Gm-Message-State: AOAM532FReTpB97lsv2LWi9wVhIK+eOt4YvPfeow/gMvX7vHv0vbb12g
-        4XA3lxcoyPVUiMbHPQxLE5M=
-X-Google-Smtp-Source: ABdhPJxc+U0rwjsBE0g1+LJf3/921SQAlSClVRIUiNYJqVYKUNV6pzhfvMBdGRGx2YYHZo6QUvCcrQ==
-X-Received: by 2002:a37:8301:: with SMTP id f1mr5473168qkd.86.1598289197871;
-        Mon, 24 Aug 2020 10:13:17 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:dd21])
-        by smtp.gmail.com with ESMTPSA id f189sm9839624qke.15.2020.08.24.10.13.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wl71a8cghqkJSR267P9P0mVn6KDAwl29z7WcXnWApbw=;
+        b=O+Q2t9JtNMOHEqdhc24riLzLfLX8mHWfZi+ge81qiXdF1BoeM2iGPnV1cE/hvEBo4i
+         oLtQku8EKW0StIjJnGYlx0amZc7U5n9jwpAMvKi4HUdIloDktORC/Rym9q/sGjVARnAC
+         dUEwM8f47Qoo/TSa2dNtGeZtvpCtqpgm0KCjEUNmnglZ+rzQo1RPczIDAefN03LPQNhH
+         WeSIUntury99od740xUenjyD3avc4ElBoAEn1RXBslEpd87BETxY0WMwEgsWIZx2kkxH
+         Hd/0DzPimqXp/RSUTqcLfUYQfqXBC/ZhuLQZY/6uBzucD5YSDBhxtv8bw+FJXo43kJxk
+         gQ9A==
+X-Gm-Message-State: AOAM532YE7Vb+HxuqytdzFTjbNL/EEhUKb8tJEMWvJpiEe55XE3jN7yW
+        FVxMGfcMhrzJ8gG44fbPKxeCyA==
+X-Google-Smtp-Source: ABdhPJzJpVpTBCn9w1SRoKPNDmqmftKz/0Hk0SqBHm4+qva5yK1qN6pusdN1tE19FBtGZFn2rMK8zQ==
+X-Received: by 2002:a6b:5c03:: with SMTP id z3mr5669907ioh.16.1598289371025;
+        Mon, 24 Aug 2020 10:16:11 -0700 (PDT)
+Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
+        by smtp.gmail.com with ESMTPSA id p77sm7618499ill.39.2020.08.24.10.16.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 10:13:17 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 13:13:14 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/4] mm: support nesting memalloc_use_memcg()
-Message-ID: <20200824171314.GA17113@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20200824153607.6595-1-schatzberg.dan@gmail.com>
- <20200824153607.6595-3-schatzberg.dan@gmail.com>
- <20200824161901.GA2401952@carbon.lan>
+        Mon, 24 Aug 2020 10:16:10 -0700 (PDT)
+From:   Raul E Rangel <rrangel@chromium.org>
+To:     adrian.hunter@intel.com
+Cc:     chris.wang@amd.com, Akshu.Agrawal@amd.com,
+        Nehal-bakulchandra.Shah@amd.com,
+        Raul E Rangel <rrangel@chromium.org>,
+        Jisheng Zhang <jszhang@marvell.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH] mmc: sdhci: Don't enable presets while tuning
+Date:   Mon, 24 Aug 2020 11:16:07 -0600
+Message-Id: <20200824111427.1.Id6f3c92fecf4acc60c3b7f57d5f4e4c854ace765@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824161901.GA2401952@carbon.lan>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 09:19:01AM -0700, Roman Gushchin wrote:
-> Hi Dan,
-> 
-> JFYI: I need a similar patch for the bpf memory accounting rework,
-> so I ended up sending it separately (with some modifications including
-> different naming): https://lkml.org/lkml/2020/8/21/1464 .
-> 
-> Can you please, rebase your patchset using this patch?
-> 
-> I hope Andrew can pull this standalone patch into 5.9-rc*,
-> as Shakeel suggested. It will help us to avoid merge conflicts
-> during the 5.10 merge window.
-> 
-> Thanks!
+SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
+used for DDR52. The HS400 retuning sequence is:
 
-Yeah I mentioned it in the cover letter and linked to your patch. I
-had not realized the naming change, so I can rebase on top of that -
-I'll wait to see if there's other feedback first.
+    HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
+
+This means that when HS400 tuning happens, we transition through DDR52
+for a very brief period. This causes presets to be enabled
+unintentionally and stay enabled when transitioning back to HS200 or
+HS400.
+
+This patch prevents enabling presets while tuning is in progress.
+
+     change and that presets were still disabled.
+
+Fixes: 0dafa60eb2506 ("mmc: sdhci: also get preset value and driver type for MMC_DDR52")
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+---
+The indentation changed because I ran clang-format
+
+ drivers/mmc/host/sdhci.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 37b1158c1c0c9..fd702c436c165 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2360,12 +2360,13 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+ 		host->timing = ios->timing;
+ 
+ 		if (!(host->quirks2 & SDHCI_QUIRK2_PRESET_VALUE_BROKEN) &&
+-				((ios->timing == MMC_TIMING_UHS_SDR12) ||
+-				 (ios->timing == MMC_TIMING_UHS_SDR25) ||
+-				 (ios->timing == MMC_TIMING_UHS_SDR50) ||
+-				 (ios->timing == MMC_TIMING_UHS_SDR104) ||
+-				 (ios->timing == MMC_TIMING_UHS_DDR50) ||
+-				 (ios->timing == MMC_TIMING_MMC_DDR52))) {
++		    !mmc_doing_retune(mmc) &&
++		    ((ios->timing == MMC_TIMING_UHS_SDR12) ||
++		     (ios->timing == MMC_TIMING_UHS_SDR25) ||
++		     (ios->timing == MMC_TIMING_UHS_SDR50) ||
++		     (ios->timing == MMC_TIMING_UHS_SDR104) ||
++		     (ios->timing == MMC_TIMING_UHS_DDR50) ||
++		     (ios->timing == MMC_TIMING_MMC_DDR52))) {
+ 			u16 preset;
+ 
+ 			sdhci_enable_preset_value(host, true);
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
