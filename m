@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959E524F859
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C9E24F7A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgHXJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+        id S1729817AbgHXJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgHXJaO (ORCPT
+        with ESMTP id S1727790AbgHXJSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:30:14 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF407C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:30:14 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k13so3925054plk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:30:14 -0700 (PDT)
+        Mon, 24 Aug 2020 05:18:02 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4318C061573;
+        Mon, 24 Aug 2020 02:18:02 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x25so4501391pff.4;
+        Mon, 24 Aug 2020 02:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pK5bVNvEUkGmkHt7h+22p1PRjllmkBfGKoPd86o06Lw=;
-        b=zb6H8ukRfhieLWr3DBnUXOTmg55+e5EVKeqsfa2altwwB4K1VmjB+xm8dp0KBc1B0F
-         KH/tRUbVH5H9kDw1etY4+d/Urtgr+0Uix5vBzCbL7jtkQ1eORBWByV8kv2G/GTNO34Vt
-         mSH6FAZHzaRAefjA6cu7fJfPaD6DxdXrTBmzBKhB6v3cEnUrPrwh8faxFALumEMVOqJA
-         CTTMXQeHQ8MSlQBI1kcnwyGWnp1vQ2Y8z7P0NgI/6mlqv0ZgTeOsB4RhP2gBC/WJvl+H
-         E/7v/z49lP1blJipG/yCn02u9NiwT7GRfdVRKXa+EBMMQvQmxFyFlkyzbmIzDvLjy4lx
-         1+hg==
+        bh=rMbx9PJ3DCBK5KCbc3Tq72JFtt/jZJ3a0mHSBLV/+uA=;
+        b=AnqeJkTdPwAVQxkz4xsNAtHq1yAHzh39+X/LXN7tfivOxU91cTAYJkDJJEjAHalmTR
+         JZlcvmT0jYOFVX6LkmIh6yFcYtztGmbUR6o6yzTt2BxiUbPXknRCADhyi23jcFSPn4uw
+         M71l9lbogTqNOdr1bUTHbUybuPAn+BIlK1zzCStEEaaRqb7iMr0gqZvvHFJO39zu68h7
+         3y9YUX1d1+rSQqgmOEVJ5qdyprOkA23HJUvmKtbuFOwVLNgYGmxJLg6a+sS7/fE7N5Eq
+         mksxmBPLx7hej4N+hF4XWBKcKl1DxvAZHPO+gnF2uzOwJWB6Lgc0gxCpW6QyWAHddreL
+         MUQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pK5bVNvEUkGmkHt7h+22p1PRjllmkBfGKoPd86o06Lw=;
-        b=Pmq0VVtptpwC9ipMhier8jxEbC1PKVWAR5llIINKwM2bFUgXNk94BPA/nWj0/9uLD6
-         IFzJyWLKhqwKSdnYWxXJqd+BIvHTbDRXD5Tv6gjH5VccdpW7UAkGstSrII1+VXzUlfgG
-         AhM8yNci2wT/HxIr1Ne2MIPqtCpkflwqYrSVHrGrc1IoMJ6KKcT+M0nPuYkOiIvelBmk
-         k0Rwz/fC7OOWrvSIaovz8wskXeDC/PCkVFLfSXVJO8hTFNKzslVyFaQHjRnh4gDQ2BLh
-         tVb2UHC9CmxEF4OyQmeljaopywPGi/bvwJxC3+Dm92PTwlTwsoNEe0oa2lNYHdxNsUr2
-         e/OA==
-X-Gm-Message-State: AOAM530DqHt5tZsM5OFnoq8dgfDHo6027vroeXm+KZumEFJtpsUXQE7p
-        WNxEKZZqMILC+p7R9t4ymxhY8w==
-X-Google-Smtp-Source: ABdhPJwzqLJz/+aP8JzlsLfMYGqG9zUEjWrPHt0rxu0+/5xAZOVgSxNCJ+v8x4WUX1WjzQRFq4pUgA==
-X-Received: by 2002:a17:90a:448e:: with SMTP id t14mr3829392pjg.59.1598261414267;
-        Mon, 24 Aug 2020 02:30:14 -0700 (PDT)
-Received: from localhost ([122.172.43.13])
-        by smtp.gmail.com with ESMTPSA id y3sm9647312pjg.8.2020.08.24.02.30.13
+        bh=rMbx9PJ3DCBK5KCbc3Tq72JFtt/jZJ3a0mHSBLV/+uA=;
+        b=OHIupXePxRwVVrsdOC5YHTAS+bM7EKbiHE1B37fZI+imbKYAVEj3WKQohJeUDMPaPF
+         OicXOl4AqJwYKuMS7pOWf3LlNVBnIGtt2MVEIEcIML82dDTmaMfWDeFJm/Z2jcdMouW5
+         KBVJOUVu2u/sHDRAvOLJpcnNt1tAHKD27RF+tThMYR/y6g9EBydAfM9excyMkKP3lCQW
+         IqozGWVg40NtKNhf09s+ga41o5cyyWGSRZDp+fbXFm6kpVbNYWRWMrmqXzBfxFCuhPDB
+         VT3PZyhLZvKZiZBag62tZqAY2GnsU6aVRGM0Xc5+3zZE0gIE4F4QcTBDID9hPTm3EE6S
+         e86Q==
+X-Gm-Message-State: AOAM532VmLXjOzxpDUbNSIegrEXvH6Z5tTKv9Kep1OiRYyuC5GI2hX0U
+        +R2yvjtVSBhA6UQRwWChB7xQgY2MCVQnpg==
+X-Google-Smtp-Source: ABdhPJwH15eOuacRsnIJtiFTkzCC9mVtco/DG7gF2PFLarQs3vCzzD3G4wVhpqSTXi5lRLlEgpy9XQ==
+X-Received: by 2002:a63:4b63:: with SMTP id k35mr2965491pgl.235.1598260682241;
+        Mon, 24 Aug 2020 02:18:02 -0700 (PDT)
+Received: from localhost ([121.0.29.56])
+        by smtp.gmail.com with ESMTPSA id 62sm10342504pfx.47.2020.08.24.02.18.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Aug 2020 02:30:13 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     stable@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH - for v5.7 stable] opp: Put opp table in dev_pm_opp_set_rate() for empty tables
-Date:   Mon, 24 Aug 2020 15:00:03 +0530
-Message-Id: <e7e9f887328c06800a79f3b48feb623fd15aa3d5.1598261323.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        Mon, 24 Aug 2020 02:18:01 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: [PATCH] kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
+Date:   Mon, 24 Aug 2020 18:18:25 +0800
+Message-Id: <20200824101825.4106-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,39 +72,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-commit 8979ef70850eb469e1094279259d1ef393ffe85f upstream.
+8c8560b83390("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes)
+changed it without giving any reason in the changelog.
 
-We get the opp_table pointer at the top of the function and so we should
-put the pointer at the end of the function like all other exit paths
-from this function do.
+In theory, the syncing is needed, and need to be fixed by reverting
+this part of change.
 
-Cc: v5.7+ <stable@vger.kernel.org> # v5.7+
-Fixes: aca48b61f963 ("opp: Manage empty OPP tables with clk handle")
-Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-[ Viresh: Split the patch into two ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-[ Viresh: Update the code for v5.7-stable ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- drivers/opp/core.c | 2 +-
+ arch/x86/kvm/mmu/mmu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index bb7060d52eec..c94e725e6522 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -820,7 +820,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 		if (opp_table->required_opp_tables) {
- 			ret = _set_required_opps(dev, opp_table, NULL);
- 		} else if (!_get_opp_count(opp_table)) {
--			return 0;
-+			ret = 0;
- 		} else {
- 			dev_err(dev, "target frequency can't be 0\n");
- 			ret = -EINVAL;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 4e03841f053d..9a93de921f2b 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2468,7 +2468,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 		}
+ 
+ 		if (sp->unsync_children)
+-			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
++			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+ 
+ 		__clear_sp_write_flooding_count(sp);
+ 
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.19.1.6.gb485710b
 
