@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AE324F7F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EE824F823
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgHXJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:24:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33634 "EHLO mail.kernel.org"
+        id S1727037AbgHXJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730255AbgHXIxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:53:55 -0400
+        id S1729656AbgHXIwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:52:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 415C1204FD;
-        Mon, 24 Aug 2020 08:53:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BDBE204FD;
+        Mon, 24 Aug 2020 08:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259234;
-        bh=YpO6n/hx+XryrWAOxjzu0xvCNugcUj0aDwhi0NSNc6w=;
+        s=default; t=1598259165;
+        bh=Okk13ya5vY/zxAdaG1dG8uTrUbWIRUGPqbRNUa/aJjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QoO6TeUWdRjOkjPczkfNfrTEnh6hFd343xrw/NbGjue9496PF+lFOBBcyu6EmBC1G
-         vBv3l2N3v21Vw8Fu+YYjrx0bZ8zuQqlCEbRuW0NN3GwqSHVHDet6HGS07f4XKVzT2H
-         qCyK8KyQBTaAtxfDHegfso1/QaINF2jlqXZYX1bk=
+        b=TIT6kKsNqB95VWbaYvVEK2YwGRzUXmzAHwqx00blmOzFlSjKspr8g8+qalhtBByFY
+         K6qq1nKhD7Lv9xqnEJrnByrxJvNoXwrrTQFzMTKpjFjmyZyQ2GptGyNtdLkYpY/yp1
+         ukpcb+U8McWC4bWunnYO51X1xXwqT6ttHxHvi1fM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eiichi Tsukata <devel@etsukata.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 31/50] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
+Subject: [PATCH 4.9 33/39] net: dsa: b53: check for timeout
 Date:   Mon, 24 Aug 2020 10:31:32 +0200
-Message-Id: <20200824082353.619704553@linuxfoundation.org>
+Message-Id: <20200824082350.220310354@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eiichi Tsukata <devel@etsukata.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 96cf2a2c75567ff56195fe3126d497a2e7e4379f ]
+[ Upstream commit 774d977abfd024e6f73484544b9abe5a5cd62de7 ]
 
-If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
-shows the following warning:
+clang static analysis reports this problem
 
-  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
-  member access within null pointer of type 'struct xfs_kobj'
-  Call Trace:
-   dump_stack+0x10e/0x195
-   ubsan_type_mismatch_common+0x241/0x280
-   __ubsan_handle_type_mismatch_v1+0x32/0x40
-   init_xfs_fs+0x12b/0x28f
-   do_one_initcall+0xdd/0x1d0
-   do_initcall_level+0x151/0x1b6
-   do_initcalls+0x50/0x8f
-   do_basic_setup+0x29/0x2b
-   kernel_init_freeable+0x19f/0x20b
-   kernel_init+0x11/0x1e0
-   ret_from_fork+0x22/0x30
+b53_common.c:1583:13: warning: The left expression of the compound
+  assignment is an uninitialized value. The computed value will
+  also be garbage
+        ent.port &= ~BIT(port);
+        ~~~~~~~~ ^
 
-Fix it by checking parent_kobj before the code accesses its member.
+ent is set by a successful call to b53_arl_read().  Unsuccessful
+calls are caught by an switch statement handling specific returns.
+b32_arl_read() calls b53_arl_op_wait() which fails with the
+unhandled -ETIMEDOUT.
 
-Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-[darrick: minor whitespace edits]
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+So add -ETIMEDOUT to the switch statement.  Because
+b53_arl_op_wait() already prints out a message, do not add another
+one.
+
+Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_sysfs.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/dsa/b53/b53_common.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
-index d04637181ef21..980c9429abec5 100644
---- a/fs/xfs/xfs_sysfs.h
-+++ b/fs/xfs/xfs_sysfs.h
-@@ -44,9 +44,11 @@ xfs_sysfs_init(
- 	struct xfs_kobj		*parent_kobj,
- 	const char		*name)
- {
-+	struct kobject		*parent;
-+
-+	parent = parent_kobj ? &parent_kobj->kobject : NULL;
- 	init_completion(&kobj->complete);
--	return kobject_init_and_add(&kobj->kobject, ktype,
--				    &parent_kobj->kobject, "%s", name);
-+	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
- }
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index 060f9b1769298..c387be5c926b7 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1175,6 +1175,8 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
+ 		return ret;
  
- static inline void
+ 	switch (ret) {
++	case -ETIMEDOUT:
++		return ret;
+ 	case -ENOSPC:
+ 		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
+ 			addr, vid);
 -- 
 2.25.1
 
