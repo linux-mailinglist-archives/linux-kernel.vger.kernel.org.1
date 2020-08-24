@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D11424FABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9F524FACD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 12:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgHXJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728955AbgHXJ6f (ORCPT
+        id S1729455AbgHXKAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 06:00:01 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:33983 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726884AbgHXJ7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:58:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20061C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:58:35 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 11:58:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598263113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VBtkaB/urMRjE3KDZiHlShNfLKbL53xdqqZJYFhzB6U=;
-        b=zQK29oix1xwa06jMXLKYr+zKUzHU699aC1Y7GbINccUZlofpr3TVjS229SPdTOywDmRmKR
-        NNq9UoeBjWaX/R0F6hxFHm8jAhzoNfGfnpSw2mp7P9jQG9M97ORA3QzC/jsF8D6S6Y5e1B
-        ne7B3kt63HE45NchLkJPB+UXmLbYw80+j6TftpzTPGbjGe04I5GnFsUgkLuNb64Lb3jfiQ
-        HbgRSoBno6ntZfeDAc7O0Zsfs6uKaQJorFtdJjLx+iRcyW76iysPwWEn9vTdvdGWpIgLLU
-        HBO8tdEm3he973k81nulL2wfvZ9fWZPsghPqTMMzRVj4qbJCkzBzl3OBROYdhA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598263113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VBtkaB/urMRjE3KDZiHlShNfLKbL53xdqqZJYFhzB6U=;
-        b=2UjFVzZIp1GezRNJ7apJWJOzysrfRYWMPEkSSV724oBmU7zCnuPfW2s/wjn2aPmKMOQayW
-        BxglsF10dTFJCpAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: {standard input}:5973: Error: operand out of range (512 is not
- between -512 and 511)
-Message-ID: <20200824095831.5lpkmkafelnvlpi2@linutronix.de>
-References: <202008241018.RkyIlLKd%lkp@intel.com>
+        Mon, 24 Aug 2020 05:59:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U6g21Wa_1598263186;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U6g21Wa_1598263186)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 24 Aug 2020 17:59:47 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH 1/2] mm/slub: Introduce two counters for the partial
+ objects
+To:     Pekka Enberg <penberg@gmail.com>,
+        Christopher Lameter <cl@linux.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>
+References: <1593678728-128358-1-git-send-email-xlpang@linux.alibaba.com>
+ <a53f9039-5cba-955b-009e-12e8c5ffb345@suse.cz>
+ <CAOJsxLHX62P0yvHZcXdje41zm_2demzTraqvHXAvfhVPp2HKsA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com>
+ <CAOJsxLGqrCTgQhdOTTWKcCz0TsVfh_AxTCVWNGj6Mo4hyE5E2Q@mail.gmail.com>
+ <alpine.DEB.2.22.394.2008111250170.86069@www.lameter.com>
+ <CAOJsxLHnTDjY3X69zVVaZ0MbpRab-1+Rk3L5AnZD3oQEceHD7Q@mail.gmail.com>
+From:   xunlei <xlpang@linux.alibaba.com>
+Message-ID: <9811b473-e09f-c2aa-cdd8-c71c34fe4707@linux.alibaba.com>
+Date:   Mon, 24 Aug 2020 17:59:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAOJsxLHnTDjY3X69zVVaZ0MbpRab-1+Rk3L5AnZD3oQEceHD7Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202008241018.RkyIlLKd%lkp@intel.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-24 10:17:19 [+0800], kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d012a7190fc1fd72ed48911e77ca97ba4521bccd
-> commit: de8f5e4f2dc1f032b46afda0a78cab5456974f89 lockdep: Introduce wait-type checks
-> date:   5 months ago
-> config: arc-randconfig-r004-20200824 (attached as .config)
-> compiler: arc-elf-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout de8f5e4f2dc1f032b46afda0a78cab5456974f89
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
+On 2020/8/20 PM9:58, Pekka Enberg wrote:
+> Hi Christopher,
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> On Tue, Aug 11, 2020 at 3:52 PM Christopher Lameter <cl@linux.com> wrote:
+>>
+>> On Fri, 7 Aug 2020, Pekka Enberg wrote:
+>>
+>>> Why do you consider this to be a fast path? This is all partial list
+>>> accounting when we allocate/deallocate a slab, no? Just like
+>>> ___slab_alloc() says, I assumed this to be the slow path... What am I
+>>> missing?
+>>
+>> I thought these were per object counters? If you just want to count the
+>> number of slabs then you do not need the lock at all. We already have a
+>> counter for the number of slabs.
 > 
-> All errors (new ones prefixed by >>):
+> The patch attempts to speed up count_partial(), which holds on to the
+> "n->list_lock" (with IRQs off) for the whole duration it takes to walk
+> the partial slab list:
 > 
->    {standard input}: Assembler messages:
-> >> {standard input}:5973: Error: operand out of range (512 is not between -512 and 511)
+>         spin_lock_irqsave(&n->list_lock, flags);
+>         list_for_each_entry(page, &n->partial, slab_list)
+>                 x += get_count(page);
+>         spin_unlock_irqrestore(&n->list_lock, flags);
 > 
+> It's counting the number of *objects*, but the counters are only
+> updated in bulk when we add/remove a slab to/from the partial list.
+> The counter updates are therefore *not* in the fast-path AFAICT.
+> 
+> Xunlei, please correct me if I'm reading your patches wrong.
 
-I have here gcc 10 and the output is:
-|  CC      arch/arc/kernel/signal.o
-|arch/arc/include/asm/bitops.h: Assembler messages:
-|arch/arc/include/asm/bitops.h:236: Error: junk at end of line, first unrecognized character is `0'
-|arch/arc/include/asm/bitops.h:236: Error: junk at end of line, first unrecognized character is `0'
-|make[3]: *** [scripts/Makefile.build:283: arch/arc/kernel/signal.o] Error 1
-|make[2]: *** [scripts/Makefile.build:500: arch/arc/kernel] Error 2
-|make[1]: *** [Makefile:1788: arch/arc] Error 2
+Yes, it's all in slow-path.
 
-the reason is that:
-| #ifndef CONFIG_ARC_PLAT_EZNPS
-| BIT_OPS(set, |, bset)
-| BIT_OPS(clear, & ~, bclr)
-| BIT_OPS(change, ^, bxor)
-| #else
-| BIT_OPS(set, |, CTOP_INST_AOR_DI_R2_R2_R3)
-| BIT_OPS(clear, & ~, CTOP_INST_AAND_DI_R2_R2_R3)
-| BIT_OPS(change, ^, CTOP_INST_AXOR_DI_R2_R2_R3)
-| #endif
+> 
+> On Tue, Aug 11, 2020 at 3:52 PM Christopher Lameter <cl@linux.com> wrote:
+>>> No objections to alternative fixes, of course, but wrapping the
+>>> counters under CONFIG_DEBUG seems like just hiding the actual issue...
+>>
+>> CONFIG_DEBUG is on by default. It just compiles in the debug code and
+>> disables it so we can enable it with a kernel boot option. This is because
+>> we have had numerous issues in the past with "production" kernels that
+>> could not be recompiled with debug options. So just running the prod
+>> kernel with another option will allow you to find hard to debug issues in
+>> a full scale producton deployment with potentially proprietary modules
+>> etc.
+> 
+> Yeah, it's been too long since I last looked at the code and did not
+> realize even count_partial() is wrapped in CONFIG_DEBUG. So by all
 
-and the config supplied does not accept CTOP_INST_AAND_DI_R2_R2_R3
-(which is
-	#define CTOP_INST_AAND_DI_R2_R2_R3              0x4A664C04
-)
-and the assembler does not like that.
-After the removal CONFIG_ARC_PLAT_EZNPS I got to stage 2:
-|drivers/irqchip/irq-eznps.c:80:16: error: 'CTOP_AUX_IACK' undeclared (first use in this function)
-|   80 |  write_aux_reg(CTOP_AUX_IACK, 1 << irq);
+Besides CONFIG_DEBUG, count_partial() is also wrapped in CONFIG_SYSFS.
 
-so I removed CONFIG_EZNPS_GIC. And then I ended with:
-|  LD      vmlinux.o
-|arc-linux-ld: gcc-10.1.0-nolibc/arc-linux/bin/../lib/gcc/arc-linux/10.1.0/arc700/libgcc.a(_muldi3.o): compiled for a little endian system and target is big endian
-|arc-linux-ld: failed to merge target specific data of file gcc-10.1.0-nolibc/arc-linux/bin/../lib/gcc/arc-linux/10.1.0/arc700/libgcc.a(_muldi3.o)
-
-Please update CI and ARC.
-
-Sebastian
+> means, let's also wrap the counters with that too.
+> 
+> - Pekka
+> 
