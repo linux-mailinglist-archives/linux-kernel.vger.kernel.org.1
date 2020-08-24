@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB51224FCAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1787F24FC9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgHXLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726570AbgHXLaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727003AbgHXLby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgHXLaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Aug 2020 07:30:39 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11B3D207D3;
-        Mon, 24 Aug 2020 11:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598268629;
-        bh=bt7dFAcDuO0UdPyEe5tTiZUrM3cI4CmBaNfQ2X4kSiY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lt32UVbWH5/QjXYwo5xbqFXcjvVDVxIQtlxjOIceDtcUJDMnGaSYbBetkYc2uIy0g
-         R2QZtNor9TILz6FSszTk/mch2MKJef5vqhy49U/HRLFz5EAnQ/xEKZQGC5AIiQO1zw
-         CN2PfKxV6rUe6gJ6YXT4VcTWeHk0vBz4gQOiTzU8=
-From:   Will Deacon <will@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
-        kernel-team@android.com, Will Deacon <will@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH stable-5.4.y backport 2/2] KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set
-Date:   Mon, 24 Aug 2020 12:30:22 +0100
-Message-Id: <20200824113022.24860-2-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200824113022.24860-1-will@kernel.org>
-References: <20200824113022.24860-1-will@kernel.org>
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2282C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:30:30 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 17so4650665pfw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KFVBStf/gf1dn9u4zO2x0xipCrd73hHfqj8Q+elUA6k=;
+        b=iqLr05L9bMYf1Q1YOzzoOeQuCLaPr/lR39Wr1rxWF64ZbU0xLpZBF8iUwYh/a3/5VC
+         K1lL5Il0RvcoFxohuj31lGwRHYwD+h7NMKfo2lmfMQ1iLqLvNDujhvNcQEhp0Ae0kDH9
+         IR4OiPOcd9b1WB97D4SkdRLgWaPsEdhOG05MRr1Ov/lXXoEn0zTsTaIYgARNOdtLJDiw
+         xgIJKzGjmeXNxaLu0Olnx2evewVxzXldixTPJlzoU/ScmAPXIIk/P9rYR+qWb8HQ7hC7
+         XT2eIHtIgOR/PXaEs3pQAZzZ3qsR0AnInnRzshA7AaWSOuXTmeava6a40ndJRxvH4jUV
+         adLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KFVBStf/gf1dn9u4zO2x0xipCrd73hHfqj8Q+elUA6k=;
+        b=Bg8L4dveYWfxlByxSar/ODgnrCbh3boe5LpbZBW3W0Qva9TtbCmrk6d5W6vxDcfE+g
+         ISD20OrxBHhJAphH69FGxQwck4wDIBUVj85eBMzpSRLhcdYLgHEzFt4EQh1FSrzlAcHy
+         TfEKnRmuoTjTF38TQdgO4YWdQ4I1LNZEgFb6tQ2ITghtGVbhU3tBq0oDx51+4gQxM7W2
+         qfVQq2JITzzP3oe/nrauSpYCAeBnRf4Z1IOvEXtJLJ59STtVpbBeSHfJHOgA30YRrIFy
+         KdcHIc73EJkBfLTut/sJId2kHoHR3On/ae2Sznr3kAZBSdzy0gfzwpD+DvQtIzJZd3QD
+         qS9g==
+X-Gm-Message-State: AOAM531KT5gn4OT3wGOGZwl1d4UdI+vv+m5bpWuMn1+EY+3Zt4i3UB4P
+        1OToTcBxAVLIcfJEPA4GkQjcWQ==
+X-Google-Smtp-Source: ABdhPJwof+0lVQnVChbft2uU8gERi7rnvy18l1DB/HKP5XCCoWFy6zzd0qvuoXraHA02UUv2w1CLsw==
+X-Received: by 2002:a05:6a00:851:: with SMTP id q17mr3790700pfk.214.1598268630288;
+        Mon, 24 Aug 2020 04:30:30 -0700 (PDT)
+Received: from localhost ([122.172.43.13])
+        by smtp.gmail.com with ESMTPSA id x13sm2714433pfr.69.2020.08.24.04.30.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 04:30:29 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 17:00:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [RFC PATCH 2/3] opp: Set required OPPs in reverse order when
+ scaling down
+Message-ID: <20200824113027.lzh6fp4bottjl6cc@vireshk-i7>
+References: <20200730080146.25185-1-stephan@gerhold.net>
+ <20200730080146.25185-3-stephan@gerhold.net>
+ <20200821163152.GA3422@gerhold.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821163152.GA3422@gerhold.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b5331379bc62611d1026173a09c73573384201d9 upstream.
+On 21-08-20, 18:31, Stephan Gerhold wrote:
+> This patch does not apply anymore after the cleanup you pushed to
+> opp/linux-next. I would be happy to send a v2 with that fixed.
+> 
+> On my other OPP patch set you mentioned that you might apply these
+> directly with some of your own changes - would you also prefer to do it
+> yourself in this case or should I send a v2?
 
-When an MMU notifier call results in unmapping a range that spans multiple
-PGDs, we end up calling into cond_resched_lock() when crossing a PGD boundary,
-since this avoids running into RCU stalls during VM teardown. Unfortunately,
-if the VM is destroyed as a result of OOM, then blocking is not permitted
-and the call to the scheduler triggers the following BUG():
+I will pick the first 2 myself, that's fine. Lets see where we go with
+the third one :)
 
- | BUG: sleeping function called from invalid context at arch/arm64/kvm/mmu.c:394
- | in_atomic(): 1, irqs_disabled(): 0, non_block: 1, pid: 36, name: oom_reaper
- | INFO: lockdep is turned off.
- | CPU: 3 PID: 36 Comm: oom_reaper Not tainted 5.8.0 #1
- | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
- | Call trace:
- |  dump_backtrace+0x0/0x284
- |  show_stack+0x1c/0x28
- |  dump_stack+0xf0/0x1a4
- |  ___might_sleep+0x2bc/0x2cc
- |  unmap_stage2_range+0x160/0x1ac
- |  kvm_unmap_hva_range+0x1a0/0x1c8
- |  kvm_mmu_notifier_invalidate_range_start+0x8c/0xf8
- |  __mmu_notifier_invalidate_range_start+0x218/0x31c
- |  mmu_notifier_invalidate_range_start_nonblock+0x78/0xb0
- |  __oom_reap_task_mm+0x128/0x268
- |  oom_reap_task+0xac/0x298
- |  oom_reaper+0x178/0x17c
- |  kthread+0x1e4/0x1fc
- |  ret_from_fork+0x10/0x30
+> Still looking for your feedback on both patch sets by the way! :)
 
-Use the new 'flags' argument to kvm_unmap_hva_range() to ensure that we
-only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is set in the notifier
-flags.
+Sorry about the delay, I was on vacation for over a week in between and
+this and the other patchset was a bit tricky (which you may have not
+realized, not sure, as I wondered if something will not work within
+the OPP core for v1 binding, but it did finally I believe) :)
 
-Cc: <stable@vger.kernel.org> # v5.4 only
-Fixes: 8b3405e345b5 ("kvm: arm/arm64: Fix locking for kvm_free_stage2_pgd")
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Message-Id: <20200811102725.7121-3-will@kernel.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- virt/kvm/arm/mmu.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-index b4a6bbadd144..7501ec8a4600 100644
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -332,7 +332,8 @@ static void unmap_stage2_puds(struct kvm *kvm, pgd_t *pgd,
-  * destroying the VM), otherwise another faulting VCPU may come in and mess
-  * with things behind our backs.
-  */
--static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+static void __unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size,
-+				 bool may_block)
- {
- 	pgd_t *pgd;
- 	phys_addr_t addr = start, end = start + size;
-@@ -357,11 +358,16 @@ static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
- 		 * If the range is too large, release the kvm->mmu_lock
- 		 * to prevent starvation and lockup detector warnings.
- 		 */
--		if (next != end)
-+		if (may_block && next != end)
- 			cond_resched_lock(&kvm->mmu_lock);
- 	} while (pgd++, addr = next, addr != end);
- }
- 
-+static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
-+{
-+	__unmap_stage2_range(kvm, start, size, true);
-+}
-+
- static void stage2_flush_ptes(struct kvm *kvm, pmd_t *pmd,
- 			      phys_addr_t addr, phys_addr_t end)
- {
-@@ -2045,7 +2051,10 @@ static int handle_hva_to_gpa(struct kvm *kvm,
- 
- static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
- {
--	unmap_stage2_range(kvm, gpa, size);
-+	unsigned flags = *(unsigned *)data;
-+	bool may_block = flags & MMU_NOTIFIER_RANGE_BLOCKABLE;
-+
-+	__unmap_stage2_range(kvm, gpa, size, may_block);
- 	return 0;
- }
- 
-@@ -2056,7 +2065,7 @@ int kvm_unmap_hva_range(struct kvm *kvm,
- 		return 0;
- 
- 	trace_kvm_unmap_hva_range(start, end);
--	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, NULL);
-+	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, &flags);
- 	return 0;
- }
- 
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+viresh
