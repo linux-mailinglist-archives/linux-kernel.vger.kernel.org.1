@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8FA24FA26
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEDF24F8F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgHXJxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:53:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
+        id S1729564AbgHXJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:39:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728518AbgHXIiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:38:21 -0400
+        id S1728981AbgHXIqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FDDE20FC3;
-        Mon, 24 Aug 2020 08:38:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4309E2072D;
+        Mon, 24 Aug 2020 08:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258300;
-        bh=RsLtqsOq7s7yk7751y3KEOm21IF0y9XdheSoIvQVt/k=;
+        s=default; t=1598258806;
+        bh=Nsx1/QnVpUDV33+SrioDmlhfg5tkM9R+Pa91bvw0w0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kj1TTAQfZR2zGtdbduy0Hq5hdkKkPf8Dl6sUseWRpf3tzyeNkXmlOURIhVTJBnyEo
-         6UK/wcXNnCDTAzKbha2jD9GgfInPADgQHklanTIvkZwu81xiSzsg/kHk0stbvboZS2
-         /V4ps0lNCnivZv4u5pLb2bajBhzDS4/TBwjd8f40=
+        b=hfl1IS/DOPyW16v277hYIKM8vTqxhXEEPXDoY7ykq9TM8Fzr7cLk3e36zy59dlXIy
+         ZZWpmN58BPsUOSD8alquUBdVhcG0C/+VGqnKyfXHF5RvRe4bv2NcvxKoTrUwpNpod2
+         YyHlpE3R7KfpoTlPpj/Bzaf+z7m2EEj9A7NMrqpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 119/148] kconfig: qconf: fix signal connection to invalid slots
-Date:   Mon, 24 Aug 2020 10:30:17 +0200
-Message-Id: <20200824082419.712373164@linuxfoundation.org>
+Subject: [PATCH 5.4 052/107] jffs2: fix UAF problem
+Date:   Mon, 24 Aug 2020 10:30:18 +0200
+Message-Id: <20200824082407.711962637@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Zhe Li <lizhe67@huawei.com>
 
-[ Upstream commit d85de3399f97467baa2026fbbbe587850d01ba8a ]
+[ Upstream commit 798b7347e4f29553db4b996393caf12f5b233daf ]
 
-If you right-click in the ConfigList window, you will see the following
-messages in the console:
+The log of UAF problem is listed below.
+BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
+Read of size 4 by task rm/8283
+=============================================================================
+BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
+-----------------------------------------------------------------------------
 
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:888
-QObject::connect:  (sender name:   'config')
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:897
-QObject::connect:  (sender name:   'config')
-QObject::connect: No such slot QAction::setOn(bool) in scripts/kconfig/qconf.cc:906
-QObject::connect:  (sender name:   'config')
+INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
+        0xb0bba6ef
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        __slab_alloc.isra.21.constprop.25+0x2c/0x44
+        __kmalloc+0x1dc/0x370
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        jffs2_do_unlink+0x328/0x5fc [jffs2]
+        jffs2_rmdir+0x110/0x1cc [jffs2]
+        vfs_rmdir+0x180/0x268
+        do_rmdir+0x2cc/0x300
+        ret_from_syscall+0x0/0x3c
+INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
+        0x2e9173
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
+        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
+        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
+        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
+        kthread+0x1a8/0x1b0
+        ret_from_kernel_thread+0x5c/0x64
+Call Trace:
+[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
+[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
+[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
+[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
+[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
 
-Right, there is no such slot in QAction. I think this is a typo of
-setChecked.
+The root cause is that we don't get "jffs2_inode_info.sem" before
+we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
+This patch add codes to get "jffs2_inode_info.sem" before we scan
+"jffs2_inode_info.dents" to slove the UAF problem.
 
-Due to this bug, when you toggled the menu "Option->Show Name/Range/Data"
-the state of the context menu was not previously updated. Fix this.
-
-Fixes: d5d973c3f8a9 ("Port xconfig to Qt5 - Put back some of the old implementation(part 2)")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
+Reviewed-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/qconf.cc | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/jffs2/dir.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index be67e74237d22..91ed69b651e99 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -873,7 +873,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowName(bool)));
- 		connect(parent(), SIGNAL(showNameChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showName);
- 		headerPopup->addAction(action);
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index f20cff1194bb6..776493713153f 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	int ret;
+ 	uint32_t now = JFFS2_NOW();
  
-@@ -882,7 +882,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowRange(bool)));
- 		connect(parent(), SIGNAL(showRangeChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showRange);
- 		headerPopup->addAction(action);
- 
-@@ -891,7 +891,7 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- 		connect(action, SIGNAL(toggled(bool)),
- 			parent(), SLOT(setShowData(bool)));
- 		connect(parent(), SIGNAL(showDataChanged(bool)),
--			action, SLOT(setOn(bool)));
-+			action, SLOT(setChecked(bool)));
- 		action->setChecked(showData);
- 		headerPopup->addAction(action);
++	mutex_lock(&f->sem);
+ 	for (fd = f->dents ; fd; fd = fd->next) {
+-		if (fd->ino)
++		if (fd->ino) {
++			mutex_unlock(&f->sem);
+ 			return -ENOTEMPTY;
++		}
  	}
-@@ -1275,7 +1275,7 @@ QMenu* ConfigInfoView::createStandardContextMenu(const QPoint & pos)
++	mutex_unlock(&f->sem);
  
- 	action->setCheckable(true);
- 	connect(action, SIGNAL(toggled(bool)), SLOT(setShowDebug(bool)));
--	connect(this, SIGNAL(showDebugChanged(bool)), action, SLOT(setOn(bool)));
-+	connect(this, SIGNAL(showDebugChanged(bool)), action, SLOT(setChecked(bool)));
- 	action->setChecked(showDebug());
- 	popup->addSeparator();
- 	popup->addAction(action);
+ 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+ 			      dentry->d_name.len, f, now);
 -- 
 2.25.1
 
