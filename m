@@ -2,197 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3CC25011E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D72E250124
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgHXP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:28:09 -0400
-Received: from mail.efficios.com ([167.114.26.124]:34856 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgHXP1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:27:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id CA17524B433;
-        Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id JI11sT3keksC; Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3E03E24B430;
-        Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3E03E24B430
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1598282869;
-        bh=k/FdiPr2ljyOg552ab2M3cf84irwVHEhJWysUBT9k9g=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Ni6sIR0PEc0CgtxVKZ6wMIzbQLDCkss7nxiW46dTEyDGBmXV1o4xpP5c3ZK/4x9xs
-         3DXZGmkoG/0Kq/SbYlsaUWlJBVnaJeu+P8O1Ft2uozdPTpt0BpZxKqRZIBuygV/uZy
-         Z95bDo2v5iaKVoWZTI1y/irli//d0B/yNqNWclGJ2Ee0REScmqVTznLbVsvXAN1tND
-         syWol4QMIDiXtEhgeC63MoNJd7ZXOsq9hPUv1WYHSDKzQiQDriXiskHlTzIfrBEcfo
-         Hnu9MkX0FltWdgQtMBWXKeETP0vclvB6Fy/DDDwbm7cq5+4W6HVbw3HVzRY/sJyXSy
-         +exTORLV6+JpA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lVS9NMqoVrkb; Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 2F35124B8E7;
-        Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-Date:   Mon, 24 Aug 2020 11:27:49 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Nicholas Piggin <npiggin@gmail.com>
-Message-ID: <764014395.16126.1598282869127.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200816152907.GB87259@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200814164358.4783-1-mathieu.desnoyers@efficios.com> <20200814164358.4783-3-mathieu.desnoyers@efficios.com> <20200816152907.GB87259@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v2)
+        id S1726803AbgHXPac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:30:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56250 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726878AbgHXP3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:29:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 95AD4AC92;
+        Mon, 24 Aug 2020 15:30:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9CB1BDA730; Mon, 24 Aug 2020 17:28:29 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 17:28:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     linux-kernel@vger.kernel.org, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v3] btrfs: block-group: Fix free-space bitmap threshould
+Message-ID: <20200824152829.GK2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>,
+        linux-kernel@vger.kernel.org, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
+References: <20200821145444.25791-1-marcos@mpdesouza.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: sched: membarrier: cover kthread_use_mm (v2)
-Thread-Index: s276cd/5raHQhg/Q8ooEoMEfpwMdNA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821145444.25791-1-marcos@mpdesouza.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 16, 2020, at 11:29 AM, Boqun Feng boqun.feng@gmail.com wrote:
-
-> On Fri, Aug 14, 2020 at 12:43:57PM -0400, Mathieu Desnoyers wrote:
->> Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
->> to allow the effect of membarrier(2) to apply to kthreads accessing
->> user-space memory as well.
->> 
->> Given that no prior kthread use this guarantee and that it only affects
->> kthreads, adding this guarantee does not affect user-space ABI.
->> 
->> Refine the check in membarrier_global_expedited to exclude runqueues
->> running the idle thread rather than all kthreads from the IPI cpumask.
->> 
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Nicholas Piggin <npiggin@gmail.com>
->> Cc: Andy Lutomirski <luto@amacapital.net>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> ---
->> Changes since v1:
->> - Add WARN_ON_ONCE(current->mm) in play_idle_precise (PeterZ),
->> - Use smp_mb__after_spinlock rather than smp_mb after task_lock.
->> ---
->>  kernel/kthread.c          | 19 +++++++++++++++++++
->>  kernel/sched/idle.c       |  1 +
->>  kernel/sched/membarrier.c |  8 ++------
->>  3 files changed, 22 insertions(+), 6 deletions(-)
->> 
->> diff --git a/kernel/kthread.c b/kernel/kthread.c
->> index 3edaa380dc7b..77aaaa7bc8d9 100644
->> --- a/kernel/kthread.c
->> +++ b/kernel/kthread.c
->> @@ -1255,8 +1255,19 @@ void kthread_use_mm(struct mm_struct *mm)
->>  	finish_arch_post_lock_switch();
->>  #endif
->>  
->> +	/*
->> +	 * When a kthread starts operating on an address space, the loop
->> +	 * in membarrier_{private,global}_expedited() may not observe
->> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
->> +	 * memory barrier after storing to tsk->mm, before accessing
->> +	 * user-space memory. A full memory barrier for membarrier
->> +	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
->> +	 * mmdrop(), or explicitly with smp_mb().
->> +	 */
->>  	if (active_mm != mm)
->>  		mmdrop(active_mm);
->> +	else
->> +		smp_mb();
+On Fri, Aug 21, 2020 at 11:54:44AM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> Similar question here: could smp_mb() guarantee the correctness of
-> GLOBAL_EXPEDITED? Don't you need membarrier_switch_mm() here and in
-> kthread_unuse_mm(), too?
+> [BUG]
+> After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
+> block group item"), cache->length is being assigned after calling
+> btrfs_create_block_group_cache. This causes a problem since
+> set_free_space_tree_thresholds is calculate the free-space threshould to
+> decide is the free-space tree should convert from extents to bitmaps.
 > 
-> Am I miss something here?
-
-I think you have a good point there. Which brings me to wonder why we
-don't have membarrier_switch_mm() when entering/leaving lazy TLB mode.
-This means an IPI can be sent to a kthread even if it does not use an
-mm, just because the membarrier state in the runqueue is that of the
-active_mm.
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
-
+> The current code calls set_free_space_tree_thresholds with cache->length
+> being 0, which then makes cache->bitmap_high_thresh being zero. This
+> implies the system will always use bitmap instead of extents, which is
+> not desired if the block group is not fragmented.
 > 
-> Regards,
-> Boqun
+> This behavior can be seen by a test that expects to repair systems
+> with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
+> created FREE_SPACE_BITMAP.
 > 
->>  
->>  	to_kthread(tsk)->oldfs = force_uaccess_begin();
->>  }
->> @@ -1276,6 +1287,14 @@ void kthread_unuse_mm(struct mm_struct *mm)
->>  	force_uaccess_end(to_kthread(tsk)->oldfs);
->>  
->>  	task_lock(tsk);
->> +	/*
->> +	 * When a kthread stops operating on an address space, the loop
->> +	 * in membarrier_{private,global}_expedited() may not observe
->> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
->> +	 * memory barrier after accessing user-space memory, before
->> +	 * clearing tsk->mm.
->> +	 */
->> +	smp_mb__after_spinlock();
->>  	sync_mm_rss(mm);
->>  	local_irq_disable();
->>  	tsk->mm = NULL;
->> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
->> index 6bf34986f45c..3443ee8335d0 100644
->> --- a/kernel/sched/idle.c
->> +++ b/kernel/sched/idle.c
->> @@ -341,6 +341,7 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
->>  	WARN_ON_ONCE(!(current->flags & PF_KTHREAD));
->>  	WARN_ON_ONCE(!(current->flags & PF_NO_SETAFFINITY));
->>  	WARN_ON_ONCE(!duration_ns);
->> +	WARN_ON_ONCE(current->mm);
->>  
->>  	rcu_sleep_check();
->>  	preempt_disable();
->> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
->> index 168479a7d61b..8a294483074d 100644
->> --- a/kernel/sched/membarrier.c
->> +++ b/kernel/sched/membarrier.c
->> @@ -100,13 +100,9 @@ static int membarrier_global_expedited(void)
->>  		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
->>  			continue;
->>  
->> -		/*
->> -		 * Skip the CPU if it runs a kernel thread. The scheduler
->> -		 * leaves the prior task mm in place as an optimization when
->> -		 * scheduling a kthread.
->> -		 */
->> +		/* Skip the CPU if it runs the idle thread. */
->>  		p = rcu_dereference(cpu_rq(cpu)->curr);
->> -		if (p->flags & PF_KTHREAD)
->> +		if (is_idle_task(p))
->>  			continue;
->>  
->>  		__cpumask_set_cpu(cpu, tmpmask);
->> --
->> 2.11.0
+> [FIX]
+> Call set_free_space_tree_thresholds after setting cache->length. There
+> is now a WARN_ON in set_free_space_tree_thresholds to help preventing
+> the same mistake to happen again in the future.
+> 
+> Link: https://github.com/kdave/btrfs-progs/issues/251
+> Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
+> CC: stable@vger.kernel.org # 5.8+
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Added to misc-next, thanks.
