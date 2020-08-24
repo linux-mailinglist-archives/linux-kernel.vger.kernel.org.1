@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845DC24F987
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E7D24F8F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgHXImT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
+        id S1729381AbgHXIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728901AbgHXImL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:42:11 -0400
+        id S1729362AbgHXIqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 400012074D;
-        Mon, 24 Aug 2020 08:42:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A2DA206F0;
+        Mon, 24 Aug 2020 08:46:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258530;
-        bh=NSM0kikoMYd4CitRmeGSudrfPq2pKTmsMTIAOfWWzhc=;
+        s=default; t=1598258795;
+        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaoM91sP7dlbwYqDenlP/fj1el0dg6DD59+Why2fA+RSfSMar6JhEt8z0LVBnM1mJ
-         iarwgbujLvOq4gLt+3ZCKIGIM06qsaHdawvFiw9bhGWA63X1ZBRhCViFHOAHDTkANR
-         kRMu0lKUFu4wJIpZ+4E9gTba4gSOG+Vs+ZrIxhWU=
+        b=ClHfQH1n9v4PQTs+Uqrdq6MeIuxox9RoN5CaAG5LXvslLJeVBnBCVGciHUZBTScr6
+         vyxkWK3YXoo76at0qCmt5Hq3oRKQZNpVBpZnS0ZwalQMwLnnhgpgm234r5/+/yi2FW
+         C10/6Fdx2u4AN4gFWkFYH2mURoxxTYd/9KabeLRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 079/124] can: j1939: cancel rxtimer on multipacket broadcast session complete
-Date:   Mon, 24 Aug 2020 10:30:13 +0200
-Message-Id: <20200824082413.299417973@linuxfoundation.org>
+Subject: [PATCH 5.4 048/107] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Date:   Mon, 24 Aug 2020 10:30:14 +0200
+Message-Id: <20200824082407.512298026@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-[ Upstream commit e8b17653088f28a87c81845fa41a2d295a3b458c ]
+[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
 
-If j1939_xtp_rx_dat_one() receive last frame of multipacket broadcast message,
-j1939_session_timers_cancel() should be called to cancel rxtimer.
+The Cache Control Register (CACR) of the ColdFire V3 has bits that
+control high level caching functions, and also enable/disable the use
+of the alternate stack pointer register (the EUSP bit) to provide
+separate supervisor and user stack pointer registers. The code as
+it is today will blindly clear the EUSP bit on cache actions like
+invalidation. So it is broken for this case - and that will result
+in failed booting (interrupt entry and exit processing will be
+completely hosed).
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1596599425-5534-3-git-send-email-zhangchangzhong@huawei.com
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+This only affects ColdFire V3 parts that support the alternate stack
+register (like the 5329 for example) - generally speaking new parts do,
+older parts don't. It has no impact on ColdFire V3 parts with the single
+stack pointer, like the 5307 for example.
+
+Fix the cache bit defines used, so they maintain the EUSP bit when
+carrying out cache actions through the CACR register.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/transport.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/include/asm/m53xxacr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 67189b4c482c5..d1a9adde677b0 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1811,6 +1811,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	}
+diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
+index 9138a624c5c81..692f90e7fecc1 100644
+--- a/arch/m68k/include/asm/m53xxacr.h
++++ b/arch/m68k/include/asm/m53xxacr.h
+@@ -89,9 +89,9 @@
+  * coherency though in all cases. And for copyback caches we will need
+  * to push cached data as well.
+  */
+-#define CACHE_INIT	  CACR_CINVA
+-#define CACHE_INVALIDATE  CACR_CINVA
+-#define CACHE_INVALIDATED CACR_CINVA
++#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
++#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
++#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
  
- 	if (final) {
-+		j1939_session_timers_cancel(session);
- 		j1939_session_completed(session);
- 	} else if (do_cts_eoma) {
- 		j1939_tp_set_rxtimeout(session, 1250);
+ #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
+ 			 (0x000f0000) + \
 -- 
 2.25.1
 
