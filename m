@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F337E24F148
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0966124F145
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 04:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgHXCsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 22:48:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19528 "EHLO mga17.intel.com"
+        id S1727914AbgHXCqQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 23 Aug 2020 22:46:16 -0400
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:46444 "EHLO mgw-01.mpynet.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726635AbgHXCsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 22:48:40 -0400
-IronPort-SDR: n9Dugi8/1XLCreM6P3CP0qZ/jcaNrEer9tlMkdFUIPKJbBpeQr9crZ5vRbqfVRFw3OwO4XIBAK
- MHSpVVsGi1PQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="135896561"
-X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
-   d="scan'208";a="135896561"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2020 19:48:40 -0700
-IronPort-SDR: QvQrd05CTCm6a18WSN5g52+fKEeZzJw+BZjybGfSwfSIY/837bNnl3ts3+SG+3Z8aXPqt68Nxs
- 6o9jE1mGy/Bg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,347,1592895600"; 
-   d="scan'208";a="402124727"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Aug 2020 19:48:38 -0700
-Cc:     baolu.lu@linux.intel.com
-Subject: Re: [RESEND PATCH 4/5] iommu: intel: Drop kerneldoc marker from
- regular comment
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200819175345.20833-1-krzk@kernel.org>
- <20200819175345.20833-4-krzk@kernel.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <93184b50-d55c-b84a-7563-ffd28de3179e@linux.intel.com>
-Date:   Mon, 24 Aug 2020 10:43:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200819175345.20833-4-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726737AbgHXCqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 22:46:16 -0400
+Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
+        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 07O2jdsq114953;
+        Mon, 24 Aug 2020 05:46:01 +0300
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-01.mpynet.fi with ESMTP id 3342qur1pd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 24 Aug 2020 05:46:01 +0300
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 24 Aug 2020 05:46:00 +0300
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.006; Mon, 24 Aug 2020 05:46:00 +0300
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Subject: Re: [PATCH] ntfs: add check for mft record size in superblock
+Thread-Topic: [PATCH] ntfs: add check for mft record size in superblock
+Thread-Index: AQHWeb4qTTgnzi6Afk6ibcYrpfnrp6lGW56A
+Date:   Mon, 24 Aug 2020 02:46:00 +0000
+Message-ID: <E72182A7-D6F9-4AE3-95B3-B732B2F0D7BD@tuxera.com>
+References: <20200824022804.226242-1-rkovhaev@gmail.com>
+In-Reply-To: <20200824022804.226242-1-rkovhaev@gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.145.212.211]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CCAA8F4232D2714792B297CED56AEC38@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-24_01:2020-08-21,2020-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240011
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Andrew,
 
-On 8/20/20 1:53 AM, Krzysztof Kozlowski wrote:
-> Fix W=1 compile warnings (invalid kerneldoc):
-> 
->      drivers/iommu/intel/dmar.c:389: warning: Function parameter or member 'header' not described in 'dmar_parse_one_drhd'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Can you please merge this patch?  Thanks a lot in advance!
 
-Adjust the commit title to "iommu/vt-d: Drop kerneldoc marker from
-regular comment",
-
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Rustam, thank you for the updated patch!
 
 Best regards,
-baolu
 
+	Anton
+
+> On 24 Aug 2020, at 03:28, Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> 
+> number of bytes allocated for mft record should be equal to the mft
+> record size stored in ntfs superblock
+> as reported by syzbot, userspace might trigger out-of-bounds read by
+> dereferencing ctx->attr in ntfs_attr_find()
+> 
+> Reported-and-tested-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?extid=aed06913f36eff9b544e
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> Acked-by: Anton Altaparmakov <anton@tuxera.com>
 > ---
->   drivers/iommu/intel/dmar.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> fs/ntfs/inode.c | 6 ++++++
+> 1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 93e6345f3414..ba47edf03941 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -380,7 +380,7 @@ dmar_find_dmaru(struct acpi_dmar_hardware_unit *drhd)
->   	return NULL;
->   }
->   
-> -/**
-> +/*
->    * dmar_parse_one_drhd - parses exactly one DMA remapping hardware definition
->    * structure which uniquely represent one DMA remapping hardware unit
->    * present in the platform
+> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+> index 9bb9f0952b18..caf563981532 100644
+> --- a/fs/ntfs/inode.c
+> +++ b/fs/ntfs/inode.c
+> @@ -1810,6 +1810,12 @@ int ntfs_read_inode_mount(struct inode *vi)
+> 		brelse(bh);
+> 	}
 > 
+> +	if (le32_to_cpu(m->bytes_allocated) != vol->mft_record_size) {
+> +		ntfs_error(sb, "Incorrect mft record size %u in superblock, should be %u.",
+> +				le32_to_cpu(m->bytes_allocated), vol->mft_record_size);
+> +		goto err_out;
+> +	}
+> +
+> 	/* Apply the mst fixups. */
+> 	if (post_read_mst_fixup((NTFS_RECORD*)m, vol->mft_record_size)) {
+> 		/* FIXME: Try to use the $MFTMirr now. */
+> -- 
+> 2.28.0
+> 
+
+
+-- 
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
+
