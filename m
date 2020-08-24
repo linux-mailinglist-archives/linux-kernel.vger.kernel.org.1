@@ -2,101 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FD8250A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 22:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47FF250A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 22:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgHXUzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 16:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgHXUzh (ORCPT
+        id S1726598AbgHXUww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 16:52:52 -0400
+Received: from gateway24.websitewelcome.com ([192.185.51.253]:25622 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726241AbgHXUwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 16:55:37 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB609C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 13:55:36 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f26so11263796ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 13:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yO3cJzACKVCFpDqahrm90tvJnnQfGEJdekxmCS+jC14=;
-        b=palUVOfz4f083Wb4CBtwLz5r4kSdo4QUMzWlVG2x6nFU8t03xiRSyNEgwqW+GSNaCz
-         OwqgzKJlmEhxkQevF+3ozevC9dRPTsd0IZkTILRZLAYCGwX1cKwwvhZ26NsG5y/Lbt8N
-         x4iMsKUzmBoj49og/XoEe4yJ7NYZtJgFUSl8fVaE9C8QI7ATMxEkfPfeCI7CpBZdFhAv
-         Jg1Y+R6zDLQGWaWzG68jSSqCfEiafx/N7MJ9ZHUKHt2BIVqJfbaE4b0yQBZNuN5QB4J8
-         psw+uAkb6XPgiVzqv8+TRFYTFkrMP7zfIDuHFZXtIif0mSumEjBjAVDJUeOFcLS4qdtz
-         ifXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yO3cJzACKVCFpDqahrm90tvJnnQfGEJdekxmCS+jC14=;
-        b=ml6SPyHzjbMFEwvgWDQCJlNbKHIBiln7D/+wYbBms4wuyEKORFnvU4kJsVA22o7d75
-         fua0lQIMb3+PuJKUh2DabhQZmjDdFW3RCxBrFs2wmKVoBbNOXD/5SRl7WLmb7ugbOF/4
-         gwYrf3N7yza885iLkoOKGwxU3EI8dp0cNJ2jcB88/L/D2ey6/Ek56lKNHlcC/nUtzGyi
-         Es6x5K+C3G7RcOqOW+ZvAyRnSKD+tyIc4ld+DP2xjkN8YA9iRoCgbL0L9NUlPaJ+P64Q
-         JiKnETMlEaUAMEZVq9/ZfQQiTpsq1sFxnfuXETUrg//sW7Obnn7pgUcyI5m+MUCujsbo
-         vuDw==
-X-Gm-Message-State: AOAM530WjD1eP/YTNahSJx0zQtE/bSMVvCcXI5g8tWhr1SOeeXJ1+g6N
-        WiFXMAD1tGyTgJFloFuhKpLpz9NDtrbKZZoy0U2ZHQ==
-X-Google-Smtp-Source: ABdhPJx/GQsMWNe8fX9SQJ5lXrBBnYtA5YY/yrTrZueYlnteT37fsgp+msic8W3g8C5r77mBV89IFKlz3HD3oDrzPX0=
-X-Received: by 2002:a2e:b80b:: with SMTP id u11mr3595979ljo.286.1598302534630;
- Mon, 24 Aug 2020 13:55:34 -0700 (PDT)
+        Mon, 24 Aug 2020 16:52:51 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id EB90414BBF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 15:52:44 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id AJSNkUQkKOIGpAJSOk5GHy; Mon, 24 Aug 2020 15:52:44 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=d4R9KA8mR+zr6FmqLfeiCcmRaaH35vamjamhAgIiUEA=; b=FF1JD2eyx9uc15dWHgaldBr2VY
+        h9jP+jcixa/ZVPo5abX1plwVa6ti84mrwk0KQYpJsx24vWvEQa5XuJWs4kwVDXAflsRgjOZZSin0z
+        n9oIzZWvvVqs7LoGqGTgghiCMgFkzQFUmdG/5mufHxlMNDro1B/T1jvjK3kujqFXT7xcFWGx++LR1
+        BHLzDumUk0SRs+2QaW6x+9dtJxU+Kry6vwR9XRLQZshbw7eVnGVHEbKWKEFFBaUd25an/j5mWU29L
+        Iq2/iTkEV1vk7TqJhlwbaVWslqRC1ssL6mZSwRABJ51FeANvH7rTYz4LjMa81nuBJsq/I3ojMquCS
+        MJr2D9uQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:42054 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kAJSN-002KO6-Ht; Mon, 24 Aug 2020 15:52:43 -0500
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200824034841.GA29995@embeddedor>
+ <CAHk-=wh8a8crLw5Lbs7C2Mz34fAUQn1tTHWqqOXCxbXF1bc_WA@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [GIT PULL] fallthrough pseudo-keyword macro conversions for
+ 5.9-rc3
+Message-ID: <a99adda0-c44d-2ce7-b28c-5549dcf90352@embeddedor.com>
+Date:   Mon, 24 Aug 2020 15:58:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200822163250.63664-1-paul@crapouillou.net> <20200822163250.63664-6-paul@crapouillou.net>
-In-Reply-To: <20200822163250.63664-6-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 24 Aug 2020 22:55:22 +0200
-Message-ID: <CACRpkdYHXwUsN8as7dKOvb00Ec4th45FyBV7TyBOfO4sR=78MA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] drm/panel: Add panel driver for NewVision NV3052C
- based LCDs
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf Tronnes <noralf@tronnes.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wh8a8crLw5Lbs7C2Mz34fAUQn1tTHWqqOXCxbXF1bc_WA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kAJSN-002KO6-Ht
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:42054
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 6:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
 
-> +static const struct nv3052c_reg nv3052c_regs[] = {
-> +       { 0xff, 0x30 },
-> +       { 0xff, 0x52 },
-> +       { 0xff, 0x01 },
-> +       { 0xe3, 0x00 },
-> +       { 0x40, 0x00 },
-(...)
 
-Well that's pretty opaque :D
+On 8/24/20 13:46, Linus Torvalds wrote:
+> On Sun, Aug 23, 2020 at 8:42 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+>>
+>> Not sure what the problem was with my pull-request for -rc2. So, I'm giving
+>> this a second try because I think it is worth it.
+> 
+> Just "a ton of lines changed across subsystems, I feel like I need to check it".
+> 
 
-I suppose no datasheet (why do vendors keep doing this to us...)
+Yep; you're right. These are tons of changes...
 
-In other kernel code I have referred to this as a "jam table", e.g.
-drivers/net/dsa/rtl8366rb.c.
+> For example, you say that you remove unnecessary fall-through
+> markings, but I'm not sure what your pattern for that was.
+> 
 
-I didn't make this up, the name comes from Bunnie Huang's
-book on hacking the Xbox, and he says it is common hardware
-engineer lingo.
-https://www.iacr.org/workshops/ches/ches2002/presentations/Huang.pdf
+fall-through markings are not necessary for consecutive case labels.
 
-What about naming it nv3052c_jam_table[] or nv3052c_jam[]?
+I will soon send a patch to add this info to "Implicit switch case fall-through"
+in deprecated.rst
 
-Yours,
-Linus Walleij
+> You left the one in arch/arm64/kernel/cpuinfo.c:
+> cpuinfo_detect_icache_policy(), for example.
+>> And you've fixed up indentation clearly by hand in places, but then
+> it's incorrectly done in other places (dib8096_set_param_override())
+>
+
+Yeah; I overlooked those two. I'll address them in a future pull-request.
+
+> I've pulled it, but these kinds of "trivial" conversions do make me
+> nervous. We've had a lot of cases of them breaking things, and it's a
+> pain to find when it happens.
+> 
+
+I know; don't worry, I'll be here to fix anything that has to do with
+this change ASAP, like in this case:
+
+https://lore.kernel.org/lkml/20200824203614.GA28543@embeddedor/
+
+could you take it?
+
+> I think I'd have preferred to get this as a couple of scripts that do
+> the obvious 1:1 direct conversion of the simple cases that cover 90%
+> of it all, so then the manual fixups separately.
+> 
+
+I've got it. I will certainly take this into account for future PRs.
+
+> Oh well. I've pulled it.
+> 
+
+Awesome. :)
+
+Thank you!
+--
+Gustavo
