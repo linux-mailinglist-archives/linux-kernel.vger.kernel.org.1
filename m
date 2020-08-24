@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B523E250B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 00:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C28F250B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 00:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgHXWKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 18:10:35 -0400
-Received: from ms.lwn.net ([45.79.88.28]:56776 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgHXWKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 18:10:35 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id AE9A460C;
-        Mon, 24 Aug 2020 22:10:34 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 16:10:33 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Nitin Joshi <njoshi1@lenovo.com>,
-        Sugumaran <slacshiminar@lenovo.com>,
-        Bastien Nocera <bnocera@redhat.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH] Documentation: laptops: thinkpad-acpi: fix underline
- length build warning
-Message-ID: <20200824161033.0448f327@lwn.net>
-In-Reply-To: <7b2ecef9-dfb7-808a-7c05-4e4f44b363c4@infradead.org>
-References: <7b2ecef9-dfb7-808a-7c05-4e4f44b363c4@infradead.org>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+        id S1728012AbgHXWLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 18:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726532AbgHXWLQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 18:11:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108C6C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 15:11:16 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a75so12365187ybg.15
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 15:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=7libFXTeoVXtSxsZx4eAfjri3vn9ydzbEFYgezZigKg=;
+        b=EqHlX/qMRMx/LOwfZ1t7WQK/nNN6yCRmIDpxachI3gcsZfP/KIGo3bOlFE9vp/zh+F
+         tCOnzlWuSPyTdi1yDrB95sLgu3Iq5Jn55KtezGQ1Ar7Z/xzw1pqTLWmU2chqAKL1zR1K
+         K86rsCcH4CvK90lNsaaLZok/HBhHi/fw3BLbprys2DBLQHMFaqQ7C4LDnTaaVpQYgk6h
+         EVbC+8oLy3pOkK/AL3GTgSBMJZxGuJMS7rgzpqGUBu6za8FP0vaqa4KujiTQtGOCBLGP
+         vVSmEqn+Jp8Sk6Wmz5vOk8u9PE9NGeTprgIlPEyyfJ4eGzQVOHes5tXsS27n9QGgwvZ0
+         I2EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=7libFXTeoVXtSxsZx4eAfjri3vn9ydzbEFYgezZigKg=;
+        b=Byi1fduWS0ETWGzIZLRseYB+3uyw4Tt6nl78jji45pFjn8oC9sXKfKHp7AYxuxQ3Xr
+         fp/D/hHZcFwImTne5lihYzq4ZRSMGdu1DpnY/KbbN8XL+UPVyPOTlT7IRaLNP3FFr/9p
+         IJ3esHeT1MFYFGTImS8eT1ng7UspmsCwAp51WzkJR5JGfucbTFgCQlwrfCQycLCk+WLJ
+         meA8USrDdGyjvJ/qOySnwAFvV6xNFW++QmC11pd04WIuK/kLKmmL92Hi9duG1rdg9ndu
+         +x/3yr6nFmKAc6w0bPxVqlDgil1UYuwFT/fEpg2UxB7BVk/yWdtoJeGn+20OTjFmOMMx
+         muKw==
+X-Gm-Message-State: AOAM531G8VptJXSw66f18h5pqG8CIfsR88bxZJXOctCxsYUG++P6PKuB
+        R0faILpuFgki3ECSTfiFW1+cYgWK1l4=
+X-Google-Smtp-Source: ABdhPJyYbIT3pRoEDWt2ng9koXX6AnueTSFvvd/SsxvbXJGSutYvdR3F5iCExJF30Lab3lVhBZgD2c8i/SU=
+X-Received: from khazhy-linux.svl.corp.google.com ([2620:15c:2cd:202:1ea0:b8ff:fe75:bae4])
+ (user=khazhy job=sendgmr) by 2002:a25:502:: with SMTP id 2mr10156615ybf.6.1598307075217;
+ Mon, 24 Aug 2020 15:11:15 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 15:10:34 -0700
+Message-Id: <20200824221034.2170308-1-khazhy@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+Subject: [PATCH v2] block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE
+From:   Khazhismel Kumykov <khazhy@google.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Serge Hallyn <serge@hallyn.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Khazhismel Kumykov <khazhy@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Aug 2020 15:55:16 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+CAP_SYS_ADMIN is too broad, and ionice fits into CAP_SYS_NICE's grouping.
 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix underline length build warning in thinkpad-acpi.rst documentation:
-> 
-> Documentation/admin-guide/laptops/thinkpad-acpi.rst:1437: WARNING: Title underline too short.
-> DYTC Lapmode sensor
-> ------------------
-> 
-> Fixes: acf7f4a59114 ("platform/x86: thinkpad_acpi: lap or desk mode interface")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Nitin Joshi <njoshi1@lenovo.com>
-> Cc: Sugumaran <slacshiminar@lenovo.com>
-> Cc: Bastien Nocera <bnocera@redhat.com>
-> Cc: Mark Pearson <markpearson@lenovo.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Darren Hart <dvhart@infradead.org>
-> Cc: Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>
-> Cc: ibm-acpi-devel@lists.sourceforge.net
-> Cc: platform-driver-x86@vger.kernel.org
-> ---
->  Documentation/admin-guide/laptops/thinkpad-acpi.rst |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Retain CAP_SYS_ADMIN permission for backwards compatibility.
 
-Applied, thanks.
+Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
+---
+ block/ioprio.c                  | 2 +-
+ include/uapi/linux/capability.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-jon
+v2: fix embarrassing logic mistake
+diff --git a/block/ioprio.c b/block/ioprio.c
+index 77bcab11dce5..276496246fe9 100644
+--- a/block/ioprio.c
++++ b/block/ioprio.c
+@@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
+ 
+ 	switch (class) {
+ 		case IOPRIO_CLASS_RT:
+-			if (!capable(CAP_SYS_ADMIN))
++			if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+ 				return -EPERM;
+ 			/* fall through */
+ 			/* rt has prio field too */
+diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
+index 395dd0df8d08..c6ca33034147 100644
+--- a/include/uapi/linux/capability.h
++++ b/include/uapi/linux/capability.h
+@@ -288,6 +288,8 @@ struct vfs_ns_cap_data {
+    processes and setting the scheduling algorithm used by another
+    process. */
+ /* Allow setting cpu affinity on other processes */
++/* Allow setting realtime ioprio class */
++/* Allow setting ioprio class on other processes */
+ 
+ #define CAP_SYS_NICE         23
+ 
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
