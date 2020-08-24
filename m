@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7339524F599
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9258424F5B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729894AbgHXIvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55170 "EHLO mail.kernel.org"
+        id S1730065AbgHXIwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:52:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729607AbgHXIuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:50:54 -0400
+        id S1729494AbgHXIwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:52:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE89B204FD;
-        Mon, 24 Aug 2020 08:50:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F4DC2072D;
+        Mon, 24 Aug 2020 08:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259053;
-        bh=23jSKgFE8nzqENMj08L9XbILRzX98G4LYfw6qUC1X/I=;
+        s=default; t=1598259129;
+        bh=PvGubglU6cmFIj4jp9q0XiJbLPU4XYVuiuvBCjSn7m8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quk6XDVgY0z1kaBQ02j9MUPOErmxkztWbRMiM7m3Tc+D7kbi5clccPEBwgIxSPRqp
-         kE7KeBxAjO0gFcaTXioLptOYxt8NRBH6scvmXvjXe59dmirkUaCpbf3sGNT7JaKEBF
-         UwoLJTMh3JiejL1SntO56G9mXFaAWjQnjgrqLo5Q=
+        b=ZTbKiTdZL5dNOxslZh8bdEDjwsQv3DSUg/MULH8NlGH33/6gr3aY/ZYuE30q5bPbr
+         dagGofBIvnb0yufkZTewd7rEeBcgvwWZkzRFbalxANKux0QqUx07UsqVm1x9tO5378
+         nw4QOWWvNTAlNJmjCnYGOOBErDHlJCy2YNt61GMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Akash Goel <akash.goel@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 13/33] mm, page_alloc: fix core hung in free_pcppages_bulk()
-Date:   Mon, 24 Aug 2020 10:31:09 +0200
-Message-Id: <20200824082347.190133065@linuxfoundation.org>
+Subject: [PATCH 4.9 12/39] kernel/relay.c: fix memleak on destroy relay channel
+Date:   Mon, 24 Aug 2020 10:31:11 +0200
+Message-Id: <20200824082349.099514201@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082346.498653578@linuxfoundation.org>
-References: <20200824082346.498653578@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,100 +53,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charan Teja Reddy <charante@codeaurora.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit 88e8ac11d2ea3acc003cf01bb5a38c8aa76c3cfd upstream.
+commit 71e843295c680898959b22dc877ae3839cc22470 upstream.
 
-The following race is observed with the repeated online, offline and a
-delay between two successive online of memory blocks of movable zone.
+kmemleak report memory leak as follows:
 
-P1						P2
+  unreferenced object 0x607ee4e5f948 (size 8):
+  comm "syz-executor.1", pid 2098, jiffies 4295031601 (age 288.468s)
+  hex dump (first 8 bytes):
+  00 00 00 00 00 00 00 00 ........
+  backtrace:
+     relay_open kernel/relay.c:583 [inline]
+     relay_open+0xb6/0x970 kernel/relay.c:563
+     do_blk_trace_setup+0x4a8/0xb20 kernel/trace/blktrace.c:557
+     __blk_trace_setup+0xb6/0x150 kernel/trace/blktrace.c:597
+     blk_trace_ioctl+0x146/0x280 kernel/trace/blktrace.c:738
+     blkdev_ioctl+0xb2/0x6a0 block/ioctl.c:613
+     block_ioctl+0xe5/0x120 fs/block_dev.c:1871
+     vfs_ioctl fs/ioctl.c:48 [inline]
+     __do_sys_ioctl fs/ioctl.c:753 [inline]
+     __se_sys_ioctl fs/ioctl.c:739 [inline]
+     __x64_sys_ioctl+0x170/0x1ce fs/ioctl.c:739
+     do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Online the first memory block in
-the movable zone. The pcp struct
-values are initialized to default
-values,i.e., pcp->high = 0 &
-pcp->batch = 1.
+'chan->buf' is malloced in relay_open() by alloc_percpu() but not free
+while destroy the relay channel.  Fix it by adding free_percpu() before
+return from relay_destroy_channel().
 
-					Allocate the pages from the
-					movable zone.
-
-Try to Online the second memory
-block in the movable zone thus it
-entered the online_pages() but yet
-to call zone_pcp_update().
-					This process is entered into
-					the exit path thus it tries
-					to release the order-0 pages
-					to pcp lists through
-					free_unref_page_commit().
-					As pcp->high = 0, pcp->count = 1
-					proceed to call the function
-					free_pcppages_bulk().
-Update the pcp values thus the
-new pcp values are like, say,
-pcp->high = 378, pcp->batch = 63.
-					Read the pcp's batch value using
-					READ_ONCE() and pass the same to
-					free_pcppages_bulk(), pcp values
-					passed here are, batch = 63,
-					count = 1.
-
-					Since num of pages in the pcp
-					lists are less than ->batch,
-					then it will stuck in
-					while(list_empty(list)) loop
-					with interrupts disabled thus
-					a core hung.
-
-Avoid this by ensuring free_pcppages_bulk() is called with proper count of
-pcp list pages.
-
-The mentioned race is some what easily reproducible without [1] because
-pcp's are not updated for the first memory block online and thus there is
-a enough race window for P2 between alloc+free and pcp struct values
-update through onlining of second memory block.
-
-With [1], the race still exists but it is very narrow as we update the pcp
-struct values for the first memory block online itself.
-
-This is not limited to the movable zone, it could also happen in cases
-with the normal zone (e.g., hotplug to a node that only has DMA memory, or
-no other memory yet).
-
-[1]: https://patchwork.kernel.org/patch/11696389/
-
-Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into one-list-per-migrate-type")
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: <stable@vger.kernel.org> [2.6+]
-Link: http://lkml.kernel.org/r/1597150703-19003-1-git-send-email-charante@codeaurora.org
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Daniel Axtens <dja@axtens.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Akash Goel <akash.goel@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200817122826.48518-1-weiyongjun1@huawei.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/page_alloc.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/relay.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -843,6 +843,11 @@ static void free_pcppages_bulk(struct zo
- 	if (nr_scanned)
- 		__mod_zone_page_state(zone, NR_PAGES_SCANNED, -nr_scanned);
+--- a/kernel/relay.c
++++ b/kernel/relay.c
+@@ -196,6 +196,7 @@ free_buf:
+ static void relay_destroy_channel(struct kref *kref)
+ {
+ 	struct rchan *chan = container_of(kref, struct rchan, kref);
++	free_percpu(chan->buf);
+ 	kfree(chan);
+ }
  
-+	/*
-+	 * Ensure proper count is passed which otherwise would stuck in the
-+	 * below while (list_empty(list)) loop.
-+	 */
-+	count = min(pcp->count, count);
- 	while (to_free) {
- 		struct page *page;
- 		struct list_head *list;
 
 
