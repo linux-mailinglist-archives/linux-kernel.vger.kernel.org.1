@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6702506D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3262506C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgHXRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:48:20 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:59188 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726391AbgHXRsO (ORCPT
+        id S1726990AbgHXRoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726444AbgHXRoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:48:14 -0400
-Received: from 89-64-88-199.dynamic.chello.pl (89.64.88.199) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
- id cea15cfeb758298d; Mon, 24 Aug 2020 19:48:12 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH v2 3/5] cpufreq: intel_pstate: Add ->offline and ->online callbacks
-Date:   Mon, 24 Aug 2020 19:43:31 +0200
-Message-ID: <2786976.RHVxHup3hB@kreacher>
-In-Reply-To: <4169555.5IIHXK4Dsd@kreacher>
-References: <4169555.5IIHXK4Dsd@kreacher>
+        Mon, 24 Aug 2020 13:44:15 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76798C061573;
+        Mon, 24 Aug 2020 10:44:15 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a5so9683451wrm.6;
+        Mon, 24 Aug 2020 10:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TXooCNGdhbuCs38z5vOfPrPzquVwWGwJseeAUQIr3dI=;
+        b=iTQCp4W4bnKDurMqnF9xz+FFQWCsZ7QeRAPt3KjIVEHR2InNqejYz6MyUzv93PW4aS
+         WyZwtA/F3UKwIaVU/KvdA3Nv9lp5LXXtirqDZpOniKaWsLeVW77XiGZEoE5d/0bYZkRC
+         FOyQX6o8HfXmo5r3GRobQe/q8ZGeNfZh6/gRc9gpX7z3daiXERyOK8VQm1Rz7csQFtpB
+         zZcUQK+RQI/FNAq+EELAMH9/0FmdCQpckS1vilSX1afoClvoQj7SFBCGvhJ/YykaKG/0
+         COheMc2pNwqdgg95ISwKlP8oF6sZLtIavbPS1iWIOlTS1Yqr3zijv+Cl1Tfv1BIRbm4n
+         r/9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TXooCNGdhbuCs38z5vOfPrPzquVwWGwJseeAUQIr3dI=;
+        b=pudCV+Lu7ngveoaLfSHBjWYKJfq+a4oEXyRWdX7Wx5iCL6ZcO7XIsM9ADYp/xCL781
+         VzorB/UEds2JfCy1mqN9mwT0JAUGJWIvMRDEhDqlv88VvRlDmj9x2E0nLJdAr48Ysq4o
+         eRAW1syu/8nLN8lOtGw6Pd/iCTDTVUvj60Bc2XWJaduZDeKzFqlVbg37m0vcSVC/y48v
+         7De6Ljvjc5cbgE3q5LlxRBcDP3lQM/He9MJflMaXwQM2AoFgTsPKGVE+DCR0VHA9dypj
+         0DIyFi1VDxlZE8f4WaJih1wmklyltg0yOMsuzMmcOotsy0RsMUENlBwtbm9vNj7enV0y
+         Lvlw==
+X-Gm-Message-State: AOAM532/l+eb+l0Vbrm180ByNqxIq2LuXSjWWAcPAzEmA3cZpXNBYe6m
+        NXbWA/Zs1no7Pf6UN0mCFQMtJLS6kflKTCJC
+X-Google-Smtp-Source: ABdhPJw7TMgowMg/jub8r23jyDF6m4NIDyBitGVovsMaVGfdJyBBpTjsvU/TA22pDCl+TmPubgjUgQ==
+X-Received: by 2002:adf:f086:: with SMTP id n6mr3470862wro.208.1598291054224;
+        Mon, 24 Aug 2020 10:44:14 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id a7sm446977wmj.24.2020.08.24.10.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 10:44:13 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] video: fbdev: replace spurious snprintf() with sprintf()
+Date:   Mon, 24 Aug 2020 18:44:03 +0100
+Message-Id: <20200824174407.429817-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+par->vgapass is a u8, so if we are assuming that buf is at least
+PAGE_SIZE then the extra checking is pointless.
 
-Add ->offline and ->online driver callbacks to prepare for taking a
-CPU offline and to restore its working configuration when it goes
-back online, respectively, to avoid invoking the ->init callback on
-every CPU online which is quite a bit of unnecessary overhead.
-
-Define ->offline and ->online so that they can be used in the
-passive mode as well as in the active mode and because ->offline
-will do the majority of ->stop_cpu work, the passive mode does
-not need that callback any more, so drop it.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
+ drivers/video/fbdev/sstfb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--> v2: Typo fixes and changelog edits (Doug).
-
----
- drivers/cpufreq/intel_pstate.c | 38 ++++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 3d18934fa975..98836ac299db 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2297,28 +2297,51 @@ static int intel_pstate_verify_policy(struct cpufreq_policy_data *policy)
- 	return 0;
+diff --git a/drivers/video/fbdev/sstfb.c b/drivers/video/fbdev/sstfb.c
+index afe6d1b7c3a0..c05cdabeb11c 100644
+--- a/drivers/video/fbdev/sstfb.c
++++ b/drivers/video/fbdev/sstfb.c
+@@ -733,7 +733,7 @@ static ssize_t show_vgapass(struct device *device, struct device_attribute *attr
+ {
+ 	struct fb_info *info = dev_get_drvdata(device);
+ 	struct sstfb_par *par = info->par;
+-	return snprintf(buf, PAGE_SIZE, "%d\n", par->vgapass);
++	return sprintf(buf, "%d\n", par->vgapass);
  }
  
--static void intel_cpufreq_stop_cpu(struct cpufreq_policy *policy)
-+static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
- {
-+	pr_debug("CPU %d going offline\n", policy->cpu);
-+
-+	intel_pstate_exit_perf_limits(policy);
-+
-+	/*
-+	 * If the CPU is an SMT thread and it goes offline with the performance
-+	 * settings different from the minimum, it will prevent its sibling
-+	 * from getting to lower performance levels, so force the minimum
-+	 * performance on CPU offline to prevent that from happening.
-+	 */
- 	if (hwp_active)
- 		intel_pstate_hwp_force_min_perf(policy->cpu);
- 	else
- 		intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
-+
-+	return 0;
-+}
-+
-+static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
-+{
-+	pr_debug("CPU %d going online\n", policy->cpu);
-+
-+	intel_pstate_init_acpi_perf_limits(policy);
-+
-+	if (hwp_active)
-+		wrmsrl_on_cpu(policy->cpu, MSR_HWP_REQUEST,
-+			      all_cpu_data[policy->cpu]->hwp_req_cached);
-+
-+	return 0;
- }
- 
- static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
- {
--	pr_debug("CPU %d exiting\n", policy->cpu);
-+	pr_debug("CPU %d stopping\n", policy->cpu);
- 
- 	intel_pstate_clear_update_util_hook(policy->cpu);
- 	if (hwp_active)
- 		intel_pstate_hwp_save_state(policy);
--
--	intel_cpufreq_stop_cpu(policy);
- }
- 
- static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
- {
--	intel_pstate_exit_perf_limits(policy);
-+	pr_debug("CPU %d exiting\n", policy->cpu);
- 
- 	policy->fast_switch_possible = false;
- 
-@@ -2398,6 +2421,8 @@ static struct cpufreq_driver intel_pstate = {
- 	.init		= intel_pstate_cpu_init,
- 	.exit		= intel_pstate_cpu_exit,
- 	.stop_cpu	= intel_pstate_stop_cpu,
-+	.offline	= intel_pstate_cpu_offline,
-+	.online		= intel_pstate_cpu_online,
- 	.update_limits	= intel_pstate_update_limits,
- 	.name		= "intel_pstate",
- };
-@@ -2652,7 +2677,8 @@ static struct cpufreq_driver intel_cpufreq = {
- 	.fast_switch	= intel_cpufreq_fast_switch,
- 	.init		= intel_cpufreq_cpu_init,
- 	.exit		= intel_cpufreq_cpu_exit,
--	.stop_cpu	= intel_cpufreq_stop_cpu,
-+	.offline	= intel_pstate_cpu_offline,
-+	.online		= intel_pstate_cpu_online,
- 	.update_limits	= intel_pstate_update_limits,
- 	.name		= "intel_cpufreq",
- };
+ static struct device_attribute device_attrs[] = {
 -- 
-2.26.2
-
-
-
+2.28.0
 
