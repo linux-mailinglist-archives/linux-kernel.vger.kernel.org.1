@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D9124F9A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F8724F913
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgHXJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58858 "EHLO mail.kernel.org"
+        id S1729218AbgHXJk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgHXIlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:41:08 -0400
+        id S1729241AbgHXIpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:45:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5409C2074D;
-        Mon, 24 Aug 2020 08:41:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0140B204FD;
+        Mon, 24 Aug 2020 08:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258467;
-        bh=8wABEDlREpvzT6ukPbd1Mmmvfg+2A2EvnE7zEw6dBsw=;
+        s=default; t=1598258735;
+        bh=q2KANpMGXSeyzKEWZM9I8ni3OZPfwzMBznz7DQYRhiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XqFdAidqHLwDSzL6p1f6+7PujIdSgitlIxJQgtiWyUALP40iwlvLBgiRHSdT0WQzz
-         n+CgtPSMqUI48TI9q4SUEl+wR8CRqSH4y5fh334+3ObDfunnWpU4sPBLZtZ6JA9wg9
-         vlQcm+o1IDiL+UtBC1j33sW2C03O/hvv7pbYSzZs=
+        b=pRN7qhDl+yC+4UyfyJtRDzb7WHFxsHrcdxMETx92RxCE8lGXAkO7pL1cX8alBFXsn
+         kCt4mVyI1y7W0+vkbOkrBBwDMLz6n3mQjAjAIcCkVQqewdWdnodbR7u7fCl8VkrL5e
+         FcHlgliogRHOSmY9+tSnN90ySV9KvACp6MdHuOC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 057/124] alpha: fix annotation of io{read,write}{16,32}be()
-Date:   Mon, 24 Aug 2020 10:29:51 +0200
-Message-Id: <20200824082412.228000895@linuxfoundation.org>
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 026/107] romfs: fix uninitialized memory leak in romfs_dev_read()
+Date:   Mon, 24 Aug 2020 10:29:52 +0200
+Message-Id: <20200824082406.395752684@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,57 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+From: Jann Horn <jannh@google.com>
 
-[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
+commit bcf85fcedfdd17911982a3e3564fcfec7b01eebd upstream.
 
-These accessors must be used to read/write a big-endian bus.  The value
-returned or written is native-endian.
+romfs has a superblock field that limits the size of the filesystem; data
+beyond that limit is never accessed.
 
-However, these accessors are defined using be{16,32}_to_cpu() or
-cpu_to_be{16,32}() to make the endian conversion but these expect a
-__be{16,32} when none is present.  Keeping them would need a force cast
-that would solve nothing at all.
+romfs_dev_read() fetches a caller-supplied number of bytes from the
+backing device.  It returns 0 on success or an error code on failure;
+therefore, its API can't represent short reads, it's all-or-nothing.
 
-So, do the conversion using swab{16,32}, like done in asm-generic for
-similar situations.
+However, when romfs_dev_read() detects that the requested operation would
+cross the filesystem size limit, it currently silently truncates the
+requested number of bytes.  This e.g.  means that when the content of a
+file with size 0x1000 starts one byte before the filesystem size limit,
+->readpage() will only fill a single byte of the supplied page while
+leaving the rest uninitialized, leaking that uninitialized memory to
+userspace.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Fix it by returning an error code instead of truncating the read when the
+requested read operation would go beyond the end of the filesystem.
+
+Fixes: da4458bda237 ("NOMMU: Make it possible for RomFS to use MTD devices directly")
+Signed-off-by: Jann Horn <jannh@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200818013202.2246365-1-jannh@google.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/alpha/include/asm/io.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/romfs/storage.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index e6225cf40de57..b09dd6bc98a12 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -490,10 +490,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
- }
- #endif
+--- a/fs/romfs/storage.c
++++ b/fs/romfs/storage.c
+@@ -217,10 +217,8 @@ int romfs_dev_read(struct super_block *s
+ 	size_t limit;
  
--#define ioread16be(p) be16_to_cpu(ioread16(p))
--#define ioread32be(p) be32_to_cpu(ioread32(p))
--#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
--#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
-+#define ioread16be(p) swab16(ioread16(p))
-+#define ioread32be(p) swab32(ioread32(p))
-+#define iowrite16be(v,p) iowrite16(swab16(v), (p))
-+#define iowrite32be(v,p) iowrite32(swab32(v), (p))
+ 	limit = romfs_maxsize(sb);
+-	if (pos >= limit)
++	if (pos >= limit || buflen > limit - pos)
+ 		return -EIO;
+-	if (buflen > limit - pos)
+-		buflen = limit - pos;
  
- #define inb_p		inb
- #define inw_p		inw
--- 
-2.25.1
-
+ #ifdef CONFIG_ROMFS_ON_MTD
+ 	if (sb->s_mtd)
 
 
