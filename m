@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ECD24F474
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958F824F561
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgHXIgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
+        id S1729111AbgHXIsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726806AbgHXIgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:36:42 -0400
+        id S1729508AbgHXIru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:47:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B954207DF;
-        Mon, 24 Aug 2020 08:36:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BA962072D;
+        Mon, 24 Aug 2020 08:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258201;
-        bh=/gjIw9uefbH/RR7Kq3mLhc20432IUM944MfCzRIain0=;
+        s=default; t=1598258870;
+        bh=0szdI8OWm1HrgtMt26yi8UvMYrZFo16gefVobvO4NGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k+P22WonVnUB4kx5siIENps+8Pwx7Evdna/NRFHoVL+gwF1sC+lXD3j5ipm+fUu+t
-         UZjVE+Iem1GDENPtx2/E+5f5eqlsCH5U3EMGjPUTYeH+cfjsIm+DaCgq1b4c66zwJ0
-         LVP/FYJPuOJ13sIZCDzkjEt4BORkeDmWWqt+FPKI=
+        b=kY4wKBKil8PMUueYmUGs3yRQU/jWx8iNdaiCWeWDeYKvY1XZjT5mMBajiMiTMKIHJ
+         iW9mXpjiW8b8t0raY8l0RvEh7yojkx+RqZkUb65Bpla5GVBgCfEUQ73dk603/1DgsR
+         pkBRNeCxYpw5DmauwFsXqR/HM8fDCfbCsIIAdwmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Seungwon Jeon <essuuj@gmail.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 111/148] scsi: ufs: Add quirk to disallow reset of interrupt aggregation
-Date:   Mon, 24 Aug 2020 10:30:09 +0200
-Message-Id: <20200824082419.336489121@linuxfoundation.org>
+Subject: [PATCH 5.4 044/107] rtc: goldfish: Enable interrupt in set_alarm() when necessary
+Date:   Mon, 24 Aug 2020 10:30:10 +0200
+Message-Id: <20200824082407.323480053@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,55 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alim Akhtar <alim.akhtar@samsung.com>
+From: Huacai Chen <chenhc@lemote.com>
 
-[ Upstream commit b638b5eb624bd5d0766683b6181d578f414585e9 ]
+[ Upstream commit 22f8d5a1bf230cf8567a4121fc3789babb46336d ]
 
-Some host controllers support interrupt aggregation but don't allow
-resetting counter and timer in software.
+When use goldfish rtc, the "hwclock" command fails with "select() to
+/dev/rtc to wait for clock tick timed out". This is because "hwclock"
+need the set_alarm() hook to enable interrupt when alrm->enabled is
+true. This operation is missing in goldfish rtc (but other rtc drivers,
+such as cmos rtc, enable interrupt here), so add it.
 
-Link: https://lore.kernel.org/r/20200528011658.71590-3-alim.akhtar@samsung.com
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Seungwon Jeon <essuuj@gmail.com>
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1592654683-31314-1-git-send-email-chenhc@lemote.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 3 ++-
- drivers/scsi/ufs/ufshcd.h | 6 ++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/rtc/rtc-goldfish.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 9da44a389becb..47a4c4c239196 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4914,7 +4914,8 @@ static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
- 	 * false interrupt if device completes another request after resetting
- 	 * aggregation and before reading the DB.
- 	 */
--	if (ufshcd_is_intr_aggr_allowed(hba))
-+	if (ufshcd_is_intr_aggr_allowed(hba) &&
-+	    !(hba->quirks & UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR))
- 		ufshcd_reset_intr_aggr(hba);
- 
- 	tr_doorbell = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 2ddf4c2f76f55..bda7ba1aea519 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -525,6 +525,12 @@ enum ufshcd_quirks {
- 	 * Clear handling for transfer/task request list is just opposite.
- 	 */
- 	UFSHCI_QUIRK_BROKEN_REQ_LIST_CLR		= 1 << 6,
-+
-+	/*
-+	 * This quirk needs to be enabled if host controller doesn't allow
-+	 * that the interrupt aggregation timer and counter are reset by s/w.
-+	 */
-+	UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR		= 1 << 7,
- };
- 
- enum ufshcd_caps {
+diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
+index 1a3420ee6a4d9..d5083b013fbce 100644
+--- a/drivers/rtc/rtc-goldfish.c
++++ b/drivers/rtc/rtc-goldfish.c
+@@ -73,6 +73,7 @@ static int goldfish_rtc_set_alarm(struct device *dev,
+ 		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
+ 		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
+ 		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
++		writel(1, base + TIMER_IRQ_ENABLED);
+ 	} else {
+ 		/*
+ 		 * if this function was called with enabled=0
 -- 
 2.25.1
 
