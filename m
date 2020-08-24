@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C55424FEF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7024FF02
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgHXNdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:33:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58574 "EHLO mail.kernel.org"
+        id S1726887AbgHXNfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727110AbgHXNcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:32:22 -0400
+        id S1727123AbgHXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 09:32:38 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E297E2063A;
-        Mon, 24 Aug 2020 13:32:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134BD2065F;
+        Mon, 24 Aug 2020 13:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598275942;
-        bh=RwBqFz941Jt/SoLTcwza2Sjh1YRsxek+wKn59iLih64=;
+        s=default; t=1598275947;
+        bh=L8KDTgoqa6Rk0gELQzO81+l0O3LH5zmLEgt6iWlP4DA=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=VDJob3z4g8SfZlGkZJdO47OAJ3aFcr1Pysg+cEPSPqc6ZdbgCzYTclHQKwmkRofP7
-         OR+Swz/nxkb+Iri0+EMFCZfLp5EISySn/gWdK3XMFGzCvpCqks8BEaVth9W/mxJnZ9
-         YMDRc6tqs4At4z4nENzBNfPmEgqf1uU8ud/Mux0I=
-Date:   Mon, 24 Aug 2020 14:31:48 +0100
+        b=HnGV+hGbGoHAsl/D02nLKokpz+Qg0uJk07vdVxhFlzwcYZ1cou5dHKpbD/dEnTsWB
+         L2/QDcaFx/1WE54P+h+qyimTr7Lv5ysRT42opWU0P8wn4cGziA6SXWxHsMwJf4yvBY
+         uHg2evRpQziMR55EX46TqDcMwNvlEahjdkUAJ8tk=
+Date:   Mon, 24 Aug 2020 14:31:53 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20200824102402.4047fa5f@xhacker.debian>
-References: <20200824102402.4047fa5f@xhacker.debian>
-Subject: Re: [PATCH] regulator: mp886x: use "mps,switch-frequency-hz"
-Message-Id: <159827590802.48129.18246424059084988195.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, cy_huang <u0084500@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, gene_chen@richtek.com,
+        cy_huang@richtek.com
+In-Reply-To: <1598234713-8532-1-git-send-email-u0084500@gmail.com>
+References: <1598234713-8532-1-git-send-email-u0084500@gmail.com>
+Subject: Re: [PATCH] regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
+Message-Id: <159827590802.48129.16240965662426470036.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 10:32:14 +0800, Jisheng Zhang wrote:
-> As Rob suggested, use the "mps,switch-frequency-hz" instead of the
-> "mps,switch-frequency" for switch frequency. Fortunately, the switch
-> frequency support isn't released, so we can modify it now without
-> any concern.
+On Mon, 24 Aug 2020 10:05:13 +0800, cy_huang wrote:
+> Fix below warning when CONFIG_OF=n:
+> 
+> drivers/regulator/rt4801-regulator.c:206:34: warning: unused variable 'rt4801_of_id' [-Wunused-const-variable]
+>   206 | static const struct of_device_id rt4801_of_id[] = {
+>       |                                  ^~~~~~~~~~~~
 
 Applied to
 
@@ -50,8 +50,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: mp886x: use "mps,switch-frequency-hz"
-      commit: a5f7949570dc7262d3239739b0cdaa001f935d4b
+[1/1] regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
+      commit: c8b2c8949c45b01d75237331fc1387036b952d58
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
