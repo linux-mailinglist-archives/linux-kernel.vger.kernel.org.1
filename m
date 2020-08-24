@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD20724F8EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B2924F96D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729630AbgHXJiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46342 "EHLO mail.kernel.org"
+        id S1729193AbgHXJpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729413AbgHXIrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:06 -0400
+        id S1728975AbgHXImq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ADD2204FD;
-        Mon, 24 Aug 2020 08:47:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B55CA2087D;
+        Mon, 24 Aug 2020 08:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258825;
-        bh=YyAY6cc7QTViLWyp9xxjMzcu4icKEU23qQoNGK7Dd/w=;
+        s=default; t=1598258566;
+        bh=Tj68wpcq8gwgRKTspOtj86cQXqXyuM2JjWCZZk96Frc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nj21cYnMjY/zly8e4TVNy2lIcdIRLAGaoBW+Lpj0H+qy3iCL99u27SQi4hUssAG50
-         dLYnK9b3DeP3+CTo6zUf1tcuqwtvC23dVg/Abyf6bM9yXAUtPcQeLa4xCo74A7JdR/
-         oXxwOMdGIC/Hgnor/ZYr2kIlm3CivxU49yOuLGoM=
+        b=pG9LwFEEqblJfZroqk3XC8EUg8rH4MDuPaxB3oVBbZXywu3rYtFRiMzLAT4FUDLXL
+         P+DHgIkAP3sfHbIkK2kjEvWYc1VX/5wsvDHeLkNXTnw8IwkQXrA9aQ1HaVvxoWYBKo
+         /s96MVUQbDBc/lt/UzPWbis79ptD+AOD6zJZdiCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/107] media: camss: fix memory leaks on error handling paths in probe
-Date:   Mon, 24 Aug 2020 10:30:24 +0200
-Message-Id: <20200824082407.993320333@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 091/124] of/address: check for invalid range.cpu_addr
+Date:   Mon, 24 Aug 2020 10:30:25 +0200
+Message-Id: <20200824082413.897972598@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,97 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit f45882cfb152f5d3a421fd58f177f227e44843b9 ]
+[ Upstream commit f49c7faf776f16607c948d852a03b04a88c3b583 ]
 
-camss_probe() does not free camss on error handling paths. The patch
-introduces an additional error label for this purpose. Besides, it
-removes call of v4l2_async_notifier_cleanup() from
-camss_of_parse_ports() since its caller, camss_probe(), cleans up all
-its resources itself.
+Currently invalid CPU addresses are not being sanity checked resulting in
+SATA setup failure on a SynQuacer SC2A11 development machine. The original
+check was removed by and earlier commit, so add a sanity check back in
+to avoid this regression.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 7a8b64d17e35 ("of/address: use range parser for of_dma_get_range")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200817113208.523805-1-colin.king@canonical.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss.c | 30 +++++++++++++++--------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/of/address.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index 3fdc9f964a3c6..2483641799dfb 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -504,7 +504,6 @@ static int camss_of_parse_ports(struct camss *camss)
- 	return num_subdevs;
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 8eea3f6e29a44..340d3051b1ce2 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -980,6 +980,11 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
+ 			/* Don't error out as we'd break some existing DTs */
+ 			continue;
+ 		}
++		if (range.cpu_addr == OF_BAD_ADDR) {
++			pr_err("translation of DMA address(%llx) to CPU address failed node(%pOF)\n",
++			       range.bus_addr, node);
++			continue;
++		}
+ 		dma_offset = range.cpu_addr - range.bus_addr;
  
- err_cleanup:
--	v4l2_async_notifier_cleanup(&camss->notifier);
- 	of_node_put(node);
- 	return ret;
- }
-@@ -835,29 +834,38 @@ static int camss_probe(struct platform_device *pdev)
- 		camss->csid_num = 4;
- 		camss->vfe_num = 2;
- 	} else {
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_free;
- 	}
- 
- 	camss->csiphy = devm_kcalloc(dev, camss->csiphy_num,
- 				     sizeof(*camss->csiphy), GFP_KERNEL);
--	if (!camss->csiphy)
--		return -ENOMEM;
-+	if (!camss->csiphy) {
-+		ret = -ENOMEM;
-+		goto err_free;
-+	}
- 
- 	camss->csid = devm_kcalloc(dev, camss->csid_num, sizeof(*camss->csid),
- 				   GFP_KERNEL);
--	if (!camss->csid)
--		return -ENOMEM;
-+	if (!camss->csid) {
-+		ret = -ENOMEM;
-+		goto err_free;
-+	}
- 
- 	camss->vfe = devm_kcalloc(dev, camss->vfe_num, sizeof(*camss->vfe),
- 				  GFP_KERNEL);
--	if (!camss->vfe)
--		return -ENOMEM;
-+	if (!camss->vfe) {
-+		ret = -ENOMEM;
-+		goto err_free;
-+	}
- 
- 	v4l2_async_notifier_init(&camss->notifier);
- 
- 	num_subdevs = camss_of_parse_ports(camss);
--	if (num_subdevs < 0)
--		return num_subdevs;
-+	if (num_subdevs < 0) {
-+		ret = num_subdevs;
-+		goto err_cleanup;
-+	}
- 
- 	ret = camss_init_subdevices(camss);
- 	if (ret < 0)
-@@ -936,6 +944,8 @@ err_register_entities:
- 	v4l2_device_unregister(&camss->v4l2_dev);
- err_cleanup:
- 	v4l2_async_notifier_cleanup(&camss->notifier);
-+err_free:
-+	kfree(camss);
- 
- 	return ret;
- }
+ 		/* Take lower and upper limits */
 -- 
 2.25.1
 
