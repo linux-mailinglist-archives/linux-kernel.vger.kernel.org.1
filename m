@@ -2,162 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6F024F16B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA80324F162
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgHXDOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 23:14:40 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:43292 "EHLO huawei.com"
+        id S1728067AbgHXDMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 23:12:51 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:24088 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728115AbgHXDOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 23:14:30 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C2AAD32D442E2E240A69;
-        Mon, 24 Aug 2020 11:14:24 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 24 Aug 2020 11:14:16 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH RESEND 10/10] crypto: hisilicon/zip - fix some coding styles
-Date:   Mon, 24 Aug 2020 11:11:49 +0800
-Message-ID: <1598238709-58699-11-git-send-email-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598238709-58699-1-git-send-email-shenyang39@huawei.com>
-References: <1598238709-58699-1-git-send-email-shenyang39@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+        id S1726635AbgHXDMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Aug 2020 23:12:51 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app3 (Coremail) with SMTP id cC_KCgC30d0fMENfP8QbAw--.23170S4;
+        Mon, 24 Aug 2020 11:12:34 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Sobota <krzysztof.sobota@nokia.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] watchdog: Use put_device on error
+Date:   Mon, 24 Aug 2020 11:12:30 +0800
+Message-Id: <20200824031230.31050-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgC30d0fMENfP8QbAw--.23170S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFyxWFW8Cw47Xw1UCFWDCFg_yoWfuwc_ur
+        1xtr9xWr1DGrnaga4Yqa1fZrW0vF10qF4xAr10qFyxA393Xr98WrZ7Xry09w1Dua4UArn8
+        Jryqgrsa9FyDKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VUjQBMtUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUCBlZdtPpD7wADsp
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Unified alignment styles
-2.Remove unnecessary goto branch
-3.Remove address printf
+We should use put_device() instead of freeing device
+directly after device_initialize().
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+Fixes: cb36e29bb0e4b ("watchdog: initialize device before misc_register")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/crypto/hisilicon/zip/zip_crypto.c | 13 ++++++-------
- drivers/crypto/hisilicon/zip/zip_main.c   | 16 ++++------------
- 2 files changed, 10 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 7757e33..10b7adb 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -38,8 +38,10 @@
- #define HZIP_SGL_SGE_NR				10
- 
- static const u8 zlib_head[HZIP_ZLIB_HEAD_SIZE] = {0x78, 0x9c};
--static const u8 gzip_head[HZIP_GZIP_HEAD_SIZE] = {0x1f, 0x8b, 0x08, 0x0, 0x0,
--						  0x0, 0x0, 0x0, 0x0, 0x03};
-+static const u8 gzip_head[HZIP_GZIP_HEAD_SIZE] = {
-+	0x1f, 0x8b, 0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x03
-+};
-+
- enum hisi_zip_alg_type {
- 	HZIP_ALG_TYPE_COMP = 0,
- 	HZIP_ALG_TYPE_DECOMP = 1,
-@@ -359,7 +361,6 @@ static void hisi_zip_acomp_cb(struct hisi_qp *qp, void *data)
- 
- 	atomic64_inc(&dfx->recv_cnt);
- 	status = sqe->dw3 & HZIP_BD_STATUS_M;
--
- 	if (status != 0 && status != HZIP_NC_ERR) {
- 		dev_err(dev, "%scompress fail in qp%u: %u, output: %u\n",
- 			(qp->alg_type == 0) ? "" : "de", qp->qp_id, status,
-@@ -520,8 +521,7 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
- 	struct hisi_acc_sgl_pool *pool = qp_ctx->sgl_pool;
- 	struct hisi_zip_dfx *dfx = &qp_ctx->zip_dev->dfx;
- 	struct hisi_zip_sqe zip_sqe;
--	dma_addr_t input;
--	dma_addr_t output;
-+	dma_addr_t input, output;
- 	int ret;
- 
- 	if (!a_req->src || !a_req->slen || !a_req->dst || !a_req->dlen)
-@@ -540,9 +540,8 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
- 						    (req->req_id << 1) + 1,
- 						    &output);
- 	if (IS_ERR(req->hw_dst)) {
--		dev_err(dev, "The dst map to hw SGL failed (%ld)!\n",
--			PTR_ERR(req->hw_dst));
- 		ret = PTR_ERR(req->hw_dst);
-+		dev_err(dev, "The dst map to hw SGL failed (%d)!\n", ret);
- 		goto err_unmap_input;
- 	}
- 	req->dma_dst = output;
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 49fad18..8bbae28 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -258,6 +258,7 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
- 	/* qm cache */
- 	writel(AXI_M_CFG, base + QM_AXI_M_CFG);
- 	writel(AXI_M_CFG_ENABLE, base + QM_AXI_M_CFG_ENABLE);
-+
- 	/* disable FLR triggered by BME(bus master enable) */
- 	writel(PEH_AXUSER_CFG, base + QM_PEH_AXUSER_CFG);
- 	writel(PEH_AXUSER_CFG_ENABLE, base + QM_PEH_AXUSER_CFG_ENABLE);
-@@ -311,7 +312,7 @@ static void hisi_zip_hw_error_enable(struct hisi_qm *qm)
- 	writel(0x1, qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
- 	writel(0x0, qm->io_base + HZIP_CORE_INT_RAS_FE_ENB);
- 	writel(HZIP_CORE_INT_RAS_NFE_ENABLE,
--		qm->io_base + HZIP_CORE_INT_RAS_NFE_ENB);
-+	       qm->io_base + HZIP_CORE_INT_RAS_NFE_ENB);
- 
- 	/* enable ZIP hw error interrupts */
- 	writel(0, qm->io_base + HZIP_CORE_INT_MASK_REG);
-@@ -487,7 +488,6 @@ static const struct file_operations ctrl_debug_fops = {
- 	.write = hisi_zip_ctrl_debug_write,
- };
- 
--
- static int zip_debugfs_atomic64_set(void *data, u64 val)
- {
- 	if (val)
-@@ -634,7 +634,7 @@ static void hisi_zip_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 	while (err->msg) {
- 		if (err->int_msk & err_sts) {
- 			dev_err(dev, "%s [error status=0x%x] found\n",
--				 err->msg, err->int_msk);
-+				err->msg, err->int_msk);
- 
- 			if (err->int_msk & HZIP_CORE_INT_STATUS_M_ECC) {
- 				err_val = readl(qm->io_base +
-@@ -642,9 +642,6 @@ static void hisi_zip_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 				dev_err(dev, "hisi-zip multi ecc sram num=0x%x\n",
- 					((err_val >>
- 					HZIP_SRAM_ECC_ERR_NUM_SHIFT) & 0xFF));
--				dev_err(dev, "hisi-zip multi ecc sram addr=0x%x\n",
--					(err_val >>
--					HZIP_SRAM_ECC_ERR_ADDR_SHIFT));
- 			}
+Changelog:
+
+v2: - Use put_device() instead of just removing kfree.
+      Move the memleak part to a separate patch.
+---
+ drivers/watchdog/watchdog_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 6798addabd5a..b0fa7f31b1b6 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -1021,7 +1021,7 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
+ 				pr_err("%s: a legacy watchdog module is probably present.\n",
+ 					wdd->info->identity);
+ 			old_wd_data = NULL;
+-			kfree(wd_data);
++			put_device(&wd_data->dev);
+ 			return err;
  		}
- 		err++;
-@@ -904,15 +901,10 @@ static int __init hisi_zip_init(void)
- 
- 	ret = pci_register_driver(&hisi_zip_pci_driver);
- 	if (ret < 0) {
-+		hisi_zip_unregister_debugfs();
- 		pr_err("Failed to register pci driver.\n");
--		goto err_pci;
  	}
- 
--	return 0;
--
--err_pci:
--	hisi_zip_unregister_debugfs();
--
- 	return ret;
- }
- 
 -- 
-2.7.4
+2.17.1
 
