@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EB224F8FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AF724F97F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgHXJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:39:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
+        id S1728573AbgHXJqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:46:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728629AbgHXIqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:39 -0400
+        id S1726809AbgHXImX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1EEC206F0;
-        Mon, 24 Aug 2020 08:46:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E639B2074D;
+        Mon, 24 Aug 2020 08:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258798;
-        bh=DDo9rlJ1vGfTkw3ErVmo14AXqfaIcHBATRLU97RdBrc=;
+        s=default; t=1598258542;
+        bh=rcxkiAp2mUiWSLyuix0BybFPmDsEZCspJKmcKwP9mks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLiTzXKm0byPvH8aGkhVE75AiSgcDOkymwGCcq7eAcEdNd+U+AwYl68e+Do7xJOkY
-         66Ed9CghMg3+n4ssqk49Ex3YJk1SqoiC0mnzqYF6gNkSHlkGGn/KzxLQVj+i5Td9VF
-         y5BVzk4Za1T+lfMF6HYmByQTsK6iODdxKkOBWEOg=
+        b=DYIDcDy6kZFT3C5Udq6uEyRB2iI2RuH3747OuHu4txKId54DcBCI0rT/3zSLxwy4I
+         i93BbMtB2EP7im/4mPG5r1q5+1k3hL6yrKJJbOmLS0vRQTnjzm8HxbhhMqHo6i7hlT
+         RlovI+/CjRvxQ60Lc6VB+eJbiGtmsVpX/LUlJVYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Mahesh Bandewar <maheshb@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 049/107] svcrdma: Fix another Receive buffer leak
-Date:   Mon, 24 Aug 2020 10:30:15 +0200
-Message-Id: <20200824082407.562717573@linuxfoundation.org>
+Subject: [PATCH 5.7 083/124] ipvlan: fix device features
+Date:   Mon, 24 Aug 2020 10:30:17 +0200
+Message-Id: <20200824082413.494136151@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +45,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Mahesh Bandewar <maheshb@google.com>
 
-[ Upstream commit 64d26422516b2e347b32e6d9b1d40b3c19a62aae ]
+[ Upstream commit d0f5c7076e01fef6fcb86988d9508bf3ce258bd4 ]
 
-During a connection tear down, the Receive queue is flushed before
-the device resources are freed. Typically, all the Receives flush
-with IB_WR_FLUSH_ERR.
+Processing NETDEV_FEAT_CHANGE causes IPvlan links to lose
+NETIF_F_LLTX feature because of the incorrect handling of
+features in ipvlan_fix_features().
 
-However, any pending successful Receives flush with IB_WR_SUCCESS,
-and the server automatically posts a fresh Receive to replace the
-completing one. This happens even after the connection has closed
-and the RQ is drained. Receives that are posted after the RQ is
-drained appear never to complete, causing a Receive resource leak.
-The leaked Receive buffer is left DMA-mapped.
+--before--
+lpaa10:~# ethtool -k ipvl0 | grep tx-lockless
+tx-lockless: on [fixed]
+lpaa10:~# ethtool -K ipvl0 tso off
+Cannot change tcp-segmentation-offload
+Actual changes:
+vlan-challenged: off [fixed]
+tx-lockless: off [fixed]
+lpaa10:~# ethtool -k ipvl0 | grep tx-lockless
+tx-lockless: off [fixed]
+lpaa10:~#
 
-To prevent these late-posted recv_ctxt's from leaking, block new
-Receive posting after XPT_CLOSE is set.
+--after--
+lpaa10:~# ethtool -k ipvl0 | grep tx-lockless
+tx-lockless: on [fixed]
+lpaa10:~# ethtool -K ipvl0 tso off
+Cannot change tcp-segmentation-offload
+Could not change any device features
+lpaa10:~# ethtool -k ipvl0 | grep tx-lockless
+tx-lockless: on [fixed]
+lpaa10:~#
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 2ad7bf363841 ("ipvlan: Initial check-in of the IPVLAN driver.")
+Signed-off-by: Mahesh Bandewar <maheshb@google.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ipvlan/ipvlan_main.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index 0ce4e75b29812..d803d814a03ad 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -265,6 +265,8 @@ static int svc_rdma_post_recv(struct svcxprt_rdma *rdma)
- {
- 	struct svc_rdma_recv_ctxt *ctxt;
+diff --git a/drivers/net/ipvlan/ipvlan_main.c b/drivers/net/ipvlan/ipvlan_main.c
+index f195f278a83aa..7768f1120c1f6 100644
+--- a/drivers/net/ipvlan/ipvlan_main.c
++++ b/drivers/net/ipvlan/ipvlan_main.c
+@@ -106,12 +106,21 @@ static void ipvlan_port_destroy(struct net_device *dev)
+ 	kfree(port);
+ }
  
-+	if (test_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags))
-+		return 0;
- 	ctxt = svc_rdma_recv_ctxt_get(rdma);
- 	if (!ctxt)
- 		return -ENOMEM;
++#define IPVLAN_ALWAYS_ON_OFLOADS \
++	(NETIF_F_SG | NETIF_F_HW_CSUM | \
++	 NETIF_F_GSO_ROBUST | NETIF_F_GSO_SOFTWARE | NETIF_F_GSO_ENCAP_ALL)
++
++#define IPVLAN_ALWAYS_ON \
++	(IPVLAN_ALWAYS_ON_OFLOADS | NETIF_F_LLTX | NETIF_F_VLAN_CHALLENGED)
++
+ #define IPVLAN_FEATURES \
+-	(NETIF_F_SG | NETIF_F_CSUM_MASK | NETIF_F_HIGHDMA | NETIF_F_FRAGLIST | \
++	(NETIF_F_SG | NETIF_F_HW_CSUM | NETIF_F_HIGHDMA | NETIF_F_FRAGLIST | \
+ 	 NETIF_F_GSO | NETIF_F_ALL_TSO | NETIF_F_GSO_ROBUST | \
+ 	 NETIF_F_GRO | NETIF_F_RXCSUM | \
+ 	 NETIF_F_HW_VLAN_CTAG_FILTER | NETIF_F_HW_VLAN_STAG_FILTER)
+ 
++	/* NETIF_F_GSO_ENCAP_ALL NETIF_F_GSO_SOFTWARE Newly added */
++
+ #define IPVLAN_STATE_MASK \
+ 	((1<<__LINK_STATE_NOCARRIER) | (1<<__LINK_STATE_DORMANT))
+ 
+@@ -125,7 +134,9 @@ static int ipvlan_init(struct net_device *dev)
+ 	dev->state = (dev->state & ~IPVLAN_STATE_MASK) |
+ 		     (phy_dev->state & IPVLAN_STATE_MASK);
+ 	dev->features = phy_dev->features & IPVLAN_FEATURES;
+-	dev->features |= NETIF_F_LLTX | NETIF_F_VLAN_CHALLENGED;
++	dev->features |= IPVLAN_ALWAYS_ON;
++	dev->vlan_features = phy_dev->vlan_features & IPVLAN_FEATURES;
++	dev->vlan_features |= IPVLAN_ALWAYS_ON_OFLOADS;
+ 	dev->hw_enc_features |= dev->features;
+ 	dev->gso_max_size = phy_dev->gso_max_size;
+ 	dev->gso_max_segs = phy_dev->gso_max_segs;
+@@ -225,7 +236,14 @@ static netdev_features_t ipvlan_fix_features(struct net_device *dev,
+ {
+ 	struct ipvl_dev *ipvlan = netdev_priv(dev);
+ 
+-	return features & (ipvlan->sfeatures | ~IPVLAN_FEATURES);
++	features |= NETIF_F_ALL_FOR_ALL;
++	features &= (ipvlan->sfeatures | ~IPVLAN_FEATURES);
++	features = netdev_increment_features(ipvlan->phy_dev->features,
++					     features, features);
++	features |= IPVLAN_ALWAYS_ON;
++	features &= (IPVLAN_FEATURES | IPVLAN_ALWAYS_ON);
++
++	return features;
+ }
+ 
+ static void ipvlan_change_rx_flags(struct net_device *dev, int change)
+@@ -732,10 +750,9 @@ static int ipvlan_device_event(struct notifier_block *unused,
+ 
+ 	case NETDEV_FEAT_CHANGE:
+ 		list_for_each_entry(ipvlan, &port->ipvlans, pnode) {
+-			ipvlan->dev->features = dev->features & IPVLAN_FEATURES;
+ 			ipvlan->dev->gso_max_size = dev->gso_max_size;
+ 			ipvlan->dev->gso_max_segs = dev->gso_max_segs;
+-			netdev_features_change(ipvlan->dev);
++			netdev_update_features(ipvlan->dev);
+ 		}
+ 		break;
+ 
 -- 
 2.25.1
 
