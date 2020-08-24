@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402D724F8B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C9324F975
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgHXIsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49100 "EHLO mail.kernel.org"
+        id S1729323AbgHXJpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729517AbgHXIsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:48:14 -0400
+        id S1729087AbgHXIn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:43:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB671204FD;
-        Mon, 24 Aug 2020 08:48:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 811582074D;
+        Mon, 24 Aug 2020 08:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258894;
-        bh=JWJlvUsK6gkl2cRksfkM0gxOVpkwCKdmM0aaXQwlZik=;
+        s=default; t=1598258636;
+        bh=v1rV0+cSpDxIvN/6ZeU7yyZcDQgDMvN6tAWvb4P70Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Loz61TVh/rUgxrAEQiu7LYVjAlcacezBPlKehi7d+JDHweTqelVPQBgQwMCCPF4lc
-         I21YFksyLcg2cH2yvikHjl08hmoMlC4+C+G9gHcNTra4cc2dr+0twpHme6WAaNZuwP
-         1Hdn8it2oPB/dyboU8ilJP3toLjjkzsO8W+n9hsw=
+        b=kz/JQWRqdovfRF+r7b3cnr1IGJpzQGsVEBx4DrqYAcfhqX58yZo4RZQ+95OBDnWme
+         5qYKbVxHcXJNdx7DMPMiaX1z6PLCHOtsFBVNRKcdoPSzrvBzFstto8spZE89SDT9W0
+         qOOWV7A9G0aH6KUoS6XS105tSeP00T4cUI5fP/3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/107] s390/ptrace: fix storage key handling
-Date:   Mon, 24 Aug 2020 10:30:49 +0200
-Message-Id: <20200824082409.228245728@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.7 116/124] epoll: Keep a reference on files added to the check list
+Date:   Mon, 24 Aug 2020 10:30:50 +0200
+Message-Id: <20200824082415.113654028@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit fd78c59446b8d050ecf3e0897c5a486c7de7c595 ]
+commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682 upstream.
 
-The key member of the runtime instrumentation control block contains
-only the access key, not the complete storage key. Therefore the value
-must be shifted by four bits. Since existing user space does not
-necessarily query and set the access key correctly, just ignore the
-user space provided key and use the correct one.
-Note: this is only relevant for debugging purposes in case somebody
-compiles a kernel with a default storage access key set to a value not
-equal to zero.
+When adding a new fd to an epoll, and that this new fd is an
+epoll fd itself, we recursively scan the fds attached to it
+to detect cycles, and add non-epool files to a "check list"
+that gets subsequently parsed.
 
-Fixes: 262832bc5acd ("s390/ptrace: add runtime instrumention register get/set")
-Reported-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, this check list isn't completely safe when deletions
+can happen concurrently. To sidestep the issue, make sure that
+a struct file placed on the check list sees its f_count increased,
+ensuring that a concurrent deletion won't result in the file
+disapearing from under our feet.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/kernel/ptrace.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/eventpoll.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index 5aa786063eb3e..c6aef2ecf2890 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -1283,7 +1283,6 @@ static bool is_ri_cb_valid(struct runtime_instr_cb *cb)
- 		cb->pc == 1 &&
- 		cb->qc == 0 &&
- 		cb->reserved2 == 0 &&
--		cb->key == PAGE_DEFAULT_KEY &&
- 		cb->reserved3 == 0 &&
- 		cb->reserved4 == 0 &&
- 		cb->reserved5 == 0 &&
-@@ -1347,7 +1346,11 @@ static int s390_runtime_instr_set(struct task_struct *target,
- 		kfree(data);
- 		return -EINVAL;
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1994,9 +1994,11 @@ static int ep_loop_check_proc(void *priv
+ 			 * not already there, and calling reverse_path_check()
+ 			 * during ep_insert().
+ 			 */
+-			if (list_empty(&epi->ffd.file->f_tfile_llink))
++			if (list_empty(&epi->ffd.file->f_tfile_llink)) {
++				get_file(epi->ffd.file);
+ 				list_add(&epi->ffd.file->f_tfile_llink,
+ 					 &tfile_check_list);
++			}
+ 		}
  	}
--
-+	/*
-+	 * Override access key in any case, since user space should
-+	 * not be able to set it, nor should it care about it.
-+	 */
-+	ri_cb.key = PAGE_DEFAULT_KEY >> 4;
- 	preempt_disable();
- 	if (!target->thread.ri_cb)
- 		target->thread.ri_cb = data;
--- 
-2.25.1
-
+ 	mutex_unlock(&ep->mtx);
+@@ -2040,6 +2042,7 @@ static void clear_tfile_check_list(void)
+ 		file = list_first_entry(&tfile_check_list, struct file,
+ 					f_tfile_llink);
+ 		list_del_init(&file->f_tfile_llink);
++		fput(file);
+ 	}
+ 	INIT_LIST_HEAD(&tfile_check_list);
+ }
+@@ -2204,13 +2207,17 @@ int do_epoll_ctl(int epfd, int op, int f
+ 					clear_tfile_check_list();
+ 					goto error_tgt_fput;
+ 				}
+-			} else
++			} else {
++				get_file(tf.file);
+ 				list_add(&tf.file->f_tfile_llink,
+ 							&tfile_check_list);
++			}
+ 			error = epoll_mutex_lock(&ep->mtx, 0, nonblock);
+ 			if (error) {
+ out_del:
+ 				list_del(&tf.file->f_tfile_llink);
++				if (!is_file_epoll(tf.file))
++					fput(tf.file);
+ 				goto error_tgt_fput;
+ 			}
+ 			if (is_file_epoll(tf.file)) {
 
 
