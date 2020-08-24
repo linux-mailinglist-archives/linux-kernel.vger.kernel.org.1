@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5159B24FA9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD8524F9C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgHXJ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42938 "EHLO mail.kernel.org"
+        id S1728724AbgHXIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgHXIe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:34:27 -0400
+        id S1728029AbgHXIjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13DD4207D3;
-        Mon, 24 Aug 2020 08:34:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58A772177B;
+        Mon, 24 Aug 2020 08:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258066;
-        bh=9R6DF0z8Riev++arCUBM7qjB7dhQ/99mOWwnn9pjiuM=;
+        s=default; t=1598258393;
+        bh=J0/8psHqkcXmla2yHdL0e3lJZ5L+/bmM4h8z9edyFBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TKYJRVLoWluDzLEXNTmym1gHt48YSy9t7YvRHHOMEawU4qKWGwuD4jYZdnLiZuEa0
-         O8LJ6FHSl7doWGDezOY/oVSsKZpDxQkyBm5giKNzOM0207p4ZfiZi+ElqWEYNs94Mc
-         JeQo1qp+ioRdj6WH/FKM1uRAVY1GZdURCsKTAQS0=
+        b=B/JqG199y7//9Aw/gV/V4hybLyy6UBVu+D988aPeO115XDP/O5XmCWph4FjoO3Hsi
+         ECY/dwyNh06EmCZe0k2ARm1KUr46ttFuG5CKwlOQihwa3/c+hOLlAd4RV/vNAzaX3v
+         Uxps1pTHvQiqqjIB/szEVgYUSCt7oQee+i0T6rfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 063/148] cpufreq: intel_pstate: Fix cpuinfo_max_freq when MSR_TURBO_RATIO_LIMIT is 0
-Date:   Mon, 24 Aug 2020 10:29:21 +0200
-Message-Id: <20200824082417.090573734@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 030/124] io_uring: cancel all tasks requests on exit
+Date:   Mon, 24 Aug 2020 10:29:24 +0200
+Message-Id: <20200824082410.897068252@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +43,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 4daca379c703ff55edc065e8e5173dcfeecf0148 ]
+[ Upstream commit 44e728b8aae0bb6d4229129083974f9dea43f50b ]
 
-The MSR_TURBO_RATIO_LIMIT can be 0. This is not an error. User can update
-this MSR via BIOS settings on some systems or can use msr tools to update.
-Also some systems boot with value = 0.
+If a process is going away, io_uring_flush() will cancel only 1
+request with a matching pid. Cancel all of them
 
-This results in display of cpufreq/cpuinfo_max_freq wrong. This value
-will be equal to cpufreq/base_frequency, even though turbo is enabled.
-
-But platform will still function normally in HWP mode as we get max
-1-core frequency from the MSR_HWP_CAPABILITIES. This MSR is already used
-to calculate cpu->pstate.turbo_freq, which is used for to set
-policy->cpuinfo.max_freq. But some other places cpu->pstate.turbo_pstate
-is used. For example to set policy->max.
-
-To fix this, also update cpu->pstate.turbo_pstate when updating
-cpu->pstate.turbo_freq.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/io-wq.c    | 14 --------------
+ fs/io-wq.h    |  1 -
+ fs/io_uring.c | 14 ++++++++++++--
+ 3 files changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 7e0f7880b21a6..c7540ad28995b 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -1572,6 +1572,7 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 6d2e8ccc229e3..2bfa9117bc289 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -1022,20 +1022,6 @@ enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork)
+ 	return io_wq_cancel_cb(wq, io_wq_io_cb_cancel_data, (void *)cwork, false);
+ }
  
- 		intel_pstate_get_hwp_max(cpu->cpu, &phy_max, &current_max);
- 		cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
-+		cpu->pstate.turbo_pstate = phy_max;
- 	} else {
- 		cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
+-static bool io_wq_pid_match(struct io_wq_work *work, void *data)
+-{
+-	pid_t pid = (pid_t) (unsigned long) data;
+-
+-	return work->task_pid == pid;
+-}
+-
+-enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid)
+-{
+-	void *data = (void *) (unsigned long) pid;
+-
+-	return io_wq_cancel_cb(wq, io_wq_pid_match, data, false);
+-}
+-
+ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+ {
+ 	int ret = -ENOMEM, node;
+diff --git a/fs/io-wq.h b/fs/io-wq.h
+index 8902903831f25..df8a4cd3236db 100644
+--- a/fs/io-wq.h
++++ b/fs/io-wq.h
+@@ -129,7 +129,6 @@ static inline bool io_wq_is_hashed(struct io_wq_work *work)
+ 
+ void io_wq_cancel_all(struct io_wq *wq);
+ enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork);
+-enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid);
+ 
+ typedef bool (work_cancel_fn)(struct io_wq_work *, void *);
+ 
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index cf32705546773..9bb23edf2363a 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -7720,6 +7720,13 @@ static void io_uring_cancel_files(struct io_ring_ctx *ctx,
  	}
+ }
+ 
++static bool io_cancel_pid_cb(struct io_wq_work *work, void *data)
++{
++	pid_t pid = (pid_t) (unsigned long) data;
++
++	return work->task_pid == pid;
++}
++
+ static int io_uring_flush(struct file *file, void *data)
+ {
+ 	struct io_ring_ctx *ctx = file->private_data;
+@@ -7729,8 +7736,11 @@ static int io_uring_flush(struct file *file, void *data)
+ 	/*
+ 	 * If the task is going away, cancel work it may have pending
+ 	 */
+-	if (fatal_signal_pending(current) || (current->flags & PF_EXITING))
+-		io_wq_cancel_pid(ctx->io_wq, task_pid_vnr(current));
++	if (fatal_signal_pending(current) || (current->flags & PF_EXITING)) {
++		void *data = (void *) (unsigned long)task_pid_vnr(current);
++
++		io_wq_cancel_cb(ctx->io_wq, io_cancel_pid_cb, data, true);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
