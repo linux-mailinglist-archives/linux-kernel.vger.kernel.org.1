@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3445E24F391
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A1F24F39D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgHXIEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:04:09 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:38410 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgHXID7 (ORCPT
+        id S1726051AbgHXIHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:07:14 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:6614 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725730AbgHXIHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:03:59 -0400
-Received: by mail-ej1-f68.google.com with SMTP id oz20so5727641ejb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 01:03:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+JxMlzs2Xjqv7gCLfj6qZjcFZ65L/LTwJbVU5rgXZ+8=;
-        b=DqzJScITpsVRLV3VuEO2HMYtUHQJvf0e/iXCMrHyv+Wlvneqc4IwOw95+JPIcJRjO/
-         T6HQOALeKkfiTqhvWtXIiRoMsLLfxkiVp5cRohA5jZX2aVIatpK/xmzskk9gz9lk2afj
-         VQ5EOQPCcJqtKS/m98kt2Z9fpVwZji2nCisK4eWpoXXfHYoRcCt/fH4BjwQfM6KSL0GT
-         Ggy8cpRkjByKsG3TDKleGwsVNPn5ZMKTw8bwBCxHEok0YIxd++3OYVk77qZWcsXnwTsI
-         Fhs7I/sXhOe4M+dnJUYucOgmRSELiQI4PDJ78WIPpdKI7Ryg3qcL4Myqp94uwKiNhQMk
-         jsaw==
-X-Gm-Message-State: AOAM531+t7M5kaJP1pa6HGQHUjCz/IuP9CIXOJiuL4ZzBILr0wmINhz7
-        jXIfo0h7oTKJaopR5yDjSWc=
-X-Google-Smtp-Source: ABdhPJz2NYNLj1EXQEATEwC2xTPip9yHbslDGnx5qa6pEvVHobaKUucPr+DX+qOYSxI69J3OeCO0rg==
-X-Received: by 2002:a17:906:22c9:: with SMTP id q9mr4540417eja.158.1598256237043;
-        Mon, 24 Aug 2020 01:03:57 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id a19sm8890477ejg.116.2020.08.24.01.03.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 01:03:55 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Write in vcs_read
-To:     syzbot <syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        jslaby@suse.cz, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        nico@fluxnic.net, syzkaller-bugs@googlegroups.com
-References: <0000000000005d511305ad725632@google.com>
- <c432d894-eae6-1541-0f29-267b4a16b3ae@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jslaby@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <2e94ac46-7f0c-c322-d217-afe021214eaf@kernel.org>
-Date:   Mon, 24 Aug 2020 10:03:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 24 Aug 2020 04:07:13 -0400
+X-UUID: 65827033c7fa4ed9be0c8c45bc777b51-20200824
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ws+o5UOYVh6zo1fhqEVNgTGjFEJeI4HICegFEkqKmwA=;
+        b=VHJf/G5tfTuvjMvpwsJE0QKIC1uZINdkgBOHAmp8bJ5BUndZUXULuUQpSpxyXkaQT4VCVJ7TRp23IcBsu2UupMlU/A+kDwo3AngagdmDTfQS5yqaCHTtxwRRGy+gACvudA2IyupolbTNRH/+5sfm1mt9ybSlJsTe8oz7COapQeU=;
+X-UUID: 65827033c7fa4ed9be0c8c45bc777b51-20200824
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1135189248; Mon, 24 Aug 2020 16:07:10 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 24 Aug 2020 16:07:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 24 Aug 2020 16:07:06 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v2 0/6] kasan: add workqueue and timer stack for generic KASAN
+Date:   Mon, 24 Aug 2020 16:07:06 +0800
+Message-ID: <20200824080706.24704-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <c432d894-eae6-1541-0f29-267b4a16b3ae@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 3CA77E6D371981748F1B9D271F7149CE6182270AF73BF62DA9C780BF27EE73342000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22. 08. 20, 9:34, Jiri Slaby wrote:
-> On 22. 08. 20, 9:31, syzbot wrote:
->> syzbot has bisected this issue to:
->>
->> commit b1c32fcfadf5593ab7a63261cc8a5747c36e627e
->> Author: Jiri Slaby <jslaby@suse.cz>
->> Date:   Tue Aug 18 08:57:05 2020 +0000
->>
->>     vc_screen: extract vcs_read_buf_header
-> 
-> It's like 7th e-mail about the very same issue. Can it be
-> suspended/acknowledged somehow?
-> 
->> Reported-by: syzbot+ad1f53726c3bd11180cb@syzkaller.appspotmail.com
-> 
-> I haven't managed to find the root cause on Fri yet, I will chase it on
-> Mon again.
+U3l6Ym90IHJlcG9ydHMgbWFueSBVQUYgaXNzdWVzIGZvciB3b3JrcXVldWUgb3IgdGltZXIsIHNl
+ZSBbMV0gYW5kIFsyXS4NCkluIHNvbWUgb2YgdGhlc2UgYWNjZXNzL2FsbG9jYXRpb24gaGFwcGVu
+ZWQgaW4gcHJvY2Vzc19vbmVfd29yaygpLA0Kd2Ugc2VlIHRoZSBmcmVlIHN0YWNrIGlzIHVzZWxl
+c3MgaW4gS0FTQU4gcmVwb3J0LCBpdCBkb2Vzbid0IGhlbHANCnByb2dyYW1tZXJzIHRvIHNvbHZl
+IFVBRiBvbiB3b3JrcXVldWUuIFRoZSBzYW1lIG1heSBzdGFuZCBmb3IgdGltZXMuDQoNClRoaXMg
+cGF0Y2hzZXQgaW1wcm92ZXMgS0FTQU4gcmVwb3J0cyBieSBtYWtpbmcgdGhlbSB0byBoYXZlIHdv
+cmtxdWV1ZQ0KcXVldWVpbmcgc3RhY2sgYW5kIHRpbWVyIHF1ZXVlaW5nIHN0YWNrIGluZm9ybWF0
+aW9uLiBJdCBpcyB1c2VmdWwgZm9yDQpwcm9ncmFtbWVycyB0byBzb2x2ZSB1c2UtYWZ0ZXItZnJl
+ZSBvciBkb3VibGUtZnJlZSBtZW1vcnkgaXNzdWUuDQoNCkdlbmVyaWMgS0FTQU4gd2lsbCByZWNv
+cmQgdGhlIGxhc3QgdHdvIHdvcmtxdWV1ZSBhbmQgdGltZXIgc3RhY2tzLA0KcHJpbnQgdGhlbSBp
+biBLQVNBTiByZXBvcnQuIEl0IGlzIG9ubHkgc3VpdGFibGUgZm9yIGdlbmVyaWMgS0FTQU4uDQoN
+ClsxXWh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5jb20vZy9zeXprYWxsZXItYnVncy9zZWFyY2g/cT0l
+MjJ1c2UtYWZ0ZXItZnJlZSUyMitwcm9jZXNzX29uZV93b3JrDQpbMl1odHRwczovL2dyb3Vwcy5n
+b29nbGUuY29tL2cvc3l6a2FsbGVyLWJ1Z3Mvc2VhcmNoP3E9JTIydXNlLWFmdGVyLWZyZWUlMjIl
+MjBleHBpcmVfdGltZXJzDQpbM11odHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcu
+Y2dpP2lkPTE5ODQzNw0KDQpXYWx0ZXIgV3UgKDYpOg0KdGltZXI6IGthc2FuOiByZWNvcmQgdGlt
+ZXIgc3RhY2sNCndvcmtxdWV1ZToga2FzYW46IHJlY29yZCB3b3JrcXVldWUgc3RhY2sNCmthc2Fu
+OiBwcmludCB0aW1lciBhbmQgd29ya3F1ZXVlIHN0YWNrDQpsaWIvdGVzdF9rYXNhbi5jOiBhZGQg
+dGltZXIgdGVzdCBjYXNlDQpsaWIvdGVzdF9rYXNhbi5jOiBhZGQgd29ya3F1ZXVlIHRlc3QgY2Fz
+ZQ0Ka2FzYW46IHVwZGF0ZSBkb2N1bWVudGF0aW9uIGZvciBnZW5lcmljIGthc2FuDQoNCi0tLQ0K
+DQpDaGFuZ2VzIHNpbmNlIHYxOg0KLSBUaGFua3MgZm9yIE1hcmNvIGFuZCBUaG9tYXMgc3VnZ2Vz
+dGlvbi4NCi0gUmVtb3ZlIHVubmVjZXNzYXJ5IGNvZGUgYW5kIGZpeCBjb21taXQgbG9nDQotIHJl
+dXNlIGthc2FuX3JlY29yZF9hdXhfc3RhY2soKSBhbmQgYXV4X3N0YWNrDQogIHRvIHJlY29yZCB0
+aW1lciBhbmQgd29ya3F1ZXVlIHN0YWNrLg0KLSBjaGFuZ2UgdGhlIGF1eCBzdGFjayB0aXRsZSBm
+b3IgY29tbW9uIG5hbWUuDQoNCi0tLQ0KDQpEb2N1bWVudGF0aW9uL2Rldi10b29scy9rYXNhbi5y
+c3QgfCAgNCArKy0tDQprZXJuZWwvdGltZS90aW1lci5jICAgICAgICAgICAgICAgfCAgMyArKysN
+Cmtlcm5lbC93b3JrcXVldWUuYyAgICAgICAgICAgICAgICB8ICAzICsrKw0KbGliL3Rlc3Rfa2Fz
+YW4uYyAgICAgICAgICAgICAgICAgIHwgNTQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrDQptbS9rYXNhbi9yZXBvcnQuYyAgICAgICAgICAgICAg
+ICAgfCAgNCArKy0tDQo1IGZpbGVzIGNoYW5nZWQsIDY0IGluc2VydGlvbnMoKyksIDQgZGVsZXRp
+b25zKC0p
 
-Ah, I see now. And the easiest way of handling this is simply revert the
-commit now, re-think and redo during the next merge window.
-
-There are two issues with the patch:
-1) vcs_read rounds the 'count' up to an even number. So if we read odd
-bytes from the header (3 in the reproducer), the second byte of
-(2-byte/ushort) write to temporary con_buf won't fit. It is because with
-the patch applied, we only subtract the real number read (3 bytes) and
-not the whole header (4 bytes).
-
-2) in this scenario, we perform unaligned accesses now. 2-byte/ushort
-writes to odd addresses. Due to the same reason as above.
-
-So Greg, could you revert with the above reasoning? It reverts cleanly.
-Or do you want me to send a revert?
-
-thanks,
--- 
-js
-suse labs
