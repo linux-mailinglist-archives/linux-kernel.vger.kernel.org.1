@@ -2,47 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E8624F544
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D71224F481
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgHXIqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44746 "EHLO mail.kernel.org"
+        id S1728393AbgHXIhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729343AbgHXIq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:46:26 -0400
+        id S1728044AbgHXIhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7270206F0;
-        Mon, 24 Aug 2020 08:46:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E091F221E2;
+        Mon, 24 Aug 2020 08:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258786;
-        bh=1RUvlJj4UOjBfLIGHgxFknh/nqgcIeP7tjGttnAp8Oo=;
+        s=default; t=1598258230;
+        bh=Ri/RBWj/xKdkdllwX2uawEFqyQBCuL7mbEJLEbn/lvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z0iuatpNFbQ6+p7OixpymmSQTZYYwcc+inqXkPgJghqEeAudQYro6vZOMyghANyAk
-         3Q8GMOadiS7BkUcZHMOyprMIl3bVJk66nc5pNZksDRJoZm6oq9OSuOALRthgAoACmZ
-         rj6JDGG5Q0h0w955WVCcHhADHW7j5o8hdJ5YHixg=
+        b=Po93oY2s8DBD5u9sTkr8O4T76p70lU4qAstX+vuQKCh/+u4XTaGf2htQIb2bO6gu6
+         p/yWj1NP8FFmcak6z1rJV20Wv6ziyWX+r5D3fboz1OmkaVg2CzHyX6e0L7KrKFjiyb
+         wNZio1fr9dQowuYaAlqjoUDK406JWMiRQ4OFul2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/107] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
+Subject: [PATCH 5.8 083/148] libbpf: Fix BTF-defined map-in-map initialization on 32-bit host arches
 Date:   Mon, 24 Aug 2020 10:29:41 +0200
-Message-Id: <20200824082405.826004689@linuxfoundation.org>
+Message-Id: <20200824082418.030867573@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,49 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit f3f99d63a8156c7a4a6b20aac22b53c5579c7dc1 ]
+[ Upstream commit 15728ad3e71c120278105f20fa65b3735e715e0f ]
 
-syzbot crashes on the VM_BUG_ON_MM(khugepaged_test_exit(mm), mm) in
-__khugepaged_enter(): yes, when one thread is about to dump core, has set
-core_state, and is waiting for others, another might do something calling
-__khugepaged_enter(), which now crashes because I lumped the core_state
-test (known as "mmget_still_valid") into khugepaged_test_exit().  I still
-think it's best to lump them together, so just in this exceptional case,
-check mm->mm_users directly instead of khugepaged_test_exit().
+Libbpf built in 32-bit mode should be careful about not conflating 64-bit BPF
+pointers in BPF ELF file and host architecture pointers. This patch fixes
+issue of incorrect initializating of map-in-map inner map slots due to such
+difference.
 
-Fixes: bbe98f9cadff ("khugepaged: khugepaged_test_exit() check mmget_still_valid()")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Yang Shi <shy828301@gmail.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: <stable@vger.kernel.org>	[4.8+]
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008141503370.18085@eggly.anvils
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200813204945.1020225-4-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/khugepaged.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 76e3e90dbc16e..3623d1c5343f2 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -438,7 +438,7 @@ int __khugepaged_enter(struct mm_struct *mm)
- 		return -ENOMEM;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 11e4725b8b1c0..e7642a6e39f9e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5025,7 +5025,8 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+ static int bpf_object__collect_map_relos(struct bpf_object *obj,
+ 					 GElf_Shdr *shdr, Elf_Data *data)
+ {
+-	int i, j, nrels, new_sz, ptr_sz = sizeof(void *);
++	const int bpf_ptr_sz = 8, host_ptr_sz = sizeof(void *);
++	int i, j, nrels, new_sz;
+ 	const struct btf_var_secinfo *vi = NULL;
+ 	const struct btf_type *sec, *var, *def;
+ 	const struct btf_member *member;
+@@ -5074,7 +5075,7 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
  
- 	/* __khugepaged_exit() must not run from under us */
--	VM_BUG_ON_MM(khugepaged_test_exit(mm), mm);
-+	VM_BUG_ON_MM(atomic_read(&mm->mm_users) == 0, mm);
- 	if (unlikely(test_and_set_bit(MMF_VM_HUGEPAGE, &mm->flags))) {
- 		free_mm_slot(mm_slot);
- 		return 0;
+ 			vi = btf_var_secinfos(sec) + map->btf_var_idx;
+ 			if (vi->offset <= rel.r_offset &&
+-			    rel.r_offset + sizeof(void *) <= vi->offset + vi->size)
++			    rel.r_offset + bpf_ptr_sz <= vi->offset + vi->size)
+ 				break;
+ 		}
+ 		if (j == obj->nr_maps) {
+@@ -5110,17 +5111,20 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
+ 			return -EINVAL;
+ 
+ 		moff = rel.r_offset - vi->offset - moff;
+-		if (moff % ptr_sz)
++		/* here we use BPF pointer size, which is always 64 bit, as we
++		 * are parsing ELF that was built for BPF target
++		 */
++		if (moff % bpf_ptr_sz)
+ 			return -EINVAL;
+-		moff /= ptr_sz;
++		moff /= bpf_ptr_sz;
+ 		if (moff >= map->init_slots_sz) {
+ 			new_sz = moff + 1;
+-			tmp = realloc(map->init_slots, new_sz * ptr_sz);
++			tmp = realloc(map->init_slots, new_sz * host_ptr_sz);
+ 			if (!tmp)
+ 				return -ENOMEM;
+ 			map->init_slots = tmp;
+ 			memset(map->init_slots + map->init_slots_sz, 0,
+-			       (new_sz - map->init_slots_sz) * ptr_sz);
++			       (new_sz - map->init_slots_sz) * host_ptr_sz);
+ 			map->init_slots_sz = new_sz;
+ 		}
+ 		map->init_slots[moff] = targ_map;
 -- 
 2.25.1
 
