@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AADD24F55F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000E424F4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgHXIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48348 "EHLO mail.kernel.org"
+        id S1728947AbgHXIm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:42:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727041AbgHXIr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:56 -0400
+        id S1728914AbgHXImI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:42:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48E5E204FD;
-        Mon, 24 Aug 2020 08:47:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3983F2075B;
+        Mon, 24 Aug 2020 08:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258875;
-        bh=bTH5iXVwhap6MKUOjysl2NNrLylw8YNHEzLt+9lZNL0=;
+        s=default; t=1598258527;
+        bh=Szw6jA3d8Pxqmf1JA6WaAVW8AEfSzqqzAAso5Yu42xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJBJLDZaxsH+UGLSF8hxLR///RQzhO1BfpsUl/3oE40BRlQy65NnTxOKB52txTodZ
-         OQatc6a5fUqFSrry8IdgOWbGR+K8fw5neU5csF99shIh7q6asUVcb/BVg52uIgRqfE
-         /HPJh5AOuKPr77CPYNtXMXwoRhq3OXQ5KLnaPKFI=
+        b=f1k0pKAwTmBVhyKzAfI54FKQUbhwoDnDSuj2db0fedpjuu7zccOCJzoFybDEufzl3
+         XKBMvegUTLnHUetBuZ1Go3mSgZZpapVak/Umi6OpX2NELMJqZyO/EZrU7nZdJFKojo
+         Cwe3MLjAz6CPmLr9A2yhlmOhISxrQ2C19fQQg0FE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/107] Input: psmouse - add a newline when printing proto by sysfs
+Subject: [PATCH 5.7 078/124] can: j1939: fix support for multipacket broadcast message
 Date:   Mon, 24 Aug 2020 10:30:12 +0200
-Message-Id: <20200824082407.421168143@linuxfoundation.org>
+Message-Id: <20200824082413.247087210@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +46,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 4aec14de3a15cf9789a0e19c847f164776f49473 ]
+[ Upstream commit f4fd77fd87e9b214c26bb2ebd4f90055eaea5ade ]
 
-When I cat parameter 'proto' by sysfs, it displays as follows. It's
-better to add a newline for easy reading.
+Currently j1939_tp_im_involved_anydir() in j1939_tp_recv() check the previously
+set flags J1939_ECU_LOCAL_DST and J1939_ECU_LOCAL_SRC of incoming skb, thus
+multipacket broadcast message was aborted by receive side because it may come
+from remote ECUs and have no exact dst address. Similarly, j1939_tp_cmd_recv()
+and j1939_xtp_rx_dat() didn't process broadcast message.
 
-root@syzkaller:~# cat /sys/module/psmouse/parameters/proto
-autoroot@syzkaller:~#
+So fix it by checking and process broadcast message in j1939_tp_recv(),
+j1939_tp_cmd_recv() and j1939_xtp_rx_dat().
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Link: https://lore.kernel.org/r/20200720073846.120724-1-wangxiongfeng2@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1596599425-5534-2-git-send-email-zhangchangzhong@huawei.com
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/psmouse-base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/j1939/transport.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
-index 527ae0b9a191e..0b4a3039f312f 100644
---- a/drivers/input/mouse/psmouse-base.c
-+++ b/drivers/input/mouse/psmouse-base.c
-@@ -2042,7 +2042,7 @@ static int psmouse_get_maxproto(char *buffer, const struct kernel_param *kp)
- {
- 	int type = *((unsigned int *)kp->arg);
- 
--	return sprintf(buffer, "%s", psmouse_protocol_by_type(type)->name);
-+	return sprintf(buffer, "%s\n", psmouse_protocol_by_type(type)->name);
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 90a2baac8a4aa..67189b4c482c5 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1673,8 +1673,12 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
+ 			return;
+ 		}
+ 		session = j1939_xtp_rx_rts_session_new(priv, skb);
+-		if (!session)
++		if (!session) {
++			if (cmd == J1939_TP_CMD_BAM && j1939_sk_recv_match(priv, skcb))
++				netdev_info(priv->ndev, "%s: failed to create TP BAM session\n",
++					    __func__);
+ 			return;
++		}
+ 	} else {
+ 		if (j1939_xtp_rx_rts_session_active(session, skb)) {
+ 			j1939_session_put(session);
+@@ -1852,6 +1856,13 @@ static void j1939_xtp_rx_dat(struct j1939_priv *priv, struct sk_buff *skb)
+ 		else
+ 			j1939_xtp_rx_dat_one(session, skb);
+ 	}
++
++	if (j1939_cb_is_broadcast(skcb)) {
++		session = j1939_session_get_by_addr(priv, &skcb->addr, false,
++						    false);
++		if (session)
++			j1939_xtp_rx_dat_one(session, skb);
++	}
  }
  
- static int __init psmouse_init(void)
+ /* j1939 main intf */
+@@ -1943,7 +1954,7 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 		if (j1939_tp_im_transmitter(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, true);
+ 
+-		if (j1939_tp_im_receiver(skcb))
++		if (j1939_tp_im_receiver(skcb) || j1939_cb_is_broadcast(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, false);
+ 
+ 		break;
+@@ -2007,7 +2018,7 @@ int j1939_tp_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ {
+ 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
+ 
+-	if (!j1939_tp_im_involved_anydir(skcb))
++	if (!j1939_tp_im_involved_anydir(skcb) && !j1939_cb_is_broadcast(skcb))
+ 		return 0;
+ 
+ 	switch (skcb->addr.pgn) {
 -- 
 2.25.1
 
