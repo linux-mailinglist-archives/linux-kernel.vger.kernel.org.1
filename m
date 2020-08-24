@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9107024F962
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4930724FA4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729082AbgHXJor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        id S1728253AbgHXIgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:36:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728748AbgHXInO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:14 -0400
+        id S1726730AbgHXIgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D24702075B;
-        Mon, 24 Aug 2020 08:43:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDFFF22B3F;
+        Mon, 24 Aug 2020 08:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258594;
-        bh=I2rc69Oc47pz8Ily187amhLgZCDrNoxj7kJnj5evJDg=;
+        s=default; t=1598258193;
+        bh=Tj68wpcq8gwgRKTspOtj86cQXqXyuM2JjWCZZk96Frc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yCVk4FzQmZt4yhRK78gXWQ4kyuBH5g8WpadEN3FpTAXCojRlcepRitco7reBp4phK
-         CX5Uo9tvBoO1jogZ7TFB3d4K2QGK67T7J67q6yKK1MqgoW85prWZ/IdDRILtZ44ghT
-         P06ayo9nLLJZIrDlq/kWGCylePdfyD0fYkdLbLVo=
+        b=tAb6bLQ1Ugx0Dx3Bvl4WY+snoCUlXvHvo7ko8DsfYMqlcifvX47TQSO99KLfkxapi
+         O3GXyExjhAUsuPD8yPYTEZglzj6H0H90IjAtOd9giJf8cMmhSKGT47MRtLiH0CTcAq
+         jDJGxzXiSMIsl5dvusD08GqQRLWmgJCFl44hO10s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Henrique Figueira <henrislip@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 072/124] can: j1939: transport: add j1939_session_skb_find_by_offset() function
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 108/148] of/address: check for invalid range.cpu_addr
 Date:   Mon, 24 Aug 2020 10:30:06 +0200
-Message-Id: <20200824082412.956507491@linuxfoundation.org>
+Message-Id: <20200824082419.198945010@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,88 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 840835c9281215341d84966a8855f267a971e6a3 ]
+[ Upstream commit f49c7faf776f16607c948d852a03b04a88c3b583 ]
 
-Sometimes it makes no sense to search the skb by pkt.dpo, since we need
-next the skb within the transaction block. This may happen if we have an
-ETP session with CTS set to less than 255 packets.
+Currently invalid CPU addresses are not being sanity checked resulting in
+SATA setup failure on a SynQuacer SC2A11 development machine. The original
+check was removed by and earlier commit, so add a sanity check back in
+to avoid this regression.
 
-After this patch, we will be able to work with ETP sessions where the
-block size (ETP.CM_CTS byte 2) is less than 255 packets.
-
-Reported-by: Henrique Figueira <henrislip@gmail.com>
-Reported-by: https://github.com/linux-can/can-utils/issues/228
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-5-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 7a8b64d17e35 ("of/address: use range parser for of_dma_get_range")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200817113208.523805-1-colin.king@canonical.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/transport.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/of/address.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 30957c9a8eb7a..90a2baac8a4aa 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -352,17 +352,16 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 	skb_queue_tail(&session->skb_queue, skb);
- }
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 8eea3f6e29a44..340d3051b1ce2 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -980,6 +980,11 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
+ 			/* Don't error out as we'd break some existing DTs */
+ 			continue;
+ 		}
++		if (range.cpu_addr == OF_BAD_ADDR) {
++			pr_err("translation of DMA address(%llx) to CPU address failed node(%pOF)\n",
++			       range.bus_addr, node);
++			continue;
++		}
+ 		dma_offset = range.cpu_addr - range.bus_addr;
  
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct
-+sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
-+					  unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
-+	struct j1939_sk_buff_cb *do_skcb;
- 	struct sk_buff *skb = NULL;
- 	struct sk_buff *do_skb;
--	struct j1939_sk_buff_cb *do_skcb;
--	unsigned int offset_start;
- 	unsigned long flags;
- 
--	offset_start = session->pkt.dpo * 7;
--
- 	spin_lock_irqsave(&session->skb_queue.lock, flags);
- 	skb_queue_walk(&session->skb_queue, do_skb) {
- 		do_skcb = j1939_skb_to_cb(do_skb);
-@@ -382,6 +381,14 @@ static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
- 	return skb;
- }
- 
-+static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+{
-+	unsigned int offset_start;
-+
-+	offset_start = session->pkt.dpo * 7;
-+	return j1939_session_skb_find_by_offset(session, offset_start);
-+}
-+
- /* see if we are receiver
-  * returns 0 for broadcasts, although we will receive them
-  */
-@@ -766,7 +773,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find(session);
-+	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -1765,7 +1772,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 			    __func__, session);
- 		goto out_session_cancel;
- 	}
--	se_skb = j1939_session_skb_find(session);
-+
-+	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
+ 		/* Take lower and upper limits */
 -- 
 2.25.1
 
