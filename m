@@ -2,112 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807A6250C2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B9A250C33
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 01:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgHXXPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 19:15:25 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:40622 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXXPX (ORCPT
+        id S1728153AbgHXXSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 19:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXXSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 19:15:23 -0400
-Received: by mail-io1-f66.google.com with SMTP id q132so107838iod.7;
-        Mon, 24 Aug 2020 16:15:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=glE9MJLwvJksS6Kq8WSkXlWHv26cBEY9xO46r0OVXSU=;
-        b=Snifu9Q4V00yZgnz+O+oBIwsk8zNp/jBywO1B5XMHY4Lamv9KfIZ+7WCQBPCf72TYj
-         bkj7eDmhPR4fVgPuYvonWbbPu9rCsr+srkOhvIGqSwoU7Spz3N+27juQCF24blaJwNz8
-         jH0MrymzkJ6COKS4mNdHl1BFFhrI7JzfVaaRsoeylIAhZPB7JMP1Vu7vy2fvIwDsPrJR
-         gUakRkmzN/7eWjz3sEfMpSEEQ42hbOxtXJKItzcDQCCfQdxd0vXwppvkv4Vjz+y/LnoI
-         yIlg8R6MPSVKZ8zXgj3UPRKoEHh3vFiovoXllqHuEvKGDkpNa/J0Sdy0SJ+K7/Jzj32D
-         F0Pg==
-X-Gm-Message-State: AOAM532+Mjf2SRjKEcyYWXHrr9GW5yA39QcnOcgzoibHu2TDP11gjVEa
-        89r1ZN5F+xUXgjTow6cfGw==
-X-Google-Smtp-Source: ABdhPJyi8756H2KScziyvfj8N3dhCo662Valtwe3X4z9g1X/I/OGyZyNv2EQX/btFiKGf0FNeNSZVg==
-X-Received: by 2002:a6b:bfc1:: with SMTP id p184mr6858446iof.193.1598310922357;
-        Mon, 24 Aug 2020 16:15:22 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id a71sm8392575ill.19.2020.08.24.16.15.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 16:15:21 -0700 (PDT)
-Received: (nullmailer pid 3515104 invoked by uid 1000);
-        Mon, 24 Aug 2020 23:15:19 -0000
-Date:   Mon, 24 Aug 2020 17:15:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     f.fainelli@gmail.com, tsbogend@alpha.franken.de,
-        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/14] mips: bmips: include dt-bindings headers
-Message-ID: <20200824231519.GA3507085@bogus>
-References: <20200812063129.361862-1-noltari@gmail.com>
+        Mon, 24 Aug 2020 19:18:16 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15822C061574;
+        Mon, 24 Aug 2020 16:18:15 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 9CFC42CB;
+        Mon, 24 Aug 2020 23:18:15 +0000 (UTC)
+Date:   Mon, 24 Aug 2020 17:18:14 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the jc_docs
+ tree
+Message-ID: <20200824171814.7905b7c9@lwn.net>
+In-Reply-To: <20200825091346.63395129@canb.auug.org.au>
+References: <20200825091346.63395129@canb.auug.org.au>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200812063129.361862-1-noltari@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 08:31:15AM +0200, Álvaro Fernández Rojas wrote:
-> Allow including dt-bindings header files and use them for bcm63xx.
-> 
-> Álvaro Fernández Rojas (14):
->   mips: dts: brcm: allow including header files
->   mips: bmips: add BCM3368 irq definitions
->   mips: bmips: add BCM6318 irq definitions
->   mips: bmips: add BCM6328 irq definitions
->   mips: bmips: add BCM6358 irq definitions
->   mips: bmips: add BCM6362 irq definitions
->   mips: bmips: add BCM6368 irq definitions
->   mips: bmips: add BCM63268 irq definitions
->   mips: bmips: bcm3368: include and use dt-bindings
->   mips: bmips: bcm6328: include and use dt-bindings
->   mips: bmips: bcm6358: include and use dt-bindings
->   mips: bmips: bcm6362: include and use dt-bindings
->   mips: bmips: bcm6368: include and use dt-bindings
->   mips: bmips: bcm63268: include and use dt-bindings
-> 
->  .../boot/dts/brcm/bcm3368-netgear-cvg834g.dts |  2 +-
->  arch/mips/boot/dts/brcm/bcm3368.dtsi          |  8 +-
->  .../dts/brcm/bcm63268-comtrend-vr-3032u.dts   |  2 +-
->  arch/mips/boot/dts/brcm/bcm63268.dtsi         | 12 ++-
->  arch/mips/boot/dts/brcm/bcm6328.dtsi          | 12 ++-
->  .../dts/brcm/bcm6358-neufbox4-sercomm.dts     |  2 +-
->  arch/mips/boot/dts/brcm/bcm6358.dtsi          | 12 ++-
->  .../dts/brcm/bcm6362-neufbox6-sercomm.dts     |  2 +-
->  arch/mips/boot/dts/brcm/bcm6362.dtsi          | 12 ++-
->  arch/mips/boot/dts/brcm/bcm6368.dtsi          | 12 ++-
->  arch/mips/boot/dts/brcm/bcm93384wvg.dts       |  2 +-
->  arch/mips/boot/dts/brcm/bcm93384wvg_viper.dts |  2 +-
->  arch/mips/boot/dts/brcm/bcm96368mvwg.dts      |  2 +-
->  arch/mips/boot/dts/brcm/bcm97125cbmb.dts      |  2 +-
->  arch/mips/boot/dts/brcm/bcm97346dbsmb.dts     |  4 +-
->  arch/mips/boot/dts/brcm/bcm97358svmb.dts      |  4 +-
->  arch/mips/boot/dts/brcm/bcm97360svmb.dts      |  2 +-
->  arch/mips/boot/dts/brcm/bcm97362svmb.dts      |  4 +-
->  arch/mips/boot/dts/brcm/bcm97420c.dts         |  2 +-
->  arch/mips/boot/dts/brcm/bcm97425svmb.dts      |  4 +-
->  arch/mips/boot/dts/brcm/bcm97435svmb.dts      |  4 +-
->  arch/mips/boot/dts/brcm/bcm9ejtagprb.dts      |  2 +-
->  .../bcm3368-interrupt-controller.h            | 19 ++++
->  .../bcm6318-interrupt-controller.h            | 84 ++++++++++++++++++
->  .../bcm63268-interrupt-controller.h           | 86 +++++++++++++++++++
->  .../bcm6328-interrupt-controller.h            | 68 +++++++++++++++
->  .../bcm6358-interrupt-controller.h            | 38 ++++++++
->  .../bcm6362-interrupt-controller.h            | 71 +++++++++++++++
->  .../bcm6368-interrupt-controller.h            | 71 +++++++++++++++
+On Tue, 25 Aug 2020 09:13:46 +1000
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-You'll notice that there are essentially no other headers with 
-SoC interrupt numbers. That's because we don't do defines for them. It's 
-pointless obfuscation.
+> Commit
+> 
+>   09824ed3a906 ("Documentation/locking/locktypes: fix local_locks documentation")
+> 
+> is missing a Signed-off-by from its committer.
 
-Rob
+*That* is weird...it was applied with the same "git am" script as all the
+rest...  Thanks for the heads-up, sure wish I knew what's going on.
+
+jon
