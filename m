@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8190A24F552
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE2824F48A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgHXIrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
+        id S1728447AbgHXIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729451AbgHXIrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:47:20 -0400
+        id S1728433AbgHXIhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:37:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE892206F0;
-        Mon, 24 Aug 2020 08:47:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 476872177B;
+        Mon, 24 Aug 2020 08:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258840;
-        bh=I+DwZD56sM3C9rG0X7y50N5FiUYdZB+t0XR4CbQVVzE=;
+        s=default; t=1598258254;
+        bh=efTXhLA1Wenoo87S0O0Fb0+ibbIN/NCes9dGiWbG7gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCeDtFN/xW/h8wFBVuabo1g0RqIFLd/uWSqichYKo0q8NSVfEtkjzeoTU9BYb6PTp
-         OhSCTlFQr689Bm3zvQwu55XxaqLhMhQNvqxWhhBd04gjUE1G1iXWZF82ewupNSxc6d
-         vA7O3rY2ILtuPvNMbvsrQvmUO24xdKsizNrfojpQ=
+        b=H3TWumbRmXoMt/F2vFjNHSVy6kSZu48qx0kZzGKBpd5IX5Fy3dThtLCf9WtUIubS0
+         ALhCGoR6PnPRxjFOk3difi14wqA0CXlYxmpjegyUH6z0mYfaTQeY/8ocR26Fh3GhCH
+         ar6KnYqxGo7RYoJueXxu6ZHem0t98D2+fWD0lm6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 063/107] ext4: fix potential negative array index in do_split()
-Date:   Mon, 24 Aug 2020 10:30:29 +0200
-Message-Id: <20200824082408.247538124@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Wiesner <jwiesner@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 132/148] bonding: fix active-backup failover for current ARP slave
+Date:   Mon, 24 Aug 2020 10:30:30 +0200
+Message-Id: <20200824082420.339995079@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
-References: <20200824082405.020301642@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Sandeen <sandeen@redhat.com>
+From: Jiri Wiesner <jwiesner@suse.com>
 
-[ Upstream commit 5872331b3d91820e14716632ebb56b1399b34fe1 ]
+[ Upstream commit 0410d07190961ac526f05085765a8d04d926545b ]
 
-If for any reason a directory passed to do_split() does not have enough
-active entries to exceed half the size of the block, we can end up
-iterating over all "count" entries without finding a split point.
+When the ARP monitor is used for link detection, ARP replies are
+validated for all slaves (arp_validate=3) and fail_over_mac is set to
+active, two slaves of an active-backup bond may get stuck in a state
+where both of them are active and pass packets that they receive to
+the bond. This state makes IPv6 duplicate address detection fail. The
+state is reached thus:
+1. The current active slave goes down because the ARP target
+   is not reachable.
+2. The current ARP slave is chosen and made active.
+3. A new slave is enslaved. This new slave becomes the current active
+   slave and can reach the ARP target.
+As a result, the current ARP slave stays active after the enslave
+action has finished and the log is littered with "PROBE BAD" messages:
+> bond0: PROBE: c_arp ens10 && cas ens11 BAD
+The workaround is to remove the slave with "going back" status from
+the bond and re-enslave it. This issue was encountered when DPDK PMD
+interfaces were being enslaved to an active-backup bond.
 
-In this case, count == move, and split will be zero, and we will
-attempt a negative index into map[].
+I would be possible to fix the issue in bond_enslave() or
+bond_change_active_slave() but the ARP monitor was fixed instead to
+keep most of the actions changing the current ARP slave in the ARP
+monitor code. The current ARP slave is set as inactive and backup
+during the commit phase. A new state, BOND_LINK_FAIL, has been
+introduced for slaves in the context of the ARP monitor. This allows
+administrators to see how slaves are rotated for sending ARP requests
+and attempts are made to find a new active slave.
 
-Guard against this by detecting this case, and falling back to
-split-to-half-of-count instead; in this case we will still have
-plenty of space (> half blocksize) in each split block.
-
-Fixes: ef2b02d3e617 ("ext34: ensure do_split leaves enough free space in both blocks")
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: b2220cad583c9 ("bonding: refactor ARP active-backup monitor")
+Signed-off-by: Jiri Wiesner <jwiesner@suse.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ drivers/net/bonding/bond_main.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 0218b1407abbb..36a81b57012a5 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1852,7 +1852,7 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 			     blocksize, hinfo, map);
- 	map -= count;
- 	dx_sort_map(map, count);
--	/* Split the existing block in the middle, size-wise */
-+	/* Ensure that neither split block is over half full */
- 	size = 0;
- 	move = 0;
- 	for (i = count-1; i >= 0; i--) {
-@@ -1862,8 +1862,18 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 		size += map[i].size;
- 		move++;
- 	}
--	/* map index at which we will split */
--	split = count - move;
-+	/*
-+	 * map index at which we will split
-+	 *
-+	 * If the sum of active entries didn't exceed half the block size, just
-+	 * split it in half by count; each resulting block will have at least
-+	 * half the space free.
-+	 */
-+	if (i > 0)
-+		split = count - move;
-+	else
-+		split = count/2;
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index f438e20fcda1f..500aa3e19a4c7 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -2825,6 +2825,9 @@ static int bond_ab_arp_inspect(struct bonding *bond)
+ 			if (bond_time_in_interval(bond, last_rx, 1)) {
+ 				bond_propose_link_state(slave, BOND_LINK_UP);
+ 				commit++;
++			} else if (slave->link == BOND_LINK_BACK) {
++				bond_propose_link_state(slave, BOND_LINK_FAIL);
++				commit++;
+ 			}
+ 			continue;
+ 		}
+@@ -2933,6 +2936,19 @@ static void bond_ab_arp_commit(struct bonding *bond)
+ 
+ 			continue;
+ 
++		case BOND_LINK_FAIL:
++			bond_set_slave_link_state(slave, BOND_LINK_FAIL,
++						  BOND_SLAVE_NOTIFY_NOW);
++			bond_set_slave_inactive_flags(slave,
++						      BOND_SLAVE_NOTIFY_NOW);
 +
- 	hash2 = map[split].hash;
- 	continued = hash2 == map[split - 1].hash;
- 	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
++			/* A slave has just been enslaved and has become
++			 * the current active slave.
++			 */
++			if (rtnl_dereference(bond->curr_active_slave))
++				RCU_INIT_POINTER(bond->current_arp_slave, NULL);
++			continue;
++
+ 		default:
+ 			slave_err(bond->dev, slave->dev,
+ 				  "impossible: link_new_state %d on slave\n",
+@@ -2983,8 +2999,6 @@ static bool bond_ab_arp_probe(struct bonding *bond)
+ 			return should_notify_rtnl;
+ 	}
+ 
+-	bond_set_slave_inactive_flags(curr_arp_slave, BOND_SLAVE_NOTIFY_LATER);
+-
+ 	bond_for_each_slave_rcu(bond, slave, iter) {
+ 		if (!found && !before && bond_slave_is_up(slave))
+ 			before = slave;
 -- 
 2.25.1
 
