@@ -2,188 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A93250075
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A8E250081
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgHXPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:09:56 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:29887 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgHXPJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:09:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598281728;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=oJ25+Eo0INS90wWLPFZq+am/532LdNYJA8DfYTYvpuA=;
-        b=bdOvDvfQfXFlZbBAn3yOiAd4ZYcyNwRMG9y9fyhu5CGRrQH3g51diYDZSt6STlwCVP
-        VzpK006H921OKzFbICH/1cVnBcsFchO1A7M9rQyU7/T09f2t9b6WjANsXxRL6TheUPye
-        tVYugudvyE1++scngTmrWH0eP/VfQKYzD6jgQdnXEbbzdpByxNtFCHZPAevUnpufuzyk
-        DQ2FBDArUtIzaRg/xJjE+hh42BERV4MG7KSz6IJKACP7lDH7RGAEMF8DMLC2ri4X5Env
-        s0YRhPlDF9rT2isoAyhb3Y8b9Xs2doM7nXN6JQvi1ul22SztvsJ+APvRQEFDh45z0AUO
-        apLQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/MbIo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7OF8lZF6
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 24 Aug 2020 17:08:47 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 17:08:42 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Niklas Cassel <nks@flawful.org>
-Subject: Re: [RFC PATCH 3/3] opp: Power on (virtual) power domains managed by
- the OPP core
-Message-ID: <20200824150831.GA842@gerhold.net>
-References: <20200730080146.25185-1-stephan@gerhold.net>
- <20200730080146.25185-4-stephan@gerhold.net>
- <20200824112744.jsyaxrfbybyjpwex@vireshk-i7>
- <20200824115549.GB208090@gerhold.net>
- <CAPDyKFojtArMRfO+Z8YaWCWw2fFYcO62x3eL1paNi5pKRg3Jww@mail.gmail.com>
+        id S1727889AbgHXPKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:10:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38938 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727019AbgHXPKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:10:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17128AB8B;
+        Mon, 24 Aug 2020 15:10:47 +0000 (UTC)
+Date:   Mon, 24 Aug 2020 17:10:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
+        osalvador@suse.de, mike.kravetz@oracle.com
+Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
+ page charged
+Message-ID: <20200824151013.GB3415@dhcp22.suse.cz>
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200820145850.GA4622@lca.pw>
+ <20200821080127.GD32537@dhcp22.suse.cz>
+ <20200821123934.GA4314@lca.pw>
+ <20200821134842.GF32537@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFojtArMRfO+Z8YaWCWw2fFYcO62x3eL1paNi5pKRg3Jww@mail.gmail.com>
+In-Reply-To: <20200821134842.GF32537@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 04:36:57PM +0200, Ulf Hansson wrote:
-> On Mon, 24 Aug 2020 at 13:56, Stephan Gerhold <stephan@gerhold.net> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 04:57:44PM +0530, Viresh Kumar wrote:
-> > > On 30-07-20, 10:01, Stephan Gerhold wrote:
-> > > > dev_pm_opp_attach_genpd() allows attaching an arbitrary number of
-> > > > power domains to an OPP table. In that case, the genpd core will
-> > > > create a virtual device for each of the power domains.
-> > > >
-> > > > At the moment, the OPP core only calls
-> > > > dev_pm_genpd_set_performance_state() on these virtual devices.
-> > > > It does not attempt to power on the power domains. Therefore
-> > > > the required power domain might never get turned on.
-> > > >
-> > > > So far, dev_pm_opp_attach_genpd() is only used in qcom-cpufreq-nvmem.c
-> > > > to attach the CPR power domain to the CPU OPP table. The CPR driver
-> > > > does not check if it was actually powered on so this did not cause
-> > > > any problems. However, other drivers (e.g. rpmpd) might ignore the
-> > > > performance state until the power domain is actually powered on.
-> > > >
-> > > > Since these virtual devices are managed exclusively by the OPP core,
-> > > > I would say that it should also be responsible to ensure they are
-> > > > enabled. A similar approach is already used for regulators, see
-> > > > commit 8d45719caaf5 ("opp: core: add regulators enable and disable").
-> > > >
-> > > > This commit implements similar functionality for the virtual genpd
-> > > > devices managed by the OPP core. The power domains are turned on
-> > > > the first time dev_pm_opp_set_rate() is called. They are turned off
-> > > > again when dev_pm_opp_set_rate(dev, 0) is called.
-> > > >
-> > > > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > > > ---
-> > > > Related discussion: https://lore.kernel.org/linux-arm-msm/20200426123140.GA190483@gerhold.net/
-> > > >
-> > > > There would be also other ways to implement this, e.g. device links,
-> > > > assuming that the device using the OPP table also makes use of runtime PM.
-> > > > My first thought was that it would be most consistent to handle this like
-> > > > regulators, bandwidth votes etc. RFC :)
-> > >
-> > > This stuff was done ages back and I am starting to forget almost
-> > > everything now :)
-> > >
-> > > Ulf, why doesn't pm_runtime_get(dev) take care of enabling multiple
-> > > power domain case ? RFP (request for patience) :)
-> > >
-> >
-> > So I'm really not an expert for power domains, but here is my
-> > understanding:
-> >
-> > We attach the power domains in dev_pm_opp_attach_genpd(opp_dev, names),
-> > where opp_dev is the device the OPP table belongs to.
-> >
-> > To do that, the genpd core creates a set of virtual devices. These
-> > virtual devices are not related to opp_dev in any way. Therefore, the
-> > power domains stay off until we run pm_runtime_get(virt_dev) for each of
-> > the virtual devices. (Which is what is implemented in this patch...)
+On Fri 21-08-20 15:48:44, Michal Hocko wrote:
+> On Fri 21-08-20 08:39:37, Qian Cai wrote:
+> > On Fri, Aug 21, 2020 at 10:01:27AM +0200, Michal Hocko wrote:
+> > > On Thu 20-08-20 10:58:51, Qian Cai wrote:
+> > > > On Tue, Aug 11, 2020 at 07:10:27PM +0800, Alex Shi wrote:
+> > > > > Since readahead page is charged on memcg too, in theory we don't have to
+> > > > > check this exception now. Before safely remove them all, add a warning
+> > > > > for the unexpected !memcg.
+> > > > > 
+> > > > > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> > > > > Acked-by: Michal Hocko <mhocko@suse.com>
+> > > > 
+> > > > This will trigger,
+> > > 
+> > > Thanks for the report!
+> > >  
+> > > > [ 1863.916499] LTP: starting move_pages12
+> > > > [ 1863.946520] page:000000008ccc1062 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1fd3c0
+> > > > [ 1863.946553] head:000000008ccc1062 order:5 compound_mapcount:0 compound_pincount:0
+> > > 
+> > > Hmm, this is really unexpected. How did we get order-5 page here? Is
+> > > this some special mappaing that sys_move_pages should just ignore?
+> > 
+> > Well, I thought everybody should be able to figure out where to find the LTP
+> > tests source code at this stage to see what it does. Anyway, the test simply
+> > migrate hugepages while soft offlining, so order 5 is expected as that is 2M
+> > hugepage on powerpc (also reproduced on x86 below). It might be easier to
+> > reproduce using our linux-mm random bug collection on NUMA systems.
 > 
-> Just to clarify. The reason why genpd creates virtual devices isn't
-> because of the opp table itself.
-> 
-> Instead this is because we can only attach one PM domain per device.
-> And since a device may have multiple PM domains, we need to create a
-> virtual device and per PM domain and attach that instead. Then it's up
-> to the caller to manage the virtual devices.
-> 
-> In some cases where the PM domains can be managed together, a device
-> link makes sense - while in others it doesn't.
-> 
-> >
-> > If I understand correctly, what you would like to do is to have a single
-> > pm_runtime_get(opp_dev) call also enable all the virtual devices?
-> >
-> > As far as I understand, this can be done by adding "device links"
-> > between opp_dev and the virtual devices, e.g.
-> >
-> >         device_link_add(opp_dev, virt_dev, DL_FLAG_PM_RUNTIME);
-> >
-> > for each of the virtual devices.
-> 
-> Yep.
-> 
-> >
-> > But the problem with that approach is that it assumes that someone
-> > actually calls pm_runtime_get(opp_dev), i.e. we assume that opp_dev is
-> > managed by runtime PM. As far as I know, this isn't the case for the CPU
-> > OPP table for example.
-> >
-> > Maybe Ulf can correct me if I'm wrong :)
-> 
-> If I understand correctly, the opp_dev is the actual consumer device.
-> It could represent an I/O controller for example, or a CPU in the CPU
-> freq case.
-> 
+> OK, I must have missed that this was on ppc. The order makes more sense
+> now. I will have a look at this next week.
 
-Exactly.
+OK, so I've had a look and I know what's going on there. The
+move_pages12 is migrating hugetlb pages. Those are not charged to any
+memcg. We have completely missed this case. There are two ways going
+around that. Drop the warning and update the comment so that we do not
+forget about that or special case hugetlb pages.
 
-> That said, perhaps should rely on the consumer to deploy runtime PM
-> support, but let the OPP core to set up the device links for the genpd
-> virtual devices!?
-> 
-
-Yes, that would be the alternative option.
-I would be fine with it as long as it also works for the CPUfreq case.
-
-I don't think anything manages runtime PM for the CPU device, just
-like no-one calls dev_pm_opp_set_rate(cpu_dev, 0). So with my patch the
-power domain is essentially kept always-on (except for system suspend).
-At least in my case this is intended.
-
-If device links also keep the power domains on if the consumer device
-does not make use of runtime PM it should work fine for my case.
-
-Personally, I think my original patch (without device links) fits better
-into the OPP API, for the following two reasons.
-
-With device links:
-
-  1. Unlike regulators/interconnects, attached power domains would be
-     controlled by runtime PM instead of dev_pm_opp_set_rate(opp_dev, 0).
-
-  2. ... some driver using OPP tables might not make use of runtime PM.
-     In that case, the power domains would stay on the whole time,
-     even if dev_pm_opp_set_rate(opp_dev, 0) was called.
-
-With my patch, the power domain state is directly related to the
-dev_pm_opp_set_rate(opp_dev, 0) call, which is more intuitive than
-relying on the runtime PM state in my opinion.
-
-Stephan
+I think the first option is better.
+-- 
+Michal Hocko
+SUSE Labs
