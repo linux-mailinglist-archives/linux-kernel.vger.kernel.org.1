@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A0C24FA15
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E172124F8B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgHXJwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53594 "EHLO mail.kernel.org"
+        id S1729555AbgHXIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727838AbgHXIin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:38:43 -0400
+        id S1728113AbgHXIsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:48:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 007482177B;
-        Mon, 24 Aug 2020 08:38:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30FBA2072D;
+        Mon, 24 Aug 2020 08:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258323;
-        bh=FHuqGYt9PkW0yhIUAUqjGzka7TWB2CLzxU6+I4s4Uao=;
+        s=default; t=1598258886;
+        bh=dXM8ebUwK/gOG6BlRks6/cnXzv5LRwXZ/MAjWYPQJ0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eJlpLk/0ovcFkFji45on960UdUCwK/FBJ7RrUnPUyW3yzxKqiVMy9x5Loq8mQpkUo
-         y87Lvx/ldW4VDsHVRjz9ZbQddkJVMWJC8aLNY9yBqRtxzqqJskbdSARXcNVtzvZI9k
-         JzqpqQ4so+NuZj1CbsBdQmQqsUX1hojb1u8swQ3w=
+        b=ZxkMu3T/lgnqfmNTedsQZoTqOoP4y0T5SULUBazxZRrLk0bJUaGrBUJMWEKhUJ/eu
+         Yy1VWXBhF5cfHkVrtSEoY52mE2jsEF7pY0X9nNFmO144amT2HlzrP0N0iWv4UsvZgj
+         mycXnEDL6LMRG9YeQ4OCx8Bhwuxk81VTrxrXLK0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.8 147/148] efi/libstub: Handle unterminated cmdline
-Date:   Mon, 24 Aug 2020 10:30:45 +0200
-Message-Id: <20200824082421.065889947@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 080/107] can: j1939: add rxtimer for multipacket broadcast session
+Date:   Mon, 24 Aug 2020 10:30:46 +0200
+Message-Id: <20200824082409.079524169@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +46,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit 8a8a3237a78cbc0557f0eb16a89f16d616323e99 upstream.
+[ Upstream commit 0ae18a82686f9b9965a8ce0dd81371871b306ffe ]
 
-Make the command line parsing more robust, by handling the case it is
-not NUL-terminated.
+According to SAE J1939/21 (Chapter 5.12.3 and APPENDIX C), for transmit side
+the required time interval between packets of a multipacket broadcast message
+is 50 to 200 ms, the responder shall use a timeout of 250ms (provides margin
+allowing for the maximumm spacing of 200ms). For receive side a timeout will
+occur when a time of greater than 750 ms elapsed between two message packets
+when more packets were expected.
 
-Use strnlen instead of strlen, and make sure that the temporary copy is
-NUL-terminated before parsing.
+So this patch fix and add rxtimer for multipacket broadcast session.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Link: https://lore.kernel.org/r/20200813185811.554051-4-nivedita@alum.mit.edu
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1596599425-5534-5-git-send-email-zhangchangzhong@huawei.com
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/libstub/efi-stub-helper.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/can/j1939/transport.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -194,12 +194,14 @@ efi_status_t efi_parse_options(char cons
- 	if (!cmdline)
- 		return EFI_SUCCESS;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index e3167619b196f..dbd215cbc53d8 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -723,10 +723,12 @@ static int j1939_session_tx_rts(struct j1939_session *session)
+ 		return ret;
  
--	len = strlen(cmdline) + 1;
-+	len = strnlen(cmdline, COMMAND_LINE_SIZE - 1) + 1;
- 	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, len, (void **)&buf);
- 	if (status != EFI_SUCCESS)
- 		return status;
+ 	session->last_txcmd = dat[0];
+-	if (dat[0] == J1939_TP_CMD_BAM)
++	if (dat[0] == J1939_TP_CMD_BAM) {
+ 		j1939_tp_schedule_txtimer(session, 50);
+-
+-	j1939_tp_set_rxtimeout(session, 1250);
++		j1939_tp_set_rxtimeout(session, 250);
++	} else {
++		j1939_tp_set_rxtimeout(session, 1250);
++	}
  
--	str = skip_spaces(memcpy(buf, cmdline, len));
-+	memcpy(buf, cmdline, len - 1);
-+	buf[len - 1] = '\0';
-+	str = skip_spaces(buf);
+ 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
  
- 	while (*str) {
- 		char *param, *val;
+@@ -1687,11 +1689,15 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
+ 	}
+ 	session->last_cmd = cmd;
+ 
+-	j1939_tp_set_rxtimeout(session, 1250);
+-
+-	if (cmd != J1939_TP_CMD_BAM && !session->transmission) {
+-		j1939_session_txtimer_cancel(session);
+-		j1939_tp_schedule_txtimer(session, 0);
++	if (cmd == J1939_TP_CMD_BAM) {
++		if (!session->transmission)
++			j1939_tp_set_rxtimeout(session, 750);
++	} else {
++		if (!session->transmission) {
++			j1939_session_txtimer_cancel(session);
++			j1939_tp_schedule_txtimer(session, 0);
++		}
++		j1939_tp_set_rxtimeout(session, 1250);
+ 	}
+ 
+ 	j1939_session_put(session);
+@@ -1742,6 +1748,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	int offset;
+ 	int nbytes;
+ 	bool final = false;
++	bool remain = false;
+ 	bool do_cts_eoma = false;
+ 	int packet;
+ 
+@@ -1804,6 +1811,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	    j1939_cb_is_broadcast(&session->skcb)) {
+ 		if (session->pkt.rx >= session->pkt.total)
+ 			final = true;
++		else
++			remain = true;
+ 	} else {
+ 		/* never final, an EOMA must follow */
+ 		if (session->pkt.rx >= session->pkt.last)
+@@ -1813,6 +1822,9 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	if (final) {
+ 		j1939_session_timers_cancel(session);
+ 		j1939_session_completed(session);
++	} else if (remain) {
++		if (!session->transmission)
++			j1939_tp_set_rxtimeout(session, 750);
+ 	} else if (do_cts_eoma) {
+ 		j1939_tp_set_rxtimeout(session, 1250);
+ 		if (!session->transmission)
+-- 
+2.25.1
+
 
 
