@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066E12501A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C320B2501B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 18:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgHXQD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:03:27 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45432 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726727AbgHXQC6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:02:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598284975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GOOvGMjNbf5XtLNCKd9ysNRuyAgV0fQgbTvlhMQq8xI=;
-        b=DhR4iTc47y+ZBv2Yb0yNRGx26eVpZAbahIMo1FqqP+1ecPzgzFs/MSxB5P+m+doz4kk75H
-        jbrK++sBKQtgLrlvTXKrkvmm7yOLfcEmAxOtRGyetmzgCjhPWDgBAaoDTCCN+b4WDC6dqL
-        Za5fT+WODCbKQumsb6sY4ZjqcfyQdrk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-FWvG5sP1NauODAXLjclCsQ-1; Mon, 24 Aug 2020 12:02:52 -0400
-X-MC-Unique: FWvG5sP1NauODAXLjclCsQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727921AbgHXQGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 12:06:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725780AbgHXQGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:06:12 -0400
+Received: from coco.lan (unknown [95.90.213.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2DC710ABDA5;
-        Mon, 24 Aug 2020 16:02:49 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-212.rdu2.redhat.com [10.10.112.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94F411002382;
-        Mon, 24 Aug 2020 16:02:48 +0000 (UTC)
-Subject: Re: [PATCH 3/3] mm/memcg: Unify swap and memsw page counters
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200820130350.3211-1-longman@redhat.com>
- <20200820130350.3211-4-longman@redhat.com>
- <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <18d02675-0c2a-bfc3-6953-42dcd10396b1@redhat.com>
-Date:   Mon, 24 Aug 2020 12:02:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        by mail.kernel.org (Postfix) with ESMTPSA id D10B92072D;
+        Mon, 24 Aug 2020 16:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598285171;
+        bh=03hAu4nRPFwVwIO4v5NWL3jE+EDhR0ft7Y0oPd1gP0w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y7swRGyvuvKiCu9/nrs1SXr8C+kHHYOQrQUSAJjGAjyfAkO2vlAob2lP+2GvOiVv3
+         Pt1iO8jmNElYCkalrWgU0wwBm1cz8FdwsHljARxYM9slVfU3ws0JegC3Brl+1hW/zf
+         NjcQkkkNKRa79YYaPTJPVie4PrwlTYTaf84FyRb4=
+Date:   Mon, 24 Aug 2020 18:06:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
+        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200824180601.192adc3b@coco.lan>
+In-Reply-To: <20200821155650.GB300361@ravnborg.org>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+        <20200819152120.GA106437@ravnborg.org>
+        <20200819174027.70b39ee9@coco.lan>
+        <20200819173558.GA3733@ravnborg.org>
+        <20200821164158.22777f95@coco.lan>
+        <20200821155650.GB300361@ravnborg.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/20 11:46 AM, Shakeel Butt wrote:
-> On Thu, Aug 20, 2020 at 6:04 AM Waiman Long <longman@redhat.com> wrote:
->> The swap page counter is v2 only while memsw is v1 only. As v1 and v2
->> controllers cannot be active at the same time, there is no point to keep
->> both swap and memsw page counters in mem_cgroup. The previous patch has
->> made sure that memsw page counter is updated and accessed only when in
->> v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
->> swap page counter. This saves 14 long's in the size of mem_cgroup. This
->> is a saving of 112 bytes for 64-bit archs.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   include/linux/memcontrol.h | 3 +--
->>   mm/memcontrol.c            | 8 +++++---
->>   2 files changed, 6 insertions(+), 5 deletions(-)
->>
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index d0b036123c6a..d2a819d7db70 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -216,10 +216,9 @@ struct mem_cgroup {
->>
->>          /* Accounted resources */
->>          struct page_counter memory;
->> -       struct page_counter swap;
->> +       struct page_counter swap;       /* memsw (memory+swap) for v1 */
->>
->>          /* Legacy consumer-oriented counters */
->> -       struct page_counter memsw;
->>          struct page_counter kmem;
->>          struct page_counter tcpmem;
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index d219dca5239f..04c3794cdc98 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -68,6 +68,11 @@
->>
->>   #include <trace/events/vmscan.h>
->>
->> +/*
->> + * The v1 memsw page counter is aliased to the v2 swap page counter.
->> + */
->> +#define memsw  swap
->> +
-> Personally I would prefer a union instead of #define.
+Em Fri, 21 Aug 2020 17:56:50 +0200
+Sam Ravnborg <sam@ravnborg.org> escreveu:
 
-Yes, that is also what I am thinking about in the v2.
+> Hi Mauro.
+> 
+> On Fri, Aug 21, 2020 at 04:41:58PM +0200, Mauro Carvalho Chehab wrote:
+> > Another quick question:
+> > 
+> > Em Wed, 19 Aug 2020 19:35:58 +0200
+> > Sam Ravnborg <sam@ravnborg.org> escreveu:
+> >   
+> > > > +#define DSS_REDUCE(x)	((x) > 0 ? ((x) - 1) : (x))    
+> > > Use generic macros for this?  
+> > 
+> > Do you know a generic macro similar to this? Or do you mean adding
+> > it to include/kernel.h?  
+> 
+> It looked like something there should be a macro for.
+> But I do not know one.
+> 
+> And no, do not try to go the kernel.h route on this.
+> At least not until you see more than one user.
 
-Cheers,
-Longman
+Yeah, adding this to kernel.h just for a single usage is overkill. I would
+be expecting that a non-underflow decrement logic is something that 
+would be used on other places at the Kernel, but identifying this
+pattern would require some time. Maybe Kernel janitors could write some
+coccinelle script to replace similar patterns like that into some
+macro in the future.
 
-
+Thanks,
+Mauro
