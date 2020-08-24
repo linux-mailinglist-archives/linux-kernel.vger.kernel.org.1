@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CA124F7DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DD124F7DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgHXJWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:22:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
+        id S1729797AbgHXIy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:54:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730363AbgHXIyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:54:47 -0400
+        id S1730369AbgHXIyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:54:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C50A207D3;
-        Mon, 24 Aug 2020 08:54:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E960204FD;
+        Mon, 24 Aug 2020 08:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259286;
-        bh=KvW2rz2zbwbkT+LXyYl4TUn0AOswUOmA+ZKF95S8iKE=;
+        s=default; t=1598259288;
+        bh=nDjY3y7ErgtlHV9zuxLaLxvjiiP3J7I04nb1tlS5++0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HoglygKaVzpR58G924SMUjBo0vjP5i4jdD5Qd9E6elBCIyzC3fAnHJKFpszh1GJJO
-         AEHDLH7jhK9qyeqlAYt8PVVGM+CnuWS//Kdy3UXiBjxthZXRure63qYW6YPaE6FNy4
-         l24B2cwgu6ZroE3Zo0oB8PedJk0b5K2g+RyfeeTk=
+        b=jZUX1wG+cl5Bv1aAiETZdrjjkanQqHME69at+u6E05ILm8Tew+9EuwpBb54UIkb0O
+         +CxNiu6KkgnhXhFbjiCM/peas6m4FxO0qZoQ5nRXpkZQl5qTSuGtk3zo/QUpZ5lqLa
+         AHetzuqGTfAn7Cd5azZkMUBjys4d0A8QlVzsRtmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 43/50] hv_netvsc: Fix the queue_mapping in netvsc_vf_xmit()
-Date:   Mon, 24 Aug 2020 10:31:44 +0200
-Message-Id: <20200824082354.226087780@linuxfoundation.org>
+Subject: [PATCH 4.14 44/50] net: dsa: b53: check for timeout
+Date:   Mon, 24 Aug 2020 10:31:45 +0200
+Message-Id: <20200824082354.271719950@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
 References: <20200824082351.823243923@linuxfoundation.org>
@@ -44,40 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiyang Zhang <haiyangz@microsoft.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit c3d897e01aef8ddc43149e4d661b86f823e3aae7 ]
+[ Upstream commit 774d977abfd024e6f73484544b9abe5a5cd62de7 ]
 
-netvsc_vf_xmit() / dev_queue_xmit() will call VF NIC’s ndo_select_queue
-or netdev_pick_tx() again. They will use skb_get_rx_queue() to get the
-queue number, so the “skb->queue_mapping - 1” will be used. This may
-cause the last queue of VF not been used.
+clang static analysis reports this problem
 
-Use skb_record_rx_queue() here, so that the skb_get_rx_queue() called
-later will get the correct queue number, and VF will be able to use
-all queues.
+b53_common.c:1583:13: warning: The left expression of the compound
+  assignment is an uninitialized value. The computed value will
+  also be garbage
+        ent.port &= ~BIT(port);
+        ~~~~~~~~ ^
 
-Fixes: b3bf5666a510 ("hv_netvsc: defer queue selection to VF")
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+ent is set by a successful call to b53_arl_read().  Unsuccessful
+calls are caught by an switch statement handling specific returns.
+b32_arl_read() calls b53_arl_op_wait() which fails with the
+unhandled -ETIMEDOUT.
+
+So add -ETIMEDOUT to the switch statement.  Because
+b53_arl_op_wait() already prints out a message, do not add another
+one.
+
+Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/b53/b53_common.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 10c3480c2da89..dbc6c9ed1c8f8 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -500,7 +500,7 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
- 	int rc;
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index 274d369151107..5c3fa0be8844e 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1160,6 +1160,8 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
+ 		return ret;
  
- 	skb->dev = vf_netdev;
--	skb->queue_mapping = qdisc_skb_cb(skb)->slave_dev_queue_mapping;
-+	skb_record_rx_queue(skb, qdisc_skb_cb(skb)->slave_dev_queue_mapping);
- 
- 	rc = dev_queue_xmit(skb);
- 	if (likely(rc == NET_XMIT_SUCCESS || rc == NET_XMIT_CN)) {
+ 	switch (ret) {
++	case -ETIMEDOUT:
++		return ret;
+ 	case -ENOSPC:
+ 		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
+ 			addr, vid);
 -- 
 2.25.1
 
