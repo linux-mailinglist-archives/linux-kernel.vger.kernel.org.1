@@ -2,82 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F1125005A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA10250112
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgHXPEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:04:39 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:40933 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725946AbgHXPEW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:04:22 -0400
-Received: (qmail 332615 invoked by uid 1000); 24 Aug 2020 11:04:21 -0400
-Date:   Mon, 24 Aug 2020 11:04:21 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH] PM: sleep: core: Fix the handling of pending runtime
- resume requests
-Message-ID: <20200824150421.GD329866@rowland.harvard.edu>
-References: <7969920.MVx1BpXlEM@kreacher>
- <20200821193442.GA264863@rowland.harvard.edu>
- <4922509.6NPD9QEisq@kreacher>
+        id S1727836AbgHXP0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:26:48 -0400
+Received: from mailoutvs5.siol.net ([185.57.226.196]:58204 "EHLO mail.siol.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726661AbgHXPEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:04:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id C9FE7525761;
+        Mon, 24 Aug 2020 17:04:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id FnGb3Jyiudtj; Mon, 24 Aug 2020 17:04:47 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 76D4552576B;
+        Mon, 24 Aug 2020 17:04:47 +0200 (CEST)
+Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id B9A56525761;
+        Mon, 24 Aug 2020 17:04:44 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, heiko@sntech.de,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH 0/2] ARM: dts: sun8i: r40: Enable mali400 GPU
+Date:   Mon, 24 Aug 2020 17:04:32 +0200
+Message-Id: <20200824150434.951693-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4922509.6NPD9QEisq@kreacher>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:36:36PM +0200, Rafael J. Wysocki wrote:
-> > Furthermore, by the logic used in this patch, the call to 
-> > pm_wakeup_event() in the original code is also redundant: Any required 
-> > wakeup event should have been generated when the runtime resume inside 
-> > pm_runtime_barrer() was carried out.
-> 
-> It should be redundant in the real wakeup event cases, but it may cause
-> spurious suspend aborts to occur when there are no real system wakeup
-> events.
-> 
-> Actually, the original code is racy with respect to system wakeup events,
-> because it depends on the exact time when the runtime-resume starts.  Namely,
-> if it manages to start before the freezing of pm_wq, the wakeup will be lost
-> unless the driver takes care of reporting it, which means that drivers really
-> need to do that anyway.  And if they do that (which hopefully is the case), the
-> pm_wakeup_event() call in the core may be dropped.
+Following two patches enable Mali400 GPU on Allwinner R40 SoC. At this
+point I didn't add table for frequency switching because it would
+require far more testing and defaults work stable and reasonably well.
 
-In other words, wakeup events are supposed to be reported at the time 
-the wakeup request is first noticed, right?  We don't want to wait until 
-a resume or runtime_resume callback runs; thanks to this race the 
-callback might not run at all if the event isn't reported first.
+Please take a look.
 
-Therefore the reasoning behind the original code appears to have been 
-highly suspect.  If there already was a queued runtime-resume request 
-for the device and the device was wakeup-enabled, the wakeup event 
-should _already_ have been reported at the time the request was queued.  
-And we shouldn't rely on it being reported by the runtime-resume 
-callback routine.
+Best regards,
+Jernej
 
-> > This means that the code could be simplified to just:
-> > 
-> > 	pm_runtime_barrier(dev);
-> 
-> Yes, it could, so I'm going to re-spin the patch with this code simplification
-> and updated changelog.
-> 
-> > Will this fix the reported bug?
-> 
-> I think so.
+Jernej Skrabec (2):
+  dt-bindings: gpu: mali-utgard: Add Allwinner R40 compatible
+  ARM: dts: sun8i: r40: Add Mali node
 
-Okay, we'll see!
+ .../bindings/gpu/arm,mali-utgard.yaml         |  2 ++
+ arch/arm/boot/dts/sun8i-r40.dtsi              | 22 +++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-Alan Stern
+--=20
+2.28.0
+
