@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9570624F7E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5CD24F850
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgHXJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:23:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
+        id S1730128AbgHXJ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730291AbgHXIy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:54:29 -0400
+        id S1729947AbgHXIvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73ED62072D;
-        Mon, 24 Aug 2020 08:54:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C332D207D3;
+        Mon, 24 Aug 2020 08:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259268;
-        bh=YTt8XDFjDpOBDwDUu9Z3lNGDKX7bk5qEbYYxEzD71g0=;
+        s=default; t=1598259095;
+        bh=ib3ov4ByJ2KzNtKTgGjw5zSsvyIJbB/3U+DgfprOU6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZSA300aRiGMct7UBo3oJI6tIf8mIpbHXq7unD16D49CLkcYCXIzlijhVgJKu7KZpb
-         hoMZb/K1oOp9/tho9pk0vAx6tEhuiFHksSj0RqmHZhoRqy1hEuf95XqIPYQhZgjAxX
-         6h1UCjsW9L/UyNs6w6Ij2qbtxsIKwa9m/6ripT6M=
+        b=QP2WetXphjtEAWvebVDTBZAl2LTXHaVRoEKc6phxuhRVKtgEOFn65PiHCGXNTfCJE
+         mLpQ3mJhMhySRsDE7nMLpegocwrKqduqUCznTS+gg5Mq9xkC2xzOfDr2OZQ/LjRSj1
+         RICFVj8U18Efn/pWkpnx9OQP0MYxEFrU6zboAGno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 15/50] mm, page_alloc: fix core hung in free_pcppages_bulk()
-Date:   Mon, 24 Aug 2020 10:31:16 +0200
-Message-Id: <20200824082352.747048151@linuxfoundation.org>
+        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 18/39] scsi: ufs: Add DELAY_BEFORE_LPM quirk for Micron devices
+Date:   Mon, 24 Aug 2020 10:31:17 +0200
+Message-Id: <20200824082349.435003610@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,100 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charan Teja Reddy <charante@codeaurora.org>
+From: Stanley Chu <stanley.chu@mediatek.com>
 
-commit 88e8ac11d2ea3acc003cf01bb5a38c8aa76c3cfd upstream.
+[ Upstream commit c0a18ee0ce78d7957ec1a53be35b1b3beba80668 ]
 
-The following race is observed with the repeated online, offline and a
-delay between two successive online of memory blocks of movable zone.
+It is confirmed that Micron device needs DELAY_BEFORE_LPM quirk to have a
+delay before VCC is powered off. Sdd Micron vendor ID and this quirk for
+Micron devices.
 
-P1						P2
-
-Online the first memory block in
-the movable zone. The pcp struct
-values are initialized to default
-values,i.e., pcp->high = 0 &
-pcp->batch = 1.
-
-					Allocate the pages from the
-					movable zone.
-
-Try to Online the second memory
-block in the movable zone thus it
-entered the online_pages() but yet
-to call zone_pcp_update().
-					This process is entered into
-					the exit path thus it tries
-					to release the order-0 pages
-					to pcp lists through
-					free_unref_page_commit().
-					As pcp->high = 0, pcp->count = 1
-					proceed to call the function
-					free_pcppages_bulk().
-Update the pcp values thus the
-new pcp values are like, say,
-pcp->high = 378, pcp->batch = 63.
-					Read the pcp's batch value using
-					READ_ONCE() and pass the same to
-					free_pcppages_bulk(), pcp values
-					passed here are, batch = 63,
-					count = 1.
-
-					Since num of pages in the pcp
-					lists are less than ->batch,
-					then it will stuck in
-					while(list_empty(list)) loop
-					with interrupts disabled thus
-					a core hung.
-
-Avoid this by ensuring free_pcppages_bulk() is called with proper count of
-pcp list pages.
-
-The mentioned race is some what easily reproducible without [1] because
-pcp's are not updated for the first memory block online and thus there is
-a enough race window for P2 between alloc+free and pcp struct values
-update through onlining of second memory block.
-
-With [1], the race still exists but it is very narrow as we update the pcp
-struct values for the first memory block online itself.
-
-This is not limited to the movable zone, it could also happen in cases
-with the normal zone (e.g., hotplug to a node that only has DMA memory, or
-no other memory yet).
-
-[1]: https://patchwork.kernel.org/patch/11696389/
-
-Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into one-list-per-migrate-type")
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: <stable@vger.kernel.org> [2.6+]
-Link: http://lkml.kernel.org/r/1597150703-19003-1-git-send-email-charante@codeaurora.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200612012625.6615-2-stanley.chu@mediatek.com
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_alloc.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/ufs/ufs_quirks.h | 1 +
+ drivers/scsi/ufs/ufshcd.c     | 2 ++
+ 2 files changed, 3 insertions(+)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1114,6 +1114,11 @@ static void free_pcppages_bulk(struct zo
- 	spin_lock(&zone->lock);
- 	isolated_pageblocks = has_isolate_pageblock(zone);
+diff --git a/drivers/scsi/ufs/ufs_quirks.h b/drivers/scsi/ufs/ufs_quirks.h
+index 71f73d1d1ad1f..6c944fbefd40a 100644
+--- a/drivers/scsi/ufs/ufs_quirks.h
++++ b/drivers/scsi/ufs/ufs_quirks.h
+@@ -21,6 +21,7 @@
+ #define UFS_ANY_VENDOR 0xFFFF
+ #define UFS_ANY_MODEL  "ANY_MODEL"
  
-+	/*
-+	 * Ensure proper count is passed which otherwise would stuck in the
-+	 * below while (list_empty(list)) loop.
-+	 */
-+	count = min(pcp->count, count);
- 	while (count) {
- 		struct page *page;
- 		struct list_head *list;
++#define UFS_VENDOR_MICRON      0x12C
+ #define UFS_VENDOR_TOSHIBA     0x198
+ #define UFS_VENDOR_SAMSUNG     0x1CE
+ #define UFS_VENDOR_SKHYNIX     0x1AD
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index af4b0a2021d6c..a7f520581cb0f 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -178,6 +178,8 @@ ufs_get_pm_lvl_to_link_pwr_state(enum ufs_pm_level lvl)
+ 
+ static struct ufs_dev_fix ufs_fixups[] = {
+ 	/* UFS cards deviations table */
++	UFS_FIX(UFS_VENDOR_MICRON, UFS_ANY_MODEL,
++		UFS_DEVICE_QUIRK_DELAY_BEFORE_LPM),
+ 	UFS_FIX(UFS_VENDOR_SAMSUNG, UFS_ANY_MODEL,
+ 		UFS_DEVICE_QUIRK_DELAY_BEFORE_LPM),
+ 	UFS_FIX(UFS_VENDOR_SAMSUNG, UFS_ANY_MODEL, UFS_DEVICE_NO_VCCQ),
+-- 
+2.25.1
+
 
 
