@@ -2,118 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82002250117
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE998250121
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgHXP1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgHXP1J (ORCPT
+        id S1727827AbgHXP3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:29:11 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:23335 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727095AbgHXP1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:27:09 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC1C061573;
-        Mon, 24 Aug 2020 08:27:08 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h19so10118610ljg.13;
-        Mon, 24 Aug 2020 08:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sZNoB46D8/M/M2PgyVIiT6V2NCFpqgPFmRkE3BbQYY0=;
-        b=sFvK/cjqd0IY2FPppcw4ggSbTyzS+/bWDuEn6APnjzaEMODweGr843dqvGmIuZ+7+l
-         gh06YDRForm905ZwwSXfCS10xvIyJHfBRec0N9sQKOlmpvcQiDXtyT/bqdhRpw7tZUNu
-         UEt8sEEUrr11VVRAa01f+JHkf5pvNVeBCA7po2V2tGY66x0vz7fDMP2/dIH8JrUq37HC
-         8bfccDyUTlVyGazDcn+uLQRca/72M8adtNfMbKh3TutR5L2eUnXkaE1OEV1wT1R0bjyc
-         7Ir8HxkHJ7jEa/cc/qgxI3W57DzAosbcngWFKAECdSjK8/+4rinCdsDecBnH4RjzY/1q
-         m2Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sZNoB46D8/M/M2PgyVIiT6V2NCFpqgPFmRkE3BbQYY0=;
-        b=gGRWGha3WcfILFzg2rb2LW8XxMEg1iMfsXG/iR/0/4sT+iJ/tG3o7xZXyobYoqzMyd
-         aSlPAP3eTM52Yu1MBKKjL4alqscKJKLn4Q9Lh77WT1xOb+Uhus1AESL7jMytx8OKtPiS
-         +m7Q+b/wZtLo9YfJkHirxdGUL1hw6PpxetPl+2o0sukiWSSnc0qCI38Uh/fZH87QugCe
-         tF/LxxCMGJQ5DopjVysOE7WTfv6Re9BH4g6UacM/uGoUXz/ULsVva8VlHSVwas9Gmk/j
-         Ug5wy5UXaWKbaYt4KzRrBLI2+mGOtKoZ+0E73lt/8+tB99JxrgVxl3E9cwyNlkrY0hxM
-         qmCA==
-X-Gm-Message-State: AOAM530UWit5etDGObjrMvo7RV5hh8UXG9DQHwJVpFJSLfCpVQUNoq0/
-        klZ/GqYQRnMyG2FFR+iAy24xniYdYmk=
-X-Google-Smtp-Source: ABdhPJwS3dpy3Zm6zjcqPm81pjWD00BirHl7L/nEzT8MmwndTfEiqXTyjQEML9iDc7lMLRZgUCDamw==
-X-Received: by 2002:a2e:2c0e:: with SMTP id s14mr3038795ljs.28.1598282826933;
-        Mon, 24 Aug 2020 08:27:06 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id z3sm2239976ljz.109.2020.08.24.08.27.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 08:27:06 -0700 (PDT)
-Subject: Re: [PATCH v1] brcmfmac: increase F2 watermark for BCM4329
-To:     Arend Van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200823142004.21990-1-digetx@gmail.com>
- <93536fd4-8abc-e167-a184-5a5e36d4205a@broadcom.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1ac6d0f3-d639-e947-4108-17ecc0220a1e@gmail.com>
-Date:   Mon, 24 Aug 2020 18:27:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 24 Aug 2020 11:27:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598282863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pi1uzJfERgfFWmgM6UYAK6ASgLDYuQWOOL3VyRC2LTU=;
+        b=gaTgkDFqE4P3WhxSTOihWPbvPKkvB7ylw3Ocj1ibyOqnWUHkfcLld2NabTPU+dLmKiGBvt
+        l1mzOvc9NFkzo4iFm8tx1GRP5rnFn4kvVCNquxXbrgP+pZvG/mH6G1fkNFKaTS2UhzQM7U
+        yMImu48qCJT9Bdlibg8t5Hs0oQ0z4wE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-zNVOyuFhNP-iiZLLTEszfQ-1; Mon, 24 Aug 2020 11:27:41 -0400
+X-MC-Unique: zNVOyuFhNP-iiZLLTEszfQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB26D18BFEF8;
+        Mon, 24 Aug 2020 15:27:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0139E5F206;
+        Mon, 24 Aug 2020 15:27:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200807160531.GA1345000@erythro.dev.benboeckel.internal>
+References: <20200807160531.GA1345000@erythro.dev.benboeckel.internal> <159681277616.35436.11229310534842613599.stgit@warthog.procyon.org.uk>
+To:     me@benboeckel.net
+Cc:     dhowells@redhat.com, mtk.manpages@gmail.com,
+        torvalds@linux-foundation.org, keyrings@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Add a manpage for watch_queue(7)
 MIME-Version: 1.0
-In-Reply-To: <93536fd4-8abc-e167-a184-5a5e36d4205a@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <329585.1598282852.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 24 Aug 2020 16:27:32 +0100
+Message-ID: <329586.1598282852@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.08.2020 11:28, Arend Van Spriel пишет:
-> 
-> 
-> On 8/23/2020 4:20 PM, Dmitry Osipenko wrote:
->> This patch fixes SDHCI CRC errors during of RX throughput testing on
->> BCM4329 chip if SDIO BUS is clocked above 25MHz. In particular the
->> checksum problem is observed on NVIDIA Tegra20 SoCs. The good watermark
->> value is borrowed from downstream BCMDHD driver and it's the same as the
->> value used for the BCM4339 chip, hence let's re-use it for BCM4329.
-> 
-> one comment, but when fixed you can add my....
-> 
-> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> index 3c07d1bbe1c6..ac3ee93a2378 100644
->> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> @@ -4278,6 +4278,7 @@ static void brcmf_sdio_firmware_callback(struct
->> device *dev, int err,
->>               brcmf_sdiod_writeb(sdiod, SBSDIO_FUNC1_MESBUSYCTRL,
->>                          CY_43012_MESBUSYCTRL, &err);
->>               break;
->> +        case SDIO_DEVICE_ID_BROADCOM_4329:
->>           case SDIO_DEVICE_ID_BROADCOM_4339:
->>               brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes for
->> 4339\n",
-> 
-> Maybe better to drop the chip id from the debug message. The chip id is
-> printed elsewhere already so it does not add info here and could only
-> cause confusion. Maybe you can also remove it from the 43455 message a
-> bit below.
+Ben Boeckel <me@benboeckel.net> wrote:
 
-Hello, Arend! Thank you for the review! I'll prepare v2 with the cleaned
-debug messages and couple more small changes!
+> > +In the case of message loss,
+> > +.BR read (2)
+> > +will fabricate a loss message and pass that to userspace immediately =
+after the
+> > +point at which the loss occurred.
+> =
+
+> If multiple messages are dropped in a row, is there one loss message per
+> loss message or per loss event?
+
+One loss message.  I set a flag on the last slot in the pipe ring to say t=
+hat
+message loss occurred, but there's insufficient space to store a counter
+without making the slot larger (and I really don't want to do that).
+
+Note that every slot in the pipe ring has such a flag, so you could,
+theoretically, get a loss message after every normal message that you read
+out.
+
+> > +A notification pipe allocates a certain amount of locked kernel memor=
+y (so that
+> > +the kernel can write a notification into it from contexts where alloc=
+ation is
+> > +restricted), and so is subject to pipe resource limit restrictions.
+> =
+
+> A reference to the relevant manpage for resource limitations would be
+> nice here. I'd assume `setrlimit(2)`, but I don't see anything
+> pipe-specific there.
+
+I can change that to:
+
+	... and so is subject to pipe resource limit restrictions - see
+	.BR pipe (7),
+	in the section on
+	.BR "/proc files" .
+
+> > +of interest to the watcher, a filter can be set on a queue to determi=
+ne whether
+> =
+
+> "a filter can be set"? If multiple filters are allowed, "filters can be
+> added" might work better here to indicate that multiple filters are
+> allowed. Otherwise, "a single filter" would make it clearer that only
+> one is supported.
+
+How about:
+
+	Because a source can produce a lot of different events, not all of
+	which may be of interest to the watcher, a single set of filters can
+	be set on a queue to determine whether a particular event will get
+	inserted in a queue at the point of posting inside the kernel.
+
+> Are there macros for extracting these fields available?
+
+WATCH_INFO_LENGTH, WATCH_INFO_ID and WATCH_INFO_TYPE_INFO are masks.  Ther=
+e
+are also shift macros (you add __SHIFT to the mask macro name).  I'm not s=
+ure
+how best to do this in troff.
+
+> Why not also have bitfields for these?
+
+It makes it a lot simpler to filter.
+
+> Or is there some ABI issues with
+> non-power-of-2 bitfield sizes? For clarity, which bit is bit 0? Low addr=
+ess
+> or LSB? Is this documented in some other manpage?
+
+bit 0 is 2^0 in this case.  I'm not sure how better to describe it.
+
+> Also, bit 7 is unused (for alignment I assume)? Is it always 0, 1, or
+> indeterminate?
+
+It's reserved and should always be 0 - but that's solely at the kernel's
+discretion (ie. userspace doesn't gets to set it).
+
+> > +This is used to set filters on the notifications that get written int=
+o the
+> =
+
+> "set" -> "add"? If I call this multiple times, is only the last call
+> effective or do I need to keep a list of all filters myself so I can
+> append in the future (since I see no analogous GET_FILTER call)?
+
+"Set".  You cannot add filters, you can only set/replace/remove the whole =
+set.
+
+Also, I didn't provide a GET_FILTER, assuming that you could probably keep
+track of them yourself.
+
+> Does this have implications for criu restoring a process?
+
+Maybe?
+
+> > +	unsigned char buf[128];
+> =
+
+> Is 128 the maximum message size?
+
+127 actually.  This is specified earlier in the manual page.
+
+> Do we have a macro for this? If it isn't, shouldn't there be code for
+> detecting ENOBUFS and using a bigger buffer? Or at least not rolling wit=
+h a
+> busted buffer.
+
+WATCH_INFO_LENGTH can be used for this.  I'll make the example say:
+
+	unsigned char buf[WATCH_INFO_LENGTH];
+
+> > +	case WATCH_TYPE_META:
+> =
+
+> From above, if a filter is added, all messages not matching a filter are
+> dropped. Are WATCH_TYPE_META messages special in this case?
+
+Yes.  They only do two things at the moment: Tell you that something you w=
+ere
+watching went away and tell you that messages were lost.  I've amended the
+filter section to note that this cannot be filtered.
+
+> The Rust developer in me wants to see:
+
+I don't touch Rust ;-)
+
+> 	default:
+> 		/* Subtypes may be added in future kernel versions. */
+> 		printf("unrecognized meta subtype: %d\n", n->subtype);
+> 		break;
+> =
+
+> unless we're guaranteeing that no other subtypes exist for this type
+> (updating the docs with new types doesn't help those who copy/paste from
+> here as a seed).
+
+I'm trying to keep the example small.  It's pseudo-code rather than real c=
+ode.
+I *could* expand it to a fully working program, but that would make it a l=
+ot
+bigger and harder to read.  As you pointed out, I haven't bothered with th=
+e
+error checking, for example.
+
+David
+
