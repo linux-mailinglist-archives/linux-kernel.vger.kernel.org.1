@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B285224F4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CE724F476
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgHXIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57986 "EHLO mail.kernel.org"
+        id S1728354AbgHXIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728775AbgHXIko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:40:44 -0400
+        id S1728327AbgHXIgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:36:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99C1D2075B;
-        Mon, 24 Aug 2020 08:40:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C526207DF;
+        Mon, 24 Aug 2020 08:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258444;
-        bh=/S/5fcNXp1qF0dj5Sh7EBvrVNQQbog7E1B1vZS/c6vk=;
+        s=default; t=1598258214;
+        bh=sAtohy+XmP1CQU7xNBAslMN0OOnJ3CDxvjydvblfxwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vE9HDkEzhbQHrWq2zTEXrcSZLZIoUSDtowyAyy997HUnsH305p50bzboYWQLsjJvL
-         N4SUsJwtwyf8HsomWMBlYWlo+2oZACjqY5rVVZjeWLZ94nS4xxQwzlHwGCsdw6oQzH
-         8L8yd7zuAkBmPXHHLjtEwQo6QFjdMa7Z2ogs7yuA=
+        b=OOIrYoyWsjgyE/560syy+nF3KX+TnXfOy3MO5idoL9Mwfka1jaPtE18mCjiuOVkIR
+         9VdCI79v2nHTwDsgWW8O1FMRCFHO3Yvj/s6WA4C/BG7H+pubFB2g+BoKPMynksEPFq
+         /uog6RwvMckHYqLVAJVPL8BSbvqiPiQfTo/CchAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Corey Minyard <cminyard@mvista.com>,
-        Roman Shaposhnik <roman@zededa.com>,
-        Juergen Gross <jgross@suse.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Andre Guedes <andre.guedes@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 050/124] swiotlb-xen: use vmalloc_to_page on vmalloc virt addresses
-Date:   Mon, 24 Aug 2020 10:29:44 +0200
-Message-Id: <20200824082411.881127143@linuxfoundation.org>
+Subject: [PATCH 5.8 087/148] igc: Fix PTP initialization
+Date:   Mon, 24 Aug 2020 10:29:45 +0200
+Message-Id: <20200824082418.224077304@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,61 +47,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-[ Upstream commit 8b1e868f66076490189a36d984fcce286cdd6295 ]
+[ Upstream commit 3cda505a679ced78d69c889cfb418d1728bb2707 ]
 
-xen_alloc_coherent_pages might return pages for which virt_to_phys and
-virt_to_page don't work, e.g. ioremap'ed pages.
+Right now, igc_ptp_reset() is called from igc_reset(), which is called
+from igc_probe() before igc_ptp_init() has a chance to run. It is
+detected as an attempt to use an spinlock without registering its key
+first. See log below.
 
-So in xen_swiotlb_free_coherent we can't assume that virt_to_page works.
-Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
-virt addresses.
+To avoid this problem, simplify the initialization: igc_ptp_init() is
+only called from igc_probe(), and igc_ptp_reset() is only called from
+igc_reset().
 
-This patch fixes the following crash at boot on RPi4 (the underlying
-issue is not RPi4 specific):
-https://marc.info/?l=xen-devel&m=158862573216800
+[    2.736332] INFO: trying to register non-static key.
+[    2.736902] input: HDA Intel PCH Front Headphone as /devices/pci0000:00/0000:00:1f.3/sound/card0/input10
+[    2.737513] the code is fine but needs lockdep annotation.
+[    2.737513] turning off the locking correctness validator.
+[    2.737515] CPU: 8 PID: 239 Comm: systemd-udevd Tainted: G            E     5.8.0-rc7+ #13
+[    2.737515] Hardware name: Gigabyte Technology Co., Ltd. Z390 AORUS ULTRA/Z390 AORUS ULTRA-CF, BIOS F7 03/14/2019
+[    2.737516] Call Trace:
+[    2.737521]  dump_stack+0x78/0xa0
+[    2.737524]  register_lock_class+0x6b1/0x6f0
+[    2.737526]  ? lockdep_hardirqs_on_prepare+0xca/0x160
+[    2.739177]  ? _raw_spin_unlock_irq+0x24/0x50
+[    2.739179]  ? trace_hardirqs_on+0x1c/0xf0
+[    2.740820]  __lock_acquire+0x56/0x1ff0
+[    2.740823]  ? __schedule+0x30c/0x970
+[    2.740825]  lock_acquire+0x97/0x3e0
+[    2.740830]  ? igc_ptp_reset+0x35/0xf0 [igc]
+[    2.740833]  ? schedule_hrtimeout_range_clock+0xb7/0x120
+[    2.742507]  _raw_spin_lock_irqsave+0x3a/0x50
+[    2.742512]  ? igc_ptp_reset+0x35/0xf0 [igc]
+[    2.742515]  igc_ptp_reset+0x35/0xf0 [igc]
+[    2.742519]  igc_reset+0x96/0xd0 [igc]
+[    2.744148]  igc_probe+0x68f/0x7d0 [igc]
+[    2.745796]  local_pci_probe+0x3d/0x70
+[    2.745799]  pci_device_probe+0xd1/0x190
+[    2.745802]  really_probe+0x15a/0x3f0
+[    2.759936]  driver_probe_device+0xe1/0x150
+[    2.759937]  device_driver_attach+0xa8/0xb0
+[    2.761786]  __driver_attach+0x89/0x150
+[    2.761786]  ? device_driver_attach+0xb0/0xb0
+[    2.761787]  ? device_driver_attach+0xb0/0xb0
+[    2.761788]  bus_for_each_dev+0x66/0x90
+[    2.765012]  bus_add_driver+0x12e/0x1f0
+[    2.765716]  driver_register+0x8b/0xe0
+[    2.766418]  ? 0xffffffffc0230000
+[    2.767119]  do_one_initcall+0x5a/0x310
+[    2.767826]  ? kmem_cache_alloc_trace+0xe9/0x200
+[    2.768528]  do_init_module+0x5c/0x260
+[    2.769206]  __do_sys_finit_module+0x93/0xe0
+[    2.770048]  do_syscall_64+0x46/0xa0
+[    2.770716]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[    2.771396] RIP: 0033:0x7f83534589e0
+[    2.772073] Code: 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 2e 2e 2e 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 80 24 0d 00 f7 d8 64 89 01 48
+[    2.772074] RSP: 002b:00007ffd31d0ed18 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[    2.774854] RAX: ffffffffffffffda RBX: 000055d52816aba0 RCX: 00007f83534589e0
+[    2.774855] RDX: 0000000000000000 RSI: 00007f83535b982f RDI: 0000000000000006
+[    2.774855] RBP: 00007ffd31d0ed60 R08: 0000000000000000 R09: 00007ffd31d0ed30
+[    2.774856] R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000000
+[    2.774856] R13: 0000000000020000 R14: 00007f83535b982f R15: 000055d527f5e120
 
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Tested-by: Corey Minyard <cminyard@mvista.com>
-Tested-by: Roman Shaposhnik <roman@zededa.com>
-Link: https://lore.kernel.org/r/20200710223427.6897-1-sstabellini@kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 5f2958052c58 ("igc: Add basic skeleton for PTP")
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Reviewed-by: Andre Guedes <andre.guedes@intel.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/swiotlb-xen.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igc/igc_main.c | 5 ++---
+ drivers/net/ethernet/intel/igc/igc_ptp.c  | 2 --
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index b6d27762c6f8c..5fbadd07819bd 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
- 	int order = get_order(size);
- 	phys_addr_t phys;
- 	u64 dma_mask = DMA_BIT_MASK(32);
-+	struct page *page;
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 6919c50e449a2..63259ecd41e5b 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -5158,6 +5158,8 @@ static int igc_probe(struct pci_dev *pdev,
+ 	device_set_wakeup_enable(&adapter->pdev->dev,
+ 				 adapter->flags & IGC_FLAG_WOL_SUPPORTED);
  
- 	if (hwdev && hwdev->coherent_dma_mask)
- 		dma_mask = hwdev->coherent_dma_mask;
-@@ -346,9 +347,14 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
- 	/* Convert the size to actually allocated. */
- 	size = 1UL << (order + XEN_PAGE_SHIFT);
- 
-+	if (is_vmalloc_addr(vaddr))
-+		page = vmalloc_to_page(vaddr);
-+	else
-+		page = virt_to_page(vaddr);
++	igc_ptp_init(adapter);
 +
- 	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
- 		     range_straddles_page_boundary(phys, size)) &&
--	    TestClearPageXenRemapped(virt_to_page(vaddr)))
-+	    TestClearPageXenRemapped(page))
- 		xen_destroy_contiguous_region(phys, order);
+ 	/* reset the hardware with the new settings */
+ 	igc_reset(adapter);
  
- 	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
+@@ -5174,9 +5176,6 @@ static int igc_probe(struct pci_dev *pdev,
+ 	 /* carrier off reporting is important to ethtool even BEFORE open */
+ 	netif_carrier_off(netdev);
+ 
+-	/* do hw tstamp init after resetting */
+-	igc_ptp_init(adapter);
+-
+ 	/* Check if Media Autosense is enabled */
+ 	adapter->ei = *ei;
+ 
+diff --git a/drivers/net/ethernet/intel/igc/igc_ptp.c b/drivers/net/ethernet/intel/igc/igc_ptp.c
+index 0d746f8588c81..61e38853aa47d 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ptp.c
++++ b/drivers/net/ethernet/intel/igc/igc_ptp.c
+@@ -608,8 +608,6 @@ void igc_ptp_init(struct igc_adapter *adapter)
+ 	adapter->tstamp_config.rx_filter = HWTSTAMP_FILTER_NONE;
+ 	adapter->tstamp_config.tx_type = HWTSTAMP_TX_OFF;
+ 
+-	igc_ptp_reset(adapter);
+-
+ 	adapter->ptp_clock = ptp_clock_register(&adapter->ptp_caps,
+ 						&adapter->pdev->dev);
+ 	if (IS_ERR(adapter->ptp_clock)) {
 -- 
 2.25.1
 
