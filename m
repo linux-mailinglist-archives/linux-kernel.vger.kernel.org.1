@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A8E250081
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5736D250095
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgHXPKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:10:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38938 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727019AbgHXPKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:10:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17128AB8B;
-        Mon, 24 Aug 2020 15:10:47 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 17:10:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
-        osalvador@suse.de, mike.kravetz@oracle.com
-Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
- page charged
-Message-ID: <20200824151013.GB3415@dhcp22.suse.cz>
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200820145850.GA4622@lca.pw>
- <20200821080127.GD32537@dhcp22.suse.cz>
- <20200821123934.GA4314@lca.pw>
- <20200821134842.GF32537@dhcp22.suse.cz>
+        id S1727935AbgHXPLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:11:22 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:35255 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgHXPKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:10:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1598281851; x=1629817851;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t4cBW0KJQ9oAF55ARnk4BDNoEvlWUJYtIpys/EI51Sk=;
+  b=lE/eGTLPwFEif79xf1Z7tXMMpPgRo5Oi4BNWgrRdtledyr6S1Yt+Bg9t
+   kW0PK4HED5QTL0BJ/18Et9AmuoXXOCFNQ785uGfJx3RxAHfxflxxDygz6
+   nUCCFj/TMZSlWgRjCuEXBSmRWQzKeYejBfu9go1YaE8RafH22LGNzVxTF
+   qIulAf81X+nNHipU61IJKbRIrz+9RfY4J/BWJ7v55U9yZdeHG3Oop38MG
+   iPG0Uqm+CWca00XWvQZDgmT0Nu6QQoDaFnbaZ72MD4RguyOm8zjQbkCcs
+   M4RIZG79XbKgnKRIfdJNCMK1NADv8iySnLbVdjenWLP2ED+gTw1b2fUof
+   g==;
+IronPort-SDR: CmC1ij+6/53nmSXaamACFN8afuFA/IfnsSnlrU2LnWEc8NDuLI5yZndWLtG05i5hGusMZjmBVR
+ 4qNEhEfNNSVCZ3TT7lRgyeKwsZT18f0b9IH4YMrsX/5hP8tr3Uw39qoJcutJtr9KzXfxjFsFjQ
+ hdXRF7xYun1ohCnkKmGv/6Aod217wafBLHeU7z5mQTPzmvN5Jd99jUSxSvsu4FOBNcmH0AAtNC
+ m2APQ6MARLNgG54zTSGm3s4DrFrGoA1x5n3agrHpj9P5yoCq+a7JRvvjdSnjdIgUk2MfljIjVz
+ 9C0=
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="92912510"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Aug 2020 08:10:46 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 24 Aug 2020 08:10:10 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 24 Aug 2020 08:10:40 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        SoC Team <soc@kernel.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v4 0/3] mmc: Adding support for Microchip Sparx5 SoC
+Date:   Mon, 24 Aug 2020 17:10:32 +0200
+Message-ID: <20200824151035.31093-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821134842.GF32537@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21-08-20 15:48:44, Michal Hocko wrote:
-> On Fri 21-08-20 08:39:37, Qian Cai wrote:
-> > On Fri, Aug 21, 2020 at 10:01:27AM +0200, Michal Hocko wrote:
-> > > On Thu 20-08-20 10:58:51, Qian Cai wrote:
-> > > > On Tue, Aug 11, 2020 at 07:10:27PM +0800, Alex Shi wrote:
-> > > > > Since readahead page is charged on memcg too, in theory we don't have to
-> > > > > check this exception now. Before safely remove them all, add a warning
-> > > > > for the unexpected !memcg.
-> > > > > 
-> > > > > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > > > > Acked-by: Michal Hocko <mhocko@suse.com>
-> > > > 
-> > > > This will trigger,
-> > > 
-> > > Thanks for the report!
-> > >  
-> > > > [ 1863.916499] LTP: starting move_pages12
-> > > > [ 1863.946520] page:000000008ccc1062 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1fd3c0
-> > > > [ 1863.946553] head:000000008ccc1062 order:5 compound_mapcount:0 compound_pincount:0
-> > > 
-> > > Hmm, this is really unexpected. How did we get order-5 page here? Is
-> > > this some special mappaing that sys_move_pages should just ignore?
-> > 
-> > Well, I thought everybody should be able to figure out where to find the LTP
-> > tests source code at this stage to see what it does. Anyway, the test simply
-> > migrate hugepages while soft offlining, so order 5 is expected as that is 2M
-> > hugepage on powerpc (also reproduced on x86 below). It might be easier to
-> > reproduce using our linux-mm random bug collection on NUMA systems.
-> 
-> OK, I must have missed that this was on ppc. The order makes more sense
-> now. I will have a look at this next week.
+(This is a resend of an identical patch set, sent at a time where
+Sparx5 support was not integrated yet. With the Sparx5 clock driver
+and associated header now in place in the v5.9rc series, the driver is
+now resubmitted for inclusion).
 
-OK, so I've had a look and I know what's going on there. The
-move_pages12 is migrating hugetlb pages. Those are not charged to any
-memcg. We have completely missed this case. There are two ways going
-around that. Drop the warning and update the comment so that we do not
-forget about that or special case hugetlb pages.
+The patch adds eMMC support for Sparx5, by adding a driver for the SoC
+SDHCI controller, DT configuration and DT binding documentation.
 
-I think the first option is better.
--- 
-Michal Hocko
-SUSE Labs
+Changes in v4:
+- Disable clock if sdhci_add_host() fails
+- Remove dev_err if sdhci_add_host() fails
+
+Changes in v3:
+- Add dt-bindings for property "microchip,clock-delay"
+- Enforce "microchip,clock-delay" valid range in driver
+- Removed a noisy pr_debug() in sdhci_sparx5_adma_write_desc()
+
+Changes in v2:
+- Changes in driver as per review comments
+ - Drop debug code
+ - Drop sysfs code
+ - use usleep_range()
+ - use mmc_hostname() in pr_debug()
+ - Remove deactivated code
+ - Minor cosmetics
+
+Lars Povlsen (3):
+  dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
+  sdhci: sparx5: Add Sparx5 SoC eMMC driver
+  arm64: dts: sparx5: Add Sparx5 eMMC support
+
+ .../mmc/microchip,dw-sparx5-sdhci.yaml        |  65 +++++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  24 ++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |  23 ++
+ .../boot/dts/microchip/sparx5_pcb134_emmc.dts |  23 ++
+ .../boot/dts/microchip/sparx5_pcb135_emmc.dts |  23 ++
+ drivers/mmc/host/Kconfig                      |  13 +
+ drivers/mmc/host/Makefile                     |   1 +
+ drivers/mmc/host/sdhci-of-sparx5.c            | 269 ++++++++++++++++++
+ 8 files changed, 441 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
+ create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
+
+--
+2.27.0
