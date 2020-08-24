@@ -2,139 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E98A250697
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FFA250686
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgHXRgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgHXRez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:34:55 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA50C061573;
-        Mon, 24 Aug 2020 10:34:54 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id r19so4098751qvw.11;
-        Mon, 24 Aug 2020 10:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R/gjJ6j/FhaneyBpj6umF/HqEi7YvQW6Fq+8r2981jM=;
-        b=d8erb2eTlwZ4WAHJZlxNDI0FqxDuU1CBLpFiKi/vhcy2efTmjgZOPAvl0ShimQe6Nr
-         hS1JmW55UDx0ClxiyolNWUCthFTJg5VZW4q6hag+yBmcM07jq0+IPO6ZWBIxOMQ1K1L+
-         irMnwBPwVdbXoKhNT6VKo9E/iSGUhQL4Fu2uYM6Aj+Cw37uPrXTRye9DC7rXKWxvCeQk
-         XeUgGfkEtMqJZt4vcp99utQH7hDdRX1MHJxkBXbWIqdjUmymdKtuNI9sUmBnUd4ZnW4K
-         UkZ76NfS2AlW/XXvy8VJQtQdrky3zBcoyoLmPDTZGZLjjHWGotKMUQpq0XLKjKrDiuRh
-         U1Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=R/gjJ6j/FhaneyBpj6umF/HqEi7YvQW6Fq+8r2981jM=;
-        b=mMxzlLnlWYSxsA3aYzIAkXlQleb7W6d9fOOZ2Ad5nykSKROXbiUf2fd+UVZrE9XiEk
-         troc9kvtbcbWd/wnm7mUTYU2HwnNv0I0Xrpja4Z/L/qYOd6fYsau9AENF/YRJU3JbFXK
-         IzNlr9C8zfOIYcSPmmMzouTFb2umHi2mLgQ3A0LLWYshAsUxL+5xtRrPF+aJc95Vz7tH
-         zm54sIpMAVLfxgtK1sFh/1FEwSA1I0wHWUex3mA0GlvR5KVLtcZ0TY+t6chhfssghe4l
-         kXQ7RBv5F/hnlim5p1xrRXTGpdr4vzggBVtWGGGYX+7uCU1zgWw8i9YjM3tqx0ezIF+4
-         KrLQ==
-X-Gm-Message-State: AOAM5329f1YHYdL2lM0BfoqSo7CZuAAbjTRxHnz2G6HUp7EuZIlg2w0a
-        2yU4sdGJFeEblMjIZ9sdqzE=
-X-Google-Smtp-Source: ABdhPJzMpu2lu0shOslZt9c27kd6KgRSA79fzx/p2mRpGxB9rGahuMot4Eed2b46wQK147HqDIaprg==
-X-Received: by 2002:a0c:d98d:: with SMTP id y13mr5968347qvj.203.1598290493720;
-        Mon, 24 Aug 2020 10:34:53 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id d202sm249016qke.38.2020.08.24.10.34.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 10:34:52 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 24 Aug 2020 13:34:50 -0400
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
-Message-ID: <20200824173450.GA4157679@rani.riverdale.lan>
-References: <20200817220212.338670-1-ndesaulniers@google.com>
- <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com>
- <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
- <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com>
- <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
- <20200818202407.GA3143683@rani.riverdale.lan>
- <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
- <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
- <20200818214146.GA3196105@rani.riverdale.lan>
- <CAK7LNAQmWBPV4nZ0xPdSHEt=DipHmR40co827voGOFN=2j47BQ@mail.gmail.com>
+        id S1728486AbgHXRe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728083AbgHXRep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 13:34:45 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11E062067C;
+        Mon, 24 Aug 2020 17:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598290484;
+        bh=mu/8EYgOWWMMFVzYggJY3VT5p7NWhR3sCJgvxOn1cR4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M9po9+1pECMI6iXfro2djH7yNO63Zf3WPyGTSHuQJvh58INJvJSMaD9kVAqGR/6mS
+         HATHe2IIR9z8hxM+5OkGCK26YmpZBSioCO+bD/UKz+K47SH/DI5F6aLkTem5p91EdX
+         HzkSnV1f1I2pZP+5+O9p1yrK6x7a0kUgqqSizc8E=
+Date:   Mon, 24 Aug 2020 19:35:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, ardb@kernel.org, arnd@arndb.de,
+        catalin.marinas@arm.com, mark.rutland@arm.com, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-arch@vger.kernel.org, wei.liu@kernel.org,
+        vkuznets@redhat.com, kys@microsoft.com, sunilmut@microsoft.com,
+        boqun.feng@gmail.com
+Subject: Re: [PATCH v7 09/10] arm64: efi: Export screen_info
+Message-ID: <20200824173502.GA1161855@kroah.com>
+References: <1598287583-71762-1-git-send-email-mikelley@microsoft.com>
+ <1598287583-71762-10-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNAQmWBPV4nZ0xPdSHEt=DipHmR40co827voGOFN=2j47BQ@mail.gmail.com>
+In-Reply-To: <1598287583-71762-10-git-send-email-mikelley@microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 12:57:22AM +0900, Masahiro Yamada wrote:
+On Mon, Aug 24, 2020 at 09:46:22AM -0700, Michael Kelley wrote:
+> The Hyper-V frame buffer driver may be built as a module, and
+> it needs access to screen_info. So export screen_info.
 > 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> ---
+>  arch/arm64/kernel/efi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> To prevent transformation from foo() into bar(),
-> there are two ways in Clang to do that;
-> -fno-builtin-foo, and -fno-builtin-bar.
-> There is only one in GCC; -fno-buitin-foo.
-> 
-> Is this correct?
-> 
+> diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
+> index d0cf596..8ff557a 100644
+> --- a/arch/arm64/kernel/efi.c
+> +++ b/arch/arm64/kernel/efi.c
+> @@ -55,6 +55,7 @@ static __init pteval_t create_mapping_protection(efi_memory_desc_t *md)
+>  
+>  /* we will fill this structure from the stub, so don't put it in .bss */
+>  struct screen_info screen_info __section(.data);
+> +EXPORT_SYMBOL(screen_info);
 
-It looked that way from previous experimentation, but...
+EXPORT_SYMBOL_GPL()?
 
-> 
-> 
-> I just played the optimization
-> from printf("helloworld\n") to puts("helloworld").
-> 
-> https://godbolt.org/z/5s4ded
-> 
-> 
-> -fno-builtin-puts cannot prevent clang
-> from emitting puts.
-> Is it because clang does not support
-> -fno-builtin-puts?
+I have to ask :)
 
-Ugh. clang doesn't have __builtin_puts() but it optimizes printf() into
-puts(). It doesn't have __builtin_putchar() but will optimize
-printf("c") into putchar('c').
+thanks,
 
-And it has .. half of __builtin_fwrite()? fwrite() of a single byte gets
-optimized into fputc(), fprintf() of a string literal gets optimized
-into fwrite(), -fno-builtin-fwrite prevents both optimizations, but
-__builtin_fwrite() gives a compile error.
-
-I give up.
+greg k-h
