@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881C824F5F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E108324F5F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbgHXIzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:55:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37298 "EHLO mail.kernel.org"
+        id S1728956AbgHXIzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:55:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729815AbgHXIzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:22 -0400
+        id S1730406AbgHXIzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:55:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49FBB204FD;
-        Mon, 24 Aug 2020 08:55:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB5B82087D;
+        Mon, 24 Aug 2020 08:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259321;
-        bh=LZDRt3WvxLw2evyQog7DfExtExB1LFq2ZpLvebeUAeE=;
+        s=default; t=1598259324;
+        bh=ss/+lyIIJVPE1pC7wdBMHiVipnG8obl6FjO1g5MfdVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=is5Pjl6WiIVH/itBs8NpxOoGqeSeJUBpRtTF74JYLbdcyAlB/zaWr56f2Z+JFPRJ2
-         5+WeI2U674mFr2QBxxF+8OtSEuqqJaEyDRn/evhEu059HUL3/SKpxyCetL4AzoOnry
-         Rp2WxMPywhaQArGZ8o+fUmTIDBEfUyqrYkdvc+zI=
+        b=UupuI5LIJiuSAYZHVZXQklRdH/Qle/3H0thyu3qw67qQHFGkDyteMh6h/zt1AY2vx
+         jlvxlSnYQqQ+kaK+SJHhIDR8g8hm8j4SvGaklIr9pURUKJdI1+r6cm9JLEUqFkB3zT
+         3xIY05QottNWBuqosydWOlVpaYX9LIlrySAHUtqY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 15/71] jbd2: add the missing unlock_buffer() in the error path of jbd2_write_superblock()
-Date:   Mon, 24 Aug 2020 10:31:06 +0200
-Message-Id: <20200824082356.659566903@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 16/71] scsi: zfcp: Fix use-after-free in request timeout handlers
+Date:   Mon, 24 Aug 2020 10:31:07 +0200
+Message-Id: <20200824082356.708885351@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
 References: <20200824082355.848475917@linuxfoundation.org>
@@ -44,39 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Steffen Maier <maier@linux.ibm.com>
 
-commit ef3f5830b859604eda8723c26d90ab23edc027a4 upstream.
+commit 2d9a2c5f581be3991ba67fa9e7497c711220ea8e upstream.
 
-jbd2_write_superblock() is under the buffer lock of journal superblock
-before ending that superblock write, so add a missing unlock_buffer() in
-in the error path before submitting buffer.
+Before v4.15 commit 75492a51568b ("s390/scsi: Convert timers to use
+timer_setup()"), we intentionally only passed zfcp_adapter as context
+argument to zfcp_fsf_request_timeout_handler(). Since we only trigger
+adapter recovery, it was unnecessary to sync against races between timeout
+and (late) completion.  Likewise, we only passed zfcp_erp_action as context
+argument to zfcp_erp_timeout_handler(). Since we only wakeup an ERP action,
+it was unnecessary to sync against races between timeout and (late)
+completion.
 
-Fixes: 742b06b5628f ("jbd2: check superblock mapped prior to committing")
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20200620061948.2049579-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Meanwhile the timeout handlers get timer_list as context argument and do a
+timer-specific container-of to zfcp_fsf_req which can have been freed.
+
+Fix it by making sure that any request timeout handlers, that might just
+have started before del_timer(), are completed by using del_timer_sync()
+instead. This ensures the request free happens afterwards.
+
+Space time diagram of potential use-after-free:
+
+Basic idea is to have 2 or more pending requests whose timeouts run out at
+almost the same time.
+
+req 1 timeout     ERP thread        req 2 timeout
+----------------  ----------------  ---------------------------------------
+zfcp_fsf_request_timeout_handler
+fsf_req = from_timer(fsf_req, t, timer)
+adapter = fsf_req->adapter
+zfcp_qdio_siosl(adapter)
+zfcp_erp_adapter_reopen(adapter,...)
+                  zfcp_erp_strategy
+                  ...
+                  zfcp_fsf_req_dismiss_all
+                  list_for_each_entry_safe
+                    zfcp_fsf_req_complete 1
+                    del_timer 1
+                    zfcp_fsf_req_free 1
+                    zfcp_fsf_req_complete 2
+                                    zfcp_fsf_request_timeout_handler
+                    del_timer 2
+                                    fsf_req = from_timer(fsf_req, t, timer)
+                    zfcp_fsf_req_free 2
+                                    adapter = fsf_req->adapter
+                                              ^^^^^^^ already freed
+
+Link: https://lore.kernel.org/r/20200813152856.50088-1-maier@linux.ibm.com
+Fixes: 75492a51568b ("s390/scsi: Convert timers to use timer_setup()")
+Cc: <stable@vger.kernel.org> #4.15+
+Suggested-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Steffen Maier <maier@linux.ibm.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jbd2/journal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/s390/scsi/zfcp_fsf.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1370,8 +1370,10 @@ static int jbd2_write_superblock(journal
- 	int ret;
+--- a/drivers/s390/scsi/zfcp_fsf.c
++++ b/drivers/s390/scsi/zfcp_fsf.c
+@@ -403,7 +403,7 @@ static void zfcp_fsf_req_complete(struct
+ 		return;
+ 	}
  
- 	/* Buffer got discarded which means block device got invalidated */
--	if (!buffer_mapped(bh))
-+	if (!buffer_mapped(bh)) {
-+		unlock_buffer(bh);
- 		return -EIO;
-+	}
- 
- 	trace_jbd2_write_superblock(journal, write_flags);
- 	if (!(journal->j_flags & JBD2_BARRIER))
+-	del_timer(&req->timer);
++	del_timer_sync(&req->timer);
+ 	zfcp_fsf_protstatus_eval(req);
+ 	zfcp_fsf_fsfstatus_eval(req);
+ 	req->handler(req);
+@@ -758,7 +758,7 @@ static int zfcp_fsf_req_send(struct zfcp
+ 	req->qdio_req.qdio_outb_usage = atomic_read(&qdio->req_q_free);
+ 	req->issued = get_tod_clock();
+ 	if (zfcp_qdio_send(qdio, &req->qdio_req)) {
+-		del_timer(&req->timer);
++		del_timer_sync(&req->timer);
+ 		/* lookup request again, list might have changed */
+ 		zfcp_reqlist_find_rm(adapter->req_list, req_id);
+ 		zfcp_erp_adapter_reopen(adapter, 0, "fsrs__1");
 
 
