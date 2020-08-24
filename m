@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E262D24FCEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A4324FCF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgHXLpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:45:22 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:59842 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgHXLpT (ORCPT
+        id S1727063AbgHXLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgHXLqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:45:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07OBj8To046466;
-        Mon, 24 Aug 2020 06:45:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598269508;
-        bh=ylz2yEP7MNmFHxlW15UvscwqbJnFF/9ciAx038v5df0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KhgJl73nvKfP0FUEZHVllgKaMVUa28jQXsIQhjiSMskfHwuFbIUjBdELvE0/chWKv
-         0GvfctxAIt8BuiaykVbNakghsJIdpFvQb7EcE+bQHHKg/CxCeR0CMbDiA6pmjH2My3
-         3qa+i3KMBqk8p+m6q+i/0j5XbLgiwradbP4HAYPA=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07OBj8mn126368;
-        Mon, 24 Aug 2020 06:45:08 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 24
- Aug 2020 06:45:07 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 24 Aug 2020 06:45:08 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07OBj4ck089288;
-        Mon, 24 Aug 2020 06:45:04 -0500
-Subject: Re: [RESEND PATCH v3 5/8] mtd: spi-nor: cadence-quadspi: Handle probe
- deferral while requesting DMA channel
-To:     Jan Kiszka <jan.kiszka@web.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Boris Brezillon <bbrezillon@kernel.org>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
-        <dinguyen@kernel.org>, <marex@denx.de>
-References: <20200601070444.16923-1-vigneshr@ti.com>
- <20200601070444.16923-6-vigneshr@ti.com>
- <6c8d9bff-3a67-0e6c-d4d1-36b7ed5007b9@web.de>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <8cebd31a-2366-4584-b1d1-faa30c18ed6a@ti.com>
-Date:   Mon, 24 Aug 2020 17:15:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 24 Aug 2020 07:46:37 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF24C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:46:37 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id e6so7958243oii.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSpd9ndfyXeRtsopkN5H4Z9El4e9MphbysoofBmUjKk=;
+        b=iuMev4pI1UXTK36SU5vo9Kb9A9hOWP30Dj81Zo7qdgxbcyzH0j8fQwJHFTueOj095U
+         5slvsAiAYB4ZSz7mRzUwSk2bkGa0/TJnvlcnEPFiEug1QedBDSwH6I5zjK3kSswknmUx
+         Lzol4pMRkdLbVAB94FPqz4XQkcp8nuM2aRbklxyqY7e/ebJt0i1fNKFTvYbotc4DVv+b
+         FSS6rdqU4gpSNqKcv464DOsapk+LPNAJUGEC6e5l72ZEKjM0PscLBYKA6KntyFjA96ud
+         rjUhcbtVF+UYWBO11lyINnbB1kgj9RQdFFUSLkEH7UzhcbNRix3StySlX86yNNgHEeTe
+         F4Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSpd9ndfyXeRtsopkN5H4Z9El4e9MphbysoofBmUjKk=;
+        b=jbt3+8sXpOhO3FmH6MVPO0PnY4VJ0FLRyrAqeE/bhmTIFVtIWHO5X77+e/PWiPFqcr
+         ky5MKD3Dzq5bpC/1rPqfYCvFmhhy6wgBqTzCnD9XsoJ1n9hm471vFOJGj99JxEOMWli3
+         l/AgeaIa6F8Q1da6vk+WayO+1HRutkfOpVSsx7HUS8APuBwvPOKibQPENliCdbbnWJkI
+         c22+NmWKN3oaLFs6eVmziEY86gtbuHBZ+XbZdQXpIPbXavHofjnuYbeQ5T8Hhx/+4QAc
+         Z1Qa8aMeoB46DI6JlkHqNOtl+v1g9AACHQSOJFif5qoNzJp/OYYrFbI2wow0Bhxf3dZC
+         PU4g==
+X-Gm-Message-State: AOAM5303W6eiVkQA5GYcbQ3VYzT+CEKNT1bYcsGMhtAjGYcdBP/B8kJG
+        6QysZaObj4/MylKT3678Qj4ykq1AAmeEXHICw6NRFg==
+X-Google-Smtp-Source: ABdhPJy6Rvbpz4OVF7+E6Ibj6h44yQcnycBjoZStHMF7KBGlki8rKNee1gTheosMNsZuvJoobdu2aNNGxai7LvPhZeA=
+X-Received: by 2002:aca:cd12:: with SMTP id d18mr156277oig.70.1598269596930;
+ Mon, 24 Aug 2020 04:46:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6c8d9bff-3a67-0e6c-d4d1-36b7ed5007b9@web.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200824081433.25198-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20200824081433.25198-1-walter-zh.wu@mediatek.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 24 Aug 2020 13:46:25 +0200
+Message-ID: <CANpmjNOSKQi+wYbCVYqL-LriqCD37GtOfrArB0hyKysaPYyzGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] kasan: update documentation for generic kasan
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 24 Aug 2020 at 10:14, Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> Generic KASAN support to record the last two timer and workqueue
+> stacks and print them in KASAN report. So that need to update
+> documentation.
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> ---
+>  Documentation/dev-tools/kasan.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index fede42e6536b..5a4c5da8bda8 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -193,8 +193,8 @@ function calls GCC directly inserts the code to check the shadow memory.
+>  This option significantly enlarges kernel but it gives x1.1-x2 performance
+>  boost over outline instrumented kernel.
+>
+> -Generic KASAN prints up to 2 call_rcu() call stacks in reports, the last one
+> -and the second to last.
+> +Generic KASAN prints up to 2 call_rcu() call stacks, timer queueing stacks,
+> +or workqueue queueing stacks in reports, the last one and the second to last.
 
+We could make this more readable by writing something like this:
 
-On 8/22/20 11:35 PM, Jan Kiszka wrote:
-> On 01.06.20 09:04, Vignesh Raghavendra wrote:
->> dma_request_chan_by_mask() can throw EPROBE_DEFER if DMA provider
->> is not yet probed. Currently driver just falls back to using PIO mode
->> (which is less efficient) in this case. Instead return probe deferral
->> error as is so that driver will be re probed once DMA provider is
->> available.
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->> ---
-[...]
->>
->>  static const struct spi_nor_controller_ops cqspi_controller_ops = {
->> @@ -1269,8 +1274,11 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->>  			dev_dbg(nor->dev, "using direct mode for %s\n",
->>  				mtd->name);
->>
->> -			if (!cqspi->rx_chan)
->> -				cqspi_request_mmap_dma(cqspi);
->> +			if (!cqspi->rx_chan) {
->> +				ret = cqspi_request_mmap_dma(cqspi);
->> +				if (ret == -EPROBE_DEFER)
->> +					goto err;
->> +			}
->>  		}
->>  	}
->>
->>
-> 
-> This seem to break reading the SPI flash on our IOT2050 [1] (didn't test
-> the eval board yet).
-> 
-> Without that commit, read happens via PIO, and that works. With the
-> commit, the pattern
-> 
-> with open("out.bin", "wb") as out:
->     pos = 0
->     while pos < 2:
->         with open("/dev/mtd0", "rb") as mtd:
->            mtd.seek(pos * 0x10000)
->            out.write(mtd.read(0x10000))
->         pos += 1
-> 
-> gives the wrong result for the second block while
+"Generic KASAN also reports the last 2 call stacks to creation of work
+that potentially has access to an object. Call stacks for the
+following are shown: call_rcu(), timer and workqueue queuing."
 
-Interesting... Could you please explain wrong result? Is the data move
-around or completely garbage?
-
-Does this fail even on AM654 EVM? Could you share full script for me to
-test locally?
-
-What is the flash on the board?
-
-> 
-> with open("out2.bin", "wb") as out:
->     with open("/dev/mtd0", "rb") as mtd:
->         out.write(mtd.read(0x20000))
-> 
-> (or "mtd_debug read") is fine.
-> 
-> What could be the reason? Our DTBs and k3-am654-base-board.dtb had some
-> deviations /wrt the ospi node, but aligning ours to the base board made
-> no difference.
-> 
-> Jan
-> 
-> [1] https://github.com/siemens/linux/commits/jan/iot2050
-> 
+Thanks,
+-- Marco
