@@ -2,73 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AEC24FA72
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1E124F9A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbgHXIft convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Aug 2020 04:35:49 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:59229 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728138AbgHXIfl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:35:41 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22218848-1500050 
-        for multiple; Mon, 24 Aug 2020 09:35:11 +0100
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <65125687-14ae-182f-da07-7d29b4910364@linux.intel.com>
-References: <20190525054136.27810-1-baolu.lu@linux.intel.com> <20190525054136.27810-8-baolu.lu@linux.intel.com> <159803479017.29194.1359332295829225843@build.alporthouse.com> <65125687-14ae-182f-da07-7d29b4910364@linux.intel.com>
-Subject: Re: [PATCH v4 07/15] iommu/vt-d: Delegate the dma domain to upper layer
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     baolu.lu@linux.intel.com, ashok.raj@intel.com,
-        jacob.jun.pan@intel.com, kevin.tian@intel.com,
-        jamessewart@arista.com, tmurphy@arista.com, dima@arista.com,
-        sai.praneeth.prakhya@intel.com, iommu@lists.linux-foundation.org,
+        id S1729088AbgHXJrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:47:52 -0400
+Received: from relay.sw.ru ([185.231.240.75]:58626 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728409AbgHXIlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:41:10 -0400
+Received: from [192.168.15.190]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kA7xd-000xLn-NE; Mon, 24 Aug 2020 11:36:13 +0300
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Date:   Mon, 24 Aug 2020 09:35:11 +0100
-Message-ID: <159825811140.30134.5347490249201789397@build.alporthouse.com>
-User-Agent: alot/0.9
+Cc:     "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200821234958.7896-1-peterx@redhat.com>
+ <20200821234958.7896-2-peterx@redhat.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <42bc9a68-ef9e-2542-0b21-392a7f47bd74@virtuozzo.com>
+Date:   Mon, 24 Aug 2020 11:36:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200821234958.7896-2-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lu Baolu (2020-08-24 07:31:23)
-> Hi Chris,
+On 22.08.2020 02:49, Peter Xu wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-> On 2020/8/22 2:33, Chris Wilson wrote:
-> > Quoting Lu Baolu (2019-05-25 06:41:28)
-> >> This allows the iommu generic layer to allocate a dma domain and
-> >> attach it to a device through the iommu api's. With all types of
-> >> domains being delegated to upper layer, we can remove an internal
-> >> flag which was used to distinguish domains mananged internally or
-> >> externally.
-> > 
-> > I'm seeing some really strange behaviour with this patch on a 32b
-> > Skylake system (and still present on mainline). Before this patch
-> > everything is peaceful and appears to work correctly. Applying this patch,
-> > and we fail to initialise the GPU with a few DMAR errors reported, e.g.
-> > 
-> > [   20.279445] DMAR: DRHD: handling fault status reg 3
-> > [   20.279508] DMAR: [DMA Read] Request device [00:02.0] fault addr 8900a000 [fault reason 05] PTE Write access is not set
-> > 
-> > Setting an identity map for the igfx made the DMAR errors disappear, but
-> > the GPU still failed to initialise.
-> > 
-> > There's no difference in the DMAR configuration dmesg between working and
-> > the upset patch. And the really strange part is that switching to a 64b
-> > kernel with this patch, it's working.
-> > 
-> > Any suggestions on what I should look for?
+> How about we just make sure we're the only possible valid user fo the
+> page before we bother to reuse it?
 > 
-> Can the patch titled "[PATCH] iommu/intel: Handle 36b addressing for
-> x86-32" solve this problem?
+> Simplify, simplify, simplify.
+> 
+> And get rid of the nasty serialization on the page lock at the same time.
+> 
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> [peterx: add subject prefix]
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  mm/memory.c | 59 +++++++++++++++--------------------------------------
+>  1 file changed, 17 insertions(+), 42 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 602f4283122f..cb9006189d22 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -2927,50 +2927,25 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+>  	 * not dirty accountable.
+>  	 */
+>  	if (PageAnon(vmf->page)) {
+> -		int total_map_swapcount;
+> -		if (PageKsm(vmf->page) && (PageSwapCache(vmf->page) ||
+> -					   page_count(vmf->page) != 1))
+> +		struct page *page = vmf->page;
+> +
+> +		/* PageKsm() doesn't necessarily raise the page refcount */
 
-It does. Not sure why, but that mystery I can leave for others.
--Chris
+No, this is wrong. PageKSM() always raises refcount. There was another problem:
+KSM may raise refcount without lock_page(), and only then it takes the lock.
+See get_ksm_page(GET_KSM_PAGE_NOLOCK) for the details.
+
+So, reliable protection against parallel access requires to freeze page counter,
+which is made in reuse_ksm_page().
+
+> +		if (PageKsm(page) || page_count(page) != 1)
+> +			goto copy;
+> +		if (!trylock_page(page))
+> +			goto copy;
+> +		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
+> +			unlock_page(page);
+>  			goto copy;
+> -		if (!trylock_page(vmf->page)) {
+> -			get_page(vmf->page);
+> -			pte_unmap_unlock(vmf->pte, vmf->ptl);
+> -			lock_page(vmf->page);
+> -			vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+> -					vmf->address, &vmf->ptl);
+> -			if (!pte_same(*vmf->pte, vmf->orig_pte)) {
+> -				update_mmu_tlb(vma, vmf->address, vmf->pte);
+> -				unlock_page(vmf->page);
+> -				pte_unmap_unlock(vmf->pte, vmf->ptl);
+> -				put_page(vmf->page);
+> -				return 0;
+> -			}
+> -			put_page(vmf->page);
+> -		}
+> -		if (PageKsm(vmf->page)) {
+> -			bool reused = reuse_ksm_page(vmf->page, vmf->vma,
+> -						     vmf->address);
+> -			unlock_page(vmf->page);
+> -			if (!reused)
+> -				goto copy;
+> -			wp_page_reuse(vmf);
+> -			return VM_FAULT_WRITE;
+> -		}
+> -		if (reuse_swap_page(vmf->page, &total_map_swapcount)) {
+> -			if (total_map_swapcount == 1) {
+> -				/*
+> -				 * The page is all ours. Move it to
+> -				 * our anon_vma so the rmap code will
+> -				 * not search our parent or siblings.
+> -				 * Protected against the rmap code by
+> -				 * the page lock.
+> -				 */
+> -				page_move_anon_rmap(vmf->page, vma);
+> -			}
+> -			unlock_page(vmf->page);
+> -			wp_page_reuse(vmf);
+> -			return VM_FAULT_WRITE;
+>  		}
+> -		unlock_page(vmf->page);
+> +		/*
+> +		 * Ok, we've got the only map reference, and the only
+> +		 * page count reference, and the page is locked,
+> +		 * it's dark out, and we're wearing sunglasses. Hit it.
+> +		 */
+> +		wp_page_reuse(vmf);
+> +		unlock_page(page);
+> +		return VM_FAULT_WRITE;
+>  	} else if (unlikely((vma->vm_flags & (VM_WRITE|VM_SHARED)) ==
+>  					(VM_WRITE|VM_SHARED))) {
+>  		return wp_page_shared(vmf);
+> 
+
