@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8EE24F940
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F61F24F964
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgHXJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:43:18 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38337 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729176AbgHXJnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:43:11 -0400
-Received: by mail-lf1-f68.google.com with SMTP id k10so1144093lfm.5;
-        Mon, 24 Aug 2020 02:43:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B+sPpbAS75cGxaYopa1UoLFzKyaPQjVAHOZZ21i/IqI=;
-        b=fu8wQ7QFQpFE0Uv2l3IpS1bvMo4pYxj6hnQyCsNhWJEHS6xKmP3Pdb8U6boyiSO1+3
-         oEdFS0jFXaQg15GC2JLhH7X+0Su15vp1Ar+T6V8VRqpgEYPwRkjJwbfbpBfanUizjXXg
-         rEvL6PUa4uQuwf/ilWe6prBafDVa6WNRHqRc2sqNii5WY7Ny3lEO//dGxFOwyBoIhBVU
-         fZPYHzaayXTDViJ0IV4bg875Q+OKBG5lGQqKtXTyNaq9xWs0UtbClqya/MSH2LHjGYTI
-         iKmSyNS8W/EmB5k8DkU9DWjbXqLXF+ickzVv7vfyKXw280CFgoQAWpdp9jdWGevG2WUV
-         vP8w==
-X-Gm-Message-State: AOAM533uasoIZKqtN5k0W/FOJXUh62mXSbPB+ZKy1gKD3l5LfgabZkWO
-        WWJMt6ADvcrm2UtuM9xPrbM=
-X-Google-Smtp-Source: ABdhPJwRaluAeFEm/kpc6gnTtpSDh+hopLCqZnp2vTegFRD1V8+piLnV+XMyENeg6g7FhPNgvxjnqw==
-X-Received: by 2002:ac2:5235:: with SMTP id i21mr2251097lfl.96.1598262188023;
-        Mon, 24 Aug 2020 02:43:08 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b17sm2105269ljp.9.2020.08.24.02.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 02:43:07 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kA90N-0007A7-1V; Mon, 24 Aug 2020 11:43:07 +0200
-Date:   Mon, 24 Aug 2020 11:43:07 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     "Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW)" 
-        <shenglong.wang.ext@siemens.com>, Johan Hovold <johan@kernel.org>,
-        Sheng Long Wang <china_shenglong@163.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] usb-serial:cp210x: add support to software flow
- control
-Message-ID: <20200824094307.GE21288@localhost>
-References: <20200820075240.13321-1-china_shenglong@163.com>
- <97836b78-740b-cf70-4803-27305b6e0a4d@siemens.com>
- <20200824090948.GC21288@localhost>
- <f21d4cc8b12d4ec6870623472ca7df09@siemens.com>
- <faddf44e-db1d-46e5-b6db-88168b0cc808@siemens.com>
+        id S1726257AbgHXJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:44:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:21857 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729360AbgHXJoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 05:44:54 -0400
+IronPort-SDR: yZGabS4joGdhwY7UJyKhiwt6MglXt2zkB/2DEH1iQLhvC7xaeu69YJcBAb2EcGTrgP3QgqfOTk
+ w9Qp5UxxbVaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="220138567"
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="220138567"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 02:44:53 -0700
+IronPort-SDR: wRXI7XhK5QQaeSQpnPBnrStbcl8NxUyf6Oi3PSlxLixTjXiD8LZxoTcStAxuANtCDp83F56xNw
+ DLqigSeyLtjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,348,1592895600"; 
+   d="scan'208";a="402299045"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001.fm.intel.com with SMTP; 24 Aug 2020 02:44:49 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 24 Aug 2020 12:44:48 +0300
+Date:   Mon, 24 Aug 2020 12:44:48 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI
+ flash chip writable
+Message-ID: <20200824094448.GE1375436@lahna.fi.intel.com>
+References: <CAK8P3a2_RV33kiJ0c34aopZ4iG7LYBR-u=-+BbC+Upyjh1T0Eg@mail.gmail.com>
+ <CAFmMkTHqQO1Gj7VeXr4Y_Umb1KzZc2Pf=1pDQvPPpb_XeAFPqQ@mail.gmail.com>
+ <20200819065721.GA1375436@lahna.fi.intel.com>
+ <CAK8P3a0Bq-ucgC4Xue+B_HV97pTX8YRr4hYh1gfrfGBV_H1EUQ@mail.gmail.com>
+ <20200819091123.GE1375436@lahna.fi.intel.com>
+ <CAK8P3a19MLfQARXEWzCD-ySq4t9nsyryB+con33HsQ193+muMw@mail.gmail.com>
+ <20200824082227.GU1375436@lahna.fi.intel.com>
+ <CAK8P3a0==cZDHwZfqvCuvUg9jfjBOBG+AAomE9eqJ2xm-xNLvQ@mail.gmail.com>
+ <20200824091542.GC1375436@lahna.fi.intel.com>
+ <CAK8P3a2ipcVLOzZ5jsDSmWkm=rsE7UQ8rgTU-o6me+vX+gVa9g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <faddf44e-db1d-46e5-b6db-88168b0cc808@siemens.com>
+In-Reply-To: <CAK8P3a2ipcVLOzZ5jsDSmWkm=rsE7UQ8rgTU-o6me+vX+gVa9g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 11:36:50AM +0200, Jan Kiszka wrote:
-> On 24.08.20 11:28, Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW) wrote:
-> > Hi Johan,
-> > 
-> >     Thanks for your reminding. I am adjusting patch according to the latest Linux Master branch.
+On Mon, Aug 24, 2020 at 11:31:40AM +0200, Arnd Bergmann wrote:
+> On Mon, Aug 24, 2020 at 11:15 AM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
+> > On Mon, Aug 24, 2020 at 11:08:33AM +0200, Arnd Bergmann wrote:
+> > > On Mon, Aug 24, 2020 at 10:22 AM Mika Westerberg
+> > > <mika.westerberg@linux.intel.com> wrote:
+> > > > On Sat, Aug 22, 2020 at 06:06:03PM +0200, Arnd Bergmann wrote:
+> > > > > On Wed, Aug 19, 2020 at 11:11 AM Mika Westerberg
+> > > > >
+> > > > > The mtd core just checks both the permissions on the device node (which
+> > > > > default to 0600 without any special udev rules) and the MTD_WRITEABLE
+> > > > > on the underlying device that is controlled by the module parameter
+> > > > > in case of intel-spi{,-platform,-pci}.c.
+> > > >
+> > > > OK, thanks.
+> > > >
+> > > > Since we cannot really get rid of the module parameter (AFAIK there are
+> > > > users for it), I still think we should just make the "writeable" to
+> > > > apply to the PCI part as well. That should at least make it consistent,
+> > > > and it also solves Daniel's case.
+> > >
+> > > Can you explain Daniel's case then? I still don't understand what he
+> > > actually wants.
+> > >
+> > > As I keep repeating, the module parameter *does* apply to the pci
+> > > driver front-end since it determines whether the driver will disallow
+> > > writes to the mtd device without it. The only difference is that the pci
+> > > driver will attempt to set the hardware bit without checking the
+> > > module parameter first, while the platform driver does not. If the
+> > > module parameter is not set however, the state of the hardware
+> > > bit is never checked again.
+> >
+> > I think Daniel wants the PCI driver not to set the hardware bit by
+> > default (same as the platform driver).
 > 
-> Use git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git, branch
-> is likely usb-linus, as Johan requested - just in case there is another
-> conflict due to a patch not yet in Linux master but in that tree.
+> Sure, but *why*?
 
-The usb-next is used for new features like this one, but again,
-currently Linus's master branch works as well.
-
-> > -----Original Message-----
-> > From: Johan Hovold <johan@kernel.org> 
-> > Sent: Monday, August 24, 2020 5:10 PM
-> > To: Kiszka, Jan (CT RDA IOT SES-DE) <jan.kiszka@siemens.com>
-> > Cc: Sheng Long Wang <china_shenglong@163.com>; Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW) <shenglong.wang.ext@siemens.com>; johan@kernel.org; gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH v3] usb-serial:cp210x: add support to software flow control
-> > 
-> > On Fri, Aug 21, 2020 at 07:32:58AM +0200, Jan Kiszka wrote:
-> >> On 20.08.20 09:52, Sheng Long Wang wrote:
-> >>> From: Wang Sheng Long <shenglong.wang.ext@siemens.com>
-> >>>
-> >>> When data is transmitted between two serial ports, the phenomenon of 
-> >>> data loss often occurs. The two kinds of flow control commonly used 
-> >>> in serial communication are hardware flow control and software flow 
-> >>> control.
-> >>>
-> >>> In serial communication, If you only use RX/TX/GND Pins, you can't 
-> >>> do hardware flow. So we often used software flow control and prevent 
-> >>> data loss. The user sets the software flow control through the 
-> >>> application program, and the application program sets the software 
-> >>> flow control mode for the serial port chip through the driver.
-> >>>
-> >>> For the cp210 serial port chip, its driver lacks the software flow 
-> >>> control setting code, so the user cannot set the software flow 
-> >>> control function through the application program. This adds the 
-> >>> missing software flow control.
-> >>>
-> >>> Signed-off-by: Wang Sheng Long <shenglong.wang.ext@siemens.com>
-> >>>
-> >>> Changes in v3:
-> >>> -fixed code style, It mainly adjusts the code style acccording  to 
-> >>> kernel specification.
-> >>
-> >> Patch does not apply. You forgot to rebase over latest tty/tty-next or 
-> >> linux master.
-> > 
-> > That should be the usb-next branch of the usb-serial tree:
-> > 
-> > 	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/
-> > 
-> > or linux-next (or, currently, Linus's master branch).
-> > 
-> > You can use "scripts/get_maintainer.sh --scm" to determine which tree to base your work against.
-> 
-> Thanks for correcting! But it's scripts/get_maintainer.pl. ;)
-
-Heh. Thanks for catching that.
-
-Johan
+Because this is part of the platform firmware security check patch he is
+also working on and, I guess making the flash chip writeable by default
+is triggering some of the checks in that patch. Or something along those
+lines ;-)
