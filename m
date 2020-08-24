@@ -2,165 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B780D24FF60
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DB724FF5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 15:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHXN6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 09:58:42 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52750 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgHXN6Z (ORCPT
+        id S1727091AbgHXN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 09:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727103AbgHXN6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 09:58:25 -0400
-Received: by mail-io1-f72.google.com with SMTP id n16so6174654iop.19
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:58:23 -0700 (PDT)
+        Mon, 24 Aug 2020 09:58:39 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C94C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:58:38 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id s2so8728679ioo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 06:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QpNNtbUPIEnzzdJdWVbDvtTLPkQ1sOHB0r3DVoWmNtg=;
+        b=kpj0V3HHfUh1pHV6NeDlPyWF+m0ZwvpUYuCFAoiS5WM1DUcUzzKcJZ7qjh/rVICo3P
+         ddWjH2/Qv5VqP0IEivx1w08DQMgG3cFd90QDA88+DCQJEl/8eYOKysK88StCqaZA/O2A
+         GJ1eHvGd6wP00v6g6VBD9sR7Z1JShCdQFl0E/xT3t2Oyd7pL95J/nDvgy0z+iCxwdZwG
+         J4wkuMH7yJuNu8q5LeV0mO+rKLREP6bY6bN/clAut4i5YOc8ZS0OUapwrRIhIhGINgha
+         6/1HIh2DHUn9xzltveb/gz7eMQd4XN4NnEwD3DBuCd+vXlylReX2L7DQ9toVI9nVnUAZ
+         BKAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+V0QzvgG14Z720o2lIX3LxzlzhonjMzU55Q/hPYeJzs=;
-        b=spA0ZCiuL1Ppv/yfUlWmA5Xk5Mhod62tymzBPquyARTKs1LQOC/h0U3+6/Ked4pHcR
-         DQcytqO/citkvqbazDb0Cpqy1WA0Dx5X5kN6qFs/KWWO9csXLLdIbvhGZ4edNP9rYrgv
-         OuEJF36wwrtQZ2MFT3TtuCW/6xI+InG7hEVhW8TvRfOiAi/YEl0NP4TWSD+dmzrzquYM
-         cfxwa8SbP+ae2l+KnjI3XEdBcCKnQGz4Jy3lP5zrEUI5pt7rWNl4aJjFKGtrKrM1j+ly
-         R8tJAr07/BqI4Q8mg6jR2zLSPaFs7X4vPwbXTaBCz/eivs5pSb88AG2W6z+kfi6q4bDh
-         wNZg==
-X-Gm-Message-State: AOAM531WNx+29gfFew879eIXNwVn6Vf8D7r74rbgvJmLjV6yEBV4IeCT
-        785Wlsmr0AgrZwLyzgbKoPe01oI8NULdH5a8Q2D6wqqVkIcd
-X-Google-Smtp-Source: ABdhPJz9+MNTbmYaygbznNojo1zCWjjM1cvV8uf26efNvgfqFvYArf/xzRYpvkp3qupeC3r8pUBY7AdMzFgka09oRgeWFyO2p1i1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=QpNNtbUPIEnzzdJdWVbDvtTLPkQ1sOHB0r3DVoWmNtg=;
+        b=OZpDQCIhFycAXkN0Ng0i+xJSEYoF9k1ntBX56F82VVHZUZ9FZhh0MMmM26UTFqjtaU
+         LacycAfrnwAUtvLxuJ/iwftv2yVkZQe+pwdEerTNOqTTZa2Uw5YXC9AZi44sLDFyXKCP
+         b6d81bu8q5GKKe1bZ5wBdFTWgQceQYhPUoXzjkK1ORqlTZE0PONXPiBRo7vTBiqfcdaC
+         30NFYppdQgVb6RQg482XWmx6n65TmBAMJRd1p2pf4tc3ouxRfJiK0nqi/3B8LnWPm4zB
+         X95LqDqAqcg3hzNwaOxsuPV4o1rZ6sSSFCneaObWKvJiEVxneo6wJLv1JbqCDd7O7JVW
+         86vA==
+X-Gm-Message-State: AOAM531eDrWdiA8Cu4nNSIaA6V1QdbE/KytXPK/cgo/6S/lSP8fVwRhR
+        /fwwMDar7iA0PQY0i4lSybfqnNa3BiDjJyj0qxM=
+X-Google-Smtp-Source: ABdhPJyIQ5QJ/L+au+wFuttowZIccE0sR9gcVZ1Z7jsryN3Ux2ESV+XTr9rz/er10Rlygp9tRXS/goQ2J5NwRwq1h7Q=
+X-Received: by 2002:a5d:888b:: with SMTP id d11mr4878169ioo.188.1598277517952;
+ Mon, 24 Aug 2020 06:58:37 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8b4f:: with SMTP id c15mr4900416iot.146.1598277503540;
- Mon, 24 Aug 2020 06:58:23 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 06:58:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9e4bb05ad9ffaef@google.com>
-Subject: KMSAN: uninit-value in skb_trim
-From:   syzbot <syzbot+e4534e8c1c382508312c@syzkaller.appspotmail.com>
-To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
-        glider@google.com, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Received: by 2002:a6b:b60a:0:0:0:0:0 with HTTP; Mon, 24 Aug 2020 06:58:37
+ -0700 (PDT)
+Reply-To: susanwilliam1502@citromail.hu
+From:   Susan William <victoria.atkins1967@gmail.com>
+Date:   Mon, 24 Aug 2020 06:58:37 -0700
+Message-ID: <CAJ28r_ZoE5uaOJfxKHFcycPDt=gZdWGKaNmjjqVPxA_Nik+agQ@mail.gmail.com>
+Subject: Guten Morgen,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Guten Morgen,
 
-syzbot found the following issue on:
+  Ich wei=C3=9F, dass Sie =C3=BCberrascht sein werden, wenn Sie diese Mail =
+heute
+von mir erhalten.
+Ich bin Susan William, ich arbeite mit der Royal Bank of Scotland,
+Dieser Brief ist sehr privilegiert und erfordert Ihre sofortige
+Aufmerksamkeit, da wir einen unserer Kunden verloren haben, der
+zuf=C3=A4llig aus Ihrem Land stammt und denselben sicheren Namen bei Ihnen
+hat und einen hatte befristete Einzahlung bei unserer Bank vor seinem
+Tod. Angesichts Ihrer Nationalit=C3=A4t mit unserem verstorbenen Kunden
+Eichinger, .
 
-HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e3c4b6900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4534e8c1c382508312c
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+  Ich m=C3=B6chte Sie der Bank als Beg=C3=BCnstigten des Erbschaftsfonds
+vorstellen, und wir beide teilen uns die Mittel zu 50% bis 50%, sobald
+das Geld auf Ihr Konto =C3=BCberwiesen wurde.
+Ich freue mich auf Ihre sofortige Antwort.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e4534e8c1c382508312c@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in skb_trim+0x1f2/0x280 net/core/skbuff.c:1916
-CPU: 1 PID: 8770 Comm: syz-executor.1 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- skb_trim+0x1f2/0x280 net/core/skbuff.c:1916
- ath9k_htc_rx_msg+0x5f6/0x1f50 drivers/net/wireless/ath/ath9k/htc_hst.c:453
- ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:638 [inline]
- ath9k_hif_usb_rx_cb+0x1841/0x1d10 drivers/net/wireless/ath/ath9k/hif_usb.c:671
- __usb_hcd_giveback_urb+0x687/0x870 drivers/usb/core/hcd.c:1650
- usb_hcd_giveback_urb+0x1cb/0x730 drivers/usb/core/hcd.c:1716
- dummy_timer+0xd98/0x71c0 drivers/usb/gadget/udc/dummy_hcd.c:1967
- call_timer_fn+0x226/0x550 kernel/time/timer.c:1404
- expire_timers+0x4fc/0x780 kernel/time/timer.c:1449
- __run_timers+0xaf4/0xd30 kernel/time/timer.c:1773
- run_timer_softirq+0x2d/0x50 kernel/time/timer.c:1786
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:293
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:23 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:50 [inline]
- do_softirq_own_stack+0x7c/0xa0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:390 [inline]
- __irq_exit_rcu+0x226/0x270 kernel/softirq.c:420
- irq_exit_rcu+0xe/0x10 kernel/softirq.c:432
- sysvec_apic_timer_interrupt+0x107/0x130 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:593
-RIP: 0010:kmsan_slab_free+0x8c/0xb0 mm/kmsan/kmsan_hooks.c:109
-Code: 00 00 b9 03 00 00 00 e8 12 ea ff ff be ff ff ff ff 65 0f c1 35 75 57 cc 7d ff ce 75 1a e8 6c ff 14 ff 4c 89 7d e0 ff 75 e0 9d <48> 83 c4 10 5b 41 5e 41 5f 5d c3 0f 0b 48 c7 c7 b0 63 e1 91 31 c0
-RSP: 0018:ffff888036ea36e8 EFLAGS: 00000246
-RAX: c38ce7a59d21d100 RBX: ffff88812f403c00 RCX: 0000000000000003
-RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff8881c7f65bb0
-RBP: ffff888036ea3710 R08: ffffea000000000f R09: ffff88812fffa000
-R10: 0000000000000010 R11: ffffffff912007f5 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff8881c7f65bb0 R15: 0000000000000246
- slab_free_freelist_hook mm/slub.c:1507 [inline]
- slab_free mm/slub.c:3088 [inline]
- kfree+0x4f3/0x3000 mm/slub.c:4069
- kvfree+0x91/0xa0 mm/util.c:603
- __vunmap+0xfec/0x1080 mm/vmalloc.c:2320
- __vfree mm/vmalloc.c:2364 [inline]
- vfree+0xcc/0x1c0 mm/vmalloc.c:2394
- copy_entries_to_user net/ipv4/netfilter/ip_tables.c:867 [inline]
- get_entries net/ipv4/netfilter/ip_tables.c:1024 [inline]
- do_ipt_get_ctl+0x115c/0x11e0 net/ipv4/netfilter/ip_tables.c:1700
- nf_sockopt net/netfilter/nf_sockopt.c:104 [inline]
- nf_getsockopt+0x588/0x5e0 net/netfilter/nf_sockopt.c:122
- ip_getsockopt+0x34e/0x520 net/ipv4/ip_sockglue.c:1749
- tcp_getsockopt+0x1de/0x210 net/ipv4/tcp.c:3893
- sock_common_getsockopt+0x13a/0x170 net/core/sock.c:3221
- __sys_getsockopt+0x6c7/0x820 net/socket.c:2172
- __do_sys_getsockopt net/socket.c:2187 [inline]
- __se_sys_getsockopt+0xe1/0x100 net/socket.c:2184
- __x64_sys_getsockopt+0x62/0x80 net/socket.c:2184
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x46008a
-Code: Bad RIP value.
-RSP: 002b:000000000169f6b8 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
-RAX: ffffffffffffffda RBX: 000000000169f6e0 RCX: 000000000046008a
-RDX: 0000000000000041 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000749e60 R08: 000000000169f6dc R09: 0000000000004000
-R10: 000000000169f740 R11: 0000000000000212 R12: 000000000169f740
-R13: 0000000000000003 R14: 0000000000748a20 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:269 [inline]
- kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:293
- __alloc_pages_nodemask+0xdf0/0x1030 mm/page_alloc.c:4889
- __alloc_pages include/linux/gfp.h:509 [inline]
- __alloc_pages_node include/linux/gfp.h:522 [inline]
- alloc_pages_node include/linux/gfp.h:536 [inline]
- __page_frag_cache_refill mm/page_alloc.c:4964 [inline]
- page_frag_alloc+0x35b/0x880 mm/page_alloc.c:4994
- __netdev_alloc_skb+0x2a8/0xc90 net/core/skbuff.c:451
- __dev_alloc_skb include/linux/skbuff.h:2813 [inline]
- ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:620 [inline]
- ath9k_hif_usb_rx_cb+0xe5a/0x1d10 drivers/net/wireless/ath/ath9k/hif_usb.c:671
- __usb_hcd_giveback_urb+0x687/0x870 drivers/usb/core/hcd.c:1650
- usb_hcd_giveback_urb+0x1cb/0x730 drivers/usb/core/hcd.c:1716
- dummy_timer+0xd98/0x71c0 drivers/usb/gadget/udc/dummy_hcd.c:1967
- call_timer_fn+0x226/0x550 kernel/time/timer.c:1404
- expire_timers+0x4fc/0x780 kernel/time/timer.c:1449
- __run_timers+0xaf4/0xd30 kernel/time/timer.c:1773
- run_timer_softirq+0x2d/0x50 kernel/time/timer.c:1786
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:293
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Mit freundlichen Gr=C3=BC=C3=9Fen,
+  Susan William.
