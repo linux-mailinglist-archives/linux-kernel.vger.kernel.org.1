@@ -2,118 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73405250171
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0483250183
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 17:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgHXPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 11:49:28 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58269 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726830AbgHXPsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598284130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UP0GmnQUZczjWQdgtPqOBVeYSbOn6bpQOH6oqkTvgaU=;
-        b=VOCN4QOHFUeqxzUs+Rbndid1zUte35pZg2QIxMhUCuaOOzoTWEcX8so9s8FcB0v2LhAUXS
-        J2u4+lOJXR+PXuIRxCbqpA5Ov/5N3iJsSwaIhG7/yqSrz00Th2w36mbfSOFIQtEYlOY08p
-        81nBX7DKJY6D2T7omalEBqlPA0RU+Kw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-M8-QL4DHNVSdjwXzyLR64Q-1; Mon, 24 Aug 2020 11:48:46 -0400
-X-MC-Unique: M8-QL4DHNVSdjwXzyLR64Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F22D481F010;
-        Mon, 24 Aug 2020 15:48:44 +0000 (UTC)
-Received: from bfoster (ovpn-112-11.rdu2.redhat.com [10.10.112.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C930B62A13;
-        Mon, 24 Aug 2020 15:48:43 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 11:48:41 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        willy@infradead.org
-Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
-Message-ID: <20200824154841.GB295033@bfoster>
-References: <20200819102841.481461-1-anju@linux.vnet.ibm.com>
- <20200820231140.GE7941@dread.disaster.area>
- <20200821044533.BBFD1A405F@d06av23.portsmouth.uk.ibm.com>
- <20200821215358.GG7941@dread.disaster.area>
- <20200822131312.GA17997@infradead.org>
- <20200824142823.GA295033@bfoster>
- <20200824150417.GA12258@infradead.org>
+        id S1727104AbgHXPw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 11:52:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40753 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727021AbgHXPwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:52:19 -0400
+IronPort-SDR: S/1jcvlk8j9h9jLzfKszZG/RxT+P5A3iKt4uwn1YoVR2rUh37AlTrr/f97tz7OpQVROV46Tlpz
+ fedvaLSjaCvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9722"; a="153337836"
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="153337836"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 08:51:16 -0700
+IronPort-SDR: /8pdCu2o2rnXCUzZm5yUQW+XAHKkoVBwQkEYd17QBtTUxTfjEpYA3DvkMQBRgDylmBbw0/pVMw
+ tUN1KtSSvy+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,349,1592895600"; 
+   d="scan'208";a="328540204"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2020 08:51:14 -0700
+Subject: Re: [PATCH v4 2/3] sdhci: sparx5: Add Sparx5 SoC eMMC driver
+To:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, SoC Team <soc@kernel.org>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20200824151035.31093-1-lars.povlsen@microchip.com>
+ <20200824151035.31093-3-lars.povlsen@microchip.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a6303a7f-b5a1-f02a-0bc6-e34f5483ee23@intel.com>
+Date:   Mon, 24 Aug 2020 18:50:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824150417.GA12258@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200824151035.31093-3-lars.povlsen@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 04:04:17PM +0100, Christoph Hellwig wrote:
-> On Mon, Aug 24, 2020 at 10:28:23AM -0400, Brian Foster wrote:
-> > Do I understand the current code (__bio_try_merge_page() ->
-> > page_is_mergeable()) correctly in that we're checking for physical page
-> > contiguity and not necessarily requiring a new bio_vec per physical
-> > page?
+On 24/08/20 6:10 pm, Lars Povlsen wrote:
+> This adds the eMMC driver for the Sparx5 SoC. It is based upon the
+> designware IP, but requires some extra initialization and quirks.
 > 
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+
+Already acked this, still:
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  drivers/mmc/host/Kconfig           |  13 ++
+>  drivers/mmc/host/Makefile          |   1 +
+>  drivers/mmc/host/sdhci-of-sparx5.c | 269 +++++++++++++++++++++++++++++
+>  3 files changed, 283 insertions(+)
+>  create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
 > 
-> Yes.
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 3b706af35ec31..a3bad4b4ed7ea 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -213,6 +213,19 @@ config MMC_SDHCI_OF_DWCMSHC
+>  	  If you have a controller with this interface, say Y or M here.
+>  	  If unsure, say N.
+>  
+> +config MMC_SDHCI_OF_SPARX5
+> +	tristate "SDHCI OF support for the MCHP Sparx5 SoC"
+> +	depends on MMC_SDHCI_PLTFM
+> +	depends on ARCH_SPARX5
+> +	select MMC_SDHCI_IO_ACCESSORS
+> +	help
+> +	  This selects the Secure Digital Host Controller Interface (SDHCI)
+> +	  found in the MCHP Sparx5 SoC.
+> +
+> +	  If you have a Sparx5 SoC with this interface, say Y or M here.
+> +
+> +	  If unsure, say N.
+> +
+>  config MMC_SDHCI_CADENCE
+>  	tristate "SDHCI support for the Cadence SD/SDIO/eMMC controller"
+>  	depends on MMC_SDHCI_PLTFM
+> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> index 4d5bcb0144a0a..451c25fc2c692 100644
+> --- a/drivers/mmc/host/Makefile
+> +++ b/drivers/mmc/host/Makefile
+> @@ -94,6 +94,7 @@ obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
+>  obj-$(CONFIG_MMC_SDHCI_OF_DWCMSHC)	+= sdhci-of-dwcmshc.o
+> +obj-$(CONFIG_MMC_SDHCI_OF_SPARX5)	+= sdhci-of-sparx5.o
+>  obj-$(CONFIG_MMC_SDHCI_BCM_KONA)	+= sdhci-bcm-kona.o
+>  obj-$(CONFIG_MMC_SDHCI_IPROC)		+= sdhci-iproc.o
+>  obj-$(CONFIG_MMC_SDHCI_MSM)		+= sdhci-msm.o
+> diff --git a/drivers/mmc/host/sdhci-of-sparx5.c b/drivers/mmc/host/sdhci-of-sparx5.c
+> new file mode 100644
+> index 0000000000000..2b262c12e5530
+> --- /dev/null
+> +++ b/drivers/mmc/host/sdhci-of-sparx5.c
+> @@ -0,0 +1,269 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * drivers/mmc/host/sdhci-of-sparx5.c
+> + *
+> + * MCHP Sparx5 SoC Secure Digital Host Controller Interface.
+> + *
+> + * Copyright (c) 2019 Microchip Inc.
+> + *
+> + * Author: Lars Povlsen <lars.povlsen@microchip.com>
+> + */
+> +
+> +#include <linux/sizes.h>
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_device.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/dma-mapping.h>
+> +
+> +#include "sdhci-pltfm.h"
+> +
+> +#define CPU_REGS_GENERAL_CTRL	(0x22 * 4)
+> +#define  MSHC_DLY_CC_MASK	GENMASK(16, 13)
+> +#define  MSHC_DLY_CC_SHIFT	13
+> +#define  MSHC_DLY_CC_MAX	15
+> +
+> +#define CPU_REGS_PROC_CTRL	(0x2C * 4)
+> +#define  ACP_CACHE_FORCE_ENA	BIT(4)
+> +#define  ACP_AWCACHE		BIT(3)
+> +#define  ACP_ARCACHE		BIT(2)
+> +#define  ACP_CACHE_MASK		(ACP_CACHE_FORCE_ENA|ACP_AWCACHE|ACP_ARCACHE)
+> +
+> +#define MSHC2_VERSION			0x500	/* Off 0x140, reg 0x0 */
+> +#define MSHC2_TYPE			0x504	/* Off 0x140, reg 0x1 */
+> +#define MSHC2_EMMC_CTRL			0x52c	/* Off 0x140, reg 0xB */
+> +#define  MSHC2_EMMC_CTRL_EMMC_RST_N	BIT(2)
+> +#define  MSHC2_EMMC_CTRL_IS_EMMC	BIT(0)
+> +
+> +struct sdhci_sparx5_data {
+> +	struct sdhci_host *host;
+> +	struct regmap *cpu_ctrl;
+> +	int delay_clock;
+> +};
+> +
+> +#define BOUNDARY_OK(addr, len) \
+> +	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+> +
+> +/*
+> + * If DMA addr spans 128MB boundary, we split the DMA transfer into two
+> + * so that each DMA transfer doesn't exceed the boundary.
+> + */
+> +static void sdhci_sparx5_adma_write_desc(struct sdhci_host *host, void **desc,
+> +					  dma_addr_t addr, int len,
+> +					  unsigned int cmd)
+> +{
+> +	int tmplen, offset;
+> +
+> +	if (likely(!len || BOUNDARY_OK(addr, len))) {
+> +		sdhci_adma_write_desc(host, desc, addr, len, cmd);
+> +		return;
+> +	}
+> +
+> +	pr_debug("%s: write_desc: splitting dma len %d, offset 0x%0llx\n",
+> +		 mmc_hostname(host->mmc), len, addr);
+> +
+> +	offset = addr & (SZ_128M - 1);
+> +	tmplen = SZ_128M - offset;
+> +	sdhci_adma_write_desc(host, desc, addr, tmplen, cmd);
+> +
+> +	addr += tmplen;
+> +	len -= tmplen;
+> +	sdhci_adma_write_desc(host, desc, addr, len, cmd);
+> +}
+> +
+> +static void sparx5_set_cacheable(struct sdhci_host *host, u32 value)
+> +{
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_sparx5_data *sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
+> +
+> +	pr_debug("%s: Set Cacheable = 0x%x\n", mmc_hostname(host->mmc), value);
+> +
+> +	/* Update ACP caching attributes in HW */
+> +	regmap_update_bits(sdhci_sparx5->cpu_ctrl,
+> +			   CPU_REGS_PROC_CTRL, ACP_CACHE_MASK, value);
+> +}
+> +
+> +static void sparx5_set_delay(struct sdhci_host *host, u8 value)
+> +{
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_sparx5_data *sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
+> +
+> +	pr_debug("%s: Set DLY_CC = %u\n", mmc_hostname(host->mmc), value);
+> +
+> +	/* Update DLY_CC in HW */
+> +	regmap_update_bits(sdhci_sparx5->cpu_ctrl,
+> +			   CPU_REGS_GENERAL_CTRL,
+> +			   MSHC_DLY_CC_MASK,
+> +			   (value << MSHC_DLY_CC_SHIFT));
+> +}
+> +
+> +static void sdhci_sparx5_set_emmc(struct sdhci_host *host)
+> +{
+> +	if (!mmc_card_is_removable(host->mmc)) {
+> +		u8 value;
+> +
+> +		value = sdhci_readb(host, MSHC2_EMMC_CTRL);
+> +		if (!(value & MSHC2_EMMC_CTRL_IS_EMMC)) {
+> +			value |= MSHC2_EMMC_CTRL_IS_EMMC;
+> +			pr_debug("%s: Set EMMC_CTRL: 0x%08x\n",
+> +				 mmc_hostname(host->mmc), value);
+> +			sdhci_writeb(host, value, MSHC2_EMMC_CTRL);
+> +		}
+> +	}
+> +}
+> +
+> +static void sdhci_sparx5_reset_emmc(struct sdhci_host *host)
+> +{
+> +	u8 value;
+> +
+> +	pr_debug("%s: Toggle EMMC_CTRL.EMMC_RST_N\n", mmc_hostname(host->mmc));
+> +	value = sdhci_readb(host, MSHC2_EMMC_CTRL) &
+> +		~MSHC2_EMMC_CTRL_EMMC_RST_N;
+> +	sdhci_writeb(host, value, MSHC2_EMMC_CTRL);
+> +	/* For eMMC, minimum is 1us but give it 10us for good measure */
+> +	usleep_range(10, 20);
+> +	sdhci_writeb(host, value | MSHC2_EMMC_CTRL_EMMC_RST_N,
+> +		     MSHC2_EMMC_CTRL);
+> +	/* For eMMC, minimum is 200us but give it 300us for good measure */
+> +	usleep_range(300, 400);
+> +}
+> +
+> +static void sdhci_sparx5_reset(struct sdhci_host *host, u8 mask)
+> +{
+> +	pr_debug("%s: *** RESET: mask %d\n", mmc_hostname(host->mmc), mask);
+> +
+> +	sdhci_reset(host, mask);
+> +
+> +	/* Be sure CARD_IS_EMMC stays set */
+> +	sdhci_sparx5_set_emmc(host);
+> +}
+> +
+> +static const struct sdhci_ops sdhci_sparx5_ops = {
+> +	.set_clock		= sdhci_set_clock,
+> +	.set_bus_width		= sdhci_set_bus_width,
+> +	.set_uhs_signaling	= sdhci_set_uhs_signaling,
+> +	.get_max_clock		= sdhci_pltfm_clk_get_max_clock,
+> +	.reset			= sdhci_sparx5_reset,
+> +	.adma_write_desc	= sdhci_sparx5_adma_write_desc,
+> +};
+> +
+> +static const struct sdhci_pltfm_data sdhci_sparx5_pdata = {
+> +	.quirks  = 0,
+> +	.quirks2 = SDHCI_QUIRK2_HOST_NO_CMD23 | /* Controller issue */
+> +		   SDHCI_QUIRK2_NO_1_8_V, /* No sdr104, ddr50, etc */
+> +	.ops = &sdhci_sparx5_ops,
+> +};
+> +
+> +int sdhci_sparx5_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	const char *syscon = "microchip,sparx5-cpu-syscon";
+> +	struct sdhci_host *host;
+> +	struct sdhci_pltfm_host *pltfm_host;
+> +	struct sdhci_sparx5_data *sdhci_sparx5;
+> +	struct device_node *np = pdev->dev.of_node;
+> +	u32 value;
+> +	u32 extra;
+> +
+> +	host = sdhci_pltfm_init(pdev, &sdhci_sparx5_pdata,
+> +				sizeof(*sdhci_sparx5));
+> +
+> +	if (IS_ERR(host))
+> +		return PTR_ERR(host);
+> +
+> +	/*
+> +	 * extra adma table cnt for cross 128M boundary handling.
+> +	 */
+> +	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
+> +	if (extra > SDHCI_MAX_SEGS)
+> +		extra = SDHCI_MAX_SEGS;
+> +	host->adma_table_cnt += extra;
+> +
+> +	pltfm_host = sdhci_priv(host);
+> +	sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
+> +	sdhci_sparx5->host = host;
+> +
+> +	pltfm_host->clk = devm_clk_get(&pdev->dev, "core");
+> +	if (IS_ERR(pltfm_host->clk)) {
+> +		ret = PTR_ERR(pltfm_host->clk);
+> +		dev_err(&pdev->dev, "failed to get core clk: %d\n", ret);
+> +		goto free_pltfm;
+> +	}
+> +	ret = clk_prepare_enable(pltfm_host->clk);
+> +	if (ret)
+> +		goto free_pltfm;
+> +
+> +	if (!of_property_read_u32(np, "microchip,clock-delay", &value) &&
+> +	    (value > 0 && value <= MSHC_DLY_CC_MAX))
+> +		sdhci_sparx5->delay_clock = value;
+> +
+> +	sdhci_get_of_property(pdev);
+> +
+> +	ret = mmc_of_parse(host->mmc);
+> +	if (ret)
+> +		goto err_clk;
+> +
+> +	sdhci_sparx5->cpu_ctrl = syscon_regmap_lookup_by_compatible(syscon);
+> +	if (IS_ERR(sdhci_sparx5->cpu_ctrl)) {
+> +		dev_err(&pdev->dev, "No CPU syscon regmap !\n");
+> +		ret = PTR_ERR(sdhci_sparx5->cpu_ctrl);
+> +		goto err_clk;
+> +	}
+> +
+> +	if (sdhci_sparx5->delay_clock >= 0)
+> +		sparx5_set_delay(host, sdhci_sparx5->delay_clock);
+> +
+> +	if (!mmc_card_is_removable(host->mmc)) {
+> +		/* Do a HW reset of eMMC card */
+> +		sdhci_sparx5_reset_emmc(host);
+> +		/* Update EMMC_CTRL */
+> +		sdhci_sparx5_set_emmc(host);
+> +		/* If eMMC, disable SD and SDIO */
+> +		host->mmc->caps2 |= (MMC_CAP2_NO_SDIO|MMC_CAP2_NO_SD);
+> +	}
+> +
+> +	ret = sdhci_add_host(host);
+> +	if (ret)
+> +		goto err_clk;
+> +
+> +	/* Set AXI bus master to use un-cached access (for DMA) */
+> +	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA) &&
+> +	    IS_ENABLED(CONFIG_DMA_DECLARE_COHERENT))
+> +		sparx5_set_cacheable(host, ACP_CACHE_FORCE_ENA);
+> +
+> +	pr_debug("%s: SDHC version: 0x%08x\n",
+> +		 mmc_hostname(host->mmc), sdhci_readl(host, MSHC2_VERSION));
+> +	pr_debug("%s: SDHC type:    0x%08x\n",
+> +		 mmc_hostname(host->mmc), sdhci_readl(host, MSHC2_TYPE));
+> +
+> +	return ret;
+> +
+> +err_clk:
+> +	clk_disable_unprepare(pltfm_host->clk);
+> +free_pltfm:
+> +	sdhci_pltfm_free(pdev);
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id sdhci_sparx5_of_match[] = {
+> +	{ .compatible = "microchip,dw-sparx5-sdhci" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sdhci_sparx5_of_match);
+> +
+> +static struct platform_driver sdhci_sparx5_driver = {
+> +	.driver = {
+> +		.name = "sdhci-sparx5",
+> +		.of_match_table = sdhci_sparx5_of_match,
+> +		.pm = &sdhci_pltfm_pmops,
+> +	},
+> +	.probe = sdhci_sparx5_probe,
+> +	.remove = sdhci_pltfm_unregister,
+> +};
+> +
+> +module_platform_driver(sdhci_sparx5_driver);
+> +
+> +MODULE_DESCRIPTION("Sparx5 SDHCI OF driver");
+> +MODULE_AUTHOR("Lars Povlsen <lars.povlsen@microchip.com>");
+> +MODULE_LICENSE("GPL v2");
 > 
-
-Ok. I also realize now that this occurs on a kernel without commit
-07173c3ec276 ("block: enable multipage bvecs"). That is probably a
-contributing factor, but it's not clear to me whether it's feasible to
-backport whatever supporting infrastructure is required for that
-mechanism to work (I suspect not).
-
-> > With regard to Dave's earlier point around seeing excessively sized bio
-> > chains.. If I set up a large memory box with high dirty mem ratios and
-> > do contiguous buffered overwrites over a 32GB range followed by fsync, I
-> > can see upwards of 1GB per bio and thus chains on the order of 32+ bios
-> > for the entire write. If I play games with how the buffered overwrite is
-> > submitted (i.e., in reverse) however, then I can occasionally reproduce
-> > a ~32GB chain of ~32k bios, which I think is what leads to problems in
-> > I/O completion on some systems. Granted, I don't reproduce soft lockup
-> > issues on my system with that behavior, so perhaps there's more to that
-> > particular issue.
-> > 
-> > Regardless, it seems reasonable to me to at least have a conservative
-> > limit on the length of an ioend bio chain. Would anybody object to
-> > iomap_ioend growing a chain counter and perhaps forcing into a new ioend
-> > if we chain something like more than 1k bios at once?
-> 
-> So what exactly is the problem of processing a long chain in the
-> workqueue vs multiple small chains?  Maybe we need a cond_resched()
-> here and there, but I don't see how we'd substantially change behavior.
-> 
-
-The immediate problem is a watchdog lockup detection in bio completion:
-
-  NMI watchdog: Watchdog detected hard LOCKUP on cpu 25
-
-This effectively lands at the following segment of iomap_finish_ioend():
-
-		...
-               /* walk each page on bio, ending page IO on them */
-                bio_for_each_segment_all(bv, bio, iter_all)
-                        iomap_finish_page_writeback(inode, bv->bv_page, error);
-
-I suppose we could add a cond_resched(), but is that safe directly
-inside of a ->bi_end_io() handler? Another option could be to dump large
-chains into the completion workqueue, but we may still need to track the
-length to do that. Thoughts?
-
-Brian
 
