@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C4F24F5C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94A124F59D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgHXIxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:53:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59822 "EHLO mail.kernel.org"
+        id S1729925AbgHXIvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730125AbgHXIw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:52:58 -0400
+        id S1728968AbgHXIvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:51:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADF5F204FD;
-        Mon, 24 Aug 2020 08:52:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B799204FD;
+        Mon, 24 Aug 2020 08:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259178;
-        bh=Iy+BL1A2v3mX/VVW7ydcmgn91X3QzPcTmrGQY1kAxXs=;
+        s=default; t=1598259078;
+        bh=29g9Wr5ormSMSU1CxWGIebP4jV1FGScQfXafSepgtas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eRM6bZWFTXSI8h05aEZQhJk5gt1pKQmF1foa3fnmIGCvTgIr8nH+CP0wJ2mG2AMxz
-         RKf+N6pOmusxzrCmuJSUi91UL4EQTQPlj6r0568W892WqZIvSwQH3/0yqNWASnvQJf
-         McrFlBDr97dksvDZWHMk/RZAmAX8FSCjBdbhDfXE=
+        b=GjNSpcvNaID04avLTrAt8isfwDZjrTcTBewR1GEGdr+Yf/i2uTF308CB8I0qWw+Ic
+         uDDbUpMaJbrjXVtG9U2IbCrphVI+ZwRJUlHtm9TdsvW37jUquJ2k1X2jFidJWNetMu
+         M2+cCh0+ndOn8MvaUDwYGH7bAfMTtgyLWLhgQptY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,12 +32,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Oleg Nesterov <oleg@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 02/50] perf probe: Fix memory leakage when the probe point is not found
+Subject: [PATCH 4.9 04/39] perf probe: Fix memory leakage when the probe point is not found
 Date:   Mon, 24 Aug 2020 10:31:03 +0200
-Message-Id: <20200824082351.972975154@linuxfoundation.org>
+Message-Id: <20200824082348.697579083@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082351.823243923@linuxfoundation.org>
-References: <20200824082351.823243923@linuxfoundation.org>
+In-Reply-To: <20200824082348.445866152@linuxfoundation.org>
+References: <20200824082348.445866152@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,10 +79,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 8f7f9d05f38c0..bfa6d9d215569 100644
+index 7d0d44b4f3d5c..863f668a07355 100644
 --- a/tools/perf/util/probe-finder.c
 +++ b/tools/perf/util/probe-finder.c
-@@ -1354,7 +1354,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
+@@ -1351,7 +1351,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
  	tf.ntevs = 0;
  
  	ret = debuginfo__find_probes(dbg, &tf.pf);
