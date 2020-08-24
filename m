@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6DA24F95B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142D124F930
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgHXInP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:43:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
+        id S1729184AbgHXIor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728667AbgHXInB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:01 -0400
+        id S1729163AbgHXIol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A4BD2075B;
-        Mon, 24 Aug 2020 08:43:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80E142075B;
+        Mon, 24 Aug 2020 08:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258580;
-        bh=5oWJBfWM2iBMhFUPG9LnkQ2JFREBLz/tZMYL8MrWnG4=;
+        s=default; t=1598258681;
+        bh=M46liTB7rLaDrsNa7jv2Os7kH0zrBiZPPkk6TpwqqpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FyLubT2Xi6n2PYJYaqQFn/9VYTdClC673QgSepVjlnR7KUM3LWF7jFmEmK7K7oF0t
-         nkJ6wW0xmZ+4Q2NfcHZYiloq64EFcpuHlHUw7i+SuogMb001eu87yrk44rX/NU1wmI
-         U6yV4cgVJwPY4Tv9PbL1cOGQfEZF33dMq66r4bJ0=
+        b=sMzmG7lTgnAl7ey0lPkQkbs+by1mgDPxg0N807nEAeNbiSCBy9Z1Vl1/j49vOCjBN
+         A9jeYJByYhteGLYWZ9OeLx93Bld+EFaIEib6kvk1sapFCoZCRrkovDpr7RSTyftMmI
+         TW5sgvFC8leioZog24orVmfhUFX4U0fUF5G95AyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Seungwon Jeon <essuuj@gmail.com>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
         Alim Akhtar <alim.akhtar@samsung.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 095/124] scsi: ufs: Add quirk to enable host controller without hce
-Date:   Mon, 24 Aug 2020 10:30:29 +0200
-Message-Id: <20200824082414.085007809@linuxfoundation.org>
+Subject: [PATCH 5.7 096/124] scsi: ufs: Introduce UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk
+Date:   Mon, 24 Aug 2020 10:30:30 +0200
+Message-Id: <20200824082414.145645112@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
 References: <20200824082409.368269240@linuxfoundation.org>
@@ -49,144 +48,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alim Akhtar <alim.akhtar@samsung.com>
 
-[ Upstream commit 39bf2d83b54e900675cd7b52737ded695bb60bf1 ]
+[ Upstream commit 26f968d7de823ba4974a8f25c8bd8ee2df6ab74b ]
 
-Some host controllers don't support host controller enable via HCE.
+Some UFS host controllers like Exynos uses granularities of PRDT length and
+offset as bytes, whereas others use actual segment count.
 
-Link: https://lore.kernel.org/r/20200528011658.71590-4-alim.akhtar@samsung.com
-Reviewed-by: Can Guo <cang@codeaurora.org>
+Link: https://lore.kernel.org/r/20200528011658.71590-5-alim.akhtar@samsung.com
 Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Seungwon Jeon <essuuj@gmail.com>
+Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
 Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 76 +++++++++++++++++++++++++++++++++++++--
- drivers/scsi/ufs/ufshcd.h |  6 ++++
- 2 files changed, 80 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 30 +++++++++++++++++++++++-------
+ drivers/scsi/ufs/ufshcd.h |  6 ++++++
+ 2 files changed, 29 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index acd8fb4981142..3820117795327 100644
+index 3820117795327..4d5e8f6a31438 100644
 --- a/drivers/scsi/ufs/ufshcd.c
 +++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3539,6 +3539,52 @@ static int ufshcd_dme_link_startup(struct ufs_hba *hba)
- 			"dme-link-startup: error code %d\n", ret);
- 	return ret;
- }
-+/**
-+ * ufshcd_dme_reset - UIC command for DME_RESET
-+ * @hba: per adapter instance
-+ *
-+ * DME_RESET command is issued in order to reset UniPro stack.
-+ * This function now deals with cold reset.
-+ *
-+ * Returns 0 on success, non-zero value on failure
-+ */
-+static int ufshcd_dme_reset(struct ufs_hba *hba)
-+{
-+	struct uic_command uic_cmd = {0};
-+	int ret;
-+
-+	uic_cmd.command = UIC_CMD_DME_RESET;
-+
-+	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
-+	if (ret)
-+		dev_err(hba->dev,
-+			"dme-reset: error code %d\n", ret);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ufshcd_dme_enable - UIC command for DME_ENABLE
-+ * @hba: per adapter instance
-+ *
-+ * DME_ENABLE command is issued in order to enable UniPro stack.
-+ *
-+ * Returns 0 on success, non-zero value on failure
-+ */
-+static int ufshcd_dme_enable(struct ufs_hba *hba)
-+{
-+	struct uic_command uic_cmd = {0};
-+	int ret;
-+
-+	uic_cmd.command = UIC_CMD_DME_ENABLE;
-+
-+	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
-+	if (ret)
-+		dev_err(hba->dev,
-+			"dme-reset: error code %d\n", ret);
-+
-+	return ret;
-+}
+@@ -2158,8 +2158,14 @@ static int ufshcd_map_sg(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 		return sg_segments;
  
- static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba)
- {
-@@ -4256,7 +4302,7 @@ static inline void ufshcd_hba_stop(struct ufs_hba *hba, bool can_sleep)
- }
- 
- /**
-- * ufshcd_hba_enable - initialize the controller
-+ * ufshcd_hba_execute_hce - initialize the controller
-  * @hba: per adapter instance
-  *
-  * The controller resets itself and controller firmware initialization
-@@ -4265,7 +4311,7 @@ static inline void ufshcd_hba_stop(struct ufs_hba *hba, bool can_sleep)
-  *
-  * Returns 0 on success, non-zero value on failure
-  */
--int ufshcd_hba_enable(struct ufs_hba *hba)
-+static int ufshcd_hba_execute_hce(struct ufs_hba *hba)
- {
- 	int retry;
- 
-@@ -4313,6 +4359,32 @@ int ufshcd_hba_enable(struct ufs_hba *hba)
- 
- 	return 0;
- }
+ 	if (sg_segments) {
+-		lrbp->utr_descriptor_ptr->prd_table_length =
+-			cpu_to_le16((u16)sg_segments);
 +
-+int ufshcd_hba_enable(struct ufs_hba *hba)
-+{
-+	int ret;
-+
-+	if (hba->quirks & UFSHCI_QUIRK_BROKEN_HCE) {
-+		ufshcd_set_link_off(hba);
-+		ufshcd_vops_hce_enable_notify(hba, PRE_CHANGE);
-+
-+		/* enable UIC related interrupts */
-+		ufshcd_enable_intr(hba, UFSHCD_UIC_MASK);
-+		ret = ufshcd_dme_reset(hba);
-+		if (!ret) {
-+			ret = ufshcd_dme_enable(hba);
-+			if (!ret)
-+				ufshcd_vops_hce_enable_notify(hba, POST_CHANGE);
-+			if (ret)
-+				dev_err(hba->dev,
-+					"Host controller enable failed with non-hce\n");
++		if (hba->quirks & UFSHCD_QUIRK_PRDT_BYTE_GRAN)
++			lrbp->utr_descriptor_ptr->prd_table_length =
++				cpu_to_le16((sg_segments *
++					sizeof(struct ufshcd_sg_entry)));
++		else
++			lrbp->utr_descriptor_ptr->prd_table_length =
++				cpu_to_le16((u16) (sg_segments));
+ 
+ 		prd_table = (struct ufshcd_sg_entry *)lrbp->ucd_prdt_ptr;
+ 
+@@ -3505,11 +3511,21 @@ static void ufshcd_host_memory_configure(struct ufs_hba *hba)
+ 				cpu_to_le32(upper_32_bits(cmd_desc_element_addr));
+ 
+ 		/* Response upiu and prdt offset should be in double words */
+-		utrdlp[i].response_upiu_offset =
+-			cpu_to_le16(response_offset >> 2);
+-		utrdlp[i].prd_table_offset = cpu_to_le16(prdt_offset >> 2);
+-		utrdlp[i].response_upiu_length =
+-			cpu_to_le16(ALIGNED_UPIU_SIZE >> 2);
++		if (hba->quirks & UFSHCD_QUIRK_PRDT_BYTE_GRAN) {
++			utrdlp[i].response_upiu_offset =
++				cpu_to_le16(response_offset);
++			utrdlp[i].prd_table_offset =
++				cpu_to_le16(prdt_offset);
++			utrdlp[i].response_upiu_length =
++				cpu_to_le16(ALIGNED_UPIU_SIZE);
++		} else {
++			utrdlp[i].response_upiu_offset =
++				cpu_to_le16(response_offset >> 2);
++			utrdlp[i].prd_table_offset =
++				cpu_to_le16(prdt_offset >> 2);
++			utrdlp[i].response_upiu_length =
++				cpu_to_le16(ALIGNED_UPIU_SIZE >> 2);
 +		}
-+	} else {
-+		ret = ufshcd_hba_execute_hce(hba);
-+	}
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(ufshcd_hba_enable);
  
- static int ufshcd_disable_tx_lcc(struct ufs_hba *hba, bool peer)
+ 		ufshcd_init_lrb(hba, &hba->lrb[i], i);
+ 	}
 diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 5b1acdd83d5c1..99dc0ca311899 100644
+index 99dc0ca311899..b3b2d09d8fff3 100644
 --- a/drivers/scsi/ufs/ufshcd.h
 +++ b/drivers/scsi/ufs/ufshcd.h
-@@ -529,6 +529,12 @@ enum ufshcd_quirks {
- 	 * that the interrupt aggregation timer and counter are reset by s/w.
+@@ -535,6 +535,12 @@ enum ufshcd_quirks {
+ 	 * enabled via HCE register.
  	 */
- 	UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR		= 1 << 7,
+ 	UFSHCI_QUIRK_BROKEN_HCE				= 1 << 8,
 +
 +	/*
-+	 * This quirks needs to be enabled if host controller cannot be
-+	 * enabled via HCE register.
++	 * This quirk needs to be enabled if the host controller regards
++	 * resolution of the values of PRDTO and PRDTL in UTRD as byte.
 +	 */
-+	UFSHCI_QUIRK_BROKEN_HCE				= 1 << 8,
++	UFSHCD_QUIRK_PRDT_BYTE_GRAN			= 1 << 9,
  };
  
  enum ufshcd_caps {
