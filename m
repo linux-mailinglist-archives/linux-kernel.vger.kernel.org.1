@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFE124F19B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5B524F1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 05:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgHXDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Aug 2020 23:41:13 -0400
-Received: from mail03.asahi-net.or.jp ([202.224.55.15]:50159 "EHLO
-        mail03.asahi-net.or.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgHXDlL (ORCPT
+        id S1728086AbgHXDqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Aug 2020 23:46:08 -0400
+Received: from mail02.asahi-net.or.jp ([202.224.55.14]:35483 "EHLO
+        mail02.asahi-net.or.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbgHXDqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Aug 2020 23:41:11 -0400
-X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Sun, 23 Aug 2020 23:41:10 EDT
+        Sun, 23 Aug 2020 23:46:08 -0400
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
         (Authenticated sender: PQ4Y-STU)
-        by mail03.asahi-net.or.jp (Postfix) with ESMTPA id 6C93827D27;
-        Mon, 24 Aug 2020 12:35:55 +0900 (JST)
+        by mail02.asahi-net.or.jp (Postfix) with ESMTPA id E316226B8A;
+        Mon, 24 Aug 2020 12:36:15 +0900 (JST)
 Received: from yo-satoh-debian.ysato.ml (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-        by sakura.ysato.name (Postfix) with ESMTPSA id 8E6731C07B2;
-        Mon, 24 Aug 2020 12:35:54 +0900 (JST)
-Date:   Mon, 24 Aug 2020 12:35:51 +0900
-Message-ID: <87o8n0emw8.wl-ysato@users.sourceforge.jp>
+        by sakura.ysato.name (Postfix) with ESMTPSA id 7B49D1C07B2;
+        Mon, 24 Aug 2020 12:36:15 +0900 (JST)
+Date:   Mon, 24 Aug 2020 12:36:14 +0900
+Message-ID: <87mu2kemvl.wl-ysato@users.sourceforge.jp>
 From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] h8300: dts: Fix /chosen:stdout-path
-In-Reply-To: <20200819122838.18452-1-geert+renesas@glider.be>
-References: <20200819122838.18452-1-geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] h8300: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+In-Reply-To: <20200819122925.18557-1-geert+renesas@glider.be>
+References: <20200819122925.18557-1-geert+renesas@glider.be>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL/10.8 EasyPG/1.0.0 Emacs/26
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -39,54 +37,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 21:28:38 +0900,
+On Wed, 19 Aug 2020 21:29:25 +0900,
 Geert Uytterhoeven wrote:
 > 
->     arch/h8300/boot/dts/h8s_sim.dts:11.3-25: Warning (chosen_node_stdout_path): /chosen:stdout-path: property is not a string
->     arch/h8300/boot/dts/h8300h_sim.dts:11.3-25: Warning (chosen_node_stdout_path): /chosen:stdout-path: property is not a string
+> The H8/300 platform code is not a clock provider, and just needs to call
+> of_clk_init().
 > 
-> Drop the angle brackets to fix this.
+> Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
 > 
-> A similar fix was already applied to arch/h8300/boot/dts/edosk2674.dts
-> in commit 780ffcd51cb28717 ("h8300: register address fix").
-> 
-> Fixes: 38d6bded13084d50 ("h8300: devicetree source")
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 > ---
 > v2:
 >   - Add Reviewed-by.
 > ---
->  arch/h8300/boot/dts/h8300h_sim.dts | 2 +-
->  arch/h8300/boot/dts/h8s_sim.dts    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  arch/h8300/kernel/setup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/h8300/boot/dts/h8300h_sim.dts b/arch/h8300/boot/dts/h8300h_sim.dts
-> index 595398b9d0180a80..e1d4d9b7f6b40c04 100644
-> --- a/arch/h8300/boot/dts/h8300h_sim.dts
-> +++ b/arch/h8300/boot/dts/h8300h_sim.dts
-> @@ -8,7 +8,7 @@
->  
->  	chosen {
->  		bootargs = "earlyprintk=h8300-sim";
-> -		stdout-path = <&sci0>;
-> +		stdout-path = &sci0;
->  	};
->  	aliases {
->  		serial0 = &sci0;
-> diff --git a/arch/h8300/boot/dts/h8s_sim.dts b/arch/h8300/boot/dts/h8s_sim.dts
-> index 932cc3c5a81bcdd2..4848e40e607ecc1d 100644
-> --- a/arch/h8300/boot/dts/h8s_sim.dts
-> +++ b/arch/h8300/boot/dts/h8s_sim.dts
-> @@ -8,7 +8,7 @@
->  
->  	chosen {
->  		bootargs = "earlyprintk=h8300-sim";
-> -		stdout-path = <&sci0>;
-> +		stdout-path = &sci0;
->  	};
->  	aliases {
->  		serial0 = &sci0;
+> diff --git a/arch/h8300/kernel/setup.c b/arch/h8300/kernel/setup.c
+> index 28ac88358a89a4f9..0ecaac7dd7e93d9f 100644
+> --- a/arch/h8300/kernel/setup.c
+> +++ b/arch/h8300/kernel/setup.c
+> @@ -24,7 +24,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_fdt.h>
+>  #include <linux/of_address.h>
+> -#include <linux/clk-provider.h>
+> +#include <linux/of_clk.h>
+>  #include <linux/memblock.h>
+>  #include <linux/screen_info.h>
+>  #include <linux/clocksource.h>
 > -- 
 > 2.17.1
 > 
