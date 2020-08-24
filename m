@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C406D24F88E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0367D24F8A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbgHXJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
+        id S1728364AbgHXJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728196AbgHXJeZ (ORCPT
+        with ESMTP id S1726825AbgHXJgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 05:34:25 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32519C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:34:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id p17so2283716wrj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:34:25 -0700 (PDT)
+        Mon, 24 Aug 2020 05:36:00 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB620C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:35:59 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x5so7660663wmi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 02:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oQFrC1o3Nda9YLxSbgopWEOdNnQxrkWudyF2nTbVXVU=;
-        b=iI4wNU1gyMDP3WOfbrMsV5PNzotxiKE+bg3HG4dL4ZNpFQ5QXR1VjF7EaZVhqM5pbR
-         /apqB/5NXnbQO/3QcPmJa2ymAJrRdh3q+VNx0a0WUjVrqorgAvwGbIygf/nWdu0FJnlR
-         2VF43WNvEHWPrUMPWGcStgXCXrQu0Wt4FMh6t/B7KsM4x98lcwZjW40VVfETqRVT7u+B
-         YNLoQECf0W2p2wXdHaMUWqr7ZK7KKqGr2dI98GzCd0Gk03gAkK+va2bB9KNnzETyhrA4
-         SKMppU9b3ulLFxpyUTLBv1CO7H+HQ/8rLi1gdJkfeb+dDWshGrYd+KTB+cB2lMYgNSoL
-         4qeQ==
+        bh=a+qBqva1TzYQ5RnHnuZAT29wnXZU/+xs6tKfmNJfO0E=;
+        b=yIT/7UWxUOXMSG5UryvbaY1Ck/9X1LWrS3GIdFRp7f9jKp1MojafFO7SlcdTqycmN9
+         YOkAdQNb6x3hxaPpMyoC6HBnpKa+TPMoPrX4v5Bx8e/0rcQzz3rwDAwlVJ9ySDjdHa8P
+         gxl+Alxxd3oh++LTDkXFX07MCvPy9AOHsxRLS33TQLbbJK98OjqhxguOU8kmCKbfGl+i
+         SZFZAy1V1zlQbTGkiwk+ZVCmCR7cij4liuYQ5vCKnbkQeQdxp0gb3tZq9i0Cc0HS+JK3
+         MvIYTmlkUcRDJSLOk1loa7GDDg3VUqTL4VEyL5Wu1q2wZdV4rpTx19Z4K0IQWg7MxPGC
+         D+ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=oQFrC1o3Nda9YLxSbgopWEOdNnQxrkWudyF2nTbVXVU=;
-        b=eZavSEE9WycvU4wP5q63FQiUJJQlCk+erFXy9xpMCPr/TECFLrJGnjoioDo0pSrBNw
-         5dJ84x+8nCuEOlGJ+8i3qQJ+H261UsY9x8WWvpxqiE+bOA9BTZ7LCjbR6Tybr8D6CvdT
-         9/nK3JjF+u3oRDn0NYXtpXDR3IDqUjR4mDpynZ1dOZKOlDlUtr99jQQDARdE/+udA0iT
-         uEPlYImhCk0AXFBTU3NnCD82qF39zvoxKVyZ3KuaXJkey2ZNHjdys8vpjaIEPDzPIxba
-         O7X/7+OB6n8ujR3CmvA3KnWXpp6stcM7I8fSIkAA26rNh0zhDPuUevBP9t/0OjZqqwkH
-         sc/A==
-X-Gm-Message-State: AOAM532CyjUrsLGIkHIFSVHk1Y2wlUOJ/tDQvxA58C4j2FT+Cg6kKtcn
-        RZ+85qRMRwDhV+ICYoR/YYwNfnQf06adUw==
-X-Google-Smtp-Source: ABdhPJzfp+hZthOM0E1QMoXJyd50y7e6J2eC0nSOR2g0GL2084Jm9DgaEpMukZ1glzmBjUeTo56zoQ==
-X-Received: by 2002:a5d:630b:: with SMTP id i11mr5231552wru.95.1598261663543;
-        Mon, 24 Aug 2020 02:34:23 -0700 (PDT)
+        bh=a+qBqva1TzYQ5RnHnuZAT29wnXZU/+xs6tKfmNJfO0E=;
+        b=p6prSnFklY9/aSyOQASKB5DWfKUVxrNrPSlhe2AjpZTDP2DLz9i2290AhxK70FvY7R
+         uuZrscT3lgaeYZAqA+wMOSt2Lude6CEl36wadkPxU8HApWrcmjyp7g6OArzwOcirEE2I
+         K6HMNZJP9YFvglEoOvFAR+VFABulW5WAvxnYA++3GvbDE9HkWQPQ8e6+5BTEwykXinI7
+         hfb/XfvTF6ILOEJTFMalCN2EUmLt9L3KAftm+jgAHYO86Sjt+WR015OcypQrlZ/dydaC
+         IedSuvDKcUAXoBlDfnMOVhc+cG1nz8YPms5IqRjJ+a+7h4iteyE7hSWX+DY9edojq5Xl
+         +YVw==
+X-Gm-Message-State: AOAM530fyzTZNpDyypPydeCwgZgWJNe1RUDLfD0mlMIqYnszeTcHdhPl
+        C1uawMg9NhtW+fLCNtOJ0vSx9A==
+X-Google-Smtp-Source: ABdhPJzIc6QSoUS9oxZsc9VLLMmsA6P6cy+Q5aHgP/cOCZLdV9bKWS8FvvqVA6WEuOaSKYKDEZPY4A==
+X-Received: by 2002:a1c:f017:: with SMTP id a23mr4668754wmb.164.1598261758453;
+        Mon, 24 Aug 2020 02:35:58 -0700 (PDT)
 Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
-        by smtp.googlemail.com with ESMTPSA id y17sm5682961wma.17.2020.08.24.02.34.22
+        by smtp.googlemail.com with ESMTPSA id f6sm30504901wme.32.2020.08.24.02.35.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 02:34:23 -0700 (PDT)
-Subject: Re: [PATCH v2] thermal: core: Fix use-after-free in
- thermal_zone_device_unregister()
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200817235854.26816-1-digetx@gmail.com>
+        Mon, 24 Aug 2020 02:35:58 -0700 (PDT)
+Subject: Re: [PATCH] clocksource/drivers/timer-gx6605s: Fixup counter reload
+To:     guoren@kernel.org
+Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <1597735877-71115-1-git-send-email-guoren@kernel.org>
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <84ecfc78-bbe7-b4e0-a815-46b6225eca09@linaro.org>
-Date:   Mon, 24 Aug 2020 11:34:22 +0200
+Message-ID: <8fae0fad-4211-61fa-b687-0eca4bffbdaf@linaro.org>
+Date:   Mon, 24 Aug 2020 11:35:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200817235854.26816-1-digetx@gmail.com>
+In-Reply-To: <1597735877-71115-1-git-send-email-guoren@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -71,17 +70,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2020 01:58, Dmitry Osipenko wrote:
-> The user-after-free bug in thermal_zone_device_unregister() is reported by
-> KASAN. It happens because struct thermal_zone_device is released during of
-> device_unregister() invocation, and hence the "tz" variable shouldn't be
-> touched by thermal_notify_tz_delete(tz->id).
+On 18/08/2020 09:31, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> Fixes: 55cdf0a283b8 ("thermal: core: Add notifications call in the framework")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> When the timer counts to the upper limit, an overflow interrupt is
+> generated, and the count is reset with the value in the TIME_INI
+> register. But the software expects to start counting from 0 when
+> the count overflows, so it forces TIME_INI to 0 to solve the
+> potential interrupt storm problem.
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Tested-by: Xu Kai <xukai@nationalchip.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 > ---
 
-Applied, thanks !
+Applied, thanks
 
 
 -- 
