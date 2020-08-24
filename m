@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2B224FC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361DF24FC5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHXL2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:28:01 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60904 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgHXL1g (ORCPT
+        id S1726336AbgHXLPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:15:42 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:53919 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgHXLO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:27:36 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OBKWRC003341;
-        Mon, 24 Aug 2020 11:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=27ZxFSs8lL0sEkaFc/hN0oGCfd20QQ91QvBcgAUQqeo=;
- b=V1AEHDn/vZHb1Ge/eAg/XSHhVO44p6uYsOgsiCX3Eaqi3Caq4YI6WJQgSTIGLC4KS0uj
- U7rvF4oe465fdDH19OEW7jvftJkSmjX2duWDpFkFkt0qzrJN9DPXAXj56bi3LZf0YSy3
- U+TheXIC1LAzXISF/4Q+N11cYPohXtIHeDPc6xab8CvczRflrOoqu0WFQWyepnrF8LF+
- C9wqpPH88UMM4zNpD1ytLssID6sjtyHc4Z9Ox/+mr6xDMrwwXw9OUpKYYEB9wdsFfH8M
- HkWuOCS2eM0F0c4PX2Q01x87AK+HBq/dak1KMozoWpCMo1JBP7FnTIR41UAP3xqjMtvp cQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 333cshv189-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Aug 2020 11:27:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OBPD5E095470;
-        Mon, 24 Aug 2020 11:27:20 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 333r9h24bs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Aug 2020 11:27:20 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07OBRJIf026538;
-        Mon, 24 Aug 2020 11:27:19 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 04:27:18 -0700
-Date:   Mon, 24 Aug 2020 14:27:08 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Tomer Samara <tomersamara98@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Riley Andrews <riandrews@android.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Hridya Valsaraju <hridya@google.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v4 2/2] staging: android: Remove BUG from
- ion_system_heap.c
-Message-ID: <20200824112708.GM5493@kadam>
-References: <cover.1598023523.git.tomersamara98@gmail.com>
- <a39407f84031eaeed5e65a7aab515a079edf5fcc.1598023524.git.tomersamara98@gmail.com>
- <3eba90dc-128f-49da-41a6-81494653d535@infradead.org>
- <20200824112457.GI1793@kadam>
+        Mon, 24 Aug 2020 07:14:56 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200824111447epoutp03bd05d20eb5cb5b452b6451c07a8cfe8e~uL-52EmqR2867628676epoutp039
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 11:14:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200824111447epoutp03bd05d20eb5cb5b452b6451c07a8cfe8e~uL-52EmqR2867628676epoutp039
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598267687;
+        bh=8WDpye9ll5Rw3/XZ5sZwXTyq5y6EIcg6tb3iQpuN7nQ=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=LcfH3zh1rVVHhyJ1biTKfoMiSbJf0dd7GKnFBApXDT5E/g2F9a2DkXYJttlL/8e1M
+         dWqKi/Flh6E6gFaDAAF9ONIfiB/F0RcjgHuAmvt4jeA/zRAwTQrmtiWl7F3Lj7h9tp
+         0EL5I69Gbv8QkC49aLccXfzAGqAdc6pUreFSbMBE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200824111446epcas1p26f0d23ab5f2ed77e5d10ceeb84d978c7~uL-41-DtW1227812278epcas1p2d;
+        Mon, 24 Aug 2020 11:14:46 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4BZqJz2vKczMqYkf; Mon, 24 Aug
+        2020 11:14:43 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E4.A5.29173.321A34F5; Mon, 24 Aug 2020 20:14:43 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200824111442epcas1p44030022c3b9f5efba6e4613b45d6b1aa~uL-1HRWfa0548505485epcas1p4E;
+        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200824111442epsmtrp2db6ed69b9c84d0021aa06bc8da1ddfdc~uL-1GnnZi2446424464epsmtrp28;
+        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
+X-AuditID: b6c32a37-9cdff700000071f5-0e-5f43a12387e8
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        74.00.08382.221A34F5; Mon, 24 Aug 2020 20:14:42 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200824111442epsmtip2035faacd7f7c3884733c992f84b486e1~uL-08yOxs2184021840epsmtip2M;
+        Mon, 24 Aug 2020 11:14:42 +0000 (GMT)
+Subject: Re: [PATCH v2 00/13] extcon: ptn5150: Improvements and fixes
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <028fb879-dc74-b822-c399-7f3c9628ec47@samsung.com>
+Date:   Mon, 24 Aug 2020 20:27:10 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824112457.GI1793@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240090
+In-Reply-To: <20200817070009.4631-1-krzk@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTV1d5oXO8waefAhbzj5xjtTh/fgO7
+        xeVdc9gsbjeuYLNo3XuE3eLl/umsDmweO2fdZffYtKqTzaNvyypGj8+b5AJYorJtMlITU1KL
+        FFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4CWKymUJeaUAoUCEouL
+        lfTtbIryS0tSFTLyi0tslVILUnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM05PXsVa0MxU
+        sWP3AZYGxn2MXYycHBICJhKLVs5lA7GFBHYwSpyaU93FyAVkf2KUeD7jPSuE841R4vKrZeww
+        He17nrBDJPYySsx8d44RwnnPKLGw5QkrSJWwgKvEsW//wKpEBJ4xSjTfvsIMkmAT0JLY/+IG
+        2EJ+AUWJqz8egx3CK2An8evhQyYQm0VAVeLJsVlg60QFwiRObmuBqhGUODnzCQuIzQl0xvzH
+        F8BqmAXEJW49mc8EYctLbH87hxlksYRAI4fElbebWSDudpE4u/Yt1A/CEq+Ob4GypSQ+v9vL
+        BmFXS6w8eYQNormDUWLL/gusEAljif1LJwNt4ADaoCmxfpc+RFhRYufvuYwQi/kk3n3tYQUp
+        kRDglehoE4IoUZa4/OAuE4QtKbG4vRNqlYfE5+8XmCYwKs5C8tosJO/MQvLOLITFCxhZVjGK
+        pRYU56anFhsWGCNH9yZGcMrUMt/BOO3tB71DjEwcjIcYJTiYlUR4b2+yjxfiTUmsrEotyo8v
+        Ks1JLT7EaAoM7InMUqLJ+cCknVcSb2hqZGxsbGFiaGZqaKgkzvvwlkK8kEB6YklqdmpqQWoR
+        TB8TB6dUA9O17rVbrL4sfVjmlLL1UPCdiObz12ftbFD9/NwgKIl1wu5r1af3r0gs/2tbm23B
+        I5SzLF7pUPXb84p+wmbuQibLJmfzrM+P3tRinVI06y/jBFd1fUbh5in8j3+8nzWHxXtpf+/5
+        iAWz1647eF9uTv5JK+bo2qbV5d5TJMOSj8x4szlvs1kuh+Edx4bvTucCuF7ukkoJcf8/QfHj
+        g9dflx7Vc+NK3dZs8PrWv8r65MRgvfQHeSn/GV4/7slg2jX9SSWzd0t3jeNFuchszsCEGSsa
+        t376ITBZzTExnWedutuU1kkF8Y9NXqtufPeNQ1IiougK3/4ZdmFuF3085CJLOKZurZSVd6ix
+        TZASabjlq8RSnJFoqMVcVJwIAK0BwX0iBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsWy7bCSvK7SQud4g3WtShbzj5xjtTh/fgO7
+        xeVdc9gsbjeuYLNo3XuE3eLl/umsDmweO2fdZffYtKqTzaNvyypGj8+b5AJYorhsUlJzMstS
+        i/TtErgyTk9exVrQzFSxY/cBlgbGfYxdjJwcEgImEu17nrB3MXJxCAnsZpQ48+giE0RCUmLa
+        xaPMXYwcQLawxOHDxRA1bxklrrX+YAWpERZwlTj27R9Ys4jAM0aJ01NuQU1qZ5T4umk3M0gV
+        m4CWxP4XN9hAbH4BRYmrPx6DreYVsJP49fAh2DYWAVWJJ8dmsYPYogJhEjuXPGaCqBGUODnz
+        CQuIzQl06vzHF8BqmAXUJf7Mu8QMYYtL3HoynwnClpfY/nYO8wRGoVlI2mchaZmFpGUWkpYF
+        jCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCo0RLcwfj9lUf9A4xMnEwHmKU4GBW
+        EuG9vck+Xog3JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC6YklqdmpqQWpRTBZJg5OqQam
+        Etun2Ut+K74XVRKLqRaYVv/sTuT5M7E1CZtmrTl1fYb1hKO1L6+YnGLs+xX68eNmhZdeDp1x
+        bjvc27yzF5xR5DrYcNaXQ2/5vMtNCrlN624pesycUbXjxdXusoDVC9PyNjoKM5eddbZeK1X9
+        tzC6gu399usvQzU/ighz3TPk3N/x7pbgglNqAS+/n36beWV/9q2ZJx+3Kdw4820ao90qLdYD
+        paoLX/BpJrNPX2q7NUvqrvDjLHf7pjl/0sK4pjxX7vfPbG38u2TWxs/T0+ezXCpi1XJ328m6
+        2FZeq389D2vN7XMXb1WJzvp7cb9S9yX9lsLzOs80GnYuWRihOP+q9xrlMM9Osx2rP1oGLZvG
+        p8RSnJFoqMVcVJwIAO7Mx8kBAwAA
+X-CMS-MailID: 20200824111442epcas1p44030022c3b9f5efba6e4613b45d6b1aa
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200817070046epcas1p4c047a86ccef2e5604f31e674782c9c6c
+References: <CGME20200817070046epcas1p4c047a86ccef2e5604f31e674782c9c6c@epcas1p4.samsung.com>
+        <20200817070009.4631-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 02:24:57PM +0300, Dan Carpenter wrote:
-> On Fri, Aug 21, 2020 at 09:25:26AM -0700, Randy Dunlap wrote:
-> > On 8/21/20 8:28 AM, Tomer Samara wrote:
-> > > Remove BUG() from ion_sytem_heap.c
-> > > 
-> > > this fix the following checkpatch issue:
-> > > Avoid crashing the kernel - try using WARN_ON &
-> > > recovery code ratherthan BUG() or BUG_ON().
-> > > 
-> > > Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
-> > > ---
-> > >  drivers/staging/android/ion/ion_system_heap.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/staging/android/ion/ion_system_heap.c b/drivers/staging/android/ion/ion_system_heap.c
-> > > index eac0632ab4e8..00d6154aec34 100644
-> > > --- a/drivers/staging/android/ion/ion_system_heap.c
-> > > +++ b/drivers/staging/android/ion/ion_system_heap.c
-> > > @@ -30,7 +30,7 @@ static int order_to_index(unsigned int order)
-> > >  	for (i = 0; i < NUM_ORDERS; i++)
-> > >  		if (order == orders[i])
-> > >  			return i;
-> > > -	BUG();
-> > > +	/* This is impossible. */
-> > >  	return -1;
-> > >  }
-> > 
-> > Hi,
-> > Please explain why this is impossible.
-> > 
-> > If some caller calls order_to_index(5), it will return -1, yes?
-> > 
+Hi Krzysztof,
+
+On 8/17/20 3:59 PM, Krzysztof Kozlowski wrote:
+> Hi,
 > 
-> I was happy enough with the comment as-is given that I suggested it.
-> But an alternative comment could be "/* This is impossible.
-> We always pass valid values to this function. */
+> Changes since v1:
+> 1. Mutex unlock fix in patch 8/13.
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
-Another option is to just change the BUG_ON() to a WARN_ON().  I feel
-like that communicates the same thing but makes checkpatch happy.
+Applied them. Thanks.
 
-regards,
-dan carpenter
-
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
