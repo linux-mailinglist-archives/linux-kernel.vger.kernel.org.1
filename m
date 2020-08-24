@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7644250609
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E82C250625
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgHXR0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 13:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgHXRZv (ORCPT
+        id S1728203AbgHXR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:28:29 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:44047 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728382AbgHXR2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:25:51 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB95CC061573;
-        Mon, 24 Aug 2020 10:25:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 14DB3128885BD;
-        Mon, 24 Aug 2020 10:09:02 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 10:25:45 -0700 (PDT)
-Message-Id: <20200824.102545.1450838041398463071.davem@davemloft.net>
-To:     aranea@aixah.de
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] veth: Initialize dev->perm_addr
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200824143828.5964-1-aranea@aixah.de>
-References: <20200824143828.5964-1-aranea@aixah.de>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 10:09:02 -0700 (PDT)
+        Mon, 24 Aug 2020 13:28:17 -0400
+Received: by mail-il1-f193.google.com with SMTP id j9so7957408ilc.11;
+        Mon, 24 Aug 2020 10:28:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x7C6eQok8Pl7UAFU0rsUV0+mcmV/0wTU7nSxBfhdONU=;
+        b=f64I7DgNzbLxLaQnXMunJZw4KYJ6lGCWrmUgDXGiwGXxh8er6TKzChrs++41rVg6ii
+         qD88bvDZWqXlrUZDRG2GjSbonyyB4j0D/BWzk361Vi7qY9wt3lFN5hRKJoddtnv9IOVO
+         kNvyU6zoXyyiV0tbwD9rXIkEDnEEVwW85gemPFyQr1Q1eX6JMNf5/656nYCHPMtIjcDN
+         1Vq9yGfZIiaWWZxGljFOI9vfJB8uqxdlZxPti3tU+2cW39ET4qDDOYpKaV/wc8smnEqK
+         eQEZtmvke6eTtAG6LIKox5zBBy5/iYknb0ORup9hvhCTmAaehLcc203pt2dIRh1SPPfu
+         ZgAw==
+X-Gm-Message-State: AOAM532nwip8f3v4qiorOW+YLDsko6vCNzCxMpiBDN2raVM6trBLyiKB
+        gDf2Av9ORnkk63yr7+Jb3A==
+X-Google-Smtp-Source: ABdhPJzkYfjUhbsSi6w7J4evk76kL04eVABwUGbo+mtIu1y8X5HK24uHDZUNBkjNVX1Iq4Z3YR///g==
+X-Received: by 2002:a92:c7d4:: with SMTP id g20mr5927212ilk.40.1598290096298;
+        Mon, 24 Aug 2020 10:28:16 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id y8sm6835601iom.26.2020.08.24.10.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 10:28:15 -0700 (PDT)
+Received: (nullmailer pid 2933345 invoked by uid 1000);
+        Mon, 24 Aug 2020 17:28:13 -0000
+Date:   Mon, 24 Aug 2020 11:28:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [RFC PATCH v3 2/2] dt-bindings: cpufreq: Document Krait CPU
+ Cache scaling
+Message-ID: <20200824172813.GA2932192@bogus>
+References: <20200821140026.19643-1-ansuelsmth@gmail.com>
+ <20200821140026.19643-3-ansuelsmth@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821140026.19643-3-ansuelsmth@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mira Ressel <aranea@aixah.de>
-Date: Mon, 24 Aug 2020 14:38:26 +0000
-
-> Set the perm_addr of veth devices to whatever MAC has been assigned to
-> the device. Otherwise, it remains all zero, with the consequence that
-> ipv6_generate_stable_address() (which is used if the sysctl
-> net.ipv6.conf.DEV.addr_gen_mode is set to 2 or 3) assigns every veth
-> interface on a host the same link-local address.
+On Fri, 21 Aug 2020 16:00:21 +0200, Ansuel Smith wrote:
+> Document dedicated Krait CPU Cache Scaling driver.
 > 
-> The new behaviour matches that of several other virtual interface types
-> (such as gre), and as far as I can tell, perm_addr isn't used by any
-> other code sites that are relevant to veth.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/cpufreq/krait-cache-scale.yaml   | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
 > 
-> Signed-off-by: Mira Ressel <aranea@aixah.de>
- ...
-> @@ -1342,6 +1342,8 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
->  	if (!ifmp || !tbp[IFLA_ADDRESS])
->  		eth_hw_addr_random(peer);
->  
-> +	memcpy(peer->perm_addr, peer->dev_addr, peer->addr_len);
 
-Semantically don't you want to copy over the peer->perm_addr?
 
-Otherwise this loses the entire point of the permanent address, and
-what the ipv6 address generation facility expects.
+My bot found errors running 'make dt_binding_check' on your patch:
+
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.example.dt.yaml: qcom-krait-cache: clocks:0:1: missing phandle tag in 4
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.example.dt.yaml: qcom-krait-cache: clocks:0: [4294967295, 4] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1349260
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
