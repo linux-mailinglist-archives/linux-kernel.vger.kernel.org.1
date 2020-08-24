@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6143924FAC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D397224FABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgHXJ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
+        id S1728818AbgHXJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgHXIdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:33:17 -0400
+        id S1727011AbgHXIdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:33:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BE70207D3;
-        Mon, 24 Aug 2020 08:33:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BB8A2074D;
+        Mon, 24 Aug 2020 08:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598257996;
-        bh=kCkV9GnogaTy4jEU/uZ8pRQps80RvBYxzFXGpYVLYd4=;
+        s=default; t=1598258001;
+        bh=LEHr3HsevyMnaJkhSBY7315fU7qnMjb9UHxHuYi1qX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LCd+UiMDo5qgyrjOv0Nps/+Zd8u/Y6fPM73ddyUIy3KGzQkNEDaLGOy8aKcIvama8
-         31Pe/ISi+bffjUx9zRg7wXX1QyDqEYEahMMZEAXTy5aEx2JDKDjK0J6BJz+F72gyuB
-         7TjVutS9SWPFNqiZdeoag33GucjzLMhP/RwIaDXA=
+        b=a3UmNdJMsBk6i8I5qSSPSi9ool5tjoWgJprAfthEVYUEJD8BkZJfZ9UiG8DDQJH7V
+         WUWkXZxDac+LyU1yjmNsvEpBWp9Bd2ExfudI4DM70NlXivo4rKOqlUzw8+nivjmG4q
+         go4BwovlnJ9t5PS1ZkOX8o00qzgTTE8hGI9H/UQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Aric Cyr <aric.cyr@amd.com>,
+        Ashley Thomas <Ashley.Thomas2@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.8 036/148] drm: amdgpu: Use the correct size when allocating memory
-Date:   Mon, 24 Aug 2020 10:28:54 +0200
-Message-Id: <20200824082415.777369848@linuxfoundation.org>
+Subject: [PATCH 5.8 038/148] drm/amd/display: Fix incorrect backlight register offset for DCN
+Date:   Mon, 24 Aug 2020 10:28:56 +0200
+Message-Id: <20200824082415.864565560@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
 References: <20200824082413.900489417@linuxfoundation.org>
@@ -45,37 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Aric Cyr <aric.cyr@amd.com>
 
-commit 78484d7c747e30468b35bd5f19edf602f50162a7 upstream.
+commit a49f6727e14caff32419cc3002b9ae9cafb750d7 upstream.
 
-When '*sgt' is allocated, we must allocated 'sizeof(**sgt)' bytes instead
-of 'sizeof(*sg)'.
+[Why]
+Typo in backlight refactor inctroduced wrong register offset.
 
-The sizeof(*sg) is bigger than sizeof(**sgt) so this wastes memory but
-it won't lead to corruption.
+[How]
+Change DCE to DCN register map for PWRSEQ_REF_DIV
 
-Fixes: f44ffd677fb3 ("drm/amdgpu: add support for exporting VRAM using DMA-buf v3")
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
+Signed-off-by: Aric Cyr <aric.cyr@amd.com>
+Reviewed-by: Ashley Thomas <Ashley.Thomas2@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c |    2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -465,7 +465,7 @@ int amdgpu_vram_mgr_alloc_sgt(struct amd
- 	unsigned int pages;
- 	int i, r;
- 
--	*sgt = kmalloc(sizeof(*sg), GFP_KERNEL);
-+	*sgt = kmalloc(sizeof(**sgt), GFP_KERNEL);
- 	if (!*sgt)
- 		return -ENOMEM;
- 
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h
+@@ -49,7 +49,7 @@
+ #define DCN_PANEL_CNTL_REG_LIST()\
+ 	DCN_PANEL_CNTL_SR(PWRSEQ_CNTL, LVTMA), \
+ 	DCN_PANEL_CNTL_SR(PWRSEQ_STATE, LVTMA), \
+-	DCE_PANEL_CNTL_SR(PWRSEQ_REF_DIV, LVTMA), \
++	DCN_PANEL_CNTL_SR(PWRSEQ_REF_DIV, LVTMA), \
+ 	SR(BL_PWM_CNTL), \
+ 	SR(BL_PWM_CNTL2), \
+ 	SR(BL_PWM_PERIOD_CNTL), \
 
 
