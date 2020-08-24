@@ -2,115 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473EB24F226
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 07:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949F24F243
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 07:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgHXFhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 01:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgHXFhE (ORCPT
+        id S1726104AbgHXFxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 01:53:54 -0400
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:19708 "EHLO
+        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgHXFxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 01:37:04 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4CCC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 22:37:03 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id n3so2709355pjq.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Aug 2020 22:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VTbspYLWEm5A7CDSAhaKSzWJDq2Y3rS2DPVET/55CrM=;
-        b=HyXGABs59Hi6a04xgBiFgN7Enkzv/x4dXM+VkqV0/fHObKOMiSv4CGAu3/RzSo9epx
-         xaUYunnERG7+/+1luuipmrsiwfiKDJ+YBliXZK3o7ASoIKH67qxm7wSodxTq2h3lFsst
-         XrBJIuRe/k2Cu01rI6AR0bjBeTvYcEB1gp9qib5BAVIxMtMGl1M0VLyNxKQjRQBN+ur3
-         BQAcr/K0lqq1VPZZLa+XJcs6Cc9i37sqvx7h/j/jlSBPcNA/BpwbkvI/qDTrYIY9bWjA
-         Hvf91+p5sJKsOhdismkS1AZk2dYJ8uAy8+5w7eEJuGn3ypWAItNTRQzoLYzOBh0l96r6
-         iacA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VTbspYLWEm5A7CDSAhaKSzWJDq2Y3rS2DPVET/55CrM=;
-        b=IhFlstXcEvU+SJQ53hwmh2o7vOi/KdQDI3yX//eiC9yCNoWdncAXQBEFh1lniAVleV
-         sBR+t4yaqip7x/GCoCsExrGZV1KYMcB1RpufITiwsD7leu3Sref/snXHctIOcc6bFPmN
-         quc0hG6FPLcoUhlpVtZt/14lOkv60ngC++EVwMhpVM3XSISkLNwApCqnWJP5O8rXACNr
-         lw+MHGXyBvozCPzmQ1CB2M1lbtuBOB4usF+4eBO87NEZdZd/etpprNi5tX/1Gpyqwbxs
-         UVLSM9oKwOAgSMix5H0d97PtLOfZFUGN74OQPcTKxMLMd5JJhvZz5eIR53gOhh91Nk88
-         tkGg==
-X-Gm-Message-State: AOAM533cg8IrwPr3iFXMaTULO4zydIG8fSqbR9C//QOxl1Twb0WoPIfF
-        9WZZJoNX5ndyVrRF4aRRolk=
-X-Google-Smtp-Source: ABdhPJw0E1Leu7m0BVn7We5vU8ax5JeFo1xKpABa9IZ7kd1gr5DyNONWHsX16cZKWY+VrgbfBsVEww==
-X-Received: by 2002:a17:902:9a90:: with SMTP id w16mr2647842plp.181.1598247423252;
-        Sun, 23 Aug 2020 22:37:03 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id x15sm10240444pfr.208.2020.08.23.22.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 22:37:02 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 14:37:00 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
-Message-ID: <20200824053700.GB567@jagdpanzerIV.localdomain>
-References: <20200819232632.13418-1-john.ogness@linutronix.de>
- <20200819232632.13418-2-john.ogness@linutronix.de>
+        Mon, 24 Aug 2020 01:53:52 -0400
+X-Greylist: delayed 602 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Aug 2020 01:53:51 EDT
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te12d1eb07fac14014b1204@ACLMS1.advantech.com.tw>;
+ Mon, 24 Aug 2020 13:43:47 +0800
+Received: from localhost (172.16.12.96) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 24 Aug
+ 2020 13:43:46 +0800
+From:   William Sung <william.sung@advantech.com.tw>
+To:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Campion Kang <Campion.Kang@advantech.com.tw>
+Subject: [PATCH] iio: dac: ad5593r: Dynamically set AD5593R channel modes
+Date:   Mon, 24 Aug 2020 13:43:47 +0800
+Message-ID: <20200824054347.3805-1-william.sung@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819232632.13418-2-john.ogness@linutronix.de>
+Content-Type: text/plain
+X-Originating-IP: [172.16.12.96]
+X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-StopIT: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/20 01:32), John Ogness wrote:
-> +#define CONT_LINE_MAX LOG_LINE_MAX
-> +#define CONT_BUF_COUNT 10
-> +static char cont_buf[CONT_BUF_COUNT][CONT_LINE_MAX];
-> +static DECLARE_BITMAP(cont_buf_map, CONT_BUF_COUNT);
-> +
-> +static int get_cont_buf(void)
-> +{
-> +	int bit;
-> +
-> +	do {
-> +		bit = find_first_zero_bit(cont_buf_map, CONT_BUF_COUNT);
-> +		if (bit == CONT_BUF_COUNT)
-> +			break;
-> +	} while (test_and_set_bit(bit, cont_buf_map));
-> +
-> +	return bit;
-> +}
-> +static void put_cont_buf(int index)
-> +{
-> +	if (WARN_ON(index >= CONT_BUF_COUNT))
-> +		return;
-> +	if (WARN_ON(!test_bit(index, cont_buf_map)))
-> +		return;
+To use ad5593r more flexibly, we use the module parameter to setting the
+channel modes dynamically whenever the module probe up. Users can pass
+the channel modes to the module parameter for allocating the
+functionality of channels as desired.
 
-Doesn't WARN_ON() do pr_cont() print outs as well? I'm a bit worried by
-the path that re-enters pr_cont() from "broken" pr_cont() path.
+For example:
+* Use in the kernel command line:
+Users can add the module parameter in the kernel command line such as
 
-Just ideas, to keep the discussion alive:
+    "ad5593r.ch_mode_cmdline=88001122"
 
-Overall, I wonder if pr_cont buffers should hold more info, e.g. owner
-context. If the same context does "normal" printk() while still owning
-the unfinished cont buffer then we should flush cont buffer. I may be
-in minority here, I don't see a very strong reason to keep the global
-order of the messages - e.g. if pid 234 does printk on CPU1 then we
-probably don't need to flush pid's 8889 cont buffer (which runs on CPU42,
-for instance), but keeping the order of the messages within the context
-is somehow much more important. That is, if pid 8889 starts pr_cont buffer
-and then triggers a pr_warn() or pr_alert() or any other printk() then I
-think we need to flush the cont buffer. Just 5 cents.
+"88001122" means the channel mode setting for each channel. The most
+left side indicates the mode of channel 7, and the most right side
+indicates the mode of channel 0.
 
-	-ss
+* Use when manually probe the module:
+Similar to the kernel command line usage, users can enter
+
+    "modprobe ad5593r ch_mode_probe=88001122"
+
+to start the ad5593r module with the desired channel mode setting.
+
+Signed-off-by: William Sung <william.sung@advantech.com.tw>
+---
+ drivers/iio/dac/ad5592r-base.c | 33 ++++++++++++++++++--
+ drivers/iio/dac/ad5592r-base.h |  4 +++
+ drivers/iio/dac/ad5593r.c      | 55 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 89 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
+index cc4875660a69..cd69a34fa21e 100644
+--- a/drivers/iio/dac/ad5592r-base.c
++++ b/drivers/iio/dac/ad5592r-base.c
+@@ -21,6 +21,10 @@
+ 
+ #include "ad5592r-base.h"
+ 
++/* Parameters for dynamic channel mode setting */
++static u8 update_channel_mode;
++static u8 new_channel_modes[AD559XR_CHANNEL_NR];
++
+ static int ad5592r_gpio_get(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct ad5592r_state *st = gpiochip_get_data(chip);
+@@ -132,7 +136,7 @@ static int ad5592r_gpio_init(struct ad5592r_state *st)
+ 
+ 	st->gpiochip.label = dev_name(st->dev);
+ 	st->gpiochip.base = -1;
+-	st->gpiochip.ngpio = 8;
++	st->gpiochip.ngpio = AD559XR_CHANNEL_NR;
+ 	st->gpiochip.parent = st->dev;
+ 	st->gpiochip.can_sleep = true;
+ 	st->gpiochip.direction_input = ad5592r_gpio_direction_input;
+@@ -287,6 +291,14 @@ static int ad5592r_set_channel_modes(struct ad5592r_state *st)
+ 	return ret;
+ }
+ 
++static void ad5592r_set_def_channel_modes(struct ad5592r_state *st)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(st->channel_modes); i++)
++		st->channel_modes[i] = new_channel_modes[i];
++}
++
+ static int ad5592r_reset_channel_modes(struct ad5592r_state *st)
+ {
+ 	int i;
+@@ -532,6 +544,10 @@ static int ad5592r_alloc_channels(struct iio_dev *iio_dev)
+ 			st->channel_offstate[reg] = tmp;
+ 	}
+ 
++	/* Update default channel modes set by external module */
++	if (update_channel_mode == 1)
++		ad5592r_set_def_channel_modes(st);
++
+ 	channels = devm_kcalloc(st->dev,
+ 			1 + 2 * num_channels, sizeof(*channels),
+ 			GFP_KERNEL);
+@@ -567,7 +583,7 @@ static int ad5592r_alloc_channels(struct iio_dev *iio_dev)
+ 	}
+ 
+ 	channels[curr_channel].type = IIO_TEMP;
+-	channels[curr_channel].channel = 8;
++	channels[curr_channel].channel = AD559XR_CHANNEL_NR;
+ 	channels[curr_channel].info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+ 				   BIT(IIO_CHAN_INFO_SCALE) |
+ 				   BIT(IIO_CHAN_INFO_OFFSET);
+@@ -589,6 +605,17 @@ static void ad5592r_init_scales(struct ad5592r_state *st, int vref_mV)
+ 		div_s64_rem(tmp * 2, 1000000000LL, &st->scale_avail[1][1]);
+ }
+ 
++void ad5592r_update_default_channel_modes(u8 *new_modes)
++{
++	int idx = 0;
++
++	update_channel_mode = 1;
++	for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++)
++		new_channel_modes[idx] = new_modes[idx];
++
++}
++EXPORT_SYMBOL_GPL(ad5592r_update_default_channel_modes);
++
+ int ad5592r_probe(struct device *dev, const char *name,
+ 		const struct ad5592r_rw_ops *ops)
+ {
+@@ -603,7 +630,7 @@ int ad5592r_probe(struct device *dev, const char *name,
+ 	st = iio_priv(iio_dev);
+ 	st->dev = dev;
+ 	st->ops = ops;
+-	st->num_channels = 8;
++	st->num_channels = AD559XR_CHANNEL_NR;
+ 	dev_set_drvdata(dev, iio_dev);
+ 
+ 	st->reg = devm_regulator_get_optional(dev, "vref");
+diff --git a/drivers/iio/dac/ad5592r-base.h b/drivers/iio/dac/ad5592r-base.h
+index 23dac2f1ff8a..40ad6369e660 100644
+--- a/drivers/iio/dac/ad5592r-base.h
++++ b/drivers/iio/dac/ad5592r-base.h
+@@ -39,6 +39,9 @@ enum ad5592r_registers {
+ #define AD5592R_REG_CTRL_ADC_RANGE	BIT(5)
+ #define AD5592R_REG_CTRL_DAC_RANGE	BIT(4)
+ 
++/* Define quantity of channels of AD5592R/AD5593R */
++#define AD559XR_CHANNEL_NR		8
++
+ struct ad5592r_rw_ops {
+ 	int (*write_dac)(struct ad5592r_state *st, unsigned chan, u16 value);
+ 	int (*read_adc)(struct ad5592r_state *st, unsigned chan, u16 *value);
+@@ -69,6 +72,7 @@ struct ad5592r_state {
+ 	__be16 spi_msg_nop;
+ };
+ 
++void ad5592r_update_default_channel_modes(u8 *new_modes);
+ int ad5592r_probe(struct device *dev, const char *name,
+ 		const struct ad5592r_rw_ops *ops);
+ int ad5592r_remove(struct device *dev);
+diff --git a/drivers/iio/dac/ad5593r.c b/drivers/iio/dac/ad5593r.c
+index 1fbe9c019c7f..dfc453a75ad6 100644
+--- a/drivers/iio/dac/ad5593r.c
++++ b/drivers/iio/dac/ad5593r.c
+@@ -21,6 +21,10 @@
+ #define AD5593R_MODE_GPIO_READBACK	(6 << 4)
+ #define AD5593R_MODE_REG_READBACK	(7 << 4)
+ 
++/* Parameters for dynamic channel mode setting */
++static char *ch_mode = "";
++module_param(ch_mode, charp, 0400);
++
+ static int ad5593r_write_dac(struct ad5592r_state *st, unsigned chan, u16 value)
+ {
+ 	struct i2c_client *i2c = to_i2c_client(st->dev);
+@@ -92,9 +96,60 @@ static const struct ad5592r_rw_ops ad5593r_rw_ops = {
+ 	.gpio_read = ad5593r_gpio_read,
+ };
+ 
++static void ad5593r_check_new_channel_mode(void)
++{
++	char *new_mode[2] = {NULL, NULL}, tmp[2];
++	u8 new_ch_modes[AD559XR_CHANNEL_NR];
++	int idx = 0, cnt = 0, i;
++
++	if (strlen(ch_mode) == AD559XR_CHANNEL_NR)
++		new_mode[cnt++] = ch_mode;
++
++	for (i = 0; i < cnt; i++) {
++		/* Check if all channel modes are valid */
++		for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++) {
++			switch (new_mode[i][idx]) {
++			case '0':
++			case '1':
++			case '2':
++			case '3':
++			case '8':
++				continue;
++			default:
++				/* There is invalid mode exist, ignore the settings */
++				pr_err("%s: invalid(%c) in index(%d)\n",
++					__func__, new_mode[i][idx], idx);
++				goto inval_para;
++			}
++		}
++
++inval_para:
++		/* There is invalid parameters setting in current parameter, so ignore it */
++		if (idx < AD559XR_CHANNEL_NR)
++			continue;
++
++		/* Set the new modes to ad5592r-base driver to setup the new channe modes */
++		memset(tmp, 0, 2);
++		for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++) {
++			tmp[0] = new_mode[i][idx];
++			if (kstrtou8(tmp, 10, &new_ch_modes[AD559XR_CHANNEL_NR - idx - 1])) {
++				pr_err("%s: kstr error idx(%d)\n", __func__, idx);
++				break;
++			}
++		}
++		/* Something error when convering the string to integer, ignore the settings */
++		if (idx < AD559XR_CHANNEL_NR)
++			continue;
++
++		ad5592r_update_default_channel_modes(new_ch_modes);
++		break;
++	}
++}
++
+ static int ad5593r_i2c_probe(struct i2c_client *i2c,
+ 		const struct i2c_device_id *id)
+ {
++	ad5593r_check_new_channel_mode();
+ 	return ad5592r_probe(&i2c->dev, id->name, &ad5593r_rw_ops);
+ }
+ 
+-- 
+2.17.1
+
