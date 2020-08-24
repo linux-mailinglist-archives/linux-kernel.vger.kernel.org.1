@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1118E250567
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBA0250601
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 19:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgHXQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 12:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728044AbgHXQe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:34:29 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4669C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id v16so4494872plo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sJRzEKxQslNUvlgLwatGfusZhkWsuQ/eLz0nCOLU88U=;
-        b=WHXuMrr+DrJsG5ydYqMywzOTNF0xboE3NYuEaGBrglNd4z3mFnPcURJW1XjqONdE02
-         jEd3johpV7asGvtVa+ez8MfBRQ87rUHVp7CmI3ahiaW8mamMuaI8qLNBlRmHIN8qIRqs
-         TFjcjDUxevJ7NY3H2b9PAQBUOWcIP8vFY1z/g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sJRzEKxQslNUvlgLwatGfusZhkWsuQ/eLz0nCOLU88U=;
-        b=F4XGw/wvFcNJhEyvv1BQ6HMYKe+VwjfEqvfVk6QskcE/29QbR5uHDKUeUcR/4da7Zz
-         UTLaLHeEQ7AYuL92LdrPrky9Zma8JqzNEd+7RQwZ8A2YybNI94G9CEz56VJ0E+ctXL9O
-         GANNsNCQOCfQe62sj97X7XXkp/sXuTFe+xh+IfYjO1F/Kdl09+rGfhj6rgXpYHkZ3t0g
-         8e5P+Ao9KyAnmSH/FQJJVZsy9PI2p2AVq0k1eSZ10K0kz59SLAggSnAPNPH/KdkweRUe
-         r0njrFvfb1FhP14fkF6toJ/MHf8vLhmVyCLwToDrbc/7/wAWO+nRLNZ2G3/TvJv7qF8i
-         0zhg==
-X-Gm-Message-State: AOAM533xTfXr0A1BC6Z9idTNBmggO/AzJXtGEhq2JIYVVpoMi5zRpG9Q
-        mtq115Y3IAoct6hpWVP1vuZ2Avf5cpTpbg==
-X-Google-Smtp-Source: ABdhPJyworV0/Dr0sI3KHDP2uuvn/VCt9Dk9wQf/9i50LZ8rfttmW34/1Rr/04C4VJQlwHUH/o6Tlg==
-X-Received: by 2002:a17:902:9a93:: with SMTP id w19mr4173622plp.297.1598286869071;
-        Mon, 24 Aug 2020 09:34:29 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q16sm12747047pfg.153.2020.08.24.09.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 09:34:28 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 09:34:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seccomp: Use current_pt_regs()
-Message-ID: <202008240929.8DDED2B90@keescook>
-References: <20200824125921.488311-1-efremov@linux.com>
+        id S1728111AbgHXRZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 13:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728271AbgHXQfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:42 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97BC922CBB;
+        Mon, 24 Aug 2020 16:35:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598286941;
+        bh=4YAmf4dSSuVzZiazHPkKQCjkpbtJsu85PXPDdQOTguM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Q75rnpUBNTBW4jlA+DA7AJ68KZfchfqlWzcbkUboDBYbSjbAjd/bJmygr5xcr2ik9
+         ZopX1+bAO1EhZ3HSVwTeelaxM9NvzX8wcyrQjKzAnaaOne8xeFj3EWdpwKMtgIZlJm
+         dYUYOb9gRoy18NnV2uDwowzA7Uv9vVuuNA5LqjDs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 27/63] selftests/bpf: Fix btf_dump test cases on 32-bit arches
+Date:   Mon, 24 Aug 2020 12:34:27 -0400
+Message-Id: <20200824163504.605538-27-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824125921.488311-1-efremov@linux.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:59:21PM +0300, Denis Efremov wrote:
-> Modify seccomp_do_user_notification(), __seccomp_filter(),
-> __secure_computing() to use current_pt_regs().
+From: Andrii Nakryiko <andriin@fb.com>
 
-This looks okay. It seems some architectures have a separate
-define for current_pt_regs(), though it's overlapped directly with
-task_pt_regs(). I'm curious what the benefit of the change is?
+[ Upstream commit eed7818adf03e874994b966aa33bc00204dd275a ]
 
--Kees
+Fix btf_dump test cases by hard-coding BPF's pointer size of 8 bytes for cases
+where it's impossible to deterimne the pointer size (no long type in BTF). In
+cases where it's known, validate libbpf correctly determines it as 8.
 
-> 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  kernel/seccomp.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 3ee59ce0a323..dc4eaa1d6002 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -910,7 +910,7 @@ static int seccomp_do_user_notification(int this_syscall,
->  	if (flags & SECCOMP_USER_NOTIF_FLAG_CONTINUE)
->  		return 0;
->  
-> -	syscall_set_return_value(current, task_pt_regs(current),
-> +	syscall_set_return_value(current, current_pt_regs(),
->  				 err, ret);
->  	return -1;
->  }
-> @@ -943,13 +943,13 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  		/* Set low-order bits as an errno, capped at MAX_ERRNO. */
->  		if (data > MAX_ERRNO)
->  			data = MAX_ERRNO;
-> -		syscall_set_return_value(current, task_pt_regs(current),
-> +		syscall_set_return_value(current, current_pt_regs(),
->  					 -data, 0);
->  		goto skip;
->  
->  	case SECCOMP_RET_TRAP:
->  		/* Show the handler the original registers. */
-> -		syscall_rollback(current, task_pt_regs(current));
-> +		syscall_rollback(current, current_pt_regs());
->  		/* Let the filter pass back 16 bits of data. */
->  		seccomp_send_sigsys(this_syscall, data);
->  		goto skip;
-> @@ -962,7 +962,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  		/* ENOSYS these calls if there is no tracer attached. */
->  		if (!ptrace_event_enabled(current, PTRACE_EVENT_SECCOMP)) {
->  			syscall_set_return_value(current,
-> -						 task_pt_regs(current),
-> +						 current_pt_regs(),
->  						 -ENOSYS, 0);
->  			goto skip;
->  		}
-> @@ -982,7 +982,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  		if (fatal_signal_pending(current))
->  			goto skip;
->  		/* Check if the tracer forced the syscall to be skipped. */
-> -		this_syscall = syscall_get_nr(current, task_pt_regs(current));
-> +		this_syscall = syscall_get_nr(current, current_pt_regs());
->  		if (this_syscall < 0)
->  			goto skip;
->  
-> @@ -1025,7 +1025,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  			kernel_siginfo_t info;
->  
->  			/* Show the original registers in the dump. */
-> -			syscall_rollback(current, task_pt_regs(current));
-> +			syscall_rollback(current, current_pt_regs());
->  			/* Trigger a manual coredump since do_exit skips it. */
->  			seccomp_init_siginfo(&info, this_syscall, data);
->  			do_coredump(&info);
-> @@ -1060,7 +1060,7 @@ int __secure_computing(const struct seccomp_data *sd)
->  		return 0;
->  
->  	this_syscall = sd ? sd->nr :
-> -		syscall_get_nr(current, task_pt_regs(current));
-> +		syscall_get_nr(current, current_pt_regs());
->  
->  	switch (mode) {
->  	case SECCOMP_MODE_STRICT:
-> -- 
-> 2.26.2
-> 
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200813204945.1020225-6-andriin@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+index cb33a7ee4e04f..39fb81d9daeb5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -12,15 +12,16 @@ void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+ static struct btf_dump_test_case {
+ 	const char *name;
+ 	const char *file;
++	bool known_ptr_sz;
+ 	struct btf_dump_opts opts;
+ } btf_dump_test_cases[] = {
+-	{"btf_dump: syntax", "btf_dump_test_case_syntax", {}},
+-	{"btf_dump: ordering", "btf_dump_test_case_ordering", {}},
+-	{"btf_dump: padding", "btf_dump_test_case_padding", {}},
+-	{"btf_dump: packing", "btf_dump_test_case_packing", {}},
+-	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", {}},
+-	{"btf_dump: multidim", "btf_dump_test_case_multidim", {}},
+-	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", {}},
++	{"btf_dump: syntax", "btf_dump_test_case_syntax", true, {}},
++	{"btf_dump: ordering", "btf_dump_test_case_ordering", false, {}},
++	{"btf_dump: padding", "btf_dump_test_case_padding", true, {}},
++	{"btf_dump: packing", "btf_dump_test_case_packing", true, {}},
++	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", true, {}},
++	{"btf_dump: multidim", "btf_dump_test_case_multidim", false, {}},
++	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", false, {}},
+ };
+ 
+ static int btf_dump_all_types(const struct btf *btf,
+@@ -62,6 +63,18 @@ static int test_btf_dump_case(int n, struct btf_dump_test_case *t)
+ 		goto done;
+ 	}
+ 
++	/* tests with t->known_ptr_sz have no "long" or "unsigned long" type,
++	 * so it's impossible to determine correct pointer size; but if they
++	 * do, it should be 8 regardless of host architecture, becaues BPF
++	 * target is always 64-bit
++	 */
++	if (!t->known_ptr_sz) {
++		btf__set_pointer_size(btf, 8);
++	} else {
++		CHECK(btf__pointer_size(btf) != 8, "ptr_sz", "exp %d, got %zu\n",
++		      8, btf__pointer_size(btf));
++	}
++
+ 	snprintf(out_file, sizeof(out_file), "/tmp/%s.output.XXXXXX", t->file);
+ 	fd = mkstemp(out_file);
+ 	if (CHECK(fd < 0, "create_tmp", "failed to create file: %d\n", fd)) {
 -- 
-Kees Cook
+2.25.1
+
