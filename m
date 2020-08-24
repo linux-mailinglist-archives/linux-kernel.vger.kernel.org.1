@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C8E24F9D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766A524FA7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgHXIja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55060 "EHLO mail.kernel.org"
+        id S1728548AbgHXJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 05:56:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728633AbgHXIjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:21 -0400
+        id S1728089AbgHXIfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:35:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BE8A20FC3;
-        Mon, 24 Aug 2020 08:39:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BD0A206F0;
+        Mon, 24 Aug 2020 08:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258360;
-        bh=5A2VtyRJR0QYn/NUiPF8cKX4wWAD7dQLc9ZXAmgRtV8=;
+        s=default; t=1598258132;
+        bh=aGAVE7dUlLLoJZfcZXaEkseQizeF/7cuRvfQAW6y5Xw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRejIB/9BVcvlTlTy9AFt5aaVRhdTiCWBuYnxkQYIdfIhfZw5SmezP+Zey2qaNMzx
-         oJWHtTHmAG0HRGsBLIhr4zlYLk5OXR+vv4B1l61cDXFFDEKJ9dX55UWxP9+h7Nz7yJ
-         JtHXBHTPOFd12XSK0a+z/gcI5Poaakb9PGxcAzXU=
+        b=TrfDvVozbPDU2bEuF8/z7MlCaIX/GUoYdDJwByvQbjyKcVmlGU3R5gnYOJ5qYP9Rk
+         tgMXh3QNhbrIAWqjsPuqGAph22iIYokOdMq98+qT2lTtnqTajNZbEPSVnD6F9nsbIS
+         85f8meGdiYxxgFTFklGPTszIKA255twnb/HR4c54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.7 020/124] scsi: zfcp: Fix use-after-free in request timeout handlers
-Date:   Mon, 24 Aug 2020 10:29:14 +0200
-Message-Id: <20200824082410.412275851@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Allison Collins <allison.henderson@oracle.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 057/148] xfs: fix inode quota reservation checks
+Date:   Mon, 24 Aug 2020 10:29:15 +0200
+Message-Id: <20200824082416.799697353@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,85 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Maier <maier@linux.ibm.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-commit 2d9a2c5f581be3991ba67fa9e7497c711220ea8e upstream.
+[ Upstream commit f959b5d037e71a4d69b5bf71faffa065d9269b4a ]
 
-Before v4.15 commit 75492a51568b ("s390/scsi: Convert timers to use
-timer_setup()"), we intentionally only passed zfcp_adapter as context
-argument to zfcp_fsf_request_timeout_handler(). Since we only trigger
-adapter recovery, it was unnecessary to sync against races between timeout
-and (late) completion.  Likewise, we only passed zfcp_erp_action as context
-argument to zfcp_erp_timeout_handler(). Since we only wakeup an ERP action,
-it was unnecessary to sync against races between timeout and (late)
-completion.
+xfs_trans_dqresv is the function that we use to make reservations
+against resource quotas.  Each resource contains two counters: the
+q_core counter, which tracks resources allocated on disk; and the dquot
+reservation counter, which tracks how much of that resource has either
+been allocated or reserved by threads that are working on metadata
+updates.
 
-Meanwhile the timeout handlers get timer_list as context argument and do a
-timer-specific container-of to zfcp_fsf_req which can have been freed.
+For disk blocks, we compare the proposed reservation counter against the
+hard and soft limits to decide if we're going to fail the operation.
+However, for inodes we inexplicably compare against the q_core counter,
+not the incore reservation count.
 
-Fix it by making sure that any request timeout handlers, that might just
-have started before del_timer(), are completed by using del_timer_sync()
-instead. This ensures the request free happens afterwards.
+Since the q_core counter is always lower than the reservation count and
+we unlock the dquot between reservation and transaction commit, this
+means that multiple threads can reserve the last inode count before we
+hit the hard limit, and when they commit, we'll be well over the hard
+limit.
 
-Space time diagram of potential use-after-free:
+Fix this by checking against the incore inode reservation counter, since
+we would appear to maintain that correctly (and that's what we report in
+GETQUOTA).
 
-Basic idea is to have 2 or more pending requests whose timeouts run out at
-almost the same time.
-
-req 1 timeout     ERP thread        req 2 timeout
-----------------  ----------------  ---------------------------------------
-zfcp_fsf_request_timeout_handler
-fsf_req = from_timer(fsf_req, t, timer)
-adapter = fsf_req->adapter
-zfcp_qdio_siosl(adapter)
-zfcp_erp_adapter_reopen(adapter,...)
-                  zfcp_erp_strategy
-                  ...
-                  zfcp_fsf_req_dismiss_all
-                  list_for_each_entry_safe
-                    zfcp_fsf_req_complete 1
-                    del_timer 1
-                    zfcp_fsf_req_free 1
-                    zfcp_fsf_req_complete 2
-                                    zfcp_fsf_request_timeout_handler
-                    del_timer 2
-                                    fsf_req = from_timer(fsf_req, t, timer)
-                    zfcp_fsf_req_free 2
-                                    adapter = fsf_req->adapter
-                                              ^^^^^^^ already freed
-
-Link: https://lore.kernel.org/r/20200813152856.50088-1-maier@linux.ibm.com
-Fixes: 75492a51568b ("s390/scsi: Convert timers to use timer_setup()")
-Cc: <stable@vger.kernel.org> #4.15+
-Suggested-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
-Signed-off-by: Steffen Maier <maier@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Allison Collins <allison.henderson@oracle.com>
+Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/scsi/zfcp_fsf.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/xfs/xfs_trans_dquot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/scsi/zfcp_fsf.c
-+++ b/drivers/s390/scsi/zfcp_fsf.c
-@@ -430,7 +430,7 @@ static void zfcp_fsf_req_complete(struct
- 		return;
- 	}
- 
--	del_timer(&req->timer);
-+	del_timer_sync(&req->timer);
- 	zfcp_fsf_protstatus_eval(req);
- 	zfcp_fsf_fsfstatus_eval(req);
- 	req->handler(req);
-@@ -905,7 +905,7 @@ static int zfcp_fsf_req_send(struct zfcp
- 	req->qdio_req.qdio_outb_usage = atomic_read(&qdio->req_q_free);
- 	req->issued = get_tod_clock();
- 	if (zfcp_qdio_send(qdio, &req->qdio_req)) {
--		del_timer(&req->timer);
-+		del_timer_sync(&req->timer);
- 		/* lookup request again, list might have changed */
- 		zfcp_reqlist_find_rm(adapter->req_list, req_id);
- 		zfcp_erp_adapter_reopen(adapter, 0, "fsrs__1");
+diff --git a/fs/xfs/xfs_trans_dquot.c b/fs/xfs/xfs_trans_dquot.c
+index c0f73b82c0551..ed0ce8b301b40 100644
+--- a/fs/xfs/xfs_trans_dquot.c
++++ b/fs/xfs/xfs_trans_dquot.c
+@@ -647,7 +647,7 @@ xfs_trans_dqresv(
+ 			}
+ 		}
+ 		if (ninos > 0) {
+-			total_count = be64_to_cpu(dqp->q_core.d_icount) + ninos;
++			total_count = dqp->q_res_icount + ninos;
+ 			timer = be32_to_cpu(dqp->q_core.d_itimer);
+ 			warns = be16_to_cpu(dqp->q_core.d_iwarns);
+ 			warnlimit = defq->iwarnlimit;
+-- 
+2.25.1
+
 
 
