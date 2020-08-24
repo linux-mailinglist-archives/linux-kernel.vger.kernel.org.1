@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570D524F4B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6535824F460
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgHXIjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
+        id S1728134AbgHXIfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:35:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727902AbgHXIjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:39:24 -0400
+        id S1728123AbgHXIff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:35:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 872762177B;
-        Mon, 24 Aug 2020 08:39:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF3FA204FD;
+        Mon, 24 Aug 2020 08:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258364;
-        bh=lVVAh9Z9McLW3SoXxl5P+4DwQWEYitbI4AmCQQ3aerw=;
+        s=default; t=1598258134;
+        bh=ASNGJWgtwtS9VpHWrz2J5lsF5hX9JWswGiuJzWsIJqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W+Eupww3+KqMvt4UTtKmTwLpOT+EUbUaiJzrMicBAaxqdz9h9wFdB87/E6ot+EUnO
-         5expdivR/CwdQWRtuQ96ZKqbe+isgZ1P6jtR2Ds9OWiqh5entt5Pr1dOEgvZbbTIT4
-         XNHVA/hyZAPuBbgNabNgnRnreWYghEp6Xwo24ss8=
+        b=ahtxM8xrC1qqws7h5aaMtBa1RvKQxs3l76Fi1x0osmAj6IlWfkBb/IPeJpUW+Bx47
+         mC7/3Xz5jgiD0UyQ79ADEwWxWHhwR37SyAOxBpg3RXJh1p0zT3RXxtKV9zDaTzUxyd
+         l6SVyJKgeZTU4f8Ie9wS/p3byhx9QXgCzUh/vzT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Weijiang <weijiang.yang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.7 021/124] selftests: kvm: Use a shorter encoding to clear RAX
-Date:   Mon, 24 Aug 2020 10:29:15 +0200
-Message-Id: <20200824082410.462355707@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Kuehling <Felix.Kuehling@amd.com>,
+        Laurent Morichetti <laurent.morichetti@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 058/148] drm/ttm: fix offset in VMAs with a pg_offs in ttm_bo_vm_access
+Date:   Mon, 24 Aug 2020 10:29:16 +0200
+Message-Id: <20200824082416.848529113@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
+References: <20200824082413.900489417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Weijiang <weijiang.yang@intel.com>
+From: Felix Kuehling <Felix.Kuehling@amd.com>
 
-commit 98b0bf02738004829d7e26d6cb47b2e469aaba86 upstream.
+[ Upstream commit c0001213d195d1bac83e0744c06ff06dd5a8ba53 ]
 
-If debug_regs.c is built with newer binutils, the resulting binary is "optimized"
-by the assembler:
+VMAs with a pg_offs that's offset from the start of the vma_node need
+to adjust the offset within the BO accordingly. This matches the
+offset calculation in ttm_bo_vm_fault_reserved.
 
-asm volatile("ss_start: "
-             "xor %%rax,%%rax\n\t"
-             "cpuid\n\t"
-             "movl $0x1a0,%%ecx\n\t"
-             "rdmsr\n\t"
-             : : : "rax", "ecx");
-
-is translated to :
-
-  000000000040194e <ss_start>:
-  40194e:       31 c0                   xor    %eax,%eax     <----- rax->eax?
-  401950:       0f a2                   cpuid
-  401952:       b9 a0 01 00 00          mov    $0x1a0,%ecx
-  401957:       0f 32                   rdmsr
-
-As you can see rax is replaced with eax in target binary code.
-This causes a difference is the length of xor instruction (2 Byte vs 3 Byte),
-and makes the hard-coded instruction length check fail:
-
-        /* Instruction lengths starting at ss_start */
-        int ss_size[4] = {
-                3,              /* xor */   <-------- 2 or 3?
-                2,              /* cpuid */
-                5,              /* mov */
-                2,              /* rdmsr */
-        };
-
-Encode the shorter version directly and, while at it, fix the "clobbers"
-of the asm.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Tested-by: Laurent Morichetti <laurent.morichetti@amd.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/381169/
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/x86_64/debug_regs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo_vm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
-+++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-@@ -40,11 +40,11 @@ static void guest_code(void)
+diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+index fa03fab02076d..33526c5df0e8c 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+@@ -505,8 +505,10 @@ static int ttm_bo_vm_access_kmap(struct ttm_buffer_object *bo,
+ int ttm_bo_vm_access(struct vm_area_struct *vma, unsigned long addr,
+ 		     void *buf, int len, int write)
+ {
+-	unsigned long offset = (addr) - vma->vm_start;
+ 	struct ttm_buffer_object *bo = vma->vm_private_data;
++	unsigned long offset = (addr) - vma->vm_start +
++		((vma->vm_pgoff - drm_vma_node_start(&bo->base.vma_node))
++		 << PAGE_SHIFT);
+ 	int ret;
  
- 	/* Single step test, covers 2 basic instructions and 2 emulated */
- 	asm volatile("ss_start: "
--		     "xor %%rax,%%rax\n\t"
-+		     "xor %%eax,%%eax\n\t"
- 		     "cpuid\n\t"
- 		     "movl $0x1a0,%%ecx\n\t"
- 		     "rdmsr\n\t"
--		     : : : "rax", "ecx");
-+		     : : : "eax", "ebx", "ecx", "edx");
- 
- 	/* DR6.BD test */
- 	asm volatile("bd_start: mov %%dr0, %%rax" : : : "rax");
+ 	if (len < 1 || (offset + len) >> PAGE_SHIFT > bo->num_pages)
+-- 
+2.25.1
+
 
 
