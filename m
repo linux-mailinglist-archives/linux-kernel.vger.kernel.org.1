@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7177924F42A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C519324F4B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgHXId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:33:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40838 "EHLO mail.kernel.org"
+        id S1728657AbgHXIjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726158AbgHXIdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:33:19 -0400
+        id S1726243AbgHXIjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:39:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCDBE206F0;
-        Mon, 24 Aug 2020 08:33:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A15A7221E2;
+        Mon, 24 Aug 2020 08:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598257999;
-        bh=RTZlpJtWR9dCMfe8rD/njmwdfqkcm8EYx/e7gU4wJaE=;
+        s=default; t=1598258358;
+        bh=FFaw75yiFjKfBsZ9/FI71IAOExrSv7wL9MF/7Pubngg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfb/BDOo8t34rL3hO8W6BzRchug750M2MwVBlWqUafd9GABCsdkuC+DOZQSWwYePZ
-         qMKHJjldLGcQk4AvgLTAav1zHKwOkgp4sFYYBBuBxyuLvFEvSeyTsSL0p2i4HJYpoq
-         zTkq7EBFyB/O2VkL903HAfXxSS7EN69nlR/sRC8A=
+        b=zG0dPd0FB0/fHnPlOS/3xtECdgWnCLWt3uhynhzHT5U0Jmkp/yB4jvT8IDduGR9K2
+         G/ExzAkP27fxVUBYxwTSWnxbcU+KPpAqb6mtJKUffjdckAsR14n4mSAkZbdMq7iXxo
+         poDcdcJCYanJWZKuJDwq0xxd80OUQlWZASBgye7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Kolesa <daniel@octaforge.org>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.8 037/148] drm/amdgpu/display: use GFP_ATOMIC in dcn20_validate_bandwidth_internal
-Date:   Mon, 24 Aug 2020 10:28:55 +0200
-Message-Id: <20200824082415.827200041@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 002/124] drm/panel-simple: Fix inverted V/H SYNC for Frida FRD350H54004 panel
+Date:   Mon, 24 Aug 2020 10:28:56 +0200
+Message-Id: <20200824082409.496866539@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Kolesa <daniel@octaforge.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit f41ed88cbd6f025f7a683a11a74f901555fba11c upstream.
+[ Upstream commit bad20a2dbfdfaf01560026909506b6ed69d65ba2 ]
 
-GFP_KERNEL may and will sleep, and this is being executed in
-a non-preemptible context; this will mess things up since it's
-called inbetween DC_FP_START/END, and rescheduling will result
-in the DC_FP_END later being called in a different context (or
-just crashing if any floating point/vector registers/instructions
-are used after the call is resumed in a different context).
+The FRD350H54004 panel was marked as having active-high VSYNC and HSYNC
+signals, which sorts-of worked, but resulted in the picture fading out
+under certain circumstances.
 
-Signed-off-by: Daniel Kolesa <daniel@octaforge.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this issue by marking VSYNC and HSYNC signals active-low.
 
+v2: Rebase on drm-misc-next
+
+Fixes: 7b6bd8433609 ("drm/panel: simple: Add support for the Frida FRD350H54004 panel")
+Cc: stable@vger.kernel.org # v5.5
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200716125647.10964-1-paul@crapouillou.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 +-
+ drivers/gpu/drm/panel/panel-simple.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -3097,7 +3097,7 @@ static bool dcn20_validate_bandwidth_int
- 	int vlevel = 0;
- 	int pipe_split_from[MAX_PIPES];
- 	int pipe_cnt = 0;
--	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_KERNEL);
-+	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
- 	DC_LOGGER_INIT(dc->ctx->logger);
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 346e3f9fd505a..a68eff1fb4297 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -1537,7 +1537,7 @@ static const struct drm_display_mode frida_frd350h54004_mode = {
+ 	.vsync_end = 240 + 2 + 6,
+ 	.vtotal = 240 + 2 + 6 + 2,
+ 	.vrefresh = 60,
+-	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC,
++	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+ };
  
- 	BW_VAL_TRACE_COUNT();
+ static const struct panel_desc frida_frd350h54004 = {
+-- 
+2.25.1
+
 
 
