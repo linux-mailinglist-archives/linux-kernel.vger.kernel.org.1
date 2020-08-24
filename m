@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9927724FE24
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B989924FE27
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 14:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgHXM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 08:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgHXMzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 08:55:51 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A97C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:55:50 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id w20so5148014iom.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 05:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ol8YT1cMqM+bS+eKkIQclYZtOIm8N5ybqN/W6Nvay1A=;
-        b=MTkD24hwxVFj2Iz6AEhRsHOOfV2mdC6VtjyGrBkIaVfkyLJJZP/ERBQJoQ+5xOIny+
-         dRQrflYiJ+KvFMjdh9qV1Pz3omozx70uJFmhuFvud0VvthhBxlR5/RDq1QmLRe1O1FWw
-         sAerIJDzeqVEiswMNCR7e695s1KXw6CsoMm2UamxB/0L/Dkmema4Dk0t7XB67tJpQ3y0
-         9MTmlbKJjb/gHbrbMj3zfk1sqNcaqFpGDRjeHhq2ed+IehRy3158FmKrCvUZhtnEcuOb
-         RDj0YZQFUreZm0NqFM+aACvU2iaOYTnWtsWVPOE1ddMwKAx3FotZBpul63qg9tU/bKlX
-         KIpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ol8YT1cMqM+bS+eKkIQclYZtOIm8N5ybqN/W6Nvay1A=;
-        b=CTc+NoGSFpbwpgEq/zNJTcZEeFqxceC4+sQ8tLK8G4zY0ctdWTGduhjyRF8DHoE6CY
-         osdmFvyLA1bkCRpiW7ZDWwPRLytJrE4Sj3D5cXLbvYM1VhWq6kG9s/NJs02cBhWIxsRd
-         6fLF3pdSYZ8IDSrCIZQICEjgIe0uNt9cSFAn6+N2zn171kF58FXLnGfv+4svvBv+pI80
-         rVfzitAcT6Kl5236OFFSmDeDKiPdkO8qYPoTSXhiLMe2OqRuAXiVyJCV8XuPeKEOfr9A
-         0AUf+BxyxqVwXjp7/Kovy8MyLaJ8puP2bw/Orm6Q+Awfcd8ITHP8SIWalk/6nuvAmO8D
-         J7Hw==
-X-Gm-Message-State: AOAM532PKI82jZqNTVlsElORtW6dJdE7FmY6euOnpqzeLm6l0+WIPhWP
-        +mM73ZYW+BxM/Xw5CB+QzUI+uf6rJGOEt3ZYKII=
-X-Google-Smtp-Source: ABdhPJzoQ8cu1Pzt6AouOA9Ylc7F4XvQE8+Qom/CsbAZpoaBYHkkW8GjoCNbySWzloShYbPdRg6J0tdsSBV2iwpGqD4=
-X-Received: by 2002:a05:6602:15d0:: with SMTP id f16mr4763238iow.45.1598273749751;
- Mon, 24 Aug 2020 05:55:49 -0700 (PDT)
+        id S1727957AbgHXM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 08:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727903AbgHXMzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 08:55:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10AD020838;
+        Mon, 24 Aug 2020 12:55:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598273755;
+        bh=uaIpIkYXWrHltizAIIf9mWbKoMDFCmIolkVH3w/Ohp4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=azHT/aIvCD/fhdYwv6V4TMwMl5hcMboYO4ABWj7syBpuZ8Ej+ZOh8eTIXP8WG2WjC
+         Plq3dzr5Mq1PdfanNBX1TSOW9B2DGO48MgzNHoc+h4kPKQZm1mdrdM5pLijRL1dQx8
+         gYGFSnysboVazxCkToYQDi260ScgK/i45RtvhNF8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kAC0v-006DfH-HL; Mon, 24 Aug 2020 13:55:53 +0100
 MIME-Version: 1.0
-Received: by 2002:a4f:c881:0:0:0:0:0 with HTTP; Mon, 24 Aug 2020 05:55:48
- -0700 (PDT)
-Reply-To: robertandersonhappy1@gmail.com
-From:   robert <ekeulp@gmail.com>
-Date:   Mon, 24 Aug 2020 05:55:48 -0700
-Message-ID: <CAAMsw6Zx49fqy2YVdsg1X+QJp7ZEceOmE_7TR9S1rgt8HwhkoQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 24 Aug 2020 13:55:53 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH stable-4.9.y backport] KVM: arm/arm64: Don't reschedule in
+ unmap_stage2_range()
+In-Reply-To: <20200824112940.24706-1-will@kernel.org>
+References: <20200824112940.24706-1-will@kernel.org>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <d59a7d7de22b1a83ff2ca4bf5204c551@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, james.morse@arm.com, pbonzini@redhat.com, kernel-team@android.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uen d=C3=ADa mi buen amigo.
+On 2020-08-24 12:29, Will Deacon wrote:
+> Upstream commits fdfe7cbd5880 ("KVM: Pass MMU notifier range flags to
+> kvm_unmap_hva_range()") and b5331379bc62 ("KVM: arm64: Only reschedule
+> if MMU_NOTIFIER_RANGE_BLOCKABLE is not set") fix a "sleeping from 
+> invalid
+> context" BUG caused by unmap_stage2_range() attempting to reschedule 
+> when
+> called on the OOM path.
+> 
+> Unfortunately, these patches rely on the MMU notifier callback being
+> passed knowledge about whether or not blocking is permitted, which was
+> introduced in 4.19. Rather than backport this considerable amount of
+> infrastructure just for KVM on arm, instead just remove the conditional
+> reschedule.
+> 
+> Cc: <stable@vger.kernel.org> # v4.9 only
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm/kvm/mmu.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/arch/arm/kvm/mmu.c b/arch/arm/kvm/mmu.c
+> index bb0d5e21d60b..b5ce1e81f945 100644
+> --- a/arch/arm/kvm/mmu.c
+> +++ b/arch/arm/kvm/mmu.c
+> @@ -298,12 +298,6 @@ static void unmap_stage2_range(struct kvm *kvm,
+> phys_addr_t start, u64 size)
+>  		next = stage2_pgd_addr_end(addr, end);
+>  		if (!stage2_pgd_none(*pgd))
+>  			unmap_stage2_puds(kvm, pgd, addr, next);
+> -		/*
+> -		 * If the range is too large, release the kvm->mmu_lock
+> -		 * to prevent starvation and lockup detector warnings.
+> -		 */
+> -		if (next != end)
+> -			cond_resched_lock(&kvm->mmu_lock);
+>  	} while (pgd++, addr = next, addr != end);
+>  }
 
-C=C3=B3mo est=C3=A1s hoy? Ha pasado mucho tiempo escuch=C3=A9 de ti, lo que=
- est=C3=A1 pasando
-=C2=BFtu lado? Hoy estoy muy feliz de informarles sobre mi =C3=A9xito en
-obtener esos fondos de herencia transferidos bajo la cooperaci=C3=B3n de un=
- nuevo
-socio de India Asia. Es canadiense pero vive en la India, pero actualmente
-Estoy en India para proyectos de inversi=C3=B3n con mi propia participaci=
-=C3=B3n
-de la suma total de
-millones de d=C3=B3lares. mientras tanto, no olvid=C3=A9 tus esfuerzos e in=
-tentos pasados
-para ayudarme a transferir esos fondos de herencia a pesar de que fall=C3=
-=B3
-nosotros de alguna manera, quiero que se comunique con mi secretaria
-en Lom=C3=A9 Togo Republic West
-=C3=81frica, su nombre es marca solomon, esta es su direcci=C3=B3n de corre=
-o electr=C3=B3nico (
-solomonbrand003@gmail.com), p=C3=ADdale que se comunique con Ecobank si
-conserv=C3=B3 la suma de $ 350,000.00, para su compensaci=C3=B3n, este fond=
-o de
-compensaci=C3=B3n
-es por todos los esfuerzos e intentos pasados =E2=80=8B=E2=80=8Bde ayudarme=
- en el pasado
-transacci=C3=B3n. Apreci=C3=A9 mucho sus esfuerzos en ese momento. as=C3=AD=
- que siente
-libre y p=C3=B3ngase en contacto con mi secretario, el se=C3=B1or solomon,
-Ecobank transferir=C3=A1 la suma total de $ 350,000.00.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Por favor av=C3=ADseme inmediatamente Ecobank transfiere el fondo $ 350.000=
-.00
-en su propia cuenta bancaria, en este momento, estoy demasiado ocupado
-aqu=C3=AD debido a
-los proyectos de inversi=C3=B3n que estoy teniendo con mi nuevo socio en la
-mano, entonces
-p=C3=B3ngase en contacto con la marca Mr Solomon en su direcci=C3=B3n de co=
-rreo
-electr=C3=B3nico,
-P=C3=B3ngase en contacto con Ecobank en su nombre sin demora. Mantente a
-salvo de Covid 19.
-
-Atentamente,
-Dr. robert andersonuen d=C3=ADa mi buen amigo.
-
-C=C3=B3mo est=C3=A1s hoy? Ha pasado mucho tiempo escuch=C3=A9 de ti, lo que=
- est=C3=A1 pasando
-=C2=BFtu lado? Hoy estoy muy feliz de informarles sobre mi =C3=A9xito en
-obtener esos fondos de herencia transferidos bajo la cooperaci=C3=B3n de un=
- nuevo
-socio de India Asia. Es canadiense pero vive en la India, pero actualmente
-Estoy en India para proyectos de inversi=C3=B3n con mi propia participaci=
-=C3=B3n
-de la suma total de
-millones de d=C3=B3lares. mientras tanto, no olvid=C3=A9 tus esfuerzos e in=
-tentos pasados
-para ayudarme a transferir esos fondos de herencia a pesar de que fall=C3=
-=B3
-nosotros de alguna manera, quiero que se comunique con mi secretaria
-en Lom=C3=A9 Togo Republic West
-=C3=81frica, su nombre es marca solomon, esta es su direcci=C3=B3n de corre=
-o electr=C3=B3nico (
-solomonbrand003@gmail.com), p=C3=ADdale que se comunique con Ecobank si
-conserv=C3=B3 la suma de $ 350,000.00, para su compensaci=C3=B3n, este fond=
-o de
-compensaci=C3=B3n
-es por todos los esfuerzos e intentos pasados =E2=80=8B=E2=80=8Bde ayudarme=
- en el pasado
-transacci=C3=B3n. Apreci=C3=A9 mucho sus esfuerzos en ese momento. as=C3=AD=
- que siente
-libre y p=C3=B3ngase en contacto con mi secretario, el se=C3=B1or solomon,
-Ecobank transferir=C3=A1 la suma total de $ 350,000.00.
-
-Por favor av=C3=ADseme inmediatamente Ecobank transfiere el fondo $ 350.000=
-.00
-en su propia cuenta bancaria, en este momento, estoy demasiado ocupado
-aqu=C3=AD debido a
-los proyectos de inversi=C3=B3n que estoy teniendo con mi nuevo socio en la
-mano, entonces
-p=C3=B3ngase en contacto con la marca Mr Solomon en su direcci=C3=B3n de co=
-rreo
-electr=C3=B3nico,
-P=C3=B3ngase en contacto con Ecobank en su nombre sin demora. Mantente a
-salvo de Covid 19.
-
-Atentamente,
-Dr. robert anderson
+         M.
+-- 
+Jazz is not dead. It just smells funny...
