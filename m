@@ -2,122 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F4D24F886
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B953224F8B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgHXJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728241AbgHXItl (ORCPT
+        id S1729736AbgHXJge convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Aug 2020 05:36:34 -0400
+Received: from gw-eagle2.siemens.com ([194.138.20.69]:11513 "EHLO
+        gw-eagle2.siemens.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbgHXJgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:49:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E00C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 01:49:40 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a5so7833494wrm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 01:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zDiYUFquth7cyRebjTDkbtYp+6xmfLZ57umDUURK8BE=;
-        b=jbuFPrqnGdZkpuf0OoZ4MhNtVoU3u8mDO+7eohccVgR+/Ufb34v5QUQ1egDxgLLvit
-         ny7igxC9wkACDhQkRr6+LAbF0s6BZERAJWLkn2TjC/jSUayf/7jKcIgTD9BRh5sfwpek
-         3/+3sXt8ISswLoWakmDyEnDaPXmLm0rh8qkSMNTJprXWyqxrRniGADdppFvoknlBT2H9
-         BREN1po5rN1VfvrAmPoB1o/kZrHjxz4JW0t7F0oAXyOIyCTU66lSBtz6JvHjU2z7VNOd
-         d50rMA6vUVl/W1kA/QnRMVU/hyLBhrX12Kx4r7jko5z9Rat7BgJB18ZW2Wq6kUhA4+63
-         W+Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zDiYUFquth7cyRebjTDkbtYp+6xmfLZ57umDUURK8BE=;
-        b=hIjWu/ivfLIrz3m2NBA0vj1Wu2jraEwMXJo4HxRv5ccAgE2VQ7n54L7n924cdGhVT9
-         yvrLqqT95Vh4dyv36BytDAUaIXYW0xAJriIqyTQKWfaMimPOfgdXfcIE5lQDR6hpBagn
-         DnpnjQyv6NyBYcz+uurpQA1V6AIPciL2/vovtZAfh9KrROgME3yDV0ruSxO1T5ZfAXIy
-         PgWb4Rz3eaSdWsH4Hn4xUM6Coc/WIo8fTJhig+F+pj5tslN6qa6zwk31q4cJLUYXUvFu
-         Ott3VMxA2vtmysZJJxPBb9xh3opy6/VRkBBz0tGU9oBQrJASXfp18aLahY4ZuFVuHdcM
-         jS3Q==
-X-Gm-Message-State: AOAM5310pAGxjxw0hNAn042mj9YtkLrM6ffzDiTO19bbJE5ettDKS75Q
-        MgJM4XrYcN5qpMzOXO3g9y4swA==
-X-Google-Smtp-Source: ABdhPJz9eKE3NWBVPX2z+eAhK9dcu43QK9Wj+PEVt/vF9PIoZWnjq56T72brZlxcizBu89MfN7lRcw==
-X-Received: by 2002:a5d:6692:: with SMTP id l18mr4730824wru.211.1598258977851;
-        Mon, 24 Aug 2020 01:49:37 -0700 (PDT)
-Received: from dell ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id n205sm12973788wma.47.2020.08.24.01.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 01:49:37 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 09:49:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mfd: core: Fix double-free in mfd_remove_devices_fn()
-Message-ID: <20200824084935.GJ3248864@dell>
-References: <20200817235048.24577-1-digetx@gmail.com>
- <CGME20200824083847eucas1p2e5fee0790df8f21934d99e848dc14afe@eucas1p2.samsung.com>
- <ac27b0cc-6ede-c7ed-19ee-2472f87f93f7@samsung.com>
+        Mon, 24 Aug 2020 05:36:32 -0400
+X-Greylist: delayed 489 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Aug 2020 05:36:30 EDT
+Received: from mail2.dc4ca.siemens.de (mail2.dc4ca.siemens.de [139.25.224.94])
+        by gw-eagle2.siemens.com (Postfix) with ESMTPS id 592E1468008;
+        Mon, 24 Aug 2020 11:28:13 +0200 (CEST)
+Received: from DEMCHDC8A0A.ad011.siemens.net (demchdc8a0a.ad011.siemens.net [139.25.226.106])
+        by mail2.dc4ca.siemens.de (Postfix) with ESMTPS id 4E10D1552BD22;
+        Mon, 24 Aug 2020 11:28:13 +0200 (CEST)
+Received: from CNPEK01M06MSX.ad011.siemens.net (139.24.237.223) by
+ DEMCHDC8A0A.ad011.siemens.net (139.25.226.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Mon, 24 Aug 2020 11:28:12 +0200
+Received: from CNPEK01M06MSX.ad011.siemens.net ([139.24.237.223]) by
+ CNPEK01M06MSX.ad011.siemens.net ([139.24.237.223]) with mapi id
+ 15.01.2044.004; Mon, 24 Aug 2020 17:28:09 +0800
+From:   "Wang, Sheng Long" <shenglong.wang.ext@siemens.com>
+To:     Johan Hovold <johan@kernel.org>
+CC:     Sheng Long Wang <china_shenglong@163.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Kiszka, Jan" <jan.kiszka@siemens.com>
+Subject: RE: [PATCH v3] usb-serial:cp210x: add support to software flow
+ control
+Thread-Topic: [PATCH v3] usb-serial:cp210x: add support to software flow
+ control
+Thread-Index: AQHWdscbn5u/RYWMnkqBpjeEIyjP+KlBhWMAgATzlACAAInCwA==
+Date:   Mon, 24 Aug 2020 09:28:09 +0000
+Message-ID: <f21d4cc8b12d4ec6870623472ca7df09@siemens.com>
+References: <20200820075240.13321-1-china_shenglong@163.com>
+ <97836b78-740b-cf70-4803-27305b6e0a4d@siemens.com>
+ <20200824090948.GC21288@localhost>
+In-Reply-To: <20200824090948.GC21288@localhost>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcejAwNDNjYnhcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0xZTQ5YzYxZC1lNWVjLTExZWEtYmU1OS1iMDBjZDE2OTA4NjRcYW1lLXRlc3RcMWU0OWM2MWYtZTVlYy0xMWVhLWJlNTktYjAwY2QxNjkwODY0Ym9keS50eHQiIHN6PSIyNTEwIiB0PSIxMzI0MjczNDg4ODE2NTU1ODciIGg9Ik4yT21wR1RxOUxNKzQ2dUl5MXE4QlJMRWtFbz0iIGlkPSIiIGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUhBQUFBQWpSNlBnK0huV0FZWmFyOHdMMmVEL2hscXZ6QXZaNFA4QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUJBQUFBVGFuck9nQUFBQUFBQUFBQUFBQUFBQT09Ii8+PC9tZXRhPg==
+x-dg-rorf: 
+x-document-confidentiality: NotClassified
+x-originating-ip: [139.24.108.238]
+x-tm-snts-smtp: D19F5371A4BF487AD73746162E220B87BAA644334B4D139CA133D1D1F789C5EE2000:8
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac27b0cc-6ede-c7ed-19ee-2472f87f93f7@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, Marek Szyprowski wrote:
+Hi Johan,
 
-> Hi
-> 
-> On 18.08.2020 01:50, Dmitry Osipenko wrote:
-> > The pdev.mfd_cell is released by platform_device_release(), which is
-> > invoked by platform_device_unregister(). Hence mfd_remove_devices_fn()
-> > shouldn't release the cell variable. The double-free bug is reported KASAN
-> > during of MFD driver module removal.
-> >
-> > Fixes: 466a62d7642f ("mfd: core: Make a best effort attempt to match devices with the correct of_nodes")
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> 
-> I've reported that almost a week earlier and got information that it 
-> will be dropped:
-> 
-> https://lore.kernel.org/lkml/79bcd1b5-2247-5e00-7d49-2f94f9b40744@samsung.com/
-> 
-> https://lore.kernel.org/lkml/20200813080100.GI4354@dell/
-> 
-> Sadly it finally landed in v5.9-rc1. Would be nice to mention this in 
-> the revert:
+    Thanks for your reminding. I am adjusting patch according to the latest Linux Master branch.
 
-That's true.  The patch was taken out but the change managed to get in
-via another commit.  I will add your Reported-by to the revert.
+With best regards,
+Wang Sheng Long
+Siemens Ltd., China
+RC-CN DI FA R&D SW
+Tianyuan road No.99
+611731 CHENGDU, China
+Mobil: +86 15281074996
+mailto:shenglong.wang.ext@siemens.com
 
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> >   drivers/mfd/mfd-core.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> >
-> > diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-> > index c3651f06684f..c50718e3db58 100644
-> > --- a/drivers/mfd/mfd-core.c
-> > +++ b/drivers/mfd/mfd-core.c
-> > @@ -370,8 +370,6 @@ static int mfd_remove_devices_fn(struct device *dev, void *data)
-> >   	regulator_bulk_unregister_supply_alias(dev, cell->parent_supplies,
-> >   					       cell->num_parent_supplies);
-> >   
-> > -	kfree(cell);
-> > -
-> >   	platform_device_unregister(pdev);
-> >   	return 0;
-> >   }
-> 
-> Best regards
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+-----Original Message-----
+From: Johan Hovold <johan@kernel.org> 
+Sent: Monday, August 24, 2020 5:10 PM
+To: Kiszka, Jan (CT RDA IOT SES-DE) <jan.kiszka@siemens.com>
+Cc: Sheng Long Wang <china_shenglong@163.com>; Wang, Sheng Long (EXT) (RC-CN DI FA R&D SW) <shenglong.wang.ext@siemens.com>; johan@kernel.org; gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] usb-serial:cp210x: add support to software flow control
+
+On Fri, Aug 21, 2020 at 07:32:58AM +0200, Jan Kiszka wrote:
+> On 20.08.20 09:52, Sheng Long Wang wrote:
+> > From: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> > 
+> > When data is transmitted between two serial ports, the phenomenon of 
+> > data loss often occurs. The two kinds of flow control commonly used 
+> > in serial communication are hardware flow control and software flow 
+> > control.
+> > 
+> > In serial communication, If you only use RX/TX/GND Pins, you can't 
+> > do hardware flow. So we often used software flow control and prevent 
+> > data loss. The user sets the software flow control through the 
+> > application program, and the application program sets the software 
+> > flow control mode for the serial port chip through the driver.
+> > 
+> > For the cp210 serial port chip, its driver lacks the software flow 
+> > control setting code, so the user cannot set the software flow 
+> > control function through the application program. This adds the 
+> > missing software flow control.
+> > 
+> > Signed-off-by: Wang Sheng Long <shenglong.wang.ext@siemens.com>
+> > 
+> > Changes in v3:
+> > -fixed code style, It mainly adjusts the code style acccording  to 
+> > kernel specification.
+> 
+> Patch does not apply. You forgot to rebase over latest tty/tty-next or 
+> linux master.
+
+That should be the usb-next branch of the usb-serial tree:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/
+
+or linux-next (or, currently, Linus's master branch).
+
+You can use "scripts/get_maintainer.sh --scm" to determine which tree to base your work against.
+
+Johan
