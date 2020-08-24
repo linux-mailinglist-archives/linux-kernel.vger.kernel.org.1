@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9C924FA5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E110D24F902
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgHXJzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:55:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
+        id S1729326AbgHXIqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbgHXIgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:36:23 -0400
+        id S1729104AbgHXIqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 262F4206F0;
-        Mon, 24 Aug 2020 08:36:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F0B3204FD;
+        Mon, 24 Aug 2020 08:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258182;
-        bh=bgTmsYHvGs3ntpuCwcRjLQ5BevUI8JP4aY4CVC7BZwo=;
+        s=default; t=1598258770;
+        bh=PytyJQyEU46vyyqpShlG43bv0cszxenOGURoWaVe4Oc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ShK50+x47lw7TnXU8KOjC0HjTx5GoaAXVjPafBZQdORUsX5Akw+sCs2KyyP1jKd3Z
-         L5xsQDIG0tlGPae+9lf5sbqParWH5CVf17P4Fq4mWmM6w6WryP5zBhA9D+y9yEW3Ds
-         aHCTNFo9XOAzJwhBzec8nGXkTotQhfsiE0b9Y1yE=
+        b=t6I5P1Py7ZU3CgvrnzQ14lxyaMZzpsMdX4dcGdBGZl4e7Kig5Yj/shfXgG3dA3HLM
+         3xSnhXjiMUdaGzVbXHIGmdT5VC4spJEnyqpCdhyOCT03Wy7LAfYL7+u7ULPqNOBikv
+         XUQrdXuCXgQLIcG4+ltwVtHTueqDzGUgKqvg5vHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhiyi Guo <zhguo@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 104/148] vfio/type1: Add proper error unwind for vfio_iommu_replay()
-Date:   Mon, 24 Aug 2020 10:30:02 +0200
-Message-Id: <20200824082419.007370794@linuxfoundation.org>
+        stable@vger.kernel.org, Stylon Wang <stylon.wang@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 037/107] drm/amd/display: Fix EDID parsing after resume from suspend
+Date:   Mon, 24 Aug 2020 10:30:03 +0200
+Message-Id: <20200824082406.960304366@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082413.900489417@linuxfoundation.org>
-References: <20200824082413.900489417@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,164 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Williamson <alex.williamson@redhat.com>
+From: Stylon Wang <stylon.wang@amd.com>
 
-[ Upstream commit aae7a75a821a793ed6b8ad502a5890fb8e8f172d ]
+commit b24bdc37d03a0478189e20a50286092840f414fa upstream.
 
-The vfio_iommu_replay() function does not currently unwind on error,
-yet it does pin pages, perform IOMMU mapping, and modify the vfio_dma
-structure to indicate IOMMU mapping.  The IOMMU mappings are torn down
-when the domain is destroyed, but the other actions go on to cause
-trouble later.  For example, the iommu->domain_list can be empty if we
-only have a non-IOMMU backed mdev attached.  We don't currently check
-if the list is empty before getting the first entry in the list, which
-leads to a bogus domain pointer.  If a vfio_dma entry is erroneously
-marked as iommu_mapped, we'll attempt to use that bogus pointer to
-retrieve the existing physical page addresses.
+[Why]
+Resuming from suspend, CEA blocks from EDID are not parsed and no video
+modes can support YUV420. When this happens, output bpc cannot go over
+8-bit with 4K modes on HDMI.
 
-This is the scenario that uncovered this issue, attempting to hot-add
-a vfio-pci device to a container with an existing mdev device and DMA
-mappings, one of which could not be pinned, causing a failure adding
-the new group to the existing container and setting the conditions
-for a subsequent attempt to explode.
+[How]
+In amdgpu_dm_update_connector_after_detect(), drm_add_edid_modes() is
+called after drm_connector_update_edid_property() to fully parse EDID
+and update display info.
 
-To resolve this, we can first check if the domain_list is empty so
-that we can reject replay of a bogus domain, should we ever encounter
-this inconsistent state again in the future.  The real fix though is
-to add the necessary unwind support, which means cleaning up the
-current pinning if an IOMMU mapping fails, then walking back through
-the r-b tree of DMA entries, reading from the IOMMU which ranges are
-mapped, and unmapping and unpinning those ranges.  To be able to do
-this, we also defer marking the DMA entry as IOMMU mapped until all
-entries are processed, in order to allow the unwind to know the
-disposition of each entry.
+Cc: stable@vger.kernel.org
+Signed-off-by: Stylon Wang <stylon.wang@amd.com>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-Reported-by: Zhiyi Guo <zhguo@redhat.com>
-Tested-by: Zhiyi Guo <zhguo@redhat.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/vfio_iommu_type1.c | 71 ++++++++++++++++++++++++++++++---
- 1 file changed, 66 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 5e556ac9102a5..f48f0db908a46 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -1422,13 +1422,16 @@ static int vfio_bus_type(struct device *dev, void *data)
- static int vfio_iommu_replay(struct vfio_iommu *iommu,
- 			     struct vfio_domain *domain)
- {
--	struct vfio_domain *d;
-+	struct vfio_domain *d = NULL;
- 	struct rb_node *n;
- 	unsigned long limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
- 	int ret;
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1434,6 +1434,7 @@ amdgpu_dm_update_connector_after_detect(
  
- 	/* Arbitrarily pick the first domain in the list for lookups */
--	d = list_first_entry(&iommu->domain_list, struct vfio_domain, next);
-+	if (!list_empty(&iommu->domain_list))
-+		d = list_first_entry(&iommu->domain_list,
-+				     struct vfio_domain, next);
-+
- 	n = rb_first(&iommu->dma_list);
+ 			drm_connector_update_edid_property(connector,
+ 							   aconnector->edid);
++			drm_add_edid_modes(connector, aconnector->edid);
  
- 	for (; n; n = rb_next(n)) {
-@@ -1446,6 +1449,11 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
- 				phys_addr_t p;
- 				dma_addr_t i;
- 
-+				if (WARN_ON(!d)) { /* mapped w/o a domain?! */
-+					ret = -EINVAL;
-+					goto unwind;
-+				}
-+
- 				phys = iommu_iova_to_phys(d->domain, iova);
- 
- 				if (WARN_ON(!phys)) {
-@@ -1475,7 +1483,7 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
- 				if (npage <= 0) {
- 					WARN_ON(!npage);
- 					ret = (int)npage;
--					return ret;
-+					goto unwind;
- 				}
- 
- 				phys = pfn << PAGE_SHIFT;
-@@ -1484,14 +1492,67 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
- 
- 			ret = iommu_map(domain->domain, iova, phys,
- 					size, dma->prot | domain->prot);
--			if (ret)
--				return ret;
-+			if (ret) {
-+				if (!dma->iommu_mapped)
-+					vfio_unpin_pages_remote(dma, iova,
-+							phys >> PAGE_SHIFT,
-+							size >> PAGE_SHIFT,
-+							true);
-+				goto unwind;
-+			}
- 
- 			iova += size;
- 		}
-+	}
-+
-+	/* All dmas are now mapped, defer to second tree walk for unwind */
-+	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-+		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-+
- 		dma->iommu_mapped = true;
- 	}
-+
- 	return 0;
-+
-+unwind:
-+	for (; n; n = rb_prev(n)) {
-+		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-+		dma_addr_t iova;
-+
-+		if (dma->iommu_mapped) {
-+			iommu_unmap(domain->domain, dma->iova, dma->size);
-+			continue;
-+		}
-+
-+		iova = dma->iova;
-+		while (iova < dma->iova + dma->size) {
-+			phys_addr_t phys, p;
-+			size_t size;
-+			dma_addr_t i;
-+
-+			phys = iommu_iova_to_phys(domain->domain, iova);
-+			if (!phys) {
-+				iova += PAGE_SIZE;
-+				continue;
-+			}
-+
-+			size = PAGE_SIZE;
-+			p = phys + size;
-+			i = iova + size;
-+			while (i < dma->iova + dma->size &&
-+			       p == iommu_iova_to_phys(domain->domain, i)) {
-+				size += PAGE_SIZE;
-+				p += PAGE_SIZE;
-+				i += PAGE_SIZE;
-+			}
-+
-+			iommu_unmap(domain->domain, iova, size);
-+			vfio_unpin_pages_remote(dma, iova, phys >> PAGE_SHIFT,
-+						size >> PAGE_SHIFT, true);
-+		}
-+	}
-+
-+	return ret;
- }
- 
- /*
--- 
-2.25.1
-
+ 			if (aconnector->dc_link->aux_mode)
+ 				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
 
 
