@@ -2,101 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FDB24FC29
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36F124FC32
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 13:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgHXLBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 07:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgHXLBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 07:01:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A58C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:01:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so8248450wrw.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 04:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vJ1eNEFLaB8nJQQFgwghGU2wabwAkxn1KgMf6hL5Xh8=;
-        b=sTMfmVTwLeCOxUYP0/k8SSgTjJs9jk9DQarL7xUBCbYbtS7PLGpK4BOOxSzsUPouFh
-         /+dcD4qNa1NDz8hZ36wc0aHERmx8lVLKxVGbLchsAMyDFaxFQPXGGhqrJGZrdmNCZq51
-         GjNtFOlLkVfnufZ9Qws82+UOiJFfCTeqQOp1eLQU78+kKoOuLV9C9b+nguzrXEmpTwsI
-         pQwE2u/MRLkzuDT/fu5YhVew1acgk1FfLLkJLTorupCAT6n2dlH8hXN/GfFVKRdnGP6b
-         8CyE0TlrlGuCDRd8tINbMXV8ISCBAu7PyU/IfY16jC/c3LOz9KwK8dxmIfOQCO9hfnmN
-         x3zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vJ1eNEFLaB8nJQQFgwghGU2wabwAkxn1KgMf6hL5Xh8=;
-        b=OMFPUYRv/aRuyxK6vDWu4T55LBc99jRPnczeCMAy1PEe5zQoKRFk+iaMmrwM8aWTJR
-         laAA+LkjoiqlsrvEM5aKwPHCfSlSs+ElSqaX3QXAuZ4i36LF9WCKu62JFU7rIernRcYt
-         sy7v8K+MQxSbvOK4sXeyQs0PvjMyJ6hvZ691PVG/2yp3kNigGFvfb3vtAYkpoR3JK3h9
-         0JjSSlxEvItnw5DeRJOuI1rjZXAFkSpjH4hMOaePMXdxgf0RR7ANEMAUXJ0nJ15hoCU5
-         lsEZaaSDSlglPsVZgNQM6br8hkWnWZ8/Wp/wtVCZp9NCN/wlFDrdl+skVSXcS/65oPsD
-         +xLw==
-X-Gm-Message-State: AOAM532y6EG8fYq3Ju2UL/fya+hQael4TS2BPQ83K6eivZzfqS2pHwDm
-        umjBu/vv55fuJm6Hf+Qz8xjxHQ==
-X-Google-Smtp-Source: ABdhPJybWoKbzrnXY1ZEEs5uOne0Za2Q/iVEnEp5VoqZtSurpnQJ6PCFjrJAQOjeOulEsHmjz+NiVw==
-X-Received: by 2002:adf:f64f:: with SMTP id x15mr5717930wrp.180.1598266861232;
-        Mon, 24 Aug 2020 04:01:01 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0? ([2a01:e34:ed2f:f020:cd42:2fa4:120f:76b0])
-        by smtp.googlemail.com with ESMTPSA id c4sm22629929wrt.41.2020.08.24.04.01.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 04:01:00 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Do reset before enable
-To:     Tony Lindgren <tony@atomide.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        id S1726461AbgHXLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 07:01:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:59610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgHXLBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:01:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F22741063;
+        Mon, 24 Aug 2020 04:01:35 -0700 (PDT)
+Received: from [10.37.12.65] (unknown [10.37.12.65])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653203F66B;
+        Mon, 24 Aug 2020 04:01:34 -0700 (PDT)
+Subject: Re: [PATCH 3/3] memory: samsung: exynos5422-dmc: add missing and fix
+ kerneldoc
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-References: <20200817092428.6176-1-tony@atomide.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <1e43fb86-df5b-88e0-aa54-8cc3336ce97a@linaro.org>
-Date:   Mon, 24 Aug 2020 13:00:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+References: <20200822163218.21857-1-krzk@kernel.org>
+ <20200822163218.21857-3-krzk@kernel.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <6a87531f-a16f-5597-a10f-bdc2130077f1@arm.com>
+Date:   Mon, 24 Aug 2020 12:01:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200817092428.6176-1-tony@atomide.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200822163218.21857-3-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2020 11:24, Tony Lindgren wrote:
-> Commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and
-> resume for am3 and am4") exposed a new issue for type2 dual mode timers
-> on at least omap5 where the clockevent will stop when the SoC starts
-> entering idle states during the boot.
-> 
-> Turns out we are wrongly first enabling the system timer and then
-> resetting it, while we must also re-enable it after reset. The current
-> sequence leaves the timer module in a partially initialized state. This
-> issue went unnoticed earlier with ti-sysc driver reconfiguring the timer
-> module until we fixed the issue of ti-sysc reconfiguring system timers.
-> 
-> Let's fix the issue by calling dmtimer_systimer_enable() from reset for
-> both type1 and type2 timers, and switch the order of reset and enable in
-> dmtimer_systimer_setup(). Let's also move dmtimer_systimer_enable() and
-> dmtimer_systimer_disable() to do this without adding forward declarations.
-> 
-> Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
-> Reported-by: H. Nikolaus Schaller" <hns@goldelico.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
 
-Applied, thanks
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+On 8/22/20 5:32 PM, Krzysztof Kozlowski wrote:
+> Add missing kerneldoc to struct exynos5_dmc and correct the existing
+> kerneldoc in other places to fix W=1 warnings like:
+> 
+>      drivers/memory/samsung/exynos5422-dmc.c:107: warning: Function parameter or member 'freq_hz' not described in 'dmc_opp_table'
+>      drivers/memory/samsung/exynos5422-dmc.c:154: warning: Function parameter or member 'dev' not described in 'exynos5_dmc'
+>      drivers/memory/samsung/exynos5422-dmc.c:357: warning: Excess function parameter 'param' description in 'exynos5_set_bypass_dram_timings'
+>      drivers/memory/samsung/exynos5422-dmc.c:630: warning: Function parameter or member 'flags' not described in 'exynos5_dmc_get_volt_freq'
+>      drivers/memory/samsung/exynos5422-dmc.c:962: warning: cannot understand function prototype: 'struct devfreq_dev_profile exynos5_dmc_df_profile = '
+>      drivers/memory/samsung/exynos5422-dmc.c:1011: warning: Function parameter or member 'reg_timing_row' not described in 'create_timings_aligned'
+>      drivers/memory/samsung/exynos5422-dmc.c:1011: warning: Excess function parameter 'idx' description in 'create_timings_aligned'
+>      drivers/memory/samsung/exynos5422-dmc.c:1345: warning: Excess function parameter 'set' description in 'exynos5_dmc_set_pause_on_switching'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Acked-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
