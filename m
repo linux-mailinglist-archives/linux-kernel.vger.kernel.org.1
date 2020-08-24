@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF2C24F617
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF7A24F511
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 10:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730503AbgHXI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 04:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
+        id S1729122AbgHXIoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730189AbgHXIzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:55:35 -0400
+        id S1729113AbgHXIoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:44:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3243F206F0;
-        Mon, 24 Aug 2020 08:55:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F7A720FC3;
+        Mon, 24 Aug 2020 08:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598259334;
-        bh=SRIaPpLvux6NAEqZoCGosXKHXx3fwAPykO7By0pyEn4=;
+        s=default; t=1598258649;
+        bh=isQXeN4Kjqa46COgWlJ4jwfTuzmKFsO5k3hpGO/mHW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zBPfqEcUYZBfYoQcbNbyLsd2sEAjWxFWxWi5VoKC6XYXaf0tRTEOfBLXwEMKpNvHo
-         IP6nT1H66upjm7T4RNrb+hHNBmWm8CSQDj5tp+3wn7qhyGdRuNZvvD+XwJDVXrfnyO
-         qpqbMj4YSbgwa8ywsgR9iwQVAPE6f5y5NfA28t2w=
+        b=ZPFdNtP5eUCDYu3gKaKXeidatLt8liruT+BHwHhk+68QqgdRE9Yw/Y26dLupx0FEW
+         xZE0OpnQ+wbO8G911PaCQ65/E5qT8Q8UMwpp3KbH1xEW26OP+YeR9ckIsIFz6vK/Yp
+         gnijQ3XX2d1+i+D7PBoh6+TEfrD/fSgIvKks8DF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/71] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.7 121/124] efi/libstub: Stop parsing arguments at "--"
 Date:   Mon, 24 Aug 2020 10:30:55 +0200
-Message-Id: <20200824082356.086227487@linuxfoundation.org>
+Message-Id: <20200824082415.357813730@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082355.848475917@linuxfoundation.org>
-References: <20200824082355.848475917@linuxfoundation.org>
+In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
+References: <20200824082409.368269240@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,51 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit f3f99d63a8156c7a4a6b20aac22b53c5579c7dc1 ]
+commit 1fd9717d75df68e3c3509b8e7b1138ca63472f88 upstream.
 
-syzbot crashes on the VM_BUG_ON_MM(khugepaged_test_exit(mm), mm) in
-__khugepaged_enter(): yes, when one thread is about to dump core, has set
-core_state, and is waiting for others, another might do something calling
-__khugepaged_enter(), which now crashes because I lumped the core_state
-test (known as "mmget_still_valid") into khugepaged_test_exit().  I still
-think it's best to lump them together, so just in this exceptional case,
-check mm->mm_users directly instead of khugepaged_test_exit().
+Arguments after "--" are arguments for init, not for the kernel.
 
-Fixes: bbe98f9cadff ("khugepaged: khugepaged_test_exit() check mmget_still_valid()")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Yang Shi <shy828301@gmail.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: <stable@vger.kernel.org>	[4.8+]
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008141503370.18085@eggly.anvils
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Link: https://lore.kernel.org/r/20200725155916.1376773-1-nivedita@alum.mit.edu
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- mm/khugepaged.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/libstub/efi-stub-helper.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index fbb3ac9ce0869..f37be43f8caeb 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -427,7 +427,7 @@ int __khugepaged_enter(struct mm_struct *mm)
- 		return -ENOMEM;
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -87,6 +87,8 @@ efi_status_t efi_parse_options(char cons
+ 		char *param, *val;
  
- 	/* __khugepaged_exit() must not run from under us */
--	VM_BUG_ON_MM(khugepaged_test_exit(mm), mm);
-+	VM_BUG_ON_MM(atomic_read(&mm->mm_users) == 0, mm);
- 	if (unlikely(test_and_set_bit(MMF_VM_HUGEPAGE, &mm->flags))) {
- 		free_mm_slot(mm_slot);
- 		return 0;
--- 
-2.25.1
-
+ 		str = next_arg(str, &param, &val);
++		if (!val && !strcmp(param, "--"))
++			break;
+ 
+ 		if (!strcmp(param, "nokaslr")) {
+ 			efi_nokaslr = true;
 
 
