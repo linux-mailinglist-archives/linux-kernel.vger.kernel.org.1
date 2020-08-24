@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31DB24F981
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B5F24F905
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Aug 2020 11:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgHXJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 05:46:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
+        id S1729318AbgHXIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 04:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728944AbgHXImZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:42:25 -0400
+        id S1728882AbgHXIqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:46:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 784BF2075B;
-        Mon, 24 Aug 2020 08:42:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0D12207D3;
+        Mon, 24 Aug 2020 08:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258545;
-        bh=9HAS2loCHxQ24PIAcghVs2Z0hXa2Wx19xvuumM0vtFI=;
+        s=default; t=1598258768;
+        bh=WPMxQiXaIVKU9BE9M+GjN7jGrzR1Z1QBgsw1OK0nLUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gTWTq7V9SlXGmnoi1/4GDGzxvNIFACaEWJbyJtIRVv8W5l/6xy3QqdpAui8HAhb9V
-         LEZG5kCuNorXazsa2FVx/H7opZQRUJyb8ZSwqHpcwJNvAmNfO5HgKBq3sV6JECleCY
-         v39Q7SSCj9+lZUovxYblJ4qUbfWu3D4XncbcYHtU=
+        b=FxCivM+huFX8ak2nXjaRMLmVW8YfTynbMXNdDtm5a5k7IaYaHxKjNoWEW+rSM/UCv
+         IcXDe+7sKnjQqZjG2lGw5P3Yl6OiRgISW0mzVNvUImg/+56sxxpKzYkju/gzOYIcJm
+         d3/o6httiWumR51oPsCV9p+u58jyhHhjI8s5rRFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 066/124] ASoC: q6routing: add dummy register read/write function
-Date:   Mon, 24 Aug 2020 10:30:00 +0200
-Message-Id: <20200824082412.663970116@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Kolesa <daniel@octaforge.org>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 036/107] drm/amdgpu/display: use GFP_ATOMIC in dcn20_validate_bandwidth_internal
+Date:   Mon, 24 Aug 2020 10:30:02 +0200
+Message-Id: <20200824082406.911184133@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Daniel Kolesa <daniel@octaforge.org>
 
-[ Upstream commit 796a58fe2b8c9b6668db00d92512ec84be663027 ]
+commit f41ed88cbd6f025f7a683a11a74f901555fba11c upstream.
 
-Most of the DAPM widgets for DSP ASoC components reuse reg field
-of the widgets for its internal calculations, however these are not
-real registers. So read/writes to these numbers are not really
-valid. However ASoC core will read these registers to get default
-state during startup.
+GFP_KERNEL may and will sleep, and this is being executed in
+a non-preemptible context; this will mess things up since it's
+called inbetween DC_FP_START/END, and rescheduling will result
+in the DC_FP_END later being called in a different context (or
+just crashing if any floating point/vector registers/instructions
+are used after the call is resumed in a different context).
 
-With recent changes to ASoC core, every register read/write
-failures are reported very verbosely. Prior to this fails to reads
-are totally ignored, so we never saw any error messages.
+Signed-off-by: Daniel Kolesa <daniel@octaforge.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-To fix this add dummy read/write function to return default value.
-
-Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200811120205.21805-2-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 46e50612b92c1..750e6a30444eb 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -973,6 +973,20 @@ static int msm_routing_probe(struct snd_soc_component *c)
- 	return 0;
- }
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -2845,7 +2845,7 @@ static bool dcn20_validate_bandwidth_int
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
+-	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_KERNEL);
++	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
  
-+static unsigned int q6routing_reg_read(struct snd_soc_component *component,
-+				       unsigned int reg)
-+{
-+	/* default value */
-+	return 0;
-+}
-+
-+static int q6routing_reg_write(struct snd_soc_component *component,
-+			       unsigned int reg, unsigned int val)
-+{
-+	/* dummy */
-+	return 0;
-+}
-+
- static const struct snd_soc_component_driver msm_soc_routing_component = {
- 	.probe = msm_routing_probe,
- 	.name = DRV_NAME,
-@@ -981,6 +995,8 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
- 	.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
- 	.dapm_routes = intercon,
- 	.num_dapm_routes = ARRAY_SIZE(intercon),
-+	.read = q6routing_reg_read,
-+	.write = q6routing_reg_write,
- };
- 
- static int q6pcm_routing_probe(struct platform_device *pdev)
--- 
-2.25.1
-
+ 	BW_VAL_TRACE_COUNT();
 
 
