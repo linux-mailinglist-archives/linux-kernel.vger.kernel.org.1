@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E812512A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9809E2512B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgHYHKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S1729393AbgHYHKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728936AbgHYHKD (ORCPT
+        with ESMTP id S1729276AbgHYHKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:10:03 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89394C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:10:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so6192323pgf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:10:03 -0700 (PDT)
+        Tue, 25 Aug 2020 03:10:35 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F571C061574;
+        Tue, 25 Aug 2020 00:10:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id bo3so15114705ejb.11;
+        Tue, 25 Aug 2020 00:10:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cGSRd7I0SCxqdyTaBPcY4PAA0jEQQULAtHrZoGGo1pM=;
-        b=YNNIdw2TpYsIyU0Ly5iF4T09BX2GIRRodEwsUWdAqHqD4U18rCWpYMvR5vgdg87kdi
-         cm+EuCQeHXpYZiqWGZborf0wtijtGP3cbQps6UHva9f/CBZT82MKfOiaZ6MhG1+rbkv2
-         Y62qK/N6oMK/nTpg5n4VLPBpQ9hLE2uSQiDzY=
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gPWggGnZfKXzYv43SZ5/w/OGptcwgH/cYoepbnpuXSU=;
+        b=YQx6miclATuS6VbE6jZFDWN40JxQ/1nlhUefrciReWKCPK1PB5FiMSBPlYM1zxuGwz
+         DPQCBv3VBF0bfZxCQGjeVhyw94aZ2SuYv34fLToG/A3EJPKRqfmIU8jB3mKcre2iEphq
+         gf1mzRXOzxB/Ek7w8xs6x3QkGetykd+ka7NaU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cGSRd7I0SCxqdyTaBPcY4PAA0jEQQULAtHrZoGGo1pM=;
-        b=GyrMi5EWLPBBbHLbk7AEqhqCXLvcx5K3QdFqbIqRqXSy+zrzkeCHmZJeJMCX4Ns8j0
-         XqLgn/iTVNFix3MPJsqAsVZZ9c79x4X03YhqnQskdqLRT+MYshvakdWAvdo3esORW0g4
-         AHa4EmokJYYUt5NUoLd0zmxKcgDkJxlcmrU0K6Gk+g2Ze9CpM+GycQZFFJMgw0mP7P32
-         w6E28ckJoN96fxiEDH7WLvu5kYEJwSv2+a2cgk0Q/of8IYEphjWsnnqXL8xkLD4RwlxP
-         Te0dVuXeK1H+iPV90ZKhsYpmlv78toJfC2jqkKzqRCA/6WPA1J/4I/uWWqfnwXV2gYsD
-         hByQ==
-X-Gm-Message-State: AOAM532ceOoLHT3fgLSjRtfcW3V1tvsMLRKoQ/6OFlMPcmVH49gkjnNa
-        yILpWdIu4lR+9zdlSPpyiCjJgA==
-X-Google-Smtp-Source: ABdhPJxhoDNMh0zvVAWYdXbJ3/yiu8BrfQCZr9Kxsw4TSVDBmcJl5gXRwU96bsmEuAWUG0w2Fu5BAA==
-X-Received: by 2002:a63:c902:: with SMTP id o2mr6036356pgg.264.1598339403002;
-        Tue, 25 Aug 2020 00:10:03 -0700 (PDT)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id y4sm14218064pff.44.2020.08.25.00.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 00:10:02 -0700 (PDT)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: Warn if trace_printk and friends are called
-Date:   Tue, 25 Aug 2020 15:09:58 +0800
-Message-Id: <20200825150942.1.I723c43c155f02f726c97501be77984f1e6bb740a@changeid>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gPWggGnZfKXzYv43SZ5/w/OGptcwgH/cYoepbnpuXSU=;
+        b=hqhve2arDBbz7elUYiSxB2lOMOu7xgnllKMqI5cH389PO/qf2P1MaBfLrAz51Fl4wa
+         wACZiGlE/lYx4tTzdXi8YQEASlwbDElX7TaS64TFqkmlurf/48LK1eM8MwRZb4l/PsQK
+         GRjnzMrfz4Nbj60lqg5lkTVgfL4kc0QJNiD9soh4UWknYIRTZHGW8TT9aLkrXL9uDQm6
+         NdGndeyNoyV8JqPEVpim+gbb22UjTL4d5m0LwiKdQkTmfaPeM/3nhWTmb5DXeCjtXNxy
+         8Iux5dzIqXQiVnyqdye0hrHz3OYdDZA7f0gUUCYVlVPFp59yzGNTKr9yfyROrPPJCK6m
+         rHOw==
+X-Gm-Message-State: AOAM531Y6VwBiF/02Lkamhy2EYQIAejUwHW7FxmaymnhX4fvMMB1KJNh
+        Tl5BwTEceI2WpFf3dMKS5kZhfNc4jWbOuge0IALK3EqIjROx7g==
+X-Google-Smtp-Source: ABdhPJxT7sLAof3wgdsZrFIY0FgjJ9rUTWN5mlEBLHxkNznDjkfvRa3dUDnJhYrwxtShLAiGNnWtLnIVtbS/FI/GNSM=
+X-Received: by 2002:a17:906:b34c:: with SMTP id cd12mr8653384ejb.504.1598339433785;
+ Tue, 25 Aug 2020 00:10:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200820170228.42053-1-eajames@linux.ibm.com> <20200820170228.42053-3-eajames@linux.ibm.com>
+ <20200820171257.GG5854@sirena.org.uk> <660034d2-c808-3a4b-6ecc-be1769e8a017@linux.ibm.com>
+In-Reply-To: <660034d2-c808-3a4b-6ecc-be1769e8a017@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 25 Aug 2020 07:10:21 +0000
+Message-ID: <CACPK8XcJnDjt6N9KHNEG7Mhy7=mWX2OYA-Z0tfBbvHdsJC7apA@mail.gmail.com>
+Subject: Re: [PATCH 2/7] spi: fsi: Fix clock running too fast
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Brad Bishop <bradleyb@fuzziesquirrel.com>,
+        Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trace_printk is meant as a debugging tool, and should not be
-compiled into production code without specific debug Kconfig
-options enabled, or source code changes, as indicated by the
-warning that shows up on boot if any trace_printk is called:
- **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
- **                                                      **
- ** trace_printk() being used. Allocating extra memory.  **
- **                                                      **
- ** This means that this is a DEBUG kernel and it is     **
- ** unsafe for production use.                           **
+On Thu, 20 Aug 2020 at 21:06, Eddie James <eajames@linux.ibm.com> wrote:
+>
+>
+> On 8/20/20 12:12 PM, Mark Brown wrote:
+> > On Thu, Aug 20, 2020 at 12:02:23PM -0500, Eddie James wrote:
+> >> From: Brad Bishop <bradleyb@fuzziesquirrel.com>
+> >>
+> >> Use a clock divider tuned to a 200MHz FSI clock.  Use of the previous
+> >> divider at 200MHz results in corrupt data from endpoint devices. Ideally
+> >> the clock divider would be calculated from the FSI clock, but that
+> >> would require some significant work on the FSI driver.
+> > Presumably this divider was chosen for FSI clocks that aren't 200MHz -
+> > how will those be handled?
+>
+>
+> They aren't handled at the moment, but 200MHz FSI represents the worst
+> case, as it's the maximum. Slower FSI clocks will simply result in
+> slower SPI clocks.
 
-Let's warn developers when they try to submit such a change.
+That would be a good addition to the commit message, as I had the same
+question too.
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
+Cheers,
 
-See also extensive discussion under this thread:
-https://lkml.org/lkml/2020/8/20/244
-
-This seems to be the simplest way to try to reduce the number
-of trace_printk that make it into the kernel.
-
- scripts/checkpatch.pl | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 4aa1d9d5e62c5b0..4b4988f25223c6a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4272,6 +4272,14 @@ sub process {
- 			     "Prefer dev_$level(... to dev_printk(KERN_$orig, ...\n" . $herecurr);
- 		}
- 
-+# trace_printk should not be used in production code.
-+		if ($line =~ /\b(trace_printk|trace_puts|ftrace_vprintk)\s*\(/) {
-+			my $func = $1;
-+
-+			WARN("TRACE_PRINTK",
-+			     "Do not use $func() in production code (this can be ignored if built only behind a debug config option).\n" . $herecurr);
-+		}
-+
- # ENOSYS means "bad syscall nr" and nothing else.  This will have a small
- # number of false positives, but assembly files are not checked, so at
- # least the arch entry code will not trigger this warning.
--- 
-2.28.0.297.g1956fa8f8d-goog
-
+Joel
