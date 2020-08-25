@@ -2,189 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965CC251D13
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146BF251D17
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgHYQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:21:24 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60460 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgHYQVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:21:05 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 2409C29244F
-Received: by earth.universe (Postfix, from userid 1000)
-        id A3C303C0C82; Tue, 25 Aug 2020 18:21:01 +0200 (CEST)
-Date:   Tue, 25 Aug 2020 18:21:01 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Elliot Berman <eberman@codeaurora.org>
-Cc:     Andy Yan <andy.yan@rock-chips.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Trilok Soni <tsoni@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: Re: [RESEND PATCH v1 1/4] dt-bindings: power: reset: Convert
- reboot-mode to YAML
-Message-ID: <20200825162101.27ivwlxbby7q7hy6@earth.universe>
-References: <1597776856-12014-1-git-send-email-eberman@codeaurora.org>
- <1597776856-12014-2-git-send-email-eberman@codeaurora.org>
+        id S1727047AbgHYQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 12:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726878AbgHYQVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 12:21:25 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF16920866;
+        Tue, 25 Aug 2020 16:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598372476;
+        bh=PoI9JF5btHk5sSTw0bcJpdoiKWYA/9tmzXn+FNP0WxI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0ufv1R6f98uidMZFudDJ8MTfpbqeHXQrWZGk9/QedpzZuvlM0UPwbt0hgfL48dfqZ
+         scO2df1aOvVhBo7drveZAJd3yqqxhWHzwJKtRlQgImvQcFH5NzR/pbmCr6OyNmwcp1
+         DhYvoOXlfXSW/00+rsrIqYg5xhe4Vy5Q9zWScBwk=
+Received: by mail-oo1-f46.google.com with SMTP id u28so2830810ooe.12;
+        Tue, 25 Aug 2020 09:21:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531erWDC7PYzJ1+4F/XQpuA0r+Afp3yGEKtGNdsSu1XhqanRX6UC
+        uB5EydXsqIwbgosRZMa59/vQCMTxNalkQuichQ==
+X-Google-Smtp-Source: ABdhPJzxUfkNriotpHAGv5AQAyBKuk14XowJiqNyCzseH1wr+QZWzE8abqHiFPx6mMQ/UOoJUCGoJ/0E0Jxv6EzFixo=
+X-Received: by 2002:a4a:330b:: with SMTP id q11mr7411742ooq.50.1598372475009;
+ Tue, 25 Aug 2020 09:21:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="svvw56udockwuh7v"
-Content-Disposition: inline
-In-Reply-To: <1597776856-12014-2-git-send-email-eberman@codeaurora.org>
+References: <1598255421-8274-1-git-send-email-sagar.kadam@sifive.com>
+ <1598255421-8274-2-git-send-email-sagar.kadam@sifive.com> <20200824173539.GA2939042@bogus>
+ <DM6PR13MB3451089239FDA8F87BA6410497570@DM6PR13MB3451.namprd13.prod.outlook.com>
+In-Reply-To: <DM6PR13MB3451089239FDA8F87BA6410497570@DM6PR13MB3451.namprd13.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 25 Aug 2020 10:21:03 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+AfvgpXDt4vQmg2UcV7ARYKPw6hxJvuLotJH5xApz6cw@mail.gmail.com>
+Message-ID: <CAL_Jsq+AfvgpXDt4vQmg2UcV7ARYKPw6hxJvuLotJH5xApz6cw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dt-bindings: riscv: sifive-l2-cache: convert bindings
+ to json-schema
+To:     Sagar Kadam <sagar.kadam@openfive.com>
+Cc:     "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
+        Yash Shah <yash.shah@openfive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 25, 2020 at 2:47 AM Sagar Kadam <sagar.kadam@openfive.com> wrote:
+>
+> Hello Rob,
+>
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Monday, August 24, 2020 11:06 PM
+> > To: Sagar Kadam <sagar.kadam@openfive.com>
+> > Cc: aou@eecs.berkeley.edu; devicetree@vger.kernel.org; Paul Walmsley (
+> > Sifive) <paul.walmsley@sifive.com>; robh+dt@kernel.org; Yash Shah
+> > <yash.shah@openfive.com>; palmer@dabbelt.com; linux-
+> > kernel@vger.kernel.org; linux-riscv@lists.infradead.org
+> > Subject: Re: [PATCH 1/1] dt-bindings: riscv: sifive-l2-cache: convert bindings
+> > to json-schema
+> >
+> > [External Email] Do not click links or attachments unless you recognize the
+> > sender and know the content is safe
+> >
+> > On Mon, 24 Aug 2020 13:20:21 +0530, Sagar Kadam wrote:
+> > > Convert the device tree bindings for the SiFive's FU540-C000 SoC's L2
+> > > Cache controller to YAML format.
+> > >
+> > > Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+> > > ---
+> > >  .../devicetree/bindings/riscv/sifive-l2-cache.txt  | 51 ------------
+> > > .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 93
+> > > ++++++++++++++++++++++
+> > >  2 files changed, 93 insertions(+), 51 deletions(-)  delete mode
+> > > 100644 Documentation/devicetree/bindings/riscv/sifive-l2-cache.txt
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> > >
+> >
+> >
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >
+>
+> I had checked using DT_SCHEMA_FILES option due to which it didn't catch any error on other
+> schemas. Without this I could regenerate the error you mentioned.
+> I will fix it and update. Sorry for the error.
 
---svvw56udockwuh7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Update your kernel. DT_SCHEMA_FILES setting no longer matters on
+current tree. It only affects 'dtbs_check' now.
 
-Hi,
-
-Thanks, queued.
-
--- Sebastian
-
-On Tue, Aug 18, 2020 at 11:54:13AM -0700, Elliot Berman wrote:
-> Convert reboot-mode bindings to YAML.
->=20
-> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
-> ---
->  .../bindings/power/reset/reboot-mode.txt           | 25 ------------
->  .../bindings/power/reset/reboot-mode.yaml          | 47 ++++++++++++++++=
-++++++
->  2 files changed, 47 insertions(+), 25 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/power/reset/reboot-=
-mode.txt
->  create mode 100644 Documentation/devicetree/bindings/power/reset/reboot-=
-mode.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/power/reset/reboot-mode.tx=
-t b/Documentation/devicetree/bindings/power/reset/reboot-mode.txt
-> deleted file mode 100644
-> index de34f27..0000000
-> --- a/Documentation/devicetree/bindings/power/reset/reboot-mode.txt
-> +++ /dev/null
-> @@ -1,25 +0,0 @@
-> -Generic reboot mode core map driver
-> -
-> -This driver get reboot mode arguments and call the write
-> -interface to store the magic value in special register
-> -or ram. Then the bootloader can read it and take different
-> -action according to the argument stored.
-> -
-> -All mode properties are vendor specific, it is a indication to tell
-> -the bootloader what to do when the system reboots, and should be named
-> -as mode-xxx =3D <magic> (xxx is mode name, magic should be a none-zero v=
-alue).
-> -
-> -For example modes common on Android platform:
-> -- mode-normal: Normal reboot mode, system reboot with command "reboot".
-> -- mode-recovery: Android Recovery mode, it is a mode to format the devic=
-e or update a new image.
-> -- mode-bootloader: Android fastboot mode, it's a mode to re-flash partit=
-ions on the Android based device.
-> -- mode-loader: A bootloader mode, it's a mode used to download image on =
-Rockchip platform,
-> -	       usually used in development.
-> -
-> -Example:
-> -	reboot-mode {
-> -		mode-normal =3D <BOOT_NORMAL>;
-> -		mode-recovery =3D <BOOT_RECOVERY>;
-> -		mode-bootloader =3D <BOOT_FASTBOOT>;
-> -		mode-loader =3D <BOOT_BL_DOWNLOAD>;
-> -	}
-> diff --git a/Documentation/devicetree/bindings/power/reset/reboot-mode.ya=
-ml b/Documentation/devicetree/bindings/power/reset/reboot-mode.yaml
-> new file mode 100644
-> index 0000000..a6c9102
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/reset/reboot-mode.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/reset/reboot-mode.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Generic reboot mode core map
-> +
-> +maintainers:
-> +  - Andy Yan <andy.yan@rock-chips.com>
-> +
-> +description: |
-> +  This driver get reboot mode arguments and call the write
-> +  interface to store the magic value in special register
-> +  or ram. Then the bootloader can read it and take different
-> +  action according to the argument stored.
-> +
-> +  All mode properties are vendor specific, it is a indication to tell
-> +  the bootloader what to do when the system reboots, and should be named
-> +  as mode-xxx =3D <magic> (xxx is mode name, magic should be a non-zero =
-value).
-> +
-> +  For example, modes common Android platform are:
-> +    - normal: Normal reboot mode, system reboot with command "reboot".
-> +    - recovery: Android Recovery mode, it is a mode to format the device=
- or update a new image.
-> +    - bootloader: Android fastboot mode, it's a mode to re-flash partiti=
-ons on the Android based device.
-> +    - loader: A bootloader mode, it's a mode used to download image on R=
-ockchip platform,
-> +              usually used in development.
-> +
-> +properties:
-> +  mode-normal:
-> +      $ref: /schemas/types.yaml#/definitions/uint32
-> +      description: |
-> +        Default value to set on a reboot if no command was provided.
-> +
-> +patternProperties:
-> +  "^mode-.*$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +examples:
-> +  - |
-> +    reboot-mode {
-> +      mode-normal =3D <0>;
-> +      mode-recovery =3D <1>;
-> +      mode-bootloader =3D <2>;
-> +      mode-loader =3D <3>;
-> +    };
-> +...
-> --=20
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->=20
-
---svvw56udockwuh7v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9FOl8ACgkQ2O7X88g7
-+ppIVA//Q7sFR8KWW2DLHJO66JM9waRoFhMR0niAYGKNORlj8MIbR5ruDIQ7iX2K
-E0Q+7igrfRF2nOxuVOEYD8dIS9PygAeLyiCY8u5gZorISVf2GveENkWSDGZeY//G
-nkoEjTFKI17uEmwgw5PO07xuHJvmhUJ3UvaA+gNHIWOrkO2P6zH4s4jEZsqGs1uu
-xJk+BFCVBjb7cX6cWZLyF1cgw660n3bNtF9iPjHnNLKpVxIwK+OEB/hCeatEayTh
-3jPeZ1zLtI3Umo3dhEo0H+s5Hjt/HIt/bQhuvirTTrDyDQF4n3gxWwIeRKUY3z8N
-jTw2esV/61m8ZpIX4cSuwoAroCUlK4jYRRdNDuCfwT07HbLiUs/YdC3KtZGXXrdn
-xacoaTXQWP/7FL7URwPEsc4KcRImU3sodyPs+ReXfk8DAQA2DjT95hSqLUaZvh8h
-1uilDsSLFJauzWR7hDGuhPyA/3qvm9AU2BrZ0ziskT7XoZ/hq0GB/Dtuuq+5lV8c
-dGMNmLIbMyXO+hGnIODXl5fxMiayEJ9mW3wN0P8ynTZ/2N7IKm3tTXeDGwHosd7Y
-M+d+JHY4p9T8tF84p9eqQf1CqFVLffZjnEfRTLMY60AJBdDHSp9SdjrdoYNs4/AH
-So9SKU3ssbJLe9c2Ea1DjQx773vfq1iFAFaS2WvWPX/Up8TXmyo=
-=33YO
------END PGP SIGNATURE-----
-
---svvw56udockwuh7v--
+Rob
