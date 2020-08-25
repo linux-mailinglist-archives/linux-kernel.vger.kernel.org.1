@@ -2,226 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C142251539
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A4125153D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgHYJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728475AbgHYJVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:21:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233D4C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:21:13 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x25so6839670pff.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=CabenADhkeDmn9ATtQd7NLLVZBNFWUdF1srj48ypUAI=;
-        b=kSjlVWgouzQuBvJvV62xPzMHc4Vj3H4P2jq5sEj88IFUueTeSlgbZJQQNE3NPTOaIv
-         AUFfCzVN60vZgbqISgmmC4fDhSRw0k+/pe+jV/GUy7I2Czq2iQctt613YQmZPS5WbSj/
-         7Z92ZI2S3kDbhgkMw9zM0X/7FiWzayW+Uocbo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=CabenADhkeDmn9ATtQd7NLLVZBNFWUdF1srj48ypUAI=;
-        b=Hdablb1b70jGyS5MBxJ8ADcK4qtARGJnYTLQA1o9hPMOBGOez8jEHianzwD49ngICz
-         4NFxP9Tpl+RUeC+97Bj2a7XSHPcY2okYzBRztlRveSIZGjHsYYrM5QDvwVvwPKj1xFME
-         RUCWj0EvXRCHjSLsCV4gmzSOHWqWwHgsSkDwppkjdnGN0CcEhxKgyMvyOVZkBFGVvQfD
-         /4FzWQkeqajbCy2V8/C3jdeagoVHNkjp3e+1FpkElxj0dxC8/JQNPozwIQtV6UCqX7QO
-         J2J5hrd1tll4cLiACmcd34dBMG+84yjV4f5dHoPchGV9EZuj56MiqjWZ0eM/SH33Z8UD
-         ZGmQ==
-X-Gm-Message-State: AOAM531nDM6imipP3cbjnWEkkdmmRAwq92odypiuhpzrPzC1Ua4yheRu
-        B1zHMpmE3Ag80aejd6zyLakdKw==
-X-Google-Smtp-Source: ABdhPJxdwZWXCwKiihvkw3GaI/1XdPFEcf/CzYv8zUyN/gMdBfFcd2+g74fujhZp9Fj7e9zwfmwJng==
-X-Received: by 2002:a17:902:b681:: with SMTP id c1mr7154572pls.10.1598347272513;
-        Tue, 25 Aug 2020 02:21:12 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id s125sm14294117pfb.125.2020.08.25.02.21.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 02:21:11 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1729104AbgHYJWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:22:30 -0400
+Received: from 8bytes.org ([81.169.241.247]:39304 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728377AbgHYJW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 05:22:29 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 840D829A; Tue, 25 Aug 2020 11:22:27 +0200 (CEST)
+Date:   Tue, 25 Aug 2020 11:22:24 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v6 02/76] KVM: SVM: Add GHCB definitions
+Message-ID: <20200825092224.GF3319@8bytes.org>
+References: <20200824085511.7553-1-joro@8bytes.org>
+ <20200824085511.7553-3-joro@8bytes.org>
+ <20200824104451.GA4732@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200825003341.1797322-1-robdclark@gmail.com>
-References: <20200825003341.1797322-1-robdclark@gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Atul Dhudase <adhudase@codeaurora.org>,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Evan Green <evgreen@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Alexandru Stan <amstan@chromium.org>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org
-Date:   Tue, 25 Aug 2020 02:21:10 -0700
-Message-ID: <159834727050.334488.84544239322533805@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824104451.GA4732@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Clark (2020-08-24 17:33:39)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/bo=
-ot/dts/qcom/sc7180-trogdor.dtsi
-> new file mode 100644
-> index 000000000000..b04987ab6c22
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -0,0 +1,1364 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-[...]
-> +
-> +       gpio_keys: gpio-keys {
-> +               compatible =3D "gpio-keys";
-> +               status =3D "disabled";
-> +               pinctrl-names =3D "default";
-> +               pinctrl-0 =3D <&pen_pdct_l>;
-> +
-> +               pen-insert {
-> +                       label =3D "Pen Insert";
-> +
-> +                       /* Insert =3D low, eject =3D high */
-> +                       gpios =3D <&tlmm 52 GPIO_ACTIVE_LOW>;
-> +                       linux,code =3D <SW_PEN_INSERTED>;
-> +                       linux,input-type =3D <EV_SW>;
-> +                       wakeup-source;
-> +               };
-> +       };
-> +
-> +       max98357a: max98357a {
+On Mon, Aug 24, 2020 at 12:44:51PM +0200, Borislav Petkov wrote:
+> On Mon, Aug 24, 2020 at 10:53:57AM +0200, Joerg Roedel wrote:
+> >  static inline void __unused_size_checks(void)
+> >  {
+> > -	BUILD_BUG_ON(sizeof(struct vmcb_save_area) != 0x298);
+> > +	BUILD_BUG_ON(sizeof(struct vmcb_save_area) != 1032);
+> >  	BUILD_BUG_ON(sizeof(struct vmcb_control_area) != 256);
+> > +	BUILD_BUG_ON(sizeof(struct ghcb) != 4096);
+> 
+> Could those naked numbers be proper, meaningfully named defines?
 
-Maybe node name should be 'audio-codec' or 'dac' or 'amp' or 'speaker'
-or 'codec'?
+I don't think so, if I look at the history of these checks their whole
+purpose seems to be to alert the developer/maintainer when their size
+changes and that they might not fit on the stack anymore. But that is
+taken care of in patch 1.
 
-> +               compatible =3D "maxim,max98357a";
-> +               pinctrl-names =3D "default";
-> +               pinctrl-0 =3D <&amp_en>;
-> +               sdmode-gpios =3D <&tlmm 23 GPIO_ACTIVE_HIGH>;
-> +               #sound-dai-cells =3D <0>;
-> +       };
-> +
-> +       pwmleds {
-> +               compatible =3D "pwm-leds";
-> +               keyboard_backlight: keyboard-backlight {
-> +                       status =3D "disabled";
-> +                       label =3D "cros_ec::kbd_backlight";
-> +                       pwms =3D <&cros_ec_pwm 0>;
-> +                       max-brightness =3D <1023>;
-> +               };
-> +       };
-> +};
-> +
-> +&qfprom {
-> +       vcc-supply =3D <&pp1800_l11a>;
-> +};
-> +
-> +
+Regards,
 
-Drop double newline?
-
-> +&qspi {
-> +       status =3D "okay";
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
-> +
-> +       flash@0 {
-> +               compatible =3D "jedec,spi-nor";
-> +               reg =3D <0>;
-> +
-> +               /* TODO: Increase frequency after testing */
-
-Maybe drop this TODO? I don't see it being too meaningful.
-
-> +               spi-max-frequency =3D <25000000>;
-> +               spi-tx-bus-width =3D <2>;
-> +               spi-rx-bus-width =3D <2>;
-> +       };
-> +};
-> +
-> +
-
-Drop double newline?
-
-> +&apps_rsc {
-> +       pm6150-rpmh-regulators {
-> +               compatible =3D "qcom,pm6150-rpmh-regulators";
-> +
-> +&wifi {
-> +       status =3D "okay";
-> +       vdd-0.8-cx-mx-supply =3D <&vdd_cx_wlan>;
-> +       vdd-1.8-xo-supply =3D <&pp1800_l1c>;
-> +       vdd-1.3-rfa-supply =3D <&pp1300_l2c>;
-> +
-> +       /*
-> +        * TODO: Put ch1 supply in its rightful place, rather than in ch0=
-'s
-> +        * spot. Channel 0 is held open by bluetooth for now.
-> +        */
-> +       vdd-3.3-ch0-supply =3D <&pp3300_l11c>;
-> +       wifi-firmware {
-> +               iommus =3D <&apps_smmu 0xc2 0x1>;
-> +       };
-> +};
-> +
-> +/* PINCTRL - additions to nodes defined in sdm845.dtsi */
-
-Oops, that should be sc7180.dtsi
-
-> +
-> +&qspi_cs0 {
-> +       pinconf {
-> +               pins =3D "gpio68";
-> +               bias-disable;
-> +       };
-[...]
-> +/* PINCTRL - board-specific pinctrl */
-> +
-> +&pm6150_gpio {
-> +       status =3D "disabled"; /* No GPIOs are connected */
-> +};
-> +
-> +&pm6150l_gpio {
-> +       gpio-line-names =3D "AP_SUSPEND",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "",
-> +                         "";
-> +};
-> +
-> +&tlmm {
-[...]
-> +
-> +&venus {
-> +       video-firmware {
-> +               iommus =3D <&apps_smmu 0x0c42 0x0>;
-> +       };
-> +};
-
-I believe this node should come before the PINCTRL comment above and be
-sorted alphabetically by node name.
-
- +/* PINCTRL - additions to nodes defined in sdm845.dtsi */
+	Joerg
