@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A714F251440
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAFD251444
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729159AbgHYIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:31:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:53805 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgHYIb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:31:57 -0400
-IronPort-SDR: 3ZdKkZYxqJGv0EMPGa9iH564Ii7nBwMql5OeKygtVrDCH0b5AgUahtZNWimjuOu7E29G30HUIb
- wLrf9DNHnN8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="174106730"
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="174106730"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 01:31:56 -0700
-IronPort-SDR: WivsC7h88SgsL8a8qszs7v2ZnMAHxv/TgbYyuA16oH/M6k7sTqAuZE02nQ35x9bi+QQiX1NTqG
- 3WHrkjIWZBSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="299022794"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga006.jf.intel.com with ESMTP; 25 Aug 2020 01:31:54 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     cw00.choi@samsung.com, linux-kernel@vger.kernel.org
-Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
-        myungjoo.ham@samsung.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, yin1.li@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v1 1/1] extcon: ptn5150: Add usb-typec support for Intel LGM SoC
-Date:   Tue, 25 Aug 2020 16:31:47 +0800
-Message-Id: <20200825083147.25270-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200825083147.25270-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200825083147.25270-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1729261AbgHYIcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729165AbgHYIcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 04:32:10 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0410C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:32:08 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x64so5007916lff.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8VBcmM6sRKWlq0/anJb0wKs91ISNtH5ktL2MLmE99og=;
+        b=X9RY+o6sC9Ppm0S92JcWuGapwVP6vGdg7BjmyO+bVW0rj1WTbhhQsV4pHkqkwAjjaN
+         8H/JJC5//XVna28iO68xRVOv9wU5x6YXvvotlGw4lLejKAMz/7Q00mTo0f967W4aMtUw
+         fPiG3HQHt/fd2KN89nN8sEf0oVh56pcOds4wS0HQdO+5Lb+PNySRcvEGwgy4lHZefIy5
+         rpPA57c8RiRxZCxSfGlU1duSCLz3LMQ8/pSg+8uvHvNSWoz0nBeDuyncKVeR1U7EwtMq
+         czWKRkH2JC3rN+Vs1JuY98vwSztqYkw2+2QSwv4wCzy/Zrvk0+76s1xbiZ0f2HRzJS2N
+         lsAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8VBcmM6sRKWlq0/anJb0wKs91ISNtH5ktL2MLmE99og=;
+        b=Y//GTeNLTRpAPYetutPiqMC/JavDP5vSWmdN7u3GfnLybNG1B4m8YE/0EcXPloRdNH
+         5r5qWoi/yRil543NUiu9/de2cEZq6siPOx0QUnRH06SjHi86KGRZ6qrzxQ/6fzyIfDW2
+         Kamm5FcBiP5b16cBawmCeJzIzJluyugZ28nvimYleS2II7T10JvA/OM2pJGbJvRXdSPm
+         MfITl1WmdYj57UnKwI7thTwfsJvhPS+ULlLGkw7F/RVLtuwyizxREgjIafUURACszwcB
+         +jEuqlYgblpTHf9YfEt0m5KNrcrxgWxOZdUEZnqZzOgf4g7/7hZIWSFyZG4eif1R0/Py
+         X9UQ==
+X-Gm-Message-State: AOAM5301h1ieeQs2JCoqKwZNhA4vw9u4U7Q/p8k7oyDsW4vKbpuUn940
+        dJq2WiFev3RvTZGbWfr+5FwtnQ==
+X-Google-Smtp-Source: ABdhPJyvP5CCC/9K1+399P66A5Xf4E5azNewtsF/LKST22V5Yw1PmUGF53lGY/lu2kWSsQNejxGZUA==
+X-Received: by 2002:ac2:4570:: with SMTP id k16mr4396381lfm.60.1598344327410;
+        Tue, 25 Aug 2020 01:32:07 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id f14sm2666979ljp.138.2020.08.25.01.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 01:32:06 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 10:32:04 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     arm@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, olof@lixom.net, soc@kernel.org,
+        tee-dev@lists.linaro.org, Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v3] tee: convert convert get_user_pages() -->
+ pin_user_pages()
+Message-ID: <20200825083204.GA2068961@jade>
+References: <CAHUa44FrxidzSUOM_JchOTa5pF6P+j8uZJA5DpKfGLWaS6tCcw@mail.gmail.com>
+ <20200824211125.1867329-1-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200824211125.1867329-1-jhubbard@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Mon, Aug 24, 2020 at 02:11:25PM -0700, John Hubbard wrote:
+> This code was using get_user_pages*(), in a "Case 2" scenario
+> (DMA/RDMA), using the categorization from [1]. That means that it's
+> time to convert the get_user_pages*() + put_page() calls to
+> pin_user_pages*() + unpin_user_pages() calls.
+> 
+> Factor out a new, small release_registered_pages() function, in
+> order to consolidate the logic for discerning between
+> TEE_SHM_USER_MAPPED and TEE_SHM_KERNEL_MAPPED pages. This also
+> absorbs the kfree() call that is also required there.
+> 
+> There is some helpful background in [2]: basically, this is a small
+> part of fixing a long-standing disconnect between pinning pages, and
+> file systems' use of those pages.
+> 
+> [1] Documentation/core-api/pin_user_pages.rst
+> 
+> [2] "Explicit pinning of user-space pages":
+>     https://lwn.net/Articles/807108/
+> 
+> Cc: Jens Wiklander <jens.wiklander@linaro.org>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: tee-dev@lists.linaro.org
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+> 
+> OK, one more try, this time actually handling the _USER_MAPPED vs.
+> _KERNEL_MAPPED pages!
+> 
+> thanks,
+> John Hubbard
+> NVIDIA
 
-Add usb-typec detection support for Intel LGM SoC based
-boards.
+Looks good and it works too! :-) I've tested it on my Hikey board with
+the OP-TEE test suite.
+I'm picking this up.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- drivers/extcon/extcon-ptn5150.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-index 8ba706fad887..60355a1b5cb2 100644
---- a/drivers/extcon/extcon-ptn5150.c
-+++ b/drivers/extcon/extcon-ptn5150.c
-@@ -300,6 +300,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
-+	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
-+				       EXTCON_PROP_USB_TYPEC_POLARITY);
- 	/* Initialize PTN5150 device and print vendor id and version id */
- 	ret = ptn5150_init_dev_type(info);
- 	if (ret)
--- 
-2.11.0
-
+Thanks,
+Jens
