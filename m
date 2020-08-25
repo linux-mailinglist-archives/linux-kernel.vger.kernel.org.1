@@ -2,53 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46E1251DED
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D507251DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHYROO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:14:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35176 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726542AbgHYROF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:14:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 97D69AE68;
-        Tue, 25 Aug 2020 17:14:35 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 19:14:04 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7][next] printk: ringbuffer: relocate get_data()
-Message-ID: <20200825171403.GZ4353@alley>
-References: <20200824103538.31446-1-john.ogness@linutronix.de>
- <20200824103538.31446-4-john.ogness@linutronix.de>
+        id S1726432AbgHYRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHYRQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:16:19 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57CCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:16:17 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i10so14711272ljn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mo0Muk7fdL9/zKvFIFzgemUwwyHBnlsardInfQrXhhI=;
+        b=AXHm/dJ0rHd2TZInwSAMWT4xkULe3KuDv7PEy7Vmvg/70C93nEQmnBLnPpdCBjEU/a
+         LJpWzWoIZgMXXtaBkJKYQjGsN166f2E2VBNOpC5bVvUamarlECX/2LPLkbbcBPTwTvvE
+         qT1suASowH5CMkTUCLy+iBbc5oXs37/DBfN9KLkV3fR13Qj17TxGnzyjuaA1VYZAztPs
+         9JUjeZmcOpEbVMQO8+ALhLoqRhIqBdWw9dOvSSUX52BZ+DfxwRKcXxnwcQu/a2yx4OpK
+         jP0UXr2BNWAJsVwDVO2WsFf5U+hO4aKj+5xGQc+MsIS5bvDUhJZ88ujLF0S0/azfHkTb
+         Cjsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mo0Muk7fdL9/zKvFIFzgemUwwyHBnlsardInfQrXhhI=;
+        b=seDupLxQyjufGlM24NzkW4DXV8BpTN40bGbzOttrcXwMYPd8ZWbOafIKab/+ijtC3O
+         TvxU7F9194iab9skzPOlHFQGyEg3CoLLKDdXdhJ78iZhK7AfHb5bSWR5s6yekdNuHAZm
+         5fflnKkbQ9MZ4UCbNk1mNc7abjCZPEW0iLXFxxW1au9SgT2BbdAfMz4JsGnNLPv2bOZF
+         fXm2tUblCfekeduCQg4PVylh4QJM548Ezo8PITUVTNyL3xb6buRuIwTVpcjWy5Cp1rph
+         8lc+2t+Xadyy2tkEg7tMNgKhpSZRUzVqgjXTeLb/RDxMfFzZ/UF9iuL9Syrqy0upe4As
+         rpTA==
+X-Gm-Message-State: AOAM530M2JjnbtJAYRC1Kw0eJowIaj89KQ4KiY+GrthpCkiZAJUaqtRI
+        PKYQSENN59JEh7NUCglBmRNH2ZDfzj+0wZ/QtBS3po/YyIQ=
+X-Google-Smtp-Source: ABdhPJyl4eVEh3fx1XakUFyburv/u13PcRmesrkEZ5DyEj3uIY2alEfePNPmrcFzUWwlz8YZ9r6wJ12wLIIebJZhfuw=
+X-Received: by 2002:a2e:8ed4:: with SMTP id e20mr5672379ljl.403.1598375776209;
+ Tue, 25 Aug 2020 10:16:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824103538.31446-4-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
+ <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
+ <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
+ <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
+ <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com> <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
+In-Reply-To: <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 25 Aug 2020 14:16:05 -0300
+Message-ID: <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com>
+Subject: Re: (EXT) Re: (EXT) Re: [PATCH 2/2] ARM: dts: imx6qdl: tqma6: minor fixes
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-08-24 12:41:34, John Ogness wrote:
-> Move the internal get_data() function as-is above prb_reserve() so
-> that a later change can make use of the static function.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On Tue, Aug 25, 2020 at 11:40 AM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Makes sense. Does the following logic sound correct?
+>
+> - If num-cs is set, use that (and add it to the docs)
 
-Best Regards,
-Petr
+I would not add num-cs to the docs. As far as I can see there is no
+imx dts that uses num-cs currently.
+
+> - If num-cs is unset, use the number of cs-gpios
+> - If num-cs is unset and no cs-gpios are defined, use a driver-provided
+> default
+>
+>
+> I'm not sure if 3 is a particularly useful default either, but it seems
+> it was chosen to accommodate boards that previously set this via
+> platform data. All SoCs I've checked (i.MX6Q/DL, i.MX6UL, i.MX7) have 4
+> internal CS pins per ECSPI instance, so maybe the driver should use
+> that as its default instead?
+
+I think it is time to get rid of i.MX board files. I will try to work
+on this when I have a chance.
+
+bout using 4 as default chip select number, please also check some
+older SoCs like imx25, imx35, imx51, imx53, etc
