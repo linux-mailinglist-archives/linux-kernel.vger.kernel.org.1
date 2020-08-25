@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D69250D65
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD04250D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgHYAcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 20:32:16 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55482 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728667AbgHYAcG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 20:32:06 -0400
-Received: by mail-io1-f69.google.com with SMTP id k10so7420821ioh.22
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 17:32:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=c5Kv1Rn0yV+exH6v0x9JjcLClh6/0bR8a+fScfVRIVU=;
-        b=ndyQZ/lu9rsK9Om3DiOlA9MH93X3mGvySUxUjNeytuKbVhP4Vg1nyKDzFV/WT7ixMC
-         sbMpDIVj2F1VQU1KG6cNIAOWPdfe9ksM1FizBrUjx+GrmFHlmlUJNRkJsfSi/l3xzk7C
-         c2tt9KXokME6N+yXJLCa//AF9qSLxmyGrfveA5cW90ZMLiyZz5vW4P0b9ce+j4BQIxL1
-         +CSFDStlrZf1v/EpCZ6dengXDTGEHXl7a1+TZhkUg47XHmuS8er8iIzhLM6sgc4HPCU4
-         hBXvK1YgFUctuN2UPrxMnPtH4e6kYd21Bi/48fJjF5dK3PswLwXNOx5uKVIwGsPZO7wj
-         i5VQ==
-X-Gm-Message-State: AOAM5334j2kW5/EoUCjyGX/QfGlr6vzXScKGTcwshpYEfaIy0e1ASxy3
-        je5Egh9cNjOmZXV1YGPdBcI+xmzqXpq9UOsSYTmMVvMjjnNx
-X-Google-Smtp-Source: ABdhPJx5MOMoD70oFHm4ifkadWV41DDpC3TBkUtcU2ajYZ2Tp6W0+CZhNsxmqkl6PMO/AuyVZqFpYAiqtEXzphpRRafjmRKmf4LA
+        id S1728509AbgHYAcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 20:32:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728439AbgHYAct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 20:32:49 -0400
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0684D22BEB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598315569;
+        bh=HzNRSUeUL6OriNoi411G8DjwqUuqi7JFl1V+hmvfPWg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uRWu1h/pRTe38+cnhWVoUjMTGyUxj4FX6LHXPmQOHohc0UiMAuVFXRFfGvQuUXiFU
+         x0m9GY1EjwLb2Vn/RymkjG2w7e8cfbzAb7e02+yOOlT1W3LXR000Pr7kw4RnV+6ZXj
+         WrQB1im2A7usG0ceNRnrso4/XUttJEJC2aZHtYTM=
+Received: by mail-wm1-f42.google.com with SMTP id t14so588261wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 17:32:48 -0700 (PDT)
+X-Gm-Message-State: AOAM5326/J6Ldwqtoh3Z7okUS0CYSEJ56a90LPTh0BhAMNjdEbwuUMUW
+        4xMbjZeKAY57Npzt8LWcN9s1QIV6JmuFdokcSzqkPg==
+X-Google-Smtp-Source: ABdhPJyauPayFdftcuPZnq0MJTSphzvI2x0UgLNn081J3B9GZfktgEGZliAmuQJq8JPRJLx6kwBNbrs1VoFPRwDiqF4=
+X-Received: by 2002:a7b:ca48:: with SMTP id m8mr1581098wml.36.1598315567552;
+ Mon, 24 Aug 2020 17:32:47 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13ca:: with SMTP id v10mr7365206ilj.105.1598315525364;
- Mon, 24 Aug 2020 17:32:05 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 17:32:05 -0700
-In-Reply-To: <0000000000008caae305ab9a5318@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020e49105ada8d598@google.com>
-Subject: Re: general protection fault in security_inode_getattr
-From:   syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, jmorris@namei.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        netdev@vger.kernel.org, omosnace@redhat.com, serge@hallyn.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20200825002645.3658-1-yu-cheng.yu@intel.com> <20200825002645.3658-10-yu-cheng.yu@intel.com>
+In-Reply-To: <20200825002645.3658-10-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 24 Aug 2020 17:32:35 -0700
+X-Gmail-Original-Message-ID: <CALCETrVXwUDu2m-XEd-_J03L=sricM4cMxQYVkdGRWZDjmMB2g@mail.gmail.com>
+Message-ID: <CALCETrVXwUDu2m-XEd-_J03L=sricM4cMxQYVkdGRWZDjmMB2g@mail.gmail.com>
+Subject: Re: [PATCH v11 9/9] x86: Disallow vsyscall emulation when CET is enabled
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Mon, Aug 24, 2020 at 5:30 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>
+> From: "H.J. Lu" <hjl.tools@gmail.com>
+>
+> Emulation of the legacy vsyscall page is required by some programs built
+> before 2013.  Newer programs after 2013 don't use it.  Disallow vsyscall
+> emulation when Control-flow Enforcement (CET) is enabled to enhance
+> security.
 
-commit 35697c12d7ffd31a56d3c9604066a166b75d0169
-Author: Yonghong Song <yhs@fb.com>
-Date:   Thu Jan 16 17:40:04 2020 +0000
+NAK.
 
-    selftests/bpf: Fix test_progs send_signal flakiness with nmi mode
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13032139900000
-start commit:   d012a719 Linux 5.9-rc2
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10832139900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17032139900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
-dashboard link: https://syzkaller.appspot.com/bug?extid=f07cc9be8d1d226947ed
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104a650e900000
-
-Reported-by: syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com
-Fixes: 35697c12d7ff ("selftests/bpf: Fix test_progs send_signal flakiness with nmi mode")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+By all means disable execute emulation if CET-IBT is enabled at the
+time emulation is attempted, and maybe even disable the vsyscall page
+entirely if you can magically tell that CET-IBT will be enabled when a
+process starts, but you don't get to just disable it outright on a
+CET-enabled kernel.
