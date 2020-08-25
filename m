@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8042513F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC0F2513FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728778AbgHYIPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgHYIPD (ORCPT
+        id S1728202AbgHYIQo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 04:16:44 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:43231 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728089AbgHYIQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:15:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DF7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:15:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id r15so11722852wrp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fCMhYRJmjkYiKHZv5M9E4fwHUfNifLkPhD+twyPnjk8=;
-        b=PmDZwmz/MeYnNaxx634n/X2V9xw4jBokuKq3G9Cymy+g8c25WRZi9y9Dt0sYltwoLj
-         rfXvOeghHR2ar1bXcVTbSDIa6gZt19jSb5F6pyMM3XPnP/Pf+lRj5siFbW4Lyo4eUGGg
-         u4lCIRzS13c/cp77o+pDAdycl01PenDOecNgaLrtL4j2Nr3m50ytRhyw4IK2jOkjkCqD
-         h+HADUFO3wFFJtzG6+7F1Gfhx6tPzeWEYpmLaXSebSkzhKIUyw/V62kWOhEfZ8zI8tiF
-         vnM+JUMmVfHKEc7KPfwaXphrA7P4eaUfbKqKvOtGFeXJJCYM7Hc8VEKBlEN1McplTPO5
-         wvfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fCMhYRJmjkYiKHZv5M9E4fwHUfNifLkPhD+twyPnjk8=;
-        b=t6q4vvDZ482xpBiFWCbtl9xyC6LcuVL4qOwq9aH/ivc2w/7HwqjjfqP+qWc/E37Te3
-         YoyZ8JPCrzpG3lc1PuSqR6MU2xhkwUj++oEiEoLFOhPb/1B9OxYEuPDDDpbtR75bLxQh
-         z9Dsyn0Bubo/2gqUzB8i5wfmJ6P+YqojhSPKxqQMEeeIuOXjRpjB6rLCtFD87akmvWYN
-         pwSBueTbLjaxbmc7DOEvIs3NL+ApbeAMXqf743AMhY8z3SFC+/dhZGFPDGNyTYTBazGG
-         gLi2Dzob+Us7ZbgpXnNYFesvbKSmxhFvSeJMnMmXdFHryDq2wCkwbQpGkQqea25tiPs3
-         zGwg==
-X-Gm-Message-State: AOAM5320KkLHkZtq6TIbEizvhnvZbYqTf3xHldcqMna92mqxT6DDosm1
-        rFAjmPhg6Qoi878+fruEFgk=
-X-Google-Smtp-Source: ABdhPJx/HZbjSGWiAMZDR8byiF2se8q102htS9s8NywuAX8BwxBr4+FOSWXB9/ZHj8ZWtL6kI4/uJA==
-X-Received: by 2002:a5d:6885:: with SMTP id h5mr5689661wru.358.1598343301615;
-        Tue, 25 Aug 2020 01:15:01 -0700 (PDT)
-Received: from lenovo-laptop (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id v67sm4395205wma.46.2020.08.25.01.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 01:15:00 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Tue, 25 Aug 2020 09:14:59 +0100
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>, devel@driverdev.osuosl.org,
-        Saiyam Doshi <saiyamdoshi.in@gmail.com>,
-        Magnus Damm <damm+renesas@opensource.se>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org,
-        "Javier F. Arias" <jarias.linux@gmail.com>,
-        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
-        Simon Horman <horms+renesas@verge.net.au>
-Subject: Re: [PATCH] staging: emxx_udc: Fix passing of NULL to
- dma_alloc_coherent()
-Message-ID: <20200825081459.qfvswtep5fkaqai2@lenovo-laptop>
-References: <20200824142118.GA223827@mwanda>
- <20200824151920.251446-1-alex.dewar90@gmail.com>
- <20200824155712.4kgxwqiufm2ieboz@medion>
- <20200825073713.GR1793@kadam>
+        Tue, 25 Aug 2020 04:16:43 -0400
+Received: from [2001:67c:670:100:3ad5:47ff:feaf:1a17] (helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kAU8B-0000Us-1j; Tue, 25 Aug 2020 10:16:35 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kAU89-0002cv-D2; Tue, 25 Aug 2020 10:16:33 +0200
+Message-ID: <32b000b801202c3d6318da6c5bc52d47ab6947e0.camel@pengutronix.de>
+Subject: Re: [PATCH v1] ata: ahci_brcm: Fix use of BCM7216 reset controller
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 25 Aug 2020 10:16:33 +0200
+In-Reply-To: <20200824204002.45500-1-james.quinlan@broadcom.com>
+References: <20200824204002.45500-1-james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825073713.GR1793@kadam>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:37:13AM +0300, Dan Carpenter wrote:
-> On Mon, Aug 24, 2020 at 04:57:12PM +0100, Alex Dewar wrote:
-> > On Mon, Aug 24, 2020 at 04:19:17PM +0100, Alex Dewar wrote:
-> > > In nbu2ss_eq_queue() memory is allocated with dma_alloc_coherent(),
-> > > though, strangely, NULL is passed as the struct device* argument. Pass
-> > > the UDC's device instead.
+On Mon, 2020-08-24 at 16:40 -0400, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
 > 
-> I think passing NULL was always wrong, but it used to not cause an Oops.
-> This was changed a year or two ago.
+> A reset controller "rescal" is shared between the AHCI driver and the PCIe
+> driver for the BrcmSTB 7216 chip.  Use
+> devm_reset_control_get_optional_shared() to handle this sharing.
 > 
-> > > 
-> > > Build-tested on x86 only.
-> > > 
-> > > Fixes: 33aa8d45a4fe ("staging: emxx_udc: Add Emma Mobile USB Gadget driver")
-> > > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> > > ---
-> > > 
-> > > So I *think* this is the right fix, but I don't have the hardware so
-> > > I've only been able to build-test it. My worry is that I could be
-> > > passing in the wrong struct device* here, which would squelch the
-> > > warning without fixing the breakage.
-> > > 
-> > > Can someone cleverer than me tell me if this makes sense?
-> > > 
-> > > - Alex
-> > 
-> > PS -- I meant to put an RFC in the subject line and an extra tag:
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > 
+> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
+> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> ---
+>  drivers/ata/ahci_brcm.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
 > 
-> I don't know which dev pointer we're supposed to pass...  It would be
-> good to find someone to test the patch but if not then applying your
-> patch is reasonable.
-> 
-> But could you search through the file and update the rest as well.
-> The dma_free_coherent() needs to be updated and there was a second
-> dma_alloc_coherent() in the bug report.
-> 
-> regards,
-> dan carpenter
-> 
+> diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
+> index 6853dbb4131d..d6115bc04b09 100644
+> --- a/drivers/ata/ahci_brcm.c
+> +++ b/drivers/ata/ahci_brcm.c
+> @@ -428,7 +428,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+>  {
+>  	const struct of_device_id *of_id;
+>  	struct device *dev = &pdev->dev;
+> -	const char *reset_name = NULL;
+>  	struct brcm_ahci_priv *priv;
+>  	struct ahci_host_priv *hpriv;
+>  	struct resource *res;
+> @@ -452,11 +451,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+>  
+>  	/* Reset is optional depending on platform and named differently */
+>  	if (priv->version == BRCM_SATA_BCM7216)
+> -		reset_name = "rescal";
+> +		priv->rcdev = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
+>  	else
+> -		reset_name = "ahci";
+> +		priv->rcdev = devm_reset_control_get_optional(&pdev->dev, "ahci");
 
-I can only find the one instance of dma_alloc_coherent(). Was it by any
-chance a different warning about the same call....?
+I think it would be cleaner to use two separate reset control handles
+here. It is hard to reason about what the code does when the reset
+control is shared on one platform and exclusive on the other.
+
+> -	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
+>  	if (IS_ERR(priv->rcdev))
+>  		return PTR_ERR(priv->rcdev);
+>  
+> @@ -479,10 +477,7 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+>  		break;
+>  	}
+>  
+> -	if (priv->version == BRCM_SATA_BCM7216)
+> -		ret = reset_control_reset(priv->rcdev);
+
+I think we might have a similar issue currently with
+"usb: dwc3: meson-g12a: fix shared reset control use", where two IP
+cores try to share a pulsed reset line.
+
+> -	else
+> -		ret = reset_control_deassert(priv->rcdev);
+> +	ret = reset_control_deassert(priv->rcdev);
+
+Isn't the shared 'rescal' reset a triggered reset pulse? Looking at the
+reset-brcmstb-rescal reset controller driver, without reset line level
+control implemented, this will turn into a no-op for BCM7216. Yes, the
+reset line will be deasserted after this call, but there is no guarantee
+that the reset line was ever pulsed.
+
+regards
+Philipp
