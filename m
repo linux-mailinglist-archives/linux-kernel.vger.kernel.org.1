@@ -2,66 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F315D251991
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2254251995
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgHYN1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        id S1726374AbgHYN2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHYN1M (ORCPT
+        with ESMTP id S1725805AbgHYN2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:27:12 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86003C061574;
-        Tue, 25 Aug 2020 06:27:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 34C76295FCD
-Subject: Re: [PATCH] MAINTAINERS: add Dafna Hirschfeld for rkisp1
-To:     Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        kernel@collabora.com, tfiga@chromium.org
-References: <20200825132209.193435-1-helen.koike@collabora.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <ca53cdf2-e82b-9370-86d8-9005b104ca04@collabora.com>
-Date:   Tue, 25 Aug 2020 15:27:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200825132209.193435-1-helen.koike@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Tue, 25 Aug 2020 09:28:12 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C77C061574;
+        Tue, 25 Aug 2020 06:28:12 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id D4DDF11E45768;
+        Tue, 25 Aug 2020 06:11:24 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 06:28:10 -0700 (PDT)
+Message-Id: <20200825.062810.532289828451334856.davem@davemloft.net>
+To:     linmiaohe@huawei.com
+Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: clean up codestyle for net/ipv4
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200825123211.33235-1-linmiaohe@huawei.com>
+References: <20200825123211.33235-1-linmiaohe@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 25 Aug 2020 06:11:25 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Miaohe Lin <linmiaohe@huawei.com>
+Date: Tue, 25 Aug 2020 08:32:11 -0400
 
-
-Am 25.08.20 um 15:22 schrieb Helen Koike:
-> Add Dafna Hirschfeld to rkisp1 maintainers list
+> This is a pure codestyle cleanup patch. Also add a blank line after
+> declarations as warned by checkpatch.pl.
 > 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> ---
->   MAINTAINERS | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index deaafb617361c..3deb954b2bb5d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14858,6 +14858,7 @@ F:	include/linux/hid-roccat*
->   
->   ROCKCHIP ISP V1 DRIVER
->   M:	Helen Koike <helen.koike@collabora.com>
-> +M:	Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->   L:	linux-media@vger.kernel.org
->   S:	Maintained
->   F:	drivers/staging/media/rkisp1/
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Acked-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-
-> 
+Applied to net-next.
