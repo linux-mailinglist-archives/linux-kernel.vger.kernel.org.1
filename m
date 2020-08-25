@@ -2,183 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC9E25245E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4B5252475
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgHYXmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbgHYXlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:41:50 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C7621775
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 23:41:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598398910;
-        bh=CyQtlYDE+A8MG0JyxNX1QVig85hDl88iFa2qsrgexI0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gx5ZsCuzH4ioCxetiD2y+vDwoxSZvhEsF7Y75vaMTQ31Zx2Pc7i8L0ab0V5om2kr2
-         356372LR7wlNGShYXgIo51ov/7n9BBGd4pZEl0ixshjyVVdqBdEqHTPdcSE7dNGJKP
-         BCmCCFOhrMdnaXxrUoK47jEzw6JP1t6ssDxFnh+U=
-Received: by mail-wr1-f54.google.com with SMTP id p17so495394wrj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 16:41:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533T2NrM78sKWEC1N55b2U2zT8M8WSCq7i/vOuwp/qioQ8S7sZrC
-        xh2Q07fYlYQNzVOCYzhP5XsjStjZa3MzpRFKkdHcdg==
-X-Google-Smtp-Source: ABdhPJziIjnGOyouCp9gtTbUgUQ2Fpvm/xo4S/Yz68qNI2Xo0rcmdpT4fj8YTSQ4WNQrlkdF8f3yZXhj2uoNEGenMOo=
-X-Received: by 2002:a5d:4145:: with SMTP id c5mr12976959wrq.18.1598398908278;
- Tue, 25 Aug 2020 16:41:48 -0700 (PDT)
+        id S1726581AbgHYXuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:50:50 -0400
+Received: from anchovy3.45ru.net.au ([203.30.46.155]:55394 "EHLO
+        anchovy3.45ru.net.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgHYXut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 19:50:49 -0400
+Received: (qmail 18469 invoked by uid 5089); 25 Aug 2020 23:44:07 -0000
+Received: by simscan 1.2.0 ppid: 18331, pid: 18332, t: 0.0840s
+         scanners: regex: 1.2.0 attach: 1.2.0 clamav: 0.88.3/m:40/d:1950
+Received: from unknown (HELO ?192.168.0.22?) (preid@electromag.com.au@203.59.235.95)
+  by anchovy2.45ru.net.au with ESMTPA; 25 Aug 2020 23:44:06 -0000
+Subject: Re: [PATCH 2/4] i2c: at91: implement i2c bus recovery
+To:     Wolfram Sang <wsa@the-dreams.de>, Codrin.Ciubotariu@microchip.com,
+        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
+        Ludovic.Desroches@microchip.com, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com
+References: <20191002144658.7718-1-kamel.bouhara@bootlin.com>
+ <20191002144658.7718-3-kamel.bouhara@bootlin.com>
+ <20191021202044.GB3607@kunai>
+ <724d3470-0561-1b3f-c826-bc16c74a8c0a@bootlin.com>
+ <1e70ae35-052b-67cc-27c4-1077c211efd0@microchip.com>
+ <20191024150726.GA1120@kunai>
+ <65d83bb0-9a0c-c6e2-1c58-cb421c69816c@electromag.com.au>
+ <20200825132846.GA1753@kunai>
+From:   Phil Reid <preid@electromag.com.au>
+Message-ID: <8deeae50-2d67-d728-7afd-1b8f1b7a927e@electromag.com.au>
+Date:   Wed, 26 Aug 2020 07:44:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200521200513.656533920@linutronix.de> <20200521202118.796915981@linutronix.de>
- <f0079706-4cb3-b3e3-9a5e-97aaba0aa0eb@amazon.com> <87a6yj58af.fsf@nanos.tec.linutronix.de>
- <051182cc-6c90-e48b-d191-8ca004385261@amazon.com>
-In-Reply-To: <051182cc-6c90-e48b-d191-8ca004385261@amazon.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 25 Aug 2020 16:41:36 -0700
-X-Gmail-Original-Message-ID: <CALCETrXutDjE5Z6WR+47MJvp3xt4n=EGiF_oEYm88vGvCqUgHA@mail.gmail.com>
-Message-ID: <CALCETrXutDjE5Z6WR+47MJvp3xt4n=EGiF_oEYm88vGvCqUgHA@mail.gmail.com>
-Subject: Re: [patch V9 21/39] x86/irq: Convey vector as argument and not in ptregs
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>, robketr@amazon.de,
-        amos@scylladb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200825132846.GA1753@kunai>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-AU
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 4:18 PM Alexander Graf <graf@amazon.com> wrote:
->
-> Hi Thomas,
->
-> On 25.08.20 12:28, Thomas Gleixner wrote:
-> >void irq_complete_move(struct irq_cfg *cfg)
-{
-        __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
-}
+On 25/08/2020 21:28, Wolfram Sang wrote:
+> Hi Phil,
+> 
+> yes, this thread is old but a similar issue came up again...
+> 
+> On Fri, Oct 25, 2019 at 09:14:00AM +0800, Phil Reid wrote:
+> 
+>>>
+>>>> So at the beginning of a new transfer, we should check if SDA (or SCL?)
+>>>> is low and, if it's true, only then we should try recover the bus.
+>>>
+>>> Yes, this is the proper time to do it. Remember, I2C does not define a
+>>> timeout.
+>>>
+>>
+>> FYI: Just a single poll at the start of the transfer, for it being low, will cause problems with multi-master buses.
+>> Bus recovery should be attempted after a timeout when trying to communicate, even thou i2c doesn't define a timeout.
+>>
+>> I'm trying to fix the designware drivers handling of this at the moment.
+> 
+> I wonder what you ended up with? You are right, a single poll is not
+> enough. It only might be if one applies the new "single-master" binding
+> for a given bus. If that is not present, my best idea so far is to poll
+> SDA for the time defined in adapter->timeout and if it is all low, then
+> initiate a recovery.
+> 
 
-> > Alex,
-> >
-> > On Mon, Aug 24 2020 at 19:29, Alexander Graf wrote:
-> >> I'm currently trying to understand a performance regression with
-> >> ScyllaDB on i3en.3xlarge (KVM based VM on Skylake) which we reliably
-> >> bisected down to this commit:
-> >>
-> >>     https://github.com/scylladb/scylla/issues/7036
-> >>
-> >> What we're seeing is that syscalls such as membarrier() take forever
-> >> (0-10 =C2=B5s would be normal):
-> > ...
-> >> That again seems to stem from a vastly slowed down
-> >> smp_call_function_many_cond():
-> >>
-> >> Samples: 218K of event 'cpu-clock', 4000 Hz
-> >> Overhead  Shared Object        Symbol
-> >>     94.51%  [kernel]             [k] smp_call_function_many_cond
-> >>      0.76%  [kernel]             [k] __do_softirq
-> >>      0.32%  [kernel]             [k] native_queued_spin_lock_slowpath
-> >> [...]
-> >>
-> >> which is stuck in
-> >>
-> >>          =E2=94=82     csd_lock_wait():
-> >>          =E2=94=82             smp_cond_load_acquire(&csd->flags, !(VA=
-L &
-> >>     0.00 =E2=94=82       mov    0x8(%rcx),%edx
-> >>     0.00 =E2=94=82       and    $0x1,%edx
-> >>          =E2=94=82     =E2=86=93 je     2b9
-> >>          =E2=94=82     rep_nop():
-> >>     0.70 =E2=94=822af:   pause
-> >>          =E2=94=82     csd_lock_wait():
-> >>    92.82 =E2=94=82       mov    0x8(%rcx),%edx
-> >>     6.48 =E2=94=82       and    $0x1,%edx
-> >>     0.00 =E2=94=82     =E2=86=91 jne    2af
-> >>     0.00 =E2=94=822b9: =E2=86=91 jmp    282
-> >>
-> >>
-> >> Given the patch at hand I was expecting lost IPIs, but I can't quite s=
-ee
-> >> anything getting lost.
-> >
-> > I have no idea how that patch should be related to IPI and smp function
-> > calls. It's changing the way how regular device interrupts and their
-> > spurious counterpart are handled and not the way how IPIs are
-> > handled. They are handled by direct vectors and do not go through
-> > do_IRQ() at all.
-> >
-> > Aside of that the commit just changes the way how the interrupt vector
-> > of a regular device interrupt is stored and conveyed. The extra read an=
-d
-> > write on the cache hot stack is hardly related to anything IPI.
->
-> I am as puzzled as you are, but the bisect is very clear: 79b9c183021e
-> works fast and 633260fa1 (as well as mainline) shows the weird behavior
-> above.
->
-> It gets even better. This small (demonstrative only, mangled) patch on
-> top of 633260fa1 also resolves the performance issue:
->
-> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-> index c766936..7e91e9a 100644
-> --- a/arch/x86/kernel/irq.c
-> +++ b/arch/x86/kernel/irq.c
-> @@ -239,6 +239,7 @@ __visible void __irq_entry do_IRQ(struct pt_regs
-> *regs, unsigned long vector)
->          * lower 8 bits.
->          */
->         vector &=3D 0xFF;
-> +       regs->orig_ax =3D ~vector;
->
->         /* entering_irq() tells RCU that we're not quiescent.  Check it. =
-*/
->         RCU_LOCKDEP_WARN(!rcu_is_watching(), "IRQ failed to wake up RCU")=
-;
->
->
-> To me that sounds like some irq exit code somewhere must still be
-> looking at orig_ax to decide on something - and that something is wrong
-> now that we removed the negation of the vector. It also seems to have an
-> impact on remote function calls.
->
-> I'll have a deeper look tomorrow again if I can find any such place, but
-> I wouldn't mind if anyone could point me into the right direction
-> earlier :).
+On my todo list still.
 
-How about this:
+Our system eventually recovers at the moment and the multi-master bus
+doesn't contain anything that's time critical to our systems operation.
 
-void irq_complete_move(struct irq_cfg *cfg)
-{
-        __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
-}
 
-in arch/x86/kernel/apic/vector.c.
+-- 
+Regards
+Phil Reid
+
+ElectroMagnetic Imaging Technology Pty Ltd
+Development of Geophysical Instrumentation & Software
+www.electromag.com.au
+
+3 The Avenue, Midland WA 6056, AUSTRALIA
+Ph: +61 8 9250 8100
+Fax: +61 8 9250 7100
+Email: preid@electromag.com.au
