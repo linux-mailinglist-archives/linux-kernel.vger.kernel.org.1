@@ -2,363 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84631251B8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0EE251B9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgHYO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37914 "EHLO
+        id S1727098AbgHYO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgHYO5N (ORCPT
+        with ESMTP id S1726336AbgHYO6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:57:13 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1CAC061574;
-        Tue, 25 Aug 2020 07:57:12 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7972029E;
-        Tue, 25 Aug 2020 16:57:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598367428;
-        bh=ApFDUDAZh97tdh8G+B/ThY2Go5hWkE36+XZ4tnyH2c0=;
-        h=Reply-To:Subject:From:To:References:Date:In-Reply-To:From;
-        b=H5z51FJGbyJguEYCNyY0/0s0QD+/zUvg4YVL1hh1z8W9l0P3FXK+nIXMR5QsxJhP5
-         zjSr1Bx/NLsYClfN6CX2WyvpD+JJGN1xyb4lqDGiQElbT+3ciKTjR85XqTk2WkvJS1
-         iqQOBoD0NV6wfHTcmWHoZlGDdtBwwk+WfEWSD9mw=
-Reply-To: kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v5 9/9] arm64: dts: renesas: salvator: add a connection
- from adv748x codec (HDMI input) to the R-Car SoC
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     Alex Riesen <alexander.riesen@cetitec.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-References: <cover.1585852001.git.alexander.riesen@cetitec.com>
- <90f2c14fcbe5d06eefdaeadbe8a6efc8c91523f3.1585852001.git.alexander.riesen@cetitec.com>
- <fd19ca3c-e815-499e-0c46-0a4e2684b6b9@ideasonboard.com>
-Autocrypt: addr=kieran.bingham@ideasonboard.com; keydata=
- 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
- WZw01QYHU/GUV/zHJSFk
-Organization: Ideas on Board
-Message-ID: <c7d93d6c-4893-8bd0-5859-87f30389b5d5@ideasonboard.com>
-Date:   Tue, 25 Aug 2020 15:57:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 25 Aug 2020 10:58:04 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4061CC061574;
+        Tue, 25 Aug 2020 07:58:04 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u128so7552687pfb.6;
+        Tue, 25 Aug 2020 07:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EV9ZwzCwV4Z9BNt841c3RBiIdIkv89NbNGG9BR4Vsvo=;
+        b=tQvGYTFufQJ5ANwInffuD4W0HHbHhK3UMnx7AkOXZ23wS9FDnOwTjxSUnuDU8w4+6H
+         WrzNpO/vv8kZIl9tBYikyi80TDvKRYoJRBF/EOhJ27PSG4SngR/Xuxnm4uoZDqEtmWBG
+         w9Q0ZzZ9TN1p9oEP0v5cNP2EC/Qk6ju4EZSTPIhwUvYV4CJIzVxROxF6yxMWRxEcdjR3
+         Wwb3UgbmDMVI5u10e62d1rDys9XDuhYY/OoRWEe7B70C4tjmS+HdaxNk2nUDyAKQCx1z
+         59brznER2AMWT2lF91xyUfS5EzwwaTvRDntW33H3IP4yPpmtQ1udSgwIFm7gpknoBzQ6
+         VDYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EV9ZwzCwV4Z9BNt841c3RBiIdIkv89NbNGG9BR4Vsvo=;
+        b=BtD7YGdTJUT2agGmnvXR8lfXoJjMV0/kJIHjtrC+5M3mHw3OStSb8wm2BskmgUB8G3
+         ejNwmKN5P6Hm1Qey8xgbp48plidW0TwIGJqsgnpekMuqezTZsKO0zM6WSEZTbXLUbybv
+         iMj0OBVVJ2TXQ+CmBcKk9593NgPGk6GAdUqiRl5Ffyx38L5fmzoE1OG4SNQ2EPpSTkFl
+         i8LuphpqHt17nJdXpGr1WNxkNGu8gRPtbOaL1vkJ32QV+jA1q0JM0diit7I+oKz1BnlN
+         j59I4R7Lug6tMaiMbUC8fwJvy+AoALTrTE+pTLFthydzQc0502CLOKb2JZkqiYP96v5+
+         gAQw==
+X-Gm-Message-State: AOAM533rqJ9iksNCfb1bOmojLvYnoxlcDLYxprRDgihjAwE8iLVnoQVs
+        mZuGH5yO1GMJ/gSa6NmN0lU=
+X-Google-Smtp-Source: ABdhPJxnK3YNImOtYVgHd5D3Y/G4BRiEKbLrVsJXP4BBfTIN6Zbw6lEUoA6/orOoc47WqA6yXSiVLw==
+X-Received: by 2002:a17:902:8bcc:: with SMTP id r12mr7892933plo.314.1598367483737;
+        Tue, 25 Aug 2020 07:58:03 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
+        by smtp.gmail.com with ESMTPSA id e29sm15755956pfj.92.2020.08.25.07.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 07:58:03 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v7 00/12] huge vmalloc mappings
+Date:   Wed, 26 Aug 2020 00:57:41 +1000
+Message-Id: <20200825145753.529284-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <fd19ca3c-e815-499e-0c46-0a4e2684b6b9@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+I think it's ready to go into -mm if it gets acks for the arch
+changes.
 
-On 18/06/2020 17:32, Kieran Bingham wrote:
-> Hi Alex,
-> 
-> On 02/04/2020 19:35, Alex Riesen wrote:
->> As all known variants of the Salvator board have the HDMI decoder
->> chip (the ADV7482) connected to the SSI4 on R-Car SoC, the ADV7482
->> endpoint and the connection definitions are placed in the common board
->> file.
->>
->> For the same reason, the CLK_C clock line and I2C configuration (similar
->> to the ak4613, on the same interface) are added into the common file.
->>
->> Signed-off-by: Alexander Riesen <alexander.riesen@cetitec.com>
->>
->> --
->>
->> v5: Add dummy ssi4 node to the rcar sound card in r8a77961, as the
->>     devices (Salvator-X 2nd version with R-Car M3 W+) also reference
->>     salvator-common.dtsi.
->>     Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> v2: Also add ssi4_ctrl pin group in the sound pins. The pins are
->>     responsible for SCK4 (sample clock) WS4 and (word boundary input),
->>     and are required for SSI audio input over I2S.
->>
->>     The adv748x shall provide its own implementation of the output clock
->>     (MCLK), connected to the audio_clk_c line of the R-Car SoC.
->>
->>     If the frequency of the ADV748x MCLK were fixed, the clock
->>     implementation were not necessary, but it does not seem so: the MCLK
->>     depends on the value in a speed multiplier register and the input sample
->>     rate (48kHz).
->>
->>     Remove audio clock C from the clocks of adv7482.
->>
->>     The clocks property of the video-receiver node lists the input
->>     clocks of the device, which is quite the opposite from the
->>     original intention: the adv7482 on Salvator X boards is a
->>     provide of the MCLK clock for I2S audio output.
->>
->>     Remove old definition of &sound_card.dais and reduce size of changes
->>     in the Salvator-X specific device tree source.
->>
->>     Declare video-receiver a clock producer, as the adv748x driver
->>     implements the master clock used I2S audio output.
->>
->>     Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> v2: The driver provides only MCLK clock, not the SCLK and LRCLK,
->>     which are part of the I2S protocol.
->>
->>     Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> ---
->>  .../boot/dts/renesas/r8a77950-salvator-x.dts  |  3 +-
->>  arch/arm64/boot/dts/renesas/r8a77961.dtsi     |  1 +
->>  .../boot/dts/renesas/salvator-common.dtsi     | 47 +++++++++++++++++--
+Thanks,
+Nick
 
-Once again I'm back trying to test this series, and one issue I've had
-is that the board I have (r8a77951-salvator-xs.dts) isn't included in
-this DT update.
+Since v6:
+- Fixed a false positive warning introduced in patch 2, found by
+  kbuild test robot.
 
-For v6, Should we include the relevant changes to all the following?
+Since v5:
+- Split arch changes out better and make the constant folding work
+- Avoid most of the 80 column wrap, fix a reference to lib/ioremap.c
+- Fix compile error on some archs
 
-arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
-arch/arm64/boot/dts/renesas/r8a77951-salvator-x.dts
-arch/arm64/boot/dts/renesas/r8a77960-salvator-x.dts
-arch/arm64/boot/dts/renesas/r8a77965-salvator-x.dts
-arch/arm64/boot/dts/renesas/salvator-x.dtsi
+Since v4:
+- Fixed an off-by-page-order bug in v4
+- Several minor cleanups.
+- Added page order to /proc/vmallocinfo
+- Added hugepage to alloc_large_system_hage output.
+- Made an architecture config option, powerpc only for now.
 
-And perhaps handle the salvator-xs in a second (yet very similar) patch?
+Since v3:
+- Fixed an off-by-one bug in a loop
+- Fix !CONFIG_HAVE_ARCH_HUGE_VMAP build fail
+- Hopefully this time fix the arm64 vmap stack bug, thanks Jonathan
+  Cameron for debugging the cause of this (hopefully).
 
-arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
-arch/arm64/boot/dts/renesas/r8a77960-salvator-xs.dts
-arch/arm64/boot/dts/renesas/r8a77961-salvator-xs.dts
-arch/arm64/boot/dts/renesas/r8a77965-salvator-xs.dts
-arch/arm64/boot/dts/renesas/salvator-xs.dtsi
-
-I think I've added the relevant entries to my dtb, but I haven't
-successfully captured audio yet.
-
-I can see the device being listed through arecord:
-
-kbingham@salvator-xs:~$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: rcarsound [rcar-sound], device 0: rsnd-dai.0-ak4613-hifi
-ak4613-hifi-0 []
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: rcarsound [rcar-sound], device 3: rsnd-dai.3-adv748x-i2s
-adv748x.4-0070-3 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Since v2:
+- Rebased on vmalloc cleanups, split series into simpler pieces.
+- Fixed several compile errors and warnings
+- Keep the page array and accounting in small page units because
+  struct vm_struct is an interface (this should fix x86 vmap stack debug
+  assert). [Thanks Zefan]
 
 
-But as yet, everything I try to record fails or is empty silence.
+Nicholas Piggin (12):
+  mm/vmalloc: fix vmalloc_to_page for huge vmap mappings
+  mm: apply_to_pte_range warn and fail if a large pte is encountered
+  mm/vmalloc: rename vmap_*_range vmap_pages_*_range
+  mm/ioremap: rename ioremap_*_range to vmap_*_range
+  mm: HUGE_VMAP arch support cleanup
+  powerpc: inline huge vmap supported functions
+  arm64: inline huge vmap supported functions
+  x86: inline huge vmap supported functions
+  mm: Move vmap_range from mm/ioremap.c to mm/vmalloc.c
+  mm/vmalloc: add vmap_range_noflush variant
+  mm/vmalloc: Hugepage vmalloc mappings
+  powerpc/64s/radix: Enable huge vmalloc mappings
 
-Debugging ...
-
---
-Regards
-
-Kieran
-
-
-
->>  3 files changed, 45 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts b/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
->> index 2438825c9b22..e16c146808b6 100644
->> --- a/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
->> +++ b/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
->> @@ -146,7 +146,8 @@ &sata {
->>  &sound_card {
->>  	dais = <&rsnd_port0	/* ak4613 */
->>  		&rsnd_port1	/* HDMI0  */
->> -		&rsnd_port2>;	/* HDMI1  */
->> +		&rsnd_port2	/* HDMI1  */
->> +		&rsnd_port3>;	/* adv7482 hdmi-in  */
-> 
-> Ah - that was confusing at first... but HDMI0 and HDMI1 are *outputs*,
-> where of course the adv7482 is an input ;-)
-> 
-> 
-> Otherwise, I can't spot anything else yet so:
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> But I fear there may have been some churn around here, so it would be
-> good to see a rebase too.
-> 
-> --
-> Kieran
-> 
-> 
-> 
->>  };
->>  
->>  &usb2_phy2 {
->> diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
->> index be3824bda632..b79907beaf31 100644
->> --- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
->> @@ -861,6 +861,7 @@ rcar_sound,src {
->>  			rcar_sound,ssi {
->>  				ssi0: ssi-0 { };
->>  				ssi1: ssi-1 { };
->> +				ssi4: ssi-4 { };
->>  			};
->>  		};
->>  
->> diff --git a/arch/arm64/boot/dts/renesas/salvator-common.dtsi b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> index 98bbcafc8c0d..ead7f8d7a929 100644
->> --- a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
->> @@ -460,7 +460,7 @@ pca9654: gpio@20 {
->>  		#gpio-cells = <2>;
->>  	};
->>  
->> -	video-receiver@70 {
->> +	adv7482_hdmi_in: video-receiver@70 {
->>  		compatible = "adi,adv7482";
->>  		reg = <0x70 0x71 0x72 0x73 0x74 0x75
->>  		       0x60 0x61 0x62 0x63 0x64 0x65>;
->> @@ -469,6 +469,7 @@ video-receiver@70 {
->>  
->>  		#address-cells = <1>;
->>  		#size-cells = <0>;
->> +		#clock-cells = <0>; /* the MCLK for I2S output */
->>  
->>  		interrupt-parent = <&gpio6>;
->>  		interrupt-names = "intrq1", "intrq2";
->> @@ -510,6 +511,15 @@ adv7482_txb: endpoint {
->>  				remote-endpoint = <&csi20_in>;
->>  			};
->>  		};
->> +
->> +		port@c {
->> +			reg = <12>;
->> +
->> +			adv7482_i2s: endpoint {
->> +				remote-endpoint = <&rsnd_endpoint3>;
->> +				system-clock-direction-out;
->> +			};
->> +		};
->>  	};
->>  
->>  	csa_vdd: adc@7c {
->> @@ -684,7 +694,8 @@ sdhi3_pins_uhs: sd3_uhs {
->>  	};
->>  
->>  	sound_pins: sound {
->> -		groups = "ssi01239_ctrl", "ssi0_data", "ssi1_data_a";
->> +		groups = "ssi01239_ctrl", "ssi0_data", "ssi1_data_a",
->> +			 "ssi4_data", "ssi4_ctrl";
->>  		function = "ssi";
->>  	};
->>  
->> @@ -733,8 +744,8 @@ &rcar_sound {
->>  	pinctrl-0 = <&sound_pins &sound_clk_pins>;
->>  	pinctrl-names = "default";
->>  
->> -	/* Single DAI */
->> -	#sound-dai-cells = <0>;
->> +	/* multi DAI */
->> +	#sound-dai-cells = <1>;
->>  
->>  	/* audio_clkout0/1/2/3 */
->>  	#clock-cells = <1>;
->> @@ -758,8 +769,19 @@ &rcar_sound {
->>  		 <&cpg CPG_MOD 1020>, <&cpg CPG_MOD 1021>,
->>  		 <&cpg CPG_MOD 1019>, <&cpg CPG_MOD 1018>,
->>  		 <&audio_clk_a>, <&cs2000>,
->> -		 <&audio_clk_c>,
->> +		 <&adv7482_hdmi_in>,
->>  		 <&cpg CPG_CORE CPG_AUDIO_CLK_I>;
->> +	clock-names = "ssi-all",
->> +		      "ssi.9", "ssi.8", "ssi.7", "ssi.6",
->> +		      "ssi.5", "ssi.4", "ssi.3", "ssi.2",
->> +		      "ssi.1", "ssi.0",
->> +		      "src.9", "src.8", "src.7", "src.6",
->> +		      "src.5", "src.4", "src.3", "src.2",
->> +		      "src.1", "src.0",
->> +		      "mix.1", "mix.0",
->> +		      "ctu.1", "ctu.0",
->> +		      "dvc.0", "dvc.1",
->> +		      "clk_a", "clk_b", "clk_c", "clk_i";
->>  
->>  	ports {
->>  		#address-cells = <1>;
->> @@ -777,6 +799,21 @@ rsnd_endpoint0: endpoint {
->>  				capture  = <&ssi1 &src1 &dvc1>;
->>  			};
->>  		};
->> +		rsnd_port3: port@3 {
->> +			reg = <3>;
->> +			rsnd_endpoint3: endpoint {
->> +				remote-endpoint = <&adv7482_i2s>;
->> +
->> +				dai-tdm-slot-num = <8>;
->> +				dai-tdm-slot-width = <32>;
->> +				dai-format = "left_j";
->> +				mclk-fs = <256>;
->> +				bitclock-master = <&adv7482_i2s>;
->> +				frame-master = <&adv7482_i2s>;
->> +
->> +				capture = <&ssi4>;
->> +			};
->> +		};
->>  	};
->>  };
->>  
->>
-> 
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ arch/Kconfig                                  |   4 +
+ arch/arm64/include/asm/vmalloc.h              |  25 +
+ arch/arm64/mm/mmu.c                           |  26 -
+ arch/powerpc/Kconfig                          |   1 +
+ arch/powerpc/include/asm/vmalloc.h            |  21 +
+ arch/powerpc/mm/book3s64/radix_pgtable.c      |  21 -
+ arch/x86/include/asm/vmalloc.h                |  23 +
+ arch/x86/mm/ioremap.c                         |  19 -
+ arch/x86/mm/pgtable.c                         |  13 -
+ include/linux/io.h                            |   9 -
+ include/linux/vmalloc.h                       |  10 +
+ init/main.c                                   |   1 -
+ mm/ioremap.c                                  | 225 +--------
+ mm/memory.c                                   |  60 ++-
+ mm/page_alloc.c                               |   5 +-
+ mm/vmalloc.c                                  | 443 +++++++++++++++---
+ 17 files changed, 515 insertions(+), 393 deletions(-)
 
 -- 
-Regards
---
-Kieran
+2.23.0
+
