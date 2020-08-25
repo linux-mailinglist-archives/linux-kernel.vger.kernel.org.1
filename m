@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE325251902
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62712518E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgHYMuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:50:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42800 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728586AbgHYMrx (ORCPT
+        id S1728908AbgHYMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:48:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726551AbgHYMry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:47:53 -0400
+        Tue, 25 Aug 2020 08:47:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598359672;
+        s=mimecast20190719; t=1598359673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aLpiPZxsqM3g0W5LjWpYmN4ZvZtyTkOjbomSMgIs/1o=;
-        b=h5SnBLxYbk3OBTFoWNbIb/HlkOcuvNgH+zQsNLjDxz3SXTx4x2QeFrPZeikW65Btroivym
-        tYZiOiLZ6zJ9y86mfWmgNwb9jDFyu/XMUvzhHaSA7sSDWvxQFHwSJgIK38lGR+6VKCm0IP
-        NsDsX36I3qbzXI00Zk3NCsAqHAfVmsU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-1-yPINjzP5yOm7j4D7PUTg-1; Tue, 25 Aug 2020 08:47:50 -0400
-X-MC-Unique: 1-yPINjzP5yOm7j4D7PUTg-1
-Received: by mail-wm1-f69.google.com with SMTP id g79so419799wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:47:49 -0700 (PDT)
+        bh=zglq0vOI//KuVKJ2M/RQ4QygBvZQL1YIWMQ/tBpIyuY=;
+        b=ZTkrgs0n7lOFGuohiv2C8cXwmMN+8+pMWKiCZ64X8H11iYPRP35NSF3i2PfrP2BkSAvVSM
+        EW9d0lHMGmUs8cYVng4iUaH8mcMV/8qhwA8/IeJW75X7XMLF/LsnFKghchkJsiF9hj+6bs
+        yhhUX9/CAVXojLITIcVAYqmoNBZOmWY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-oe-9TsfUN1mytl9sIbJg1Q-1; Tue, 25 Aug 2020 08:47:51 -0400
+X-MC-Unique: oe-9TsfUN1mytl9sIbJg1Q-1
+Received: by mail-wr1-f72.google.com with SMTP id w2so4871896wrr.19
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:47:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aLpiPZxsqM3g0W5LjWpYmN4ZvZtyTkOjbomSMgIs/1o=;
-        b=WtUymr1rRQYt2x534peQ82KozAu1UnP/QE5WsP5PZ8acLgqk2Z6RR8l1KjqegEXSIl
-         CQn3mCjyoDXNkpwRkpc9zHg9EclOLXLtr+F6yEzv0sRP7wW5FkynWUoTRH3whatB+6DZ
-         RbCnkX0JNpNGZFU+oVeE3eCKtbUP+tke0tqxmr59OXvHsZ3CoE6thyr5aUQ8Mmae+D2x
-         YfYrVuU/mRx4HG5OeL41NvNhyJc7CgreX8cKjiMv76XGb8vLfexLVfy811B5uWaY6p3K
-         sLwdqYAjUu82ps8KDQ6v7AFhCcpa/04UlPq3xNA6gJW7HTZshTAIkjDyBC5BShKi5Por
-         KfTg==
-X-Gm-Message-State: AOAM533p9dEIf9E6oA+qEzMtLN5CBJ8N9tGOK9zlxcReCibfnslMcOIw
-        V2trgf64h+TGL8EBIMyZi08j5YHcQeustJuXYiHrRr0PRo29sFsWNozqzwvAoJGflgXzNRB8Kgm
-        Op/q+7r1M1xqbQLxUk36BHVZ3
-X-Received: by 2002:a5d:4c83:: with SMTP id z3mr10752479wrs.359.1598359668897;
-        Tue, 25 Aug 2020 05:47:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy5IWslteQWtM63O6QJ6FmCHlzFwS4rya6A3uEqVde/ijAKZQN6jjfkV80riZasUytYvoGcWA==
-X-Received: by 2002:a5d:4c83:: with SMTP id z3mr10752468wrs.359.1598359668686;
-        Tue, 25 Aug 2020 05:47:48 -0700 (PDT)
+        bh=zglq0vOI//KuVKJ2M/RQ4QygBvZQL1YIWMQ/tBpIyuY=;
+        b=Rpqo9V72PxLSbjRKfPCrvqS4Mo73RF+pPxR0lXkMU8iuk5kIigEkfGQRL720cO5fAz
+         99ceR+I9iT9okRG6kSeFyyP+CB9caDYsvQ/rFybbSNMhcFfx+H2wS5SWPYbB2SY5SGSt
+         aweUjOC5X/zIiotYUbDFhSDxXCm2A/yIPKf6qFXI6RBuiWF0zyPw0eDErZPOFhebMygl
+         QtxFcWw/aIEBiLQsgmcfr0Cn+89IzIuvhSX/vUZbStMASQG990sPvLwjlfm6z3e90SsK
+         lEcQ0jhMsrz1/Q/5F39P1uU8OYerjKsPlX64MyfjkpxylG7C+3kHoFKOp3CO2u6Fw21I
+         a8yA==
+X-Gm-Message-State: AOAM531wBcmrx8G1B1TX/9qJD3T75p9PI+D97pFfJHtOJTA3A7uQ0cj8
+        AQKQl7qANC+vlClbOznt54ovZhBEyQP8KmkOvQhFC1goIgGd/w2eUZWPmr984fak/caG81xHKBR
+        cqKDYSVXAho2Z1JN2yLOiy8W3
+X-Received: by 2002:a1c:ddd4:: with SMTP id u203mr1968297wmg.68.1598359670153;
+        Tue, 25 Aug 2020 05:47:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxR2ePLTiLPRqNp7jTWB/BAbT9feWHGtVJFaiKfxqRwDqFmE5Oiq3aEmgnUngSQeg2gFFkj4A==
+X-Received: by 2002:a1c:ddd4:: with SMTP id u203mr1968279wmg.68.1598359669886;
+        Tue, 25 Aug 2020 05:47:49 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id u6sm27469306wrn.95.2020.08.25.05.47.47
+        by smtp.gmail.com with ESMTPSA id u6sm27469306wrn.95.2020.08.25.05.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 05:47:47 -0700 (PDT)
+        Tue, 25 Aug 2020 05:47:49 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         benh@kernel.crashing.org, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v4 3/4] objtool: orc: Skip setting orc_entry for non-text sections
-Date:   Tue, 25 Aug 2020 13:47:41 +0100
-Message-Id: <20200825124742.29782-4-jthierry@redhat.com>
+Subject: [PATCH v4 4/4] objtool: check: Use orc definition only when needed
+Date:   Tue, 25 Aug 2020 13:47:42 +0100
+Message-Id: <20200825124742.29782-5-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200825124742.29782-1-jthierry@redhat.com>
 References: <20200825124742.29782-1-jthierry@redhat.com>
@@ -68,32 +68,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Orc generation is only done for text sections, but some instructions
-can be found in non-text sections (e.g. .discard.text sections).
+Implementation of ORC requires some definitions that are currently
+provided by the target architecture headers. Do not depend on these
+definitions when the orc subcommand is not implemented.
 
-Skip setting their orc sections since their whole sections will be
-skipped for orc generation.
+This avoid requiring arches with no orc implementation to provide dummy
+orc definitions.
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/orc_gen.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/objtool/Makefile | 4 ++++
+ tools/objtool/arch.h   | 2 ++
+ tools/objtool/check.h  | 2 ++
+ 3 files changed, 8 insertions(+)
 
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 968f55e6dd94..66fd56c33303 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -18,6 +18,9 @@ int create_orc(struct objtool_file *file)
- 		struct cfi_reg *cfa = &insn->cfi.cfa;
- 		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
+diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+index 7770edcda3a0..33d1e3ca8efd 100644
+--- a/tools/objtool/Makefile
++++ b/tools/objtool/Makefile
+@@ -55,6 +55,10 @@ ifeq ($(SRCARCH),x86)
+ 	SUBCMD_ORC := y
+ endif
  
-+		if (!insn->sec->text)
-+			continue;
++ifeq ($(SUBCMD_ORC),y)
++	CFLAGS += -DINSN_USE_ORC
++endif
 +
- 		orc->end = insn->cfi.end;
+ export SUBCMD_CHECK SUBCMD_ORC
+ export srctree OUTPUT CFLAGS SRCARCH AWK
+ include $(srctree)/tools/build/Makefile.include
+diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
+index 2e2ce089b0e9..b18c5f61d42d 100644
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -11,7 +11,9 @@
+ #include "objtool.h"
+ #include "cfi.h"
  
- 		if (cfa->base == CFI_UNDEFINED) {
++#ifdef INSN_USE_ORC
+ #include <asm/orc_types.h>
++#endif
+ 
+ enum insn_type {
+ 	INSN_JUMP_CONDITIONAL,
+diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+index 061aa96e15d3..0abdf8efdbc0 100644
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -42,7 +42,9 @@ struct instruction {
+ 	struct symbol *func;
+ 	struct list_head stack_ops;
+ 	struct cfi_state cfi;
++#ifdef INSN_USE_ORC
+ 	struct orc_entry orc;
++#endif
+ };
+ 
+ struct instruction *find_insn(struct objtool_file *file,
 -- 
 2.21.3
 
