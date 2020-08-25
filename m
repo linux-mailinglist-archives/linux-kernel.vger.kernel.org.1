@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F4B25121B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0195B25122A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgHYGhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 02:37:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55298 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726940AbgHYGhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 02:37:19 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 574DB6BEFDB23197F942;
-        Tue, 25 Aug 2020 14:37:13 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 25 Aug 2020 14:37:04 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <kashyap.desai@broadcom.com>, <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <megaraidlinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
-Subject: [PATCH] scsi: megaraid: Remove unnecessary assignment to variable ret
-Date:   Tue, 25 Aug 2020 14:38:36 +0800
-Message-ID: <20200825063836.92239-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1729093AbgHYGkH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 02:40:07 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55725 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729068AbgHYGkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 02:40:04 -0400
+Received: from mail-pj1-f69.google.com ([209.85.216.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kASck-000689-3v
+        for linux-kernel@vger.kernel.org; Tue, 25 Aug 2020 06:40:02 +0000
+Received: by mail-pj1-f69.google.com with SMTP id g7so1135232pja.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 23:40:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=piHKc2fPSQ4MbF9wubCjfB1Fk6iimFoRYF73q4RIKo4=;
+        b=CXoSAw9cOiy5qe5vF0kjoFq7GnPBGaiQXrB3Dsjw8uJnDJBd0eSCjSjHH+/ig6x1yJ
+         /T5dtdWoVFXVU1B6h4boH8jgfh3KfgMua+1OQWkgpyBmn3U3DlaD+j15jZYJ9+M806Jk
+         QAX7wMjhuDj1FPTedxoKoCim2D2gAbx+nAcQaUotHHPpzRik+7w2d0j/8fq8Z1bDpfw1
+         2MTijwGYZWVq/vN+QlVELNf0yo5VtvLl2iL/1bSo0lwwzgJYYfrFDWWUSmi3ObNh0/9I
+         ya3ct3lTJxK+3bdTzZjLAdEHdrfZ2fz3kBMnw/94vOBe4v8k59HKGOffHxkKDfvOUgnP
+         Tvuw==
+X-Gm-Message-State: AOAM532UH4MPfNa+GLZz4kWhxSKh/dTmi7mMctx22bzkIr8CiUH9sXQc
+        ZbDTkfCOnu7o/7tgmpVLqbJPz8kGbmHNWYZzFLKnP/0K3ih4GV6pBjFZPwzLF2c0Rwl6KjD+T0H
+        1qE2HO90d51eVuEiteey5yizJE42K2X/m4GGIfsARZg==
+X-Received: by 2002:a63:4b5e:: with SMTP id k30mr5723125pgl.205.1598337600719;
+        Mon, 24 Aug 2020 23:40:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzseWnZhEGmmZYtaFmo76Hw39HDPPRpN+UXTz/LyMdT8cUuOUtVeMtR58p5BQArrGxFPfHBEQ==
+X-Received: by 2002:a63:4b5e:: with SMTP id k30mr5723103pgl.205.1598337600351;
+        Mon, 24 Aug 2020 23:40:00 -0700 (PDT)
+Received: from [10.101.46.234] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id y128sm13656594pfy.74.2020.08.24.23.39.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 23:39:59 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
+From:   Kai Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20200825062320.GA27116@infradead.org>
+Date:   Tue, 25 Aug 2020 14:39:55 +0800
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, jonathan.derrick@intel.com,
+        Mario.Limonciello@dell.com, Heiner Kallweit <hkallweit1@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Huffman, Amber" <amber.huffman@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <08080FC7-861B-472A-BD7D-02D33926677F@canonical.com>
+References: <20200821123222.32093-1-kai.heng.feng@canonical.com>
+ <20200825062320.GA27116@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable ret is being initialized with 'FAILED'. So we can remove
-this assignement.
+Hi Christoph,
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 2 --
- 1 file changed, 2 deletions(-)
+> On Aug 25, 2020, at 2:23 PM, Christoph Hellwig <hch@infradead.org> wrote:
+> 
+> On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
+>> New Intel laptops with VMD cannot reach deeper power saving state,
+>> renders very short battery time.
+> 
+> So what about just disabling VMD given how bloody pointless it is?
+> Hasn't anyone learned from the AHCI remapping debacle?
+> 
+> I'm really pissed at all this pointless crap intel comes up with just
+> to make life hard for absolutely no gain.  Is it so hard to just leave
+> a NVMe device as a standard NVMe device instead of f*^&ing everything
+> up in the chipset to make OS support a pain and I/O slower than by
+> doing nothing?
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index 0824410f78f8..96d424645b18 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -4700,7 +4700,6 @@ int megasas_reset_target_fusion(struct scsi_cmnd *scmd)
- 	if (atomic_read(&instance->adprecovery) != MEGASAS_HBA_OPERATIONAL) {
- 		dev_err(&instance->pdev->dev, "Controller is not OPERATIONAL,"
- 		"SCSI host:%d\n", instance->host->host_no);
--		ret = FAILED;
- 		return ret;
- 	}
- 
-@@ -4713,7 +4712,6 @@ int megasas_reset_target_fusion(struct scsi_cmnd *scmd)
- 	}
- 
- 	if (!mr_device_priv_data->is_tm_capable) {
--		ret = FAILED;
- 		goto out;
- 	}
- 
--- 
-2.17.1
+From what I can see from the hardwares at my hand, VMD only enables a PCI domain and PCI bridges behind it.
 
+NVMe works as a regular NVMe under those bridges. No magic remapping happens here.
+
+Kai-Heng
