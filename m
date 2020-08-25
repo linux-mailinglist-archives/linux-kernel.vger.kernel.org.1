@@ -2,180 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA1C25131E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A1251322
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgHYHZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728828AbgHYHZ2 (ORCPT
+        id S1729457AbgHYHZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:25:46 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44259 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729322AbgHYHZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:25:28 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9849BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:25:27 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id y4so23532vkn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LsQ6Z/LSlEgnBzqN/u/Za51QKnSSVHsOYfBbNiqX3qg=;
-        b=fSG7xuI6hdvN9UXnyV88cpSYsVzi1RFc7p6vE4JsflwoBdDSiC51GbPTdj2ORvgrA3
-         zg4m8Z0TJfeAP7x38kCewNBMCkKmwklZrJuyNgWwpyFRTRybln44fZmAWlJzrl5Qa73m
-         CR4LkaBtWd/uJ0KE4lCfng3m9orLljEEhh0vWZruot7sI7wbV9aSisF3vSbJ8MVjTcxV
-         QUf0mi4+LQAiLGvS8ZhveA2qZIOOcBCHii3lewL0Fx57k0ZXH85DhvyW/VrW89CF6Z+A
-         UBipNu9ucoCeVtRCQ5xKdoOKUAiL+8u60LAOpTgwA4QA+mPLefXYyK4rvFebZ+wBdKwH
-         rf2w==
+        Tue, 25 Aug 2020 03:25:43 -0400
+Received: by mail-wr1-f67.google.com with SMTP id c15so11591512wrs.11;
+        Tue, 25 Aug 2020 00:25:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LsQ6Z/LSlEgnBzqN/u/Za51QKnSSVHsOYfBbNiqX3qg=;
-        b=r/NPCKnAdm+JBldUCaDObVmCVscdnXnGGCoxL/cRD033y5ilWUOwZ8nWtlhY8P9Rd9
-         5FNH72cxUhnM5PWuBWOTBMgEmbf3t7a+fxgVqiyrqwQMXFRnU8DmccOes70wcGnN6adl
-         m9acU3zCpFi4WFusFtFl7jvRZswSsFXVC25K0P20RoadYSVjiCG4IfJDjCL8qw7x0cBY
-         gv7Ah5V0ssor6EmdQeJMfBUJvpZc9b1EbI1plNG3QdwHgttxeEfcRfyF+gXe1gFoN8RR
-         /EIYRoHKttm7k4I446ziAMkJsPgke6Ct11sV1jn7n5Ir1sNJ+7rtutE4zr/ScLMOEriQ
-         ztkQ==
-X-Gm-Message-State: AOAM5301x57y/sjN3WC+WBW4V/c65F/QuZWsrSRj8YFzd1+Fj2VoUBuB
-        7ycK4EM20dq23E6johFOTK/t4rBYB3bHWCG3LmtkQA==
-X-Google-Smtp-Source: ABdhPJxtywMh569OxMwZBZzpjAUTN1NycbW1Pwsi6XOVn+c1MAXVI47ivNPmnt2UBDB11mIEnwPeouEU7C2LveKfoEk=
-X-Received: by 2002:a1f:2fc1:: with SMTP id v184mr4873982vkv.42.1598340326172;
- Tue, 25 Aug 2020 00:25:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2UDn8nshmtelV8H6R+gegKh3+mv7xE3Ee9qPVJXzBko=;
+        b=S4RdN/vMMc0Coh78HuMqgbN43vnvU4MEkGp4iVIhYKM1Ntu2HrZNF2ZA55pqJethkB
+         VQnR21o1ifR3bFsXjjuAKGABHsFPtUr0O22RQBLsi6pqP2JvCsgVCW9Q7E9M1oDKbKMy
+         FKT/q+bRvuvYmWXozyNqoDnJ4qcummDtpNpqtlLVBXvB4ySCCVU9Am9vb8QA8rxh6Pb4
+         3xqfvENrKTM95G/MOF2fhccDxFkKyfzuvUWfOnBDCHpinuRO9NCe94cnhQTDbPhUGrMj
+         7Gdmd0uuShBNvc/gVFbbxyUq6G7HjhuxUD0GU7RUHgzOBtBD+/Cn+Wv2y8FRqUS7YusC
+         XYeA==
+X-Gm-Message-State: AOAM5326ljVnj3Mz7IkCzbHLXJPObxWqMbbr13/ZkCuHfvmaDGypJa6c
+        Jr/6+kDl7QEPnfFNNtxe1t8=
+X-Google-Smtp-Source: ABdhPJzAtbLQMnecXqAvMsqz572yNqZJ5Dk8OpUuLTfB3ohjDCMwvv1x50yQZ9ondRCQBmNzjHwp/A==
+X-Received: by 2002:adf:9224:: with SMTP id 33mr9207502wrj.24.1598340341132;
+        Tue, 25 Aug 2020 00:25:41 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id f10sm3717581wmj.37.2020.08.25.00.25.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 25 Aug 2020 00:25:40 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 09:25:37 +0200
+From:   "krzk@kernel.org" <krzk@kernel.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Cc:     "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "han.xu@nxp.com" <han.xu@nxp.com>,
+        "Anson.Huang@nxp.com" <Anson.Huang@nxp.com>,
+        "yibin.gong@nxp.com" <yibin.gong@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "aford173@gmail.com" <aford173@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "richard@nod.at" <richard@nod.at>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "daniel.baluta@nxp.com" <daniel.baluta@nxp.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "jun.li@nxp.com" <jun.li@nxp.com>
+Subject: Re: [PATCH 03/16] arm64: dts: imx8mm-beacon-som.dtsi: Align
+ regulator names with schema
+Message-ID: <20200825072537.GA5914@kozik-lap>
+References: <20200824190701.8447-1-krzk@kernel.org>
+ <20200824190701.8447-3-krzk@kernel.org>
+ <fa042a4f670775f340e88fca8f363252112fd538.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20200824164724.981131044@linuxfoundation.org>
-In-Reply-To: <20200824164724.981131044@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 25 Aug 2020 12:55:14 +0530
-Message-ID: <CA+G9fYvRpqKnMUGQXMZ+QBSrwD6AjGx8cuvzxSYo7r7kdPoRTg@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/51] 4.14.195-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <fa042a4f670775f340e88fca8f363252112fd538.camel@fi.rohmeurope.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 at 22:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.195 release.
-> There are 51 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 26 Aug 2020 16:47:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.195-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, Aug 25, 2020 at 06:51:33AM +0000, Vaittinen, Matti wrote:
+> Hello Krzysztof,
+> 
+> Just some questions - please ignore if I misunderstood the impact of
+> the change.
+> 
+> On Mon, 2020-08-24 at 21:06 +0200, Krzysztof Kozlowski wrote:
+> > Device tree schema expects regulator names to be lowercase.  This
+> > fixes
+> > dtbs_check warnings like:
+> > 
+> >     arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: pmic@4b:
+> > regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  .../boot/dts/freescale/imx8mn-ddr4-evk.dts    | 22 +++++++++------
+> > ----
+> >  1 file changed, 11 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+> > b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+> > index a1e5483dbbbe..299caed5d46e 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+> > @@ -60,7 +60,7 @@
+> >  
+> >  		regulators {
+> >  			buck1_reg: BUCK1 {
+> > -				regulator-name = "BUCK1";
+> > +				regulator-name = "buck1";
+> 
+> I am not against this change but I would expect seeing some other
+> patches too? I guess this will change the regulator name in regulator
+> core, right? So maybe I am mistaken but it looks to me this change is
+> visible in suppliers, sysfs and debugfs too? Thus changing this sounds
+> a bit like asking for a nose bleed :) Am I right that the impact of
+> this change has been thoroughly tested? Are there any other patches
+> (that I have not seen) related to this change?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Oh, crap, the names of regulators in the driver are lowercase, but they
+use of_match_ptr for upper case. Seriously, why making a binding which
+is contradictory to the driver implementation on the first day?
 
-Summary
-------------------------------------------------------------------------
+The driver goes with binding, right? One expects uppercase, other
+lowercase...
 
-kernel: 4.14.195-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 376e60828efba537a502fdb54d35e2805852dbb4
-git describe: v4.14.194-52-g376e60828efb
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
-ild/v4.14.194-52-g376e60828efb
+And tell me, what is now the ABI? The binding or the incorrect
+implementation?
 
-No regressions (compared to build v4.14.194)
+> 
+> >  				regulator-min-microvolt = <700000>;
+> >  				regulator-max-microvolt = <1300000>;
+> >  				regulator-boot-on;
+> > @@ -69,7 +69,7 @@
+> >  			};
+> >  
+> >  			buck2_reg: BUCK2 {
+> > -				regulator-name = "BUCK2";
+> > +				regulator-name = "buck2";
+> >  				regulator-min-microvolt = <700000>;
+> >  				regulator-max-microvolt = <1300000>;
+> >  				regulator-boot-on;
+> > @@ -79,14 +79,14 @@
+> >  
+> >  			buck3_reg: BUCK3 {
+> >  				// BUCK5 in datasheet
+> > -				regulator-name = "BUCK3";
+> > +				regulator-name = "buck3";
+> >  				regulator-min-microvolt = <700000>;
+> >  				regulator-max-microvolt = <1350000>;
+> >  			};
+> >  
+> >  			buck4_reg: BUCK4 {
+> >  				// BUCK6 in datasheet
+> > -				regulator-name = "BUCK4";
+> > +				regulator-name = "buck4";
+> >  				regulator-min-microvolt = <3000000>;
+> >  				regulator-max-microvolt = <3300000>;
+> >  				regulator-boot-on;
+> > @@ -95,7 +95,7 @@
+> >  
+> >  			buck5_reg: BUCK5 {
+> >  				// BUCK7 in datasheet
+> > -				regulator-name = "BUCK5";
+> > +				regulator-name = "buck5";
+> 
+> What I see in bd718x7-regulator.c for LDO6 desc is:
+> 
+>                         /* LDO6 is supplied by buck5 */
+>                         .supply_name = "buck5",
+> 
+> So, is this change going to change the supply-chain for the board? Is
+> this intended? (Or am I mistaken on what is the impact of regulator-
+> name property?)
 
-No fixes (compared to build v4.14.194)
+The names will take regulator names from the driver. The problem is with
+matching the of_node.
 
 
-Ran 26317 total tests in the following environments and test suites.
+Dear Rob,
 
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
+Maybe you have an idea how to fix this driver-binding ABI
+incompatibility? Or better just leave it?
 
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-fs-tests
-* ltp-math-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Best regards,
+Krzysztof
+
