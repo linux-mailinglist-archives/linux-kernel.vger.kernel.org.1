@@ -2,89 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165B5251C54
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE30251C5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgHYPck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 11:32:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39616 "EHLO mx2.suse.de"
+        id S1726946AbgHYPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 11:33:57 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:42874 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726627AbgHYPcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:32:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12256B579;
-        Tue, 25 Aug 2020 15:33:08 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 17:32:36 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
-Message-ID: <20200825153236.GW4353@alley>
-References: <20200819232632.13418-1-john.ogness@linutronix.de>
- <20200819232632.13418-2-john.ogness@linutronix.de>
- <20200820101625.GE4353@alley>
- <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
- <20200825131041.GV4353@alley>
- <0f3e3efffad64739a223273cc7c738bc@AcuMS.aculab.com>
+        id S1726851AbgHYPdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 11:33:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=3757; q=dns/txt; s=axis-central1;
+  t=1598369629; x=1629905629;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6u0giep84Vqjswp4FAaMyA0eMEjwRejj8AWYbb8MEmk=;
+  b=Qmz3BsH7Km90qoz1JbjZvXDdg/E0NW4Dp9G8f1NESH7N65B9wxTyPsDr
+   NzeDbFrnyzy+3KIx+YLDGM+CR+vsPIC6whnndd+SJzOM1W11idRlk2qTm
+   boYviYQEvV3uL/W8Cf7mAhul7QrCf+DsZYhZEZdh8BRuX0qQaPs2ASu9j
+   zkdASi/uSCUYHK4z917s4Xem+p6nxachj/VaTGKnN+ZOZWZjPRZRMh9s0
+   Q8ncSP28SoyL6lMGJuPBjGDZCdPS+eBBQ6x+iNuaSrucwgrqOuvkSBq+c
+   NJ0hsoRILeTyQBvDViFUmtLhMHJypbUofKY+QUPODuAEAwbMfjBCH3zuP
+   A==;
+IronPort-SDR: xjs3YL7hc/0RqTof64rOhXPJbxyRrBkvPLRFBBXQE8B7OlMZXChnyD+qbA/tgSxSPu7H2C7dXf
+ xAfCxaur4SgMT7sypkRnh6US0lLVNgXwSxlvQ88DWk1rRt5Kw3CvAQ28ZOAyfD4FP7Mh8GxaFP
+ F9my6D7lL40WAQzWZpWYfG/0+PqtQe3S6tZI0O4gmN27ajtjrteDwHnfx+V7lgMh+m3q+Zfnz9
+ 4+2FhiI0HPlx0Y9FMEAS1eln1UefJsP7fOwwtNsL2GrpXW7RRzAJVKXQMY0/Mh+5wBNxhIvDuP
+ rLM=
+X-IronPort-AV: E=Sophos;i="5.76,353,1592863200"; 
+   d="scan'208";a="11853117"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <jbaron@akamai.com>, <rostedt@goodmis.org>, <mingo@redhat.com>
+CC:     <kernel@axis.com>, <corbet@lwn.net>, <pmladek@suse.com>,
+        <sergey.senozhatsky@gmail.com>, <john.ogness@linutronix.de>,
+        <linux-kernel@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH v3 0/2] Dynamic debug trace support
+Date:   Tue, 25 Aug 2020 17:33:36 +0200
+Message-ID: <20200825153338.17061-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f3e3efffad64739a223273cc7c738bc@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-08-25 13:38:57, David Laight wrote:
-> From: Petr Mladek
-> > Sent: 25 August 2020 14:11
-> > 
-> > On Thu 2020-08-20 12:33:23, David Laight wrote:
-> > > From: Petr Mladek
-> > > > Sent: 20 August 2020 11:16
-> > > ...
-> > > > Now that I think about it. This is the biggest problem with any temporary buffer
-> > > > for pr_cont() lines. I am more and more convinced that we should just
-> > > > _keep the current behavior_. It is not ideal. But sometimes mixed
-> > > > messages are always better than lost ones.
-> > >
-> > > Maybe a marker to say 'more expected' might be useful.
-> > > OTOH lack of a trailing '\n' probably signifies that a
-> > > pr_cont() is likely to be next.
-> > 
-> > The problem is the "probably". Lack of trailing '\n' might also mean
-> > that the author did not care. Note that newline is not strictly
-> > required at the moment. The next message is concatenated only when
-> > pr_cont() is used from the same process.
-> 
-> Thinks.... (smoke comes out of ears...):
-> If the 'trace entry' contained the pid and whether it was a pr_cont
-> then the trace reader could merge continuation lines even if
-> there was a small number of interleaved other traces.
-> 
-> So anything reading continuously might break a continuation
-> (as might happen if there is a trace from an ISR).
-> But the output from dmesg and /var/log/messages will
-> almost always be correct.
-> 
-> This moves all the complexity away from the trace writing code.
+v3:
+ - Split flag rename to a separate patch
+ - Rename event to printk:dyndbg
 
-Yeah, this was the original plan. Unfortunately, it would require
-changes on the reader side and it would break existing readers (userspace),
-see
-https://lore.kernel.org/lkml/20200811160551.GC12903@alley/
+v2:
+ - Remove stack buffer and use code similar to __ftrace_trace_stack()
+ - Use an event with the same class as printk:console
 
-And it is not acceptable, see
-https://lore.kernel.org/lkml/CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com/
+Vincent Whitchurch (2):
+  dynamic debug: split enable and printk flags
+  dynamic debug: allow printing to trace event
 
-Best Regards,
-Petr
+ .../admin-guide/dynamic-debug-howto.rst       |   1 +
+ include/linux/dynamic_debug.h                 |  11 +-
+ include/trace/events/printk.h                 |  12 +-
+ lib/dynamic_debug.c                           | 161 ++++++++++++++----
+ 4 files changed, 151 insertions(+), 34 deletions(-)
+
+Range-diff:
+-:  ------------ > 1:  2564b3dbbb04 dynamic debug: split enable and printk flags
+1:  7bd3fb553503 ! 2:  90291c35d751 dynamic debug: allow printing to trace event
+    @@ Commit message
+         debug do it.
+     
+         Add an "x" flag to make the dynamic debug call site print to a new
+    -    printk:dynamic trace event.  The trace event can be emitted instead of
+    -    or in addition to the printk().
+    +    printk:dyndbg trace event.  The trace event can be emitted instead of or
+    +    in addition to the printk().
+     
+         The print buffer is statically allocated and managed using code borrowed
+         from __ftrace_trace_stack() and is limited to 256 bytes (four of these
+    @@ Documentation/admin-guide/dynamic-debug-howto.rst: of the characters::
+      The flags are::
+      
+        p    enables the pr_debug() callsite.
+    -+  x    enables trace to the printk:dynamic event
+    ++  x    enables trace to the printk:dyndbg event
+        f    Include the function name in the printed message
+        l    Include line number in the printed message
+        m    Include module name in the printed message
+     
+      ## include/linux/dynamic_debug.h ##
+     @@ include/linux/dynamic_debug.h: struct _ddebug {
+    - 	 * writes commands to <debugfs>/dynamic_debug/control
+    - 	 */
+    - #define _DPRINTK_FLAGS_NONE	0
+    --#define _DPRINTK_FLAGS_PRINT	(1<<0) /* printk() a message using the format */
+    -+#define _DPRINTK_FLAGS_PRINTK	(1<<0) /* printk() a message using the format */
+    - #define _DPRINTK_FLAGS_INCL_MODNAME	(1<<1)
+      #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+      #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+      #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
+    +-#define _DPRINTK_FLAGS_ENABLE		_DPRINTK_FLAGS_PRINTK
+     +#define _DPRINTK_FLAGS_TRACE		(1<<5)
+    -+#define _DPRINTK_FLAGS_PRINT		(_DPRINTK_FLAGS_PRINTK | \
+    ++#define _DPRINTK_FLAGS_ENABLE		(_DPRINTK_FLAGS_PRINTK | \
+     +					 _DPRINTK_FLAGS_TRACE)
+      #if defined DEBUG
+    --#define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
+    -+#define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINTK
+    + #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINTK
+      #else
+    - #define _DPRINTK_FLAGS_DEFAULT 0
+    - #endif
+     
+      ## include/trace/events/printk.h ##
+     @@
+    @@ include/trace/events/printk.h: TRACE_EVENT(console,
+     +	TP_ARGS(text, len)
+     +);
+     +
+    -+DEFINE_EVENT(printk, dynamic,
+    ++DEFINE_EVENT(printk, dyndbg,
+     +	TP_PROTO(const char *text, size_t len),
+     +	TP_ARGS(text, len)
+     +);
+    @@ lib/dynamic_debug.c
+      
+      #include <rdma/ib_verbs.h>
+      
+    -@@ lib/dynamic_debug.c: static inline const char *trim_prefix(const char *path)
+    - }
+    - 
+    - static struct { unsigned flag:8; char opt_char; } opt_array[] = {
+    --	{ _DPRINTK_FLAGS_PRINT, 'p' },
+    -+	{ _DPRINTK_FLAGS_PRINTK, 'p' },
+    - 	{ _DPRINTK_FLAGS_INCL_MODNAME, 'm' },
+    +@@ lib/dynamic_debug.c: static struct { unsigned flag:8; char opt_char; } opt_array[] = {
+      	{ _DPRINTK_FLAGS_INCL_FUNCNAME, 'f' },
+      	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
+      	{ _DPRINTK_FLAGS_INCL_TID, 't' },
+    @@ lib/dynamic_debug.c: static char *dynamic_emit_prefix(const struct _ddebug *desc
+     +	buf = this_cpu_ptr(dynamic_trace_bufs.bufs) + bufidx;
+     +
+     +	len = vscnprintf(buf->buf, sizeof(buf->buf), fmt, args);
+    -+	trace_dynamic(buf->buf, len);
+    ++	trace_dyndbg(buf->buf, len);
+     +
+     +out:
+     +	/* As above. */
+-- 
+2.28.0
+
