@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43A62518F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B5E25190B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgHYMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:49:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38626 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729372AbgHYMtN (ORCPT
+        id S1727907AbgHYMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgHYMvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:49:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598359751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cbENVwZDuEmq7Y+JiiFnjSHv5sQfWHtT+16663LunI=;
-        b=FzjXo7AjAFrCeH6NgJAyzxT7hF9Xc/qAuCogApNQuzekOWX+GVShq7hc5P3exlIn8J7UfU
-        gGVTHlzNysJth1P0DCrthq19rY01CC95xn7J99uSm4e7V1ViDED5no10AjWd8+bjFQKwtJ
-        Nd2mhx5iA9dsmDvrtzZRMY8Cs2Do0/4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-lHpUuQjVPi-HejwtZRDGWw-1; Tue, 25 Aug 2020 08:49:10 -0400
-X-MC-Unique: lHpUuQjVPi-HejwtZRDGWw-1
-Received: by mail-wm1-f70.google.com with SMTP id r14so699821wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:49:09 -0700 (PDT)
+        Tue, 25 Aug 2020 08:51:05 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15346C061574;
+        Tue, 25 Aug 2020 05:51:05 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y2so13676079ljc.1;
+        Tue, 25 Aug 2020 05:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4z0t3K+QLoeioxTOOGGcWlYv6LhGdZE1xgkuzCwfl6I=;
+        b=BslcMvlA00KIenKbUhG69iU/HgJJyCGKkU9LCQGUJg4hzTV1AF7AtA3IfXyHYynqkj
+         E584RJXo+mJRSbQ0t1i3M9BS4bWr9T9tpRsi17etVCkqu+a45wbxGP5C6h3ZLn34T+mz
+         F6HNbTKtgGDK639gCsCx+yvuI/IoQ6asl1cGmoC95/cTtCAiJ7RhdZwaNiCyfNikrywR
+         c6wFUV9CXtNpOj4Y2Uath3LcmZaB++Cw6hTngDM8HpXsq+17+ebKIFcj3+sX1cU93ZPX
+         6sWVaCJ/AZPViXuGBBYD9Z6KbC8z9Zc7mmF1RlQHXDKnFdpWc/ExxDbE/X9cN+pJRCxk
+         J7kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2cbENVwZDuEmq7Y+JiiFnjSHv5sQfWHtT+16663LunI=;
-        b=J08tQvUDyVnFywEyIHdxNzoStUSElECKExwomecl77D6h5xSkWljAvClLH+g98P5Pa
-         RU2NPa+iRsD8EgvH1ecP3JYAOTzE7Z91Bj/jskUXakoRNH4WTMQmX5mBPzOe9m6klONA
-         oKGibBWP4p/8q9ZAesEvNJzW+ytKGpKz5EAdVD8Joc+EzzlQgv0B3XWkAP8RiXkQsWbD
-         y9kI1eOzH9fNUJkcoLtPz1goMOKbiQx7/5ZW547c69aID4ip1fW2OWt18J12htMWO/YQ
-         +qdawKfODl2Zbabp1KHZ/tN//SR00eXe4aDzopTnT1CGacVMzWA6rQB3NHHnN2f5BcqT
-         bNGQ==
-X-Gm-Message-State: AOAM533taOhkCEl/NsqFBLuT84W9b/luBS2RdrYBCbr7R38L9V1ULtK0
-        3wdwWaWonRX80WKHGZ/Yl1GZQDC/7Tcxko4dEfG4XRI5V+yDx08mlBfnxoblAQlHDc2ibHiDI4o
-        eo+HZWu+LjeO6dfbge1b49yEZ
-X-Received: by 2002:adf:9283:: with SMTP id 3mr10403578wrn.70.1598359748940;
-        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxN9gfbiXLS3FXlknqEUTpyobm1UaS3fx3Umjd+xf3wr9fw7fymjKhATua12i3qZKiqps4MNA==
-X-Received: by 2002:adf:9283:: with SMTP id 3mr10403569wrn.70.1598359748763;
-        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id y16sm30120301wrr.83.2020.08.25.05.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
-Subject: Re: [PATCH v4 0/4] Remove dependency of check subcmd upon orc
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        benh@kernel.crashing.org
-References: <20200825124700.29616-1-jthierry@redhat.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <3ef3dd0e-8820-1734-d11e-58a5c9390dd6@redhat.com>
-Date:   Tue, 25 Aug 2020 13:49:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4z0t3K+QLoeioxTOOGGcWlYv6LhGdZE1xgkuzCwfl6I=;
+        b=gKynM1Ztp9jkZF0328284qIQyvpWklQbgcGaGGNJ4cPTNq9YsfMoRxzxT8befaciql
+         llYwH9enWgHfo/H+tRLaehFVSd0QceXU5+QkMndKrZnRXCEwsy7l+JW0Y5zlhmK9tbEj
+         pmXOSb5saFtd/2reQq/PBEM7A3ZraDdu2DuYX/ljv2+jcW+UKBwpOkZ6nS0l/6XM68m/
+         V1MWlapOhuhnhK9onjtxjoHBK2jfSAp3Cuzc0Zl0shVUH5qmxcBmHta082jZLnLnz6j+
+         igZQpxi1jueBHPP14qc2U7cs/sOJa7WJCGef92ZwuwlSEFnm93zHW9Z80P+nwI9ZchLe
+         1WoQ==
+X-Gm-Message-State: AOAM531TS7L0UuLLGqxSwp81i02KwLhwZv5mZ+0hN01og7sTRAtK4Z/P
+        lQf1GpbekKQQfpPDP8xwZSoW6d6pWblBzeu2YC4=
+X-Google-Smtp-Source: ABdhPJwmAXSB4sPIlEhiDhTQQ4uyWKneA5ej6i1dzJ0HZftooX5KdSQEzmLDZQNCBJ71+jbZrBVTfavtSJ1qlp4VYFA=
+X-Received: by 2002:a2e:8ed4:: with SMTP id e20mr5152175ljl.403.1598359863461;
+ Tue, 25 Aug 2020 05:51:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200825124700.29616-1-jthierry@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200825030406.373623-1-cphealy@gmail.com>
+In-Reply-To: <20200825030406.373623-1-cphealy@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 25 Aug 2020 09:50:51 -0300
+Message-ID: <CAOMZO5C3MpiV_c0iwQHmf74O35WpT1kkwtkASSBoFnL+=JXvJA@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: nvmem: Add syscon to Vybrid OCOTP driver
+To:     Chris Healy <cphealy@gmail.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sanchayan Maity <maitysanchayan@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        stable <stable@vger.kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Chris,
 
-Sorry for the duplicate send. An issue happened while sending this one. 
-Please ignore this thread.
+On Tue, Aug 25, 2020 at 12:04 AM Chris Healy <cphealy@gmail.com> wrote:
+>
+> From: Chris Healy <cphealy@gmail.com>
+>
+> Add syscon compatibility with Vybrid OCOTP driver binding. This is
+> required to access the UID.
+>
+> Fixes: 623069946952 ("nvmem: Add DT binding documentation for Vybrid
+> OCOTP driver")
 
-Thanks,
+Fixes line should not be split even when greater than 80 columns.
 
-Julien
+Shawn can probably fix while applying it.
 
-On 8/25/20 1:46 PM, Julien Thierry wrote:
-> Hi,
-> 
-> Matt Helsley's change[1] provided a base framework to opt-in/out
-> objtool subcommands at compile time. This makes it easier for
-> architectures to port objtool, one subcommand at a time.
-> 
-> Orc generation relies on the check operation implementation. However,
-> the way this is done causes the check implementation to depend on the
-> implementation of orc generation functions to call if orc generation is
-> requested. This means that in order to implement check subcmd, orc
-> subcmd also need to be implemented.
-> 
-> These patches aim at removing that dependency, having orc subcmd
-> being built on top of the check subcmd.
-> 
-> 
-> Changes since v3 [2]:
-> - Rebased on v5.9-rc1
-> - Renamed objtool_setup_file() to objtool_open_read()
-> - Fixed misplaced elf_write() when file->elf->changed is true
-> - Avoid additional allocation for orc data and compile out orc
->    definition when not needed instead
-> 
-> [1] https://www.spinics.net/lists/kernel/msg3510844.html
-> [2] https://lkml.org/lkml/2020/7/30/415
-> 
-> Cheers,
-> 
-> Julien
-> 
-> -->
-> 
-> Julien Thierry (4):
->    objtool: Move object file loading out of check
->    objtool: Move orc outside of check
->    objtool: orc: Skip setting orc_entry for non-text sections
->    objtool: check: Use orc definition only when needed
-> 
->   tools/objtool/Makefile        |  4 +++
->   tools/objtool/arch.h          |  2 ++
->   tools/objtool/builtin-check.c | 15 ++++++++++-
->   tools/objtool/builtin-orc.c   | 27 +++++++++++++++++++-
->   tools/objtool/check.c         | 47 ++++++-----------------------------
->   tools/objtool/check.h         |  2 ++
->   tools/objtool/objtool.c       | 29 +++++++++++++++++++++
->   tools/objtool/objtool.h       |  4 ++-
->   tools/objtool/orc_gen.c       |  3 +++
->   tools/objtool/weak.c          |  4 +--
->   10 files changed, 92 insertions(+), 45 deletions(-)
-> 
-> --
-> 2.21.3
-> 
-
--- 
-Julien Thierry
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
