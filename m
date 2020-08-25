@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8514B25154C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D888251556
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgHYJ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgHYJ0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:26:17 -0400
-Received: from localhost (p54b333df.dip0.t-ipconnect.de [84.179.51.223])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0A7D2068F;
-        Tue, 25 Aug 2020 09:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598347576;
-        bh=T2kSGOuK3m8k7gWo3P5HzQK2jaRznKuC20hjtiRBOjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1LEMhQv5WeJFL2nBK/MIhnwi+Rsmd2rP6kyGFal1Ibj3oyVyP6QTmZf8b9QFO0cJe
-         BOWHPOJ1C5ucLNpfSrD7Sms7JRo6XyJ/1V3tOJAl42iMk6thRjCYB8x52DwZEbl8rp
-         iN0ZN0aZZbWdNq+xFA2WhMg3kLeOITGjURJwyiuI=
-Date:   Tue, 25 Aug 2020 11:26:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: mv64xxx: Add bus error recovery
-Message-ID: <20200825092613.GJ1861@ninjato>
-References: <20200824225254.1114-1-mark.tomlinson@alliedtelesis.co.nz>
+        id S1729214AbgHYJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:27:48 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33828 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726149AbgHYJ1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 05:27:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U6pQcyl_1598347663;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U6pQcyl_1598347663)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Aug 2020 17:27:44 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH] sched/fair: Fix wrong cpu selecting from isolated domain
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
+ <CAPJCdBnTm0=Nazi2w9a6mBcKNv=_66UwvMfTNg6vLNKqW6qfwQ@mail.gmail.com>
+From:   xunlei <xlpang@linux.alibaba.com>
+Message-ID: <495238bd-ea0d-56c6-4a9c-7b18deafcc8f@linux.alibaba.com>
+Date:   Tue, 25 Aug 2020 17:27:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aznLbwQ42o7LEaqN"
-Content-Disposition: inline
-In-Reply-To: <20200824225254.1114-1-mark.tomlinson@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPJCdBnTm0=Nazi2w9a6mBcKNv=_66UwvMfTNg6vLNKqW6qfwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/8/25 下午2:37, Jiang Biao wrote:
+> On Mon, 24 Aug 2020 at 20:31, Xunlei Pang <xlpang@linux.alibaba.com> wrote:
+>>
+>> We've met problems that occasionally tasks with full cpumask
+>> (e.g. by putting it into a cpuset or setting to full affinity)
+>> were migrated to our isolated cpus in production environment.
+>>
+>> After some analysis, we found that it is due to the current
+>> select_idle_smt() not considering the sched_domain mask.
+>>
+>> Fix it by checking the valid domain mask in select_idle_smt().
+>>
+>> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
+>> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+>> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+>> ---
+>>  kernel/sched/fair.c | 9 +++++----
+>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 1a68a05..fa942c4 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+>>  /*
+>>   * Scan the local SMT mask for idle CPUs.
+>>   */
+>> -static int select_idle_smt(struct task_struct *p, int target)
+>> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>>  {
+>>         int cpu;
+>>
+>> @@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
+>>                 return -1;
+>>
+>>         for_each_cpu(cpu, cpu_smt_mask(target)) {
+>> -               if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+>> +               if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+>> +                   !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+> Maybe the following change could be better, :)
+> for_each_cpu_and(cpu, cpu_smt_mask(target), sched_domain_span(sd))
+> keep a similar style with select_idle_core/cpu, and could reduce loops.
+> 
 
---aznLbwQ42o7LEaqN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I thought that, but given that smt mask is usually small, the original
+code may run a bit faster?
 
-On Tue, Aug 25, 2020 at 10:52:54AM +1200, Mark Tomlinson wrote:
-> This adds i2c bus recovery to the mv64xxx driver.
->=20
-> Implement bus recovery to recover from SCL/SDA stuck low.
->=20
-> This uses the generic recovery function, setting the clock/data lines as
-> GPIO pins, and sending 9 clocks to try and recover the bus.
->=20
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-> ---
-> Changes in v2:
->  - use generic GPIO recovery function.
+> Just an option.
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> 
 
-Thank you for doing that! Glad to see the new helper function works for
-you as well. The initialization code is all well, but I wonder about the
-use of i2c_recover_bus(). Recovery should be tried only if it is
-detected that SDA is pulled low when the bus should be free. So, you
-shouldn't call i2c_recover_bus() in unconditionally in probe(). Can your
-HW detect if SDA is stuck low?
-
-
---aznLbwQ42o7LEaqN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9E2TEACgkQFA3kzBSg
-KbY5iQ//XCFBdzw1bllHv/Z/puDG8CmCq+PfsS+u1FqRaxrqC88T0/dBq04kbWVP
-wa/mERJ6NjSJAHG3BYrV3zeGxlKw/60XV9gLeycj+Q9Xq+xCnPbXh5cAfDoGoJL9
-GhKso1gfhpA8YtCN+6NpG6S6mRMLSaW2XfLEw4n7A+LHAVROzA7Hp+payFWyn5zm
-3ic9Lrdnqay/7CtuaCLmcauIb5jlixEwcuLdlvHKrxYZ13/7iSFnLNj62308lCwj
-8I0ykEbviIhyDzAHvqe4DhyghFBK2QKuTg0q3rxHWq8jKcWicPpp+qqCqVI1Ugab
-oKFzbuuXS8/nP551WkvOA7Hqwc7YI6HlrH+LYUxJllLTvL+O8UpDM3Jgv6U+Csvo
-omNAPXOfZVbOtrpfRbLudHWWdhNdwB1+YDtEcy+Kw9fhTADapDgEQmaiXMt5IRMU
-dP4bcxPswhg5y11fcRbhJM9tiHyTA3kz0Fch516CTLhRZP4C9FkZZ7Wip0aHHtCZ
-nVxmdGRPN+AnzQd+fOHGs8W/8iXY5H+x/OIzC7KKllq8Al6CZ4xGwh2dUCFB4DaD
-WRbtsUFyRuLMbK7phO+PLoxk+Dm16z2yZRW1uV5b9916myM2iNS1VVUrFfotVyLH
-tZqK9o9eKPzQy31xcpgCCFYnlrMf71VQNhshRSlUxI4Zo4z9b6I=
-=Rz8g
------END PGP SIGNATURE-----
-
---aznLbwQ42o7LEaqN--
+Thanks :-)
