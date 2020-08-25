@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392D9251AAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBC6251AB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgHYOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgHYOSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:18:32 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57687C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:18:31 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r13so10542342iln.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
-        b=aw1QWNf3nx90XJSzXYAZQe7F04hGPY8+Gb+qR8Ze+dP2vRW0I4JdU4Kyne2+ye13UW
-         Zad39+dVzCW5d6cTcfiDt5+u3pyK0Gm1JhPyRny4A5LDMsB3f/zhEDDVTZndtWUW3Hfc
-         njciB/DQ4eevRhkLmSrwx7364rKibGzFp/FtwIz693ca3qROabwT5HSB7/gHuD9AiwDg
-         7SA0mVFQ44RaNI7rNK4T+AbFcWaIGoobuRvhnB7TvIkMgL/RaLdwUA9adq5hQ4ef+56i
-         g8z5WEYqyxhctyOIRZpS1zKfyTKAsW0SdFeLOwmSEmjdsfBO0lVHaMeFCut9nTP+ABoL
-         4+RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
-        b=aghIN7zD7ggh3p9DtxgFENveS9rol6a6W/ADPCe7mxvRM9qAGNTxkicT5nNAE6qSoq
-         3jbHz+LgQ+M35orFPKoTxfvjfKEzgsVw2zGpCVadn25t4FvVMNabQOY541ASjr5+7xB1
-         AEx/I5zg7rhwTeMnijtFKXSHtbeV/8tBce1sF2SiZw2poBCWtHL0pCJHQRZ2aLQ2SZ8x
-         G9khly8XFBO8atkuIUmgDvY/tfF+Hbe9XvxSU56D8nYY6eThQJyUHewRLcEE/h42dwkJ
-         ID+bfqzaFBJyLyMuNJBo+bovXpcjdZXbH/QiuVAvgrdeWKpPYg1f41cfMOee84wXjqnb
-         45ww==
-X-Gm-Message-State: AOAM532v2UGerOGNh2f0f6lNRogAkTmn4nvNmebkx3Vo2tAsxpDbEXsE
-        8gdw54SzCwME7JjiBq7TIFwsJPc/dzsFOVS3
-X-Google-Smtp-Source: ABdhPJyY1OaQ+Umotok2j2XLRxsZuzwhZJCnmSI1jN+NLrCYnTMyRkEaZpokELcBWo2CHRg0pa9f7w==
-X-Received: by 2002:a92:6c09:: with SMTP id h9mr9815270ilc.46.1598365109513;
-        Tue, 25 Aug 2020 07:18:29 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id f18sm9350485ilj.24.2020.08.25.07.18.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 07:18:28 -0700 (PDT)
-Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
- <20200818181117.GA34125@mit.edu>
- <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
- <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
- <20200822143326.GC199705@mit.edu>
- <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
- <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
-Message-ID: <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
-Date:   Tue, 25 Aug 2020 08:18:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1726471AbgHYOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgHYOTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 10:19:53 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8E5A20665;
+        Tue, 25 Aug 2020 14:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598365193;
+        bh=nPGL9xYuqaBBb6/X96T+G2iHHQlcXKOgwQl9Zw4KiiI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iaGyhMfeaypRkkg78x/TqeTLlP7Ug9P/6t0HcUF9cfvYzoBP7dlbN66BlJsE72aQB
+         gFO926LG+A8j/n10vj3d0q/2v1qBwP4BUaEmAskeXMfYxMKbrzxuSfchirsFuq6tlR
+         gCF5x45zyVZZ/smvKsF3jkxon6a5fGyDqd50Z6Hw=
+Date:   Tue, 25 Aug 2020 23:19:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     peterz@infradead.org
+Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
+ entry is not optimized (trigger by int3 breakpoint)
+Message-Id: <20200825231950.cd193c13ecf7dcf60232b897@kernel.org>
+In-Reply-To: <20200825141058.GZ1362448@hirez.programming.kicks-ass.net>
+References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
+        <20200825005426.f592075d13be740cb3c9aa77@kernel.org>
+        <7396e7b2079644a6aafd9670a111232b@trendmicro.com>
+        <20200825151538.f856d701a34f4e0561a64932@kernel.org>
+        <20200825120911.GX1362448@hirez.programming.kicks-ass.net>
+        <20200825221555.a2d72c9754284feced6a8536@kernel.org>
+        <20200825133005.GY1362448@hirez.programming.kicks-ass.net>
+        <20200825141058.GZ1362448@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/20 4:56 AM, Jens Axboe wrote:
-> On 8/22/20 9:48 AM, Jens Axboe wrote:
->> On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
->>> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
->>>>>>> Resending this one, as I've been carrying it privately since May. The
->>>>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
->>>>>>> please consider this one for 5.9. Thanks!
->>>>>>
->>>>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
->>>>>> missing something?  It's on my queue to send to Linus once I get my
->>>>>> (late) ext4 primary pull request for 5.9.
->>>>>
->>>>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
->>>>
->>>> Didn't see it in the queue that just sent in, is it still queued up?
->>>
->>> It wasn't in the queue which I queued up because that was based on
->>> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
->>> that's totally on me.
->>>
->>> He has said that he's going to start ignoring pull requests that
->>> aren't fixes only if this becomes a pattern, so while I can send him
->>> another pull request which will just have that one change, there are
->>> no guarantees he's going to take it at this late date.
->>>
->>> Sorry, when you sent me the commit saying that the changes that were
->>> needed were already upstream on August 3rd, I thought that meant that
->>> they were aready in Linus's tree.  I should have checked and noticed
->>> that that in fact "ext4: flag as supporting buffered async reads"
->>> wasn't compiling against Linus's upstream tree, so I didn't realize
->>> this needed to be handled as a special case during the merge window.
->>
->> Well to be honest, this kind of sucks. I've been posting it since May,
->> and the ideal approach would have been to just ack it and I could have
->> carried it in my tree. That's what we did for btrfs and XFS, both of
->> which have it.
->>
->> The required patches *were* upstreamed on August 3rd, which is why I
->> mentioned that. But yes, not in 5.8 or earlier, of course.
->>
->> So I suggest that you either include it for the next pull request for
->> Linus, or that I put it in with your ack. Either is fine with me. I'd
->> consider this a "dropping the ball" kind of thing, it's not like the
->> patch hasn't been in linux-next or hasn't been ready for months. This
->> isn't some "oh I wrote this feature after the merge window" event. It'd
->> be a real shame to ship 5.9 and ext4 not have support for the more
->> efficient async buffered reads, imho, especially since the two other
->> major local file systems already have it.
->>
->> Let me know what you think.
-> 
-> Ted, can you make a call on this, please? It's now post -rc2. Let's
-> get this settled and included, one way or another.
+On Tue, 25 Aug 2020 16:10:58 +0200
+peterz@infradead.org wrote:
 
-Daily ping on this one...
+> On Tue, Aug 25, 2020 at 03:30:05PM +0200, peterz@infradead.org wrote:
+> > On Tue, Aug 25, 2020 at 10:15:55PM +0900, Masami Hiramatsu wrote:
+> 
+> > > OK, this looks good to me too.
+> > > I'll make a series to rewrite kretprobe based on this patch, OK?
+> > 
+> > Please, I'll send the fix along when I have it.
+> 
+> One approach that I think might work nicely is trying to pull
+> trampoline_handler() into core code (with a few arch helpers). Then we
+> can replace that loop once, instead of having to go fix each
+> architectures one by one.
+
+Yes, that is what I'm trying (I had done it, but lost the code... let's do it again)
+
+Thank you,
+
+> 
+> They're all basically the same loop after all.
+
 
 -- 
-Jens Axboe
-
+Masami Hiramatsu <mhiramat@kernel.org>
