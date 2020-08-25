@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7682251D70
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F412251D76
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHYQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:47:58 -0400
-Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:41284 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725805AbgHYQr5 (ORCPT
+        id S1726578AbgHYQtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 12:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgHYQtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:47:57 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EE3E8837F24D;
-        Tue, 25 Aug 2020 16:47:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4425:5007:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14877:21064:21080:21433:21451:21627:21939:21990:30003:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: form08_42108202705d
-X-Filterd-Recvd-Size: 2494
-Received: from XPS-9350 (unknown [172.58.35.126])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 16:47:53 +0000 (UTC)
-Message-ID: <777e01f8dc9bd35e8b7bdf1b5181d0d13b86d8b9.camel@perches.com>
-Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Roland Dreier <roland@purestorage.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 25 Aug 2020 09:47:50 -0700
-In-Reply-To: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
-References: <20200825155142.349651-1-alex.dewar90@gmail.com>
-         <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
-         <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
-         <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 25 Aug 2020 12:49:12 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4AFC061574;
+        Tue, 25 Aug 2020 09:49:11 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ep8so1529064pjb.3;
+        Tue, 25 Aug 2020 09:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hOmXAx+g6AYdmKcdtOAJb/8DkoFuv5X12lGh19wTah0=;
+        b=LqBYNQvYi+P0BNF3Y12On1ZZO83Cj2Ctnu1HX1scg2WJpZ2vCQ3YXvazQgyvJpa9hw
+         6mAlLdbF1SqQfhzJut9yZ+Y6QsnQ7Y2J+1CK19IL/ZyLJcs3H4VQydH2SXLSI8BSuRiJ
+         JKNVr2T4J6YyMvAxxwrZmOmEdBQ2FTH/lZTKYe61H9FFuRbdqTb/GlPIYixoOAIB52oh
+         vRBftreDlVMP6H/8H/q/c5ss+l/2FgZAD8KtWu6eZbiLkA0KwSz0LveVpnRrrA43Gspa
+         O6V+vt8vmQwA152KJ9sM8CVs7FFv4fTSBLlt/hYbILOLOcDHb+GbD8ynt5hMebg95lvH
+         MjhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hOmXAx+g6AYdmKcdtOAJb/8DkoFuv5X12lGh19wTah0=;
+        b=ok3yskuzIlC0jQu0oC+ob7K2CND3Y9Qo5IRrggKg1kUIROUAUJQITjxKz84XA2n7Ww
+         AbroTYh/eqjyG9ECHPfmy+6bbghpc9oGNeRhQb5Tq5+DaSWEDycsni3qCc2pliKC1rTF
+         NgqXr+Phjl2mP8oP5x4g/0LWFISGTI9ry1hxKPhFaFI687PPqMtZi3X/0lPIcW7586mb
+         2o95frlHQCcdSPjvhkAPnJT+dZvyzpNb4vt/7GFlPEFyNcUIIbWJiA3vIzv7+lYmoill
+         YL4P3mPPUbtVDLI8SYRNveJf5oa2Pl0SxAnoe/0KEKo4I5lraL4pH1Pg32mbuVb8OkqA
+         KvRw==
+X-Gm-Message-State: AOAM530VwLybmlz3XS3S3sPmXCXw55P0FPM0/e+2ewcpQOTPyYi0X3Vx
+        5CWqxVpux6VqYkgHYCwtNg==
+X-Google-Smtp-Source: ABdhPJxJniaH/TLwosXRVvYOc5w1FpSJBIScyt++FcpHV0j2yRV/ev3rIRUqe6DE4jbPsVTPpLuqHg==
+X-Received: by 2002:a17:90a:9103:: with SMTP id k3mr2353650pjo.4.1598374151495;
+        Tue, 25 Aug 2020 09:49:11 -0700 (PDT)
+Received: from localhost.localdomain ([161.117.80.159])
+        by smtp.gmail.com with ESMTPSA id t5sm3314443pji.51.2020.08.25.09.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 09:49:11 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     jslaby@suse.cz
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 15/16] vc_screen: extract vcs_read_buf_header
+Date:   Tue, 25 Aug 2020 12:48:04 -0400
+Message-Id: <20200825164804.860743-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200818085706.12163-15-jslaby@suse.cz>
+References: <20200818085706.12163-15-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 11:49 -0500, Gustavo A. R. Silva wrote:
-> 
-> On 8/25/20 11:26, Joe Perches wrote:
-> > On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
-> > > On 8/25/20 10:51, Alex Dewar wrote:
-> > > > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-> > > > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
-> > > > were later converted to fallthrough statements by commit df561f6688fe
-> > > > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
-> > > > warning about unreachable code.
-> > > > 
-> > > > Remove the fallthrough statements and replace the mass of gotos with
-> > > > simple return statements to make the code terser and less bug-prone.
-> > > > 
-> > > 
-> > > This should be split up into two separate patches: one to address the
-> > > fallthrough markings, and another one for the gotos.
-> > 
-> > I don't think it's necessary to break this into multiple patches.
-> > Logical changes in a single patch are just fine, micro patches
-> > aren't that useful.
-> > 
-> 
-> There is a reason for this. Read the changelog text and review the patch.
+Hi all,
 
-What makes you think I didn't already do that?
+Link: https://syzkaller.appspot.com/bug?id=f332576321998d36cd07d09c9c1268cfed1895c9
 
-I think your desire for micropatches is unnecessary.
+As reported by syzbot, vcs_read_buf() is overflowing `con_buf16`, since
+this patch removed the following check:
 
+-		if (count > CON_BUF_SIZE) {
+-			count = CON_BUF_SIZE;
+-			filled = count - pos;
+-		}
 
+Decreasing `count` by `min(HEADER_SIZE - pos, count)` bypasses this check.
+Additionally, this patch also removed updates to `skip` and `filled`.
+
+What should we do in order to fix it?
+
+Thank you,
+Peilin Ye
