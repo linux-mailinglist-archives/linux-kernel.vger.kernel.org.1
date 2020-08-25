@@ -2,177 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C10925189B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564A5251899
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgHYMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:33:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10320 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726691AbgHYMdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:33:35 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EDFE757303068AF559DB;
-        Tue, 25 Aug 2020 20:33:28 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
- 20:33:19 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
-        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: clean up codestyle for net/ipv4
-Date:   Tue, 25 Aug 2020 08:32:11 -0400
-Message-ID: <20200825123211.33235-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        id S1727105AbgHYMcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:32:45 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:34172 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726633AbgHYMcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:32:42 -0400
+IronPort-SDR: 3x1e3Pz1wwgpI9X+zYjsp9iXbYNiCGl6869zS6wKdQlry6UZ/QchFDCnrbItKQ+Vj5mwNn73fY
+ byJi0Cffvj6It9fidoVSnaFFCBWKd2afRv5/mDfZQv1SiI9lyShuLUx5gQE588CqzErvIoI6cy
+ 7Kq5KOv+gwTbrFo94qPj8mssP87LEkQbBEoSD2lIugvY+KHxPFbbk4ztRClaMWjAMS0VVAiSAr
+ PtnDaCIGZe/BMmwhAInG4XzAvde97QvTIz/fCZ4Qr5KHCHrAfZjZxLTrbQ1ViYsJfCIavZK3pc
+ acg=
+X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
+   d="scan'208";a="13590729"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 25 Aug 2020 14:32:40 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 25 Aug 2020 14:32:40 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 25 Aug 2020 14:32:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1598358760; x=1629894760;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=//UX+6dtDsOUhxAY7i7j/5wz0r3N+fBK+XOosoJPu7c=;
+  b=X2TFKHrYtkCTYBCwj2Tz1QOT9Ld6aw4ZVo7Ky2Hz3m1fRxYfd930e874
+   dlCsgaPZv/5RsWw71Jflo4f/hU43VstavrYDkKiRnoQnA7sHZArxJzOaT
+   QooIvqWfOqv6fLss6u7199on/eGrT6E5OmeeaL4avxvaw+sLjq89N3v+D
+   iHsTTS9p0cj47T5xXuW+1p+Gj4xYRSGCdeLnTn+r3ffzeKNT84QuuLmyv
+   TKL1bX1cI3PBxj+MPlgUqcDsFFOwQVVT91huR3kf3HcZhb7mOih+6gxQu
+   ktJDZjs1YNsACgKNwXUgjhWmSv8ol2qm7AvUtK8fvmvWKCdBUxtokwEBc
+   g==;
+IronPort-SDR: U8bM6z9Do0ynMVDiZZr75f3Wt1TQ80iR8iTg4Zpzn4MSYaMYvxaXQWguiRy2D1M0xaiIA+xRfw
+ QIB6ZKrPXlqJPzGNUB37NTBVovbPRQ1cgrxqWN/m1pLAerVydGwddVk+w/VK6mYozdVQY5T3UJ
+ BEeP1kG5h0zLWKcGd1TGUsKnQiNP5Bm/igIWEUk7vDjqUouwfuhRipm8QYkvvpdegkAt4A932p
+ e8wehn69XnqkCMjdQeexCE4EUpSbnZ95QBlY4kaIH5mlRJYnxeJVINdNwJKitjpk1BgqFhDrMq
+ 2zc=
+X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
+   d="scan'208";a="13590728"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 25 Aug 2020 14:32:40 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 54326280065;
+        Tue, 25 Aug 2020 14:32:40 +0200 (CEST)
+Message-ID: <936a2a0d85b9bd8455cc1844e264a0d9fc86c5ac.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: (EXT) Re: [PATCH mmc-next v2] mmc: allow setting slot
+ index via device tree alias
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 25 Aug 2020 14:32:38 +0200
+In-Reply-To: <CAPDyKFrBj2RO3jqgrQ5qhYpMOFfjufBnr2y8McdgJXR-Z_618g@mail.gmail.com>
+References: <20200820075949.19133-1-matthias.schiffer@ew.tq-group.com>
+         <CAPDyKFoi7KghuBqu7YVS4GH4Bp1puhgb=PcwBVDvaTesLujrrw@mail.gmail.com>
+         <548605506aa2e73afafdc228263da04585871e0b.camel@ew.tq-group.com>
+         <11654b05dd8fb87e195aed20cbdaa22d8856b072.camel@ew.tq-group.com>
+         <CAPDyKFrBj2RO3jqgrQ5qhYpMOFfjufBnr2y8McdgJXR-Z_618g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a pure codestyle cleanup patch. Also add a blank line after
-declarations as warned by checkpatch.pl.
+On Tue, 2020-08-25 at 14:27 +0200, Ulf Hansson wrote:
+> On Tue, 25 Aug 2020 at 14:00, Matthias Schiffer
+> <matthias.schiffer@ew.tq-group.com> wrote:
+> > 
+> > On Tue, 2020-08-25 at 11:39 +0200, Matthias Schiffer wrote:
+> > > On Tue, 2020-08-25 at 11:14 +0200, Ulf Hansson wrote:
+> > > > On Thu, 20 Aug 2020 at 09:59, Matthias Schiffer
+> > > > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > > > --- a/drivers/mmc/core/host.c
+> > > > > +++ b/drivers/mmc/core/host.c
+> > > > > @@ -387,6 +387,7 @@ struct mmc_host *mmc_alloc_host(int
+> > > > > extra,
+> > > > > struct device *dev)
+> > > > >  {
+> > > > >         int err;
+> > > > >         struct mmc_host *host;
+> > > > > +       int alias_id, min_idx, max_idx;
+> > > > > 
+> > > > >         host = kzalloc(sizeof(struct mmc_host) + extra,
+> > > > > GFP_KERNEL);
+> > > > >         if (!host)
+> > > > > @@ -395,7 +396,18 @@ struct mmc_host *mmc_alloc_host(int
+> > > > > extra,
+> > > > > struct device *dev)
+> > > > >         /* scanning will be enabled when we're ready */
+> > > > >         host->rescan_disable = 1;
+> > > > > 
+> > > > > -       err = ida_simple_get(&mmc_host_ida, 0, 0,
+> > > > > GFP_KERNEL);
+> > > > > +       host->parent = dev;
+> > > > > +
+> > > > > +       alias_id = mmc_get_reserved_index(host);
+> > > > > +       if (alias_id >= 0) {
+> > > > > +               min_idx = alias_id;
+> > > > > +               max_idx = alias_id + 1;
+> > > > > +       } else {
+> > > > > +               min_idx = mmc_first_nonreserved_index();
+> > > > > +               max_idx = 0;
+> > > > > +       }
+> > > > > +
+> > > > > +       err = ida_simple_get(&mmc_host_ida, min_idx, max_idx,
+> > > > > GFP_KERNEL);
+> > 
+> > 
+> > One more question I came across when reworking my patch: Do we need
+> > a
+> > fallback here for the case where the reserved index is already
+> > taken?
+> > To handle an SD card being replaced while still mounted?
+> 
+> Removal/insertion of an SD card should be fine, as that doesn't mean
+> that the host is removed. In other words, host->index remains the
+> same.
+> 
+> Although, for a bad DT configuration, where for example the same
+> aliases id is used twice, a fallback could make sense. On the other
+> hand, as such configuration would be wrong, we might as well just
+> print a message and return an error.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/ipv4/ip_options.c | 35 +++++++++++++++++++----------------
- net/ipv4/ip_output.c  |  2 +-
- net/ipv4/route.c      |  6 +++---
- 3 files changed, 23 insertions(+), 20 deletions(-)
+I don't think this can happen as long as we don't have DTs changing at
+runtime: Each alias is a DT property name in /aliases, which can only exist once.
 
-diff --git a/net/ipv4/ip_options.c b/net/ipv4/ip_options.c
-index 948747aac4e2..da1b5038bdfd 100644
---- a/net/ipv4/ip_options.c
-+++ b/net/ipv4/ip_options.c
-@@ -47,32 +47,32 @@ void ip_options_build(struct sk_buff *skb, struct ip_options *opt,
- 	unsigned char *iph = skb_network_header(skb);
- 
- 	memcpy(&(IPCB(skb)->opt), opt, sizeof(struct ip_options));
--	memcpy(iph+sizeof(struct iphdr), opt->__data, opt->optlen);
-+	memcpy(iph + sizeof(struct iphdr), opt->__data, opt->optlen);
- 	opt = &(IPCB(skb)->opt);
- 
- 	if (opt->srr)
--		memcpy(iph+opt->srr+iph[opt->srr+1]-4, &daddr, 4);
-+		memcpy(iph + opt->srr + iph[opt->srr + 1] - 4, &daddr, 4);
- 
- 	if (!is_frag) {
- 		if (opt->rr_needaddr)
--			ip_rt_get_source(iph+opt->rr+iph[opt->rr+2]-5, skb, rt);
-+			ip_rt_get_source(iph + opt->rr + iph[opt->rr + 2] - 5, skb, rt);
- 		if (opt->ts_needaddr)
--			ip_rt_get_source(iph+opt->ts+iph[opt->ts+2]-9, skb, rt);
-+			ip_rt_get_source(iph + opt->ts + iph[opt->ts + 2] - 9, skb, rt);
- 		if (opt->ts_needtime) {
- 			__be32 midtime;
- 
- 			midtime = inet_current_timestamp();
--			memcpy(iph+opt->ts+iph[opt->ts+2]-5, &midtime, 4);
-+			memcpy(iph + opt->ts + iph[opt->ts + 2] - 5, &midtime, 4);
- 		}
- 		return;
- 	}
- 	if (opt->rr) {
--		memset(iph+opt->rr, IPOPT_NOP, iph[opt->rr+1]);
-+		memset(iph + opt->rr, IPOPT_NOP, iph[opt->rr + 1]);
- 		opt->rr = 0;
- 		opt->rr_needaddr = 0;
- 	}
- 	if (opt->ts) {
--		memset(iph+opt->ts, IPOPT_NOP, iph[opt->ts+1]);
-+		memset(iph + opt->ts, IPOPT_NOP, iph[opt->ts + 1]);
- 		opt->ts = 0;
- 		opt->ts_needaddr = opt->ts_needtime = 0;
- 	}
-@@ -495,26 +495,29 @@ EXPORT_SYMBOL(ip_options_compile);
- void ip_options_undo(struct ip_options *opt)
- {
- 	if (opt->srr) {
--		unsigned  char *optptr = opt->__data+opt->srr-sizeof(struct  iphdr);
--		memmove(optptr+7, optptr+3, optptr[1]-7);
--		memcpy(optptr+3, &opt->faddr, 4);
-+		unsigned char *optptr = opt->__data + opt->srr - sizeof(struct iphdr);
-+
-+		memmove(optptr + 7, optptr + 3, optptr[1] - 7);
-+		memcpy(optptr + 3, &opt->faddr, 4);
- 	}
- 	if (opt->rr_needaddr) {
--		unsigned  char *optptr = opt->__data+opt->rr-sizeof(struct  iphdr);
-+		unsigned char *optptr = opt->__data + opt->rr - sizeof(struct iphdr);
-+
- 		optptr[2] -= 4;
--		memset(&optptr[optptr[2]-1], 0, 4);
-+		memset(&optptr[optptr[2] - 1], 0, 4);
- 	}
- 	if (opt->ts) {
--		unsigned  char *optptr = opt->__data+opt->ts-sizeof(struct  iphdr);
-+		unsigned char *optptr = opt->__data + opt->ts - sizeof(struct iphdr);
-+
- 		if (opt->ts_needtime) {
- 			optptr[2] -= 4;
--			memset(&optptr[optptr[2]-1], 0, 4);
--			if ((optptr[3]&0xF) == IPOPT_TS_PRESPEC)
-+			memset(&optptr[optptr[2] - 1], 0, 4);
-+			if ((optptr[3] & 0xF) == IPOPT_TS_PRESPEC)
- 				optptr[2] -= 4;
- 		}
- 		if (opt->ts_needaddr) {
- 			optptr[2] -= 4;
--			memset(&optptr[optptr[2]-1], 0, 4);
-+			memset(&optptr[optptr[2] - 1], 0, 4);
- 		}
- 	}
- }
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 61f802d5350c..329a0ab87542 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1351,7 +1351,7 @@ ssize_t	ip_append_page(struct sock *sk, struct flowi4 *fl4, struct page *page,
- 	if (cork->flags & IPCORK_OPT)
- 		opt = cork->opt;
- 
--	if (!(rt->dst.dev->features&NETIF_F_SG))
-+	if (!(rt->dst.dev->features & NETIF_F_SG))
- 		return -EOPNOTSUPP;
- 
- 	hh_len = LL_RESERVED_SPACE(rt->dst.dev);
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 18c8baf32de5..96fcdfb9bb26 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1079,7 +1079,7 @@ EXPORT_SYMBOL_GPL(ipv4_update_pmtu);
- 
- static void __ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
- {
--	const struct iphdr *iph = (const struct iphdr *) skb->data;
-+	const struct iphdr *iph = (const struct iphdr *)skb->data;
- 	struct flowi4 fl4;
- 	struct rtable *rt;
- 
-@@ -1127,7 +1127,7 @@ void ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
- 		new = true;
- 	}
- 
--	__ip_rt_update_pmtu((struct rtable *) xfrm_dst_path(&rt->dst), &fl4, mtu);
-+	__ip_rt_update_pmtu((struct rtable *)xfrm_dst_path(&rt->dst), &fl4, mtu);
- 
- 	if (!dst_check(&rt->dst, 0)) {
- 		if (new)
-@@ -1168,7 +1168,7 @@ EXPORT_SYMBOL_GPL(ipv4_redirect);
- 
- void ipv4_sk_redirect(struct sk_buff *skb, struct sock *sk)
- {
--	const struct iphdr *iph = (const struct iphdr *) skb->data;
-+	const struct iphdr *iph = (const struct iphdr *)skb->data;
- 	struct flowi4 fl4;
- 	struct rtable *rt;
- 	struct net *net = sock_net(sk);
--- 
-2.19.1
+
+> 
+> [...]
+> 
+> Kind regards
+> Uffe
 
