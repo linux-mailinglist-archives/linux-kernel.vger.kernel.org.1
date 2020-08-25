@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D43D251217
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1C025121D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgHYGg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 02:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S1729103AbgHYGhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 02:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726940AbgHYGg1 (ORCPT
+        with ESMTP id S1729068AbgHYGhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 02:36:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4642AC061574;
-        Mon, 24 Aug 2020 23:36:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u128so6531847pfb.6;
-        Mon, 24 Aug 2020 23:36:27 -0700 (PDT)
+        Tue, 25 Aug 2020 02:37:33 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0995C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 23:37:32 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id j21so815272oii.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 23:37:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1imp3+Ksc7RuV6xFYmD+POgYzK3oIgsJy+XwlfX1vWM=;
-        b=QRP1hK7ZSNCvr8yONsKOqaVMMy8SLMGDLSJQZXMqISsQCowT1avtYcJD8nLL2z3JSM
-         9u4RKw/319OGcfitYg6vzWzQ3JXOBHIGRsaFNolssKdsW7oLt0n5ZYD46k7TymZr9sle
-         GjgXAIeBRQBIZ/AxJ8Hc8ySzGtFy+iij5FYEiZLMekfCrCd93MSHFtkc5j6qOg7L3OrG
-         Yghok62XGvH/RLvemGcu9a5bdODx7jPKdkVrY2FKl9a/Xm/G6g8Shy1/oqxd1BAtFSjY
-         3EWzopiTvWNiRRO/GQadTmErSPObfGfFqzxNSbJRKMtuKdp9qHFV+Pzee5lF90BLO+fY
-         6xqw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0d0Anc1XlMz+zpMek67nwSvikP6pkgQmKbLI0Ck2oAM=;
+        b=NDlbceHBONvyCLLkia1Z8aH4agCZ01UngrV0cslSC+9CHfi6fBNWHHJUootlPMMsdh
+         wkX63RemGeJMg+vPcxpb+erAd5OHyCigDLcZKxT4EoelVTAX9lW4QPuu6bnRVK9JOwQJ
+         7i6wp4dWMRsiX34qBV34oU1uJ2XxIkh/pDVe3XegjezjVfHwDs6Vu1mW7vnahIXBrLQZ
+         Eqp0fIb+xajsNygrwxd6Y7GEFI7kUq+GpyMYtWV0KQtTLjeYFgnNHMJN31KMGi77Km+T
+         4mPHyhof1GQjFlsUfUNc05SmJ/sph3hkfjqYg+2Piuntcb5efvDF/dqxZUgpxh5KZf5m
+         igjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1imp3+Ksc7RuV6xFYmD+POgYzK3oIgsJy+XwlfX1vWM=;
-        b=EMbZl4Bpr/OE/EpvRGabhHR/A6uAiwEv36CF2E/OfpBOEQ/ZtRsVfwYvv9vUvD5Q5e
-         tvVsYpf5KTExIJKr7N4NFsmB7TocO5+9pKo08aGhJFzJ+9gXAo6AX+JzF49SlMQXRXuz
-         WykDAjLHbJM2/505/N9SlL6c96IhkCOXOF7ZZQ35UXbTq2qnEEPzlm0TpHub7iG/+A3S
-         BPdtNG8xRtcz6VPpkws7ctRJff24HW59Jkud53rO9OFvNXU1Ol4mxcsqY7K3MxeFz6k2
-         bIhQg3mB+p/exp/3Bsc11clew3l9p4GV+nfme3TykHr2E//e0NOD/bPcdoB0BX5fcPEV
-         WH4A==
-X-Gm-Message-State: AOAM530l8pYNjQ/Zm3nOVceeLwbTG6NzNczHfDfdcIN4TgKScp3MZP5K
-        XcECw7XZOduTfq+oyKg4Ajg=
-X-Google-Smtp-Source: ABdhPJxbg4sF0Lr6g1Mh0p09gnomcuIy8SBHXncnjZPUMeo6cn4NDTun5tIVj0oYys9mXexnhUzcyg==
-X-Received: by 2002:a62:c541:: with SMTP id j62mr6898091pfg.257.1598337386778;
-        Mon, 24 Aug 2020 23:36:26 -0700 (PDT)
-Received: from ideapad ([157.32.253.94])
-        by smtp.gmail.com with ESMTPSA id 131sm1628345pfw.167.2020.08.24.23.36.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 23:36:26 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 12:06:20 +0530
-From:   Himadri Pandya <himadrispandya@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] net: usb: Fix uninit-was-stored issue in asix_read_cmd()
-Message-ID: <20200825063620.GA17052@ideapad>
-References: <20200823082042.20816-1-himadrispandya@gmail.com>
- <20200824111655.20a3193e@kicinski-fedora-PC1C0HJN>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0d0Anc1XlMz+zpMek67nwSvikP6pkgQmKbLI0Ck2oAM=;
+        b=YphGH+vjRHUGmXQl4T68pAM2KonqZ7vbFJby/g04gtCK/ogrBYyBgie4gwGk43whbQ
+         GRzaXgr12lwITj9WHVF+BX5XvSfG4QadMT1u/hhG86U5Pj/iwcQwRs6jtah5+776lF6O
+         8nGqnYm/aeQoqdKoULtgcsyxYQ7Uudh5hL+XsE9pUWj0Zi0dbfsi+NSplULNnNUI3hoc
+         RopDig/CrvJJk2gFR61lfJgSgQu5gPFP2SiyqV7L5GC380bV3SXjboWgvGIeGKkHoHhU
+         bP4rW8Yj8FEAkLG8G1vOowmegnf0NCBgHqO/Jyl2ZnuyhlXRhEAJ7aNt9qrqLj7e/l09
+         48yg==
+X-Gm-Message-State: AOAM533v+WlQZNT5BfkBePbs0+XNzBqbNrg2eADCuKDnyZihPKnMfKRr
+        VcZ4Vu1/EFMh5DYFQ24NxRIUigfCTiayiNt7YKM=
+X-Google-Smtp-Source: ABdhPJz7c9aF+8Y5tdKUSSKzv5l/3+ps2MqPJHtRg7YUkOtBZuPCNTjIwqSO9ctkcV5wYNlfATbCQtcCZI3Xu43VFc0=
+X-Received: by 2002:a05:6808:9a1:: with SMTP id e1mr210610oig.150.1598337452192;
+ Mon, 24 Aug 2020 23:37:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824111655.20a3193e@kicinski-fedora-PC1C0HJN>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
+In-Reply-To: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Tue, 25 Aug 2020 14:37:21 +0800
+Message-ID: <CAPJCdBnTm0=Nazi2w9a6mBcKNv=_66UwvMfTNg6vLNKqW6qfwQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix wrong cpu selecting from isolated domain
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 11:16:55AM -0700, Jakub Kicinski wrote:
-> On Sun, 23 Aug 2020 13:50:42 +0530 Himadri Pandya wrote:
-> > Initialize the buffer before passing it to usb_read_cmd() function(s) to
-> > fix the uninit-was-stored issue in asix_read_cmd().
-> > 
-> > Fixes: KMSAN: kernel-infoleak in raw_ioctl
-> 
-> Regardless of the ongoing discussion - could you please make this line
-> a correct Fixes tag?
-> 
-> Right now integration scripts are complaining that it doesn't contain a
-> valid git hash.
-> 
-> > Reported by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
-> > 
-> 
-> This empty line is unnecessary.
-> 
-> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+On Mon, 24 Aug 2020 at 20:31, Xunlei Pang <xlpang@linux.alibaba.com> wrote:
+>
+> We've met problems that occasionally tasks with full cpumask
+> (e.g. by putting it into a cpuset or setting to full affinity)
+> were migrated to our isolated cpus in production environment.
+>
+> After some analysis, we found that it is due to the current
+> select_idle_smt() not considering the sched_domain mask.
+>
+> Fix it by checking the valid domain mask in select_idle_smt().
+>
+> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
+> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+> ---
+>  kernel/sched/fair.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a05..fa942c4 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+>  /*
+>   * Scan the local SMT mask for idle CPUs.
+>   */
+> -static int select_idle_smt(struct task_struct *p, int target)
+> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>         int cpu;
+>
+> @@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
+>                 return -1;
+>
+>         for_each_cpu(cpu, cpu_smt_mask(target)) {
+> -               if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> +               if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+> +                   !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+Maybe the following change could be better, :)
+for_each_cpu_and(cpu, cpu_smt_mask(target), sched_domain_span(sd))
+keep a similar style with select_idle_core/cpu, and could reduce loops.
 
-Thank you. I'll fix it.
-
-Himadri
+Just an option.
+Reviewed-by: Jiang Biao <benbjiang@tencent.com>
