@@ -2,106 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B6B252074
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0D2520CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgHYThh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 15:37:37 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33376 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHYThd (ORCPT
+        id S1726700AbgHYTnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 15:43:11 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36614 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgHYTnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:37:33 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PJZRxx087365;
-        Tue, 25 Aug 2020 19:37:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- cc : to; s=corp-2020-01-29;
- bh=nz+vs61Nuq5CIPrLplvM9HKtYzJlZ7en1yfmlfAsdrI=;
- b=TmI3nIyRChhEJAnXX+UO+DoM12Vb0QRcM8H/qKCOp+ZccrP2WVVh0WORtCn9HwDIovhe
- ot85G675OkEUV4nwrPs2rtbyaGz3BJuaxgWu15i3dh77wD7EoxMTpZCZqPigye7Fhc46
- MWSJZOw3KtRzjvqM9/7erqj/TWTQnHRe/wo61ZyRvrg1ig2xDJLlUVVi+84BjRILKBUa
- 00XfP5Y86A6rm8d0xmQiq8Duvi967eAIw7Tmc0tf4cbs5zWleoahzKGQ6vcXS/T8zmks
- hT5SKis8sDr1cABwAOiXrljphPnE39OpLDms/j6qSyhjX5Mw3YbQCl2Yjj8WaLV6cUV7 FA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 333w6tu2mt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Aug 2020 19:37:31 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PJZJST133721;
-        Tue, 25 Aug 2020 19:37:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 333r9jyv50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Aug 2020 19:37:31 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07PJbUT6007877;
-        Tue, 25 Aug 2020 19:37:30 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 25 Aug 2020 12:37:29 -0700
-From:   Chuck Lever <chuck.lever@oracle.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Please pull NFS server fixes for v5.9
-Message-Id: <374E25EA-2EFE-4E68-BCBD-880E25ADAF8C@oracle.com>
-Date:   Tue, 25 Aug 2020 15:37:29 -0400
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=994 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=977 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008250146
+        Tue, 25 Aug 2020 15:43:10 -0400
+Received: by mail-io1-f68.google.com with SMTP id i10so8158551iow.3;
+        Tue, 25 Aug 2020 12:43:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xFa4K2EMnvtSpb7MXWNHE/NvCVe7Pt+4e7+jJHBanys=;
+        b=RWWyOZTC34l4psCUv40YziStvOB1Sju+6sqfXEqpMfEBjbdv5WHhV3D3QQVTonDfof
+         9EDuFhEi/LdgR9uHIvIqsPOxxAphKpU2i6vD0qea5JiXseyoikJyEHI1J0PeEssqbeQk
+         vPwxEPXqLPkSo8h5Y1CIXX4eDKl01Zq4JZyPGw42yKzqVBTdprFlk2Kq1U+0x+Vc3wEo
+         fXSfjJ/cQMMiy4T+t2EKWJjUiIi0Bw/Um61woo8FJm3RTGGoqdnlN2Ai7HHBwQMpfARu
+         m++o187vME2t90J7eLaxn3SIQ7Lx6cYpbSDz1DrZuAt1EYPiqxgMptW7KQN9wQyHhahL
+         8+5Q==
+X-Gm-Message-State: AOAM5319nVVIyI2n29oyjj6E795wEWPD2Z00vpEZ9sNhAFWk04djIPQ/
+        DLoJ974wiavfgEcjPKVtaQ==
+X-Google-Smtp-Source: ABdhPJw/xaJIuCeQO1r6j9JB2bC93O0bNOs9R51Cj4LIZPtj20c0bgEkzt2KrzZok2oxQxpiHdKeDg==
+X-Received: by 2002:a6b:bfc1:: with SMTP id p184mr10370531iof.193.1598384589390;
+        Tue, 25 Aug 2020 12:43:09 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id f128sm9645725ilh.71.2020.08.25.12.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 12:43:08 -0700 (PDT)
+Received: (nullmailer pid 1198512 invoked by uid 1000);
+        Tue, 25 Aug 2020 19:43:06 -0000
+Date:   Tue, 25 Aug 2020 13:43:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Landen Chao <landen.chao@mediatek.com>
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com,
+        vivien.didelot@savoirfairelinux.com, matthias.bgg@gmail.com,
+        mark.rutland@arm.com, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, davem@davemloft.net,
+        sean.wang@mediatek.com, opensource@vdorst.com,
+        frank-w@public-files.de, dqfext@gmail.com
+Subject: Re: [PATCH net-next v2 4/7] dt-bindings: net: dsa: add new MT7531
+ binding to support MT7531
+Message-ID: <20200825194306.GA1160944@bogus>
+References: <cover.1597729692.git.landen.chao@mediatek.com>
+ <1ec38b68deec6f1c23e1236d38035b1823ea2ebf.1597729692.git.landen.chao@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ec38b68deec6f1c23e1236d38035b1823ea2ebf.1597729692.git.landen.chao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus -
+On Tue, Aug 18, 2020 at 03:14:09PM +0800, Landen Chao wrote:
+> Add devicetree binding to support the compatible mt7531 switch as used
+> in the MediaTek MT7531 switch.
+> 
+> Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+> Signed-off-by: Landen Chao <landen.chao@mediatek.com>
+> ---
+>  .../devicetree/bindings/net/dsa/mt7530.txt    | 71 ++++++++++++++++++-
+>  1 file changed, 68 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/mt7530.txt b/Documentation/devicetree/bindings/net/dsa/mt7530.txt
+> index c5ed5d25f642..50eaf40fb612 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/mt7530.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/mt7530.txt
+> @@ -5,6 +5,7 @@ Required properties:
+>  
+>  - compatible: may be compatible = "mediatek,mt7530"
+>  	or compatible = "mediatek,mt7621"
+> +	or compatible = "mediatek,mt7531"
+>  - #address-cells: Must be 1.
+>  - #size-cells: Must be 0.
+>  - mediatek,mcm: Boolean; if defined, indicates that either MT7530 is the part
+> @@ -32,10 +33,13 @@ Required properties for the child nodes within ports container:
+>  
+>  - reg: Port address described must be 6 for CPU port and from 0 to 5 for
+>  	user ports.
+> -- phy-mode: String, must be either "trgmii" or "rgmii" for port labeled
+> -	 "cpu".
+> +- phy-mode: String, the follow value would be acceptable for port labeled "cpu"
+> +	If compatible mediatek,mt7530 or mediatek,mt7621 is set,
+> +	must be either "trgmii" or "rgmii"
+> +	If compatible mediatek,mt7531 is set,
+> +	must be either "sgmii", "1000base-x" or "2500base-x"
+>  
+> -Port 5 of the switch is muxed between:
+> +Port 5 of mt7530 and mt7621 switch is muxed between:
+>  1. GMAC5: GMAC5 can interface with another external MAC or PHY.
+>  2. PHY of port 0 or port 4: PHY interfaces with an external MAC like 2nd GMAC
+>     of the SOC. Used in many setups where port 0/4 becomes the WAN port.
+> @@ -308,3 +312,64 @@ Example 3: MT7621: Port 5 is connected to external PHY: Port 5 -> external PHY.
+>  		};
+>  	};
+>  };
+> +
+> +Example 4: MT7531BE port6 -- up-clocked 2.5Gbps SGMII -- MT7622 CPU 1st GMAC
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+Does this really need another example?
 
- Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
- git://git.linux-nfs.org/projects/cel/cel-2.6.git tags/nfsd-5.9-1
-
-for you to fetch changes up to ad112aa8b1ac4bf5e8da67734fcb535fd3cd564e:
-
- SUNRPC: remove duplicate include (2020-08-19 13:19:42 -0400)
-
-----------------------------------------------------------------
-Fixes:
-
-- Eliminate an oops introduced in v5.8
-- Remove a duplicate #include added by nfsd-5.9
-
-----------------------------------------------------------------
-J. Bruce Fields (1):
-     nfsd: fix oops on mixed NFSv4/NFSv3 client access
-
-Wang Hai (1):
-     SUNRPC: remove duplicate include
-
-fs/nfsd/nfs4state.c         | 2 ++
-net/sunrpc/auth_gss/trace.c | 1 -
-2 files changed, 2 insertions(+), 1 deletion(-)
-
---
-Chuck Lever
-
-
-
+> +
+> +&eth {
+> +	gmac0: mac@0 {
+> +		compatible = "mediatek,eth-mac";
+> +		reg = <0>;
+> +		phy-mode = "2500base-x";
+> +
+> +		fixed-link {
+> +			speed = <2500>;
+> +			full-duplex;
+> +			pause;
+> +		};
+> +	};
+> +
+> +	&mdio0 {
+> +		switch@0 {
+> +			compatible = "mediatek,mt7531";
+> +			reg = <0>;
+> +			reset-gpios = <&pio 54 0>;
+> +
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0>;
+> +
+> +				port@0 {
+> +					reg = <0>;
+> +					label = "lan0";
+> +				};
+> +
+> +				port@1 {
+> +					reg = <1>;
+> +					label = "lan1";
+> +				};
+> +
+> +				port@2 {
+> +					reg = <2>;
+> +					label = "lan2";
+> +				};
+> +
+> +				port@3 {
+> +					reg = <3>;
+> +					label = "lan3";
+> +				};
+> +
+> +				port@4 {
+> +					reg = <4>;
+> +					label = "wan";
+> +				};
+> +
+> +				port@6 {
+> +					reg = <6>;
+> +					label = "cpu";
+> +					ethernet = <&gmac0>;
+> +					phy-mode = "2500base-x";
+> +				};
+> +			};
+> +		};
+> +	};
+> -- 
+> 2.17.1
