@@ -2,198 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC251A52
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD1F251A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726113AbgHYN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgHYN64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:58:56 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5098FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:58:56 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id g6so8705230pfi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
-        b=kChPl54dn9ymEmCalokFzgP0MuYBhYIUai4sfhGRDTh7cmSDYrE9/f2w2wlzy79P1U
-         odUElDEA6bydiFE9ZvHxHgUU1DeCZfPfixc+QnXh6sqh3mCROa7cWR80GWycaCUfb4IF
-         UBKXlwIVApSR31H2zG7ZxWF6WxQTdY9nQlI9tLzJ7tq7xXyPlCbj3ruaO4VmIFc2t8FP
-         u5EoeZ4mdLG9kegCOTiKILj3FbecfJPwMC/TsHIbN2mbiBeuIHnoLEgj58tO1/iziyT3
-         ZHyFWI96H8MuXgxec7wRTEFCpZDQz1eBjJcUj1sj21HyfKjhnsCK5NAQONRKGgGjyfaK
-         ImQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
-        b=sJa1SZXttWznqzE51khzqJIamQZ6LLvCKfCrYk4ytrIMWuBbYJB0cprSBNoHOZXgG+
-         P1k2QSG39plouO4N+mB6JE87snf8Ao3ZPD/UF3kPEBYRzovlzL/T6j59Oz4rSWZ2InRe
-         zvfkbBoBIUzHaGr//GWT6EDQmBNxVl1FOc4IpKvKe6SeBdCQUNz+6kk+lx9mxS2Tj+GS
-         uofHrr5TX4bcVfQYlvnBD6IOz2y0LEi7/WHH3qHzJ9O0rzzThdroUHGYQFdeYOl9pf80
-         q74/ohJMoDnZZWjMcXPc+KB5ozReybkQzdQRbVmfKmcmgtFr/jxq5QOSOzam4+jgjCNq
-         J/jQ==
-X-Gm-Message-State: AOAM532ZS6a164pAE1WrBKqcUErAvgG1QYvKdmlzeh0WY5bl0Zm9LXQH
-        N+GL0i9q1ygc/02aMoCz72HHpFeRtwAegpkvDlE=
-X-Google-Smtp-Source: ABdhPJyZgdjJcZNgecDr3UiTzEn5aQy+0LYKn3Ej4qIsX1xwC3PrG7l2IDzKFUt1pE1eWuX67nXFBj1sKlB/v8+4iqU=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a62:7c97:: with SMTP id
- x145mr8231879pfc.155.1598363935586; Tue, 25 Aug 2020 06:58:55 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 06:58:36 -0700
-Message-Id: <20200825135838.2938771-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v3] lib/string.c: implement stpcpy
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org, Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726158AbgHYN6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:58:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgHYN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:58:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 69977AFAE;
+        Tue, 25 Aug 2020 13:59:14 +0000 (UTC)
+Date:   Tue, 25 Aug 2020 14:58:41 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/numa: use runnable_avg to classify node
+Message-ID: <20200825135841.GC3033@suse.de>
+References: <20200825121818.30260-1-vincent.guittot@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20200825121818.30260-1-vincent.guittot@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM implemented a recent "libcall optimization" that lowers calls to
-`sprintf(dest, "%s", str)` where the return value is used to
-`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-in parsing format strings.  `stpcpy` is just like `strcpy` except it
-returns the pointer to the new tail of `dest`.  This optimization was
-introduced into clang-12.
+On Tue, Aug 25, 2020 at 02:18:18PM +0200, Vincent Guittot wrote:
+> Use runnable_avg to classify numa node state similarly to what is done for
+> normal load balancer. This helps to ensure that numa and normal balancers
+> use the same view of the state of the system.
+> 
+> - large arm64system: 2 nodes / 224 CPUs
+> hackbench -l (256000/#grp) -g #grp
+> 
+> grp    tip/sched/core         +patchset              improvement
+> 1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
+> 4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
+> 16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
+> 32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
+> 64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
+> 128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
+> 256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
+> 
 
-Implement this so that we don't observe linkage failures due to missing
-symbol definitions for `stpcpy`.
+Intuitively the patch makes sense but I'm not a fan of using hackbench
+for evaluating NUMA balancing. The tasks are too short-lived and it's
+not sensitive enough to data placement because of the small footprint
+and because hackbench tends to saturate a machine.
 
-Similar to last year's fire drill with:
-commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+As predicting NUMA balancing behaviour in your head can be difficult, I've
+queued up a battery of tests on a few different NUMA machines and will see
+what falls out. It'll take a few days as some of the tests are long-lived.
 
-The kernel is somewhere between a "freestanding" environment (no full libc)
-and "hosted" environment (many symbols from libc exist with the same
-type, function signature, and semantics).
+Baseline will be 5.9-rc2 as I haven't looked at the topology rework in
+tip/sched/core and this patch should not be related to it.
 
-As H. Peter Anvin notes, there's not really a great way to inform the
-compiler that you're targeting a freestanding environment but would like
-to opt-in to some libcall optimizations (see pr/47280 below), rather than
-opt-out.
-
-Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-and Clang, and Clang is missing many __builtin_* definitions, which I
-consider a bug in Clang and am working on fixing.
-
-Masahiro summarizes the subtle distinction between compilers justly:
-  To prevent transformation from foo() into bar(), there are two ways in
-  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
-  only one in GCC; -fno-buitin-foo.
-
-(Any difference in that behavior in Clang is likely a bug from a missing
-__builtin_* definition.)
-
-Masahiro also notes:
-  We want to disable optimization from foo() to bar(),
-  but we may still benefit from the optimization from
-  foo() into something else. If GCC implements the same transform, we
-  would run into a problem because it is not -fno-builtin-bar, but
-  -fno-builtin-foo that disables that optimization.
-
-  In this regard, -fno-builtin-foo would be more future-proof than
-  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
-  may want to prevent calls from foo() being optimized into calls to
-  bar(), but we still may want other optimization on calls to foo().
-
-It seems that compilers today don't quite provide the fine grain control
-over which libcall optimizations pseudo-freestanding environments would
-prefer.
-
-Finally, Kees notes that this interface is unsafe, so we should not
-encourage its use.  As such, I've removed the declaration from any
-header, but it still needs to be exported to avoid linkage errors in
-modules.
-
-Cc: stable@vger.kernel.org
-Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-Link: https://reviews.llvm.org/D85963
-Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V3:
-* Drop Sami's Tested by tag; newer patch.
-* Add EXPORT_SYMBOL as per Andy.
-* Rewrite commit message, rewrote part of what Masahiro said to be
-  generic in terms of foo() and bar().
-* Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
-  '\0', as per Arvind and Rasmus.
-
-Changes V2:
-* Added Sami's Tested by; though the patch changed implementation, the
-  missing symbol at link time was the problem Sami was observing.
-* Fix __restrict -> __restrict__ typo as per Joe.
-* Drop note about restrict from commit message as per Arvind.
-* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-* Fix off by one error as per Arvind; I had another off by one error in
-  my test program that was masking this.
-
- lib/string.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/lib/string.c b/lib/string.c
-index 6012c385fb31..6bd0cf0fb009 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
- }
- EXPORT_SYMBOL(strscpy_pad);
- 
-+/**
-+ * stpcpy - copy a string from src to dest returning a pointer to the new end
-+ *          of dest, including src's %NUL-terminator. May overrun dest.
-+ * @dest: pointer to end of string being copied into. Must be large enough
-+ *        to receive copy.
-+ * @src: pointer to the beginning of string being copied from. Must not overlap
-+ *       dest.
-+ *
-+ * stpcpy differs from strcpy in a key way: the return value is the new
-+ * %NUL-terminated character. (for strcpy, the return value is a pointer to
-+ * src. This interface is considered unsafe as it doesn't perform bounds
-+ * checking of the inputs. As such it's not recommended for usage. Instead,
-+ * its definition is provided in case the compiler lowers other libcalls to
-+ * stpcpy.
-+ */
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-+{
-+	while ((*dest++ = *src++) != '\0')
-+		/* nothing */;
-+	return --dest;
-+}
-+EXPORT_SYMBOL(stpcpy);
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+Mel Gorman
+SUSE Labs
