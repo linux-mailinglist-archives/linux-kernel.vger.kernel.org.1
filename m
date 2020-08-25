@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BB925184E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EE5251852
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgHYMLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729051AbgHYMLg (ORCPT
+        id S1730192AbgHYMM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:12:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27562 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730204AbgHYMMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:11:36 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5ABC061574;
-        Tue, 25 Aug 2020 05:11:35 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id e11so10164244ils.10;
-        Tue, 25 Aug 2020 05:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y0fqJAi2q1wLdvWz2fG2+Ma0IiMVbAmyb/CXLp46wV4=;
-        b=J+lbKQ8ZWXW+rZRvfI0n3+KbSsRmAQiWkv4Q0JtH2LcPvtJx/FaQlbnZqhY6vZkVM6
-         zpkNW+fpbwGHhSYAmUcQFwBvrzvbxs+iuOAY+ZbHdmAbnJaUfh72Key3s8Y2Tsy/Doe7
-         1acNNB5bLjwpS4+OnuQkyOiltLS0ruy7wYM7s74NbMNylzrX9dcHPGhTJb5erEWxR209
-         kJMoCDzdw4SjO9ysuZf75VZOLfgt/C6fxlIpJkvpW2hq4o3Wp45AeMhiuXEEtljuRjVg
-         mQvRKtuoD4RpOrS2atQMK1UX+7d4FPJII4PzV6M7BdTDPp7rRAE5UQFjJer8OtfmtQ28
-         +D3g==
+        Tue, 25 Aug 2020 08:12:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598357528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=upnq8NEVm+7U4uzaDHupvA1NaUQYK9efVkZAiFGd+EI=;
+        b=IekHNPFeUAluz9WSVhURfySD6QxQMzOQ15E0DcuQgOx8WMBVksDqVzXQxXSEW6OIWaRoMe
+        UPcRj7GoSdoK+MgqT0B/oZWScikiS8ieE741zlIzLz7fiXABPw1xZ3q2F441YZZn7cHzaH
+        +vMc4VSgDsUmPB/aKD/omLCe0qaVLzw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-_DVrOnUDPDKKxYnVT8Vqdw-1; Tue, 25 Aug 2020 08:12:06 -0400
+X-MC-Unique: _DVrOnUDPDKKxYnVT8Vqdw-1
+Received: by mail-wr1-f70.google.com with SMTP id w2so4838459wrr.19
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:12:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y0fqJAi2q1wLdvWz2fG2+Ma0IiMVbAmyb/CXLp46wV4=;
-        b=ELpJHIT20DJHHZE4oIf7sbYRcxJRFe8fq90Y/069K8QauOLzxQuFGYW/dLKxD5/39M
-         7ddCou5lwaS9n0rQWKPIxULs6Q/0iYSGRWt0HR96zd/N90YkzuwiPQro9IYyKPsWvGoB
-         ZHNEBTalqMKQMb7ubO56fkHF2jO7uG84oi+Uco4VmNdLms/D0YWUxm94iptVVfaZeNcA
-         IVU14ZCOMgheRblwy9jDRyRyIar8F8hUIOPa3tNM42l73nPnAIL35Ns/blTUHu+YolqP
-         rWuHrVxCv7+9qoBvHJB0jity0H3tfPso7N+ACvL8iIn8iEbM1h9A+8FVi68+IUPzHs1g
-         5Lcw==
-X-Gm-Message-State: AOAM530RJ4j+psQuxuyFtbN9R48xJH6zz3PncvGLVFB+CAVpP5lY1pqN
-        +kP8zYLdPkPw1qQGOQ9LJK+emLF/GnoZ6+NScZXuMXKPdZ8Y
-X-Google-Smtp-Source: ABdhPJw1wsBg30NMrUWDxgSVJ06a4iXUNVqdmIBtQII2d10y4Id3bTjHiUJHWlyU+nUBrC+CAOUV4AcEleFyg4koMKk=
-X-Received: by 2002:a92:5a8c:: with SMTP id b12mr8199951ilg.27.1598357494861;
- Tue, 25 Aug 2020 05:11:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=upnq8NEVm+7U4uzaDHupvA1NaUQYK9efVkZAiFGd+EI=;
+        b=Y5aegRh/k9KZuxCja/hnhpjbCQgVK5oQRLJ9bdbCJi4PP92h0vdfupJwMs84GZz/tP
+         KOeXLuBnclHEG/NBI3hUW1IszUkbp4qgGX2IE1bhPW9ndzaafLsjxhNW+jMXdaggmN5d
+         ld7Zs0ZXyE/oUcrlZs6KGSWAiWBPXoizJVRaPqgMfxEu+iT+9LmfILsWPEs/8lsqQAbL
+         7UYUSINIcdT5crGV9WBc6Xx/j28R4tzjXnT5fENpIyqmvKVnqMgL8Rzp3N9svM5qWMpI
+         7YUDClf13mh6AQERRhG02Ul1cfFmjO6d7r8CHRF9b840gx3EK61o/+VEhH/DThEWGaQL
+         YE3Q==
+X-Gm-Message-State: AOAM5311tmeH6a2hSTCIaqzzwLlGLfwS1X/ENNVd+cVSEFucO2oA/eFS
+        JMCqSq484CAtMxaO2tSr+u5z5P+VBm2X9hVzTpmzd8BE0HKabCgS3AXKkFbIxGzjeZOWNsTBGnx
+        j8YL752L/MZelzVCE8Nu+CsG1
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr1713578wma.87.1598357525844;
+        Tue, 25 Aug 2020 05:12:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDVwpKikgxEP7+hKoX+7FhiabuIK5zACSaMY1YEFAc0TP1HL1kvfWD7azMdBk1T5V9Ygk2hw==
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr1713558wma.87.1598357525673;
+        Tue, 25 Aug 2020 05:12:05 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id j8sm10280508wrs.22.2020.08.25.05.12.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 05:12:05 -0700 (PDT)
+Subject: Re: [PATCH v2 8/9] frame: Make unwind hints definitions available to
+ other architectures
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+References: <20200730094652.28297-1-jthierry@redhat.com>
+ <20200730094652.28297-9-jthierry@redhat.com>
+ <20200730145613.lbsexjcqwj67ktmb@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <12615fa7-8ba9-1daa-f648-644bf16110f2@redhat.com>
+Date:   Tue, 25 Aug 2020 13:12:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200821105229.18938-1-pbonzini@redhat.com> <20200821142152.GA6330@sjchrist-ice>
- <CAMzpN2h79bi5dd7PxjY45xYy71UdYomKa1t2gNxLtRpDkMs+Lw@mail.gmail.com> <874kor57jm.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <874kor57jm.fsf@nanos.tec.linutronix.de>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 25 Aug 2020 08:11:23 -0400
-Message-ID: <CAMzpN2jQofGQ18PsEobeqfGX6ux=xuun_SQZhY=E3n1pzvEoAQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/entry/64: Do not use RDPID in paranoid entry to
- accomodate KVM
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Chang Seok Bae <chang.seok.bae@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200730145613.lbsexjcqwj67ktmb@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 6:44 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Fri, Aug 21 2020 at 11:35, Brian Gerst wrote:
-> > On Fri, Aug 21, 2020 at 10:22 AM Sean Christopherson
-> >> >  .macro GET_PERCPU_BASE reg:req
-> >> > -     ALTERNATIVE \
-> >> > -             "LOAD_CPU_AND_NODE_SEG_LIMIT \reg", \
-> >> > -             "RDPID  \reg", \
-> >>
-> >> This was the only user of the RDPID macro, I assume we want to yank that out
-> >> as well?
-> >
-> > No.  That one should be kept until the minimum binutils version is
-> > raised to one that supports the RDPID opcode.
->
-> The macro is unused and nothing in the kernel can use RDPID as we just
-> established.
 
-It is opencoded in vdso_read_cpunode(), but the RDPID macro can't be
-used there.  So you are correct, it can be removed.
 
---
-Brian Gerst
+On 7/30/20 3:56 PM, Josh Poimboeuf wrote:
+> On Thu, Jul 30, 2020 at 10:46:51AM +0100, Julien Thierry wrote:
+>> Unwind hints are useful to provide objtool with information about stack
+>> states in non-standard functions/code.
+>> While the type of information being provided might be very arch
+>> specific, the mechanism to provide the information can be useful for
+>> other architectures.
+>>
+>> Move the relevant unwint hint definitions for all architectures to
+>> see.
+> 
+> The scope of include/linux/frame.h has been creeping, it's no longer
+> just about frame pointers.  Maybe we should rename it to objtool.h.
+> 
+
+I missed this comment until now, sorry.
+
+The name "objtool.h" might conflict with tools/objtool/objtool.h. What 
+about "objtool_utils.h" or "objtool_defs.h" ?
+
+-- 
+Julien Thierry
+
