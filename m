@@ -2,149 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC262523FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1D6252403
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgHYXOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgHYXOs (ORCPT
+        id S1726698AbgHYXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:18:06 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:6726 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgHYXSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:14:48 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0F0C061574;
-        Tue, 25 Aug 2020 16:14:48 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m34so63235pgl.11;
-        Tue, 25 Aug 2020 16:14:48 -0700 (PDT)
+        Tue, 25 Aug 2020 19:18:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t+vF/AWstA9TSWcFttjZuK5Zv8tvYzpOTR1kcqpIxJ4=;
-        b=TP6gTQnJM0RrYMqJnMhPvdVQpODPKHkS1q9nkPJCEVxQDdKOY/9X3ieTQ5APjTs99s
-         04ITRLlPcOJFWl6rwSne7XvO4G8AacidA26rCCkdaQWSbFH7Amr1p71zr6Br/fDCLfea
-         NWqNdCjwHbjEmZxVKvtm82YSe/0on8xQExCxt0PeiSBcNSm/F6C2nz+qKpijKAFdl1MW
-         /5JmxOM9bX30yDgJW/aGZHRHq/Krf8enocXS5QVfj3bdU9s1x6iqQG2lss+Rqt2Zq8Cg
-         KyX7YTSYrD93j9BhIrYMVxebJtf8QAJFn088SG2rW9Um6rBKPclPYUGRnj+GfuKvcoPl
-         +DSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t+vF/AWstA9TSWcFttjZuK5Zv8tvYzpOTR1kcqpIxJ4=;
-        b=gKqmSVUDpOEbjysD8EkrKUHydJ0bKTNufjnp3n9WfIDU67f9MRBxEOk2UEwAfujPRz
-         fuhD2eXRmcxdBVhIwXnurz2uE3FYBO3k/bzSYseYSyr+DdqSl6zM6Cfqqn50TiRrj4cI
-         FbQOdfvJ44+vZ0hxYf/tlZHXSCNl9ZKFDT3MOrWf+PTES2neB44k93KylVu6h8Uqq99q
-         AuUjyz3RayO2umimvqAhvAI4J2pUmBcocjK1yq7zy/KHC7fImRyUl6tSip2c7IS3gUpF
-         QyQj9CVTdNwVWzMCBGzaO7OpcGF8XLSaTMjlK9kxz/N8NLs4zzUK7bXdM3Yfs5Osn6C3
-         NwTA==
-X-Gm-Message-State: AOAM530C6fAm/X2tQvWNLzXZrHjDlHUbVGpeEMwi1TsGf+SAAUfR86HI
-        H8a53BaiYw8r/fa32spIljQ=
-X-Google-Smtp-Source: ABdhPJwrLtxlTGlTGzN5yK2R9cmi4i37aldtK0ixWIhF7COjveVyx3OFx0tGC8UQFcylLAWCumhVuw==
-X-Received: by 2002:a63:ff5f:: with SMTP id s31mr8673621pgk.333.1598397287304;
-        Tue, 25 Aug 2020 16:14:47 -0700 (PDT)
-Received: from Ryzen-9-3900X.localdomain (ip68-3-136-221.ph.ph.cox.net. [68.3.136.221])
-        by smtp.gmail.com with ESMTPSA id b12sm141769pjz.15.2020.08.25.16.14.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 16:14:46 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] Documentation/llvm: Improve formatting of commands, variables, and arguments
-Date:   Tue, 25 Aug 2020 16:14:38 -0700
-Message-Id: <20200825231438.15682-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.28.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1598397481; x=1629933481;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=OZtUg8bkcWalZh9AnNqlOzfHczxvpTVUs+LUb8aFXXg=;
+  b=XGnzWoNI8BFAh/jbrn5Z06/iiHYPaSeEw0A22NvvRLUBLl+2ctUDMP/Y
+   iFfEX8zi3gDaW+x8H56A4lFfBpG3V5tf4IvNeyCfpbEQMIJkwYu0mm1LF
+   TswD1djyF+X89SISs6zKSumipLkR+NN1rMsaTf0uhu3MTgLsVLhThmCyC
+   o=;
+X-IronPort-AV: E=Sophos;i="5.76,354,1592870400"; 
+   d="scan'208";a="49993520"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 25 Aug 2020 23:17:52 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 99BBDA238E;
+        Tue, 25 Aug 2020 23:17:50 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 25 Aug 2020 23:17:48 +0000
+Received: from s3-prod-s3ws-c3-7217.iad7.amazon.com (10.43.162.40) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 25 Aug 2020 23:17:41 +0000
+Subject: Re: [patch V9 21/39] x86/irq: Convey vector as argument and not in
+ ptregs
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        <avi@scylladb.com>, "Herrenschmidt, Benjamin" <benh@amazon.com>,
+        <robketr@amazon.de>, <amos@scylladb.com>
+References: <20200521200513.656533920@linutronix.de>
+ <20200521202118.796915981@linutronix.de>
+ <f0079706-4cb3-b3e3-9a5e-97aaba0aa0eb@amazon.com>
+ <87a6yj58af.fsf@nanos.tec.linutronix.de>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <051182cc-6c90-e48b-d191-8ca004385261@amazon.com>
+Date:   Wed, 26 Aug 2020 01:17:39 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.1.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a6yj58af.fsf@nanos.tec.linutronix.de>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.40]
+X-ClientProxiedBy: EX13D06UWA004.ant.amazon.com (10.43.160.164) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While reviewing a separate patch, I noticed that the formatting of the
-commands, variables, and arguments was not in a monospaced font like the
-rest of the Kbuild documentation (see kbuild/kconfig.rst for an
-example). This is due to a lack of "::" before indented command blocks
-and single backticks instead of double backticks for inline formatting.
-
-Add those so that the document looks nicer in an HTML format, while not
-ruining the look in plain text.
-
-As a result of this, we can remove the escaped backslashes in the last
-code block and move them to single backslashes.
-
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- Documentation/kbuild/llvm.rst | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index 2aac50b97921..334df758dce3 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -23,8 +23,8 @@ supports C and the GNU C extensions required by the kernel, and is pronounced
- Clang
- -----
- 
--The compiler used can be swapped out via `CC=` command line argument to `make`.
--`CC=` should be set when selecting a config and during a build.
-+The compiler used can be swapped out via ``CC=`` command line argument to ``make``.
-+``CC=`` should be set when selecting a config and during a build. ::
- 
- 	make CC=clang defconfig
- 
-@@ -34,33 +34,33 @@ Cross Compiling
- ---------------
- 
- A single Clang compiler binary will typically contain all supported backends,
--which can help simplify cross compiling.
-+which can help simplify cross compiling. ::
- 
- 	ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
- 
--`CROSS_COMPILE` is not used to prefix the Clang compiler binary, instead
--`CROSS_COMPILE` is used to set a command line flag: `--target <triple>`. For
--example:
-+``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
-+``CROSS_COMPILE`` is used to set a command line flag: ``--target <triple>``. For
-+example: ::
- 
- 	clang --target aarch64-linux-gnu foo.c
- 
- LLVM Utilities
- --------------
- 
--LLVM has substitutes for GNU binutils utilities. Kbuild supports `LLVM=1`
--to enable them.
-+LLVM has substitutes for GNU binutils utilities. Kbuild supports ``LLVM=1``
-+to enable them. ::
- 
- 	make LLVM=1
- 
--They can be enabled individually. The full list of the parameters:
-+They can be enabled individually. The full list of the parameters: ::
- 
--	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
--	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \\
--	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
-+	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
-+	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \
-+	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \
- 	  HOSTLD=ld.lld
- 
- Currently, the integrated assembler is disabled by default. You can pass
--`LLVM_IAS=1` to enable it.
-+``LLVM_IAS=1`` to enable it.
- 
- Getting Help
- ------------
-
-base-commit: abb3438d69fb6dd5baa4ae23eafbf5b87945eff1
--- 
-2.28.0
+SGkgVGhvbWFzLAoKT24gMjUuMDguMjAgMTI6MjgsIFRob21hcyBHbGVpeG5lciB3cm90ZToKPiAK
+PiBBbGV4LAo+IAo+IE9uIE1vbiwgQXVnIDI0IDIwMjAgYXQgMTk6MjksIEFsZXhhbmRlciBHcmFm
+IHdyb3RlOgo+PiBJJ20gY3VycmVudGx5IHRyeWluZyB0byB1bmRlcnN0YW5kIGEgcGVyZm9ybWFu
+Y2UgcmVncmVzc2lvbiB3aXRoCj4+IFNjeWxsYURCIG9uIGkzZW4uM3hsYXJnZSAoS1ZNIGJhc2Vk
+IFZNIG9uIFNreWxha2UpIHdoaWNoIHdlIHJlbGlhYmx5Cj4+IGJpc2VjdGVkIGRvd24gdG8gdGhp
+cyBjb21taXQ6Cj4+Cj4+ICAgICBodHRwczovL2dpdGh1Yi5jb20vc2N5bGxhZGIvc2N5bGxhL2lz
+c3Vlcy83MDM2Cj4+Cj4+IFdoYXQgd2UncmUgc2VlaW5nIGlzIHRoYXQgc3lzY2FsbHMgc3VjaCBh
+cyBtZW1iYXJyaWVyKCkgdGFrZSBmb3JldmVyCj4+ICgwLTEwIMK1cyB3b3VsZCBiZSBub3JtYWwp
+Ogo+IC4uLgo+PiBUaGF0IGFnYWluIHNlZW1zIHRvIHN0ZW0gZnJvbSBhIHZhc3RseSBzbG93ZWQg
+ZG93bgo+PiBzbXBfY2FsbF9mdW5jdGlvbl9tYW55X2NvbmQoKToKPj4KPj4gU2FtcGxlczogMjE4
+SyBvZiBldmVudCAnY3B1LWNsb2NrJywgNDAwMCBIego+PiBPdmVyaGVhZCAgU2hhcmVkIE9iamVj
+dCAgICAgICAgU3ltYm9sCj4+ICAgICA5NC41MSUgIFtrZXJuZWxdICAgICAgICAgICAgIFtrXSBz
+bXBfY2FsbF9mdW5jdGlvbl9tYW55X2NvbmQKPj4gICAgICAwLjc2JSAgW2tlcm5lbF0gICAgICAg
+ICAgICAgW2tdIF9fZG9fc29mdGlycQo+PiAgICAgIDAuMzIlICBba2VybmVsXSAgICAgICAgICAg
+ICBba10gbmF0aXZlX3F1ZXVlZF9zcGluX2xvY2tfc2xvd3BhdGgKPj4gWy4uLl0KPj4KPj4gd2hp
+Y2ggaXMgc3R1Y2sgaW4KPj4KPj4gICAgICAgICAg4pSCICAgICBjc2RfbG9ja193YWl0KCk6Cj4+
+ICAgICAgICAgIOKUgiAgICAgICAgICAgICBzbXBfY29uZF9sb2FkX2FjcXVpcmUoJmNzZC0+Zmxh
+Z3MsICEoVkFMICYKPj4gICAgIDAuMDAg4pSCICAgICAgIG1vdiAgICAweDgoJXJjeCksJWVkeAo+
+PiAgICAgMC4wMCDilIIgICAgICAgYW5kICAgICQweDEsJWVkeAo+PiAgICAgICAgICDilIIgICAg
+IOKGkyBqZSAgICAgMmI5Cj4+ICAgICAgICAgIOKUgiAgICAgcmVwX25vcCgpOgo+PiAgICAgMC43
+MCDilIIyYWY6ICAgcGF1c2UKPj4gICAgICAgICAg4pSCICAgICBjc2RfbG9ja193YWl0KCk6Cj4+
+ICAgIDkyLjgyIOKUgiAgICAgICBtb3YgICAgMHg4KCVyY3gpLCVlZHgKPj4gICAgIDYuNDgg4pSC
+ICAgICAgIGFuZCAgICAkMHgxLCVlZHgKPj4gICAgIDAuMDAg4pSCICAgICDihpEgam5lICAgIDJh
+Zgo+PiAgICAgMC4wMCDilIIyYjk6IOKGkSBqbXAgICAgMjgyCj4+Cj4+Cj4+IEdpdmVuIHRoZSBw
+YXRjaCBhdCBoYW5kIEkgd2FzIGV4cGVjdGluZyBsb3N0IElQSXMsIGJ1dCBJIGNhbid0IHF1aXRl
+IHNlZQo+PiBhbnl0aGluZyBnZXR0aW5nIGxvc3QuCj4gCj4gSSBoYXZlIG5vIGlkZWEgaG93IHRo
+YXQgcGF0Y2ggc2hvdWxkIGJlIHJlbGF0ZWQgdG8gSVBJIGFuZCBzbXAgZnVuY3Rpb24KPiBjYWxs
+cy4gSXQncyBjaGFuZ2luZyB0aGUgd2F5IGhvdyByZWd1bGFyIGRldmljZSBpbnRlcnJ1cHRzIGFu
+ZCB0aGVpcgo+IHNwdXJpb3VzIGNvdW50ZXJwYXJ0IGFyZSBoYW5kbGVkIGFuZCBub3QgdGhlIHdh
+eSBob3cgSVBJcyBhcmUKPiBoYW5kbGVkLiBUaGV5IGFyZSBoYW5kbGVkIGJ5IGRpcmVjdCB2ZWN0
+b3JzIGFuZCBkbyBub3QgZ28gdGhyb3VnaAo+IGRvX0lSUSgpIGF0IGFsbC4KPiAKPiBBc2lkZSBv
+ZiB0aGF0IHRoZSBjb21taXQganVzdCBjaGFuZ2VzIHRoZSB3YXkgaG93IHRoZSBpbnRlcnJ1cHQg
+dmVjdG9yCj4gb2YgYSByZWd1bGFyIGRldmljZSBpbnRlcnJ1cHQgaXMgc3RvcmVkIGFuZCBjb252
+ZXllZC4gVGhlIGV4dHJhIHJlYWQgYW5kCj4gd3JpdGUgb24gdGhlIGNhY2hlIGhvdCBzdGFjayBp
+cyBoYXJkbHkgcmVsYXRlZCB0byBhbnl0aGluZyBJUEkuCgpJIGFtIGFzIHB1enpsZWQgYXMgeW91
+IGFyZSwgYnV0IHRoZSBiaXNlY3QgaXMgdmVyeSBjbGVhcjogNzliOWMxODMwMjFlIAp3b3JrcyBm
+YXN0IGFuZCA2MzMyNjBmYTEgKGFzIHdlbGwgYXMgbWFpbmxpbmUpIHNob3dzIHRoZSB3ZWlyZCBi
+ZWhhdmlvciAKYWJvdmUuCgpJdCBnZXRzIGV2ZW4gYmV0dGVyLiBUaGlzIHNtYWxsIChkZW1vbnN0
+cmF0aXZlIG9ubHksIG1hbmdsZWQpIHBhdGNoIG9uIAp0b3Agb2YgNjMzMjYwZmExIGFsc28gcmVz
+b2x2ZXMgdGhlIHBlcmZvcm1hbmNlIGlzc3VlOgoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5l
+bC9pcnEuYyBiL2FyY2gveDg2L2tlcm5lbC9pcnEuYwppbmRleCBjNzY2OTM2Li43ZTkxZTlhIDEw
+MDY0NAotLS0gYS9hcmNoL3g4Ni9rZXJuZWwvaXJxLmMKKysrIGIvYXJjaC94ODYva2VybmVsL2ly
+cS5jCkBAIC0yMzksNiArMjM5LDcgQEAgX192aXNpYmxlIHZvaWQgX19pcnFfZW50cnkgZG9fSVJR
+KHN0cnVjdCBwdF9yZWdzIAoqcmVncywgdW5zaWduZWQgbG9uZyB2ZWN0b3IpCiAgCSAqIGxvd2Vy
+IDggYml0cy4KICAJICovCiAgCXZlY3RvciAmPSAweEZGOworCXJlZ3MtPm9yaWdfYXggPSB+dmVj
+dG9yOwoKICAJLyogZW50ZXJpbmdfaXJxKCkgdGVsbHMgUkNVIHRoYXQgd2UncmUgbm90IHF1aWVz
+Y2VudC4gIENoZWNrIGl0LiAqLwogIAlSQ1VfTE9DS0RFUF9XQVJOKCFyY3VfaXNfd2F0Y2hpbmco
+KSwgIklSUSBmYWlsZWQgdG8gd2FrZSB1cCBSQ1UiKTsKCgpUbyBtZSB0aGF0IHNvdW5kcyBsaWtl
+IHNvbWUgaXJxIGV4aXQgY29kZSBzb21ld2hlcmUgbXVzdCBzdGlsbCBiZSAKbG9va2luZyBhdCBv
+cmlnX2F4IHRvIGRlY2lkZSBvbiBzb21ldGhpbmcgLSBhbmQgdGhhdCBzb21ldGhpbmcgaXMgd3Jv
+bmcgCm5vdyB0aGF0IHdlIHJlbW92ZWQgdGhlIG5lZ2F0aW9uIG9mIHRoZSB2ZWN0b3IuIEl0IGFs
+c28gc2VlbXMgdG8gaGF2ZSBhbiAKaW1wYWN0IG9uIHJlbW90ZSBmdW5jdGlvbiBjYWxscy4KCkkn
+bGwgaGF2ZSBhIGRlZXBlciBsb29rIHRvbW9ycm93IGFnYWluIGlmIEkgY2FuIGZpbmQgYW55IHN1
+Y2ggcGxhY2UsIGJ1dCAKSSB3b3VsZG4ndCBtaW5kIGlmIGFueW9uZSBjb3VsZCBwb2ludCBtZSBp
+bnRvIHRoZSByaWdodCBkaXJlY3Rpb24gCmVhcmxpZXIgOikuCgoKQWxleAoKCgpBbWF6b24gRGV2
+ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4K
+R2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpF
+aW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTcz
+IEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
 
