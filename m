@@ -2,195 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829A4251340
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52403251345
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgHYHeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        id S1729511AbgHYHfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729473AbgHYHeG (ORCPT
+        with ESMTP id S1729301AbgHYHfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:34:06 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90629C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:34:06 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id k18so3422981uao.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:34:06 -0700 (PDT)
+        Tue, 25 Aug 2020 03:35:17 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0C7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:35:17 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id x24so9629071otp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nv6CSGIbCknVAshl07j/5xGDdqtleXXUaO2AgALOcBQ=;
-        b=Apqc+J7zJjLt7HIY9LJFORqtLChLWyXyW9OPPAm2IWuGKCEajOMJOtXt10DCqIEofM
-         xvvHt+AE/VOWITfgJLQESVHUSXbl5SlmedCTjvNoU6i4abY1JLQs5mDoynT8Fpan7Hve
-         URdOCRAMTN7YlABeKlRlIHyHB9fb7JRo8O2x66tNawMGyqBwQm9OQ4U9+CljGwOgEEum
-         pN53ulxBMNpATD0T+DEUnY3jpR0IPiAa1DOZ2AtxLPw3InU5Wx2J0fgKInN09ExID/3P
-         LkyET0zqDcSGBHVmedmDFcAy5zPKkEh8SiTsqt2rEpCJDplMY23oKHlDSsiyyxM6WRIa
-         Cmcg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
+        b=ln4wlNKPaOTcV51Bxd6xupM38b+4zSiREKmnjNl8O+x+g54g3J9aNrYeeGz7CU+UNe
+         g0Dk0kZ9QbHr02qvkzYAq2LM0SUpXKjGcT+SGYJZOgaY9HG3lDvRL9YecleSm4OAPxC8
+         6wPrB+x+kDENlcGLtTCiFuHJX/kQaVQW3Cke3AHffGTN3nKpxcNVG1c6YJ6/0tMub9yy
+         PbNxd/3hBgjVtUjA0bFFXOFQ8LwA+Q6E3My0yaOdwnlmUZ0YFmWf2/y6njgOlyWdTiE0
+         C3QzJLUzPF28uMJbV07Zgfezh1VNtzV3IEBMRvxKZsTRvHQc/wAAnPiCIH/dXqKrvzug
+         jArg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nv6CSGIbCknVAshl07j/5xGDdqtleXXUaO2AgALOcBQ=;
-        b=M2tOPiB81YJppeW+Dk4w/JeCRDMWvEyMGrb5hHpYOQ3kO/K2vAuhfqVdYFzH7doSYz
-         UxoMy/StX591H4xfSzCfhjc4NNe9ad4JTS/h9DkyMRJ/USyoApM6TeWp/8NKYTjrirRo
-         +FQBEmkRlXUrCDONyIOqYgLwrO9R7FsN7STMqPHXHoHciW3TSGZk6k4tqft53xwZq9ik
-         c/4OdpZKMSBvFU3M9DH6N64HxuxwhvgV9ZLcNysC6L/StqX6Zds8PuT46uHA5yrxWhDe
-         KRSnb7iOCPAKlrX6gwX49ADkJF31LhrbVcEefDuHlKTt1qpBH7JWfKVvF9bcOjJAAVxC
-         XGcw==
-X-Gm-Message-State: AOAM532sRDqCpNI7bxb4R6JGr/ivhka6hqienJ+3hITPyMNIcPkWNE+b
-        zfEMWrnbXDRxDpW/dePZJ3E03PEMU4w88AkhKuBXnQ==
-X-Google-Smtp-Source: ABdhPJzaForEfiwBwHGNvHwRx3BWRXpyG8wDtoenb+p3GP/dDIygv4Sf8WgzvnHPl3pAkzXAJYtywlXsz8c7R9LZ5dk=
-X-Received: by 2002:ab0:462:: with SMTP id 89mr4776164uav.34.1598340845625;
- Tue, 25 Aug 2020 00:34:05 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
+        b=k38KKIy/etCQ5NEaiDm8WXjHybdJ9TgE7VCjTSasoGvog0sy9VW10IY4mF6HAfho2w
+         CB2socOjlSpezQtnh18q4G9GGUJlKnobuspv+v37FOBOLvjMoiMw7DAO1/yP/4OIY0k8
+         r8umcRgfn4Y9kKkOv3JYqrxBHLhl1I3Z5D/P20aex6HG1QFBiTorasGfFK3Ez87PKLVE
+         ondv8jS+wDX9til2fFlKKbjmNrRmCqX0h4x4imFRVxnZGwMQly6jIbb0mYeczlzi1ZHK
+         tYOMNtbWRBpdXil4WxryRA4Jb8cogEc4zDehjN8G4KkMYniIkdjeGuBbKUOjPD+Y8Yfv
+         Or4g==
+X-Gm-Message-State: AOAM533HERqyuriRTvvkmWdhHf8IS3GHNr1OCHa6qkLZTK5/r+pDU0uJ
+        tryA8Brl75N8Fj5WOBy3fD6mSF1+xyYDMfwBixg=
+X-Google-Smtp-Source: ABdhPJxWdfYzkwJ24iMDEmBtvd8XriXvMdFTX+TSYioQdpu4QkIlzVq0TKsHM6hvr5d/iCk5zgN4DZ7ix5xTP5XCra8=
+X-Received: by 2002:a9d:6e19:: with SMTP id e25mr6395003otr.198.1598340916267;
+ Tue, 25 Aug 2020 00:35:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYt=oYWHEG6VNkfEh8+UxbReS6_+9hnz+1bOYZHj5j1F_Q@mail.gmail.com>
- <20200824110645.GC17456@casper.infradead.org>
-In-Reply-To: <20200824110645.GC17456@casper.infradead.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 25 Aug 2020 13:03:53 +0530
-Message-ID: <CA+G9fYvjKGF3HZXyd=JQHzRG=r=bmD0hYQn02VL4Y=5y57OgaA@mail.gmail.com>
-Subject: Re: BUG: Bad page state in process true pfn:a8fed on arm
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>, opendmb@gmail.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        afzal.mohd.ma@gmail.com, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Received: by 2002:a05:6830:22d8:0:0:0:0 with HTTP; Tue, 25 Aug 2020 00:35:15
+ -0700 (PDT)
+Reply-To: mrericbello@yandex.com
+From:   Mr Eric Bello <ubabank.benin11@gmail.com>
+Date:   Tue, 25 Aug 2020 00:35:15 -0700
+Message-ID: <CAA3c-f3VJvn-ZTLyjhinHb+Az1tb74RRdE-jMB=ua-aSuYEXMQ@mail.gmail.com>
+Subject: From Mr Eric Bello
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 at 16:36, Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Aug 24, 2020 at 03:14:55PM +0530, Naresh Kamboju wrote:
-> > [   67.545247] BUG: Bad page state in process true  pfn:a8fed
-> > [   67.550767] page:9640c0ab refcount:0 mapcount:-1024
->
-> Somebody freed a page table without calling __ClearPageTable() on it.
+Dear Friend,
 
-After running git bisect on this problem,
-The first suspecting of this problem on arm architecture this patch.
-424efe723f7717430bec7c93b4d28bba73e31cf6
-("mm: account PMD tables like PTE tables ")
+I am Mr Eric Bello, Working with a reputable bank here in Burkina Faso
+as the manager in audit department. During our last banking audits we
+discovered an abandoned account belongs to one of our deceased
+customer, late Mr. Hamid Amine Razzaq, a billionaire businessman.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Anders Roxell <anders.roxell@linaro.org>
+Meanwhile, before i contacted you i have done personal investigation
+in locating any of his relatives who knows about the account, but i
+came out unsuccessful. I am writing to request your assistance in
+transferring the sum of 15.500.000.00 (Fifteen million Five Hundred
+Thousand Dollars) into your account.
 
-Additional information:
-We have tested linux next by reverting this patch and confirmed
-that the reported BUG is not reproduced.
+I decided to contact you to act as his foreign business partner so
+that my bank will accord you the recognition and have the fund
+transfer into your account. More details information will be forwarded
+to you.
 
-These configs enabled on the running device,
-
-CONFIG_TRANSPARENT_HUGEPAGE=y
-CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
-
-
--- Suspecting patch --
-commit 424efe723f7717430bec7c93b4d28bba73e31cf6
-Author: Matthew Wilcox <willy@infradead.org>
-Date:   Thu Aug 20 10:01:30 2020 +1000
-
-    mm: account PMD tables like PTE tables
-
-    We account the PTE level of the page tables to the process in order to
-    make smarter OOM decisions and help diagnose why memory is fragmented.
-    For these same reasons, we should account pages allocated for PMDs.  With
-    larger process address spaces and ASLR, the number of PMDs in use is
-    higher than it used to be so the inaccuracy is starting to matter.
-
-    Link: http://lkml.kernel.org/r/20200627184642.GF25039@casper.infradead.org
-    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-    Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-    Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-    Cc: Andy Lutomirski <luto@kernel.org>
-    Cc: Arnd Bergmann <arnd@arndb.de>
-    Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-    Cc: Joerg Roedel <joro@8bytes.org>
-    Cc: Max Filippov <jcmvbkbc@gmail.com>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-    Cc: Stafford Horne <shorne@gmail.com>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index b0a15ee77b8a..a4e5b806347c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2239,7 +2239,7 @@ static inline spinlock_t *pmd_lockptr(struct
-mm_struct *mm, pmd_t *pmd)
-  return ptlock_ptr(pmd_to_page(pmd));
- }
-
--static inline bool pgtable_pmd_page_ctor(struct page *page)
-+static inline bool pmd_ptlock_init(struct page *page)
- {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-  page->pmd_huge_pte = NULL;
-@@ -2247,7 +2247,7 @@ static inline bool pgtable_pmd_page_ctor(struct
-page *page)
-  return ptlock_init(page);
- }
-
--static inline void pgtable_pmd_page_dtor(struct page *page)
-+static inline void pmd_ptlock_free(struct page *page)
- {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-  VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
-@@ -2264,8 +2264,8 @@ static inline spinlock_t *pmd_lockptr(struct
-mm_struct *mm, pmd_t *pmd)
-  return &mm->page_table_lock;
- }
-
--static inline bool pgtable_pmd_page_ctor(struct page *page) { return true; }
--static inline void pgtable_pmd_page_dtor(struct page *page) {}
-+static inline bool pmd_ptlock_init(struct page *page) { return true; }
-+static inline void pmd_ptlock_free(struct page *page) {}
-
- #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
-
-@@ -2278,6 +2278,22 @@ static inline spinlock_t *pmd_lock(struct
-mm_struct *mm, pmd_t *pmd)
-  return ptl;
- }
-
-+static inline bool pgtable_pmd_page_ctor(struct page *page)
-+{
-+ if (!pmd_ptlock_init(page))
-+ return false;
-+ __SetPageTable(page);
-+ inc_zone_page_state(page, NR_PAGETABLE);
-+ return true;
-+}
-+
-+static inline void pgtable_pmd_page_dtor(struct page *page)
-+{
-+ pmd_ptlock_free(page);
-+ __ClearPageTable(page);
-+ dec_zone_page_state(page, NR_PAGETABLE);
-+}
-+
- /*
-  * No scalability reason to split PUD locks yet, but follow the same pattern
-  * as the PMD locks to make it easier if we decide to.  The VM should not be
+However, i will give you full details on how the business will be
+executed and also note that you will have 40% of the above mentioned
+if you agree to handle this business with me while 50% will be for me
+and 10% for any expenses that may arise on the process .reply here:(
+ericbell4109@gmail.com )
 
 
-
-
-- Naresh
+I am expecting to read from you soon.
+Best Regards
+Mr Eric Bello.
