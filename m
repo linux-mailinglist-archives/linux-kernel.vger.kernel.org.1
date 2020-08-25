@@ -2,134 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE592519CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1762519AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgHYNhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:37:38 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:34481 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726749AbgHYNgX (ORCPT
+        id S1726119AbgHYNbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgHYNbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:36:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id B57FBCCD;
-        Tue, 25 Aug 2020 09:36:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:36:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=POEurteasFjtErahfEjgvleBxyP
-        Dp8wZRReEbv/IAys=; b=i8UhYGZnZjo037lPyii2wA/CX7LkgMwr9a3XbcVjYtH
-        Wmv4F/2SE2c8N6spUbl7zBloi9b8wwCB+yERBHAut3kTCUOpHgNgbOA4LR/Ew0vV
-        zHWRGcEy9u2JN0gE1wGX9XTkLkCrA7Mkx86YSG14ttmT+Uj6+qHU7u84BFVAS5sH
-        fXYnmp4r3f7OD7prv9BfPZedMze1b1hMbGqK9suB0YzsZo+r1Pwlb71TifHAQdcZ
-        T8olniVwYsB8msCX1/AJnol0C48g8QdEGfJm6UpKwcj6f5GUa8fq4cMTtm0kveAB
-        Q8qOXt9jXKfa556Nf62m8CjIn3OfmFnNPZlpFx0bL9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=POEurt
-        easFjtErahfEjgvleBxyPDp8wZRReEbv/IAys=; b=XJMuObmrP1KF2fiCudIQoF
-        Uw9YdDA9nRFLxEgXw4Mjs9KyCgAEczVVNqFx6J1rHndHBdOO5lsN9hYTd5dtYd2o
-        SiQ+GHyPrGNtuolY4oY5F0wdDLm6p9aUtcwVif+FX4vxcDyt7PIfORygP+kHk+PU
-        5y82npqA9hHXInV1zafBoPumQHM2nxY8MkCgYYQDh0chHba0IOTKOzdhfCFpUmqr
-        mRM5PpYFzv8lUAPcy88JZ84iEz+emJjwyCr0JgsRaWbO7k2o/042PGFoKQHO+cX6
-        3W2gjd2837hYtUzxOdHL8tBTnRCazMAGQiti0R8NLNtESi0NhEQEDTSm2jxGeohQ
-        ==
-X-ME-Sender: <xms:1BNFX-4Ec6Wt06BBmqcZp-stJ36Ws-Pz6M9S0fH9vKfHtHaYRipLhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvddune
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:1BNFX34Jxf_MxSBsPQgv3osZA2IUOm9RuGW3he0GaDIb-Crt_jqsNQ>
-    <xmx:1BNFX9eW9OggrB-x6yam3EuKH9xSnH4r8TBzbmLawHnDvILI2Ef81w>
-    <xmx:1BNFX7LPwLSpf-QM7m7LqSbRD0zLgnVPKcNN9eWu5vFhQibCKW1fKQ>
-    <xmx:1BNFX6AWjA-EcPGV4346e34oYz6jt_QRUfA4kEdsWppp3Zws0d7Ei3LzJcE>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id ABAA63280059;
-        Tue, 25 Aug 2020 09:36:19 -0400 (EDT)
-Date:   Tue, 25 Aug 2020 10:55:32 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Frank Lee <tiny.windzz@gmail.com>,
-        Frank Lee <frank@allwinnertech.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, gregory.clement@bootlin.com,
-        Thomas Gleixner <tglx@linutronix.de>, jason@lakedaemon.net,
-        Marc Zyngier <maz@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        "p.zabel" <p.zabel@pengutronix.de>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        clabbe@baylibre.com, bage@linutronix.de,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>, linux-i2c@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v5 00/16] Allwinner A100 Initial support
-Message-ID: <20200825085532.vv4dpuzmjnshm5qn@gilmour.lan>
-References: <cover.1595572867.git.frank@allwinnertech.com>
- <CAEExFWsvScMgi_Dftfq06HZiF8CFAmym8Z_tgQoHHAfiGxWt0g@mail.gmail.com>
- <CAEExFWuwjmqAh0c3kMLS3Gs6UC2A8TtY-9nJeWxFPRDugtR4pA@mail.gmail.com>
- <20200824080327.GH3248864@dell>
+        Tue, 25 Aug 2020 09:31:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F00C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:31:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b17so11948149wru.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ox8QK/IzGS/2yKfoGq07DsTXf8p9QMN6eWLRJ1J4AIg=;
+        b=mNQPJdy2gY4XWix22ixlqX4gAjdlU3M6HmAifc6qwgvG8KDB2RtfoojcjwoOxRsoWq
+         85QxMnS8xmEJEqZvqPK/uY6IgabsmL4poARlffOF/1WY8IYEQKHCl62/BFfsRNCvlWjB
+         I3rUkJvXf1HSY0ud3Qpk5ukGsLaI/X+7wS4xUrvPjbR/MU+sxSfkPKSnHnrg4Mut2sJr
+         BnUQy7ewuSeizkEy57yes+sJYFbk4cyE1vir/mU+YfdTBYWp72iZRK+87WVKqyFbyjyR
+         V77xU+EBKOcwvQvdHa4QUUJpH2Q2QxR91rSwAR/BFUPm2HO+TAHVcQu3vXxTqnQiNEWm
+         I50Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ox8QK/IzGS/2yKfoGq07DsTXf8p9QMN6eWLRJ1J4AIg=;
+        b=FHRpTO0Ok8diBhpKn7e67fcoicNF0sF5kLcl2rx06SVx1YrCNs1TCSDeeoB4sc5FTT
+         5PS3mYZClEwF3pSlJJb2mBXUL8Z5oOQQNyJbmf8WvhZWu591yz3IEIKMjZq4X83zxvHs
+         YgqmDQL/tJQimVTJjKKco5SgBIqsUv26txfdtNexB01ELaOqH+J7iDIAF9RAahu1vwqH
+         B0j6vRVNYWqH8pWL8735ZSgibPCJ5BMyA7nZKztOLsXJeknCpD9Lr721yqy1OHAoqxGU
+         NDRCgfMVAdZHm4vu4XOXlMe35hX0fz87scZGYCAEBymKxa1EaIL6TlMRfsxa6FrKBqhi
+         RKMQ==
+X-Gm-Message-State: AOAM533jrD2Dwf8jR94dsjNjL/BhkpK8LTSLREgFapXDUQ5W/uQ/PjHT
+        0Rdygis+TVamSXLDdyx2SikepuCuDmDEIkFhyWSsXg==
+X-Google-Smtp-Source: ABdhPJzUeQqJA/novRqHBseQlf6eWrBox45GDrOW28wDGMRdDNkXczDDP6iZM3MA8UOhbFpSCcNnxyXb9cIU+oTD434=
+X-Received: by 2002:a5d:688d:: with SMTP id h13mr10296178wru.176.1598362297868;
+ Tue, 25 Aug 2020 06:31:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="auueqe22v4rtftcj"
-Content-Disposition: inline
-In-Reply-To: <20200824080327.GH3248864@dell>
+References: <1598029961-2474-1-git-send-email-amit.pundir@linaro.org> <23c4191e-4d64-80d8-e688-27d004729ea1@gmail.com>
+In-Reply-To: <23c4191e-4d64-80d8-e688-27d004729ea1@gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 25 Aug 2020 19:01:01 +0530
+Message-ID: <CAMi1Hd0=FXSPk+UXte4Etq5p0Ths9rkt9Uuup1OOLD6qzT=XQA@mail.gmail.com>
+Subject: Re: [PATCH v5] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Konrad,
 
---auueqe22v4rtftcj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, 22 Aug 2020 at 02:51, Konrad Dybcio <konradybcio@gmail.com> wrote:
+>
+> Hi
+>
+> First of all, sorry if anybody sees this twice. I've been messing with Thunderbird lately.
+>
+>
+>
+> > dtb-$(CONFIG_ARCH_QCOM)       += sdm845-cheza-r3.dtb
+> > dtb-$(CONFIG_ARCH_QCOM)       += sdm845-db845c.dtb
+> > +dtb-$(CONFIG_ARCH_QCOM)      += sdm845-beryllium.dtb
+>
+> [B]eryllium should come before [C]heza, no? Also, aren't the non-development boards supposed to include the vendor name? i.e. sdm845-(xiaomi/poco)-beryllium.dtb
 
-On Mon, Aug 24, 2020 at 09:03:27AM +0100, Lee Jones wrote:
-> On Mon, 24 Aug 2020, Frank Lee wrote:
->=20
-> > ping......
->=20
-> "Please don't send content free pings and please allow a reasonable
->  time for review.  People get busy, go on holiday, attend conferences
->  and so on so unless there is some reason for urgency (like critical
->  bug fixes) please allow at least a couple of weeks for review.  If
->  there have been review comments then people may be waiting for those
->  to be addressed.  Sending content free pings just adds to the mail
->  volume (if they are seen at all) and if something has gone wrong
->  you'll have to resend the patches anyway so [RESEND]ing with any
->  comments addressed is generally a much better approach."
+Ack. I didn't pay attention to that part. I'll fix that.
 
-This is true to some extent, but pinging after a month doesn't seem
-unreasonable either.
+>
+>
+> > +     model = "Xiaomi Technologies Inc. Beryllium";
+>
+> At least with Xperias, we settled on setting the model property to the "pretty" name, in this case Poco F1
 
-Maxime
+Ack.
 
---auueqe22v4rtftcj
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+>
+> > +     pm8998-rpmh-regulators {
+> > +             compatible = "qcom,pm8998-rpmh-regulators";
+> > +             qcom,pmic-id = "a";
+> > +
+> > +             vreg_l1a_0p875: ldo1 {
+>
+> I think you forgot to include (regulatorname)-supply properties which should cause havoc with all things regulators..
 
------BEGIN PGP SIGNATURE-----
+I didn't know that. Thanks for pointing that out. I just copied db845c
+dts and started removing the nodes/properties which I didn't seem fit.
+There is a very good probability that I goofed up big time.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0TSBAAKCRDj7w1vZxhR
-xQ6OAP9rRoEY6LGAwA8rIYGP9nqZkGQvX8jYgLKgy8LDGLzgHwD9FpLVh5zaq2PN
-wZuijCenTGRJcOzorN0M0qrwWwjOnwM=
-=/bST
------END PGP SIGNATURE-----
+FWIW in my limited testing so far (Booted AOSP to UI, with working
+Touchscreen/BT/WiFi/Audio with out-of-tree drivers [1]), I didn't run
+into issues with mainline (v5.9-rc1) or Android GKI (v5.4.58). May be
+I just got lucky. I'll check up on the usage of (regulatorname)-supply
+properties.
 
---auueqe22v4rtftcj--
+>
+>
+> > +             vreg_l1a_0p875: ldo1 {
+> > +                     regulator-min-microvolt = <880000>;
+> > +                     regulator-max-microvolt = <880000>;
+> 0p88? Unless it's a PMIC limitation.. Please also confirm names for the rest of the regulators.
+>
+> Also why are there so few regulators? And none from pmi8998? Are the rest WIP/coming in a followup commit, or are they disabled on this board? AFAICS you only include SoC/PMIC DTs which would suggest they should be there.
+
+I intend to add more regulators and feature nodes in follow up commits.
+
+>
+>
+> > +/* Reserved memory changes from downstream */
+>
+> Wouldn't it look better if you included that in the main {} node instead of reopening it in the middle of the file? I mean, it works, but let's hear what others have to say.
+
+Ack. I'll fix that if necessary.
+
+>
+>
+> > +                      * It seems that mmc_test reports errors if drive
+> > +                      * strength is not 16 on clk, cmd, and data pins.
+>
+> You say that, but then you set "drive-strength = <10>;" for cmd and data, please confirm it's intentional.
+
+In sync with db845c as well as downstream dts but I'll check on this as well.
+
+>
+>
+> > +&ufs_mem_hc {
+>
+> UFS comes before USB alphabetically.
+
+Ack. I'll add them alphabetically if that is the common norm.
+
+Regards,
+Amit Pundir
+[1] https://github.com/pundiramit/linux/commits/beryllium-mainline
+
+
+>
+>
+> > +&ufs_mem_phy
+>
+> Ditto
+>
+>
+> > +&qup_uart6_default
+>
+> Ditto
+>
+>
+> Konrad
