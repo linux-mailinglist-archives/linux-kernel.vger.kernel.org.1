@@ -2,77 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBBF25128E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F6B25129F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgHYHGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:06:30 -0400
-Received: from smtprelay0045.hostedemail.com ([216.40.44.45]:38566 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729137AbgHYHG3 (ORCPT
+        id S1729309AbgHYHI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:08:59 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34705 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728936AbgHYHI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:06:29 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id A520D100E7B43;
-        Tue, 25 Aug 2020 07:06:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3770:3865:3866:3867:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:7903:7904:9010:9025:9388:10004:10400:10848:11232:11658:11914:12043:12048:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:13846:14096:14097:14181:14659:14721:14764:14777:21080:21451:21627:21672:21781:30012:30026:30054:30060:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: tooth00_0809ad927059
-X-Filterd-Recvd-Size: 2084
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 07:06:27 +0000 (UTC)
-Message-ID: <dc8aca7e3772670782c2abc086cab8b6f81be3c1.camel@perches.com>
-Subject: Re: [PATCH] scsi: megaraid: Remove unnecessary assignment to
- variable ret
-From:   Joe Perches <joe@perches.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 25 Aug 2020 00:06:26 -0700
-In-Reply-To: <5e8d3765063043f7a90c92c098317319757595ed.camel@perches.com>
-References: <20200825063836.92239-1-jingxiangfeng@huawei.com>
-         <5e8d3765063043f7a90c92c098317319757595ed.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 25 Aug 2020 03:08:56 -0400
+Received: by mail-wr1-f68.google.com with SMTP id f7so11614882wrw.1;
+        Tue, 25 Aug 2020 00:08:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l54b9M6lsfNgFjV5LriaXZxkCjRvfaXuheWXTmhA8H0=;
+        b=IhJpiKm5Vp3VzhjSJT571kVboqOooMmXwHKQfrJe0v5jcYoZJz7rmdoIugP8nLVVY4
+         vg9RUGaJYw2SrljnPJEtWjZRYziyBEPhRJOC4XXnxx4Vk7HTOFB6DZWPhhXekF9un+2B
+         VwXIrn6Pn3M/g7x1U7ktjlhhtnjkMsgQv8cU2dgwK8GNN62uco1YPUNIr0I9JUYVkvwf
+         IjXc6yx0F817c+m/n+bRScmigY9RCumpvnbwtz1Qhtoo9hMU7zX34WLt9PDMo+V/ZACn
+         jyYOghhxSYRIILxzX2UuJUT/h75RhjChvRLVoICg7zISWdeLAMvNOEY4yERqO/zp7DAL
+         1Gbg==
+X-Gm-Message-State: AOAM533YmdK5ORUcDXJ2Bh2wSimS/8BDJLipqZzbFpn/GeEaB/JkbGOA
+        t7459voHH9YXg04qQ5Ec0KE=
+X-Google-Smtp-Source: ABdhPJx6Y8Pp2Xu+VQIJdGvRDGKdAFvlXR7vDcNPN4yTT16XHARtlil/gzCAiQcAzCm0WH80KJ2xHQ==
+X-Received: by 2002:a5d:494b:: with SMTP id r11mr9680913wrs.419.1598339333020;
+        Tue, 25 Aug 2020 00:08:53 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id h11sm29004318wrb.68.2020.08.25.00.08.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 25 Aug 2020 00:08:52 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 09:08:49 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
+        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v2 12/19] dt-bindings: mmc: fsl-imx-esdhc: Fix i.MX 8
+ compatible matching
+Message-ID: <20200825070849.GC3458@kozik-lap>
+References: <20200824162652.21047-1-krzk@kernel.org>
+ <20200824162652.21047-12-krzk@kernel.org>
+ <20200825023801.GA3835035@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200825023801.GA3835035@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 00:01 -0700, Joe Perches wrote:
-> On Tue, 2020-08-25 at 14:38 +0800, Jing Xiangfeng wrote:
-> > The variable ret is being initialized with 'FAILED'. So we can remove
-> > this assignement.
+On Mon, Aug 24, 2020 at 08:38:01PM -0600, Rob Herring wrote:
+> On Mon, Aug 24, 2020 at 06:26:45PM +0200, Krzysztof Kozlowski wrote:
+> > The i.MX 8 DTSes use two compatibles so update the binding to fix
+> > dtbs_check warnings like:
+> > 
+> >   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+> >     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+> >     From schema: Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > 
+> >   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+> >     compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+> > 
+> >   arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: mmc@30b40000:
+> >     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Changes since v1:
+> > 1. Handle also fsl,imx8mm-usdhc and fsl,imx8qxp-usdhc
+> > ---
+> >  .../bindings/mmc/fsl-imx-esdhc.yaml           | 40 +++++++++++--------
+> >  1 file changed, 23 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > index 10b45966f1b8..54f05e2a4246 100644
+> > --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > @@ -21,23 +21,29 @@ description: |
+> >  
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -      - fsl,imx25-esdhc
+> > -      - fsl,imx35-esdhc
+> > -      - fsl,imx51-esdhc
+> > -      - fsl,imx53-esdhc
+> > -      - fsl,imx6q-usdhc
+> > -      - fsl,imx6sl-usdhc
+> > -      - fsl,imx6sx-usdhc
+> > -      - fsl,imx6ull-usdhc
+> > -      - fsl,imx7d-usdhc
+> > -      - fsl,imx7ulp-usdhc
+> > -      - fsl,imx8mq-usdhc
+> > -      - fsl,imx8mm-usdhc
+> > -      - fsl,imx8mn-usdhc
+> > -      - fsl,imx8mp-usdhc
+> > -      - fsl,imx8qm-usdhc
+> > -      - fsl,imx8qxp-usdhc
+> > +    oneOf:
+> > +      - enum:
+> > +          - fsl,imx25-esdhc
+> > +          - fsl,imx35-esdhc
+> > +          - fsl,imx51-esdhc
+> > +          - fsl,imx53-esdhc
+> > +          - fsl,imx6q-usdhc
+> > +          - fsl,imx6sl-usdhc
+> > +          - fsl,imx6sx-usdhc
+> > +          - fsl,imx6ull-usdhc
+> > +          - fsl,imx7d-usdhc
+> > +          - fsl,imx7ulp-usdhc
 > 
-> If you are going to change the code at all,
-> might as well try to improve it more by removing
-> the unnecessary out: label altogether.
+> > +          - fsl,imx8mq-usdhc
+> > +          - fsl,imx8mm-usdhc
+> > +          - fsl,imx8qxp-usdhc
+> 
+> These should be dropped.
 
-Looks like the megaraid mailing list is either subscribers-only
-or doesn't exist anymore as my mail to it bounced.
+You're right, thanks.
 
-One of the maintainers should remove it or update it.
-
-Maybe:
----
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ac79fdbdf8d0..0c181cd07201 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11060,7 +11060,7 @@ MEGARAID SCSI/SAS DRIVERS
- M:	Kashyap Desai <kashyap.desai@broadcom.com>
- M:	Sumit Saxena <sumit.saxena@broadcom.com>
- M:	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
--L:	megaraidlinux.pdl@broadcom.com
-+L:	megaraidlinux.pdl@broadcom.com (subscribers-only)
- L:	linux-scsi@vger.kernel.org
- S:	Maintained
- W:	http://www.avagotech.com/support/
-
+Best regards,
+Krzysztof
 
