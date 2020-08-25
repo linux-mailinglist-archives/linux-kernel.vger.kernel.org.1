@@ -2,170 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549B3251A42
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC251A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgHYNym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:54:42 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37114 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgHYNyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:54:12 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BbVpR386fz9txln;
-        Tue, 25 Aug 2020 15:54:07 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id wYJEZo8a1ZRO; Tue, 25 Aug 2020 15:54:07 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BbVpR1f5cz9txlj;
-        Tue, 25 Aug 2020 15:54:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AF6D38B825;
-        Tue, 25 Aug 2020 15:54:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 10ZooPWDYufu; Tue, 25 Aug 2020 15:54:08 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 342A58B823;
-        Tue, 25 Aug 2020 15:54:07 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 7257965D42; Tue, 25 Aug 2020 13:54:07 +0000 (UTC)
-Message-Id: <30d2ed97e1494f6ffbd4493e06cb58d9f402bb17.1598363608.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <df48ed76cf8a756a7f97ed42a1a39d0a404014bc.1598363608.git.christophe.leroy@csgroup.eu>
-References: <df48ed76cf8a756a7f97ed42a1a39d0a404014bc.1598363608.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 9/9] powerpc/vdso: Remove unused \tmp param in
- __get_datapage()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 25 Aug 2020 13:54:07 +0000 (UTC)
+        id S1726113AbgHYN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgHYN64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:58:56 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5098FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:58:56 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id g6so8705230pfi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
+        b=kChPl54dn9ymEmCalokFzgP0MuYBhYIUai4sfhGRDTh7cmSDYrE9/f2w2wlzy79P1U
+         odUElDEA6bydiFE9ZvHxHgUU1DeCZfPfixc+QnXh6sqh3mCROa7cWR80GWycaCUfb4IF
+         UBKXlwIVApSR31H2zG7ZxWF6WxQTdY9nQlI9tLzJ7tq7xXyPlCbj3ruaO4VmIFc2t8FP
+         u5EoeZ4mdLG9kegCOTiKILj3FbecfJPwMC/TsHIbN2mbiBeuIHnoLEgj58tO1/iziyT3
+         ZHyFWI96H8MuXgxec7wRTEFCpZDQz1eBjJcUj1sj21HyfKjhnsCK5NAQONRKGgGjyfaK
+         ImQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
+        b=sJa1SZXttWznqzE51khzqJIamQZ6LLvCKfCrYk4ytrIMWuBbYJB0cprSBNoHOZXgG+
+         P1k2QSG39plouO4N+mB6JE87snf8Ao3ZPD/UF3kPEBYRzovlzL/T6j59Oz4rSWZ2InRe
+         zvfkbBoBIUzHaGr//GWT6EDQmBNxVl1FOc4IpKvKe6SeBdCQUNz+6kk+lx9mxS2Tj+GS
+         uofHrr5TX4bcVfQYlvnBD6IOz2y0LEi7/WHH3qHzJ9O0rzzThdroUHGYQFdeYOl9pf80
+         q74/ohJMoDnZZWjMcXPc+KB5ozReybkQzdQRbVmfKmcmgtFr/jxq5QOSOzam4+jgjCNq
+         J/jQ==
+X-Gm-Message-State: AOAM532ZS6a164pAE1WrBKqcUErAvgG1QYvKdmlzeh0WY5bl0Zm9LXQH
+        N+GL0i9q1ygc/02aMoCz72HHpFeRtwAegpkvDlE=
+X-Google-Smtp-Source: ABdhPJyZgdjJcZNgecDr3UiTzEn5aQy+0LYKn3Ej4qIsX1xwC3PrG7l2IDzKFUt1pE1eWuX67nXFBj1sKlB/v8+4iqU=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a62:7c97:: with SMTP id
+ x145mr8231879pfc.155.1598363935586; Tue, 25 Aug 2020 06:58:55 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 06:58:36 -0700
+Message-Id: <20200825135838.2938771-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+Subject: [PATCH v3] lib/string.c: implement stpcpy
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org, Andy Lavr <andy.lavr@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The \tmp param is not used anymore, remove it.
+LLVM implemented a recent "libcall optimization" that lowers calls to
+`sprintf(dest, "%s", str)` where the return value is used to
+`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+in parsing format strings.  `stpcpy` is just like `strcpy` except it
+returns the pointer to the new tail of `dest`.  This optimization was
+introduced into clang-12.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Implement this so that we don't observe linkage failures due to missing
+symbol definitions for `stpcpy`.
+
+Similar to last year's fire drill with:
+commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+
+The kernel is somewhere between a "freestanding" environment (no full libc)
+and "hosted" environment (many symbols from libc exist with the same
+type, function signature, and semantics).
+
+As H. Peter Anvin notes, there's not really a great way to inform the
+compiler that you're targeting a freestanding environment but would like
+to opt-in to some libcall optimizations (see pr/47280 below), rather than
+opt-out.
+
+Arvind notes, -fno-builtin-* behaves slightly differently between GCC
+and Clang, and Clang is missing many __builtin_* definitions, which I
+consider a bug in Clang and am working on fixing.
+
+Masahiro summarizes the subtle distinction between compilers justly:
+  To prevent transformation from foo() into bar(), there are two ways in
+  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
+  only one in GCC; -fno-buitin-foo.
+
+(Any difference in that behavior in Clang is likely a bug from a missing
+__builtin_* definition.)
+
+Masahiro also notes:
+  We want to disable optimization from foo() to bar(),
+  but we may still benefit from the optimization from
+  foo() into something else. If GCC implements the same transform, we
+  would run into a problem because it is not -fno-builtin-bar, but
+  -fno-builtin-foo that disables that optimization.
+
+  In this regard, -fno-builtin-foo would be more future-proof than
+  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
+  may want to prevent calls from foo() being optimized into calls to
+  bar(), but we still may want other optimization on calls to foo().
+
+It seems that compilers today don't quite provide the fine grain control
+over which libcall optimizations pseudo-freestanding environments would
+prefer.
+
+Finally, Kees notes that this interface is unsafe, so we should not
+encourage its use.  As such, I've removed the declaration from any
+header, but it still needs to be exported to avoid linkage errors in
+modules.
+
+Cc: stable@vger.kernel.org
+Link: https://bugs.llvm.org/show_bug.cgi?id=47162
+Link: https://bugs.llvm.org/show_bug.cgi?id=47280
+Link: https://github.com/ClangBuiltLinux/linux/issues/1126
+Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
+Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
+Link: https://reviews.llvm.org/D85963
+Suggested-by: Andy Lavr <andy.lavr@gmail.com>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- arch/powerpc/include/asm/vdso/gettimeofday.h | 4 ++--
- arch/powerpc/include/asm/vdso_datapage.h     | 2 +-
- arch/powerpc/kernel/vdso32/cacheflush.S      | 2 +-
- arch/powerpc/kernel/vdso32/datapage.S        | 4 ++--
- arch/powerpc/kernel/vdso64/cacheflush.S      | 2 +-
- arch/powerpc/kernel/vdso64/datapage.S        | 4 ++--
- 6 files changed, 9 insertions(+), 9 deletions(-)
+Changes V3:
+* Drop Sami's Tested by tag; newer patch.
+* Add EXPORT_SYMBOL as per Andy.
+* Rewrite commit message, rewrote part of what Masahiro said to be
+  generic in terms of foo() and bar().
+* Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
+  '\0', as per Arvind and Rasmus.
 
-diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
-index 59a609a48b63..8602f1243e8d 100644
---- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-+++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-@@ -22,7 +22,7 @@
- #ifdef CONFIG_PPC64
- 	PPC_STL		r2, STACK_FRAME_OVERHEAD + STK_GOT(r1)
- #endif
--	get_datapage	r5, r0
-+	get_datapage	r5
- 	addi		r5, r5, VDSO_DATA_OFFSET
- 	bl		\funct
- 	PPC_LL		r0, STACK_FRAME_OVERHEAD + PPC_LR_STKOFF(r1)
-@@ -51,7 +51,7 @@
- #ifdef CONFIG_PPC64
- 	PPC_STL		r2, STACK_FRAME_OVERHEAD + STK_GOT(r1)
- #endif
--	get_datapage	r4, r0
-+	get_datapage	r4
- 	addi		r4, r4, VDSO_DATA_OFFSET
- 	bl		\funct
- 	PPC_LL		r0, STACK_FRAME_OVERHEAD + PPC_LR_STKOFF(r1)
-diff --git a/arch/powerpc/include/asm/vdso_datapage.h b/arch/powerpc/include/asm/vdso_datapage.h
-index 2bc415f7714c..71f44598f392 100644
---- a/arch/powerpc/include/asm/vdso_datapage.h
-+++ b/arch/powerpc/include/asm/vdso_datapage.h
-@@ -102,7 +102,7 @@ extern struct vdso_arch_data *vdso_data;
+Changes V2:
+* Added Sami's Tested by; though the patch changed implementation, the
+  missing symbol at link time was the problem Sami was observing.
+* Fix __restrict -> __restrict__ typo as per Joe.
+* Drop note about restrict from commit message as per Arvind.
+* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
+* Fix off by one error as per Arvind; I had another off by one error in
+  my test program that was masking this.
+
+ lib/string.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/lib/string.c b/lib/string.c
+index 6012c385fb31..6bd0cf0fb009 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
+ }
+ EXPORT_SYMBOL(strscpy_pad);
  
- #else /* __ASSEMBLY__ */
- 
--.macro get_datapage ptr, tmp
-+.macro get_datapage ptr
- 	bcl	20, 31, .+4
- 999:
- 	mflr	\ptr
-diff --git a/arch/powerpc/kernel/vdso32/cacheflush.S b/arch/powerpc/kernel/vdso32/cacheflush.S
-index 3440ddf21c8b..017843bf5382 100644
---- a/arch/powerpc/kernel/vdso32/cacheflush.S
-+++ b/arch/powerpc/kernel/vdso32/cacheflush.S
-@@ -27,7 +27,7 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
- #ifdef CONFIG_PPC64
- 	mflr	r12
-   .cfi_register lr,r12
--	get_datapage	r10, r0
-+	get_datapage	r10
- 	mtlr	r12
- #endif
- 
-diff --git a/arch/powerpc/kernel/vdso32/datapage.S b/arch/powerpc/kernel/vdso32/datapage.S
-index 5513a4f8253e..0513a2eabec8 100644
---- a/arch/powerpc/kernel/vdso32/datapage.S
-+++ b/arch/powerpc/kernel/vdso32/datapage.S
-@@ -28,7 +28,7 @@ V_FUNCTION_BEGIN(__kernel_get_syscall_map)
- 	mflr	r12
-   .cfi_register lr,r12
- 	mr.	r4,r3
--	get_datapage	r3, r0
-+	get_datapage	r3
- 	mtlr	r12
- 	addi	r3,r3,CFG_SYSCALL_MAP32
- 	beqlr
-@@ -49,7 +49,7 @@ V_FUNCTION_BEGIN(__kernel_get_tbfreq)
-   .cfi_startproc
- 	mflr	r12
-   .cfi_register lr,r12
--	get_datapage	r3, r0
-+	get_datapage	r3
- 	lwz	r4,(CFG_TB_TICKS_PER_SEC + 4)(r3)
- 	lwz	r3,CFG_TB_TICKS_PER_SEC(r3)
- 	mtlr	r12
-diff --git a/arch/powerpc/kernel/vdso64/cacheflush.S b/arch/powerpc/kernel/vdso64/cacheflush.S
-index cab14324242b..61985de5758f 100644
---- a/arch/powerpc/kernel/vdso64/cacheflush.S
-+++ b/arch/powerpc/kernel/vdso64/cacheflush.S
-@@ -25,7 +25,7 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
-   .cfi_startproc
- 	mflr	r12
-   .cfi_register lr,r12
--	get_datapage	r10, r0
-+	get_datapage	r10
- 	mtlr	r12
- 
- 	lwz	r7,CFG_DCACHE_BLOCKSZ(r10)
-diff --git a/arch/powerpc/kernel/vdso64/datapage.S b/arch/powerpc/kernel/vdso64/datapage.S
-index 03bb72c440dc..00760dc69d68 100644
---- a/arch/powerpc/kernel/vdso64/datapage.S
-+++ b/arch/powerpc/kernel/vdso64/datapage.S
-@@ -28,7 +28,7 @@ V_FUNCTION_BEGIN(__kernel_get_syscall_map)
- 	mflr	r12
-   .cfi_register lr,r12
- 	mr	r4,r3
--	get_datapage	r3, r0
-+	get_datapage	r3
- 	mtlr	r12
- 	addi	r3,r3,CFG_SYSCALL_MAP64
- 	cmpldi	cr0,r4,0
-@@ -50,7 +50,7 @@ V_FUNCTION_BEGIN(__kernel_get_tbfreq)
-   .cfi_startproc
- 	mflr	r12
-   .cfi_register lr,r12
--	get_datapage	r3, r0
-+	get_datapage	r3
- 	ld	r3,CFG_TB_TICKS_PER_SEC(r3)
- 	mtlr	r12
- 	crclr	cr0*4+so
++/**
++ * stpcpy - copy a string from src to dest returning a pointer to the new end
++ *          of dest, including src's %NUL-terminator. May overrun dest.
++ * @dest: pointer to end of string being copied into. Must be large enough
++ *        to receive copy.
++ * @src: pointer to the beginning of string being copied from. Must not overlap
++ *       dest.
++ *
++ * stpcpy differs from strcpy in a key way: the return value is the new
++ * %NUL-terminated character. (for strcpy, the return value is a pointer to
++ * src. This interface is considered unsafe as it doesn't perform bounds
++ * checking of the inputs. As such it's not recommended for usage. Instead,
++ * its definition is provided in case the compiler lowers other libcalls to
++ * stpcpy.
++ */
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
++{
++	while ((*dest++ = *src++) != '\0')
++		/* nothing */;
++	return --dest;
++}
++EXPORT_SYMBOL(stpcpy);
++
+ #ifndef __HAVE_ARCH_STRCAT
+ /**
+  * strcat - Append one %NUL-terminated string to another
 -- 
-2.25.0
+2.28.0.297.g1956fa8f8d-goog
 
