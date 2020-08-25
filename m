@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A162517B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 13:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA31F2517DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 13:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgHYLeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 07:34:08 -0400
-Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:30081
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725893AbgHYLeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 07:34:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TbCUBNSH50axq+yjXKWYl3QsywGGGbuT9Ekry2cSZvAWq79mGrpthVsrL+zoJrQPDdzX4Vp14rZ9QE3Hzurgv2Og0ZSgBXrJ4rUDkeN/CrM/EVmK7laI3xHL5gXUOYewv9f44Njyhdg1EyVP2Sg9doNZjPPll49kf6DcY6UTT7JNzEShlHHlDfAfRC1GjKJNEskzzDpZ/sch0OQR+GQjopmq2xnG/AO3UuoszA5vvk+1wLnT1dgMsumKPc0z407e4Jj5q8Ahzfw085erQLUBcp/IYPxulnyVWH4UUtzkkwugMGI4+DNQRSFqVIMIPwAp5/9kM1VEhM5M8fjdU3y7nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MsgYUm1SttPoXuoYXy+c9CP+h9MziHt/7U3f9XGzFvc=;
- b=FH1tk/hjn/8WI6vCDXhrb1ozC/PqaZtCwndc+6vuGYpTozGdDGFJlSrlZ3ImB0a4TY0ORrEXf/e0bSsDhfwaHGaWtCZhkC5DW4rdZBV3e3M4d8B8PDEIUFChxVQUjIBjywokGPi3LzDLe0Kft5wMroMLvufcYHJFR07pcBOiFgo1inXKMzFu0GP0rE5qXy1pr0svUSfyjQKTBC72N54SxadfvdeL/ugMM4OVCO2jU01SyL6SSJxv4D9sOArWwcpY7pdlYY4hkh1twOnbnCiMHYjLCf7kVVdhQaNmmurHnWLLojcrh7xtLNzJkMddj0Ga1RImdH2/G2WzkYzOjOZCUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730067AbgHYLlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 07:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730020AbgHYLga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 07:36:30 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB82BC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 04:36:16 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id 2so1104031pjx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 04:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MsgYUm1SttPoXuoYXy+c9CP+h9MziHt/7U3f9XGzFvc=;
- b=Zp5It0Ag6Aefb6J5DbgF5J3jmUvbFCWBOy2iLk59rafV+U1hDU2PnnWRWoAqGh7amWVjlG+6yXeFDtcl2su0lh5iH5fWHYNAUZaGFZ3/zvIIlUdwSDon8/+pkYM5zP0nGbxebwuDZajQNiFa9jTigYzXse6+zl3pAfolcQJaNy0=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3540.namprd12.prod.outlook.com (2603:10b6:408:6c::33)
- by BN8PR12MB3073.namprd12.prod.outlook.com (2603:10b6:408:66::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Tue, 25 Aug
- 2020 11:34:00 +0000
-Received: from BN8PR12MB3540.namprd12.prod.outlook.com
- ([fe80::b5a6:78c7:bdd1:543]) by BN8PR12MB3540.namprd12.prod.outlook.com
- ([fe80::b5a6:78c7:bdd1:543%7]) with mapi id 15.20.3305.026; Tue, 25 Aug 2020
- 11:34:00 +0000
-Subject: Re: [PATCH v5 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
- controller
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Sanjay R Mehta <Sanju.Mehta@amd.com>, gregkh@linuxfoundation.org,
-        dan.j.williams@intel.com, Thomas.Lendacky@amd.com,
-        Shyam-sundar.S-k@amd.com, Nehal-bakulchandra.Shah@amd.com,
-        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        Naveenkumar.YA@amd.com
-References: <1592356288-42064-1-git-send-email-Sanju.Mehta@amd.com>
- <1592356288-42064-2-git-send-email-Sanju.Mehta@amd.com>
- <20200703071841.GJ273932@vkoul-mobl>
- <19b20b55-0748-fb3c-755d-87ee6bdccf48@amd.com>
- <20200825111659.GM2639@vkoul-mobl>
-From:   Sanjay R Mehta <sanmehta@amd.com>
-Message-ID: <9f1abb41-84d3-4e8f-3efe-f708a33aec85@amd.com>
-Date:   Tue, 25 Aug 2020 17:03:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-In-Reply-To: <20200825111659.GM2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BM1PR0101CA0058.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:19::20) To BN8PR12MB3540.namprd12.prod.outlook.com
- (2603:10b6:408:6c::33)
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=glFTkS5G7hs4SNdc7xuyY0+I6rArkO6QBk+llo/j5FQ=;
+        b=A+l4BXwL8oca3n7v8aMTKTcICSrXGYTx/nHjowSd50dIHc94OIG9VY1FbjRbccROJ6
+         2Q73gFyOjU3I1sLPEwC3cXL9/ARZSjYwdX4JmHCDVkqY9d21cswHf+CqNsaFi6VCvZtn
+         XOaS8gu6hEKrnsYrGqTnmYGE89W1/WdhYofeM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=glFTkS5G7hs4SNdc7xuyY0+I6rArkO6QBk+llo/j5FQ=;
+        b=tQxUDroSdupNMwWEI5wbSMZdrii5XOvUZ81dN/GRVgVRfR9RxXsAQvs8CNEFcJW0Qt
+         WJHEIAnc5/BFdf7WBgy8wsi6wx5sTtCw+d3Vscr/zeXRZlVeEdHPh7KSqYLCk5uvNhun
+         XIc3t7vtWJdc7e7N/CyBM4qfo39r3HmsCbwv5L29JkubKjRc3Bpsa+xQ/k9xlzxzzygR
+         I7cMv2mw/RmQ8efbSr+chQGfeY6ltyo7y45y/cyfcqp9z2DAA3Sf/mewL0fRkG+l6yBm
+         Zsw92zoEgA0ju08IqhQDZOVc90+O5ckBR+OZ8zy1bf5vAyOf+mrBxXRrHrRwhIcLblor
+         Vudw==
+X-Gm-Message-State: AOAM531vb8Irtmvat9BR9z+619biR0xkgIXTi5/s2rQKtf16URtYz2FA
+        Yaywwvbo++wq8B0RSMa+9WZ5fg==
+X-Google-Smtp-Source: ABdhPJy4yBj9SbHa9s44Trh1M4T/0mY5MMRYpEq9Kpm/iTyJawjS0anz8F4CDdLjtzBIKT+QNuoz0w==
+X-Received: by 2002:a17:90a:ce:: with SMTP id v14mr1242997pjd.123.1598355376234;
+        Tue, 25 Aug 2020 04:36:16 -0700 (PDT)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
+        by smtp.gmail.com with ESMTPSA id e29sm15130084pfj.92.2020.08.25.04.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 04:36:15 -0700 (PDT)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] checkpatch: Warn if trace_printk and friends are called
+Date:   Tue, 25 Aug 2020 19:36:06 +0800
+Message-Id: <20200825193600.v2.1.I723c43c155f02f726c97501be77984f1e6bb740a@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BM1PR0101CA0058.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:19::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Tue, 25 Aug 2020 11:33:56 +0000
-X-Originating-IP: [165.204.159.242]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9a8a4a91-ed05-42d8-76a5-08d848eac2e8
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3073:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3073089822C02EEC4379B19CE5570@BN8PR12MB3073.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8XvEBUwP3Rmgm3uOta+sW45AmUZ1K30jIOko+p4+bRuwAcinP9ODxC2MlfaIl+bv5Km7uYtEUJnOyQxsZDRrsrmQi4uwoXmnnMxmNntuBpQRI1Enmns3Uyc115CXuXilu9UqegPl4CtcYNAVWfMKB9irbe3UTe5XkwIoOWxmZgjNaiFH/eSX5+Lze+9KwrnpEpKm8HQN27ccJwJlRZTQO628H/CKvuVQQh8E3m2jbr4+S4knJCjr7hLzeslO3TjfP+vMJvuivEDzo6E1OAJ6Gcu1vk5XyzoEzyLI8Y7vHh5vCLfyzG+gMp/OsRqMWxgKujjLUByQqv4AyD2h9FXGtskUAfdqcIJcj7V3GDtIANwOwOWlHJ7hSUBGpFblzkv3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3540.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(366004)(39860400002)(136003)(2616005)(5660300002)(6666004)(53546011)(186003)(8676002)(6916009)(26005)(316002)(2906002)(36756003)(6486002)(4744005)(478600001)(66556008)(66476007)(956004)(52116002)(31686004)(4326008)(8936002)(31696002)(16576012)(66946007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: U8CUTRteTe6dMu5erUqfwIDumdmw6UsKZ8wudSm38uCAF8t2EaH5A0mHELJXcn9OE8xym3dSJ4hRytFTZDwq5SXeOZV6NIwF/jiaWVVCqdNprg6t66iyaQ7rzLudIUbItlyrls2aytnNKwvtOlLjSvfoIct9gjGQcd5QjGaXpqkdLxY6sl/eBvYMh+7v89de55xtes8VV0MbLRz4yrEmNuh+L8qtUyRXJguMoRXz4vOXdp0WGip2tWeQ5xxsO7F9ESmtOsMD5rliAf2F9Hg0Db2k+JnEaywYglqai3mLMxd2JJlWntL1IqPHC9awp9nnlMTpJSdLJ0vIn0pskeqlsqBUwpwjvRf09jhBjUzPc8ep0Fqy+iaky3ogypKTrvsMO7+lijBiB6uKOdu6J1HF101+9HiPl5blRXsXcN7BGqfiQBeuTu+IUnLG2HkNdfB2NA0PuN2PPvT603QL9CmUhYu/lLsXL3+oFe7uWg9UdqClkvUt3keGTWImSsNViIbb1Syb+hlFFh8FRV322j6YXsDJ/MlY+7XbReocTHkRUUL/SR4rB4sGKh48xzEuEh5qz3uQ38EbZoH3tDsReoGds+izLwYrDV5SGMt2tQgq206Bn1D/RlqV5yy2PuOU04VspV1H/6DXQarx14zjgu37rg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a8a4a91-ed05-42d8-76a5-08d848eac2e8
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3540.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2020 11:34:00.4675
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SFP0paTBj3VJJ53hIU6uOsKyX2e+eUe2LprnbxXKPrw1xvv506VuH0/o9X3qFL0NQTwJQKnB+cZSNy2iKz5QyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3073
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 24-08-20, 13:11, Sanjay R Mehta wrote:
->> Apologies for my delayed response.
->>
->> On 7/3/2020 12:48 PM, Vinod Koul wrote:
->>> [CAUTION: External Email]
->>>
->>> On 16-06-20, 20:11, Sanjay R Mehta wrote:
->>>
->>>> +static int pt_core_execute_cmd(struct ptdma_desc *desc,
->>>> +                            struct pt_cmd_queue *cmd_q)
->>>> +{
->>>> +     __le32 *mp;
->>>> +     u32 *dp;
->>>> +     u32 tail;
->>>> +     int     i;
->>>
->>> no tabs, spaces pls
->> Sure, will fix in the next version of patch.
-> 
-> Also, please make sure you run checkpatch.pl with --strict option, that
-> will help out reducing the churn here
-> 
-Thanks Vinod. Will make sure to run the checkpatch.pl with --strict option.
+trace_printk is meant as a debugging tool, and should not be
+compiled into production code without specific debug Kconfig
+options enabled, or source code changes, as indicated by the
+warning that shows up on boot if any trace_printk is called:
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **                                                      **
+ ** trace_printk() being used. Allocating extra memory.  **
+ **                                                      **
+ ** This means that this is a DEBUG kernel and it is     **
+ ** unsafe for production use.                           **
 
-Also, please do let me know if I am missing anything else too.
-I will make sure to submit those changes too in the next version of patch series.
+Let's warn developers when they try to submit such a change.
 
-> Thanks
-> --
-> ~Vinod
-> 
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+See also extensive discussion under this thread:
+https://lkml.org/lkml/2020/8/20/244
+
+This seems to be the simplest way to try to reduce the number
+of trace_printk that make it into the kernel.
+
+Changes in v2:
+ - Use $1 directly, fix wording, remove final period.
+
+ scripts/checkpatch.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 4aa1d9d5e62c5b0..1102aa0ec2f7a05 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4272,6 +4272,12 @@ sub process {
+ 			     "Prefer dev_$level(... to dev_printk(KERN_$orig, ...\n" . $herecurr);
+ 		}
+ 
++# trace_printk should not be used in production code.
++		if ($line =~ /\b(trace_printk|trace_puts|ftrace_vprintk)\s*\(/) {
++			WARN("TRACE_PRINTK",
++			     "Do not use $1() in production code (this can be ignored if built only with a debug config option)\n" . $herecurr);
++		}
++
+ # ENOSYS means "bad syscall nr" and nothing else.  This will have a small
+ # number of false positives, but assembly files are not checked, so at
+ # least the arch entry code will not trigger this warning.
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
