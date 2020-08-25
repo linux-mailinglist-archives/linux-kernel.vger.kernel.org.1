@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541C0251AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E4D251AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgHYOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:19:31 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:46050 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726095AbgHYOT0 (ORCPT
+        id S1726611AbgHYOST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:18:19 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:34201 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725893AbgHYOSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:19:26 -0400
-X-IronPort-AV: E=Sophos;i="5.76,352,1592838000"; 
-   d="scan'208";a="55488792"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 25 Aug 2020 23:19:25 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 990644001950;
-        Tue, 25 Aug 2020 23:19:23 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        iommu@lists.linux-foundation.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH 2/2] ARM: dts: r8a7742: Add IPMMU DT nodes
-Date:   Tue, 25 Aug 2020 15:18:05 +0100
-Message-Id: <20200825141805.27105-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825141805.27105-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200825141805.27105-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 25 Aug 2020 10:18:10 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 8C501D3E;
+        Tue, 25 Aug 2020 10:18:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 25 Aug 2020 10:18:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=QmEs8/Z0/o2w/oQl3zJBNrpba7k
+        QG47nIMOSPlw4dkQ=; b=IUgbMKUuJGl2klzpvew5RZOXzxgT4oxejy6EcWkXt4c
+        UmyCtEnguOaFbzspswsQsu5s5TsfByHsUqtkVTCZoE+LkCMIYulwRO7mePSc4BKH
+        WnTfha7iIJK4fnOi8soaGNQ6pIu6ae0Xt7R3HaRnAV63iXkR5at9V2hpdn/Vwz5B
+        kevUcTmVG8VhWaCjgB41Dj+ANMU2XXMD2vC5f08GYP0dhP4uWwGvnh0LrXyz9wRj
+        J53F5jLvUNWKvGeY1z+ggp4ZWs5LLXJPWWLJCGX7/C6iJMGm0safbUnMB5Eax7TI
+        41ldXbU8p1pUY0sSTqXWT4eeEpXT+ha+x5cBJdpEAbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QmEs8/
+        Z0/o2w/oQl3zJBNrpba7kQG47nIMOSPlw4dkQ=; b=nHb4Xtuo+K7SOY6c/qS+IU
+        YTsTc0DPytVZGtDx3dgxVumIGtrYkZSs1jEsDfPCG/22iA+CHNHdTwmQ4bHMBKz/
+        DRIM032/qsTPORddjzPW7avZdhY7AfjUjCCVPgtj+nuCMhwEeMwAZ5MYAiiQ0E1w
+        ZIC0GM6qLyiqoj4fCNp3ptjh/X0djxHKYv8F+oELfCE52e/DCyOhet6zuPDPxuPh
+        3dRD1earO1ucHV9D7NDXJylSe86RW7tKmQnpF4M4/nBOLd2V7KNBE+zcwPvxpoSk
+        H+TFpbnd4hjXkwQs4NW7fmbFGlcQ3AwNDa7NWkPpyEU3uyQ+PIPODHMYywugBcPQ
+        ==
+X-ME-Sender: <xms:oB1FXwslh79Ia_3uIbKVs_-iycyPE_Uhv1YJck48pSUI5NDS78DQGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
+    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
+    htfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepgeehheefffegkeevhedthffgudfh
+    geefgfdthefhkedtleffveekgfeuffehtdeinecukfhppeejiedrvdehtddrkeegrddvfe
+    einecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehmrghilhhfrhhomhepphgr
+    thhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:oR1FX9fD7O9Uu6rejzrAklCAVWAPVPlLVRaloHh_uErln5vbASUbcg>
+    <xmx:oR1FX7zkVtPHNmeLkTKeVixGVexe5wTRWm2uf66wOQUwyB_0R3SpmQ>
+    <xmx:oR1FXzO4szcvhvCBvmRI0uxmX7Dg5vdUjq_-7Z3XlHW-lIvk2j28Bw>
+    <xmx:oR1FXwzjA0Tse1MRnIqNuiKAyXDNXBKJPYxX2z_ZpgezICBQxLaygQ>
+Received: from localhost (76-250-84-236.lightspeed.austtx.sbcglobal.net [76.250.84.236])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BB28130600B9;
+        Tue, 25 Aug 2020 10:18:08 -0400 (EDT)
+Date:   Tue, 25 Aug 2020 09:18:08 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     rentao.bupt@gmail.com
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, taoren@fb.com
+Subject: Re: [PATCH 4/5] ARM: dts: aspeed: minipack: Update 64MB FMC flash
+ layout
+Message-ID: <20200825141808.GH3532@heinlein>
+References: <20200824211948.12852-1-rentao.bupt@gmail.com>
+ <20200824211948.12852-5-rentao.bupt@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="smOfPzt+Qjm5bNGJ"
+Content-Disposition: inline
+In-Reply-To: <20200824211948.12852-5-rentao.bupt@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the five IPMMU instances found in the r8a7742 to DT with a disabled
-status.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
----
- arch/arm/boot/dts/r8a7742.dtsi | 48 ++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+--smOfPzt+Qjm5bNGJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index 0fc52b27ae64..c62e26876f95 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -412,6 +412,54 @@
- 			#thermal-sensor-cells = <0>;
- 		};
- 
-+		ipmmu_sy0: iommu@e6280000 {
-+			compatible = "renesas,ipmmu-r8a7742",
-+				     "renesas,ipmmu-vmsa";
-+			reg = <0 0xe6280000 0 0x1000>;
-+			interrupts = <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 224 IRQ_TYPE_LEVEL_HIGH>;
-+			#iommu-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		ipmmu_sy1: iommu@e6290000 {
-+			compatible = "renesas,ipmmu-r8a7742",
-+				     "renesas,ipmmu-vmsa";
-+			reg = <0 0xe6290000 0 0x1000>;
-+			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
-+			#iommu-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		ipmmu_ds: iommu@e6740000 {
-+			compatible = "renesas,ipmmu-r8a7742",
-+				     "renesas,ipmmu-vmsa";
-+			reg = <0 0xe6740000 0 0x1000>;
-+			interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
-+			#iommu-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		ipmmu_mp: iommu@ec680000 {
-+			compatible = "renesas,ipmmu-r8a7742",
-+				     "renesas,ipmmu-vmsa";
-+			reg = <0 0xec680000 0 0x1000>;
-+			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>;
-+			#iommu-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		ipmmu_mx: iommu@fe951000 {
-+			compatible = "renesas,ipmmu-r8a7742",
-+				     "renesas,ipmmu-vmsa";
-+			reg = <0 0xfe951000 0 0x1000>;
-+			interrupts = <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
-+			#iommu-cells = <1>;
-+			status = "disabled";
-+		};
-+
- 		icram0: sram@e63a0000 {
- 			compatible = "mmio-sram";
- 			reg = <0 0xe63a0000 0 0x12000>;
--- 
-2.17.1
+On Mon, Aug 24, 2020 at 02:19:47PM -0700, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
+>=20
+> Set 64Mb FMC flash layout in Minipack device tree explicitly because the
+> flash layout was removed from "ast2500-facebook-netbmc-common.dtsi".
+>=20
+> Please note "data0" partition' size is updated to 4MB to be consistent
+> with other Facebook OpenBMC platforms.
+>=20
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> ---
+>  .../boot/dts/aspeed-bmc-facebook-minipack.dts | 47 ++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 2 deletions(-)
+>=20
 
+Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
+
+--=20
+Patrick Williams
+
+--smOfPzt+Qjm5bNGJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl9FHZ8ACgkQqwNHzC0A
+wRmoQA/7BzbYGmsNhCqDgSK2BBGRdfOQXzsHB7RX5l1njoX0+O85xoTB5XUVuqP2
+DhjGuc4+QprGKmCnHeatfbQUOwDqWPQvFvKnEIjRlsnXSK2xYVubqHkJQnz6Is+5
+LP0Zw3lIZVYVXFmjM3WOaRlnNkPSAz0UoyxwAwZzSodN/0Vp9udCHnIpIT8IafB9
+4+wtW4KqfuFpJ721upa/9KrxsBB2+P0tQcmCwBEROIcL3Cj5HQz606T96vVAI+Y7
+7Hh4GfLCpkePKECh+vWlQmGUp6ASUXnm3GHwX55/l+QZM4EWI5W9i8C3feJ9XYu3
+aL0RD3gMbhKIykUnciO3UPGYWPPGAdqepk7/t4kEP6+ygMieYPvTO+6gHpd99XOG
+NMhkNvQObj+Ypuvg88/LZZwgMXO/MmPerZ8HULEukSm20qblGgjTY1BMyAbraEld
+Mtn4Q7axAuN3QeSlCgrtlJOvdhVaJdorznfuTM9LkW6+8Ct5ZMS+f3lyMRMT8Ch8
+fBqVNIXVS7uCWRRZrDamDE32ioO0xQEZtDBIy2ZAaW0UMtNNkYWPBytsxIRrok1R
+yFHZBON12LtqCXXtycVCCFBspH9FzpXeJixAAsCp3o0DpMf1W1QznwbYtyzsRJBP
+9lp4G+UBpOsmFWpVK01kOaLv6URm7f+zBWfQKN2AV5Yy7XFHZoI=
+=YxTc
+-----END PGP SIGNATURE-----
+
+--smOfPzt+Qjm5bNGJ--
