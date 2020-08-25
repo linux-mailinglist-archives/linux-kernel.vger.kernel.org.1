@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E664250FB8
+	by mail.lfdr.de (Postfix) with ESMTP id 31A75250FB7
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 04:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgHYCux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728439AbgHYCux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 24 Aug 2020 22:50:53 -0400
 Received: from mga18.intel.com ([134.134.136.126]:37715 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726882AbgHYCus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 22:50:48 -0400
-IronPort-SDR: QLYeLUn7fOCPwD2nOa9Vh8cV5J31PDXqmqjC77xy5hDmXt5Iwutpv8rVF4WfXuiQOy+4DftZRC
- 4DA8R+Oy+jgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="143690756"
+        id S1728093AbgHYCuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 22:50:52 -0400
+IronPort-SDR: QCJ+uH/Uc+kOZqYaYaJNv5rYLsnpGoB7MsYj3CF13RqfBoJJBy05X51ZyfnOXMyj55aB8ag14M
+ fnx6FjT+SrqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="143690762"
 X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="143690756"
+   d="scan'208";a="143690762"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 19:50:47 -0700
-IronPort-SDR: KYAhnWgxFOCaJoDJUxYxCgJDJS5/P4c2DlQRajKstXV1X/gMPbx1kC+RVA7pS4EmsNz6fWaFx0
- hBJx2lHYeIyw==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 19:50:51 -0700
+IronPort-SDR: C+PkuNmqbVjWu4QDtqetRuK3O1eSYDpByK3ZDpO8FIgLsYhXoBEqB9jqmdOcabz0yGWjnbzluk
+ g0W6CXX7T8VA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="312409734"
+   d="scan'208";a="312409752"
 Received: from shsi6026.sh.intel.com ([10.239.147.135])
-  by orsmga002.jf.intel.com with ESMTP; 24 Aug 2020 19:50:43 -0700
+  by orsmga002.jf.intel.com with ESMTP; 24 Aug 2020 19:50:47 -0700
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,15 +36,16 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        Yin Fengwei <fengwei.yin@intel.com>,
         Shuo Liu <shuo.a.liu@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
         Dave Hansen <dave.hansen@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH 03/17] x86/acrn: Introduce an API to check if a VM is privileged
-Date:   Tue, 25 Aug 2020 10:45:03 +0800
-Message-Id: <20200825024516.16766-4-shuo.a.liu@intel.com>
+Subject: [PATCH 04/17] x86/acrn: Introduce hypercall interfaces
+Date:   Tue, 25 Aug 2020 10:45:04 +0800
+Message-Id: <20200825024516.16766-5-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200825024516.16766-1-shuo.a.liu@intel.com>
 References: <20200825024516.16766-1-shuo.a.liu@intel.com>
@@ -55,13 +56,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yin Fengwei <fengwei.yin@intel.com>
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-ACRN Hypervisor reports hypervisor features via CPUID leaf 0x40000001
-which is similar to KVM. A VM can check if it's the privileged VM using
-the feature bits. The Service VM is the only privileged VM by design.
+The Service VM communicates with the hypervisor via conventional
+hypercalls. VMCALL instruction is used to make the hypercalls.
 
-Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+ACRN hypercall ABI:
+  * Hypercall number is in R8 register.
+  * Up to 2 parameters are in RDI and RSI registers.
+  * Return value is in RAX register.
+
+Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
+register as direct register constraints, here are two ways to use R8 in
+extended asm:
+  1) use explicit register variable as input
+  2) use supported constraint as input with a explicit MOV to R8 in
+     beginning of asm
+
+The number of instructions of above two ways are same.
+Asm code from 1)
+  38:   41 b8 00 00 00 80       mov    $0x80000000,%r8d
+  3e:   48 89 c7                mov    %rax,%rdi
+  41:   0f 01 c1                vmcall
+Here, writes to the lower dword (%r8d) clear the upper dword of %r8 when
+the CPU is in 64-bit mode.
+
+Asm code from 2)
+  38:   48 89 c7                mov    %rax,%rdi
+  3b:   49 b8 00 00 00 80 00    movabs $0x80000000,%r8
+  42:   00 00 00
+  45:   0f 01 c1                vmcall
+
+Choose 1) for code simplicity and a little bit of code size
+optimization.
+
+Originally-by: Yakui Zhao <yakui.zhao@intel.com>
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
@@ -73,63 +102,75 @@ Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
 Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 ---
- arch/x86/include/asm/acrn.h |  9 +++++++++
- arch/x86/kernel/cpu/acrn.c  | 19 ++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/acrn.h | 57 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
 diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
-index ff259b69cde7..a2d4aea3a80d 100644
+index a2d4aea3a80d..23a93b87edeb 100644
 --- a/arch/x86/include/asm/acrn.h
 +++ b/arch/x86/include/asm/acrn.h
-@@ -2,7 +2,16 @@
- #ifndef _ASM_X86_ACRN_H
- #define _ASM_X86_ACRN_H
+@@ -14,4 +14,61 @@ void acrn_setup_intr_handler(void (*handler)(void));
+ void acrn_remove_intr_handler(void);
+ bool acrn_is_privileged_vm(void);
  
 +/*
-+ * This CPUID returns feature bitmaps in EAX.
-+ * Guest VM uses this to detect the appropriate feature bit.
++ * Hypercalls for ACRN
++ *
++ * - VMCALL instruction is used to implement ACRN hypercalls.
++ * - ACRN hypercall ABI:
++ *   - Hypercall number is passed in R8 register.
++ *   - Up to 2 arguments are passed in RDI, RSI.
++ *   - Return value will be placed in RAX.
 + */
-+#define	ACRN_CPUID_FEATURES		0x40000001
-+/* Bit 0 indicates whether guest VM is privileged */
-+#define	ACRN_FEATURE_PRIVILEGED_VM	BIT(0)
++static inline long acrn_hypercall0(unsigned long hcall_id)
++{
++	register long r8 asm("r8");
++	long result;
 +
- void acrn_setup_intr_handler(void (*handler)(void));
- void acrn_remove_intr_handler(void);
-+bool acrn_is_privileged_vm(void);
- 
++	/* Nothing can come between the r8 assignment and the asm: */
++	r8 = hcall_id;
++	asm volatile("vmcall\n\t"
++		     : "=a" (result)
++		     : "r" (r8)
++		     : );
++
++	return result;
++}
++
++static inline long acrn_hypercall1(unsigned long hcall_id,
++				   unsigned long param1)
++{
++	register long r8 asm("r8");
++	long result;
++
++	/* Nothing can come between the r8 assignment and the asm: */
++	r8 = hcall_id;
++	asm volatile("vmcall\n\t"
++		     : "=a" (result)
++		     : "r" (r8), "D" (param1)
++		     : );
++
++	return result;
++}
++
++static inline long acrn_hypercall2(unsigned long hcall_id,
++				   unsigned long param1,
++				   unsigned long param2)
++{
++	register long r8 asm("r8");
++	long result;
++
++	/* Nothing can come between the r8 assignment and the asm: */
++	r8 = hcall_id;
++	asm volatile("vmcall\n\t"
++		     : "=a" (result)
++		     : "r" (r8), "D" (param1), "S" (param2)
++		     : );
++
++	return result;
++}
++
  #endif /* _ASM_X86_ACRN_H */
-diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
-index bd1d7e759a0f..6f0a00cbbf7e 100644
---- a/arch/x86/kernel/cpu/acrn.c
-+++ b/arch/x86/kernel/cpu/acrn.c
-@@ -21,9 +21,26 @@
- #include <asm/idtentry.h>
- #include <asm/irq_regs.h>
- 
-+static u32 acrn_cpuid_base(void)
-+{
-+	static u32 acrn_cpuid_base;
-+
-+	if (!acrn_cpuid_base && boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		acrn_cpuid_base = hypervisor_cpuid_base("ACRNACRNACRN", 0);
-+
-+	return acrn_cpuid_base;
-+}
-+
-+bool acrn_is_privileged_vm(void)
-+{
-+	return cpuid_eax(acrn_cpuid_base() | ACRN_CPUID_FEATURES) &
-+			 ACRN_FEATURE_PRIVILEGED_VM;
-+}
-+EXPORT_SYMBOL_GPL(acrn_is_privileged_vm);
-+
- static u32 __init acrn_detect(void)
- {
--	return hypervisor_cpuid_base("ACRNACRNACRN", 0);
-+	return acrn_cpuid_base();
- }
- 
- static void __init acrn_init_platform(void)
 -- 
 2.28.0
 
