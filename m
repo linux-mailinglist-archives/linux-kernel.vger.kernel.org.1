@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C4B2510C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 06:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA2F2510C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 06:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgHYEh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 00:37:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14326 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728772AbgHYEhR (ORCPT
+        id S1728752AbgHYEhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 00:37:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20444 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728415AbgHYEhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 00:37:17 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07P4W0Ce058364;
-        Tue, 25 Aug 2020 00:36:45 -0400
+        Tue, 25 Aug 2020 00:37:08 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07P4Vt8L177831;
+        Tue, 25 Aug 2020 00:36:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=ALicwylMRdt++AkmiA3Lf+/Mg69vaDPZZtSuWe3nmYk=;
- b=FQOfe1VX828uK6NLUMHfd2pbOZeBHESUWhPJXJuH8NYuwRIhR44nWd9ofU6BZVFxGAln
- qR1JwOXVmiHVpwS4xrZ9Aoh2sopsKiSJECI5p9mqB5WjuEUvZT3js013Vwn4UmcFFovi
- Pa64bSQuJJx8mm1qU9WPetOo0poGsIUuTwfr8p9oXn2gWPAiw4wc26FHm7iUqbTvCl/t
- sG3WeGjAFG9zkj/AK0F8MtU1bc+aVWFLB/JcLYKFEFKpYtJsszWQ1q1sGYfom2IGZBzt
- 7JmHOY45XHuFsQKKMM5ioLQrIQ37Mv5k4+RVBPbgdGIfI4LqPclG73bMwwf/UnxWTm4m aA== 
+ bh=qYW6kMBXuW2eBojnnQbWdTTvVoxBeB244/VWM8uumKg=;
+ b=RcJNgci7dfbzfjDEfKLaOz3pNwr/s6kvxYgej/9QsxJHrL0McQYzPkoUUfB5ryQRJXv9
+ riseU7wPeU2yWHb84LmmKsN1VVSeYtTV+mxf3l3bgfz47NEddCJFexoZpRfePJ7l/PhT
+ qJQtGAn0Cs3hudxk0pu+83ZBni9WQaEmcI58VuuxINA0Pqg3IWiiJoiL02FpKfny6v+q
+ oucEKiXnOtkWwbqQyrk3vEcr82Hp/ytMnWSjGEerxeohiFK7PFGyVFccDsbDVbsS+TeS
+ LaXEUpqbYKCwEegPh2MOyoHCMKnVGLE2Q7UrP2Mb/WDPzokpvK0m7gddPTqbY/+XQTtH +g== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 334t8x9t4n-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 334sne2p1s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 00:36:44 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07P4WMeJ059205;
-        Tue, 25 Aug 2020 00:36:44 -0400
+        Tue, 25 Aug 2020 00:36:46 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07P4XTnM182410;
+        Tue, 25 Aug 2020 00:36:46 -0400
 Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 334t8x9t3t-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 334sne2p12-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 00:36:44 -0400
+        Tue, 25 Aug 2020 00:36:46 -0400
 Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07P4Wdu9030786;
-        Tue, 25 Aug 2020 04:36:41 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 332uk6b1cq-1
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07P4WhIo030814;
+        Tue, 25 Aug 2020 04:36:44 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 332uk6b1cr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 04:36:41 +0000
+        Tue, 25 Aug 2020 04:36:44 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07P4ac2k65995118
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07P4afTc26149194
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Aug 2020 04:36:38 GMT
+        Tue, 25 Aug 2020 04:36:41 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C8CF3AE051;
-        Tue, 25 Aug 2020 04:36:38 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id B7E2AAE045;
+        Tue, 25 Aug 2020 04:36:41 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 365CFAE04D;
-        Tue, 25 Aug 2020 04:36:36 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5431CAE051;
+        Tue, 25 Aug 2020 04:36:39 +0000 (GMT)
 Received: from bangoria.ibmuc.com (unknown [9.199.33.167])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Aug 2020 04:36:36 +0000 (GMT)
+        Tue, 25 Aug 2020 04:36:39 +0000 (GMT)
 From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 To:     mpe@ellerman.id.au, christophe.leroy@c-s.fr
 Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org, paulus@samba.org,
         naveen.n.rao@linux.vnet.ibm.com, pedromfc@linux.ibm.com,
         rogealve@linux.ibm.com, jniethe5@gmail.com,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 5/8] powerpc/watchpoint: Fix exception handling for CONFIG_HAVE_HW_BREAKPOINT=N
-Date:   Tue, 25 Aug 2020 10:06:14 +0530
-Message-Id: <20200825043617.1073634-6-ravi.bangoria@linux.ibm.com>
+Subject: [PATCH v5 6/8] powerpc/watchpoint: Add hw_len wherever missing
+Date:   Tue, 25 Aug 2020 10:06:15 +0530
+Message-Id: <20200825043617.1073634-7-ravi.bangoria@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200825043617.1073634-1-ravi.bangoria@linux.ibm.com>
 References: <20200825043617.1073634-1-ravi.bangoria@linux.ibm.com>
@@ -72,144 +72,54 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- adultscore=0 spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=965 lowpriorityscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250030
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 adultscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008250030
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On powerpc, ptrace watchpoint works in one-shot mode. i.e. kernel
-disables event every time it fires and user has to re-enable it.
-Also, in case of ptrace watchpoint, kernel notifies ptrace user
-before executing instruction.
+There are couple of places where we set len but not hw_len. For
+ptrace/perf watchpoints, when CONFIG_HAVE_HW_BREAKPOINT=Y, hw_len
+will be calculated and set internally while parsing watchpoint.
+But when CONFIG_HAVE_HW_BREAKPOINT=N, we need to manually set
+'hw_len'. Similarly for xmon as well, hw_len needs to be set
+directly.
 
-With CONFIG_HAVE_HW_BREAKPOINT=N, kernel is missing to disable
-ptrace event and thus it's causing infinite loop of exceptions.
-This is especially harmful when user watches on a data which is
-also read/written by kernel, eg syscall parameters. In such case,
-infinite exceptions happens in kernel mode which causes soft-lockup.
-
-Fixes: 9422de3e953d ("powerpc: Hardware breakpoints rewrite to handle non DABR breakpoint registers")
-Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
+Fixes: b57aeab811db ("powerpc/watchpoint: Fix length calculation for unaligned target")
 Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 ---
- arch/powerpc/include/asm/hw_breakpoint.h  |  3 ++
- arch/powerpc/kernel/process.c             | 48 +++++++++++++++++++++++
- arch/powerpc/kernel/ptrace/ptrace-noadv.c |  5 +++
- 3 files changed, 56 insertions(+)
+ arch/powerpc/kernel/ptrace/ptrace-noadv.c | 1 +
+ arch/powerpc/xmon/xmon.c                  | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
-index 2eca3dd54b55..c72263214d3f 100644
---- a/arch/powerpc/include/asm/hw_breakpoint.h
-+++ b/arch/powerpc/include/asm/hw_breakpoint.h
-@@ -18,6 +18,7 @@ struct arch_hw_breakpoint {
- 	u16		type;
- 	u16		len; /* length of the target data symbol */
- 	u16		hw_len; /* length programmed in hw */
-+	u8		flags;
- };
- 
- /* Note: Don't change the first 6 bits below as they are in the same order
-@@ -37,6 +38,8 @@ struct arch_hw_breakpoint {
- #define HW_BRK_TYPE_PRIV_ALL	(HW_BRK_TYPE_USER | HW_BRK_TYPE_KERNEL | \
- 				 HW_BRK_TYPE_HYP)
- 
-+#define HW_BRK_FLAG_DISABLED	0x1
-+
- /* Minimum granularity */
- #ifdef CONFIG_PPC_8xx
- #define HW_BREAKPOINT_SIZE  0x4
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 016bd831908e..160fbbf41d40 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -636,6 +636,44 @@ void do_send_trap(struct pt_regs *regs, unsigned long address,
- 				    (void __user *)address);
- }
- #else	/* !CONFIG_PPC_ADV_DEBUG_REGS */
-+
-+static void do_break_handler(struct pt_regs *regs)
-+{
-+	struct arch_hw_breakpoint null_brk = {0};
-+	struct arch_hw_breakpoint *info;
-+	struct ppc_inst instr = ppc_inst(0);
-+	int type = 0;
-+	int size = 0;
-+	unsigned long ea;
-+	int i;
-+
-+	/*
-+	 * If underneath hw supports only one watchpoint, we know it
-+	 * caused exception. 8xx also falls into this category.
-+	 */
-+	if (nr_wp_slots() == 1) {
-+		__set_breakpoint(0, &null_brk);
-+		current->thread.hw_brk[0] = null_brk;
-+		current->thread.hw_brk[0].flags |= HW_BRK_FLAG_DISABLED;
-+		return;
-+	}
-+
-+	/* Otherwise findout which DAWR caused exception and disable it. */
-+	wp_get_instr_detail(regs, &instr, &type, &size, &ea);
-+
-+	for (i = 0; i < nr_wp_slots(); i++) {
-+		info = &current->thread.hw_brk[i];
-+		if (!info->address)
-+			continue;
-+
-+		if (wp_check_constraints(regs, instr, ea, type, size, info)) {
-+			__set_breakpoint(i, &null_brk);
-+			current->thread.hw_brk[i] = null_brk;
-+			current->thread.hw_brk[i].flags |= HW_BRK_FLAG_DISABLED;
-+		}
-+	}
-+}
-+
- void do_break (struct pt_regs *regs, unsigned long address,
- 		    unsigned long error_code)
- {
-@@ -647,6 +685,16 @@ void do_break (struct pt_regs *regs, unsigned long address,
- 	if (debugger_break_match(regs))
- 		return;
- 
-+	/*
-+	 * We reach here only when watchpoint exception is generated by ptrace
-+	 * event (or hw is buggy!). Now if CONFIG_HAVE_HW_BREAKPOINT is set,
-+	 * watchpoint is already handled by hw_breakpoint_handler() so we don't
-+	 * have to do anything. But when CONFIG_HAVE_HW_BREAKPOINT is not set,
-+	 * we need to manually handle the watchpoint here.
-+	 */
-+	if (!IS_ENABLED(CONFIG_HAVE_HW_BREAKPOINT))
-+		do_break_handler(regs);
-+
- 	/* Deliver the signal to userspace */
- 	force_sig_fault(SIGTRAP, TRAP_HWBKPT, (void __user *)address);
- }
 diff --git a/arch/powerpc/kernel/ptrace/ptrace-noadv.c b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-index 57a0ab822334..866597b407bc 100644
+index 866597b407bc..081c39842d84 100644
 --- a/arch/powerpc/kernel/ptrace/ptrace-noadv.c
 +++ b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-@@ -286,11 +286,16 @@ long ppc_del_hwdebug(struct task_struct *child, long data)
+@@ -219,6 +219,7 @@ long ppc_set_hwdebug(struct task_struct *child, struct ppc_hw_breakpoint *bp_inf
+ 	brk.address = ALIGN_DOWN(bp_info->addr, HW_BREAKPOINT_SIZE);
+ 	brk.type = HW_BRK_TYPE_TRANSLATE | HW_BRK_TYPE_PRIV_ALL;
+ 	brk.len = DABR_MAX_LEN;
++	brk.hw_len = DABR_MAX_LEN;
+ 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_READ)
+ 		brk.type |= HW_BRK_TYPE_READ;
+ 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index df7bca00f5ec..55c43a6c9111 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -969,6 +969,7 @@ static void insert_cpu_bpts(void)
+ 			brk.address = dabr[i].address;
+ 			brk.type = (dabr[i].enabled & HW_BRK_TYPE_DABR) | HW_BRK_TYPE_PRIV_ALL;
+ 			brk.len = 8;
++			brk.hw_len = 8;
+ 			__set_breakpoint(i, &brk);
+ 		}
  	}
- 	return ret;
- #else /* CONFIG_HAVE_HW_BREAKPOINT */
-+	if (child->thread.hw_brk[data - 1].flags & HW_BRK_FLAG_DISABLED)
-+		goto del;
-+
- 	if (child->thread.hw_brk[data - 1].address == 0)
- 		return -ENOENT;
- 
-+del:
- 	child->thread.hw_brk[data - 1].address = 0;
- 	child->thread.hw_brk[data - 1].type = 0;
-+	child->thread.hw_brk[data - 1].flags = 0;
- #endif /* CONFIG_HAVE_HW_BREAKPOINT */
- 
- 	return 0;
 -- 
 2.26.2
 
