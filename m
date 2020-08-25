@@ -2,221 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D029025241D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319832523FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgHYXVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:21:36 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.78]:15669 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726905AbgHYXVc (ORCPT
+        id S1726682AbgHYXJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgHYXJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:21:32 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 3F4D52835E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 17:58:11 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id AhtLkxW66CjCVAhtLkjbI6; Tue, 25 Aug 2020 17:58:11 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qbTX7+RfGTdBt/QiCAJh2phecdvKxL9tHi/iN+H8Res=; b=tko7O8wsfo714hNVhqOuUL4Zuo
-        XgR8Pl1ivGkPYGkAV/YYkv58SH8ePWlSizxnTdWoMzkN7xyE8lwvuPswowDCfTTDDdOWXkwcRw/Ty
-        oP4GM80xHnLw3mrfHiifaoZodjBb0XEoD4lVFxuU57RP8CUg9Vb1TVQXIvs+ICBkBwQLZi+9V2ml/
-        q15xAk5GxUQM5UXJJdknIZ/N9XJv+mJ7IGYsOjYg9zxzVMBuILjI3AGpxKvo0NDXNDDMsX8m6Zv77
-        DlmNu8dMGCJLhwMNgJharR33nH91RSvUcPAftA4NAU9YA0Ekzas52C5OVXPwcGjkEMhzOU2Vn/iKA
-        N5cyD+rw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:40606 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kAhtK-004D5n-Ja; Tue, 25 Aug 2020 17:58:10 -0500
-Subject: Re: [PATCH] Documentation: add minimum clang/llvm version
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>, Borislav Petkov <bp@suse.de>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200825222552.3113760-1-ndesaulniers@google.com>
- <20200825225131.GA2702183@ubuntu-n2-xlarge-x86>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <8e867824-48ca-f63a-c863-d4ce9f9ebf75@embeddedor.com>
-Date:   Tue, 25 Aug 2020 18:04:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 25 Aug 2020 19:09:28 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562D5C061574;
+        Tue, 25 Aug 2020 16:09:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bbl754848z9sTK;
+        Wed, 26 Aug 2020 09:09:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1598396962;
+        bh=PT/lyVPPPlyugAJQBBONAwhxYNwsYmbBguP8Pax6C38=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J1bO8Yx/hQOulgT9ISDieyLJujg9TVAqYpEGGNYtixi8BJIHQUBtv3QQqRMIaIIoT
+         KWi42x9UyOdrVA4ga5+6o2sP2w3psGT1du1queIriNL/XSVVgCEc4HzM2LyTYZBvX9
+         SRVJ+Y/Di1CNDymMNUAfaeV1S35cTrATiwjBqLihn4aNeH1uRY3ZOKMjfUOst7s467
+         VYh02/JLZSBp+glwUGOV4RnWH6GsTQiBCJ/HLfONLgDT1jXewFi0jVoJQhrHYM2hl3
+         Sy32/HytRfS0rNn1pms1CeZZMsQky+9mVcZaAOuyFXUGXc4D5EDdlOMWDf9EqG/VXC
+         zJVmnRg0g6cOQ==
+Date:   Wed, 26 Aug 2020 09:09:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20200826090919.5363a6f6@canb.auug.org.au>
+In-Reply-To: <CAADnVQJ1KZ1hUGsZY0XrWcQTa6V-y7VA9YdEjxCJfHRe5mH4xw@mail.gmail.com>
+References: <20200821111111.6c04acd6@canb.auug.org.au>
+        <20200825112020.43ce26bb@canb.auug.org.au>
+        <CAADnVQLr8dU799ZrUnrBBDCtDxPyybZwrMFs5CAOHHW5pnLHHA@mail.gmail.com>
+        <20200825130445.655885f8@canb.auug.org.au>
+        <CAADnVQKGf7o8gJ60m_zjh+QcmRTNH+y1ha_B2q-1ixcCSAoHaw@mail.gmail.com>
+        <20200825165029.795a8428@canb.auug.org.au>
+        <CAADnVQ+SZj-Q=vijGkoUkmWeA=MM2S2oaVvJ7fj6=c4S4y-LMA@mail.gmail.com>
+        <20200826071046.263e0c24@canb.auug.org.au>
+        <CAADnVQJ1KZ1hUGsZY0XrWcQTa6V-y7VA9YdEjxCJfHRe5mH4xw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200825225131.GA2702183@ubuntu-n2-xlarge-x86>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kAhtK-004D5n-Ja
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:40606
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 15
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: multipart/signed; boundary="Sig_/Zh2BFdtqv6yQB66h7H_fq7a";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Zh2BFdtqv6yQB66h7H_fq7a
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Alexei,
 
-On 8/25/20 17:51, Nathan Chancellor wrote:
-> On Tue, Aug 25, 2020 at 03:25:51PM -0700, Nick Desaulniers wrote:
->> Based on a vote at the LLVM BoF at Plumbers 2020, we decided to start
->> small, supporting just one formal upstream release of LLVM for now.
->>
->> We can probably widen the support window of supported versions over
->> time.  Also, note that LLVM's release process is different than GCC's.
->> GCC tends to have 1 major release per year while releasing minor updates
->> to the past 3 major versions.  LLVM tends to support one major release
->> and one minor release every six months.
->>
->> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->> ---
->> Note to reviewers: working remote, I'm having trouble testing/verifying
->> that I have the RST links wired up correctly; I would appreciate it if
->> someone is able to `make htmldocs` and check
->> Documentation/output/process/changes.html properly links to
->> Documentation/output/kbuild/llvm.html.
-> 
-> I ran 'make O=out htmldocs' and can confirm that the link works properly
-> in process/changes.html, pointing to kbuild/llvm.html.
-> 
+On Tue, 25 Aug 2020 15:34:52 -0700 Alexei Starovoitov <alexei.starovoitov@g=
+mail.com> wrote:
+>
+> On Tue, Aug 25, 2020 at 2:10 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > Hi Alexei,
+> >
+> > On Tue, 25 Aug 2020 07:33:51 -0700 Alexei Starovoitov <alexei.starovoit=
+ov@gmail.com> wrote: =20
+> > >
+> > > what do you suggest to use to make it 'manually enabled' ?
+> > > All I could think of is to add:
+> > > depends on !COMPILE_TEST
+> > > so that allmodconfig doesn't pick it up. =20
+> >
+> > That is probably sufficient.  Some gcc plugins and kasan bits, etc use
+> > just that. =20
+>=20
+> Ok. Pushed the silencing 'fix':
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?=
+id=3D2532f849b5134c4c62a20e5aaca33d9fb08af528
 
-The same here.
+Thanks for that.
 
-Tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+--=20
+Cheers,
+Stephen Rothwell
 
-Thanks
---
-Gustavo
+--Sig_/Zh2BFdtqv6yQB66h7H_fq7a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->>  Documentation/kbuild/llvm.rst     |  2 ++
->>  Documentation/process/changes.rst | 10 ++++++++++
->>  2 files changed, 12 insertions(+)
->>
->> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
->> index 2aac50b97921..70ec6e9a183b 100644
->> --- a/Documentation/kbuild/llvm.rst
->> +++ b/Documentation/kbuild/llvm.rst
->> @@ -1,3 +1,5 @@
->> +.. _kbuild_llvm:
->> +
->>  ==============================
->>  Building Linux with Clang/LLVM
->>  ==============================
->> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
->> index ee741763a3fc..6c580ef9f2a3 100644
->> --- a/Documentation/process/changes.rst
->> +++ b/Documentation/process/changes.rst
->> @@ -30,6 +30,7 @@ you probably needn't concern yourself with pcmciautils.
->>          Program        Minimal version       Command to check the version
->>  ====================== ===============  ========================================
->>  GNU C                  4.9              gcc --version
->> +Clang/LLVM (optional)  10.0.1           clang --version
-> 
-> Maybe it is worth making the "(optional)" a footnote like Sphinx? Seems
-> to just kind of stick out to me but I do not have a strong opinion
-> unless others do.
-> 
->>  GNU make               3.81             make --version
->>  binutils               2.23             ld -v
->>  flex                   2.5.35           flex --version
->> @@ -68,6 +69,15 @@ GCC
->>  The gcc version requirements may vary depending on the type of CPU in your
->>  computer.
->>  
->> +Clang/LLVM (optional)
->> +---------------------
->> +
->> +The latest formal release of clang and LLVM utils (according to
->> +`releases.llvm.org <https://releases.llvm.org>`_) are supported for building
->> +kernels. Older releases aren't gauranteed to work, and we may drop workarounds
->> +from the kernel that were used to support older versions. Please see additional
->> +docs on :ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
->> +
-> 
-> Do we maybe want to add a section for LLVM/clang in the "Getting updated
-> software" section? Maybe just a link to the existing section that we
-> have in kbuild/llvm.rst?
-> 
->>  Make
->>  ----
->>  
->> -- 
->> 2.28.0.297.g1956fa8f8d-goog
->>
-> 
-> Regardless of the nits above:
-> 
-> Reviewed-and-tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9Fmh8ACgkQAVBC80lX
+0GycUAf/QpYP3TtlUVJ6SmAaJPuAUYrTh68rq3ACJ0IjFZwwiOCQp6ucfEIYa4F5
+ls/OOmoh7FlL8TPBRIVOKtBG/FBmPOiX74QWh3Nu4c9niR1J0hPymwobI7vVtWGB
+Sgdztx2z8HL1v1sM7F9uFNWRkQOwvyqurYijKpeRTHcoPv7na+stl0ooLYYII8gw
+2lpKqE5TyPHMHGWljXfy7K2yqxPbBpQxc4d000c1zaL5EPAlF4JWw3fci3N8BoT4
+bn5sMBcNg2dQMzx+CIlev8oQO4i5c7u4bTaogEsXx90YRO7pmwRm9e11ZlvRZLeU
+rwPezPGPNmj20GUbBIfO0TAtHsP5Sg==
+=rf9f
+-----END PGP SIGNATURE-----
+
+--Sig_/Zh2BFdtqv6yQB66h7H_fq7a--
