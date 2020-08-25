@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62712518E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C5A2518FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgHYMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:48:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726551AbgHYMry (ORCPT
+        id S1729530AbgHYMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:49:43 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16326 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727941AbgHYMsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:47:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598359673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zglq0vOI//KuVKJ2M/RQ4QygBvZQL1YIWMQ/tBpIyuY=;
-        b=ZTkrgs0n7lOFGuohiv2C8cXwmMN+8+pMWKiCZ64X8H11iYPRP35NSF3i2PfrP2BkSAvVSM
-        EW9d0lHMGmUs8cYVng4iUaH8mcMV/8qhwA8/IeJW75X7XMLF/LsnFKghchkJsiF9hj+6bs
-        yhhUX9/CAVXojLITIcVAYqmoNBZOmWY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-oe-9TsfUN1mytl9sIbJg1Q-1; Tue, 25 Aug 2020 08:47:51 -0400
-X-MC-Unique: oe-9TsfUN1mytl9sIbJg1Q-1
-Received: by mail-wr1-f72.google.com with SMTP id w2so4871896wrr.19
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:47:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zglq0vOI//KuVKJ2M/RQ4QygBvZQL1YIWMQ/tBpIyuY=;
-        b=Rpqo9V72PxLSbjRKfPCrvqS4Mo73RF+pPxR0lXkMU8iuk5kIigEkfGQRL720cO5fAz
-         99ceR+I9iT9okRG6kSeFyyP+CB9caDYsvQ/rFybbSNMhcFfx+H2wS5SWPYbB2SY5SGSt
-         aweUjOC5X/zIiotYUbDFhSDxXCm2A/yIPKf6qFXI6RBuiWF0zyPw0eDErZPOFhebMygl
-         QtxFcWw/aIEBiLQsgmcfr0Cn+89IzIuvhSX/vUZbStMASQG990sPvLwjlfm6z3e90SsK
-         lEcQ0jhMsrz1/Q/5F39P1uU8OYerjKsPlX64MyfjkpxylG7C+3kHoFKOp3CO2u6Fw21I
-         a8yA==
-X-Gm-Message-State: AOAM531wBcmrx8G1B1TX/9qJD3T75p9PI+D97pFfJHtOJTA3A7uQ0cj8
-        AQKQl7qANC+vlClbOznt54ovZhBEyQP8KmkOvQhFC1goIgGd/w2eUZWPmr984fak/caG81xHKBR
-        cqKDYSVXAho2Z1JN2yLOiy8W3
-X-Received: by 2002:a1c:ddd4:: with SMTP id u203mr1968297wmg.68.1598359670153;
-        Tue, 25 Aug 2020 05:47:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxR2ePLTiLPRqNp7jTWB/BAbT9feWHGtVJFaiKfxqRwDqFmE5Oiq3aEmgnUngSQeg2gFFkj4A==
-X-Received: by 2002:a1c:ddd4:: with SMTP id u203mr1968279wmg.68.1598359669886;
-        Tue, 25 Aug 2020 05:47:49 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id u6sm27469306wrn.95.2020.08.25.05.47.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 05:47:49 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        benh@kernel.crashing.org, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v4 4/4] objtool: check: Use orc definition only when needed
-Date:   Tue, 25 Aug 2020 13:47:42 +0100
-Message-Id: <20200825124742.29782-5-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200825124742.29782-1-jthierry@redhat.com>
-References: <20200825124742.29782-1-jthierry@redhat.com>
+        Tue, 25 Aug 2020 08:48:24 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PCeAmt017797;
+        Tue, 25 Aug 2020 08:48:06 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 332w761k67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 08:48:06 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07PCm4jg034775
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 25 Aug 2020 08:48:05 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 25 Aug 2020 05:48:03 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 25 Aug 2020 05:48:03 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07PCm0jH001781;
+        Tue, 25 Aug 2020 08:48:00 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <vkoul@kernel.org>, <lars@metafoo.de>, <dan.j.williams@intel.com>,
+        <ardeleanalex@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 0/6] dmaengine: axi-dmac: add support for reading bus attributes from register
+Date:   Tue, 25 Aug 2020 15:48:27 +0300
+Message-ID: <20200825124840.43664-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-25_04:2020-08-25,2020-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=8
+ mlxlogscore=943 spamscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008250096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementation of ORC requires some definitions that are currently
-provided by the target architecture headers. Do not depend on these
-definitions when the orc subcommand is not implemented.
+The series adds support for reading the DMA bus attributes from the
+INTERFACE_DESCRIPTION (0x10) register.
 
-This avoid requiring arches with no orc implementation to provide dummy
-orc definitions.
+The first 5 changes are a bit of rework prior to adding the actual
+change in patch 6, as things need to be shifted around a bit, to enable 
+the clock to be enabled earlier, to be able to read the version
+register.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- tools/objtool/Makefile | 4 ++++
- tools/objtool/arch.h   | 2 ++
- tools/objtool/check.h  | 2 ++
- 3 files changed, 8 insertions(+)
+Changelog v1 -> v2:
+* fixed error-exit paths for the clock move patch
+  i.e. 'dmaengine: axi-dmac: move clock enable earlier'
+* fixed error-exit path for patch
+  'axi-dmac: wrap channel parameter adjust into function'
+* added patch 'dmaengine: axi-dmac: move active_descs list init after device-tree init'
+  the list of active_descs can be moved a bit lower in the init/probe
 
-diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
-index 7770edcda3a0..33d1e3ca8efd 100644
---- a/tools/objtool/Makefile
-+++ b/tools/objtool/Makefile
-@@ -55,6 +55,10 @@ ifeq ($(SRCARCH),x86)
- 	SUBCMD_ORC := y
- endif
- 
-+ifeq ($(SUBCMD_ORC),y)
-+	CFLAGS += -DINSN_USE_ORC
-+endif
-+
- export SUBCMD_CHECK SUBCMD_ORC
- export srctree OUTPUT CFLAGS SRCARCH AWK
- include $(srctree)/tools/build/Makefile.include
-diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
-index 2e2ce089b0e9..b18c5f61d42d 100644
---- a/tools/objtool/arch.h
-+++ b/tools/objtool/arch.h
-@@ -11,7 +11,9 @@
- #include "objtool.h"
- #include "cfi.h"
- 
-+#ifdef INSN_USE_ORC
- #include <asm/orc_types.h>
-+#endif
- 
- enum insn_type {
- 	INSN_JUMP_CONDITIONAL,
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 061aa96e15d3..0abdf8efdbc0 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -42,7 +42,9 @@ struct instruction {
- 	struct symbol *func;
- 	struct list_head stack_ops;
- 	struct cfi_state cfi;
-+#ifdef INSN_USE_ORC
- 	struct orc_entry orc;
-+#endif
- };
- 
- struct instruction *find_insn(struct objtool_file *file,
+Alexandru Ardelean (6):
+  dmaengine: axi-dmac: move version read in probe
+  dmaengine: axi-dmac: move active_descs list init after device-tree
+    init
+  dmaengine: axi-dmac: move clock enable earlier
+  dmaengine: axi-dmac: wrap entire dt parse in a function
+  dmaengine: axi-dmac: wrap channel parameter adjust into function
+  dmaengine: axi-dmac: add support for reading bus attributes from
+    registers
+
+ drivers/dma/dma-axi-dmac.c | 138 ++++++++++++++++++++++++++++---------
+ 1 file changed, 107 insertions(+), 31 deletions(-)
+
 -- 
-2.21.3
+2.17.1
 
