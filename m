@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE6E2518E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD692518DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgHYMsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgHYMsJ (ORCPT
+        id S1728565AbgHYMsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:48:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48609 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728215AbgHYMrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:48:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99104C061574;
-        Tue, 25 Aug 2020 05:48:08 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o13so6768693pgf.0;
-        Tue, 25 Aug 2020 05:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4269fKP33XlJpXg8yjCtAkVnsXDMAY6w7aJ7rv3Q3M0=;
-        b=cXoZCcdhfytkmnTMsokXvLlvrp+x9/j5jLJpaflRFfXKbkLI8fNXIoVs2NJVWTXVCl
-         CbygMLkkVo3e1I0wxWWbEosJkqHRLxfOR7WH+HmcWtVcLNm+6QhC+SlRMyCDuoVaO++l
-         3u77s46eU8Fti9PGm4wrerGQU4lRaZ+8JgKRRc47TGwBMYMYe2WyDmQNpW08Tk48vV8J
-         EWBbsR3Tj3LJu2UtGGTdCXZZSdg0csCGc+vIioXNGWlSVEokqFcnzCUcttuOnQFOFcIX
-         Su3SAfZDF9FyhvdGdAKvW7D4jjLfbkVxx1BrpD/t3ItTJ1PtfXlLCEIvy2UyRhD4mfY7
-         8kNA==
+        Tue, 25 Aug 2020 08:47:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598359668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WQqeovEos31NURIhF+93BKAu0gcYl/FcEI3tiNqMNwY=;
+        b=Nl3t5kUn4qhM258Z2m9qWKi9Qpo3pCPnXf/Z5X5ecf4VDjAqxk8av/bKHa0HcwEO3SOEFT
+        1zweJgJ4nmq8Jlmwanbh2SuTZwQZmLjE8ZOqbDgb+FYjQs49NOk+O+1k/79rBrAhprY12k
+        uT2QbpcNWgoWvk+onYXZNcLCzsOvA/I=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-PJ41S8w9PeqvuRW_Ug-0ig-1; Tue, 25 Aug 2020 08:47:47 -0400
+X-MC-Unique: PJ41S8w9PeqvuRW_Ug-0ig-1
+Received: by mail-wm1-f71.google.com with SMTP id z25so690991wmk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:47:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4269fKP33XlJpXg8yjCtAkVnsXDMAY6w7aJ7rv3Q3M0=;
-        b=kcrrted2cL65oBDx313u7t2pQVLPqhsK06eLg4/tIJV/wGK6HzNux0GXTy0UXaEfpI
-         YgvXcgS6OTE/6xAhKywiJLLuWMQCaXhvDgo5bW9IWN93igM0dorwH+VpGHOQQbGv4cAh
-         PTo4cmigLGALiTqfYvjBufekMWM/bMj/b2ha4Ros1zt/8R4ePPmCGbEUmFRPHOqvavfr
-         cyLpQIRRC4nQYvO3yLyWximgBIFc5bYgi/tasPjsmmKBIGPlDdUk00SELbjFDdfwdPDB
-         WQTYoTfyaFJ5LbfkjbRiJ6TI3I5VkE3MZ7SYjRLo26cTqQrBzEPaDK6/9r1qL6LgJfYq
-         Ek+g==
-X-Gm-Message-State: AOAM5309dos15yXEkcB7mRgiA8rdl6Ha/2K/70qF+4ooduzRfnEjqU99
-        ydYPNJQsyLinl7rR/iUQjGM=
-X-Google-Smtp-Source: ABdhPJyKqLBHjOHXcKbgxx6YQqv8L76E4HOjzEbGrQ+8+X5EMajVHExAlrgCk3/r9dhSPzwIYbVZBQ==
-X-Received: by 2002:a63:161d:: with SMTP id w29mr6416171pgl.16.1598359688232;
-        Tue, 25 Aug 2020 05:48:08 -0700 (PDT)
-Received: from nish-HP-Pavilion ([2409:4072:619:dc6c:a526:a3b6:4686:f6fb])
-        by smtp.gmail.com with ESMTPSA id a20sm5675597pfi.11.2020.08.25.05.48.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WQqeovEos31NURIhF+93BKAu0gcYl/FcEI3tiNqMNwY=;
+        b=SMT2CD/jdojwDL8MuZbiy/XP8YL+JO0B11nUfzE0ogbS3Aub8iZF0hneUsn5L9NIKO
+         0r6r/PR9Y/TOCEwxkABFCKtOaLhVYeDYf+5XnuoM7yrATaGGHcORqvWUYClFeEhjYiZq
+         x+WgEXRv2MXvgMmm9ly6kfEsLQQBa5CpbLobUtQsTPJCW+1BrA0kJ3vfZ9DjEKgif32n
+         0EJUW0r4+SEpuU2xRKquS0s9ztRSRMeaUAKBSggMjne/1Mmyq5yxeuRPsT21n3VA8LSs
+         NCQWUjhydZUkdFzStIHuVLGMYf+hL/QYXtHtKaRvf3uGOM/pErzRkpPTFLyZ45NVBQX6
+         eCXQ==
+X-Gm-Message-State: AOAM530r1B3eiDERXHJkdgMWwqxBt7XiCvo4VilQsizbQJWB+OaQsirS
+        YGrRPjdB1wFpA5aXPP5r6Um5bvvXzeXUsXacTBnpcn6OWeizTYNPn4HUOF9QvBe1PypIER0uGxg
+        Nw9rMGJ3pcVg63l8pWPGfT3Z7
+X-Received: by 2002:adf:e812:: with SMTP id o18mr10911988wrm.29.1598359665452;
+        Tue, 25 Aug 2020 05:47:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPGbty69o0UQCbA+Zv1jCAkzVLOG/OeElcNlwe+hsyYaJQ+zPfrYyHq7C50AkxHv7mYp+v4Q==
+X-Received: by 2002:adf:e812:: with SMTP id o18mr10911974wrm.29.1598359665281;
+        Tue, 25 Aug 2020 05:47:45 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id u6sm27469306wrn.95.2020.08.25.05.47.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 05:48:07 -0700 (PDT)
-From:   Nishant Malpani <nish.malpani25@gmail.com>
-To:     jic23@kernel.org, robh+dt@kernel.org
-Cc:     dragos.bogdan@analog.com, darius.berghe@analog.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Nishant Malpani <nish.malpani25@gmail.com>
-Subject: [PATCH 3/3] iio: gyro: adxrs290: Add debugfs register access support
-Date:   Tue, 25 Aug 2020 18:17:11 +0530
-Message-Id: <20200825124711.11455-4-nish.malpani25@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200825124711.11455-1-nish.malpani25@gmail.com>
-References: <20200825124711.11455-1-nish.malpani25@gmail.com>
+        Tue, 25 Aug 2020 05:47:44 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        benh@kernel.crashing.org, Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH v4 0/4] Remove dependency of check subcmd upon orc
+Date:   Tue, 25 Aug 2020 13:47:38 +0100
+Message-Id: <20200825124742.29782-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,51 +65,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend support to read/write byte data from/to the device using
-debugfs iio interface.
+Hi,
 
-Signed-off-by: Nishant Malpani <nish.malpani25@gmail.com>
----
- drivers/iio/gyro/adxrs290.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Matt Helsley's change[1] provided a base framework to opt-in/out
+objtool subcommands at compile time. This makes it easier for
+architectures to port objtool, one subcommand at a time.
 
-diff --git a/drivers/iio/gyro/adxrs290.c b/drivers/iio/gyro/adxrs290.c
-index 25046590761e..b0050cdd2b90 100644
---- a/drivers/iio/gyro/adxrs290.c
-+++ b/drivers/iio/gyro/adxrs290.c
-@@ -435,6 +435,24 @@ static int adxrs290_read_avail(struct iio_dev *indio_dev,
- 	}
- }
- 
-+static int adxrs290_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-+			       unsigned int writeval, unsigned int *readval)
-+{
-+	struct adxrs290_state *st = iio_priv(indio_dev);
-+	int ret;
-+
-+	if (!readval)
-+		return adxrs290_spi_write_reg(st->spi, reg, writeval);
-+
-+	ret = spi_w8r8(st->spi, ADXRS290_READ_REG(reg));
-+	if (ret < 0)
-+		return ret;
-+
-+	*readval = ret;
-+
-+	return 0;
-+}
-+
- static int adxrs290_data_rdy_trigger_set_state(struct iio_trigger *trig, bool state)
- {
- 	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
-@@ -547,6 +565,7 @@ static const struct iio_info adxrs290_info = {
- 	.read_raw = &adxrs290_read_raw,
- 	.write_raw = &adxrs290_write_raw,
- 	.read_avail = &adxrs290_read_avail,
-+	.debugfs_reg_access = &adxrs290_reg_access,
- };
- 
- static int adxrs290_probe_trigger(struct iio_dev *indio_dev)
--- 
-2.20.1
+Orc generation relies on the check operation implementation. However,
+the way this is done causes the check implementation to depend on the
+implementation of orc generation functions to call if orc generation is
+requested. This means that in order to implement check subcmd, orc
+subcmd also need to be implemented.
+
+These patches aim at removing that dependency, having orc subcmd
+being built on top of the check subcmd.
+
+
+Changes since v3 [2]:
+- Rebased on v5.9-rc1
+- Renamed objtool_setup_file() to objtool_open_read()
+- Fixed misplaced elf_write() when file->elf->changed is true
+- Avoid additional allocation for orc data and compile out orc
+  definition when not needed instead
+
+[1] https://www.spinics.net/lists/kernel/msg3510844.html
+[2] https://lkml.org/lkml/2020/7/30/415
+
+Cheers,
+
+Julien
+
+-->
+
+Julien Thierry (4):
+  objtool: Move object file loading out of check
+  objtool: Move orc outside of check
+  objtool: orc: Skip setting orc_entry for non-text sections
+  objtool: check: Use orc definition only when needed
+
+ tools/objtool/Makefile        |  4 +++
+ tools/objtool/arch.h          |  2 ++
+ tools/objtool/builtin-check.c | 15 ++++++++++-
+ tools/objtool/builtin-orc.c   | 27 +++++++++++++++++++-
+ tools/objtool/check.c         | 47 ++++++-----------------------------
+ tools/objtool/check.h         |  2 ++
+ tools/objtool/objtool.c       | 29 +++++++++++++++++++++
+ tools/objtool/objtool.h       |  4 ++-
+ tools/objtool/orc_gen.c       |  3 +++
+ tools/objtool/weak.c          |  4 +--
+ 10 files changed, 92 insertions(+), 45 deletions(-)
+
+--
+2.21.3
 
