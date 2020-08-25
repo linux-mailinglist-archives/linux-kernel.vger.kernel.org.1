@@ -2,240 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297DB252418
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD7925240C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgHYXVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:21:06 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47054 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726806AbgHYXU6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:20:58 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07PNHKuv028295
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 16:20:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=HgzqjB5ACMQJ2wKbBOxw1UrrEi03bKtksEwZ/GfWJPA=;
- b=SaVF08fiLwawS+4d8TAKY8afEW0pOD61fe4CmOC70DRkzrpgENMwSm29WyaoNBn/SagA
- 60wlbcU0fRudFTf2YTLCXxta0BlEtecAszx6yayz+KQ3N0tmAkuse1x81aW8DWvPBKkk
- ZhmD/sfpEuE7ibrPZd0bY2FjMo66VZG6HsI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 332y1j98bx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 16:20:57 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 25 Aug 2020 16:20:56 -0700
-Received: by devbig218.frc2.facebook.com (Postfix, from userid 116055)
-        id C637E20785A; Tue, 25 Aug 2020 16:20:52 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Udip Pant <udippant@fb.com>
-Smtp-Origin-Hostname: devbig218.frc2.facebook.com
-To:     Udip Pant <udippant@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Smtp-Origin-Cluster: frc2c02
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: test for map update access from within EXT programs
-Date:   Tue, 25 Aug 2020 16:20:03 -0700
-Message-ID: <20200825232003.2877030-5-udippant@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200825232003.2877030-1-udippant@fb.com>
-References: <20200825232003.2877030-1-udippant@fb.com>
+        id S1726723AbgHYXUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:20:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:64351 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726551AbgHYXUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 19:20:45 -0400
+IronPort-SDR: wG38uz093x+ROHUOKSLCZ+n8z1/uJHaLg0B87oue+95NwACuXbRjQH5XthEvhQDNShkHMaseRa
+ 4S60Mcoaf3uw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="153785378"
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
+   d="scan'208";a="153785378"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 16:20:44 -0700
+IronPort-SDR: HbLeFRBO0j4TUp/5AwD3jwj6kDOUWk9a36wZcMaRz5dn+yScu6/OrmFmjmecDIO5bLlrG4ykFO
+ UfDAyCFdRFKQ==
+X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
+   d="scan'208";a="474548472"
+Received: from akrishn3-mobl3.amr.corp.intel.com (HELO [10.212.155.246]) ([10.212.155.246])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 16:20:43 -0700
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200825002540.3351-1-yu-cheng.yu@intel.com>
+ <20200825002540.3351-26-yu-cheng.yu@intel.com>
+ <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
+ <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com>
+ <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
+Date:   Tue, 25 Aug 2020 16:20:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-25_10:2020-08-25,2020-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008250173
-X-FB-Internal: deliver
+In-Reply-To: <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds further tests to ensure access permissions and restrictions
-are applied properly for some map types such as sock-map.
-It also adds another negative tests to assert static functions cannot be
-replaced. In the 'unreliable' mode it still fails with error 'tracing pro=
-gs
-cannot use bpf_spin_lock yet' with the change in the verifier
-
-Signed-off-by: Udip Pant <udippant@fb.com>
----
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 33 +++++++++++++--
- .../bpf/progs/freplace_attach_probe.c         | 40 +++++++++++++++++++
- .../bpf/progs/freplace_cls_redirect.c         | 34 ++++++++++++++++
- 3 files changed, 104 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/freplace_attach_pro=
-be.c
- create mode 100644 tools/testing/selftests/bpf/progs/freplace_cls_redire=
-ct.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
-ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index d295ca9bbf96..a550dab9ba7a 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -142,7 +142,20 @@ static void test_func_replace_verify(void)
- 				  prog_name, false);
- }
-=20
--static void test_func_replace_return_code(void)
-+static void test_func_sockmap_update(void)
-+{
-+	const char *prog_name[] =3D {
-+		"freplace/cls_redirect",
-+	};
-+	test_fexit_bpf2bpf_common("./freplace_cls_redirect.o",
-+				  "./test_cls_redirect.o",
-+				  ARRAY_SIZE(prog_name),
-+				  prog_name, false);
-+}
-+
-+static void test_obj_load_failure_common(const char *obj_file,
-+					  const char *target_obj_file)
-+
- {
- 	/*
- 	 * standalone test that asserts failure to load freplace prog
-@@ -151,8 +164,6 @@ static void test_func_replace_return_code(void)
- 	struct bpf_object *obj =3D NULL, *pkt_obj;
- 	int err, pkt_fd;
- 	__u32 duration =3D 0;
--	const char *target_obj_file =3D "./connect4_prog.o";
--	const char *obj_file =3D "./freplace_connect_v4_prog.o";
-=20
- 	err =3D bpf_prog_load(target_obj_file, BPF_PROG_TYPE_UNSPEC,
- 			    &pkt_obj, &pkt_fd);
-@@ -181,11 +192,27 @@ static void test_func_replace_return_code(void)
- 	bpf_object__close(pkt_obj);
- }
-=20
-+static void test_func_replace_return_code(void)
-+{
-+	/* test invalid return code in the replaced program */
-+	test_obj_load_failure_common("./freplace_connect_v4_prog.o",
-+				     "./connect4_prog.o");
-+}
-+
-+static void test_func_map_prog_compatibility(void)
-+{
-+	/* test with spin lock map value in the replaced program */
-+	test_obj_load_failure_common("./freplace_attach_probe.o",
-+				     "./test_attach_probe.o");
-+}
-+
- void test_fexit_bpf2bpf(void)
- {
- 	test_target_no_callees();
- 	test_target_yes_callees();
- 	test_func_replace();
- 	test_func_replace_verify();
-+	test_func_sockmap_update();
- 	test_func_replace_return_code();
-+	test_func_map_prog_compatibility();
- }
-diff --git a/tools/testing/selftests/bpf/progs/freplace_attach_probe.c b/=
-tools/testing/selftests/bpf/progs/freplace_attach_probe.c
-new file mode 100644
-index 000000000000..bb2a77c5b62b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/freplace_attach_probe.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define VAR_NUM 2
-+
-+struct hmap_elem {
-+	struct bpf_spin_lock lock;
-+	int var[VAR_NUM];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct hmap_elem);
-+} hash_map SEC(".maps");
-+
-+SEC("freplace/handle_kprobe")
-+int new_handle_kprobe(struct pt_regs *ctx)
-+{
-+	struct hmap_elem zero =3D {}, *val;
-+	int key =3D 0;
-+
-+	val =3D bpf_map_lookup_elem(&hash_map, &key);
-+	if (!val)
-+		return 1;
-+	/* spin_lock in hash map */
-+	bpf_spin_lock(&val->lock);
-+	val->var[0] =3D 99;
-+	bpf_spin_unlock(&val->lock);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/freplace_cls_redirect.c b/=
-tools/testing/selftests/bpf/progs/freplace_cls_redirect.c
-new file mode 100644
-index 000000000000..68a5a9db928a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/freplace_cls_redirect.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/stddef.h>
-+#include <linux/bpf.h>
-+#include <linux/pkt_cls.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct bpf_map_def SEC("maps") sock_map =3D {
-+	.type =3D BPF_MAP_TYPE_SOCKMAP,
-+	.key_size =3D sizeof(int),
-+	.value_size =3D sizeof(int),
-+	.max_entries =3D 2,
-+};
-+
-+SEC("freplace/cls_redirect")
-+int freplace_cls_redirect_test(struct __sk_buff *skb)
-+{
-+	int ret =3D 0;
-+	const int zero =3D 0;
-+	struct bpf_sock *sk;
-+
-+	sk =3D bpf_map_lookup_elem(&sock_map, &zero);
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+
-+	ret =3D bpf_map_update_elem(&sock_map, &zero, sk, 0);
-+	bpf_sk_release(sk);
-+
-+	return ret =3D=3D 0 ? TC_ACT_OK : TC_ACT_SHOT;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.24.1
+On 8/25/20 2:04 PM, Yu, Yu-cheng wrote:
+>>> I think this is more arch-specific.  Even if it becomes a new syscall,
+>>> we still need to pass the same parameters.
+>>
+>> Right, but without the copying in and out of memory.
+>>
+> Linux-api is already on the Cc list.  Do we need to add more people to
+> get some agreements for the syscall?
+What kind of agreement are you looking for?  I'd suggest just coding it
+up and posting the patches.  Adding syscalls really is really pretty
+straightforward and isn't much code at all.
 
