@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D0125122F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405FE251225
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgHYGkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 02:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S1729123AbgHYGi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 02:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729143AbgHYGkR (ORCPT
+        with ESMTP id S1729068AbgHYGiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 02:40:17 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C45BC061574;
-        Mon, 24 Aug 2020 23:40:17 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l191so4026660pgd.5;
-        Mon, 24 Aug 2020 23:40:17 -0700 (PDT)
+        Tue, 25 Aug 2020 02:38:24 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D4C061574;
+        Mon, 24 Aug 2020 23:38:24 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o18so15023714eje.7;
+        Mon, 24 Aug 2020 23:38:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oPTjuwCthUmMjgvx3f4uFfhVGWQpGsk/v4Ea0sfsyl0=;
-        b=WPjjoCq+eG/jacxw0fg2TjSSg+WH2qd9qtOh8QHCFrnYLd3PAxB9gGVpOGIj7++dxP
-         HwS3D4HBpmVEypbh7z1GKn03/lmjFGPFRj5U1DTGZM1lDP4szKeMJkLiHR59EFPZEiug
-         Tzgfl5QfBqr/936EBhajsGoBWIJkFKmo3cTDcKMFKjpM6mPQZZlD7wvTQrFD0U0jHLI0
-         lyj8TqGBghmq5CjleenqJgsHIO7pIbXjgbgF88LcnNOcPIj5IxHtwBgvxQP0CBeu3FNy
-         D8biLNpmjUwYJ85GXI84Atz+TxzUxIfFMHstOWhBevRYoaF8r05x1DhRN0DRngM5QtHx
-         6fWg==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Q9k3xF6hWPOQM3uFwSy2qlWDQ5BGn+QdqRbPCM8EhM=;
+        b=d318I0JDAY3KO2OfweXvemxDvpcgVxD/poXqH0o44y89iIIdQ2tKqg8axqlHdT8Acl
+         ZwraWTH8Be+wNIdnhcriuFkqqu+TMMH0QJZ/TUNOpruZNRxE9CT0VlMX/CzWe+IZ+AKh
+         1i6LQwYPsKVqW8t3f2z5GeVPSUXLalcko0o7M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oPTjuwCthUmMjgvx3f4uFfhVGWQpGsk/v4Ea0sfsyl0=;
-        b=KMMRw56Ji1WildJY/FVu1agLOqGRMp9LNibO6YbyRGdtyqV1aswGqtyRNyBSrbKZ8h
-         xy2znbbRR1yn7FQMHWT6garh2O3DR6jSA7nWiA0RjrWJEKOvEPsfYTKmlEagUCzHojIS
-         fw/dVl5zpHKWxx+xZQ2QxFKWIe/BN5LIZSed2ReezAGzVMHZVatMoQCCHxzD8+l+YAQV
-         Qyzxy5L6Xtiityg8sQ2f9anfZTXJc3VnSxT22F6LZGXMSujornM5BF0mD2QI9Ni9DTQH
-         CY1qMGpx4vlEVmGODg6TiSgRx7LiRSvC9OM653aM1oNpzpdGaLLEKSv2dQZRHAIdGNiL
-         6PtQ==
-X-Gm-Message-State: AOAM530vEHbdaP9UiB6nFpoOcFBm9ZNfSHF1pc2X7pt6bpCV6JJ3w3SO
-        aNdJ4eXgDGG/4tb3Jf9rWCh5FxFalmBPbw==
-X-Google-Smtp-Source: ABdhPJyaq/aiNW3XYF9jYLOs4N4aihEAEXilSmW5U5Zqa+46msSb8mpneLfXg8ij+FdWScxpvDBLaw==
-X-Received: by 2002:a17:902:7202:: with SMTP id ba2mr6317259plb.4.1598337617019;
-        Mon, 24 Aug 2020 23:40:17 -0700 (PDT)
-Received: from xiaomi.mioffice.cn ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id z2sm14197283pfq.46.2020.08.24.23.40.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 23:40:16 -0700 (PDT)
-From:   Qiwu Huang <yanziily@gmail.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Qiwu Huang <huangqiwu@xiaomi.com>
-Subject: [PATCH v9 4/4] power: supply: core: property to control reverse charge
-Date:   Tue, 25 Aug 2020 14:37:59 +0800
-Message-Id: <34d9921bc92f99c9ee680b4b090173c9c08c6e09.1598337073.git.huangqiwu@xiaomi.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1598337073.git.huangqiwu@xiaomi.com>
-References: <cover.1598337073.git.huangqiwu@xiaomi.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Q9k3xF6hWPOQM3uFwSy2qlWDQ5BGn+QdqRbPCM8EhM=;
+        b=AuRsY8/wXh5c6AUTfKei83ZPPLzod9pc+bVP4uAjLRjKsa9+A2UYrbbWStFClXP2nB
+         Rnat2K6phw+OBLcRqDObIKQ9eE/tLRSmitQJyIN2WHOT+9CTzr7CNNp55rMsegDv7c/M
+         FUKrh5x34dkUWmf/PPhJ7xgsCE8YjyYczkSWwPIEcog+qQoQrCGLWZvktTzaq26pgtSY
+         tk4QzY9ghDtUJ2NzuE6KxNBy39Xx9Q/aEPL8ixXeSyLc3ZHmjL9oSbbOfosd0WeIav80
+         a0YLBsRKze74hckUkkUYAP88RbIwJ1U1PXKUAGLe0VnoW00A0tsCEUr3bZJnT9Op6Pjr
+         Ls4g==
+X-Gm-Message-State: AOAM533W/91YS/kuRs22kAMSivCsyTmUBV4YCNTze+xnwjDuby7ydhHR
+        rfiXYe3kxDM6PsyDo4jV36RnxHtpUrtMpTjMC6KFnVVk4Ro=
+X-Google-Smtp-Source: ABdhPJweMgK6I5TgV9Ly2uJzqR7Tgq7Qn1uQsVbMr86HbZ6rf4REgHoJ8D+2tbHNLahHnsDFOhsp3YQTaEez+w4QafM=
+X-Received: by 2002:a17:906:4ec3:: with SMTP id i3mr8802552ejv.215.1598337503276;
+ Mon, 24 Aug 2020 23:38:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200820161152.22751-1-eajames@linux.ibm.com> <20200820161152.22751-4-eajames@linux.ibm.com>
+In-Reply-To: <20200820161152.22751-4-eajames@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 25 Aug 2020 06:38:10 +0000
+Message-ID: <CACPK8XdG1+3eQPQ71fZYZdHwcn8WNLQKF=5iKrOvGhLwispSQA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] i2c: aspeed: Mask IRQ status to relevant bits
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-input@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiwu Huang <huangqiwu@xiaomi.com>
+On Thu, 20 Aug 2020 at 16:12, Eddie James <eajames@linux.ibm.com> wrote:
+>
+> Mask the IRQ status to only the bits that the driver checks. This
+> prevents excessive driver warnings when operating in slave mode
+> when additional bits are set that the driver doesn't handle.
+>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
+>  drivers/i2c/busses/i2c-aspeed.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> index 31268074c422..abf40f2af8b4 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -604,6 +604,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+>         writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+>                bus->base + ASPEED_I2C_INTR_STS_REG);
+>         readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> +       irq_received &= 0xf000ffff;
+>         irq_remaining = irq_received;
 
-Interface to control wireless reverse charge.
+This would defeat the check for irq_remaining. I don't think we want to do this.
 
-Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
----
- Documentation/ABI/testing/sysfs-class-power | 14 ++++++++++++++
- drivers/power/supply/power_supply_sysfs.c   |  1 +
- include/linux/power_supply.h                |  1 +
- 3 files changed, 16 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-index 4459b720feb2..8840fdf483a7 100644
---- a/Documentation/ABI/testing/sysfs-class-power
-+++ b/Documentation/ABI/testing/sysfs-class-power
-@@ -779,3 +779,17 @@ Description:
- 
- 		Access: Read-Only
- 		Valid values: 0 - 100
-+
-+What:		/sys/class/power_supply/<supply_name>/reverse_chg_mode
-+Date:		Jul 2020
-+Contact:	Fei Jiang <jiangfei1@xiaomi.com>
-+Description:
-+		Some devices support wireless reverse charge function which
-+		charge other devices.The property provider interface to
-+		enable/disable wireless reverse charge.If enabled, start TX
-+		mode and detect RX. Disabled when timeout or manual setting.
-+
-+		Access: Read, Write
-+		Valid values:
-+		- 1: enabled
-+		- 0: disabled
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index e420a453095e..81916b6b6ccf 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -209,6 +209,7 @@ static struct power_supply_attr power_supply_attrs[] = {
- 	POWER_SUPPLY_ATTR(QUICK_CHARGE_TYPE),
- 	POWER_SUPPLY_ATTR(TX_ADAPTER),
- 	POWER_SUPPLY_ATTR(SIGNAL_STRENGTH),
-+	POWER_SUPPLY_ATTR(REVERSE_CHG_MODE),
- };
- 
- static struct attribute *
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index 747338118fa1..988d3f05ea1c 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -170,6 +170,7 @@ enum power_supply_property {
- 	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
- 	POWER_SUPPLY_PROP_TX_ADAPTER,
- 	POWER_SUPPLY_PROP_SIGNAL_STRENGTH,
-+	POWER_SUPPLY_PROP_REVERSE_CHG_MODE,
- };
- 
- enum power_supply_type {
--- 
-2.28.0
-
+Can you explain why these bits are being set in slave mode?
