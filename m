@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145C5251D6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90AF251D72
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgHYQqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgHYQq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:46:26 -0400
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35A3F20897
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 16:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598373985;
-        bh=h7VlFzTauWqMoJUomlXnnALAqMdX0hYV+PCoeAtM3rU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ixCNTejeXeS4PKewMPrRJz0TPr9F/qVGDl1NVmW5yLCnXY+CNkM1PeCIUztLTNI1J
-         yhAfbnlEao6slE5NERq5TsP1mTb+Dm5wPk1oQLas3zK6gxiPkQseCT/9Yk0PjUeetv
-         eiOxO5rEY6DiQrfVdAvuOPrz9UgKSZFqqYBcPWU8=
-Received: by mail-wr1-f53.google.com with SMTP id x7so7384256wro.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 09:46:25 -0700 (PDT)
-X-Gm-Message-State: AOAM530MK1Tixq81K1bMpCUJF5viiGSgGL7YNbyQoeM82wL7b0uWhGFZ
-        L+HktYY3+nvHg6nqK6Fv9tZQyxI7VoA/xG+YbQSIkQ==
-X-Google-Smtp-Source: ABdhPJxswIrK25qCisxfAyv3fZDFeyCIvRRGk35lL5GQWcCGTLO6frz2GitjxtR2oXxuSk02fsGFCsm1Ywrtb5Smdmg=
-X-Received: by 2002:a5d:400e:: with SMTP id n14mr11308231wrp.75.1598373983617;
- Tue, 25 Aug 2020 09:46:23 -0700 (PDT)
+        id S1726736AbgHYQsF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 12:48:05 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43891 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgHYQsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 12:48:04 -0400
+Received: by mail-lj1-f196.google.com with SMTP id v12so14593074ljc.10;
+        Tue, 25 Aug 2020 09:48:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nTSrXzEAroJk48irekSp56G+4B2v4pPedg0lBTRq2cw=;
+        b=S/SsSFAJHnMWHbArNn2dUJvcIoCl8RcC0osg1x07Qww1mxJYk3Y5VRTbTJyejV58s+
+         1rnXaxyaD58yu0vNA/fNJdMF0ld+EpqrdMPurbB8pRUjJ/c02Ro80NBv88f4+ZIXSrHl
+         uLWRY5mVLbSEuuHOcG770ey2LSDEf95uCUYAtwpdJwnMJF3OIbE7WekpdYmWJw4H/fic
+         v7RlOMZyJOgl9EntAiWQaj79JcFx14Wk5YvK4R/tLXDGN9prMVdtDL7VpMEn8BvGXH0F
+         vSyVokIzb+DFA3eozT2RvuOWLUdJ8EdolIMHkFkbYwZ5NjFKr6XzpyJ5qeo72vsK7cGj
+         s5+Q==
+X-Gm-Message-State: AOAM531PqP/PKkJLfUFM+sOw54SsCg5BKUGY1oC76QJZcSCJ/6SNJ4cf
+        D1k/DuyTC0wyRdxWnewlUelc4JMDInpErQ==
+X-Google-Smtp-Source: ABdhPJy2lLA/znQ/K+nshMqLdx/QxXOO8kZjwQ6kKS1O78uxwfG1QzxA9xoDFZ7aSIafPsJc36N+Lw==
+X-Received: by 2002:a2e:b04e:: with SMTP id d14mr5680053ljl.16.1598374081757;
+        Tue, 25 Aug 2020 09:48:01 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id d15sm2947454ljl.32.2020.08.25.09.48.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 09:48:01 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id i14so4731348lfl.12;
+        Tue, 25 Aug 2020 09:48:01 -0700 (PDT)
+X-Received: by 2002:a19:5046:: with SMTP id z6mr4935334lfj.4.1598374080957;
+ Tue, 25 Aug 2020 09:48:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOp6jLYrwMqV=7hmxgdZUdDZ2aeUB27TTHm=j6cQT7C10Muhww@mail.gmail.com>
- <7DF88F22-0310-40C9-9DA6-5EBCB4877933@amacapital.net> <CALCETrUrvrQNw6dPau_rtHjA_YuCVdCTWYd4dsdcvcGsOaspmg@mail.gmail.com>
- <b0813ec5-b163-cc11-bfc9-e9d08c9c4ff2@zytor.com> <CALCETrXvgb257CWnaA1NgUUp3x08+gJBEOQh4o9OYkB-RvAo1A@mail.gmail.com>
- <CAP045Ao6xBquwSDoCLzzNbEW1Lr969d+D0jQQ2Zb4pX3B77-Xw@mail.gmail.com>
- <CALCETrUgm-Cph4fwqk108VHZPLuM7XWL=nff-xB+hc+hiDrqsg@mail.gmail.com> <CAP045Aqhox6YSdk0v_YZWY=y7Ps4ZfH779MG-W4a=gc+cYEY+Q@mail.gmail.com>
-In-Reply-To: <CAP045Aqhox6YSdk0v_YZWY=y7Ps4ZfH779MG-W4a=gc+cYEY+Q@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 25 Aug 2020 09:46:11 -0700
-X-Gmail-Original-Message-ID: <CALCETrX+TLB+w0X0jc9jq_U4SQezWXEmSpEmmdPobnbUuYfang@mail.gmail.com>
-Message-ID: <CALCETrX+TLB+w0X0jc9jq_U4SQezWXEmSpEmmdPobnbUuYfang@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/cpu fsgsbase breaks TLS in 32 bit rr tracees on
- a 64 bit system
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>
+References: <20200825131049.1277596-1-jernej.skrabec@siol.net>
+ <CAGb2v66q15syd5g-9RUocmEwJyvpbJniTmwLJL4QH5s==fCi2Q@mail.gmail.com> <21600331.3yVNq0iq4W@jernej-laptop>
+In-Reply-To: <21600331.3yVNq0iq4W@jernej-laptop>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 26 Aug 2020 00:47:48 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67Lm43mg-QrHJAV7svLnVJS0We6tiTLbCwi_d48ARRFVg@mail.gmail.com>
+Message-ID: <CAGb2v67Lm43mg-QrHJAV7svLnVJS0We6tiTLbCwi_d48ARRFVg@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH] clk: sunxi-ng: sun8i: r40: Use sigma delta
+ modulation for audio PLL
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 9:32 AM Kyle Huey <me@kylehuey.com> wrote:
+On Wed, Aug 26, 2020 at 12:45 AM Jernej Škrabec <jernej.skrabec@siol.net> wrote:
 >
-> On Tue, Aug 25, 2020 at 9:12 AM Andy Lutomirski <luto@amacapital.net> wro=
-te:
-> > I don=E2=80=99t like this at all. Your behavior really shouldn=E2=80=99=
-t depend on
-> > whether the new instructions are available.  Also, some day I would
-> > like to change Linux to have the new behavior even if FSGSBASE
-> > instructions are not available, and this will break rr again.  (The
-> > current !FSGSBASE behavior is an ugly optimization of dubious value.
-> > I would not go so far as to describe it as correct.)
->
-> Ok.
->
-> > I would suggest you do one of the following things:
+> Dne torek, 25. avgust 2020 ob 16:46:31 CEST je Chen-Yu Tsai napisal(a):
+> > On Tue, Aug 25, 2020 at 9:11 PM Jernej Skrabec <jernej.skrabec@siol.net>
+> wrote:
+> > > Audio cores need specific clock rates which can't be simply obtained by
+> > > adjusting integer multipliers and dividers. HW for such cases supports
+> > > delta-sigma modulation which enables fractional multipliers.
+> > >
+> > > Port H3 delta-sigma table to R40. They have identical audio PLLs.
+> > >
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > ---
+> > >
+> > >  drivers/clk/sunxi-ng/ccu-sun8i-r40.c | 37 ++++++++++++++++++----------
+> > >  1 file changed, 24 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+> > > b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c index 23bfe1d12f21..84153418453f
+> > > 100644
+> > > --- a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+> > > +++ b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+> > > @@ -45,18 +45,29 @@ static struct ccu_nkmp pll_cpu_clk = {
+> > >
+> > >   * the base (2x, 4x and 8x), and one variable divider (the one true
+> > >   * pll audio).
+> > >   *
+> > >
+> > > - * We don't have any need for the variable divider for now, so we just
+> > > - * hardcode it to match with the clock names
+> > > + * With sigma-delta modulation for fractional-N on the audio PLL,
+> > > + * we have to use specific dividers. This means the variable divider
+> > > + * can no longer be used, as the audio codec requests the exact clock
+> > > + * rates we support through this mechanism. So we now hard code the
+> > > + * variable divider to 1. This means the clock rates will no longer
+> > > + * match the clock names.
+> > >
+> > >   */
+> > >
+> > >  #define SUN8I_R40_PLL_AUDIO_REG        0x008
+> > >
+> > > -static SUNXI_CCU_NM_WITH_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
+> > > -                                  "osc24M", 0x008,
+> > > -                                  8, 7,        /* N */
+> > > -                                  0, 5,        /* M */
+> > > -                                  BIT(31),     /* gate */
+> > > -                                  BIT(28),     /* lock */
+> > > -                                  CLK_SET_RATE_UNGATE);
+> > > +static struct ccu_sdm_setting pll_audio_sdm_table[] = {
+> > > +       { .rate = 22579200, .pattern = 0xc0010d84, .m = 8, .n = 7 },
+> > > +       { .rate = 24576000, .pattern = 0xc000ac02, .m = 14, .n = 14 },
 > >
-> > 1. Use int $0x80 directly to load 32-bit regs into a child.  This
-> > might dramatically simplify your code and should just do the right
-> > thing.
->
-> I don't know what that means.
-
-This is untested, but what I mean is:
-
-static int ptrace32(int req, pid_t pid, int addr, int data) {
-   int ret;
-   /* new enough kernels won't clobber r8, etc. */
-   asm volatile ("int $0x80" : "=3Da" (ret) : "a" (26 /* ptrace */), "b"
-(req), "c" (pid), "d" (addr), "S" (data) : "flags", "r8", "r9", "r10",
-"r11");
-   return ret;
-}
-
-with a handful of caveats:
-
- - This won't compile with -fPIC, I think.  Instead you'll need to
-write a little bit of asm to set up and restore ebx yourself.  gcc is
-silly like this.
-
- - Note that addr is an int.  You'll need to mmap(..., MAP_32BIT, ...)
-to get a buffer that can be pointed to with an int.
-
-The advantage is that this should work on all kernels that support
-32-bit mode at all.
-
->
-> > 2. Something like your patch but make it unconditional.
+> > The user manual has an additional requirement: 3 <= N/M <= 21.
+> > Though it then says 72 <= 24*N/P <= 504. Not sure which one is
+> > right...
 > >
-> > 3. Ask for, and receive, real kernel support for setting FS and GS in
-> > the way that 32-bit code expects.
+> > Did you run into any glitches or audio distortions?
 >
-> I think the easiest way forward for us would be a PTRACE_GET/SETREGSET
-> like operation that operates on the regsets according to the
-> *tracee*'s bitness (rather than the tracer, as it works currently).
-> Does that sound workable?
+> No, I tested HDMI audio and it seems to work fine.
 >
+> BSP driver also uses those values:
+> https://github.com/BPI-SINOVOIP/BPI-M2U-bsp/blob/master/linux-sunxi/drivers/
+> clk/sunxi/clk-sun8iw11.c#L160
 
-Strictly speaking, on Linux, there is no unified concept of a task's
-bitness, so "set all these registers according to the target's
-bitness" is not well defined.  We could easily give you a
-PTRACE_SETREGS_X86_32, etc, though.
+Sounds good. Thanks.
