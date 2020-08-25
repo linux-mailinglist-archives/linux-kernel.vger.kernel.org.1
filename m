@@ -2,204 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C74251D8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D67251D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgHYQwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:52:53 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:38894 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726483AbgHYQw0 (ORCPT
+        id S1725947AbgHYQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 12:43:24 -0400
+Received: from gateway34.websitewelcome.com ([192.185.149.13]:40783 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725936AbgHYQnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:52:26 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PGmZSc019634;
-        Tue, 25 Aug 2020 18:52:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=u6EYUC0xcRE70s9suBWPO0FSC0+bERZDODPG0q9BHrI=;
- b=NowFBprX6iCB0n1vfOwFNf31Ug7be9tG+l5tyhKVx7FrYv0smpcSM3cFtcqFQCz57Bay
- 6Bmmd9RnfGEfewXwAcptIVYrliaVr20HHNuYB2tQxVasd4GxwuCUfMB973duOqzG3GpA
- voSbyt5so5Tg7qWKuKrysAf5KOj2IjrkrzGtze8RL2oKJ5hfCZpObYbBkviBOVGan6Ew
- VihCtMMh5JEG9ryGpXjthvd5OpbfwQms9oAJek5OkcRfRsg9NqM6idhvOBApcBxgQrXK
- W5N/LkK+qQBiAeSUoX2f+5thfH3Ep/1Xj/maTfhWMphWJ8NytY+baq/r7OGXd61emNFC OA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 333b6x4067-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 18:52:22 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5CF8310002A;
-        Tue, 25 Aug 2020 18:52:22 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 50F9C2AE6AA;
-        Tue, 25 Aug 2020 18:52:22 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug 2020 18:52:21
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@st.com>
-Subject: [PATCH v2 8/8] rpmsg: virtio: use rpmsg_ns driver to manage ns announcement
-Date:   Tue, 25 Aug 2020 18:49:07 +0200
-Message-ID: <20200825164907.3642-9-arnaud.pouliquen@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825164907.3642-1-arnaud.pouliquen@st.com>
-References: <20200825164907.3642-1-arnaud.pouliquen@st.com>
+        Tue, 25 Aug 2020 12:43:20 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id E69AB86EAB0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 11:43:17 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Ac2Xk48AtLFNkAc2XkYVEl; Tue, 25 Aug 2020 11:43:17 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cOGcQuNcgu27ssRe7+iEilXICwkaDhh0xHUhsfky6/A=; b=fRFpmnqdD+FV804lUWuyvAZWBn
+        X4dF1aIY3v3YTV0F+UJuTPHXi6WvGPmwCRi4qh4bbjlMcUBZJYX4jJb8tdD+o3m6UWuAe7yo+r5Zs
+        obIUsnhWJ33DeeIc16B9xOVd7ioOInz5s0vcrRCWgrORSU4RWYMowBDr+COgroKxen4E8pNCtmFR5
+        2n5C5sBchDXyzeAZXXt+Dr1dOuolMFUszSqBrQBOV7+5Hd8V/laHZqXYrvHqEKBfEELVVq+ciHYbJ
+        C93vdYvzgpYMuETgWOp04+omT/m6jjxxSOWPP3FSVWdAmdlTjpFC8TjG9WbXGzChZD2bvtlosLOl8
+        xC45sjSQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58602 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kAc2X-000vvH-4N; Tue, 25 Aug 2020 11:43:17 -0500
+Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
+To:     Joe Perches <joe@perches.com>, Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Roland Dreier <roland@purestorage.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200825155142.349651-1-alex.dewar90@gmail.com>
+ <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
+ <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
+Date:   Tue, 25 Aug 2020 11:49:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-25_06:2020-08-25,2020-08-25 signatures=0
+In-Reply-To: <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kAc2X-000vvH-4N
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58602
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 17
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new rpmsg_ns API to send the name service announcements if
-the VIRTIO_RPMSG_F_NS is set, else just not implement the ops.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- drivers/rpmsg/virtio_rpmsg_bus.c | 94 +++++---------------------------
- 1 file changed, 13 insertions(+), 81 deletions(-)
 
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index f771fdae150e..3c771a6392be 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -91,35 +91,6 @@ struct rpmsg_hdr {
- 	u8 data[];
- } __packed;
- 
--/**
-- * struct rpmsg_ns_msg - dynamic name service announcement message
-- * @name: name of remote service that is published
-- * @addr: address of remote service that is published
-- * @flags: indicates whether service is created or destroyed
-- *
-- * This message is sent across to publish a new service, or announce
-- * about its removal. When we receive these messages, an appropriate
-- * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-- * or ->remove() handler of the appropriate rpmsg driver will be invoked
-- * (if/as-soon-as one is registered).
-- */
--struct rpmsg_ns_msg {
--	char name[RPMSG_NAME_SIZE];
--	__virtio32 addr;
--	__virtio32 flags;
--} __packed;
--
--/**
-- * enum rpmsg_ns_flags - dynamic name service announcement flags
-- *
-- * @RPMSG_NS_CREATE: a new remote service was just created
-- * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-- */
--enum rpmsg_ns_flags {
--	RPMSG_NS_CREATE		= 0,
--	RPMSG_NS_DESTROY	= 1,
--};
--
- /**
-  * @vrp: the remote processor this channel belongs to
-  */
-@@ -324,60 +295,18 @@ static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
- 	__rpmsg_destroy_ept(vch->vrp, ept);
- }
- 
--static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
--{
--	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
--	struct virtproc_info *vrp = vch->vrp;
--	struct device *dev = &rpdev->dev;
--	int err = 0;
--
--	/* need to tell remote processor's name service about this channel ? */
--	if (rpdev->announce && rpdev->ept &&
--	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
--		struct rpmsg_ns_msg nsm;
--
--		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
--		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
--		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_CREATE);
--
--		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
--		if (err)
--			dev_err(dev, "failed to announce service %d\n", err);
--	}
--
--	return err;
--}
--
--static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
--{
--	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
--	struct virtproc_info *vrp = vch->vrp;
--	struct device *dev = &rpdev->dev;
--	int err = 0;
--
--	/* tell remote processor's name service we're removing this channel */
--	if (rpdev->announce && rpdev->ept &&
--	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
--		struct rpmsg_ns_msg nsm;
--
--		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
--		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
--		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_DESTROY);
--
--		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
--		if (err)
--			dev_err(dev, "failed to announce service %d\n", err);
--	}
--
--	return err;
--}
--
- static const struct rpmsg_device_ops virtio_rpmsg_ops = {
- 	.create_channel = virtio_rpmsg_create_channel,
- 	.release_channel = virtio_rpmsg_release_channel,
- 	.create_ept = virtio_rpmsg_create_ept,
--	.announce_create = virtio_rpmsg_announce_create,
--	.announce_destroy = virtio_rpmsg_announce_destroy,
-+};
-+
-+static const struct rpmsg_device_ops virtio_rpmsg_w_nsa_ops = {
-+	.create_channel = virtio_rpmsg_create_channel,
-+	.release_channel = virtio_rpmsg_release_channel,
-+	.create_ept = virtio_rpmsg_create_ept,
-+	.announce_create = rpmsg_ns_announce_create,
-+	.announce_destroy = rpmsg_ns_announce_destroy,
- };
- 
- static void virtio_rpmsg_release_device(struct device *dev)
-@@ -423,7 +352,10 @@ __rpmsg_create_channel(struct virtproc_info *vrp,
- 	rpdev = &vch->rpdev;
- 	rpdev->src = chinfo->src;
- 	rpdev->dst = chinfo->dst;
--	rpdev->ops = &virtio_rpmsg_ops;
-+	if (virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS))
-+		rpdev->ops = &virtio_rpmsg_w_nsa_ops;
-+	else
-+		rpdev->ops = &virtio_rpmsg_ops;
- 
- 	/*
- 	 * rpmsg server channels has predefined local address (for now),
-@@ -933,7 +865,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
- 
- 		/* Assign public information to the rpmsg_device */
- 		rpdev_ns = &vch->rpdev;
--		rpdev_ns->ops = &virtio_rpmsg_ops;
-+		rpdev_ns->ops = &virtio_rpmsg_w_nsa_ops;
- 
- 		rpdev_ns->dev.parent = &vrp->vdev->dev;
- 		rpdev_ns->dev.release = virtio_rpmsg_release_device;
--- 
-2.17.1
+On 8/25/20 11:26, Joe Perches wrote:
+> On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
+>>
+>> On 8/25/20 10:51, Alex Dewar wrote:
+>>> Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+>>> erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
+>>> were later converted to fallthrough statements by commit df561f6688fe
+>>> ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
+>>> warning about unreachable code.
+>>>
+>>> Remove the fallthrough statements and replace the mass of gotos with
+>>> simple return statements to make the code terser and less bug-prone.
+>>>
+>>
+>> This should be split up into two separate patches: one to address the
+>> fallthrough markings, and another one for the gotos.
+> 
+> I don't think it's necessary to break this into multiple patches.
+> Logical changes in a single patch are just fine, micro patches
+> aren't that useful.
+> 
 
+There is a reason for this. Read the changelog text and review the patch.
+
+Thanks
+--
+Gustavo
