@@ -2,405 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797D6251298
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A5251288
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729347AbgHYHHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:07:12 -0400
-Received: from mga04.intel.com ([192.55.52.120]:40719 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729326AbgHYHHG (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:07:06 -0400
-IronPort-SDR: Hxb5NneO4G1TrSjv2+VhbWYxltmZFoCRRcdmBrh2udU7IAoqpgAZ34dT2m6i0jMChfWd+a4EVa
- 3ajrQ453oQaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="153479782"
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="153479782"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 00:07:00 -0700
-IronPort-SDR: 6cd4zvTOfq3Ix+m8OQoyXECPd419lNsfynEd75rHalvmbZBTlCD0Ep/c8qWBlR/TsWzk7sSrPI
- XTWU4K/jGpkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="322655245"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.55])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Aug 2020 00:06:54 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v4 7/7] perf diff: Support hot streams comparison
-Date:   Tue, 25 Aug 2020 07:35:13 +0800
-Message-Id: <20200824233513.16930-8-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824233513.16930-1-yao.jin@linux.intel.com>
-References: <20200824233513.16930-1-yao.jin@linux.intel.com>
+        id S1729242AbgHYHBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:01:22 -0400
+Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:33036 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728939AbgHYHBN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 03:01:13 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 30EA5837F27B;
+        Tue, 25 Aug 2020 07:01:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3867:3871:3872:3873:4321:5007:6119:7903:9040:9592:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12555:12679:12740:12760:12895:12986:13161:13229:13439:14093:14097:14659:14721:21080:21451:21627:21990:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: kick90_3a07d8a27059
+X-Filterd-Recvd-Size: 3293
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 25 Aug 2020 07:01:09 +0000 (UTC)
+Message-ID: <5e8d3765063043f7a90c92c098317319757595ed.camel@perches.com>
+Subject: Re: [PATCH] scsi: megaraid: Remove unnecessary assignment to
+ variable ret
+From:   Joe Perches <joe@perches.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 25 Aug 2020 00:01:07 -0700
+In-Reply-To: <20200825063836.92239-1-jingxiangfeng@huawei.com>
+References: <20200825063836.92239-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables perf-diff with "--stream" option.
+On Tue, 2020-08-25 at 14:38 +0800, Jing Xiangfeng wrote:
+> The variable ret is being initialized with 'FAILED'. So we can remove
+> this assignement.
 
-"--stream": Enable hot streams comparison
+If you are going to change the code at all,
+might as well try to improve it more by removing
+the unnecessary out: label altogether.
 
-Now let's see examples.
-
-perf record -b ...      Generate perf.data.old with branch data
-perf record -b ...      Generate perf.data with branch data
-perf diff --stream
-
-[ Matched hot streams ]
-
-hot chain pair 1:
-            cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
-        ---------------------------              --------------------------
-                      main div.c:39                           main div.c:39
-                      main div.c:44                           main div.c:44
-
-hot chain pair 2:
-           cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
-        ---------------------------              --------------------------
-          __random_r random_r.c:360               __random_r random_r.c:360
-          __random_r random_r.c:388               __random_r random_r.c:388
-          __random_r random_r.c:388               __random_r random_r.c:388
-          __random_r random_r.c:380               __random_r random_r.c:380
-          __random_r random_r.c:357               __random_r random_r.c:357
-              __random random.c:293                   __random random.c:293
-              __random random.c:293                   __random random.c:293
-              __random random.c:291                   __random random.c:291
-              __random random.c:291                   __random random.c:291
-              __random random.c:291                   __random random.c:291
-              __random random.c:288                   __random random.c:288
-                     rand rand.c:27                          rand rand.c:27
-                     rand rand.c:26                          rand rand.c:26
-                           rand@plt                                rand@plt
-                           rand@plt                                rand@plt
-              compute_flag div.c:25                   compute_flag div.c:25
-              compute_flag div.c:22                   compute_flag div.c:22
-                      main div.c:40                           main div.c:40
-                      main div.c:40                           main div.c:40
-                      main div.c:39                           main div.c:39
-
-hot chain pair 3:
-             cycles: 9, hits: 4.48%                  cycles: 6, hits: 4.51%
-        ---------------------------              --------------------------
-          __random_r random_r.c:360               __random_r random_r.c:360
-          __random_r random_r.c:388               __random_r random_r.c:388
-          __random_r random_r.c:388               __random_r random_r.c:388
-          __random_r random_r.c:380               __random_r random_r.c:380
-
-[ Hot streams in old perf data only ]
-
-hot chain 1:
-            cycles: 18, hits: 6.75%
-         --------------------------
-          __random_r random_r.c:360
-          __random_r random_r.c:388
-          __random_r random_r.c:388
-          __random_r random_r.c:380
-          __random_r random_r.c:357
-              __random random.c:293
-              __random random.c:293
-              __random random.c:291
-              __random random.c:291
-              __random random.c:291
-              __random random.c:288
-                     rand rand.c:27
-                     rand rand.c:26
-                           rand@plt
-                           rand@plt
-              compute_flag div.c:25
-              compute_flag div.c:22
-                      main div.c:40
-
-hot chain 2:
-            cycles: 29, hits: 2.78%
-         --------------------------
-              compute_flag div.c:22
-                      main div.c:40
-                      main div.c:40
-                      main div.c:39
-
-[ Hot streams in new perf data only ]
-
-hot chain 1:
-                                                     cycles: 4, hits: 4.54%
-                                                 --------------------------
-                                                              main div.c:42
-                                                      compute_flag div.c:28
-
-hot chain 2:
-                                                     cycles: 5, hits: 3.51%
-                                                 --------------------------
-                                                              main div.c:39
-                                                              main div.c:44
-                                                              main div.c:42
-                                                      compute_flag div.c:28
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Perhaps:
 ---
- v4:
-   - Remove the "--before" and "--after" options since they are for
-     source line based comparison. In this patchset, we will not
-     support source line based comparison.
+ drivers/scsi/megaraid/megaraid_sas_fusion.c | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
- tools/perf/Documentation/perf-diff.txt |   4 +
- tools/perf/builtin-diff.c              | 133 ++++++++++++++++++++++---
- 2 files changed, 124 insertions(+), 13 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-diff.txt b/tools/perf/Documentation/perf-diff.txt
-index f50ca0fef0a4..be65bd55ab2a 100644
---- a/tools/perf/Documentation/perf-diff.txt
-+++ b/tools/perf/Documentation/perf-diff.txt
-@@ -182,6 +182,10 @@ OPTIONS
- --tid=::
- 	Only diff samples for given thread ID (comma separated list).
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 883cccb59c2d..1a8f18113136 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -4688,9 +4688,8 @@ int megasas_task_abort_fusion(struct scsi_cmnd *scmd)
  
-+--stream::
-+	Enable hot streams comparison. Stream can be a callchain which is
-+	aggregated by the branch records from samples.
-+
- COMPARISON
- ----------
- The comparison is governed by the baseline file. The baseline perf.data
-diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
-index f8c9bdd8269a..cfe26f0321f0 100644
---- a/tools/perf/builtin-diff.c
-+++ b/tools/perf/builtin-diff.c
-@@ -25,6 +25,7 @@
- #include "util/map.h"
- #include "util/spark.h"
- #include "util/block-info.h"
-+#include "util/stream.h"
- #include <linux/err.h>
- #include <linux/zalloc.h>
- #include <subcmd/pager.h>
-@@ -42,6 +43,7 @@ struct perf_diff {
- 	int				 range_size;
- 	int				 range_num;
- 	bool				 has_br_stack;
-+	bool				 stream;
- };
- 
- /* Diff command specific HPP columns. */
-@@ -72,6 +74,8 @@ struct data__file {
- 	struct perf_data	 data;
- 	int			 idx;
- 	struct hists		*hists;
-+	struct evsel_streams	*evsel_streams;
-+	int			 nr_evsel_streams;
- 	struct diff_hpp_fmt	 fmt[PERF_HPP_DIFF__MAX_INDEX];
- };
- 
-@@ -106,6 +110,7 @@ enum {
- 	COMPUTE_DELTA_ABS,
- 	COMPUTE_CYCLES,
- 	COMPUTE_MAX,
-+	COMPUTE_STREAM,	/* After COMPUTE_MAX to avoid use current compute arrays */
- };
- 
- const char *compute_names[COMPUTE_MAX] = {
-@@ -393,6 +398,11 @@ static int diff__process_sample_event(struct perf_tool *tool,
- 	struct perf_diff *pdiff = container_of(tool, struct perf_diff, tool);
- 	struct addr_location al;
- 	struct hists *hists = evsel__hists(evsel);
-+	struct hist_entry_iter iter = {
-+		.evsel	= evsel,
-+		.sample	= sample,
-+		.ops	= &hist_iter_normal,
-+	};
- 	int ret = -1;
- 
- 	if (perf_time__ranges_skip_sample(pdiff->ptime_range, pdiff->range_num,
-@@ -411,14 +421,8 @@ static int diff__process_sample_event(struct perf_tool *tool,
- 		goto out_put;
+ int megasas_reset_target_fusion(struct scsi_cmnd *scmd)
+ {
+-
+ 	struct megasas_instance *instance;
+-	int ret = FAILED;
++	int ret;
+ 	u16 devhandle;
+ 	struct MR_PRIV_DEVICE *mr_device_priv_data;
+ 	mr_device_priv_data = scmd->device->hostdata;
+@@ -4700,32 +4699,27 @@ int megasas_reset_target_fusion(struct scsi_cmnd *scmd)
+ 	if (atomic_read(&instance->adprecovery) != MEGASAS_HBA_OPERATIONAL) {
+ 		dev_err(&instance->pdev->dev, "Controller is not OPERATIONAL,"
+ 		"SCSI host:%d\n", instance->host->host_no);
+-		ret = FAILED;
+-		return ret;
++		return FAILED;
  	}
  
--	if (compute != COMPUTE_CYCLES) {
--		if (!hists__add_entry(hists, &al, NULL, NULL, NULL, sample,
--				      true)) {
--			pr_warning("problem incrementing symbol period, "
--				   "skipping event\n");
--			goto out_put;
--		}
--	} else {
-+	switch (compute) {
-+	case COMPUTE_CYCLES:
- 		if (!hists__add_entry_ops(hists, &block_hist_ops, &al, NULL,
- 					  NULL, NULL, sample, true)) {
- 			pr_warning("problem incrementing symbol period, "
-@@ -428,6 +432,23 @@ static int diff__process_sample_event(struct perf_tool *tool,
- 
- 		hist__account_cycles(sample->branch_stack, &al, sample, false,
- 				     NULL);
-+		break;
-+
-+	case COMPUTE_STREAM:
-+		if (hist_entry_iter__add(&iter, &al, PERF_MAX_STACK_DEPTH,
-+					 NULL)) {
-+			pr_debug("problem adding hist entry, skipping event\n");
-+			goto out_put;
-+		}
-+		break;
-+
-+	default:
-+		if (!hists__add_entry(hists, &al, NULL, NULL, NULL, sample,
-+				      true)) {
-+			pr_warning("problem incrementing symbol period, "
-+				   "skipping event\n");
-+			goto out_put;
-+		}
+ 	if (!mr_device_priv_data) {
+ 		sdev_printk(KERN_INFO, scmd->device,
+ 			    "device been deleted! scmd: (0x%p)\n", scmd);
+ 		scmd->result = DID_NO_CONNECT << 16;
+-		ret = SUCCESS;
+-		goto out;
++		return SUCCESS;
  	}
  
- 	/*
-@@ -996,6 +1017,50 @@ static void data_process(void)
+-	if (!mr_device_priv_data->is_tm_capable) {
+-		ret = FAILED;
+-		goto out;
+-	}
++	if (!mr_device_priv_data->is_tm_capable)
++		return FAILED;
+ 
+ 	mutex_lock(&instance->reset_mutex);
+ 	devhandle = megasas_get_tm_devhandle(scmd->device);
+ 
+ 	if (devhandle == (u16)ULONG_MAX) {
+-		ret = SUCCESS;
+ 		sdev_printk(KERN_INFO, scmd->device,
+ 			"target reset issued for invalid devhandle\n");
+ 		mutex_unlock(&instance->reset_mutex);
+-		goto out;
++		return SUCCESS;
  	}
+ 
+ 	sdev_printk(KERN_INFO, scmd->device,
+@@ -4741,7 +4735,6 @@ int megasas_reset_target_fusion(struct scsi_cmnd *scmd)
+ 	scmd_printk(KERN_NOTICE, scmd, "target reset %s!!\n",
+ 		(ret == SUCCESS) ? "SUCCESS" : "FAILED");
+ 
+-out:
+ 	return ret;
  }
  
-+static int process_base_stream(struct data__file *data_base,
-+			       struct data__file *data_pair,
-+			       const char *title __maybe_unused)
-+{
-+	struct evlist *evlist_base = data_base->session->evlist;
-+	struct evlist *evlist_pair = data_pair->session->evlist;
-+	struct evsel *evsel_base, *evsel_pair;
-+	struct evsel_streams *es_base, *es_pair;
-+
-+	evlist__for_each_entry(evlist_base, evsel_base) {
-+		evsel_pair = evsel_match(evsel_base, evlist_pair);
-+		if (!evsel_pair)
-+			continue;
-+
-+		es_base = evsel_streams_get(data_base->evsel_streams,
-+					    data_base->nr_evsel_streams,
-+					    evsel_base->idx);
-+		if (!es_base)
-+			return -1;
-+
-+		es_pair = evsel_streams_get(data_pair->evsel_streams,
-+					    data_pair->nr_evsel_streams,
-+					    evsel_pair->idx);
-+		if (!es_pair)
-+			return -1;
-+
-+		match_evsel_streams(es_base, es_pair);
-+		evsel_streams_report(es_base, es_pair, STREAM_CALLCHAIN);
-+	}
-+
-+	return 0;
-+}
-+
-+static void stream_process(void)
-+{
-+	/*
-+	 * Stream comparison only supports two data files.
-+	 * perf.data.old and perf.data. data__files[0] is perf.data.old,
-+	 * data__files[1] is perf.data.
-+	 */
-+	process_base_stream(&data__files[0], &data__files[1],
-+			    "# Output based on old perf data:\n#\n");
-+}
-+
- static void data__free(struct data__file *d)
- {
- 	int col;
-@@ -1109,6 +1174,19 @@ static int check_file_brstack(void)
- 	return 0;
- }
- 
-+static struct evsel_streams *create_evsel_streams(struct evlist *evlist,
-+						  int nr_streams_max,
-+						  int *nr_evsel_streams)
-+{
-+	struct evsel_streams *es;
-+
-+	es = perf_evlist__create_streams(evlist, nr_streams_max,
-+					 STREAM_CALLCHAIN);
-+	*nr_evsel_streams = evlist->core.nr_entries;
-+
-+	return es;
-+}
-+
- static int __cmd_diff(void)
- {
- 	struct data__file *d;
-@@ -1153,9 +1231,21 @@ static int __cmd_diff(void)
- 
- 		if (pdiff.ptime_range)
- 			zfree(&pdiff.ptime_range);
-+
-+		if (compute == COMPUTE_STREAM) {
-+			d->evsel_streams = create_evsel_streams(
-+						d->session->evlist,
-+						5,
-+						&d->nr_evsel_streams);
-+			if (!d->evsel_streams)
-+				goto out_delete;
-+		}
- 	}
- 
--	data_process();
-+	if (compute == COMPUTE_STREAM)
-+		stream_process();
-+	else
-+		data_process();
- 
-  out_delete:
- 	data__for_each_file(i, d) {
-@@ -1228,6 +1318,8 @@ static const struct option options[] = {
- 		   "only consider symbols in these pids"),
- 	OPT_STRING(0, "tid", &symbol_conf.tid_list_str, "tid[,tid...]",
- 		   "only consider symbols in these tids"),
-+	OPT_BOOLEAN(0, "stream", &pdiff.stream,
-+		    "Enable hot streams comparison."),
- 	OPT_END()
- };
- 
-@@ -1887,6 +1979,9 @@ int cmd_diff(int argc, const char **argv)
- 	if (cycles_hist && (compute != COMPUTE_CYCLES))
- 		usage_with_options(diff_usage, options);
- 
-+	if (pdiff.stream)
-+		compute = COMPUTE_STREAM;
-+
- 	symbol__annotation_init();
- 
- 	if (symbol__init(NULL) < 0)
-@@ -1898,13 +1993,25 @@ int cmd_diff(int argc, const char **argv)
- 	if (check_file_brstack() < 0)
- 		return -1;
- 
--	if (compute == COMPUTE_CYCLES && !pdiff.has_br_stack)
-+	if ((compute == COMPUTE_CYCLES || compute == COMPUTE_STREAM)
-+	    && !pdiff.has_br_stack) {
- 		return -1;
-+	}
- 
--	if (ui_init() < 0)
--		return -1;
-+	if (compute == COMPUTE_STREAM) {
-+		symbol_conf.show_branchflag_count = true;
-+		callchain_param.mode = CHAIN_FLAT;
-+		callchain_param.key = CCKEY_SRCLINE;
-+		callchain_param.branch_callstack = 1;
-+		symbol_conf.use_callchain = true;
-+		callchain_register_param(&callchain_param);
-+		sort_order = "srcline,symbol,dso";
-+	} else {
-+		if (ui_init() < 0)
-+			return -1;
- 
--	sort__mode = SORT_MODE__DIFF;
-+		sort__mode = SORT_MODE__DIFF;
-+	}
- 
- 	if (setup_sorting(NULL) < 0)
- 		usage_with_options(diff_usage, options);
--- 
-2.17.1
+
 
