@@ -2,103 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE2E251404
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53CA251408
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgHYISG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbgHYIR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:17:57 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4ECC061574;
-        Tue, 25 Aug 2020 01:17:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g75so1274122wme.4;
-        Tue, 25 Aug 2020 01:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zEFfvA2kHwjuvhR3Qz6nkbsxorcU/wr3Elf4vtaspII=;
-        b=YryXzqT2z2b/ohM1i+A1G9iTyVisdOicIRL6ywEH8JvdOgS92NZjWJ0PPrzIavBINj
-         j3t9HAkeiv99v241TrXsAihavrCvI8zTL+yyN64iEr2Ip0TKgGH4sZk/Y4vh0QUu5hH7
-         Dzye6Bj63WqyHrdIMHCseZojYoz2QkSr0RKERwUr+4nojOOttD7BwD1oJ5jXV9bVdiFE
-         xNs7kD3x1jdg6wIrcpIJFTIDGw2jmxRlQCM9C38tkpdUzk+qyKmsrVDiuGJ51c8XGbyV
-         E/sIp6hnNGWABWO+ebNGunoJFnNBgt1nAWgxg3aeoqnWk06i1DstFewiErHwX9RojyWm
-         PVUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zEFfvA2kHwjuvhR3Qz6nkbsxorcU/wr3Elf4vtaspII=;
-        b=cgu+wRJTkUUcsqetWjS5Qiul+JrpldwPcaQSSMffKPdzI++3NJqjsjCM/sA3KG6t06
-         3h47a+mOUPZCj0VfdjWjVgJeFAz/LnwCnZbaAyGNXI7qNOFbonintZlDSMDsLDYgQiSK
-         8ZuOA+dWFeqAYMBBahweCO2s3F86E1AoCois7qR/ZHAVLVrAjvvzQAMh8Mr3sr93dd1K
-         a4ce4MBL3G9Qjg0Xm36OiTP4guT+Ct227zA7PGvmdAQ1A7aLCz3hBslhKvtMn+hxjrZc
-         KiZElo6AnaCZk5eHBYtEPhsRL2TXE9JUGRPOckXvQtDRUd282uq0UaBOsBc20EEVK3E4
-         MLHg==
-X-Gm-Message-State: AOAM532BpyqZuoigCA3iEqH/Cc9dL1uuNQzkbRIYAZz0kCJJTXe85k5u
-        Tf2/kONtxGAIWYPUmP6bLX4=
-X-Google-Smtp-Source: ABdhPJyBNz/akXKtnS93s6DuFveM+sB5KYPVWADdLttJekfGdyWoHpoO8pfV2rUwqiPMVVgOSt+82A==
-X-Received: by 2002:a1c:ed15:: with SMTP id l21mr912400wmh.56.1598343474830;
-        Tue, 25 Aug 2020 01:17:54 -0700 (PDT)
-Received: from lenovo-laptop (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id a7sm4014284wmj.24.2020.08.25.01.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 01:17:54 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Tue, 25 Aug 2020 09:17:52 +0100
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Alex Dewar' <alex.dewar90@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "accessrunner-general@lists.sourceforge.net" 
-        <accessrunner-general@lists.sourceforge.net>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: atm: don't use snprintf() for sysfs attrs
-Message-ID: <20200825081752.hj3zyhg2qumzd64n@lenovo-laptop>
-References: <20200824222322.22962-1-alex.dewar90@gmail.com>
- <3e882693bb344424af37d4d35f3db605@AcuMS.aculab.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e882693bb344424af37d4d35f3db605@AcuMS.aculab.com>
+        id S1728756AbgHYITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:19:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61045 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725924AbgHYITd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 04:19:33 -0400
+IronPort-SDR: z5OEt4tTDHvp9pTl2LN67ZRv3cKJoip/E3Q1Tmc4KkNzZlR1Pi/wg/OzlcE5GmVl6gOQAaRa+7
+ DfdVBZ2LO4qQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="143728909"
+X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
+   d="scan'208";a="143728909"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 01:19:30 -0700
+IronPort-SDR: 14pHFxSM1Xk8lRdRpWgAS8Jn3WeAa4x706y7+MpfaoUG2UWvuXW9BY/7zAlkjmy0RWZ4kFjmgG
+ HH45A2y+OOKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
+   d="scan'208";a="336432480"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
+  by FMSMGA003.fm.intel.com with ESMTP; 25 Aug 2020 01:19:28 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH] scsi: ufs-pci: Add LTR support for Intel controllers
+Date:   Tue, 25 Aug 2020 11:18:54 +0300
+Message-Id: <20200825081854.7222-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 08:12:05AM +0000, David Laight wrote:
-> From: Alex Dewar
-> > Sent: 24 August 2020 23:23
-> > kernel/cpu.c: don't use snprintf() for sysfs attrs
-> > 
-> > As per the documentation (Documentation/filesystems/sysfs.rst),
-> > snprintf() should not be used for formatting values returned by sysfs.
-> > 
-> > In all of these cases, sprintf() suffices as we know that the formatted
-> > strings will be less than PAGE_SIZE in length.
-> 
-> Hmmmm....
-> I much prefer to see bounded string ops.
-> sysfs really ought to be passing through the buffer length.
-> The buffer size should probably be SYSFS_BUF_LEN not PAGE_SIZE
-> (even it happens to typically be the same).
-> If PAGE_SIZE is big (or small) passing a 4k buffer may be
-> more appropriate than a PAGE_SIZE one.
-> 
-> 	David
+Intel host controllers support the setting of latency tolerance.
+Accordingly, implement the PM QoS ->set_latency_tolerance() callback. The
+raw register values are also exposed via debugfs.
 
-We could use scnprintf() instead I guess. But an expression like:
-	return sprintf(buf, "%d\n", value);
-will never overflow if buf is PAGE_SIZE, right...?
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/scsi/ufs/ufshcd-pci.c | 122 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 120 insertions(+), 2 deletions(-)
 
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 5a95a7bfbab0..e10f05013ae6 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -13,6 +13,14 @@
+ #include "ufshcd.h"
+ #include <linux/pci.h>
+ #include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
++#include <linux/debugfs.h>
++
++struct intel_host {
++	u32		active_ltr;
++	u32		idle_ltr;
++	struct dentry	*debugfs_root;
++};
+ 
+ static int ufs_intel_disable_lcc(struct ufs_hba *hba)
+ {
+@@ -44,20 +52,129 @@ static int ufs_intel_link_startup_notify(struct ufs_hba *hba,
+ 	return err;
+ }
+ 
++#define INTEL_ACTIVELTR		0x804
++#define INTEL_IDLELTR		0x808
++
++#define INTEL_LTR_REQ		BIT(15)
++#define INTEL_LTR_SCALE_MASK	GENMASK(11, 10)
++#define INTEL_LTR_SCALE_1US	(2 << 10)
++#define INTEL_LTR_SCALE_32US	(3 << 10)
++#define INTEL_LTR_VALUE_MASK	GENMASK(9, 0)
++
++static void intel_cache_ltr(struct ufs_hba *hba)
++{
++	struct intel_host *host = ufshcd_get_variant(hba);
++
++	host->active_ltr = readl(hba->mmio_base + INTEL_ACTIVELTR);
++	host->idle_ltr = readl(hba->mmio_base + INTEL_IDLELTR);
++}
++
++static void intel_ltr_set(struct device *dev, s32 val)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	struct intel_host *host = ufshcd_get_variant(hba);
++	u32 ltr;
++
++	pm_runtime_get_sync(dev);
++
++	/*
++	 * Program latency tolerance (LTR) accordingly what has been asked
++	 * by the PM QoS layer or disable it in case we were passed
++	 * negative value or PM_QOS_LATENCY_ANY.
++	 */
++	ltr = readl(hba->mmio_base + INTEL_ACTIVELTR);
++
++	if (val == PM_QOS_LATENCY_ANY || val < 0) {
++		ltr &= ~INTEL_LTR_REQ;
++	} else {
++		ltr |= INTEL_LTR_REQ;
++		ltr &= ~INTEL_LTR_SCALE_MASK;
++		ltr &= ~INTEL_LTR_VALUE_MASK;
++
++		if (val > INTEL_LTR_VALUE_MASK) {
++			val >>= 5;
++			if (val > INTEL_LTR_VALUE_MASK)
++				val = INTEL_LTR_VALUE_MASK;
++			ltr |= INTEL_LTR_SCALE_32US | val;
++		} else {
++			ltr |= INTEL_LTR_SCALE_1US | val;
++		}
++	}
++
++	if (ltr == host->active_ltr)
++		goto out;
++
++	writel(ltr, hba->mmio_base + INTEL_ACTIVELTR);
++	writel(ltr, hba->mmio_base + INTEL_IDLELTR);
++
++	/* Cache the values into intel_host structure */
++	intel_cache_ltr(hba);
++out:
++	pm_runtime_put(dev);
++}
++
++static void ufs_intel_ltr_expose(struct ufs_hba *hba)
++{
++	struct intel_host *host = ufshcd_get_variant(hba);
++	struct dentry *dir = host->debugfs_root;
++	struct device *dev = hba->dev;
++
++	dev->power.set_latency_tolerance = intel_ltr_set;
++	dev_pm_qos_expose_latency_tolerance(dev);
++
++	intel_cache_ltr(hba);
++
++	debugfs_create_x32("active_ltr", 0444, dir, &host->active_ltr);
++	debugfs_create_x32("idle_ltr", 0444, dir, &host->idle_ltr);
++}
++
++static void ufs_intel_ltr_hide(struct ufs_hba *hba)
++{
++	struct device *dev = hba->dev;
++
++	dev_pm_qos_hide_latency_tolerance(dev);
++	dev->power.set_latency_tolerance = NULL;
++}
++
++static int ufs_intel_common_init(struct ufs_hba *hba)
++{
++	struct device *dev = hba->dev;
++	struct intel_host *host;
++
++	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++	ufshcd_set_variant(hba, host);
++	host->debugfs_root = debugfs_create_dir(dev_name(dev), NULL);
++	ufs_intel_ltr_expose(hba);
++	return 0;
++}
++
++static void ufs_intel_common_exit(struct ufs_hba *hba)
++{
++	struct intel_host *host = ufshcd_get_variant(hba);
++
++	debugfs_remove_recursive(host->debugfs_root);
++	ufs_intel_ltr_hide(hba);
++}
++
+ static int ufs_intel_ehl_init(struct ufs_hba *hba)
+ {
+ 	hba->quirks |= UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8;
+-	return 0;
++	return ufs_intel_common_init(hba);
+ }
+ 
+ static struct ufs_hba_variant_ops ufs_intel_cnl_hba_vops = {
+ 	.name                   = "intel-pci",
++	.init			= ufs_intel_common_init,
++	.exit			= ufs_intel_common_exit,
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
+ };
+ 
+ static struct ufs_hba_variant_ops ufs_intel_ehl_hba_vops = {
+ 	.name                   = "intel-pci",
+ 	.init			= ufs_intel_ehl_init,
++	.exit			= ufs_intel_common_exit,
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
+ };
+ 
+@@ -162,6 +279,8 @@ ufshcd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return err;
+ 	}
+ 
++	pci_set_drvdata(pdev, hba);
++
+ 	hba->vops = (struct ufs_hba_variant_ops *)id->driver_data;
+ 
+ 	err = ufshcd_init(hba, mmio_base, pdev->irq);
+@@ -171,7 +290,6 @@ ufshcd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return err;
+ 	}
+ 
+-	pci_set_drvdata(pdev, hba);
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_allow(&pdev->dev);
+ 
+-- 
+2.17.1
+
