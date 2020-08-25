@@ -2,720 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0116E2523F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D029025241D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgHYXEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:04:04 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:37280 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgHYXEE (ORCPT
+        id S1726903AbgHYXVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:21:36 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.78]:15669 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726905AbgHYXVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:04:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1598396702; x=1629932702;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=fayes6/xHcJ+Om/UEz4MdG7OwiA7isHkMygJaBFxx38=;
-  b=qzITqsHHXlqFZQ91HnBwI93OldmTIk7acxUMdAFkIQ1gAfR4EnCu8gAN
-   N1hqmP0M46BHLhIs1P2l9laBSmKn2M8LwmcGE8Jl1/3u0WM+lFiwh6Pgq
-   cdrsN7Ni7rn71OucQrU21udwJoc/WbtfuR+Z+5tVGzYYZMd5gkxzzwejT
-   I4W9mKSTphIDuuBpxg49JrDZwJjaROeUpcEE6PGoA6kUlVG7oWR6yX3WU
-   JksZmDQBg/1yGid2ZIo9vjgvjvy0UftYe8Cfh5Ybh6XmNU9e2AUSH01/O
-   1dgFR9VExjw6nFAHXMMniALz5ZLyS3LNqFRnNUNH8n4+CXsD8WApMdRfB
-   w==;
-IronPort-SDR: mBLUqRzrRuAaFJ0T7BoEIEdeFeC55Ikfqi5JPxRHKA9ZPNazHIKwcfEKfB6/UzTh/lFlTwz+JY
- jEN1mdyeXeGETsmi2+J1S96KB+n8sylwTX0a7xqrUcYKwyQSLyEu9puFIxoU94yMzA0hsFW/Wu
- s+m6GBtCS0SdJB9yGJ3MdeIY+nSD77OZKAMF0/FxquKWqZ7oKnHyeb+VSvcJ+ry7YxuYvCT4F5
- B2BE/d6vHbnIhRdpFYS8CiotKMLuBdg6gShRQxZTwsuQRdegHBLRtVd9/zjdTZO+nezKO4RNK1
- eCE=
-X-IronPort-AV: E=Sophos;i="5.76,354,1592841600"; 
-   d="scan'208";a="249055523"
-Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Aug 2020 07:05:01 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DHqwLa7OxZHqbgF5dMJ/N+9kw86OKbtS+ch8AD8gg70alJr1Jb7WSd4jAeJcO7u87d700cxkMFyag+lsRi5eGIXSm9CgO9C6FNXvZO3VBMTUnCGQ1Nn388cXB1k7jeU3CabBEQuYqi+5NAXY4ShvI07nzAQwZiyyVAVqRIvBoVErkj5CpDlK9Amf/DHUqJdHUSGoRl1UHk/gW2EfbjPQBw1LnXfb1taOir4xlV9bkBUbQhIQvly4u8jrJeouhbTV5CsnoitHolT5JXA974zHLY15VxZet1s3xedBWN2yxGcjLY2MT2zLbmz2eiYsmNgDLGi4aWL4k3WbJhGUao98Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B/6Gas7AwTp0xC0j5Q7uNGj8czR9lNZKL+atcXVkiZI=;
- b=WOXYOiifnF4eubV+8gzuecOfuWn9ndv/Syw8y71Ud/E2/2AbRwFk0ZFDSFdF0y1vpRn2iPep7/2GCeDWzgBX6L1qwnkltdMzt4KqUPEgqKLRSbgpGFp7qT3rmhWcDMjOC7xfa62YslYeO4FHdBkPPe1G+tIKTJGFR+Fn1nsssuKeIIZqL6kMLFAhfUpP+H9EazkpelHJ/9GUgd8RmZo608Qbzh479YuUa0V6ncL2Tcc+fFUjTQP5I+t2O9uRSNNF5gGaPEFSQvTGLDuhrNzjVtHUO19hckmJH1HyV98cMGU4AMxVke10dorMP+ixHKYIh6vPZw/Y3A2NCnntm6lJqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B/6Gas7AwTp0xC0j5Q7uNGj8czR9lNZKL+atcXVkiZI=;
- b=iiFvGkS6YeSaKx9hZz19ARIHA/HqQy2MdTBDHdL6j2Y8rnN6kBEh1STpykP0VdrMrNXO4tffUVUdvxArhNbLFFtu0r1d4RCGkShHpj7V1PV6dQfrM+5KZBsrToJshh3UPKlbfYHCxRmxhnz4rqIFCX3UahQyaS+hFQoipLLty7I=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
- by CY4PR0401MB3634.namprd04.prod.outlook.com (2603:10b6:910:8f::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Tue, 25 Aug
- 2020 23:03:58 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2%12]) with mapi id 15.20.3305.026; Tue, 25 Aug
- 2020 23:03:58 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>, Jens Axboe <axboe@kernel.dk>
-CC:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] null_blk: add support for max open/active zone limit for
- zoned devices
-Thread-Topic: [PATCH] null_blk: add support for max open/active zone limit for
- zoned devices
-Thread-Index: AQHWetp3ECXvSpsXkEe3PPbQhU57tw==
-Date:   Tue, 25 Aug 2020 23:03:58 +0000
-Message-ID: <CY4PR04MB3751304895558D34A8EE8DB1E7570@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200825122244.126129-1-niklas.cassel@wdc.com>
- <CY4PR04MB37518DF84867B6E8573A13B0E7570@CY4PR04MB3751.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:95f6:21b7:9982:4fac]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c7807641-d004-419b-ad83-08d8494b266d
-x-ms-traffictypediagnostic: CY4PR0401MB3634:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR0401MB3634ACC002E7B2C269580424E7570@CY4PR0401MB3634.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ShZMjmQAb0xF8isb/z6mpo0s7w3z2Na1vcZF+34wj5M0lxJHW1QmDQzItUTVA1als072JcS6eVT4nTcPZ3jmhHxaOtg2fbtmrk0qSUGE+1mPAN48R7wIfljWOSK5lX22JWhX5hkswsw1ouKKyamZoDWR3lPsBYzz7d9RXD0pWVnvM1ToBXmEI1lh5lFztn5uk6GACaSNFnlMTs/DbrcGqYKIKf7c4LjHk+3a53UYuDURkZ881FSWjv1Te8BHIWOhU/uIHZafBhuXBG1mgny6lCJcdHgSQPC5ln+1+Wcx6zwaBR8VEVDvp+afZH5uCjz0PTLcKEhSLDCRcLPqv3dlZQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(396003)(136003)(376002)(66476007)(66556008)(64756008)(76116006)(66946007)(9686003)(55016002)(91956017)(66446008)(53546011)(83380400001)(4326008)(54906003)(7696005)(6506007)(2906002)(316002)(110136005)(8936002)(71200400001)(33656002)(478600001)(30864003)(86362001)(52536014)(5660300002)(186003)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: C15r/xzz5JD7muwXJ4g2aivhJxgCY95XIgta+5RmbCh8YvUHE+1i/RiWdzJLZAp/FqSLMLt/utPk8xtorDLCa/g0tF1RlIuJbyNm5Tgaq3F1sbtU1PtYYa08gIENJNqZpKMdeSeTeZrMof2LXlB5/Uaf/5LZimA+vAab6hRgfJnTextZkK6EUVrcvgBLUA9LGS5Hj+QlGk/cq9Xtqi8IMA9by53QaM5jPtB+2ChEO8QJkVOel8K9FnunUzbJwO6wqxhPa/2nXB801ipZhNgh5aX6DQMHKTXgSU+DvqG2bOP1hQxu9znY5bANVo64kYdCqcGVfHCZMFWh1kqUiMukOc11nKNXgu7/itnpXW1L1Ea0ybWJCEirzWWgwaBbjqCvJqrlPzL5eiCW79MjGa1z7F2W1/AC99KBInIdEI29yjOYXXUEBNyJyKxo6/jAwjXv9P+RN10TKGrZQ2TgCkaXrUaDnVg3tmtrIDSJx4Zo5u/FzuDFFy0ZQ0C6QmeOxBaH4CG5ClJ5C/fjEd0LMu0BYE4KCQF4KqfGc5ZhloSOf46YZcdt5/xjJLRIARVwydTpsbpnVCk67rglJE6czxLMuMrRTEgV0g5dfkJM6vUauyucRMS63bv+WKKWMSPrtqKwV5PsWOnhF8M+ybaTmTiAVrMyaXZvG9B61IpdBBHRqYT3knwHvCwWNFABzQcHcSUo75GnAKVeBn4mhlvTp16xUg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 25 Aug 2020 19:21:32 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 3F4D52835E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 17:58:11 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id AhtLkxW66CjCVAhtLkjbI6; Tue, 25 Aug 2020 17:58:11 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qbTX7+RfGTdBt/QiCAJh2phecdvKxL9tHi/iN+H8Res=; b=tko7O8wsfo714hNVhqOuUL4Zuo
+        XgR8Pl1ivGkPYGkAV/YYkv58SH8ePWlSizxnTdWoMzkN7xyE8lwvuPswowDCfTTDDdOWXkwcRw/Ty
+        oP4GM80xHnLw3mrfHiifaoZodjBb0XEoD4lVFxuU57RP8CUg9Vb1TVQXIvs+ICBkBwQLZi+9V2ml/
+        q15xAk5GxUQM5UXJJdknIZ/N9XJv+mJ7IGYsOjYg9zxzVMBuILjI3AGpxKvo0NDXNDDMsX8m6Zv77
+        DlmNu8dMGCJLhwMNgJharR33nH91RSvUcPAftA4NAU9YA0Ekzas52C5OVXPwcGjkEMhzOU2Vn/iKA
+        N5cyD+rw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:40606 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kAhtK-004D5n-Ja; Tue, 25 Aug 2020 17:58:10 -0500
+Subject: Re: [PATCH] Documentation: add minimum clang/llvm version
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Will Deacon <will@kernel.org>, Borislav Petkov <bp@suse.de>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200825222552.3113760-1-ndesaulniers@google.com>
+ <20200825225131.GA2702183@ubuntu-n2-xlarge-x86>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <8e867824-48ca-f63a-c863-d4ce9f9ebf75@embeddedor.com>
+Date:   Tue, 25 Aug 2020 18:04:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7807641-d004-419b-ad83-08d8494b266d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2020 23:03:58.8492
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wyAiX7LoYlWY3snEoj2Elbq3Ub1qfjn9TPHHaQ2nt1zGvQxJi3Sf340DMj04YGDp77IQf7p+Ix5hooNnZjEE8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR0401MB3634
+In-Reply-To: <20200825225131.GA2702183@ubuntu-n2-xlarge-x86>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kAhtK-004D5n-Ja
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:40606
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 15
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/26 7:52, Damien Le Moal wrote:=0A=
-> On 2020/08/25 21:22, Niklas Cassel wrote:=0A=
->> Add support for user space to set a max open zone and a max active zone=
-=0A=
->> limit via configfs. By default, the default value is 0 =3D=3D no limit.=
-=0A=
-> =0A=
-> s/value is/values are/=0A=
-> =0A=
->>=0A=
->> Call the block layer API functions used for exposing the configured=0A=
->> limits to sysfs.=0A=
->>=0A=
->> Add accounting in null_blk_zoned so that these new limits are respected.=
-=0A=
->> Performing an operating that would exceed these limits results is a=0A=
-> =0A=
-> s/is a/in a/=0A=
-> =0A=
->> standard I/O error.=0A=
->>=0A=
->> A max open zone limit exists in the ZBC standard.=0A=
->> While null_blk_zoned is used to test the Zoned Block Device model in=0A=
->> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned=
-=0A=
->> mostly follows ZBC.=0A=
->>=0A=
->> Therefore, implement the manage open zone resources function from ZBC,=
-=0A=
->> but additionally add support for max active zones.=0A=
->> This enables user space not only to test against a device with an open=
-=0A=
->> zone limit, but also to test against a device with an active zone limit.=
-=0A=
->>=0A=
->> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>=0A=
->> ---=0A=
->>  drivers/block/null_blk.h       |   5 +=0A=
->>  drivers/block/null_blk_main.c  |  16 +-=0A=
->>  drivers/block/null_blk_zoned.c | 316 +++++++++++++++++++++++++++------=
-=0A=
->>  3 files changed, 283 insertions(+), 54 deletions(-)=0A=
->>=0A=
->> diff --git a/drivers/block/null_blk.h b/drivers/block/null_blk.h=0A=
->> index daed4a9c34367..d2e7db43a52a7 100644=0A=
->> --- a/drivers/block/null_blk.h=0A=
->> +++ b/drivers/block/null_blk.h=0A=
->> @@ -42,6 +42,9 @@ struct nullb_device {=0A=
->>  	struct badblocks badblocks;=0A=
->>  =0A=
->>  	unsigned int nr_zones;=0A=
->> +	unsigned int nr_zones_imp_open;=0A=
->> +	unsigned int nr_zones_exp_open;=0A=
->> +	unsigned int nr_zones_closed;=0A=
->>  	struct blk_zone *zones;=0A=
->>  	sector_t zone_size_sects;=0A=
->>  =0A=
->> @@ -51,6 +54,8 @@ struct nullb_device {=0A=
->>  	unsigned long zone_size; /* zone size in MB if device is zoned */=0A=
->>  	unsigned long zone_capacity; /* zone capacity in MB if device is zoned=
- */=0A=
->>  	unsigned int zone_nr_conv; /* number of conventional zones */=0A=
->> +	unsigned int zone_max_open; /* max number of open zones */=0A=
->> +	unsigned int zone_max_active; /* max number of active zones */=0A=
->>  	unsigned int submit_queues; /* number of submission queues */=0A=
->>  	unsigned int home_node; /* home node for the device */=0A=
->>  	unsigned int queue_mode; /* block interface */=0A=
->> diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main=
-.c=0A=
->> index d74443a9c8fa2..53161a418611b 100644=0A=
->> --- a/drivers/block/null_blk_main.c=0A=
->> +++ b/drivers/block/null_blk_main.c=0A=
->> @@ -208,6 +208,14 @@ static unsigned int g_zone_nr_conv;=0A=
->>  module_param_named(zone_nr_conv, g_zone_nr_conv, uint, 0444);=0A=
->>  MODULE_PARM_DESC(zone_nr_conv, "Number of conventional zones when block=
- device is zoned. Default: 0");=0A=
->>  =0A=
->> +static unsigned int g_zone_max_open;=0A=
->> +module_param_named(zone_max_open, g_zone_max_open, uint, 0444);=0A=
->> +MODULE_PARM_DESC(zone_max_open, "Maximum number of open zones when bloc=
-k device is zoned. Default: 0 (no limit)");=0A=
->> +=0A=
->> +static unsigned int g_zone_max_active;=0A=
->> +module_param_named(zone_max_active, g_zone_max_active, uint, 0444);=0A=
->> +MODULE_PARM_DESC(zone_max_active, "Maximum number of active zones when =
-block device is zoned. Default: 0 (no limit)");=0A=
->> +=0A=
->>  static struct nullb_device *null_alloc_dev(void);=0A=
->>  static void null_free_dev(struct nullb_device *dev);=0A=
->>  static void null_del_dev(struct nullb *nullb);=0A=
->> @@ -347,6 +355,8 @@ NULLB_DEVICE_ATTR(zoned, bool, NULL);=0A=
->>  NULLB_DEVICE_ATTR(zone_size, ulong, NULL);=0A=
->>  NULLB_DEVICE_ATTR(zone_capacity, ulong, NULL);=0A=
->>  NULLB_DEVICE_ATTR(zone_nr_conv, uint, NULL);=0A=
->> +NULLB_DEVICE_ATTR(zone_max_open, uint, NULL);=0A=
->> +NULLB_DEVICE_ATTR(zone_max_active, uint, NULL);=0A=
->>  =0A=
->>  static ssize_t nullb_device_power_show(struct config_item *item, char *=
-page)=0A=
->>  {=0A=
->> @@ -464,6 +474,8 @@ static struct configfs_attribute *nullb_device_attrs=
-[] =3D {=0A=
->>  	&nullb_device_attr_zone_size,=0A=
->>  	&nullb_device_attr_zone_capacity,=0A=
->>  	&nullb_device_attr_zone_nr_conv,=0A=
->> +	&nullb_device_attr_zone_max_open,=0A=
->> +	&nullb_device_attr_zone_max_active,=0A=
->>  	NULL,=0A=
->>  };=0A=
->>  =0A=
->> @@ -517,7 +529,7 @@ nullb_group_drop_item(struct config_group *group, st=
-ruct config_item *item)=0A=
->>  static ssize_t memb_group_features_show(struct config_item *item, char =
-*page)=0A=
->>  {=0A=
->>  	return snprintf(page, PAGE_SIZE,=0A=
->> -			"memory_backed,discard,bandwidth,cache,badblocks,zoned,zone_size,zon=
-e_capacity,zone_nr_conv\n");=0A=
->> +			"memory_backed,discard,bandwidth,cache,badblocks,zoned,zone_size,zon=
-e_capacity,zone_nr_conv,zone_max_open,zone_max_active\n");=0A=
->>  }=0A=
->>  =0A=
->>  CONFIGFS_ATTR_RO(memb_group_, features);=0A=
->> @@ -580,6 +592,8 @@ static struct nullb_device *null_alloc_dev(void)=0A=
->>  	dev->zone_size =3D g_zone_size;=0A=
->>  	dev->zone_capacity =3D g_zone_capacity;=0A=
->>  	dev->zone_nr_conv =3D g_zone_nr_conv;=0A=
->> +	dev->zone_max_open =3D g_zone_max_open;=0A=
->> +	dev->zone_max_active =3D g_zone_max_active;=0A=
->>  	return dev;=0A=
->>  }=0A=
->>  =0A=
->> diff --git a/drivers/block/null_blk_zoned.c b/drivers/block/null_blk_zon=
-ed.c=0A=
->> index 3d25c9ad23831..5fb38c9bdd4ae 100644=0A=
->> --- a/drivers/block/null_blk_zoned.c=0A=
->> +++ b/drivers/block/null_blk_zoned.c=0A=
->> @@ -51,6 +51,24 @@ int null_init_zoned_dev(struct nullb_device *dev, str=
-uct request_queue *q)=0A=
->>  			dev->zone_nr_conv);=0A=
->>  	}=0A=
->>  =0A=
->> +	/* Max active zones has to be <=3D number of sequential zones */=0A=
->> +	if (dev->zone_max_active > dev->nr_zones - dev->zone_nr_conv) {=0A=
->> +		dev->zone_max_active =3D dev->nr_zones - dev->zone_nr_conv;=0A=
->> +		pr_info("changed the maximum number of active zones to %u\n",=0A=
->> +			dev->nr_zones);=0A=
->> +	}=0A=
-> =0A=
-> if dev->zone_max_active =3D=3D dev->nr_zones - dev->zone_nr_conv, you cou=
-ld also=0A=
-> change dev->zone_max_active to 0, since that is equivalent. Not a blocker=
-=0A=
-> though, I think.=0A=
-> =0A=
->> +=0A=
->> +	/* Max open zones has to be <=3D max active zones */=0A=
->> +	if (dev->zone_max_active && dev->zone_max_open > dev->zone_max_active)=
- {=0A=
->> +		dev->zone_max_open =3D dev->zone_max_active;=0A=
->> +		pr_info("changed the maximum number of open zones to %u\n",=0A=
->> +			dev->nr_zones);=0A=
->> +	} else if (dev->zone_max_open > dev->nr_zones - dev->zone_nr_conv) {=
-=0A=
->> +		dev->zone_max_open =3D dev->nr_zones - dev->zone_nr_conv;=0A=
->> +		pr_info("changed the maximum number of open zones to %u\n",=0A=
->> +			dev->nr_zones);=0A=
->> +	}=0A=
-> =0A=
-> And same here for zone_max_open.=0A=
-> =0A=
->> +=0A=
->>  	for (i =3D 0; i <  dev->zone_nr_conv; i++) {=0A=
->>  		struct blk_zone *zone =3D &dev->zones[i];=0A=
->>  =0A=
->> @@ -99,6 +117,8 @@ int null_register_zoned_dev(struct nullb *nullb)=0A=
->>  	}=0A=
->>  =0A=
->>  	blk_queue_max_zone_append_sectors(q, dev->zone_size_sects);=0A=
->> +	blk_queue_max_open_zones(q, dev->zone_max_open);=0A=
->> +	blk_queue_max_active_zones(q, dev->zone_max_active);=0A=
->>  =0A=
->>  	return 0;=0A=
->>  }=0A=
->> @@ -159,6 +179,99 @@ size_t null_zone_valid_read_len(struct nullb *nullb=
-,=0A=
->>  	return (zone->wp - sector) << SECTOR_SHIFT;=0A=
->>  }=0A=
->>  =0A=
->> +static blk_status_t null_close_zone(struct nullb_device *dev, struct bl=
-k_zone *zone)=0A=
->> +{=0A=
->> +	if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +=0A=
->> +	switch (zone->cond) {=0A=
->> +	case BLK_ZONE_COND_CLOSED:=0A=
->> +		/* close operation on closed is not an error */=0A=
->> +		return BLK_STS_OK;=0A=
->> +	case BLK_ZONE_COND_IMP_OPEN:=0A=
->> +		dev->nr_zones_imp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_EXP_OPEN:=0A=
->> +		dev->nr_zones_exp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_EMPTY:=0A=
->> +	case BLK_ZONE_COND_FULL:=0A=
->> +	default:=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +	}=0A=
->> +=0A=
->> +	if (zone->wp =3D=3D zone->start) {=0A=
->> +		zone->cond =3D BLK_ZONE_COND_EMPTY;=0A=
->> +	} else {=0A=
->> +		zone->cond =3D BLK_ZONE_COND_CLOSED;=0A=
->> +		dev->nr_zones_closed++;=0A=
->> +	}=0A=
->> +=0A=
->> +	return BLK_STS_OK;=0A=
->> +}=0A=
->> +=0A=
->> +static void null_close_first_imp_zone(struct nullb_device *dev)=0A=
->> +{=0A=
->> +	unsigned int i;=0A=
->> +=0A=
->> +	for (i =3D 0; i < dev->nr_zones; i++) {=0A=
-> =0A=
-> You can start the loop from dev->nr_conv_zones, that will avoid the first=
- if below.=0A=
-> =0A=
->> +		if (dev->zones[i].type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> +			continue;=0A=
->> +		if (dev->zones[i].cond =3D=3D BLK_ZONE_COND_IMP_OPEN) {=0A=
->> +			null_close_zone(dev, &dev->zones[i]);=0A=
->> +			return;=0A=
->> +		}=0A=
->> +	}=0A=
->> +}=0A=
->> +=0A=
->> +static bool null_room_in_active(struct nullb_device *dev)=0A=
-> =0A=
-> The name is a little strange. What about null_can_set_active() ?=0A=
-> =0A=
->> +{=0A=
->> +	if (!dev->zone_max_active)=0A=
->> +		return true;=0A=
->> +=0A=
->> +	return dev->nr_zones_exp_open + dev->nr_zones_imp_open +=0A=
->> +	       dev->nr_zones_closed < dev->zone_max_active;=0A=
->> +}=0A=
->> +=0A=
->> +static bool null_room_in_open(struct nullb_device *dev)=0A=
-> =0A=
-> Same here: null_can_open() ?=0A=
-> =0A=
->> +{=0A=
->> +	if (!dev->zone_max_open)=0A=
->> +		return true;=0A=
->> +=0A=
->> +	return dev->nr_zones_exp_open + dev->nr_zones_imp_open < dev->zone_max=
-_open;=0A=
->> +}=0A=
->> +=0A=
->> +/*=0A=
->> + * This function matches the manage open zone resources function in the=
- ZBC standard,=0A=
->> + * with the addition of max active zones support (added in the ZNS stan=
-dard).=0A=
->> + *=0A=
->> + * ZBC states that an implicitly open zone shall be closed only if ther=
-e is not=0A=
->> + * room within the open limit. However, if an active limit is set, it i=
-s not certain=0A=
->> + * that an implicitly opened zone can be closed without exceeding the a=
-ctive limit.=0A=
-> =0A=
-> Hu... imp open and close both being an active state, closing an imp open =
-zone=0A=
-> will never result in exceeding the max active limit. Did you mean somethi=
-ng like=0A=
-> "closing an imp open zone to open another one" ? or something else ? This=
- needs=0A=
-> clarification as the function name does not really tell us what this is t=
-rying=0A=
-> to do. It looks like this is checking if a zone can be open... So why not=
- merge=0A=
-> that into null_room_in_open(), renamed null_can_open() ?=0A=
-> =0A=
->> + */=0A=
->> +static bool null_manage_zone_resources(struct nullb_device *dev, struct=
- blk_zone *zone)=0A=
->> +{=0A=
->> +	switch (zone->cond) {=0A=
->> +	case BLK_ZONE_COND_EMPTY:=0A=
->> +		if (!null_room_in_active(dev))=0A=
->> +			return false;=0A=
->> +		fallthrough;=0A=
->> +	case BLK_ZONE_COND_CLOSED:=0A=
->> +		if (null_room_in_open(dev)) {=0A=
->> +			return true;=0A=
->> +		} else if (dev->nr_zones_imp_open && null_room_in_active(dev)) {=0A=
->> +			null_close_first_imp_zone(dev);=0A=
->> +			return true;=0A=
->> +		} else {=0A=
-> =0A=
-> else is not needed here.=0A=
-> =0A=
->> +			return false;=0A=
->> +		}=0A=
->> +	default:=0A=
->> +		/* Should never be called for other states */=0A=
->> +		WARN_ON(1);=0A=
->> +		return false;=0A=
->> +	}=0A=
->> +}=0A=
->> +=0A=
->>  static blk_status_t null_zone_write(struct nullb_cmd *cmd, sector_t sec=
-tor,=0A=
->>  				    unsigned int nr_sectors, bool append)=0A=
->>  {=0A=
->> @@ -177,43 +290,155 @@ static blk_status_t null_zone_write(struct nullb_=
-cmd *cmd, sector_t sector,=0A=
->>  		/* Cannot write to a full zone */=0A=
->>  		return BLK_STS_IOERR;=0A=
->>  	case BLK_ZONE_COND_EMPTY:=0A=
->> +	case BLK_ZONE_COND_CLOSED:=0A=
->> +		if (!null_manage_zone_resources(dev, zone))=0A=
->> +			return BLK_STS_IOERR;=0A=
->> +		break;=0A=
->>  	case BLK_ZONE_COND_IMP_OPEN:=0A=
->>  	case BLK_ZONE_COND_EXP_OPEN:=0A=
->> +		break;=0A=
->> +	default:=0A=
->> +		/* Invalid zone condition */=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +	}=0A=
->> +=0A=
->> +	/*=0A=
->> +	 * Regular writes must be at the write pointer position.=0A=
->> +	 * Zone append writes are automatically issued at the write=0A=
->> +	 * pointer and the position returned using the request or BIO=0A=
->> +	 * sector.=0A=
->> +	 */=0A=
->> +	if (append) {=0A=
->> +		sector =3D zone->wp;=0A=
->> +		if (cmd->bio)=0A=
->> +			cmd->bio->bi_iter.bi_sector =3D sector;=0A=
->> +		else=0A=
->> +			cmd->rq->__sector =3D sector;=0A=
->> +	} else if (sector !=3D zone->wp) {=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +	}=0A=
->> +=0A=
->> +	if (zone->wp + nr_sectors > zone->start + zone->capacity)=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +=0A=
->> +	if (zone->cond =3D=3D BLK_ZONE_COND_CLOSED) {=0A=
->> +		dev->nr_zones_closed--;=0A=
->> +		dev->nr_zones_imp_open++;=0A=
->> +	} else if (zone->cond =3D=3D BLK_ZONE_COND_EMPTY) {=0A=
->> +		dev->nr_zones_imp_open++;=0A=
->> +	}=0A=
->> +	if (zone->cond !=3D BLK_ZONE_COND_EXP_OPEN)=0A=
->> +		zone->cond =3D BLK_ZONE_COND_IMP_OPEN;=0A=
->> +=0A=
->> +	ret =3D null_process_cmd(cmd, REQ_OP_WRITE, sector, nr_sectors);=0A=
->> +	if (ret !=3D BLK_STS_OK)=0A=
->> +		return ret;=0A=
->> +=0A=
->> +	zone->wp +=3D nr_sectors;=0A=
->> +	if (zone->wp =3D=3D zone->start + zone->capacity) {=0A=
->> +		if (zone->cond =3D=3D BLK_ZONE_COND_EXP_OPEN)=0A=
->> +			dev->nr_zones_exp_open--;=0A=
->> +		else if (zone->cond =3D=3D BLK_ZONE_COND_IMP_OPEN)=0A=
->> +			dev->nr_zones_imp_open--;=0A=
->> +		zone->cond =3D BLK_ZONE_COND_FULL;=0A=
->> +	}=0A=
->> +	return BLK_STS_OK;=0A=
->> +}=0A=
->> +=0A=
->> +static blk_status_t null_open_zone(struct nullb_device *dev, struct blk=
-_zone *zone)=0A=
->> +{=0A=
->> +	if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +=0A=
->> +	switch (zone->cond) {=0A=
->> +	case BLK_ZONE_COND_EXP_OPEN:=0A=
->> +		/* open operation on exp open is not an error */=0A=
->> +		return BLK_STS_OK;=0A=
->> +	case BLK_ZONE_COND_EMPTY:=0A=
->> +		if (!null_manage_zone_resources(dev, zone))=0A=
->> +			return BLK_STS_IOERR;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_IMP_OPEN:=0A=
->> +		dev->nr_zones_imp_open--;=0A=
->> +		break;=0A=
->>  	case BLK_ZONE_COND_CLOSED:=0A=
->> -		/*=0A=
->> -		 * Regular writes must be at the write pointer position.=0A=
->> -		 * Zone append writes are automatically issued at the write=0A=
->> -		 * pointer and the position returned using the request or BIO=0A=
->> -		 * sector.=0A=
->> -		 */=0A=
->> -		if (append) {=0A=
->> -			sector =3D zone->wp;=0A=
->> -			if (cmd->bio)=0A=
->> -				cmd->bio->bi_iter.bi_sector =3D sector;=0A=
->> -			else=0A=
->> -				cmd->rq->__sector =3D sector;=0A=
->> -		} else if (sector !=3D zone->wp) {=0A=
->> +		if (!null_manage_zone_resources(dev, zone))=0A=
->>  			return BLK_STS_IOERR;=0A=
->> -		}=0A=
->> +		dev->nr_zones_closed--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_FULL:=0A=
->> +	default:=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +	}=0A=
->> +=0A=
->> +	zone->cond =3D BLK_ZONE_COND_EXP_OPEN;=0A=
->> +	dev->nr_zones_exp_open++;=0A=
->> +=0A=
->> +	return BLK_STS_OK;=0A=
->> +}=0A=
->> +=0A=
->> +static blk_status_t null_finish_zone(struct nullb_device *dev, struct b=
-lk_zone *zone)=0A=
->> +{=0A=
->> +	if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> +		return BLK_STS_IOERR;=0A=
->>  =0A=
->> -		if (zone->wp + nr_sectors > zone->start + zone->capacity)=0A=
->> +	switch (zone->cond) {=0A=
->> +	case BLK_ZONE_COND_FULL:=0A=
->> +		/* finish operation on full is not an error */=0A=
->> +		return BLK_STS_OK;=0A=
->> +	case BLK_ZONE_COND_EMPTY:=0A=
->> +		if (!null_manage_zone_resources(dev, zone))=0A=
->> +			return BLK_STS_IOERR;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_IMP_OPEN:=0A=
->> +		dev->nr_zones_imp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_EXP_OPEN:=0A=
->> +		dev->nr_zones_exp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_CLOSED:=0A=
->> +		if (!null_manage_zone_resources(dev, zone))=0A=
->>  			return BLK_STS_IOERR;=0A=
->> +		dev->nr_zones_closed--;=0A=
->> +		break;=0A=
->> +	default:=0A=
->> +		return BLK_STS_IOERR;=0A=
->> +	}=0A=
->>  =0A=
->> -		if (zone->cond !=3D BLK_ZONE_COND_EXP_OPEN)=0A=
->> -			zone->cond =3D BLK_ZONE_COND_IMP_OPEN;=0A=
->> +	zone->cond =3D BLK_ZONE_COND_FULL;=0A=
->> +	zone->wp =3D zone->len;=0A=
-> =0A=
-> zone->wp =3D zone=3D>start + zone->len;=0A=
-> =0A=
->>  =0A=
->> -		ret =3D null_process_cmd(cmd, REQ_OP_WRITE, sector, nr_sectors);=0A=
->> -		if (ret !=3D BLK_STS_OK)=0A=
->> -			return ret;=0A=
->> +	return BLK_STS_OK;=0A=
->> +}=0A=
->> +=0A=
->> +static blk_status_t null_reset_zone(struct nullb_device *dev, struct bl=
-k_zone *zone)=0A=
->> +{=0A=
->> +	if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> +		return BLK_STS_IOERR;=0A=
->>  =0A=
->> -		zone->wp +=3D nr_sectors;=0A=
->> -		if (zone->wp =3D=3D zone->start + zone->capacity)=0A=
->> -			zone->cond =3D BLK_ZONE_COND_FULL;=0A=
->> +	switch (zone->cond) {=0A=
->> +	case BLK_ZONE_COND_EMPTY:=0A=
->> +		/* reset operation on empty is not an error */=0A=
->>  		return BLK_STS_OK;=0A=
->> +	case BLK_ZONE_COND_IMP_OPEN:=0A=
->> +		dev->nr_zones_imp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_EXP_OPEN:=0A=
->> +		dev->nr_zones_exp_open--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_CLOSED:=0A=
->> +		dev->nr_zones_closed--;=0A=
->> +		break;=0A=
->> +	case BLK_ZONE_COND_FULL:=0A=
->> +		break;=0A=
->>  	default:=0A=
->> -		/* Invalid zone condition */=0A=
->>  		return BLK_STS_IOERR;=0A=
->>  	}=0A=
->> +=0A=
->> +	zone->cond =3D BLK_ZONE_COND_EMPTY;=0A=
->> +	zone->wp =3D zone->start;=0A=
->> +=0A=
->> +	return BLK_STS_OK;=0A=
->>  }=0A=
->>  =0A=
->>  static blk_status_t null_zone_mgmt(struct nullb_cmd *cmd, enum req_opf =
-op,=0A=
->> @@ -222,49 +447,34 @@ static blk_status_t null_zone_mgmt(struct nullb_cm=
-d *cmd, enum req_opf op,=0A=
->>  	struct nullb_device *dev =3D cmd->nq->dev;=0A=
->>  	unsigned int zone_no =3D null_zone_no(dev, sector);=0A=
->>  	struct blk_zone *zone =3D &dev->zones[zone_no];=0A=
->> +	blk_status_t ret;=0A=
->>  	size_t i;=0A=
->>  =0A=
->>  	switch (op) {=0A=
->>  	case REQ_OP_ZONE_RESET_ALL:=0A=
->>  		for (i =3D 0; i < dev->nr_zones; i++) {=0A=
->> -			if (zone[i].type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> -				continue;=0A=
->> -			zone[i].cond =3D BLK_ZONE_COND_EMPTY;=0A=
->> -			zone[i].wp =3D zone[i].start;=0A=
->> +			null_reset_zone(dev, &dev->zones[i]);=0A=
->>  		}=0A=
-> =0A=
-> You can drop the curly brackets too, and start the loop from nr_conv_zone=
-s too.=0A=
-> =0A=
->>  		break;=0A=
->>  	case REQ_OP_ZONE_RESET:=0A=
->> -		if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -=0A=
->> -		zone->cond =3D BLK_ZONE_COND_EMPTY;=0A=
->> -		zone->wp =3D zone->start;=0A=
->> +		ret =3D null_reset_zone(dev, zone);=0A=
->> +		if (ret !=3D BLK_STS_OK)=0A=
->> +			return ret;=0A=
-> =0A=
-> You can return directly here:=0A=
-> =0A=
-> return null_reset_zone(dev, zone);=0A=
-=0A=
-Arg. No, you can't. There is the trace call after the switch. So please ign=
-ore=0A=
-this comment :)=0A=
-=0A=
-But you can still avoid repeating the "if (ret !=3D BLK_STS_OK) return ret;=
-" by=0A=
-calling the trace only for BLK_STS_OK and returning ret at the end.=0A=
-=0A=
-> =0A=
->>  		break;=0A=
->>  	case REQ_OP_ZONE_OPEN:=0A=
->> -		if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -		if (zone->cond =3D=3D BLK_ZONE_COND_FULL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -=0A=
->> -		zone->cond =3D BLK_ZONE_COND_EXP_OPEN;=0A=
->> +		ret =3D null_open_zone(dev, zone);=0A=
->> +		if (ret !=3D BLK_STS_OK)=0A=
->> +			return ret;=0A=
-> =0A=
-> same here.=0A=
-> =0A=
->>  		break;=0A=
->>  	case REQ_OP_ZONE_CLOSE:=0A=
->> -		if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -		if (zone->cond =3D=3D BLK_ZONE_COND_FULL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -=0A=
->> -		if (zone->wp =3D=3D zone->start)=0A=
->> -			zone->cond =3D BLK_ZONE_COND_EMPTY;=0A=
->> -		else=0A=
->> -			zone->cond =3D BLK_ZONE_COND_CLOSED;=0A=
->> +		ret =3D null_close_zone(dev, zone);=0A=
->> +		if (ret !=3D BLK_STS_OK)=0A=
->> +			return ret;=0A=
-> =0A=
-> And here.=0A=
-> =0A=
->>  		break;=0A=
->>  	case REQ_OP_ZONE_FINISH:=0A=
->> -		if (zone->type =3D=3D BLK_ZONE_TYPE_CONVENTIONAL)=0A=
->> -			return BLK_STS_IOERR;=0A=
->> -=0A=
->> -		zone->cond =3D BLK_ZONE_COND_FULL;=0A=
->> -		zone->wp =3D zone->start + zone->len;=0A=
->> +		ret =3D null_finish_zone(dev, zone);=0A=
->> +		if (ret !=3D BLK_STS_OK)=0A=
->> +			return ret;=0A=
-> =0A=
-> And here too.=0A=
-> =0A=
->>  		break;=0A=
->>  	default:=0A=
->>  		return BLK_STS_NOTSUPP;=0A=
->>=0A=
-> =0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+
+
+On 8/25/20 17:51, Nathan Chancellor wrote:
+> On Tue, Aug 25, 2020 at 03:25:51PM -0700, Nick Desaulniers wrote:
+>> Based on a vote at the LLVM BoF at Plumbers 2020, we decided to start
+>> small, supporting just one formal upstream release of LLVM for now.
+>>
+>> We can probably widen the support window of supported versions over
+>> time.  Also, note that LLVM's release process is different than GCC's.
+>> GCC tends to have 1 major release per year while releasing minor updates
+>> to the past 3 major versions.  LLVM tends to support one major release
+>> and one minor release every six months.
+>>
+>> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>> ---
+>> Note to reviewers: working remote, I'm having trouble testing/verifying
+>> that I have the RST links wired up correctly; I would appreciate it if
+>> someone is able to `make htmldocs` and check
+>> Documentation/output/process/changes.html properly links to
+>> Documentation/output/kbuild/llvm.html.
+> 
+> I ran 'make O=out htmldocs' and can confirm that the link works properly
+> in process/changes.html, pointing to kbuild/llvm.html.
+> 
+
+The same here.
+
+Tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+>>  Documentation/kbuild/llvm.rst     |  2 ++
+>>  Documentation/process/changes.rst | 10 ++++++++++
+>>  2 files changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+>> index 2aac50b97921..70ec6e9a183b 100644
+>> --- a/Documentation/kbuild/llvm.rst
+>> +++ b/Documentation/kbuild/llvm.rst
+>> @@ -1,3 +1,5 @@
+>> +.. _kbuild_llvm:
+>> +
+>>  ==============================
+>>  Building Linux with Clang/LLVM
+>>  ==============================
+>> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+>> index ee741763a3fc..6c580ef9f2a3 100644
+>> --- a/Documentation/process/changes.rst
+>> +++ b/Documentation/process/changes.rst
+>> @@ -30,6 +30,7 @@ you probably needn't concern yourself with pcmciautils.
+>>          Program        Minimal version       Command to check the version
+>>  ====================== ===============  ========================================
+>>  GNU C                  4.9              gcc --version
+>> +Clang/LLVM (optional)  10.0.1           clang --version
+> 
+> Maybe it is worth making the "(optional)" a footnote like Sphinx? Seems
+> to just kind of stick out to me but I do not have a strong opinion
+> unless others do.
+> 
+>>  GNU make               3.81             make --version
+>>  binutils               2.23             ld -v
+>>  flex                   2.5.35           flex --version
+>> @@ -68,6 +69,15 @@ GCC
+>>  The gcc version requirements may vary depending on the type of CPU in your
+>>  computer.
+>>  
+>> +Clang/LLVM (optional)
+>> +---------------------
+>> +
+>> +The latest formal release of clang and LLVM utils (according to
+>> +`releases.llvm.org <https://releases.llvm.org>`_) are supported for building
+>> +kernels. Older releases aren't gauranteed to work, and we may drop workarounds
+>> +from the kernel that were used to support older versions. Please see additional
+>> +docs on :ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
+>> +
+> 
+> Do we maybe want to add a section for LLVM/clang in the "Getting updated
+> software" section? Maybe just a link to the existing section that we
+> have in kbuild/llvm.rst?
+> 
+>>  Make
+>>  ----
+>>  
+>> -- 
+>> 2.28.0.297.g1956fa8f8d-goog
+>>
+> 
+> Regardless of the nits above:
+> 
+> Reviewed-and-tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
