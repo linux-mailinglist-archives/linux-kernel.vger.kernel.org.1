@@ -2,188 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A668B2518EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43A62518F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgHYMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:48:58 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:44798 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729173AbgHYMsn (ORCPT
+        id S1729521AbgHYMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:49:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38626 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729372AbgHYMtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:48:43 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PCeAgb017877;
-        Tue, 25 Aug 2020 08:48:31 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 332w761k7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 08:48:30 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 07PCmTRn017105
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 25 Aug 2020 08:48:29 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 25 Aug 2020 05:48:28 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 25 Aug 2020 05:48:27 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 25 Aug 2020 05:48:27 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07PCm0jU001781;
-        Tue, 25 Aug 2020 08:48:24 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <vkoul@kernel.org>, <lars@metafoo.de>, <dan.j.williams@intel.com>,
-        <ardeleanalex@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 6/6] dmaengine: axi-dmac: add support for reading bus attributes from registers
-Date:   Tue, 25 Aug 2020 15:48:40 +0300
-Message-ID: <20200825124840.43664-14-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825124840.43664-1-alexandru.ardelean@analog.com>
-References: <20200825124840.43664-1-alexandru.ardelean@analog.com>
+        Tue, 25 Aug 2020 08:49:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598359751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2cbENVwZDuEmq7Y+JiiFnjSHv5sQfWHtT+16663LunI=;
+        b=FzjXo7AjAFrCeH6NgJAyzxT7hF9Xc/qAuCogApNQuzekOWX+GVShq7hc5P3exlIn8J7UfU
+        gGVTHlzNysJth1P0DCrthq19rY01CC95xn7J99uSm4e7V1ViDED5no10AjWd8+bjFQKwtJ
+        Nd2mhx5iA9dsmDvrtzZRMY8Cs2Do0/4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-lHpUuQjVPi-HejwtZRDGWw-1; Tue, 25 Aug 2020 08:49:10 -0400
+X-MC-Unique: lHpUuQjVPi-HejwtZRDGWw-1
+Received: by mail-wm1-f70.google.com with SMTP id r14so699821wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:49:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2cbENVwZDuEmq7Y+JiiFnjSHv5sQfWHtT+16663LunI=;
+        b=J08tQvUDyVnFywEyIHdxNzoStUSElECKExwomecl77D6h5xSkWljAvClLH+g98P5Pa
+         RU2NPa+iRsD8EgvH1ecP3JYAOTzE7Z91Bj/jskUXakoRNH4WTMQmX5mBPzOe9m6klONA
+         oKGibBWP4p/8q9ZAesEvNJzW+ytKGpKz5EAdVD8Joc+EzzlQgv0B3XWkAP8RiXkQsWbD
+         y9kI1eOzH9fNUJkcoLtPz1goMOKbiQx7/5ZW547c69aID4ip1fW2OWt18J12htMWO/YQ
+         +qdawKfODl2Zbabp1KHZ/tN//SR00eXe4aDzopTnT1CGacVMzWA6rQB3NHHnN2f5BcqT
+         bNGQ==
+X-Gm-Message-State: AOAM533taOhkCEl/NsqFBLuT84W9b/luBS2RdrYBCbr7R38L9V1ULtK0
+        3wdwWaWonRX80WKHGZ/Yl1GZQDC/7Tcxko4dEfG4XRI5V+yDx08mlBfnxoblAQlHDc2ibHiDI4o
+        eo+HZWu+LjeO6dfbge1b49yEZ
+X-Received: by 2002:adf:9283:: with SMTP id 3mr10403578wrn.70.1598359748940;
+        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxN9gfbiXLS3FXlknqEUTpyobm1UaS3fx3Umjd+xf3wr9fw7fymjKhATua12i3qZKiqps4MNA==
+X-Received: by 2002:adf:9283:: with SMTP id 3mr10403569wrn.70.1598359748763;
+        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id y16sm30120301wrr.83.2020.08.25.05.49.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 05:49:08 -0700 (PDT)
+Subject: Re: [PATCH v4 0/4] Remove dependency of check subcmd upon orc
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        benh@kernel.crashing.org
+References: <20200825124700.29616-1-jthierry@redhat.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <3ef3dd0e-8820-1734-d11e-58a5c9390dd6@redhat.com>
+Date:   Tue, 25 Aug 2020 13:49:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-25_04:2020-08-25,2020-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=25
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1015
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008250096
+In-Reply-To: <20200825124700.29616-1-jthierry@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with core version 4.3.a the DMA bus attributes can (and should) be
-read from the INTERFACE_DESCRIPTION (0x10) register.
+Hi,
 
-For older core versions, this will still need to be provided from the
-device-tree.
+Sorry for the duplicate send. An issue happened while sending this one. 
+Please ignore this thread.
 
-The bus-type values are identical to the ones stored in the device-trees,
-so we just need to read them. Bus-width values are stored in log2 values,
-so we just need to use them as shift values to make them equivalent to the
-current format.
+Thanks,
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/dma/dma-axi-dmac.c | 66 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 63 insertions(+), 3 deletions(-)
+Julien
 
-diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
-index 7ee56ae60093..25442a437879 100644
---- a/drivers/dma/dma-axi-dmac.c
-+++ b/drivers/dma/dma-axi-dmac.c
-@@ -6,6 +6,7 @@
-  *  Author: Lars-Peter Clausen <lars@metafoo.de>
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/dma-mapping.h>
-@@ -45,6 +46,16 @@
-  * there is no address than can or needs to be configured for the device side.
-  */
- 
-+#define AXI_DMAC_REG_INTERFACE_DESC	0x10
-+#define   AXI_DMAC_DMA_SRC_TYPE_MSK	GENMASK(13, 12)
-+#define   AXI_DMAC_DMA_SRC_TYPE_GET(x)	FIELD_GET(AXI_DMAC_DMA_SRC_TYPE_MSK, x)
-+#define   AXI_DMAC_DMA_SRC_WIDTH_MSK	GENMASK(11, 8)
-+#define   AXI_DMAC_DMA_SRC_WIDTH_GET(x)	FIELD_GET(AXI_DMAC_DMA_SRC_WIDTH_MSK, x)
-+#define   AXI_DMAC_DMA_DST_TYPE_MSK	GENMASK(5, 4)
-+#define   AXI_DMAC_DMA_DST_TYPE_GET(x)	FIELD_GET(AXI_DMAC_DMA_DST_TYPE_MSK, x)
-+#define   AXI_DMAC_DMA_DST_WIDTH_MSK	GENMASK(3, 0)
-+#define   AXI_DMAC_DMA_DST_WIDTH_GET(x)	FIELD_GET(AXI_DMAC_DMA_DST_WIDTH_MSK, x)
-+
- #define AXI_DMAC_REG_IRQ_MASK		0x80
- #define AXI_DMAC_REG_IRQ_PENDING	0x84
- #define AXI_DMAC_REG_IRQ_SOURCE		0x88
-@@ -801,6 +812,51 @@ static int axi_dmac_parse_dt(struct device *dev, struct axi_dmac *dmac)
- 	return 0;
- }
- 
-+static int axi_dmac_read_chan_config(struct device *dev, struct axi_dmac *dmac)
-+{
-+	struct axi_dmac_chan *chan = &dmac->chan;
-+	unsigned int val, desc;
-+
-+	desc = axi_dmac_read(dmac, AXI_DMAC_REG_INTERFACE_DESC);
-+	if (desc == 0) {
-+		dev_err(dev, "DMA interface register reads zero\n");
-+		return -EFAULT;
-+	}
-+
-+	val = AXI_DMAC_DMA_SRC_TYPE_GET(desc);
-+	if (val > AXI_DMAC_BUS_TYPE_FIFO) {
-+		dev_err(dev, "Invalid source bus type read: %d\n", val);
-+		return -EINVAL;
-+	}
-+	chan->src_type = val;
-+
-+	val = AXI_DMAC_DMA_DST_TYPE_GET(desc);
-+	if (val > AXI_DMAC_BUS_TYPE_FIFO) {
-+		dev_err(dev, "Invalid destination bus type read: %d\n", val);
-+		return -EINVAL;
-+	}
-+	chan->dest_type = val;
-+
-+	val = AXI_DMAC_DMA_SRC_WIDTH_GET(desc);
-+	if (val == 0) {
-+		dev_err(dev, "Source bus width is zero\n");
-+		return -EINVAL;
-+	}
-+	/* widths are stored in log2 */
-+	chan->src_width = 1 << val;
-+
-+	val = AXI_DMAC_DMA_DST_WIDTH_GET(desc);
-+	if (val == 0) {
-+		dev_err(dev, "Destination bus width is zero\n");
-+		return -EINVAL;
-+	}
-+	chan->dest_width = 1 << val;
-+
-+	axi_dmac_adjust_chan_params(chan);
-+
-+	return 0;
-+}
-+
- static int axi_dmac_detect_caps(struct axi_dmac *dmac, unsigned int version)
- {
- 	struct axi_dmac_chan *chan = &dmac->chan;
-@@ -880,7 +936,13 @@ static int axi_dmac_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = axi_dmac_parse_dt(&pdev->dev, dmac);
-+	version = axi_dmac_read(dmac, ADI_AXI_REG_VERSION);
-+
-+	if (version >= ADI_AXI_PCORE_VER(4, 3, 'a'))
-+		ret = axi_dmac_read_chan_config(&pdev->dev, dmac);
-+	else
-+		ret = axi_dmac_parse_dt(&pdev->dev, dmac);
-+
- 	if (ret < 0)
- 		goto err_clk_disable;
- 
-@@ -912,8 +974,6 @@ static int axi_dmac_probe(struct platform_device *pdev)
- 	dmac->chan.vchan.desc_free = axi_dmac_desc_free;
- 	vchan_init(&dmac->chan.vchan, dma_dev);
- 
--	version = axi_dmac_read(dmac, ADI_AXI_REG_VERSION);
--
- 	ret = axi_dmac_detect_caps(dmac, version);
- 	if (ret)
- 		goto err_clk_disable;
+On 8/25/20 1:46 PM, Julien Thierry wrote:
+> Hi,
+> 
+> Matt Helsley's change[1] provided a base framework to opt-in/out
+> objtool subcommands at compile time. This makes it easier for
+> architectures to port objtool, one subcommand at a time.
+> 
+> Orc generation relies on the check operation implementation. However,
+> the way this is done causes the check implementation to depend on the
+> implementation of orc generation functions to call if orc generation is
+> requested. This means that in order to implement check subcmd, orc
+> subcmd also need to be implemented.
+> 
+> These patches aim at removing that dependency, having orc subcmd
+> being built on top of the check subcmd.
+> 
+> 
+> Changes since v3 [2]:
+> - Rebased on v5.9-rc1
+> - Renamed objtool_setup_file() to objtool_open_read()
+> - Fixed misplaced elf_write() when file->elf->changed is true
+> - Avoid additional allocation for orc data and compile out orc
+>    definition when not needed instead
+> 
+> [1] https://www.spinics.net/lists/kernel/msg3510844.html
+> [2] https://lkml.org/lkml/2020/7/30/415
+> 
+> Cheers,
+> 
+> Julien
+> 
+> -->
+> 
+> Julien Thierry (4):
+>    objtool: Move object file loading out of check
+>    objtool: Move orc outside of check
+>    objtool: orc: Skip setting orc_entry for non-text sections
+>    objtool: check: Use orc definition only when needed
+> 
+>   tools/objtool/Makefile        |  4 +++
+>   tools/objtool/arch.h          |  2 ++
+>   tools/objtool/builtin-check.c | 15 ++++++++++-
+>   tools/objtool/builtin-orc.c   | 27 +++++++++++++++++++-
+>   tools/objtool/check.c         | 47 ++++++-----------------------------
+>   tools/objtool/check.h         |  2 ++
+>   tools/objtool/objtool.c       | 29 +++++++++++++++++++++
+>   tools/objtool/objtool.h       |  4 ++-
+>   tools/objtool/orc_gen.c       |  3 +++
+>   tools/objtool/weak.c          |  4 +--
+>   10 files changed, 92 insertions(+), 45 deletions(-)
+> 
+> --
+> 2.21.3
+> 
+
 -- 
-2.17.1
+Julien Thierry
 
