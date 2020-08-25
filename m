@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E86D25219D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1022521AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgHYULH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 16:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S1727069AbgHYUMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 16:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHYULD (ORCPT
+        with ESMTP id S1726645AbgHYULG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 16:11:03 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323C3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:11:03 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id k18so10003020qtm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:11:03 -0700 (PDT)
+        Tue, 25 Aug 2020 16:11:06 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47667C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:11:06 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id i2so6812970qtb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=81C/lA6HY2KxQVDEZQTDvj+0VcawE4mM9Jq8wz/uYUA=;
-        b=YLcGY5Mx7CJzSCKqS86IKhVeZI6lXWrdWhYqPATA4Q/3Ia3m9SfovL0wgvJ2U7MCS5
-         wuR9C7ACB5L9sOLYYKmGqAfZm0OR5nIBYpBYXiaUNDOu6aBB+fj9rwe7HX7IPbYetqtd
-         8Ek4SvDGpwuHi9rMDwv7hrNi5JSmWoQWfbbOE+kHQE9/atEqrIaXa4+dcWvvUc7QL1BT
-         //IxusKhH9oKytppAid63HO8I8UXQIJMJbxMCRxIBPMYIPYWwGUMLz/h3dQPpGv7SP8X
-         +hagxkxr8rpCKcEo8sAVz9nj0TVXD1LaLQVbqHySKt5GxE57Zwrde1iJf/unZQUCzTi4
-         zAfQ==
+        bh=Y3YVryPXklllfdxGU+w/IQCrc9AF7mpnZ0z2qTujuJ8=;
+        b=mK1eEnbFMbuEq6vr/5IuRN3tRmdLpPEIrymOmhWmNDmV9j+qxrPh9B6L+vZo9ugmXm
+         8PGysjggH+SLwzfc4ws25Efk3GgNFwXgk2hcBXVrh2kpNlbSLoLp/Nt6oehqvr6dXdqa
+         j0/zzwxMezWQ73DBewBagBo0s0cZ1CiyNolsIRHQL7qZpFFodvSDGd/sAe1od/5DCieB
+         zO7ONjxYxBVesuDOurKt0R/wLyUIxAk8oQ947L0zwK7bBIIJj/MuhP41xH0UqyXiMckT
+         d8uUeGQcpsMqGANG8jm5DQ7JarsUi5m0OVzOdCQAe08OVdQ+NRF7yrB2AyrCtdXDybsE
+         X1KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=81C/lA6HY2KxQVDEZQTDvj+0VcawE4mM9Jq8wz/uYUA=;
-        b=EIJ6lKyfRqXArXcza/BJzumUkI9Lxz6Q17rNoaHowWkrNK9qZz3sFa8xRcsWfId+W5
-         /i3im61ybPvstSJjfKjoa7oP2F8YUo6ucJpm8wLwYOF8d3kVQgOQc2MSJlGKvmkXegOe
-         8AqKXhWUIJBgCzD616NpNJ+CthcBZaEQsXG7K+kbJHUwqq7fn2eYO+vzEYRmJhEE9Cjx
-         BnZxV/5GS161WFUMl2bOetZ1/yu3yidXFAVBFZCPPdQZfV/mJCXVz62u86CDwwUjC/yG
-         vcZsn/DUK8WkdBa4ATtxKZxSycZBvAek6TWrK0oYIfJ8K7ZWl6VCpC9Vi7O2ebQe4QIG
-         Xghg==
-X-Gm-Message-State: AOAM530uYz4vYBIP3m/BwCcusPS+rd90OjABYjJmBkT743g2uU7yGKo5
-        KG9UCbt9NNDC86ex+qzLWII=
-X-Google-Smtp-Source: ABdhPJwuskvK6HPj7W2thApZVZNcdOdNW/RoIlcEBXUC8fe42Of980eEVd3b7I8iBLSfMMyatVsZAw==
-X-Received: by 2002:aed:3e59:: with SMTP id m25mr11234505qtf.341.1598386262359;
-        Tue, 25 Aug 2020 13:11:02 -0700 (PDT)
+        bh=Y3YVryPXklllfdxGU+w/IQCrc9AF7mpnZ0z2qTujuJ8=;
+        b=M7m8OUwZ61TAXRdwVAzO/rcIHDy2gbhHuhjcKzi/i+rEmdGdX1wOudTYpxIxRTkItg
+         HE15m/QUS5S18t6gpf5a9qsm3vGDBPzbifSW1YTtxpVxC916U+Z+iseKtzq/K5E62GBj
+         xmNU0IW4lFhCfvr2M+zolTiKHDz84iyD2dfv69Zy/MUPfb48sE5P5k3HDv9euiYJ3N7A
+         0qFwnzg7FkNKsfNcPb9vPAB+eBnxLZIqIInjmE5jIqNgrx+8Xrht+mTP2Amzo+By1HYZ
+         e9SKdiND86+3aKnxLcrCjaWfPjHuKjn58OBkwxDbXZkz2FBQ2OkOHClkfWIIPGfm5tY3
+         6cVA==
+X-Gm-Message-State: AOAM530x1H2bx481rulHLeCix9Mk0AwYahM/kRj9smEF6dTHWb8/fchv
+        GoVsn51GKM9yh3ZvSMQxv4sTJ6M2gyY=
+X-Google-Smtp-Source: ABdhPJxYZEOOmucmMIGwT/JzQtTHt89dm1h1u72DCk2DdcaKfpm6PDuSIA49Q+8WPXU52vqxCOlo1w==
+X-Received: by 2002:ac8:6141:: with SMTP id d1mr3025288qtm.170.1598386264388;
+        Tue, 25 Aug 2020 13:11:04 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id n23sm12453459qkk.105.2020.08.25.13.11.01
+        by smtp.googlemail.com with ESMTPSA id n23sm12453459qkk.105.2020.08.25.13.11.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 13:11:01 -0700 (PDT)
+        Tue, 25 Aug 2020 13:11:04 -0700 (PDT)
 From:   Connor McAdams <conmanx360@gmail.com>
 Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/20] ALSA: hda/ca0132 - Add speaker tuning initialization commands.
-Date:   Tue, 25 Aug 2020 16:10:21 -0400
-Message-Id: <20200825201040.30339-3-conmanx360@gmail.com>
+Subject: [PATCH v2 03/20] ALSA: hda/ca0132 - Add surround channel config control.
+Date:   Tue, 25 Aug 2020 16:10:22 -0400
+Message-Id: <20200825201040.30339-4-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200825201040.30339-1-conmanx360@gmail.com>
 References: <20200825201040.30339-1-conmanx360@gmail.com>
@@ -66,165 +66,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add speaker tuning initialization DSP commands, and also define
-previously unknown DSP command values.
+Add a surround channel configuration enumeration control. Setting up
+different channel configurations allows the DSP to upmix stereo audio
+into multi-channel audio, and allows for redirection of bass to a
+subwoofer.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 119 +++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ sound/pci/hda/patch_ca0132.c | 110 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 108 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 7491e2044638..2e664aeee1c4 100644
+index 2e664aeee1c4..1a5fb30b69ab 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -589,6 +589,60 @@ static const struct ct_eq_preset ca0132_alt_eq_presets[] = {
+@@ -38,6 +38,8 @@
+ #define FLOAT_ONE	0x3f800000
+ #define FLOAT_TWO	0x40000000
+ #define FLOAT_THREE     0x40400000
++#define FLOAT_FIVE	0x40a00000
++#define FLOAT_SIX       0x40c00000
+ #define FLOAT_EIGHT     0x41000000
+ #define FLOAT_MINUS_5	0xc0a00000
+ 
+@@ -143,7 +145,8 @@ enum {
+ 	MIC_BOOST_ENUM,
+ 	AE5_HEADPHONE_GAIN_ENUM,
+ 	AE5_SOUND_FILTER_ENUM,
+-	ZXR_HEADPHONE_GAIN
++	ZXR_HEADPHONE_GAIN,
++	SPEAKER_CHANNEL_CFG_ENUM,
+ #define EFFECTS_COUNT  (EFFECT_END_NID - EFFECT_START_NID)
+ };
+ 
+@@ -686,6 +689,39 @@ static const struct ca0132_alt_out_set alt_out_presets[] = {
  	}
  };
  
-+/*
-+ * Definitions for the DSP req's to handle speaker tuning. These all belong to
-+ * module ID 0x96, the output effects module.
-+ */
-+enum speaker_tuning_reqs {
-+	/*
-+	 * Currently, this value is always set to 0.0f. However, on Windows,
-+	 * when selecting certain headphone profiles on the new Sound Blaster
-+	 * connect software, the QUERY_SPEAKER_EQ_ADDRESS req on mid 0x80 is
-+	 * sent. This gets the speaker EQ address area, which is then used to
-+	 * send over (presumably) an equalizer profile for the specific
-+	 * headphone setup. It is sent using the same method the DSP
-+	 * firmware is uploaded with, which I believe is why the 'ctspeq.bin'
-+	 * file exists in linux firmware tree but goes unused. It would also
-+	 * explain why the QUERY_SPEAKER_EQ_ADDRESS req is defined but unused.
-+	 * Once this profile is sent over, SPEAKER_TUNING_USE_SPEAKER_EQ is
-+	 * set to 1.0f.
-+	 */
-+	SPEAKER_TUNING_USE_SPEAKER_EQ           = 0x1f,
-+	SPEAKER_TUNING_ENABLE_CENTER_EQ         = 0x20,
-+	SPEAKER_TUNING_FRONT_LEFT_VOL_LEVEL     = 0x21,
-+	SPEAKER_TUNING_FRONT_RIGHT_VOL_LEVEL    = 0x22,
-+	SPEAKER_TUNING_CENTER_VOL_LEVEL         = 0x23,
-+	SPEAKER_TUNING_LFE_VOL_LEVEL            = 0x24,
-+	SPEAKER_TUNING_REAR_LEFT_VOL_LEVEL      = 0x25,
-+	SPEAKER_TUNING_REAR_RIGHT_VOL_LEVEL     = 0x26,
-+	SPEAKER_TUNING_SURROUND_LEFT_VOL_LEVEL  = 0x27,
-+	SPEAKER_TUNING_SURROUND_RIGHT_VOL_LEVEL = 0x28,
-+	/*
-+	 * Inversion is used when setting headphone virtualization to line
-+	 * out. Not sure why this is, but it's the only place it's ever used.
-+	 */
-+	SPEAKER_TUNING_FRONT_LEFT_INVERT        = 0x29,
-+	SPEAKER_TUNING_FRONT_RIGHT_INVERT       = 0x2a,
-+	SPEAKER_TUNING_CENTER_INVERT            = 0x2b,
-+	SPEAKER_TUNING_LFE_INVERT               = 0x2c,
-+	SPEAKER_TUNING_REAR_LEFT_INVERT         = 0x2d,
-+	SPEAKER_TUNING_REAR_RIGHT_INVERT        = 0x2e,
-+	SPEAKER_TUNING_SURROUND_LEFT_INVERT     = 0x2f,
-+	SPEAKER_TUNING_SURROUND_RIGHT_INVERT    = 0x30,
-+	/* Delay is used when setting surround speaker distance in Windows. */
-+	SPEAKER_TUNING_FRONT_LEFT_DELAY         = 0x31,
-+	SPEAKER_TUNING_FRONT_RIGHT_DELAY        = 0x32,
-+	SPEAKER_TUNING_CENTER_DELAY             = 0x33,
-+	SPEAKER_TUNING_LFE_DELAY                = 0x34,
-+	SPEAKER_TUNING_REAR_LEFT_DELAY          = 0x35,
-+	SPEAKER_TUNING_REAR_RIGHT_DELAY         = 0x36,
-+	SPEAKER_TUNING_SURROUND_LEFT_DELAY      = 0x37,
-+	SPEAKER_TUNING_SURROUND_RIGHT_DELAY     = 0x38,
-+	/* Of these two, only mute seems to ever be used. */
-+	SPEAKER_TUNING_MAIN_VOLUME              = 0x39,
-+	SPEAKER_TUNING_MUTE                     = 0x3a,
++/* Surround output channel count configuration structures. */
++#define SPEAKER_CHANNEL_CFG_COUNT 5
++enum {
++	SPEAKER_CHANNELS_2_0,
++	SPEAKER_CHANNELS_2_1,
++	SPEAKER_CHANNELS_4_0,
++	SPEAKER_CHANNELS_4_1,
++	SPEAKER_CHANNELS_5_1,
 +};
 +
- /* DSP command sequences for ca0132_alt_select_out */
- #define ALT_OUT_SET_MAX_COMMANDS 9 /* Max number of commands in sequence */
- struct ca0132_alt_out_set {
-@@ -6874,6 +6928,67 @@ static void ca0132_refresh_widget_caps(struct hda_codec *codec)
++struct ca0132_alt_speaker_channel_cfg {
++	char *name;
++	unsigned int val;
++};
++
++static const struct ca0132_alt_speaker_channel_cfg speaker_channel_cfgs[] = {
++	{ .name = "2.0",
++	  .val = FLOAT_ONE
++	},
++	{ .name = "2.1",
++	  .val = FLOAT_TWO
++	},
++	{ .name = "4.0",
++	  .val = FLOAT_FIVE
++	},
++	{ .name = "4.1",
++	  .val = FLOAT_SIX
++	},
++	{ .name = "5.1",
++	  .val = FLOAT_EIGHT
++	}
++};
++
+ /*
+  * DSP volume setting structs. Req 1 is left volume, req 2 is right volume,
+  * and I don't know what the third req is, but it's always zero. I assume it's
+@@ -1063,6 +1099,7 @@ struct ca0132_spec {
+ 	/* ca0132_alt control related values */
+ 	unsigned char in_enum_val;
+ 	unsigned char out_enum_val;
++	unsigned char channel_cfg_val;
+ 	unsigned char mic_boost_enum_val;
+ 	unsigned char smart_volume_setting;
+ 	long fx_ctl_val[EFFECT_LEVEL_SLIDERS];
+@@ -4476,7 +4513,8 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 		snd_hda_set_pin_ctl(codec, spec->out_pins[3],
+ 				    pin_ctl | PIN_OUT);
+ 
+-		dspio_set_uint_param(codec, 0x80, 0x04, FLOAT_EIGHT);
++		tmp = speaker_channel_cfgs[spec->channel_cfg_val].val;
++		dspio_set_uint_param(codec, 0x80, 0x04, tmp);
+ 		break;
  	}
+ 	/*
+@@ -5582,6 +5620,54 @@ static int ca0132_alt_output_select_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
  }
  
-+/*
-+ * Default speaker tuning values setup for alternative codecs.
-+ */
-+static const unsigned int sbz_default_delay_values[] = {
-+	/* Non-zero values are floating point 0.000198. */
-+	0x394f9e38, 0x394f9e38, 0x00000000, 0x00000000, 0x00000000, 0x00000000
-+};
-+
-+static const unsigned int zxr_default_delay_values[] = {
-+	/* Non-zero values are floating point 0.000220. */
-+	0x00000000, 0x00000000, 0x3966afcd, 0x3966afcd, 0x3966afcd, 0x3966afcd
-+};
-+
-+static const unsigned int ae5_default_delay_values[] = {
-+	/* Non-zero values are floating point 0.000100. */
-+	0x00000000, 0x00000000, 0x38d1b717, 0x38d1b717, 0x38d1b717, 0x38d1b717
-+};
-+
-+/*
-+ * If we never change these, probably only need them on initialization.
-+ */
-+static void ca0132_alt_init_speaker_tuning(struct hda_codec *codec)
++/* Select surround output type: 2.1, 4.0, 4.1, or 5.1. */
++static int ca0132_alt_speaker_channel_cfg_get_info(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_info *uinfo)
 +{
++	unsigned int items = SPEAKER_CHANNEL_CFG_COUNT;
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = items;
++	if (uinfo->value.enumerated.item >= items)
++		uinfo->value.enumerated.item = items - 1;
++	strcpy(uinfo->value.enumerated.name,
++			speaker_channel_cfgs[uinfo->value.enumerated.item].name);
++	return 0;
++}
++
++static int ca0132_alt_speaker_channel_cfg_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 +	struct ca0132_spec *spec = codec->spec;
-+	unsigned int i, tmp, start_req, end_req;
-+	const unsigned int *values;
 +
-+	switch (ca0132_quirk(spec)) {
-+	case QUIRK_SBZ:
-+		values = sbz_default_delay_values;
-+		break;
-+	case QUIRK_ZXR:
-+		values = zxr_default_delay_values;
-+		break;
-+	case QUIRK_AE5:
-+		values = ae5_default_delay_values;
-+		break;
-+	default:
-+		values = sbz_default_delay_values;
-+		break;
-+	}
++	ucontrol->value.enumerated.item[0] = spec->channel_cfg_val;
++	return 0;
++}
 +
-+	tmp = FLOAT_ZERO;
-+	dspio_set_uint_param(codec, 0x96, SPEAKER_TUNING_ENABLE_CENTER_EQ, tmp);
++static int ca0132_alt_speaker_channel_cfg_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	int sel = ucontrol->value.enumerated.item[0];
++	unsigned int items = SPEAKER_CHANNEL_CFG_COUNT;
 +
-+	start_req = SPEAKER_TUNING_FRONT_LEFT_VOL_LEVEL;
-+	end_req = SPEAKER_TUNING_REAR_RIGHT_VOL_LEVEL;
-+	for (i = start_req; i < end_req + 1; i++)
-+		dspio_set_uint_param(codec, 0x96, i, tmp);
++	if (sel >= items)
++		return 0;
 +
-+	start_req = SPEAKER_TUNING_FRONT_LEFT_INVERT;
-+	end_req = SPEAKER_TUNING_REAR_RIGHT_INVERT;
-+	for (i = start_req; i < end_req + 1; i++)
-+		dspio_set_uint_param(codec, 0x96, i, tmp);
++	codec_dbg(codec, "ca0132_alt_speaker_channels: sel=%d, channels=%s\n",
++		    sel, speaker_channel_cfgs[sel].name);
 +
++	spec->channel_cfg_val = sel;
 +
-+	for (i = 0; i < 6; i++)
-+		dspio_set_uint_param(codec, 0x96,
-+				SPEAKER_TUNING_FRONT_LEFT_DELAY + i, values[i]);
++	if (spec->out_enum_val == SURROUND_OUT)
++		ca0132_alt_select_out(codec);
++
++	return 1;
 +}
 +
  /*
-  * Creates a dummy stream to bind the output to. This seems to have to be done
-  * after changing the main outputs source and destination streams.
-@@ -7373,6 +7488,8 @@ static void sbz_setup_defaults(struct hda_codec *codec)
- 		}
- 	}
- 
-+	ca0132_alt_init_speaker_tuning(codec);
-+
- 	ca0132_alt_create_dummy_stream(codec);
+  * Smart Volume output setting control. Three different settings, Normal,
+  * which takes the value from the smart volume slider. The two others, loud
+@@ -6226,6 +6312,23 @@ static int ca0132_alt_add_output_enum(struct hda_codec *codec)
+ 				snd_ctl_new1(&knew, codec));
  }
  
-@@ -7440,6 +7557,8 @@ static void ae5_setup_defaults(struct hda_codec *codec)
- 		}
- 	}
- 
-+	ca0132_alt_init_speaker_tuning(codec);
++/*
++ * Add a control for selecting channel count on speaker output. Setting this
++ * allows the DSP to do bass redirection and channel upmixing on surround
++ * configurations.
++ */
++static int ca0132_alt_add_speaker_channel_cfg_enum(struct hda_codec *codec)
++{
++	struct snd_kcontrol_new knew =
++		HDA_CODEC_MUTE_MONO("Surround Channel Config",
++				    SPEAKER_CHANNEL_CFG_ENUM, 1, 0, HDA_OUTPUT);
++	knew.info = ca0132_alt_speaker_channel_cfg_get_info;
++	knew.get = ca0132_alt_speaker_channel_cfg_get;
++	knew.put = ca0132_alt_speaker_channel_cfg_put;
++	return snd_hda_ctl_add(codec, SPEAKER_CHANNEL_CFG_ENUM,
++				snd_ctl_new1(&knew, codec));
++}
 +
- 	ca0132_alt_create_dummy_stream(codec);
- }
- 
+ /*
+  * Create an Input Source enumerated control for the alternate ca0132 codecs
+  * because the front microphone has no auto-detect, and Line-in has to be set
+@@ -6530,6 +6633,9 @@ static int ca0132_build_controls(struct hda_codec *codec)
+ 	 */
+ 	if (ca0132_use_alt_functions(spec)) {
+ 		err = ca0132_alt_add_output_enum(codec);
++		if (err < 0)
++			return err;
++		err = ca0132_alt_add_speaker_channel_cfg_enum(codec);
+ 		if (err < 0)
+ 			return err;
+ 		err = ca0132_alt_add_mic_boost_enum(codec);
 -- 
 2.20.1
 
