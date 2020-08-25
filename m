@@ -2,68 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6A1250FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 05:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF601250FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 05:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728525AbgHYDVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 23:21:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:34686 "EHLO huawei.com"
+        id S1728570AbgHYDW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 23:22:59 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:34532 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728039AbgHYDVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 23:21:48 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 819D2C7853B8487B524F;
-        Tue, 25 Aug 2020 11:21:45 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
- 11:21:37 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
-        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v2] net: gain ipv4 mtu when mtu is not locked
-Date:   Mon, 24 Aug 2020 23:20:28 -0400
-Message-ID: <20200825032028.50760-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        id S1728554AbgHYDW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 23:22:59 -0400
+Received: from localhost.localdomain (unknown [222.209.10.89])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxauT3g0RfXqUNAA--.17408S2;
+        Tue, 25 Aug 2020 11:22:38 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     tsbogend@alpha.franken.de
+Cc:     akpm@linux-foundation.org, jiaxun.yang@flygoat.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        maobibo@loongson.cn, paulburton@kernel.org
+Subject: Re: [PATCH v2 1/2] MIPS: Set page access bit with pgprot on
+Date:   Tue, 25 Aug 2020 11:20:38 +0800
+Message-Id: <20200825032039.21413-1-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200726083206.GE5032@alpha.franken.de>
+References: <20200726083206.GE5032@alpha.franken.de>
+X-CM-TRANSID: AQAAf9AxauT3g0RfXqUNAA--.17408S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5t7k0a2IF6F4UM7kC6x804xWl14x267AK
+        xVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j
+        6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr
+        1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvE
+        ncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I
+        8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8rcTPUUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mtu is locked, we should not obtain ipv4 mtu as we return immediately
-in this case and leave acquired ipv4 mtu unused.
+adjust the code and add support non-rixi 
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/ipv4/route.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 8ca6bcab7b03..18c8baf32de5 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1013,13 +1013,14 @@ out:	kfree_skb(skb);
- static void __ip_rt_update_pmtu(struct rtable *rt, struct flowi4 *fl4, u32 mtu)
- {
- 	struct dst_entry *dst = &rt->dst;
--	u32 old_mtu = ipv4_mtu(dst);
- 	struct fib_result res;
- 	bool lock = false;
-+	u32 old_mtu;
- 
- 	if (ip_mtu_locked(dst))
- 		return;
- 
-+	old_mtu = ipv4_mtu(dst);
- 	if (old_mtu < mtu)
- 		return;
- 
--- 
-2.19.1
 
