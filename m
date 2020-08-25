@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901F125165D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D56E251663
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729792AbgHYKNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 06:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S1729810AbgHYKOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 06:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729778AbgHYKNs (ORCPT
+        with ESMTP id S1729761AbgHYKOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 06:13:48 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6498BC061574;
-        Tue, 25 Aug 2020 03:13:48 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so6506702pgf.0;
-        Tue, 25 Aug 2020 03:13:48 -0700 (PDT)
+        Tue, 25 Aug 2020 06:14:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5957DC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 03:14:10 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id m34so6485023pgl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 03:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4G4DuKErvOyDuzxBJkBN29qvlat6IqEju9q8dYOb154=;
-        b=o5noqC2/wdN1xiBxyxbPmMEjlCjMi2LVdAcXbGV02KjTYzA7QlI5btsfY7Vb0a1s0Y
-         X05BYoDoABwRV7phcc92WGFbjkYZD2bF+KPjwdtQGv5Hv3i3v3b0Yim6b8eJeYcXNNhg
-         nORyo0zORlpYi9GIAGtRaURoh7ezcIQq2GCmCE1avYr3xOvCAKNpIYERrFuCm3X3FKjT
-         Wjl/q0W6fDG8kTW9i5Xy+xl/Ut1doF/nzfrG16Z7mBrOHyye4aoooKZIwxeLvRK06c7X
-         VUWa4fWnVcbHYNdJ3zdXnL/HDP9MGcwHOnpCsAah19IbVkE+OtB7AF5odr2nTiJ3LOdK
-         DFCQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=NK/rGdFzl/ZJ0ikUSNHqbk5FsBpl+Htmp3bLWdAh3jY=;
+        b=SCvq4FUNygb0mPDOTL9HsmV1XyflsHOwL6MGLFxggA22jrk3r0cUnTgiCypWwgft1T
+         yZx8mVaFF/HA1b+iKbCRANmRux23s0+GG3gfMuBKEX/JZLD2VjmzCXc2/PTSFamz0VKQ
+         w/f24Tt+ZBLC1s0+2dt24P5IOI3cswYZh/3XI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4G4DuKErvOyDuzxBJkBN29qvlat6IqEju9q8dYOb154=;
-        b=bbmhaA7Imx9PhfaFeZDTTrPgeB04F+rH8UkQdy5qb2R5kMTykmuUd9gopaobyCSXF9
-         BNKpep66rlzEwyhuA1fu0fUN+0QBWhLe2J4Q0WHKTZKBt+Uo/ZW92+tUzmiI+bOcxXcm
-         0Q5NBWkEclRyA7QjV8LRfZ4+3fFnsKESuZNwlUY5/M6UgNBOlFsopTs3+0wUIUQdL9Vr
-         Oneen3s4Z5J7pnDZ4XDxN1DfiX6kOIQwBmPgc8BeOn/vwTk+DFeQd6aiZ7lSsAcmIG2g
-         xCiMBxeo1Qd/5p78Kjo9YBKmnCNpOtjWq2WCxXqs+gnCdHRauWVq2I/2ACly13whZfNV
-         LZKA==
-X-Gm-Message-State: AOAM533xLsJ78UX0b48W6KY9rQdRKKWnZSNrqfbsCugG+HoCaoDWCZSv
-        uGYm3pjdjX3W9BlPJqaLf5tGuLniYC/okA==
-X-Google-Smtp-Source: ABdhPJykSPKR3ufOXUEpAP3gSyIGOrl5nn7vYRLrcu4IoV+QqvdYqm0nFNVOUdXrptMslOlcieLiCQ==
-X-Received: by 2002:a65:498f:: with SMTP id r15mr6391268pgs.410.1598350427484;
-        Tue, 25 Aug 2020 03:13:47 -0700 (PDT)
-Received: from panther.thds.mooo.com (061239037006.ctinets.com. [61.239.37.6])
-        by smtp.gmail.com with ESMTPSA id y1sm14303925pfl.136.2020.08.25.03.13.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Aug 2020 03:13:46 -0700 (PDT)
-From:   Kenneth Chan <kenneth.t.chan@gmail.com>
-To:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     laforge@gnumonks.org, Kenneth Chan <kenneth.t.chan@gmail.com>
-Subject: [PATCH] panasonic-laptop: take over maintainership
-Date:   Tue, 25 Aug 2020 18:13:41 +0800
-Message-Id: <20200825101341.5699-1-kenneth.t.chan@gmail.com>
-X-Mailer: git-send-email 2.17.5
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=NK/rGdFzl/ZJ0ikUSNHqbk5FsBpl+Htmp3bLWdAh3jY=;
+        b=Nf46gxgbpXtqGyP9V651+ASNwjAWF4YUB5GwFl8lLNbUTbGUZ2gjpEle/scNepXqjf
+         nKwZkrKHvRSJW/4AMGqSi6N3vxEoHLKf0ep+x4jlftKJovyMsQzL/G+Pvrzzb916DT0u
+         ufw/XZoitvBJq9ctEqzW/jmJPLMRRFxA6KZEm7d5pMQYpDD1IPZh2bYqiy983yWrfABU
+         LSGQrEoip4G7khyxLBsAG0YcjgBl8BoAK5GQK7Wac7FUKhZ1ylYDhzivSZ3omRNY7RuV
+         S1bpUyVOdaciRa8CtAosuQWtAE0344EzVUZ5n7vtUIuj93CJaNhfW2zUXCSsGnMMwn9F
+         UcRQ==
+X-Gm-Message-State: AOAM533PtzsfGOJI1YMyx8kgdV/grhXyZ6wfJD/NdUU5P+m2XPJwlhOb
+        l4qw6/aj5VEGP1McDGjNjKu+SOLZe+T+wQ==
+X-Google-Smtp-Source: ABdhPJxRam8z3NFVm74MYbnfL8FAHtSGolerCZEMwDw8/bzH96h2YpXlmD1E8BATCSSWhjkeXP8j8w==
+X-Received: by 2002:a65:498f:: with SMTP id r15mr6392116pgs.410.1598350450231;
+        Tue, 25 Aug 2020 03:14:10 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id x13sm6165505pfr.69.2020.08.25.03.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 03:14:09 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1598113021-4149-7-git-send-email-mkshah@codeaurora.org>
+References: <1598113021-4149-1-git-send-email-mkshah@codeaurora.org> <1598113021-4149-7-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH v5 6/6] irqchip: qcom-pdc: Reset PDC interrupts during init
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, linus.walleij@linaro.org, maz@kernel.org,
+        mka@chromium.org
+Date:   Tue, 25 Aug 2020 03:14:08 -0700
+Message-ID: <159835044855.334488.7962570422326622972@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Take over maintaniership of panasonic-laptop from Harald Welte.
+Quoting Maulik Shah (2020-08-22 09:17:01)
+> Kexec can directly boot into a new kernel without going to complete
+> reboot. This can leave the previous kernel's configuration for PDC
+> interrupts as is.
+>=20
+> Clear previous kernel's configuration during init by setting interrupts
+> in enable bank to zero. The IRQs specified in qcom,pdc-ranges property
+> are the only ones that can be used by the new kernel so clear only those
+> IRQs. The remaining ones may be in use by a different kernel and should
+> not be set by new kernel.
 
+Presumably they're not in use anymore if the kernel has been kexeced and
+replaced this one?
 
-Signed-off-by: Kenneth Chan <kenneth.t.chan@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> Suggested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b186ade3597..3815ba053136 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13039,7 +13039,7 @@ F:	include/net/page_pool.h
- F:	net/core/page_pool.c
- 
- PANASONIC LAPTOP ACPI EXTRAS DRIVER
--M:	Harald Welte <laforge@gnumonks.org>
-+M:	Kenneth Chan <kenneth.t.chan@gmail.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	drivers/platform/x86/panasonic-laptop.c
-
-base-commit: 6a9dc5fd6170d0a41c8a14eb19e63d94bea5705a
--- 
-2.17.5
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
