@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2911252458
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FF8252455
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgHYXlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgHYXlA (ORCPT
+        id S1726929AbgHYXlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:41:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53380 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726682AbgHYXlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:41:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC8FC061755;
-        Tue, 25 Aug 2020 16:40:59 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 23:40:57 -0000
+        Tue, 25 Aug 2020 19:41:02 -0400
+Date:   Tue, 25 Aug 2020 23:40:58 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598398858;
+        s=2020; t=1598398859;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ziOJnoWdDqzH6dlbsic6t9xNNsNXXgPa/zqW104mGMA=;
-        b=P+q5gVdkF/Um7rCvZi0YuCqKP0IhMw7n30bGhnOHeJAv9fxBP+yLNkkeat8mPxNaL6J4be
-        A6pFwG5pX7yA6oGernNtg615FXTLo+T05D37MOF0G3ABF2RuZelnuQ+TQ37l/Sr7opd8xU
-        7wNeLZ+LtdmdSd+X/jgddCHHdH7VVFA70EgIieZElTc8y/41LOkbu8Zs1PMtek2glwDmHx
-        +h2vtsXiHqZAV9ro7H/cyKB4UuM+wX2sGVoqP6GdcMOtIZghJvQEt6g7UikV/4yQFDW/i2
-        9dAyIWs44u3opNFSt5Csd/Wu2KXVfbOMxd9nub3I9oluNqE7HkgIuqibjN+9SQ==
+        bh=rzXZro/WCMp8rK3rvBY74sCXaI0aU4NZbdxzBymnTV4=;
+        b=eyhZ33I4IBvjBG0CX/rC33G/npGTXoI47nf27aSJllF6MFQf4ad0faHUNJ6bKI0xjfmSSk
+        FSUiSjj3BLB4npnOB6XcYUnSL7ZmmNjkIDCl43apeamYtLshXgTf1KNfRt+wGKupfm14Ce
+        +GD0IJBFEsDj3vcFYFWq5L51tqqx/qUDPr+W0x4ygShwrnsUR5A3ZdbXYdOIvjb6KbCDD6
+        Hnc8sStKK2/c/l9mxvnmubik/d+500mTxr6HHhdlvOxpclBP2q2+suiaucasOSH+49k0kS
+        +XbJsMsOan5ML8RcwSnN/L+itdLQsGjuR4cei88iDURrGwVrSyKNjPVzjnu9uA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598398858;
+        s=2020e; t=1598398859;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ziOJnoWdDqzH6dlbsic6t9xNNsNXXgPa/zqW104mGMA=;
-        b=kHloOHoU/JyKYg1zZFxNYpofLCR9Pw1+U9MQIrQrZQyGzR7OyKWyw4+z9bzLv+/nQi/ReO
-        PXb14IRANjeHAPDg==
+        bh=rzXZro/WCMp8rK3rvBY74sCXaI0aU4NZbdxzBymnTV4=;
+        b=eZjwI9eOx4TPZHv8HsdmoG1BxVumE5CVT9mvu0yJC0eBpKw26us9UPMKdZDfJ5pV6RmRaU
+        lmUiiUJOb1SjicDQ==
 From:   "tip-bot2 for Lokesh Vutla" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] dt-bindings: irqchip: Convert ti, sci-inta bindings to yaml
+Subject: [tip: irq/urgent] irqchip/ti-sci-intr: Add support for INTR being a
+ parent to INTR
 Cc:     Lokesh Vutla <lokeshvutla@ti.com>, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200806074826.24607-9-lokeshvutla@ti.com>
-References: <20200806074826.24607-9-lokeshvutla@ti.com>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200806074826.24607-7-lokeshvutla@ti.com>
+References: <20200806074826.24607-7-lokeshvutla@ti.com>
 MIME-Version: 1.0
-Message-ID: <159839885734.389.12537527089551190665.tip-bot2@tip-bot2>
+Message-ID: <159839885878.389.9669469617522915234.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,216 +58,288 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/urgent branch of tip:
 
-Commit-ID:     c4dff06e79d99691f18dfc8a61a1cb17c602a025
-Gitweb:        https://git.kernel.org/tip/c4dff06e79d99691f18dfc8a61a1cb17c602a025
+Commit-ID:     a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
+Gitweb:        https://git.kernel.org/tip/a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
 Author:        Lokesh Vutla <lokeshvutla@ti.com>
-AuthorDate:    Thu, 06 Aug 2020 13:18:21 +05:30
+AuthorDate:    Thu, 06 Aug 2020 13:18:19 +05:30
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 16 Aug 2020 22:01:19 +01:00
+CommitterDate: Sun, 16 Aug 2020 22:00:23 +01:00
 
-dt-bindings: irqchip: Convert ti, sci-inta bindings to yaml
+irqchip/ti-sci-intr: Add support for INTR being a parent to INTR
 
-In order to automate the verification of DT nodes convert
-ti,sci-inta.txt ti,sci-inta.yaml.
+Driver assumes that Interrupt parent to Interrupt router is always GIC.
+This is not true always and an Interrupt Router can be a parent to
+Interrupt Router. Update the driver to detect the parent and request the
+parent irqs accordingly.
 
 Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200806074826.24607-9-lokeshvutla@ti.com
+Link: https://lore.kernel.org/r/20200806074826.24607-7-lokeshvutla@ti.com
 ---
- Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt  | 66 +-----------------------------------------------
- Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- MAINTAINERS                                                             |  2 +-
- 3 files changed, 99 insertions(+), 67 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
+ drivers/irqchip/irq-ti-sci-intr.c | 152 +++++++++++++++++------------
+ 1 file changed, 93 insertions(+), 59 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
-deleted file mode 100644
-index 5fd3ee0..0000000
---- a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
-+++ /dev/null
-@@ -1,66 +0,0 @@
--Texas Instruments K3 Interrupt Aggregator
--=========================================
+diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-intr.c
+index 5ea148f..cbc1758 100644
+--- a/drivers/irqchip/irq-ti-sci-intr.c
++++ b/drivers/irqchip/irq-ti-sci-intr.c
+@@ -17,29 +17,20 @@
+ #include <linux/of_irq.h>
+ #include <linux/soc/ti/ti_sci_protocol.h>
+ 
+-#define TI_SCI_DEV_ID_MASK	0xffff
+-#define TI_SCI_DEV_ID_SHIFT	16
+-#define TI_SCI_IRQ_ID_MASK	0xffff
+-#define TI_SCI_IRQ_ID_SHIFT	0
+-#define HWIRQ_TO_DEVID(hwirq)	(((hwirq) >> (TI_SCI_DEV_ID_SHIFT)) & \
+-				 (TI_SCI_DEV_ID_MASK))
+-#define HWIRQ_TO_IRQID(hwirq)	((hwirq) & (TI_SCI_IRQ_ID_MASK))
+-#define TO_HWIRQ(dev, index)	((((dev) & TI_SCI_DEV_ID_MASK) << \
+-				 TI_SCI_DEV_ID_SHIFT) | \
+-				((index) & TI_SCI_IRQ_ID_MASK))
 -
--The Interrupt Aggregator (INTA) provides a centralized machine
--which handles the termination of system events to that they can
--be coherently processed by the host(s) in the system. A maximum
--of 64 events can be mapped to a single interrupt.
+ /**
+  * struct ti_sci_intr_irq_domain - Structure representing a TISCI based
+  *				   Interrupt Router IRQ domain.
+  * @sci:	Pointer to TISCI handle
+- * @dst_irq:	TISCI resource pointer representing GIC irq controller.
+- * @dst_id:	TISCI device ID of the GIC irq controller.
++ * @out_irqs:	TISCI resource pointer representing INTR irqs.
++ * @dev:	Struct device pointer.
++ * @ti_sci_id:	TI-SCI device identifier
+  * @type:	Specifies the trigger type supported by this Interrupt Router
+  */
+ struct ti_sci_intr_irq_domain {
+ 	const struct ti_sci_handle *sci;
+-	struct ti_sci_resource *dst_irq;
+-	u32 dst_id;
++	struct ti_sci_resource *out_irqs;
++	struct device *dev;
++	u32 ti_sci_id;
+ 	u32 type;
+ };
+ 
+@@ -70,16 +61,45 @@ static int ti_sci_intr_irq_domain_translate(struct irq_domain *domain,
+ {
+ 	struct ti_sci_intr_irq_domain *intr = domain->host_data;
+ 
+-	if (fwspec->param_count != 2)
++	if (fwspec->param_count != 1)
+ 		return -EINVAL;
+ 
+-	*hwirq = TO_HWIRQ(fwspec->param[0], fwspec->param[1]);
++	*hwirq = fwspec->param[0];
+ 	*type = intr->type;
+ 
+ 	return 0;
+ }
+ 
+ /**
++ * ti_sci_intr_xlate_irq() - Translate hwirq to parent's hwirq.
++ * @intr:	IRQ domain corresponding to Interrupt Router
++ * @irq:	Hardware irq corresponding to the above irq domain
++ *
++ * Return parent irq number if translation is available else -ENOENT.
++ */
++static int ti_sci_intr_xlate_irq(struct ti_sci_intr_irq_domain *intr, u32 irq)
++{
++	struct device_node *np = dev_of_node(intr->dev);
++	u32 base, pbase, size, len;
++	const __be32 *range;
++
++	range = of_get_property(np, "ti,interrupt-ranges", &len);
++	if (!range)
++		return irq;
++
++	for (len /= sizeof(*range); len >= 3; len -= 3) {
++		base = be32_to_cpu(*range++);
++		pbase = be32_to_cpu(*range++);
++		size = be32_to_cpu(*range++);
++
++		if (base <= irq && irq < base + size)
++			return irq - base + pbase;
++	}
++
++	return -ENOENT;
++}
++
++/**
+  * ti_sci_intr_irq_domain_free() - Free the specified IRQs from the domain.
+  * @domain:	Domain to which the irqs belong
+  * @virq:	Linux virtual IRQ to be freed.
+@@ -89,66 +109,76 @@ static void ti_sci_intr_irq_domain_free(struct irq_domain *domain,
+ 					unsigned int virq, unsigned int nr_irqs)
+ {
+ 	struct ti_sci_intr_irq_domain *intr = domain->host_data;
+-	struct irq_data *data, *parent_data;
+-	u16 dev_id, irq_index;
++	struct irq_data *data;
++	int out_irq;
+ 
+-	parent_data = irq_domain_get_irq_data(domain->parent, virq);
+ 	data = irq_domain_get_irq_data(domain, virq);
+-	irq_index = HWIRQ_TO_IRQID(data->hwirq);
+-	dev_id = HWIRQ_TO_DEVID(data->hwirq);
++	out_irq = (uintptr_t)data->chip_data;
+ 
+-	intr->sci->ops.rm_irq_ops.free_irq(intr->sci, dev_id, irq_index,
+-					   intr->dst_id, parent_data->hwirq);
+-	ti_sci_release_resource(intr->dst_irq, parent_data->hwirq);
++	intr->sci->ops.rm_irq_ops.free_irq(intr->sci,
++					   intr->ti_sci_id, data->hwirq,
++					   intr->ti_sci_id, out_irq);
++	ti_sci_release_resource(intr->out_irqs, out_irq);
+ 	irq_domain_free_irqs_parent(domain, virq, 1);
+ 	irq_domain_reset_irq_data(data);
+ }
+ 
+ /**
+- * ti_sci_intr_alloc_gic_irq() - Allocate GIC specific IRQ
++ * ti_sci_intr_alloc_parent_irq() - Allocate parent IRQ
+  * @domain:	Pointer to the interrupt router IRQ domain
+  * @virq:	Corresponding Linux virtual IRQ number
+  * @hwirq:	Corresponding hwirq for the IRQ within this IRQ domain
+  *
+- * Returns 0 if all went well else appropriate error pointer.
++ * Returns parent irq if all went well else appropriate error pointer.
+  */
+-static int ti_sci_intr_alloc_gic_irq(struct irq_domain *domain,
+-				     unsigned int virq, u32 hwirq)
++static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
++					unsigned int virq, u32 hwirq)
+ {
+ 	struct ti_sci_intr_irq_domain *intr = domain->host_data;
++	struct device_node *parent_node;
+ 	struct irq_fwspec fwspec;
+-	u16 dev_id, irq_index;
+-	u16 dst_irq;
+-	int err;
 -
--
--                              Interrupt Aggregator
--                     +-----------------------------------------+
--                     |      Intmap            VINT             |
--                     | +--------------+  +------------+        |
--            m ------>| | vint  | bit  |  | 0 |.....|63| vint0  |
--               .     | +--------------+  +------------+        |       +------+
--               .     |         .               .               |       | HOST |
--Globalevents  ------>|         .               .               |------>| IRQ  |
--               .     |         .               .               |       | CTRL |
--               .     |         .               .               |       +------+
--            n ------>| +--------------+  +------------+        |
--                     | | vint  | bit  |  | 0 |.....|63| vintx  |
--                     | +--------------+  +------------+        |
--                     |                                         |
--                     +-----------------------------------------+
--
--Configuration of these Intmap registers that maps global events to vint is done
--by a system controller (like the Device Memory and Security Controller on K3
--AM654 SoC). Driver should request the system controller to get the range
--of global events and vints assigned to the requesting host. Management
--of these requested resources should be handled by driver and requests
--system controller to map specific global event to vint, bit pair.
--
--Communication between the host processor running an OS and the system
--controller happens through a protocol called TI System Control Interface
--(TISCI protocol). For more details refer:
--Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
--
--TISCI Interrupt Aggregator Node:
---------------------------------
--- compatible:		Must be "ti,sci-inta".
--- reg:			Should contain registers location and length.
--- interrupt-controller:	Identifies the node as an interrupt controller
--- msi-controller:	Identifies the node as an MSI controller.
--- interrupt-parent:	phandle of irq parent.
--- ti,sci:		Phandle to TI-SCI compatible System controller node.
--- ti,sci-dev-id:	TISCI device id of interrupt controller.
--- ti,interrupt-ranges:	Set of triplets containing ranges that convert
--			the INTA output interrupt numbers to parent's
--			interrupt number. Each triplet has following entries:
--			- First entry specifies the base for vint
--			- Second entry specifies the base for parent irqs
--			- Third entry specifies the limit
--
--
--Example:
----------
--main_udmass_inta: interrupt-controller@33d00000 {
--	compatible = "ti,sci-inta";
--	reg = <0x0 0x33d00000 0x0 0x100000>;
--	interrupt-controller;
--	msi-controller;
--	interrupt-parent = <&main_navss_intr>;
--	ti,sci = <&dmsc>;
--	ti,sci-dev-id = <179>;
--	ti,interrupt-ranges = <0 0 256>;
--};
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
-new file mode 100644
-index 0000000..c7cd056
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/ti,sci-inta.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+-	dev_id = HWIRQ_TO_DEVID(hwirq);
+-	irq_index = HWIRQ_TO_IRQID(hwirq);
++	u16 out_irq, p_hwirq;
++	int err = 0;
+ 
+-	dst_irq = ti_sci_get_free_resource(intr->dst_irq);
+-	if (dst_irq == TI_SCI_RESOURCE_NULL)
++	out_irq = ti_sci_get_free_resource(intr->out_irqs);
++	if (out_irq == TI_SCI_RESOURCE_NULL)
+ 		return -EINVAL;
+ 
+-	fwspec.fwnode = domain->parent->fwnode;
+-	fwspec.param_count = 3;
+-	fwspec.param[0] = 0;	/* SPI */
+-	fwspec.param[1] = dst_irq - 32; /* SPI offset */
+-	fwspec.param[2] = intr->type;
++	p_hwirq = ti_sci_intr_xlate_irq(intr, out_irq);
++	if (p_hwirq < 0)
++		goto err_irqs;
 +
-+title: Texas Instruments K3 Interrupt Aggregator
++	parent_node = of_irq_find_parent(dev_of_node(intr->dev));
++	fwspec.fwnode = of_node_to_fwnode(parent_node);
 +
-+maintainers:
-+  - Lokesh Vutla <lokeshvutla@ti.com>
++	if (of_device_is_compatible(parent_node, "arm,gic-v3")) {
++		/* Parent is GIC */
++		fwspec.param_count = 3;
++		fwspec.param[0] = 0;	/* SPI */
++		fwspec.param[1] = p_hwirq - 32; /* SPI offset */
++		fwspec.param[2] = intr->type;
++	} else {
++		/* Parent is Interrupt Router */
++		fwspec.param_count = 1;
++		fwspec.param[0] = p_hwirq;
++	}
+ 
+ 	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
+ 	if (err)
+ 		goto err_irqs;
+ 
+-	err = intr->sci->ops.rm_irq_ops.set_irq(intr->sci, dev_id, irq_index,
+-						intr->dst_id, dst_irq);
++	err = intr->sci->ops.rm_irq_ops.set_irq(intr->sci,
++						intr->ti_sci_id, hwirq,
++						intr->ti_sci_id, out_irq);
+ 	if (err)
+ 		goto err_msg;
+ 
+-	return 0;
++	return p_hwirq;
+ 
+ err_msg:
+ 	irq_domain_free_irqs_parent(domain, virq, 1);
+ err_irqs:
+-	ti_sci_release_resource(intr->dst_irq, dst_irq);
++	ti_sci_release_resource(intr->out_irqs, out_irq);
+ 	return err;
+ }
+ 
+@@ -168,18 +198,19 @@ static int ti_sci_intr_irq_domain_alloc(struct irq_domain *domain,
+ 	struct irq_fwspec *fwspec = data;
+ 	unsigned long hwirq;
+ 	unsigned int flags;
+-	int err;
++	int err, p_hwirq;
+ 
+ 	err = ti_sci_intr_irq_domain_translate(domain, fwspec, &hwirq, &flags);
+ 	if (err)
+ 		return err;
+ 
+-	err = ti_sci_intr_alloc_gic_irq(domain, virq, hwirq);
+-	if (err)
+-		return err;
++	p_hwirq = ti_sci_intr_alloc_parent_irq(domain, virq, hwirq);
++	if (p_hwirq < 0)
++		return p_hwirq;
+ 
+ 	irq_domain_set_hwirq_and_chip(domain, virq, hwirq,
+-				      &ti_sci_intr_irq_chip, NULL);
++				      &ti_sci_intr_irq_chip,
++				      (void *)(uintptr_t)p_hwirq);
+ 
+ 	return 0;
+ }
+@@ -214,6 +245,7 @@ static int ti_sci_intr_irq_domain_probe(struct platform_device *pdev)
+ 	if (!intr)
+ 		return -ENOMEM;
+ 
++	intr->dev = dev;
+ 	ret = of_property_read_u32(dev_of_node(dev), "ti,intr-trigger-type",
+ 				   &intr->type);
+ 	if (ret) {
+@@ -230,19 +262,19 @@ static int ti_sci_intr_irq_domain_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = of_property_read_u32(dev_of_node(dev), "ti,sci-dst-id",
+-				   &intr->dst_id);
++	ret = of_property_read_u32(dev_of_node(dev), "ti,sci-dev-id",
++				   &intr->ti_sci_id);
+ 	if (ret) {
+-		dev_err(dev, "missing 'ti,sci-dst-id' property\n");
++		dev_err(dev, "missing 'ti,sci-dev-id' property\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	intr->dst_irq = devm_ti_sci_get_of_resource(intr->sci, dev,
+-						    intr->dst_id,
+-						    "ti,sci-rm-range-girq");
+-	if (IS_ERR(intr->dst_irq)) {
++	intr->out_irqs = devm_ti_sci_get_resource(intr->sci, dev,
++						  intr->ti_sci_id,
++						  TI_SCI_RESASG_SUBTYPE_IR_OUTPUT);
++	if (IS_ERR(intr->out_irqs)) {
+ 		dev_err(dev, "Destination irq resource allocation failed\n");
+-		return PTR_ERR(intr->dst_irq);
++		return PTR_ERR(intr->out_irqs);
+ 	}
+ 
+ 	domain = irq_domain_add_hierarchy(parent_domain, 0, 0, dev_of_node(dev),
+@@ -252,6 +284,8 @@ static int ti_sci_intr_irq_domain_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
++	dev_info(dev, "Interrupt Router %d domain created\n", intr->ti_sci_id);
 +
-+allOf:
-+  - $ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
-+
-+description: |
-+  The Interrupt Aggregator (INTA) provides a centralized machine
-+  which handles the termination of system events to that they can
-+  be coherently processed by the host(s) in the system. A maximum
-+  of 64 events can be mapped to a single interrupt.
-+
-+                                Interrupt Aggregator
-+                       +-----------------------------------------+
-+                       |      Intmap            VINT             |
-+                       | +--------------+  +------------+        |
-+              m ------>| | vint  | bit  |  | 0 |.....|63| vint0  |
-+                 .     | +--------------+  +------------+        |      +------+
-+                 .     |         .               .               |      | HOST |
-+  Globalevents  ------>|         .               .               |----->| IRQ  |
-+                 .     |         .               .               |      | CTRL |
-+                 .     |         .               .               |      +------+
-+              n ------>| +--------------+  +------------+        |
-+                       | | vint  | bit  |  | 0 |.....|63| vintx  |
-+                       | +--------------+  +------------+        |
-+                       |                                         |
-+                       +-----------------------------------------+
-+
-+  Configuration of these Intmap registers that maps global events to vint is
-+  done by a system controller (like the Device Memory and Security Controller
-+  on AM654 SoC). Driver should request the system controller to get the range
-+  of global events and vints assigned to the requesting host. Management
-+  of these requested resources should be handled by driver and requests
-+  system controller to map specific global event to vint, bit pair.
-+
-+  Communication between the host processor running an OS and the system
-+  controller happens through a protocol called TI System Control Interface
-+  (TISCI protocol).
-+
-+properties:
-+  compatible:
-+    const: ti,sci-inta
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  msi-controller: true
-+
-+  ti,interrupt-ranges:
-+    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+    description: |
-+      Interrupt ranges that converts the INTA output hw irq numbers
-+      to parents's input interrupt numbers.
-+    items:
-+      items:
-+        - description: |
-+            "output_irq" specifies the base for inta output irq
-+        - description: |
-+            "parent's input irq" specifies the base for parent irq
-+        - description: |
-+            "limit" specifies the limit for translation
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupt-controller
-+  - msi-controller
-+  - ti,sci
-+  - ti,sci-dev-id
-+  - ti,interrupt-ranges
-+
-+examples:
-+  - |
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        main_udmass_inta: msi-controller@33d00000 {
-+            compatible = "ti,sci-inta";
-+            reg = <0x0 0x33d00000 0x0 0x100000>;
-+            interrupt-controller;
-+            msi-controller;
-+            interrupt-parent = <&main_navss_intr>;
-+            ti,sci = <&dmsc>;
-+            ti,sci-dev-id = <179>;
-+            ti,interrupt-ranges = <0 0 256>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e08405c..e3f1cdb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17116,7 +17116,7 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
- F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
- F:	Documentation/devicetree/bindings/clock/ti,sci-clk.txt
--F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
-+F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
- F:	Documentation/devicetree/bindings/reset/ti,sci-reset.txt
- F:	Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+ 	return 0;
+ }
+ 
