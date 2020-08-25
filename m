@@ -2,248 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEE62515CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149E32515D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729591AbgHYJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729529AbgHYJ5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:57:31 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CC3C061574;
-        Tue, 25 Aug 2020 02:57:31 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 145so3217014lfi.8;
-        Tue, 25 Aug 2020 02:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wEKBw3M389lIxYOx03rfrhKFmPG9fhLZHWOc6+bvMWE=;
-        b=CH9DqgWz6JIpRA+LVvmYQGUv4L0OM8jNzFLiF60A5MG/s026N+cxOtM3riTQchVoAv
-         j5mkSJNyVqUtQlD4ePWX4OfUKEHq5ZTV2k3XgewI/dN7Y6OkLTMaPF5PoO7Qw1CHsWIR
-         /jGXV7zPklnrXvKbtofYJh8H/bTZb+qSnRPKqhxqZaih/zsPXgOAfUQcZ8Sy5NfD073/
-         2+kc0i28CTrWD9+5+6Kd3uDQdxYl0b9MSm1fEW/bxd876AkwDmDXlP1adEX1K59vp9Sr
-         USugqEGf8HXUCwYSX5dj1i3v7443IaqxCvFJLPjfeJPGuYm8d1ci5NdJT5e33d0uSFJ4
-         7mmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wEKBw3M389lIxYOx03rfrhKFmPG9fhLZHWOc6+bvMWE=;
-        b=gIrFUw4o4eHxZW5WLbOlKats/EN1vqVyU3NSwj+YNoyNJLFS7G5TvmtL44p8b/p+Ja
-         39GgmOXTwZHOg3CLuyJmj9EHAmps3DM/J8DcHO6yGUTlUs7x0GT5ObDiUvwVFxhR6UB1
-         OoGzdEnTJ8lQfR9UjyqKYbPTJlvrhdUFX7qF4Ei3ytWl9hF4OZg0kwQAhtnUqEUVquan
-         7afl+AqMKBCcsS8Sc9UbxNGwhMyQ4lfv3ftJrvo8LN++n8MPLEp4PVbl/Tld7S+U5yJA
-         wbvjnziHbJxgTawclLMGdMt3BhsWmo9rpfUt+cLrv5dJUUf/T2ueXpb1E4MnPpmM0bBj
-         T8DA==
-X-Gm-Message-State: AOAM531W90S/TcHQmGpKButyaN3DCDZFCkuPk+A0PmYYiHaflrsp4Oxn
-        qAtJ+RDetZdPyjLbHEYmqOf53QCPDqo=
-X-Google-Smtp-Source: ABdhPJzbd+lIxQm9Nw2ZlRd+VhnHVPFZ3HHXOkmncxJnhKoFAzuCClvTtaWmxcbG/a62/g4odWKWuA==
-X-Received: by 2002:a19:c80b:: with SMTP id y11mr4517248lff.23.1598349449598;
-        Tue, 25 Aug 2020 02:57:29 -0700 (PDT)
-Received: from mobilestation ([95.79.127.85])
-        by smtp.gmail.com with ESMTPSA id o66sm1473024lff.76.2020.08.25.02.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 02:57:28 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 12:57:26 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Ding Tianhong <dingtianhong@huawei.com>
-Cc:     hoan@os.amperecomputing.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel.openeuler@huawei.com
-Subject: Re: [PATCH] gpio: dwapb: add support for new hisilicon ascend soc
-Message-ID: <20200825095726.yvg34q74xy57qhrx@mobilestation>
-References: <1598070473-46624-1-git-send-email-dingtianhong@huawei.com>
+        id S1729705AbgHYJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:58:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:54424 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729529AbgHYJ56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 05:57:58 -0400
+IronPort-SDR: aUBqgb8qUyOO8IJHvCFMmfGJV0NnAwtd3jhQnAlMq6rx8FblX1zjV4ctUhD8rvRx7g8UlhVIf9
+ MXGZs+m80dyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="153501159"
+X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
+   d="scan'208";a="153501159"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 02:57:43 -0700
+IronPort-SDR: ljnMQfGSIXmJOPPNJq7pRPcnFoVV9qIn3a7a1Rjou1Mcs5MdK6nrkKslC3sOLvMQkOaolBrw5b
+ slkYosNjVmnw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
+   d="scan'208";a="328814361"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 25 Aug 2020 02:57:39 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kAVhx-00BIT3-Cq; Tue, 25 Aug 2020 12:57:37 +0300
+Date:   Tue, 25 Aug 2020 12:57:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+Subject: Re: [PATCH v11 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200825095737.GS1891694@smile.fi.intel.com>
+References: <cover.1598331849.git.rahul.tanwar@linux.intel.com>
+ <fb2f7632f79e2aaa99208f7c93cae2de3dee4dff.1598331849.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1598070473-46624-1-git-send-email-dingtianhong@huawei.com>
+In-Reply-To: <fb2f7632f79e2aaa99208f7c93cae2de3dee4dff.1598331849.git.rahul.tanwar@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ding,
-Thanks for the patch. My comments are below.
+On Tue, Aug 25, 2020 at 01:07:06PM +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
 
-On Sat, Aug 22, 2020 at 12:27:53PM +0800, Ding Tianhong wrote:
-> The hisilicon ascend soc's gpio is based on the synopsys DW gpio,
-> and expand the register to support for INTCOMB_MASK, the new
-> register is used to enable/disable the interrupt combine features.
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-I am wondering what does the "Interrupt Combine" feature do? Is it the same as
-the GPIO_INTR_IO pre-synthesize parameter of the DW_apb_gpio IP-core? Is it
-possible to tune the DW APB GPIO controller at runtime sending up to the IRQ
-controller either combined or individual interrupts?
+Uwe, there is still room to improve but it's in category of nit-picks, from my
+point of view code is okay to go.
 
-If the later is true, then probably having the "Interrupt Combine" feature
-enabled must depend on whether an individual or combined interrupts are supplied
-in dts, etc...
-
-Could you explain the way the feature works and the corresponding layout
-register in more details?
-
-> 
-> Both support for ACPI and Device Tree.
-> 
-> Signed-off-by: Ding Tianhong <dingtianhong@huawei.com>
+> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
 > ---
->  drivers/gpio/gpio-dwapb.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+>  drivers/pwm/Kconfig         |  11 ++
+>  drivers/pwm/Makefile        |   1 +
+>  drivers/pwm/pwm-intel-lgm.c | 253 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 265 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
 > 
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index 1d8d55b..923b381 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -49,6 +49,8 @@
->  #define GPIO_EXT_PORTC		0x58
->  #define GPIO_EXT_PORTD		0x5c
-
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 7dbcf6973d33..4949c51fe90b 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -232,6 +232,17 @@ config PWM_IMX_TPM
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-imx-tpm.
 >  
-> +#define GPIO_INTCOMB_MASK	0xffc
-
-If the register is the HiSilicon Ascend SoC specific, then I'd suggest to add
-the vendor-specific prefix like: GPIO_HS_INTCOMB_MASK.
-
-Also pay attention to the register naming. Here you define it as "INTCOMB",
-later as "INT_COMB". It's better to have the same references everywhere: either
-with underscore or without it.
-
-Also please move the new register definition to be after the corresponding
-feature macro definition (see the next comment for detailts).
-
+> +config PWM_INTEL_LGM
+> +	tristate "Intel LGM PWM support"
+> +	depends on HAS_IOMEM
+> +	depends on (OF && X86) || COMPILE_TEST
+> +	select REGMAP_MMIO
+> +	help
+> +	  Generic PWM fan controller driver for LGM SoC.
 > +
->  #define DWAPB_DRIVER_NAME	"gpio-dwapb"
->  #define DWAPB_MAX_PORTS		4
->  
-> @@ -58,6 +60,10 @@
->  
->  #define GPIO_REG_OFFSET_V2	1
-
->  
-> +#define GPIO_REG_INT_COMB	2
-
-Please move this macro to be define after the "GPIO_PORTA_EOI_V2" one, so to
-make the blocked-like macro definitions order. Like this:
-	#define GPIO_REG_OFFSET_V2	BIT(0)	// Reg V2 Feature macro
-
-	#define GPIO_INTMASK_V2		0x44	// Reg V2-specific macro
-	...
-	#define GPIO_PORTA_EOI_V2	0x40	// Reg V2-specific macro
-
-	+ #define GPIO_REG_HS_INTCOMB	BIT(1)	// HiSilicon Feature macro
-	+ 
-	+ #define GPIO_HS_INTCOMB_MASK	0xffc	// HiSilicon-specific macro
-	+ 
-
-I missed that in my series, but having the flags defined as decimals isn't good.
-Could you convert GPIO_REG_HS_INTCOMB and GPIO_REG_OFFSET_V2 to be defined as BIT(x)?
-
-The same comment about HS_-prefixing. Perhaps GPIO_REG_HS_INTCOMB?
-
-> +#define ENABLE_INT_COMB		1
-> +#define DISABLE_INT_COMB	0
-
-I don't really see a point in having these two macros defined. They are basically
-just the boolean flags. Please see my next comment.
-
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-intel-lgm.
 > +
->  #define GPIO_INTMASK_V2		0x44
->  #define GPIO_INTTYPE_LEVEL_V2	0x34
->  #define GPIO_INT_POLARITY_V2	0x38
-> @@ -354,6 +360,20 @@ static irqreturn_t dwapb_irq_handler_mfd(int irq, void *dev_id)
->  	return IRQ_RETVAL(dwapb_do_irq(dev_id));
->  }
->  
-
-> +static void dwapb_enable_inq_combine(struct dwapb_gpio *gpio, unsigned int enable)
-
-inq_combine or int_combine?
-
-"enable" is used here as boolean, then it should be declared as one.
-
+>  config PWM_IQS620A
+>  	tristate "Azoteq IQS620A PWM support"
+>  	depends on MFD_IQS62X || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index 2c2ba0a03557..e9431b151694 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_PWM_IMG)		+= pwm-img.o
+>  obj-$(CONFIG_PWM_IMX1)		+= pwm-imx1.o
+>  obj-$(CONFIG_PWM_IMX27)		+= pwm-imx27.o
+>  obj-$(CONFIG_PWM_IMX_TPM)	+= pwm-imx-tpm.o
+> +obj-$(CONFIG_PWM_INTEL_LGM)	+= pwm-intel-lgm.o
+>  obj-$(CONFIG_PWM_IQS620A)	+= pwm-iqs620a.o
+>  obj-$(CONFIG_PWM_JZ4740)	+= pwm-jz4740.o
+>  obj-$(CONFIG_PWM_LP3943)	+= pwm-lp3943.o
+> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
+> new file mode 100644
+> index 000000000000..8e9f8cd3b7fb
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-intel-lgm.c
+> @@ -0,0 +1,253 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Intel Corporation.
+> + *
+> + * Limitations:
+> + * - The hardware supports fixed period which is dependent on 2/3 or 4
+> + *   wire fan mode.
+> + * - Supports normal polarity. Does not support changing polarity.
+> + * - When PWM is disabled, output of PWM will become 0(inactive). It doesn't
+> + *   keep track of running period.
+> + * - When duty cycle is changed, PWM output may be a mix of previous setting
+> + *   and new setting for the first period. From second period, the output is
+> + *   based on new setting.
+> + * - It is a dedicated PWM fan controller. There are no other consumers for
+> + *   this PWM controller.
+> + */
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
+> +
+> +#define LGM_PWM_FAN_CON0		0x0
+> +#define LGM_PWM_FAN_EN_EN		BIT(0)
+> +#define LGM_PWM_FAN_EN_DIS		0x0
+> +#define LGM_PWM_FAN_EN_MSK		BIT(0)
+> +#define LGM_PWM_FAN_MODE_2WIRE		0x0
+> +#define LGM_PWM_FAN_MODE_MSK		BIT(1)
+> +#define LGM_PWM_FAN_DC_MSK		GENMASK(23, 16)
+> +
+> +#define LGM_PWM_FAN_CON1		0x4
+> +#define LGM_PWM_FAN_MAX_RPM_MSK		GENMASK(15, 0)
+> +
+> +#define LGM_PWM_MAX_RPM			(BIT(16) - 1)
+> +#define LGM_PWM_DEFAULT_RPM		4000
+> +#define LGM_PWM_MAX_DUTY_CYCLE		(BIT(8) - 1)
+> +
+> +#define LGM_PWM_DC_BITS			8
+> +
+> +#define LGM_PWM_PERIOD_2WIRE_NS		(40 * NSEC_PER_MSEC)
+> +
+> +struct lgm_pwm_chip {
+> +	struct pwm_chip chip;
+> +	struct regmap *regmap;
+> +	struct clk *clk;
+> +	struct reset_control *rst;
+> +	u32 period;
+> +};
+> +
+> +static inline struct lgm_pwm_chip *to_lgm_pwm_chip(struct pwm_chip *chip)
 > +{
-> +	u32 val;
-> +
-> +	if (gpio->flags & GPIO_REG_INT_COMB) {
-> +		val = dwapb_read(gpio, GPIO_INTCOMB_MASK);
-> +		if (enable)
-> +			val |= BIT(0);
-> +		else
-> +			val &= BIT(0);
-> +		dwapb_write(gpio, GPIO_INTCOMB_MASK, val);
-> +	}
+> +	return container_of(chip, struct lgm_pwm_chip, chip);
 > +}
 > +
-
-Do you need to preserve the register content by using the read-modify-write procedure
-here? If not, then inlining something like this should be fine:
-	if (gpio->flags & GPIO_REG_HS_INTCOMB)
-		dwapb_write(gpio, GPIO_HS_INTCOMB_MASK, 1);
-
->  static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
->  				 struct dwapb_gpio_port *port,
->  				 struct dwapb_port_property *pp)
-> @@ -446,6 +466,8 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
->  		irq_create_mapping(gpio->domain, hwirq);
->  
->  	port->gc.to_irq = dwapb_gpio_to_irq;
+> +static int lgm_pwm_enable(struct pwm_chip *chip, bool enable)
+> +{
+> +	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
+> +	struct regmap *regmap = pc->regmap;
 > +
-> +	dwapb_enable_inq_combine(gpio, ENABLE_INT_COMB);
->  }
->  
->  static void dwapb_irq_teardown(struct dwapb_gpio *gpio)
-> @@ -618,6 +640,7 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
->  static const struct of_device_id dwapb_of_match[] = {
->  	{ .compatible = "snps,dw-apb-gpio", .data = (void *)0},
->  	{ .compatible = "apm,xgene-gpio-v2", .data = (void *)GPIO_REG_OFFSET_V2},
-> +	{ .compatible = "hisi,ascend-gpio", .data = (void *)GPIO_REG_INT_COMB},
->  	{ /* Sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, dwapb_of_match);
-> @@ -626,6 +649,7 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
->  	{"HISI0181", 0},
->  	{"APMC0D07", 0},
->  	{"APMC0D81", GPIO_REG_OFFSET_V2},
-> +	{"HISI19XX", GPIO_REG_INT_COMB},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(acpi, dwapb_acpi_match);
-
-> @@ -713,6 +737,8 @@ static int dwapb_gpio_remove(struct platform_device *pdev)
->  	reset_control_assert(gpio->rst);
->  	clk_bulk_disable_unprepare(DWAPB_NR_CLOCKS, gpio->clks);
->  
-> +	dwapb_enable_inq_combine(gpio, DISABLE_INT_COMB);
+> +	return regmap_update_bits(regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_EN_MSK,
+> +				  enable ? LGM_PWM_FAN_EN_EN : LGM_PWM_FAN_EN_DIS);
+> +}
 > +
->  	return 0;
->  }
-
-Note the dwapb_gpio_remove method will be discarded from the driver in the framework
-of the next series: https://patchwork.ozlabs.org/project/linux-gpio/list/?series=193334
-
-So if you really need to revert the GPIO_HS_INTCOMB_MASK flag setting, then
-you'd need to create and register a dedicated devm-action (see 8 and 9 patch in
-my series for example).
-
-BTW Linus, could you take a look at my series? Andy and Rob have finished reviewing
-it almost a month ago.
-
--Sergey
-
->  
-> @@ -794,6 +820,8 @@ static int dwapb_gpio_resume(struct device *dev)
->  			dwapb_write(gpio, GPIO_INTEN, ctx->int_en);
->  			dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
->  
-> +			dwapb_enable_inq_combine(gpio, ENABLE_INT_COMB);
+> +static int lgm_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			 const struct pwm_state *state)
+> +{
+> +	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
+> +	u32 duty_cycle, val;
+> +	int ret;
 > +
->  			/* Clear out spurious interrupts */
->  			dwapb_write(gpio, GPIO_PORTA_EOI, 0xffffffff);
->  		}
+> +	/*
+> +	 * The hardware only supports
+> +	 * normal polarity and fixed period.
+> +	 */
+> +	if (state->polarity != PWM_POLARITY_NORMAL || state->period < pc->period)
+> +		return -EINVAL;
+> +
+> +	if (!state->enabled)
+> +		return lgm_pwm_enable(chip, 0);
+> +
+> +	duty_cycle = min_t(u64, state->duty_cycle, pc->period);
+> +	val = duty_cycle * LGM_PWM_MAX_DUTY_CYCLE / pc->period;
+> +
+> +	ret = regmap_update_bits(pc->regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_DC_MSK,
+> +				 FIELD_PREP(LGM_PWM_FAN_DC_MSK, val));
+> +	if (ret)
+> +		return ret;
+> +
+> +	return lgm_pwm_enable(chip, 1);
+> +}
+> +
+> +static void lgm_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			      struct pwm_state *state)
+> +{
+> +	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
+> +	u32 duty, val;
+> +
+> +	state->enabled = regmap_test_bits(pc->regmap, LGM_PWM_FAN_CON0,
+> +					  LGM_PWM_FAN_EN_EN);
+> +	state->polarity = PWM_POLARITY_NORMAL;
+> +	state->period = pc->period; /* fixed period */
+> +
+> +	regmap_read(pc->regmap, LGM_PWM_FAN_CON0, &val);
+> +	duty = FIELD_GET(LGM_PWM_FAN_DC_MSK, val);
+> +	state->duty_cycle = DIV_ROUND_UP(duty * pc->period, LGM_PWM_MAX_DUTY_CYCLE);
+> +}
+> +
+> +static const struct pwm_ops lgm_pwm_ops = {
+> +	.get_state = lgm_pwm_get_state,
+> +	.apply = lgm_pwm_apply,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static void lgm_pwm_init(struct lgm_pwm_chip *pc)
+> +{
+> +	struct regmap *regmap = pc->regmap;
+> +	u32 con0_val;
+> +
+> +	con0_val = FIELD_PREP(LGM_PWM_FAN_MODE_MSK, LGM_PWM_FAN_MODE_2WIRE);
+> +	pc->period = LGM_PWM_PERIOD_2WIRE_NS;
+> +	regmap_update_bits(regmap, LGM_PWM_FAN_CON1, LGM_PWM_FAN_MAX_RPM_MSK,
+> +			   LGM_PWM_DEFAULT_RPM);
+> +	regmap_update_bits(regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_MODE_MSK,
+> +			   con0_val);
+> +}
+> +
+> +static const struct regmap_config lgm_pwm_regmap_config = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+> +};
+> +
+> +static void lgm_clk_disable(void *data)
+> +{
+> +	struct lgm_pwm_chip *pc = data;
+> +
+> +	clk_disable_unprepare(pc->clk);
+> +}
+> +
+> +static int lgm_clk_enable(struct device *dev, struct lgm_pwm_chip *pc)
+> +{
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(pc->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, lgm_clk_disable, pc);
+> +}
+> +
+> +static void lgm_reset_control_assert(void *data)
+> +{
+> +	struct lgm_pwm_chip *pc = data;
+> +
+> +	reset_control_assert(pc->rst);
+> +}
+> +
+> +static int lgm_reset_control_deassert(struct device *dev, struct lgm_pwm_chip *pc)
+> +{
+> +	int ret;
+> +
+> +	ret = reset_control_deassert(pc->rst);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, lgm_reset_control_assert, pc);
+> +}
+> +
+> +static int lgm_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct lgm_pwm_chip *pc;
+> +	void __iomem *io_base;
+> +	int ret;
+> +
+> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+> +	if (!pc)
+> +		return -ENOMEM;
+> +
+> +	io_base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(io_base))
+> +		return PTR_ERR(io_base);
+> +
+> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
+> +	if (IS_ERR(pc->regmap))
+> +		return dev_err_probe(dev, PTR_ERR(pc->regmap),
+> +				     "failed to init register map\n");
+> +
+> +	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
+> +	if (IS_ERR(pc->rst))
+> +		return dev_err_probe(dev, PTR_ERR(pc->rst),
+> +				     "failed to get reset control\n");
+> +
+> +	ret = lgm_reset_control_deassert(dev, pc);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
+> +
+> +	pc->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(pc->clk))
+> +		return dev_err_probe(dev, PTR_ERR(pc->clk), "failed to get clock\n");
+> +
+> +	ret = lgm_clk_enable(dev, pc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clock\n");
+> +		return ret;
+> +	}
+> +
+> +	pc->chip.dev = dev;
+> +	pc->chip.ops = &lgm_pwm_ops;
+> +	pc->chip.npwm = 1;
+> +
+> +	lgm_pwm_init(pc);
+> +
+> +	ret = pwmchip_add(&pc->chip);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to add PWM chip: %pe\n", ERR_PTR(ret));
+> +		return ret;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, pc);
+> +	return 0;
+> +}
+> +
+> +static int lgm_pwm_remove(struct platform_device *pdev)
+> +{
+> +	struct lgm_pwm_chip *pc = platform_get_drvdata(pdev);
+> +	int ret;
+> +
+> +	ret = pwmchip_remove(&pc->chip);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id lgm_pwm_of_match[] = {
+> +	{ .compatible = "intel,lgm-pwm" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, lgm_pwm_of_match);
+> +
+> +static struct platform_driver lgm_pwm_driver = {
+> +	.driver = {
+> +		.name = "intel-pwm",
+> +		.of_match_table = lgm_pwm_of_match,
+> +	},
+> +	.probe = lgm_pwm_probe,
+> +	.remove = lgm_pwm_remove,
+> +};
+> +module_platform_driver(lgm_pwm_driver);
 > -- 
-> 1.8.3.1
+> 2.11.0
 > 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
