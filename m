@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00BA251A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F434251A7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgHYOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgHYOEv (ORCPT
+        id S1726186AbgHYOHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:07:08 -0400
+Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:59940
+        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgHYOHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:04:51 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0947C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:04:50 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id n128so11698890oif.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:04:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=JSgGwhGvPr+KJZvjnrUslvVj9jpXHDMkdMBwXVwG3Cc=;
-        b=gv/ilhOo/CJuaRy+5jiJ85/gSssL8rbJ/1YRRb6JU4Qc8pmJjBam1gl5VviDYh1qko
-         e15HfbTsZ7jcrIEcUIYYZW+QbboJgAu+72tiqJFPHAlSg/iHVl5LMyYdUySfEzUU7rcL
-         uCnSDvRzuFaWg88okF3hP28IMw7GkKVzCLyRrwZoro3ErOxIOjW86X/Vw99ypXO3OAC3
-         BR9PUdPQRSXSy4ucIhcfnOzPXy+Mhg4nmpde6T0ajYikxkddCf14ud0pe3/OZNkXKSfC
-         7KlFsYqE0SH/UshfTrNpFcDi3bM//D8YGcf/kdFJRTWSmFPLTnjxyY3edqHNlNVjLCM4
-         VShw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=JSgGwhGvPr+KJZvjnrUslvVj9jpXHDMkdMBwXVwG3Cc=;
-        b=jFO2A8lMTFdhdq06RRBZZLCwmOOtUfg3PJ0zKzTdtZdWfk5sj8XO044W7rfiSfTAhd
-         jMffqz5X4A+5k0FDmG1KEXPQ4IhRCQBe1Q6QJcWJJAEtaopD2w4j7djIoTA7jIPLJLDp
-         2TpkdK78Y2sCgB22tyYeI+WRWQkDLQf9NUE7+Wjgs4wsIzDaoII2DolBas7Y+HB8+7av
-         uY3aKMSaoHXlxjA7HkIZqCXePMp8ySfirzfHUJSQZpvjCXGzk9m3ayCPAvqDhyXb3odo
-         mbMiWj8rFlfV63Akex6zQAy5NdlFZytGXLKGaW1vq9o40JP1yulXLMp8CUvoClB633Rj
-         B81Q==
-X-Gm-Message-State: AOAM530yYRV4UpGeppA2GHadWAqOQUmPNr+VQMTkNsq6umH/zNDyUVcl
-        qTRAxVqUxOqI7pwv8qX9M8yazxY3xSleLX8Ikb0=
-X-Google-Smtp-Source: ABdhPJxPghVPbLDSLQUt/3ZwXWsborMKFBq54BiGFYyuEyzO98pQFUDsiy9OyGgbbu1vy5uQ6KTXSTxXHzBPd5KqvUk=
-X-Received: by 2002:aca:f109:: with SMTP id p9mr1030013oih.84.1598364287092;
- Tue, 25 Aug 2020 07:04:47 -0700 (PDT)
+        Tue, 25 Aug 2020 10:07:05 -0400
+Received: from localhost (localhost [IPv6:::1])
+        by www.teo-en-ming.com (Postfix) with ESMTPA id 00186426B9B;
+        Tue, 25 Aug 2020 22:07:03 +0800 (+08)
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Received: by 2002:a4a:9bca:0:0:0:0:0 with HTTP; Tue, 25 Aug 2020 07:04:46
- -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Tue, 25 Aug 2020 15:04:46 +0100
-X-Google-Sender-Auth: RmrbX9HERxkKl4c_fxunBvxVOco
-Message-ID: <CABD4V+8vX-fU6-wnHdE9r=-BmLh2qurLPi5mcBGjrEbgOFCkwA@mail.gmail.com>
-Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 25 Aug 2020 22:07:03 +0800
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ceo@teo-en-ming-corp.com
+Subject: Configuring Fortigate 60D Firewall SSL VPN with FortiToken 2FA
+ (Advanced Configuration)
+Message-ID: <fac273f8cd4cde443b1f9fdd047d208e@teo-en-ming.com>
+X-Sender: ceo@teo-en-ming.com
+User-Agent: Roundcube Webmail/1.2.3
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sch=C3=B6nen Tag,
+Subject: Configuring Fortigate 60D Firewall SSL VPN with FortiToken 2FA 
+(Advanced Configuration)
 
-Ich bin Ahmed Muzashah, Account Manager einer Investmentbank hier in
-Burkina Faso. In meinem Unternehmen wird seit langem ein Kontoprojekt
-von einem Kunden unserer Bank er=C3=B6ffnet. Ich habe die M=C3=B6glichkeit,=
- den
-verbleibenden Fonds (15,8 Millionen US-Dollar) zu =C3=BCbertragen. F=C3=BCn=
-fzehn
-Millionen Achthunderttausend US-Dollar.
+Author: Mr. Turritopsis Dohrnii Teo En Ming
+Country: Singapore
+Date: 25 August 2020 Tuesday Singapore Time
+Type of Publication: PDF Manual
+Document Version: 20200825.01
 
-Ich m=C3=B6chte diese Mittel investieren und diese Vereinbarung bei unserer
-Bank einreichen. Diese wird im Rahmen einer legitimen Vereinbarung
-ausgef=C3=BChrt, die uns vor Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt. Wir =
-teilen den
-Fonds zu 40% f=C3=BCr Sie, zu 50% f=C3=BCr mich und zu 10%, um eine Basis f=
-=C3=BCr
-arme Kinder in Ihrem Land zu schaffen. Wenn Sie wirklich an meinem
-Vorschlag interessiert sind, erhalten Sie weitere Informationen zur
-=C3=9Cberweisung.
+INTRODUCTION
+============
 
-Dein,
-Mr Ahmed Muzashah,
+Fortigate firewall appliances are based on Linux Kernel and open source 
+software.
+
+In this PDF manual, I will show you how to:
+
+1.	Install Windows Server 2019 Standard as a virtual machine in Linux 
+KVM/QEMU Hypervisor
+2.	Install Active Directory Domain Services role/feature
+3.	Promote Windows Server 2019 Standard to Domain Controller
+4.	Create organizational units in Active Directory Users and Computers
+5.	Create Active Directory user
+6.	Create security group for SSL VPN users
+7.	Assign Active Directory user to the SSL VPN Users security group
+8.	Add LDAP server (Microsoft Active Directory/LDAP integration) in 
+Fortigate 60D firewall
+9.	Add user group from LDAP server in Fortigate 60D firewall (remember 
+to add members of the group as well)
+10.	Add LDAP user in Fortigate 60D firewall
+11.	Configure SSL VPN tunnel in Fortigate 60D firewall
+12.	Configure two firewall security policies to allow VPN users to 
+access the (a) internal network and the (b) internet
+13.	Assign FortiToken to LDAP user in Fortigate 60D firewall and turn on 
+2nd Factor Authentication (2FA)
+14.	Create VPN tunnel in FortiClient VPN on your Android phone and 
+connect to Fortigate 60D SSL VPN tunnel successfully
+15.	FortiClient VPN will now ask you for the token code
+
+Redundant Google Drive download links for my PDF manual
+=======================================================
+
+[1] 
+https://drive.google.com/file/d/1uhRWr8OXerCN30OeWhgFP8rG_4NlkHsa/view?usp=sharing
+
+[2] 
+https://drive.google.com/file/d/1mJ5m7zlPFLXuXfKgfLcq_nAGP1jC2QlC/view?usp=sharing
+
+[3] 
+https://drive.google.com/file/d/1ZU7aphOXIG3q8-1g6GSRXX2hXgG7AibU/view?usp=sharing
+
+[4] 
+https://drive.google.com/file/d/1IKVeGJZ5HPR6hAsRwxTHfABBLjKz9uyl/view?usp=sharing
+
+[5] 
+https://drive.google.com/file/d/1nwC7VlA3p0U2apmsOlH6mADrX84wxTNM/view?usp=sharing
+
+[6] 
+https://drive.google.com/file/d/1mXT3TdX8dtCDA1YeoX7oRxk3mSgcoN6P/view?usp=sharing
+
+
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
