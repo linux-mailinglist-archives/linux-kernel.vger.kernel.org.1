@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE7525142B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDA2251432
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgHYI0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgHYI0m (ORCPT
+        id S1729101AbgHYI1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:27:52 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:46972 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728694AbgHYI1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:26:42 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6074DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:26:42 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id u24so10896683oic.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FC5Hg6COXCLaWmmWNTz40PS96oTnHUqlyjZL5YEDjmI=;
-        b=mE7Ydj/tIvyII6lomwmN1NR0MhMKAfEoekSi7y1J/k3ZNS2dnD6AhDjL5WPSSwIQhm
-         2Q0JrJSi23rD3J5faSQlxhqF+ng5SP2GoY1jmrM9ck4FQNHYVtYw5Xf9DtY3k+SyszJ0
-         uuXE7w7FrYLEXnDuOEPQx1wFVWbq40auNwZI2K+5sQsOdeUllOFcORseNaiXyghzY8Fz
-         zTncDRbkjQoLPYoEXGJhL8nVkDUwA2XLDskzTyh7KR1ULBHzjN+sdbf3m8I9nksHQLrj
-         PL+6W5Xb9f2gylfIg2mMFkN2yhST1Xw0vv/Cenk0s0RPc9aixJEPovw86FBtXCDVSMDv
-         o98A==
+        Tue, 25 Aug 2020 04:27:45 -0400
+Received: by mail-ot1-f66.google.com with SMTP id f42so4627101otf.13;
+        Tue, 25 Aug 2020 01:27:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FC5Hg6COXCLaWmmWNTz40PS96oTnHUqlyjZL5YEDjmI=;
-        b=Hp5HlBk4GJAJtm74IS85mbbRCZWeYaCecWrx52BCHfA6sbj5F9sWYwlMciyUS4cOz1
-         SrXJF9kRilR4K3Q4vVIY5H3U2sU2PVfEr3l1F+pwWJ6At4QNaXNcjdPbfAMbnUrlCJmP
-         mw6gokvBAGMUSHGR69yeWMOL6ozGXNI9y6UEf82LP29K+s1DoJmWNR+txjQ/TQshnzpS
-         wFmKxdYmCply5vOAKhsQVDp/c8cYdH1PZl8P1N/vLVndVNGFQT0Gz8N/RIhvNk860pzc
-         nXkfSYZH3+94mj6pAZNnQK3xeVwTEHLT8BREgZAIxpLZj3BrJn4zBd2Z63CvStSXs8Im
-         3OqA==
-X-Gm-Message-State: AOAM531FaPlZR/UyQlKk33okpMa+UuLHVnRHHJiyWaRPOKnZRNQt6xEd
-        jydtGWjNl8eCMizcOJngf+abBpaANMnesIggzxPWng==
-X-Google-Smtp-Source: ABdhPJxD71P1F4ZzbI6iFZEZrr1MZD1sm9wMnlc4GSnJlk+0Zk7Erabn/fwXngbccV76Y6VS7e44EThTikvb+R3DQfs=
-X-Received: by 2002:aca:aa8c:: with SMTP id t134mr407296oie.121.1598344001584;
- Tue, 25 Aug 2020 01:26:41 -0700 (PDT)
+        bh=3hxg7mNwlR3vuscL5TlgoioLVulJhR5tUG0gm7sNHuU=;
+        b=RRrHLe0ECpE4rwnNUsYJDpdJv6peBfaUw4DBnTtIBp5lD+e/dlAtHYyHN7qBA8odcd
+         Ct3PbYGo7kKmPia3tohF0MK6nPwW1GfHjbEIp7RolzMH81S/F0Fu1hLLmCVF5TRWCEuy
+         ebVRr8/p3LiOgTEjkeOpR1h0XlrJDGMQx4ACvBa8V4GAZjDelCHxvrBzoYXV12tOxH0z
+         7TcbStwKGhsisAYARUrhFE8JFLaGUAq1TEQ2ApPi8cL9yU7yoH4O5qctX5fcP9hZgc8r
+         bHO/Wfzbqfrqbz3eGUjukZTM/QDk+oc6VYVtHwsFFnyVrzq+csY2i3NXmLmp4V4XxJBV
+         ANYw==
+X-Gm-Message-State: AOAM531ftUNIL/tL3PoQrzInT0ZupDMQhXJAHZiD43AZkZIjJxP0+2+f
+        p9l0MZC+a+vhCsFh+swr624E+Dbe2PGxbc/hJnlSjYaS
+X-Google-Smtp-Source: ABdhPJx0zXPstCnHnri8lFi7O8MyFA9EVV1YuGVzMSeMep6iCVN61tQvMEWQU45MOEt5Xh8X+3G5H74q0zQlBpGScQA=
+X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr6283711otn.250.1598344064333;
+ Tue, 25 Aug 2020 01:27:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825015654.27781-1-walter-zh.wu@mediatek.com>
-In-Reply-To: <20200825015654.27781-1-walter-zh.wu@mediatek.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 25 Aug 2020 10:26:30 +0200
-Message-ID: <CANpmjNOvj+=v7VDVDXpsUNZ9o0+KoJVJs0MjLhwr0XpYcYQZ5g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] kasan: add workqueue and timer stack for generic KASAN
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
+References: <20200825081909.2797-1-geert@linux-m68k.org>
+In-Reply-To: <20200825081909.2797-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 Aug 2020 10:27:32 +0200
+Message-ID: <CAMuHMdUZgx51cFuJdeKo57pmRX+NB+OBxsCv1sg46=MLxouN7w@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.9-rc2
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020 at 03:57, Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> Syzbot reports many UAF issues for workqueue or timer, see [1] and [2].
-> In some of these access/allocation happened in process_one_work(),
-> we see the free stack is useless in KASAN report, it doesn't help
-> programmers to solve UAF on workqueue. The same may stand for times.
->
-> This patchset improves KASAN reports by making them to have workqueue
-> queueing stack and timer stack information. It is useful for programmers
-> to solve use-after-free or double-free memory issue.
->
-> Generic KASAN also records the last two workqueue and timer stacks and
-> prints them in KASAN report. It is only suitable for generic KASAN.
->
-> [1]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22+process_one_work
-> [2]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22%20expire_timers
-> [3]https://bugzilla.kernel.org/show_bug.cgi?id=198437
->
-> Walter Wu (6):
-> timer: kasan: record timer stack
-> workqueue: kasan: record workqueue stack
-> kasan: print timer and workqueue stack
-> lib/test_kasan.c: add timer test case
-> lib/test_kasan.c: add workqueue test case
-> kasan: update documentation for generic kasan
+On Tue, Aug 25, 2020 at 10:23 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.9-rc2[1] to v5.9-rc1[3], the summaries are:
+>   - build errors: +12/-0
 
-Acked-by: Marco Elver <elver@google.com>
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
+error: implicit declaration of function 'disable_kernel_vsx'
+[-Werror=implicit-function-declaration]:  => 676:2
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
+error: implicit declaration of function 'enable_kernel_vsx'
+[-Werror=implicit-function-declaration]:  => 640:2
 
+powerpc-gcc4.9/ppc64_book3e_allmodconfig
 
+  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against `.init.text':  => (.head.text+0x5040),
+(.head.text+0x5100)
+  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text
+section in arch/sparc/kernel/trampoline_32.o:  => (.init.text+0xa4)
+  + error: arch/sparc/kernel/process_32.o: relocation truncated to
+fit: R_SPARC_WDISP22 against `.text':  => (.fixup+0x4), (.fixup+0xc)
+  + error: arch/sparc/kernel/signal_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against `.text':  => (.fixup+0x28), (.fixup+0x1c),
+(.fixup+0x34), (.fixup+0x10), (.fixup+0x4)
 
-> ---
->
-> Changes since v2:
-> - modify kasan document to be more readable.
->   Thanks for Marco suggestion.
->
-> Changes since v1:
-> - Thanks for Marco and Thomas suggestion.
-> - Remove unnecessary code and fix commit log
-> - reuse kasan_record_aux_stack() and aux_stack
->   to record timer and workqueue stack.
-> - change the aux stack title for common name.
->
-> ---
->
-> Documentation/dev-tools/kasan.rst |  4 ++--
-> kernel/time/timer.c               |  3 +++
-> kernel/workqueue.c                |  3 +++
-> lib/test_kasan.c                  | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> mm/kasan/report.c                 |  4 ++--
-> 5 files changed, 64 insertions(+), 4 deletions(-)
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200825015654.27781-1-walter-zh.wu%40mediatek.com.
+sparc64/sparc-allmodconfig
+
+  + error: modpost: "devm_ioremap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_ioremap_resource"
+[drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
+  + error: modpost: "devm_of_iomap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/iio/adc/adi-axi-adc.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/ptp/ptp_ines.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource_byname"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+
+um-x86_64/um-all{mod,yes}config
+
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/d012a7190fc1fd72ed48911e77ca97ba4521bccd/ (all 192 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9123e3a74ec7b934a4a099e98af6a61c2f80bbf5/ (all 192 configs)
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
