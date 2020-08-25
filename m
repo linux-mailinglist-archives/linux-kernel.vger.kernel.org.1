@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3EC251110
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 06:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637F6251133
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 07:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgHYE6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 00:58:10 -0400
-Received: from mail-mw2nam10on2058.outbound.protection.outlook.com ([40.107.94.58]:41940
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728994AbgHYE6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 00:58:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLoyspInkfYkX/g3c+4LXx1S+gp+YUru/QHlh0IxOPZqOFmRUdetD/yIrPkFuvTeUyhWbw5DnLeSOgjtji2iQzIa+/nJx73wkYMB0e5MQWwoT9jdMj45tfZmoezB4dbNGs+jTrOL7lVMFvRkzfi0h1nS1/rJKtEPf8fzByd8atJFENj9ZG+YChn0TX2mErb5lTA1OOab2sode9q2NUvP4TkVBW6XXuwJHxszF6cUteIS7GHgGYMJHbmNxH7x5N0xfPm2cxFZqkJj33B/JTdlw3b93vpIlPjDYzQvv+GkPjF01JeDyPYbtflxVcHjz6Ln+AYrCKI8CgfWTfr0VV0xVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tt81K9lTCWgkQF4gHCHB9yjUBPufJwEE+V1hVKJR8dM=;
- b=CZce8uAn7STA8VA0L3ds2pOb0Bxo/Cgwe/UJNLoe+L/Cj+won//+NmULDLXHsugHpq43WkLuQbFKTx6TSWMLv+1t2BpxeByAnWz/3woWCv8hfB1sL8w0opxQp7DRbfppLhHf5Dng/mQ3ThA6ymaYCpcbx0HySN2YkuUM38cP3w/O2Yq0/CBgFLyfoVdxecSDmKZaPEcXGr+oJPz6B8qxWr1doHsNBaCIouSAwwy1qpnUq4WIcrZt2IsjVGGx6MijfNMyApch6iiyQAkgVJsBsh7P7pWQx3idaIrCYS+53rQNVa6ZmF87Xngbh0lTHziiZvU5wI9dm1lri3d78FQV2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+        id S1728763AbgHYFAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 01:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728159AbgHYE77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 00:59:59 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C35C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:59:59 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 31so3724318pgy.13
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tt81K9lTCWgkQF4gHCHB9yjUBPufJwEE+V1hVKJR8dM=;
- b=LC3ot+TzLdfz6dYe0WOlY4GK8ZNGWTc6iKgXZI52hiJ3VkEg62vcEuHcjaLYPXv0k6vlQFtAhymbL1XFGki/wx/7cCc/HZGkRDK7Waos19ltQcETQLGBh/iLvGWJevTyIhpZ5dV/fsLAa6zg6Dyw9I5Id3yKQzVCm+GxYkVWNkk=
-Received: from BYAPR02MB5896.namprd02.prod.outlook.com (2603:10b6:a03:122::10)
- by BY5PR02MB7026.namprd02.prod.outlook.com (2603:10b6:a03:23d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Tue, 25 Aug
- 2020 04:58:02 +0000
-Received: from BYAPR02MB5896.namprd02.prod.outlook.com
- ([fe80::48ec:6240:92db:c6bf]) by BYAPR02MB5896.namprd02.prod.outlook.com
- ([fe80::48ec:6240:92db:c6bf%5]) with mapi id 15.20.3305.026; Tue, 25 Aug 2020
- 04:58:02 +0000
-From:   Manish Narani <MNARANI@xilinx.com>
-To:     Michal Simek <michals@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        Michal Simek <michals@xilinx.com>, git <git@xilinx.com>
-CC:     Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: RE: [PATCH] dt-bindings: mmc: Add missing description for
- clk_in/out_sd1
-Thread-Topic: [PATCH] dt-bindings: mmc: Add missing description for
- clk_in/out_sd1
-Thread-Index: AQHWefAjQIJv0fgL10uselMOSXyRxKlIQ1hA
-Date:   Tue, 25 Aug 2020 04:58:02 +0000
-Message-ID: <BYAPR02MB5896EA24D2A0BE05BDE71451C1570@BYAPR02MB5896.namprd02.prod.outlook.com>
-References: <aef586778921c93377ec2f31c86e151b6e93f6c7.1598257520.git.michal.simek@xilinx.com>
-In-Reply-To: <aef586778921c93377ec2f31c86e151b6e93f6c7.1598257520.git.michal.simek@xilinx.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: xilinx.com; dkim=none (message not signed)
- header.d=none;xilinx.com; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [103.250.157.192]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 34f2f94f-bf5d-4a47-d2d8-08d848b37230
-x-ms-traffictypediagnostic: BY5PR02MB7026:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR02MB70265BBF8D34AD3A1B851927C1570@BY5PR02MB7026.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:510;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gik6MlTfieNn3gr6mLnpRWClx5qqJ6veLBmbMAjU3ka5+D/g76iKV1bAhrR+CfGHV/6qN+8N9MFs7Q9pr2O+0eYiLoYUi2aRiSHnf86HZ64L3OkMZO6o3CpIDkVB9jiw+rNVZUsG9CUPO93Z2nFcwPISpWxL/ISbjnKqGvOdjN3dr14K1P2opvAooZNlfRTs49BGjgmlmdtiagqr00HJeMTjXB1HTDiOYnEBdjH3ztrPHZgl3atXfMQKdQMQ++WOWHxVAspbgScS7TpajcLQK1X2vb8osJFyhxrtt6CiKEXbFo4KB0GcLrJrBFi258ac
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5896.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(396003)(136003)(366004)(5660300002)(6636002)(7416002)(66446008)(66476007)(64756008)(66556008)(8676002)(4326008)(8936002)(316002)(76116006)(110136005)(66946007)(9686003)(55016002)(54906003)(6506007)(478600001)(53546011)(186003)(71200400001)(7696005)(26005)(52536014)(86362001)(2906002)(83380400001)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Ms/xqj3L9IazqZHRqPMbofng3VziS1am4FZ19zhYDiGBc0tsYhaO6+lnghtpPYBnro0s3+iIXx+C/1B4PX/5kCZ9plZdZ8jJoV5xcdQ7KQ1gSNNv4ysbjCJ2orZ1xRgqJKZ4QmqrZ2oJVlbNVdf4zXyCRGK5mjJ/UrGpuvUQc/unbYEb/+y13VZSFwPrAQX3sM4BB+ne/szN78q7GyGmFtIGXFZ8seqNKcR0/Ok23oJ/n76kLtLZO27pEXlSic6pIY2Pih30kQ8wZck4DOwhE0hMT3Fyh7toLWpkMD+lXj/k3GoXR5HiRorXVuNPqsxpyAH6gKOfbHz4+SqA2oi6+7ON6+bfnH2m/g65a5Nnrb2BV4D/2KEceIeS3pUsyhH1S43rqGCBAov95KFj4pSEojmB/9CYDpfREyRNyc2MbY/HFMfY/qIqJceba1IdT5S4O1FdE0Zwx0r8KZBHJYwmuin7Ofu2IOzpnFpj943sOhOMq1LdQnUvwRhpKGM594V4jHFMJ5Q4nSiyV5y8TnGeUsPCOGFpjysUJSswQPmmi0j/JSvy9WVrpk1HkRx+bAWVXNqJ9qyxDYaJ3h9acLx0iKcmv+Eu3kdJrpkIRbeo1YlnZHM7EIH416Mv/b4XlPS7JlGACIfKaSVwbW3bICqntg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5896.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34f2f94f-bf5d-4a47-d2d8-08d848b37230
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2020 04:58:02.4033
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pYzU352Ck4fSQqFAkXurBYJ5E4nEKc25h9n8z5rq5midqSF7WP/ffXGl6tzZygOTcI1pkaD2bJs0+OO2pJn8sA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB7026
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CujjVNlCBITdfLG2aFM5tMhbSU/fDXpGUzs/pQuuzRE=;
+        b=HvFKC9NSuGtmoN2nkRQRB89nb5D1b6pNSLZztimut3+DtGH/VMtl+ADpUf4POGIjqd
+         9Fs03QTaNVRlClXTS6x0Dxbgxgzp74huKGew2Tpzmx7z50nO+u5qO4WxIL+You+Ei5ia
+         FVQPf0BJdVUA6FYYmoSKfCWIMMK73tgMTP8m6bILGiKSyEMU2lEM78oeubAi75/Yc1zD
+         h2bcXT78SbQZ1nbEaOexZiRKgYz4FEcv1PwJa1LkM7792lFQLbjHSY2acjJ2OO9JYcPo
+         MIYj6zsKEWDyq5I8Y7fy0jsdRHfnZCWMk7yLHfozu0V3GJ69NEjGTU8rBl5Xj2rHNDSM
+         RDuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CujjVNlCBITdfLG2aFM5tMhbSU/fDXpGUzs/pQuuzRE=;
+        b=HvlAMFjafRGJ97J0CNV1fe2UU6uI+OywtTezE+V1R+h/F8rnnmagpuwC5jjSx6vGfD
+         bJzEtzJEbA9AUjJTvFZUsDTLef6dW6uhyfia+C4uIegCKmF4n1iibOhpXZo8MxKFsJic
+         jQSd59MUiPzgwRFzr7OaFj47lNf8xfH4I3ZDfhEjvFl46ZwLQ6B+CS4c7EktPqIleBd4
+         WbKaADNhVihgdRdy3loJ2GbTPxswtEPYduVWxRJQwhVqWEGbaW3n8CLOMUa2y0Hs8z0N
+         g65XPb97ZnbqxnN+dIhJNDwGzRkQDhIyWzhmKt26Q3wpkYKmcJ63IPiT8vEdzu8N/rM9
+         s7nA==
+X-Gm-Message-State: AOAM5327hcQZt/U2Vd9Ph/OqjAA4Gq2K2qU8QcVz4VMSW6900k4r3der
+        qhCGIwphbWWY8g11ouu5FQON3c3jVv8=
+X-Google-Smtp-Source: ABdhPJwYQngyhKIADWe0XS9wdCX6FqarosKpZUi4yFyZfbyt9FnMKzSNHXm0u+GoATqXUHmBWN4ATg==
+X-Received: by 2002:a62:5214:: with SMTP id g20mr6763671pfb.168.1598331598622;
+        Mon, 24 Aug 2020 21:59:58 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id b78sm13754694pfb.144.2020.08.24.21.59.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 21:59:58 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: [PATCH for v5.9] mm/page_alloc: handle a missing case for memalloc_nocma_{save/restore} APIs
+Date:   Tue, 25 Aug 2020 13:59:42 +0900
+Message-Id: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
+memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+on CMA area, but, there is a missing case and the page on CMA area could
+be allocated even if APIs are used. This patch handles this case to fix
+the potential issue.
 
-> -----Original Message-----
-> From: Michal Simek <monstr@monstr.eu> On Behalf Of Michal Simek
-> Sent: Monday, August 24, 2020 1:55 PM
-> To: linux-kernel@vger.kernel.org; monstr@monstr.eu; Michal Simek
-> <michals@xilinx.com>; git <git@xilinx.com>; Manish Narani
-> <MNARANI@xilinx.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>; Rob Herring
-> <robh+dt@kernel.org>; Ulf Hansson <ulf.hansson@linaro.org>; Wan Ahmad
-> Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>;
-> devicetree@vger.kernel.org; linux-mmc@vger.kernel.org
-> Subject: [PATCH] dt-bindings: mmc: Add missing description for clk_in/out=
-_sd1
->=20
-> The commit a8fdb80f4d47 ("arm64: zynqmp: Add ZynqMP SDHCI compatible
-> string") added clock-output-names for both SDHCIs before DT binding yaml
-> conversion. But only clk_in/out_sd0 clock names have been covered by
-> DT binding which ends up with dt yaml checking warnings as:
-> From schema: .../Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> ... mmc@ff170000: clock-output-names:0: 'clk_out_sd0' was expected
-> ... mmc@ff170000: clock-output-names:1: 'clk_in_sd0' was expected
->=20
-> Fixes: 16ecd8f33c6e ("dt-bindings: mmc: convert arasan sdhci bindings to =
-yaml")
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
+specified.
 
-Reviewed-by: Manish Narani <manish.narani@xilinx.com>
+This patch implements this behaviour by checking allocated page from
+the pcplist rather than skipping an allocation from the pcplist entirely.
+Skipping the pcplist entirely would result in a mismatch between watermark
+check and actual page allocation. And, it requires to break current code
+layering that order-0 page is always handled by the pcplist. I'd prefer
+to avoid it so this patch uses different way to skip CMA page allocation
+from the pcplist.
 
+Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} APIs)
+Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+---
+ mm/page_alloc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0e2bab4..c4abf58 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3341,6 +3341,22 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+ 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+ 	list = &pcp->lists[migratetype];
+ 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
++#ifdef CONFIG_CMA
++	if (page) {
++		int mt = get_pcppage_migratetype(page);
++
++		/*
++		 * pcp could have the pages on CMA area and we need to skip it
++		 * when !ALLOC_CMA. Free all pcplist and retry allocation.
++		 */
++		if (is_migrate_cma(mt) && !(alloc_flags & ALLOC_CMA)) {
++			list_add(&page->lru, &pcp->lists[migratetype]);
++			pcp->count++;
++			free_pcppages_bulk(zone, pcp->count, pcp);
++			page = __rmqueue_pcplist(zone, migratetype, alloc_flags, pcp, list);
++		}
++	}
++#endif
+ 	if (page) {
+ 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
+ 		zone_statistics(preferred_zone, zone);
+-- 
+2.7.4
 
