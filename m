@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA3D25194E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71FD25193A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgHYNNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:13:32 -0400
-Received: from mx01-muc.bfs.de ([193.174.230.67]:55655 "EHLO mx01-muc.bfs.de"
+        id S1727020AbgHYNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:09:58 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:12627 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726241AbgHYNN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:13:27 -0400
-X-Greylist: delayed 316 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 Aug 2020 09:13:25 EDT
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-muc.bfs.de (Postfix) with ESMTPS id 7DED42011B;
-        Tue, 25 Aug 2020 15:08:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1598360888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DfGEV/vhGDWZpAaUnALOMzkCaWG+zSVd/96DRDJ5/ls=;
-        b=I6AC7eupTBweA2z5lzUYIzGpaHhVMS8gH9lBNdCrYmKpLKX2J0X72ORAJ9SsVWa3HCU9GA
-        V/U7AkUXfwNPrPnTy8GqzNEh/BvCWSrWTFm4mKy1E4pSfbiJacpsk/Lx5heQqTn6s/Whnj
-        dWdl0qaAwtnd4XavzsBtT8Mj1dFOMlwSZDJwmIvc4ES+wPX6gRL0ea7ESd9lHsFHKrvMQS
-        7WpNWJL0Hq2OCTOuUPqc1ppLEQVi7AsRqNn6T8zvQ0EbeQIAhGNS8qPbMeWA/udd28/Z6l
-        Lq2s1Tiop1k/Ny4TlqOlai+PogWJCw5Y3BlV9eH9OeuxWV9byzAhj+vMiBzOHw==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Tue, 25 Aug
- 2020 15:08:07 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
- 15.01.2044.004; Tue, 25 Aug 2020 15:08:07 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-CC:     Stefan Achatz <erazor_de@users.sourceforge.net>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: AW: [PATCH v2] HID: roccat: add bounds checking in
- kone_sysfs_write_settings()
-Thread-Topic: [PATCH v2] HID: roccat: add bounds checking in
- kone_sysfs_write_settings()
-Thread-Index: AQHWefToEl9avbae1kGQ4FmFDoAFsalHYb09gADrooCAAIAoLQ==
-Date:   Tue, 25 Aug 2020 13:08:07 +0000
-Message-ID: <4b0f8fc9b361495c8678de81b1cba381@bfs.de>
-References: <1597819984.4101.16.camel@web.de> <20200824085735.GA208317@mwanda>
- <ab4625b2b2ea41dd83ff9e192a027f41@bfs.de>,<20200825072903.GQ1793@kadam>
-In-Reply-To: <20200825072903.GQ1793@kadam>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25624.007
-x-tm-as-result: No-10--10.842700-5.000000
-x-tmase-matchedrid: 9K29sLhW7mvRubRCcrbc5pzEHTUOuMX33dCmvEa6IiGoLZarzrrPmYbM
-        AgFeDdi/NxD2+UPaZLLxJpuUVnIb4aEJuVPDxbSkL7t268n/pW3lf2cXbNRplGOMyb1Ixq8VLUR
-        eLvdYkFoPn/Bqa8wShuMwa0EiWUk5HyjC+QCbXy0C4mcWVH6HR6dlL9piCOvOMYkmNIO7+haW0G
-        j8TPZHp/8nv9x3PStarwZ5g8tV9IyD/sxA0J0W+vUwiX15l0tvMC4zO7d4kaN/50V5HbQzfO7wr
-        YXyDkL3rwukP2KfdpBl2ySchWEQjPEPTHQ3k3TSRXdiukZQCgF9LQinZ4QefNZE3xJMmmXc+gtH
-        j7OwNO2J8YJgRrgXF16w4bdxd81x2moSG7OJU8U+f4Zag2CTlsuKfUh5HKbi
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--10.842700-5.000000
-x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25624.007
-x-tm-snts-smtp: B9A852186FD1D5E37DF19BB7767A9DCF76ABCED6B72DBA16A1D7B4441AD735862000:9
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-Spam-Status: No, score=0.07
-Authentication-Results: mx01-muc.bfs.de;
-        none
-X-Spamd-Result: default: False [0.07 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_SPAM(0.07)[58.26%];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         NEURAL_HAM(-0.00)[-0.994];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[]
+        id S1726015AbgHYNJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:09:58 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BbTqP3hfsz9tyVZ;
+        Tue, 25 Aug 2020 15:09:53 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4N7Gp3heRtYd; Tue, 25 Aug 2020 15:09:53 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BbTqP2YKzz9tyVY;
+        Tue, 25 Aug 2020 15:09:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BCA508B81B;
+        Tue, 25 Aug 2020 15:09:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1OHwb6Dc6nev; Tue, 25 Aug 2020 15:09:54 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 696118B81C;
+        Tue, 25 Aug 2020 15:09:54 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id ED59365D37; Tue, 25 Aug 2020 13:09:53 +0000 (UTC)
+Message-Id: <cover.1598360789.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v11 0/5] powerpc: switch VDSO to C implementation
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
+        anton@ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        luto@kernel.org, linux-arch@vger.kernel.org
+Date:   Tue, 25 Aug 2020 13:09:53 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lets hope the maintainer picks that up.
+This is the tenth version of a series to switch powerpc VDSO to
+generic C implementation.
 
-re,
- wh
+Changes in v11:
+- Rebased to today's powerpc/merge branch
+- Prototype of __arch_get_hw_counter() was modified in mainline (patch 2)
 
-________________________________________
-Von: Dan Carpenter [dan.carpenter@oracle.com]
-Gesendet: Dienstag, 25. August 2020 09:29
-An: Walter Harms
-Cc: Stefan Achatz; Jiri Kosina; Benjamin Tissoires; linux-input@vger.kernel=
-.org; linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org
-Betreff: Re: [PATCH v2] HID: roccat: add bounds checking in kone_sysfs_writ=
-e_settings()
+Changes in v10 are:
+- Added a comment explaining the reason for the double stack frame
+- Moved back .cfi_register lr next to mflr
 
-On Mon, Aug 24, 2020 at 03:35:16PM +0000, Walter Harms wrote:
-> hello Dan,
->
-> i notice that you can shorten the line to:
-> (line above checks for count=3D=3Dsizeof(struct kone_settings))
->
-> difference =3D memcmp(settings, &kone->settings, count);
->
-> nothing special just to shorten the line and make use of count.
->
-> and just to save one indent level and because its  readabel nicely:
->     if ( ! difference )
->           goto unlock;
->
-> hope that helps
+Main changes in v9 are:
+- Dropped the patches which put the VDSO datapage in front of VDSO text in the mapping
+- Adds a second stack frame because the caller doesn't set one, at least on PPC64
+- Saving the TOC pointer on PPC64 (is that really needed ?)
 
-Yeah.  I wrote that version and I wanted to send it, but then I decided
-not to change the style too much.  I definitely agree with you, but I
-figured I would keep the patch less intrusive.
+This series applies on today's powerpc/merge branch.
 
-regards,
-dan carpenter
+See the last patches for details on changes and performance.
+
+Christophe Leroy (5):
+  powerpc/processor: Move cpu_relax() into asm/vdso/processor.h
+  powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+  powerpc/vdso: Save and restore TOC pointer on PPC64
+  powerpc/vdso: Switch VDSO to generic C implementation.
+  powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32
+
+ arch/powerpc/Kconfig                         |   2 +
+ arch/powerpc/include/asm/clocksource.h       |   7 +
+ arch/powerpc/include/asm/processor.h         |  13 +-
+ arch/powerpc/include/asm/vdso/clocksource.h  |   7 +
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 198 ++++++++++++
+ arch/powerpc/include/asm/vdso/processor.h    |  23 ++
+ arch/powerpc/include/asm/vdso/vsyscall.h     |  25 ++
+ arch/powerpc/include/asm/vdso_datapage.h     |  40 +--
+ arch/powerpc/kernel/asm-offsets.c            |  49 +--
+ arch/powerpc/kernel/time.c                   |  91 +-----
+ arch/powerpc/kernel/vdso.c                   |   5 +-
+ arch/powerpc/kernel/vdso32/Makefile          |  32 +-
+ arch/powerpc/kernel/vdso32/config-fake32.h   |  34 +++
+ arch/powerpc/kernel/vdso32/gettimeofday.S    | 300 +------------------
+ arch/powerpc/kernel/vdso32/vdso32.lds.S      |   1 +
+ arch/powerpc/kernel/vdso32/vgettimeofday.c   |  35 +++
+ arch/powerpc/kernel/vdso64/Makefile          |  23 +-
+ arch/powerpc/kernel/vdso64/gettimeofday.S    | 242 +--------------
+ arch/powerpc/kernel/vdso64/vgettimeofday.c   |  29 ++
+ 19 files changed, 454 insertions(+), 702 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/gettimeofday.h
+ create mode 100644 arch/powerpc/include/asm/vdso/processor.h
+ create mode 100644 arch/powerpc/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/powerpc/kernel/vdso32/config-fake32.h
+ create mode 100644 arch/powerpc/kernel/vdso32/vgettimeofday.c
+ create mode 100644 arch/powerpc/kernel/vdso64/vgettimeofday.c
+
+-- 
+2.25.0
 
