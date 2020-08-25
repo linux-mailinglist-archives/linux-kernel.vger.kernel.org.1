@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD6E25189A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFA02518A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgHYMdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:33:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53218 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgHYMda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:33:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 88B06AD77;
-        Tue, 25 Aug 2020 12:33:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 434B31E1316; Tue, 25 Aug 2020 14:33:24 +0200 (CEST)
-Date:   Tue, 25 Aug 2020 14:33:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] mm: Pass pvec directly to find_get_entries
-Message-ID: <20200825123324.GB32298@quack2.suse.cz>
-References: <20200819150555.31669-1-willy@infradead.org>
- <20200819150555.31669-7-willy@infradead.org>
- <20200824161620.GK24877@quack2.suse.cz>
- <20200824173639.GD17456@casper.infradead.org>
+        id S1726770AbgHYMeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgHYMes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:34:48 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7878AC061574;
+        Tue, 25 Aug 2020 05:34:48 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id a6so2654088oog.9;
+        Tue, 25 Aug 2020 05:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8STidKdjB3IAsSg9qwMG6/fnbTG9ueb7BIUx1fPaPdM=;
+        b=EkXhmIeyqrFX4pTjEOdzP/jGeBGkdRMiIPackjwd0wko0Uj4wDHsnTqJgmE/DUMoOC
+         7UM2Ma7p67yIwuDuwdq0mgDsKjxEhDGZMd3UWwWr9xXzO3XiFPdfZsfq+Ybu18CJpCmv
+         sXA6HfyteNRB35O6jz+EhrtqehZZxQofMP/ar5YWVagBCdMGwjiqJ6yJ6q1Hp0knCTct
+         aFtdRkXwm9KZexzNqUipJ2ymmG0sdCjJldCZKNtdIkR85mQeiCYyMmw5x/pJdFJ1VjcP
+         rCPFgsIJBtyhUZXXDg+oIHHSImxO+1/EvkVPy+bXhZ9PRswqPxoROp7rklfG/xgMCD4C
+         G+wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8STidKdjB3IAsSg9qwMG6/fnbTG9ueb7BIUx1fPaPdM=;
+        b=n1cnoctdPTt2h7EUXpW/J0FqOsXO5gJ1amXYZj7qdw8KQaWjkIYn0irRYjbLTV5o2u
+         VsMCAw7A1B+UN6Z33RlsBz3wHo8K5JW6irqQlqNoMOYg23QJFcDq8BHQxT9ZpOJ2RVhK
+         mDvJRrWtPIsup6lyYvFS8NkvEwBW/zxJpH4RP7m27abAArG0c7Me02xOkMCJUawXAMaS
+         ZnQeK6hdhSSlBMYHkPAVvjscdimqIZHbBglGZUtrzb3TgIzNARzqAKuitzoYHBHZa2re
+         vFs8X7qNB9HhR3K4AsU9GvAMQn6I0IoRvD0zk/nAb560Ats/NK6gFpHBFxbsL2ykK4H1
+         iexA==
+X-Gm-Message-State: AOAM530Gu6OVnrEVQX6FV4QZgHiDdKLmk0EHVRVkKZWRADy5rRjUSN+c
+        eA/OvCk9m4qpQzZNJOT1t5J5yHziLGRiTp/z2rw=
+X-Google-Smtp-Source: ABdhPJyaNv6o4uVnFGumvl1cK7gZdIPeLXqVmwVKwDEiu2FCFHEKUVACuI2WumJhRdItKWAqsIjyLUZJMeK+/egbH10=
+X-Received: by 2002:a4a:380b:: with SMTP id c11mr6876012ooa.17.1598358887626;
+ Tue, 25 Aug 2020 05:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824173639.GD17456@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200819071633.76494-1-alexandru.ardelean@analog.com>
+ <20200819071633.76494-2-alexandru.ardelean@analog.com> <20200825112435.GO2639@vkoul-mobl>
+In-Reply-To: <20200825112435.GO2639@vkoul-mobl>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 25 Aug 2020 15:34:36 +0300
+Message-ID: <CA+U=DspxU+Fo3Ynwr0ST2pyNW8Hrie=r0N2QZGrgiEqMvpicuA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] dmaengine: axi-dmac: move clock enable earlier
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        dmaengine@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>, dan.j.williams@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24-08-20 18:36:39, Matthew Wilcox wrote:
-> On Mon, Aug 24, 2020 at 06:16:20PM +0200, Jan Kara wrote:
-> > On Wed 19-08-20 16:05:54, Matthew Wilcox (Oracle) wrote:
-> > > All callers of find_get_entries() use a pvec, so pass it directly
-> > > instead of manipulating it in the caller.
-> > > 
-> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > 
-> > Rather than passing pvec to find_get_entries() and then making everybody
-> > use it, won't it more consistent WRT the naming to make everybody use
-> > pagevec_lookup_entries() (which is trivial at this point in the series) and
-> > then rename find_get_entries() to pagevec_lookup_entries()? I.e., I'd prefer
-> > if the final function was called pagevec_lookup_entries() because that is
-> > IMO more consistent with how other functions are named in this area...
-> 
-> It seemed more consistent to me to have everybody using
-> find_get_entries().  To me the pagevec functions:
-> 
-> 1. Are in mm/swap.c (not really sure why)
+On Tue, Aug 25, 2020 at 2:24 PM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> On 19-08-20, 10:16, Alexandru Ardelean wrote:
+> > The clock may also be required to read registers from the IP core (if it is
+> > provided and the driver needs to control it).
+> > So, move it earlier in the probe.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/dma/dma-axi-dmac.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
+> > index 088c79137398..07665c60c21b 100644
+> > --- a/drivers/dma/dma-axi-dmac.c
+> > +++ b/drivers/dma/dma-axi-dmac.c
+> > @@ -850,6 +850,10 @@ static int axi_dmac_probe(struct platform_device *pdev)
+> >       if (IS_ERR(dmac->clk))
+> >               return PTR_ERR(dmac->clk);
+> >
+> > +     ret = clk_prepare_enable(dmac->clk);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> >       INIT_LIST_HEAD(&dmac->chan.active_descs);
+>
+> Change is fine, but then you need to jump to err_clk_disable in few
+> place below this and not return error
 
-Historical :). AFAIK pagevec abstraction was first created to make swapping
-out and reclaim of pages more effective. It has grown a bit since then...
+oops;
+thanks for catching this;
+will send a v2
 
-> 2. Take pvec as the first argument, not the last
-
-Well, yes, I'd keep the argument order to match original
-pagevec_lookup_entries().
-
-> 3. Wrap a find_* function
-> 
-> Whereas the find_* functions:
-> 
-> 1. Are in mm/filemap.c
-> 2. Take mapping as the first argument
-> 3. Manipulate the XArray directly
-
-Agreed.
-
-> We already have functions in filemap which take a pagevec, eg
-> page_cache_delete_batch() and delete_from_page_cache_batch().
-
-Right but those are really pretty internal helper functions so I don't
-think they form or strong precedence.
-
-> So if we're going to merge the two functions, it seems more natural to
-> have it in filemap.c and called find_get_entries(), but I'm definitely
-> open to persuasion on this!
-
-I agree that having non-trivial xarray code in mm/swap.c isn't attractive
-either. Dunno, I dislike the inconsistency between find_get_pages() and
-find_get_entries() you create but they aren't completely consistent anyway
-so I can live with that. Or we can just leave the pagevec_lookup_entries()
-wrapper and the API will stay consistent...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> >
+> >       of_channels = of_get_child_by_name(pdev->dev.of_node, "adi,channels");
+> > @@ -892,10 +896,6 @@ static int axi_dmac_probe(struct platform_device *pdev)
+> >       dmac->chan.vchan.desc_free = axi_dmac_desc_free;
+> >       vchan_init(&dmac->chan.vchan, dma_dev);
+> >
+> > -     ret = clk_prepare_enable(dmac->clk);
+> > -     if (ret < 0)
+> > -             return ret;
+> > -
+> >       version = axi_dmac_read(dmac, ADI_AXI_REG_VERSION);
+> >
+> >       ret = axi_dmac_detect_caps(dmac, version);
+> > --
+> > 2.17.1
+>
+> --
+> ~Vinod
