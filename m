@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B108A250E2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDD4250E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgHYB0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 21:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S1726041AbgHYBb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgHYBZ6 (ORCPT
+        with ESMTP id S1725921AbgHYBb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 21:25:58 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1E8C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 18:25:58 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id b16so10834671ioj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 18:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BQ53bR9yzL5LCkQfVs+ALLFFuHnjhrGR7al0c4QWdM=;
-        b=tEp/OEWL/eQB1zCKQeNoB5C1Gl7GMu1z02dU3GW78P8V9VwSwgXvgSVvQEA/zpLwca
-         9LB7yPkk9kfrQ3T2YALjtlFFQCCNJPlxfTIGkBNM4RWVKYAkoBenhNi+d6iqMyil/9L4
-         HagHEQGJf4blTAFb6VtuMF4h8Y8NJSKf9J4YAvdMMpzYPfFfSf/qM2O7Z+aAn9hYM1Af
-         S2aDHrTZRu+jxrdKqdRNDuGjgZu+qt9prvyLOg5c3dnlJTsMzpOVYMmWwV41AdzqzA3q
-         36/Q8ygp6O67P3xRn8CWhv3PigokqiJiKKCh31MXzFu195rf17UFxzV483RIjgxUhfPY
-         9+XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BQ53bR9yzL5LCkQfVs+ALLFFuHnjhrGR7al0c4QWdM=;
-        b=ZVZqr5xCSYHPXB2QwMYaTgGTBRDJutonBlEF5EYnDgp+hPkyb82JcI7pSeBPqPOxOt
-         OGZQqxr9uAUpJqwppHGZ8Ao2lOayQqk4CYP2GPsHAPOdx4PReeqY5Jy1gCJtP83RRM7y
-         NY83HQT1tS1rF4aqKq9GHOmK66uUq8aDhzjtUeUpOpNv4ipT/u1MQ8TtY+DGzHM6aBlA
-         7zewhyQ1yb/HlgCNeUKE1vRoplnAWfvzoO8rTfGLDyZl4VeS9WAmtw3ozkWJ74DDrlGG
-         QqOVzRnO2p7YueWa5tcoJKZMZlIo+dGeATQlgJfq2jldDW4E2iMcDxqWW+538gmxFlrn
-         SZcA==
-X-Gm-Message-State: AOAM532Ng1NmtI9Xu93DOM/JMltNOAATbEToNprSDXk4WXeoQnS/FIF0
-        IPN/Vs3PLZNAsb43aiRWVeYLiS12TFOBhtO7MDU=
-X-Google-Smtp-Source: ABdhPJw2xfStQ7PbjYeqOx6pCmz+i4QPf/M0ygzrEuKOnEsaqhaU71n3HeAHsNbaN9Ky+owM0M/ybADrcHNtON4O+fs=
-X-Received: by 2002:a05:6638:298:: with SMTP id c24mr8439577jaq.20.1598318757876;
- Mon, 24 Aug 2020 18:25:57 -0700 (PDT)
+        Mon, 24 Aug 2020 21:31:26 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C85C061574;
+        Mon, 24 Aug 2020 18:22:55 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BbB7c6BLcz9sR4;
+        Tue, 25 Aug 2020 11:22:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1598318573;
+        bh=OaLt4HqV3d9zbIPep2UkkAhYp07BwIaQ9BGWEtyT1I8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lRfCNWSgEYLKe909MSpT/WVlFPLpGeAgQtjIHoNLmYj/3sFCOs+dGsLZ9gfe0fIbl
+         2nmIgYHeU2vZpuSKsIvQiKUfd91D/esQuQi57MqDFcjLjxgGj5ZhaGD5vnIBMtjr1P
+         yrcitV4NkkTR1/K/YkR9MXZaXgXIV0M5n2+vsdagvqFeB9KuvjEwRNSy4zT5X3SKF2
+         Fkd0iHCZouc7UU3smrsWzKt6lnopQuSpIZsGdjYmYk1ATIlq1LtBijkTLiUxkuAaXb
+         BBwvVtPkTauIvKZqp4rSkKPYV4Rt2wBCnSbUOejwhAa0s+w5LhntummmPkJQ4SbsF6
+         8f6dtQPg6iLuQ==
+Date:   Tue, 25 Aug 2020 11:22:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: linux-next: manual merge of the reset tree with the
+ kspp-gustavo tree
+Message-ID: <20200825112251.042bfeb7@canb.auug.org.au>
+In-Reply-To: <20200819102819.63c9aa50@canb.auug.org.au>
+References: <20200819102819.63c9aa50@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1598001864-6123-1-git-send-email-zhaoyang.huang@unisoc.com>
- <CAGWkznGfc8g3SRd5vBq7sQGFLuc__98c7t21-3j4T1oAViHvgg@mail.gmail.com> <20200821115744.GP17456@casper.infradead.org>
-In-Reply-To: <20200821115744.GP17456@casper.infradead.org>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Tue, 25 Aug 2020 09:25:46 +0800
-Message-ID: <CAGWkznGda_V5y99mODJse6STqCN31ADGnYaFBW50ZTzbW7ogyw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm : sync ra->ra_pages with bdi->ra_pages
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, chunyan.zhang@unisoc.com,
-        Baolin Wang <baolin.wang7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ecRTqe0yGx.TYLu72r/9Y=S";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 7:57 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Aug 21, 2020 at 05:31:52PM +0800, Zhaoyang Huang wrote:
-> > This patch has been verified on an android system and reduces 15% of
-> > UNITERRUPTIBLE_SLEEP_BLOCKIO which was used to be caused by wrong
-> > ra->ra_pages.
->
-> Wait, what?  Readahead doesn't sleep on the pages it's requesting.
-> Unless ... your file access pattern is random, so you end up submitting
-> a readahead I/O that's bigger than needed, so takes longer for the page
-> you actually wanted to be returned.  I know we have the LOTSAMISS
-> logic, but that's not really enough.
->
-> OK, assuming this problem is really about sync mmap (ie executables),
-> this makes a bit more sense.  I think the real problem is here:
->
->         ra->start = max_t(long, 0, offset - ra->ra_pages / 2);
->         ra->size = ra->ra_pages;
->         ra->async_size = ra->ra_pages / 4;
->         ra_submit(ra, mapping, file);
->
-> which actually skips all the logic we have in ondemand_readahead()
-> for adjusting the readahead size.  Ugh, this is a mess.
->
-> I think a quick fix to your problem will be just replacing ra->ra_pages
-> with bdi->ra_pages in do_sync_mmap_readahead() and leaving ra->ra_pages
-> alone everywhere else.
->
-We can't just sync ra->ra_pages with bdi->ra_pages as eio and fadvise
-will shrink or turbo it, that is why I introduce seq_read_fact in this
-commit
+--Sig_/ecRTqe0yGx.TYLu72r/9Y=S
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> We need a smarter readahead algorithm for mmap'ed files, and I don't have
-> time to work on it right now.  So let's stick to the same dumb algorithm,
-> but make it responsive to bdi ra_pages being reset.
+Hi all,
+
+On Wed, 19 Aug 2020 10:28:19 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the reset tree got a conflict in:
+>=20
+>   drivers/reset/reset-imx7.c
+>=20
+> between commit:
+>=20
+>   58e813cceabd ("treewide: Use fallthrough pseudo-keyword")
+>=20
+> from the kspp-gustavo tree and commit:
+>=20
+>   2983e2385ff6 ("reset: imx7: add the cm4 reset for i.MX8MQ")
+>=20
+> from the reset tree.
+>=20
+> diff --cc drivers/reset/reset-imx7.c
+> index e8aa8691deb2,b60534a1e0ef..000000000000
+> --- a/drivers/reset/reset-imx7.c
+> +++ b/drivers/reset/reset-imx7.c
+> @@@ -232,12 -235,13 +235,13 @@@ static int imx8mq_reset_set(struct rese
+>   		break;
+>  =20
+>   	case IMX8MQ_RESET_PCIE_CTRL_APPS_EN:
+>  -	case IMX8MQ_RESET_PCIE2_CTRL_APPS_EN:	/* fallthrough */
+>  -	case IMX8MQ_RESET_MIPI_DSI_PCLK_RESET_N:	/* fallthrough */
+>  -	case IMX8MQ_RESET_MIPI_DSI_ESC_RESET_N:	/* fallthrough */
+>  -	case IMX8MQ_RESET_MIPI_DSI_DPI_RESET_N:	/* fallthrough */
+>  -	case IMX8MQ_RESET_MIPI_DSI_RESET_N:	/* fallthrough */
+>  -	case IMX8MQ_RESET_MIPI_DSI_RESET_BYTE_N:	/* fallthrough */
+>  +	case IMX8MQ_RESET_PCIE2_CTRL_APPS_EN:
+>  +	case IMX8MQ_RESET_MIPI_DSI_PCLK_RESET_N:
+>  +	case IMX8MQ_RESET_MIPI_DSI_ESC_RESET_N:
+>  +	case IMX8MQ_RESET_MIPI_DSI_DPI_RESET_N:
+>  +	case IMX8MQ_RESET_MIPI_DSI_RESET_N:
+>  +	case IMX8MQ_RESET_MIPI_DSI_RESET_BYTE_N:
+> + 	case IMX8MQ_RESET_M4_ENABLE:
+>   		value =3D assert ? 0 : bit;
+>   		break;
+>   	}
+
+This is now a conflict between the reset tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ecRTqe0yGx.TYLu72r/9Y=S
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9EZ+sACgkQAVBC80lX
+0GzAlAf9EPQIvQKi2989Eax9MB/EUpoxxpU5136AgPhXTxiaeGo6Wa9tR5h9YwYQ
+7yxBnNaNedymX8nnSar4qB8Ae8ad7qx7YP50OF26ZoMDTrnkHEYusueCCguu6sXC
+SeXLG+Te/2Wklhz3GIQxA8DhqZZEX5bXyLwvrgVhLcTF4ClyuvtowWw4aoIZT8ST
+zhR0MYXuAxbdQj42ielzMtMtfiVfHSv1mjHhjEE/5a2UZUf38e6r5f0Xr8UqqjLB
+IVzRJw751QvfjChm8nCV0uBnfm8NDxSlLNxeyMOfYl28S3cCqhSdPGPbpa+xACd5
++KqeEZImIP4piwaJw4/rC3za/eDOBw==
+=Q+7u
+-----END PGP SIGNATURE-----
+
+--Sig_/ecRTqe0yGx.TYLu72r/9Y=S--
