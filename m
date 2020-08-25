@@ -2,199 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA4C251A5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8096D251A6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgHYOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S1726611AbgHYODZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHYOAR (ORCPT
+        with ESMTP id S1726413AbgHYOCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:00:17 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E02C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:00:17 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id gl22so1883215pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:00:17 -0700 (PDT)
+        Tue, 25 Aug 2020 10:02:54 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C486C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:02:41 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id g6so1292279pjl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:02:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
-        b=aKhnLnCz8EWY/O9EwQPxzUF7jffQUPREucAEu/8yKU3QJT4H7vWbyhQ79WNhCjEevC
-         EWdjs6sr3iSqinEvLhq3LQjeiCyov9YbtBKKZdSDwNMNa01kfboS+9K1y9YJBIDd7/3b
-         DcfN94LhoDlCUDPYrhKYXqRX/KEyuLJnzYMRpqotPiVTboFLvnuKf4Vy2Bwr5fkLVSX4
-         QRftCpolQAJIyqqfLeDkCj2PVgFBxu2bTT/WQhuoS+HZ5+4PUMI9Vl1XUUCmD4QCipG9
-         OgJ/KdWNJBMVquN4Gm5pJpD16KJvtnAB2fsC1H/gpgTZ3Dnz/I7ucCh9Uxr7yUC3LBtl
-         517A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xqG3SdMvJx7GJfq2oMPF0l/P2B4bvHecimACRr3B0fs=;
+        b=Xty7tLG+dU+cxDG1zwMKS7VBqkMFL9+oRQOgahH5nLpH5fKwJmyxlLLGWPIE2qVKv/
+         1WwbucyxJlvoptqamR2wp5yW+q8nwJPfaxLUyMF41W6AcqPGCp6EtnVuhyGA5g5FQDks
+         03aRQBsxVLXuf2neUQer3SDSQF27D9q28Gqj2wqXTxAAJpAQXlFw/kcTQU4asvyiHQD1
+         e6kLw+s1TkzTpdMtM6yH7sFjUQDlFuYCWC5n4YfBmMbBzeWYUwm27164zB64OlOA7vub
+         8J5wOPabyN/gRP5JsNrieFCOz7IDieTj+/nf+vBRHVgJ+RuMYXLMj6e1xT+4Y/nKQodl
+         J0FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Us+zKhWOc0nF2Stw/sjqwIYhi1P3cVkrUO+fKBNUwt4=;
-        b=eOQCwzAFNakgVMsKX35AlcQcye/BdbbChktK29EcOw9OKfnPqeiDAd/xttyP7Xlr2p
-         TLjQSt9iW5Tfsed34EBVEZbrGrJ26J8UKmE0DHpbQRamHkZls2yB+di53IGnqpiWyPu/
-         BPlstimzgX/aXpveX3sCmea79riU4gW4KLc56eFW2begWnf70PHUl6UGTJueyyVx/vc7
-         NoYJ32426yMnmTox4pMZi89TjfcjDZXXNc12OKfahBdYNMtt6qjSrP45FTAKB/O0KCeb
-         ZLAhptqY5WFavTXQh0GG7AETmvpGZ03DSDt6nW1D1pptYvjMOvmXBJoxny46dKbFbU6J
-         vPYg==
-X-Gm-Message-State: AOAM5335SW46tD+SbRrkyUqJlWsF7ac2vM96JF8Sq85f7vX2tmdq2vMU
-        7xznw0S3hxevQODre4A8ezeBdFLvcKYR0HnKMms=
-X-Google-Smtp-Source: ABdhPJzkO3H/IKD862kuXcVEH4xOvXmWJhAuD7nBvOpcRiMMFVRvYMEB2L86b1PuOaKUQ16K1EJg5SgYQUqKJi9hpgE=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a17:902:8f82:: with SMTP id
- z2mr7778537plo.177.1598364016898; Tue, 25 Aug 2020 07:00:16 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 07:00:00 -0700
-Message-Id: <20200825140001.2941001-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v3] lib/string.c: implement stpcpy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xqG3SdMvJx7GJfq2oMPF0l/P2B4bvHecimACRr3B0fs=;
+        b=QaeID4N9GB1VWR3pIIXIjfQHTkeLhPP7t6irQYZEpCzt23Z74G7KNoqyfqsooyHHtm
+         e+ABbfv/aJlJUzlVUpGEwx+wrsdo7HSHYLilL3ZCFn4n7zuzDBUAVC+cfarP0uTeelQk
+         c+UmLrk+U6IFRkAdxITBi9hYI0FRBBjCgjlwjAG+Vv61acpc4jlCpbXXssXelwNZArc8
+         4LhOu0eMuL9UEdA6ICQFP+qD89fEb7uktHj2GFNpTTs+DXhSRzHr2AMlf8uh81uIHpgz
+         lTHvZhP28akDd3L680ORbTaDBlicGGwe57qz0RuMergE9RYf5kOGdDMUNMv38odPtd9e
+         7YAg==
+X-Gm-Message-State: AOAM530LUbbThCPFwSayz6OtKoDOKApE8UF6Yf7BUClzB/VvSQE3x4EL
+        YdEQR/tgkVySXBELJBuHzSBJTn+a3iG+aKw8Xs+QNg==
+X-Google-Smtp-Source: ABdhPJzUqhQqxESaGZbNm2mQAUsBlc3kLUZjOmvdGUJ/EsAy326Ph9KQE7qDsFcEsO4sSNCfTk7UwfYZy4FBoFBySQk=
+X-Received: by 2002:a17:90a:850b:: with SMTP id l11mr1672748pjn.25.1598364160101;
+ Tue, 25 Aug 2020 07:02:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com> <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com> <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <CAK7LNAQmWBPV4nZ0xPdSHEt=DipHmR40co827voGOFN=2j47BQ@mail.gmail.com>
+ <20200824173450.GA4157679@rani.riverdale.lan> <CAKwvOd=BEwuHFeuskJ4gPOGLoXm98oXA18U=tTw981g+HdVz-w@mail.gmail.com>
+ <CAK7LNAQynuqqjhL1rqMf0YnRpQ0jsWrJ7fy51FM7d0xdxws5wQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQynuqqjhL1rqMf0YnRpQ0jsWrJ7fy51FM7d0xdxws5wQ@mail.gmail.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org, Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sami Tolvanen <samitolvanen@google.com>,
+Date:   Tue, 25 Aug 2020 07:02:28 -0700
+Message-ID: <CAKwvOdk9gpKNmEAHLf9KtzmzxnSdmDdutu5Mpp39XEaxMywMFA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Yury Norov <yury.norov@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM implemented a recent "libcall optimization" that lowers calls to
-`sprintf(dest, "%s", str)` where the return value is used to
-`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-in parsing format strings.  `stpcpy` is just like `strcpy` except it
-returns the pointer to the new tail of `dest`.  This optimization was
-introduced into clang-12.
+On Tue, Aug 25, 2020 at 5:30 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Tue, Aug 25, 2020 at 4:10 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > Masahiro, are you implying that we shouldn't take the
+> > -fno-builtin-stpcpy patch, because Clang is inconsistent? (That can be
+> > fixed.) Even though -fno-builtin-stpcpy works here as intended?
+> > https://lore.kernel.org/lkml/20200817220212.338670-2-ndesaulniers@google.com/
+> >
+> > Otherwise we need to provide an implementation of this symbol in the kernel.
+> > https://lore.kernel.org/lkml/20200815020946.1538085-1-ndesaulniers@google.com/
+> >
+> > Please, pick your poison.
+>
+>
+>
+> I am not a compiler expert.
+>
+> Nor am I sure if I am the right person who makes this decision.
+> But, if so, I would choose the latter.
+> (implement stpcpy() in the kernel)
+>
+> I was addressed last night, so
+> I should write up my thoughts.
+>
+> I do not think -fno-builtin-stpcpy is a
+> general solution.
+>
+> -fno-builtin-stpcpy will work for now
+> because only Clang implements the transformation
+> from 'sprintf(dest, "%s", str)' into
+> 'stpcpy(dest, str) - dest'.
+>
+> If GCC implements it some day,
+> we would run into a problem because
+> in GCC, it is not -fno-builtin-stpcpy, but
+> -fno-builtin-sprintf that disables that optimization.
+>
+> In this regard, 'KBUILD_CFLAGS += -fno-builtin-sprintf'
+> would be more future-proof, but it is potentially
+> an overkill.
+> We want to disable optimization from sprintf() to stpcpy(),
+> but we may still benefit from the optimization from
+> sprintf() into something else.
+>
+>
+> Linus is uncomfortable with this kind of compiler magic.
+> If we take compiler's freedom away,
+> -ffreestanding is a big hammer to solve this problem.
+>
+> If we welcome the compiler's optimization,
+> we should implement stpcpy(), bcmp(), and whatever
+> until we solve all link errors.
 
-Implement this so that we don't observe linkage failures due to missing
-symbol definitions for `stpcpy`.
-
-Similar to last year's fire drill with:
-commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
-
-The kernel is somewhere between a "freestanding" environment (no full libc)
-and "hosted" environment (many symbols from libc exist with the same
-type, function signature, and semantics).
-
-As H. Peter Anvin notes, there's not really a great way to inform the
-compiler that you're targeting a freestanding environment but would like
-to opt-in to some libcall optimizations (see pr/47280 below), rather than
-opt-out.
-
-Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-and Clang, and Clang is missing many __builtin_* definitions, which I
-consider a bug in Clang and am working on fixing.
-
-Masahiro summarizes the subtle distinction between compilers justly:
-  To prevent transformation from foo() into bar(), there are two ways in
-  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
-  only one in GCC; -fno-buitin-foo.
-
-(Any difference in that behavior in Clang is likely a bug from a missing
-__builtin_* definition.)
-
-Masahiro also notes:
-  We want to disable optimization from foo() to bar(),
-  but we may still benefit from the optimization from
-  foo() into something else. If GCC implements the same transform, we
-  would run into a problem because it is not -fno-builtin-bar, but
-  -fno-builtin-foo that disables that optimization.
-
-  In this regard, -fno-builtin-foo would be more future-proof than
-  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
-  may want to prevent calls from foo() being optimized into calls to
-  bar(), but we still may want other optimization on calls to foo().
-
-It seems that compilers today don't quite provide the fine grain control
-over which libcall optimizations pseudo-freestanding environments would
-prefer.
-
-Finally, Kees notes that this interface is unsafe, so we should not
-encourage its use.  As such, I've removed the declaration from any
-header, but it still needs to be exported to avoid linkage errors in
-modules.
-
-Cc: stable@vger.kernel.org
-Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-Link: https://reviews.llvm.org/D85963
-Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V3:
-* Drop Sami's Tested by tag; newer patch.
-* Add EXPORT_SYMBOL as per Andy.
-* Rewrite commit message, rewrote part of what Masahiro said to be
-  generic in terms of foo() and bar().
-* Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
-  '\0', as per Arvind and Rasmus.
-
-Changes V2:
-* Added Sami's Tested by; though the patch changed implementation, the
-  missing symbol at link time was the problem Sami was observing.
-* Fix __restrict -> __restrict__ typo as per Joe.
-* Drop note about restrict from commit message as per Arvind.
-* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-* Fix off by one error as per Arvind; I had another off by one error in
-  my test program that was masking this.
-
- lib/string.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/lib/string.c b/lib/string.c
-index 6012c385fb31..6bd0cf0fb009 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
- }
- EXPORT_SYMBOL(strscpy_pad);
- 
-+/**
-+ * stpcpy - copy a string from src to dest returning a pointer to the new end
-+ *          of dest, including src's %NUL-terminator. May overrun dest.
-+ * @dest: pointer to end of string being copied into. Must be large enough
-+ *        to receive copy.
-+ * @src: pointer to the beginning of string being copied from. Must not overlap
-+ *       dest.
-+ *
-+ * stpcpy differs from strcpy in a key way: the return value is the new
-+ * %NUL-terminated character. (for strcpy, the return value is a pointer to
-+ * src. This interface is considered unsafe as it doesn't perform bounds
-+ * checking of the inputs. As such it's not recommended for usage. Instead,
-+ * its definition is provided in case the compiler lowers other libcalls to
-+ * stpcpy.
-+ */
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-+{
-+	while ((*dest++ = *src++) != '\0')
-+		/* nothing */;
-+	return --dest;
-+}
-+EXPORT_SYMBOL(stpcpy);
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
+Speculating that -ffreestanding is untenable, submitted v3:
+https://lore.kernel.org/lkml/20200825135838.2938771-1-ndesaulniers@google.com/T/#u
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+Thanks,
+~Nick Desaulniers
