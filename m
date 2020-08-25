@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2458251CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD8E251CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbgHYPyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 11:54:53 -0400
-Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:40976 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726222AbgHYPyv (ORCPT
+        id S1726871AbgHYP7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 11:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgHYP67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:54:51 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 59D7D18224D7E;
-        Tue, 25 Aug 2020 15:54:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2194:2197:2199:2200:2393:2525:2560:2563:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4362:4605:5007:6119:7809:7903:9025:9149:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12740:12760:12895:13439:14181:14659:14721:21067:21080:21212:21221:21433:21451:21627:21788:30012:30034:30054:30062:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: board60_4f092392705d
-X-Filterd-Recvd-Size: 2978
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 15:54:49 +0000 (UTC)
-Message-ID: <9ee753e9d0b4d8fbab431b7f4761c59586f1a3f2.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: Warn if trace_printk and friends are
- called
-From:   Joe Perches <joe@perches.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 25 Aug 2020 08:54:48 -0700
-In-Reply-To: <20200825193600.v2.1.I723c43c155f02f726c97501be77984f1e6bb740a@changeid>
-References: <20200825193600.v2.1.I723c43c155f02f726c97501be77984f1e6bb740a@changeid>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 25 Aug 2020 11:58:59 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEC3C061574;
+        Tue, 25 Aug 2020 08:58:58 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b17so12461294wru.2;
+        Tue, 25 Aug 2020 08:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uc+i0gWQ7QGFfIc1FEZg9eNWGBKxWPtFWURbOx3qDRs=;
+        b=VGI3XJusG7DtDltydX+p+GzQ5RPWGMc1T1ToEdnMnFchvPZQ3hNqQJyzZXejriIevw
+         hK/hOEsqvPo9CqNq5xjLXmUF/Lq+FYVV8cCkZNDTXXjsiuep9u07mK1dbVu64ZCl4i/y
+         hU7vcT/ErbkDhi8L+hWUu8Krk2xRoktNjGH2j/1ew87GNEk/l2I3mBETh0I7uMoYHRfA
+         0ICvCAZLnd/b9Ztb31msjaxO5SwIKNejh3SL18kQZhDeiG8IMcYexqxsLs9WPnMIYZd4
+         C5Uzkj/Wi++Jk9wGeEAN0HZVT+yGQQaM9PTfj+CRPgrkB7/bFOpALaSUcIsNdNGxRyS0
+         gIvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uc+i0gWQ7QGFfIc1FEZg9eNWGBKxWPtFWURbOx3qDRs=;
+        b=X/B49lI4Rf6YfR0OfY/AHfIiZIE5NNoEy+GPjkIxIeOsujridcCV/p1sGHMCJfDSiW
+         7RxgjgMgKmJTBK+mylVKGaOGKdbFwOveyDW3yUx8ldgMFReLYCjd1oulJ9/OIIiiHvop
+         o7S0kCYdkVwiXCbB4B07GELjkCq7wsMWZIzvwjj8znw56oycfMvS9QbpZT4nDSBIfbd5
+         0AWVLOzRVEzEg5eT+VvebQe/VQpVAT4TdZBSYwF5VI8Djn/lXcE1Y433grmzYyIA6OxO
+         Xfr1opVJxVDdoJoyKQX/IZHhnbC1S50iskCtRnc6haaSmC9ZZ7BPvHC2zVufFlhAUn0P
+         kM5w==
+X-Gm-Message-State: AOAM531Sup77c/vtO0yqEVAiTtXQO/wPmIVSqHnIPNJouHJERT/XJueI
+        txVbxe/zi5xCFD20PEL5gYlkxlKQlsDae1QT
+X-Google-Smtp-Source: ABdhPJy5CtEGeRW1UBmrR30rISXoR9TcOxm8quyf9iUBq3d4PfZjDJ8RF7ddO2JxnjDRZy14uWvLDQ==
+X-Received: by 2002:a5d:4850:: with SMTP id n16mr8439374wrs.92.1598371136604;
+        Tue, 25 Aug 2020 08:58:56 -0700 (PDT)
+Received: from ubuntu18_1.cisco.com ([173.38.220.45])
+        by smtp.gmail.com with ESMTPSA id r3sm28198987wro.1.2020.08.25.08.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 08:58:55 -0700 (PDT)
+From:   Ahmed Abdelsalam <ahabdels@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ahabdels@gmail.com, andrea.mayer@uniroma2.it
+Subject: [net-next v5 2/2] seg6: Add documentation for seg6_inherit_inner_ipv4_dscp sysctl
+Date:   Tue, 25 Aug 2020 15:58:40 +0000
+Message-Id: <20200825155840.1070-1-ahabdels@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 19:36 +0800, Nicolas Boichat wrote:
-> trace_printk is meant as a debugging tool, and should not be
-> compiled into production code without specific debug Kconfig
-> options enabled, or source code changes, as indicated by the
-> warning that shows up on boot if any trace_printk is called:
->  **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
->  **                                                      **
->  ** trace_printk() being used. Allocating extra memory.  **
->  **                                                      **
->  ** This means that this is a DEBUG kernel and it is     **
->  ** unsafe for production use.                           **
-> 
-> Let's warn developers when they try to submit such a change.
-> 
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+This patch adds a documentation for seg6_inherit_inner_ipv4_dscp
+sysctl into Documentation/networking/ip-sysctl.rst
 
-thanks.
+Signed-off-by: Ahmed Abdelsalam <ahabdels@gmail.com>
+---
+ Documentation/networking/ip-sysctl.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> ---
-> See also extensive discussion under this thread:
-> https://lkml.org/lkml/2020/8/20/244
-> 
-> This seems to be the simplest way to try to reduce the number
-> of trace_printk that make it into the kernel.
-> 
-> Changes in v2:
->  - Use $1 directly, fix wording, remove final period.
-> 
->  scripts/checkpatch.pl | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 4aa1d9d5e62c5b0..1102aa0ec2f7a05 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -4272,6 +4272,12 @@ sub process {
->  			     "Prefer dev_$level(... to dev_printk(KERN_$orig, ...\n" . $herecurr);
->  		}
->  
-> +# trace_printk should not be used in production code.
-> +		if ($line =~ /\b(trace_printk|trace_puts|ftrace_vprintk)\s*\(/) {
-> +			WARN("TRACE_PRINTK",
-> +			     "Do not use $1() in production code (this can be ignored if built only with a debug config option)\n" . $herecurr);
-> +		}
-> +
->  # ENOSYS means "bad syscall nr" and nothing else.  This will have a small
->  # number of false positives, but assembly files are not checked, so at
->  # least the arch entry code will not trigger this warning.
+diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+index 837d51f9e1fa..9dacdebeafc5 100644
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -1799,6 +1799,11 @@ seg6_flowlabel - INTEGER
+ 
+ 	Default is 0.
+ 
++seg6_inherit_inner_ipv4_dscp - BOOLEAN
++	Enable the SRv6 encapsulation to inherit the DSCP value of the inner IPv4 packet.
++
++	Default: FALSE (Do not inherit DSCP)
++
+ ``conf/default/*``:
+ 	Change the interface-specific default settings.
+ 
+-- 
+2.17.1
 
