@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B68250E80
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 04:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7221250E84
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 04:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHYCDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 22:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgHYCDs (ORCPT
+        id S1726306AbgHYCEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 22:04:31 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42123 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgHYCEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 22:03:48 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C650C061574;
-        Mon, 24 Aug 2020 19:03:48 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id w14so9334696eds.0;
-        Mon, 24 Aug 2020 19:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J49ibx7rWGFZBjoDPxKJPcnIgdlw0PGmq9DEe+09t7c=;
-        b=pN9KGp8EA4+447mPGfQrOaDsDdt7pZWjGDXrVigq63ADBstrVE4fOEW2XNN419sZMH
-         qrlIybKYhkhbScRF+4k6YVcByDAjhpXR2cBtOiAFKY1Uq3BbbJR6bTDt3Xf3RnNH+ZoE
-         K44RmSK+ckbJx66/BxCsgM724/s6XOMpEUoDotTBlucFpjk1MvWIRnwYEMekFMX8U+g2
-         giteHXA/MzU1lnCfiUuneHY3QQBbOAEEgatGVVgU9IzL2weLqYFKaEmgKYq+8SzR6maA
-         53CchjhFIKW5IV+2FdGiHXfym5i4TFLh31PxGMGsX46tTIKKQ86Q/PZHqlhCG57N4It5
-         qwhQ==
+        Mon, 24 Aug 2020 22:04:30 -0400
+Received: by mail-io1-f68.google.com with SMTP id g13so10881300ioo.9;
+        Mon, 24 Aug 2020 19:04:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J49ibx7rWGFZBjoDPxKJPcnIgdlw0PGmq9DEe+09t7c=;
-        b=S8GSRMQERfDS20HMaMuVx9Akn2EzzjviwJNxUUaGdBmqLUFbKV66+thLLlJHu/81vl
-         /hsDWws5hlc9fJCEE7+WIWd7/jWHnQtwgU+1mkq6W4W4ZhUXVTotdFaTrTiPoEXlpPbk
-         F5+gHHlODA34ZwzvoIYcmNpdw+FuKrS28Su7AFMoEASU+R2IZjcsDZWhEcdNoPRvP5ti
-         WFq1XjkaXgQdMdlhFgYidzST6LLB541TBGH3R2ufU7YYq4RZ1A/Tkd/q1aX9wG3Wf4AT
-         MsM98DCKTDws5FS44yRoRKuw1Y1jjjT0rGhMf5g31R/GW0RtVCBcg3quNFcXzV5YjQhz
-         zVkw==
-X-Gm-Message-State: AOAM530FfCvaRuogtB6K4hNfBF7EtQazgQNgu3XMpU6tLep79F3NlWeB
-        LXi81xglCoNtEQPVldR/aJI=
-X-Google-Smtp-Source: ABdhPJz5AHGCH48uQk6CVnq9RWkLV4y4g44m8Lll8usQ+nw4V75nvjb0ik+6WFoTInLpR2ll3p+FAA==
-X-Received: by 2002:aa7:cf94:: with SMTP id z20mr2790499edx.247.1598321027020;
-        Mon, 24 Aug 2020 19:03:47 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id y25sm11925234ejq.36.2020.08.24.19.03.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 19:03:46 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/6] MAINTAINERS: Remove self from PHY LIBRARY
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk
-References: <20200822201126.8253-1-f.fainelli@gmail.com>
- <20200824.161937.197785505315942083.davem@davemloft.net>
- <bd8da53d-ebf8-2e2e-124d-f12e614d820a@gmail.com>
- <20200824.182135.131366460578950674.davem@davemloft.net>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <824f8432-f40e-79ea-3d09-9be09b54746c@gmail.com>
-Date:   Mon, 24 Aug 2020 19:03:43 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.1.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=blgkJC98PTiLtQ7EY6Ja7z8tjOvIr37IMYyL+0fqpwo=;
+        b=WawycbwqP3wOhBa311N3fBUh7TapoyjOya12OO4DEeNUZWeNp3211IItQtO2LdoJZC
+         D1r1/gg9+N3HmBIx3c9tVQhobxTl741GjDpr/yqtyiXthSK6Hc8lGNVN2C4qyHCTLA1l
+         xYO7n2LW+af3KELTncRa987H7xul6lt41YRPgChsc1M/h7SRbatKNb3eTjYJ/7QMCKEw
+         P2D5blaELV+sn+fr31CEcWTrJHMM5gcCFLfMYYljEjqCgovKmJwgpaffe7W8utoQamS5
+         vA+zCgnW3I1cP3Lo6k/MA6IrdvWfpHBqQdzNLEl7sitbyeZ93vnOC6H/y0qz2wUIxBFg
+         7blQ==
+X-Gm-Message-State: AOAM5328Tj+egEC6CQMUAez6DjRa/QhZJ+T9bDdh9dk2YEvVJnT1YDNJ
+        k8QkbRAfvNgZW17OEcO6Xg==
+X-Google-Smtp-Source: ABdhPJyaaWTqX7Y2GueUjwPPkPW4DfUqOiYuBmQTQM2DxYEqy0LyZ3MAI8PjozuIA/FocPvW4hlGqw==
+X-Received: by 2002:a6b:6204:: with SMTP id f4mr7200166iog.56.1598321068966;
+        Mon, 24 Aug 2020 19:04:28 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id q19sm8336663ilj.85.2020.08.24.19.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 19:04:27 -0700 (PDT)
+Received: (nullmailer pid 3780329 invoked by uid 1000);
+        Tue, 25 Aug 2020 02:04:23 -0000
+Date:   Mon, 24 Aug 2020 20:04:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v2 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <20200825020423.GA3775564@bogus>
+References: <1597302475-15484-1-git-send-email-hector.yuan@mediatek.com>
+ <1597302475-15484-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20200824.182135.131366460578950674.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1597302475-15484-3-git-send-email-hector.yuan@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/2020 6:21 PM, David Miller wrote:
-> From: Florian Fainelli <f.fainelli@gmail.com>
-> Date: Mon, 24 Aug 2020 17:43:37 -0700
+On Thu, Aug 13, 2020 at 03:07:55PM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
 > 
->>
->>
->> On 8/24/2020 4:19 PM, David Miller wrote:
->>> From: Florian Fainelli <f.fainelli@gmail.com>
->>> Date: Sat, 22 Aug 2020 13:11:20 -0700
->>>
->>>> Hi David, Heiner, Andrew, Russell,
->>>>
->>>> This patch series aims at allowing myself to keep track of the
->>>> Ethernet
->>>> PHY and MDIO bus drivers that I authored or contributed to without
->>>> being listed as a maintainer in the PHY library anymore.
->>>>
->>>> Thank you for the fish, I will still be around.
->>> I applied this to 'net' because I think it's important to MAINTAINERS
->>> information to be as uptodate as possible.
->>
->> Humm sure, however some of the paths defined in patches 4 and 5 assume
->> that Andrew's series that moves PHY/MDIO/PCS to separate
->> directories. I suppose this may be okay for a little while until you
->> merge his patch series?
+> Add devicetree bindings for MediaTek HW driver.
 > 
-> Aha, I see.  I think it's ok for now.
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |   61 ++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..59bb24e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,cpufreq-hw
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Addresses and sizes for the memory of the HW bases in each frequency domain.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: "freq-domain0"
+> +      - const: "freq-domain1"
 
-I should have probably made it clearer that this depended on Andrew's 
-patch series as opposed to simply building on top of it.
--- 
-Florian
+Not all that useful of a name given it's based on the index.
+
+> +    description: |
+> +      Frequency domain name.
+> +
+> +  "#freq-domain-cells":
+> +    const: 1
+> +    description: |
+> +      Number of cells in a freqency domain specifier.
+
+What's this for?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - "#freq-domain-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        cpufreq_hw: cpufreq@11bc00 {
+> +            compatible = "mediatek,cpufreq-hw";
+> +            reg = <0 0x11bc10 0 0x8c>,
+> +               <0 0x11bca0 0 0x8c>;
+> +            reg-names = "freq-domain0", "freq-domain1";
+> +            #freq-domain-cells = <1>;
+> +        };
+> +    };
+> +
+> -- 
+> 1.7.9.5
