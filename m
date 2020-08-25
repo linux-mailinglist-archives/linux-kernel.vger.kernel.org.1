@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9ED251940
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A576251943
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgHYNKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:10:14 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:1694 "EHLO pegase1.c-s.fr"
+        id S1727049AbgHYNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:10:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43026 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgHYNKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:10:02 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BbTqV26QQz9tyVh;
-        Tue, 25 Aug 2020 15:09:58 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5ZdoqaRg7J6E; Tue, 25 Aug 2020 15:09:58 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BbTqV0wwFz9tyVY;
-        Tue, 25 Aug 2020 15:09:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 91E588B812;
-        Tue, 25 Aug 2020 15:09:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uqvT5x_W3ots; Tue, 25 Aug 2020 15:09:59 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4FA3F8B81B;
-        Tue, 25 Aug 2020 15:09:59 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2F25565D37; Tue, 25 Aug 2020 13:09:59 +0000 (UTC)
-Message-Id: <a89a09146fc464a54e196d92f7a241cc88030e12.1598360789.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1598360789.git.christophe.leroy@csgroup.eu>
-References: <cover.1598360789.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v11 5/5] powerpc/vdso: Provide __kernel_clock_gettime64() on
- vdso32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        anton@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, linux-arch@vger.kernel.org
-Date:   Tue, 25 Aug 2020 13:09:59 +0000 (UTC)
+        id S1726609AbgHYNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:10:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3FD4B5DC;
+        Tue, 25 Aug 2020 13:11:12 +0000 (UTC)
+Date:   Tue, 25 Aug 2020 15:10:41 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
+Message-ID: <20200825131041.GV4353@alley>
+References: <20200819232632.13418-1-john.ogness@linutronix.de>
+ <20200819232632.13418-2-john.ogness@linutronix.de>
+ <20200820101625.GE4353@alley>
+ <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provides __kernel_clock_gettime64() on vdso32. This is the
-64 bits version of __kernel_clock_gettime() which is
-y2038 compliant.
+On Thu 2020-08-20 12:33:23, David Laight wrote:
+> From: Petr Mladek
+> > Sent: 20 August 2020 11:16
+> ...
+> > Now that I think about it. This is the biggest problem with any temporary buffer
+> > for pr_cont() lines. I am more and more convinced that we should just
+> > _keep the current behavior_. It is not ideal. But sometimes mixed
+> > messages are always better than lost ones.
+> 
+> Maybe a marker to say 'more expected' might be useful.
+> OTOH lack of a trailing '\n' probably signifies that a
+> pr_cont() is likely to be next.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/vdso32/gettimeofday.S  | 9 +++++++++
- arch/powerpc/kernel/vdso32/vdso32.lds.S    | 1 +
- arch/powerpc/kernel/vdso32/vgettimeofday.c | 6 ++++++
- 3 files changed, 16 insertions(+)
+The problem is the "probably". Lack of trailing '\n' might also mean
+that the author did not care. Note that newline is not strictly
+required at the moment. The next message is concatenated only when
+pr_cont() is used from the same process.
 
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index fd7b01c51281..a6e29f880e0e 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -35,6 +35,15 @@ V_FUNCTION_BEGIN(__kernel_clock_gettime)
- 	cvdso_call __c_kernel_clock_gettime
- V_FUNCTION_END(__kernel_clock_gettime)
- 
-+/*
-+ * Exact prototype of clock_gettime64()
-+ *
-+ * int __kernel_clock_gettime64(clockid_t clock_id, struct __timespec64 *ts);
-+ *
-+ */
-+V_FUNCTION_BEGIN(__kernel_clock_gettime64)
-+	cvdso_call __c_kernel_clock_gettime64
-+V_FUNCTION_END(__kernel_clock_gettime64)
- 
- /*
-  * Exact prototype of clock_getres()
-diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index 4c985467a668..582c5b046cc9 100644
---- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -148,6 +148,7 @@ VERSION
- #ifndef CONFIG_PPC_BOOK3S_601
- 		__kernel_gettimeofday;
- 		__kernel_clock_gettime;
-+		__kernel_clock_gettime64;
- 		__kernel_clock_getres;
- 		__kernel_time;
- 		__kernel_get_tbfreq;
-diff --git a/arch/powerpc/kernel/vdso32/vgettimeofday.c b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-index 0b9ab4c22ef2..f7f71fecf4ed 100644
---- a/arch/powerpc/kernel/vdso32/vgettimeofday.c
-+++ b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-@@ -11,6 +11,12 @@ int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 	return __cvdso_clock_gettime32_data(vd, clock, ts);
- }
- 
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd)
-+{
-+	return __cvdso_clock_gettime_data(vd, clock, ts);
-+}
-+
- int __c_kernel_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz,
- 			    const struct vdso_data *vd)
- {
--- 
-2.25.0
+I would personally hate printk when I debugged some hard-to-reproduce
+bug, finally succeeded, and some message was missing just because
+of a missing newline.
 
+
+> Unexpected pr_cont() could be output with a leading "... "
+> to help indicate the message is a continuation.
+
+Interesting idea. It might help to catch broken code. Well, I am still
+not sure that people would appreciate this printk() behavior.
+
+
+> > That said, some printk() API using local buffer would be still
+> > valuable for pieces of code where people really want to avoid
+> > mixed lines. But it should be optional and people should be
+> > aware of the risks.
+> 
+> That could be very useful if it supported multi-line output.
+> Thing like the stack backtrace code could use it avoid
+> the mess that happens when multiple processes generate
+> tracebacks at the same time.
+
+Honestly, I am going to push against it. I agree that would be useful
+but it is an evil path.
+
+There has to be some limits. Backtraces are often printed in situation
+where the buffer could not get allocated dynamically. There always
+be a situation when a buffer will not be big enough.
+
+If we add this feature, people will want to use it also for other
+purposes that might need even bigger buffers and the size might
+be even harder to predict.
+
+And the temporary buffer is only part of the problem. The message also
+has to be stored into the lockless ringbuffer, show on consoles, passed
+to userspace, stored during panic by pstore.
+
+The printk() design already is very complicated. And multiple lines
+support would stretch it in yet another dimension.
+
+And it is going to be less important. We are going to always store the
+information about the printk caller. So that it will be much easier
+to grep related lines.
+
+Best Regards,
+Petr
