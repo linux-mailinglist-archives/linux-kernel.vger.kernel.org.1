@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15856251C23
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA862251C27
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgHYPU2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 11:20:28 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:33193 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgHYPU1 (ORCPT
+        id S1727093AbgHYPUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 11:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgHYPUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:20:27 -0400
-X-Originating-IP: 90.89.180.255
-Received: from lhopital-XPS-13-9360 (lfbn-tou-1-1372-bdcst.w90-89.abo.wanadoo.fr [90.89.180.255])
-        (Authenticated sender: kevin.lhopital@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 3691A240004;
-        Tue, 25 Aug 2020 15:20:23 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 17:20:22 +0200
-From:   =?UTF-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, mchehab@kernel.org,
-        robh+dt@kernel.org, mark.rutland@arm.com, wens@csie.org,
-        yong.deng@magewell.com, p.zabel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        paul.kocialkowski@bootlin.com, thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 0/7] Support of MIPI CSI-2 for A83T and OV8865 camera
-Message-ID: <20200825172022.3c951ab2@lhopital-XPS-13-9360>
-In-Reply-To: <20200824165244.x5rnon47kmtxojg2@gilmour.lan>
-References: <20200821145935.20346-1-kevin.lhopital@bootlin.com>
-        <20200824165244.x5rnon47kmtxojg2@gilmour.lan>
-Organization: bootlin
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 25 Aug 2020 11:20:39 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0DCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 08:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ENFgYq2det3TbaKrOxz6iT496d9fQlJUs9aH/gy1mek=; b=fdQK1ZhNC+bUU186LjBNw/dv/S
+        6tuWfa8JvNSy62lFo1WGM0FKljnJGeAka02oLi2Y9Db9NkDbWZC6FLFOYb8udjMYWhLw/8gihhDdb
+        +ieOqpgxAsaLJEcWGLr1QzooQG38jz7fkeKAb0Ov+NSmBl0j6TpcvbQ332PriZ9eny3AmkLhi1rB5
+        QN8JT+ZpsJo0K4dfV09m1DVHYd4EOpJMNNx6OWPDWxmiojhjBBeoyF4yoTYBOBdGlNCyln20Sal0V
+        LcjXU++nZNE6bd4OSXe3YDMz0/GYCq0XaUJUR8S1NrN3sYk9LABcXpb12ztwA+aWpx8p4YAFGD88Q
+        r9QHSocA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAakR-0007Uv-Qu; Tue, 25 Aug 2020 15:20:32 +0000
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Dan Williams <dan.j.williams@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH mmotm] x86/numa: fix build when CONFIG_ACPI is not set
+Message-ID: <70e5ee34-9809-a997-7b49-499e4be61307@infradead.org>
+Date:   Tue, 25 Aug 2020 08:20:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, 24 Aug 2020 18:52:44 +0200,
-Maxime Ripard <maxime@cerno.tech> a écrit :
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> Hi,
-> 
-> On Fri, Aug 21, 2020 at 04:59:28PM +0200, Kévin L'hôpital wrote:
-> > 
-> > Kévin L'hôpital (7):
-> >   media: sun6i-csi: Fix the bpp for 10-bit bayer formats
-> >   dt-bindings: media: i2c: Add documentation for ov8865
-> >   media: i2c: Add support for the OV8865 image sensor
-> >   media: sunxi: sun6i-csi: Move the sun6i_csi_dev structure to the
-> >     common header
-> >   media: sunxi: sun6i-csi: Add support of MIPI CSI-2 for A83T
-> >   ARM: dts: sun8i: a83t: Add support for the MIPI CSI-2 in CSI node
-> >   [NOT FOR MERGE] ARM: dts: sun8i: a83t: bananapi-m3: Enable OV8865
-> >     camera  
-> 
-> You should have a cover letter here to provide some context.
-> 
-> There's a bunch of things that would need to be explained and / or
-> argued for here, in particular:
->   - Why did you need to plumb it into sun6i-csi?
->   - You're naming the CSI part as the A83t CSI, while MIPI-CSI has
-> been supported since the A31(?), is there a reason for that?
->   - This is not documented anywhere, what did you base this work on?
-> 
-> Also, I think that documenting the general challenges you faced (which
-> were likely because of the first bullet point above) and how you
-> solved them here would be great to start a discussion if needed.
-> 
-> Finally, iirc, Hans requires a v4l2-compliance run for any new driver,
-> which isn't strictly the case for this driver, but isn't really *not*
-> the case either.
-> 
-> Maxime
+Fix build errors when CONFIG_ACPI is not set/enabled by adding
+<acpi/acpi_numa.h> in the #else (!CONFIG_ACPI) block.
 
-Thank you very much for the review, I will add all this context.
-
-Kévin
+../arch/x86/mm/numa.c: In function ‘numa_setup’:
+../arch/x86/mm/numa.c:43:3: error: implicit declaration of function ‘disable_srat’; did you mean ‘disable_irq’? [-Werror=implicit-function-declaration]
+   disable_srat();
+   ^~~~~~~~~~~~
+../arch/x86/mm/numa.c:45:3: error: implicit declaration of function ‘disable_hmat’; did you mean ‘disable_dma’? [-Werror=implicit-function-declaration]
+   disable_hmat();
+   ^~~~~~~~~~~~
 
 
--- 
-Kevin L'Hopital, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+---
+ include/linux/acpi.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- mmotm-2020-0824-1606.orig/include/linux/acpi.h
++++ mmotm-2020-0824-1606/include/linux/acpi.h
+@@ -709,6 +709,8 @@ static inline u64 acpi_arch_get_root_poi
+ #define ACPI_HANDLE_FWNODE(fwnode)	(NULL)
+ #define ACPI_DEVICE_CLASS(_cls, _msk)	.cls = (0), .cls_msk = (0),
+ 
++#include <acpi/acpi_numa.h>
++
+ struct fwnode_handle;
+ 
+ static inline bool acpi_dev_found(const char *hid)
+
