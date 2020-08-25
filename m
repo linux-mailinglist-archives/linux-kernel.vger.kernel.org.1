@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1412517D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 13:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4933D2517F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 13:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgHYLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 07:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730067AbgHYLji (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 07:39:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED8DC061574;
-        Tue, 25 Aug 2020 04:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8tGP1JPc7jordcLr9GYgEH1sQIAUBACeH7562OxDjxY=; b=jh69tqh9e33dVk1UNLhHRmhHiL
-        7OpafBoQ9WlgiW0XNhW64zL1/ETCzp6H4vvEfMB0rWyBOhhR6m6y1f2K8Rm1ANxQ7MfYlSy9BRKBJ
-        0w+5LDlcoKVpEjuSnMGW4tmb3C2UlWZQBKcZs8cryVhqimrR+Bo1XNrvqh8dWMIinKhxaW3hvf/9Y
-        CwqVStNBSBzAiL1dc7uTBWj97LHP8X1bdfHGsABFRj2uE+jdoEwWe8k2GC7wQXV5LKDDEEPlA1adh
-        /aBCHjF34Wg1fJhQNag+xJ6RKYboemMzFYE4Rot8gJswaDDR7LSF6lLLlUCrLc7JS3IZYlIeULqSn
-        LhCnHHdw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kAXIF-0000Sk-1w; Tue, 25 Aug 2020 11:39:11 +0000
-Date:   Tue, 25 Aug 2020 12:39:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-Message-ID: <20200825113910.GM17456@casper.infradead.org>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
- <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+        id S1730087AbgHYLmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 07:42:11 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56174 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729882AbgHYLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 07:42:07 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BEE726C774DC068FFEC6;
+        Tue, 25 Aug 2020 19:42:05 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
+ 19:41:57 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Avoid unnecessary inet_addr_type() call when addr is INADDR_ANY
+Date:   Tue, 25 Aug 2020 07:40:48 -0400
+Message-ID: <20200825114048.24515-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 11:26:58AM +0800, Alex Shi wrote:
-> I tried reusing page->prviate to store lruvec pointer, that could remove some 
-> regression on this, since private is generally unused on a lru page. But the patch
-> is too buggy now. 
+We can avoid unnecessary inet_addr_type() call by check addr against
+INADDR_ANY first.
 
-page->private is for the use of the filesystem.  You can grep for
-attach_page_private() to see how most filesystems use it.
-Some still use set_page_private() for various reasons.
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/ipv4/ping.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index cc09d1135ce2..19a947bf0faa 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -310,10 +310,10 @@ static int ping_check_bind_addr(struct sock *sk, struct inet_sock *isk,
+ 		pr_debug("ping_check_bind_addr(sk=%p,addr=%pI4,port=%d)\n",
+ 			 sk, &addr->sin_addr.s_addr, ntohs(addr->sin_port));
+ 
+-		chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
+-
+ 		if (addr->sin_addr.s_addr == htonl(INADDR_ANY))
+ 			chk_addr_ret = RTN_LOCAL;
++		else
++			chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
+ 
+ 		if ((!inet_can_nonlocal_bind(net, isk) &&
+ 		     chk_addr_ret != RTN_LOCAL) ||
+-- 
+2.19.1
+
