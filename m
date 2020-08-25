@@ -2,141 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E432514AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34F22514A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgHYIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:54:39 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45345 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725916AbgHYIyj (ORCPT
+        id S1728504AbgHYIxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgHYIxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:54:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6oygkt_1598345661;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6oygkt_1598345661)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 Aug 2020 16:54:24 +0800
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <4cc9f54a-9eda-9966-df9a-a00bc9e88f4c@linux.alibaba.com>
-Date:   Tue, 25 Aug 2020 16:52:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 25 Aug 2020 04:53:35 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17470C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:53:34 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so12873043ljg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 01:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EtDubTWcya3bFNIMWt5cpovVHx+/aPFuncLPAlV9+q8=;
+        b=hg6SynizBYW+QsJT+XYq5YMt+Nz9cUWGDuKfmhI4lW4tNZLzeavZKk99fUlOfxyi3K
+         Xpd9KmZG48QT9+r1neCW3o7qMudIsjtFIcM+bIzkTcE0TIoXL7AZY/DZKfPQR6q4aStp
+         Aw+O8kqksFZnlvLi/ts/FSdbod4DZn/D/i4Qc69TTNj3r3FB9Qm9KBePALuNWpXltBOL
+         JMeBNp+Td70msn2CiW6D4fci8cxU8LWo/wVPF7q5RLXfyryBurHJYXOfm0AZ/jKgjGtO
+         DfnjUAUme1d/Scto+d5AOyLGFXsAirGuVKhAWnINjL+U6DbWPP2d6wikmR8RyiRxUw40
+         imMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EtDubTWcya3bFNIMWt5cpovVHx+/aPFuncLPAlV9+q8=;
+        b=QmsegusZPv1kSBR74eLZ9wphSlLxtEsfZflX9sepIElDDWfMz9EdxgKYnatnq2yjQk
+         s+oQCQ8nq0eVfhMXOfz+mhjw8C9Otu8IZWB3m+g8IABzHdRjwzMZnVkmK36M9gYaIjql
+         2zmXknUKdFeu28qFLewmK157X6PacEPMiddbC74O3Y6rJZdTuf28P3ngP6sT9355/1Lm
+         ByVyu7h1WLASfBSrzQ7L81+R5PTNiiE4AGut2Nun/Mn+dXy6LUkr0tHuO4aKFO4R54nP
+         dSw1SP8fvY5bzINVzlYdRnKKzMFq+WasBcKYWhbP9uLcGzmstaPl5a9nuBVw54Jum9LN
+         CI2A==
+X-Gm-Message-State: AOAM531gljSaNuj6Zm8Faaj2Q19oJ+WN6XdS7kqlM3mkep3hcF1qqN2v
+        0eo2E98YTQniY5JxhG/Mhm5PnQwWzs7cSEeEVzghqQ==
+X-Google-Smtp-Source: ABdhPJzgd8VhaITc7beto8F5Oa1lQp4WYJZVsedInRAxlBWhJv7ZxzqrbHw+79LvHxCSjX2KcL7GkSO6u2tVrErxAxM=
+X-Received: by 2002:a2e:920c:: with SMTP id k12mr4632919ljg.29.1598345613076;
+ Tue, 25 Aug 2020 01:53:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <CA+G9fYt=oYWHEG6VNkfEh8+UxbReS6_+9hnz+1bOYZHj5j1F_Q@mail.gmail.com>
+ <20200824110645.GC17456@casper.infradead.org> <CA+G9fYvjKGF3HZXyd=JQHzRG=r=bmD0hYQn02VL4Y=5y57OgaA@mail.gmail.com>
+ <20200825083119.GA69694@linux.ibm.com>
+In-Reply-To: <20200825083119.GA69694@linux.ibm.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Tue, 25 Aug 2020 10:53:22 +0200
+Message-ID: <CADYN=9+2RDeUdbNT+XT6WgTW70UCdsARqaAL7PQ0+OPLvrkNng@mail.gmail.com>
+Subject: Re: BUG: Bad page state in process true pfn:a8fed on arm
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>, opendmb@gmail.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal.mohd.ma@gmail.com, Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 25 Aug 2020 at 10:32, Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> On Tue, Aug 25, 2020 at 01:03:53PM +0530, Naresh Kamboju wrote:
+> > On Mon, 24 Aug 2020 at 16:36, Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Mon, Aug 24, 2020 at 03:14:55PM +0530, Naresh Kamboju wrote:
+> > > > [   67.545247] BUG: Bad page state in process true  pfn:a8fed
+> > > > [   67.550767] page:9640c0ab refcount:0 mapcount:-1024
+> > >
+> > > Somebody freed a page table without calling __ClearPageTable() on it.
+> >
+> > After running git bisect on this problem,
+> > The first suspecting of this problem on arm architecture this patch.
+> > 424efe723f7717430bec7c93b4d28bba73e31cf6
+> > ("mm: account PMD tables like PTE tables ")
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Reported-by: Anders Roxell <anders.roxell@linaro.org>
+>
+> Can you please check if this fix helps?
 
+That fixed the problem.
 
-ÔÚ 2020/8/25 ÉÏÎç9:56, Daniel Jordan Ð´µÀ:
-> On Mon, Aug 24, 2020 at 01:24:20PM -0700, Hugh Dickins wrote:
->> On Mon, 24 Aug 2020, Andrew Morton wrote:
->>> On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
->> Andrew demurred on version 17 for lack of review.  Alexander Duyck has
->> been doing a lot on that front since then.  I have intended to do so,
->> but it's a mirage that moves away from me as I move towards it: I have
-> 
-> Same, I haven't been able to keep up with the versions or the recent review
-> feedback.  I got through about half of v17 last week and hope to have more time
-> for the rest this week and beyond.
-> 
->>>> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
->>>> containers on a 2s * 26cores * HT box with a modefied case:
-> 
-> Alex, do you have a pointer to the modified readtwice case?
-> 
+Cheers,
+Anders
 
-Hi Daniel,
-
-my readtwice modification like below.
-
-diff --git a/case-lru-file-readtwice b/case-lru-file-readtwice
-index 85533b248634..57cb97d121ae 100755
---- a/case-lru-file-readtwice
-+++ b/case-lru-file-readtwice
-@@ -15,23 +15,30 @@
-
- . ./hw_vars
-
--for i in `seq 1 $nr_task`
--do
--       create_sparse_file $SPARSE_FILE-$i $((ROTATE_BYTES / nr_task))
--       timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-1-$i 2>&1 &
--       timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-2-$i 2>&1 &
--done
-+OUT_DIR=$(hostname)-${nr_task}c-$(((mem + (1<<29))>>30))g
-+TEST_CASES=${@:-$(echo case-*)}
-+
-+echo $((1<<30)) > /proc/sys/vm/max_map_count
-+echo $((1<<20)) > /proc/sys/kernel/threads-max
-+echo 1 > /proc/sys/vm/overcommit_memory
-+#echo 3 > /proc/sys/vm/drop_caches
-+
-+
-+i=1
-+
-+if [ "$1" == "m" ];then
-+       mount_tmpfs
-+       create_sparse_root
-+       create_sparse_file $SPARSE_FILE-$i $((ROTATE_BYTES))
-+       exit
-+fi
-+
-+
-+if [ "$1" == "r" ];then
-+       (timeout --foreground -s INT ${runtime:-300} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-1-$i 2>&1)&
-+       (timeout --foreground -s INT ${runtime:-300} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-2-$i 2>&1)&
-+fi
-
- wait
- sleep 1
-
--for file in $TMPFS_MNT/dd-output-*
--do
--       [ -s "$file" ] || {
--               echo "dd output file empty: $file" >&2
--       }
--       cat $file
--       rm  $file
--done
--
--rm `seq -f $SPARSE_FILE-%g 1 $nr_task`
-diff --git a/hw_vars b/hw_vars
-index 8731cefb9f57..ceeaa9f17c0b 100755
---- a/hw_vars
-+++ b/hw_vars
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/sh -ex
-
- if [ -n "$runtime" ]; then
-        USEMEM="$CMD ./usemem --runtime $runtime"
-@@ -43,7 +43,7 @@ create_loop_devices()
-        modprobe loop 2>/dev/null
-        [ -e "/dev/loop0" ] || modprobe loop 2>/dev/null
-
--       for i in $(seq 0 8)
-+       for i in $(seq 0 104)
-        do
-                [ -e "/dev/loop$i" ] && continue
-                mknod /dev/loop$i b 7 $i
+>
+> diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
+> index 9415222b49ad..b8cbe03ad260 100644
+> --- a/arch/arm/include/asm/tlb.h
+> +++ b/arch/arm/include/asm/tlb.h
+> @@ -59,6 +59,7 @@ __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmdp, unsigned long addr)
+>  #ifdef CONFIG_ARM_LPAE
+>         struct page *page = virt_to_page(pmdp);
+>
+> +       pgtable_pmd_page_dtor(page);
+>         tlb_remove_table(tlb, page);
+>  #endif
+>  }
+>
+> > Additional information:
+> > We have tested linux next by reverting this patch and confirmed
+> > that the reported BUG is not reproduced.
+> >
+> > These configs enabled on the running device,
+> >
+> > CONFIG_TRANSPARENT_HUGEPAGE=y
+> > CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
+> >
+> >
+> > -- Suspecting patch --
+> > commit 424efe723f7717430bec7c93b4d28bba73e31cf6
+> > Author: Matthew Wilcox <willy@infradead.org>
+> > Date:   Thu Aug 20 10:01:30 2020 +1000
+> >
+> >     mm: account PMD tables like PTE tables
+> >
+> >     We account the PTE level of the page tables to the process in order to
+> >     make smarter OOM decisions and help diagnose why memory is fragmented.
+> >     For these same reasons, we should account pages allocated for PMDs.  With
+> >     larger process address spaces and ASLR, the number of PMDs in use is
+> >     higher than it used to be so the inaccuracy is starting to matter.
+> >
+> >     Link: http://lkml.kernel.org/r/20200627184642.GF25039@casper.infradead.org
+> >     Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> >     Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+> >     Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+> >     Cc: Andy Lutomirski <luto@kernel.org>
+> >     Cc: Arnd Bergmann <arnd@arndb.de>
+> >     Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> >     Cc: Joerg Roedel <joro@8bytes.org>
+> >     Cc: Max Filippov <jcmvbkbc@gmail.com>
+> >     Cc: Peter Zijlstra <peterz@infradead.org>
+> >     Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+> >     Cc: Stafford Horne <shorne@gmail.com>
+> >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >     Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index b0a15ee77b8a..a4e5b806347c 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -2239,7 +2239,7 @@ static inline spinlock_t *pmd_lockptr(struct
+> > mm_struct *mm, pmd_t *pmd)
+> >   return ptlock_ptr(pmd_to_page(pmd));
+> >  }
+> >
+> > -static inline bool pgtable_pmd_page_ctor(struct page *page)
+> > +static inline bool pmd_ptlock_init(struct page *page)
+> >  {
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >   page->pmd_huge_pte = NULL;
+> > @@ -2247,7 +2247,7 @@ static inline bool pgtable_pmd_page_ctor(struct
+> > page *page)
+> >   return ptlock_init(page);
+> >  }
+> >
+> > -static inline void pgtable_pmd_page_dtor(struct page *page)
+> > +static inline void pmd_ptlock_free(struct page *page)
+> >  {
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >   VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
+> > @@ -2264,8 +2264,8 @@ static inline spinlock_t *pmd_lockptr(struct
+> > mm_struct *mm, pmd_t *pmd)
+> >   return &mm->page_table_lock;
+> >  }
+> >
+> > -static inline bool pgtable_pmd_page_ctor(struct page *page) { return true; }
+> > -static inline void pgtable_pmd_page_dtor(struct page *page) {}
+> > +static inline bool pmd_ptlock_init(struct page *page) { return true; }
+> > +static inline void pmd_ptlock_free(struct page *page) {}
+> >
+> >  #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
+> >
+> > @@ -2278,6 +2278,22 @@ static inline spinlock_t *pmd_lock(struct
+> > mm_struct *mm, pmd_t *pmd)
+> >   return ptl;
+> >  }
+> >
+> > +static inline bool pgtable_pmd_page_ctor(struct page *page)
+> > +{
+> > + if (!pmd_ptlock_init(page))
+> > + return false;
+> > + __SetPageTable(page);
+> > + inc_zone_page_state(page, NR_PAGETABLE);
+> > + return true;
+> > +}
+> > +
+> > +static inline void pgtable_pmd_page_dtor(struct page *page)
+> > +{
+> > + pmd_ptlock_free(page);
+> > + __ClearPageTable(page);
+> > + dec_zone_page_state(page, NR_PAGETABLE);
+> > +}
+> > +
+> >  /*
+> >   * No scalability reason to split PUD locks yet, but follow the same pattern
+> >   * as the PMD locks to make it easier if we decide to.  The VM should not be
+> >
+> >
+> >
+> >
+> > - Naresh
+>
+> --
+> Sincerely yours,
+> Mike.
