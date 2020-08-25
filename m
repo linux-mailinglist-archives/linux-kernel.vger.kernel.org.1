@@ -2,113 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A491D252277
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 23:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AFE25229A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 23:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgHYVHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 17:07:53 -0400
-Received: from cmta18.telus.net ([209.171.16.91]:46801 "EHLO cmta18.telus.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgHYVHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 17:07:51 -0400
-Received: from dougxps ([173.180.45.4])
-        by cmsmtp with SMTP
-        id AgAVkQs0IqUs3AgAWkWBnA; Tue, 25 Aug 2020 15:07:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
-        t=1598389670; bh=okfs/gSusVf/W8ubFP2qX6KtZJzytKM0afb0qqjR/Eg=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date;
-        b=4zfsWlqxGLKOlEUpukz8dh81lSKCN2RHp4GG2TOj1tlEOJ9WLxtUm7BNJlDFlEgkZ
-         9+1aITVhEpyNa3/xjRqkVtzQnZ7oFcgN0StGFJ8AGLmiCkPbiUMc+GGqDvmhBKZjpk
-         ZDHVzC13+783zLEHXEnCvc7mAuDB/UNGUPpcdxU28UFH7xff4yZjAmxf+WeAyc38Ei
-         DonDDmH8x10J4GE7mjBF1JgszfmNJu08VvfUKBmY0QbrAhN2iNAWnsqwBVWvgT+URN
-         /EH5vAyUAd1WjNv4n0dOzTl17LhNVqPyfTAL1u2AemmmdL8eb9I194HLE6xEdrIU+l
-         3Yr88rf/CIFxg==
-X-Telus-Authed: none
-X-Authority-Analysis: v=2.3 cv=Mo8sFFSe c=1 sm=1 tr=0
- a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
- a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=IkcTkHD0fZMA:10 a=2s2tET4dTWZ_aRCLoUoA:9
- a=QEXdDO2ut3YA:10
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>
-Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'Linux PM'" <linux-pm@vger.kernel.org>,
-        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
-References: <4169555.5IIHXK4Dsd@kreacher>        <5cf44a75c9f73740d2a22dbfc5c7a57489b1a3ca.camel@linux.intel.com>        <002001d67a7b$2b46e1c0$81d4a540$@net> <d07cd980439d999b060dccdd16cb44c390cbf66d.camel@linux.intel.com>
-In-Reply-To: <d07cd980439d999b060dccdd16cb44c390cbf66d.camel@linux.intel.com>
-Subject: RE: [PATCH v2 0/5] cpufreq: intel_pstate: Address some HWP-related oddities
-Date:   Tue, 25 Aug 2020 14:07:46 -0700
-Message-ID: <004a01d67b23$c9829b60$5c87d220$@net>
+        id S1726541AbgHYVQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 17:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgHYVQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 17:16:43 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA61C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 14:16:43 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id a6so31030oog.9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 14:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nv+nHABf+7pKY4zhisehwzpgqw3omZaeWbPdYJaF9h4=;
+        b=FBglIdt8odJ/zBvyclcpdTXeqmx/SarwaxcVOuYLB+yIIuX5zIKrVhzvt61NwOEMnB
+         AOgzCRxByu2Q4Li6hGpHuPiB3Ye6WIOlaEPciHKvV2SgDmzKrbqlxDA/7ANjx+k9MOlo
+         HFB+UiDxu9euZ7ovkn9WF8eReuRebJ6tx/4H8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nv+nHABf+7pKY4zhisehwzpgqw3omZaeWbPdYJaF9h4=;
+        b=kD5nvFPxvHH8qvx2PyjH2MvssO1igkClVS0H1EN75RLZKpb2AJkVkMZUnABq6QkVtr
+         r6JBU1Tfx2h68H2GrIAHMuZbxZGORU+peV4V2gwJ73Xmn11NP4W8aXHmaJm6hxql7JFV
+         BOhQvERxe7zUqkRdEqEwx0cJZxo9V7nBCf4FBKdJ59O6M+ar9bjJ/c0theE69OKuvf5v
+         oqPbH0cIdPomME7ayryJpd9Hc6Iw5CcWJka3OeYSI4HtHDd956c8skjWexi1iRXb4ofx
+         DuRjWQBGDbwOY1oR/ph3BikUWdZAc6EySysLNjt8t6W5rpEVntqnk6F7vtwXWUKcT3Nh
+         jEHw==
+X-Gm-Message-State: AOAM532013wGr35BA2cGo6Onh3Of8IyZx+c34LVBTdKsZhThwb9+Pv0V
+        gwGQlEyG8+5eryOKrp+KUevhQe7h1VEWsw==
+X-Google-Smtp-Source: ABdhPJx3bYLDEyNaPfzn+1UyzCWT3sGZ3PMqnsQNfdFJLg1XBgm4RKoJhdKoamQl+B4DP1X9E/KQbg==
+X-Received: by 2002:a4a:b28a:: with SMTP id k10mr8036492ooo.93.1598390202539;
+        Tue, 25 Aug 2020 14:16:42 -0700 (PDT)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
+        by smtp.gmail.com with ESMTPSA id v4sm14286ool.21.2020.08.25.14.16.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 14:16:42 -0700 (PDT)
+Received: by mail-ot1-f52.google.com with SMTP id x24so11647702otp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 14:16:42 -0700 (PDT)
+X-Received: by 2002:a9f:2966:: with SMTP id t93mr7153412uat.90.1598389816754;
+ Tue, 25 Aug 2020 14:10:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Office Outlook 12.0
-Content-Language: en-ca
-Thread-Index: AdZ68u9Uyt9nR49dTce4yZVhEfzmlQAEGlEQ
-X-CMAE-Envelope: MS4wfIDvh/3kq5OxzYmu7kehd7AzqqKrivKj6FoX406cZFn35t6L5jEJJrAy/xmpYMXe5q2D2Frhoe4BywGq9rwxFkvqoHHvaGOyFTDDthzNfhjCzj3UtAWt
- 18TIYhyMzVOBRfLgQp7hg/aSqjl6/2UtAnC3WjlWK9v4hqbWP8Q7oYiP8xkkKnizFIYdNStQqpwTwh4AIIvQlQp+jtPa83QTaeeGz3hhZGhRIJ1N+SdFqctD
- Xc+sc09umctwSgWe/LAy8iTkcWQq9Gf5QePERGC3PihgM2D4Max8rLIfqVuxa5w4
+References: <20200825003341.1797322-1-robdclark@gmail.com>
+In-Reply-To: <20200825003341.1797322-1-robdclark@gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 25 Aug 2020 14:10:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vwa1ffbbQpyi9aHksbweVW-TNkXACc-fJFeyndM0EOvA@mail.gmail.com>
+Message-ID: <CAD=FV=Vwa1ffbbQpyi9aHksbweVW-TNkXACc-fJFeyndM0EOvA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: add initial trogdor and
+ lazor dt
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Atul Dhudase <adhudase@codeaurora.org>,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
+        Evan Green <evgreen@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Alexandru Stan <amstan@chromium.org>,
+        Sujit Kautkar <sujitka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+Hi,
 
-Thanks for your reply.
+On Mon, Aug 24, 2020 at 5:32 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
+> new file mode 100644
+> index 000000000000..2b37113f1e3a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
+> @@ -0,0 +1,18 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Lazor board device tree source
+> + *
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +#include "sc7180-trogdor-lazor-r1.dts"
+> +#include "sc7180-trogdor-lte-sku.dtsi"
+> +
+> +/ {
+> +       model = "Google Lazor (rev1, rev3+) with LTE";
 
-On 2020.08.25 08:12 Srinivas Pandruvada wrote:
-> On Mon, 2020-08-24 at 18:00 -0700, Doug Smythies wrote:
-> > I think there is a disconnect between your written
-> > description of what is going on and your supporting MSR reads.
-> >
-> I reproduced again.
-> I see the copy paste individual at the first place swapped.
+Since we're not handling the currently-being-debugged eMMC problem by
+hacking the -rev2 dts, above model should probably just say:
 
-Yes, and that had me confused, initially.
-
-> I pasted the full output by direct copy - paste from the screen.
-> 
-> But the issues are still there.
-
-Agreed.
-I didn't try your offline/online of CPU 1 part previously,
-but did now, and get the same results as you.
-
-I did not know that "rdmsr -a 0x774" lists
-stuff in the order that CPU were last brought on-line.
-I had assumed the list was in CPU order. Weird.
-
-My example (nothing new here, just me catching up.
-The offline/online order was cpu1, then cpu3, then cpu2):
-
-root@s18:/sys/devices/system/cpu# grep . cpu*/cpufreq/energy_performance_preference
-cpu0/cpufreq/energy_performance_preference:balance_performance
-cpu1/cpufreq/energy_performance_preference:127
-cpu2/cpufreq/energy_performance_preference:125
-cpu3/cpufreq/energy_performance_preference:126
-cpu4/cpufreq/energy_performance_preference:balance_performance
-cpu5/cpufreq/energy_performance_preference:balance_performance
-root@s18:/sys/devices/system/cpu# rdmsr -p 0 0x774
-80002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -p 1 0x774
-7f002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -p 2 0x774
-7d002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -p 3 0x774
-7e002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -p 4 0x774
-80002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -p 5 0x774
-80002e2e
-root@s18:/sys/devices/system/cpu# rdmsr -a 0x774
-80002e2e
-80002e2e
-80002e2e
-7f002e2e
-7e002e2e
-7d002e2e
-
-... Doug
+"Google Lazor (rev1+) with LTE";
 
 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> new file mode 100644
+> index 000000000000..c2a8f7d5b336
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Lazor board device tree source
+> + *
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sc7180-trogdor-lazor.dtsi"
+> +
+> +/ {
+> +       model = "Google Lazor (rev1, rev3+)";
+
+"Google Lazor (rev1+)";
+
+
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> new file mode 100644
+> index 000000000000..1b8bc5a1e625
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> +&sdhc_1 {
+> +       /*
+> +        * HACK: due to b/155826689 we are temporarily overriding the
+> +        * compatible string which will cause us to restore the DLL config
+> +        * at runtime resume.
+> +        */
+> +       compatible = "qcom,sdm845-sdhci", "qcom,sdhci-msm-v5";
+> +
+> +       /* HACK: this emmc is also causing us s2r problems, so further hack. */
+> +       max-frequency = <100000000>;
+> +       /delete-property/mmc-ddr-1_8v;
+> +       /delete-property/mmc-hs400-1_8v;
+> +       /delete-property/mmc-hs400-enhanced-strobe;
+> +};
+
+I'd be inclined to leave the "sdhc_1" hacks out.  Qualcomm's gotta fix
+this without hacks.  It means that trogdor boards won't work quite
+work right until they do but it needs to be fixed in a saner way.
+
+
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> new file mode 100644
+> index 000000000000..b04987ab6c22
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -0,0 +1,1364 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Trogdor device tree source (common between revisions)
+> + *
+> + * Copyright 2019 Google LLC.
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +
+> +/* PMICs depend on spmi_bus label and so must come after SoC */
+> +#include "pm6150.dtsi"
+> +#include "pm6150l.dtsi"
+> +
+> +/*
+> + * Reserved memory changes
+> + *
+> + * Delete all unused memory nodes and define the peripheral memory regions
+> + * required by the board dts.
+> + *
+
+Get rid of extra blank line?
+
+> + */
+> +
+> +/delete-node/ &hyp_mem;
+> +/delete-node/ &xbl_mem;
+> +/delete-node/ &aop_mem;
+> +/delete-node/ &sec_apps_mem;
+> +/delete-node/ &tz_mem;
+> +
+> +/* Increase the size from 2MB to 8MB */
+> +&rmtfs_mem {
+> +       reg = <0x0 0x84400000 0x0 0x800000>;
+> +};
+> +
+> +/ {
+> +
+
+Get rid of extra blank line?
+
+
+> +       /* BOARD-SPECIFIC TOP LEVEL NODES */
+> +
+> +       backlight: backlight {
+> +               compatible = "pwm-backlight";
+> +
+> +               /* The panels don't seem to like anything below ~ 5% */
+> +               brightness-levels = <
+> +                       196 256 324 400 484 576 676 784 900 1024 1156 1296
+> +                       1444 1600 1764 1936 2116 2304 2500 2704 2916 3136
+> +                       3364 3600 3844 4096
+> +               >;
+> +               num-interpolated-steps = <64>;
+> +               default-brightness-level = <951>;
+
+I suspect that this isn't quite right because locally we have the
+series from <https://lore.kernel.org/r/20200721042522.2403410-1-amstan@chromium.org>.
+From looking at <https://crrev.com/c/2291209> I think you just gotta
+drop these properties.
+
+
+> +&wifi {
+> +       status = "okay";
+> +       vdd-0.8-cx-mx-supply = <&vdd_cx_wlan>;
+> +       vdd-1.8-xo-supply = <&pp1800_l1c>;
+> +       vdd-1.3-rfa-supply = <&pp1300_l2c>;
+> +
+> +       /*
+> +        * TODO: Put ch1 supply in its rightful place, rather than in ch0's
+> +        * spot. Channel 0 is held open by bluetooth for now.
+> +        */
+> +       vdd-3.3-ch0-supply = <&pp3300_l11c>;
+
+I'd be tempted to just do this correctly for upstream.  Seems like the
+ath10k patch is ready to go anyway?
