@@ -2,145 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF10251074
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 06:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4312B251087
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 06:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbgHYEXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 00:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        id S1728806AbgHYEYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 00:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728698AbgHYEXB (ORCPT
+        with ESMTP id S1728230AbgHYEYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 00:23:01 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1E9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:23:00 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e1so13546801ybk.14
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:23:00 -0700 (PDT)
+        Tue, 25 Aug 2020 00:24:18 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88839C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:24:18 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id n3so229223pjq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 21:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=q3nSt4wRkjHfPpuinxzh6IcLdnhOBWqWD7BzNcZASGQ=;
-        b=iOrrBtpCQqPWL/QlRPN8dY8agdU97ZafJw0zhs2XYhVClb+5t/7QCKvQV8CdwF4Gxo
-         PIBqCcgPKqEzUz0aX9V9RT1yhN5WzpJrN6lxoulJ5fJfwUQjPZr2SvpmPI6i8LkeOpyq
-         40+qR96cq0/ttPQys9m1tE7if0Nwzhl4xlbYN5rVN0gfPMX0mIPwfzzsoyUwKqJz+ft3
-         o9M+fVIUr2mSja1CQR+ycnVxw+WPzADXn9JNm2SHWg40dp+vOXrERTNE8NqIodBgTvUe
-         hGmNJ4wIAiTfICfOWOSMoIj8E4GnLgHR7WHYOiHzQlfKQY+fqFH1C2a8JffXyu+KpyuN
-         FGaA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WNoNA5qagjn+hJHDWLEGAUu86F/mgyZHandDYgbafhI=;
+        b=FG/dbJ6dM9yY2ydqIONvW8BgEZMsFL4E9bpkccz3xeRS5M923Sf/kGBCx3JsoZUQ8Y
+         va6T/pyrvWsQeHBUxm+pLVb1zk4+V0dOPkwDRGcHnv6jQxhD6g6APHIujd5/IdLw/uMk
+         cMk2Gz1C3IjRyDxcQz5WN+qopA8XnV2/cq6xCERBd/HB+zT774YuHii2kf1uOTiE+p6V
+         yA29ngza4Anx/CcLR2zVEg/1te9BN/sxcXs4Q/h0drLAIKDkY8LlTq1A5qwXe6UZGg72
+         tbcAHynJuYGKE6dhrAnZezMrVRDvJIPwV2/gTGkP36KNzU1WTC+x+MYebMAkM0sVMxbd
+         ZLxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=q3nSt4wRkjHfPpuinxzh6IcLdnhOBWqWD7BzNcZASGQ=;
-        b=C0xqgiYHUL0NHs526jIw6A+td/CVQNg+484qPGlbt1/LuEXulKetfC/EFArmMh6++N
-         zWjKqJaAh1DOyH/btuTATTutbHwpBxSsuoLF9jObiqxGqIH5Sigi/nZPQ/eGZdxYY880
-         +8dWOuTPAryooytukM/vO98DRuf49XTvWWFfWKd0UaNP2YU9UcAFmkN2IizIEGZs7Egv
-         2ioC5nVzLNhdO4hwwjQFAiR2Pph/Pj8k8EecMZVn2DAk6w3Vn2mW+Gtwq7u8Y7mOP8Po
-         ODtdTx1tVXID7yIGxYbL+HMuUJpZ+O9Gh9HKYcfACEvvZMElr46rogZllVU0MFK7wz9R
-         Z24g==
-X-Gm-Message-State: AOAM530e2Q0mLaByVSzdpqH2wlRb8z2doKEw2NXKpyQUqoe2dabJvUZU
-        Dxn+IjZP76UAOm0BQShPKYp4S3pBU04=
-X-Google-Smtp-Source: ABdhPJyMPsru/KTYSkksb0IP69mOSU2XoMbDyBkPpREK+vNx8sbowVpDDOakiySCRKujuqH3qC8CgwD7rJs=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a25:c50d:: with SMTP id v13mr12071638ybe.206.1598329380022;
- Mon, 24 Aug 2020 21:23:00 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 21:22:10 -0700
-In-Reply-To: <20200825042210.300632-1-badhri@google.com>
-Message-Id: <20200825042210.300632-15-badhri@google.com>
-Mime-Version: 1.0
-References: <20200825042210.300632-1-badhri@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH 14/14 v1] usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WNoNA5qagjn+hJHDWLEGAUu86F/mgyZHandDYgbafhI=;
+        b=oJvoECeu3yuQqtjfMTr1XZfSFDMymnZdqgYijJBXT0wY/ATaGy66MHiWFm2S6oR/Az
+         Z3t38EcKCYh9YBPyC71pENAH3RBQaAMeZwKMNdUYjYYFZk68nL6DfNBWaUgnU4eDVaAQ
+         Y7603itNHuhyJWEqZnuG/nDUENSQb0XktBTyDEIFdvhIqaw0I0bnWCH6RECsuG+Fsu0N
+         7I+VXWnSNtnHttHZNczXKDwocAOgnvojroQb/c4QaJNeQNTp9LpcKTERm4cZK6UAACku
+         pxGBCjZTx3lq89AYCNfBYSdhhATihxIXlbqZpT8FbkLxoRfyJzZqafz5hgzX4+FtYpjX
+         1CkQ==
+X-Gm-Message-State: AOAM530x5ef90U3PmoqaNGh7ubk6DNbmWIpI8IJadczWYLcdh8xqAMYu
+        aCTHjauWqfGTYsVSp1aUF+DCtQ==
+X-Google-Smtp-Source: ABdhPJz1C07dDr73P9yjNL0m73i3bg1BovXril3uSAZ4HQAGSqR1SqwiW6VLTGUkobN948gWSJC4Tg==
+X-Received: by 2002:a17:90a:9288:: with SMTP id n8mr43088pjo.137.1598329458005;
+        Mon, 24 Aug 2020 21:24:18 -0700 (PDT)
+Received: from localhost ([122.172.43.13])
+        by smtp.gmail.com with ESMTPSA id f195sm12741963pfa.96.2020.08.24.21.24.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 21:24:16 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 09:54:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH - for v5.7 stable] opp: Put opp table in
+ dev_pm_opp_set_rate() for empty tables
+Message-ID: <20200825042414.n2hoahplhjdhwmgy@vireshk-i7>
+References: <e7e9f887328c06800a79f3b48feb623fd15aa3d5.1598261323.git.viresh.kumar@linaro.org>
+ <20200824161021.GD435319@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824161021.GD435319@kroah.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Programs VBUS_SINK_DISCONNECT_THRESHOLD based on the power_role,
-voltage requested as sink, mode of operation.
+On 24-08-20, 18:10, Greg KH wrote:
+> On Mon, Aug 24, 2020 at 03:00:03PM +0530, Viresh Kumar wrote:
+> > From: Stephen Boyd <swboyd@chromium.org>
+> > 
+> > commit 8979ef70850eb469e1094279259d1ef393ffe85f upstream.
+> > 
+> > We get the opp_table pointer at the top of the function and so we should
+> > put the pointer at the end of the function like all other exit paths
+> > from this function do.
+> > 
+> > Cc: v5.7+ <stable@vger.kernel.org> # v5.7+
+> > Fixes: aca48b61f963 ("opp: Manage empty OPP tables with clk handle")
+> > Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > [ Viresh: Split the patch into two ]
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > [ Viresh: Update the code for v5.7-stable ]
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  drivers/opp/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> This is already in the 5.7-stable queue, why add it again?
+> 
+> confused,
 
-The programmed threshold is based on vSinkDisconnect and
-vSinkDisconnectPD values.
+Because I received an email from your bot that it failed to apply to 5.7 stable,
+rightly so as the patch was required to be modified.
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 48 ++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 6ba808ad901a..e35bd995c037 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -137,6 +137,52 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
- 		return;
- }
- 
-+static int max_tcpci_set_auto_vbus_discharge_threshold(struct tcpci *tcpci, struct tcpci_data *data,
-+						       enum typec_role port_role,
-+						       enum typec_pwr_opmode mode, bool pps_active,
-+						       u32 requested_vbus_voltage_mv)
-+{
-+	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-+	u32 threshold = 0;
-+	u8 pwr_ctrl;
-+
-+	/*
-+	 * Indicates that vbus is going to go away due PR_SWAP, hard reset etc.
-+	 * Do not discharge vbus here.
-+	 */
-+	if (requested_vbus_voltage_mv == 0)
-+		goto write_thresh;
-+
-+	if (port_role == TYPEC_SINK) {
-+		max_tcpci_read8(chip, TCPC_POWER_CTRL, &pwr_ctrl);
-+		if (pwr_ctrl & TCPC_FAST_ROLE_SWAP_EN) {
-+			/* To prevent disconnect when the source is fast role swap is capable. */
-+			threshold = 3500;
-+		} else if (mode == TYPEC_PWR_MODE_PD) {
-+			if (pps_active)
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 850;
-+			else
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 1250;
-+		} else {
-+			/* 3.5V for non-pd sink */
-+			threshold = 3500;
-+		}
-+	} else {
-+		/* 4V for source */
-+		threshold = 4000;
-+	}
-+
-+	threshold = threshold / TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB;
-+
-+	if (threshold > TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX) {
-+		dev_err(chip->dev, "VBUS_SINK_DISCONNECT_THRESH out of range");
-+		return -EINVAL;
-+	}
-+
-+write_thresh:
-+	return max_tcpci_write16(chip, TCPC_VBUS_SINK_DISCONNECT_THRESH, threshold);
-+}
-+
- static void process_rx(struct max_tcpci_chip *chip, u16 status)
- {
- 	struct pd_message msg;
-@@ -454,6 +500,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 	chip->data.start_drp_toggling = max_tcpci_start_toggling;
- 	chip->data.TX_BUF_BYTE_x_hidden = true;
- 	chip->data.init = tcpci_init;
-+	chip->data.set_auto_vbus_discharge_threshold = max_tcpci_set_auto_vbus_discharge_threshold;
-+	chip->data.auto_discharge_disconnect = true;
- 
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+viresh
