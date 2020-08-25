@@ -2,147 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5683B250E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCCD250E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgHYBoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 21:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgHYBoR (ORCPT
+        id S1726783AbgHYBy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:54:58 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:64801 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgHYByy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 21:44:17 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC469C061574;
-        Mon, 24 Aug 2020 18:44:16 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id p25so9650662qkp.2;
-        Mon, 24 Aug 2020 18:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fe927XpL2PIePdhPHFFj/u8541ev56/XnVnreXE8fcA=;
-        b=HX/N1OKrA8nEMk3KbUEGSvsgJXZ66O7ArZQanOXFOKHFH8g7LzDX5NWzYGBbnI4zqb
-         wP/IPSnUx2tg3MWVN4Ne+z9knP4ww4AEfToG0KsNZ97q2dlx8nXbeMGKb4YPhBF0A0Ll
-         LT95u8c0hezhD1w3n4NBTdZBIxX+JLWz61pYBjdJbCQWKRYaQpTZPiZb3BwAFQYjGy8F
-         9vnLIe/apvqKzKbtJ9u1PxCsJR6PkpL/Ci3pseZ+uf10Aud4uHGG2YmfMnDbcwh6rslx
-         7ZMxPfKPfG++eIn2HooOWbMIz4qZg+r5jrRN9f5c/pYpbM/6iW59prbe2M1dzF0qfPMi
-         9rog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fe927XpL2PIePdhPHFFj/u8541ev56/XnVnreXE8fcA=;
-        b=okw+rdYvEitv9/FgNwTV8oIOHA7PkcWQDE7d03dpC5HulcZTxZNjDK3YeMeDhOEUQB
-         E2VpiEoS43udaZDEzDHLhYlppg32+wti4wBcSJ6FZuheI5lttAk7+hNsRopJKkevXWg/
-         xvHQv/PyRGA0sGy1TvXiozzEgJ84UTLhXBWay7ulAkhBtb/dnSMzuHjyKyT0A2S/iPF/
-         6ArkcsQiaJ3lakag2SL4K91YIa3cNqpuFt9r2wJLfX5CkLh7LLYHgrTYCCTrphu6i67Y
-         Z7tUSyYQHUMVEFvoCSJHiBsSre2TbBi9WCSTHcMMEFpy6GaEkn6jMb97I8vGDHpiuLCe
-         J2uQ==
-X-Gm-Message-State: AOAM530c6oZblmXoTWbCL7dGo8mthBCsp9VtqFdAZ3J5JUP918zETObP
-        9H0H0iDWo5Ircthdth98LK9x9eNE7qHwGQ==
-X-Google-Smtp-Source: ABdhPJxfn+TI8Y9xjJ/3Gk+yyNnj1KyvdpFFZDtO8DBbk/jj8iJP37pLpb5GHc24Due3eBVDeYBEQA==
-X-Received: by 2002:a37:98d:: with SMTP id 135mr7246102qkj.384.1598319856217;
-        Mon, 24 Aug 2020 18:44:16 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id u16sm6625694qkm.121.2020.08.24.18.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 18:44:15 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 0/3] mikroBUS driver for add-on boards
-To:     Vaishnav M A <vaishnav@beagleboard.org>,
-        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, johan@kernel.org,
-        elder@kernel.org,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     robh@kernel.org, mchehab+huawei@kernel.org, davem@davemloft.net,
-        jkridner@beagleboard.org, drew@beagleboard.org,
-        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
-        chrisfriedt@gmail.com, zoran.stojsavljevic@gmail.com
-References: <20200818124815.11029-1-vaishnav@beagleboard.org>
- <d53f0014-db7c-902c-70c7-eacac41cc6ed@gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <cc4fc632-caf0-93d8-804f-431ec053133d@gmail.com>
-Date:   Mon, 24 Aug 2020 20:44:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 24 Aug 2020 21:54:54 -0400
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 07P1se50013557
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:54:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 07P1se50013557
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1598320481;
+        bh=CKR+6kF2zsUjEyroT6l5Mabjj0JoFdiFLY9EUgK/rQ8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HQxo0Hh7Sm5JG0iakkdNULPO+O/YRaJuetg5u/z7Fk8S92cXnhIloTHHzH8WaJkVd
+         Xejqn+70d53Js00cyi7nmKdOT9KV8nSMzCfXo1rwEy4LihwpP3zrDXCzfOlZWdY30D
+         AKVsMZ5dKZryNDNqReWswAtHUwk9uMOZmqfZx5M3ipUOuGTgUOhRpgJyFTPHFEGKe3
+         jzHXhdO0sBkCMVuS0QgWTijXHR3Q4LZ6KLg+Q5Hawu4UFUJM3Nd0RjQfjKBl8GMto0
+         m16Wy6NIJDW70QRluQHpwJDNnXx3D7WvsY2jM5VCxKJ2ZTP4YQ9zq5GJwUKi1KD25c
+         lGMm/0ZFHS08Q==
+X-Nifty-SrcIP: [209.85.217.48]
+Received: by mail-vs1-f48.google.com with SMTP id y8so5516346vsq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 18:54:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531O/l5yQvWBK6l9vWYx5jGoO/44Nwxsu4lYFawWYRDKpzZ5ou5D
+        69V6lCJJlJ2IQEkxcFkQ0GINc0+k0FczM4+WZo8=
+X-Google-Smtp-Source: ABdhPJxtngz7TxbxCeluS12D2Qfi3T9+Y5D803T91Bizs97Eo7PG4UP+u1bzFArjaN3MuZQ253ptlO5Ciye13ANcgWA=
+X-Received: by 2002:a67:bb06:: with SMTP id m6mr4408946vsn.54.1598320479429;
+ Mon, 24 Aug 2020 18:54:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d53f0014-db7c-902c-70c7-eacac41cc6ed@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200812160017.GA30302@linux-8ccs> <CAMj1kXFfSLvujJYk4Em6T+UvAUDW3VX0BibsD43z30Q_TSsehg@mail.gmail.com>
+ <20200812200019.GY3982@worktop.programming.kicks-ass.net> <CAMj1kXEn5o_7OOqgcntOPCqBYmpY74OkGqQ_bUBJvHG6Q9GVLA@mail.gmail.com>
+ <20200813130422.GA16938@linux-8ccs> <CAMj1kXErCQYNN9r5siGNukc+9KC=QnER8LfFXVfbHdeDivYztg@mail.gmail.com>
+ <20200821121959.GC20833@willie-the-truck> <CAMj1kXEyLMQz7+Fmv7i0FAu4x0uDmh7aUpbfuXaqs6k6XGog7w@mail.gmail.com>
+ <20200821123036.GA21158@willie-the-truck> <CAMj1kXHgHo59vuua49rAoLfSt36JKSzFMMH+Z=y+3jNjbFPZsg@mail.gmail.com>
+ <20200824152359.GA32398@linux-8ccs>
+In-Reply-To: <20200824152359.GA32398@linux-8ccs>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 25 Aug 2020 10:54:02 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT6n8j06DQTM-WpasEjmD-bK1Z=b9UVJ-F9tpn+mh8pUw@mail.gmail.com>
+Message-ID: <CAK7LNAT6n8j06DQTM-WpasEjmD-bK1Z=b9UVJ-F9tpn+mh8pUw@mail.gmail.com>
+Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Mark Rutland <mark.rutland@arm.com>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vaishnav,
+On Tue, Aug 25, 2020 at 12:24 AM Jessica Yu <jeyu@kernel.org> wrote:
+>
+> +++ Ard Biesheuvel [22/08/20 15:47 +0200]:
+> >(+ Masahiro)
+> >
+> >On Fri, 21 Aug 2020 at 14:30, Will Deacon <will@kernel.org> wrote:
+> >>
+> >> On Fri, Aug 21, 2020 at 02:27:05PM +0200, Ard Biesheuvel wrote:
+> >> > On Fri, 21 Aug 2020 at 14:20, Will Deacon <will@kernel.org> wrote:
+> >> > >
+> >> > > On Thu, Aug 13, 2020 at 03:07:13PM +0200, Ard Biesheuvel wrote:
+> >> > > > On Thu, 13 Aug 2020 at 15:04, Jessica Yu <jeyu@kernel.org> wrote:
+> >> > > > >
+> >> > > > > +++ Ard Biesheuvel [13/08/20 10:36 +0200]:
+> >> > > > > >On Wed, 12 Aug 2020 at 22:00, Peter Zijlstra <peterz@infradead.org> wrote:
+> >> > > > > >>
+> >> > > > > >> On Wed, Aug 12, 2020 at 06:37:57PM +0200, Ard Biesheuvel wrote:
+> >> > > > > >> > I know there is little we can do at this point, apart from ignoring
+> >> > > > > >> > the permissions - perhaps we should just defer the w^x check until
+> >> > > > > >> > after calling module_frob_arch_sections()?
+> >> > > > > >>
+> >> > > > > >> My earlier suggestion was to ignore it for 0-sized sections.
+> >> > > > > >
+> >> > > > > >Only they are 1 byte sections in this case.
+> >> > > > > >
+> >> > > > > >We override the sh_type and sh_flags explicitly for these sections at
+> >> > > > > >module load time, so deferring the check seems like a reasonable
+> >> > > > > >alternative to me.
+> >> > > > >
+> >> > > > > So module_enforce_rwx_sections() is already called after
+> >> > > > > module_frob_arch_sections() - which really baffled me at first, since
+> >> > > > > sh_type and sh_flags should have been set already in
+> >> > > > > module_frob_arch_sections().
+> >> > > > >
+> >> > > > > I added some debug prints to see which section the module code was
+> >> > > > > tripping on, and it was .text.ftrace_trampoline. See this snippet from
+> >> > > > > arm64's module_frob_arch_sections():
+> >> > > > >
+> >> > > > >                 else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE) &&
+> >> > > > >                          !strcmp(secstrings + sechdrs[i].sh_name,
+> >> > > > >                                  ".text.ftrace_trampoline"))
+> >> > > > >                         tramp = sechdrs + i;
+> >> > > > >
+> >> > > > > Since Mauro's config doesn't have CONFIG_DYNAMIC_FTRACE enabled, tramp
+> >> > > > > is never set here and the if (tramp) check at the end of the function
+> >> > > > > fails, so its section flags are never set, so they remain WAX and fail
+> >> > > > > the rwx check.
+> >> > > >
+> >> > > > Right. Our module.lds does not go through the preprocessor, so we
+> >> > > > cannot add the #ifdef check there currently. So we should either drop
+> >> > > > the IS_ENABLED() check here, or simply rename the section, dropping
+> >> > > > the .text prefix (which doesn't seem to have any significance outside
+> >> > > > this context)
+> >> > > >
+> >> > > > I'll leave it to Will to make the final call here.
+> >> > >
+> >> > > Why don't we just preprocess the linker script, like we do for the main
+> >> > > kernel?
+> >> > >
+> >> >
+> >> > That should work as well, I just haven't checked how straight-forward
+> >> > it is to change that.
+> >>
+> >> Ok, if it's _not_ straightforward, then let's just drop the IS_ENABLED()
+> >> altogether.
+> >>
+> >
+> >I played around with this for a while, but failed to get Kbuild to
+> >instantiate $(objtree)/arch/arm64/kernel/module.lds based on
+> >$(srctree)/arch/arm64/kernel/module.lds.S and the cpp_lds_S rule.
+> >Perhaps Masahiro has any suggestions here? Otherwise, let's just drop
+> >the IS_ENABLED() check for now.
+>
+> I also tinkered around a bit and was able to generate
+> $(objtree)/arch/arm64/kernel/module.lds based on
+> $(srctree)/arch/arm64/kernel/module.lds.S only if I specified the
+> former as the make target directly. Correct me if I'm wrong, but I
+> guess this might be because the single build targets would utilize
+> scripts/Makefile.build (where the cpp_lds_S rule is defined) while the
+> module-related Makefiles don't seem to support .lds.S -> .lds in
+> general.. Masahiro, how easy would it be to extend .lds.S -> .lds
+> support to module linker scripts as well?
+>
+> Thanks,
+>
+> Jessica
 
-Apologies in advance -- I expect to be very slow in responding this
-week.  Linux Plumbers will take some of my time and I am moving to
-a new home.
-
--Frank
 
 
-On 2020-08-18 15:38, Frank Rowand wrote:
-> Hi Vaishnav,
-> 
-> +me +devicetree
-> 
-> Please add these two recipients to future versions.
-> 
-> I will comment more after reading the first version and v2.
-> 
-> -Frank
-> 
-> 
-> On 2020-08-18 07:48, Vaishnav M A wrote:
->> Hi,
->>
->> This Patch series is an update to the mikroBUS driver
->> RFC v1 Patch : https://lkml.org/lkml/2020/7/24/518 .
->> The mikrobus driver is updated to add mikrobus ports from device-tree
->> overlays, the debug interfaces for adding mikrobus ports through sysFS
->> is removed, and the driver considers the extended usage of mikrobus
->> port pins from their standard purposes.
->>
->> change log:
->>         v2: support for adding mikroBUS ports from DT overlays,
->>         remove debug sysFS interface for adding mikrobus ports,
->>         consider extended pin usage/deviations from mikrobus standard
->>         specifications,
->>         use greybus CPort protocol enum instead of new protcol enums
->>         Fix cases of wrong indendation, ignoring return values, freeing
->>         allocated resources in case of errors and other style suggestions
->>         in v1 review.
->>
->> Vaishnav M A (3):
->>   add mikrobus descriptors to greybus_manifest
->>   mikroBUS driver for add-on boards on mikrobus ports
->>   Add Device Tree Bindings for mikroBUS port
->>
->>  .../bindings/misc/linux,mikrobus.txt          |  81 ++
->>  MAINTAINERS                                   |   6 +
->>  drivers/misc/Kconfig                          |   1 +
->>  drivers/misc/Makefile                         |   1 +
->>  drivers/misc/mikrobus/Kconfig                 |  16 +
->>  drivers/misc/mikrobus/Makefile                |   7 +
->>  drivers/misc/mikrobus/mikrobus_core.c         | 692 ++++++++++++++++++
->>  drivers/misc/mikrobus/mikrobus_core.h         | 191 +++++
->>  drivers/misc/mikrobus/mikrobus_manifest.c     | 444 +++++++++++
->>  drivers/misc/mikrobus/mikrobus_manifest.h     |  21 +
->>  drivers/misc/mikrobus/mikrobus_port.c         | 171 +++++
->>  include/linux/greybus/greybus_manifest.h      |  47 ++
->>  12 files changed, 1678 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/misc/linux,mikrobus.txt
->>  create mode 100644 drivers/misc/mikrobus/Kconfig
->>  create mode 100644 drivers/misc/mikrobus/Makefile
->>  create mode 100644 drivers/misc/mikrobus/mikrobus_core.c
->>  create mode 100644 drivers/misc/mikrobus/mikrobus_core.h
->>  create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.c
->>  create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.h
->>  create mode 100644 drivers/misc/mikrobus/mikrobus_port.c
->>
-> 
+If you want to generate
+$(objtree)/arch/arm64/kernel/module.lds,
+you need to tell it to the build system.
 
+The following seems to work,
+but please do NOT do this:
+
+
+----------------->8--------------------
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index b45f0124cc16..4ae398c21111 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -116,7 +116,7 @@ endif
+ CHECKFLAGS     += -D__aarch64__
+
+ ifeq ($(CONFIG_ARM64_MODULE_PLTS),y)
+-KBUILD_LDS_MODULE      += $(srctree)/arch/arm64/kernel/module.lds
++KBUILD_LDS_MODULE      += arch/arm64/kernel/module.lds
+ endif
+
+ ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
+diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+index a561cbb91d4d..693797e6db01 100644
+--- a/arch/arm64/kernel/Makefile
++++ b/arch/arm64/kernel/Makefile
+@@ -71,3 +71,5 @@ extra-y                                       +=
+$(head-y) vmlinux.lds
+ ifeq ($(CONFIG_DEBUG_EFI),y)
+ AFLAGS_head.o += -DVMLINUX_PATH="\"$(realpath $(objtree)/vmlinux)\""
+ endif
++
++always-$(CONFIG_MODULES) += module.lds
+diff --git a/arch/arm64/kernel/module.lds b/arch/arm64/kernel/module.lds.S
+similarity index 100%
+rename from arch/arm64/kernel/module.lds
+rename to arch/arm64/kernel/module.lds.S
+----------------->8--------------------
+
+
+
+
+
+The difference between
+arch/arm64/kernel/vmlinux.lds and
+arch/arm64/kernel/module.lds is that
+we must keep the latter for external
+module builds.
+
+'make clean' cannot remove any
+build artifact used for external modules,
+but 'make mrproper' must remove them.
+
+Let me think about it.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
