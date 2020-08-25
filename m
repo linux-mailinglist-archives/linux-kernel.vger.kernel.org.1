@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF75251AE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CCE251AE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgHYOeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S1726610AbgHYOek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgHYOdw (ORCPT
+        with ESMTP id S1726551AbgHYOeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:33:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDEDC061574;
-        Tue, 25 Aug 2020 07:33:52 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id w14so10946719eds.0;
-        Tue, 25 Aug 2020 07:33:51 -0700 (PDT)
+        Tue, 25 Aug 2020 10:34:07 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B737C061574;
+        Tue, 25 Aug 2020 07:34:04 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w25so14038964ljo.12;
+        Tue, 25 Aug 2020 07:34:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=snlphi07wh4k/ZlUaJslE4TyIoIQObGzwbf9XX6F2gE=;
-        b=Yib2xjtHWS6lTKiBsjvnNXsReEzjfZVtw8/EwFP8xLdicuKIdlC/bBKg51YNgybwiZ
-         syolwh8bHUh28zU7K8ODoZAFomyP3u17/yLPZOwUBlNv6oPyLQky89ooypA/2nDysCDd
-         yxOQxQhut8w/LCblVhcjoCA/vC6NW31bkXhS/x7cQr73x3nUfeGSK1Loh4y8P0wzAQZw
-         +owTO9Gz2EDGvv2yuzvGrned4KI1Q/NMIJNn7XjFykpUMHD6Ed6K/Lj+Jd73e05drfdz
-         k31ptJ0uEbhqzXJZfuxD1iAHd/IbDvqO2TuHy+rrr9/UNFIHXn17p61ukV5ZaqmV69gr
-         P9rA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=00qy2pNCOtPFyED/8lG4zQs8PuaD2Zn8I4O/t5hQ9Bk=;
+        b=OCecthoSt4bCALEoeE5FfEDKlZu18mvmEIdpPOsMkQ5l6lPkerHfErNgTJzfxxC+DX
+         jhaZR5EuPhkh31XY0g0jK+LPX680HVNsA2kIljZpjMk+1n3MfNm5wKPpoUt1nXyEtUt7
+         eL0iyv9JmUesw6rlTvZB1Gqvw11FLp/R3DwzQMEbFCgP2729nNW/+qm4hJ9PsDVCOvnD
+         L7colNLXj6/HoHwIhEYWDRnco8YxdMGf1HIKfIVseTiFcMxZ7k/nR+EFcmtSluYoJAxT
+         fEe9NtHotaJpCZA5OWmVGe4sMzX3w96kIgRVsV17UX+QyeohQny0JGGgVts1t39vQU01
+         PZPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=snlphi07wh4k/ZlUaJslE4TyIoIQObGzwbf9XX6F2gE=;
-        b=kxFJRaNbzb1JKQ5Ind2LeGRJgpfdk+XytoavQn545faIE4qgIAq/Lz5/gkLop0rqx0
-         DfUeUK5/4/mQChSGiQM7HRtjYmQ2L9fg09XP3UW/oJa4Qg9WR5pzQ8IeeuCJ4CpO7TN1
-         OEF1QrZpbO3FGN35QldnU9wUVYFpmBc0WkpyiDau3YKzNARe5e11phZLxqTXgCd38kdJ
-         aDBzxCxGks/eIXV3NKQqL+AIs6R1JOxbxueX6h/OfjldVHkV8gpOpikT9RU8kY2/MbX0
-         pQiofsO5nnBO00fF124bfdzKjUVoY+YUtj1sK10yUF+LpLZqdtUbxRVsmLvNY2eyoUjd
-         cPbQ==
-X-Gm-Message-State: AOAM530bAPlIWojgAc8RxVNm38TndxCdkjsjPPIkW8phw9gjIX5PyNga
-        awF84+xClM1nLF6Eg9LfWxx2XnwF+V32dw==
-X-Google-Smtp-Source: ABdhPJyfghb40Q8ooZbR6quRhSY6a6ZQ//NX+dONJTpgexPkUM/sSNuxGH4myzLN5FSZLK3iTdspSA==
-X-Received: by 2002:a05:6402:54c:: with SMTP id i12mr10337471edx.358.1598366030722;
-        Tue, 25 Aug 2020 07:33:50 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id f22sm12891703edt.91.2020.08.25.07.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 07:33:49 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>
-Subject: [PATCH] pinctrl: devicetree: Keep deferring even on timeout
-Date:   Tue, 25 Aug 2020 16:33:48 +0200
-Message-Id: <20200825143348.1358679-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=00qy2pNCOtPFyED/8lG4zQs8PuaD2Zn8I4O/t5hQ9Bk=;
+        b=HfUCrM4henAikbdg7yu3gr8dtiloNlSB5rhz5ZAY/GN45IwKZKDkRibf8/bbiTrr3V
+         G+UpdGrkWagW/qE35Ko3OAGLyOMZnWM1I/TIHhnCbqvUQ53QdTVAiAThV/p7JRSy+XdZ
+         zjjOmI1YArLGlQHhPjnYCD37HxTDm1C40VZ/B+d8yUMlJoSv4vmN/R52pOctpVB4Lljo
+         ot8j4gTqf4n0pjVo2u+Ysey5AZDEHWcWuWlZnmtxccDrjH2Bdv2tH+D6fkFWp7FB1hwy
+         g2MNsYn+PmHUwVaIer+LKWZwKuMJJQF9IaX22tplg7O5EfMWoOw5gaugi7ia5aP4+LyO
+         OkIw==
+X-Gm-Message-State: AOAM532YjBWUG+lpIbZ3ssL733m4WwuPPfmymOvvvzZi/V3TY5uVX+UE
+        ykGb6MjSGQaErwIqs0oFxCAP3wcjK4GY5KTkzn4=
+X-Google-Smtp-Source: ABdhPJw+2PoMTt6hCpRQlUsK/fYGK+EZ00dHWuxY8Agb+bMR/IyI65ArPrD06xZaoIRR454ye1p7RW6pIp+aChjNGfM=
+X-Received: by 2002:a2e:968c:: with SMTP id q12mr4759972lji.51.1598366042818;
+ Tue, 25 Aug 2020 07:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200821111111.6c04acd6@canb.auug.org.au> <20200825112020.43ce26bb@canb.auug.org.au>
+ <CAADnVQLr8dU799ZrUnrBBDCtDxPyybZwrMFs5CAOHHW5pnLHHA@mail.gmail.com>
+ <20200825130445.655885f8@canb.auug.org.au> <CAADnVQKGf7o8gJ60m_zjh+QcmRTNH+y1ha_B2q-1ixcCSAoHaw@mail.gmail.com>
+ <20200825165029.795a8428@canb.auug.org.au>
+In-Reply-To: <20200825165029.795a8428@canb.auug.org.au>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 25 Aug 2020 07:33:51 -0700
+Message-ID: <CAADnVQ+SZj-Q=vijGkoUkmWeA=MM2S2oaVvJ7fj6=c4S4y-LMA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Mon, Aug 24, 2020 at 11:50 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Alexei,
+>
+> On Mon, 24 Aug 2020 20:27:28 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >
+> > I didn't receive the first email you've replied to.
+> > The build error is:
+> > "
+> > No libelf found
+> > make[5]: *** [Makefile:284: elfdep] Error 1
+> > "
+> > and build process stops because libelf is not found, right?
+> > That is expected and necessary.
+> > bpf_preload needs libbpf that depends on libelf.
+> > The only 'fix' is to turn off bpf_preload.
+> > It's off by default.
+> > allmodconfig cannot build bpf_preload umd if there is no libelf.
+> > There is CC_CAN_LINK that does feature detection.
+> > We can extend scripts/cc-can-link.sh or add another script that
+> > will do CC_CAN_LINK_LIBELF, but such approach doesn't scale.
+> > imo it's cleaner to rely on feature detection by libbpf Makefile with
+> > an error above instead of adding such knobs to top Kconfig.
+> > Does it make sense?
+>
+> Sorry, but if this is not necessary to build the kernel, then an
+> allmodconfig build needs to succeed so you need to do the detection and
+> turn it off automatically.  Or you could make it so that it has to be
+> manually enabled in all circumstances.
 
-driver_deferred_probe_check_state() may return -ETIMEDOUT instead of
--EPROBE_DEFER after all built-in drivers have been probed. This can
-cause issues for built-in drivers that depend on resources provided by
-loadable modules.
-
-One such case happens on Tegra where I2C controllers are used during
-early boot to set up the system PMIC, so the I2C driver needs to be a
-built-in driver. At the same time, some instances of the I2C controller
-depend on the DPAUX hardware for pinmuxing. Since the DPAUX is handled
-by the display driver, which is usually not built-in, the pin control
-states will not become available until after the root filesystem has
-been mounted and the display driver loaded from it.
-
-Fixes: bec6c0ecb243 ("pinctrl: Remove use of driver_deferred_probe_check_state_continue()")
-Suggested-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- drivers/pinctrl/devicetree.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
-index 5eff8c296552..3fb238714718 100644
---- a/drivers/pinctrl/devicetree.c
-+++ b/drivers/pinctrl/devicetree.c
-@@ -130,9 +130,8 @@ static int dt_to_map_one_config(struct pinctrl *p,
- 		if (!np_pctldev || of_node_is_root(np_pctldev)) {
- 			of_node_put(np_pctldev);
- 			ret = driver_deferred_probe_check_state(p->dev);
--			/* keep deferring if modules are enabled unless we've timed out */
--			if (IS_ENABLED(CONFIG_MODULES) && !allow_default &&
--			    (ret == -ENODEV))
-+			/* keep deferring if modules are enabled */
-+			if (IS_ENABLED(CONFIG_MODULES) && !allow_default && ret < 0)
- 				ret = -EPROBE_DEFER;
- 			return ret;
- 		}
--- 
-2.28.0
-
+what do you suggest to use to make it 'manually enabled' ?
+All I could think of is to add:
+depends on !COMPILE_TEST
+so that allmodconfig doesn't pick it up.
