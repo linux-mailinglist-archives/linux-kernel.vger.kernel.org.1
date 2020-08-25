@@ -2,293 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E780225167F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C7025166D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgHYKSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 06:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729514AbgHYKS0 (ORCPT
+        id S1729769AbgHYKQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 06:16:19 -0400
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:15030 "EHLO
+        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728117AbgHYKQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 06:18:26 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D36CC061755;
-        Tue, 25 Aug 2020 03:18:26 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id u128so6967805pfb.6;
-        Tue, 25 Aug 2020 03:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=abce8nytRXIsJmVCs+R7mlyjniT5KpaodlzSXtD9Q08=;
-        b=C3lnL1OrxTNuHW5mTA6pj7CUWq7RpEB4Qll4778RLOundnCNAx0S0qokKlhPK+T2Ex
-         VsrjF9IkDnu/GnURURHExUI6BKYX9wQHjCMiTFdMpQuRxpdEi+fIHOEyFH7HbJ4Uh7/a
-         VzAG0UbwLMgACy/xXLo0OIwntOHJRiWySXPnHOTCPG4Mcdpd9zNlMoqMpKl9S2YIwYVD
-         KaRTbuERPxnL8gXrNa+PCk0rUEfGn8wEo56L2IjhqXjYU72d+uXIX39O2pCAknbw1jTb
-         ayDdZInNuSdYXlgt5ljk67gTRsmLl2+aCLKVLuUheugEoFvxHhIU9Hz7THEgGAHQwXrg
-         4Lgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=abce8nytRXIsJmVCs+R7mlyjniT5KpaodlzSXtD9Q08=;
-        b=fky+fhyW2kDXgoRclIheUpqCcfTe9XL+rOxCNonP1JK5ZSreXPT6umglGMo5lONbIh
-         jXzFnN2R0DouN0DTagi7jY5udnu2A8VcunyzKlX+3Up2FU0yk8kUbRk5Ynb8KEtA8jGO
-         nM6q1dP48F2cHWp5B+iS9+iv9Jfpy8qe40z4PZOATI6XSeJjQB4Z7bwC2mvwBNDvBjTa
-         bIikvsCfwSnHJOpAVtPptjyXzShLuXAOh6EVJiPWyDf+d2J6Fl18A4R8ioRwCcJkgdC9
-         0tYWRLRkXUiBSExn9/5lQ5fp9d6NEvhoOw+tbPSjZ3u1U9QQ7LBxG+cbreO1M+Dznk0t
-         bRLg==
-X-Gm-Message-State: AOAM5326AyM6Gk1+Mym54GPooW9rfuy6k3MJ+klVDLtRfLiwc7CEXnWF
-        rnzhr209cF7kaSiBzhRpMuM=
-X-Google-Smtp-Source: ABdhPJwKf+gYfy8HTNuLF0IitXG96hEG+ZUHPAjWk2HT1yFLXOyUg9DLPWG9At+ocO37mO2icz2yyg==
-X-Received: by 2002:a62:33c2:: with SMTP id z185mr7019582pfz.242.1598350705565;
-        Tue, 25 Aug 2020 03:18:25 -0700 (PDT)
-Received: from xiaomi.mioffice.cn ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id 19sm1788911pjk.28.2020.08.25.03.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 03:18:24 -0700 (PDT)
-From:   Qiwu Huang <yanziily@gmail.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Qiwu Huang <huangqiwu@xiaomi.com>
-Subject: [PATCH v10 1/4] power: supply: core: add quick charge type property
+        Tue, 25 Aug 2020 06:16:18 -0400
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te1333e83e4ac14014b1204@ACLMS1.advantech.com.tw>;
+ Tue, 25 Aug 2020 18:16:16 +0800
+Received: from localhost (172.16.12.96) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 25 Aug
+ 2020 18:16:15 +0800
+From:   William Sung <william.sung@advantech.com.tw>
+To:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Campion Kang <Campion.Kang@advantech.com.tw>
+Subject: [PATCH v2] iio: dac: ad5593r: Dynamically set AD5593R channel modes
 Date:   Tue, 25 Aug 2020 18:16:14 +0800
-Message-Id: <a6872d7b15b283ef683085eacacb76a651edc3ed.1598349907.git.huangqiwu@xiaomi.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1598349907.git.huangqiwu@xiaomi.com>
-References: <cover.1598349907.git.huangqiwu@xiaomi.com>
+Message-ID: <20200825101614.2462-1-william.sung@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.16.12.96]
+X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-StopIT: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiwu Huang <huangqiwu@xiaomi.com>
+To use ad5593r more flexibly, we use the module parameter to setting the
+channel modes dynamically whenever the module probe up. Users can pass
+the channel modes to the module parameter for allocating the
+functionality of channels as desired.
 
-Reports the kind of quick charge type based on
-different adapter power.
+For example:
+* Use in the kernel command line:
+Users can add the module parameter in the kernel command line such as
 
-Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+    "ad5593r.ch_mode=88001122"
+
+"88001122" means the channel mode setting for each channel. The most
+left side indicates the mode of channel 7, and the most right side
+indicates the mode of channel 0.
+
+* Use when manually probe the module:
+Similar to the kernel command line usage, users can enter
+
+    "modprobe ad5593r ch_mode=88001122"
+
+to start the ad5593r module with the desired channel mode setting.
+
+v2: Fix the patch description and remove redundant for loop
+
+Signed-off-by: William Sung <william.sung@advantech.com.tw>
 ---
- Documentation/ABI/testing/sysfs-class-power | 21 ++++++
- drivers/power/supply/power_supply_sysfs.c   |  1 +
- drivers/power/supply/qcom_smbb.c            | 81 ++++++++++++++++++++-
- include/linux/power_supply.h                | 14 ++++
- 4 files changed, 116 insertions(+), 1 deletion(-)
+ drivers/iio/dac/ad5592r-base.c | 33 ++++++++++++++++++++---
+ drivers/iio/dac/ad5592r-base.h |  4 +++
+ drivers/iio/dac/ad5593r.c      | 48 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 82 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-index 40213c73bc9c..a6ec1c45adee 100644
---- a/Documentation/ABI/testing/sysfs-class-power
-+++ b/Documentation/ABI/testing/sysfs-class-power
-@@ -709,3 +709,24 @@ Description:
+diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
+index cc4875660a69..cd69a34fa21e 100644
+--- a/drivers/iio/dac/ad5592r-base.c
++++ b/drivers/iio/dac/ad5592r-base.c
+@@ -21,6 +21,10 @@
  
- 		Access: Read
- 		Valid values: 1-31
-+
-+What:		/sys/class/power_supply/<supply_name>/quick_charge_type
-+Date:		Jul 2020
-+Contact:	Fei Jiang <jiangfei1@xiaomi.com>
-+		Description:
-+		Reports the kind of quick charge type based on different adapter power.
-+		Different quick charge type represent different charging power.
-+		QUICK_CHARGE_NORMAL : Charging Power <= 10W
-+		QUICK_CHARGE_FAST : 10W < Charging Power <= 20W
-+		QUICK_CHARGE_FLASH : 20W < Charging Power <= 30W
-+		QUICK_CHARGE_TURBE : 30W < Charging Power <= 50W
-+		QUICK_CHARGE_SUPER : Charging Power > 50W
-+
-+		Access: Read-Only
-+		Valid values:
-+			0: QUICK_CHARGE_NORMAL,
-+			1: QUICK_CHARGE_FAST,
-+			2: QUICK_CHARGE_FLASH,
-+			3: QUICK_CHARGE_TURBE,
-+			4: QUICK_CHARGE_SUPER.
-+
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index 3d383086018c..67f568c88c0b 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -210,6 +210,7 @@ static struct power_supply_attr power_supply_attrs[] = {
- 	POWER_SUPPLY_ATTR(MODEL_NAME),
- 	POWER_SUPPLY_ATTR(MANUFACTURER),
- 	POWER_SUPPLY_ATTR(SERIAL_NUMBER),
-+	POWER_SUPPLY_ATTR(QUICK_CHARGE_TYPE),
- };
+ #include "ad5592r-base.h"
  
- static struct attribute *
-diff --git a/drivers/power/supply/qcom_smbb.c b/drivers/power/supply/qcom_smbb.c
-index c890e1cec720..21ddfa39f655 100644
---- a/drivers/power/supply/qcom_smbb.c
-+++ b/drivers/power/supply/qcom_smbb.c
-@@ -90,6 +90,12 @@
- #define STATUS_CHG_FAST		BIT(7) /* Fast charging */
- #define STATUS_CHG_GONE		BIT(8) /* No charger is connected */
- 
-+#define IMAX_NORMAL		2000000
-+#define IMAX_FAST		4000000
-+#define IMAX_FLASH		6000000
-+#define IMAX_TURBE		10000000
-+#define IMAX_SUPER		12000000
++/* Parameters for dynamic channel mode setting */
++static u8 update_channel_mode;
++static u8 new_channel_modes[AD559XR_CHANNEL_NR];
 +
- enum smbb_attr {
- 	ATTR_BAT_ISAFE,
- 	ATTR_BAT_IMAX,
-@@ -111,6 +117,7 @@ struct smbb_charger {
+ static int ad5592r_gpio_get(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct ad5592r_state *st = gpiochip_get_data(chip);
+@@ -132,7 +136,7 @@ static int ad5592r_gpio_init(struct ad5592r_state *st)
  
- 	bool dc_disabled;
- 	bool jeita_ext_temp;
-+	bool pd_verifed;
- 	unsigned long status;
- 	struct mutex statlock;
+ 	st->gpiochip.label = dev_name(st->dev);
+ 	st->gpiochip.base = -1;
+-	st->gpiochip.ngpio = 8;
++	st->gpiochip.ngpio = AD559XR_CHANNEL_NR;
+ 	st->gpiochip.parent = st->dev;
+ 	st->gpiochip.can_sleep = true;
+ 	st->gpiochip.direction_input = ad5592r_gpio_direction_input;
+@@ -287,6 +291,14 @@ static int ad5592r_set_channel_modes(struct ad5592r_state *st)
+ 	return ret;
+ }
  
-@@ -485,6 +492,58 @@ static const struct smbb_irq {
- 	{ "dc-valid", smbb_dc_valid_handler },
- };
- 
-+struct quick_charge {
-+	enum power_supply_type adap_type;
-+	enum power_supply_quick_charge_type adap_cap;
-+};
-+
-+static struct quick_charge adapter_cap[10] = {
-+	{ POWER_SUPPLY_TYPE_USB,		QUICK_CHARGE_NORMAL },
-+	{ POWER_SUPPLY_TYPE_USB_DCP,		QUICK_CHARGE_NORMAL },
-+	{ POWER_SUPPLY_TYPE_USB_CDP,		QUICK_CHARGE_NORMAL },
-+	{ POWER_SUPPLY_TYPE_USB_ACA,		QUICK_CHARGE_NORMAL },
-+	{ POWER_SUPPLY_TYPE_USB_FLOAT,		QUICK_CHARGE_NORMAL },
-+	{ POWER_SUPPLY_TYPE_USB_PD,		QUICK_CHARGE_FAST },
-+	{ POWER_SUPPLY_TYPE_USB_HVDCP,		QUICK_CHARGE_FAST },
-+	{ POWER_SUPPLY_TYPE_USB_HVDCP_3,	QUICK_CHARGE_FAST },
-+	{ POWER_SUPPLY_TYPE_USB_HVDCP_3P5,	QUICK_CHARGE_FAST },
-+	{0, 0},
-+};
-+
-+static int get_quick_charge_type(struct smbb_charger *chg)
++static void ad5592r_set_def_channel_modes(struct ad5592r_state *st)
 +{
-+	union power_supply_propval prop = {0, };
-+	int charger_type, rc;
-+	int i = 0;
++	int i;
 +
-+	rc = power_supply_get_property(chg->bat_psy,
-+			POWER_SUPPLY_PROP_STATUS, &prop);
-+	if (rc < 0)
-+		return rc;
-+	if (prop.intval == POWER_SUPPLY_STATUS_DISCHARGING)
-+		return 0;
-+
-+	rc = power_supply_get_property(chg->usb_psy,
-+			POWER_SUPPLY_PROP_USB_TYPE, &prop);
-+	if (rc < 0)
-+		return rc;
-+	charger_type = prop.intval;
-+
-+	/* when pd adapter is authenticated successfully */
-+	if ((charger_type == POWER_SUPPLY_TYPE_USB_PD) && chg->pd_verifed) {
-+		return QUICK_CHARGE_TURBE;
-+	}
-+
-+	while (adapter_cap[i].adap_type != 0) {
-+		if (charger_type == adapter_cap[i].adap_type) {
-+			return adapter_cap[i].adap_cap;
-+		}
-+		i++;
-+	}
-+
-+	return 0;
++	for (i = 0; i < ARRAY_SIZE(st->channel_modes); i++)
++		st->channel_modes[i] = new_channel_modes[i];
 +}
 +
- static int smbb_usbin_get_property(struct power_supply *psy,
- 		enum power_supply_property psp,
- 		union power_supply_propval *val)
-@@ -505,6 +564,9 @@ static int smbb_usbin_get_property(struct power_supply *psy,
- 	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX:
- 		val->intval = 2500000;
- 		break;
-+	case POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE:
-+		val->intval = get_quick_charge_type(chg);
-+		break;
- 	default:
- 		rc = -EINVAL;
- 		break;
-@@ -662,11 +724,27 @@ static int smbb_battery_set_property(struct power_supply *psy,
- 		const union power_supply_propval *val)
+ static int ad5592r_reset_channel_modes(struct ad5592r_state *st)
  {
- 	struct smbb_charger *chg = power_supply_get_drvdata(psy);
-+	int charger_type, bat_imax;
- 	int rc;
+ 	int i;
+@@ -532,6 +544,10 @@ static int ad5592r_alloc_channels(struct iio_dev *iio_dev)
+ 			st->channel_offstate[reg] = tmp;
+ 	}
  
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_CURRENT_MAX:
--		rc = smbb_charger_attr_write(chg, ATTR_BAT_IMAX, val->intval);
-+		charger_type = get_quick_charge_type(chg);
-+		if (charger_type == QUICK_CHARGE_NORMAL)
-+			bat_imax = IMAX_NORMAL;
-+		else if (charger_type == QUICK_CHARGE_FAST)
-+			bat_imax = IMAX_FAST;
-+		else if (charger_type == QUICK_CHARGE_FLASH)
-+			bat_imax = IMAX_FLASH;
-+		else if (charger_type == QUICK_CHARGE_TURBE)
-+			bat_imax = IMAX_TURBE;
-+		else if (charger_type == QUICK_CHARGE_SUPER)
-+			bat_imax = IMAX_SUPER;
-+		else
-+			bat_imax = IMAX_NORMAL;
++	/* Update default channel modes set by external module */
++	if (update_channel_mode == 1)
++		ad5592r_set_def_channel_modes(st);
 +
-+		bat_imax = min(val->intval, bat_imax);
-+		rc = smbb_charger_attr_write(chg, ATTR_BAT_IMAX, bat_imax);
- 		break;
- 	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
- 		rc = smbb_charger_attr_write(chg, ATTR_BAT_VMAX, val->intval);
-@@ -695,6 +773,7 @@ static enum power_supply_property smbb_charger_properties[] = {
- 	POWER_SUPPLY_PROP_ONLINE,
- 	POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT,
- 	POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX,
-+	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
- };
+ 	channels = devm_kcalloc(st->dev,
+ 			1 + 2 * num_channels, sizeof(*channels),
+ 			GFP_KERNEL);
+@@ -567,7 +583,7 @@ static int ad5592r_alloc_channels(struct iio_dev *iio_dev)
+ 	}
  
- static enum power_supply_property smbb_battery_properties[] = {
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index 97cc4b85bf61..24b31b7e88a0 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -171,6 +171,7 @@ enum power_supply_property {
- 	POWER_SUPPLY_PROP_MODEL_NAME,
- 	POWER_SUPPLY_PROP_MANUFACTURER,
- 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
-+	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
- };
+ 	channels[curr_channel].type = IIO_TEMP;
+-	channels[curr_channel].channel = 8;
++	channels[curr_channel].channel = AD559XR_CHANNEL_NR;
+ 	channels[curr_channel].info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+ 				   BIT(IIO_CHAN_INFO_SCALE) |
+ 				   BIT(IIO_CHAN_INFO_OFFSET);
+@@ -589,6 +605,17 @@ static void ad5592r_init_scales(struct ad5592r_state *st, int vref_mV)
+ 		div_s64_rem(tmp * 2, 1000000000LL, &st->scale_avail[1][1]);
+ }
  
- enum power_supply_type {
-@@ -186,6 +187,10 @@ enum power_supply_type {
- 	POWER_SUPPLY_TYPE_USB_PD,		/* Power Delivery Port */
- 	POWER_SUPPLY_TYPE_USB_PD_DRP,		/* PD Dual Role Port */
- 	POWER_SUPPLY_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
-+	POWER_SUPPLY_TYPE_USB_HVDCP,		/* High Voltage DCP */
-+	POWER_SUPPLY_TYPE_USB_HVDCP_3,		/* Efficient High Voltage DCP */
-+	POWER_SUPPLY_TYPE_USB_HVDCP_3P5,	/* Efficient High Voltage DCP */
-+	POWER_SUPPLY_TYPE_USB_FLOAT,		/* Floating charger */
- };
- 
- enum power_supply_usb_type {
-@@ -201,6 +206,15 @@ enum power_supply_usb_type {
- 	POWER_SUPPLY_USB_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
- };
- 
-+enum power_supply_quick_charge_type {
-+	QUICK_CHARGE_NORMAL = 0,		/* Charging Power <= 10W */
-+	QUICK_CHARGE_FAST,			/* 10W < Charging Power <= 20W */
-+	QUICK_CHARGE_FLASH,			/* 20W < Charging Power <= 30W */
-+	QUICK_CHARGE_TURBE,			/* 30W < Charging Power <= 50W */
-+	QUICK_CHARGE_SUPER,			/* Charging Power > 50W */
-+	QUICK_CHARGE_MAX,
-+};
++void ad5592r_update_default_channel_modes(u8 *new_modes)
++{
++	int idx = 0;
 +
- enum power_supply_notifier_events {
- 	PSY_EVENT_PROP_CHANGED,
++	update_channel_mode = 1;
++	for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++)
++		new_channel_modes[idx] = new_modes[idx];
++
++}
++EXPORT_SYMBOL_GPL(ad5592r_update_default_channel_modes);
++
+ int ad5592r_probe(struct device *dev, const char *name,
+ 		const struct ad5592r_rw_ops *ops)
+ {
+@@ -603,7 +630,7 @@ int ad5592r_probe(struct device *dev, const char *name,
+ 	st = iio_priv(iio_dev);
+ 	st->dev = dev;
+ 	st->ops = ops;
+-	st->num_channels = 8;
++	st->num_channels = AD559XR_CHANNEL_NR;
+ 	dev_set_drvdata(dev, iio_dev);
+ 
+ 	st->reg = devm_regulator_get_optional(dev, "vref");
+diff --git a/drivers/iio/dac/ad5592r-base.h b/drivers/iio/dac/ad5592r-base.h
+index 23dac2f1ff8a..40ad6369e660 100644
+--- a/drivers/iio/dac/ad5592r-base.h
++++ b/drivers/iio/dac/ad5592r-base.h
+@@ -39,6 +39,9 @@ enum ad5592r_registers {
+ #define AD5592R_REG_CTRL_ADC_RANGE	BIT(5)
+ #define AD5592R_REG_CTRL_DAC_RANGE	BIT(4)
+ 
++/* Define quantity of channels of AD5592R/AD5593R */
++#define AD559XR_CHANNEL_NR		8
++
+ struct ad5592r_rw_ops {
+ 	int (*write_dac)(struct ad5592r_state *st, unsigned chan, u16 value);
+ 	int (*read_adc)(struct ad5592r_state *st, unsigned chan, u16 *value);
+@@ -69,6 +72,7 @@ struct ad5592r_state {
+ 	__be16 spi_msg_nop;
  };
+ 
++void ad5592r_update_default_channel_modes(u8 *new_modes);
+ int ad5592r_probe(struct device *dev, const char *name,
+ 		const struct ad5592r_rw_ops *ops);
+ int ad5592r_remove(struct device *dev);
+diff --git a/drivers/iio/dac/ad5593r.c b/drivers/iio/dac/ad5593r.c
+index 1fbe9c019c7f..a19331d91406 100644
+--- a/drivers/iio/dac/ad5593r.c
++++ b/drivers/iio/dac/ad5593r.c
+@@ -21,6 +21,10 @@
+ #define AD5593R_MODE_GPIO_READBACK	(6 << 4)
+ #define AD5593R_MODE_REG_READBACK	(7 << 4)
+ 
++/* Parameters for dynamic channel mode setting */
++static char *ch_mode = "";
++module_param(ch_mode, charp, 0400);
++
+ static int ad5593r_write_dac(struct ad5592r_state *st, unsigned chan, u16 value)
+ {
+ 	struct i2c_client *i2c = to_i2c_client(st->dev);
+@@ -92,9 +96,53 @@ static const struct ad5592r_rw_ops ad5593r_rw_ops = {
+ 	.gpio_read = ad5593r_gpio_read,
+ };
+ 
++static void ad5593r_check_new_channel_mode(void)
++{
++	char *new_mode = NULL, tmp[2];
++	u8 new_ch_modes[AD559XR_CHANNEL_NR];
++	int idx = 0;
++
++	if (strlen(ch_mode) != AD559XR_CHANNEL_NR)
++		return;
++
++	new_mode = ch_mode;
++
++	/* Check if all channel modes are valid */
++	for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++) {
++		switch (new_mode[idx]) {
++		case '0':
++		case '1':
++		case '2':
++		case '3':
++		case '8':
++			continue;
++		default:
++			/* There is invalid mode exist, ignore the settings */
++			pr_err("%s: invalid(%c) in index(%d)\n",
++				__func__, new_mode[idx], idx);
++			return;
++		}
++	}
++
++	/* Set the new modes to ad5592r-base driver to setup the new channel modes */
++	memset(tmp, 0, 2);
++	for (idx = 0; idx < AD559XR_CHANNEL_NR; idx++) {
++		tmp[0] = new_mode[idx];
++		if (kstrtou8(tmp, 10, &new_ch_modes[AD559XR_CHANNEL_NR - idx - 1])) {
++			/* Something error when converting the string to integer */
++			/* Ignore this settings */
++			pr_err("%s: kstr error idx(%d)\n", __func__, idx);
++			return;
++		}
++	}
++
++	ad5592r_update_default_channel_modes(new_ch_modes);
++}
++
+ static int ad5593r_i2c_probe(struct i2c_client *i2c,
+ 		const struct i2c_device_id *id)
+ {
++	ad5593r_check_new_channel_mode();
+ 	return ad5592r_probe(&i2c->dev, id->name, &ad5593r_rw_ops);
+ }
+ 
 -- 
-2.28.0
+2.17.1
 
