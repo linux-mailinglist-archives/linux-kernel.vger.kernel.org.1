@@ -2,83 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F43251E8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0A7251E94
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgHYRmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgHYRmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:42:00 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E81CB2087C
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 17:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598377320;
-        bh=kYKBKWPdmIGbowfnANRtKnPRq86WNOXztM21yJfgy/8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Oij2eI5JkXzLlsBn/eF7PnI3rfkUCoAgdebAy7NdWTrmhYYqTFRf/LrRywr7qP4c6
-         sZshwlstASSBuHHm/09pXiY0y/BT2PCOzWU63a40UUb7V8tfNu+zdZZm49K5mqEvO5
-         l9iJq7Dc9WrOBnGnRTjeERTJxrPl3crUYiGmA5uQ=
-Received: by mail-wm1-f45.google.com with SMTP id x5so3380970wmi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:41:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530bbOIwr7plu1u3WaWC11W/1TDnS2/aStWF5hgqqYTQpy8GGbGa
-        ueJmE101c1GC5YUSzirO+d2Nc+/o9uRiDQEVKJeCKw==
-X-Google-Smtp-Source: ABdhPJzfBFAV7N2kTP8Aaatm/dxdRuETsg1NbmfZjmQIwU7edH4V2JOF6K2tvjsYlUsZLF5qFw+Xzl0W4w9yIEaSX58=
-X-Received: by 2002:a1c:7e02:: with SMTP id z2mr3108351wmc.138.1598377318393;
- Tue, 25 Aug 2020 10:41:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <875z98jkof.fsf@nanos.tec.linutronix.de> <3babf003-6854-e50a-34ca-c87ce4169c77@citrix.com>
- <20200825043959.GF15046@sjchrist-ice> <CALCETrUP1T2k3UzZMsXMfAD83xbYEG+nAv3a-LeBjNW+=ijJAg@mail.gmail.com>
- <20200825171903.GA20660@sjchrist-ice> <CALCETrWy2x-RByfknjjKxRbE0LBPk2Ugj1d58xYHb91ogbfnvA@mail.gmail.com>
- <dfce335fefe043868301bacf57120759@intel.com>
-In-Reply-To: <dfce335fefe043868301bacf57120759@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 25 Aug 2020 10:41:46 -0700
-X-Gmail-Original-Message-ID: <CALCETrWw4Jr2iqpPdH-YoAT7oUUNbyWsm2P2+ghYsQ=R8bc9Ew@mail.gmail.com>
-Message-ID: <CALCETrWw4Jr2iqpPdH-YoAT7oUUNbyWsm2P2+ghYsQ=R8bc9Ew@mail.gmail.com>
-Subject: Re: TDX #VE in SYSCALL gap (was: [RFD] x86: Curing the exception and
- syscall trainwreck in hardware)
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pu Wen <puwen@hygon.cn>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sasha Levin <alexander.levin@microsoft.com>,
-        Dirk Hohndel <dirkhh@vmware.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        "H. Peter Anvin" <hpa@linux.intel.com>,
-        "Mallick, Asit K" <asit.k.mallick@intel.com>,
-        Gordon Tetlow <gordon@tetlows.org>,
-        David Kaplan <David.Kaplan@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726619AbgHYRmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:42:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2110 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726119AbgHYRma (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:42:30 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PHVkMg119397;
+        Tue, 25 Aug 2020 13:42:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=YaEteyqYhXWEEFt5cfVRUCG9Bu1VG3wqjnkN65nMqUU=;
+ b=oHzfQuFHJc2IeY8KZsVVlhLHqj2OMy70BTA+F3OMcrOxPDIAyO+EAS2fJ5q16Ts+xsIf
+ SkZ2VoL1DDsssHMt6y6Zy3MVlwyCY3OYZRVuC8Kp4SJEPocEfxvKdnvTF7LIH0zElxk1
+ Yu6HGgvBATpY5tsfyz2VXxzEDm0YSXLxHUK3/8bafDK2gq+NAfH6Q1CVBW+HL9GzYwkx
+ PEhZTyelB5mefmatnWDEpuVLO4eEW8wgbco3S6tHv+A+bvIGqrroa5QuJrV29/OP94AP
+ e8NG4rpBATZcGzSRBf/M3JCPnToqbpuXOQKgsffCpiyOVOXY06P7kxiZ2QBRTNwIo4xj CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3356u68s7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 13:42:21 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07PHW9b2121391;
+        Tue, 25 Aug 2020 13:42:21 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3356u68s71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 13:42:21 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07PHbpeV010599;
+        Tue, 25 Aug 2020 17:42:19 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 332ujkup8c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 17:42:19 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07PHgHj511010526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Aug 2020 17:42:17 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 399674C04E;
+        Tue, 25 Aug 2020 17:42:17 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A48D14C04A;
+        Tue, 25 Aug 2020 17:42:14 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.103.4])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 25 Aug 2020 17:42:14 +0000 (GMT)
+Message-ID: <49f8a616d80344c539b512f8b83590ea281ee54d.camel@linux.ibm.com>
+Subject: Re: [PATCH] IMA: Handle early boot data measurement
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com
+Cc:     tyhicks@linux.microsoft.com, tusharsu@linux.microsoft.com,
+        sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 25 Aug 2020 13:42:13 -0400
+In-Reply-To: <307617de-b42d-ac52-6e9e-9e0d16bbc20e@linux.microsoft.com>
+References: <20200821231230.20212-1-nramas@linux.microsoft.com>
+         <a7ea2da1f895ee3db4697c00804160acb6db656e.camel@linux.ibm.com>
+         <307617de-b42d-ac52-6e9e-9e0d16bbc20e@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-25_08:2020-08-25,2020-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008250129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:36 AM Luck, Tony <tony.luck@intel.com> wrote:
->
-> > > Or malicious hypervisor action, and that's a problem.
-> > >
-> > > Suppose the hypervisor remaps a GPA used in the SYSCALL gap (e.g. the
-> > > actual SYSCALL text or the first memory it accesses -- I don't have a
-> > > TDX spec so I don't know the details).
->
-> Is it feasible to defend against a malicious (or buggy) hypervisor?
->
-> Obviously, we can't leave holes that guests can exploit. But the hypervisor
-> can crash the system no matter how clever TDX is.
+On Tue, 2020-08-25 at 08:46 -0700, Lakshmi Ramasubramanian wrote:
+> On 8/25/20 8:40 AM, Mimi Zohar wrote:
+> > On Fri, 2020-08-21 at 16:12 -0700, Lakshmi Ramasubramanian wrote:
+> > > The current implementation of early boot measurement in
+> > > the IMA subsystem is very specific to asymmetric keys. It does not
+> > > handle early boot measurement of data from other subsystems such as
+> > > Linux Security Module (LSM), Device-Mapper, etc. As a result data,
+> > > provided by these subsystems during system boot are not measured by IMA.
+> > > 
+> > > Update the early boot key measurement to handle any early boot data.
+> > > Refactor the code from ima_queue_keys.c to a new file ima_queue_data.c.
+> > > Rename the kernel configuration CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS to
+> > > CONFIG_IMA_QUEUE_EARLY_BOOT_DATA so it can be used for enabling any
+> > > early boot data measurement. Since measurement of asymmetric keys is
+> > > the first consumer of early boot measurement, this kernel configuration
+> > > is enabled if IMA_MEASURE_ASYMMETRIC_KEYS and SYSTEM_TRUSTED_KEYRING are
+> > > both enabled.
+> > > 
+> > > Update the IMA hook ima_measure_critical_data() to utilize early boot
+> > > measurement support.
+> > 
+> > Please limit the changes in this patch to renaming the functions and/or
+> > files.  For example, adding "measure_payload_hash" should be a separate
+> > patch, not hidden here.
+> > 
+> 
+> Thanks for the feedback Mimi.
+> 
+> I'll split this into 2 patches:
+> 
+> PATCH 1: Rename files + rename CONFIG
+> PATCH 2: Update IMA hook to utilize early boot data measurement.
 
-Crashing the system is one thing.  Corrupting the system in a way that
-could allow code execution is another thing entirely.  And the whole
-point of TDX is to defend the guest against the hypervisor.
+I'm referring to introducing the "measure_payload_hash" flag.  I assume
+this is to indicate whether the buffer should be hashed or not.  
+
+Example 1: ima_alloc_key_entry() and ima_alloc_data_entry(0 comparison
+> -static struct ima_key_entry *ima_alloc_key_entry(struct key *keyring,
+> -                                                const void *payload,
+> -                                                size_t payload_len)
+> -{
+
+
+> +static struct ima_data_entry *ima_alloc_data_entry(const char *event_name,
+> +                                                  const void *payload,
+> +                                                  size_t payload_len,
+> +                                                  const char *event_data,
+> +                                                  enum ima_hooks func,
+> +                                                  bool measure_payload_hash)  <====
+> +{
+
+Example 2:  
+diff --git a/security/integrity/ima/ima_asymmetric_keys.c b/security/integrity/ima/ima_asymmetric_keys.c
+index a74095793936..65423754765f 100644
+--- a/security/integrity/ima/ima_asymmetric_keys.c
++++ b/security/integrity/ima/ima_asymmetric_keys.c
+@@ -37,9 +37,10 @@ void ima_post_key_create_or_update(struct key *keyring, struct key *key,
+        if (!payload || (payload_len == 0))
+                return;
+ 
+-       if (ima_should_queue_key())
+-               queued = ima_queue_key(keyring, payload, payload_len);
+-
++       if (ima_should_queue_data())
++               queued = ima_queue_data(keyring->description, payload,
++                                       payload_len, keyring->description,
++                                       KEY_CHECK, false);   <===
+        if (queued)
+                return;
+
+But in general, as much as possible function and file name changes
+should be done independently of other changes.
+
+thanks,
+
+Mimi
+
