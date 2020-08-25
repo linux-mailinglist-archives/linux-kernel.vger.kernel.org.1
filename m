@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB83251E91
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DAE251EA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgHYRmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:42:24 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:39423 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgHYRmU (ORCPT
+        id S1726444AbgHYRxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgHYRxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:42:20 -0400
-Received: by mail-il1-f196.google.com with SMTP id f12so11150418ils.6;
-        Tue, 25 Aug 2020 10:42:19 -0700 (PDT)
+        Tue, 25 Aug 2020 13:53:49 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7044CC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:53:49 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id l13so716932otp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C1x1jyjBhFzCQy8a0EbMsi3qjsuzPMNqfqLhlXLSl7A=;
+        b=k3t5RucNoAwMD2XGqRLYQNKFhfSn1C0q4rGtp52+V7O6X/6WeDPvz2lk7ykbKchVOJ
+         kPCDzRJEovZZRaWBYKOZ/dGYhQ3tvXlh4IelW4WQAJEgZo4RP12M8sTKFFGxEQuMoxFQ
+         80sJYM2wFiGa55KienyTFIuZkrOZn2IPbVq5bd1X4wviQrMZmvMrrYpGp/GrXocAJYyN
+         wK27QECJDk71rlAOvF9ZNCkCTD2Tp3+Eypex5mWXwf/lOH+LZQ1gT1T3JCyYq1rjf0Oy
+         g3Uu6LEGQzfu0o/h01UYs6YqslQvZqhW4AqNXUPIoKn98U1VHlUsuLpR/2g7Mx1YMC7F
+         BpVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NTp9u+iFGhAjZbw/H+WbVNzQr+UMY6B6b4vLY7DE2lo=;
-        b=MwlGuAjlcVWmp0YPF1lmEUSoBhrUUDjMmxWws8ytNAR+/KY0zxDwpjMidLibZe/sGW
-         hAkxDiVb2tK5lRCEu3uX5kn7Ndb9QmXuVdF268DzLxTIyPTfCX7e1NVyND0oPf2UaJY4
-         AaWuI84lZvsJ3m48+YboHOwyLnwNj1NXXGVP5gxJX1lidBnup70hntaXRtoOJuTUXnIo
-         ioSkI/LdDb3kq8LO8FYABNTIiF3qZKhildyas5Qt9wgKB6gBsAdwwJA+TxJwCyRHPErx
-         d4dstkYxE9p5dJ/Cj9deHjDm5wtMQebUaicPjjaotG7Gar5o2uXtKdavq/EyCKpC8GI+
-         CfIA==
-X-Gm-Message-State: AOAM531Xv1n1+bNnkDJLoTfsU1KVutA08YB2tcxPyVcFcUR9/wOeWQJ/
-        1HrYTZUmPD2SrWxLjOWAbg==
-X-Google-Smtp-Source: ABdhPJzWee0fZTqZEQWL/ptQEMx+PfSomfPDeGF7gm1FmOf20zLrifz3/STLKJkgTmLuKgxEqET0/Q==
-X-Received: by 2002:a05:6e02:670:: with SMTP id l16mr10253072ilt.52.1598377338930;
-        Tue, 25 Aug 2020 10:42:18 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id v84sm9831589ilk.4.2020.08.25.10.42.16
+        bh=C1x1jyjBhFzCQy8a0EbMsi3qjsuzPMNqfqLhlXLSl7A=;
+        b=mNXIp2moAX7AcKWA0l6o/JOrHdl/bOQsD/tTA1vsR/+8fkVXVnpqKCpa3CvwNrFjjD
+         vM0ypkWyurUKKzPq6LlW0AfxzAFYe/NgRIbO1uqY0b5sbAjX3k9OutLVlEHoQDBDd2ce
+         cDQV3rqO7+SJPWvOL6tY3cekWKccoR2mS2UN3G9/KXJijA3WUX5h/NMb4O+k8dL2uZjZ
+         a1cFemfi4Xz8VlKcTIV07yzS9GXxDy73eUAte40jEjuvyTci2LMClZIK1+S4+1KJd6dq
+         qBCyD6Az+wIN1k7qjCk1UpehaIhTZ5CvCmTId2rFVe3FxqdpyxbFksS/Xd92IYw3SsPh
+         S6pA==
+X-Gm-Message-State: AOAM533VmmvwzURv/hDjamW93XFm79w/DvKew5I2GdC5cUOK1o3ZILDB
+        04Sgcu/vS4Dk38ibdtpz3M5R1Q==
+X-Google-Smtp-Source: ABdhPJz82wuG/Ujs87c1fACgiNfpycutLB/WbcCGDf6CJAe7OGmHiti1fhnkkMUkGutRcWom15/OCA==
+X-Received: by 2002:a9d:27e7:: with SMTP id c94mr1043336otb.360.1598378028593;
+        Tue, 25 Aug 2020 10:53:48 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id b10sm418053oiy.7.2020.08.25.10.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 10:42:17 -0700 (PDT)
-Received: (nullmailer pid 1008933 invoked by uid 1000);
-        Tue, 25 Aug 2020 17:42:15 -0000
-Date:   Tue, 25 Aug 2020 11:42:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Crystal Guo <crystal.guo@mediatek.com>
-Cc:     p.zabel@pengutronix.de, matthias.bgg@gmail.com,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, s-anna@ti.com, afd@ti.com,
-        seiya.wang@mediatek.com, stanley.chu@mediatek.com,
-        yingjoe.chen@mediatek.com, fan.chen@mediatek.com,
-        yong.liang@mediatek.com
-Subject: Re: [v4,1/4] dt-binding: reset-controller: ti: add reset-duration-us
- property
-Message-ID: <20200825174215.GA999117@bogus>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
- <20200817030324.5690-2-crystal.guo@mediatek.com>
+        Tue, 25 Aug 2020 10:53:47 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 12:53:45 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>, khilman@kernel.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, gregkh@linuxfoundation.org, pavel@ucw.cz,
+        len.brown@intel.com, rnayak@codeaurora.org, dianders@chromium.org,
+        mka@chromium.org
+Subject: Re: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME
+ flags
+Message-ID: <20200825175345.GC3715@yoga>
+References: <20200821204921.32536-1-sibis@codeaurora.org>
+ <159804608868.334488.2486130699850456264@swboyd.mtv.corp.google.com>
+ <20200824164212.GA3715@yoga>
+ <159834001729.334488.11862381163144726708@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200817030324.5690-2-crystal.guo@mediatek.com>
+In-Reply-To: <159834001729.334488.11862381163144726708@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:03:21AM +0800, Crystal Guo wrote:
-> introduce 'reset' method to allow device do serialized assert and
-> deassert operations in a single step, which needs a minimum delay
-> to be waited between assert and deassert.
-
-Why is Mediatek adding to a TI binding?
-
-> 
-> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/reset/ti-syscon-reset.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> index 86945502ccb5..ab041032339b 100644
-> --- a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> +++ b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> @@ -59,6 +59,11 @@ Required properties:
->  Please also refer to Documentation/devicetree/bindings/reset/reset.txt for
->  common reset controller usage by consumers.
+On Tue 25 Aug 02:20 CDT 2020, Stephen Boyd wrote:
+> Quoting Bjorn Andersson (2020-08-24 09:42:12)
+> > On Fri 21 Aug 14:41 PDT 2020, Stephen Boyd wrote:
+[..]
+> > > I find it odd that this is modeled as a power domain instead of some
+> > > Qualcomm specific message that the remoteproc driver sends to AOSS. Is
+> > > there some sort of benefit the driver gets from using the power domain
+> > > APIs for this vs. using a custom API?
+> > 
+> > We need to send "up" and "down" notifications and this needs to happen
+> > at the same time as other standard resources are enabled/disabled.
+> > 
+> > Further more, at the time the all resources handled by the downstream
+> > driver was either power-domains (per above understanding) or clocks, so
+> > it made sense to me not to spin up a custom API.
+> > 
 >  
-> +Optional properties:
-> +- reset-duration-us: When do serialized assert and deassert operations, minimum delay in microseconds
-> +is needed to be waited between an assert and a deassert to reset the device. This value can be 0, 0 means
-> +that such a delay is not needed.
+> So the benefit is not spinning up a custom API? I'm not Ulf, but it
+> looks like this is hard to rationalize about as a power domain. It
+> doesn't have any benefit to model it this way besides to make it
+> possible to turn on with other power domains.
+> 
+> This modem remoteproc drivers isn't SoC agnostic anyway, it relies on
+> SMEM APIs, so standing up another small qmp_remoteproc_booted() and
+> qmp_remoteproc_shutdown() API would avoid adding a genpd flag here that
+> probably will never be used outside of this corner-case. There is also
+> some get/put EPROBE_DEFER sort of logic to implement, but otherwise it
+> would be possible to do this outside of power domains, and that seems
+> better given that this isn't really a power domain to start with.
 
-This goes in the reset controller node or each consumer? For the latter, 
-it should be a cell in 'resets' if you need this. But really, I think 
-the reset controller should enforce some minimum time that works for all 
-consumers. Surely having a minimum time per reset isn't really needed.
+In later platforms a few new users of the AOSS communication interface
+is introduced that certainly doesn't fit any existing API/framework in
+the kernel. So the plan was to pretty much expose qmp_send() to these
+drivers.
 
-Rob
+My worry with using this interface is that we'll probably have to come
+up with some DT binding pieces and probably we'll end up adding yet
+another piece of hard coded information in the remoteproc drivers.
+
+But I'm not against us doing this work in favor of not having to
+introduce a one-off for this corner case.
+
+Regards,
+Bjorn
