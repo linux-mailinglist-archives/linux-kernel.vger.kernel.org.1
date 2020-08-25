@@ -2,148 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292DD251493
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E432514AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbgHYIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:47:57 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:52657 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbgHYIr5 (ORCPT
+        id S1728889AbgHYIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:54:39 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45345 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725916AbgHYIyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:47:57 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 2CD061C0011;
-        Tue, 25 Aug 2020 08:47:53 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 10:47:52 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: mmc: Add Sparx5 SDHCI controller
- bindings
-Message-ID: <20200825084752.GD2389103@piout.net>
-References: <20200824151035.31093-1-lars.povlsen@microchip.com>
- <20200824151035.31093-2-lars.povlsen@microchip.com>
- <CAPDyKFoBom1n4AHniiukPiE_szskHrhcmVXfMpKTvNo9Xw9v0w@mail.gmail.com>
+        Tue, 25 Aug 2020 04:54:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6oygkt_1598345661;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6oygkt_1598345661)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Aug 2020 16:54:24 +0800
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <4cc9f54a-9eda-9966-df9a-a00bc9e88f4c@linux.alibaba.com>
+Date:   Tue, 25 Aug 2020 16:52:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFoBom1n4AHniiukPiE_szskHrhcmVXfMpKTvNo9Xw9v0w@mail.gmail.com>
+In-Reply-To: <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2020 09:33:45+0200, Ulf Hansson wrote:
-> On Mon, 24 Aug 2020 at 17:10, Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> >
-> > The Sparx5 SDHCI controller is based on the Designware controller IP.
-> >
-> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > ---
-> >  .../mmc/microchip,dw-sparx5-sdhci.yaml        | 65 +++++++++++++++++++
-> >  1 file changed, 65 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> > new file mode 100644
-> > index 0000000000000..55883290543b9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> > @@ -0,0 +1,65 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mmc/microchip,dw-sparx5-sdhci.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Microchip Sparx5 Mobile Storage Host Controller Binding
-> > +
-> > +allOf:
-> > +  - $ref: "mmc-controller.yaml"
-> > +
-> > +maintainers:
-> > +  - Lars Povlsen <lars.povlsen@microchip.com>
-> > +
-> > +# Everything else is described in the common file
-> > +properties:
-> > +  compatible:
-> > +    const: microchip,dw-sparx5-sdhci
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +    description:
-> > +      Handle to "core" clock for the sdhci controller.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: core
-> > +
-> > +  microchip,clock-delay:
-> > +    description: Delay clock to card to meet setup time requirements.
-> > +      Each step increase by 1.25ns.
-> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> > +    minimum: 1
-> > +    maximum: 15
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/clock/microchip,sparx5.h>
-> > +    sdhci0: mmc@600800000 {
-> 
-> Nitpick:
-> 
-> I think we should use solely "mmc[n]" here. So:
-> 
-> mmc0@600800000 {
-> 
-> Please update patch3/3 accordingly as well.
 
-This is not what the devicetree specification says. 2.2.2 says that the
-generic name is mmc, not mmc[n]. Since there is a proper unit-address, I
-don't see the need for an index here.
 
+ÔÚ 2020/8/25 ÉÏÎç9:56, Daniel Jordan Ð´µÀ:
+> On Mon, Aug 24, 2020 at 01:24:20PM -0700, Hugh Dickins wrote:
+>> On Mon, 24 Aug 2020, Andrew Morton wrote:
+>>> On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>> Andrew demurred on version 17 for lack of review.  Alexander Duyck has
+>> been doing a lot on that front since then.  I have intended to do so,
+>> but it's a mirage that moves away from me as I move towards it: I have
 > 
-> > +        compatible = "microchip,dw-sparx5-sdhci";
-> > +        reg = <0x00800000 0x1000>;
-> > +        pinctrl-0 = <&emmc_pins>;
-> > +        pinctrl-names = "default";
-> > +        clocks = <&clks CLK_ID_AUX1>;
-> > +        clock-names = "core";
-> > +        assigned-clocks = <&clks CLK_ID_AUX1>;
-> > +        assigned-clock-rates = <800000000>;
-> > +        interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-> > +        bus-width = <8>;
-> > +        microchip,clock-delay = <10>;
-> > +    };
+> Same, I haven't been able to keep up with the versions or the recent review
+> feedback.  I got through about half of v17 last week and hope to have more time
+> for the rest this week and beyond.
 > 
-> Kind regards
-> Uffe
+>>>> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+>>>> containers on a 2s * 26cores * HT box with a modefied case:
+> 
+> Alex, do you have a pointer to the modified readtwice case?
+> 
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Hi Daniel,
+
+my readtwice modification like below.
+
+diff --git a/case-lru-file-readtwice b/case-lru-file-readtwice
+index 85533b248634..57cb97d121ae 100755
+--- a/case-lru-file-readtwice
++++ b/case-lru-file-readtwice
+@@ -15,23 +15,30 @@
+
+ . ./hw_vars
+
+-for i in `seq 1 $nr_task`
+-do
+-       create_sparse_file $SPARSE_FILE-$i $((ROTATE_BYTES / nr_task))
+-       timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-1-$i 2>&1 &
+-       timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-2-$i 2>&1 &
+-done
++OUT_DIR=$(hostname)-${nr_task}c-$(((mem + (1<<29))>>30))g
++TEST_CASES=${@:-$(echo case-*)}
++
++echo $((1<<30)) > /proc/sys/vm/max_map_count
++echo $((1<<20)) > /proc/sys/kernel/threads-max
++echo 1 > /proc/sys/vm/overcommit_memory
++#echo 3 > /proc/sys/vm/drop_caches
++
++
++i=1
++
++if [ "$1" == "m" ];then
++       mount_tmpfs
++       create_sparse_root
++       create_sparse_file $SPARSE_FILE-$i $((ROTATE_BYTES))
++       exit
++fi
++
++
++if [ "$1" == "r" ];then
++       (timeout --foreground -s INT ${runtime:-300} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-1-$i 2>&1)&
++       (timeout --foreground -s INT ${runtime:-300} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-2-$i 2>&1)&
++fi
+
+ wait
+ sleep 1
+
+-for file in $TMPFS_MNT/dd-output-*
+-do
+-       [ -s "$file" ] || {
+-               echo "dd output file empty: $file" >&2
+-       }
+-       cat $file
+-       rm  $file
+-done
+-
+-rm `seq -f $SPARSE_FILE-%g 1 $nr_task`
+diff --git a/hw_vars b/hw_vars
+index 8731cefb9f57..ceeaa9f17c0b 100755
+--- a/hw_vars
++++ b/hw_vars
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/sh -ex
+
+ if [ -n "$runtime" ]; then
+        USEMEM="$CMD ./usemem --runtime $runtime"
+@@ -43,7 +43,7 @@ create_loop_devices()
+        modprobe loop 2>/dev/null
+        [ -e "/dev/loop0" ] || modprobe loop 2>/dev/null
+
+-       for i in $(seq 0 8)
++       for i in $(seq 0 104)
+        do
+                [ -e "/dev/loop$i" ] && continue
+                mknod /dev/loop$i b 7 $i
