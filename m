@@ -2,73 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9DD251DF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46E1251DED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgHYROx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:14:53 -0400
-Received: from mailoutvs4.siol.net ([185.57.226.195]:34395 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726784AbgHYROU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:14:20 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id E4C50524B30;
-        Tue, 25 Aug 2020 19:14:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id tm1MSW7P3ZD9; Tue, 25 Aug 2020 19:14:13 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id A924C524B4C;
-        Tue, 25 Aug 2020 19:14:13 +0200 (CEST)
-Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 71931524B30;
-        Tue, 25 Aug 2020 19:14:11 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     mchehab@kernel.org, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: [PATCH 3/3] ARM: dts: sun8i: r40: bananapi-m2-ultra: Enable IR
-Date:   Tue, 25 Aug 2020 19:13:58 +0200
-Message-Id: <20200825171358.1286902-4-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200825171358.1286902-1-jernej.skrabec@siol.net>
-References: <20200825171358.1286902-1-jernej.skrabec@siol.net>
+        id S1726786AbgHYROO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:14:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726542AbgHYROF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:14:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 97D69AE68;
+        Tue, 25 Aug 2020 17:14:35 +0000 (UTC)
+Date:   Tue, 25 Aug 2020 19:14:04 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7][next] printk: ringbuffer: relocate get_data()
+Message-ID: <20200825171403.GZ4353@alley>
+References: <20200824103538.31446-1-john.ogness@linutronix.de>
+ <20200824103538.31446-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824103538.31446-4-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BananaPi M2 Ultra has IR receiver connected to IR0.
+On Mon 2020-08-24 12:41:34, John Ogness wrote:
+> Move the internal get_data() function as-is above prb_reserve() so
+> that a later change can make use of the static function.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Enable it.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts b/arch/arm=
-/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-index ea15073f0c79..2fc62ef0cb3e 100644
---- a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-+++ b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-@@ -164,6 +164,10 @@ axp22x: pmic@34 {
-=20
- #include "axp22x.dtsi"
-=20
-+&ir0 {
-+	status =3D "okay";
-+};
-+
- &mmc0 {
- 	vmmc-supply =3D <&reg_dcdc1>;
- 	bus-width =3D <4>;
---=20
-2.28.0
-
+Best Regards,
+Petr
