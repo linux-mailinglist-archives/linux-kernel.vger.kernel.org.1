@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0195B25122A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3534251235
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 08:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgHYGkH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 02:40:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55725 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729068AbgHYGkE (ORCPT
+        id S1729169AbgHYGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 02:40:45 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:41349 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729110AbgHYGkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 02:40:04 -0400
-Received: from mail-pj1-f69.google.com ([209.85.216.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kASck-000689-3v
-        for linux-kernel@vger.kernel.org; Tue, 25 Aug 2020 06:40:02 +0000
-Received: by mail-pj1-f69.google.com with SMTP id g7so1135232pja.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 23:40:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=piHKc2fPSQ4MbF9wubCjfB1Fk6iimFoRYF73q4RIKo4=;
-        b=CXoSAw9cOiy5qe5vF0kjoFq7GnPBGaiQXrB3Dsjw8uJnDJBd0eSCjSjHH+/ig6x1yJ
-         /T5dtdWoVFXVU1B6h4boH8jgfh3KfgMua+1OQWkgpyBmn3U3DlaD+j15jZYJ9+M806Jk
-         QAX7wMjhuDj1FPTedxoKoCim2D2gAbx+nAcQaUotHHPpzRik+7w2d0j/8fq8Z1bDpfw1
-         2MTijwGYZWVq/vN+QlVELNf0yo5VtvLl2iL/1bSo0lwwzgJYYfrFDWWUSmi3ObNh0/9I
-         ya3ct3lTJxK+3bdTzZjLAdEHdrfZ2fz3kBMnw/94vOBe4v8k59HKGOffHxkKDfvOUgnP
-         Tvuw==
-X-Gm-Message-State: AOAM532UH4MPfNa+GLZz4kWhxSKh/dTmi7mMctx22bzkIr8CiUH9sXQc
-        ZbDTkfCOnu7o/7tgmpVLqbJPz8kGbmHNWYZzFLKnP/0K3ih4GV6pBjFZPwzLF2c0Rwl6KjD+T0H
-        1qE2HO90d51eVuEiteey5yizJE42K2X/m4GGIfsARZg==
-X-Received: by 2002:a63:4b5e:: with SMTP id k30mr5723125pgl.205.1598337600719;
-        Mon, 24 Aug 2020 23:40:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzseWnZhEGmmZYtaFmo76Hw39HDPPRpN+UXTz/LyMdT8cUuOUtVeMtR58p5BQArrGxFPfHBEQ==
-X-Received: by 2002:a63:4b5e:: with SMTP id k30mr5723103pgl.205.1598337600351;
-        Mon, 24 Aug 2020 23:40:00 -0700 (PDT)
-Received: from [10.101.46.234] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id y128sm13656594pfy.74.2020.08.24.23.39.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Aug 2020 23:39:59 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-From:   Kai Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200825062320.GA27116@infradead.org>
-Date:   Tue, 25 Aug 2020 14:39:55 +0800
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, jonathan.derrick@intel.com,
-        Mario.Limonciello@dell.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Huffman, Amber" <amber.huffman@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <08080FC7-861B-472A-BD7D-02D33926677F@canonical.com>
-References: <20200821123222.32093-1-kai.heng.feng@canonical.com>
- <20200825062320.GA27116@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Tue, 25 Aug 2020 02:40:43 -0400
+Received: from [2001:67c:670:100:1d::c0] (helo=ptx.hi.pengutronix.de)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kASd5-0006Yi-0e; Tue, 25 Aug 2020 08:40:23 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kASd2-0002aQ-Mk; Tue, 25 Aug 2020 08:40:20 +0200
+Date:   Tue, 25 Aug 2020 08:40:20 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Robin Gong <yibin.gong@nxp.com>, Li Jun <jun.li@nxp.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Han Xu <han.xu@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/16] dt-bindings: mtd: gpmi-nand: Fix matching of
+ clocks on different SoCs
+Message-ID: <20200825064020.GM13023@pengutronix.de>
+References: <20200824190701.8447-1-krzk@kernel.org>
+ <20200824190701.8447-2-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824190701.8447-2-krzk@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:34:56 up 187 days, 14:05, 139 users,  load average: 0.34, 0.21,
+ 0.22
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-> On Aug 25, 2020, at 2:23 PM, Christoph Hellwig <hch@infradead.org> wrote:
+On Mon, Aug 24, 2020 at 09:06:47PM +0200, Krzysztof Kozlowski wrote:
+> Driver requires different amount of clocks for different SoCs.  Describe
+> these requirements properly to fix dtbs_check warnings like:
 > 
-> On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
->> New Intel laptops with VMD cannot reach deeper power saving state,
->> renders very short battery time.
+>     arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: clock-names:1: 'gpmi_apb' was expected
 > 
-> So what about just disabling VMD given how bloody pointless it is?
-> Hasn't anyone learned from the AHCI remapping debacle?
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/mtd/gpmi-nand.yaml    | 76 +++++++++++++++----
+>  1 file changed, 61 insertions(+), 15 deletions(-)
 > 
-> I'm really pissed at all this pointless crap intel comes up with just
-> to make life hard for absolutely no gain.  Is it so hard to just leave
-> a NVMe device as a standard NVMe device instead of f*^&ing everything
-> up in the chipset to make OS support a pain and I/O slower than by
-> doing nothing?
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> index 28ff8c581837..9d764e654e1d 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,imx6q-gpmi-nand
+> +              - fsl,imx6sx-gpmi-nand
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: SoC gpmi io clock
+> +            - description: SoC gpmi apb clock
+> +            - description: SoC gpmi bch clock
+> +            - description: SoC gpmi bch apb clock
+> +            - description: SoC per1 bch clock
+> +        clock-names:
+> +          items:
+> +            - const: gpmi_io
+> +            - const: gpmi_apb
+> +            - const: gpmi_bch
+> +            - const: gpmi_bch_apb
+> +            - const: per1_bch
 
-From what I can see from the hardwares at my hand, VMD only enables a PCI domain and PCI bridges behind it.
+This enforces this specific order of the clocks given in the dts. The
+clock binding itself doesn't require any specific order, that's what we
+have the names array for.
 
-NVMe works as a regular NVMe under those bridges. No magic remapping happens here.
+Is this really what we want?
 
-Kai-Heng
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
