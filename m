@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F7252146
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343FF25215A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgHYTvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 15:51:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25897 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726940AbgHYTvq (ORCPT
+        id S1726483AbgHYT40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 15:56:26 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48858 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHYT4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:51:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598385105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0voShhwhtzYr2KtRr3u+pQ89aQmDPNWLEdGZaEsKjCQ=;
-        b=dHrXQOxF61oNR4H6+Czi1iO7D78tVHOA+j6/ynAGcC5oleRe4OQhU61HI+bue/1XoK5L97
-        plPCov0WA0nsdVFvzl5yGRxpLdgrtsysSl2h/Kk0QL+V8x77TyY7zCVbo5HeOC+J1ZO44W
-        sDup/NeHZ3j9UYMkhsWrRdeS8d63Tig=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-lc_8cC68MTm4hOMmE-6Rwg-1; Tue, 25 Aug 2020 15:51:44 -0400
-X-MC-Unique: lc_8cC68MTm4hOMmE-6Rwg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DB6851AE;
-        Tue, 25 Aug 2020 19:51:42 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-120-227.rdu2.redhat.com [10.10.120.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E17B15D9D3;
-        Tue, 25 Aug 2020 19:51:41 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC v4 20/20] drm/nouveau/kms: Start using drm_dp_read_dpcd_caps()
-Date:   Tue, 25 Aug 2020 15:50:27 -0400
-Message-Id: <20200825195027.74681-21-lyude@redhat.com>
-In-Reply-To: <20200825195027.74681-1-lyude@redhat.com>
-References: <20200825195027.74681-1-lyude@redhat.com>
+        Tue, 25 Aug 2020 15:56:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1BFCD1C0BB9; Tue, 25 Aug 2020 21:56:21 +0200 (CEST)
+Date:   Tue, 25 Aug 2020 21:56:20 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 4.19 65/71] powerpc/pseries: Do not initiate shutdown
+ when system is running on UPS
+Message-ID: <20200825195620.GB27453@duo.ucw.cz>
+References: <20200824082355.848475917@linuxfoundation.org>
+ <20200824082359.202438041@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
+Content-Disposition: inline
+In-Reply-To: <20200824082359.202438041@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we've extracted i915's code for reading both the normal DPCD
-caps and extended DPCD caps into a shared helper, let's start using this
-in nouveau to enable us to start checking extended DPCD caps for free.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_dp.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+--uZ3hkaAS1mZxFaxD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index 89afc97ee2591..271a0a863a0e1 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -55,15 +55,13 @@ nouveau_dp_probe_dpcd(struct nouveau_connector *nv_connector,
- 	int ret;
- 	u8 *dpcd = outp->dp.dpcd;
- 
--	ret = drm_dp_dpcd_read(aux, DP_DPCD_REV, dpcd, DP_RECEIVER_CAP_SIZE);
--	if (ret == DP_RECEIVER_CAP_SIZE && dpcd[DP_DPCD_REV]) {
--		ret = drm_dp_read_desc(aux, &outp->dp.desc,
--				       drm_dp_is_branch(dpcd));
--		if (ret < 0)
--			goto out;
--	} else {
-+	ret = drm_dp_read_dpcd_caps(aux, dpcd);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = drm_dp_read_desc(aux, &outp->dp.desc, drm_dp_is_branch(dpcd));
-+	if (ret < 0)
- 		goto out;
--	}
- 
- 	if (nouveau_mst) {
- 		mstm = outp->dp.mstm;
--- 
-2.26.2
+Hi!
 
+> We have a user space tool (rtas_errd) on LPAR to monitor for
+> EPOW_SHUTDOWN_ON_UPS. Once it gets an event it initiates shutdown
+> after predefined time. It also starts monitoring for any new EPOW
+
+Yeah, so there's userspace tool, and currently systems _with_ that
+tool work poorly with UPS.
+
+So you have fixed that, and now, systems _without_ that tool will work
+poorly.
+
+That's not a fix for serious bug, that's behaviour change. You are
+fixing one set of systems and breaking another.
+
+I don't believe it is suitable for stable.
+
+								Pavel
+
+> @@ -118,7 +118,6 @@ static void handle_system_shutdown(char
+>  	case EPOW_SHUTDOWN_ON_UPS:
+>  		pr_emerg("Loss of system power detected. System is running on"
+>  			 " UPS/battery. Check RTAS error log for details\n");
+> -		orderly_poweroff(true);
+>  		break;
+> =20
+>  	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
+>=20
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--uZ3hkaAS1mZxFaxD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX0Vs5AAKCRAw5/Bqldv6
+8lOOAJ4n0Ishqs/WgvEdZcbqzcFgzjVtbQCfTrF16PSpZ4y473rFXdbzTTGTELw=
+=yuvK
+-----END PGP SIGNATURE-----
+
+--uZ3hkaAS1mZxFaxD--
