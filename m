@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55F2251F3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 20:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F2D251F2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 20:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgHYSq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 14:46:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25465 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726158AbgHYSqZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 14:46:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598381183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hnzV/kN/xqPpoOor9QkIbP7zA8CppIvbXByIibfpm1o=;
-        b=N/QGmMDmYQuX/cJ9HM3aVVJx9fAmvovC7/YSndWfh9tvUawNxPsr8vAadc1xC3RBbW5QQf
-        SxhXLYsaF5YlibYCW6WSuvIGuakiXLHOcuL8gsh5RmlCTFVTaVyCbe5Q1hSmTvhOmk7ndr
-        lH96ZWduWAnmR2WZZx5Pmx/pYE6ZPbM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-uhiai4ZCNs6kwjkwHww5iQ-1; Tue, 25 Aug 2020 14:46:21 -0400
-X-MC-Unique: uhiai4ZCNs6kwjkwHww5iQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B93498030A0;
-        Tue, 25 Aug 2020 18:46:20 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-10.gru2.redhat.com [10.97.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7186C19C4F;
-        Tue, 25 Aug 2020 18:46:20 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 3896C409D614; Tue, 25 Aug 2020 15:44:50 -0300 (-03)
-Message-ID: <20200825184414.486721471@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Tue, 25 Aug 2020 15:41:49 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [patch 2/2] nohz: try to avoid IPI when setting tick dependency for task
-References: <20200825184147.948670309@fuller.cnet>
+        id S1726542AbgHYSny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 14:43:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:12410 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgHYSnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 14:43:53 -0400
+IronPort-SDR: m4yz0HROXZ6HZHWPpqSWLqH4xlzxUW5911DRcp6s3J96xOmtJXoOKIw3etxahgiQvP3qMf/sTu
+ 3Db6of0SNJig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="155439471"
+X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
+   d="scan'208";a="155439471"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 11:43:53 -0700
+IronPort-SDR: qetOCdbrXhUWR50LkuRroCI0FBVBMcDQk5TuarjRNg+/M+0SIrJkeab98uN4ag6jhMxZrjXlKR
+ d/7/Qx64Pq9g==
+X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
+   d="scan'208";a="322866093"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.213.162.112]) ([10.213.162.112])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 11:43:52 -0700
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200825002540.3351-1-yu-cheng.yu@intel.com>
+ <20200825002540.3351-26-yu-cheng.yu@intel.com>
+ <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com>
+Date:   Tue, 25 Aug 2020 11:43:51 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
-performed (to re-read the dependencies and possibly not re-enter
-nohz_full on a given CPU).
+On 8/24/2020 5:36 PM, Andy Lutomirski wrote:
+> On Mon, Aug 24, 2020 at 5:30 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+> 
+>> arch_prctl(ARCH_X86_CET_MMAP_SHSTK, u64 *args)
+>>      Allocate a new shadow stack.
+>>
+>>      The parameter 'args' is a pointer to a user buffer.
+>>
+>>      *args = desired size
+>>      *(args + 1) = MAP_32BIT or MAP_POPULATE
+>>
+>>      On returning, *args is the allocated shadow stack address.
+> 
+> This is hideous.  Would this be better as a new syscall?
 
-A common case is for applications that run on nohz_full= CPUs
-to not use POSIX timers (eg DPDK).
+Could you point out why this is hideous, so that I can modify the 
+arch_prctl?
 
-This patch optimizes tick_nohz_dep_set_task to avoid kicking
-all nohz_full= CPUs in case the task allowed mask does not
-intersect with nohz_full= CPU mask,
-when going through tick_nohz_dep_set_task.
+I think this is more arch-specific.  Even if it becomes a new syscall, 
+we still need to pass the same parameters.
 
-This reduces interruptions to nohz_full= CPUs.
-
----
- kernel/time/tick-sched.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-Index: linux-2.6/kernel/time/tick-sched.c
-===================================================================
---- linux-2.6.orig/kernel/time/tick-sched.c
-+++ linux-2.6/kernel/time/tick-sched.c
-@@ -383,11 +383,16 @@ void tick_nohz_dep_set_task(struct task_
- 			tick_nohz_full_kick();
- 			preempt_enable();
- 		} else {
-+			unsigned long flags;
-+
- 			/*
- 			 * Some future tick_nohz_full_kick_task()
--			 * should optimize this.
-+			 * should further optimize this.
- 			 */
--			tick_nohz_full_kick_all();
-+			raw_spin_lock_irqsave(&tsk->pi_lock, flags);
-+			if (cpumask_intersects(&tsk->cpus_mask, tick_nohz_full_mask))
-+				tick_nohz_full_kick_all();
-+			raw_spin_unlock_irqrestore(&tsk->pi_lock, flags);
- 		}
- 	}
- }
-
-
+Yu-cheng
