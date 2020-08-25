@@ -2,145 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8672251897
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C10925189B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgHYMbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:31:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726633AbgHYMbx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:31:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598358711;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CiFYE8jzaodhVA5L8Zma5x1CexylW0/iR0TiifPXNJU=;
-        b=Tgoyj9Ug0JDpFUwEgqWJTuiVMzCPRowmQGAsMTwExrIl6UjlmHrG+en/b2CmEjzTjXtrvE
-        7GRmBF5VCQWSqp0ZevLfjtliHYMgvukSN1hc4RPpOB/2KUPV3Gi6ARb9DzFMn5Z+UbHraG
-        itiREyb/fC52HqpuzFxX0VIdrNgTY38=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-kGxfKyW5PS66R_ibxxfTOA-1; Tue, 25 Aug 2020 08:31:49 -0400
-X-MC-Unique: kGxfKyW5PS66R_ibxxfTOA-1
-Received: by mail-wm1-f69.google.com with SMTP id z1so666368wmf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:31:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CiFYE8jzaodhVA5L8Zma5x1CexylW0/iR0TiifPXNJU=;
-        b=I806nqQ9qd6RZ35I59pJ8EOLTxeKSjz6+fwfHYTFQFjz3LSIMsrZeuR27uytziMOCn
-         /dh2bIiD9YHFbix+VZ0E0T8LDgggVkbcfSzBg/86/MBDsRy+yVsR4ZGrVr9/yc46uMf+
-         ZOXKNn0V1DhJnocU5goayIxqxd/A4l06mTKX9K3UKCqSabUZyDSJwd1oe8/b6pOGoDFA
-         lfP+E69rBbt+IY0uyoFgkArdiyGjf73WOOsSRfq8op/GfOytkJl50mZiWdGZGyiKzFUg
-         jI6k4phc84FUqX+SIF+0Y1I0GIJQb6nJJ17v3c/ErrKIjEYmHZgiahJK8a8LHps6aroB
-         e9nw==
-X-Gm-Message-State: AOAM5334YwI3f4E1VOvLryts1dmuRkwKp0uHk+SaFTm2YcruQatKrRZ0
-        215SWGzS0Ugr6C1sZWLfrIxzj/xhX7IlzZBxGFgC3MTUNNJqg+uwUeby/G2vgCfGrO5aotZo1AW
-        VbTbnZBQm1Le4OMqKtL96O27n
-X-Received: by 2002:a05:600c:2242:: with SMTP id a2mr1919348wmm.116.1598358708495;
-        Tue, 25 Aug 2020 05:31:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyX8aYj0awXHHpnlkUQoNNKBBi3FAFHM/xNdLWzWuCdGkPsY2zIZ2JxN3LamkywklqNo/JmtQ==
-X-Received: by 2002:a05:600c:2242:: with SMTP id a2mr1919332wmm.116.1598358708301;
-        Tue, 25 Aug 2020 05:31:48 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id j7sm5927284wmj.38.2020.08.25.05.31.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 05:31:47 -0700 (PDT)
-Subject: Re: [PATCH v2 9/9] objtool: Abstract unwind hint reading
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org
-References: <20200730094652.28297-1-jthierry@redhat.com>
- <20200730094652.28297-10-jthierry@redhat.com>
- <20200730150341.udqnykbw7yfsjvin@treble>
- <1a078563-001d-c666-d2f5-9291f0efd35a@redhat.com>
- <20200731140441.cpzr4lrlkcrmoz2c@treble>
- <6a314dba-4086-717b-d226-6c292240a3e9@redhat.com>
- <20200803213506.hlbpdlitom7sjtqo@treble>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <8fe8199e-a2f3-513f-6cdf-c61d7936dede@redhat.com>
-Date:   Tue, 25 Aug 2020 13:31:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727875AbgHYMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:33:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10320 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726691AbgHYMdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:33:35 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EDFE757303068AF559DB;
+        Tue, 25 Aug 2020 20:33:28 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
+ 20:33:19 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: clean up codestyle for net/ipv4
+Date:   Tue, 25 Aug 2020 08:32:11 -0400
+Message-ID: <20200825123211.33235-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20200803213506.hlbpdlitom7sjtqo@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a pure codestyle cleanup patch. Also add a blank line after
+declarations as warned by checkpatch.pl.
 
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/ipv4/ip_options.c | 35 +++++++++++++++++++----------------
+ net/ipv4/ip_output.c  |  2 +-
+ net/ipv4/route.c      |  6 +++---
+ 3 files changed, 23 insertions(+), 20 deletions(-)
 
-On 8/3/20 10:35 PM, Josh Poimboeuf wrote:
-> On Mon, Aug 03, 2020 at 01:13:14PM +0100, Julien Thierry wrote:
->>
->>
->> On 7/31/20 3:04 PM, Josh Poimboeuf wrote:
->>> On Fri, Jul 31, 2020 at 08:00:58AM +0100, Julien Thierry wrote:
->>>>>> +	cfa->offset = hint->sp_offset;
->>>>>> +	insn->cfi.hint_type = hint->type;
->>>>>> +	insn->cfi.end = hint->end;
->>>>>> +
->>>>>> +	insn->cfi.sp_only = hint->type == ORC_TYPE_REGS || hint->type == ORC_TYPE_REGS_IRET;
->>>>>
->>>>> What does "sp" mean here in sp_only?
->>>>>
->>>>
->>>> Stack pointer, like in CFI_SP. When objtool encounters one of these hints,
->>>> it starts to only track the stack frame with the stack pointer (no BP, no
->>>> drap register, no move to temporary registers). Just trying to make some
->>>> sense of this corner case.
->>>
->>> I think that's not quite right, because ORC_TYPE_CALL could also be
->>> "sp_only" in some cases, by that definition.
->>>
->>
->> But in that case the code will still track when/if the CFI becomes pointed
->> to by BP.
->>
->>> The call to update_cfi_state_regs() is really regs-specific, not
->>> sp-specific.
->>>
->>
->> I must admit I don't really understand what "regs" is and why exactly such
->> an exception in stack state tracking is made where only operations to SP are
->> taken into account.
-> 
-> "regs" is a special type of stack frame, usually for asm entry code,
-> where the frame is actually an instance of 'struct pt_regs'.  So if
-> there's a variable associated it with it, maybe it should have "regs" in
-> the name.
-> 
-> Though I think non-x86 arches will also have regs frames, so would it
-> make sense to just make the unwind hint types a global multiarch thing?
-> They could be renamed to UNWIND_HINT_TYPE_REGS{_PARTIAL}.  Then there
-> wouldn't really be a need for the "sp_only" thing.
-> 
-
-If having regs frame means having a pt_regs on the stack when procedure 
-calls/return, then yes this will probably be the case on most archs (it 
-is for arm64 at least.
-
-However in that case, arm64 still builds a stack frame and sets the 
-frame pointer, so only handling SP operations doesn't make much sense 
-for arm64.
-
-Also, things like ORC_TYPE_REGS_IRET don't have a use for arm64 (but 
-maybe for other non-x86 arches it does?)
-
-In the end that's why I left the unwind hint types as arch defined. It 
-seems like every arch will have their specific semantics they might want 
-to let objtool know about.
-
+diff --git a/net/ipv4/ip_options.c b/net/ipv4/ip_options.c
+index 948747aac4e2..da1b5038bdfd 100644
+--- a/net/ipv4/ip_options.c
++++ b/net/ipv4/ip_options.c
+@@ -47,32 +47,32 @@ void ip_options_build(struct sk_buff *skb, struct ip_options *opt,
+ 	unsigned char *iph = skb_network_header(skb);
+ 
+ 	memcpy(&(IPCB(skb)->opt), opt, sizeof(struct ip_options));
+-	memcpy(iph+sizeof(struct iphdr), opt->__data, opt->optlen);
++	memcpy(iph + sizeof(struct iphdr), opt->__data, opt->optlen);
+ 	opt = &(IPCB(skb)->opt);
+ 
+ 	if (opt->srr)
+-		memcpy(iph+opt->srr+iph[opt->srr+1]-4, &daddr, 4);
++		memcpy(iph + opt->srr + iph[opt->srr + 1] - 4, &daddr, 4);
+ 
+ 	if (!is_frag) {
+ 		if (opt->rr_needaddr)
+-			ip_rt_get_source(iph+opt->rr+iph[opt->rr+2]-5, skb, rt);
++			ip_rt_get_source(iph + opt->rr + iph[opt->rr + 2] - 5, skb, rt);
+ 		if (opt->ts_needaddr)
+-			ip_rt_get_source(iph+opt->ts+iph[opt->ts+2]-9, skb, rt);
++			ip_rt_get_source(iph + opt->ts + iph[opt->ts + 2] - 9, skb, rt);
+ 		if (opt->ts_needtime) {
+ 			__be32 midtime;
+ 
+ 			midtime = inet_current_timestamp();
+-			memcpy(iph+opt->ts+iph[opt->ts+2]-5, &midtime, 4);
++			memcpy(iph + opt->ts + iph[opt->ts + 2] - 5, &midtime, 4);
+ 		}
+ 		return;
+ 	}
+ 	if (opt->rr) {
+-		memset(iph+opt->rr, IPOPT_NOP, iph[opt->rr+1]);
++		memset(iph + opt->rr, IPOPT_NOP, iph[opt->rr + 1]);
+ 		opt->rr = 0;
+ 		opt->rr_needaddr = 0;
+ 	}
+ 	if (opt->ts) {
+-		memset(iph+opt->ts, IPOPT_NOP, iph[opt->ts+1]);
++		memset(iph + opt->ts, IPOPT_NOP, iph[opt->ts + 1]);
+ 		opt->ts = 0;
+ 		opt->ts_needaddr = opt->ts_needtime = 0;
+ 	}
+@@ -495,26 +495,29 @@ EXPORT_SYMBOL(ip_options_compile);
+ void ip_options_undo(struct ip_options *opt)
+ {
+ 	if (opt->srr) {
+-		unsigned  char *optptr = opt->__data+opt->srr-sizeof(struct  iphdr);
+-		memmove(optptr+7, optptr+3, optptr[1]-7);
+-		memcpy(optptr+3, &opt->faddr, 4);
++		unsigned char *optptr = opt->__data + opt->srr - sizeof(struct iphdr);
++
++		memmove(optptr + 7, optptr + 3, optptr[1] - 7);
++		memcpy(optptr + 3, &opt->faddr, 4);
+ 	}
+ 	if (opt->rr_needaddr) {
+-		unsigned  char *optptr = opt->__data+opt->rr-sizeof(struct  iphdr);
++		unsigned char *optptr = opt->__data + opt->rr - sizeof(struct iphdr);
++
+ 		optptr[2] -= 4;
+-		memset(&optptr[optptr[2]-1], 0, 4);
++		memset(&optptr[optptr[2] - 1], 0, 4);
+ 	}
+ 	if (opt->ts) {
+-		unsigned  char *optptr = opt->__data+opt->ts-sizeof(struct  iphdr);
++		unsigned char *optptr = opt->__data + opt->ts - sizeof(struct iphdr);
++
+ 		if (opt->ts_needtime) {
+ 			optptr[2] -= 4;
+-			memset(&optptr[optptr[2]-1], 0, 4);
+-			if ((optptr[3]&0xF) == IPOPT_TS_PRESPEC)
++			memset(&optptr[optptr[2] - 1], 0, 4);
++			if ((optptr[3] & 0xF) == IPOPT_TS_PRESPEC)
+ 				optptr[2] -= 4;
+ 		}
+ 		if (opt->ts_needaddr) {
+ 			optptr[2] -= 4;
+-			memset(&optptr[optptr[2]-1], 0, 4);
++			memset(&optptr[optptr[2] - 1], 0, 4);
+ 		}
+ 	}
+ }
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 61f802d5350c..329a0ab87542 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1351,7 +1351,7 @@ ssize_t	ip_append_page(struct sock *sk, struct flowi4 *fl4, struct page *page,
+ 	if (cork->flags & IPCORK_OPT)
+ 		opt = cork->opt;
+ 
+-	if (!(rt->dst.dev->features&NETIF_F_SG))
++	if (!(rt->dst.dev->features & NETIF_F_SG))
+ 		return -EOPNOTSUPP;
+ 
+ 	hh_len = LL_RESERVED_SPACE(rt->dst.dev);
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 18c8baf32de5..96fcdfb9bb26 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -1079,7 +1079,7 @@ EXPORT_SYMBOL_GPL(ipv4_update_pmtu);
+ 
+ static void __ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
+ {
+-	const struct iphdr *iph = (const struct iphdr *) skb->data;
++	const struct iphdr *iph = (const struct iphdr *)skb->data;
+ 	struct flowi4 fl4;
+ 	struct rtable *rt;
+ 
+@@ -1127,7 +1127,7 @@ void ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
+ 		new = true;
+ 	}
+ 
+-	__ip_rt_update_pmtu((struct rtable *) xfrm_dst_path(&rt->dst), &fl4, mtu);
++	__ip_rt_update_pmtu((struct rtable *)xfrm_dst_path(&rt->dst), &fl4, mtu);
+ 
+ 	if (!dst_check(&rt->dst, 0)) {
+ 		if (new)
+@@ -1168,7 +1168,7 @@ EXPORT_SYMBOL_GPL(ipv4_redirect);
+ 
+ void ipv4_sk_redirect(struct sk_buff *skb, struct sock *sk)
+ {
+-	const struct iphdr *iph = (const struct iphdr *) skb->data;
++	const struct iphdr *iph = (const struct iphdr *)skb->data;
+ 	struct flowi4 fl4;
+ 	struct rtable *rt;
+ 	struct net *net = sock_net(sk);
 -- 
-Julien Thierry
+2.19.1
 
