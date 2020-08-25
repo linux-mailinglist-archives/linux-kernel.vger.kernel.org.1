@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A576251943
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0166251947
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgHYNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:10:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43026 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726609AbgHYNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:10:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3FD4B5DC;
-        Tue, 25 Aug 2020 13:11:12 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 15:10:41 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
-Message-ID: <20200825131041.GV4353@alley>
-References: <20200819232632.13418-1-john.ogness@linutronix.de>
- <20200819232632.13418-2-john.ogness@linutronix.de>
- <20200820101625.GE4353@alley>
- <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
+        id S1727024AbgHYNLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:11:15 -0400
+Received: from mailoutvs36.siol.net ([185.57.226.227]:37227 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727774AbgHYNLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:11:03 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTP id 6417F523AC4;
+        Tue, 25 Aug 2020 15:10:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uAa3ThSR6OU9; Tue, 25 Aug 2020 15:10:56 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTPS id F188C523B2E;
+        Tue, 25 Aug 2020 15:10:55 +0200 (CEST)
+Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Zimbra) with ESMTPSA id 70C35523955;
+        Tue, 25 Aug 2020 15:10:55 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: [PATCH] clk: sunxi-ng: sun8i: r40: Use sigma delta modulation for audio PLL
+Date:   Tue, 25 Aug 2020 15:10:49 +0200
+Message-Id: <20200825131049.1277596-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-08-20 12:33:23, David Laight wrote:
-> From: Petr Mladek
-> > Sent: 20 August 2020 11:16
-> ...
-> > Now that I think about it. This is the biggest problem with any temporary buffer
-> > for pr_cont() lines. I am more and more convinced that we should just
-> > _keep the current behavior_. It is not ideal. But sometimes mixed
-> > messages are always better than lost ones.
-> 
-> Maybe a marker to say 'more expected' might be useful.
-> OTOH lack of a trailing '\n' probably signifies that a
-> pr_cont() is likely to be next.
+Audio cores need specific clock rates which can't be simply obtained by
+adjusting integer multipliers and dividers. HW for such cases supports
+delta-sigma modulation which enables fractional multipliers.
 
-The problem is the "probably". Lack of trailing '\n' might also mean
-that the author did not care. Note that newline is not strictly
-required at the moment. The next message is concatenated only when
-pr_cont() is used from the same process.
+Port H3 delta-sigma table to R40. They have identical audio PLLs.
 
-I would personally hate printk when I debugged some hard-to-reproduce
-bug, finally succeeded, and some message was missing just because
-of a missing newline.
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ drivers/clk/sunxi-ng/ccu-sun8i-r40.c | 37 ++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c b/drivers/clk/sunxi-ng/=
+ccu-sun8i-r40.c
+index 23bfe1d12f21..84153418453f 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+@@ -45,18 +45,29 @@ static struct ccu_nkmp pll_cpu_clk =3D {
+  * the base (2x, 4x and 8x), and one variable divider (the one true
+  * pll audio).
+  *
+- * We don't have any need for the variable divider for now, so we just
+- * hardcode it to match with the clock names
++ * With sigma-delta modulation for fractional-N on the audio PLL,
++ * we have to use specific dividers. This means the variable divider
++ * can no longer be used, as the audio codec requests the exact clock
++ * rates we support through this mechanism. So we now hard code the
++ * variable divider to 1. This means the clock rates will no longer
++ * match the clock names.
+  */
+ #define SUN8I_R40_PLL_AUDIO_REG	0x008
+=20
+-static SUNXI_CCU_NM_WITH_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
+-				   "osc24M", 0x008,
+-				   8, 7,	/* N */
+-				   0, 5,	/* M */
+-				   BIT(31),	/* gate */
+-				   BIT(28),	/* lock */
+-				   CLK_SET_RATE_UNGATE);
++static struct ccu_sdm_setting pll_audio_sdm_table[] =3D {
++	{ .rate =3D 22579200, .pattern =3D 0xc0010d84, .m =3D 8, .n =3D 7 },
++	{ .rate =3D 24576000, .pattern =3D 0xc000ac02, .m =3D 14, .n =3D 14 },
++};
++
++static SUNXI_CCU_NM_WITH_SDM_GATE_LOCK(pll_audio_base_clk, "pll-audio-ba=
+se",
++				       "osc24M", 0x008,
++				       8, 7,	/* N */
++				       0, 5,	/* M */
++				       pll_audio_sdm_table, BIT(24),
++				       0x284, BIT(31),
++				       BIT(31),	/* gate */
++				       BIT(28),	/* lock */
++				       CLK_SET_RATE_UNGATE);
+=20
+ static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX(pll_video0_clk, "pll-vid=
+eo0",
+ 						"osc24M", 0x0010,
+@@ -952,10 +963,10 @@ static const struct clk_hw *clk_parent_pll_audio[] =
+=3D {
+ 	&pll_audio_base_clk.common.hw
+ };
+=20
+-/* We hardcode the divider to 4 for now */
++/* We hardcode the divider to 1 for now */
+ static CLK_FIXED_FACTOR_HWS(pll_audio_clk, "pll-audio",
+ 			    clk_parent_pll_audio,
+-			    4, 1, CLK_SET_RATE_PARENT);
++			    1, 1, CLK_SET_RATE_PARENT);
+ static CLK_FIXED_FACTOR_HWS(pll_audio_2x_clk, "pll-audio-2x",
+ 			    clk_parent_pll_audio,
+ 			    2, 1, CLK_SET_RATE_PARENT);
+@@ -1307,10 +1318,10 @@ static int sun8i_r40_ccu_probe(struct platform_de=
+vice *pdev)
+ 	if (IS_ERR(reg))
+ 		return PTR_ERR(reg);
+=20
+-	/* Force the PLL-Audio-1x divider to 4 */
++	/* Force the PLL-Audio-1x divider to 1 */
+ 	val =3D readl(reg + SUN8I_R40_PLL_AUDIO_REG);
+ 	val &=3D ~GENMASK(19, 16);
+-	writel(val | (3 << 16), reg + SUN8I_R40_PLL_AUDIO_REG);
++	writel(val | (0 << 16), reg + SUN8I_R40_PLL_AUDIO_REG);
+=20
+ 	/* Force PLL-MIPI to MIPI mode */
+ 	val =3D readl(reg + SUN8I_R40_PLL_MIPI_REG);
+--=20
+2.28.0
 
-> Unexpected pr_cont() could be output with a leading "... "
-> to help indicate the message is a continuation.
-
-Interesting idea. It might help to catch broken code. Well, I am still
-not sure that people would appreciate this printk() behavior.
-
-
-> > That said, some printk() API using local buffer would be still
-> > valuable for pieces of code where people really want to avoid
-> > mixed lines. But it should be optional and people should be
-> > aware of the risks.
-> 
-> That could be very useful if it supported multi-line output.
-> Thing like the stack backtrace code could use it avoid
-> the mess that happens when multiple processes generate
-> tracebacks at the same time.
-
-Honestly, I am going to push against it. I agree that would be useful
-but it is an evil path.
-
-There has to be some limits. Backtraces are often printed in situation
-where the buffer could not get allocated dynamically. There always
-be a situation when a buffer will not be big enough.
-
-If we add this feature, people will want to use it also for other
-purposes that might need even bigger buffers and the size might
-be even harder to predict.
-
-And the temporary buffer is only part of the problem. The message also
-has to be stored into the lockless ringbuffer, show on consoles, passed
-to userspace, stored during panic by pstore.
-
-The printk() design already is very complicated. And multiple lines
-support would stretch it in yet another dimension.
-
-And it is going to be less important. We are going to always store the
-information about the printk caller. So that it will be much easier
-to grep related lines.
-
-Best Regards,
-Petr
