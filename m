@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3DD2520BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B6B252074
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgHYTii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 15:38:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgHYTif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:38:35 -0400
-Received: from localhost.localdomain (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32F632075E;
-        Tue, 25 Aug 2020 19:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598384314;
-        bh=CnRSnps+AJEG/CNxkZZ3JT+RUcAXLf0eIGA4Cov4d+8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZTh8uDdJN0oZDjmHM1fwbgW4o+BHRN/PdSZyKy0cU32v1H396hLroUhBIucTU7/f
-         3B0SVkiukyEhDsxBnB/gjN/d9cgXbw0CgVNhPRcS5j4M/AQeQI+ZzsRpqurlX/UIwC
-         DDVYRERMdKorKgSdTO6orDExuLSLLLg5FXVqp4Mk=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
-        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 19/19] arm64: dts: imx8mq-zii-ultra: Add hog suffixes to GPIO hogs
-Date:   Tue, 25 Aug 2020 21:35:36 +0200
-Message-Id: <20200825193536.7332-20-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825193536.7332-1-krzk@kernel.org>
-References: <20200825193536.7332-1-krzk@kernel.org>
+        id S1726938AbgHYThh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 15:37:37 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33376 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHYThd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 15:37:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PJZRxx087365;
+        Tue, 25 Aug 2020 19:37:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=corp-2020-01-29;
+ bh=nz+vs61Nuq5CIPrLplvM9HKtYzJlZ7en1yfmlfAsdrI=;
+ b=TmI3nIyRChhEJAnXX+UO+DoM12Vb0QRcM8H/qKCOp+ZccrP2WVVh0WORtCn9HwDIovhe
+ ot85G675OkEUV4nwrPs2rtbyaGz3BJuaxgWu15i3dh77wD7EoxMTpZCZqPigye7Fhc46
+ MWSJZOw3KtRzjvqM9/7erqj/TWTQnHRe/wo61ZyRvrg1ig2xDJLlUVVi+84BjRILKBUa
+ 00XfP5Y86A6rm8d0xmQiq8Duvi967eAIw7Tmc0tf4cbs5zWleoahzKGQ6vcXS/T8zmks
+ hT5SKis8sDr1cABwAOiXrljphPnE39OpLDms/j6qSyhjX5Mw3YbQCl2Yjj8WaLV6cUV7 FA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 333w6tu2mt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 25 Aug 2020 19:37:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PJZJST133721;
+        Tue, 25 Aug 2020 19:37:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 333r9jyv50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Aug 2020 19:37:31 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07PJbUT6007877;
+        Tue, 25 Aug 2020 19:37:30 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 25 Aug 2020 12:37:29 -0700
+From:   Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Please pull NFS server fixes for v5.9
+Message-Id: <374E25EA-2EFE-4E68-BCBD-880E25ADAF8C@oracle.com>
+Date:   Tue, 25 Aug 2020 15:37:29 -0400
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=994 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008250146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=977 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008250146
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to device tree specification, device node names should be
-somewhat generic and reflecting the function of the device so add the
-"hog" suffixes to all GPIO hog nodes.
+Hi Linus -
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-index 0d1088dcaa02..fa7a041ffcfd 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-zii-ultra.dtsi
-@@ -229,28 +229,28 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_gpio3_hog>;
- 
--	usb-emulation {
-+	usb-emulation-hog {
- 		gpio-hog;
- 		gpios = <10 GPIO_ACTIVE_HIGH>;
- 		output-low;
- 		line-name = "usb-emulation";
- 	};
- 
--	usb-mode1 {
-+	usb-mode1-hog {
- 		gpio-hog;
- 		gpios = <11 GPIO_ACTIVE_HIGH>;
- 		output-high;
- 		line-name = "usb-mode1";
- 	};
- 
--	usb-pwr {
-+	usb-pwr-hog {
- 		gpio-hog;
- 		gpios = <12 GPIO_ACTIVE_LOW>;
- 		output-high;
- 		line-name = "usb-pwr-ctrl-en-n";
- 	};
- 
--	usb-mode2 {
-+	usb-mode2-hog {
- 		gpio-hog;
- 		gpios = <13 GPIO_ACTIVE_HIGH>;
- 		output-high;
--- 
-2.17.1
+ Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+ git://git.linux-nfs.org/projects/cel/cel-2.6.git tags/nfsd-5.9-1
+
+for you to fetch changes up to ad112aa8b1ac4bf5e8da67734fcb535fd3cd564e:
+
+ SUNRPC: remove duplicate include (2020-08-19 13:19:42 -0400)
+
+----------------------------------------------------------------
+Fixes:
+
+- Eliminate an oops introduced in v5.8
+- Remove a duplicate #include added by nfsd-5.9
+
+----------------------------------------------------------------
+J. Bruce Fields (1):
+     nfsd: fix oops on mixed NFSv4/NFSv3 client access
+
+Wang Hai (1):
+     SUNRPC: remove duplicate include
+
+fs/nfsd/nfs4state.c         | 2 ++
+net/sunrpc/auth_gss/trace.c | 1 -
+2 files changed, 2 insertions(+), 1 deletion(-)
+
+--
+Chuck Lever
+
+
 
