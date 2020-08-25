@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C4E251831
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3180A251832
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgHYMGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:06:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52704 "EHLO huawei.com"
+        id S1730098AbgHYMGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:06:20 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52696 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726351AbgHYMGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:06:01 -0400
+        id S1728581AbgHYMGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:06:09 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 45575E51671AF449BBA3;
+        by Forcepoint Email with ESMTP id 3DA6F8EFAF073BB64FFC;
         Tue, 25 Aug 2020 20:06:00 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by DGGEMS410-HUB.china.huawei.com
  (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
- 20:05:52 +0800
+ 20:05:53 +0800
 From:   Yu Kuai <yukuai3@huawei.com>
 To:     <timur@kernel.org>, <nicoleotsuka@gmail.com>,
         <Xiubo.Lee@gmail.com>, <festevam@gmail.com>,
@@ -28,9 +28,9 @@ CC:     <alsa-devel@alsa-project.org>, <linuxppc-dev@lists.ozlabs.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <yukuai@huawei.com>,
         <yi.zhang@huawei.com>
-Subject: [PATCH 1/2] ASoC: fsl: imx-es8328: add missing kfree() call in imx_es8328_probe()
-Date:   Tue, 25 Aug 2020 20:05:30 +0800
-Message-ID: <20200825120531.1479304-2-yukuai3@huawei.com>
+Subject: [PATCH 2/2] ASoC: fsl: imx-es8328: add missing put_device() call in imx_es8328_probe()
+Date:   Tue, 25 Aug 2020 20:05:31 +0800
+Message-ID: <20200825120531.1479304-3-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200825120531.1479304-1-yukuai3@huawei.com>
 References: <20200825120531.1479304-1-yukuai3@huawei.com>
@@ -44,57 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If memory allocation for 'data' or 'comp' succeed, imx_es8328_probe()
-doesn't have corresponding kfree() in exception handling. Thus add
-kfree() for this function implementation.
+if of_find_device_by_node() succeed, imx_es8328_probe() doesn't have
+a corresponding put_device(). Thus add a jump target to fix the exception
+handling for this function implementation.
 
 Fixes: 7e7292dba215 ("ASoC: fsl: add imx-es8328 machine driver")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- sound/soc/fsl/imx-es8328.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/fsl/imx-es8328.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 15a27a2cd0ca..8f71ed3a6f75 100644
+index 8f71ed3a6f75..a3f121939a83 100644
 --- a/sound/soc/fsl/imx-es8328.c
 +++ b/sound/soc/fsl/imx-es8328.c
-@@ -151,7 +151,7 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
- 	if (!comp) {
+@@ -145,7 +145,7 @@ static int imx_es8328_probe(struct platform_device *pdev)
+ 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+ 	if (!data) {
  		ret = -ENOMEM;
 -		goto fail;
-+		goto free_data;
++		goto put_device;
  	}
  
- 	data->dev = dev;
-@@ -182,12 +182,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse card name\n");
--		goto fail;
-+		goto free_comp;
- 	}
- 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse routing: %d\n", ret);
--		goto fail;
-+		goto free_comp;
- 	}
- 	data->card.num_links = 1;
- 	data->card.owner = THIS_MODULE;
-@@ -196,10 +196,14 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(&data->card);
- 	if (ret) {
- 		dev_err(dev, "Unable to register: %d\n", ret);
--		goto fail;
-+		goto free_comp;
- 	}
- 
- 	platform_set_drvdata(pdev, data);
-+free_comp:
-+	kfree(comp);
-+free_data:
-+	kfree(data);
+ 	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
+@@ -204,6 +204,8 @@ static int imx_es8328_probe(struct platform_device *pdev)
+ 	kfree(comp);
+ free_data:
+ 	kfree(data);
++put_device:
++	put_device(&ssi_pdev->dev);
  fail:
  	of_node_put(ssi_np);
  	of_node_put(codec_np);
