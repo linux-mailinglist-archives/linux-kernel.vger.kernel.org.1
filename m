@@ -2,103 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9E725115C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 07:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C813125115F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 07:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgHYFKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 01:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55148 "EHLO mail.kernel.org"
+        id S1726889AbgHYFOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 01:14:43 -0400
+Received: from smtp.rcn.com ([69.168.97.78]:24064 "EHLO smtp.rcn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgHYFKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 01:10:51 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27D782071E;
-        Tue, 25 Aug 2020 05:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598332250;
-        bh=Tm5TGS9QxUQnZMSBd7cObay8VgPGZsJUas2eWOf9csE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T43Wjah61jO7E4dy/ROpCXV6YaMsYbfXW65GEfmoSfuVTQHHiONBQPnQ9AHvCiKKZ
-         FnENnMAAPPpMAXEuoT5HpmlSTg1/Sfix7DgfKuLLIASWuAlEajxtod+WhD9StoKoVB
-         kbV5AUYwDsPcWT8q18WH9VdGEL5wj/mrD3m6lKcg=
-Date:   Mon, 24 Aug 2020 22:10:49 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     js1304@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-Message-Id: <20200824221049.edb3c540bbfc859a6806600d@linux-foundation.org>
-In-Reply-To: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
-References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726095AbgHYFOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 01:14:43 -0400
+DKIM-Signature: v=1; a=rsa-sha1; d=rcn.com; s=20180516; c=relaxed/simple;
+        q=dns/txt; i=@rcn.com; t=1598332480;
+        h=From:Subject:Date:To:MIME-Version:Content-Type;
+        bh=4md+ssomE4Gwt1ASNPOhq2CzLX4=;
+        b=Tw+Hw2Au6oTPSG5DhuRup9/WAZGt6+OuqQqlKyv4cZNY69MfT9AzNqn1ZAFt61yR
+        pbkr5FffGqFcsth8xlclsznQRvqNbUwVqDytH5hPhoOz6t1nmyR16lcGJ/Xl8Rnw
+        wwpmHwwCVhn9H1Gy3nWUt5CtLRandxf34PhNRfvp9jtNwevK/OAS7EpQIRC+pUE+
+        M5lF3qAdrysRwX4CgqzxUhOwe4DrrDgYw5Llo1rkeKQmq1yuBmJdIyodZ4nqIzk4
+        no4l0ikfeqoD2BNyOHCqH+x0zLErI8xjTggJh8AuwNnNS2aAV+Pl/WlLa2yOQd9w
+        JBBwCAFxPWmwS1ELOhtbSw==;
+X-User-Whitelist: YES
+X-Authed-Username: cGVhcmxob3dlckByY24uY29t
+Authentication-Results: smtp03.rcn.cmh.synacor.com header.from=pearlhower@rcn.com; sender-id=softfail
+Authentication-Results: smtp03.rcn.cmh.synacor.com smtp.mail=pearlhower@rcn.com; spf=softfail; sender-id=softfail
+Received: from [10.33.66.0] ([10.33.66.0:43302] helo=md09.rcn.cmh.synacor.com)
+        by smtp.rcn.com (envelope-from <pearlhower@rcn.com>)
+        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
+        id 57/A5-51190-F3E944F5; Tue, 25 Aug 2020 01:14:40 -0400
+Date:   Tue, 25 Aug 2020 01:14:39 -0400 (EDT)
+From:   neetu pal <pearlhower@rcn.com>
+Reply-To: neetu pal <pal820590@gmail.com>
+To:     rcnts@rcn.com
+Message-ID: <290124736.3518005.1598332479639.JavaMail.root@rcn.com>
+In-Reply-To: <1206416174.3498078.1598331772875.JavaMail.root@rcn.com>
+Subject: Re: jii hllo
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [155.94.250.96]
+X-Mailer: Zimbra 7.2.7_GA_2942 (zclient/7.2.7_GA_2942)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020 13:59:42 +0900 js1304@gmail.com wrote:
-
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> memalloc_nocma_{save/restore} APIs can be used to skip page allocation
-> on CMA area, but, there is a missing case and the page on CMA area could
-> be allocated even if APIs are used. This patch handles this case to fix
-> the potential issue.
-> 
-> Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
-> could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
-> specified.
-> 
-> This patch implements this behaviour by checking allocated page from
-> the pcplist rather than skipping an allocation from the pcplist entirely.
-> Skipping the pcplist entirely would result in a mismatch between watermark
-> check and actual page allocation. And, it requires to break current code
-> layering that order-0 page is always handled by the pcplist. I'd prefer
-> to avoid it so this patch uses different way to skip CMA page allocation
-> from the pcplist.
-> 
-> ...
->
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3341,6 +3341,22 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
->  	pcp = &this_cpu_ptr(zone->pageset)->pcp;
->  	list = &pcp->lists[migratetype];
->  	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-> +#ifdef CONFIG_CMA
-> +	if (page) {
-> +		int mt = get_pcppage_migratetype(page);
-> +
-> +		/*
-> +		 * pcp could have the pages on CMA area and we need to skip it
-> +		 * when !ALLOC_CMA. Free all pcplist and retry allocation.
-> +		 */
-> +		if (is_migrate_cma(mt) && !(alloc_flags & ALLOC_CMA)) {
-> +			list_add(&page->lru, &pcp->lists[migratetype]);
-> +			pcp->count++;
-> +			free_pcppages_bulk(zone, pcp->count, pcp);
-> +			page = __rmqueue_pcplist(zone, migratetype, alloc_flags, pcp, list);
-> +		}
-> +	}
-> +#endif
->  	if (page) {
->  		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
->  		zone_statistics(preferred_zone, zone);
-
-That's a bunch more code on a very hot path to serve an obscure feature
-which has a single obscure callsite.
-
-Can we instead put the burden on that callsite rather than upon
-everyone?  For (dumb) example, teach __gup_longterm_locked() to put the
-page back if it's CMA and go get another one?
-
-
+i dropped by to say Gm sir
