@@ -2,66 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755BE250E32
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846D3250E2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgHYB0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 21:26:44 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34162 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726090AbgHYB0n (ORCPT
+        id S1726051AbgHYBZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgHYBZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 21:26:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U6n39Zm_1598318789;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6n39Zm_1598318789)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 Aug 2020 09:26:31 +0800
-Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
- page charged
-To:     Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>
-Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
-        osalvador@suse.de, mike.kravetz@oracle.com
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200820145850.GA4622@lca.pw> <20200821080127.GD32537@dhcp22.suse.cz>
- <20200821123934.GA4314@lca.pw> <20200821134842.GF32537@dhcp22.suse.cz>
- <20200824151013.GB3415@dhcp22.suse.cz>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <12425e06-38ce-7ff4-28ce-b0418353fc67@linux.alibaba.com>
-Date:   Tue, 25 Aug 2020 09:25:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Mon, 24 Aug 2020 21:25:58 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D7C061795;
+        Mon, 24 Aug 2020 18:25:57 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c15so5514374lfi.3;
+        Mon, 24 Aug 2020 18:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jpy+rSx3coyHvf0g6hIeypuYpqa8oP10BXDs9xh41qM=;
+        b=ryVk9vuPpSwNGdnQNdFbQ3QD9HAT9QzYuB4mGsXCREHyb9TETMffIvJgtHbwJ1D6UP
+         KuyibYmYeTsHzqSPwAZ7IM3ImefPvC825bzFijw4oLdQVwxI7Y3gjMwjGDKLJMWy2hgK
+         jO6AV4Mh4mQoiR6vyWPwpCWZNQ/zaXpbntgb/Bneml08MUNDPosduafgTksHGiIK0Ztg
+         o5gVVQQN/hr5w2mQ/i0M2W5EwHlOf//EBa59DdZViV9/7QlO56/00xXyZtXKARHd0xvd
+         ZJt7i6S5/olhJMBMfGBV3G0T62G4Z+NDh+OixQrTnP/B/9noSDO6Le1Hc7DGhZ3lwZDK
+         Md6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jpy+rSx3coyHvf0g6hIeypuYpqa8oP10BXDs9xh41qM=;
+        b=HSyxJCr7TerAmZlbKAOtBkum94HRlAeNQjtravEGnKKtgqr+uBnafEicP1fCIfAPM+
+         /9sAifP0lvak0m4f30wn2b3d2GjXr+TEA8TBs4qZfmQELreC2Z1furEGEf1DhSRX3Z9i
+         WoC816JV9a0umgki6/Uh83nAL3IJjvWOHZv3UeQEVIucGC0yNrJI1VmljyIcHBHQdwvY
+         Uow4YCLncBsj0wxWhboG7FxlaPyXmPlen8Cq6wLEZtuX8miQJrZN+Kn1cNLKpeQ4Rn9+
+         XJHjoVk0tjQ1d1ii5g57xUa9FKn6mDFvPguTs6j5rCjOKMtnmjjspGtmiA/JTpX+gKMV
+         6TAA==
+X-Gm-Message-State: AOAM532Isi6vhO9qxGn7G6E69AXozy20T4oSmOIy99/Fd7/OHpp0GM0I
+        U9OKnIuysR7e5Ke660tIxK2ZBZQve31yNrdb6bKsmKplubQ=
+X-Google-Smtp-Source: ABdhPJzK4oIDt75RqWFfSOL5JvMJ4HA7UQVacJrYLltQlmBOgqKplwE7cr9RpNmtLVFeSrI19uLRBrEHbYdf6WLlVI8=
+X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr3727857lfs.8.1598318755939;
+ Mon, 24 Aug 2020 18:25:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200824151013.GB3415@dhcp22.suse.cz>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+References: <20200821111111.6c04acd6@canb.auug.org.au> <20200825112020.43ce26bb@canb.auug.org.au>
+In-Reply-To: <20200825112020.43ce26bb@canb.auug.org.au>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 24 Aug 2020 18:25:44 -0700
+Message-ID: <CAADnVQLr8dU799ZrUnrBBDCtDxPyybZwrMFs5CAOHHW5pnLHHA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-reproduce using our linux-mm random bug collection on NUMA systems.
->>
->> OK, I must have missed that this was on ppc. The order makes more sense
->> now. I will have a look at this next week.
-> 
-> OK, so I've had a look and I know what's going on there. The
-> move_pages12 is migrating hugetlb pages. Those are not charged to any
-> memcg. We have completely missed this case. There are two ways going
-> around that. Drop the warning and update the comment so that we do not
-> forget about that or special case hugetlb pages.
-> 
-> I think the first option is better.
-> 
+On Mon, Aug 24, 2020 at 6:20 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Fri, 21 Aug 2020 11:11:11 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the bpf-next tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > Auto-detecting system features:
+> > ...                        libelf: [  [31mOFF [m ]
+> > ...                          zlib: [  [31mOFF [m ]
+> > ...                           bpf: [  [32mon [m  ]
+> >
+> > No libelf found
+> > make[5]: *** [Makefile:284: elfdep] Error 1
+> >
+> > Caused by commit
+> >
+> >   d71fa5c9763c ("bpf: Add kernel module with user mode driver that populates bpffs.")
+> >
+> > [For a start, can we please *not* add this verbose feature detection
+> > output to the nrormal build?]
+> >
+> > This is a PowerPC hosted cross build.
+> >
+> > I have marked BPF_PRELOAD as BROKEN for now.
+>
+> Still getting this failure ...
 
-
-Hi Michal,
-
-Compare to ignore the warning which is designed to give, seems addressing
-the hugetlb out of charge issue is a better solution, otherwise the memcg
-memory usage is out of control on hugetlb, is that right?
-
-Thanks
-Alex 
+I don't have powerpc with crosscompiler to x86 to reproduce.
+What exactly the error?
+bpf_preload has:
+"depends on CC_CAN_LINK"
+which is exactly the same as bpfilter.
+You should have seen this issue with bpfilter for years now.
