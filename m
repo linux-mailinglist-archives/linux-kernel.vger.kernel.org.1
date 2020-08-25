@@ -2,252 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E16251537
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABFE25153C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgHYJUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        id S1729245AbgHYJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgHYJUf (ORCPT
+        with ESMTP id S1728475AbgHYJVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:20:35 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4236BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:20:35 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id v138so5960062vsv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:20:35 -0700 (PDT)
+        Tue, 25 Aug 2020 05:21:17 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D6AC061574;
+        Tue, 25 Aug 2020 02:21:17 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id v2so9819879ilq.4;
+        Tue, 25 Aug 2020 02:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RE4Ki0KsQ1ZCjBgLwwwcSn3VtnY3dVfuiwED9hvbSeQ=;
-        b=jaSXdba5X+bBzry1TQOZDk+5dtAHbETHyvKYqbEPs1bmgJzW8DPYoewuuztM9m6TQ3
-         nOaLZQnUlsJGhLn8aR3vkrzi7JnWBdwqQRoN5SJ7UQJGcB1cEXtbvTmpmtBco7bQ67TN
-         AdgGj3TUhrfzF/0rmrfCKiiimSOH6a30o9+SHy2juX4w0FFddoDHy/eT2y1PAWNTT8Nr
-         krCjL2BpZdknCArUnYpYLvbn4zlJC8F4TZQQqI1x5ansp8VW4l6C3/eVPWSIZnM+a3IU
-         HK4RZrA5xb91vgGcVRh5VIILEEG1iOYfD+cn+O2GtLgVhYaSXjkFwsT4dIwC7ZXahKcq
-         Ln6w==
+         :cc:content-transfer-encoding;
+        bh=O5ZePddE7+2hNWWo8aSkH/TkS7aUaHrfFN3bU8JewnQ=;
+        b=AklZ0aZuCA3+GJ0XJ+PRbCWWB0W1arHTu7OZqdh5V49EiqOpO0rOB/mGE7iOY1tLfb
+         hoiKGScSflRxbFxkm4pzX7YttP3A7ZcwYsr2L0CB0foOE3EF0WoHGdj/ilpgJM2dnDOr
+         ju1wdEHTC4t/lfElQ9XC2D6AP7CU0uJoXECSmqjfa7fyGiWm8UHHVCuGi9Mog6GRbzS3
+         2UOPsIhvT2h8BykHwMAxlXr7cPoYsiUxyrWjbztXm+sHk/n8rO8W1MAyTaslSOO7oW/p
+         +wPobgqN4vA5xD60ZVvrS19F2UkiDxFBZIqmPG9OPi7NpElliZpEK6ZGBEpdg8Icy7Q6
+         A8hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RE4Ki0KsQ1ZCjBgLwwwcSn3VtnY3dVfuiwED9hvbSeQ=;
-        b=XEfDMLghYJXfjqmrPRxZhZQd1Ccsc1DxKeP91s6h9oytGitJOmP/aaIv5yZtJXFyMV
-         UspHYwrKH5x4mKuRyTrgQ1iubaAR6ljFhA3um/LGqGEqYXd7iH9HSUmPI6jGS+RAxTT6
-         7Fwr2nJNPmYz9kihNg+dcuLSGI6jXZBzbS4myeLBJt6SGzI0GkEAkLKSAts8lH5FMP7l
-         fSBQkNBl4fGYUfMUbi+EmyDqIEmujdxozmbUQkyfGNwCWzbd+/Z4Y33Uj07mTPZnmhav
-         xDDs3eHKRYFya8m6GA6BY+XDOfMkpu9ycTtsMyZnHNjrlXWNw7W5XgaE8XvMb6z6XIjI
-         QDlw==
-X-Gm-Message-State: AOAM531xjCID5YZlTIQXDgZqia2LUt7XNdAO8dPvhQVxGWivOspW/yYV
-        jK2y7sLNsFxQEtr+2JUUzmiHwrk949xahH0ZmucqT+rcPM561Q==
-X-Google-Smtp-Source: ABdhPJwkkicekTC3pU8dLL4Fs6NujFaf6Q6aRPdusTHFwELiwk8Tp8c+YfE+JVOT1IwgNu431PAptkDFAdGSjW/c0c0=
-X-Received: by 2002:a67:8c06:: with SMTP id o6mr5206839vsd.200.1598347234392;
- Tue, 25 Aug 2020 02:20:34 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O5ZePddE7+2hNWWo8aSkH/TkS7aUaHrfFN3bU8JewnQ=;
+        b=qRfXbsyIqhuJ0STjvx9QPZjnV3VGqRbOk9RRvXEGrMLR31tvnW7XTn4pD1A2Ngg+Ml
+         PiJKFBjrb6EsrDxgNTkSjtuOU0lt62EhH6TfEjV37/9E9CF+xZ+bdTx2KLecOLfEnflV
+         34HXHuq3mgJ8wgynHKTN2HTJiLkFfSIwfr0cFRMY7Ji11bSHosXJmdH/IcL11+hOEXR0
+         NM4WqXUQu72EXTXsNEDmFBfpdfoGOH8mBzOstreAxbvYByYDC2Cz3lTaMyeNrSVS/TbZ
+         gkQZetesKDodJEHseUIlgmi+QqIKVCfOSnK5nsAAOymLr47N3WzR40MpOjr7Zmg+Lqxq
+         /7ag==
+X-Gm-Message-State: AOAM533et9HsBj4Nq1CpIXIHt2yIkDOTspnv7ZyYRwNSjVCdkkQYgc7j
+        EC5juV7bEtm1s/uWbdLB/FAjTlANcY3AQ1A2Io1XfIvSUCM=
+X-Google-Smtp-Source: ABdhPJwUTHNJrsritlvIyqvwywRovUNlslidY5JbPeOUgN5sF/K+k8KoxiM3CYAkzCB6ZeH4UcpQc/ljrwCFnEkzwbA=
+X-Received: by 2002:a92:d386:: with SMTP id o6mr8517221ilo.292.1598347277087;
+ Tue, 25 Aug 2020 02:21:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200820075949.19133-1-matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <20200820075949.19133-1-matthias.schiffer@ew.tq-group.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 25 Aug 2020 11:19:58 +0200
-Message-ID: <CAPDyKFq8RL8=1bF2Tc3eQPpTBDv-z4K5jEhu5J1TOF=X-GJPqA@mail.gmail.com>
-Subject: Re: [PATCH mmc-next v2] mmc: allow setting slot index via device tree alias
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1597910022-22617-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1597910022-22617-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20200820113015.GB5854@sirena.org.uk> <CAE+NS36C0AwbrFJdYGY6_n_g3DVitp_e1GfZUxjMbKu1bJ_t4w@mail.gmail.com>
+ <20200824194840.GF4676@sirena.org.uk>
+In-Reply-To: <20200824194840.GF4676@sirena.org.uk>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 25 Aug 2020 17:21:06 +0800
+Message-ID: <CAE+NS37p38dAN1bAi_VvEYYGNiWDVFKrdHL-hTgi2nim_7Zvqw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] regulator: mt6360: Add DT binding documentation
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Gene Chen <gene_chen@richtek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 09:59, Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
+Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8825=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=883:49=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> As with GPIO, UART and others, allow specifying the device index via the
-> aliases node in the device tree.
+> On Mon, Aug 24, 2020 at 03:21:57PM +0800, Gene Chen wrote:
+> > > On Thu, Aug 20, 2020 at 03:53:42PM +0800, Gene Chen wrote:
 >
-> On embedded devices, there is often a combination of removable (e.g.
-> SD card) and non-removable MMC devices (e.g. eMMC).
-> Therefore the index might change depending on
+> > > > +  LDO_VIN3-supply:
+> > > > +    description: Input supply phandle(s) for LDO3
 >
-> * host of removable device
-> * removable card present or not
+> > > Only LDO3 needs a supply?
 >
-> This makes it difficult to hardcode the root device, if it is on the
-> non-removable device. E.g. if SD card is present eMMC will be mmcblk1,
-> if SD card is not present at boot, eMMC will be mmcblk0.
+> > LDO_VIN1/LDO_VIN2 is real MT6360 pin supply from VSYS to LDO1/2/3/5
+> > LDO_VIN3 is also real pin supply from BUCK2 to LDO6/7
 >
-> All indices defined in the aliases node will be reserved for use by the
-> respective MMC device, moving the indices of devices that don't have an
-> alias up into the non-reserved range. If the aliases node is not found,
-> the driver will act as before.
->
-> This is a rebased and slightly cleaned up version of
-> https://www.spinics.net/lists/linux-mmc/msg26588.html .
->
-> Based-on-patch-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Link: https://lkml.org/lkml/2020/8/5/194
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> So shouldn't there be a documented LDO_VIN1/2 then?
 
-One more thing, can you please also update the DT doc example in
-mmc-controller.yaml, to show that mmc supports aliases. In a separate
-patch, of course.
-
-Kind regards
-Uffe
-
-> ---
->
-> v2: fix missing symbols for modular mmcblock
->
->  drivers/mmc/core/block.c | 13 +++++++++++--
->  drivers/mmc/core/core.c  | 40 ++++++++++++++++++++++++++++++++++++++++
->  drivers/mmc/core/core.h  |  3 +++
->  drivers/mmc/core/host.c  | 15 +++++++++++++--
->  4 files changed, 67 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 7896952de1ac..4620afaf0e50 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -38,6 +38,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/idr.h>
->  #include <linux/debugfs.h>
-> +#include <linux/of.h>
->
->  #include <linux/mmc/ioctl.h>
->  #include <linux/mmc/card.h>
-> @@ -2260,9 +2261,17 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
->                                               int area_type)
->  {
->         struct mmc_blk_data *md;
-> -       int devidx, ret;
-> +       int rsvidx, devidx = -1, ret;
-> +
-> +       rsvidx = mmc_get_reserved_index(card->host);
-> +       if (rsvidx >= 0)
-> +               devidx = ida_simple_get(&mmc_blk_ida, rsvidx, rsvidx + 1,
-> +                                       GFP_KERNEL);
-> +       if (devidx < 0)
-> +               devidx = ida_simple_get(&mmc_blk_ida,
-> +                                       mmc_first_nonreserved_index(),
-> +                                       max_devices, GFP_KERNEL);
->
-> -       devidx = ida_simple_get(&mmc_blk_ida, 0, max_devices, GFP_KERNEL);
->         if (devidx < 0) {
->                 /*
->                  * We get -ENOSPC because there are no more any available
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index 8ccae6452b9c..5bce281a5faa 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -2419,10 +2419,50 @@ void mmc_unregister_pm_notifier(struct mmc_host *host)
->  }
->  #endif
->
-> +static int mmc_max_reserved_idx = -1;
-> +
-> +/**
-> + * mmc_first_nonreserved_index() - get the first index that is not reserved
-> + */
-> +int mmc_first_nonreserved_index(void)
-> +{
-> +       return mmc_max_reserved_idx + 1;
-> +}
-> +EXPORT_SYMBOL(mmc_first_nonreserved_index);
-> +
-> +/**
-> + * mmc_get_reserved_index() - get the index reserved for this MMC host
-> + *
-> + * Returns:
-> + *   The index reserved for this host on success,
-> + *   negative error if no index is reserved for this host
-> + */
-> +int mmc_get_reserved_index(struct mmc_host *host)
-> +{
-> +       return of_alias_get_id(host->parent->of_node, "mmc");
-> +}
-> +EXPORT_SYMBOL(mmc_get_reserved_index);
-> +
-> +static void __init mmc_of_reserve_idx(void)
-> +{
-> +       int max;
-> +
-> +       max = of_alias_get_highest_id("mmc");
-> +       if (max < 0)
-> +               return;
-> +
-> +       mmc_max_reserved_idx = max;
-> +
-> +       pr_debug("MMC: reserving %d slots for OF aliases\n",
-> +                mmc_max_reserved_idx + 1);
-> +}
-> +
->  static int __init mmc_init(void)
->  {
->         int ret;
->
-> +       mmc_of_reserve_idx();
-> +
->         ret = mmc_register_bus();
->         if (ret)
->                 return ret;
-> diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
-> index 575ac0257af2..6aef6cf4e90f 100644
-> --- a/drivers/mmc/core/core.h
-> +++ b/drivers/mmc/core/core.h
-> @@ -79,6 +79,9 @@ int mmc_attach_mmc(struct mmc_host *host);
->  int mmc_attach_sd(struct mmc_host *host);
->  int mmc_attach_sdio(struct mmc_host *host);
->
-> +int mmc_first_nonreserved_index(void);
-> +int mmc_get_reserved_index(struct mmc_host *host);
-> +
->  /* Module parameters */
->  extern bool use_spi_crc;
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index ce43f7573d80..386e15afde83 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -387,6 +387,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
->  {
->         int err;
->         struct mmc_host *host;
-> +       int alias_id, min_idx, max_idx;
->
->         host = kzalloc(sizeof(struct mmc_host) + extra, GFP_KERNEL);
->         if (!host)
-> @@ -395,7 +396,18 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
->         /* scanning will be enabled when we're ready */
->         host->rescan_disable = 1;
->
-> -       err = ida_simple_get(&mmc_host_ida, 0, 0, GFP_KERNEL);
-> +       host->parent = dev;
-> +
-> +       alias_id = mmc_get_reserved_index(host);
-> +       if (alias_id >= 0) {
-> +               min_idx = alias_id;
-> +               max_idx = alias_id + 1;
-> +       } else {
-> +               min_idx = mmc_first_nonreserved_index();
-> +               max_idx = 0;
-> +       }
-> +
-> +       err = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
->         if (err < 0) {
->                 kfree(host);
->                 return NULL;
-> @@ -406,7 +418,6 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
->         dev_set_name(&host->class_dev, "mmc%d", host->index);
->         host->ws = wakeup_source_register(NULL, dev_name(&host->class_dev));
->
-> -       host->parent = dev;
->         host->class_dev.parent = dev;
->         host->class_dev.class = &mmc_host_class;
->         device_initialize(&host->class_dev);
-> --
-> 2.17.1
->
+LDO_VINx is HW design layout, so actually it can't be changed by device tre=
+e.
+LDO_VIN1/LDO_VIN2 supply from VSYS, not regulator, so I think usually
+not to show the supply from in device tree.
+or I should declare a dummy reference to system power like "*-supply =3D
+<&system_power>;"?
