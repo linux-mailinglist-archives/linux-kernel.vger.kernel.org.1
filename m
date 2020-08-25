@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04688251C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67173251CBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgHYPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 11:47:03 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41560 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727011AbgHYPq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:46:57 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B6F5220B4908;
-        Tue, 25 Aug 2020 08:46:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B6F5220B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1598370415;
-        bh=cG0PU1AiCXqIk4eMHJUWBNM5pgMeFVP8Pc2YAFUO1Lo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mSj8+R+HyTWTccdCmaX3nwvs/qC1Imig3edjrJgu4HulycBCUbGm+F3HHf/nae1yY
-         IHq+ic0DuDVeei+Ezy6lmnMP89du0Dok1QeKMez78ncPIJYfxf3WGtCc88IlTa4RAE
-         /IzxlHbvHQp02qxCLmLTQfN2YaXczm/r9xcZei0g=
-Subject: Re: [PATCH] IMA: Handle early boot data measurement
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com
-Cc:     tyhicks@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200821231230.20212-1-nramas@linux.microsoft.com>
- <a7ea2da1f895ee3db4697c00804160acb6db656e.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <307617de-b42d-ac52-6e9e-9e0d16bbc20e@linux.microsoft.com>
-Date:   Tue, 25 Aug 2020 08:46:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726766AbgHYP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 11:57:50 -0400
+Received: from mga02.intel.com ([134.134.136.20]:42814 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgHYP5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 11:57:49 -0400
+IronPort-SDR: nmCdGcPNwigStIZTdKCMeo9l9w5NWdPLG9KvRhxNIcL316aRZvaf2tXQ7SajahVjF9p1lIrmr6
+ TPqKz8iQqz4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="143916176"
+X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
+   d="scan'208";a="143916176"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 08:57:49 -0700
+IronPort-SDR: CZ0OUMq/2Wps2vSIlSVLi1OAPFFDR3A73gnlpCzVQL8MOjU3oeXEX4QBMMvjFT51zj9SqNQuAj
+ rvcTPoBWiQhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
+   d="scan'208";a="328905060"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 25 Aug 2020 08:57:49 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id CA454301C53; Tue, 25 Aug 2020 08:47:21 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 08:47:21 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, jolsa@redhat.com, yao.jin@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com, maddy@linux.ibm.com,
+        ravi.bangoria@linux.ibm.com
+Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
+Message-ID: <20200825154721.GP1509399@tassilo.jf.intel.com>
+References: <20200825074041.378520-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <a7ea2da1f895ee3db4697c00804160acb6db656e.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825074041.378520-1-kjain@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/20 8:40 AM, Mimi Zohar wrote:
-> On Fri, 2020-08-21 at 16:12 -0700, Lakshmi Ramasubramanian wrote:
->> The current implementation of early boot measurement in
->> the IMA subsystem is very specific to asymmetric keys. It does not
->> handle early boot measurement of data from other subsystems such as
->> Linux Security Module (LSM), Device-Mapper, etc. As a result data,
->> provided by these subsystems during system boot are not measured by IMA.
->>
->> Update the early boot key measurement to handle any early boot data.
->> Refactor the code from ima_queue_keys.c to a new file ima_queue_data.c.
->> Rename the kernel configuration CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS to
->> CONFIG_IMA_QUEUE_EARLY_BOOT_DATA so it can be used for enabling any
->> early boot data measurement. Since measurement of asymmetric keys is
->> the first consumer of early boot measurement, this kernel configuration
->> is enabled if IMA_MEASURE_ASYMMETRIC_KEYS and SYSTEM_TRUSTED_KEYRING are
->> both enabled.
->>
->> Update the IMA hook ima_measure_critical_data() to utilize early boot
->> measurement support.
-> 
-> Please limit the changes in this patch to renaming the functions and/or
-> files.  For example, adding "measure_payload_hash" should be a separate
-> patch, not hidden here.
-> 
+On Tue, Aug 25, 2020 at 01:10:41PM +0530, Kajol Jain wrote:
+> This patch adds new structure called 'json_event' inside jevents.h
+> file to improve the callback prototype inside jevent files.
+> Initially, whenever user want to add new field, they need to update
+> in all function callback which make it more and more complex with
+> increased number of parmeters.
+> With this change, we just need to add it in new structure 'json_event'.
 
-Thanks for the feedback Mimi.
+Looks good to me. Thanks.
 
-I'll split this into 2 patches:
+I wouldn't consolidate with event_struct, these are logically
+different layers.
 
-PATCH 1: Rename files + rename CONFIG
-PATCH 2: Update IMA hook to utilize early boot data measurement.
-
-  -lakshmi
-
-
-
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
