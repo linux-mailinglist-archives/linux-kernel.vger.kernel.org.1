@@ -2,167 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BB82516D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7622516AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 12:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729917AbgHYKqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 06:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729888AbgHYKqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 06:46:44 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E9052068E;
-        Tue, 25 Aug 2020 10:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598352403;
-        bh=A2g5oilIRlZrMle7ltlGm+gmrEyCPIBbijgQjXU/jDk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RQYFIU70fNrrKSv+aJ6VQbTUxdzzqI77VBhCdUSnroTC7Gmw+mw6VigQpjuMzTk6H
-         jrjrcemPcAHP/Uz0QkHSDG1jFrC0sLOVQ895+zatkTZSZ97q38+RVRFwjUf4eqtDL6
-         wAPrPSyYqhW4YH8U87syp3/1JH+iLRVjmjLaOZbQ=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kAWTR-006VZJ-JQ; Tue, 25 Aug 2020 11:46:41 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        qiuguorui1 <qiuguorui1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Suman Anna <s-anna@ti.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: [GIT PULL] irqchip fixes for 5.9, take #2
-Date:   Tue, 25 Aug 2020 11:45:57 +0100
-Message-Id: <20200825104557.1042702-1-maz@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1729784AbgHYKdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 06:33:43 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:22499 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728117AbgHYKdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 06:33:41 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200825103336epoutp0382871002ba8a618634680e336c4dd0ff~ufFOeTAVA0792907929epoutp03c
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:33:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200825103336epoutp0382871002ba8a618634680e336c4dd0ff~ufFOeTAVA0792907929epoutp03c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598351616;
+        bh=l6bgua5qF1U2anSdUW95hVGgAsI0ptIuSgH/OBirhSk=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Ih1UP6+rTm5eGdqOOIG3BeuEWCRiyEtOKa7ze0PDVaAqAC0xv50fLQJYKJzTkgZf9
+         881HPYGlTiIrYnSyK3AJmuY8//f5DG3IO4m7i6kvF3yITapzx0jWzdbX5bicESM/H7
+         OX/J9y/KBj0mJO4OZBBqm7HdOgXXQSvgcLX6iu+A=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200825103335epcas1p15a5a344977d6990c2058627888284a6f~ufFOC-eEo2081420814epcas1p1W;
+        Tue, 25 Aug 2020 10:33:35 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4BbQM05WMQzMqYkZ; Tue, 25 Aug
+        2020 10:33:32 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        65.F2.29173.CF8E44F5; Tue, 25 Aug 2020 19:33:32 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200825103331epcas1p341eca764a8accfad2113d7bed7a7e7fd~ufFJ85NCB0778707787epcas1p3J;
+        Tue, 25 Aug 2020 10:33:31 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200825103331epsmtrp1618d954f3f43d77474fc6f156b57ed16~ufFJ2yIKL1149211492epsmtrp1m;
+        Tue, 25 Aug 2020 10:33:31 +0000 (GMT)
+X-AuditID: b6c32a37-9cdff700000071f5-5d-5f44e8fcdc23
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        80.14.08303.BF8E44F5; Tue, 25 Aug 2020 19:33:31 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200825103331epsmtip1dd254f71d0a0cbe244daedb4e2865ef8~ufFJnI14F1178111781epsmtip1Q;
+        Tue, 25 Aug 2020 10:33:31 +0000 (GMT)
+Subject: Re: [PATCH v1 1/1] extcon: ptn5150: Add usb-typec support for Intel
+ LGM SoC
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
+        myungjoo.ham@samsung.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, yin1.li@intel.com
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <4b1edd2e-4791-3f12-206f-9277435cdf59@samsung.com>
+Date:   Tue, 25 Aug 2020 19:46:00 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, enric.balletbo@collabora.com, linux@fw-web.de, john.stultz@linaro.org, lokeshvutla@ti.com, nm@ti.com, paul@crapouillou.net, qiuguorui1@huawei.com, robh@kernel.org, saravanak@google.com, s-anna@ti.com, jason@lakedaemon.net, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20200825083147.25270-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAJsWRmVeSWpSXmKPExsWy7bCmru6fFy7xBvcP61hcfxthcf78BnaL
+        y7vmsFncblzBZvGlYz2bxYZj99ksXu6fzmrR1HSczYHDY+esu+wei/e8ZPLYtKqTzWPeyUCP
+        vi2rGD0+b5ILYIvKtslITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLx
+        CdB1y8wBOkdJoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BZoFecmFtcmpeul5yf
+        a2VoYGBkClSYkJ1x6+su9oJ53BW7fx1gaWBcw9nFyMkhIWAi0fV8P0sXIxeHkMAORolnl9ZB
+        OZ8YJc68XcMG4XxmlJiz5ywTTMvyv6+hErsYJWYffMAM4bxnlLhxtYkFpEpYIEzixuVu1i5G
+        Dg4RgXyJM08EQcLMAtOAJq1hBLHZBLQk9r+4wQZi8wsoSlz98RgszitgJ/HgYBNYnEVAVWL7
+        9jusILYo0MiT21qgagQlTs58AraKUyBQ4vfSu0wQ88Ulbj2ZD2XLS2x/OwfsNgmBpRwSH67f
+        YoT4wEVi3cG1rBC2sMSr41vYIWwpiZf9bVB2tcTKk0fYIJo7GCW27L8A1WAssX/pZCaQx5gF
+        NCXW79KHCCtK7Pw9lxFiMZ/Eu689YL9LCPBKdLQJQZQoS1x+cBcaiJISi9s72SYwKs1C8s4s
+        JC/MQvLCLIRlCxhZVjGKpRYU56anFhsWGCPH9iZGcFLVMt/BOO3tB71DjEwcjIcYJTiYlUR4
+        BS86xwvxpiRWVqUW5ccXleakFh9iNAUG8ERmKdHkfGBazyuJNzQ1MjY2tjAxNDM1NFQS5314
+        SyFeSCA9sSQ1OzW1ILUIpo+Jg1OqgelekbinoN2Vb8WS39O9FdlqWMocEp/0KxT5d8czsGZl
+        B94SzNjS1r/zQOfdW7eWWciffN0tHTU7c6rJtHWFpXMKrxz46h+/Y6NYu7xF01muKbY6jzll
+        Y7TkP67bfDBI2NGWbXmNbMrlqV9msD492ya+fuv0bO8XIs/M7hxWLk23vOb/2K+rNlaIVeMY
+        o8SOElad067ydQ/z7H41KtmELxQ1FeKIyhR5Grl/hXfqmtWRX2+Xm+/YJf0iVL325vmX7S+y
+        vkltZMkX//2PO35acGvE0i1V14wPaBZvvTrT+cDvdbMOvaqdq6n3sLR5rd+p3+lvnCd9nzdl
+        +SrzpeGW4asUnTv2hOv8Wy40k0fgsxJLcUaioRZzUXEiAHkPruEzBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LZdlhJTvf3C5d4gy/3hSyuv42wOH9+A7vF
+        5V1z2CxuN65gs/jSsZ7NYsOx+2wWL/dPZ7VoajrO5sDhsXPWXXaPxXteMnlsWtXJ5jHvZKBH
+        35ZVjB6fN8kFsEVx2aSk5mSWpRbp2yVwZdz6uou9YB53xe5fB1gaGNdwdjFyckgImEgs//ua
+        rYuRi0NIYAejxJ/N81ghEpIS0y4eZe5i5ACyhSUOHy6GqHnLKPF5xhpGkBphgTCJG5e7wepF
+        BPIl3s3czQpSxCwwjVHi//E2VoiO14wSa1avA6tiE9CS2P/iBhuIzS+gKHH1x2OwSbwCdhIP
+        DjaBxVkEVCW2b78DVi8KtGHnksdMEDWCEidnPmEBsTkFAiV+L70LFmcWUJf4M+8SM4QtLnHr
+        yXyouLzE9rdzmCcwCs9C0j4LScssJC2zkLQsYGRZxSiZWlCcm55bbFhglJdarlecmFtcmpeu
+        l5yfu4kRHGFaWjsY96z6oHeIkYmD8RCjBAezkgiv4EXneCHelMTKqtSi/Pii0pzU4kOM0hws
+        SuK8X2ctjBMSSE8sSc1OTS1ILYLJMnFwSjUwXbmtKlSu8uyobtm5addfsn4/ouC9Rf62f6U4
+        9zY3MxuhX8ZdOuuMWcseJOg05a6cr+3Gkj3h8Nmns5etU/qXqyOsxbSA73//avldHoIiG/xf
+        crZXdrxdKyjt05Yb9mrOxLfWxjwnBNpb260a5U/v3RBeq3Ao9OqF05f3xl68si3n79MpVm8n
+        RBk7F3QyzxOKWfLP2dJyX4jt1othMWJbH7ezOK+7VeQTH1n6hiG0ump+a5po/vFdkpGW5+zm
+        344zYKoLa9hlPquHdeXy6sZtzY4sk1iarD9XMERO58uoz1OM1D505fe6T/m7Ttcke7yY/f6e
+        dOrKd+duTVBP31kUvefd4T1bk+yO3Oib9nmBEktxRqKhFnNRcSIAzIcoIx8DAAA=
+X-CMS-MailID: 20200825103331epcas1p341eca764a8accfad2113d7bed7a7e7fd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200825083202epcas1p39a30661dd7ae7e5b4f8645a7cfcedd1d
+References: <20200825083147.25270-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <CGME20200825083202epcas1p39a30661dd7ae7e5b4f8645a7cfcedd1d@epcas1p3.samsung.com>
+        <20200825083147.25270-2-vadivel.muruganx.ramuthevar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi,
 
-This is a combo pull request for the first two two batches of fixes
-for 5.9. The most important part is that the whole "let's build
-irqchips as platform devices" series has broken users' platforms as
-the end-points drivers are not equipped to deal with the semi-random
-probe ordering. There is work in progress to fix it, but in the
-meantime let's go back to something that doesn't set the world on
-fire. I have kept the helpers around to serve as a base for that
-future work, but the callers are now back to their original state.
+On 8/25/20 5:31 PM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> 
+> Add usb-typec detection support for Intel LGM SoC based
+> boards.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/extcon/extcon-ptn5150.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
+> index 8ba706fad887..60355a1b5cb2 100644
+> --- a/drivers/extcon/extcon-ptn5150.c
+> +++ b/drivers/extcon/extcon-ptn5150.c
+> @@ -300,6 +300,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+>  		return ret;
+>  	}
+>  
+> +	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
+> +				       EXTCON_PROP_USB_TYPEC_POLARITY);
 
-We also have two interesting fixes: one avoiding losing interrupts
-when there is more that a single one pending with STM32 exti, and a
-wakup interrupt issue with the Ingenic driver.
+extcon_set_property_capability() just sets the capability
+of EXTCON_PROP_USB_TYPEC_POLARITY property.
 
-The rest of it is what I was hinting at when I sent the original 5.9
-pull request, with a bunch of TI updates that deal with the change of
-their firmware interface. The handling of the dependencies was bad
-enough that I couldn't send it before -rc1 was out...
+If you want to set the value (0 or 1) of EXTCON_PROP_USB_TYPEC_POLARITY,
+we have to call extcon_set_property() function. But, this patch doesn't
+set the any value of EXTCON_PROP_USB_TYPEC_POLARITY property.
 
-Please pull,
+Why do you only use extcon_set_property_capability()
+without the proper extcon_set_property()?
 
-	M.
+>  	/* Initialize PTN5150 device and print vendor id and version id */
+>  	ret = ptn5150_init_dev_type(info);
+>  	if (ret)
+> 
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.9-2
-
-for you to fetch changes up to 821fc9e261f3af235752f46e59084467cfd440c4:
-
-  irqchip/ingenic: Leave parent IRQ unmasked on suspend (2020-08-25 10:59:29 +0100)
-
-----------------------------------------------------------------
-irqchip fixes for Linux 5.9, take #2
-
-- Revert the wholesale conversion to platform drivers of the
-  pdc, sysirq and cirq drivers, as it breaks a number of
-  platforms even when the driver is built-in (probe ordering
-  bites you).
-
-- Prevent interrupt from being lost with the STM32 exti driver
-
-- Fix wake-up interrupts for the MIPS Ingenir driver
-
-irqchip fixes for Linux 5.9, take #1
-
-- Fix an embarassing typo in the new module helpers, leading
-  to the probe failing most of the time
-
-- The promised TI firmware rework that couldn't make it into
-  the merge window due to a very badly managed set of dependency
-
-----------------------------------------------------------------
-Lokesh Vutla (13):
-      firmware: ti_sci: Drop the device id to resource type translation
-      firmware: ti_sci: Drop unused structure ti_sci_rm_type_map
-      firmware: ti_sci: Add support for getting resource with subtype
-      dt-bindings: irqchip: ti, sci-intr: Update bindings to drop the usage of gic as parent
-      dt-bindings: irqchip: Convert ti, sci-intr bindings to yaml
-      irqchip/ti-sci-intr: Add support for INTR being a parent to INTR
-      dt-bindings: irqchip: ti, sci-inta: Update docs to support different parent.
-      dt-bindings: irqchip: Convert ti, sci-inta bindings to yaml
-      irqchip/ti-sci-inta: Do not store TISCI device id in platform device id field
-      irqchip/ti-sci-inta: Add support for INTA directly connecting to GIC
-      arm64: dts: k3-j721e: ti-sci-inta/intr: Update to latest bindings
-      arm64: dts: k3-am65: ti-sci-inta/intr: Update to latest bindings
-      arm64: dts: k3-am65: Update the RM resource types
-
-Marc Zyngier (2):
-      irqchip: Fix probing deferal when using IRQCHIP_PLATFORM_DRIVER helpers
-      irqchip: Revert modular support for drivers using IRQCHIP_PLATFORM_DRIVER helperse
-
-Paul Cercueil (1):
-      irqchip/ingenic: Leave parent IRQ unmasked on suspend
-
-qiuguorui1 (1):
-      irqchip/stm32-exti: Avoid losing interrupts due to clearing pending bits by mistake
-
- .../bindings/interrupt-controller/ti,sci-inta.txt  |  66 ---------
- .../bindings/interrupt-controller/ti,sci-inta.yaml |  98 +++++++++++++
- .../bindings/interrupt-controller/ti,sci-intr.txt  |  82 -----------
- .../bindings/interrupt-controller/ti,sci-intr.yaml | 102 ++++++++++++++
- MAINTAINERS                                        |   4 +-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi           |  36 +++--
- arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            |  12 +-
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi         |   8 +-
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts     |   4 +-
- .../boot/dts/ti/k3-j721e-common-proc-board.dts     |  10 +-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          |  43 +++---
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi    |  12 +-
- drivers/firmware/ti_sci.c                          | 155 +++++++++------------
- drivers/irqchip/Kconfig                            |   2 +-
- drivers/irqchip/irq-ingenic.c                      |   2 +-
- drivers/irqchip/irq-mtk-cirq.c                     |   4 +-
- drivers/irqchip/irq-mtk-sysirq.c                   |   4 +-
- drivers/irqchip/irq-stm32-exti.c                   |  14 +-
- drivers/irqchip/irq-ti-sci-inta.c                  |  95 ++++++++++---
- drivers/irqchip/irq-ti-sci-intr.c                  | 152 ++++++++++++--------
- drivers/irqchip/irqchip.c                          |   2 +-
- drivers/irqchip/qcom-pdc.c                         |   8 +-
- include/linux/soc/ti/ti_sci_protocol.h             |  13 ++
- 23 files changed, 534 insertions(+), 394 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
