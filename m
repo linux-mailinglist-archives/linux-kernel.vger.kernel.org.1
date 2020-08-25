@@ -2,111 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0162525244B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC9E25245E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 01:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgHYXl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 19:41:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53404 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgHYXlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:41:05 -0400
-Date:   Tue, 25 Aug 2020 23:41:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598398862;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f29ANvwdHE68cOMKguILoDdjkoxV1L2Txqd1M2X6P9E=;
-        b=WYPuECm9K3MUXv17wcIEA0tBtOfbOubVv53z42qQZKZ29HQwrs2NU7AsK2slAe994I9Am4
-        3SC/FOugxE5m27sX7VTtCl8yyJptlYB9zpkBv7JGSqvFUysCsK2QmpzLulUEU7qHN58CS5
-        E9SctDHcrykJ3LztgdUGjveNZJ3z7w1xUFWhJxsyPNnVe8l8JJzAuKjPV/LoFfqeefWH3J
-        i4QMyKjBVTL8vIl40NA3Whwwi3naccz1divS2oBAdvLxelzBs7Gf70H1+Mw8uqYVnn+6Fq
-        TpL/T3wAzvoibPkhbzRDbvzCSADT/LrPIlBxrJYwKnCnGElYSMOewOqztYqzhw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598398862;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f29ANvwdHE68cOMKguILoDdjkoxV1L2Txqd1M2X6P9E=;
-        b=URgFRVEGdXYj+JYCJyvTMY5ueJx3b8cD6UpftJylrG16hNW+8J+zkBnPpW3MfRfHxfGB3h
-        ClZzf6XqOuFIzNDQ==
-From:   "tip-bot2 for Lokesh Vutla" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] firmware: ti_sci: Drop the device id to resource
- type translation
-Cc:     Lokesh Vutla <lokeshvutla@ti.com>, Marc Zyngier <maz@kernel.org>,
-        Nishanth Menon <nm@ti.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200806074826.24607-2-lokeshvutla@ti.com>
-References: <20200806074826.24607-2-lokeshvutla@ti.com>
+        id S1727019AbgHYXmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 19:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726734AbgHYXlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 19:41:50 -0400
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9C7621775
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 23:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598398910;
+        bh=CyQtlYDE+A8MG0JyxNX1QVig85hDl88iFa2qsrgexI0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gx5ZsCuzH4ioCxetiD2y+vDwoxSZvhEsF7Y75vaMTQ31Zx2Pc7i8L0ab0V5om2kr2
+         356372LR7wlNGShYXgIo51ov/7n9BBGd4pZEl0ixshjyVVdqBdEqHTPdcSE7dNGJKP
+         BCmCCFOhrMdnaXxrUoK47jEzw6JP1t6ssDxFnh+U=
+Received: by mail-wr1-f54.google.com with SMTP id p17so495394wrj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 16:41:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533T2NrM78sKWEC1N55b2U2zT8M8WSCq7i/vOuwp/qioQ8S7sZrC
+        xh2Q07fYlYQNzVOCYzhP5XsjStjZa3MzpRFKkdHcdg==
+X-Google-Smtp-Source: ABdhPJziIjnGOyouCp9gtTbUgUQ2Fpvm/xo4S/Yz68qNI2Xo0rcmdpT4fj8YTSQ4WNQrlkdF8f3yZXhj2uoNEGenMOo=
+X-Received: by 2002:a5d:4145:: with SMTP id c5mr12976959wrq.18.1598398908278;
+ Tue, 25 Aug 2020 16:41:48 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159839886206.389.15390769011790154183.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200521200513.656533920@linutronix.de> <20200521202118.796915981@linutronix.de>
+ <f0079706-4cb3-b3e3-9a5e-97aaba0aa0eb@amazon.com> <87a6yj58af.fsf@nanos.tec.linutronix.de>
+ <051182cc-6c90-e48b-d191-8ca004385261@amazon.com>
+In-Reply-To: <051182cc-6c90-e48b-d191-8ca004385261@amazon.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 25 Aug 2020 16:41:36 -0700
+X-Gmail-Original-Message-ID: <CALCETrXutDjE5Z6WR+47MJvp3xt4n=EGiF_oEYm88vGvCqUgHA@mail.gmail.com>
+Message-ID: <CALCETrXutDjE5Z6WR+47MJvp3xt4n=EGiF_oEYm88vGvCqUgHA@mail.gmail.com>
+Subject: Re: [patch V9 21/39] x86/irq: Convey vector as argument and not in ptregs
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Avi Kivity <avi@scylladb.com>,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>, robketr@amazon.de,
+        amos@scylladb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Tue, Aug 25, 2020 at 4:18 PM Alexander Graf <graf@amazon.com> wrote:
+>
+> Hi Thomas,
+>
+> On 25.08.20 12:28, Thomas Gleixner wrote:
+> >void irq_complete_move(struct irq_cfg *cfg)
+{
+        __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
+}
 
-Commit-ID:     4473171db68fe9e3de3f2bc68a00527f23852ad8
-Gitweb:        https://git.kernel.org/tip/4473171db68fe9e3de3f2bc68a00527f23852ad8
-Author:        Lokesh Vutla <lokeshvutla@ti.com>
-AuthorDate:    Thu, 06 Aug 2020 13:18:14 +05:30
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 16 Aug 2020 22:00:22 +01:00
+> > Alex,
+> >
+> > On Mon, Aug 24 2020 at 19:29, Alexander Graf wrote:
+> >> I'm currently trying to understand a performance regression with
+> >> ScyllaDB on i3en.3xlarge (KVM based VM on Skylake) which we reliably
+> >> bisected down to this commit:
+> >>
+> >>     https://github.com/scylladb/scylla/issues/7036
+> >>
+> >> What we're seeing is that syscalls such as membarrier() take forever
+> >> (0-10 =C2=B5s would be normal):
+> > ...
+> >> That again seems to stem from a vastly slowed down
+> >> smp_call_function_many_cond():
+> >>
+> >> Samples: 218K of event 'cpu-clock', 4000 Hz
+> >> Overhead  Shared Object        Symbol
+> >>     94.51%  [kernel]             [k] smp_call_function_many_cond
+> >>      0.76%  [kernel]             [k] __do_softirq
+> >>      0.32%  [kernel]             [k] native_queued_spin_lock_slowpath
+> >> [...]
+> >>
+> >> which is stuck in
+> >>
+> >>          =E2=94=82     csd_lock_wait():
+> >>          =E2=94=82             smp_cond_load_acquire(&csd->flags, !(VA=
+L &
+> >>     0.00 =E2=94=82       mov    0x8(%rcx),%edx
+> >>     0.00 =E2=94=82       and    $0x1,%edx
+> >>          =E2=94=82     =E2=86=93 je     2b9
+> >>          =E2=94=82     rep_nop():
+> >>     0.70 =E2=94=822af:   pause
+> >>          =E2=94=82     csd_lock_wait():
+> >>    92.82 =E2=94=82       mov    0x8(%rcx),%edx
+> >>     6.48 =E2=94=82       and    $0x1,%edx
+> >>     0.00 =E2=94=82     =E2=86=91 jne    2af
+> >>     0.00 =E2=94=822b9: =E2=86=91 jmp    282
+> >>
+> >>
+> >> Given the patch at hand I was expecting lost IPIs, but I can't quite s=
+ee
+> >> anything getting lost.
+> >
+> > I have no idea how that patch should be related to IPI and smp function
+> > calls. It's changing the way how regular device interrupts and their
+> > spurious counterpart are handled and not the way how IPIs are
+> > handled. They are handled by direct vectors and do not go through
+> > do_IRQ() at all.
+> >
+> > Aside of that the commit just changes the way how the interrupt vector
+> > of a regular device interrupt is stored and conveyed. The extra read an=
+d
+> > write on the cache hot stack is hardly related to anything IPI.
+>
+> I am as puzzled as you are, but the bisect is very clear: 79b9c183021e
+> works fast and 633260fa1 (as well as mainline) shows the weird behavior
+> above.
+>
+> It gets even better. This small (demonstrative only, mangled) patch on
+> top of 633260fa1 also resolves the performance issue:
+>
+> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
+> index c766936..7e91e9a 100644
+> --- a/arch/x86/kernel/irq.c
+> +++ b/arch/x86/kernel/irq.c
+> @@ -239,6 +239,7 @@ __visible void __irq_entry do_IRQ(struct pt_regs
+> *regs, unsigned long vector)
+>          * lower 8 bits.
+>          */
+>         vector &=3D 0xFF;
+> +       regs->orig_ax =3D ~vector;
+>
+>         /* entering_irq() tells RCU that we're not quiescent.  Check it. =
+*/
+>         RCU_LOCKDEP_WARN(!rcu_is_watching(), "IRQ failed to wake up RCU")=
+;
+>
+>
+> To me that sounds like some irq exit code somewhere must still be
+> looking at orig_ax to decide on something - and that something is wrong
+> now that we removed the negation of the vector. It also seems to have an
+> impact on remote function calls.
+>
+> I'll have a deeper look tomorrow again if I can find any such place, but
+> I wouldn't mind if anyone could point me into the right direction
+> earlier :).
 
-firmware: ti_sci: Drop the device id to resource type translation
+How about this:
 
-With ABI 3.0, sysfw deprecated special resource types used for AM65x
-SoC. Instead started using device id as resource type similar to the
-convention used in J721E SOC.
+void irq_complete_move(struct irq_cfg *cfg)
+{
+        __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
+}
 
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20200806074826.24607-2-lokeshvutla@ti.com
----
- drivers/firmware/ti_sci.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 53cee17..81e4d77 100644
---- a/drivers/firmware/ti_sci.c
-+++ b/drivers/firmware/ti_sci.c
-@@ -3355,16 +3355,6 @@ static const struct ti_sci_desc ti_sci_pmmc_k2g_desc = {
- 	.rm_type_map = NULL,
- };
- 
--static struct ti_sci_rm_type_map ti_sci_am654_rm_type_map[] = {
--	{.dev_id = 56, .type = 0x00b}, /* GIC_IRQ */
--	{.dev_id = 179, .type = 0x000}, /* MAIN_NAV_UDMASS_IA0 */
--	{.dev_id = 187, .type = 0x009}, /* MAIN_NAV_RA */
--	{.dev_id = 188, .type = 0x006}, /* MAIN_NAV_UDMAP */
--	{.dev_id = 194, .type = 0x007}, /* MCU_NAV_UDMAP */
--	{.dev_id = 195, .type = 0x00a}, /* MCU_NAV_RA */
--	{.dev_id = 0, .type = 0x000}, /* end of table */
--};
--
- /* Description for AM654 */
- static const struct ti_sci_desc ti_sci_pmmc_am654_desc = {
- 	.default_host_id = 12,
-@@ -3373,7 +3363,7 @@ static const struct ti_sci_desc ti_sci_pmmc_am654_desc = {
- 	/* Limited by MBOX_TX_QUEUE_LEN. K2G can handle upto 128 messages! */
- 	.max_msgs = 20,
- 	.max_msg_size = 60,
--	.rm_type_map = ti_sci_am654_rm_type_map,
-+	.rm_type_map = NULL,
- };
- 
- static const struct of_device_id ti_sci_of_match[] = {
+in arch/x86/kernel/apic/vector.c.
