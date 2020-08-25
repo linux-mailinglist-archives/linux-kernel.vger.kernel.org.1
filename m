@@ -2,115 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC0F2513FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA6C2513FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgHYIQo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 04:16:44 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:43231 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728089AbgHYIQn (ORCPT
+        id S1728471AbgHYIR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:17:58 -0400
+Received: from out28-145.mail.aliyun.com ([115.124.28.145]:51304 "EHLO
+        out28-145.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgHYIRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:16:43 -0400
-Received: from [2001:67c:670:100:3ad5:47ff:feaf:1a17] (helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kAU8B-0000Us-1j; Tue, 25 Aug 2020 10:16:35 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kAU89-0002cv-D2; Tue, 25 Aug 2020 10:16:33 +0200
-Message-ID: <32b000b801202c3d6318da6c5bc52d47ab6947e0.camel@pengutronix.de>
-Subject: Re: [PATCH v1] ata: ahci_brcm: Fix use of BCM7216 reset controller
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 25 Aug 2020 10:16:33 +0200
-In-Reply-To: <20200824204002.45500-1-james.quinlan@broadcom.com>
-References: <20200824204002.45500-1-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 25 Aug 2020 04:17:55 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.250105|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.077471-0.000474437-0.922055;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03279;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.INYD1yr_1598343458;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.INYD1yr_1598343458)
+          by smtp.aliyun-inc.com(10.147.41.158);
+          Tue, 25 Aug 2020 16:17:52 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenwenjin@gmail.com, sernia.zhou@foxmail.com,
+        yanfei.li@ingenic.com, rick.tyliu@ingenic.com,
+        aric.pzqi@ingenic.com, dongsheng.qiu@ingenic.com
+Subject: [PATCH 0/1] Fix static checker warning.
+Date:   Tue, 25 Aug 2020 16:16:53 +0800
+Message-Id: <20200825081654.18186-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-24 at 16:40 -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> A reset controller "rescal" is shared between the AHCI driver and the PCIe
-> driver for the BrcmSTB 7216 chip.  Use
-> devm_reset_control_get_optional_shared() to handle this sharing.
-> 
-> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> ---
->  drivers/ata/ahci_brcm.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
-> index 6853dbb4131d..d6115bc04b09 100644
-> --- a/drivers/ata/ahci_brcm.c
-> +++ b/drivers/ata/ahci_brcm.c
-> @@ -428,7 +428,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  {
->  	const struct of_device_id *of_id;
->  	struct device *dev = &pdev->dev;
-> -	const char *reset_name = NULL;
->  	struct brcm_ahci_priv *priv;
->  	struct ahci_host_priv *hpriv;
->  	struct resource *res;
-> @@ -452,11 +451,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  
->  	/* Reset is optional depending on platform and named differently */
->  	if (priv->version == BRCM_SATA_BCM7216)
-> -		reset_name = "rescal";
-> +		priv->rcdev = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
->  	else
-> -		reset_name = "ahci";
-> +		priv->rcdev = devm_reset_control_get_optional(&pdev->dev, "ahci");
+Fix the warning that appears during Static analysis.
 
-I think it would be cleaner to use two separate reset control handles
-here. It is hard to reason about what the code does when the reset
-control is shared on one platform and exclusive on the other.
+周琰杰 (Zhou Yanjie) (1):
+  USB: PHY: JZ4770: Fix static checker warning.
 
-> -	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
->  	if (IS_ERR(priv->rcdev))
->  		return PTR_ERR(priv->rcdev);
->  
-> @@ -479,10 +477,7 @@ static int brcm_ahci_probe(struct platform_device *pdev)
->  		break;
->  	}
->  
-> -	if (priv->version == BRCM_SATA_BCM7216)
-> -		ret = reset_control_reset(priv->rcdev);
+ drivers/usb/phy/phy-jz4770.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-I think we might have a similar issue currently with
-"usb: dwc3: meson-g12a: fix shared reset control use", where two IP
-cores try to share a pulsed reset line.
+-- 
+2.11.0
 
-> -	else
-> -		ret = reset_control_deassert(priv->rcdev);
-> +	ret = reset_control_deassert(priv->rcdev);
-
-Isn't the shared 'rescal' reset a triggered reset pulse? Looking at the
-reset-brcmstb-rescal reset controller driver, without reset line level
-control implemented, this will turn into a no-op for BCM7216. Yes, the
-reset line will be deasserted after this call, but there is no guarantee
-that the reset line was ever pulsed.
-
-regards
-Philipp
