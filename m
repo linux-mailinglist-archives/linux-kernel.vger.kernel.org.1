@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153142512F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA39E251302
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgHYHVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:21:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54050 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729277AbgHYHVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:21:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A81FAE63;
-        Tue, 25 Aug 2020 07:22:06 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 09:21:34 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-Message-ID: <20200825072134.GA22869@dhcp22.suse.cz>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+        id S1729392AbgHYHV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:21:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47524 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729194AbgHYHVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 03:21:55 -0400
+Date:   Tue, 25 Aug 2020 09:21:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598340113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMiNCEJ8BasINNDn7lM/cZvFiMvMZcNk+zxoVqGBx0c=;
+        b=lpohMO4AuqciTq7XljGE/G6Tn+Q3G1RblpL1soN2WKA+jafIfUYM+lazj3F5s2Vnfx4D5s
+        2VIGsTbgLnTPkSK6dqtp0j6oZHScwD4k8kvyjd4oAhLqaoTFi41AB35mLbEnqB1i+Fck+/
+        e3RNHtBM4ewSNktev6GgoReG6rxHulCKkjcCeFHAlnQ4qpYSVUIHSBl5UggT/yJaD5Z9zL
+        2gkqfxsKbQWqfhSe7bgmptTbQKTfyFhQytXSjvsuqyBvWC119GwzQ3ewVssLpK9acgqqEF
+        WDIYNBFweYzw/6Mi6+fz2EhEqLNC30L8bBOUhklEEyaStbJjqnFlX1waKWwGzQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598340113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMiNCEJ8BasINNDn7lM/cZvFiMvMZcNk+zxoVqGBx0c=;
+        b=CFSF1lVUmnhX4zs4jWvsEjHzIO4f477Y3lFEcnW9PCL0KkPZ3ufd/79F0cnlDvuO0f0Jr+
+        hrR7F4GAPgW9XmDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        oferle@mellanox.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] irqchip/eznps: Fix build error for !ARC700 builds
+Message-ID: <20200825072152.725jmtlcqah5oos4@linutronix.de>
+References: <20200824230149.199656-1-vgupta@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+In-Reply-To: <20200824230149.199656-1-vgupta@synopsys.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24-08-20 11:42:04, Andrew Morton wrote:
-> On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+On 2020-08-24 16:01:49 [-0700], Vineet Gupta wrote:
+
+A little of patch description wouldn't hurt. Especially since it is not
+a simple move but IENABLE comes out of nowhere.
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Link: http://lists.infradead.org/pipermail/linux-snps-arc/2020-August/004032.html
+
+That link gets lost if someone decides to recreate the pipermail archive
+and you have no hint what it was. Using
+
+  Link: https://lkml.kernel.org/r/20200824095831.5lpkmkafelnvlpi2@linutronix.de
+
+instead will instead give you the message-id in case lore dies or the
+lkml.kernel.org redirect service goes into retirement.
+
+> Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+> ---
+>  arch/arc/plat-eznps/include/plat/ctop.h | 1 -
+>  include/soc/nps/common.h                | 6 ++++++
+>  2 files changed, 6 insertions(+), 1 deletion(-)
 > 
-> > The new version which bases on v5.9-rc2. The first 6 patches was picked into
-> > linux-mm, and add patch 25-32 that do some further post optimization.
-> 
-> 32 patches, version 18.  That's quite heroic.  I'm unsure whether I
-> should merge it up at this point - what do people think?
+> diff --git a/arch/arc/plat-eznps/include/plat/ctop.h b/arch/arc/plat-eznps/include/plat/ctop.h
+> index a4a61531c7fb..77712c5ffe84 100644
+> --- a/arch/arc/plat-eznps/include/plat/ctop.h
+> +++ b/arch/arc/plat-eznps/include/plat/ctop.h
+> @@ -33,7 +33,6 @@
+>  #define CTOP_AUX_DPC				(CTOP_AUX_BASE + 0x02C)
+>  #define CTOP_AUX_LPC				(CTOP_AUX_BASE + 0x030)
+>  #define CTOP_AUX_EFLAGS				(CTOP_AUX_BASE + 0x080)
+> -#define CTOP_AUX_IACK				(CTOP_AUX_BASE + 0x088)
+>  #define CTOP_AUX_GPA1				(CTOP_AUX_BASE + 0x08C)
+>  #define CTOP_AUX_UDMC				(CTOP_AUX_BASE + 0x300)
+>  
+> diff --git a/include/soc/nps/common.h b/include/soc/nps/common.h
+> index 9b1d43d671a3..8c18dc6d3fde 100644
+> --- a/include/soc/nps/common.h
+> +++ b/include/soc/nps/common.h
+> @@ -45,6 +45,12 @@
+>  #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_INST	0x5B60
+>  #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_LIMM	0x00010422
+>  
+> +#ifndef AUX_IENABLE
+> +#define AUX_IENABLE				0x40c
+> +#endif
+> +
+> +#define CTOP_AUX_IACK				(0xFFFFF800 + 0x088)
+> +
+>  #ifndef __ASSEMBLY__
+>  
+>  /* In order to increase compilation test coverage */
 
-This really needs a proper review. Unfortunately
-: 24 files changed, 646 insertions(+), 443 deletions(-)
-is quite an undertaking to review as well. Especially in a tricky code
-which is full of surprises.
-
-I do agree that per memcg locking looks like a nice feature but I do not
-see any pressing reason to merge it ASAP. The cover letter doesn't
-really describe any pressing usecase that cannot really live without
-this being merged.
-
-I am fully aware of my dept to review but I simply cannot find enough
-time to sit on it and think it through to have a meaningful feedback at
-this moment.
-
-> > Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> > containers on a 2s * 26cores * HT box with a modefied case:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> > With this patchset, the readtwice performance increased about 80%
-> > in concurrent containers.
-> 
-> That's rather a slight amount of performance testing for a huge
-> performance patchset!  Is more detailed testing planned?
-
-Agreed! This needs much better testing coverage.
-
--- 
-Michal Hocko
-SUSE Labs
+Sebastian
