@@ -2,62 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCFC250DF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F01250DFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgHYA6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 20:58:17 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21060 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgHYA6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 20:58:16 -0400
-IronPort-SDR: Wnm/HaDrGjET4+3aUAC4MeTygxWI2pqEh5DyOYmdh/ISSOvU/LnS0Y3lrj2nk+ypOqNB0Ho1Eb
- Mx/wqVYtVkdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="135565434"
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="135565434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 17:58:15 -0700
-IronPort-SDR: 2eKQQQwP2WrZWLeQXIWU6xAWF65uFSrWjZ16L1zEz0Bkgab5pTRE4pUh9uc2cl2TXCL6mEKJ/8
- FIX6oXWkVx1g==
-X-IronPort-AV: E=Sophos;i="5.76,350,1592895600"; 
-   d="scan'208";a="281352562"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 17:58:15 -0700
-Date:   Mon, 24 Aug 2020 17:58:13 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 2/2] KVM: LAPIC: Guarantee the timer is in
- tsc-deadline mode when setting
-Message-ID: <20200825005813.GE15046@sjchrist-ice>
-References: <1597213838-8847-1-git-send-email-wanpengli@tencent.com>
- <1597213838-8847-2-git-send-email-wanpengli@tencent.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597213838-8847-2-git-send-email-wanpengli@tencent.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728152AbgHYBAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgHYBAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 21:00:06 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAB5C061574;
+        Mon, 24 Aug 2020 18:00:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9BDF812952B86;
+        Mon, 24 Aug 2020 17:43:19 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 18:00:05 -0700 (PDT)
+Message-Id: <20200824.180005.985671879284027774.davem@davemloft.net>
+To:     dinghao.liu@zju.edu.cn
+Cc:     kjlu@umn.edu, kuba@kernel.org, heiko@sntech.de, wxt@rock-chips.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: arc_emac: Fix memleak in arc_mdio_probe
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200823085650.912-1-dinghao.liu@zju.edu.cn>
+References: <20200823085650.912-1-dinghao.liu@zju.edu.cn>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 17:43:19 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 02:30:38PM +0800, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Check apic_lvtt_tscdeadline() mode directly instead of apic_lvtt_oneshot()
-> and apic_lvtt_period() to guarantee the timer is in tsc-deadline mode when
-> wrmsr MSR_IA32_TSCDEADLINE.
-> 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Date: Sun, 23 Aug 2020 16:56:47 +0800
 
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> When devm_gpiod_get_optional() fails, bus should be
+> freed just like when of_mdiobus_register() fails.
+> 
+> Fixes: 1bddd96cba03d ("net: arc_emac: support the phy reset for emac driver")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+
+Applied, thank you.
