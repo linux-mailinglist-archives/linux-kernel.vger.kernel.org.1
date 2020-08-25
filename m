@@ -2,147 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCF4251B05
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF58251B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgHYOke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:40:34 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:61998 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgHYOk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:40:26 -0400
-IronPort-SDR: jQXFCqjRieCb7k89dSJUs7dk2aK3dg/U7sIt28ziFJy7PplBNy7fQDlZrXhJVRnc1UcUVLEVL0
- WW8FlmNRme6hgqI2GJLjSXn1cvhygYj2JhoGtZeFEuy+HybNUWFU9LyiCyAI/bqMYFEqoVv80L
- 30tIA/hkHCBEeWU5VJZ0r08d7yZVp3meXhNet/DBfx9IyGCCU8LE7PkF+JLzoaeLq+RDJqFFzC
- vMGUlJJzlau1RbJMN3fS/IGkXcEvF4a4yDnSTX6Vxo/2B0VrkthedaTWs6LUUlWmTD55L2iYWl
- +/c=
-X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
-   d="scan'208";a="13593256"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 25 Aug 2020 16:40:24 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Tue, 25 Aug 2020 16:40:24 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Tue, 25 Aug 2020 16:40:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598366424; x=1629902424;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=sydRdP2v+a39i3S/V7PW3+s/8G7TCO3YNXAMHCLf95Y=;
-  b=AMN5fQc5FtN3uZ+KSJ/IsTH7uBBAfo919i8FZXa3cPHzIs6mIqRF8Dwl
-   ygknbiIUndX0YPgaYJqnArx7dglmubtZbtAOwSShK2THpAcZrDFT7M8KJ
-   coR6TPW1ODy/msF1QcGsDSIlYcCOZL4cK3iuYSL49BTg6Xw0HCz91VqFm
-   ylurN2LpnRff6tHfynmQbRafx5rMO+UwoQvpLyMvjI1DjE/7WHKGIxX8u
-   e8Q9+RlNkRFlv2mm9a2Vn2G/+Ahi6n0cpef4DTzLdbLIbgcM8zGwIviue
-   a1T6zIIGOn2BY9uJFE+az6JIyTR8u5J7Up4ib/m27wdEDf3SNgRffj0JS
-   g==;
-IronPort-SDR: 74gmj+cYDEgk0e9qj2hMNWee9DTqE0mcv8+Bp3zHQOoKWGSYjKk3Kz/yL7o+wu/7jWeC316yLs
- z+ICd4Ye8EAHf9ooF6u383zhguu0oHd8SgnnCkDwAxSV4bNrNLm8qhjE4c8/NDTCtaPbGMAnzg
- vJcibrHnApuxkMgrqUDiBMYKb+1ZDEJQoGTx+TnUDwbZsIQ4v0+lC47o2NWo6aDQm3lZ2LEXiR
- vlG8eWAhMdqMOD55fhSYK68YxTkMkxMvH0lyieN5coxtGXkRHd83jpCUEJNjLViek8B1h4ozXV
- jFM=
-X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
-   d="scan'208";a="13593255"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 25 Aug 2020 16:40:24 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id E458C280065;
-        Tue, 25 Aug 2020 16:40:23 +0200 (CEST)
-Message-ID: <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: (EXT) Re: [PATCH 2/2] ARM: dts: imx6qdl: tqma6: minor
- fixes
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 25 Aug 2020 16:40:23 +0200
-In-Reply-To: <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
-References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
-         <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
-         <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
-         <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
-         <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726650AbgHYOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:41:25 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40432 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgHYOlU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 10:41:20 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kAa88-0003Fw-2k; Tue, 25 Aug 2020 14:40:56 +0000
+Date:   Tue, 25 Aug 2020 16:40:54 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, mingo@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com,
+        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
+        Oleg Nesterov <oleg@redhat.com>, adobriyan@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de,
+        John Johansen <john.johansen@canonical.com>,
+        laoar.shao@gmail.com, Tim Murray <timmurray@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, stable <stable@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v2 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200825144054.obvhipwce7g7sgdm@wittgenstein>
+References: <20200824153036.3201505-1-surenb@google.com>
+ <20200825111524.v2bnoya35spde3zt@wittgenstein>
+ <CAJuCfpE7YQjBJDKBcc-20qEDsu9koirFuGSO306NDuKz6_9Tsg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpE7YQjBJDKBcc-20qEDsu9koirFuGSO306NDuKz6_9Tsg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 11:24 -0300, Fabio Estevam wrote:
-> Hi Matthias,
+On Tue, Aug 25, 2020 at 07:24:34AM -0700, Suren Baghdasaryan wrote:
+> On Tue, Aug 25, 2020 at 4:15 AM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> >
+> > On Mon, Aug 24, 2020 at 08:30:36AM -0700, Suren Baghdasaryan wrote:
+> > > Currently __set_oom_adj loops through all processes in the system to
+> > > keep oom_score_adj and oom_score_adj_min in sync between processes
+> > > sharing their mm. This is done for any task with more that one mm_users,
+> > > which includes processes with multiple threads (sharing mm and signals).
+> > > However for such processes the loop is unnecessary because their signal
+> > > structure is shared as well.
+> > > Android updates oom_score_adj whenever a tasks changes its role
+> > > (background/foreground/...) or binds to/unbinds from a service, making
+> > > it more/less important. Such operation can happen frequently.
+> > > We noticed that updates to oom_score_adj became more expensive and after
+> > > further investigation found out that the patch mentioned in "Fixes"
+> > > introduced a regression. Using Pixel 4 with a typical Android workload,
+> > > write time to oom_score_adj increased from ~3.57us to ~362us. Moreover
+> > > this regression linearly depends on the number of multi-threaded
+> > > processes running on the system.
+> > > Mark the mm with a new MMF_PROC_SHARED flag bit when task is created with
+> > > (CLONE_VM && !CLONE_THREAD && !CLONE_VFORK). Change __set_oom_adj to use
+> > > MMF_PROC_SHARED instead of mm_users to decide whether oom_score_adj
+> > > update should be synchronized between multiple processes. To prevent
+> > > races between clone() and __set_oom_adj(), when oom_score_adj of the
+> > > process being cloned might be modified from userspace, we use
+> > > oom_adj_mutex. Its scope is changed to global and it is renamed into
+> > > oom_adj_lock for naming consistency with oom_lock. The combination of
+> > > (CLONE_VM && !CLONE_THREAD) is rarely used except for the case of vfork().
+> > > To prevent performance regressions of vfork(), we skip taking oom_adj_lock
+> > > and setting MMF_PROC_SHARED when CLONE_VFORK is specified. Clearing the
+> > > MMF_PROC_SHARED flag (when the last process sharing the mm exits) is left
+> > > out of this patch to keep it simple and because it is believed that this
+> > > threading model is rare. Should there ever be a need for optimizing that
+> > > case as well, it can be done by hooking into the exit path, likely
+> > > following the mm_update_next_owner pattern.
+> > > With the combination of (CLONE_VM && !CLONE_THREAD && !CLONE_VFORK) being
+> > > quite rare, the regression is gone after the change is applied.
+> > >
+> > > Fixes: 44a70adec910 ("mm, oom_adj: make sure processes sharing mm have same view of oom_score_adj")
+> > > Reported-by: Tim Murray <timmurray@google.com>
+> > > Debugged-by: Minchan Kim <minchan@kernel.org>
+> > > Suggested-by: Michal Hocko <mhocko@kernel.org>
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > ---
+> > >
+> > > v2:
+> > > - Implemented proposal from Michal Hocko in:
+> > > https://lore.kernel.org/linux-fsdevel/20200820124109.GI5033@dhcp22.suse.cz/
+> > > - Updated description to reflect the change
+> > >
+> > > v1:
+> > > - https://lore.kernel.org/linux-mm/20200820002053.1424000-1-surenb@google.com/
+> > >
+> > >  fs/proc/base.c                 |  7 +++----
+> > >  include/linux/oom.h            |  1 +
+> > >  include/linux/sched/coredump.h |  1 +
+> > >  kernel/fork.c                  | 21 +++++++++++++++++++++
+> > >  mm/oom_kill.c                  |  2 ++
+> > >  5 files changed, 28 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/fs/proc/base.c b/fs/proc/base.c
+> > > index 617db4e0faa0..cff1a58a236c 100644
+> > > --- a/fs/proc/base.c
+> > > +++ b/fs/proc/base.c
+> > > @@ -1055,7 +1055,6 @@ static ssize_t oom_adj_read(struct file *file, char __user *buf, size_t count,
+> > >
+> > >  static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
+> > >  {
+> > > -     static DEFINE_MUTEX(oom_adj_mutex);
+> > >       struct mm_struct *mm = NULL;
+> > >       struct task_struct *task;
+> > >       int err = 0;
+> > > @@ -1064,7 +1063,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
+> > >       if (!task)
+> > >               return -ESRCH;
+> > >
+> > > -     mutex_lock(&oom_adj_mutex);
+> > > +     mutex_lock(&oom_adj_lock);
+> > >       if (legacy) {
+> > >               if (oom_adj < task->signal->oom_score_adj &&
+> > >                               !capable(CAP_SYS_RESOURCE)) {
+> > > @@ -1095,7 +1094,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
+> > >               struct task_struct *p = find_lock_task_mm(task);
+> > >
+> > >               if (p) {
+> > > -                     if (atomic_read(&p->mm->mm_users) > 1) {
+> > > +                     if (test_bit(MMF_PROC_SHARED, &p->mm->flags)) {
+> > >                               mm = p->mm;
+> > >                               mmgrab(mm);
+> > >                       }
+> > > @@ -1132,7 +1131,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
+> > >               mmdrop(mm);
+> > >       }
+> > >  err_unlock:
+> > > -     mutex_unlock(&oom_adj_mutex);
+> > > +     mutex_unlock(&oom_adj_lock);
+> > >       put_task_struct(task);
+> > >       return err;
+> > >  }
+> > > diff --git a/include/linux/oom.h b/include/linux/oom.h
+> > > index f022f581ac29..861f22bd4706 100644
+> > > --- a/include/linux/oom.h
+> > > +++ b/include/linux/oom.h
+> > > @@ -55,6 +55,7 @@ struct oom_control {
+> > >  };
+> > >
+> > >  extern struct mutex oom_lock;
+> > > +extern struct mutex oom_adj_lock;
+> > >
+> > >  static inline void set_current_oom_origin(void)
+> > >  {
+> > > diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
+> > > index ecdc6542070f..070629b722df 100644
+> > > --- a/include/linux/sched/coredump.h
+> > > +++ b/include/linux/sched/coredump.h
+> > > @@ -72,6 +72,7 @@ static inline int get_dumpable(struct mm_struct *mm)
+> > >  #define MMF_DISABLE_THP              24      /* disable THP for all VMAs */
+> > >  #define MMF_OOM_VICTIM               25      /* mm is the oom victim */
+> > >  #define MMF_OOM_REAP_QUEUED  26      /* mm was queued for oom_reaper */
+> > > +#define MMF_PROC_SHARED      27      /* mm is shared while sighand is not */
+> > >  #define MMF_DISABLE_THP_MASK (1 << MMF_DISABLE_THP)
+> > >
+> > >  #define MMF_INIT_MASK                (MMF_DUMPABLE_MASK | MMF_DUMP_FILTER_MASK |\
+> > > diff --git a/kernel/fork.c b/kernel/fork.c
+> > > index 4d32190861bd..6fce8ffa9b8b 100644
+> > > --- a/kernel/fork.c
+> > > +++ b/kernel/fork.c
+> > > @@ -1809,6 +1809,25 @@ static __always_inline void delayed_free_task(struct task_struct *tsk)
+> > >               free_task(tsk);
+> > >  }
+> > >
+> > > +static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
+> > > +{
+> > > +     /* Skip if kernel thread */
+> > > +     if (!tsk->mm)
+> > > +             return;
+> >
+> > Hm, wouldn't
+> >
+> >         if (tsk->flags & PF_KTHREAD)
+> >                 return;
+> >
+> > be clearer and more future proof?
 > 
-> On Tue, Aug 25, 2020 at 4:22 AM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
-> 
-> > Hmm, unless I'm overlooking something, this is not going to work:
-> > 
-> > - spi_get_gpio_descs() sets num_chipselect to the maximum of the
-> > num_chipselect set in the driver and the number of cs-gpios
-> > 
-> > - spi_imx_probe() sets num_chipselect to 3 if not specified in the
-> > device tree
-> > 
-> > So I think we would end up with 3 instead of 1 chipselect.
-> 
-> Oh, this has changed recently in 8cdcd8aeee281 ("spi: imx/fsl-lpspi:
-> Convert to GPIO descriptors"):
-> ....
-> 
-> -       } else {
-> -               u32 num_cs;
-> -
-> -               if (!of_property_read_u32(np, "num-cs", &num_cs))
-> -                       master->num_chipselect = num_cs;
-> -               /* If not preset, default value of 1 is used */
-> 
-> Initially, if num-cs was not present the default value for
-> num_chipselect was 1.
-> 
-> -       }
-> +       /*
-> +        * Get number of chip selects from device properties. This
-> can be
-> +        * coming from device tree or boardfiles, if it is not
-> defined,
-> +        * a default value of 3 chip selects will be used, as all the
-> legacy
-> +        * board files have <= 3 chip selects.
-> +        */
-> +       if (!device_property_read_u32(&pdev->dev, "num-cs", &val))
-> +               master->num_chipselect = val;
-> +       else
-> +               master->num_chipselect = 3;
-> 
-> Now it became 3.
-> 
-> I think this is a driver issue and we should fix the driver instead
-> of
-> requiring to pass num-cs to the device tree.
-> 
-> 
-> num-cs is not even documented in the spi-imx binding.
+> The check follows a similar pattern from copy_mm to detect when we are
 
-Makes sense. Does the following logic sound correct?
+Ah cool. Was mostly interest not me asking for a change. :)
+This looks like a simple enough fix now. Fwiw:
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-- If num-cs is set, use that (and add it to the docs)
-- If num-cs is unset, use the number of cs-gpios
-- If num-cs is unset and no cs-gpios are defined, use a driver-provided 
-default
-
-
-I'm not sure if 3 is a particularly useful default either, but it seems
-it was chosen to accommodate boards that previously set this via
-platform data. All SoCs I've checked (i.MX6Q/DL, i.MX6UL, i.MX7) have 4
-internal CS pins per ECSPI instance, so maybe the driver should use
-that as its default instead?
-
+Thanks!
+Christian
