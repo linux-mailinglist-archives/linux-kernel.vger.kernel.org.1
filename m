@@ -2,185 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EFF2513E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B5C2513F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 10:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728452AbgHYIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 04:14:05 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:9509 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgHYIOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 04:14:04 -0400
-IronPort-SDR: 3TZ+pFKs7+99wzg5P+7OVUGj7Aleqy2XQ6PeHy9Jnh00a6aA9nbnDlKSBSL2mFvX7X4Z1APj+O
- H/1SEYCHDR59cgkjjmIbjyxvTPPAg1ZQZlSdadW2F4TEPAFBLpTJzi7I4ovJLrReUXgzns7BEl
- G3vNt/5vlQl4/hkR6iilwOwuR4lHLjjEAYPLf6KUuZM2yUO9OhsbXZQLhttE6hH5KVmcy22A28
- bbz5rUHJJKh7wX7gCOlULeFjnR5M3INJrT7684mp1edsC0TXyY0ho5ghzPXh3ncspF7KC8DuOa
- Aog=
-X-IronPort-AV: E=Sophos;i="5.76,351,1592863200"; 
-   d="scan'208";a="13585174"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 25 Aug 2020 10:14:02 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Tue, 25 Aug 2020 10:14:02 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Tue, 25 Aug 2020 10:14:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598343242; x=1629879242;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SbnisccfhTeUVsH1MoGKsVpn0dy/gnGJsTIGiG2lQNA=;
-  b=ZEvN7jDPW+J0vAHgxc7i1JxAolwjIFAKHqIPg3UwgIssSfehdis8FMP1
-   9he1AQWVt276Wn01MfhAhUWOLBZNd/TzD4UghrYomPrDe7MQ3A7/L6C1t
-   IGvaskdjgvkkN+ye9JK5xfqgwHFdlzKe/zAoov8l/pgrk87OccD0mkUKJ
-   vTLCBIXhZm8QVQCYcZP1WbGshMbmcw6/WwD3O6MEgM4FfSNl/vIRFFInl
-   DMllpQCIzdOKBLgxWWszTQhY3c84As4cTCMQen3XIZOX9LyT7ay+VoDQ3
-   +BYfdhJiOLEwk19xoYVXlpHGos/euvLTE/WY1QGTAtFWt8MPQiRjnBipv
-   Q==;
-IronPort-SDR: /Hr8llNwaok/l5wxLk2a7W2+jptFZ1II6U8aUetTCCD4/EaBVgu0mLd6C6TcErxFDxM/8GMwtv
- rULJHQ6MMsCdDajiUT3EHpOMD53+xc7a/Fmugyfuk52a94oGist6EaelEXP2z7XBWlUkgKWKSm
- GlaTkRampryusq326ZbOQ3UjkzrZGc6efxixx8QTWZT81oKgyNDip9G7xwQOPhHBS/gUcnRSZR
- 1UzLq5ZA748gJfg8wWMTb67NbSsir+5m/3x8pA3cbzKFmpakuCDLOQewSytyppBLwOy/Nx7gGL
- bzg=
-X-IronPort-AV: E=Sophos;i="5.76,351,1592863200"; 
-   d="scan'208";a="13585173"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 25 Aug 2020 10:14:02 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 0F10A280065;
-        Tue, 25 Aug 2020 10:14:02 +0200 (CEST)
-Message-ID: <2b3604bf88082f8d8f6d21707907eff757b49362.camel@ew.tq-group.com>
-Subject: Re: [PATCH RFC leds + net-next v4 0/2] Add support for LEDs on
- Marvell PHYs
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        jacek.anaszewski@gmail.com, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Date:   Tue, 25 Aug 2020 10:13:59 +0200
-In-Reply-To: <20200728150530.28827-1-marek.behun@nic.cz>
-References: <20200728150530.28827-1-marek.behun@nic.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727961AbgHYIQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 04:16:39 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2689 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725924AbgHYIQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 04:16:39 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 5C7627B498D567DE738A;
+        Tue, 25 Aug 2020 09:16:37 +0100 (IST)
+Received: from [127.0.0.1] (10.47.8.13) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Tue, 25 Aug
+ 2020 09:16:36 +0100
+Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
+To:     Kajol Jain <kjain@linux.ibm.com>, <acme@kernel.org>
+CC:     <jolsa@redhat.com>, <ak@linux.intel.com>,
+        <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
+        <maddy@linux.ibm.com>, <ravi.bangoria@linux.ibm.com>
+References: <20200825074041.378520-1-kjain@linux.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <bc078472-e859-b7dc-c451-d737dd573edf@huawei.com>
+Date:   Tue, 25 Aug 2020 09:14:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <20200825074041.378520-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.13]
+X-ClientProxiedBy: lhreml702-chm.china.huawei.com (10.201.108.51) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-28 at 17:05 +0200, Marek Behún wrote:
-> Hi,
+On 25/08/2020 08:40, Kajol Jain wrote:
+> This patch adds new structure called 'json_event' inside jevents.h
+> file to improve the callback prototype inside jevent files.
+> Initially, whenever user want to add new field, they need to update
+> in all function callback which make it more and more complex with
+> increased number of parmeters.
+> With this change, we just need to add it in new structure 'json_event'.
 > 
-> this is v4 of my RFC adding support for LEDs connected to Marvell
-> PHYs.
 > 
-> Please note that if you want to test this, you still need to first
-> apply
-> the patch adding the LED private triggers support from Pavel's tree.
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>   tools/perf/pmu-events/jevents.c | 188 +++++++++++++-------------------
+>   tools/perf/pmu-events/jevents.h |  28 +++--
+>   2 files changed, 94 insertions(+), 122 deletions(-)
 > 
-https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=93690cdf3060c61dfce813121d0bfc055e7fa30d
+> This is the initial prototype to include structure for passing
+> json fileds. Please, Let me know if this is the right direction
+> to go forward.
+> This patch doen't include all the changes, like percore/perchip
+> field addition. If this looks fine I can send new patch set with
+> those changes.
 > 
-> What I still don't like about this is that the LEDs created by the
-> code
-> don't properly support device names. LEDs should have name in format
-> "device:color:function", for example "eth0:green:activity".
-> 
-> The code currently looks for attached netdev for a given PHY, but
-> at the time this happens there is no netdev attached, so the LEDs
-> gets
-> names without the device part (ie ":green:activity").
-> 
-> This can be addressed in next version by renaming the LED when a
-> netdev
-> is attached to the PHY, but first a API for LED device renaming needs
-> to
-> be proposed. I am going to try to do that. This would also solve the
-> same problem when userspace renames an interface.
-> 
-> And no, I don't want phydev name there.
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index fa86c5f997cc..606805af69fe 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -318,12 +318,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
+>   	close_table = 1;
+>   }
+>   
+> -static int print_events_table_entry(void *data, char *name, char *event,
+> -				    char *desc, char *long_desc,
+> -				    char *pmu, char *unit, char *perpkg,
+> -				    char *metric_expr,
+> -				    char *metric_name, char *metric_group,
+> -				    char *deprecated, char *metric_constraint)
 
+Right, too many paramaetrs of the same type, so looks reasonable to pass 
+a struct
 
-Hello Marek,
+[...]
 
-thanks for your patches - Andrew suggested me to have a look at them as
-I'm currently trying to add LED trigger support to the TI DP83867 PHY.
+>   		if (arch_std) {
+>   			/*
+>   			 * An arch standard event is referenced, so try to
+>   			 * fixup any unassigned values.
+>   			 */
+> -			err = try_fixup(fn, arch_std, &event, &desc, &name,
+> -					&long_desc, &pmu, &filter, &perpkg,
+> -					&unit, &metric_expr, &metric_name,
+> -					&metric_group, eventcode,
+> -					&deprecated, &metric_constraint);
+> +			err = try_fixup(fn, arch_std, eventcode, je);
+>   			if (err)
+>   				goto free_strings;
+>   		}
+> -		err = func(data, name, real_event(name, event), desc, long_desc,
+> -			   pmu, unit, perpkg, metric_expr, metric_name,
+> -			   metric_group, deprecated, metric_constraint);
+> +		je->event = real_event(je->name, je->event);
+> +		err = func(data, je);
+>   free_strings:
+> -		free(event);
+> -		free(desc);
+> -		free(name);
+> -		free(long_desc);
+>   		free(extra_desc);
+> -		free(pmu);
+>   		free(filter);
+> -		free(perpkg);
+> -		free(deprecated);
+> -		free(unit);
+> -		free(metric_expr);
+> -		free(metric_name);
+> -		free(metric_group);
+> -		free(metric_constraint);
+>   		free(arch_std);
+> +		free(je);
+>   
+>   		if (err)
+>   			break;
+> diff --git a/tools/perf/pmu-events/jevents.h b/tools/perf/pmu-events/jevents.h
+> index 2afc8304529e..e696edf70e9a 100644
+> --- a/tools/perf/pmu-events/jevents.h
+> +++ b/tools/perf/pmu-events/jevents.h
 
-Is there already a plan to add support for polarity and similiar
-settings, at least to the generic part of your changes?
+Somewhat unrelated - this file only seems to be included in jevents.c, 
+so I don't see why it exists...
 
-In the TI DP83867, there are 2 separate settings for each LED:
+> @@ -2,14 +2,28 @@
+>   #ifndef JEVENTS_H
+>   #define JEVENTS_H 1
+>   
+> +#include "pmu-events.h"
+> +
+> +struct json_event {
+> +	char *name;
+> +	char *event;
+> +	char *desc;
+> +	char *topic;
+> +	char *long_desc;
+> +	char *pmu;
+> +	char *unit;
+> +	char *perpkg;
+> +	char *metric_expr;
+> +	char *metric_name;
+> +	char *metric_group;
+> +	char *deprecated;
+> +	char *metric_constraint;
 
-- Trigger event
-- Polarity or override (active-high/active-low/force-high/force-low -
-the latter two would be used for led_brightness_set)
-- (There is also a 3rd register that defines the blink frequency, but
-as it allows only a single setting for all LEDs, I would ignore it for
-now)
+This looks very much like struct event_struct, so could look to consolidate:
 
-At least the per-LED polarity setting would be essential to have for
-this feature to be useful for our TQ-Systems mainboards with TI PHYs.
+struct event_struct {
+	struct list_head list;
+	char *name;
+	char *event;
+	char *desc;
+	char *long_desc;
+	char *pmu;
+	char *unit;
+	char *perpkg;
+	char *metric_expr;
+	char *metric_name;
+	char *metric_group;
+	char *deprecated;
+	char *metric_constraint;
+};
 
-
-Kind regards,
-Matthias
-
-
-
-> 
-> Changes since v3:
-> - addressed some of Andrew's suggestions
-> - phy_hw_led_mode.c renamed to phy_led.c
-> - the DT reading code is now also generic, moved to phy_led.c and
-> called
->   from phy_probe
-> - the function registering the phydev-hw-mode trigger is now called
-> from
->   phy_device.c function phy_init before registering genphy drivers
-> - PHY LED functionality now depends on CONFIG_LEDS_TRIGGERS
-> 
-> Changes since v2:
-> - to share code with other drivers which may want to also offer PHY
-> HW
->   control of LEDs some of the code was refactored and now resides in
->   phy_hw_led_mode.c. This code is compiled in when config option
->   LED_TRIGGER_PHY_HW is enabled. Drivers wanting to offer PHY HW
-> control
->   of LEDs should depend on this option.
-> - the "hw-control" trigger is renamed to "phydev-hw-mode" and is
->   registered by the code in phy_hw_led_mode.c
-> - the "hw_control" sysfs file is renamed to "hw_mode"
-> - struct phy_driver is extended by three methods to support PHY HW
-> LED
->   control
-> - I renamed the various HW control modes offeret by Marvell PHYs to
->   conform to other Linux mode names, for example the
-> "1000/100/10/else"
->   mode was renamed to "1Gbps/100Mbps/10Mbps", or "recv/else" was
-> renamed
->   to "rx" (this is the name of the mode in netdev trigger).
-> 
-> Marek
-> 
-> 
-> Marek Behún (2):
->   net: phy: add API for LEDs controlled by PHY HW
->   net: phy: marvell: add support for PHY LEDs via LED class
-> 
->  drivers/net/phy/Kconfig      |   4 +
->  drivers/net/phy/Makefile     |   1 +
->  drivers/net/phy/marvell.c    | 287
-> +++++++++++++++++++++++++++++++++++
->  drivers/net/phy/phy_device.c |  25 ++-
->  drivers/net/phy/phy_led.c    | 176 +++++++++++++++++++++
->  include/linux/phy.h          |  51 +++++++
->  6 files changed, 537 insertions(+), 7 deletions(-)
->  create mode 100644 drivers/net/phy/phy_led.c
+> +};
+> +
+>   int json_events(const char *fn,
+> -		int (*func)(void *data, char *name, char *event, char *desc,
+> -				char *long_desc,
+> -				char *pmu,
+> -				char *unit, char *perpkg, char *metric_expr,
+> -				char *metric_name, char *metric_group,
+> -				char *deprecated, char *metric_constraint),
+> -		void *data);
+> +		int (*func)(void *data, struct json_event *je),
+> +			void *data);
+> +
+>   char *get_cpu_str(void);
+>   
+>   #ifndef min
 > 
 
