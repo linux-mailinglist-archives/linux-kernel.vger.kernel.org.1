@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D40A251E0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B6B251E11
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgHYRR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:17:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:23064 "EHLO mga17.intel.com"
+        id S1726541AbgHYRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:18:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:23068 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgHYRRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:17:19 -0400
-IronPort-SDR: kRqIpSnhXWQcofIeM1V4mQrxUB29X9hpSBgRxiLiBev+MLakKiLK5SMTtpQxi5zqo2RBpRYg4/
- 35sMQxY+lTBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="136221306"
+        id S1726225AbgHYRRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:17:21 -0400
+IronPort-SDR: jQeRja6yCj+MnlmJoAS1GRQFOuzGViKDfGDXkviMmurUIHrPl/oHP8tzDb6h38zdJxa3AkVszI
+ kMtTfrnx5Ouw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="136221315"
 X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
-   d="scan'208";a="136221306"
+   d="scan'208";a="136221315"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 10:17:12 -0700
-IronPort-SDR: 3J5sB4kkc2mN1d+nqB4YZ35SH7MpSKKoj/cNPuNppRPv27Ipcoqi3wILTGipjJ7zwU5QWHYHcY
- ZOSzYywA4m9A==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 10:17:13 -0700
+IronPort-SDR: d3NZa9SV0Erea1YTulYBLN0sGbqCPfb1OHXJZ1polaNzEvInVIOYHnBaL3ccwUU0BvnRDoH1cA
+ zd5liRfe9T7A==
 X-IronPort-AV: E=Sophos;i="5.76,353,1592895600"; 
-   d="scan'208";a="331478405"
+   d="scan'208";a="331478421"
 Received: from bgarring-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.4.243])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 10:17:10 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 10:17:12 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
@@ -35,11 +35,16 @@ Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
         Rander Wang <rander.wang@linux.intel.com>,
         Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Hui Wang <hui.wang@canonical.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/4] regmap: add SoundWire 1.2 MBQ support
-Date:   Tue, 25 Aug 2020 12:16:52 -0500
-Message-Id: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
+Date:   Tue, 25 Aug 2020 12:16:53 -0500
+Message-Id: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
+References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -47,34 +52,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation of the upstream contribution of SDCA (SoundWire Device
-Class for Audio) ASoC codec drivers [1] [2], add regmap support
-SoundWire 1.2 MBQ support. The MBQ (Multi-Byte Quantity) registers
-need to be handled in a different way from regular 8-bit SoundWire
-registers, their main application is going to be for volume/gain
-controls.
+-ENOTSUPP is not a valid error code, use recommended value instead.
 
-The 3rd patch was initially suggested for inclusion in the SoundWire
-tree, and was modified to add more background information in the
-commit message as requested by Vinod Koul.
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/base/regmap/regmap-sdw.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Pierre-Louis Bossart (4):
-  regmap: sdw: move to -EOPNOTSUPP
-  regmap: sdw: add required header files
-  soundwire: SDCA: add helper macro to access controls
-  regmap: sdw: add support for SoundWire 1.2 MBQ
-
- drivers/base/regmap/Kconfig             |   6 +-
- drivers/base/regmap/Makefile            |   1 +
- drivers/base/regmap/regmap-sdw-mbq.c    | 102 ++++++++++++++++++++++++
- drivers/base/regmap/regmap-sdw.c        |   8 +-
- include/linux/regmap.h                  |  20 +++++
- include/linux/soundwire/sdw_registers.h |  13 +++
- 6 files changed, 146 insertions(+), 4 deletions(-)
- create mode 100644 drivers/base/regmap/regmap-sdw-mbq.c
-
-
-base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
+index 50a66382d87d..89d3856f5890 100644
+--- a/drivers/base/regmap/regmap-sdw.c
++++ b/drivers/base/regmap/regmap-sdw.c
+@@ -40,14 +40,14 @@ static int regmap_sdw_config_check(const struct regmap_config *config)
+ {
+ 	/* All register are 8-bits wide as per MIPI Soundwire 1.0 Spec */
+ 	if (config->val_bits != 8)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* Registers are 32 bits wide */
+ 	if (config->reg_bits != 32)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (config->pad_bits != 0)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
