@@ -2,153 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D67251D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27F5251D87
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgHYQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:43:24 -0400
-Received: from gateway34.websitewelcome.com ([192.185.149.13]:40783 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725936AbgHYQnU (ORCPT
+        id S1726542AbgHYQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 12:52:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25018 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725947AbgHYQwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:43:20 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id E69AB86EAB0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 11:43:17 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Ac2Xk48AtLFNkAc2XkYVEl; Tue, 25 Aug 2020 11:43:17 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cOGcQuNcgu27ssRe7+iEilXICwkaDhh0xHUhsfky6/A=; b=fRFpmnqdD+FV804lUWuyvAZWBn
-        X4dF1aIY3v3YTV0F+UJuTPHXi6WvGPmwCRi4qh4bbjlMcUBZJYX4jJb8tdD+o3m6UWuAe7yo+r5Zs
-        obIUsnhWJ33DeeIc16B9xOVd7ioOInz5s0vcrRCWgrORSU4RWYMowBDr+COgroKxen4E8pNCtmFR5
-        2n5C5sBchDXyzeAZXXt+Dr1dOuolMFUszSqBrQBOV7+5Hd8V/laHZqXYrvHqEKBfEELVVq+ciHYbJ
-        C93vdYvzgpYMuETgWOp04+omT/m6jjxxSOWPP3FSVWdAmdlTjpFC8TjG9WbXGzChZD2bvtlosLOl8
-        xC45sjSQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58602 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kAc2X-000vvH-4N; Tue, 25 Aug 2020 11:43:17 -0500
-Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
-To:     Joe Perches <joe@perches.com>, Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Roland Dreier <roland@purestorage.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200825155142.349651-1-alex.dewar90@gmail.com>
- <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
- <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
-Date:   Tue, 25 Aug 2020 11:49:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 25 Aug 2020 12:52:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598374333;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GH3XQPFWbt0lqGRNQZepy/lyen7L04oI1NtwwdbRf3c=;
+        b=NrXlumnecMEHxwDwn5rsp9Ui8UGR+Qz/VL2uyOKCAPTxCpKnAktJCLNa1uYWTACXU3Cjfj
+        FBIDQwDatcXhkFtRYfHFf/YAQH9fL3gDrD1OXX5mvuj9YPG63R1ZZVap1pwtBkTESFYwh9
+        YeE1CgnRV9XeAAEUX90m4d1rvGbqRIc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-l_VdJnjNOFeSdR2bdQk5Dg-1; Tue, 25 Aug 2020 12:52:07 -0400
+X-MC-Unique: l_VdJnjNOFeSdR2bdQk5Dg-1
+Received: by mail-qt1-f200.google.com with SMTP id c8so3174571qtp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 09:52:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=GH3XQPFWbt0lqGRNQZepy/lyen7L04oI1NtwwdbRf3c=;
+        b=QhOFNfQTwSxbYDPHsky/TU0cC8MeN9YzIin+d6Po+M+GYGhCIeb0FsMjh2xe4K/f9E
+         DZKz/50yokE5SOYYFypgq1xbh7t/PiHMqKcaGivPGxLJ8rxgpa8GoQerwy7XfCt+ZRrg
+         hZ3NyRooNjlDiGENmWf0j4rlvxjm0zFHVzBCPRqNjRcuJGLjPCxSiTJn4uo3UUL8aXJO
+         aB6zluOa2S75AeXTtA3xeMcL2UbllePjlhI8JTABJ1CQCzpfLXuY89aDg5FTKKO5DaRF
+         wUzuPzvwc1DzkAbVZHMNOGvai0+fw+Y7pJTjohi8tpma//yo7Y/Yh3u5Jadgp5CE3ayo
+         a3FQ==
+X-Gm-Message-State: AOAM532t/Mjk9ZZetG5MUHYJwhW8ENCBWP8CNPFmKC2MAPgnzVYke3Sy
+        z4HMyp8lF21K/dEt5YtIi2bSFDQbe0Crzv2jPnNQd/HpVyzPJeUBflCF9a4gpIKOnbHuKt5pO2O
+        eMDZKAyLF4KMC7FP6X7YAcset
+X-Received: by 2002:ac8:1773:: with SMTP id u48mr9877466qtk.259.1598374327296;
+        Tue, 25 Aug 2020 09:52:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPR44U8niNebYvUrKITYg+kbJjP80i+hSedazIwkyueDHLFtKe3ByC0Rxwfw2DlIYaJ18R6g==
+X-Received: by 2002:ac8:1773:: with SMTP id u48mr9877443qtk.259.1598374326949;
+        Tue, 25 Aug 2020 09:52:06 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id k3sm12047360qkb.95.2020.08.25.09.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 09:52:06 -0700 (PDT)
+Message-ID: <76392bff28359a88fbdf0857f011e0ed9f666dc4.camel@redhat.com>
+Subject: Re: [Nouveau] [PATCH 1/2] drm/nouveau/kms/nv50-: Program notifier
+ offset before requesting disp caps
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Ben Skeggs <skeggsb@gmail.com>
+Cc:     ML nouveau <nouveau@lists.freedesktop.org>,
+        Sasha Levin <sashal@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, stable@vger.kernel.org
+Date:   Tue, 25 Aug 2020 12:52:05 -0400
+In-Reply-To: <CACAvsv6hymdcGkEcigL3fWACZ_1POpB+aefq9d9ChnYv_dHnVg@mail.gmail.com>
+References: <20200824183253.826343-1-lyude@redhat.com>
+         <20200824183253.826343-2-lyude@redhat.com>
+         <CACAvsv6hymdcGkEcigL3fWACZ_1POpB+aefq9d9ChnYv_dHnVg@mail.gmail.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kAc2X-000vvH-4N
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58602
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 17
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/25/20 11:26, Joe Perches wrote:
-> On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
->>
->> On 8/25/20 10:51, Alex Dewar wrote:
->>> Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
->>> erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
->>> were later converted to fallthrough statements by commit df561f6688fe
->>> ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
->>> warning about unreachable code.
->>>
->>> Remove the fallthrough statements and replace the mass of gotos with
->>> simple return statements to make the code terser and less bug-prone.
->>>
->>
->> This should be split up into two separate patches: one to address the
->> fallthrough markings, and another one for the gotos.
-> 
-> I don't think it's necessary to break this into multiple patches.
-> Logical changes in a single patch are just fine, micro patches
-> aren't that useful.
+On Tue, 2020-08-25 at 08:28 +1000, Ben Skeggs wrote:
+> On Tue, 25 Aug 2020 at 04:33, Lyude Paul <lyude@redhat.com> wrote:
+> > Not entirely sure why this never came up when I originally tested this
+> > (maybe some BIOSes already have this setup?) but the ->caps_init vfunc
+> > appears to cause the display engine to throw an exception on driver
+> > init, at least on my ThinkPad P72:
+> > 
+> > nouveau 0000:01:00.0: disp: chid 0 mthd 008c data 00000000 0000508c 0000102b
+> > 
+> > This is magic nvidia speak for "You need to have the DMA notifier offset
+> > programmed before you can call NV507D_GET_CAPABILITIES." So, let's fix
+> > this by doing that, and also perform an update afterwards to prevent
+> > racing with the GPU when reading capabilities.
+> > 
+> > Changes since v1:
+> > * Don't just program the DMA notifier offset, make sure to actually
+> >   perform an update
+> I'm not sure there's a need to send an Update() method here, I believe
+> GetCapabilities() is an action method on its own right?
 > 
 
-There is a reason for this. Read the changelog text and review the patch.
+I'm not entirely sure about this part tbh. I do know that we need to call
+GetCapabilities() _after_ the DMA notifier offset is programmed. But, my
+assumption was that if GetCapabilities() requires a DMA notifier offset to store
+its results in, we'd probably want to fire an update or something to make sure
+that we're not reading before it finishes writing capabilities?
 
-Thanks
---
-Gustavo
+> Ben.
+> 
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > Fixes: 4a2cb4181b07 ("drm/nouveau/kms/nv50-: Probe SOR and PIOR caps for DP
+> > interlacing support")
+> > Cc: <stable@vger.kernel.org> # v5.8+
+> > ---
+> >  drivers/gpu/drm/nouveau/dispnv50/core507d.c | 25 ++++++++++++++++-----
+> >  1 file changed, 19 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+> > b/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+> > index e341f572c2696..5e86feec3b720 100644
+> > --- a/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+> > +++ b/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+> > @@ -65,13 +65,26 @@ core507d_ntfy_init(struct nouveau_bo *bo, u32 offset)
+> >  int
+> >  core507d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
+> >  {
+> > -       u32 *push = evo_wait(&disp->core->chan, 2);
+> > +       struct nv50_core *core = disp->core;
+> > +       u32 interlock[NV50_DISP_INTERLOCK__SIZE] = {0};
+> > +       u32 *push;
+> > 
+> > -       if (push) {
+> > -               evo_mthd(push, 0x008c, 1);
+> > -               evo_data(push, 0x0);
+> > -               evo_kick(push, &disp->core->chan);
+> > -       }
+> > +       core->func->ntfy_init(disp->sync, NV50_DISP_CORE_NTFY);
+> > +
+> > +       push = evo_wait(&core->chan, 4);
+> > +       if (!push)
+> > +               return 0;
+> > +
+> > +       evo_mthd(push, 0x0084, 1);
+> > +       evo_data(push, 0x80000000 | NV50_DISP_CORE_NTFY);
+> > +       evo_mthd(push, 0x008c, 1);
+> > +       evo_data(push, 0x0);
+> > +       evo_kick(push, &core->chan);
+> > +
+> > +       core->func->update(core, interlock, false);
+> > +       if (core->func->ntfy_wait_done(disp->sync, NV50_DISP_CORE_NTFY,
+> > +                                      core->chan.base.device))
+> > +               NV_ERROR(drm, "core notifier timeout\n");
+> > 
+> >         return 0;
+> >  }
+> > --
+> > 2.26.2
+> > 
+> > _______________________________________________
+> > Nouveau mailing list
+> > Nouveau@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/nouveau
+-- 
+Sincerely,
+      Lyude Paul (she/her)
+      Software Engineer at Red Hat
+
