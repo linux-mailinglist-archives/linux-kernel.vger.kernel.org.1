@@ -2,201 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A23252210
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67A4252216
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgHYUnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 16:43:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44987 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726257AbgHYUnk (ORCPT
+        id S1726700AbgHYUoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 16:44:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54028 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726627AbgHYUoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 16:43:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598388218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cxP4EgaB0Xz0w6dYf0l2wcvtIDiO0CRcIDu5KxI9VFs=;
-        b=bamuOPJ6/ydvnZ1R8THB1Fs+/LGudd8l30WZbXEs3szQTcql+hBmPJ8wfL/KIQcDZnCzBn
-        J9fZD7B4S6F55SP5Htbo3N28X7VXi/838ddrxR10sXHA0Io5JYcBuq0M2eit4CUJBHi0m8
-        dks6HpeyqCJTbugbXHI9/FhPUMjHYM8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-7wO29EiuOyeMIOLpHIkNRQ-1; Tue, 25 Aug 2020 16:43:34 -0400
-X-MC-Unique: 7wO29EiuOyeMIOLpHIkNRQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 175A71DDE0;
-        Tue, 25 Aug 2020 20:43:32 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3723119C58;
-        Tue, 25 Aug 2020 20:43:31 +0000 (UTC)
-Date:   Tue, 25 Aug 2020 14:43:30 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     bhelgaas@google.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        mpe@ellerman.id.au, oohall@gmail.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: Introduce flag for detached virtual functions
-Message-ID: <20200825144330.70530629@x1.home>
-In-Reply-To: <6917634d-0976-6f7b-6efc-a7a855686fb9@linux.ibm.com>
-References: <1597333243-29483-1-git-send-email-mjrosato@linux.ibm.com>
-        <1597333243-29483-2-git-send-email-mjrosato@linux.ibm.com>
-        <6917634d-0976-6f7b-6efc-a7a855686fb9@linux.ibm.com>
-Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Tue, 25 Aug 2020 16:44:06 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PKWEj9143603;
+        Tue, 25 Aug 2020 16:44:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=qq9xo8OEuC+VNL592BWu6lVgpZVzSQUt/espQc/7n+A=;
+ b=ULlc7yStgzIc5WXanqAqDaPQ8c8j2d58czY2G2ZKTQ343iorNtYqvQwPv2I63YqHhTEg
+ IwaXeuf+/NcHhqH+cvXFmUWOapmfL1v0mgFUfyxRaxi0K9smx8n0eaJ3/2bd8H48ryNe
+ o1A1vnV51SdHfgJsgShLcgkY3PFxn05emjX5oBwQKYhPvk6KCValbxTdjnpIdA3eY7wa
+ TQjRWG9f2iMjz15YbCloxhWfxjboI1R/jbu4Ffg98tdSMllSLfDWc/5B3jUPFXHgTMiH
+ tuqu+HGAc47ARvATsEpmUqawn3IA55vnoU/x2IfVmJAsub5raXO4sgylSf2e7Bs3mCY7 zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3356116nyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 16:44:00 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07PKWIxg143749;
+        Tue, 25 Aug 2020 16:44:00 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3356116nx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 16:44:00 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07PKcqO4004186;
+        Tue, 25 Aug 2020 20:43:57 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 332ujrtat5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 20:43:57 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07PKht9623986526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Aug 2020 20:43:55 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A210A4051;
+        Tue, 25 Aug 2020 20:43:55 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9038A404D;
+        Tue, 25 Aug 2020 20:43:51 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.103.4])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 25 Aug 2020 20:43:51 +0000 (GMT)
+Message-ID: <879a504a63021b248e8d2ce952283bbf83f21688.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 2/3] IMA: add policy to support measuring critical
+ data from kernel components
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Tue, 25 Aug 2020 16:43:50 -0400
+In-Reply-To: <e701ad15-1672-d208-c2b8-8228a728c98d@linux.microsoft.com>
+References: <20200821182107.5328-1-tusharsu@linux.microsoft.com>
+         <20200821182107.5328-3-tusharsu@linux.microsoft.com>
+         <d82c5cdab170d3dcc513b38632801c3aa14ca389.camel@linux.ibm.com>
+         <e701ad15-1672-d208-c2b8-8228a728c98d@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-25_09:2020-08-25,2020-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008250150
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 10:21:24 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-
-> On 8/13/20 11:40 AM, Matthew Rosato wrote:
-> > s390x has the notion of providing VFs to the kernel in a manner
-> > where the associated PF is inaccessible other than via firmware.
-> > These are not treated as typical VFs and access to them is emulated
-> > by underlying firmware which can still access the PF.  After
-> > the referened commit however these detached VFs were no longer able
-> > to work with vfio-pci as the firmware does not provide emulation of
-> > the PCI_COMMAND_MEMORY bit.  In this case, let's explicitly recognize
-> > these detached VFs so that vfio-pci can allow memory access to
-> > them again. >
-> > Fixes: abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO access on disabled memory")
-> > Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>  
+On Tue, 2020-08-25 at 10:32 -0700, Tushar Sugandhi wrote:
 > 
-> Polite ping - If unhappy with the approach moving in this direction, I 
-> have also played around with Alex's prior suggestion of a dev_flags bit 
-> that denotes a device that doesn't implement PCI_COMMAND_MEMORY.  Please 
-> advise.
-
-
-I'm not unhappy with it, but there are quite a number of users of
-is_virtfn and I wonder to what extent we can replace all of them.  For
-instance if the longer term plan would be to consider is_virtfn private
-then I think there are places in vfio-pci where we'd need to test
-(pci_physfn(pdev) != pdev) in order to make sure we're working on the
-topology we expect (see VF token handling).  If we want to consider
-these detached VFs as actual VFs (minus the PF) everywhere in the code,
-rather than a PF that doesn't implement random features as determined
-by the bare metal hypervisor, then this might be the way to go.  The
-former implies that we'd migrate away from is_virtfn to this new
-interface, potentially changing the code path these devices would take
-as that adoption proceeds.  Have you taken a look at other is_virtfn
-use cases to see if any would be strictly undesirable for this class of
-devices?  Otherwise I think Bjorn needs to weigh in since the PCI-core
-change is a central aspect to this proposal.  Thanks,
-
-Alex
-
-
-> > ---
-> >   arch/s390/pci/pci_bus.c            | 13 +++++++++++++
-> >   drivers/vfio/pci/vfio_pci_config.c |  8 ++++----
-> >   include/linux/pci.h                |  4 ++++
-> >   3 files changed, 21 insertions(+), 4 deletions(-)
+> On 2020-08-24 3:46 p.m., Mimi Zohar wrote:
+> > On Fri, 2020-08-21 at 11:21 -0700, Tushar Sugandhi wrote:
+> > > There would be several candidate kernel components suitable for IMA
+> > > measurement. Not all of them would have support for IMA measurement.
+> > > Also, system administrators may not want to measure data for all of
+> > > them, even when they support IMA measurement. An IMA policy specific
+> > > to various kernel components is needed to measure their respective
+> > > critical data.
+> > > 
+> > > Add a new IMA policy CRITICAL_DATA+data_sources to support measuring
+> > > various critical kernel components. This policy would enable the
+> > > system administrators to limit the measurement to the components,
+> > > if the components support IMA measurement.
+> > > 
+> > > Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> > > ---
+> > >   Documentation/ABI/testing/ima_policy |  6 ++-
+> > >   security/integrity/ima/ima.h         |  1 +
+> > >   security/integrity/ima/ima_api.c     |  2 +-
+> > >   security/integrity/ima/ima_policy.c  | 62 +++++++++++++++++++++++++---
+> > >   4 files changed, 63 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> > > index cd572912c593..a0dd0f108555 100644
+> > > --- a/Documentation/ABI/testing/ima_policy
+> > > +++ b/Documentation/ABI/testing/ima_policy
+> > > @@ -29,7 +29,7 @@ Description:
+> > >   		base: 	func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK][MODULE_CHECK]
+> > >   				[FIRMWARE_CHECK]
+> > >   				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+> > > -				[KEXEC_CMDLINE] [KEY_CHECK]
+> > > +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+> > >   			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+> > >   			       [[^]MAY_EXEC]
+> > >   			fsmagic:= hex value
+> > > @@ -125,3 +125,7 @@ Description:
+> > >   		keys added to .builtin_trusted_keys or .ima keyring:
+> > >   
+> > >   			measure func=KEY_CHECK keyrings=.builtin_trusted_keys|.ima
+> > > +
+> > > +		Example of measure rule using CRITICAL_DATA to measure critical data
+> > > +
+> > > +			measure func=CRITICAL_DATA data_sources=selinux|apparmor|dm-crypt
 > > 
-> > diff --git a/arch/s390/pci/pci_bus.c b/arch/s390/pci/pci_bus.c
-> > index 642a993..1b33076 100644
-> > --- a/arch/s390/pci/pci_bus.c
-> > +++ b/arch/s390/pci/pci_bus.c
-> > @@ -184,6 +184,19 @@ static inline int zpci_bus_setup_virtfn(struct zpci_bus *zbus,
-> >   }
-> >   #endif
-> >   
-> > +void pcibios_bus_add_device(struct pci_dev *pdev)
-> > +{
-> > +	struct zpci_dev *zdev = to_zpci(pdev);
-> > +
-> > +	/*
-> > +	 * If we have a VF on a non-multifunction bus, it must be a VF that is
-> > +	 * detached from its parent PF.  We rely on firmware emulation to
-> > +	 * provide underlying PF details.
-> > +	 */
-> > +	if (zdev->vfn && !zdev->zbus->multifunction)
-> > +		pdev->detached_vf = 1;
-> > +}
-> > +
-> >   static int zpci_bus_add_device(struct zpci_bus *zbus, struct zpci_dev *zdev)
-> >   {
-> >   	struct pci_bus *bus;
-> > diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-> > index d98843f..98f93d1 100644
-> > --- a/drivers/vfio/pci/vfio_pci_config.c
-> > +++ b/drivers/vfio/pci/vfio_pci_config.c
-> > @@ -406,7 +406,7 @@ bool __vfio_pci_memory_enabled(struct vfio_pci_device *vdev)
-> >   	 * PF SR-IOV capability, there's therefore no need to trigger
-> >   	 * faults based on the virtual value.
-> >   	 */
-> > -	return pdev->is_virtfn || (cmd & PCI_COMMAND_MEMORY);
-> > +	return dev_is_vf(&pdev->dev) || (cmd & PCI_COMMAND_MEMORY);
-> >   }
-> >   
-> >   /*
-> > @@ -420,7 +420,7 @@ static void vfio_bar_restore(struct vfio_pci_device *vdev)
-> >   	u16 cmd;
-> >   	int i;
-> >   
-> > -	if (pdev->is_virtfn)
-> > +	if (dev_is_vf(&pdev->dev))
-> >   		return;
-> >   
-> >   	pci_info(pdev, "%s: reset recovery - restoring BARs\n", __func__);
-> > @@ -521,7 +521,7 @@ static int vfio_basic_config_read(struct vfio_pci_device *vdev, int pos,
-> >   	count = vfio_default_config_read(vdev, pos, count, perm, offset, val);
-> >   
-> >   	/* Mask in virtual memory enable for SR-IOV devices */
-> > -	if (offset == PCI_COMMAND && vdev->pdev->is_virtfn) {
-> > +	if ((offset == PCI_COMMAND) && (dev_is_vf(&vdev->pdev->dev))) {
-> >   		u16 cmd = le16_to_cpu(*(__le16 *)&vdev->vconfig[PCI_COMMAND]);
-> >   		u32 tmp_val = le32_to_cpu(*val);
-> >   
-> > @@ -1713,7 +1713,7 @@ int vfio_config_init(struct vfio_pci_device *vdev)
-> >   	vdev->rbar[5] = le32_to_cpu(*(__le32 *)&vconfig[PCI_BASE_ADDRESS_5]);
-> >   	vdev->rbar[6] = le32_to_cpu(*(__le32 *)&vconfig[PCI_ROM_ADDRESS]);
-> >   
-> > -	if (pdev->is_virtfn) {
-> > +	if (dev_is_vf(&pdev->dev)) {
-> >   		*(__le16 *)&vconfig[PCI_VENDOR_ID] = cpu_to_le16(pdev->vendor);
-> >   		*(__le16 *)&vconfig[PCI_DEVICE_ID] = cpu_to_le16(pdev->device);
-> >   
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index 8355306..7c062de 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -445,6 +445,7 @@ struct pci_dev {
-> >   	unsigned int	is_probed:1;		/* Device probing in progress */
-> >   	unsigned int	link_active_reporting:1;/* Device capable of reporting link active */
-> >   	unsigned int	no_vf_scan:1;		/* Don't scan for VFs after IOV enablement */
-> > +	unsigned int	detached_vf:1;		/* VF without local PF access */
-> >   	pci_dev_flags_t dev_flags;
-> >   	atomic_t	enable_cnt;	/* pci_enable_device has been called */
-> >   
-> > @@ -1057,6 +1058,8 @@ struct resource *pci_find_parent_resource(const struct pci_dev *dev,
-> >   void pci_sort_breadthfirst(void);
-> >   #define dev_is_pci(d) ((d)->bus == &pci_bus_type)
-> >   #define dev_is_pf(d) ((dev_is_pci(d) ? to_pci_dev(d)->is_physfn : false))
-> > +#define dev_is_vf(d) ((dev_is_pci(d) ? (to_pci_dev(d)->is_virtfn || \
-> > +					to_pci_dev(d)->detached_vf) : false))
-> >   
-> >   /* Generic PCI functions exported to card drivers */
-> >   
-> > @@ -1764,6 +1767,7 @@ static inline struct pci_dev *pci_get_domain_bus_and_slot(int domain,
-> >   
-> >   #define dev_is_pci(d) (false)
-> >   #define dev_is_pf(d) (false)
-> > +#define dev_is_vf(d) (false)
-> >   static inline bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags)
-> >   { return false; }
-> >   static inline int pci_irqd_intx_xlate(struct irq_domain *d,
-> >   
+> > This example uses "data_sources" without first defining it in the
+> > "option:" section.  Defining two new options is an indication that this
+> Thanks. I will define "data_sources" first in "option:" section.
+> > patch should be split up.  One which defines the "CRITICAL_DATA" and
+> > another one which defines the new key value pair.  The term
+> I intentionally kept the "CRITICAL_DATA" and "data_sources" in the same
+> patch.
 > 
+> CRITICAL_DATA is different than KEY_CHECK because in case of KEY_CHECK,
+> "keyrings=" is optional. If "keyrings=" is not specified, then we
+> measure all keyrings.
+> 
+> Where for CRITICAL_DATA, "data_sources=" is mandatory.
+> 
+> Because the data sources would be diverse and orthogonal to each other,
+> (unlike "keyrings=") - not specifying "data_sources=" shouldn't result
+> in IMA blindly measuring all data sources.
+
+Good point.
+> 
+> Since CRITICAL_DATA, and "data_sources=" go hand in hand, I wanted them
+> to be part of the same patch.
+
+Separating them will help clarify the patch description.  There's no
+harm in defining the critical data source first.
+
+> > "data_sources" is pretty generic.  Perhaps constrain it a bit by re-
+> > naming it "critical_data=".  Or was such using a generic name
+> > intentional?
+> > 
+> We intentionally kept the name generic because the data to be measured
+> could be coming from any kernel component with any granularity (from a
+> single bool to megabytes of data). The kernel component is also loosely
+> defined here. It could be an LSM (like SELinux), or a broader base layer
+> (like device-mapper), or a specific module (like dm-crypt), or it could
+> be different parts of a single module.
+> 
+> Also, we didn't want to name "data_sources" as "critical_data" to avoid
+> confusion with func "CRITICAL_DATA".
+
+The point is that you're measuring critical data, not just any data
+from any source.  Whatever term is used, it needs to be added to the
+Documentation/ABI/testing/ima_policy.  I think something that is self
+describing will help.  See what makes the most sense.
+
+> > Normally "CRITICAL_DATA" would be defined with the critical data hook,
+> > but that seems to be defined in patch 3/3 "IMA: define IMA hook to
+> > measure critical data from kernel components".
+> > 
+> I can make the "CRITICAL_DATA" and the hook as part of the same patch.
+> That would mean combining patch 2 and 3 into a single one.
+> 
+> Does it sound ok?
+
+In the other thread, we discussed separating out "measure_payload_hash"from other changes.  The end result you want one logical change per patch.  Each patch builds upon the previous one.  (Look at how Tyler does it.)
+
+> > > diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> > > index 8875085db689..0f4209a92bfb 100644
+> > > --- a/security/integrity/ima/ima.h
+> > > +++ b/security/integrity/ima/ima.h
+> > > @@ -200,6 +200,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+> > >   	hook(POLICY_CHECK, policy)			\
+> > >   	hook(KEXEC_CMDLINE, kexec_cmdline)		\
+> > >   	hook(KEY_CHECK, key)				\
+> > > +	hook(CRITICAL_DATA, critical_data)		\
+> > >   	hook(MAX_CHECK, none)
+> > >   
+> > >   #define __ima_hook_enumify(ENUM, str)	ENUM,
+> > > diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> > > index af218babd198..9917e1730cb6 100644
+> > > --- a/security/integrity/ima/ima_api.c
+> > > +++ b/security/integrity/ima/ima_api.c
+> > > @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+> > >    *		subj=, obj=, type=, func=, mask=, fsmagic=
+> > >    *	subj,obj, and type: are LSM specific.
+> > >    *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
+> > > - *	| KEXEC_CMDLINE | KEY_CHECK
+> > > + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
+> > >    *	mask: contains the permission mask
+> > >    *	fsmagic: hex value
+> > >    *
+> > > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > > index 8866e84d0062..7b649095ac7a 100644
+> > > --- a/security/integrity/ima/ima_policy.c
+> > > +++ b/security/integrity/ima/ima_policy.c
+> > > @@ -33,6 +33,7 @@
+> > >   #define IMA_PCR		0x0100
+> > >   #define IMA_FSNAME	0x0200
+> > >   #define IMA_KEYRINGS	0x0400
+> > > +#define IMA_DATA_SOURCES	0x0800
+> > >   
+> > >   #define UNKNOWN		0
+> > >   #define MEASURE		0x0001	/* same as IMA_MEASURE */
+> > > @@ -84,6 +85,7 @@ struct ima_rule_entry {
+> > >   	} lsm[MAX_LSM_RULES];
+> > >   	char *fsname;
+> > >   	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+> > > +	struct ima_rule_opt_list *data_sources; /* Measure data from these sources */
+> > >   	struct ima_template_desc *template;
+> > >   };
+> > >   
+> > > @@ -508,14 +510,23 @@ static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
+> > >   {
+> > >   	int i;
+> > >   
+> > > -	if (func == KEY_CHECK) {
+> > > -		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
+> > > -		       ima_match_rule_data(rule, rule->keyrings, func_data,
+> > > -					   true, cred);
+> > > -	}
+> > >   	if ((rule->flags & IMA_FUNC) &&
+> > >   	    (rule->func != func && func != POST_SETATTR))
+> > >   		return false;
+> > > +
+> > > +	switch (func) {
+> > > +	case KEY_CHECK:
+> > > +		return ((rule->func == func) &&
+> > > +			ima_match_rule_data(rule, rule->keyrings,
+> > > +					    func_data, true, cred));
+> > > +	case CRITICAL_DATA:
+> > > +		return ((rule->func == func) &&
+> > > +			ima_match_rule_data(rule, rule->data_sources,
+> > > +					    func_data, false, cred));
+> > > +	default:
+> > > +		break;
+> > > +	}
+> > > +
+> > >   	if ((rule->flags & IMA_MASK) &&
+> > >   	    (rule->mask != mask && func != POST_SETATTR))
+> > >   		return false;
+> > > @@ -911,7 +922,7 @@ enum {
+> > >   	Opt_uid_lt, Opt_euid_lt, Opt_fowner_lt,
+> > >   	Opt_appraise_type, Opt_appraise_flag,
+> > >   	Opt_permit_directio, Opt_pcr, Opt_template, Opt_keyrings,
+> > > -	Opt_err
+> > > +	Opt_data_sources, Opt_err
+> > >   };
+> > >   
+> > >   static const match_table_t policy_tokens = {
+> > > @@ -948,6 +959,7 @@ static const match_table_t policy_tokens = {
+> > >   	{Opt_pcr, "pcr=%s"},
+> > >   	{Opt_template, "template=%s"},
+> > >   	{Opt_keyrings, "keyrings=%s"},
+> > > +	{Opt_data_sources, "data_sources=%s"},
+> > >   	{Opt_err, NULL}
+> > >   };
+> > >   
+> > > @@ -1110,6 +1122,19 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> > >   		if (ima_rule_contains_lsm_cond(entry))
+> > >   			return false;
+> > >   
+> > > +		break;
+> > > +	case CRITICAL_DATA:
+> > > +		if (entry->action & ~(MEASURE | DONT_MEASURE))
+> > > +			return false;
+> > > +
+> > > +		if (!(entry->flags & IMA_DATA_SOURCES) ||
+> > > +		    (entry->flags & ~(IMA_FUNC | IMA_UID | IMA_PCR |
+> > > +		    IMA_DATA_SOURCES)))
+> > > +			return false;
+> > 
+> > Requiring IMA_FUNC and IMA_DATA_SOURCES makes sense, but why are
+> > IMA_UID and IMA_PCR required?
+> > 
+> Since the data to be measured could be for any scenario, I didn't want
+> to restrict the kernel components from choosing UID to measure the data
+> for, or restrict them from choosing PCR to store the measurements in.
+> But as the consumers are kernel components, perhaps support for IMA_UID
+> is not required.  But we should still support IMA_PCR.
+> Please let me know what do you think, and I can update the logic
+> accordingly.
+
+I think I misinterpreted this code.  As long as IMA_UID and IMA_PCR
+aren't required, then it is fine.
+
+> > > +
+> > > +		if (ima_rule_contains_lsm_cond(entry))
+> > > +			return false;
+> > > +
+> > >   		break;
+> > >   	default:
+> > >   		return false;
+> > > @@ -1242,6 +1267,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+> > >   			else if (IS_ENABLED(CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS) &&
+> > >   				 strcmp(args[0].from, "KEY_CHECK") == 0)
+> > >   				entry->func = KEY_CHECK;
+> > > +			else if (strcmp(args[0].from, "CRITICAL_DATA") == 0)
+> > > +				entry->func = CRITICAL_DATA;
+> > >   			else
+> > >   				result = -EINVAL;
+> > >   			if (!result)
+> > > @@ -1312,6 +1339,23 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+> > >   
+> > >   			entry->flags |= IMA_KEYRINGS;
+> > >   			break;
+> > > +		case Opt_data_sources:
+> > > +			ima_log_string(ab, "data_sources", args[0].from);
+> > > +
+> > > +			if (entry->data_sources) {
+> > > +				result = -EINVAL;
+> > > +				break;
+> > > +			}
+> > > +
+> > > +			entry->data_sources = ima_alloc_rule_opt_list(args);
+> > > +			if (IS_ERR(entry->data_sources)) {
+> > > +				result = PTR_ERR(entry->data_sources);
+> > > +				entry->data_sources = NULL;
+> > > +				break;
+> > > +			}
+> > > +
+> > 
+> > "keyrings=" isn't bounded because keyrings can be created by userspace.
+> > Perhaps keyring names has a minimum/maximum length.  IMA isn't
+> > measuring userspace construsts.  Shouldn't the list of critical data
+> > being measured be bounded and verified?
+> The comment is not entirely clear.
+> Do you mean there should be some sort of allow_list in IMA, against
+> which the values in "data_sources=" should be vetted? And if the
+> value is present in the IMA allow_list, then only the measurements for
+> that data source are allowed?
+> 
+> Or do you mean something else?
+
+Yes, something along those lines.  Does the list of critical data need
+to be vetted?  And if so, against what?
+
+Mimi
+
+> > 
+> > > +			entry->flags |= IMA_DATA_SOURCES;
+> > > +			break;
+> > >   		case Opt_fsuuid:
+> > >   			ima_log_string(ab, "fsuuid", args[0].from);
+> > >   
+> > > @@ -1692,6 +1736,12 @@ int ima_policy_show(struct seq_file *m, void *v)
+> > >   		seq_puts(m, " ");
+> > >   	}
+> > >   
+> > > +	if (entry->flags & IMA_DATA_SOURCES) {
+> > > +		seq_puts(m, "data_sources=");
+> > > +		ima_show_rule_opt_list(m, entry->data_sources);
+> > > +		seq_puts(m, " ");
+> > > +	}
+> > > +
+> > >   	if (entry->flags & IMA_PCR) {
+> > >   		snprintf(tbuf, sizeof(tbuf), "%d", entry->pcr);
+> > >   		seq_printf(m, pt(Opt_pcr), tbuf);
+
 
