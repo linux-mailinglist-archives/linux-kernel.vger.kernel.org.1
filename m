@@ -2,48 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C813125115F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 07:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FC4251164
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 07:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgHYFOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 01:14:43 -0400
-Received: from smtp.rcn.com ([69.168.97.78]:24064 "EHLO smtp.rcn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgHYFOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 01:14:43 -0400
-DKIM-Signature: v=1; a=rsa-sha1; d=rcn.com; s=20180516; c=relaxed/simple;
-        q=dns/txt; i=@rcn.com; t=1598332480;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=4md+ssomE4Gwt1ASNPOhq2CzLX4=;
-        b=Tw+Hw2Au6oTPSG5DhuRup9/WAZGt6+OuqQqlKyv4cZNY69MfT9AzNqn1ZAFt61yR
-        pbkr5FffGqFcsth8xlclsznQRvqNbUwVqDytH5hPhoOz6t1nmyR16lcGJ/Xl8Rnw
-        wwpmHwwCVhn9H1Gy3nWUt5CtLRandxf34PhNRfvp9jtNwevK/OAS7EpQIRC+pUE+
-        M5lF3qAdrysRwX4CgqzxUhOwe4DrrDgYw5Llo1rkeKQmq1yuBmJdIyodZ4nqIzk4
-        no4l0ikfeqoD2BNyOHCqH+x0zLErI8xjTggJh8AuwNnNS2aAV+Pl/WlLa2yOQd9w
-        JBBwCAFxPWmwS1ELOhtbSw==;
-X-User-Whitelist: YES
-X-Authed-Username: cGVhcmxob3dlckByY24uY29t
-Authentication-Results: smtp03.rcn.cmh.synacor.com header.from=pearlhower@rcn.com; sender-id=softfail
-Authentication-Results: smtp03.rcn.cmh.synacor.com smtp.mail=pearlhower@rcn.com; spf=softfail; sender-id=softfail
-Received: from [10.33.66.0] ([10.33.66.0:43302] helo=md09.rcn.cmh.synacor.com)
-        by smtp.rcn.com (envelope-from <pearlhower@rcn.com>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id 57/A5-51190-F3E944F5; Tue, 25 Aug 2020 01:14:40 -0400
-Date:   Tue, 25 Aug 2020 01:14:39 -0400 (EDT)
-From:   neetu pal <pearlhower@rcn.com>
-Reply-To: neetu pal <pal820590@gmail.com>
-To:     rcnts@rcn.com
-Message-ID: <290124736.3518005.1598332479639.JavaMail.root@rcn.com>
-In-Reply-To: <1206416174.3498078.1598331772875.JavaMail.root@rcn.com>
-Subject: Re: jii hllo
+        id S1727943AbgHYFQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 01:16:04 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16655 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgHYFQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 01:16:03 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f449e840001>; Mon, 24 Aug 2020 22:15:48 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 24 Aug 2020 22:16:02 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 22:16:02 -0700
+Received: from [10.25.97.151] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
+ 2020 05:15:56 +0000
+Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
+ DPCM
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+CC:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
+ <1596605064-27748-4-git-send-email-spujar@nvidia.com>
+ <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
+ <97f325a6-96cc-11c5-8027-8c0a159e3da0@nvidia.com>
+ <2d3aa11e-3c56-1f7a-3d41-2457f973d55b@nvidia.com>
+ <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
+Date:   Tue, 25 Aug 2020 10:45:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [155.94.250.96]
-X-Mailer: Zimbra 7.2.7_GA_2942 (zclient/7.2.7_GA_2942)
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598332548; bh=MUVzG/YgQfmq+QuRb+X4fsdhVCfaBa++YFanvLETpZI=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=jI0jHRUV3D9ybv7EXxTV/i81TKRnoXjcx1Pd7PmWDFsOaq/mYXfr5OpADeh1XOfKt
+         BCsb/f5SVDm8wVBsNprIXJAgMdpdr+kvkRZos3EJxSej3KdbDB4eJXHzDSX45Dr/BK
+         kS442KO7lWoR6L+A4vIu5IDt8pLWkLR5W8gz4b/iOcbkc/b8MlnSU5HG18Srk/Mcrg
+         6RXR5RJz4Kr6ggXYYRBMyfslWI7X8SJPWGMDEvKYdywSVHey+oFICmqF5X3gLwRw5d
+         001ZTgUBQMAOQgYhXP60Vr8unUtr+bgVYwxLHRD9MsraPokqJFJptFtz2JA7aMdCjh
+         HWQUfW57zokBw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i dropped by to say Gm sir
+Hi Morimoto-san,
+
+
+> (snip)
+>> I tried testing this with LOCKDEP config enabled at my end.
+>> It seems I don't see warning originated from above function.
+>> Are you suggesting that, in general, snd_soc_find_dai()
+>> should be called with client_mutex held?
+> Hmm ? strange...
+
+Yes indeed. For saftely I will follow the same as other callers are doing.
+
+...
+
+> Yes, I'm posting fixup patch.
+>
+>          https://patchwork.kernel.org/patch/11719919/
+
+Just curious that why snd_soc_find_dai() itself cannot be protected, 
+instead of leaving this to callers.
+
+
+Thanks,
+Sameer.
