@@ -2,149 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864012521D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6B92521DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 22:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgHYUUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 16:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgHYUUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 16:20:03 -0400
-Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01E6D2074D;
-        Tue, 25 Aug 2020 20:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598386802;
-        bh=SS+t45IQlef2ZNO8GZOFRl2+c25Lro4JNuNwmNwc8zQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=UeuOVm1ZSIo+ErhE6OlxewMDFPnV4NsWvJxM77q2rQm3Y6ZJ+3mnLIcJH7jIXO4EC
-         /XE+2wmGjyHazKgT/AJKml79ce5k1iC5Q8WKAKcLKlgCau+LQEJi/95s8aaS2ETMil
-         Wsikip6rcjjaxBoIOlqOC42TYjOKJ7dhkIDcMCCw=
-Date:   Tue, 25 Aug 2020 15:20:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        linux-pci@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Megha Dey <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [patch RFC 17/38] x86/pci: Reducde #ifdeffery in PCI init code
-Message-ID: <20200825202000.GA1925088@bjorn-Precision-5520>
+        id S1726840AbgHYUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 16:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgHYUU2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 16:20:28 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5204AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:20:28 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w25so15285795ljo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 13:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TDBfHzBFyP6h01HYJ4KqTPKabcjc/ti98JY0bYSyFc4=;
+        b=R7K8efCt5R7qk4Zhoo97u+soBC3l8BQg4q6dDYRsC41gvGExf5cc/Icb9s/oijdugJ
+         9nYrREha8UKyjETDC3hEbUX4spQm6UO+RoQIXoTn9HEV84H8V+0yjHDAmlvT5ADLtAwh
+         aoBwSuMoWcKjxV/bsQcxWK3Ykc5K6d8kmq80nMHdGzsl4Qn8pyOB1kqSFtpA9HIJu5xP
+         cm4+0UDPqlRjD6EFgQ7OjD9ns2q+U9dEWOQTSNclVHAYLmmWyrlHi6bstJLxdBrsNqc1
+         9oCF+6+bwJuQNxBooBW8UCVkTIQtac18rljgKCQ1R2YIgefFQEQXbXV4wAcrCf/jG268
+         dUHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TDBfHzBFyP6h01HYJ4KqTPKabcjc/ti98JY0bYSyFc4=;
+        b=NWWnzqylJgygAzA4zyE3jpmV0gyz8vZZqBbezmITE+IYJh/JWxxrhskYxuMfvtF5EW
+         Z4S4va6kZNbiwOwWSJo/iXg7kBU9W+n99H8Fd3o69TzR47/Lnu/2zAtAN/MZLMUFKCu9
+         j4ortP9s9II6W7bDVkYIdSaeORbv2p2fC///JWGjMDwL9dYtVoB1cUTjn+xJruWXD243
+         nsOS9ikLxqzTVjWdK8CVvdjofMpOOMTFusMcUYkWwoXcikfC9AaTADdGzKsWNPlDvLAJ
+         gmcNdGRr9sC/ojsoptkmmrD2+J8IeQmIo5zzZ9RNE4FcDeAOvPUuswV1/vYA0lSvfPxf
+         xLSg==
+X-Gm-Message-State: AOAM532y9ht9MbebJOnigWxkk9DK4KHNRjWkLrCUrylgqs0lL/+tQyP5
+        P2akkPEe8/kSGsCFJfxX0QmShV9nfUxbO9PYDNk=
+X-Google-Smtp-Source: ABdhPJzhKLCHrmOhIWsmNZpOtluajQCyO4SeQk4gAT9oVh1CvMzjGeWLbxMByg0YE3q4SEWCgMYJxkBFDUKOtN98iPE=
+X-Received: by 2002:a05:651c:23a:: with SMTP id z26mr5410654ljn.257.1598386826599;
+ Tue, 25 Aug 2020 13:20:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821002946.982695529@linutronix.de>
+References: <1596049269-14950-1-git-send-email-jrdr.linux@gmail.com> <692e6a9b-6caa-7c60-d685-6cc951ee9483@nvidia.com>
+In-Reply-To: <692e6a9b-6caa-7c60-d685-6cc951ee9483@nvidia.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 26 Aug 2020 01:50:15 +0530
+Message-ID: <CAFqt6zY4KBe7KukmvYbbbzZMrW5T5gS4dx0KrMUdZ9Y8K=yucA@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        mchehab+samsung@kernel.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Reducde/Reduce/ (in subject)
+On Thu, Jul 30, 2020 at 6:30 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 7/29/20 12:01 PM, Souptick Joarder wrote:
+> > First, when memory allocation for sg_list_unaligned failed, there
+> > is no point of calling put_pages() as we haven't pinned any pages.
+> >
+> > Second, if get_user_pages_fast() failed we should unpinned num_pinned
+> > pages, no point of checking till num_pages.
+>
+> Hi Souptick,
+>
+> For both of the above, the wording "no point" is so overly gentle as
+> to be misleading. That's because calling put_page() on any pages beyond
+> num_pinned is a *bug*.
+>
+> So let's reword that. And let's change the patch subject from "Correcting" to
+> "fix".
+>
+> And probably good to add a Fixes: tag, too.
 
-On Fri, Aug 21, 2020 at 02:24:41AM +0200, Thomas Gleixner wrote:
-> Adding a function call before the first #ifdef in arch_pci_init() triggers
-> a 'mixed declarations and code' warning if PCI_DIRECT is enabled.
-> 
-> Use stub functions and move the #ifdeffery to the header file where it is
-> not in the way.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-pci@vger.kernel.org
+Is there any scripts/ settings to fetch Fixes: tag other than using git blame ?
 
-Nice cleanup, thanks.  Glad to get rid of the useless initializer,
-too.
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> ---
->  arch/x86/include/asm/pci_x86.h |   11 +++++++++++
->  arch/x86/pci/init.c            |   10 +++-------
->  2 files changed, 14 insertions(+), 7 deletions(-)
-> 
-> --- a/arch/x86/include/asm/pci_x86.h
-> +++ b/arch/x86/include/asm/pci_x86.h
-> @@ -114,9 +114,20 @@ extern const struct pci_raw_ops pci_dire
->  extern bool port_cf9_safe;
->  
->  /* arch_initcall level */
-> +#ifdef CONFIG_PCI_DIRECT
->  extern int pci_direct_probe(void);
->  extern void pci_direct_init(int type);
-> +#else
-> +static inline int pci_direct_probe(void) { return -1; }
-> +static inline  void pci_direct_init(int type) { }
-> +#endif
-> +
-> +#ifdef CONFIG_PCI_BIOS
->  extern void pci_pcbios_init(void);
-> +#else
-> +static inline void pci_pcbios_init(void) { }
-> +#endif
-> +
->  extern void __init dmi_check_pciprobe(void);
->  extern void __init dmi_check_skip_isa_align(void);
->  
-> --- a/arch/x86/pci/init.c
-> +++ b/arch/x86/pci/init.c
-> @@ -8,11 +8,9 @@
->     in the right sequence from here. */
->  static __init int pci_arch_init(void)
->  {
-> -#ifdef CONFIG_PCI_DIRECT
-> -	int type = 0;
-> +	int type;
->  
->  	type = pci_direct_probe();
-> -#endif
->  
->  	if (!(pci_probe & PCI_PROBE_NOEARLY))
->  		pci_mmcfg_early_init();
-> @@ -20,18 +18,16 @@ static __init int pci_arch_init(void)
->  	if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
->  		return 0;
->  
-> -#ifdef CONFIG_PCI_BIOS
->  	pci_pcbios_init();
-> -#endif
-> +
->  	/*
->  	 * don't check for raw_pci_ops here because we want pcbios as last
->  	 * fallback, yet it's needed to run first to set pcibios_last_bus
->  	 * in case legacy PCI probing is used. otherwise detecting peer busses
->  	 * fails.
->  	 */
-> -#ifdef CONFIG_PCI_DIRECT
->  	pci_direct_init(type);
-> -#endif
-> +
->  	if (!raw_pci_ops && !raw_pci_ext_ops)
->  		printk(KERN_ERR
->  		"PCI: Fatal: No config space access function found\n");
-> 
+>
+> More:
+>
+> >
+> > This will address both.
+> >
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > ---
+> > v2:
+> >       Added review tag.
+> >
+> >   drivers/virt/fsl_hypervisor.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+> > index 1b0b11b..ea344d7 100644
+> > --- a/drivers/virt/fsl_hypervisor.c
+> > +++ b/drivers/virt/fsl_hypervisor.c
+> > @@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+> >
+> >       unsigned int i;
+> >       long ret = 0;
+> > -     int num_pinned; /* return value from get_user_pages() */
+> > +     int num_pinned = 0; /* return value from get_user_pages() */
+> >       phys_addr_t remote_paddr; /* The next address in the remote buffer */
+> >       uint32_t count; /* The number of bytes left to copy */
+> >
+> > @@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+> >
+> >   exit:
+> >       if (pages) {
+> > -             for (i = 0; i < num_pages; i++)
+> > +             for (i = 0; i < num_pinned; i++)
+> >                       if (pages[i])
+>
+> I suspect that this "if" is unnecessary now.
+>
+> Either way, the diff itself looks good to me, so with the wording changes to
+> the commit description, you can add:
+>
+>      Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+>
+> thanks,
+> --
+> John Hubbard
+> NVIDIA
+>
+> >                               put_page(pages[i]);
+> >       }
+> >
+>
