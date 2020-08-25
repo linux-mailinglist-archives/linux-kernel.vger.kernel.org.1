@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFFC251AE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32882251AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 16:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgHYOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 10:34:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:48069 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgHYOd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 10:33:59 -0400
-IronPort-SDR: rY/5/ZBrnqsTNyf3HA16dSVV1buAL3eI58we/ZKYnmTqnI+DyrsIO6lcZrnMUm8m5ELc7uob8U
- BHbEU7XMEHvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="220379820"
-X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
-   d="scan'208";a="220379820"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 07:33:57 -0700
-IronPort-SDR: dzmeqHoIyTXJ+o+g7Y8O9WxJ1M4qlPGVCY4Rp7vvQQFDRLvAXeYKDd3/dQ9lCaBWtakJIiZusD
- 4GhiA4F4SMXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
-   d="scan'208";a="328880141"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 25 Aug 2020 07:33:55 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kAa1J-00BLPk-Mi; Tue, 25 Aug 2020 17:33:53 +0300
-Date:   Tue, 25 Aug 2020 17:33:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 2/3] software node: Introduce device_add_software_node()
-Message-ID: <20200825143353.GL1891694@smile.fi.intel.com>
-References: <20200825135951.53340-1-heikki.krogerus@linux.intel.com>
- <20200825135951.53340-3-heikki.krogerus@linux.intel.com>
- <20200825143228.GK1891694@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825143228.GK1891694@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1726432AbgHYOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 10:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgHYOfv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 10:35:51 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB726C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:35:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id a14so15021654ybm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 07:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=k54hAuV/R48nxWYsw6Z5KxJrA9oI9B0nXG5/JiFy5us=;
+        b=UxJfVoSQ6M50tQ6tL3OjiBKFoj5dbR9m2teUe/DbOwuHyLkEOQBaiPEO8CHG4hmfyP
+         fw9VamB60nxGGIPKTO6+9jrJQcpAq81zZNXrencHIPpiOkuEYiio5PV1kaj6/fEsGnrP
+         EQGDUtUH03q6+8yY3OyG5DLCqmKVWa1y2zU6+CDTewQn4qSZwkLYJu8AUVWf7yuyGhdR
+         4yCbkQnCsSUROFh3TnbORkNAiqkboGYpkUzEoeaaVJL5iv9JMtD68ivIFKowik+pknw5
+         b5KJZz6IAx5/2KDTkHz8DXuSbyhZPQS/6bwr0ms8euZHox0FwCSUhaTEFjOx230aDma3
+         lOMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=k54hAuV/R48nxWYsw6Z5KxJrA9oI9B0nXG5/JiFy5us=;
+        b=pZXeOhkNmlZfPGiX6Wv1M9xSq8yK8tXmsYwDX3NvSH9GnE1Op7v1n0Nj6dH+Y5S2jX
+         YPrIO5kHyCOM1kZ/6SCl6K99mMeTWcpWIEcjgSMDFryNQEByW1p2cDjZ4ieg/SzFUgKi
+         gzhEXeSedV3kGMNL12KCKd/FdK0JhEqIts4yn/TeOYyPgH1ghcCOVhTOlvTWFr+vYHad
+         2ONZLSLSGxXMDZut0LaQbV1UJ6tqBFy9RpHbws9MdWjggTdKkrhvE/r6lpHzTf5G2RcP
+         +cuah4j1QNYZUFS6osKInfXotDg8xecPuyX/UMj6F7XLDiIpmks6EATiLiLyh13q5/4N
+         xs3w==
+X-Gm-Message-State: AOAM532s/qZhEAFj9ZylEtdI6euzpr/IPXp44BvXblliwguMM4GzygXy
+        X7/droLRduqdNkjo3NFUlnISglG276fKyeaQSQY=
+X-Google-Smtp-Source: ABdhPJxV4FKG8uHtaQph860dD9ew7juRufCD1tdUO7icppNv8/UvfInW+cK167h5B1JTota55ag5L0+hLTjQqbTbI4M=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:38c5:: with SMTP id
+ f188mr14594662yba.132.1598366150820; Tue, 25 Aug 2020 07:35:50 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 07:35:40 -0700
+Message-Id: <20200825143540.2948637-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+Subject: [PATCH] MAINTAINERS: add LLVM maintainers
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 05:32:28PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 25, 2020 at 04:59:50PM +0300, Heikki Krogerus wrote:
-> > This helper will register a software node and then assign
-> > it to device at the same time. The function will also make
-> > sure that the device can't have more than one software node.
-> 
-> > +	/* Only one software node per device. */
-> > +	if (dev_to_swnode(dev))
-> > +		return -EBUSY;
-> 
-> > +	swnode = dev_to_swnode(dev);
-> > +	if (!swnode)
-> > +		return;
-> 
-> Hmm... I didn't find implementation of dev_to_swnode().
-> What did I miss?
+Nominate Nathan and myself to be point of contact for clang/LLVM related
+support, after a poll at the LLVM BoF at Linux Plumbers Conf 2020.
 
-Now found, I was looking into header, but it's defined in the c-file in
-previous patch.
+While corporate sponsorship is beneficial, its important to not entrust
+the keys to the nukes with any one entity. Should Nathan and I find
+ourselves at the same employer, I would gladly step down.
 
+Cc: clang-built-linux@googlegroups.com
+Cc: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 33aab0c88118..0cbb24753153 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4249,6 +4249,8 @@ S:	Maintained
+ F:	.clang-format
+ 
+ CLANG/LLVM BUILD SUPPORT
++M:	Nathan Chancellor <natechancellor@gmail.com>
++M:	Nick Desaulniers <ndesaulniers@google.com>
+ L:	clang-built-linux@googlegroups.com
+ S:	Supported
+ W:	https://clangbuiltlinux.github.io/
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.28.0.297.g1956fa8f8d-goog
 
