@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E3E250CB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61CD250CB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgHYAEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 20:04:35 -0400
-Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:47738 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726041AbgHYAEf (ORCPT
+        id S1726698AbgHYAFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 20:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbgHYAFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 20:04:35 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 2A086837F253;
-        Tue, 25 Aug 2020 00:04:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:305:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3653:3865:3867:3870:3872:5007:6299:7903:10004:10400:10848:11026:11658:11914:12296:12297:12555:12760:13019:13069:13161:13229:13311:13357:13439:14181:14394:14659:14721:21080:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hen28_1000ccd27057
-X-Filterd-Recvd-Size: 1577
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 00:04:32 +0000 (UTC)
-Message-ID: <f63229c051567041819f25e76f49d83c6e4c0f71.camel@perches.com>
-Subject: [PATCH] get_maintainer: Add test for file in VCS
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 Aug 2020 17:04:31 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 24 Aug 2020 20:05:36 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A291C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 17:05:35 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o18so14160880eje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 17:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSJ3hn6SwlvnIDydC8UlMXM4TqY2oPyCDRxRi3ibWKE=;
+        b=QApUvtXGB19mVLe2YJN+0fc/ADwHcSDUAddvOk2oAlHGx94SRMwAiMJTJvczmY5/LJ
+         5H8+z7s7ZKd4wBvGD40WowzmVgvVsHC7ykBwWbntxs+LCdWQ0VlGq5aJy0tz0qdKFdin
+         uqbcvQg3gw5dEsFtO/tv+zUPbf76fN0Xd+WIdO2tZWQV+cPBuKHwpaS0iqoIazyjb0WC
+         0VZo8VziYEC6cUStvp9KOD1OLo0QqjVFLoqT/QcWYj/HyXpaO7wUMO/DhvkzYkOkf+Q8
+         50J2vA7dD1LC81Uhbyha05eeIKaAFh7rlFdSCBn2tV5rFA3cEm13F4JrxvRfM0oeesYi
+         BmQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSJ3hn6SwlvnIDydC8UlMXM4TqY2oPyCDRxRi3ibWKE=;
+        b=ORAJKTnETHrUuw3d3ra7iS1FKS9LPliZoidWr3y6UhE0IAfKj96kv9SM4XO+pooW3N
+         mD8jA8fumAY0EhgpMFPKeqGGcasi6W4NBmyhHnHCTnomon/CFTts/nr1629WQ3Ys1VYH
+         epJMNwrJbiJ9k7nDUioJkzmug6Zf8tWLWAnzyeJMOzo7GQRv2FEtiTnPff/lQbnApw5U
+         eRLkz30JvJLOhvH1lUBsBWfRiRXrVqj9BlK4NUBUnpZ7Wp+CMuFi1pqOAYaGvtvTabk7
+         s2JaqN50U2i+UNORYD6KcCqbLykvFZykXm70U39WBzDnpX7+N1HnFS8nChRgQwUOIXeI
+         +bMQ==
+X-Gm-Message-State: AOAM531vHXLrTZ+OAJHIYloD7nxhzNrF1riC7Npe8RxV7YnTZrSsjOct
+        pFc25t396vqQhK5TyNu4nAmRMOXGsLQ72nI5vYvDMg==
+X-Google-Smtp-Source: ABdhPJwq7yY0fgxViANrAk7HQzEo+kQDYpeeuJOcuEDl5RbeTE9wZIRWTSGvgD/2fC4+y7BPhunkS6W3JpETlvNIrSg=
+X-Received: by 2002:a17:906:a085:: with SMTP id q5mr7825181ejy.136.1598313933985;
+ Mon, 24 Aug 2020 17:05:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-2-haoluo@google.com>
+ <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
+In-Reply-To: <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 24 Aug 2020 17:05:22 -0700
+Message-ID: <CA+khW7iGs=tN2FT=rEiPZMQ_Z9=sqhRe4dY7dKbVoViwX666BQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Introduce pseudo_btf_id
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's somewhat common for me to ask get_maintainer
-to tell me who
-maintains a patch file rather than
-the files modified by the patch.
+Yonghong,
 
-Emit a warning if using get_maintainer.pl -f <patchfile>
+An update on this thread. I successfully reproduced this issue on a
+8.2.0 gcc compiler, It looks like gcc 4.9 did not have this issue. I
+was also using clang which did not show this bug.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/get_maintainer.pl | 3 +++
- 1 file changed, 3 insertions(+)
+It seems having a DW_AT_specification that refers to another
+DW_TAG_variable isn't handled in pahole. I have a (maybe hacky) pahole
+patch as fix and let me clean it up and post for review soon.
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 484d2fbf5921..5a36354a38cc 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -541,6 +541,9 @@ foreach my $file (@ARGV) {
- 	    die "$P: file '${file}' not found\n";
- 	}
-     }
-+    if ($from_filename && (vcs_exists() && !vcs_file_exists($file))) {
-+	warn "$P: file '$file' not found in version control $!\n";
-+    }
-     if ($from_filename || ($file ne "&STDIN" && vcs_file_exists($file))) {
- 	$file =~ s/^\Q${cur_path}\E//;	#strip any absolute path
- 	$file =~ s/^\Q${lk_path}\E//;	#or the path to the lk tree
-
-
-
+Hao
