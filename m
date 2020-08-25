@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACE32520D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D920D2520DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgHYToX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 15:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgHYToS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:44:18 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D68CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 12:44:17 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k18so8143135pfp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 12:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=d8/Un318ZcCCy10fIEVIRzShdO9a4RkWIVvjcQb9S7k=;
-        b=EJNvcCl9fDrs3+onNrhQI9rAN5wHEYg6FUM4h8EYSqsf0ggKbKpNi4ieqAPSbLEwpU
-         8Pt+9Z+s8i0Do34/858mKp0Xso2X8s74B1mxOMqCUroRZFJn04Jz2g9Vjwdlr5XUIGBK
-         MgUH8pNj47jpKyw1CXj5xPhcLRBkjSyY2XuNQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=d8/Un318ZcCCy10fIEVIRzShdO9a4RkWIVvjcQb9S7k=;
-        b=AdW392uG5r+SnGBV8m8W6tLYeC0J2r2g3l+omk9G5GCFup6WpgYtYTXjPLLOQvnLX2
-         FJiP4FA0C7Tl3OiYnQix5Wi/XZrkbJqAWWJ7VnyZvC2149o6Q18byBdxwtB8qGXv5tdo
-         aPuLMvVLIqQrOC1ngEppLHmZaQy1O1/hpJ0GNv3fpkXOf9NQx2UvvltD+2UX1ZXuulR7
-         IVbp41uxALUU97xie/eb4ATsFFhIs96AOAHKOk/CmTav1AUmg+YrgR6QQaB0/CvNSi+7
-         F6yq8Rsvt6Jm6chiw1ixjy74CNRq4iDbVWXuaV1UATGafR0PEKSmn6X+X28pSViG0dBI
-         JcmA==
-X-Gm-Message-State: AOAM531wHxafNSvB74KjegdWWomAiQPRWp0V/bfGbEq/VZ9+YM9kYy14
-        uHvd9983Hlj81Ii8926h3OhLhImalEdBFkuX
-X-Google-Smtp-Source: ABdhPJz6iW/DMeE5Q9PnRtY3u363NVWs0iyLks265waeOU1YIHymcoHqLqnOs9pviQrApYYHqXLQqA==
-X-Received: by 2002:a17:902:c111:: with SMTP id 17mr9344661pli.46.1598384656852;
-        Tue, 25 Aug 2020 12:44:16 -0700 (PDT)
-Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id x5sm45297pfj.1.2020.08.25.12.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 12:44:16 -0700 (PDT)
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH v3 3/3] MAINTAINERS: bcm-vk: add maintainer for Broadcom VK Driver
-Date:   Tue, 25 Aug 2020 12:44:00 -0700
-Message-Id: <20200825194400.28960-4-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200825194400.28960-1-scott.branden@broadcom.com>
-References: <20200825194400.28960-1-scott.branden@broadcom.com>
+        id S1726876AbgHYToi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 15:44:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgHYTo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 15:44:28 -0400
+Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21F262076C;
+        Tue, 25 Aug 2020 19:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598384668;
+        bh=9Go/Zhclcce+flMww2sY3aWDPzUfYx7gBKodCIGY8g0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mRgqK9U0so7TKb9tGf3mKjc7Qoz7L+zuD1nCa1PUm/ZFAF9ZHedfsXfQsk1+aEBPQ
+         vg9s5BZxQMIvvV3xlL+/+9XNZq+FOIvz4GkSoGzk7UW9t/FEYVV8PTl8yW/yepF1Rc
+         0EFukoesUcYCzzrC1VevYPkEYDz86gtpVyXMPxpk=
+Date:   Tue, 25 Aug 2020 14:44:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH 3/9] PCI/MSI: Provide default retrigger callback
+Message-ID: <20200825194426.GA1922753@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824102317.1038259-4-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entry for new Broadcom VK Driver
+On Mon, Aug 24, 2020 at 11:23:11AM +0100, Marc Zyngier wrote:
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b186ade3597..5ce9cf6b52d0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3699,6 +3699,13 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/broadcom/tg3.*
- 
-+BROADCOM VK DRIVER
-+M:	Scott Branden <scott.branden@broadcom.com>
-+L:	bcm-kernel-feedback-list@broadcom.com
-+S:	Supported
-+F:	drivers/misc/bcm-vk/
-+F:	include/uapi/linux/misc/bcm_vk.h
-+
- BROCADE BFA FC SCSI DRIVER
- M:	Anil Gurumurthy <anil.gurumurthy@qlogic.com>
- M:	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
--- 
-2.17.1
-
+> ---
+>  drivers/pci/msi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index 30ae4ffda5c1..c4d31ce2d951 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -1446,6 +1446,8 @@ static void pci_msi_domain_update_chip_ops(struct msi_domain_info *info)
+>  		chip->irq_mask = pci_msi_mask_irq;
+>  	if (!chip->irq_unmask)
+>  		chip->irq_unmask = pci_msi_unmask_irq;
+> +	if (!chip->irq_retrigger)
+> +		chip->irq_retrigger = irq_chip_retrigger_hierarchy;
+>  }
+>  
+>  /**
+> -- 
+> 2.27.0
+> 
