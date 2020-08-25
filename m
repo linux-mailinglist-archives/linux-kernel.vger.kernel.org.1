@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD04250D81
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D615250D94
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 02:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgHYAcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 20:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728439AbgHYAct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 20:32:49 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0684D22BEB
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598315569;
-        bh=HzNRSUeUL6OriNoi411G8DjwqUuqi7JFl1V+hmvfPWg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uRWu1h/pRTe38+cnhWVoUjMTGyUxj4FX6LHXPmQOHohc0UiMAuVFXRFfGvQuUXiFU
-         x0m9GY1EjwLb2Vn/RymkjG2w7e8cfbzAb7e02+yOOlT1W3LXR000Pr7kw4RnV+6ZXj
-         WrQB1im2A7usG0ceNRnrso4/XUttJEJC2aZHtYTM=
-Received: by mail-wm1-f42.google.com with SMTP id t14so588261wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 17:32:48 -0700 (PDT)
-X-Gm-Message-State: AOAM5326/J6Ldwqtoh3Z7okUS0CYSEJ56a90LPTh0BhAMNjdEbwuUMUW
-        4xMbjZeKAY57Npzt8LWcN9s1QIV6JmuFdokcSzqkPg==
-X-Google-Smtp-Source: ABdhPJyauPayFdftcuPZnq0MJTSphzvI2x0UgLNn081J3B9GZfktgEGZliAmuQJq8JPRJLx6kwBNbrs1VoFPRwDiqF4=
-X-Received: by 2002:a7b:ca48:: with SMTP id m8mr1581098wml.36.1598315567552;
- Mon, 24 Aug 2020 17:32:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200825002645.3658-1-yu-cheng.yu@intel.com> <20200825002645.3658-10-yu-cheng.yu@intel.com>
-In-Reply-To: <20200825002645.3658-10-yu-cheng.yu@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 24 Aug 2020 17:32:35 -0700
-X-Gmail-Original-Message-ID: <CALCETrVXwUDu2m-XEd-_J03L=sricM4cMxQYVkdGRWZDjmMB2g@mail.gmail.com>
-Message-ID: <CALCETrVXwUDu2m-XEd-_J03L=sricM4cMxQYVkdGRWZDjmMB2g@mail.gmail.com>
-Subject: Re: [PATCH v11 9/9] x86: Disallow vsyscall emulation when CET is enabled
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728647AbgHYAdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 20:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728513AbgHYAdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 20:33:36 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B184CC061574;
+        Mon, 24 Aug 2020 17:33:35 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7DC2E1294C709;
+        Mon, 24 Aug 2020 17:16:48 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 17:33:33 -0700 (PDT)
+Message-Id: <20200824.173333.548043755025064224.davem@davemloft.net>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     dave@thedillows.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] typhoon: switch from 'pci_' to 'dma_' API
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200823061150.162135-1-christophe.jaillet@wanadoo.fr>
+References: <20200823061150.162135-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 17:16:48 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 5:30 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->
-> From: "H.J. Lu" <hjl.tools@gmail.com>
->
-> Emulation of the legacy vsyscall page is required by some programs built
-> before 2013.  Newer programs after 2013 don't use it.  Disallow vsyscall
-> emulation when Control-flow Enforcement (CET) is enabled to enhance
-> security.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Sun, 23 Aug 2020 08:11:50 +0200
 
-NAK.
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
+> 
+> When memory is allocated in 'typhoon_init_one()' GFP_KERNEL can be used
+> because it is a probe function and no lock is acquired.
+> 
+> When memory is allocated in 'typhoon_download_firmware()', GFP_ATOMIC
+> must be used because it can be called from a .ndo_tx_timeout function.
+> So this function can be called with the 'netif_tx_lock' acquired.
+> The call chain is:
+>   --> typhoon_tx_timeout                 (.ndo_tx_timeout function)
+>     --> typhoon_start_runtime
+>       --> typhoon_download_firmware
+> 
+> While at is, update some comments accordingly.
+ ...
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-By all means disable execute emulation if CET-IBT is enabled at the
-time emulation is attempted, and maybe even disable the vsyscall page
-entirely if you can magically tell that CET-IBT will be enabled when a
-process starts, but you don't get to just disable it outright on a
-CET-enabled kernel.
+Applied.
