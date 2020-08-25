@@ -2,178 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD27251549
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18929251552
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgHYJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S1729360AbgHYJ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgHYJ0R (ORCPT
+        with ESMTP id S1726149AbgHYJ1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:26:17 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8645C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:26:16 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id u131so3398829vsu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 02:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XXBH4sOkqPl9zJcXTUASMt/Fu8TtonsFgui8Kl7kFVY=;
-        b=TWYP0KD8mtsXXsDXuppZAwQQ67rPdc4tICCU7GvKYEWHxBchEiOadVBDgc3Z8BF4XO
-         jgTMzMeNoBBJVXZQfk3AMdbGvkgTBbqlpoiA7C9nNtGeaBxLnx3jEK/vv9nFlnPh9/DJ
-         TgJ990nDyVQNC1Kk3CDHNeM0HolTeK2JGc+JeKc0Asg0tf53T/j0z1oYXEUe3TmHHahK
-         DMXwFbejlBBLFqp1266S1YpJxC8PokIgG47WLH6Q6IrqGhqIXC4/t/ES0j/TyzAtHMVh
-         qHLuYP8F/xPcgPYas5khMHfmzHbhhXfPMw8lKgklue4eg9EkJZXUlSnL6zfYM93OJ86S
-         K39Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XXBH4sOkqPl9zJcXTUASMt/Fu8TtonsFgui8Kl7kFVY=;
-        b=X81zL8HFa1VwnnAD9n2VXXHEqLdQdqO4k3ni4GjiP4oRue6AVKqiVlyN7zk4w0sraH
-         U3QSVyl9y5iL6Ley0YnLXRbFxrVqJJg2a6A9FnDNeL3xmVDytqtsD0ecYbRqSpwPdUSt
-         UrkrEH1pO+24AL7RG777gAPdIVYfZ98iA8USlf36DfKyeHHntR4mKsMJtz5CnYheHnpB
-         Fwk5gvRvQqmTsTgEOFrY2p0bGd1HzsowFnqvnIVFxu/XS2aP6rI6S7avKSS8StvgJy7M
-         uJuWAhDryNpTh21MCHcmff6D7tcZqGltXM+pBYyWdwdkbD5FXVyewHTSPk1BxXC00apN
-         ek3Q==
-X-Gm-Message-State: AOAM532Ni1+4VDlQ4uQGWlZcLkig17sHaiHpAxWyL/qdo4PkDidaFB5L
-        GSQ1q9o/FON+KMyhnBZc98tPmkjML2P/jAGtmnpVYQ==
-X-Google-Smtp-Source: ABdhPJzPB9driK8H4qkeuT9S/aH4aByKHE7EXpTg6JCgldVacqxODAO1rUsFRonHGhpGwdxbkweJVIM8uPGeKAfsn/U=
-X-Received: by 2002:a67:8c06:: with SMTP id o6mr5214822vsd.200.1598347574303;
- Tue, 25 Aug 2020 02:26:14 -0700 (PDT)
+        Tue, 25 Aug 2020 05:27:14 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 05EDDC061574;
+        Tue, 25 Aug 2020 02:27:12 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 07P9PiZd063077;
+        Tue, 25 Aug 2020 11:25:44 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 07P9PhbJ023763;
+        Tue, 25 Aug 2020 11:25:44 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 07P9Pg7v023760;
+        Tue, 25 Aug 2020 11:25:42 +0200
+X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Drew Fustini <pdp7pdp7@gmail.com>
+Subject: Re: [PATCH v5 5/6] can: ctucanfd: CTU CAN FD open-source IP core - platform and next steps and mainlining chances
+Date:   Tue, 25 Aug 2020 11:25:41 +0200
+User-Agent: KMail/1.9.10
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>
+References: <cover.1597518433.git.ppisa@pikron.com> <4ceda3a9d68263b4e0dfe66521a46f40b2e502f7.1597518433.git.ppisa@pikron.com> <73e3dad8-9ab7-2f8f-312c-1957b4572b08@infradead.org>
+In-Reply-To: <73e3dad8-9ab7-2f8f-312c-1957b4572b08@infradead.org>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <20200824151035.31093-1-lars.povlsen@microchip.com>
- <20200824151035.31093-2-lars.povlsen@microchip.com> <CAPDyKFoBom1n4AHniiukPiE_szskHrhcmVXfMpKTvNo9Xw9v0w@mail.gmail.com>
- <20200825084752.GD2389103@piout.net>
-In-Reply-To: <20200825084752.GD2389103@piout.net>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 25 Aug 2020 11:25:37 +0200
-Message-ID: <CAPDyKFrCxmpfH9DQNyeWdGEgRVpB9B9qdowpTgSvF+f+MgQeSA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202008251125.41514.pisa@cmp.felk.cvut.cz>
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 07P9PiZd063077
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-2.35, required 6, autolearn=not spam, BAYES_00 -0.50,
+        KHOP_HELO_FCRDNS 0.40, NICE_REPLY_A -2.25, SPF_HELO_NONE 0.00,
+        SPF_NONE 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1598952344.9039@HkfVtbUmYo4kbaG1GUmWow
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020 at 10:47, Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+Hello Randy and Rob,
+
+thanks much for review, I have corrected FPGA spelling
+and binding YAML license.
+
+On Sunday 16 of August 2020 01:28:13 Randy Dunlap wrote:
+> On 8/15/20 12:43 PM, Pavel Pisa wrote:
+> > diff --git a/drivers/net/can/ctucanfd/Kconfig
+> > b/drivers/net/can/ctucanfd/Kconfig index e1636373628a..a8c9cc38f216
+> > 100644
+> > --- a/drivers/net/can/ctucanfd/Kconfig
+> > +++ b/drivers/net/can/ctucanfd/Kconfig
+> > @@ -21,4 +21,15 @@ config CAN_CTUCANFD_PCI
+> >  	  PCIe board with PiKRON.com designed transceiver riser shield is
+> > available at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
+> >
+> > +config CAN_CTUCANFD_PLATFORM
+> > +	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
+> > +	depends on OF
 >
-> On 25/08/2020 09:33:45+0200, Ulf Hansson wrote:
-> > On Mon, 24 Aug 2020 at 17:10, Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> > >
-> > > The Sparx5 SDHCI controller is based on the Designware controller IP.
-> > >
-> > > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > > ---
-> > >  .../mmc/microchip,dw-sparx5-sdhci.yaml        | 65 +++++++++++++++++++
-> > >  1 file changed, 65 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> > > new file mode 100644
-> > > index 0000000000000..55883290543b9
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-> > > @@ -0,0 +1,65 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/mmc/microchip,dw-sparx5-sdhci.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Microchip Sparx5 Mobile Storage Host Controller Binding
-> > > +
-> > > +allOf:
-> > > +  - $ref: "mmc-controller.yaml"
-> > > +
-> > > +maintainers:
-> > > +  - Lars Povlsen <lars.povlsen@microchip.com>
-> > > +
-> > > +# Everything else is described in the common file
-> > > +properties:
-> > > +  compatible:
-> > > +    const: microchip,dw-sparx5-sdhci
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      Handle to "core" clock for the sdhci controller.
-> > > +
-> > > +  clock-names:
-> > > +    items:
-> > > +      - const: core
-> > > +
-> > > +  microchip,clock-delay:
-> > > +    description: Delay clock to card to meet setup time requirements.
-> > > +      Each step increase by 1.25ns.
-> > > +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> > > +    minimum: 1
-> > > +    maximum: 15
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - interrupts
-> > > +  - clocks
-> > > +  - clock-names
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +    #include <dt-bindings/clock/microchip,sparx5.h>
-> > > +    sdhci0: mmc@600800000 {
-> >
-> > Nitpick:
-> >
-> > I think we should use solely "mmc[n]" here. So:
-> >
-> > mmc0@600800000 {
-> >
-> > Please update patch3/3 accordingly as well.
->
-> This is not what the devicetree specification says. 2.2.2 says that the
-> generic name is mmc, not mmc[n]. Since there is a proper unit-address, I
-> don't see the need for an index here.
+> Can this be
+> 	depends on OF || COMPILE_TEST
+> ?
 
-You are absolutely right, thanks!
+I am not sure for this change. Is it ensured/documented somewhere that
+header files provide dummy definition such way, that OF drivers builds
+even if OF support is disabled? If I remember well, CTU CAN FD OF
+module build fails if attempted in the frame of native x86_64
+build where OF has been disabled. Does COMPILE_TEST ensure that
+such build succeeds.
 
-My apologies for the noise!
+As for the next steps, I expect that without any review of Marc Kleine-Budde
+or Wolfgang Grandegger from initial attempt for submission from February 2019,
+we are at the end of the road now.
 
->
-> >
-> > > +        compatible = "microchip,dw-sparx5-sdhci";
-> > > +        reg = <0x00800000 0x1000>;
-> > > +        pinctrl-0 = <&emmc_pins>;
-> > > +        pinctrl-names = "default";
-> > > +        clocks = <&clks CLK_ID_AUX1>;
-> > > +        clock-names = "core";
-> > > +        assigned-clocks = <&clks CLK_ID_AUX1>;
-> > > +        assigned-clock-rates = <800000000>;
-> > > +        interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-> > > +        bus-width = <8>;
-> > > +        microchip,clock-delay = <10>;
-> > > +    };
+If there is confirmed preference, I would shorten license headers in the
+C files, but I am not sure if SPDX-License-Identifier is recognized by 
+copyright law and because code and CTU CAN FD IP can be used outside
+of Linux kernel by others, we would like to keep legally binding preamble.
+It is reduced by not listing address to obtain complete GPL-2.0 from anyway.
+And change of preamble requires to update main repository, because
+header files are generated from IP core IPXACT definition by Python
+based tools. 
 
+I am aware of only one other suggestion not followed yet and it
+is separation of part of ctucan_tx_interrupt() function into new
+one suggested by Pavel Machek. I agree that function length of 108
+lines is big. When blank lines are removed we are on 68 lines and 28
+lines are switch statement. The function consist of two nested loops.
+External one required to ensure no lost interrupt when edge triggered
+delivery or implementation is used. For me personally, it is more
+readable in the actual format then to separate and propagate local
+variables to another function. And particular function code received
+only formatting and ctu_can_fd_ -> ctucan_hw_ rename in past year
+so it is tested many/many times by manual PCI test and automated
+Zynq tests. Each of the following pipelines which contains two jobs
+ands by test of FPGA design and driver build and tests on real HW  
 
+   https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top/pipelines
 
-Kind regards
-Uffe
+You can go through years of the testing and development back.
+So I have even tendency to not shuffle code which does not
+result in indisputable better readability and breaks more than year
+of unmodified code successful (pass) test result line and confidence.
+
+Because I understand that you all are loaded a lot I expect that after
+ACK/review-by by Rob, there is no need to send v6 to
+  devicetree@vger.kernel.org
+I am not sure about cross-post to
+  netdev@vger.kernel.org
+  linux-kernel@vger.kernel.org
+when the progress is stuck on
+  linux-can@vger.kernel.org
+Problem is that linux-can seems to eat core driver patch, probably because it 
+is too long.
+
+Thanks to all for patience and if somebody does want to be loaded by minor
+updates, resends and pings to linux-can, send me note to not bother you
+again.
+
+Thanks for your time,
+
+Pavel
+
+PS: I would be available on Drew Fustini's LPC 2020
+    BoF: upstream drivers for open source FPGA SoC peripherals 
+    today. If there is interrest I can provide some information
+    and show some overview and results.
+
