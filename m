@@ -2,103 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97862250FE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 05:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601B4250FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 05:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgHYDSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 23:18:39 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27223 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726532AbgHYDSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 23:18:38 -0400
-IronPort-SDR: 9HHBntzfR+XkoY/LMmn1QL6hRuUEkk6Z1ddq0MTeRmsDwKFM7BBPFMccnd1HI1NglWbcjBHJvc
- c+hPZGG3/I8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="240850035"
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="240850035"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2020 20:18:36 -0700
-IronPort-SDR: JAxBwfPxBJxqHiuWgjooPlP0PKKHpV1jccNd0dqL8Y1KDhRFDcblAA1ocnzcCLuPd8yErURvlh
- BIByxsbA6JjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,351,1592895600"; 
-   d="scan'208";a="322591044"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2020 20:18:34 -0700
-Cc:     baolu.lu@linux.intel.com, ashok.raj@intel.com,
-        jacob.jun.pan@intel.com, kevin.tian@intel.com,
-        jamessewart@arista.com, tmurphy@arista.com, dima@arista.com,
-        sai.praneeth.prakhya@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 07/15] iommu/vt-d: Delegate the dma domain to upper
- layer
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20190525054136.27810-1-baolu.lu@linux.intel.com>
- <20190525054136.27810-8-baolu.lu@linux.intel.com>
- <159803479017.29194.1359332295829225843@build.alporthouse.com>
- <65125687-14ae-182f-da07-7d29b4910364@linux.intel.com>
- <159825811140.30134.5347490249201789397@build.alporthouse.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <a6288e81-76de-956a-77e9-bccbcbba366f@linux.intel.com>
-Date:   Tue, 25 Aug 2020 11:13:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728437AbgHYDPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 23:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726532AbgHYDPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 Aug 2020 23:15:09 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 20:15:08 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c12so8052769qtn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 20:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SvW0vlaUXlhWFbm4GXWlUoLrbQbUVmWGmeetFSuThhE=;
+        b=lBdDG+jr+clUeV0eZJNh0HDFKzUBl3kRTE4wstKazWuV5tSm0WZL5CH4NcESSYmzwC
+         sP4WG8N++5UqDSc3i3VIMNJ0jvo8sUZYtbg6/s2Hh/U63UpgMYGr2OgHf5cwuWZvOr76
+         tmOZwzIAeSNJVqYyxCy0FQ1+N/2UUUOWWnInumaZmoOyep+CVW6y5F0dUJ+0+amyzmSh
+         s+PTEw1UPrFB36N8Kx/VnENvAlsIhownfXWtitpvHR2u91jdmB+afg4z4yi1l7dceg4g
+         X9ZWX+J6qgvDHUDyoWq/TUyWcZyD/OfUDexLvjw804QiXxRYV2LJyzlUVkp53xobKQCb
+         VUkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SvW0vlaUXlhWFbm4GXWlUoLrbQbUVmWGmeetFSuThhE=;
+        b=bkn7OWblJfrS1F7KQUZ02ApsErR3o7Tx5JDzgwe5/VkrusSn7ju252WLaEnL3BuKiq
+         /vBdOmwBN9hZvpMEaa+Gh+AXo4uVdYNTNZTCTQtiVT6zo6rkpvKfBz3UTBXm28lsvfSF
+         4+NjGs1fLLfL0puxcQT5xN/2sR6FYFZd2nNhe8keXzXB6IBXpAQh7A7mCMeWD1NKKn/w
+         +lKgcicJrRyCHob5WVj+dD1bIx+qNW5xHurfGVhBmJDwwt4hjHH9sVc1wogkobRgHK8H
+         3iYXo/oxyhJxNBsT5bvq3nclXyxtsbsWcGT2n7r88cFyFIyWEcEm1eHFHJxLQgqu6H2/
+         bozg==
+X-Gm-Message-State: AOAM533Ao+VEyNZv2QafrkmXvLHEgkEkuxlelzoGu87XdqNzvAMjv2BZ
+        hn6uHIEpyTzwrZKtCoWtOkI=
+X-Google-Smtp-Source: ABdhPJxNJ48MdYSl7r2xKefnshL60K4Lxd4UGz3J+2l5UciwcxMPHBZ0Y1xQjLCZd+sM07lOCMSRhA==
+X-Received: by 2002:aed:3ead:: with SMTP id n42mr7978240qtf.5.1598325307956;
+        Mon, 24 Aug 2020 20:15:07 -0700 (PDT)
+Received: from smtp.gmail.com ([2607:fea8:56e0:6d60::2db6])
+        by smtp.gmail.com with ESMTPSA id d26sm13283713qtc.51.2020.08.24.20.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 20:15:07 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 23:15:01 -0400
+From:   Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-usp@googlegroups.com
+Subject: Re: [PATCH] drm/vkms: Use alpha value to blend values.
+Message-ID: <20200825031501.y3knhdwph5a6knld@smtp.gmail.com>
+References: <20200818160215.19550-1-realwakka@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <159825811140.30134.5347490249201789397@build.alporthouse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hw63tmig6dcz7gis"
+Content-Disposition: inline
+In-Reply-To: <20200818160215.19550-1-realwakka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
 
-On 8/24/20 4:35 PM, Chris Wilson wrote:
-> Quoting Lu Baolu (2020-08-24 07:31:23)
->> Hi Chris,
->>
->> On 2020/8/22 2:33, Chris Wilson wrote:
->>> Quoting Lu Baolu (2019-05-25 06:41:28)
->>>> This allows the iommu generic layer to allocate a dma domain and
->>>> attach it to a device through the iommu api's. With all types of
->>>> domains being delegated to upper layer, we can remove an internal
->>>> flag which was used to distinguish domains mananged internally or
->>>> externally.
->>>
->>> I'm seeing some really strange behaviour with this patch on a 32b
->>> Skylake system (and still present on mainline). Before this patch
->>> everything is peaceful and appears to work correctly. Applying this patch,
->>> and we fail to initialise the GPU with a few DMAR errors reported, e.g.
->>>
->>> [   20.279445] DMAR: DRHD: handling fault status reg 3
->>> [   20.279508] DMAR: [DMA Read] Request device [00:02.0] fault addr 8900a000 [fault reason 05] PTE Write access is not set
->>>
->>> Setting an identity map for the igfx made the DMAR errors disappear, but
->>> the GPU still failed to initialise.
->>>
->>> There's no difference in the DMAR configuration dmesg between working and
->>> the upset patch. And the really strange part is that switching to a 64b
->>> kernel with this patch, it's working.
->>>
->>> Any suggestions on what I should look for?
->>
->> Can the patch titled "[PATCH] iommu/intel: Handle 36b addressing for
->> x86-32" solve this problem?
-> 
-> It does. Not sure why, but that mystery I can leave for others.
+--hw63tmig6dcz7gis
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's caused by left switching 36 bits operation against a 32-bit
-integer. Your patch fixes this by converting the integer from unsigned
-long to u64. It looks good to me. Thanks!
+Hi Sidong,
 
-> -Chris
-> 
+Thanks a lot for your patch and effort to improve VKMS.
 
-Best regards,
-baolu
+On 08/18, Sidong Yang wrote:
+> I wrote this patch for TODO list in vkms documentation.
+>=20
+> Use alpha value to blend source value and destination value Instead of
+> just overwrite with source value.
+>=20
+> Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+>=20
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
+vkms_composer.c
+> index 4f3b07a32b60..e3230e2a99af 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -77,6 +77,9 @@ static void blend(void *vaddr_dst, void *vaddr_src,
+> =20
+>  	for (i =3D y_src, i_dst =3D y_dst; i < y_limit; ++i) {
+>  		for (j =3D x_src, j_dst =3D x_dst; j < x_limit; ++j) {
+> +			u8 *src, *dst;
+> +			u32 alpha, inv_alpha;
+> +
+>  			offset_dst =3D dest_composer->offset
+>  				     + (i_dst * dest_composer->pitch)
+>  				     + (j_dst++ * dest_composer->cpp);
+> @@ -84,8 +87,15 @@ static void blend(void *vaddr_dst, void *vaddr_src,
+>  				     + (i * src_composer->pitch)
+>  				     + (j * src_composer->cpp);
+> =20
+> -			memcpy(vaddr_dst + offset_dst,
+> -			       vaddr_src + offset_src, sizeof(u32));
+> +			src =3D vaddr_src + offset_src;
+> +			dst =3D vaddr_dst + offset_dst;
+> +			alpha =3D src[3] + 1;
+> +			inv_alpha =3D 256 - src[3];
+> +			dst[0] =3D (alpha * src[0] + inv_alpha * dst[0]) >> 8;
+> +			dst[1] =3D (alpha * src[1] + inv_alpha * dst[1]) >> 8;
+> +			dst[2] =3D (alpha * src[2] + inv_alpha * dst[2]) >> 8;
+
+Did you test your change with IGT? Maybe I missed something but looks
+like that you're applying the alpha value but the value that we get is
+already pre-multiplied.
+
+Btw, It looks like that you and Melissa are working in the same feature,
+maybe you two could try to sync for avoiding overlapping.
+
+Finally, do you have plans to send your fix for
+vkms_get_vblank_timestamp() function? That patch was really good and
+removes a lot of warning generated during the IGT test.
+
+Best Regards
+
+> +			dst[3] =3D 0xff;
+> +
+>  		}
+>  		i_dst++;
+>  	}
+> --=20
+> 2.17.1
+>=20
+
+--=20
+Rodrigo Siqueira
+https://siqueira.tech
+
+--hw63tmig6dcz7gis
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAl9EgjAACgkQWJzP/com
+vP+QwRAAn9k/9RskirKfJGva/5Qzhykbkj2nANsnwZo+hY6t2TNNuj4jx/INI0XA
+l8eswurDyaB8yN/IUKs8HQ4LZEnrz4bKnYP8vpsJBxjPu6r+hTJ1vCEchISwaPHO
+gQENSqrjAjgwkfVwHBJ4ltt3mwuvxJ01xgR+pztsIQ+H7U15TnZVhv7wVmt3jbhx
+Rdgy9DM6mT5XVDcOJpriHlMQVCdfumRgbnQZxCSvyp++Bkb/HnvvV0YZnWpA1e0z
+azxOW5jDeiQkg3VTJMO7tgnbXF6nX/Gucfuc1eN9yuiYJrWEyzjEjYGucbCvsbRV
+U0l3XF3/lFGFLQOKe6MV+/TXVQ6rVmSAkNtSRdum8qHh8ukzHbIqdSFhdU6ThNlm
+rexe62XyN1+f09f+kb/7FLxt5ov/7zdEjd2Vx9HQ8PLGhnWXJTxEvEaw12YQk5HB
+Z5yvsD0V8nbUFCuCShvgDdQqSAAURMmoBxo0T8WYPnKIgfN100vL4WFu5Ru+MCFt
+bbLzX+z+CyHg0oND2jg2umTDf0F6Cr2tOlxCTb7N+oqo15rsC1wpB9HqySai/oi5
+3sADXinocJuSnwO08TvSpDtsQzLMvSm19V4hx33UCcheBH3Fk9nbtFmc70q/EY7f
+avYZXPn+CZKPFpGv7dgqsoYe5f2sTmKQUdzC/DsQb26OHQ7zilQ=
+=qLnU
+-----END PGP SIGNATURE-----
+
+--hw63tmig6dcz7gis--
