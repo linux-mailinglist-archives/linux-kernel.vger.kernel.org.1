@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EB5250E28
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755BE250E32
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgHYBVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 21:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgHYBVg (ORCPT
+        id S1726541AbgHYB0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:26:44 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34162 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726090AbgHYB0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 21:21:36 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6457C061574;
-        Mon, 24 Aug 2020 18:21:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A72391295BBB2;
-        Mon, 24 Aug 2020 18:04:49 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 18:21:35 -0700 (PDT)
-Message-Id: <20200824.182135.131366460578950674.davem@davemloft.net>
-To:     f.fainelli@gmail.com
-Cc:     netdev@vger.kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-netdev@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk
-Subject: Re: [PATCH net-next 0/6] MAINTAINERS: Remove self from PHY LIBRARY
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <bd8da53d-ebf8-2e2e-124d-f12e614d820a@gmail.com>
-References: <20200822201126.8253-1-f.fainelli@gmail.com>
-        <20200824.161937.197785505315942083.davem@davemloft.net>
-        <bd8da53d-ebf8-2e2e-124d-f12e614d820a@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Mon, 24 Aug 2020 21:26:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U6n39Zm_1598318789;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6n39Zm_1598318789)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Aug 2020 09:26:31 +0800
+Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
+ page charged
+To:     Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>
+Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
+        osalvador@suse.de, mike.kravetz@oracle.com
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200820145850.GA4622@lca.pw> <20200821080127.GD32537@dhcp22.suse.cz>
+ <20200821123934.GA4314@lca.pw> <20200821134842.GF32537@dhcp22.suse.cz>
+ <20200824151013.GB3415@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <12425e06-38ce-7ff4-28ce-b0418353fc67@linux.alibaba.com>
+Date:   Tue, 25 Aug 2020 09:25:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200824151013.GB3415@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 24 Aug 2020 18:04:50 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Mon, 24 Aug 2020 17:43:37 -0700
+reproduce using our linux-mm random bug collection on NUMA systems.
+>>
+>> OK, I must have missed that this was on ppc. The order makes more sense
+>> now. I will have a look at this next week.
+> 
+> OK, so I've had a look and I know what's going on there. The
+> move_pages12 is migrating hugetlb pages. Those are not charged to any
+> memcg. We have completely missed this case. There are two ways going
+> around that. Drop the warning and update the comment so that we do not
+> forget about that or special case hugetlb pages.
+> 
+> I think the first option is better.
+> 
 
-> 
-> 
-> On 8/24/2020 4:19 PM, David Miller wrote:
->> From: Florian Fainelli <f.fainelli@gmail.com>
->> Date: Sat, 22 Aug 2020 13:11:20 -0700
->> 
->>> Hi David, Heiner, Andrew, Russell,
->>>
->>> This patch series aims at allowing myself to keep track of the
->>> Ethernet
->>> PHY and MDIO bus drivers that I authored or contributed to without
->>> being listed as a maintainer in the PHY library anymore.
->>>
->>> Thank you for the fish, I will still be around.
->> I applied this to 'net' because I think it's important to MAINTAINERS
->> information to be as uptodate as possible.
-> 
-> Humm sure, however some of the paths defined in patches 4 and 5 assume
-> that Andrew's series that moves PHY/MDIO/PCS to separate
-> directories. I suppose this may be okay for a little while until you
-> merge his patch series?
 
-Aha, I see.  I think it's ok for now.
+Hi Michal,
+
+Compare to ignore the warning which is designed to give, seems addressing
+the hugetlb out of charge issue is a better solution, otherwise the memcg
+memory usage is out of control on hugetlb, is that right?
+
+Thanks
+Alex 
