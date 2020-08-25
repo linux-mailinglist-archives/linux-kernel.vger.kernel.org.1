@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787F0251A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1DF251A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgHYNxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgHYNx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:53:26 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9A3C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:53:25 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u18so2509587wmc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:53:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=m5K7q4ntfOvCuWo9VcwV3Y8K7PEmWf/RHpOYApWqYOo=;
-        b=p6qMNMd5VglEdqFcIL1iv1XVKPRZ+sI70S8iThAOM+4AcOZuWdjDKeIKcuVwOrv97l
-         mlzPdyztvYgnW6wJDVCB3Zwj5L/YbWx44evE1cefrB4fkVlzOUNZGIK1bwBRlX34j8Vx
-         rop3HtmimD+WJ70KqcQt4D6PQzT1TvsMJ/x9dio43yiqkEcoej/f4of2ZQlmhTfC4p+n
-         WIxtyaIr6IzvFHkq73aPJzB8sua9bocWmlXJIpI7t5WUNXF+apZlgt3q1ncLtpusFoWn
-         NSctCbUnOTq51icB0I75NTaV26VnEpI1kjT4ICWIZXkbN4xEi1Hp16oDmEPe/fetgm3z
-         M2hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=m5K7q4ntfOvCuWo9VcwV3Y8K7PEmWf/RHpOYApWqYOo=;
-        b=Ve9y91Lvv3FfYBJm82oM4ucVHiSpJd+GQPnX6sHx+J8XgwEYeFN5uAMWaKPpWYG2uH
-         RKt/aG0snARR7u8Y1iyiSPg+IqUDMOuXyqN5/YVyD+FgAH7msIINBqmpLcRNU7WlvEhe
-         FPEt8MEwUopaMYENu2Q2NE9H6GSYBPgLiyAautC5DgW0eWRw3uhY5oyX5RgNZQU+KUKU
-         7N2fwoVFxLnLJKNUyzWGf71MlL4/fOlAIy9OLsgDS4doomZftCJV8+27OSeUvJawwm8X
-         nAJoymv3lM9SI2kBrc165K5ZfHI0J5TyKOnKYNdbfmA/lfZ2SHuNLqmBG+z54T87k0ik
-         WnHA==
-X-Gm-Message-State: AOAM532ua5fd8jkI26w6ysS8Cxy5guEc4gp26N7YNQxJ2/8EL0mQAmxg
-        4sCSFy/PQmbi3GdGcnsWqejOtg==
-X-Google-Smtp-Source: ABdhPJy8k9/Nb4tlj+y4Bq+1w/ACN3QGov3SCl+s4GMHcCRvFUwVSFwb3GgE8g5wKq+pB2bBXE/pBA==
-X-Received: by 2002:a1c:c90d:: with SMTP id f13mr2243927wmb.25.1598363603543;
-        Tue, 25 Aug 2020 06:53:23 -0700 (PDT)
-Received: from dell ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id h10sm30075699wro.57.2020.08.25.06.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 06:53:22 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 14:53:20 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Frank Lee <tiny.windzz@gmail.com>,
-        Frank Lee <frank@allwinnertech.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, gregory.clement@bootlin.com,
-        Thomas Gleixner <tglx@linutronix.de>, jason@lakedaemon.net,
-        Marc Zyngier <maz@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        "p.zabel" <p.zabel@pengutronix.de>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        clabbe@baylibre.com, bage@linutronix.de,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>, linux-i2c@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v5 00/16] Allwinner A100 Initial support
-Message-ID: <20200825135320.GM3248864@dell>
-References: <cover.1595572867.git.frank@allwinnertech.com>
- <CAEExFWsvScMgi_Dftfq06HZiF8CFAmym8Z_tgQoHHAfiGxWt0g@mail.gmail.com>
- <CAEExFWuwjmqAh0c3kMLS3Gs6UC2A8TtY-9nJeWxFPRDugtR4pA@mail.gmail.com>
- <20200824080327.GH3248864@dell>
- <20200825085532.vv4dpuzmjnshm5qn@gilmour.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200825085532.vv4dpuzmjnshm5qn@gilmour.lan>
+        id S1726413AbgHYNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:54:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:6477 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726191AbgHYNyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:54:08 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BbVpN0mStz9txlZ;
+        Tue, 25 Aug 2020 15:54:04 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 7XPdRsKX9l1c; Tue, 25 Aug 2020 15:54:04 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BbVpM73nzz9txlY;
+        Tue, 25 Aug 2020 15:54:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 714D48B822;
+        Tue, 25 Aug 2020 15:54:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HxYGHEkwjCuH; Tue, 25 Aug 2020 15:54:02 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92E388B812;
+        Tue, 25 Aug 2020 15:53:59 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2D50F65D3C; Tue, 25 Aug 2020 13:53:59 +0000 (UTC)
+Message-Id: <df48ed76cf8a756a7f97ed42a1a39d0a404014bc.1598363608.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 1/9] powerpc/vdso: Remove BUG_ON() in vdso_init()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 25 Aug 2020 13:53:59 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020, Maxime Ripard wrote:
+If we are not able to allocate memory for the pagelists, bail out.
 
-> On Mon, Aug 24, 2020 at 09:03:27AM +0100, Lee Jones wrote:
-> > On Mon, 24 Aug 2020, Frank Lee wrote:
-> > 
-> > > ping......
-> > 
-> > "Please don't send content free pings and please allow a reasonable
-> >  time for review.  People get busy, go on holiday, attend conferences
-> >  and so on so unless there is some reason for urgency (like critical
-> >  bug fixes) please allow at least a couple of weeks for review.  If
-> >  there have been review comments then people may be waiting for those
-> >  to be addressed.  Sending content free pings just adds to the mail
-> >  volume (if they are seen at all) and if something has gone wrong
-> >  you'll have to resend the patches anyway so [RESEND]ing with any
-> >  comments addressed is generally a much better approach."
-> 
-> This is true to some extent, but pinging after a month doesn't seem
-> unreasonable either.
+There is no reason to crash the machine, just have vdso init fail.
 
-Pinging is mostly a fruitless exercise.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+This series is based on top of the series switching to C VDSO implementation,
+but in fact only the last patch depends on that series and is not vital as
+it is just afterwork cleanup.
 
-After a month, many Maintainers would have purged any un-serviced
-mails anyway.  If a patch-set is left hanging, still requiring
-attention before the next version, submitting a [RESEND] is generally
-a better option.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/vdso.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
+diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
+index 23208a051af5..88a4a02ed4c4 100644
+--- a/arch/powerpc/kernel/vdso.c
++++ b/arch/powerpc/kernel/vdso.c
+@@ -747,20 +747,16 @@ static int __init vdso_init(void)
+ 	 * Initialize the vDSO images in memory, that is do necessary
+ 	 * fixups of vDSO symbols, locate trampolines, etc...
+ 	 */
+-	if (vdso_setup()) {
+-		printk(KERN_ERR "vDSO setup failure, not enabled !\n");
+-		vdso32_pages = 0;
+-#ifdef CONFIG_PPC64
+-		vdso64_pages = 0;
+-#endif
+-		return 0;
+-	}
++	if (vdso_setup())
++		goto setup_failed;
+ 
+ #ifdef CONFIG_VDSO32
+ 	/* Make sure pages are in the correct state */
+ 	vdso32_pagelist = kcalloc(vdso32_pages + 2, sizeof(struct page *),
+ 				  GFP_KERNEL);
+-	BUG_ON(vdso32_pagelist == NULL);
++	if (!vdso32_pagelist)
++		goto alloc_failed;
++
+ 	for (i = 0; i < vdso32_pages; i++) {
+ 		struct page *pg = virt_to_page(vdso32_kbase + i*PAGE_SIZE);
+ 		get_page(pg);
+@@ -773,7 +769,9 @@ static int __init vdso_init(void)
+ #ifdef CONFIG_PPC64
+ 	vdso64_pagelist = kcalloc(vdso64_pages + 2, sizeof(struct page *),
+ 				  GFP_KERNEL);
+-	BUG_ON(vdso64_pagelist == NULL);
++	if (!vdso64_pagelist)
++		goto alloc_failed;
++
+ 	for (i = 0; i < vdso64_pages; i++) {
+ 		struct page *pg = virt_to_page(vdso64_kbase + i*PAGE_SIZE);
+ 		get_page(pg);
+@@ -789,5 +787,14 @@ static int __init vdso_init(void)
+ 	vdso_ready = 1;
+ 
+ 	return 0;
++
++setup_failed:
++	pr_err("vDSO setup failure, not enabled !\n");
++alloc_failed:
++	vdso32_pages = 0;
++#ifdef CONFIG_PPC64
++	vdso64_pages = 0;
++#endif
++	return 0;
+ }
+ arch_initcall(vdso_init);
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.0
+
