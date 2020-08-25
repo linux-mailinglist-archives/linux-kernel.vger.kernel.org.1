@@ -2,133 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21949251833
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AD3251839
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgHYMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728093AbgHYMG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:06:26 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87D2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:06:26 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id nv17so1149876pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=f7Xw87w/h5UvoabA+YlP6Bsn9RajGgFTR3KFrppXRRY=;
-        b=OOIK5NAH8qBlZl61Na9QU2GYwVCduBlfi2NZol0VFYNhC3F2qUyXztDdWQK/g1yN08
-         81F7NABVeNAk2Zv+idhvRPOrkNa/IWlc5hqmkGmJsWCqOKNF2MJE9zZjJ9FGoyeYaobx
-         xPUNZvP8ndqqqDiIinuDS6qdn9zfkSOiJz2l1wTva4Fw1C/Kq6cLIlNFSaJO8KLNMaV2
-         p/ygEjIvOkHzHuPZ1OpGNkvd70FMbrQffjcjL/vSj3NymiH02XMtHc9Y/4M7prQjXavB
-         UbUIJ3oiZsRfB0hj4ax9FKNdjwJHuAJLZkxCOndmCHbOPyBY8JMx12iclZVrINMxGxyC
-         m8Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=f7Xw87w/h5UvoabA+YlP6Bsn9RajGgFTR3KFrppXRRY=;
-        b=FNQBE+wDgGybhroj4GI4I0RMlCdEml1qEqbltOo/h8bBM+WQ8D3OltY0yCBMM6DdAs
-         k/XQ8LUGTRyB29lNugKwI+wle8dSWshvoppOfeeS9mu2f3XujP6vcy1y+lfObGpFADcc
-         t/DSVgZoS2mx0MylM3/mKNdvWs2vRdT6wN3Z+5+EeIFOXt3t76HwcXRIXiB3HeV7CraY
-         qKi0t72unQNndj0LH4OdeuK4cd1b2TbjfWw7oihmMroPMNt0RZ+cfDAl/OYCnzenKo5L
-         dVN9Jeh2ztrv8HnXTRdJe7tkiUZc7KCKGtJXaXlrkx0CvmVQ6w8u4cbZBJVPkJ684qaW
-         nhlg==
-X-Gm-Message-State: AOAM530c2Gq2wB/XWvJgAZXYm+fVEB/T4dBMmhJtZis+q+av94NKdcHr
-        LQTcdO7ceso32JHVRPUeI02hkTH1iQmueg==
-X-Google-Smtp-Source: ABdhPJwIDIbapC/r5dkd4XzqXqUzr+kB4BTKDK4Ng/k0FEJ4aXkmFo48suBkWgwXJ/OwYQiagcVTBA==
-X-Received: by 2002:a17:90a:cf8a:: with SMTP id i10mr1342047pju.140.1598357186344;
-        Tue, 25 Aug 2020 05:06:26 -0700 (PDT)
-Received: from builder-PowerEdge-R730xd.mioffice.cn ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id a20sm5546597pfi.11.2020.08.25.05.06.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Aug 2020 05:06:25 -0700 (PDT)
-From:   Qianli Zhao <zhaoqianligood@gmail.com>
-To:     tj@kernel.org, jiangshanlai@gmail.com, dan.carpenter@oracle.com,
-        Markus.Elfring@web.de
-Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-Subject: [PATCH v3] workqueue: Warn when work flush own workqueue
-Date:   Tue, 25 Aug 2020 20:06:19 +0800
-Message-Id: <e253c86e5f43cdaf5de696c7e2beca4d7edd1ea0.1598355934.git.zhaoqianli@xiaomi.com>
+        id S1730128AbgHYMGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:06:55 -0400
+Received: from mail-eopbgr700047.outbound.protection.outlook.com ([40.107.70.47]:33568
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728093AbgHYMGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:06:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TFqe7vseEot8pBtjiXYE7GW44nvgPNzCeCdLc6lspVj+sfM5EOA6gDVzC/PzBRH9LHU1rqdR1rVIwDMcewv2sEByoL9DdGGyOstSzV1QLk2SvT+byIu541SR79LsuXJdkj2oYiNnai7R5n65YDcMjAU3SzRcH4ittTTZNiRJnQA6yLVtWPaU2tEXSi2uGQ3aqVQ5oCOEY8MAEo7qCPBe9A8t3zlVLQmJ9JJZxW3eZE45yR8lwnOoNooJxJUehQtVlBW+mkssLZYGFh/8kj6ZbQKGZtKRxtfQ/WTQkWoEFgwrXV0H5eA21ME5rX+yrRJKyY3bdHgVAqS8pK20OeZXAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vMG3mMAb2nWg1X8f1twtmFnUZI6uF+kIIY+RhsQnODc=;
+ b=L2uDmQ4JZ7poY49l3hlckYRTXkYLWNDG+Jo3D5JuFgddPlJLCf2H5feJ5jFf22cfkqH8jkkftUYnetcUuvM6JDg07DQKIWg3vrmnKPj4IibCi0xiUSgzVq1vTfxK7ThKjI5yjeS+/Jc5xo9XKVaATY0GMFlKd1OyMHIdUsWHLDBn10OXvtBfyOb6yvw+017vLeE8/H/t9QlrrVazjTA44WzuElyb8M0kYxnaonc3I6ebbLkZxbp1NLJ945qHs8fdQlmNhXQsuMQeG5hZVZcua6PezvvsfpVtRymOwfKDQ3H7drCWDRQuPoi0x6dH2cXgCp7nyF0L3zS0Z19e5M0y/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vMG3mMAb2nWg1X8f1twtmFnUZI6uF+kIIY+RhsQnODc=;
+ b=bogxS5ARNZeRj15SNQEEZnSDWz1qBgV4cM4MOPbpsuKv5ghzlXH6sWdlpGlT/knu/EjO3mTGneKcUOcsinWoJ9GZHsiZ0AIGtqf2bGaVBF8QQ8q68OIqfZOcKiBPHNe5aGACEm2NjvYw9onMrLtIf0fnZaDa9uJhNqUWudaap0U=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=sifive.com;
+Received: from BN6PR1301MB2020.namprd13.prod.outlook.com
+ (2603:10b6:405:34::34) by BN6PR1301MB1873.namprd13.prod.outlook.com
+ (2603:10b6:405:34::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.11; Tue, 25 Aug
+ 2020 12:06:50 +0000
+Received: from BN6PR1301MB2020.namprd13.prod.outlook.com
+ ([fe80::a446:9877:b346:93ad]) by BN6PR1301MB2020.namprd13.prod.outlook.com
+ ([fe80::a446:9877:b346:93ad%5]) with mapi id 15.20.3326.019; Tue, 25 Aug 2020
+ 12:06:50 +0000
+From:   Yash Shah <yash.shah@sifive.com>
+To:     robh+dt@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com
+Cc:     aou@eecs.berkeley.edu, james.morse@arm.com, rrichter@marvell.com,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        sachin.ghadi@sifive.com, Yash Shah <yash.shah@sifive.com>
+Subject: [PATCH 1/3] dt-bindings: riscv: Add DT documentation for DDR Controller in SiFive SoCs
+Date:   Tue, 25 Aug 2020 17:36:20 +0530
+Message-Id: <1598357182-4226-2-git-send-email-yash.shah@sifive.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1598357182-4226-1-git-send-email-yash.shah@sifive.com>
+References: <1598357182-4226-1-git-send-email-yash.shah@sifive.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BMXPR01CA0023.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:d::33) To BN6PR1301MB2020.namprd13.prod.outlook.com
+ (2603:10b6:405:34::34)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by BMXPR01CA0023.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3305.24 via Frontend Transport; Tue, 25 Aug 2020 12:06:46 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [159.117.144.156]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fe1ef5c2-9584-4d2f-da8f-08d848ef5911
+X-MS-TrafficTypeDiagnostic: BN6PR1301MB1873:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1301MB1873C12462C0CD4188394AC482570@BN6PR1301MB1873.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qLDlEQkhmBXWkpKyHfyc7xkRWa0RTNAxdKdscWwLsZKgjKB9HT8cxsUpiNx02j8XZ8j8ybcCpIBJDr5uIF7o27K3wMoaRakpvUSeH9zrmw4sYpw9io9J6UMmVbRTUIFktS/9Zqv5k9RXjDl1bZnhpJa3HkEMi2gFC8ca5CL528wDsYHITDJjR84IB7BgMG3MFJT8eBBOhi1qP6wxS226kfvxz2Ra8GD6/Vqvnhm8ehtcyPLVJ0AghAJXygVR6ku130qZCcsL4Mu7aN/ETTtt2Adx4dssDMu9y2YABFH/s3tuP9tIrGR4/SE0f/2aEmxbTuNQ8dCwlHQYvhYelIF9JPJdiMaGjeOT+NpghF2LS2t9uraUgPLxqSaLJXwDsu+JcLezYvuzBNooxAOeeho7qA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR1301MB2020.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(396003)(366004)(136003)(346002)(39850400004)(376002)(7416002)(4326008)(6486002)(66556008)(52116002)(26005)(66476007)(186003)(107886003)(8936002)(316002)(83170400001)(16576012)(42882007)(966005)(5660300002)(66946007)(6666004)(478600001)(36756003)(2616005)(956004)(2906002)(8676002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: fMOX2sk3tsK5vsJ50TKOJb3eZ6Z+V8MT3KlU9+QresCAdY4RPfTwORZQEnrtCQqea9ooEDtcFeRKjts5Jb97Dch1Pfr6WfI5NGLu1/5GkSAF/7Gfq09C1Ulmrtuf3FdW9hqZFJ+HzCLsN/0YoLaXhrI1k1XqiOxYu5G3SVMuCz3kqkAT/9LihIBOZz2qw3kyoKExzzWHO9orDGuEbEz3U7ROUv3PcHF9USOEIRXFU3QtnQ9cv0qb3URuV+uwP+m3gH972IdjYpKOl2V74Cpr2s8FjQQfxao0AUQTGaVuJvRRRPzkGAbJ940wD7Cr4E/jRf2LqQ2LaTFXng7lNwYLR1H5hVneci6zQ+KhRCxDjmhAOLh1UguNTkDUUxDpA9XTGtoZNpwedUNL1cFlCEoSb63O13PO6mQcnZY1NmgufWMUG0Hg1VxeKHZPkyHXJ70vXDcEvBDhBz2VpkhgwtO7ZivXIHviH/UGGgFp/kiHDzuDHUARQqwFrGMakdmOxObi+PG48KfeEWC1PbIRf8EGgYbkjAb4x/4c46OrbCn/KVGqLerciey6haI2VCEq6jCiYXPix42OzbyWVZvEqM07uqOSVNQaaT5a3h49/Zyib2arFGOPuy5OeXzgeyC0waOvgZzbnF6SNR06aETnXaL3iA==
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe1ef5c2-9584-4d2f-da8f-08d848ef5911
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR1301MB2020.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2020 12:06:50.3889
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aDJtNMI3YPe/8Wk/kuQTmJ8ZEpNFUbfKn4kcH5Kzqidy0OUvgYux6aeVRXNcJwxhxoZTywXrl+yWYmxSgf5FcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1301MB1873
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qianli Zhao <zhaoqianli@xiaomi.com>
+Add device tree bindings for SiFive FU540 DDR controller driver
 
-If a workqueue flushes itself then that will lead to
-a deadlock. Print a warning and a stack trace when
-this happens.
-
-crash> ps 10856
-PID    PPID  CPU       TASK       ST   COMM
-10856    2   2  ffffffc873428080  UN  [kworker/u16:15]
-crash> bt 10856
-PID: 10856  TASK: ffffffc873428080  CPU: 2   COMMAND: "kworker/u16:15"
- #0 [ffffff80270cb9a0] __switch_to at ffffff99bba8533c
- #1 [ffffff80270cba30] __schedule at ffffff99bcda18dc
- #2 [ffffff80270cba50] schedule at ffffff99bcda1cdc
- #3 [ffffff80270cbaf0] schedule_timeout at ffffff99bcda6674
- #4 [ffffff80270cbb70] wait_for_common at ffffff99bcda2c68
- #5 [ffffff80270cbb80] wait_for_completion at ffffff99bcda2b60
- #6 [ffffff80270cbc30] flush_workqueue at ffffff99bbad7a60
- #7 [ffffff80270cbc90] drain_workqueue at ffffff99bbad80fc
- #8 [ffffff80270cbcb0] destroy_workqueue at ffffff99bbad92f8
- #9 [ffffff80270cbda0] dfc_svc_init at ffffff99bbfbfb6c
- #10 [ffffff80270cbdf0] process_one_work at ffffff99bbadc478
- #11 [ffffff80270cbe50] worker_thread at ffffff99bbadc9dc
- #12 [ffffff80270cbeb0] kthread at ffffff99bbae1f84
-
-Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+Signed-off-by: Yash Shah <yash.shah@sifive.com>
 ---
-Changes in V3:
-- update changelog
-- update comment
+ .../devicetree/bindings/riscv/sifive-ddr.yaml      | 41 ++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
 
-Changes in V2:
-- update changelog
-- update comment
-
- kernel/workqueue.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c41c3c1..a46d289 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -2585,6 +2585,7 @@ static int rescuer_thread(void *__rescuer)
-  * @target_work: work item being flushed (NULL for workqueue flushes)
-  *
-  * %current is trying to flush the whole @target_wq or @target_work on it.
-+ * If a work queue flushes itself, that will lead to a deadlock.
-  * If @target_wq doesn't have %WQ_MEM_RECLAIM, verify that %current is not
-  * reclaiming memory or running on a workqueue which doesn't have
-  * %WQ_MEM_RECLAIM as that can break forward-progress guarantee leading to
-@@ -2594,13 +2595,16 @@ static void check_flush_dependency(struct workqueue_struct *target_wq,
- 				   struct work_struct *target_work)
- {
- 	work_func_t target_func = target_work ? target_work->func : NULL;
--	struct worker *worker;
-+	struct worker *worker = current_wq_worker();
+diff --git a/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
+new file mode 100644
+index 0000000..0288119
+--- /dev/null
++++ b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
+@@ -0,0 +1,41 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/riscv/sifive-ddr.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	WARN_ONCE(worker && worker->current_pwq->wq == target_wq &&
-+		  worker->task == current,
-+		  "workqueue: current work function:%ps is flushing own workqueue:%s",
-+		  worker->current_func, target_wq->name);
- 
- 	if (target_wq->flags & WQ_MEM_RECLAIM)
- 		return;
- 
--	worker = current_wq_worker();
--
- 	WARN_ONCE(current->flags & PF_MEMALLOC,
- 		  "workqueue: PF_MEMALLOC task %d(%s) is flushing !WQ_MEM_RECLAIM %s:%ps",
- 		  current->pid, current->comm, target_wq->name, target_func);
++title: SiFive DDR memory controller binding
++
++description: |
++  The Sifive DDR controller driver is used to manage the Cadence DDR
++  controller present in SiFive FU540-C000 SoC. Currently the driver is
++  used to manage EDAC feature of the DDR controller.
++
++maintainers:
++  - Yash Shah <yash.shah@sifive.com>
++
++properties:
++  compatible:
++    enum:
++      - sifive,fu540-c000-ddr
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    memory-controller@100b0000 {
++        compatible = "sifive,fu540-c000-ddr";
++        reg = <0x100b0000 0x4000>;
++        interrupts = <31>;
++    };
 -- 
 2.7.4
 
