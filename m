@@ -2,114 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9252512B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0303C2512BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgHYHKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729362AbgHYHKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:10:37 -0400
-Received: from localhost (p54b333df.dip0.t-ipconnect.de [84.179.51.223])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C35662074D;
-        Tue, 25 Aug 2020 07:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598339436;
-        bh=FWfgAaWELOpnq9T2ZqffNJ7A9qnO3QfKuIy+OMg+Nkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3Wq0A6wK+XyCx0NdyaVbiOp2OMrI3KPwj1V3RQ/NOii/Sv8XJMYsbLmiBZPZxHLr
-         0oPOxmO4ZW2uxwUXqLpZCKZIApP5fRkbLXbO9bWzKlL5g/hG5Vx0qfVAI9CAKfOqMV
-         tmM358uBo/FCFQE7cpCl+yIXbi94y/ptPbOUqIoI=
-Date:   Tue, 25 Aug 2020 09:10:33 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
-Message-ID: <20200825071033.GB1861@ninjato>
-References: <20200812203618.2656699-1-robh@kernel.org>
+        id S1729419AbgHYHK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729362AbgHYHKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 03:10:49 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A06AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:10:49 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w186so4077229pgb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TTgfUq1fGiGTBOtF7D+zM11uTAbbvBDC7L57nNCRjH8=;
+        b=ThvdxAPM6oP8ehCOHc0veHlhphl+pbTwqIrZGdY8mZx6UJUhatbGlqTG6ZW9wJpOG3
+         dQWBIobN+JUrlpnC+H9i9XMKmPsW+GiBL1JXmLRBx9BdCnuKpXgeKIRIIDlKJSALQBE9
+         +PsUGOpRDrrWv+KAvlgl617R1C8YK6QldJ4NgfhXyWvoNJcibKfhqBizKaqoGNeWe51g
+         u5U6YhxgA0gX4ZttwH9fWCvQXO3KpngSk4CcnHA1qFt4nDj2hQ1epL4dt9ZrUAsid5iG
+         KegKpPqi7ihTRcES4oK8HIUiNXJnjkECq66ShWpkvzVD3Q57UBYgUnKQYzWYM7VgfXIN
+         lzrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TTgfUq1fGiGTBOtF7D+zM11uTAbbvBDC7L57nNCRjH8=;
+        b=O926Yvzb1wmkF4AJOVUukz7BvQVyLLpeHA8u9QOm6qqvAcjWX6HtP0DUQ8JL66eg4p
+         GbjcVTmhL5PXGBAnwN6LyeRyGD4v87H5LSC4aQtmwdb0DjV9qh9AYjTAGZGeqquFH3wl
+         /fChdbKy0bOSD4PBT7nXrD5AHL1RWxI56K+aSAo/PIoCj7ekiYBjtHquxqYH7C1b8brY
+         BTsOuT5dLeTiFQAUhuVm2WTkpCxBIamieGC0wleEO38bOoNVTUGoTmGYS4bJfMH9NCOf
+         2EKwlrajbW/cp94xYNvP/gHmdcsGgMQcwMX6eBYPeBvK4XexDhz7bs83O8NswVRCTm6y
+         0TNQ==
+X-Gm-Message-State: AOAM532fAibhWyIoGEP2VMFV9VHYgpeIepDZGIqZLZM9Rb9AnsDrHyXm
+        cq03Ha6JHBP+qwnv4UxJ5+F75d0OxeFFClaw7zPZTw==
+X-Google-Smtp-Source: ABdhPJzSuZY5BWe7wp+b6KHqIrIRtDa4pl6CE9TgqHhhfhWUNuUFAeqytbzFQspPt0QF1oEGRxEh+UY7X9p1+B6oMxs=
+X-Received: by 2002:aa7:9f1b:: with SMTP id g27mr6899591pfr.215.1598339448477;
+ Tue, 25 Aug 2020 00:10:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
-Content-Disposition: inline
-In-Reply-To: <20200812203618.2656699-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com> <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com> <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <CAK7LNAQmWBPV4nZ0xPdSHEt=DipHmR40co827voGOFN=2j47BQ@mail.gmail.com>
+ <20200824173450.GA4157679@rani.riverdale.lan>
+In-Reply-To: <20200824173450.GA4157679@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 25 Aug 2020 00:10:37 -0700
+Message-ID: <CAKwvOd=BEwuHFeuskJ4gPOGLoXm98oXA18U=tTw981g+HdVz-w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 24, 2020 at 10:34 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, Aug 25, 2020 at 12:57:22AM +0900, Masahiro Yamada wrote:
+> >
+> >
+> > To prevent transformation from foo() into bar(),
+> > there are two ways in Clang to do that;
+> > -fno-builtin-foo, and -fno-builtin-bar.
+> > There is only one in GCC; -fno-buitin-foo.
+> >
+> > Is this correct?
+> >
+>
+> It looked that way from previous experimentation, but...
+>
+> >
+> >
+> > I just played the optimization
+> > from printf("helloworld\n") to puts("helloworld").
+> >
+> > https://godbolt.org/z/5s4ded
+> >
+> >
+> > -fno-builtin-puts cannot prevent clang
+> > from emitting puts.
+> > Is it because clang does not support
+> > -fno-builtin-puts?
+>
+> Ugh. clang doesn't have __builtin_puts() but it optimizes printf() into
+> puts(). It doesn't have __builtin_putchar() but will optimize
+> printf("c") into putchar('c').
 
---JYK4vJDZwFMowpUq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bah, merely a <strikethrough>flesh
+wound</strikethrough><strikethrough>compiler bug</strikethrough>rather
+long TODO in the compiler.
+https://github.com/llvm/llvm-project/blob/be2bc7d4cef2edd66c7fb74b70adf62fc68754db/clang/include/clang/Basic/Builtins.def#L943
 
-On Wed, Aug 12, 2020 at 02:36:18PM -0600, Rob Herring wrote:
-> Clean-up incorrect indentation, extra spaces, long lines, and missing
-> EOF newline in schema files. Most of the clean-ups are for list
-> indentation which should always be 2 spaces more than the preceding
-> keyword.
->=20
-> Found with yamllint (which I plan to integrate into the checks).
->=20
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Anyways, give me a week and I'll hack through the rest of them
+https://reviews.llvm.org/D86508.  Certainly made HPA's point hit home,
+that's a lot of functionality to implement or disable in an
+environment.
 
-I trust you guys in figuring out the details, so for touching I2C:
+Masahiro, are you implying that we shouldn't take the
+-fno-builtin-stpcpy patch, because Clang is inconsistent? (That can be
+fixed.) Even though -fno-builtin-stpcpy works here as intended?
+https://lore.kernel.org/lkml/20200817220212.338670-2-ndesaulniers@google.com/
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
+Otherwise we need to provide an implementation of this symbol in the kernel.
+https://lore.kernel.org/lkml/20200815020946.1538085-1-ndesaulniers@google.com/
 
-
---JYK4vJDZwFMowpUq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9EuWkACgkQFA3kzBSg
-KbZbPA/+MqNMzGTVXT++2afD+v/Qkum1LRbeldro+e0ewQSps4tnW/eHg9RaemYr
-BwxfsOZA+EJp0lGOnRM5/vhPMoInlSEwJSBlxtjratUScfPiR7D4ljKXGaUQv4IV
-l9cXBZuOeLnSerxdYsuGrs8M0uqe4rAc3jt/FGD4rSgawNTN1HieFaQ0vq/0I5Gi
-pyJv09alaosBuqNYc37Gqm9Ddk6xEJb8lvwrVqeS2ZGMFmfJuFlsuLKhwdgen/og
-Wik6VZEjyUHJbyZgkcwMn6rTVTnopK7E0RYmdap35Bh6MAZ3auQ4eQU2tktY3L0G
-+NL/ah9FAvmPH1RAR7KmXzZxVYX2ZoWm3AJVpCIvlc9toZI5NdOwdruT+KlTLHIY
-T0vs7B3wqsrD4pHputHdDtf9iSZDB0FiTi44yJjReI72Yb47gDXXK7tOcewvq33Y
-J9dv/HeT85ER8dZ3fCssLdOsIVSE5ZGaDGjP9M4hPo5ZqM5WlMcqW13gmBsEaY3W
-quFFx4pgOXFmnO+7fCb0OIoySeTtgCMNqSwekaNsrbK8dBsFhMx62IzUwwCwL8ST
-clLrMsK81BA4v5hiU1SXC5zAJJG1W0FEpGvIuQRa5YxW8goqwIJrEuvy8jWLhg1x
-kB4BNFdQdBMg8xw0GSHGDhOZhIxgC5t/fvrbiLmqazzmbfCE1i8=
-=71f2
------END PGP SIGNATURE-----
-
---JYK4vJDZwFMowpUq--
+Please, pick your poison.
+-- 
+Thanks,
+~Nick Desaulniers
