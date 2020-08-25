@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCE7251C7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665CF251C85
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 17:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgHYPoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 11:44:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgHYPoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:44:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EDA420782;
-        Tue, 25 Aug 2020 15:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598370239;
-        bh=DgFyxOdNOTi3TG94BiEuLcvBwr2/zo4bHO/PeqCjCx4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IKrg3F2vFQXnqAASePy/mMuLsPQW7IEiL+Xux1qbWn0qGtd1OeKAs6//mcqd5evcH
-         FplyaJzVGuDTO1NiHzr441tAkqzWhwayfwfl5jDKAJkZMHemuEv0dp2dMbGVIreylT
-         pochdB6GTVu2BLXiAolfJbfQGA4AiPxAdKQgbtQI=
-Date:   Tue, 25 Aug 2020 17:44:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Himadri Pandya <himadrispandya@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        USB list <linux-usb@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH] net: usb: Fix uninit-was-stored issue in asix_read_cmd()
-Message-ID: <20200825154415.GA1513396@kroah.com>
-References: <20200823082042.20816-1-himadrispandya@gmail.com>
- <CACT4Y+Y1TpqYowNXj+OTcQwH-7T4n6PtPPa4gDWkV-np5KhKAQ@mail.gmail.com>
- <20200823101924.GA3078429@kroah.com>
- <CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com>
- <20200823105808.GB87391@kroah.com>
- <CACT4Y+ZiZQK8WBre9E4777NPaRK4UDOeZOeMZOQC=5tDsDu23A@mail.gmail.com>
- <20200825065135.GA1316856@kroah.com>
- <20200825143946.GA365901@rowland.harvard.edu>
- <20200825144437.GA1484901@kroah.com>
+        id S1726952AbgHYPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 11:44:49 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:47779 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgHYPos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 11:44:48 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 07PFieiC001998
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Tue, 25 Aug 2020 08:44:40 -0700 (PDT)
+Received: from pek-lpggp1.wrs.com (128.224.153.74) by ALA-HCB.corp.ad.wrs.com
+ (147.11.189.41) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
+ 08:44:22 -0700
+From:   <yanfei.xu@windriver.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] USB: integrate macro definitions into include/linux/usb.h
+Date:   Tue, 25 Aug 2020 23:44:21 +0800
+Message-ID: <20200825154421.5463-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825144437.GA1484901@kroah.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 04:44:37PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 25, 2020 at 10:39:46AM -0400, Alan Stern wrote:
-> > On Tue, Aug 25, 2020 at 08:51:35AM +0200, Greg Kroah-Hartman wrote:
-> > > At first glance, I think this can all be cleaned up, but it will take a
-> > > bit of tree-wide work.  I agree, we need a "read this message and error
-> > > if the whole thing is not there", as well as a "send this message and
-> > > error if the whole thing was not sent", and also a way to handle
-> > > stack-provided data, which seems to be the primary reason subsystems
-> > > wrap this call (they want to make it easier on their drivers to use it.)
-> > > 
-> > > Let me think about this in more detail, but maybe something like:
-> > > 	usb_control_msg_read()
-> > > 	usb_control_msg_send()
-> > > is a good first step (as the caller knows this) and stack provided data
-> > > would be allowed, and it would return an error if the whole message was
-> > > not read/sent properly.  That way we can start converting everything
-> > > over to a sane, and checkable, api and remove a bunch of wrapper
-> > > functions as well.
-> > 
-> > Suggestion: _read and _send are not a natural pair.  Consider instead
-> > _read and _write.  _recv and _send don't feel right either, because it
-> > both cases the host sends the control message -- the difference lies
-> > in who sends the data.
-> 
-> Yes, naming is hard :)
-> 
-> 	usb_control_read_msg()
-> 	usb_control_write_msg()
-> 
-> feels good to me, let me try this out and see if it actually makes sense
-> to do this on a few in-usb-core files and various drivers...
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-Turns out we have a long history of using snd/rcv for USB control
-messages:
-	usb_rcvctrlpipe()
-	usb_sndctrlpipe()
+include/linux/usb.h also contains 'Hard limit' and 'Arbitrary limit'
+macro definitions in it, hence we can integrate these from config.c
+into include/linux/usb.h
 
-so while _recv and _send might feel a bit "odd", it is what we are used
-to using, and when converting existing users, I can drop the pipe macro
-from the calls, turning something like:
-	usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0), ...);
-into:
-	usb_control_send_msg(hdev, 0, ...);
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+ drivers/usb/core/config.c | 3 ---
+ include/linux/usb.h       | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-or maybe:
-	usb_control_msg_send(hdev, 0, ...);
-with a full noun_verb pairing, instead of noun_verb_noun.
+diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
+index 562a730befda..58c5d946cd86 100644
+--- a/drivers/usb/core/config.c
++++ b/drivers/usb/core/config.c
+@@ -14,9 +14,6 @@
+ #include "usb.h"
+ 
+ 
+-#define USB_MAXALTSETTING		128	/* Hard limit */
+-
+-#define USB_MAXCONFIG			8	/* Arbitrary limit */
+ 
+ 
+ static inline const char *plural(int n)
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 20c555db4621..d0a117cfc6bd 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -275,9 +275,12 @@ void usb_put_intf(struct usb_interface *intf);
+ 
+ /* Hard limit */
+ #define USB_MAXENDPOINTS	30
++#define USB_MAXALTSETTING	128
++
+ /* this maximum is arbitrary */
+ #define USB_MAXINTERFACES	32
+ #define USB_MAXIADS		(USB_MAXINTERFACES/2)
++#define USB_MAXCONFIG		8
+ 
+ /*
+  * USB Resume Timer: Every Host controller driver should drive the resume
+-- 
+2.18.2
 
-thanks,
-
-greg k-h
