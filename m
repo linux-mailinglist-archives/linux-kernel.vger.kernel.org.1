@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52403251345
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AB4251354
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 09:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgHYHfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 03:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S1729602AbgHYHhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 03:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729301AbgHYHfR (ORCPT
+        with ESMTP id S1729528AbgHYHhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 03:35:17 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0C7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:35:17 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id x24so9629071otp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
-        b=ln4wlNKPaOTcV51Bxd6xupM38b+4zSiREKmnjNl8O+x+g54g3J9aNrYeeGz7CU+UNe
-         g0Dk0kZ9QbHr02qvkzYAq2LM0SUpXKjGcT+SGYJZOgaY9HG3lDvRL9YecleSm4OAPxC8
-         6wPrB+x+kDENlcGLtTCiFuHJX/kQaVQW3Cke3AHffGTN3nKpxcNVG1c6YJ6/0tMub9yy
-         PbNxd/3hBgjVtUjA0bFFXOFQ8LwA+Q6E3My0yaOdwnlmUZ0YFmWf2/y6njgOlyWdTiE0
-         C3QzJLUzPF28uMJbV07Zgfezh1VNtzV3IEBMRvxKZsTRvHQc/wAAnPiCIH/dXqKrvzug
-         jArg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
-        b=k38KKIy/etCQ5NEaiDm8WXjHybdJ9TgE7VCjTSasoGvog0sy9VW10IY4mF6HAfho2w
-         CB2socOjlSpezQtnh18q4G9GGUJlKnobuspv+v37FOBOLvjMoiMw7DAO1/yP/4OIY0k8
-         r8umcRgfn4Y9kKkOv3JYqrxBHLhl1I3Z5D/P20aex6HG1QFBiTorasGfFK3Ez87PKLVE
-         ondv8jS+wDX9til2fFlKKbjmNrRmCqX0h4x4imFRVxnZGwMQly6jIbb0mYeczlzi1ZHK
-         tYOMNtbWRBpdXil4WxryRA4Jb8cogEc4zDehjN8G4KkMYniIkdjeGuBbKUOjPD+Y8Yfv
-         Or4g==
-X-Gm-Message-State: AOAM533HERqyuriRTvvkmWdhHf8IS3GHNr1OCHa6qkLZTK5/r+pDU0uJ
-        tryA8Brl75N8Fj5WOBy3fD6mSF1+xyYDMfwBixg=
-X-Google-Smtp-Source: ABdhPJxWdfYzkwJ24iMDEmBtvd8XriXvMdFTX+TSYioQdpu4QkIlzVq0TKsHM6hvr5d/iCk5zgN4DZ7ix5xTP5XCra8=
-X-Received: by 2002:a9d:6e19:: with SMTP id e25mr6395003otr.198.1598340916267;
- Tue, 25 Aug 2020 00:35:16 -0700 (PDT)
+        Tue, 25 Aug 2020 03:37:05 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337DAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 00:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ya4jMDaDyGCvxtwvR2hGgIsqC+b9XOYcII4MqnwNsIQ=; b=KQDtro0nEEymkXbn91WTHgO/by
+        UMLzBTaCvX+Wmv4dlkUa7dTaxpalQHKKCX6J/V7e9YSWNsUosCVNp7RQXjypyIot82EhFkZqwIX5g
+        X38rVjNJo1ByxRxSsNKcM1bmjMRvzLb+sQcJRdwVtQW7m+NgDX3O3CK2IQV3AvYaQZlfF33LFA06w
+        Ff8TXFcNksl1OTrVMWbZmqAQ+hp4dqRo+nHWPgOYCd98MeIUFBj1HnPOtSWBIqJJzAyEg804jhV8G
+        I1B6FV6QZKAQBG386thhYA4ziV1ThTu/cmZFejJYVqL/hbnoXqOtRqwsnYscZGF5oRbLa64XuuJ3t
+        fNxxmExg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kATVn-00079D-Sn; Tue, 25 Aug 2020 07:36:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A88FC305C10;
+        Tue, 25 Aug 2020 09:36:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5DA802C01BB75; Tue, 25 Aug 2020 09:36:51 +0200 (CEST)
+Date:   Tue, 25 Aug 2020 09:36:51 +0200
+From:   peterz@infradead.org
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
+ entry is not optimized (trigger by int3 breakpoint)
+Message-ID: <20200825073651.GW1362448@hirez.programming.kicks-ass.net>
+References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
+ <20200824141429.GA3982@worktop.programming.kicks-ass.net>
+ <20200825031503.57d08355bf44900af7d70536@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6830:22d8:0:0:0:0 with HTTP; Tue, 25 Aug 2020 00:35:15
- -0700 (PDT)
-Reply-To: mrericbello@yandex.com
-From:   Mr Eric Bello <ubabank.benin11@gmail.com>
-Date:   Tue, 25 Aug 2020 00:35:15 -0700
-Message-ID: <CAA3c-f3VJvn-ZTLyjhinHb+Az1tb74RRdE-jMB=ua-aSuYEXMQ@mail.gmail.com>
-Subject: From Mr Eric Bello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825031503.57d08355bf44900af7d70536@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Tue, Aug 25, 2020 at 03:15:03AM +0900, Masami Hiramatsu wrote:
 
-I am Mr Eric Bello, Working with a reputable bank here in Burkina Faso
-as the manager in audit department. During our last banking audits we
-discovered an abandoned account belongs to one of our deceased
-customer, late Mr. Hamid Amine Razzaq, a billionaire businessman.
+> > I did the below, but i'm not at all sure that isn't horrible broken. I
+> > can't really find many rp->lock sites and this might break things by
+> > limiting contention.
+> 
+> This is not enough. 
 
-Meanwhile, before i contacted you i have done personal investigation
-in locating any of his relatives who knows about the account, but i
-came out unsuccessful. I am writing to request your assistance in
-transferring the sum of 15.500.000.00 (Fifteen million Five Hundred
-Thousand Dollars) into your account.
+I was afraid of that..
 
-I decided to contact you to act as his foreign business partner so
-that my bank will accord you the recognition and have the fund
-transfer into your account. More details information will be forwarded
-to you.
+> For checking the recursion of kretprobes, we might
+> need kretprobe_table_trylock() or kretprobe_table_busy() (but both
+> can be false positive)
 
-However, i will give you full details on how the business will be
-executed and also note that you will have 40% of the above mentioned
-if you agree to handle this business with me while 50% will be for me
-and 10% for any expenses that may arise on the process .reply here:(
-ericbell4109@gmail.com )
+Agreed.
 
+> Note that rp->lock shouldn't matter unless we will support recursive
+> kprobe itself. (even though, we can use raw_spin_trylock_irqsave())
 
-I am expecting to read from you soon.
-Best Regards
-Mr Eric Bello.
+If the deadlock mentioned isn't about rp->lock, then what it is about?
