@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E80E25152A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1970251530
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 11:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbgHYJRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 05:17:14 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38085 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgHYJRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 05:17:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BbNfr5s2Nz9sSP;
-        Tue, 25 Aug 2020 19:17:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1598347030;
-        bh=8+HCk3p1QLwmXwB6X50SNetgu111UDw1AjiCvBM1Qoc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VjpbkblajU7mqY192XaSvH07JYOT7dIP0r2K67EFTD1QN5Rjx61EmDnEqE9jiSPXG
-         97jJNo9a388hhQQ/84o/6/nHx/VSCMAyjV5E7jSE7KQ+qGNA+qTWjkakLKPbFldMlu
-         abxbDo0eM12E8B8p4LT76udOlpl5mZASdfSWjIqEUMB16qQ/ehJHKRf1e3Eax+EdBx
-         VIFvm2bNHKGES27gzqd1/PiacoZ1Ih4aM+BJoiTSRvACxLV3j7EVeJu7D/ntZWujpM
-         Ma/O25A6iL+3AC5MWjr08nMQUQ4rf3y9jLfYOwJqoIMTY5QopiClq08e/e3WP6Jxrj
-         GJKBz+VhCxQkw==
-Date:   Tue, 25 Aug 2020 19:17:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: linux-next: Signed-off-by missing for commit in the net-next tree
-Message-ID: <20200825191707.3c244b4f@canb.auug.org.au>
+        id S1729431AbgHYJRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 05:17:51 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45318 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728245AbgHYJRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 05:17:49 -0400
+Received: from localhost.localdomain (unknown [10.20.41.73])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf8cs10RfZ78NAA--.460S3;
+        Tue, 25 Aug 2020 17:17:33 +0800 (CST)
+Subject: Re: [PATCH] Revert "ALSA: hda: Add support for Loongson 7A1000
+ controller"
+To:     Takashi Iwai <tiwai@suse.de>
+References: <1598343903-2372-1-git-send-email-yangtiezhu@loongson.cn>
+ <s5h4kor6sb4.wl-tiwai@suse.de>
+Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>, stable@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <35883e9a-9d2a-624a-66c8-cace17ae6673@loongson.cn>
+Date:   Tue, 25 Aug 2020 17:17:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Qee=H7JH_MGf+Bt0fL0_Jdo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <s5h4kor6sb4.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxf8cs10RfZ78NAA--.460S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFy3GFyrGry3Jryftw1DZFb_yoW5uw4Dpr
+        y8Jr4UCw40qr17Gr1Yyrs8Jr97Kr4UA3WUJ348trn8ZF1UWr17Jw1UtFWUKr1DJr15try7
+        J39rAF4rKryUG3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VUbKsjUUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Qee=H7JH_MGf+Bt0fL0_Jdo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 08/25/2020 04:30 PM, Takashi Iwai wrote:
+> On Tue, 25 Aug 2020 10:25:03 +0200,
+> Tiezhu Yang wrote:
+>> This reverts commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+>> 7A1000 controller").
+>>
+>> With this patch, there exists the following error on the Loongson LS7A
+>> platform:
+>>
+>> [  216.639938] rcu: INFO: rcu_preempt self-detected stall on CPU
+>> [  216.645685] rcu:     0-....: (1 GPs behind) idle=d5a/1/0x4000000000000004 softirq=562/563 fqs=16476
+>> [  216.654565]  (t=53772 jiffies g=-463 q=11976)
+>> [  216.658923] NMI backtrace for cpu 0
+>> [  216.662417] CPU: 0 PID: 68 Comm: kworker/0:2 Not tainted 5.8.0+ #3
+>> [  216.668587] Hardware name:  , BIOS
+>> [  216.672174] Workqueue: events azx_probe_work [snd_hda_intel]
+>> [  216.677829] Stack : 0000000000000000 0000000000000000 ffffffff95004ce0 d786f9efa2288403
+>> [  216.685848]         d786f9efa2288403 0000000000000000 98000001102638c8 ffffffff80cee270
+>> [  216.693866]         0000000000000000 0000000000000000 0000000000000000 00000000000002b4
+>> [  216.701883]         206b726f775f6562 0000000000000001 0000000000000000 ffffffff80f30000
+>> [  216.709902]         ffffffff80f30000 ffffffff80d90000 0000000000000000 0000000000000000
+>> [  216.717919]         0000000000000000 0000000000000000 0000000000000000 ffffffff80d90000
+>> [  216.725937]         ffffffff80d90000 0000000000000007 ffffffff806aff18 0000000000000000
+>> [  216.733955]         ffffffff80f00000 9800000110cc4000 98000001102638c0 ffffffff80d9db80
+>> [  216.741974]         ffffffff8065a740 0000000000000000 0000000000000000 0000000000000000
+>> [  216.749991]         000073746e657665 0000000000000000 ffffffff80211a64 d786f9efa2288403
+>> [  216.758009]         ...
+>> [  216.760464] Call Trace:
+>> [  216.762920] [<ffffffff80211a64>] show_stack+0x9c/0x130
+>> [  216.768058] [<ffffffff8065a740>] dump_stack+0xb0/0xf0
+>> [  216.773110] [<ffffffff80665774>] nmi_cpu_backtrace+0x134/0x140
+>> [  216.778939] [<ffffffff80665910>] nmi_trigger_cpumask_backtrace+0x190/0x200
+>> [  216.785805] [<ffffffff802b1abc>] rcu_dump_cpu_stacks+0x12c/0x190
+>> [  216.791806] [<ffffffff802b08cc>] rcu_sched_clock_irq+0xa2c/0xfc8
+>> [  216.797808] [<ffffffff802b91d4>] update_process_times+0x2c/0xb8
+>> [  216.803724] [<ffffffff802cad80>] tick_sched_timer+0x40/0xb8
+>> [  216.809293] [<ffffffff802ba5f0>] __hrtimer_run_queues+0x118/0x1d0
+>> [  216.815380] [<ffffffff802bab74>] hrtimer_interrupt+0x12c/0x2d8
+>> [  216.821208] [<ffffffff8021547c>] c0_compare_interrupt+0x74/0xa0
+>> [  216.827124] [<ffffffff80296bd0>] __handle_irq_event_percpu+0xa8/0x198
+>> [  216.833558] [<ffffffff80296cf0>] handle_irq_event_percpu+0x30/0x90
+>> [  216.839732] [<ffffffff8029d958>] handle_percpu_irq+0x88/0xb8
+>> [  216.845388] [<ffffffff80296124>] generic_handle_irq+0x44/0x60
+>> [  216.851131] [<ffffffff80b3cfd0>] do_IRQ+0x18/0x28
+>> [  216.855838] [<ffffffff8067ace4>] plat_irq_dispatch+0x64/0x100
+>> [  216.861579] [<ffffffff80209a20>] handle_int+0x140/0x14c
+>> [  216.866802] [<ffffffff802402e8>] irq_exit+0xf8/0x100
+> Could you edit the Oops message to drop unnecessary hex numbers,
+> timestamps, and whatever redundant for readers?
 
-Hi all,
+OK, thanks for your reply.
+I will do it and then send v2 soon.
 
-Commit
+Thanks,
+Tiezhu
 
-  0093870aa891 ("batman-adv: Migrate to linux/prandom.h")
+>
+>
+> thanks,
+>
+> Takashi
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Qee=H7JH_MGf+Bt0fL0_Jdo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9E1xMACgkQAVBC80lX
-0Gwh7ggAnnBLs/I+UEtLEoB8fQg2672yo7GLfnZFpN9+LrY4i5vhF2YTPXAQU1en
-A4KVU9QxZbt5k7ZZW2u0Dx1+h8XXTjmn6cQR28i+JXcv7BFwsCGKM3VCVhrQZzJj
-OklyzKb0OIrytVvQBnScuOhQAaunFFj9zMH1iTAapfzco9NTVyv+gQG+rrubR2uV
-SFZVqY5ShtTqM5MybBvHGImK6cm0XnLFNwrAFwUQeeHysMpkuYq5FQcVotH74Yd5
-BOp+ixOvuvWBmQrkuvesAMmonXHADgSgPkWCFXIkwEHriQfH+uWOD9U0jFor+pK/
-jIBlD63YZb2Eedqiy2b3+BwgMrvYrA==
-=Qoeq
------END PGP SIGNATURE-----
-
---Sig_/Qee=H7JH_MGf+Bt0fL0_Jdo--
