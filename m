@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05A3251818
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4F625181E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgHYMDH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Aug 2020 08:03:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:57188 "EHLO foss.arm.com"
+        id S1730035AbgHYMD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:03:27 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:61528 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgHYMAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:00:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC1B01FB;
-        Tue, 25 Aug 2020 05:00:17 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F9B13F66B;
-        Tue, 25 Aug 2020 05:00:16 -0700 (PDT)
-References: <20200824153902.57875-1-andriy.shevchenko@linux.intel.com> <jhjeenwdl7u.mognet@arm.com> <20200825082636.GQ1891694@smile.fi.intel.com> <jhjd03fdrn3.mognet@arm.com> <jhjblizdofu.mognet@arm.com> <20200825112405.GU1891694@smile.fi.intel.com> <20200825112605.GV1891694@smile.fi.intel.com> <20200825113202.GX1891694@smile.fi.intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH v1] sched/topology: Make compiler happy about unused constant definitions
-In-reply-to: <20200825113202.GX1891694@smile.fi.intel.com>
-Date:   Tue, 25 Aug 2020 13:00:12 +0100
-Message-ID: <jhja6yjdjg3.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        id S1728567AbgHYMBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:01:01 -0400
+IronPort-SDR: 6zdHpv3OdfV3hyh0EdskEu+UPLu/M69ZmFtzQKXZ1pCrVeU7JOR82StliBN4baJEAea/bJSd+5
+ F/2twTHqOfoeNmGl+BrodQTF2fpEriSycrhp/VM0Mgo5LKwRHCEPi55A1V6J4yL9M0+OpRkpq9
+ ulam5l+pqQpnHw9qrVop951qwBhIcSZZAA4pSQ9koMnuv6ht8UTmCPSnhCcwW+1yf73ZDsmYbM
+ /0BvNI895j9fSvmD6y1EgnrG5lZ9Zi6pmz0G5FVvtBTkbvpwZ74jRDwLo9Zp8LRfb3hsWSn2rL
+ qE8=
+X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
+   d="scan'208";a="13590046"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 25 Aug 2020 14:00:40 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 25 Aug 2020 14:00:40 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 25 Aug 2020 14:00:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1598356840; x=1629892840;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=8miJjHVFYc/bpyj6qBdQOmlSnWEp1x28yyZ2xAwXd7E=;
+  b=TFpFgGIItZZ6Hfm9j+DSHG8urROrM04d6sXbAaGI11CpJC+CGjRuY2FN
+   FVhKNCK9vRyd3ipqGaNKnvFPiYuBQwMQ/OEcgLhyUoojyLmkDCM6I+Psp
+   pHxSg7PYV9L7xPqSZUDCj06dOiSkOZu9OIOw67XJdu0+J+cP/VNp9iDlF
+   gyepLv9uKgaXiwg+iTl94HOO6Gt4c7Jsnkt9ql7YllOnZ48BIwTYLChQO
+   8Z78wvHiRWCDDS7mWU0HsIk0LflJhbMsH3lWU1xOuoqG/oi8Xkw7b1UIC
+   Zs1+0PDC3jH+A1vW12qtYk+wJJ/E9LWOPij++EoBpQxd2YOPPn7X3kJgX
+   g==;
+IronPort-SDR: 3ZUPXeoIoG8BMineYbSaOq103KqArpYZptsK7J8L/+d6BXHFTn08diiop2JaQ/kg+DYBuAIV0n
+ vTV+IwTJoidgr6baurJmZgR3v4PEjLWIf9Z+Er3215Zmc3NRRywTQrnVDRoAN2loUfVBNztZLt
+ bMBkmgdmjJTEQXQsCol1+JPuA10WP/tj9bomARTk5jINV5YdULrMfWQpOK/r56z5HIwSprcusO
+ oCmsqYusVbOzIsgyuf+DpewTRRCw5/l/nbGmRTtXiYSPxkYLK7QHeZHkHJZ1hhfsLzUTVx/q6C
+ yRQ=
+X-IronPort-AV: E=Sophos;i="5.76,352,1592863200"; 
+   d="scan'208";a="13590045"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 25 Aug 2020 14:00:40 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3DA40280065;
+        Tue, 25 Aug 2020 14:00:40 +0200 (CEST)
+Message-ID: <11654b05dd8fb87e195aed20cbdaa22d8856b072.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH mmc-next v2] mmc: allow setting slot index via
+ device tree alias
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 25 Aug 2020 14:00:38 +0200
+In-Reply-To: <548605506aa2e73afafdc228263da04585871e0b.camel@ew.tq-group.com>
+References: <20200820075949.19133-1-matthias.schiffer@ew.tq-group.com>
+         <CAPDyKFoi7KghuBqu7YVS4GH4Bp1puhgb=PcwBVDvaTesLujrrw@mail.gmail.com>
+         <548605506aa2e73afafdc228263da04585871e0b.camel@ew.tq-group.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-08-25 at 11:39 +0200, Matthias Schiffer wrote:
+> On Tue, 2020-08-25 at 11:14 +0200, Ulf Hansson wrote:
+> > On Thu, 20 Aug 2020 at 09:59, Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > --- a/drivers/mmc/core/host.c
+> > > +++ b/drivers/mmc/core/host.c
+> > > @@ -387,6 +387,7 @@ struct mmc_host *mmc_alloc_host(int extra,
+> > > struct device *dev)
+> > >  {
+> > >         int err;
+> > >         struct mmc_host *host;
+> > > +       int alias_id, min_idx, max_idx;
+> > > 
+> > >         host = kzalloc(sizeof(struct mmc_host) + extra,
+> > > GFP_KERNEL);
+> > >         if (!host)
+> > > @@ -395,7 +396,18 @@ struct mmc_host *mmc_alloc_host(int extra,
+> > > struct device *dev)
+> > >         /* scanning will be enabled when we're ready */
+> > >         host->rescan_disable = 1;
+> > > 
+> > > -       err = ida_simple_get(&mmc_host_ida, 0, 0, GFP_KERNEL);
+> > > +       host->parent = dev;
+> > > +
+> > > +       alias_id = mmc_get_reserved_index(host);
+> > > +       if (alias_id >= 0) {
+> > > +               min_idx = alias_id;
+> > > +               max_idx = alias_id + 1;
+> > > +       } else {
+> > > +               min_idx = mmc_first_nonreserved_index();
+> > > +               max_idx = 0;
+> > > +       }
+> > > +
+> > > +       err = ida_simple_get(&mmc_host_ida, min_idx, max_idx,
+> > > GFP_KERNEL);
 
-On 25/08/20 12:32, Andy Shevchenko wrote:
-> On Tue, Aug 25, 2020 at 02:26:05PM +0300, Andy Shevchenko wrote:
->> On Tue, Aug 25, 2020 at 02:24:05PM +0300, Andy Shevchenko wrote:
->> > On Tue, Aug 25, 2020 at 11:12:21AM +0100, Valentin Schneider wrote:
->> > > On 25/08/20 10:03, Valentin Schneider wrote:
->> > > > On 25/08/20 09:26, Andy Shevchenko wrote:
->> > > >> On Mon, Aug 24, 2020 at 06:09:41PM +0100, Valentin Schneider wrote:
->> > > >>> On 24/08/20 16:39, Andy Shevchenko wrote:
->> > > >>> > Compilation of almost each file ends up with
->> > > >>> >
->> > > >>> >  In file included from .../include/linux/energy_model.h:10,
->> > > >>> >                 from .../include/linux/device.h:16,
->> > > >>> >                 from .../drivers/spi/spi.c:8:
->> > > >>> >  .../include/linux/sched/topology.h:30:27: warning: ‘SD_DEGENERATE_GROUPS_MASK’ defined but not used [-Wunused-const-variable=]
->> > > >>> >     30 | static const unsigned int SD_DEGENERATE_GROUPS_MASK =
->> > > >>> >        |                           ^~~~~~~~~~~~~~~~~~~~~~~~~
->> > > >>> >  ...
->> > > >>> >
->> > > >>> > Make compiler happy by annotating the static constants with __maybwe_unused.
->> > >
->> > > > Sorry, that's what I get for trying to be too succinct; what I tried to say
->> > > > was that SD_DEGENERATE_GROUPS_MASK should very much be used for SMP. If the
->> > > > build is !SMP, it shouldn't even be defined, IOW I'm perplexed as to where
->> > > > this is coming from.
->> > >
->> > > So I see how having this as a constvar rather than a constexpr is somewhat
->> > > daft (we get an instance per compilation unit), but none of my compilers
->> > > seem to complain (even with W=1). AFAIA the kernelbot didn't catch any of
->> > > it either.
->
-> And even without compiler or any other analyzer / bot I can 100% sure tell that
-> spi.c does *not* use that symbol.
 
-Aye aye, this is a daft constvar placement from my end, apologies.
+One more question I came across when reworking my patch: Do we need a
+fallback here for the case where the reserved index is already taken?
+To handle an SD card being replaced while still mounted?
 
-For the SD_DEGENERATE_GROUPS_MASK, that one could directly be shoved into
-kernel/sched/topology.c (or done via an enum, I don't care too much).
 
-I suppose the other one causing you grief is sd_flag_debug[]; that one too
-really shouldn't be in a header. I need to access that in two separate
-files, so I guess I'll have to cook up some wrappers.
+> > >         if (err < 0) {
+> > >                 kfree(host);
+> > >                 return NULL;
+> > > @@ -406,7 +418,6 @@ struct mmc_host *mmc_alloc_host(int extra,
+> > > struct device *dev)
+> > >         dev_set_name(&host->class_dev, "mmc%d", host->index);
+> > >         host->ws = wakeup_source_register(NULL, dev_name(&host-
+> > > > class_dev));
+> > > 
+> > > -       host->parent = dev;
+> > >         host->class_dev.parent = dev;
+> > >         host->class_dev.class = &mmc_host_class;
+> > >         device_initialize(&host->class_dev);
+> > > --
+> > > 2.17.1
+> > > 
+> > 
+> > Kind regards
+> > Uffe
 
-Let me take a jab at it, it's my own mess after all...
