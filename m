@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791AA251CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9A251CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 18:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgHYQBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 12:01:21 -0400
-Received: from smtprelay0079.hostedemail.com ([216.40.44.79]:55326 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726222AbgHYQBG (ORCPT
+        id S1726971AbgHYQB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 12:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726635AbgHYQBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:01:06 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 00B8A837F24F;
-        Tue, 25 Aug 2020 16:01:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2565:2682:2685:2689:2693:2731:2828:2859:2911:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4425:5007:7809:8829:9010:9025:10004:10044:10400:10848:11232:11657:11658:11914:12043:12291:12297:12555:12740:12760:12895:12986:13439:14096:14097:14181:14659:14721:21080:21450:21451:21627:21795:21939:30054:30060:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:5,LUA_SUMMARY:none
-X-HE-Tag: jar75_46028082705d
-X-Filterd-Recvd-Size: 3756
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 16:01:02 +0000 (UTC)
-Message-ID: <ec1410782019a2e43399445206e673273fd12c31.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS: add namespace entry
-From:   Joe Perches <joe@perches.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Tue, 25 Aug 2020 09:01:01 -0700
-In-Reply-To: <20200825154148.1219500-1-christian.brauner@ubuntu.com>
-References: <20200825154148.1219500-1-christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 25 Aug 2020 12:01:07 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC66FC061574;
+        Tue, 25 Aug 2020 09:01:06 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id z9so2593812wmk.1;
+        Tue, 25 Aug 2020 09:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GqlIVjTW1iaRrj2Ldn6FQUjE2Jdk0+FHiegdjOOHybA=;
+        b=pnkRHHhjAEBgWY5x+eFMW0t4S3RoXd5RHnqQGlhZoXxep60UGQHt7wTohTUiQsPki0
+         X8cDYP4xt9w6NvEx73OjO4kL1scbrZ0ZZxvqoC475VSDoWUe1Wz32ocDVhc7tuVcL5oJ
+         Ui9OHteyR8XB+qvfjZWVzDrTrvPgM8dI4A1XL916iY3N6OZidPQ0neqBYePhHiF6OCpR
+         JojLpl9eNGX4VxU9pZOO2FyyhqOXE5h6wZJXyQXZpRwIxZMFmipmBMpuyOuFjEc2TgnK
+         fpeSbb+v1L8rALNpGZfIShoW6t3wKqoZTtggAJK8fPXvNotwJw6m4Hh1XcEKwc5eX7em
+         Omww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GqlIVjTW1iaRrj2Ldn6FQUjE2Jdk0+FHiegdjOOHybA=;
+        b=eaDQkLeM7BQTd37cU68rXiuUnrFRe7vefWC5IGnu86ZOFZCn45VuVHyEqDhmnhl/+z
+         AenhjyulOZGkydZqm4w0G77M1IgGUzGZVpyo2LHxBhGthEcfwn/zOudWt0EHrJircy7H
+         9BHIfqAjgeD9qf/bxgrYbBiLIIy4/0UDkD31lTOXWCbhxpdnZXjtPT7IkI9iCzd+/o+z
+         IwYVepY/7KiqGNHauCU8ZNcOEHzLFiLWY0u+kBJ6Hk6Sft+3Azu0lxvJO9R4BJVzqgCv
+         uj1lkU/41ro6j7J25lMeFqt5a3dhfwXb5d9KXIj/m1MAFoV69fpvJljMpYLsWTFwxS3A
+         scOg==
+X-Gm-Message-State: AOAM531QAks9TliJ7LDhRj6dwZaJ2/FgNRihrFtMboNny6d+M6OEDqE5
+        mfaHkC1bJPGALcifsCiBDZCPkl1wTLcNqw==
+X-Google-Smtp-Source: ABdhPJyr+wKSpdwL2axhfuYsxNLZXt1R/iWLIuhO2Upcy75aWXozRyxdK/K2P9E7GQ0stfcziCvOFg==
+X-Received: by 2002:a05:600c:514:: with SMTP id i20mr2762605wmc.102.1598371263990;
+        Tue, 25 Aug 2020 09:01:03 -0700 (PDT)
+Received: from [10.55.3.147] ([173.38.220.45])
+        by smtp.gmail.com with ESMTPSA id y26sm6672788wmj.23.2020.08.25.09.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 09:01:03 -0700 (PDT)
+Subject: Re: [net-next v5 2/2] seg6: Add documentation for
+ seg6_inherit_inner_ipv4_dscp sysctl
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrea.mayer@uniroma2.it
+References: <20200825121844.1576-1-ahabdels@gmail.com>
+ <20200825085127.50ba9c82@kicinski-fedora-PC1C0HJN>
+From:   Ahmed Abdelsalam <ahabdels@gmail.com>
+Message-ID: <ad5dfe4a-da8e-aed2-4a32-cd617ad795b2@gmail.com>
+Date:   Tue, 25 Aug 2020 18:01:01 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200825085127.50ba9c82@kicinski-fedora-PC1C0HJN>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 17:41 +0200, Christian Brauner wrote:
-> Namespace maintainership has never been formalized which has led to confusion
-> when people need to determine where to send patches and who should take a look
-> at them. Especially, since we have a dedicated list
-> containers.lists.linuxfoundation.org already for a long time. In preparation of
-> this patch I added the containers.lists.linuxfoundation.org mailing list to be
-> archived on lore.
-> 
-> This will not just make it easier to catch and review patches specific to
-> namespaces and containers but also for changes not specifically touching
-> namespaces but which nevertheless will have impact on namespaces and
-> containers.
-> 
-> Add an entry for Eric (who agreed to this) and me and add a first batch of
-> files that are relevant. Currently, only a small set of files are added and
-> only such namespaces that haven't gotten a separate maintainers entry (e.g.
-> time namespaces). I expect this to grow more entries and/or regular expressions
-> over time. For now these entries here are sufficient. I intend to route this
-> patch upstream soon.
-> 
-> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
->  MAINTAINERS | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f0068bceeb61..272211cdc327 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11892,6 +11892,26 @@ S:	Supported
->  W:	https://www.cspi.com/ethernet-products/support/downloads/
->  F:	drivers/net/ethernet/myricom/myri10ge/
->  
-> +NAMESPACES AND CONTAINERS
-> +M:     Christian Brauner <christian.brauner@ubuntu.com>
-> +M:     Eric W. Biederman <ebiederm@xmission.com>
-> +L:     containers.lists.linuxfoundation.org
-> +S:     Supported
-> +T:     https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/
-> +T:     https://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git/
-> +F:     ipc/namespace.c
-> +F:     kernel/nsproxy.c
-> +F:     kernel/pid_namespace.c
-> +F:     kernel/user_namespace.c
-> +F:     kernel/utsname.c
-> +F:     include/linux/nsproxy.h
-> +F:     include/linux/ipc_namespace.h
-> +F:     include/linux/ns_common.h
-> +F:     include/linux/nsproxy.h
-> +F:     include/linux/pid_namespace.h
-> +F:     include/linux/user_namespace.h
-> +F:     include/linux/utsname.h
-
-Please sort the filename order alphabetically.
-
-F:	include/linux/ipc_namespace.h
-F:	include/linux/ns_common.h
-F:	include/linux/nsproxy.h
-F:	include/linux/nsproxy.h
-F:	include/linux/pid_namespace.h
-F:	include/linux/user_namespace.h
-F:	include/linux/utsname.h
-F:	ipc/namespace.c
-F:	kernel/nsproxy.c
-F:	kernel/pid_namespace.c
-F:	kernel/user_namespace.c
-F:	kernel/utsname.c
 
 
+On 25/08/2020 17:51, Jakub Kicinski wrote:
+> On Tue, 25 Aug 2020 12:18:44 +0000 Ahmed Abdelsalam wrote:
+>> +	Enable the SRv6 encapsulation to inherit the DSCP value of the inner IPv4 packet.
+>> +
+>> +	Default: FALSE (Do not inherit DSCP)
+>> +
+>>   ``conf/default/*``:
+>>   	Change the interface-specific default settings.
+>>   
+> 
+> Checkpatch complains about whitespace:
+> 
+> ERROR: trailing whitespace
+> #24: FILE: Documentation/networking/ip-sysctl.rst:1802:
+> +seg6_inherit_inner_ipv4_dscp - BOOLEAN                                                                                                                                                                                                                                                                                                        $
+> 
+sorry forgot to run checkpatch on this one before sending.
+
+patch fixed and resent.
