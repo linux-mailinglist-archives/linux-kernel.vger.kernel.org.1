@@ -2,133 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BD4250E5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA8D250E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 03:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgHYBsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 21:48:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46950 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgHYBsI (ORCPT
+        id S1726632AbgHYB47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 21:56:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:22883 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725850AbgHYB47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 21:48:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07P1j56S075916;
-        Tue, 25 Aug 2020 01:47:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=LY6QXv+QQJLtDU1fswIE+NA2N2Om8CrOP23/sePbiW8=;
- b=OwaW/7vjdlu4dZ2+5+N3MgPoSuzJUxwXHWtbSOxWsbYuaWRd8Ln2Ody6DRZV6e2Ni31r
- 2UMtKxyKirqtXL3TooNaAIVz4wgGcIXNcutvALRVEoFq0RQ6maIyOzvGdvM4O4PR2Nk8
- 4qNHXEGT/qhmZajoaUOQ+bXYpUjTGuxmnmHyg6x1zFrV5xYCqpRm8oD+A8rWfCft7CAQ
- ucipuE5IUKM+vFQSC320Adm9gKKm8E6G/DT+61vRnGp5qG6LOsMJKl1WdDn5wGKtRUKN
- SMNf23y35k8D4MP3PeERkJ/B9qZoZSMuvdGs3jQPAqDehH+gzFH2yFH9rVXtQAGq8ZaR Gw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 333cshys3c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Aug 2020 01:47:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07P1jGBD104605;
-        Tue, 25 Aug 2020 01:47:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 333r9hxvdw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Aug 2020 01:47:35 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07P1lTl7006007;
-        Tue, 25 Aug 2020 01:47:29 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Aug 2020 18:47:28 -0700
-Date:   Mon, 24 Aug 2020 21:56:27 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-Message-ID: <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+        Mon, 24 Aug 2020 21:56:59 -0400
+X-UUID: d2c409b765f64f23a75f83bc153bfba3-20200825
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=dui2EisGgR0+t0THBhS3OAXFKeQaKCwjzNylFyfsynE=;
+        b=vIAQSCJL2GMmOBhY1FXjNbDc0jvqU73eR4Jrjw+GvFGcspFaq8vu1mXNKn1Deij8FXbf3N4t0XoB3x1SwDmfR1M0v1tT22xDaTdnpafXrpuW5pWSHMD6IH9A/eAs5G7D9UKLkyk4PpHK6so5CMYy3sjFB79O7fbbX86D8qz+ehs=;
+X-UUID: d2c409b765f64f23a75f83bc153bfba3-20200825
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2031445678; Tue, 25 Aug 2020 09:56:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 25 Aug 2020 09:56:54 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 25 Aug 2020 09:56:55 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v3 0/6] kasan: add workqueue and timer stack for generic KASAN
+Date:   Tue, 25 Aug 2020 09:56:54 +0800
+Message-ID: <20200825015654.27781-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250013
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1011
- spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250013
+Content-Type: text/plain
+X-TM-SNTS-SMTP: A71BEAAB700B14FB398E93913C82E2C0D2E251B57762600FE97A0A54DAEC618C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 01:24:20PM -0700, Hugh Dickins wrote:
-> On Mon, 24 Aug 2020, Andrew Morton wrote:
-> > On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> Andrew demurred on version 17 for lack of review.  Alexander Duyck has
-> been doing a lot on that front since then.  I have intended to do so,
-> but it's a mirage that moves away from me as I move towards it: I have
+U3l6Ym90IHJlcG9ydHMgbWFueSBVQUYgaXNzdWVzIGZvciB3b3JrcXVldWUgb3IgdGltZXIsIHNl
+ZSBbMV0gYW5kIFsyXS4NCkluIHNvbWUgb2YgdGhlc2UgYWNjZXNzL2FsbG9jYXRpb24gaGFwcGVu
+ZWQgaW4gcHJvY2Vzc19vbmVfd29yaygpLA0Kd2Ugc2VlIHRoZSBmcmVlIHN0YWNrIGlzIHVzZWxl
+c3MgaW4gS0FTQU4gcmVwb3J0LCBpdCBkb2Vzbid0IGhlbHANCnByb2dyYW1tZXJzIHRvIHNvbHZl
+IFVBRiBvbiB3b3JrcXVldWUuIFRoZSBzYW1lIG1heSBzdGFuZCBmb3IgdGltZXMuDQoNClRoaXMg
+cGF0Y2hzZXQgaW1wcm92ZXMgS0FTQU4gcmVwb3J0cyBieSBtYWtpbmcgdGhlbSB0byBoYXZlIHdv
+cmtxdWV1ZQ0KcXVldWVpbmcgc3RhY2sgYW5kIHRpbWVyIHN0YWNrIGluZm9ybWF0aW9uLiBJdCBp
+cyB1c2VmdWwgZm9yIHByb2dyYW1tZXJzDQp0byBzb2x2ZSB1c2UtYWZ0ZXItZnJlZSBvciBkb3Vi
+bGUtZnJlZSBtZW1vcnkgaXNzdWUuDQoNCkdlbmVyaWMgS0FTQU4gYWxzbyByZWNvcmRzIHRoZSBs
+YXN0IHR3byB3b3JrcXVldWUgYW5kIHRpbWVyIHN0YWNrcyBhbmQNCnByaW50cyB0aGVtIGluIEtB
+U0FOIHJlcG9ydC4gSXQgaXMgb25seSBzdWl0YWJsZSBmb3IgZ2VuZXJpYyBLQVNBTi4NCg0KWzFd
+aHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9nL3N5emthbGxlci1idWdzL3NlYXJjaD9xPSUyMnVz
+ZS1hZnRlci1mcmVlJTIyK3Byb2Nlc3Nfb25lX3dvcmsNClsyXWh0dHBzOi8vZ3JvdXBzLmdvb2ds
+ZS5jb20vZy9zeXprYWxsZXItYnVncy9zZWFyY2g/cT0lMjJ1c2UtYWZ0ZXItZnJlZSUyMiUyMGV4
+cGlyZV90aW1lcnMNClszXWh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/
+aWQ9MTk4NDM3DQoNCldhbHRlciBXdSAoNik6DQp0aW1lcjoga2FzYW46IHJlY29yZCB0aW1lciBz
+dGFjaw0Kd29ya3F1ZXVlOiBrYXNhbjogcmVjb3JkIHdvcmtxdWV1ZSBzdGFjaw0Ka2FzYW46IHBy
+aW50IHRpbWVyIGFuZCB3b3JrcXVldWUgc3RhY2sNCmxpYi90ZXN0X2thc2FuLmM6IGFkZCB0aW1l
+ciB0ZXN0IGNhc2UNCmxpYi90ZXN0X2thc2FuLmM6IGFkZCB3b3JrcXVldWUgdGVzdCBjYXNlDQpr
+YXNhbjogdXBkYXRlIGRvY3VtZW50YXRpb24gZm9yIGdlbmVyaWMga2FzYW4NCg0KLS0tDQoNCkNo
+YW5nZXMgc2luY2UgdjI6DQotIG1vZGlmeSBrYXNhbiBkb2N1bWVudCB0byBiZSBtb3JlIHJlYWRh
+YmxlLg0KICBUaGFua3MgZm9yIE1hcmNvIHN1Z2dlc3Rpb24uDQoNCkNoYW5nZXMgc2luY2UgdjE6
+DQotIFRoYW5rcyBmb3IgTWFyY28gYW5kIFRob21hcyBzdWdnZXN0aW9uLg0KLSBSZW1vdmUgdW5u
+ZWNlc3NhcnkgY29kZSBhbmQgZml4IGNvbW1pdCBsb2cNCi0gcmV1c2Uga2FzYW5fcmVjb3JkX2F1
+eF9zdGFjaygpIGFuZCBhdXhfc3RhY2sNCiAgdG8gcmVjb3JkIHRpbWVyIGFuZCB3b3JrcXVldWUg
+c3RhY2suDQotIGNoYW5nZSB0aGUgYXV4IHN0YWNrIHRpdGxlIGZvciBjb21tb24gbmFtZS4NCg0K
+LS0tDQoNCkRvY3VtZW50YXRpb24vZGV2LXRvb2xzL2thc2FuLnJzdCB8ICA0ICsrLS0NCmtlcm5l
+bC90aW1lL3RpbWVyLmMgICAgICAgICAgICAgICB8ICAzICsrKw0Ka2VybmVsL3dvcmtxdWV1ZS5j
+ICAgICAgICAgICAgICAgIHwgIDMgKysrDQpsaWIvdGVzdF9rYXNhbi5jICAgICAgICAgICAgICAg
+ICAgfCA1NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysNCm1tL2thc2FuL3JlcG9ydC5jICAgICAgICAgICAgICAgICB8ICA0ICsrLS0NCjUgZmls
+ZXMgY2hhbmdlZCwgNjQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSk=
 
-Same, I haven't been able to keep up with the versions or the recent review
-feedback.  I got through about half of v17 last week and hope to have more time
-for the rest this week and beyond.
-
-> > > Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> > > containers on a 2s * 26cores * HT box with a modefied case:
-
-Alex, do you have a pointer to the modified readtwice case?
-
-Even better would be a description of the problem you're having in production
-with lru_lock.  We might be able to create at least a simulation of it to show
-what the expected improvement of your real workload is.
-
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> > > With this patchset, the readtwice performance increased about 80%
-> > > in concurrent containers.
-> > 
-> > That's rather a slight amount of performance testing for a huge
-> > performance patchset!
-> 
-> Indeed.  And I see that clause about readtwice performance increased 80%
-> going back eight months to v6: a lot of fundamental bugs have been fixed
-> in it since then, so I do think it needs refreshing.  It could be faster
-> now: v16 or v17 fixed the last bug I knew of, which had been slowing
-> down reclaim considerably.
-> 
-> When I last timed my repetitive swapping loads (not loads anyone sensible
-> would be running with), across only two memcgs, Alex's patchset was
-> slightly faster than without: it really did make a difference.  But
-> I tend to think that for all patchsets, there exists at least one
-> test that shows it faster, and another that shows it slower.
-> 
-> > Is more detailed testing planned?
-> 
-> Not by me, performance testing is not something I trust myself with,
-> just get lost in the numbers: Alex, this is what we hoped for months
-> ago, please make a more convincing case, I hope Daniel and others
-> can make more suggestions.  But my own evidence suggests it's good.
-
-I ran a few benchmarks on v17 last week (sysbench oltp readonly, kerndevel from
-mmtests, a memcg-ized version of the readtwice case I cooked up) and then today
-discovered there's a chance I wasn't running the right kernels, so I'm redoing
-them on v18.  Plan to look into what other, more "macro" tests would be
-sensitive to these changes.
