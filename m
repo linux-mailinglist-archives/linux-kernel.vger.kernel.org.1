@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034C82518D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73642518D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 14:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgHYMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 08:47:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25171 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726551AbgHYMrK (ORCPT
+        id S1726373AbgHYMrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 08:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgHYMr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:47:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598359629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LjZLo6mDyWyvCnED8Jf/q99jB/pytg41/FYF51HEwZQ=;
-        b=KrmZ/pgda152v32uY8Yj2RZ/RSASwEVQZouVNfQiW+Xy1Mgb0o4Y0/dilszHEpi3U5QYFJ
-        VvxI490rl+znVkxOY6W28UNytS5J6ND5K4EZDv/ri8TwNKEmH31IFZGv+Xh6ZBhlLuTnIa
-        lh/elYKogiJTGeGKAmEZGNexdGG4J0g=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-ShjwVvp2M4K87dTfhuKm7w-1; Tue, 25 Aug 2020 08:47:07 -0400
-X-MC-Unique: ShjwVvp2M4K87dTfhuKm7w-1
-Received: by mail-wm1-f70.google.com with SMTP id f125so897433wma.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 05:47:07 -0700 (PDT)
+        Tue, 25 Aug 2020 08:47:27 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF54C061574;
+        Tue, 25 Aug 2020 05:47:27 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id q1so1191319pjd.1;
+        Tue, 25 Aug 2020 05:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tm5BZU7E80L7QCy6SXNATG1Gat1yh7ptVqD6ebMDZV0=;
+        b=I7ynOoI28qulQvQTMeRLoKrD6ChW8o+L9Uk8/AUsaM5+T06OiaQXJ5GaGHSIOFYLmp
+         e8gpz1OOYGcbgQgvoIf48FCm+NTzQACXLSTtdQ/Et1kHFdCjqIEqUbrScZXaNJr05XaE
+         KikbgN6bc4jx+i5NOs18ule41RFlvifIk/gb9oPgZHklC1JOGj0kL/0xBV8AuCPpfFnK
+         HbbIHae3i5FneiEu+xytTkho85gWuew2OoP8hHyd4aR3e1b+DZYjbLRIR5BnS/ZBigei
+         79IJyLnG526RRMhf4pwuxUGX1iAFMiSIJeaM8UtbvX0s2T1p7BOiJNq7E2uCJdkQpKid
+         qf/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LjZLo6mDyWyvCnED8Jf/q99jB/pytg41/FYF51HEwZQ=;
-        b=UESy27d4j5Ag17j38kM/KuYIfZlUqlr8YAQ5TiDI67YjzFOQWNBG8P83J0jbr6/7Lp
-         2LADZFjf1p8u/xCmBxOyoOq2Q/JQxtVDAWKXHagyot8k6dexMLlyebtvCbX4NXK5Qzf4
-         tCgtdp7EP5PmN23NO7XeTw/xlfbtlIL+c+G3N2B5dAqTgFi2AbrprxlUIBJQFwHj8iWx
-         ZDQko/VBmUOlqoQv3OkQpuMBzwzM+GGOIpwm0PhX2F1FnNSUOxkupR4Ki4Ua0cw1m7pK
-         hTiTsVMTp2k4r1Wkn90Q5FxkOy0JQXq2JKjjMM2bFPs58mclzZc4qJ3eZY7J/ovDeLVG
-         WNYg==
-X-Gm-Message-State: AOAM530ubUhPRh0YrkKXCNRPVhzHtHJawEwomDZ+O7c0xCQe22jEy75v
-        oH4V5h3M7u23AaOxHB3Dk9e+XgRNEBUHJxEDSdojsAwxZBuezFRjS5+ASUn+RqcLnYAjknfynLu
-        Tcy7dJy0EfVWFuMIjL1R6W0pH
-X-Received: by 2002:adf:ba83:: with SMTP id p3mr10893272wrg.246.1598359626072;
-        Tue, 25 Aug 2020 05:47:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzknUoE4jdxCHSgVWstg6FzejGYP1wBLljLSmKIqGnusifXFIgJi1B7vjg8GX+QovXvK378Q==
-X-Received: by 2002:adf:ba83:: with SMTP id p3mr10893254wrg.246.1598359625883;
-        Tue, 25 Aug 2020 05:47:05 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id m125sm6179521wme.35.2020.08.25.05.47.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tm5BZU7E80L7QCy6SXNATG1Gat1yh7ptVqD6ebMDZV0=;
+        b=TkMH9KQhDKvT9tSF2qUFGB/FG8MJAWiPRbEod3DO8lyZrGhxvu+vg3PYowdPNdVVw3
+         sj1fKInk9hRc+Aredm+gt6qCSStwy5QEmN/3sDTROzLZ1hQV6IKLTbi7jYF/J8qsX2U4
+         xMTmr3sOdwLUYeHy0fe7C1a0ivjXE5agThiDmT63atpmCEbdj+x4ZmuPEag5C9eINnt7
+         fFO1udH6a0JDq2fSzm7cvRmdGNei2QK1vcAmTBTl09F97zgxuTHW3K+fuouNRSyUE6l7
+         TIZkccfxOWs7rstvq7aCquvUfzXZ+3agaQGJeJfDNF0rGDWMv4VIubdNTAuJpGGzuNFk
+         oDNw==
+X-Gm-Message-State: AOAM5329j34AXO6CfS6UDv8xYF7M71dUqy7ATroq67iuUX36pocUh/5m
+        tX1MlXn4XTCVgrrfz1kDqq1LwEZw6GQ=
+X-Google-Smtp-Source: ABdhPJwd/4iPAjwuwyX10EmFMpUKmVabcqnOV0Ki/8cvNFmrflhNYXzLoz/yexFGsPj1KBxltfpaXw==
+X-Received: by 2002:a17:90b:a45:: with SMTP id gw5mr1473885pjb.80.1598359646759;
+        Tue, 25 Aug 2020 05:47:26 -0700 (PDT)
+Received: from nish-HP-Pavilion ([2409:4072:619:dc6c:a526:a3b6:4686:f6fb])
+        by smtp.gmail.com with ESMTPSA id m7sm10864490pfm.31.2020.08.25.05.47.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 05:47:05 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        benh@kernel.crashing.org, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH v4 2/4] objtool: Move orc outside of check
-Date:   Tue, 25 Aug 2020 13:46:58 +0100
-Message-Id: <20200825124700.29616-3-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200825124700.29616-1-jthierry@redhat.com>
-References: <20200825124700.29616-1-jthierry@redhat.com>
+        Tue, 25 Aug 2020 05:47:26 -0700 (PDT)
+From:   Nishant Malpani <nish.malpani25@gmail.com>
+To:     jic23@kernel.org, robh+dt@kernel.org
+Cc:     dragos.bogdan@analog.com, darius.berghe@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Nishant Malpani <nish.malpani25@gmail.com>
+Subject: [PATCH 0/3] iio: gyro: adxrs290: Add triggered buffer & debugfs support
+Date:   Tue, 25 Aug 2020 18:17:08 +0530
+Message-Id: <20200825124711.11455-1-nish.malpani25@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,146 +65,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the objtool_file can be obtained outside of the check function,
-orc generation builtin no longer requires check to explicitly call its
-orc related functions.
+Introduce DATA_RDY trigger for triggered buffer setup; this enables continuous
+data capture. Additionally, add support for direct register access using the debugfs 
+iio interface. 
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- tools/objtool/builtin-check.c | 10 +++++++++-
- tools/objtool/builtin-orc.c   | 21 ++++++++++++++++++++-
- tools/objtool/check.c         | 18 +-----------------
- tools/objtool/objtool.h       |  2 +-
- tools/objtool/weak.c          |  2 +-
- 5 files changed, 32 insertions(+), 21 deletions(-)
+The device-tree bindings documentation illustrates an example of using a GPIO irq
+line to trigger a data capture.
 
-diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-index 0126ec3bb6c9..c6d199bfd0ae 100644
---- a/tools/objtool/builtin-check.c
-+++ b/tools/objtool/builtin-check.c
-@@ -42,6 +42,7 @@ int cmd_check(int argc, const char **argv)
- {
- 	const char *objname, *s;
- 	struct objtool_file *file;
-+	int ret;
- 
- 	argc = parse_options(argc, argv, check_options, check_usage, 0);
- 
-@@ -58,5 +59,12 @@ int cmd_check(int argc, const char **argv)
- 	if (!file)
- 		return 1;
- 
--	return check(file, false);
-+	ret = check(file);
-+	if (ret)
-+		return ret;
-+
-+	if (file->elf->changed)
-+		return elf_write(file->elf);
-+
-+	return 0;
- }
-diff --git a/tools/objtool/builtin-orc.c b/tools/objtool/builtin-orc.c
-index 3979f275a775..53e316585a3c 100644
---- a/tools/objtool/builtin-orc.c
-+++ b/tools/objtool/builtin-orc.c
-@@ -32,6 +32,7 @@ int cmd_orc(int argc, const char **argv)
- 
- 	if (!strncmp(argv[0], "gen", 3)) {
- 		struct objtool_file *file;
-+		int ret;
- 
- 		argc = parse_options(argc, argv, check_options, orc_usage, 0);
- 		if (argc != 1)
-@@ -43,7 +44,25 @@ int cmd_orc(int argc, const char **argv)
- 		if (!file)
- 			return 1;
- 
--		return check(file, true);
-+		ret = check(file);
-+		if (ret)
-+			return ret;
-+
-+		if (list_empty(&file->insn_list))
-+			return 0;
-+
-+		ret = create_orc(file);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = create_orc_sections(file);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (file->elf->changed)
-+			return elf_write(file->elf);
-+
-+		return 0;
- 	}
- 
- 	if (!strcmp(argv[0], "dump")) {
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index ef8e9300e1a3..6156bd9a687c 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2776,7 +2776,7 @@ static int validate_reachable_instructions(struct objtool_file *file)
- 	return 0;
- }
- 
--int check(struct objtool_file *file, bool orc)
-+int check(struct objtool_file *file)
- {
- 	int ret, warnings = 0;
- 
-@@ -2823,22 +2823,6 @@ int check(struct objtool_file *file, bool orc)
- 		warnings += ret;
- 	}
- 
--	if (orc) {
--		ret = create_orc(file);
--		if (ret < 0)
--			goto out;
--
--		ret = create_orc_sections(file);
--		if (ret < 0)
--			goto out;
--	}
--
--	if (file->elf->changed) {
--		ret = elf_write(file->elf);
--		if (ret < 0)
--			goto out;
--	}
--
- out:
- 	if (ret < 0) {
- 		/*
-diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
-index 42b27c4ed683..46240098f08d 100644
---- a/tools/objtool/objtool.h
-+++ b/tools/objtool/objtool.h
-@@ -21,7 +21,7 @@ struct objtool_file {
- 
- struct objtool_file *objtool_open_read(const char *_objname);
- 
--int check(struct objtool_file *file, bool orc);
-+int check(struct objtool_file *file);
- int orc_dump(const char *objname);
- int create_orc(struct objtool_file *file);
- int create_orc_sections(struct objtool_file *file);
-diff --git a/tools/objtool/weak.c b/tools/objtool/weak.c
-index 82698319f008..29180d599b08 100644
---- a/tools/objtool/weak.c
-+++ b/tools/objtool/weak.c
-@@ -17,7 +17,7 @@
- 	return ENOSYS;							\
- })
- 
--int __weak check(struct objtool_file *file, bool orc)
-+int __weak check(struct objtool_file *file)
- {
- 	UNSUPPORTED("check subcommand");
- }
+Nishant Malpani (3):
+  iio: gyro: adxrs290: Add triggered buffer support
+  dt-bindings: iio: gyro: adxrs290: Add required interrupts property
+  iio: gyro: adxrs290: Add debugfs register access support
+
+ .../bindings/iio/gyroscope/adi,adxrs290.yaml  |   8 +
+ drivers/iio/gyro/Kconfig                      |   2 +
+ drivers/iio/gyro/adxrs290.c                   | 291 +++++++++++++++++-
+ 3 files changed, 287 insertions(+), 14 deletions(-)
+
 -- 
-2.21.3
+2.20.1
 
