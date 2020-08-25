@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A68D2520F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A2325210F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 21:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgHYTtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 15:49:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51978 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgHYTtJ (ORCPT
+        id S1726673AbgHYTux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 15:50:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45363 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726391AbgHYTuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:49:09 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598384947;
+        Tue, 25 Aug 2020 15:50:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598385051;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nx2guUxaBEVRMrKDYjrAwhgM23aIhrP6oY6kMfLb3ZY=;
-        b=g1XjYt4TEhfIY6zrAYI2vv7JWz6a8/qZG+rhV5sdrhKQwt5rS3GTPX98RLngamtPG9Z0Y3
-        ntvwf0MVpAvbdcNSDVleHqSaE4p5MlEYpYwvz7nk29+5U2TCyOKncN04dwSr0OWPdIgPJG
-        A0QSLZ0sA0h+HgZx/mQgRmO6I4yG2sHs1lsqMr3E/5CqXK42C+h/ARaLPPjp2MWk1QlXyk
-        v8uEnyfhYM2ViD4JqdUrsapwJA+hp33e9/oG1extMtwpcl8QfTKvS1iv25lguijo5REdDp
-        E/ZBLpZDhpgjaK4SpEzZRinrpGEDdfHgzczMI7oVnvGJo4BWezDtXkkgGUrtOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598384947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nx2guUxaBEVRMrKDYjrAwhgM23aIhrP6oY6kMfLb3ZY=;
-        b=2g3lJNGuoxX9O8r/+8OdIEIqhjw+1a9reAJCb6GL7K9VJOf6bRa85U3T6T4Bopph0LPMC4
-        HIa0NGsb+LXwOSCA==
-To:     "Luck\, Tony" <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Christopherson\, Sean J" <sean.j.christopherson@intel.com>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pu Wen <puwen@hygon.cn>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sasha Levin <alexander.levin@microsoft.com>,
-        Dirk Hohndel <dirkhh@vmware.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        "H. Peter Anvin" <hpa@linux.intel.com>,
-        "Mallick\, Asit K" <asit.k.mallick@intel.com>,
-        Gordon Tetlow <gordon@tetlows.org>,
-        David Kaplan <David.Kaplan@amd.com>
-Subject: RE: TDX #VE in SYSCALL gap (was: [RFD] x86: Curing the exception and syscall trainwreck in hardware)
-In-Reply-To: <dfce335fefe043868301bacf57120759@intel.com>
-References: <875z98jkof.fsf@nanos.tec.linutronix.de> <3babf003-6854-e50a-34ca-c87ce4169c77@citrix.com> <20200825043959.GF15046@sjchrist-ice> <CALCETrUP1T2k3UzZMsXMfAD83xbYEG+nAv3a-LeBjNW+=ijJAg@mail.gmail.com> <20200825171903.GA20660@sjchrist-ice> <CALCETrWy2x-RByfknjjKxRbE0LBPk2Ugj1d58xYHb91ogbfnvA@mail.gmail.com> <dfce335fefe043868301bacf57120759@intel.com>
-Date:   Tue, 25 Aug 2020 21:49:07 +0200
-Message-ID: <87ft8ay098.fsf@nanos.tec.linutronix.de>
+        bh=XEe3c9xUUAHMGFTm0eT9WyrcYzxI8isW4VeO4QnKthQ=;
+        b=LpIQyyxeGmEAuc7Qi48JSdgZ+D/tEXceKw/1VrGwHrNIVOLh2mJkfXmk5k1Zujn9ASJfGD
+        mqyPVTGdOB21gBj0XoX6GyyhkvMT8SQOqiptE+9Tke6QS4jb4ifnJCikzgXnRhCeMXrygD
+        tszmAZdA4ZSf4MEYnzTe2+lYxRaSMk4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-BMSy7aV2O9qJAPjqBVN1tg-1; Tue, 25 Aug 2020 15:50:46 -0400
+X-MC-Unique: BMSy7aV2O9qJAPjqBVN1tg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0625210ABDB2;
+        Tue, 25 Aug 2020 19:50:45 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-120-227.rdu2.redhat.com [10.10.120.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DEA1C5D9D3;
+        Tue, 25 Aug 2020 19:50:43 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC v4 01/20] drm/nouveau/kms: Fix some indenting in nouveau_dp_detect()
+Date:   Tue, 25 Aug 2020 15:50:08 -0400
+Message-Id: <20200825195027.74681-2-lyude@redhat.com>
+In-Reply-To: <20200825195027.74681-1-lyude@redhat.com>
+References: <20200825195027.74681-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25 2020 at 17:35, Tony Luck wrote:
->> > Or malicious hypervisor action, and that's a problem.
->> >
->> > Suppose the hypervisor remaps a GPA used in the SYSCALL gap (e.g. the
->> > actual SYSCALL text or the first memory it accesses -- I don't have a
->> > TDX spec so I don't know the details).
->
-> Is it feasible to defend against a malicious (or buggy) hypervisor?
->
-> Obviously, we can't leave holes that guests can exploit. But the hypervisor
-> can crash the system no matter how clever TDX is.
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_dp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-If it crashes and burns reliably then fine, but is that guaranteed?
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+index 8a0f7994e1aeb..ee778ddc95fae 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dp.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+@@ -76,10 +76,10 @@ nouveau_dp_detect(struct nouveau_encoder *nv_encoder)
+ 	nv_encoder->dp.link_nr = dpcd[2] & DP_MAX_LANE_COUNT_MASK;
+ 
+ 	NV_DEBUG(drm, "display: %dx%d dpcd 0x%02x\n",
+-		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw, dpcd[0]);
++		 nv_encoder->dp.link_nr, nv_encoder->dp.link_bw, dpcd[0]);
+ 	NV_DEBUG(drm, "encoder: %dx%d\n",
+-		     nv_encoder->dcb->dpconf.link_nr,
+-		     nv_encoder->dcb->dpconf.link_bw);
++		 nv_encoder->dcb->dpconf.link_nr,
++		 nv_encoder->dcb->dpconf.link_bw);
+ 
+ 	if (nv_encoder->dcb->dpconf.link_nr < nv_encoder->dp.link_nr)
+ 		nv_encoder->dp.link_nr = nv_encoder->dcb->dpconf.link_nr;
+@@ -87,7 +87,7 @@ nouveau_dp_detect(struct nouveau_encoder *nv_encoder)
+ 		nv_encoder->dp.link_bw = nv_encoder->dcb->dpconf.link_bw;
+ 
+ 	NV_DEBUG(drm, "maximum: %dx%d\n",
+-		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw);
++		 nv_encoder->dp.link_nr, nv_encoder->dp.link_bw);
+ 
+ 	nouveau_dp_probe_oui(dev, aux, dpcd);
+ 
+-- 
+2.26.2
 
-I have serious doubts about that given the history and fragility of all
-of this and I really have zero interest in dealing with the fallout a
-year from now.
-
-Thanks,
-
-        tglx
