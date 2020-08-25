@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0B22519E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC53B2519DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgHYNjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:39:37 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:59075 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726661AbgHYNgP (ORCPT
+        id S1726975AbgHYNi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:38:29 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58475 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726666AbgHYNgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:36:15 -0400
+        Tue, 25 Aug 2020 09:36:16 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 305A0CE5;
+        by mailout.west.internal (Postfix) with ESMTP id CB907C44;
         Tue, 25 Aug 2020 09:36:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
+Received: from mailfrontend1 ([10.202.2.162])
   by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:36:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ijja1zd1NrI/KqNd5QwvwVeI+/N
-        wFID0Zk+H/Ib8Sf8=; b=EpCifEomFNpLiC32fhxlKOIVd+6jRivaUp2ddKQCsQd
-        zRxi5vMq558vHws5iChP5gN7MawflsjU52Yqnbzywic21/eE9AI2XwX/s9y5ppqf
-        1jaItK3u489q3AiJIs3FY8X0+jltZRB255Fb/Javq4DyqdYRa5Jp6w3h7cOvkjFN
-        zRTUqFUjKZE6RvbckIT9mgdMugj+ajvd/8g8SrtssPn6vbkXjn/AXGq8z3WDgvbR
-        PFU80Cg2ILWxSa6BnEiS+Ch24yP8wqwmnc2CZtnw/8AstSysZUx4QKRFvWog77Do
-        0751FMiA+lONZp2kwvXgh7K3MYN9SjkMK3gAVlGa62Q==
+        :content-type:in-reply-to; s=fm3; bh=6W84PROEQmkc2RBlckn+N87LQMj
+        GNR/EGQp574cjw3s=; b=eEENWt/Jb5iqxaDm6IwF2aFfKrXAyqlElS+EfV7HFIf
+        YbtslznD2C0ayt97gwGRh+Zw9ip1+ZuUFLki2Xi35AqGVuN3RnYjIYtPjhbRHT5i
+        3K3J/oGSSyTaIMgrsoTiXEKYJnSuSFp4mWJrL3fg2cjECPrcI52z+nX34H3PvMSB
+        S5YAUUjv+S/DNytvTfLdqwXpTKpB+TbimxpC3KTC6FjJzupYSghFqKfjQHxmleh3
+        WxWZG66xcnwDMCaYXbZPDzlxrShma8je6Tfnd3SHOV5IqszBDYWf/shfr1UqK5qs
+        mIhQnDI0F9Qx2BL3gqNIJDbtB8Tzw1edgVX0pZV8kyw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ijja1z
-        d1NrI/KqNd5QwvwVeI+/NwFID0Zk+H/Ib8Sf8=; b=hO/KnZpWpva2pkWv83V455
-        WluLNIVYGYkaEPrkhy4fYbIYW2BekC9Hh4J/HM4YOyp5Lm4jP5AVvNRz3XH91uhI
-        OIVObhsi3IUwaUXThcFf8Bs1se5R+XtD8l0Va3GyAJMbb2cIEiHLgqZ6bFECRJ+S
-        jU2bzLdNCRP4MuW4zYPoTfaNWCjdxGPdmVqgQfG+tlT2QJ+4tLoccFLGYHIz4c5z
-        vuVAnr8c6LVayvh5EZas7ysp5so1mZ2bxXxFGfJMLME1zWPjzhQrQxeBY2yZFQ+F
-        jyRdedQsx5vXvINuNueYQyWef39qFOsSTgeGoyrPzV0m5ZZB3mW05Kx3hEM7UbXQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6W84PR
+        OEQmkc2RBlckn+N87LQMjGNR/EGQp574cjw3s=; b=ukB6Ymh/jZqd9UlE8u92dI
+        K4NKtgsf8RtU0VyHzweGw9N4ekYp3R+vKvypo5ZNP5RvmbaTi01ahoUKkfFPuDZB
+        Phi0HT8/DDNgc+vDDCHOiyw92ow12pleduJeS4zpTv9Qc60zWY2L2CDdt+1jN+W4
+        fhEs46zLwDIXQ7V/dwQrc1mQTCRruvsGEWjPE+wZ9/O9r8wK1XuQqX+ym2wfUsLt
+        LOf3rejmXctpa1giUVAQ7sPAZtLs/xWV9ZlPSC+axWfaUbCN+o/PpMC2hhYJH14z
+        983LNk+XUIRHhh5xs8D8kg4EkHZUpcBuCOYevzao0RRQt1qGdGvNeZQuxKBJocqw
         ==
-X-ME-Sender: <xms:zBNFX-Wt7Sqp1VX5Ch1Wxova3TW0ILo01uyRBIvCxi3C9jL29UMCEw>
+X-ME-Sender: <xms:zhNFX9teEcsvc0M8yvwZBjJ6wPd_QPSjaD0fOV-3zP2rEFNEeQUReA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudekne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:zBNFX6nkgP6_m4jPRsfVpk3KUUzP3qC00EL9e9NEfyISsM22Yh3bbQ>
-    <xmx:zBNFXyaKfXuldkmN3FNWfkwXZIdykVj9iHoI9VZtEHkHRC4P2GfPzw>
-    <xmx:zBNFX1ViffIuC0jdtK7TgT96yMB_GIKh4bj2aYe1ln5ALD-pky8KrQ>
-    <xmx:zRNFXyd3w2sHe6WP61uQaDKkdukKp8RGA98ZToxCPKtFtb-JrJgONXZkTso>
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:zhNFX2dBeLWcm0a_WglsHYNpsLJ3X1kzLlsbQMLTporojbAzs38wag>
+    <xmx:zhNFXwy7SuMttLMhWUs4pyOMkLJpRHCdHmKmjI3bPKWAlwGc47rIrQ>
+    <xmx:zhNFX0PY0QY19Dz809NtxJkXtI8_GMwBA9y4F0OBSomdG3jY_aakAg>
+    <xmx:zhNFXwlGIL7v88QtUdSSIAvlIzlMLg4KZ-vMFPGfy79VBpdzsoePsQ>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 960A230600B2;
-        Tue, 25 Aug 2020 09:36:12 -0400 (EDT)
-Date:   Tue, 25 Aug 2020 10:50:37 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id 109D03280059;
+        Tue, 25 Aug 2020 09:36:13 -0400 (EDT)
+Date:   Tue, 25 Aug 2020 10:51:07 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Frank Lee <frank@allwinnertech.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, icenowy@aosc.io,
-        megous@megous.com, clabbe@baylibre.com, karlp@tweak.net.au,
-        bage@linutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tiny.windzz@gmail.com, huangshuosheng@allwinnertech.com,
-        liyong@allwinnertech.com, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 15/16] dt-bindings: arm: sunxi: Add Allwinner A100
- Perf1 Board bindings
-Message-ID: <20200825085037.nrgsah7iueom4pva@gilmour.lan>
+Cc:     wens@csie.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tiny.windzz@gmail.com,
+        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
+Subject: Re: [PATCH v5 16/16] arm64: allwinner: A100: add support for
+ Allwinner Perf1 board
+Message-ID: <20200825085107.kxy4gnybrdcu3wvt@gilmour.lan>
 References: <cover.1595572867.git.frank@allwinnertech.com>
- <0368996b732f300d0b5719e51dbd4322fa09053d.1595572867.git.frank@allwinnertech.com>
+ <30f4a3fc6ac84d05094e2c3b89d1dddc8ff6b7fc.1595572867.git.frank@allwinnertech.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5zlmlzykjskcqmd3"
+        protocol="application/pgp-signature"; boundary="lxn37t4dsz2j435x"
 Content-Disposition: inline
-In-Reply-To: <0368996b732f300d0b5719e51dbd4322fa09053d.1595572867.git.frank@allwinnertech.com>
+In-Reply-To: <30f4a3fc6ac84d05094e2c3b89d1dddc8ff6b7fc.1595572867.git.frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---5zlmlzykjskcqmd3
-Content-Type: text/plain; charset=us-ascii
+--lxn37t4dsz2j435x
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 24, 2020 at 03:20:12PM +0800, Frank Lee wrote:
+On Fri, Jul 24, 2020 at 03:21:05PM +0800, Frank Lee wrote:
 > From: Yangtao Li <frank@allwinnertech.com>
 >=20
-> Document board compatible names for Allwinner A100 Perf1 Board.
+> A100 perf1 is an Allwinner A100-based SBC, with the following features:
+>=20
+> - 1GiB DDR3 DRAM
+> - AXP803 PMIC
+> - 2 USB 2.0 ports
+> - MicroSD slot and on-board eMMC module
+> - on-board Nand flash
+> - =B7=B7=B7
+>=20
+> Adds initial support for it, including UART and PMU.
 >=20
 > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Applied, thanks!
+Applied thanks!
 Maxime
 
---5zlmlzykjskcqmd3
+--lxn37t4dsz2j435x
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0TQ3QAKCRDj7w1vZxhR
-xaAvAP9zeYUaQsnMXlw6X6M1x8FFSPu772Y3fLxjAgwAnaUj0AD+LvIa19X6V4v/
-v6Q09616KvDpHmwFLosGupxmADJXjQM=
-=q/nN
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0TQ+gAKCRDj7w1vZxhR
+xfUzAQD3AW8OyYU3exYwA0a3IaKo9c98e6hnoYQ27izQfONzQwD9F/H7Zdhn+YEP
+fuuTq0ApgXKkHP1YOyH41Hacyux6nwo=
+=fy21
 -----END PGP SIGNATURE-----
 
---5zlmlzykjskcqmd3--
+--lxn37t4dsz2j435x--
