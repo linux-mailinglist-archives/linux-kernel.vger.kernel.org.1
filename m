@@ -2,132 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60610251DE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C90251DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 19:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgHYROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 13:14:02 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:57268 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgHYRNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:13:25 -0400
-Received: by mail-il1-f197.google.com with SMTP id x2so9396797ilm.23
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 10:13:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ep+DsuyAmWsazblTEOVrewteCHG+sHXnccEH6Iu0R/c=;
-        b=M+KXZOG2M8DnFVL+mkpu0MHKckKCoausxitp9mtG2RXSXrlQESt3ptSGYIQloXuPiy
-         PMyOeVF3HqYYemJIRhV2SoiJkFxSamYBuYkzZzT4XUfDU8MhFYap1wKuGXdPBJdv+ftA
-         q60B4SuNOWXNNq1eFtRw1soAFSLtptLpCFkGwGGy+QyyE7FGap317TC6TCVRq5WomEcA
-         F92aNkcdmm8In8SxgjIT0H9gWGNLk0fA9US9gsJEy/i9E9EIOUj11yFw8GTkKFh56pZw
-         FDLAabsqZEgGhunAEkqwQCl6elBD4kl7a4pVys2zg/qUF2V2f/Jgfozyfo4E8dMAHvbw
-         p/pQ==
-X-Gm-Message-State: AOAM531mNwHEffAR9luD86I0Ut1vBNtl5zirhny8Hf/8Fd9pQNt7iRGi
-        wnGZqy7qGoIxDqSmLkAHt0lHursikrqOq10e6dI/DXcylBj7
-X-Google-Smtp-Source: ABdhPJy4rZok+wcE1queuo86SuHNhGp4mUTkPPKETthZwliyP7AUH5bEvlP5H8dqW85tdV8DLUWWyfIPuDrpQ7M9l6XIR27RRUUC
+        id S1726804AbgHYROX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 13:14:23 -0400
+Received: from mailoutvs2.siol.net ([185.57.226.193]:34294 "EHLO mail.siol.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726750AbgHYROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:14:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 38058524B30;
+        Tue, 25 Aug 2020 19:14:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id XHJMv2YnN3Bq; Tue, 25 Aug 2020 19:14:07 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id E4B2C524B0B;
+        Tue, 25 Aug 2020 19:14:06 +0200 (CEST)
+Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id 99FFB524B30;
+        Tue, 25 Aug 2020 19:14:06 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH 0/3] ARM: dts: sun8i: r40: Enable IR on BananaPi M2U
+Date:   Tue, 25 Aug 2020 19:13:55 +0200
+Message-Id: <20200825171358.1286902-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:9a94:: with SMTP id c20mr8972530ill.37.1598375603959;
- Tue, 25 Aug 2020 10:13:23 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 10:13:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000177d5605adb6d2c7@google.com>
-Subject: general protection fault in addrconf_notify
-From:   syzbot <syzbot+8f00ab65043d135664b9@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series first adds nodes to R40 DTSI and then enable IR receiver
+for BananaPi M2 Ultra board.
 
-syzbot found the following issue on:
+Please take a look.
 
-HEAD commit:    494d311a Add linux-next specific files for 20200821
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=170c9051900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a61d44f28687f508
-dashboard link: https://syzkaller.appspot.com/bug?extid=8f00ab65043d135664b9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Best regards,
+Jernej
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Jernej Skrabec (3):
+  dt-bindings: media: allwinner,sun4i-a10-ir: Add R40 compatible
+  ARM: dts: sun8i: r40: Add IR nodes
+  ARM: dts: sun8i: r40: bananapi-m2-ultra: Enable IR
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8f00ab65043d135664b9@syzkaller.appspotmail.com
+ .../media/allwinner,sun4i-a10-ir.yaml         |  9 +++--
+ .../boot/dts/sun8i-r40-bananapi-m2-ultra.dts  |  4 +++
+ arch/arm/boot/dts/sun8i-r40.dtsi              | 36 +++++++++++++++++++
+ 3 files changed, 46 insertions(+), 3 deletions(-)
 
-general protection fault, probably for non-canonical address 0xdffffc00e0dffffe: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000000706fffff0-0x0000000706fffff7]
-CPU: 1 PID: 19287 Comm: syz-executor.3 Not tainted 5.9.0-rc1-next-20200821-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:addrconf_ifdown.isra.0+0x33b/0x1570 net/ipv6/addrconf.c:3743
-Code: 84 d2 01 00 00 e8 25 80 88 fa 48 81 eb 48 01 00 00 0f 84 c0 01 00 00 e8 13 80 88 fa 48 8d bb 38 01 00 00 48 89 f8 48 c1 e8 03 <80> 3c 28 00 0f 85 62 05 00 00 4c 39 bb 38 01 00 00 75 9b e8 ed 7f
-RSP: 0018:ffffc900188cf8e0 EFLAGS: 00010202
-RAX: 00000000e0dffffe RBX: 0000000706fffeb8 RCX: ffffffff815b5270
-RDX: ffff8881f7dfa3c0 RSI: ffffffff86ebf2ad RDI: 0000000706fffff0
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52003119f0e R11: 0000000000000001 R12: 0000000000000054
-R13: ffff8881f5370328 R14: 0000000000000000 R15: ffff88809a0d5800
-FS:  000000000271d940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30d2c000 CR3: 00000001f4c2b000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- addrconf_notify+0x55c/0x2310 net/ipv6/addrconf.c:3627
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- dev_close_many+0x30b/0x650 net/core/dev.c:1634
- rollback_registered_many+0x3a8/0x1210 net/core/dev.c:9260
- rollback_registered net/core/dev.c:9328 [inline]
- unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10409
- unregister_netdevice include/linux/netdevice.h:2774 [inline]
- __tun_detach+0xff6/0x1310 drivers/net/tun.c:673
- tun_detach drivers/net/tun.c:690 [inline]
- tun_chr_close+0xd9/0x180 drivers/net/tun.c:3390
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:139 [inline]
- exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:166
- syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:241
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x416e21
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffd36a5d3b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000416e21
-RDX: 0000000000000000 RSI: 0000000000000eff RDI: 0000000000000005
-RBP: 0000000000000001 R08: 00000000f18eaf02 R09: 0000000000000000
-R10: 00007ffd36a5d4a0 R11: 0000000000000293 R12: 000000000118d940
-R13: 000000000118d940 R14: ffffffffffffffff R15: 000000000118d08c
-Modules linked in:
----[ end trace 46271974e693cee0 ]---
-RIP: 0010:addrconf_ifdown.isra.0+0x33b/0x1570 net/ipv6/addrconf.c:3743
-Code: 84 d2 01 00 00 e8 25 80 88 fa 48 81 eb 48 01 00 00 0f 84 c0 01 00 00 e8 13 80 88 fa 48 8d bb 38 01 00 00 48 89 f8 48 c1 e8 03 <80> 3c 28 00 0f 85 62 05 00 00 4c 39 bb 38 01 00 00 75 9b e8 ed 7f
-RSP: 0018:ffffc900188cf8e0 EFLAGS: 00010202
-RAX: 00000000e0dffffe RBX: 0000000706fffeb8 RCX: ffffffff815b5270
-RDX: ffff8881f7dfa3c0 RSI: ffffffff86ebf2ad RDI: 0000000706fffff0
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52003119f0e R11: 0000000000000001 R12: 0000000000000054
-R13: ffff8881f5370328 R14: 0000000000000000 R15: ffff88809a0d5800
-FS:  000000000271d940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30d2c000 CR3: 00000001f4c2b000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+--=20
+2.28.0
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
