@@ -2,254 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAE0250FB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 04:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871D8250FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 05:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgHYCtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Aug 2020 22:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728245AbgHYCsz (ORCPT
+        id S1728121AbgHYC7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Aug 2020 22:59:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47148 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727935AbgHYC7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Aug 2020 22:48:55 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE791C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 19:48:54 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n129so9734462qkd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Aug 2020 19:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rr2wu86hvyBvF0qDYpQKgu2V3m2RjeVp5RhnLSFtTac=;
-        b=fsoRajizjPljsgm6M/MbWqMqC696sWJI9F7blcRie8ChI/LkHG2OMuVlQ2IN63I8RN
-         YQVsiH7wHQ5OkWiA12juc9HSqryWRcczlxnkJmasVTcQArh+RUUhO+ioiH37mhRgObbh
-         lpjr1AJPjZXAn8qhT5zbB5G4pVeQxFNcd2rAU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rr2wu86hvyBvF0qDYpQKgu2V3m2RjeVp5RhnLSFtTac=;
-        b=hVt5Eeb189i5N8IpwU+oq8I/fNUUZFtby6GHeeemqTI0eXtuqmf7X8FgR/1RAPRTe5
-         Xk+WRGgbCUaL2d19+sp1dX00v7D5fVWXz2jm2/gy7LJmpSn5YrTlr7q70IwhX0ZLKybw
-         FWYy82SDeQmgl12DFqbZz7hMd5sUnBjw2rlbGk1XViZzXUKptTfN3M8YY0ZBs34A5qfi
-         Rp1p5ifBEp5XB99RqXNndqC7J20xpM6IbXBZO4cZRzDyufFcYOmhmF50gjVHKwMc6GbW
-         Nb76ID6lUNccFrWPb9jH5u1vjUO9OXonT/E4N0CQq1jBYyju9oiYdIl2gMsaOfLU4veX
-         Cpdg==
-X-Gm-Message-State: AOAM530b/JO2FQIN0du0F+QgXxJUTN8IiEVZ8yHJlhH+Jx8kNkG3rqPZ
-        R3e1P+9R4XrYCPTmu/jAWjRgnlFZAhMPWw==
-X-Google-Smtp-Source: ABdhPJxAdm+O9SlFrjOmVisv5gQ8PXG15WctozW0BSZ2pM1/XomNp0wSwAyBGPFNBWi38oVInqiwsQ==
-X-Received: by 2002:a37:b88:: with SMTP id 130mr7652261qkl.222.1598323733772;
-        Mon, 24 Aug 2020 19:48:53 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id n14sm2159188qtk.50.2020.08.24.19.48.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 19:48:53 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        boqun.feng@gmail.com, dave@stgolabs.net,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: [PATCH v4 -rcu 4/4] rcu/trace: Add tracing for how segcb list changes
-Date:   Mon, 24 Aug 2020 22:48:42 -0400
-Message-Id: <20200825024842.3408659-5-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-In-Reply-To: <20200825024842.3408659-1-joel@joelfernandes.org>
-References: <20200825024842.3408659-1-joel@joelfernandes.org>
+        Mon, 24 Aug 2020 22:59:46 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07P2WEcp104893;
+        Mon, 24 Aug 2020 22:59:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=/qls1/xChu/1XznckOaVVuSv1KynuZebmcC+LdDqFqc=;
+ b=nod9U/+GopzB9ZJ766O+EVSFOyRFBHmRtm9PAzt4nFUTQxiX3sRK2DI/NGLyj5NaapyX
+ 6x4BmngJCaV6nZ/FQ/TxPqsDUlZuKPvfkth0irv8TQHHkWYTBs/AFpDQM2SPEVF90UHi
+ mv40zzk1jg3F8+eIGm0B5hyekpGS+GUqWL+GXbqcZ1wt8pJg1sG/FRwAQSvnaORiVgkq
+ WsjY7xTaRLFmidRQN9hAYbdGfERz+qgTmSTdx679ySWfhNI1zmSUc+whGOkKqqZcUrr+
+ 8af/Ezyf7IJJjlNO/pm8diBdC/eYg0vIE3gY8ZfJDi6Bm2dbaMyYzHMBsqmCCGWQTdKd gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 334sekh46v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Aug 2020 22:59:42 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07P2WcdB105939;
+        Mon, 24 Aug 2020 22:59:42 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 334sekh46c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Aug 2020 22:59:41 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07P2qSLm026477;
+        Tue, 25 Aug 2020 02:59:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 332ujjstkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Aug 2020 02:59:40 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07P2w7XI60883386
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Aug 2020 02:58:07 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC05911C04C;
+        Tue, 25 Aug 2020 02:59:37 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BB5B11C04A;
+        Tue, 25 Aug 2020 02:59:36 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 25 Aug 2020 02:59:36 +0000 (GMT)
+Date:   Tue, 25 Aug 2020 08:29:35 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     xunlei <xlpang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: Fix wrong cpu selecting from isolated domain
+Message-ID: <20200825025935.GB31355@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
+ <20200824133820.GA31355@linux.vnet.ibm.com>
+ <b84b9194-b79e-a708-6151-1bbb0826b70e@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <b84b9194-b79e-a708-6151-1bbb0826b70e@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 spamscore=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008250015
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Track how the segcb list changes before/after acceleration, during
-queuing and during dequeuing.
+* xunlei <xlpang@linux.alibaba.com> [2020-08-25 10:11:24]:
 
-This has proved useful to discover an optimization to avoid unwanted GP
-requests when there are no callbacks accelerated. The overhead is minimal as
-each segment's length is now stored in the respective segment.
+> On 2020/8/24 PM9:38, Srikar Dronamraju wrote:
+> > * Xunlei Pang <xlpang@linux.alibaba.com> [2020-08-24 20:30:19]:
+> > 
+> >> We've met problems that occasionally tasks with full cpumask
+> >> (e.g. by putting it into a cpuset or setting to full affinity)
+> >> were migrated to our isolated cpus in production environment.
+> >>
+> >> After some analysis, we found that it is due to the current
+> >> select_idle_smt() not considering the sched_domain mask.
+> >>
+> >> Fix it by checking the valid domain mask in select_idle_smt().
+> >>
+> >> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
+> >> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+> >> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+> >> ---
+> >>  kernel/sched/fair.c | 9 +++++----
+> >>  1 file changed, 5 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> index 1a68a05..fa942c4 100644
+> >> --- a/kernel/sched/fair.c
+> >> +++ b/kernel/sched/fair.c
+> >> @@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+> >>  /*
+> >>   * Scan the local SMT mask for idle CPUs.
+> >>   */
+> >> -static int select_idle_smt(struct task_struct *p, int target)
+> >> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+> >>  {
+> >>  	int cpu;
+> >>  
+> >> @@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
+> >>  		return -1;
+> >>  
+> >>  	for_each_cpu(cpu, cpu_smt_mask(target)) {
+> >> -		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> >> +		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+> >> +		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+> >>  			continue;
+> > 
+> > Don't think this is right thing to do.  What if this task had set a cpumask
+> > that doesn't cover all the cpus in this sched_domain_span(sd)
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
- kernel/rcu/rcu_segcblist.c | 27 +++++++++++++++++++++++++++
- kernel/rcu/rcu_segcblist.h |  7 +++++++
- kernel/rcu/tree.c          | 23 +++++++++++++++++++++++
- 4 files changed, 82 insertions(+)
+ah, right I  missed the 'or' part.
+> 
+> It doesn't matter, without this patch, it selects an idle cpu from:
+> "cpu_smt_mask(target) and p->cpus_ptr"
+> 
+> with this patch, it selects an idle cpu from:
+> "cpu_smt_mask(target) and p->cpus_ptr and sched_domain_span(sd)"
+> 
+> > 
+> > cpu_smt_mask(target) would already limit to the sched_domain_span(sd) so I
+> > am not sure how this can help?
+> > 
+> > 
+> 
+> Here is an example:
+> CPU0 and CPU16 are hyper-thread pair, CPU16 is domain isolated. So its
+> sd_llc doesn't contain CPU16, and cpu_smt_mask(0) is 0 and 16.
+> 
+> Then we have @target is 0, select_idle_smt() may return the isolated(and
+> idle) CPU16 without this patch.
 
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 155b5cb43cfd..7b84df3c95df 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
- 		  __entry->qlen)
- );
- 
-+TRACE_EVENT_RCU(rcu_segcb,
-+
-+		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-+
-+		TP_ARGS(ctx, cb_count, gp_seq),
-+
-+		TP_STRUCT__entry(
-+			__field(const char *, ctx)
-+			__array(int, cb_count, 4)
-+			__array(unsigned long, gp_seq, 4)
-+		),
-+
-+		TP_fast_assign(
-+			__entry->ctx = ctx;
-+			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
-+			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
-+		),
-+
-+		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-+			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-+			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-+			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-+
-+);
-+
- /*
-  * Tracepoint for the registration of a single RCU callback of the special
-  * kvfree() form.  The first argument is the RCU type, the second argument
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 73a103464ea4..6419dbbaecde 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -378,6 +378,33 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
- 	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
- }
- 
-+/*
-+ * Return how many CBs each segment along with their gp_seq values.
-+ *
-+ * This function is O(N) where N is the number of callbacks. Only used from
-+ * tracing code which is usually disabled in production.
-+ */
-+#ifdef CONFIG_RCU_TRACE
-+void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-+			 int cbcount[RCU_CBLIST_NSEGS],
-+			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-+{
-+	struct rcu_head **cur_tail;
-+	int i;
-+
-+	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-+		cbcount[i] = 0;
-+
-+	cur_tail = &(rsclp->head);
-+
-+	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-+		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-+		gpseq[i] = rsclp->gp_seq[i];
-+		cur_tail = rsclp->tails[i];
-+	}
-+}
-+#endif
-+
- /*
-  * Extract only those callbacks still pending (not yet ready to be
-  * invoked) from the specified rcu_segcblist structure and place them in
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index b90725f81d77..5f7cdfed0ba4 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -105,3 +105,10 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
- bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
- void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 			 struct rcu_segcblist *src_rsclp);
-+#ifdef CONFIG_RCU_TRACE
-+void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-+			 int cbcount[RCU_CBLIST_NSEGS],
-+			 unsigned long gpseq[RCU_CBLIST_NSEGS]);
-+#else
-+#define rcu_segcblist_countseq(...)
-+#endif
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 51348144a4ea..16ad99a9ebba 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1476,6 +1476,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- {
- 	unsigned long gp_seq_req;
- 	bool ret = false;
-+	int cbs[RCU_CBLIST_NSEGS];
-+	unsigned long gps[RCU_CBLIST_NSEGS];
- 
- 	rcu_lockdep_assert_cblist_protected(rdp);
- 	raw_lockdep_assert_held_rcu_node(rnp);
-@@ -1484,6 +1486,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
- 		return false;
- 
-+	/* Count CBs for tracing. */
-+	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-+	trace_rcu_segcb("SegCbPreAcc", cbs, gps);
-+
- 	/*
- 	 * Callbacks are often registered with incomplete grace-period
- 	 * information.  Something about the fact that getting exact
-@@ -1504,6 +1510,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	else
- 		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
- 
-+	/* Count CBs for tracing. */
-+	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-+	trace_rcu_segcb("SegCbPostAcc", cbs, gps);
-+
- 	return ret;
- }
- 
-@@ -2421,6 +2431,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
- 	long pending, tlimit = 0;
-+	int cbs[RCU_CBLIST_NSEGS];
-+	unsigned long gps[RCU_CBLIST_NSEGS];
- 
- 	/* If no callbacks are ready, just return. */
- 	if (!rcu_segcblist_ready_cbs(&rdp->cblist)) {
-@@ -2461,6 +2473,11 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Invoke callbacks. */
- 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
- 	rhp = rcu_cblist_dequeue(&rcl);
-+
-+	/* Count CBs for tracing. */
-+	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-+	trace_rcu_segcb("SegCbDequeued", cbs, gps);
-+
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		rcu_callback_t f;
- 
-@@ -2929,6 +2946,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	unsigned long flags;
- 	struct rcu_data *rdp;
- 	bool was_alldone;
-+	int cbs[RCU_CBLIST_NSEGS];
-+	unsigned long gps[RCU_CBLIST_NSEGS];
- 
- 	/* Misaligned rcu_head! */
- 	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
-@@ -2974,6 +2993,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		trace_rcu_callback(rcu_state.name, head,
- 				   rcu_segcblist_n_cbs(&rdp->cblist));
- 
-+	/* Count CBs for tracing. */
-+	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-+	trace_rcu_segcb("SegCBQueued", cbs, gps);
-+
- 	/* Go handle any RCU core processing required. */
- 	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
- 	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+Okay.
+
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+Thanks and Regards
+Srikar Dronamraju
