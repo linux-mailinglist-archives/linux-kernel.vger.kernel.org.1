@@ -2,303 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632F3253001
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0926252FFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730354AbgHZNdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730338AbgHZNco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:32:44 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A9FC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:32:43 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id s2so2116363ioo.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=barpilot-io.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ss1ahBsuacpjwRSXltHzxXXPlZjpMb8fBUu+mx+WaA0=;
-        b=pV2YDm4gGeVOLDRs9SoD9t/ey5oo6Jn5i+yiYXajiVDqp00hf+19vn2QF6njFX2ucf
-         ecfmFkg+1ejYXGBuai2oFmAfYG1WJ+HEPesLXFXHyu7nDs1CcAKuAbJS+zcmZjNd7GQT
-         l8kCZQRVbxcnuNsCyV/78ljoJ2BESDoK+I9r7/7KVxfvmLK8eHwBSI23zIB5ztr/Zts7
-         JLbkD87muiOgdeK0rpdH//kdkj/Q/Bu5NshHUs5vEXfFrrglmVt2IaVHfkyqmMfBRtzj
-         7R+xbfsjPfm0X8NwiOkDcWaDcNffD8QPJ06KTXGUfNtr1EIib7DPxImjGJkBsipQ+liW
-         vB+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ss1ahBsuacpjwRSXltHzxXXPlZjpMb8fBUu+mx+WaA0=;
-        b=qNFRIUwUa1aH0hcx36PSWcveLzDf02LWFK9DO1QZZ11LETLcCn+wZ0QU92fRAcEiiZ
-         5jPUzjsr4tb9IYVe2ii5v4/WFqs32X8+KxSBsIGRmW6RXY43YWy3Dr6vXfKh0o2552dP
-         7C0nr4X0BDW5LmhMRKXOuuFDaL/VUk5Lg5YJw/obD9zBF7CIoxcq65T5UVn1pHN7G8/3
-         u1PLyDldRQU+kSoxXxRiS/woVCnGxkFJmLY8ZV481RA07VEdPAUGWcbuz7Vx4ZdlFmta
-         zbIk6pZFsK6lq+W1QcwHaL8yC2en0KCW//FB1rAgqLc9Ephh775WM+GuQEvyM83TWgRH
-         ynkQ==
-X-Gm-Message-State: AOAM530Clnb1KYar2oWQES7FSAapNsmlZEgeKOug+isgDdmBwCJeZTnc
-        xKMPV8AMNaD2ayEI/eCkhyheLUJ9ktF4UdjH+6MK6g==
-X-Google-Smtp-Source: ABdhPJyifgZETWPgeEmgkWQCxtIe38cCNfUgOnfz3mne9gTA7+p1ZkpyygVpWr209UqK3E9ChtDREgSeJZxzN7X6nKY=
-X-Received: by 2002:a6b:e009:: with SMTP id z9mr12846483iog.124.1598448762210;
- Wed, 26 Aug 2020 06:32:42 -0700 (PDT)
+        id S1730348AbgHZNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730289AbgHZNcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:32:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 656F2208E4;
+        Wed, 26 Aug 2020 13:32:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598448760;
+        bh=b1nmyfPK5FQ7cjqNh+7j1qIyG/iexxlz9aw19IXSc24=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tL+y8cFx68cVj/yVRenvmIZEEKy9hGzoiqxQdyuSQZ+isFRgrSnJXt0VWCkLRp8iR
+         ZHAsWilvx7FAxEBcpf2aXVgBsK+TolYL3TYHW44mW4q8bkqk/V6OAtFJBNzh/gEFeW
+         0lucH461F4WvGvITYPOsZwVziOE4hG8PHrScxR88=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kAvXa-006rI6-9y; Wed, 26 Aug 2020 14:32:38 +0100
 MIME-Version: 1.0
-References: <20200826120421.44356-1-guilhem@barpilot.io> <CAJZ5v0i8XUF39Vv=EM4TgyXgK6zHniZW3tGYFPweO3kg+BrxOQ@mail.gmail.com>
- <CAGX5Wg2OOgY6d1RH514Kh9D6b+siga+jzH7qubcmE+ukq+6KKA@mail.gmail.com>
- <d0ca671465e6ce72c6c4d5178440ebc1e4814da8.camel@gmail.com> <e82c121057c4496238d3de7f7c919b7039d23b7c.camel@gmail.com>
-In-Reply-To: <e82c121057c4496238d3de7f7c919b7039d23b7c.camel@gmail.com>
-From:   Guilhem Lettron <guilhem@barpilot.io>
-Date:   Wed, 26 Aug 2020 15:32:31 +0200
-Message-ID: <CAGX5Wg0LrzPwf=2pGrQHAbFMVkOoYDxOoFa+ZmLBYshPvZQUXg@mail.gmail.com>
-Subject: Re: [PATCH] intel_idle: Add ICL support
-To:     dedekind1@gmail.com
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 Aug 2020 14:32:38 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] Input; Sanitize event code before modifying bitmaps
+In-Reply-To: <20200824195102.GY1665100@dtor-ws>
+References: <20200817112700.468743-1-maz@kernel.org>
+ <20200817112700.468743-2-maz@kernel.org> <20200824195102.GY1665100@dtor-ws>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <bcf65dce766d0376027e80bf205b095d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dmitry.torokhov@gmail.com, jikos@kernel.org, benjamin.tissoires@redhat.com, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 at 15:18, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> On Wed, 2020-08-26 at 16:16 +0300, Artem Bityutskiy wrote:
-> > Just get a reasonably new turbostat (it is part of the kernel tree, you
-> > can compile it yourself) and run it for few seconds (like 'turbostat
-> > sleep 10'), get the output (will be a lot of it), and we can check what
-> > is actually going on with regards to C-states.
->
-> Oh, and if you could do that with and without your patch, we could even
-> compare things. But try to do it at least with the default (acpi_idle)
-> configuration.
+Hi Dmitry,
 
-with my patch:
+On 2020-08-24 20:51, Dmitry Torokhov wrote:
+> Hi Marc,
+> 
+> On Mon, Aug 17, 2020 at 12:26:59PM +0100, Marc Zyngier wrote:
+>> When calling into input_set_capability(), the passed event code is
+>> blindly used to set a bit in a number of bitmaps, without checking
+>> whether this actually fits the expected size of the bitmap.
+>> 
+>> This event code can come from a variety of sources, including devices
+>> masquerading as input devices, only a bit more "programmable".
+>> 
+>> Instead of taking the raw event code, sanitize it to the actual bitmap
+>> size and output a warning to let the user know.
+>> 
+>> These checks are, at least in spirit, in keeping with cb222aed03d7
+>> ("Input: add safety guards to input_set_keycode()").
+>> 
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  drivers/input/input.c | 16 +++++++++++++++-
+>>  1 file changed, 15 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/input/input.c b/drivers/input/input.c
+>> index 3cfd2c18eebd..1e77cf47aa44 100644
+>> --- a/drivers/input/input.c
+>> +++ b/drivers/input/input.c
+>> @@ -1974,14 +1974,18 @@ EXPORT_SYMBOL(input_get_timestamp);
+>>   * In addition to setting up corresponding bit in appropriate 
+>> capability
+>>   * bitmap the function also adjusts dev->evbit.
+>>   */
+>> -void input_set_capability(struct input_dev *dev, unsigned int type, 
+>> unsigned int code)
+>> +void input_set_capability(struct input_dev *dev, unsigned int type, 
+>> unsigned int raw_code)
+>>  {
+>> +	unsigned int code = raw_code;
+>> +
+>>  	switch (type) {
+>>  	case EV_KEY:
+>> +		code &= KEY_MAX;
+>>  		__set_bit(code, dev->keybit);
+> 
+> 
+> I would much rather prefer we did not simply set some random bits in
+> this case, but instead complained loudly and refused to alter anything.
+> 
+> The function is not exported directly to userspace, so we expect 
+> callers
+> to give us sane inputs, and I believe WARN() splash in case of bad
+> inputs would be the best solution here.
 
-turbostat version 20.03.20 - Len Brown <lenb@kernel.org>
-CPUID(0): GenuineIntel 0x1b CPUID levels; 0x80000008 xlevels;
-family:model:stepping 0x6:7e:5 (6:126:5)
-CPUID(1): SSE3 MONITOR - EIST TM2 TSC MSR ACPI-TM HT TM
-CPUID(6): APERF, TURBO, DTS, PTM, HWP, No-HWPnotify, HWPwindow,
-HWPepp, HWPpkg, EPB
-cpu2: MSR_IA32_MISC_ENABLE: 0x00850089 (TCC EIST MWAIT PREFETCH TURBO)
-CPUID(7): SGX
-cpu2: MSR_IA32_FEATURE_CONTROL: 0x00020005 (Locked )
-CPUID(0x15): eax_crystal: 2 ebx_tsc: 78 ecx_crystal_hz: 38400000
-TSC: 1497 MHz (38400000 Hz * 78 / 2 / 1000000)
-CPUID(0x16): base_mhz: 1500 max_mhz: 3900 bus_mhz: 100
-cpu2: MSR_MISC_PWR_MGMT: 0x00401c40 (ENable-EIST_Coordination
-DISable-EPB DISable-OOB)
-RAPL: 17476 sec. Joule Counter Range, at 15 Watts
-cpu2: MSR_PLATFORM_INFO: 0x4043cf1810f00
-4 * 100.0 = 400.0 MHz max efficiency frequency
-15 * 100.0 = 1500.0 MHz base frequency
-cpu2: MSR_IA32_POWER_CTL: 0x0024005d (C1E auto-promotion: DISabled)
-cpu2: MSR_TURBO_RATIO_LIMIT: 0x2323232323232627
-35 * 100.0 = 3500.0 MHz max turbo 8 active cores
-35 * 100.0 = 3500.0 MHz max turbo 7 active cores
-35 * 100.0 = 3500.0 MHz max turbo 6 active cores
-35 * 100.0 = 3500.0 MHz max turbo 5 active cores
-35 * 100.0 = 3500.0 MHz max turbo 4 active cores
-35 * 100.0 = 3500.0 MHz max turbo 3 active cores
-38 * 100.0 = 3800.0 MHz max turbo 2 active cores
-39 * 100.0 = 3900.0 MHz max turbo 1 active cores
-cpu2: MSR_CONFIG_TDP_NOMINAL: 0x0000000d (base_ratio=13)
-cpu2: MSR_CONFIG_TDP_LEVEL_1: 0x000a0060 (PKG_MIN_PWR_LVL1=0
-PKG_MAX_PWR_LVL1=0 LVL1_RATIO=10 PKG_TDP_LVL1=96)
-cpu2: MSR_CONFIG_TDP_LEVEL_2: 0x000f00c8 (PKG_MIN_PWR_LVL2=0
-PKG_MAX_PWR_LVL2=0 LVL2_RATIO=15 PKG_TDP_LVL2=200)
-cpu2: MSR_CONFIG_TDP_CONTROL: 0x00000000 ( lock=0)
-cpu2: MSR_TURBO_ACTIVATION_RATIO: 0x0000000c (MAX_NON_TURBO_RATIO=12 lock=0)
-cpu2: MSR_PKG_CST_CONFIG_CONTROL: 0x74008008 (UNdemote-C1, demote-C1,
-locked, pkg-cstate-limit=8 (unlimited))
-current_driver: intel_idle
-current_governor: menu
-current_governor_ro: menu
-cpu2: POLL: CPUIDLE CORE POLL IDLE
-cpu2: C1: MWAIT 0x00
-cpu2: C1E: MWAIT 0x01
-cpu2: C6: MWAIT 0x20
-cpu2: C7s: MWAIT 0x33
-cpu2: C8: MWAIT 0x40
-cpu2: C9: MWAIT 0x50
-cpu2: C10: MWAIT 0x60
-cpu2: cpufreq driver: intel_cpufreq
-cpu2: cpufreq governor: schedutil
-cpufreq intel_pstate no_turbo: 0
-cpu2: MSR_MISC_FEATURE_CONTROL: 0x00000000 (L2-Prefetch
-L2-Prefetch-pair L1-Prefetch L1-IP-Prefetch)
-cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
-cpu0: MSR_HWP_CAPABILITIES: 0x010e0d27 (high 39 guar 13 eff 14 low 1)
-cpu0: MSR_HWP_REQUEST: 0x80002727 (min 39 max 39 des 0 epp 0x80 window
-0x0 pkg 0x0)
-cpu0: MSR_HWP_REQUEST_PKG: 0x8000ff01 (min 1 max 255 des 0 epp 0x80 window 0x0)
-cpu0: MSR_HWP_STATUS: 0x00000000 (No-Guaranteed_Perf_Change, No-Excursion_Min)
-cpu0: MSR_IA32_ENERGY_PERF_BIAS: 0x00000006 (balanced)
-cpu0: MSR_RAPL_POWER_UNIT: 0x000a0e03 (0.125000 Watts, 0.000061
-Joules, 0.000977 sec.)
-cpu0: MSR_PKG_POWER_INFO: 0x00000078 (15 W TDP, RAPL 0 - 0 W, 0.000000 sec.)
-cpu0: MSR_PKG_POWER_LIMIT: 0x5a8118009d80c8 (UNlocked)
-cpu0: PKG Limit #1: ENabled (25.000000 Watts, 24.000000 sec, clamp ENabled)
-cpu0: PKG Limit #2: ENabled (35.000000 Watts, 10.000000* sec, clamp DISabled)
-cpu0: MSR_DRAM_POWER_LIMIT: 0x5400de00000000 (UNlocked)
-cpu0: DRAM Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_PP0_POLICY: 0
-cpu0: MSR_PP0_POWER_LIMIT: 0x00000000 (UNlocked)
-cpu0: Cores Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_PP1_POLICY: 0
-cpu0: MSR_PP1_POWER_LIMIT: 0x00000000 (UNlocked)
-cpu0: GFX Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_IA32_TEMPERATURE_TARGET: 0x05640000 (100 C)
-cpu0: MSR_IA32_PACKAGE_THERM_STATUS: 0x88290800 (59 C)
-cpu0: MSR_IA32_PACKAGE_THERM_INTERRUPT: 0x00000003 (100 C, 100 C)
-cpu2: MSR_PKGC3_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu2: MSR_PKGC6_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu2: MSR_PKGC7_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu2: MSR_PKGC8_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu2: MSR_PKGC9_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu2: MSR_PKGC10_IRTL: 0x00000000 (NOTvalid, 0 ns)
-10.003466 sec
-Core CPU Avg_MHz Busy% Bzy_MHz TSC_MHz IRQ SMI POLL C1 C1E C6 C7s C8
-C9 C10 POLL% C1% C1E% C6% C7s% C8% C9% C10% CPU%c1 CPU%c6 CPU%c7
-CoreTmp PkgTmp GFX%rc6 GFXMHz Totl%C0 Any%C0 GFX%C0 CPUGFX% Pkg%pc2
-Pkg%pc3 Pkg%pc6 Pkg%pc7 Pkg%pc8 Pkg%pc9 Pk%pc10 CPU%LPI SYS%LPI
-PkgWatt CorWatt GFXWatt RAMWatt PKG_% RAM_%
-- - 219 8.59 2549 1498 48489 160 71 1256 11389 21414 5 31317 489 8252
-0.00 0.10 1.61 17.26 0.01 52.02 0.53 19.27 16.07 26.24 49.10 56 56
-96.64 300 68.29 48.58 3.08 2.10 30.36 0.04 0.00 0.00 0.00 0.00 0.00
-0.00 0.00 7.38 4.91 0.07 0.00 0.00 0.00
-0 0 189 5.83 3239 1498 6131 20 26 222 1922 2648 0 4232 0 298 0.00 0.20
-1.97 16.85 0.00 69.76 0.00 4.51 20.30 20.57 53.30 56 56 96.64 300
-68.29 48.58 3.08 2.10 30.36 0.04 0.00 0.00 0.00 0.00 0.00 0.00 0.00
-7.38 4.91 0.07 0.00 0.00 0.00
-0 4 397 12.02 3307 1498 4248 20 5 173 1252 1552 0 3266 2 1367 0.00
-0.08 1.22 10.13 0.00 46.47 0.01 28.39 14.11
-1 1 302 8.53 3545 1498 6108 20 11 155 1215 3588 0 4462 0 2 0.00 0.11
-1.90 28.91 0.00 59.04 0.00 0.08 14.13 31.04 46.31 55
-1 5 149 6.29 2378 1498 3953 20 8 144 1391 1710 0 3239 9 1304 0.00 0.06
-1.48 10.45 0.00 49.50 0.23 31.45 16.37
-2 2 159 7.86 2022 1498 3688 20 5 111 1088 1450 0 3122 1 1191 0.00 0.14
-0.95 9.49 0.00 49.73 0.07 31.64 13.61 19.24 59.29 54
-2 6 175 7.44 2355 1498 6107 20 4 137 1726 2424 0 3863 4 651 0.00 0.06
-1.90 15.83 0.00 56.39 0.04 18.00 14.03
-3 3 213 11.84 1797 1498 13814 20 7 170 1431 6125 2 5634 464 2422 0.00
-0.09 1.89 34.67 0.01 31.54 3.82 16.28 16.54 34.11 37.51 52
-3 7 167 8.91 1871 1498 4440 20 5 144 1364 1917 3 3499 9 1017 0.00 0.07
-1.55 11.78 0.03 53.73 0.07 23.83 19.47
+Fair enough. I've moved the checking to the HID layer (using
+hid_map_usage() as the validation primitive), which makes
+changing input_set_capability() irrelevant.
 
-without (3.9-rc2):
+I'll post v2 shortly in the form of a single patch.
 
-turbostat version 20.03.20 - Len Brown <lenb@kernel.org>
-CPUID(0): GenuineIntel 0x1b CPUID levels; 0x80000008 xlevels;
-family:model:stepping 0x6:7e:5 (6:126:5)
-CPUID(1): SSE3 MONITOR - EIST TM2 TSC MSR ACPI-TM HT TM
-CPUID(6): APERF, TURBO, DTS, PTM, HWP, No-HWPnotify, HWPwindow,
-HWPepp, HWPpkg, EPB
-cpu1: MSR_IA32_MISC_ENABLE: 0x00850089 (TCC EIST MWAIT PREFETCH TURBO)
-CPUID(7): SGX
-cpu1: MSR_IA32_FEATURE_CONTROL: 0x00020005 (Locked )
-CPUID(0x15): eax_crystal: 2 ebx_tsc: 78 ecx_crystal_hz: 38400000
-TSC: 1497 MHz (38400000 Hz * 78 / 2 / 1000000)
-CPUID(0x16): base_mhz: 1500 max_mhz: 3900 bus_mhz: 100
-cpu1: MSR_MISC_PWR_MGMT: 0x00401c40 (ENable-EIST_Coordination
-DISable-EPB DISable-OOB)
-RAPL: 17476 sec. Joule Counter Range, at 15 Watts
-cpu1: MSR_PLATFORM_INFO: 0x4043cf1810f00
-4 * 100.0 = 400.0 MHz max efficiency frequency
-15 * 100.0 = 1500.0 MHz base frequency
-cpu1: MSR_IA32_POWER_CTL: 0x0024005f (C1E auto-promotion: ENabled)
-cpu1: MSR_TURBO_RATIO_LIMIT: 0x2323232323232627
-35 * 100.0 = 3500.0 MHz max turbo 8 active cores
-35 * 100.0 = 3500.0 MHz max turbo 7 active cores
-35 * 100.0 = 3500.0 MHz max turbo 6 active cores
-35 * 100.0 = 3500.0 MHz max turbo 5 active cores
-35 * 100.0 = 3500.0 MHz max turbo 4 active cores
-35 * 100.0 = 3500.0 MHz max turbo 3 active cores
-38 * 100.0 = 3800.0 MHz max turbo 2 active cores
-39 * 100.0 = 3900.0 MHz max turbo 1 active cores
-cpu1: MSR_CONFIG_TDP_NOMINAL: 0x0000000d (base_ratio=13)
-cpu1: MSR_CONFIG_TDP_LEVEL_1: 0x000a0060 (PKG_MIN_PWR_LVL1=0
-PKG_MAX_PWR_LVL1=0 LVL1_RATIO=10 PKG_TDP_LVL1=96)
-cpu1: MSR_CONFIG_TDP_LEVEL_2: 0x000f00c8 (PKG_MIN_PWR_LVL2=0
-PKG_MAX_PWR_LVL2=0 LVL2_RATIO=15 PKG_TDP_LVL2=200)
-cpu1: MSR_CONFIG_TDP_CONTROL: 0x00000000 ( lock=0)
-cpu1: MSR_TURBO_ACTIVATION_RATIO: 0x0000000c (MAX_NON_TURBO_RATIO=12 lock=0)
-cpu1: MSR_PKG_CST_CONFIG_CONTROL: 0x74008008 (UNdemote-C1, demote-C1,
-locked, pkg-cstate-limit=8 (unlimited))
-current_driver: intel_idle
-current_governor: menu
-current_governor_ro: menu
-cpu1: POLL: CPUIDLE CORE POLL IDLE
-cpu1: C1_ACPI: ACPI FFH MWAIT 0x0
-cpu1: C2_ACPI: ACPI FFH MWAIT 0x31
-cpu1: C3_ACPI: ACPI FFH MWAIT 0x60
-cpu1: cpufreq driver: intel_cpufreq
-cpu1: cpufreq governor: schedutil
-cpufreq intel_pstate no_turbo: 0
-cpu1: MSR_MISC_FEATURE_CONTROL: 0x00000000 (L2-Prefetch
-L2-Prefetch-pair L1-Prefetch L1-IP-Prefetch)
-cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
-cpu0: MSR_HWP_CAPABILITIES: 0x010e0d27 (high 39 guar 13 eff 14 low 1)
-cpu0: MSR_HWP_REQUEST: 0x80002727 (min 39 max 39 des 0 epp 0x80 window
-0x0 pkg 0x0)
-cpu0: MSR_HWP_REQUEST_PKG: 0x8000ff01 (min 1 max 255 des 0 epp 0x80 window 0x0)
-cpu0: MSR_HWP_STATUS: 0x00000000 (No-Guaranteed_Perf_Change, No-Excursion_Min)
-cpu0: MSR_IA32_ENERGY_PERF_BIAS: 0x00000006 (balanced)
-cpu0: MSR_RAPL_POWER_UNIT: 0x000a0e03 (0.125000 Watts, 0.000061
-Joules, 0.000977 sec.)
-cpu0: MSR_PKG_POWER_INFO: 0x00000078 (15 W TDP, RAPL 0 - 0 W, 0.000000 sec.)
-cpu0: MSR_PKG_POWER_LIMIT: 0x42817000dd8170 (UNlocked)
-cpu0: PKG Limit #1: ENabled (46.000000 Watts, 28.000000 sec, clamp ENabled)
-cpu0: PKG Limit #2: ENabled (46.000000 Watts, 0.002441* sec, clamp DISabled)
-cpu0: MSR_DRAM_POWER_LIMIT: 0x5400de00000000 (UNlocked)
-cpu0: DRAM Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_PP0_POLICY: 0
-cpu0: MSR_PP0_POWER_LIMIT: 0x00000000 (UNlocked)
-cpu0: Cores Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_PP1_POLICY: 0
-cpu0: MSR_PP1_POWER_LIMIT: 0x00000000 (UNlocked)
-cpu0: GFX Limit: DISabled (0.000000 Watts, 0.000977 sec, clamp DISabled)
-cpu0: MSR_IA32_TEMPERATURE_TARGET: 0x00640000 (100 C)
-cpu0: MSR_IA32_PACKAGE_THERM_STATUS: 0x881d0800 (71 C)
-cpu0: MSR_IA32_PACKAGE_THERM_INTERRUPT: 0x00000003 (100 C, 100 C)
-cpu1: MSR_PKGC3_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu1: MSR_PKGC6_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu1: MSR_PKGC7_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu1: MSR_PKGC8_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu1: MSR_PKGC9_IRTL: 0x00000000 (NOTvalid, 0 ns)
-cpu1: MSR_PKGC10_IRTL: 0x00000000 (NOTvalid, 0 ns)
-10.002424 sec
-Core CPU Avg_MHz Busy% Bzy_MHz TSC_MHz IRQ SMI POLL C1_ACPI C2_ACPI
-C3_ACPI POLL% C1_ACPI% C2_ACPI% C3_ACPI% CPU%c1 CPU%c6 CPU%c7 CoreTmp
-PkgTmp GFX%rc6 GFXMHz Totl%C0 Any%C0 GFX%C0 CPUGFX% Pkg%pc2 Pkg%pc3
-Pkg%pc6 Pkg%pc7 Pkg%pc8 Pkg%pc9 Pk%pc10 CPU%LPI SYS%LPI PkgWatt
-CorWatt GFXWatt RAMWatt PKG_% RAM_%
-- - 204 9.81 2083 1497 50389 176 820 25733 20628 14751 0.01 10.71
-36.19 42.84 29.48 0.00 60.71 58 58 97.96 300 73.65 52.84 1.861.41
-16.96 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 6.08 3.79 0.03 0.00 0.00
-0.00
-0 0 218 7.90 2760 1497 6824 22 4 3882 3146 864 0.00 12.68 53.86 24.76
-26.32 0.00 65.77 58 58 97.96 300 73.65 52.84 1.861.41 16.96 0.00 0.00
-0.00 0.00 0.00 0.00 0.00 0.00 6.08 3.79 0.03 0.00 0.00 0.00
-0 4 144 6.91 2084 1497 4409 22 7 2410 2078 1608 0.00 7.55 32.26 52.88 27.32
-1 1 154 8.09 1903 1497 4783 22 3 2528 2178 1801 0.00 7.54 34.66 49.51
-42.41 0.00 49.50 57
-1 5 290 14.49 2000 1497 14750 22 755 5964 4261 4558 0.04 22.47 27.57 35.05 36.01
-2 2 209 11.35 1840 1497 4663 22 1 2771 2132 1467 0.00 8.39 31.37 48.69
-28.70 0.00 59.96 55
-2 6 232 13.35 1738 1497 5625 22 40 3313 2140 1338 0.00 10.36 33.13 42.87 26.70
-3 3 221 9.01 2451 1497 4944 22 7 2627 2536 1447 0.00 9.32 41.41 39.55
-23.38 0.00 67.61 54
-3 7 167 7.39 2266 1497 4391 22 3 2238 2157 1668 0.00 7.39 35.25 49.42 25.00
+Thanks,
 
-
->
-> Artem.
->
-
-Guilhem Lettron
+         M.
+-- 
+Jazz is not dead. It just smells funny...
