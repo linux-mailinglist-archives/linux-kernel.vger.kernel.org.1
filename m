@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFDC252685
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BB725268B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbgHZFV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 01:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S1726074AbgHZFZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 01:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgHZFV4 (ORCPT
+        with ESMTP id S1725779AbgHZFZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 01:21:56 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245B1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 22:21:56 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id v1so246539qvn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 22:21:56 -0700 (PDT)
+        Wed, 26 Aug 2020 01:25:47 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA63C061574;
+        Tue, 25 Aug 2020 22:25:47 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id g33so476322pgb.4;
+        Tue, 25 Aug 2020 22:25:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=js0EBC62eWGyWAw9YJWIyLBqx2ojH0IgaEQrWHEIoXI=;
-        b=ErlMU/KeJReMDDWNhlUIRGySVmy3ZbFLthcDLUwgpSWt8bgf6Y+3A+gXACc3aSugat
-         uVPawmSTv1QFEVkBmYXMoMvv8ZzBiUT8eWET69xlh8dOPXS+WxYELokjxMqn2d9BQ90L
-         iaC0+khrDU6LMOcUv4Xvg6AThTYLNBlAqbPYybxt9ikwIFLiQV3seXYwEwuo/KZTaf/f
-         8fDErVlBkYsJDK1GSU2opAeCL7ChvFpQBDxYKJNq6gfNgyXhW+16CCPIi6y2WDmz9fsr
-         pzHKd3lyT2fHNoTiyISi1CRm5wOdgayb9SalsfWtZ0GBiOUBFiPb1prQLtGffhqUHcL4
-         trRw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z3LGnTCr/eYWP2X66RzavN5L3cyXT8al4eEGOaizoiY=;
+        b=TfeqLHcwx/4LJP7jMLoGi1fx+AaQXjeW4/KupkajuYLiaHsKTrpKRVYKr0xecpkpFY
+         Nao+/2wENu1uePJFif1Hfid7aqHP/XwcOWUboXGwabAXASPUdKnrQvsnaYp/ZAh8DzMz
+         lUB4V+Wc6PPGBdmkiNMgRK63PZouA3S0xfADC2JlTXPpxai7atEoe2xNYI/1Gu+Zce4N
+         cyYmzqU5VLOI5uTX72dDOXCJQjtYaFL2Q6OOKKE/PJELZvwZu59thE3ez9Yp5empA0sk
+         OAsVsGDLxDgMX1wVkxgeY8fgEgrVC9uBeIYdvBKVTuWp1jZywsYOo7dIhQBrBh/Jm8QC
+         vVMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=js0EBC62eWGyWAw9YJWIyLBqx2ojH0IgaEQrWHEIoXI=;
-        b=j2XtZJC9x3VZaBkyxifI8vIvYPEXGhM5BPmNM0VrDUWlx/SPDqQP8ZzRI1yWyJeIi3
-         10YqN3+bRWHJQjtfmv5XCWXxNbzpiCVHZW9d+e4RIoa2AndgH/weRTV92iaKgoVKO9j+
-         VDvswc762paPUyb5wQPfs+razccNYKwW802fLFTdGjkFD/9K4WvRKR/zuKq0IZQn5aaL
-         Oh2dmeNMVC0nAzlolfGuip0aW8uinYwMizKXQPWCPm+gxme2wan9l9lKCtRsKVE8sLML
-         E7ZWfvIthqY5dfuBmiA8UCRx575dc+0Ehr9Br2ITutfl/5hCc5gT0FM6b7rJR/00g8ek
-         PkbA==
-X-Gm-Message-State: AOAM532Xi4T/pOQ16PGMfUKMEWGxr+htl+wH4WRJO8pQYR4iTbf2mLrs
-        SQSrErUzabQ+FVAyRGpod+lUNjDgDzdQRQfeHpU=
-X-Google-Smtp-Source: ABdhPJx+R64pJw48sxesha5UFmsvqWxbki3DIAa8ABi4VpfdPgoyGpwdHW/9IAVPPWzez5itZdMXGCnOPCuwpIlmN+I=
-X-Received: by 2002:a05:6214:68b:: with SMTP id r11mr12451619qvz.226.1598419315432;
- Tue, 25 Aug 2020 22:21:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z3LGnTCr/eYWP2X66RzavN5L3cyXT8al4eEGOaizoiY=;
+        b=YMYHDGDc2McL++WNvRvBf4Gon43JIN0htMzEWd88FOaKM8xcaa3gImC3oR2Bm7i5CS
+         Q/l/DdAYXQFd6JzwEC1llnTj1ueLfAzTNQ/5Vfuz32EZVv7CDUWWqOLAi7WC47GEUeQY
+         P4u7XAPQcgFrDFzmbEneN91OHWjccdPyyeAFShucKpYFB/NnEQ7L40J51ySc3Ml17JH8
+         yRn4/dbFGQ/N42m4ODQH/btWBaUSCpQ43Q/5ibbWo10xwF/WrJYyofw4KtM+J+aas8Wk
+         rlRrC6XWtQU6NQ2fSzMI3tJW076/pzgY7hcUQ5PbyTqDcrLFrPQnsXInt0g/AvER2G/+
+         Vf3Q==
+X-Gm-Message-State: AOAM530Y34GU3qI60Xdl+FemeR67xwrzmB/o+3ZyYL+MQBho4q527O44
+        lSU77t0MGJeXiWCHLudvnI0=
+X-Google-Smtp-Source: ABdhPJw+ftD1vGst9Sng0HcdiMUhLsCbU70lfP1v2eg95myGqO9IKgxambJjK/6cp0fcI+4QzO0c9g==
+X-Received: by 2002:a62:2903:: with SMTP id p3mr4044358pfp.83.1598419547097;
+        Tue, 25 Aug 2020 22:25:47 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id 19sm790409pjk.28.2020.08.25.22.25.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 22:25:46 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 14:25:44 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] i2c: consider devices with of_match_table during i2c
+ device probing
+Message-ID: <20200826052544.GA500@jagdpanzerIV.localdomain>
+References: <20200826042938.3259-1-sergey.senozhatsky@gmail.com>
+ <20200826050851.GA1081@ninjato>
 MIME-Version: 1.0
-References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200824221049.edb3c540bbfc859a6806600d@linux-foundation.org>
- <CAAmzW4MYQsRoR-q8tUmwPYLvCbiMq_zt19_AgorAQHnbwnu37g@mail.gmail.com> <20200825174257.5b48a5dd24b5e08a915b101e@linux-foundation.org>
-In-Reply-To: <20200825174257.5b48a5dd24b5e08a915b101e@linux-foundation.org>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Wed, 26 Aug 2020 14:21:44 +0900
-Message-ID: <CAAmzW4PLv_6wfJFsDKGNziHwAS94ERJL4tEwPLuUCpCDC1DnAA@mail.gmail.com>
-Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826050851.GA1081@ninjato>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 8=EC=9B=94 26=EC=9D=BC (=EC=88=98) =EC=98=A4=EC=A0=84 9:42, A=
-ndrew Morton <akpm@linux-foundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> On Tue, 25 Aug 2020 14:34:32 +0900 Joonsoo Kim <js1304@gmail.com> wrote:
->
-> > >
-> > > That's a bunch more code on a very hot path to serve an obscure featu=
-re
-> > > which has a single obscure callsite.
-> > >
-> > > Can we instead put the burden on that callsite rather than upon
-> > > everyone?  For (dumb) example, teach __gup_longterm_locked() to put t=
-he
-> > > page back if it's CMA and go get another one?
-> >
-> > Hmm... Unfortunately, it cannot ensure that we eventually get the non-C=
-MA page.
-> > I think that the only way to ensure it is to implement the
-> > functionality here. We can
-> > use 'unlikely' or 'static branch' to reduce the overhead for a really
-> > rare case but
-> > for now I have no idea how to completely remove the overhead.
->
-> Gee, there must be something?  Provide the gup code with a special
-> entry point which takes the page straight from __rmqueue() and bypasses
-> the pcp lists?
+On (20/08/26 07:08), Wolfram Sang wrote:
+> On Wed, Aug 26, 2020 at 01:29:37PM +0900, Sergey Senozhatsky wrote:
+> > Unlike acpi_match_device(), acpi_driver_match_device() does
+> > consider devices that provide of_match_table and performs
+> > of_compatible() matching for such devices. The key point here is
+> > that ACPI of_compatible() matching - acpi_of_match_device() - is
+> > part of ACPI and does not depend on CONFIG_OF.
+> > 
+> > Consider the following case:
+> > o !CONFIG_OF system
+> > o probing of i2c device that provides .of_match_table, but no .id_table
+> > 
+> >  i2c_device_probe()
+> >  ...
+> >    if (!driver->id_table &&
+> >        !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
+> >        !i2c_of_match_device(dev->driver->of_match_table, client)) {
+> >        status = -ENODEV;
+> >        goto put_sync_adapter;
+> >    }
+> > 
+> > i2c_of_match_device() depends on CONFIG_OF and, thus, is always false.
+> > i2c_acpi_match_device() does ACPI match only, no of_comtatible() matching
+> > takes place, even though the device provides .of_match_table and ACPI,
+> > technically, is capable of matching such device. The result is -ENODEV.
+> > Probing will succeed, however, if we'd use .of_match_table aware ACPI
+> > matching.
+> > 
+> > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> 
+> We have currently this in for-current which is even removing
+> i2c_acpi_match_device():
+> 
+> http://patchwork.ozlabs.org/project/linux-i2c/list/?series=196990&state=*
 
-Hmm... it seems not possible. It's allocation context API and maybe actual
-allocation happens in handle_mm_fault() or it's successor. We cannot use
-a special entry point for allocation there since it's a general function.
+Oh, nice!
+Can we go a bit further and use i2c_device_match() in i2c_device_probe()
+instead of a mix of APIs from different subsystems?
 
-And, IMHO, making a special allocation function that bypasses the pcp list
-would not be a good practice.
+E.g.
 
-Thanks.
+        if (!driver->id_table &&
+-           !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
+-           !i2c_of_match_device(dev->driver->of_match_table, client)) {
++           !(client && i2c_device_match(&client->dev, dev->driver))) {
+                status = -ENODEV;
+                goto put_sync_adapter;
+        }
+
+	-ss
