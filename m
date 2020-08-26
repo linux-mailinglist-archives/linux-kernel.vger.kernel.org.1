@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D23252CBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DA2252CB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgHZLqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:46:43 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46898 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729010AbgHZLc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:32:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBSn5N130689;
-        Wed, 26 Aug 2020 11:32:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5Ht1XuRh4b+8zpTwbLUQhePD4bsTWs0tlQTAg2dpUqs=;
- b=r8MygctazbXYkPghqAMvpnufGNDjB9TXLOBFzDVvsL7gUj0qMZsh5yzEpF0/sTXpqo1B
- kgSJFaad6h2DJLgtk2VJmjuj+hobPb6o8RdVxBDnZwNoWfx1NiLfcOl23EdrWG9FpIno
- uCouHzDi4heZQeRezddeEJEAwKklseApDBUOINok7SyN9wxaWJPJt1qHjpMi2ibcTnB4
- mGuDKRF0BNFvUNgme/6u21SqRQWXl0vFkNcEr2wbSo5+z4vnu/joke8Qwu6Xg3vDt15/
- FHUZJf2kbDw/sTItp3/S2l0NsXz8NXD7C6tsj1lI2rnosrolR4TZMehJ4ufVI9eXzKK7 wQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 335gw81nty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 11:32:23 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBUofp098051;
-        Wed, 26 Aug 2020 11:32:22 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 333r9m1s7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:32:22 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07QBWLwi019420;
-        Wed, 26 Aug 2020 11:32:21 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Aug 2020 04:32:20 -0700
-Date:   Wed, 26 Aug 2020 14:32:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] afs: Remove erroneous fallthough annotation
-Message-ID: <20200826113214.GB393664@mwanda>
+        id S1729034AbgHZLqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728932AbgHZLdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:33:10 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 063352087C;
+        Wed, 26 Aug 2020 11:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598441586;
+        bh=rkdJpqDKGPr3YuL3BMdQcX/bSGlko7vm4k18JNIejrg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0G+G6QnbzQCztoPazul2NDxfGxy+ETcF1gEEIZZayu7JlY9ANQnRvDrI6lUgYRi08
+         xEwmaStf8q60ERX1sQjaPflMPh5yrwA7y1clzs1AnlAMTNQQG71hmcZId0Hpizshnv
+         JBupRTtfjGyzEnB7/+k8pm3BG3bpH+HzHx6gfC0U=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1BD4940D3D; Wed, 26 Aug 2020 08:33:04 -0300 (-03)
+Date:   Wed, 26 Aug 2020 08:33:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        heiko.carstens@de.ibm.com
+Subject: Re: [PATCH] perf test: Perf test 67 dumps core on s390
+Message-ID: <20200826113304.GC1059382@kernel.org>
+References: <20200825071211.16959-1-tmricht@linux.ibm.com>
+ <CAP-5=fUkOyVUgagpkh6zgbjA1Dd0oP_WmP4HVA8f6J3WifwM9w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008260093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- mlxscore=0 phishscore=0 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 clxscore=1015 spamscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260093
+In-Reply-To: <CAP-5=fUkOyVUgagpkh6zgbjA1Dd0oP_WmP4HVA8f6J3WifwM9w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fall through annotation comes after a return statement so it's not
-reachable.
+Em Tue, Aug 25, 2020 at 02:04:30PM -0700, Ian Rogers escreveu:
+> On Tue, Aug 25, 2020 at 12:12 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+> >
+> > Linux 5.9 introduced perf test case "Parse and process metrics" and
+> > on s390 this test case always dumps core:
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/afs/flock.c | 1 -
- 1 file changed, 1 deletion(-)
+<SNIP>
 
-diff --git a/fs/afs/flock.c b/fs/afs/flock.c
-index eff82a6839e4..cb3054c7843e 100644
---- a/fs/afs/flock.c
-+++ b/fs/afs/flock.c
-@@ -376,7 +376,6 @@ void afs_lock_work(struct work_struct *work)
- 		spin_unlock(&vnode->lock);
- 		return;
+> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> > Reviewed-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+
+I'll add your comments and...
  
--		fallthrough;
- 	default:
- 		/* Looks like a lock request was withdrawn. */
- 		spin_unlock(&vnode->lock);
--- 
-2.28.0
+> This also shows up with address sanitizer on all architectures
+> (perhaps change the patch title) and perhaps add a "Fixes: <commit>"
+> tag.
+> =================================================================
+> ==4718==ERROR: AddressSanitizer: global-buffer-overflow on address
+> 0x55c93b4d59e8 at pc 0x55c93a1541e2 bp 0x7ffd24327c60 sp
+> 0x7ffd24327c58
+> READ of size 8 at 0x55c93b4d59e8 thread T0
+>     #0 0x55c93a1541e1 in find_metric tools/perf/util/metricgroup.c:764:2
+> > +++ b/tools/perf/tests/parse-metric.c
+> > @@ -70,6 +70,11 @@ static struct pmu_event pme_test[] = {
+> >  {
+> >         .metric_expr    = "1/m3",
+> >         .metric_name    = "M3",
+> > +},
+> > +{
+> > +       .metric_expr    = NULL,
+> > +       .metric_name    = NULL,
+> > +       .metric_group   = NULL
 
+No need to set all three to NULL, just one is enough and then the
+compiler will zero out all the rest.
+
+- Arnaldo
