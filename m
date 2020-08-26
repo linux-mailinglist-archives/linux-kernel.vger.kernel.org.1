@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6DC252A31
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFAB252A95
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgHZJgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:36:10 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9428 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728414AbgHZJfb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:35:31 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q93fqv062189;
-        Wed, 26 Aug 2020 05:33:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=f6n5hA9DQ+0MPkLhlYXYoSErJsIfh7/Cf8XqwUfu8TU=;
- b=oXu9uOqcDBZ3rzFg2UKvVK0x0FIYDygwK4Lhd4yAF+Xoht64BCyEKZCyM2VDCye2lpqv
- UDYSMhAo2TYgmmyHS81nqfaw9Y4+2dsOzIq0x68gUtd6+LXu+qGJALsiRe2LkOd6OXHy
- QlZyQulJmhqe8OgK/S6Ur+xJC6ilqWMb8VMgvKrakypAsctk/CyNszQlw2s8Uwwu4WWm
- ujhqLScihwxyDNqKC2nnFeC17BEyvmQIZXJ8ncCv87LoWwOnS7FoJPlI5jbMXiOp2ui1
- PXlCEzdOEoPSWSzP2ASxnNarFgc0wtbn1dfldFWZ3kvZZAGHUbhEVSd+i+NYBRU0KtQh Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335kkv369t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 05:33:07 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07Q9NEGF126698;
-        Wed, 26 Aug 2020 05:33:07 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335kkv3661-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 05:33:05 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9X1M9010480;
-        Wed, 26 Aug 2020 09:33:01 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 332utq2nma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 09:33:01 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07Q9WwTs29622674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 09:32:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8651D4C044;
-        Wed, 26 Aug 2020 09:32:58 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1738A4C040;
-        Wed, 26 Aug 2020 09:32:55 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.77.206.242])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Aug 2020 09:32:54 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com,
-        kjain@linux.ibm.com
-Subject: [RFC] perf/core: Fixes hung issue on perf stat command during cpu hotplug
-Date:   Wed, 26 Aug 2020 15:02:36 +0530
-Message-Id: <20200826093236.446024-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_06:2020-08-25,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1
- mlxlogscore=999 mlxscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 adultscore=0
- clxscore=1011 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008260072
+        id S1728104AbgHZJdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:33:55 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:56362 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727956AbgHZJdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:33:53 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C231D2005B7;
+        Wed, 26 Aug 2020 11:33:51 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B5EF92003AC;
+        Wed, 26 Aug 2020 11:33:51 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 71C442030A;
+        Wed, 26 Aug 2020 11:33:51 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
+        laurentiu.tudor@nxp.com, Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v4 00/10] vfio/fsl-mc: VFIO support for FSL-MC device
+Date:   Wed, 26 Aug 2020 12:33:05 +0300
+Message-Id: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
-added assignment of ret value as -EAGAIN in case function
-call to 'smp_call_function_single' fails.
-For non-zero ret value, it did 
-'ret = !ret ? data.ret : -EAGAIN;', which always
-assign -EAGAIN to ret and make second if condition useless.
+DPAA2 (Data Path Acceleration Architecture) consists in
+mechanisms for processing Ethernet packets, queue management,
+accelerators, etc.
 
-In scenarios like when executing a perf stat with --per-thread option, and 
-if any of the monitoring cpu goes offline, the 'smp_call_function_single'
-function could return -ENXIO, and with the above check,
-task_function_call hung and increases CPU
-usage (because of repeated 'smp_call_function_single()')
+The Management Complex (mc) is a hardware entity that manages the DPAA2
+hardware resources. It provides an object-based abstraction for software
+drivers to use the DPAA2 hardware. The MC mediates operations such as
+create, discover, destroy of DPAA2 objects.
+The MC provides memory-mapped I/O command interfaces (MC portals) which
+DPAA2 software drivers use to operate on DPAA2 objects.
 
-Recration scenario:
-	# perf stat -a --per-thread && (offline a CPU )
+A DPRC is a container object that holds other types of DPAA2 objects.
+Each object in the DPRC is a Linux device and bound to a driver.
+The MC-bus driver is a platform driver (different from PCI or platform
+bus). The DPRC driver does runtime management of a bus instance. It
+performs the initial scan of the DPRC and handles changes in the DPRC
+configuration (adding/removing objects).
 
-Patch here removes the tertiary condition added as part of that 
-commit and added a check for NULL and -EAGAIN.
+All objects inside a container share the same hardware isolation
+context, meaning that only an entire DPRC can be assigned to
+a virtual machine.
+When a container is assigned to a virtual machine, all the objects
+within that container are assigned to that virtual machine.
+The DPRC container assigned to the virtual machine is not allowed
+to change contents (add/remove objects) by the guest. The restriction
+is set by the host and enforced by the mc hardware.
 
-Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- kernel/events/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The DPAA2 objects can be directly assigned to the guest. However
+the MC portals (the memory mapped command interface to the MC) need
+to be emulated because there are commands that configure the
+interrupts and the isolation IDs which are virtual in the guest.
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 5bfe8e3c6e44..330c53f7df9c 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -115,9 +115,9 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
- 	for (;;) {
- 		ret = smp_call_function_single(task_cpu(p), remote_function,
- 					       &data, 1);
--		ret = !ret ? data.ret : -EAGAIN;
--
--		if (ret != -EAGAIN)
-+		if (!ret)
-+			ret = data.ret;
-+		else if (ret != -EAGAIN)
- 			break;
- 
- 		cond_resched();
+Example:
+echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
+echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+
+The dprc.2 is bound to the VFIO driver and all the objects within
+dprc.2 are going to be bound to the VFIO driver.
+
+More details about the DPAA2 objects can be found here:
+Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
+
+The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
+driver. The changes were needed in order to re-use code and to export
+some more functions that are needed by the VFIO driver.
+Currenlty the mc-bus patches are under review:
+https://www.spinics.net/lists/kernel/msg3639226.html
+
+v3 --> v4
+- use bus provided functions to tear down the DPRC
+- added reset support
+
+v2 --> v3
+- There is no need to align region size to page size
+- read/write implemented for all DPAA2 objects
+- review fixes
+
+v1 --> v2
+- Fixed the container reset, a new flag added to the firmware command
+- Implement a bus notifier for setting driver_override
+
+
+Bharat Bhushan (1):
+  vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
+
+Diana Craciun (9):
+  vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
+  vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
+  vfio/fsl-mc: Added lock support in preparation for interrupt handling
+  vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
+  vfio/fsl-mc: trigger an interrupt via eventfd
+  vfio/fsl-mc: Add read/write support for fsl-mc devices
+  vfio/fsl-mc: Add support for device reset
+
+ MAINTAINERS                               |   6 +
+ drivers/vfio/Kconfig                      |   1 +
+ drivers/vfio/Makefile                     |   1 +
+ drivers/vfio/fsl-mc/Kconfig               |   9 +
+ drivers/vfio/fsl-mc/Makefile              |   4 +
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 684 ++++++++++++++++++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 221 +++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  56 ++
+ include/uapi/linux/vfio.h                 |   1 +
+ 9 files changed, 983 insertions(+)
+ create mode 100644 drivers/vfio/fsl-mc/Kconfig
+ create mode 100644 drivers/vfio/fsl-mc/Makefile
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+
 -- 
-2.26.2
+2.17.1
 
