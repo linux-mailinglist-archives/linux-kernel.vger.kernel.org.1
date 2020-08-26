@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF322529B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCCE2529B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgHZJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727122AbgHZJC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:02:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A49C061574;
-        Wed, 26 Aug 2020 02:02:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 2E5C2299659
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] arm64: dts: mt8173-elm: Remove ddc property from panel
-Date:   Wed, 26 Aug 2020 11:02:17 +0200
-Message-Id: <20200826090218.682931-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727940AbgHZJFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:05:22 -0400
+Received: from mail.monom.org ([188.138.9.77]:46114 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727864AbgHZJFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:05:21 -0400
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id BC39350035A;
+        Wed, 26 Aug 2020 11:05:18 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 65B64500103;
+        Wed, 26 Aug 2020 11:05:18 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 11:05:18 +0200
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9-rc2-rt1
+Message-ID: <20200826090518.m6vblobggnfdjau5@beryllium.lan>
+References: <20200824154605.v66t2rsxobt3r5jg@linutronix.de>
+ <20200826080802.5lnnf5wh3kcwfykz@beryllium.lan>
+ <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The elm and hana devices uses an Embedded DisplayPort (eDP) as interface
-for its panel, so the DDC channel specified in the binding is useless.
+On Wed, Aug 26, 2020 at 10:12:11AM +0200, Sebastian Andrzej Siewior wrote:
+> The RT patch replaced a local-irq-disable with a local-lock which broke.
+> I intend to get rid of this local-irq-disable on RT, the local-lock is
+> just duct-tape to make it look the same. If this works for everyone then
+> I will think of something…
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
-
- arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-index a5a12b2599a4..1fe5dac24ba1 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-@@ -86,7 +86,6 @@ volume_up {
- 	panel: panel {
- 		compatible = "lg,lp120up1";
- 		power-supply = <&panel_fixed_3v3>;
--		ddc-i2c-bus = <&i2c0>;
- 		backlight = <&backlight>;
- 
- 		port {
--- 
-2.28.0
-
+Yep, this patch helps. The system boots now. I give it a complete test
+run, just to make sure.
