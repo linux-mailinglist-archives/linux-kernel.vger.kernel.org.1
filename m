@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C16252F64
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F81252F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730087AbgHZNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:13:30 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:11356 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729177AbgHZNN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:13:26 -0400
-IronPort-SDR: pFmwl+dBjkX+0lVomhiKnC0L895FpwSD9mrbpFhhSWCwUlbed90E4e+M4hocR6rJWI8E+fYOi9
- asKOJibFU0c4wM68W+/1L8tzMq0lkkhePcamptJ0BelKlSDX3EjVU2G4Cb9v8FP/7R4M1Qd/0Q
- KWCEspmLCZhGeh6nR0sK6NTVlzv0m/Oe93Xui84afs9QcniTZoQLngN9PDBMGgiEigN0CUHokT
- 0TZJ05evt4mvhxH3MBFVL6QyZCGbncWMsIHJIxGoO4fYIf2Zy13ueBCxAwpRUhRGsQzYrT105d
- 7ck=
-X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
-   d="scan'208";a="13609275"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 26 Aug 2020 15:13:24 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 26 Aug 2020 15:13:24 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 26 Aug 2020 15:13:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598447604; x=1629983604;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KVe1P5ErSIxwMjJGwp2tRmMWUftzZryOsrNozm2qIy0=;
-  b=K4A081IpBbZWhGUycqChqEwWmyVhD9+05oMM7EO3K6e2Jvg35Spf+nte
-   Vx9s6I5plKOF9KHoS3mjoS1c+sgRnbRPluV+C3yZEcmr1HSbtOSYXI2q2
-   Is6bDY0BiXrXPUUQyvxhybO2woQ2nQfJ9yDUkCmA4SYRaaqy0KfOq2Y3t
-   iYL6762wSEGjcimJeK5bHDslYeZo5LcumazL0lgzAMz+aYXV0kKYIuNIX
-   ImxeTvYgzIxt9a78vfkkRRG8rN40Y5EwhpoghMaqgomXzR8Unov9we4eC
-   oIU2ArKFRe8sxdqzcjU1hY45W+BjxHqF+HfoqbyzeYshxXgDYQyGpDDkZ
-   g==;
-IronPort-SDR: 4jgI/O/kR2YJg5j4IVecx0LZX8tFwJOl/FrgdpzBRkAlC9iCV8r2+WC+OkypgW1jqQR5HEvL+o
- E0sPei3L4tYGRomn03HTtIuz0W/TMntlLzh2ThnmA1Kr3w4+9ajuOrAVLWQokj+1bmNenlxzTJ
- 68ljiby78ubfWza0fEaqyJ1vsWHRcH/07ttwN8kRp3/q35cntao3xgQ34Ot0uY/MRgGYDkiFoa
- qjb9xXqjY22nLDFGZGovAAybDef+E0JHN9nFUkx07o0eacKvkNof6+6o0kFlH/y0bfhqLN9aiS
- pGo=
-X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
-   d="scan'208";a="13609274"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 26 Aug 2020 15:13:24 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 5BA71280065;
-        Wed, 26 Aug 2020 15:13:24 +0200 (CEST)
-Message-ID: <d433e8a47d721a65903db68c38eb1c337c81e395.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH 2/2]
- ARM: dts: imx6qdl: tqma6: minor fixes
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 26 Aug 2020 15:13:22 +0200
-In-Reply-To: <CAOMZO5B_Jm8SX9N9V5oq+LAa0Yc4CmrEp2n=2t3XUyBCtnGVTA@mail.gmail.com>
-References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
-         <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
-         <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
-         <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
-         <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
-         <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
-         <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com>
-         <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
-         <CAOMZO5ADeXEHWiG7Xja1W1GnahV08ZEYSkNsrOzautn2mROCNA@mail.gmail.com>
-         <aa0b7ad149a7bd4e681e4ebee12ffaaab2803832.camel@ew.tq-group.com>
-         <CAOMZO5B_Jm8SX9N9V5oq+LAa0Yc4CmrEp2n=2t3XUyBCtnGVTA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1730149AbgHZNPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:15:31 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:44303 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729177AbgHZNP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:15:28 -0400
+Received: by mail-lj1-f194.google.com with SMTP id g6so2278339ljn.11;
+        Wed, 26 Aug 2020 06:15:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f/nPRgHC0iGFykXQ1veAuL/EAakIUq9/Zg/UORe3DVo=;
+        b=ZfgII+nubV6VFC5S9VlSTQf0+5gEAae6S0Kq3K8S67Fa5yzY8IwcMpbvex/dVNqhyx
+         EKwrEPL6EI30MZZRfQ2844SAZ2xNFU9eL1WP80sOEBZTrDXdrOZHj3IJP6m/7+uu/t3+
+         MlJqAf2yoh26MTg25Szc5EPvNAxhxqTLyTC3fRqghyDQr7BjT/vOQzLUnBimfXfwAnd1
+         xCXQ2whsdVCI9XTwWtwJbdO6f21Ja2Hv3HhUFohXcyKObXn+SjdljIhfGN5wsPZJkMLW
+         Lj1ZXZJPgf3lMSZkKly1wIAFboYUzeaHn5v7uURyZ5nsO4tthzjhwCJjjHbsXJMyyqon
+         a9WQ==
+X-Gm-Message-State: AOAM532YSg6DRtW70bxkccC1vb0SAyk/ERqpVGdwu+LBjJv4jatkdad5
+        2mp1isPuR094lzE3Cbo+SUvGSr7tUJA=
+X-Google-Smtp-Source: ABdhPJz7jT67Fc/sgQR58BoX7ag/DyxVE8rLkkDR/Zi2YcfjbLUVL6Yj5ZMEtRBXxf5+swH7Q6cR0w==
+X-Received: by 2002:a2e:85a:: with SMTP id g26mr7096722ljd.60.1598447726234;
+        Wed, 26 Aug 2020 06:15:26 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id r11sm503320ljk.46.2020.08.26.06.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 06:15:25 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     Denis Efremov <efremov@linux.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: inside-secure - use kfree_sensitive()
+Date:   Wed, 26 Aug 2020 16:15:14 +0300
+Message-Id: <20200826131515.397667-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-26 at 10:01 -0300, Fabio Estevam wrote:
-> On Wed, Aug 26, 2020 at 8:54 AM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
-> 
-> > Before 8cdcd8aeee281, num_chipselect was set to 3 for spi0 and to 1
-> > for
-> > spi1 in arch/arm/mach-imx/mach-mx31lite.c. My understanding is that
-> > it
-> > would make sense to add this as num-cs to
-> > arch/arm/boot/dts/imx31-lite.dts.
-> 
-> Or just pass cs-gpios instead?
+Use kfree_sensitive() instead of open-coding it.
 
-Using GPIOs for chipselect would require different pinmuxing. Also, why
-use GPIOs, when the SPI controller has this built in?
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ drivers/crypto/inside-secure/safexcel_hash.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+index 16a467969d8e..5ffdc1cd5847 100644
+--- a/drivers/crypto/inside-secure/safexcel_hash.c
++++ b/drivers/crypto/inside-secure/safexcel_hash.c
+@@ -1082,8 +1082,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
+ 		}
+ 
+ 		/* Avoid leaking */
+-		memzero_explicit(keydup, keylen);
+-		kfree(keydup);
++		kfree_sensitive(keydup);
+ 
+ 		if (ret)
+ 			return ret;
+-- 
+2.26.2
 
