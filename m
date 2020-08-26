@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C2825282A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCE7252838
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHZHFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 03:05:54 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:54390 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgHZHFv (ORCPT
+        id S1726751AbgHZHN2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 03:13:28 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36715 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbgHZHN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:05:51 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07Q75noN064369;
-        Wed, 26 Aug 2020 02:05:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598425549;
-        bh=6E81PBhhTm2Fd9GLC0elzJej9ab66NBkRVDF3kvJ2Ho=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=G9o+O+AR0hH78Q8eHr9AIslSwHaOq33L0puZqtoxJ/TEtjKaGPYfWBDQntfqcAc/x
-         xdNC8A1YH+eFixgP5T0nA3n1uZBanvPsEjEMnui97qwcm1mfLn0Z778hgRi/14JJIh
-         39H93UIcj7SK/MfnJHfMKg6GLG4IDrfq6+N2ZByI=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07Q75nJe124795;
-        Wed, 26 Aug 2020 02:05:49 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 26
- Aug 2020 02:05:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 26 Aug 2020 02:05:49 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07Q75lh7066890;
-        Wed, 26 Aug 2020 02:05:47 -0500
-Subject: Re: [RFC PATCH 2/3] dmaengine: add peripheral configuration
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200824084712.2526079-1-vkoul@kernel.org>
- <20200824084712.2526079-3-vkoul@kernel.org>
- <50ed780f-4c1a-2da2-71e4-423f3b224e25@ti.com>
- <20200825071023.GB2639@vkoul-mobl>
- <38bc6986-6d1d-7c35-b2df-967326fc5ca7@ti.com>
- <20200825110202.GF2639@vkoul-mobl>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <5d55965f-bb3d-4f3c-803c-e90493f8c197@ti.com>
-Date:   Wed, 26 Aug 2020 10:07:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 26 Aug 2020 03:13:27 -0400
+Received: by mail-oi1-f195.google.com with SMTP id b9so695859oiy.3;
+        Wed, 26 Aug 2020 00:13:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FGHPb84Jx11W3vIf+ODKn/oBh3C6uj3q4u2snyewUTw=;
+        b=TPRbD82xxEC79PMccp+ZMzJ5MVIGmAwTuXCY1UUHzFpOD1E3s2Wch/5XWinv0bYWXF
+         s8yCbd9DMBQW+xOr6/wXdUeDPttAPu8gSqKvXc78Oz6/8//8H1qazrRolufojI3siDPy
+         6n5NP+43t1fV20nj4OpaPbJkf8NX938MnMM925QrVXiVbGJnfIU80GpixayLF7x6uk/R
+         mk9gGftC5RpehgtfUc5OaqmDEB2YGEr6vecq9qEyWnKj5CkQWETVnjO3fBLqOpqIoZPe
+         rYFmUOKbUReXyM7O30WTfBJdkj5tGqYCqRkdEsDusL1xBpl3ViG9ZgYwrLppk4fi3A2m
+         J7nA==
+X-Gm-Message-State: AOAM531/WUMwliqa8O3BASt/i04yccXlsgCfKQFhG7SpxuKaZ7fhd/sq
+        AN4sXy0OBecMWlfTZN4hW7vLb09xl0qOdKdZfys88k8F89I=
+X-Google-Smtp-Source: ABdhPJzJ6a5NBDzJtEvfkg5F2sVcb5PuRWQN4ld2RSTCZ8WlCraVfILM0VjbwiytxZr10m9hx+KCyWNT6QSx2+Z7PCM=
+X-Received: by 2002:aca:3402:: with SMTP id b2mr648406oia.153.1598426006201;
+ Wed, 26 Aug 2020 00:13:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200825110202.GF2639@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CGME20200825170322eucas1p2c6619aa3e02d2762e07da99640a2451c@eucas1p2.samsung.com>
+ <20200825170311.24886-1-l.stelmach@samsung.com> <20200825180134.GN2403519@lunn.ch>
+In-Reply-To: <20200825180134.GN2403519@lunn.ch>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 Aug 2020 09:13:14 +0200
+Message-ID: <CAMuHMdWNdMEnSnLRkUkRmLop4E-tnBirjfMw06e_40Ss-V-JyQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Tue, Aug 25, 2020 at 8:02 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> On Tue, Aug 25, 2020 at 07:03:09PM +0200, Łukasz Stelmach wrote:
+> > +     if (netif_msg_pktdata(ax_local)) {
+> > +             int loop;
+> > +             netdev_info(ndev, "TX packet len %d, total len %d, seq %d\n",
+> > +                             pkt_len, tx_skb->len, seq_num);
+> > +
+> > +             netdev_info(ndev, "  Dump SPI Header:\n    ");
+> > +             for (loop = 0; loop < 4; loop++)
+> > +                     netdev_info(ndev, "%02x ", *(tx_skb->data + loop));
+> > +
+> > +             netdev_info(ndev, "\n");
+>
+> This no longer works as far as i remember. Lines are terminate by
+> default even if they don't have a \n.
+>
+> Please you should not be using netdev_info(). netdev_dbg() please.
 
-On 25/08/2020 14.02, Vinod Koul wrote:
->> The only thing which might be an issue is that with the DMA_PREP_CMD t=
-he
->> config_data is dma_addr_t (via dmaengine_prep_slave_single).
->=20
-> Yes I came to same conclusion
->=20
->>> I did have a prototype with metadata but didnt work very well, the
->>> problem is it assumes metadata for tx/rx but here i send the data
->>> everytime from client data.
->>
->> Yes, the intended use case for metadata (per descriptor!) is for
->> channels where each transfer might have different metadata needed for
->> the given transfer (tx/rx).
->>
->> In your case you have semi static peripheral configuration data, which=
+We have a nice helper for this: print_hex_dump_debug().
 
->> is not really changing between transfers.
->>
->> A compromise would be to add:
->> void *peripheral_config;
->> to the dma_slave_config, move the set_config inside of the device
->> specific struct you are passing from a client to the core?
->=20
-> That sounds more saner to me and uses existing interfaces cleanly. I
-> think I like this option ;-)
+Gr{oetje,eeting}s,
 
-The other option would be to use the descriptor metadata support and
-that might be even cleaner.
+                        Geert
 
-In gpi_create_tre() via gpi_prep_slave_sg() you would set up the
-desc->tre[1] and desc->tre[2] for TX
-desc->tre[2] for RX
-in the desc, you add a new variable, let's say first_tre and
-set it to 1 for TX, 2 for RX.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-If you need to send a config, you attach it via either way metadata
-support allows you (get the pointer to desc->tre[0] or give a config
-struct to the DMA driver.
-
-In the metadata handler, you check if the transfer is TX, if it is, then
-you update desc->tre[0] (or give the pointer to the client) and update
-the first_tre to 0.
-
-In issue_pending, or a small helper which can be used to start the
-transfer you would do the queuing instead of prepare time:
-for (i =3D gpi_desc->first_tre; i < MAX_TRE; i++)
-	gpi_queue_xfer(gpii, gpii_chan,  &gpi_desc->tre[i], &wp);
-
-With this change it should work neatly without any change to
-dma_slave_config.
-
->=20
->>>> I'm concerned about the size increase of dma_slave_config (it grows =
-by
->>>>> 30 bytes) and for DMAs with hundreds of channels (UDMA) it will add=
- up
->>>> to a sizeable amount.
->>>
->>> I agree that is indeed a valid concern, that is the reason I tagged t=
-his
->>> as a RFC patch ;-)
->>>
->>> I see the prep_cmd is a better approach for this, anyone else has bet=
-ter
->>> suggestions?
->>>
->>> Thanks for looking in.
->>>
->>
->> - P=C3=A9ter
->>
->> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
->> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
