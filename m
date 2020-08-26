@@ -2,182 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C741C252DB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C74252DC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbgHZMFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729639AbgHZMEf (ORCPT
+        id S1729722AbgHZMG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:06:26 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55440 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729519AbgHZMGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:04:35 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A55FC061574;
-        Wed, 26 Aug 2020 05:04:35 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id k2so1269333ots.4;
-        Wed, 26 Aug 2020 05:04:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to;
-        bh=H42To0Ot/qKyLOPGuE85SNu+0SkA0I/INYqpJsqvgsc=;
-        b=KEM9ob7lUvneiK7C8F85XB+lZbIJwGILMyE3JLGHxlx1sCAJa6oAIGuo97jGgYrMpu
-         uOz7VZ9lWJHk0WmusJF/jyOgZfwLebK4Dn/7KI/bfngOnt5+1vVvH86P6YxBI/wf/pEq
-         RaTmElS8ZR8fq0NLAlG+7t9mTb+iEDuueyKU/EMJzs6gM2aUUHEuzWT+XjVq4RsRHZd8
-         6mGwpJjBayNOQXmIJOGKIFTpgNzXyJn931wgpF8ihHS8xoScRUoZKeF1+CVOqqY3qZKB
-         04YcZxto9VVki3wl79SnCLEBF2TV77DJX5Fidk160S5S+cwAw5DMgq9lWSPnF6nLtiY9
-         NLXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to;
-        bh=H42To0Ot/qKyLOPGuE85SNu+0SkA0I/INYqpJsqvgsc=;
-        b=oyas1xK7zPiFYaHqkN6xJu9x5ryFeEXBb4+ZMWOVUNhPW8be/BxDnoPmPQnCSSAnpR
-         EnqJZmCEplJj1EUmp7bJTHPkg2sGzFbup3k3zSLZhSGaX7egG7jfNhwMaxsN45/9e1OG
-         I+2k3e48JywJGMh+WbIXEIiuRdlOw6wXWskqd/54HMxgCdVXvSK+S+OcTMkl0COoC7Bw
-         49rL0q7hPuPMMk0lp7kZUSsrO/a4eNqlQmfx0K14Q/DlmRwx1/gMbxh4F5Jnx0WwAbi9
-         QL0vhIJaIyXY0CzO6jGG9qCFzB1/2pus7+C8OCslD5jxAiV1mzDPaDDhIRNhRHskwKmP
-         BBeQ==
-X-Gm-Message-State: AOAM533otXD8Vu+IfspZ7ZknWVy9qkq0Ey+aBKqygRZwQsJjSCay6lXT
-        NiHq3hP284rXR8EZhvvUYb2DQRytJBVoiu8uKVY=
-X-Google-Smtp-Source: ABdhPJzCuDvkPvtoeoC1Hv8vDbP0LNmo0Whoc6GAv6tXuG9z1c2BfKjQ1r7gofSPeldiPXEx9jfMo1Swv5mhZJioDzM=
-X-Received: by 2002:a9d:7656:: with SMTP id o22mr9125655otl.109.1598443474719;
- Wed, 26 Aug 2020 05:04:34 -0700 (PDT)
+        Wed, 26 Aug 2020 08:06:23 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QC4Kvp019378;
+        Wed, 26 Aug 2020 08:06:17 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 332w765g4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 08:06:17 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 07QC6Gfb002516
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 26 Aug 2020 08:06:16 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 26 Aug 2020 08:06:15 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 26 Aug 2020 08:06:15 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 26 Aug 2020 08:06:14 -0400
+Received: from saturn.ad.analog.com ([10.48.65.100])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07QC6ASE000563;
+        Wed, 26 Aug 2020 08:06:11 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <shawnguo@kernel.org>,
+        <s.hauer@pengutronix.de>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: adc: fsl-imx25-gcq: Replace indio_dev->mlock with own device lock
+Date:   Wed, 26 Aug 2020 15:06:09 +0300
+Message-ID: <20200826120609.203724-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200816123248.97770-1-sedat.dilek@gmail.com>
-In-Reply-To: <20200816123248.97770-1-sedat.dilek@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 26 Aug 2020 14:04:22 +0200
-Message-ID: <CA+icZUUnP5JQCzMG=pMQFwqQBHy78au6E0eJCod0YOARbHoLrw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Simplify DEBUG_INFO Kconfig handling
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=612 spamscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008260098
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a friendly ping.
+From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-- Sedat -
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock, to protect against any other accesses during the
+reading of sample. Reading a sample requires multiple consecutive regmap
+operations and a completion callback, so this requires that no other
+read occurs until it completes.
 
-On Sun, Aug 16, 2020 at 2:32 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> While playing with [1] I saw that the handling
-> of CONFIG_DEBUG_INFO can be simplified.
->
-> [1] https://patchwork.kernel.org/patch/11716107/
->
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> ---
->  Makefile          |  6 +++++-
->  lib/Kconfig.debug | 10 ++++------
->  2 files changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 24a4c1b97bb0..f7af83393a49 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -810,13 +810,15 @@ endif
->  DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-assignments)
->
->  ifdef CONFIG_DEBUG_INFO
-> +
->  ifdef CONFIG_DEBUG_INFO_SPLIT
->  DEBUG_CFLAGS   += -gsplit-dwarf
->  else
->  DEBUG_CFLAGS   += -g
->  endif
-> +
->  KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> -endif
-> +
->  ifdef CONFIG_DEBUG_INFO_DWARF4
->  DEBUG_CFLAGS   += -gdwarf-4
->  endif
-> @@ -832,6 +834,8 @@ KBUILD_AFLAGS       += -gz=zlib
->  KBUILD_LDFLAGS += --compress-debug-sections=zlib
->  endif
->
-> +endif # CONFIG_DEBUG_INFO
-> +
->  KBUILD_CFLAGS += $(DEBUG_CFLAGS)
->  export DEBUG_CFLAGS
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 9ad9210d70a1..19930c412b93 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -212,9 +212,10 @@ config DEBUG_INFO
->
->           If unsure, say N.
->
-> +if DEBUG_INFO
-> +
->  config DEBUG_INFO_REDUCED
->         bool "Reduce debugging information"
-> -       depends on DEBUG_INFO
->         help
->           If you say Y here gcc is instructed to generate less debugging
->           information for structure types. This means that tools that
-> @@ -227,7 +228,6 @@ config DEBUG_INFO_REDUCED
->
->  config DEBUG_INFO_COMPRESSED
->         bool "Compressed debugging information"
-> -       depends on DEBUG_INFO
->         depends on $(cc-option,-gz=zlib)
->         depends on $(ld-option,--compress-debug-sections=zlib)
->         help
-> @@ -243,7 +243,6 @@ config DEBUG_INFO_COMPRESSED
->
->  config DEBUG_INFO_SPLIT
->         bool "Produce split debuginfo in .dwo files"
-> -       depends on DEBUG_INFO
->         depends on $(cc-option,-gsplit-dwarf)
->         help
->           Generate debug info into separate .dwo files. This significantly
-> @@ -259,7 +258,6 @@ config DEBUG_INFO_SPLIT
->
->  config DEBUG_INFO_DWARF4
->         bool "Generate dwarf4 debuginfo"
-> -       depends on DEBUG_INFO
->         depends on $(cc-option,-gdwarf-4)
->         help
->           Generate dwarf4 debug info. This requires recent versions
-> @@ -269,7 +267,6 @@ config DEBUG_INFO_DWARF4
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> -       depends on DEBUG_INFO
->         depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
->         depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->         help
-> @@ -279,7 +276,6 @@ config DEBUG_INFO_BTF
->
->  config GDB_SCRIPTS
->         bool "Provide GDB scripts for kernel debugging"
-> -       depends on DEBUG_INFO
->         help
->           This creates the required links to GDB helper scripts in the
->           build directory. If you load vmlinux into gdb, the helper
-> @@ -288,6 +284,8 @@ config GDB_SCRIPTS
->           instance. See Documentation/dev-tools/gdb-kernel-debugging.rst
->           for further details.
->
-> +endif # DEBUG_INFO
-> +
->  config ENABLE_MUST_CHECK
->         bool "Enable __must_check logic"
->         default y
-> --
-> 2.28.0
->
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/adc/fsl-imx25-gcq.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+index 8cb51cf7a816..2a56ed0fc793 100644
+--- a/drivers/iio/adc/fsl-imx25-gcq.c
++++ b/drivers/iio/adc/fsl-imx25-gcq.c
+@@ -38,6 +38,7 @@ struct mx25_gcq_priv {
+ 	struct completion completed;
+ 	struct clk *clk;
+ 	int irq;
++	struct mutex lock;
+ 	struct regulator *vref[4];
+ 	u32 channel_vref_mv[MX25_NUM_CFGS];
+ };
+@@ -137,9 +138,9 @@ static int mx25_gcq_read_raw(struct iio_dev *indio_dev,
+ 
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_RAW:
+-		mutex_lock(&indio_dev->mlock);
++		mutex_lock(&priv->lock);
+ 		ret = mx25_gcq_get_raw_value(&indio_dev->dev, chan, priv, val);
+-		mutex_unlock(&indio_dev->mlock);
++		mutex_unlock(&priv->lock);
+ 		return ret;
+ 
+ 	case IIO_CHAN_INFO_SCALE:
+@@ -314,6 +315,8 @@ static int mx25_gcq_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->regs);
+ 	}
+ 
++	mutex_init(&priv->lock);
++
+ 	init_completion(&priv->completed);
+ 
+ 	ret = mx25_gcq_setup_cfgs(pdev, priv);
+-- 
+2.25.1
+
