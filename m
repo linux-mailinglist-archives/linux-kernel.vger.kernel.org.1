@@ -2,93 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F7B25338A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9BA253394
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgHZPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726972AbgHZPYF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:24:05 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8DBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:24:05 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id m22so3389235eje.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9x0ycL1XFrShopot+03WmqZeGgtPZTl9aD3LEaSjmx4=;
-        b=Y7IinM6ZUKTtXipGA7LaNbiDXJj2W6H+embTruHch6qWuMQl1IKvqpRDyJ39YfjKv5
-         IIRLpLlufOdyCspVWYAhAZ+Lwl6Bx5a87yJPlnYFlsQWR+KA/Ebq45z3aFM7P4eqAY3K
-         a6TFD1j04hqGAqK9GAa/k4PhAv4ac4xtFcQy8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9x0ycL1XFrShopot+03WmqZeGgtPZTl9aD3LEaSjmx4=;
-        b=d9HGyhPVsYPBJ43ajIiT0SE02SQkN1QtmPSSpHYuBtl0Aj1W/2bgsNu4iYjtJE7cVK
-         EQ9AQJvgXW31D7EAX/edYjjUAtSnJIHIm3uhp/Nb47DlyKqBLui0a0zdVk/AAMoZ4AeJ
-         vT+1L8WWk1dC00f5nZCbMHxMAJg/0xmDiL0F/WK9XIXiIkMZoyjVuABbAJa3ctZxzyJF
-         A7GXM3od+1Qffv7wUwvH63Oe9z4S2pVYStQ8WEaknS3yO//xSJb68GlfsmLcNMQywQpx
-         Vd3NuDi440/20JiXzCVfT4iwNvbXNCRrbwOHLgTXnz4BZ+9KUjg9PdKVdLb/cbzMHprZ
-         9mMQ==
-X-Gm-Message-State: AOAM5319YFfF9bT4Ei2gBOuBUEIGCLUNLrgSNVNfhCtHyY91W4osHyJC
-        BbGpGQw5s/SftOufEHtxdJuMDOdJ/d5CQQ==
-X-Google-Smtp-Source: ABdhPJzvWBtAA2zA+GmZ7TmKCH2GjC1eP7/+S/DA+wkhxro44sZdKk0cZVttbFWz7Kojr7QLGPlemQ==
-X-Received: by 2002:a17:906:ad99:: with SMTP id la25mr15499971ejb.63.1598455443543;
-        Wed, 26 Aug 2020 08:24:03 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id a8sm2448748ejx.73.2020.08.26.08.24.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 08:24:02 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id c10so2089758edk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:24:02 -0700 (PDT)
-X-Received: by 2002:a50:b081:: with SMTP id j1mr15023825edd.291.1598455442039;
- Wed, 26 Aug 2020 08:24:02 -0700 (PDT)
+        id S1727990AbgHZPZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:25:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727877AbgHZPZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:25:16 -0400
+Received: from gaia (unknown [46.69.195.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 507272075E;
+        Wed, 26 Aug 2020 15:25:15 +0000 (UTC)
+Date:   Wed, 26 Aug 2020 16:25:12 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 05/23] arm64: use asm-generic/mmu_context.h for no-op
+ implementations
+Message-ID: <20200826152510.GB24545@gaia>
+References: <20200826145249.745432-1-npiggin@gmail.com>
+ <20200826145249.745432-6-npiggin@gmail.com>
 MIME-Version: 1.0
-References: <20200815033908.3108730-1-gwendal@chromium.org>
-In-Reply-To: <20200815033908.3108730-1-gwendal@chromium.org>
-From:   Raul Rangel <rrangel@chromium.org>
-Date:   Wed, 26 Aug 2020 09:23:50 -0600
-X-Gmail-Original-Message-ID: <CAHQZ30Cz-C7_xEV6G2=P6yVjiF_VNhCc4H5BJ961m-ai8OUNFQ@mail.gmail.com>
-Message-ID: <CAHQZ30Cz-C7_xEV6G2=P6yVjiF_VNhCc4H5BJ961m-ai8OUNFQ@mail.gmail.com>
-Subject: Re: [PATCH] platform: cros_ec: Add fields to command traces
-To:     Gwendal Grignou <gwendal@chromium.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826145249.745432-6-npiggin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 9:39 PM Gwendal Grignou <gwendal@chromium.org> wrote:
->
-> In ftrace, add more fields to the cros_ec command event:
-> - Add size of commands to check if they are properly set.
-> - Add offset (in case an EC is cascaded being another EC),
-> to allow proper command output
->
-> With:
-> echo 1 > events/cros_ec/cros_ec_cmd/enable
-> We now have (on samus)
->
-> invalid command for the sensor stack:
-> ectool-6942  [002] ....  3082.783116: cros_ec_request_done: version: 3,
->  offset: 0, command: EC_CMD_MOTION_SENSE_CMD, outsize: 2, insize: 19,
->  ec result: EC_RES_INVALID_PARAM, retval: 0
->
-> powerd accessing PD EC being the main EC:
-> powerd-1272  [002] ....    40.644026: cros_ec_request_done: version: 0,
->  offset: 1, command: EC_CMD_USB_PD_POWER_INFO, outsize: 1, insize: 16,
->  ec result: EC_RES_SUCCESS, retval: 16
->
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+On Thu, Aug 27, 2020 at 12:52:31AM +1000, Nicholas Piggin wrote:
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-Acked-by: Raul E Rangel <rrangel@chromium.org>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
