@@ -2,143 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1200253343
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FE3253365
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgHZPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:15:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52623 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726873AbgHZPPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:15:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598454915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U5sNgrzn5FhTxLM1sS1TXXuO7hObBpky+B+k/luMmaw=;
-        b=YtJISmEMCGJjqGrzH9KfrvXCqvPgxffwQ0Z8VtRiPWO6FE8yFLpbavWGlALCJBLlr3/RR/
-        3Py4ztnJx1KRYd+Py7Gs7odJR1pkMod4Bm8Wwf9gtWp1kbIzHE9tYcnbJyQNMBiLFM2MKV
-        V8dx5qghZ+vFLCT7IhHM4atBPYmYiUo=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-z4VrO4fBMU2QSCz2y6Nclg-1; Wed, 26 Aug 2020 11:15:13 -0400
-X-MC-Unique: z4VrO4fBMU2QSCz2y6Nclg-1
-Received: by mail-qk1-f199.google.com with SMTP id s128so630710qke.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:15:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U5sNgrzn5FhTxLM1sS1TXXuO7hObBpky+B+k/luMmaw=;
-        b=fFdybI/QdHvK67T8FSCH/tzZ3PH3uPseO0ebx0pjimJvQTvFqRReSiWNDK4pVpr+66
-         CF52EA3HGDw95tJcpJmIuyUmYskafGaDFMY8fgiDKQdd8Giyfj3bjo36Iyqz99nGgkNQ
-         8pE1ZE+8eslFFclrXvtor7AVdKAHHnKoYksSIqBcXe1CGr4rdQH92J0pMvH+RRDKd/Nn
-         geigSbCtkveJoAZvDStuJnV6AhphBsGBws0xokiQcjd0VHrcg7iQOYRL+7c/riaps68a
-         +PX68f3p/dm6Xm1wRtYS/ISYXw/GTXcL58nLahHsH464zBcE/vO9mFpIQ2YPAzHt4fZD
-         WeRA==
-X-Gm-Message-State: AOAM530i86a+ev4oTq8ZNhCA1zosHe/qLpokM/zAbRtDnG2ChKfvHHGt
-        BRWTazDtItfQPBUT7BitYNBa+3Z1HkmHKGbjbaO2HRGiBVnAkWbPxv6A5zR3NyRJ40xFB07N1HO
-        gywkZ7YZHcY7uizdys6H3wUon
-X-Received: by 2002:ad4:41c9:: with SMTP id a9mr14376482qvq.171.1598454912565;
-        Wed, 26 Aug 2020 08:15:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8D+KxCEvE3v1gysX35rDUKFgHfo42TjV0oOlLWCA309rI6rx4ComNW4vhIgH0v5SazHqK1Q==
-X-Received: by 2002:ad4:41c9:: with SMTP id a9mr14376450qvq.171.1598454912268;
-        Wed, 26 Aug 2020 08:15:12 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id g21sm2218058qts.18.2020.08.26.08.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 08:15:10 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 11:15:09 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     "Maoming (maoming, Cloud Infrastructure Service Product Dept.)" 
-        <maoming.maoming@huawei.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "Zhoujian (jay)" <jianjay.zhou@huawei.com>,
-        "Huangweidong (C)" <weidong.huang@huawei.com>,
-        "aarcange@redhat.com" <aarcange@redhat.com>,
-        wangyunjian <wangyunjian@huawei.com>
-Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= V2] vfio
- dma_map/unmap: optimized for hugetlbfs pages
-Message-ID: <20200826151509.GD8235@xz-x1>
-References: <20200814023729.2270-1-maoming.maoming@huawei.com>
- <20200825205907.GB8235@xz-x1>
- <8B561EC9A4D13649A62CF60D3A8E8CB28C2D9ABB@dggeml524-mbx.china.huawei.com>
+        id S1727897AbgHZPSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:18:50 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10523 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727883AbgHZPSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:18:45 -0400
+IronPort-SDR: sJR3OabF68OF93kicsNQIkyGv+qfkzmTQu234eocC/w8tKCQezOxiMXFnB0pdeV+TvTmaMvvgT
+ P8RPsjwpJqNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153731861"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="153731861"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:18:44 -0700
+IronPort-SDR: LFOOq02faltDs2sF7gkQT/rBXsdGjaw5I+KcUpzLmZZ7XJ90mijCpdb1DfxpTxWkqP1M2jymH8
+ or4UJgSKhp6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="329260583"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 26 Aug 2020 08:18:42 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kAxA5-00BatB-CF; Wed, 26 Aug 2020 18:16:29 +0300
+Date:   Wed, 26 Aug 2020 18:16:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Wolfram Sang <wsa@kernel.org>, Jean Delvare <jdelvare@suse.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: do not acpi/of match device in i2c_device_probe()
+Message-ID: <20200826151629.GR1891694@smile.fi.intel.com>
+References: <20200826144920.110605-1-sergey.senozhatsky@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8B561EC9A4D13649A62CF60D3A8E8CB28C2D9ABB@dggeml524-mbx.china.huawei.com>
+In-Reply-To: <20200826144920.110605-1-sergey.senozhatsky@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 01:56:43PM +0000, Maoming (maoming, Cloud Infrastructure Service Product Dept.) wrote:
-> > +	/*
-> > +	 * Unlike THP, the splitting should not happen for hugetlb pages.
-> > +	 * Since PG_reserved is not relevant for compound pages, and the pfn of
-> > +	 * PAGE_SIZE page which in hugetlb pages is valid,
-> > +	 * it is not necessary to check rsvd for hugetlb pages.
-> > +	 * We do not need to alloc pages because of vaddr and we can finish all
-> > +	 * work by a single operation to the head page.
-> > +	 */
-> > +	atomic_add(contiguous_npage, compound_pincount_ptr(head));
-> > +	page_ref_add(head, contiguous_npage);
-> > +	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_ACQUIRED, 
-> > +contiguous_npage);
+On Wed, Aug 26, 2020 at 11:49:20PM +0900, Sergey Senozhatsky wrote:
+> i2c, apparently, can match the same device twice - the first
+> time in ->match bus hook (i2c_device_match()), and the second
+> one in ->probe (i2c_device_probe()) bus hook.
 > 
-> I think I asked this question in v1, but I didn't get any answer... So I'm trying again...
+> To make things more complicated, the second matching does not
+> do exactly same checks as the first one. Namely, i2c_device_match()
+> calls acpi_driver_match_device() which considers devices that
+> provide of_match_table and performs of_compatible() matching for
+> such devices. One important thing to note here is that ACPI
+> of_compatible() matching (acpi_of_match_device()) is part of ACPI
+> and does not depend on CONFIG_OF.
 > 
-> Could I ask why manual referencing of pages is done here rather than using
-> pin_user_pages_remote() just like what we've done with vaddr_get_pfn(), and let
-> try_grab_page() to do the page reference and accountings?
+> i2c_device_probe(), on the other hand, calls acpi_match_device()
+> which does not perform of_compatible() matching, but instead
+> i2c_device_probe() relies on CONFIG_OF API to perform of_match_table
+> matching, IOW ->probe matching, unlike ->match matching, depends on
+> CONFIG_OF. This can break i2c device probing on !CONFIG_OF systems
+> if the device does not provide .id_table.
 > 
-> I feel like this at least is against the FOLL_PIN workflow of gup, because those FOLL_PIN paths were bypassed, afaict.
+>  i2c_device_probe()
+>  ...
+>    if (!driver->id_table &&
+>        !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
+>        !i2c_of_match_device(dev->driver->of_match_table, client)) {
+>        status = -ENODEV;
+>        goto put_sync_adapter;
+>    }
 > 
+> i2c_of_match_device() on !CONFIG_OF systems is always false, so we never
+> perform of_match_table matching. i2c_acpi_match_device() does ACPI match
+> only, no of_compatible() matching takes place, even though the device
+> provides .of_match_table and ACPI is capable of matching such device.
 > 
-> Hi,
-> My apologies for not answering your question.
-> As I understand, pin_user_pages_remote() might spend much time.
-> Because all PAGE_SIZE-pages in a hugetlb page are pinned one by one in pin_user_pages_remote() and try_grab_page().
-> So I think maybe we can use these simple code to do all work.
-> Am I wrong? And is there something else we can use? For example :pin_user_pages_fast()
+> It is not entirely clear why the device is matched again in bus
+> ->probe after successful and proper matching in bus ->match. Let's
+> remove ->probe matching.
 
-Yeah I can understand your concern, however so far it's not about the perf but
-correctness.  Documentation/core-api/pin_user_pages.rst tells us that we should
-always use pin_user_page*() APIs to pin DMA pages (with FOLL_LONGTERM).  That's
-something we should follow for now, otherwise the major logic of either
-FOLL_PIN or FULL_LONGTERM could be bypassed without being noticed.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+(assuming it's okay to go)
 
-I'm not sure whether the perf issue is a big one.  So have you tried the pin
-page APIs first and did some measurement?  There is indeed a tight loop in
-follow_hugetlb_page() however not sure how much it'll affect VFIO_IOMMU_MAP_DMA
-in general.  Even if we want to do something, it seems to be more suitable to
-be done inside follow_hugetlb_page() rather than in vfio, imho.
-
-Another comment is about the design of the whole patch - I think Alex commented
-on that too on the awkwardness on appending the hugetlbfs logic to the end of
-the existing logic.  Considering that current logic of vfio_pin_pages_remote()
-is "let's pin some pages as long as continuous", not sure whether we can make
-it into:
-
-vfio_pin_pages_remote()
-{
-  if (PageHuge(first_page))
-    vfio_pin_pages_hugetlbfs();
-  else
-    vfio_pin_pages_normal();
-}
-
-The thing is, if the 1st page is normal page, then the follow-up pages
-shouldn't normally be hugetlbfs pages so they won't be physically continuous.
-Vice versa.  In other words, each call to vfio_pin_pages_remote() should only
-handle only one type of page after all.  So maybe we can diverge them at the
-beginning of the call directly.
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/i2c/i2c-core-base.c | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 5ec082e2039d..77eea5c0bc71 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -475,17 +475,6 @@ static int i2c_device_probe(struct device *dev)
+>  
+>  	driver = to_i2c_driver(dev->driver);
+>  
+> -	/*
+> -	 * An I2C ID table is not mandatory, if and only if, a suitable OF
+> -	 * or ACPI ID table is supplied for the probing device.
+> -	 */
+> -	if (!driver->id_table &&
+> -	    !acpi_driver_match_device(dev, dev->driver) &&
+> -	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
+> -		status = -ENODEV;
+> -		goto put_sync_adapter;
+> -	}
+> -
+>  	if (client->flags & I2C_CLIENT_WAKE) {
+>  		int wakeirq;
+>  
+> -- 
+> 2.28.0
+> 
 
 -- 
-Peter Xu
+With Best Regards,
+Andy Shevchenko
+
 
