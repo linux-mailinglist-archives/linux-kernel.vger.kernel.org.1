@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DFD2532EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B4F2532FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgHZPIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:08:20 -0400
-Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:2913
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727104AbgHZPIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:08:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AvcIaSnW182+YZUo1pWrTrGoOBFqCbBsQV32wZjYbCmqzLZauL0kSj4LZi2Z/AcCMNiidU7VXBE8Zbda4a8zNWksZKqOj9HBQQvhhv002T1+gw+xGaKzCHCh1+7/MPvckvn2z0XMXGILPzeu7WGuM3IUG689N51KW0maOaU13cfw83FhXxZaVERGNCCJ4MVrCJVEbV+ksw6abbMVu7AXUVWtf4G6sk613WctLXj/c2OXfjlVQaPDIUltv8U/WO0BOjyeJJV4KNqwPr9lmlcgFOsTbi14oCJm5niR4o8kX9RmHIk9lSaHeIBLLV+tVu63YbyfVbKHb8dHXI2YLSKl+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drHFO8KIKuIF4cUAkRI/W2NE4KQ0EjRuMo01gkwBFUA=;
- b=d3Xhkn2wduCoa9W3QavLeGodPC6VPFyfuF2ktWWr53UB8o69XUeqxLy1D+a6Ev17KUNARjF77gyYZSHXW27BtwUgQosmP0NIYyatpfoBJ/x4gstIKPl9f9EFxPxQqTnXnsSVLTI7uHHYeHLok8xUjSBwoCF55ssYIDNmhrxDQ3ynt3EAcy02veyaUmOezjXdaM0UtgVxd3yjqomvNDsaat1dfvN0AT2hWQ6MZk8QReGvI4RWOcXHZ/ygOsrpa12QmNAZF1+Jaf0HPeZoSVzx/ToeMefOrk5XcvuQnppb6QaJHqptzt42ua1DxiDdHY7RjBvyYO5iD9Kb5DmUQAWnuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drHFO8KIKuIF4cUAkRI/W2NE4KQ0EjRuMo01gkwBFUA=;
- b=ZfmheNC21olK/L5nB1sb8KzPR3fVDPfOsYTtXudkP5rdDSYfNVOs7bMrMTDmIr41fboEiQdYCpufZRfoz7q5zCC+eJPdVLPkSdkPqYrCyE4vYI4d7hG4nVTPSEjAfWvwd7j5yP7+WeK+iGgK10BeFL91wM8qCjMgOnxuDxsLYA8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2417.namprd12.prod.outlook.com (2603:10b6:207:45::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Wed, 26 Aug
- 2020 15:08:12 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d%6]) with mapi id 15.20.3283.030; Wed, 26 Aug 2020
- 15:08:12 +0000
-Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
-To:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <cover.1598331148.git.joe@perches.com>
- <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <d5ea3bc7-bff2-c702-51ed-cb85767824a7@amd.com>
-Date:   Wed, 26 Aug 2020 17:08:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR03CA0070.eurprd03.prod.outlook.com (2603:10a6:208::47)
- To MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+        id S1727971AbgHZPJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:09:37 -0400
+Received: from sonic303-20.consmr.mail.ir2.yahoo.com ([77.238.178.201]:34822
+        "EHLO sonic303-20.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727924AbgHZPJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:09:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1598454575; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Vq2Ool3ICYtSx3U5mwhsRu9wv2NftIue2C/hQREtUclp/+FjCXhbN+VWK4vIiEhBBV4jsOeGsfucCQTA6gTuvmwSptgNI6duKXoHxSllejGagVAgX0zlnlk9vcRLHCzT62y8nUzMlN+Y24hu2JORO2tksRFElYdVt6OmAmvivlObLuvVHYWvPW0FCf2XoSXUqmMdLfiCY3iqbXLeNw0OFzcel8fjwH2N4J163rPZZR4tm8szJqX5h6dzvBVAD0cATU+BRx8metjkLschXd2SGKsrEGRUlQPAicDctoseHrTBbDPZI9jcnXGEoIgIUKG4NTvjf5yOyWboKlF5SQXYHw==
+X-YMail-OSG: iwBqoo0VM1mg8RAJvYOzwBCMgH6eCWZRVPsFPpuNAF63s4FlN2lpWDi1GH9Kwkq
+ J4VOUcei38igFJMHmTf7V.WQeFoQWjJEZlh4x5AsRyC5TFGlLOsaQUJEWU3GtYVG4yXmxy2qN.Ko
+ zPjtFHVGXu_Qb._D05QpGxcRydkuofFxhTY1eiz9rZzIk0u4ILDMsJ.OXZnpZr9yQJwm3H1T7mI0
+ AQFBp5G.f3HUCZJ5xxtWAGAlaHSPkJwRVt8F09SgDtan8IXfq3VZcbUwKrygsJpLgstIf6ELzbPY
+ Rt05wPrboeuDkMH3zB4Dz5ab32F3BAdNwhezIY3hs.5nobn5gk_t_Gk_30CqXdMSXEsCqAi09ONU
+ ptPNhj.xpFZDtWJzTR.1KkB9iDtCe53EFps1XfHEveDzScfvTPLXBR7RCj5hZcyjdJGwxLo65Usc
+ a7DoPsLPmvuqdrTkOn7DPhhZS8h.rZ2LC.JXT93O4zAIJHgAiGxsgpG02AAO29o5AEfLH7SBz3fd
+ Ad2PNkv_slw2HLJ2TltXXg4z2kKV1Fxgyu8kFYhatweT3UuhPr0zDQVYJObStgsbmT0TdNMVNco_
+ BkRRsQzA3ORT.sVwXnjTVA_bTYL5OmB6_7jWfacGAZ7WXGMHhezeQSxpeH6GytsEG3GLgZK.wxjT
+ 9lpRHaz9UlTFbBvA50xiCZVAyBNM9wUEI4d8.Tc.bjCgov3ye6mOlszdQqYW67gZfa_G0hZNgj0q
+ Mzr7Gvv1iIkj9_0SwMrGVYqL2S70_HJlUscsNrxdTEdlbfzL9SZydd5hrAWWb5pIv9QPAUQUpaJP
+ BUYlzQzi_7FKrMIaaIwWK6RaUNNtpvf1yfsQNbIUH.vo5CzE2m0AMaUMSqmSBGibOSexuycOx_mj
+ BXZSfKyoOGnS5c.Ts7IqhKqJS17YvswAXKMsM0OIGCbKw4LAk_vvaQhADu__jsJPF4j6ZELfTbNv
+ jOLI3OjoJNMWHnUhHWsMdU0bIJQE8SNeVclfAui5GlAcnAgKa3pa..2u3_EbExNFdShybbcbWalk
+ Wbsg0i0YuY_gwK_1B6hZ_Y2JZkhFfHvn9g8Hvvn1NS7U10H7GJZ224PB5vkHEKLR7_Avcvy2Waq5
+ HutAYCl65dDGE1cMMZ7UBIX47uL2NeEUu8JOrSSs0FIZq_wZm_GU0aomZDAOf5m1kPYMv8ha3Ypm
+ 3xXREt55kHiwU9cMqP2V1kOng3SFRWPwuGqqfjFR7.6gh15Htf8zZTZlHH3iZ1JIUP8B6jk_uEPs
+ XEPDZZxh2HqOLYOaO.vnUB.YY6FljRYaVZbvJBEn2lKSgZqzyAh08mVddlyuP.MZukJNE7es3vL1
+ O80XKpZvaWXtxFjbfMMzpbGKi0kR0aGTBPz_ynlY2aBVCkFZWHky3cGLGuMQ8HMzasCwfp9huH2j
+ Lhw7dnQU2hsiVAgxtyOaUOcesSEM9.9CsWDQXfqDBSjhtrwBi5Q--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ir2.yahoo.com with HTTP; Wed, 26 Aug 2020 15:09:35 +0000
+Date:   Wed, 26 Aug 2020 15:08:56 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mbrunel896@aol.com>
+Reply-To: mrsminaabrunel@myself.com
+Message-ID: <229377726.9754475.1598454536449@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR03CA0070.eurprd03.prod.outlook.com (2603:10a6:208::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 15:08:10 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bb70ce2f-c8d0-4f70-2cf2-08d849d1d97e
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2417:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2417123FB233B0DF5E23BCCD83540@BL0PR12MB2417.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:346;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8yXKfz3ZrYeIkNDxw1MQpi+yDmtX3xUt2+kQTdhF/yjlIpJSZ06M9Z/UbH4SV84kzMqyOeeLOUcOK3IQfaNpJJmDkVmsCjfvV+RsdZAXJxDvN7kocrxObbX6y4Zu2iVflj7X+3C4Pe7gSy8SDvBlV3JUxsl93nxO1mMzNP3TUX3WmMLy7czhfWkv2S/8cUO/tLayjbbevCZgra4rDnnfA8q1Egh7BWfcYV2uSq7Z1e0O1Vg81b9YjbEJ4GmH42AWJrA0Dwv57udZPv3TlFqu5MMxpKpGKtU+KxtG1GBO56ZmplEgXBrcgLqOgcEkSSJ6SLsEl9HHqN4RG586XcV2LJjYMHNvdmnVVqhGj9O76PoAEG1CbloIuWc9jP+nl+5H
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(366004)(478600001)(66476007)(66946007)(31686004)(8936002)(36756003)(5660300002)(6486002)(8676002)(186003)(16526019)(66556008)(4326008)(110136005)(316002)(6666004)(4744005)(31696002)(52116002)(2906002)(86362001)(83380400001)(2616005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: vVdKUTxFLmQOZCwNLnoon6BfFHFYPYehM3fzMClPyzss8yd0WVaklMyiPMCIJOrtOlN8399FSOvkEj6RgnMLDfwD/05IcQ9WxucUC2MhZ92inUnzF4AI6bW4q4Cust0aW9i8MtoqxkkbnMYuw4uMIVsre2Oplw5xjajjcIB5A9jxe8MYUz6rksN2pdJA61xEcfHI39wJYTZDpsAOV2s8SPrECzJf4j8q3QE4RQu7cUlZv5vp8tUAWyaBUOg8UnHhSKkyeY6NyI8ivFap/9y6L6t+2PNnpRW/DlCgWjGWabiwNyHKJMSiryxh0V/saRgYaAAo6l235dCE8N4I3MkE2auFEDotidSXQkqIWhFnp+WApQtO8BUcx5lr8YeyyG//TbPS8GMHs2TV2cTtAmFBzIidt1zZuZvIYl2GKrGZoUc0uNoilTDCmwfiI7QjL3QrtFcCnkZ56mgeLED1RSR+vz4pEk8Teyjqde18iX3OIA868aKNgIKD1aVEiCp3cwFCryqVKpQfC1J3CyhfsGMi8zS4OKHLdvpSvhzufBem5Mx1tFsT9v62bmMAesdniLfuv8RHDsWyLFPVp2uZIKra4WKA84laivZ9g3K/H93vUOdWO5LBY5gdKkYvuSHeba3XqkhipUcZ6RaKSqLtzyWuTNjwAOn83Nm2wVF2SAFZTAqgjk6cBElUpiuHXmruDlG+PsUI+pV8YeDJxaa1Qdki2g==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb70ce2f-c8d0-4f70-2cf2-08d849d1d97e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 15:08:12.2260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kkmx3Hr+2JXf+Ct1/b1Sa3shHETXkAdTkoxAGE2F35ujeWLqCkU17r+/WLxZLn0+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2417
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <229377726.9754475.1598454536449.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 25.08.20 um 06:56 schrieb Joe Perches:
-> Use semicolons and braces.
->
-> Signed-off-by: Joe Perches <joe@perches.com>
 
-Acked-by: Christian König <christian.koenig@amd.com>
 
-> ---
->   drivers/dma-buf/st-dma-fence.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fence.c
-> index e593064341c8..c8a12d7ad71a 100644
-> --- a/drivers/dma-buf/st-dma-fence.c
-> +++ b/drivers/dma-buf/st-dma-fence.c
-> @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
->   			dma_fence_signal(f1);
->   
->   		smp_store_mb(cb.seen, false);
-> -		if (!f2 || dma_fence_add_callback(f2, &cb.cb, simple_callback))
-> -			miss++, cb.seen = true;
-> +		if (!f2 ||
-> +		    dma_fence_add_callback(f2, &cb.cb, simple_callback)) {
-> +			miss++;
-> +			cb.seen = true;
-> +		}
->   
->   		if (!t->before)
->   			dma_fence_signal(f1);
+My Dear in the lord
 
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
