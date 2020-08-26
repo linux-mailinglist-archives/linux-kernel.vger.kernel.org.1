@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9D62529F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D306C2529F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgHZJ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:26:53 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:36686 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728068AbgHZJ0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:26:17 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app3 (Coremail) with SMTP id cC_KCgAXb_WuKkZfTOo9Aw--.41828S4;
-        Wed, 26 Aug 2020 17:26:10 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] media: mx2_emmaprp: Fix memleak in emmaprp_probe
-Date:   Wed, 26 Aug 2020 17:26:04 +0800
-Message-Id: <20200826092606.2910-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgAXb_WuKkZfTOo9Aw--.41828S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF1kGr4rZrWrGrW8CF1rJFb_yoWDWrb_G3
-        yjva9rur4vyFZ0vr109r43Zry2yFZ8WF18Jan7ta42v345Cw1jqrWUZFZrZa1UZa129ry8
-        Ar98WF9a9rn3CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x0JUqLvtUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAFsA
+        id S1728122AbgHZJ0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:26:30 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43525 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728061AbgHZJ0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:26:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598433975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=agp/hO3HA0Z0hfUFtsmDs9RtARVSFqoaGKCQpLnO2Ok=;
+        b=N3JpjTIMh+iF8460yynV+pLkmnMcPXdYwvu19bISB5HwlBZPmWa0piNz6Z5meC4FQ1dfhQ
+        KomH+Kb/Ih9TdITv+90qXk7kCQ39nn4NCMohXWk98o/MtJjIK5J5zxn+ALU8SKG6ZP06vH
+        FIJYIdSmxfHRNed6d9eyC6Sz7upxdCQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-o_C6btwHNUWyGY7NW-PatA-1; Wed, 26 Aug 2020 05:26:13 -0400
+X-MC-Unique: o_C6btwHNUWyGY7NW-PatA-1
+Received: by mail-wr1-f71.google.com with SMTP id e14so307987wrr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:26:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=agp/hO3HA0Z0hfUFtsmDs9RtARVSFqoaGKCQpLnO2Ok=;
+        b=mFZ6E+EqZo+KvyRri1JOSrQmUhNqfTpLqeqrN4RdyRV/Rf1nHHH+BX9q2EgSYIzEYh
+         gece/J9YcATNw8lLpw+uMhU5Mlmz1Cifdo38Ayrm5uspAgjwk3b2PFyjKNffF8yGirx/
+         9lBmUa+A4kcXmVnhTU6ZkMX8QvL9lfEASU4zD9ht2xtp4dOE8HIDlQg7tu2ZmQAov4dY
+         oMuG12tcv37Sintl6rDr1n5zbSN4WMChm6rEx/cCtWlckYQb2zmAvjXky5KLShyyVtez
+         17iHFe6tieuTeAZEyZG74Kjbt1k84AYTV8DmIQY2tO7dA2Hg6Kwhgjp4EBvEHtTtZAn8
+         bEpQ==
+X-Gm-Message-State: AOAM533uyLA8BQ+otHgxVDwE5nivVcsP+NYa8l2QeFijfAaIdQVWJEnr
+        GGqdSRy578qlcYVSzD9OAAq8r+4LY9UGQMWGk3WROqq1PGFuE3QwjvWxJWHNbSsMIWgXmHYBvhs
+        yALFHGX6+oyx12mIiZl2pFR/y
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr5905014wma.87.1598433972524;
+        Wed, 26 Aug 2020 02:26:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjBNfA0JkDm5pSERTTkgDewo1suo1L4gWLGvbKyUyxju95Q1RgGFF9tew89G/0ciNae8pP+A==
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr5904993wma.87.1598433972345;
+        Wed, 26 Aug 2020 02:26:12 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j8sm4780813wrs.22.2020.08.26.02.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 02:26:11 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 638F2182B6D; Wed, 26 Aug 2020 11:26:11 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Udip Pant <udippant@fb.com>, Udip Pant <udippant@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 0/4] bpf: verifier: use target program's
+ type for access verifications
+In-Reply-To: <20200825232003.2877030-1-udippant@fb.com>
+References: <20200825232003.2877030-1-udippant@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 26 Aug 2020 11:26:11 +0200
+Message-ID: <87wo1lwyfg.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When platform_get_irq() fails, we should release
-vfd and unregister pcdev->v4l2_dev just like the
-subsequent error paths.
+Udip Pant <udippant@fb.com> writes:
 
-Fixes: d4e192cc44914 ("media: mx2_emmaprp: Check for platform_get_irq() error")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+> This patch series adds changes in verifier to make decisions such as gran=
+ting
+> of read / write access or enforcement of return code status based on
+> the program type of the target program while using dynamic program
+> extension (of type BPF_PROG_TYPE_EXT).
+>
+> The BPF_PROG_TYPE_EXT type can be used to extend types such as XDP, SKB
+> and others. Since the BPF_PROG_TYPE_EXT program type on itself is just a
+> placeholder for those, we need this extended check for those extended
+> programs to actually work with proper access, while using this option.
+>
+> Patch #1 includes changes in the verifier.
+> Patch #2 adds selftests to verify write access on a packet for a valid=20
+> extension program type
+> Patch #3 adds selftests to verify proper check for the return code
+> Patch #4 adds selftests to ensure access permissions and restrictions=20
+> for some map types such sockmap.
 
-Changelog:
+Thanks for fixing this!
 
-v2: - Add 'ret = irq;'.
----
- drivers/media/platform/mx2_emmaprp.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/mx2_emmaprp.c b/drivers/media/platform/mx2_emmaprp.c
-index df78df59da45..08a5473b5610 100644
---- a/drivers/media/platform/mx2_emmaprp.c
-+++ b/drivers/media/platform/mx2_emmaprp.c
-@@ -852,8 +852,11 @@ static int emmaprp_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, pcdev);
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	if (irq < 0) {
-+		ret = irq;
-+		goto rel_vdev;
-+	}
-+
- 	ret = devm_request_irq(&pdev->dev, irq, emmaprp_irq, 0,
- 			       dev_name(&pdev->dev), pcdev);
- 	if (ret)
--- 
-2.17.1
+For the series:
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
