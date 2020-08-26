@@ -2,152 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7A6252E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F23252E8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgHZMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729864AbgHZMND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:13:03 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C5BC061574;
-        Wed, 26 Aug 2020 05:13:03 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id q14so1552638wrn.9;
-        Wed, 26 Aug 2020 05:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=moFYsbC846LP1g5s/UEInDQ9XX1XjMRNrZrZCmJ3G1E=;
-        b=d4tdmmS7mLH6wb0Ad9FaA154xnrjsqFP5axJ5Gfa8VP0TfsKdTeT5jFEaRoRjdRsOO
-         Oe7Yn7kM71WqpQyzPc0uftt/CbTA7X1VJs9HBsITXrF3P4We8+pwjv9Zu6CEp4sBr5hG
-         7WinhWLGdwyUFA5UJVgn1RdJqL2NmeXko7VCWsTpJ4IA4MH81zX0AubFt3Y2fbP7WWs6
-         zsquuNr7uQENJWKOq5T3X0v+wVEo8+xmrwXgiRvB3kNHQ0M6GcI+vLnDMgGslGzxdHJt
-         M43GeaRxp89nq1wu+mU6nS9Bbbz7qxXA6OYRQf+Xy9niW7ANEx8fp44CzqOB9KQWfRuV
-         H0Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=moFYsbC846LP1g5s/UEInDQ9XX1XjMRNrZrZCmJ3G1E=;
-        b=gCuop3w6he+3oCEvPxf6fORB79qXjMFgw6e2Tp91mqYGgw6SdttytWxwkUOa3yoXAW
-         P/th871UjXWqX30R7z7wQeyFdYI7jL9GVL9UUJxZ5rrRPPDMxBUsHFeRaXKZOQWQ/8RX
-         AIrQ36baRSEE3WsMEvGOjKtRw/LX1C1JNpLgLglSnmaWqsYoQvcbJWXP9m0YCfPJMqIt
-         GnwYCXsaUaoEc18cOgUxYkJBtiliaLG+RB/tu+yU3Lpc4nZlxyCNf5EosYpk8qGTQlhR
-         W5L7q5+Fs/RAI5grf5qhzvhIYaLA724oYnsVJOImi8j5PaC5YTwawW+ybg+/D+ge7BPN
-         QA/A==
-X-Gm-Message-State: AOAM533KfYKsDZlcZhOiZpUHJkFq5bFHwI8mclh2aGkn+cNkCtiiDA5F
-        Jb9uDn9eEDxwn3nF8uIVtqc=
-X-Google-Smtp-Source: ABdhPJyDfDAHIaoOc7H8/lHZUnbWL+KeSH8e4U0TKTxtxE+/o5a/KwnrIwO7Rx8HaxYlC8TAXtJqIQ==
-X-Received: by 2002:a5d:574e:: with SMTP id q14mr4916236wrw.281.1598443981771;
-        Wed, 26 Aug 2020 05:13:01 -0700 (PDT)
-Received: from [10.55.3.147] ([173.38.220.45])
-        by smtp.gmail.com with ESMTPSA id q6sm5470867wma.22.2020.08.26.05.13.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 05:13:01 -0700 (PDT)
-Subject: Re: [net-next v5 1/2] seg6: inherit DSCP of inner IPv4 packets
-To:     David Ahern <dsahern@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     andrea.mayer@uniroma2.it
-References: <20200825160236.1123-1-ahabdels@gmail.com>
- <efaf3273-e147-c27e-d5b8-241930335b82@gmail.com>
- <75f7be67-2362-e931-6793-1ce12c69b4ea@gmail.com>
- <71351d27-0719-6ed9-f5c6-4aee20547c58@gmail.com>
-From:   Ahmed Abdelsalam <ahabdels@gmail.com>
-Message-ID: <ab0869f7-9e69-b6fd-af5c-8e3ce432452b@gmail.com>
-Date:   Wed, 26 Aug 2020 14:12:59 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <71351d27-0719-6ed9-f5c6-4aee20547c58@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729921AbgHZMPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:15:43 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:47994 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729373AbgHZMPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:15:41 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app3 (Coremail) with SMTP id cC_KCgCXP6gxUkZfNt8_Aw--.39637S4;
+        Wed, 26 Aug 2020 20:14:44 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ericsson.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC: i5100_edac: Fix error handling code in i5100_init_one
+Date:   Wed, 26 Aug 2020 20:14:37 +0800
+Message-Id: <20200826121437.31606-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgCXP6gxUkZfNt8_Aw--.39637S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF4rCrWrXFyUuw17WFW8Xrb_yoW8Gr4xpr
+        9xG34fAry8WayY9r1UAr18XF15tFWqva43KFWxC3yag3ZxZFyktFWSqay7CFnFvFWkJFW3
+        Xwn7ta48uF18AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxE
+        wVAFwVW5JwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
+        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0
+        rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5rWrDUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAKsP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When pci_get_device_func() fails, we don't need to execute
+pci_dev_put(). But mci should be freed to prevent memleak.
+When pci_enable_device() fails, we don't need to disable
+einj either.
 
-On 26/08/2020 02:45, David Ahern wrote:
-> On 8/25/20 5:45 PM, Ahmed Abdelsalam wrote:
->>
->> Hi David
->>
->> The seg6 encap is implemented through the seg6_lwt rather than
->> seg6_local_lwt.
-> 
-> ok. I don't know the seg6 code; just taking a guess from a quick look.
-> 
->> We can add a flag(SEG6_IPTUNNEL_DSCP) in seg6_iptunnel.h if we do not
->> want to go the sysctl direction.
-> 
-> sysctl is just a big hammer with side effects.
-> 
-> It struck me that the DSCP propagation is very similar to the TTL
-> propagation with MPLS which is per route entry (MPLS_IPTUNNEL_TTL and
-> stored as ttl_propagate in mpls_iptunnel_encap). Hence the question of
-> whether SR could make this a per route attribute. Consistency across
-> implementations is best.
->SRv6 does not have an issue of having this per route.
-Actually, as SRv6 leverage IPv6 encapsulation, I would say it should 
-consistent with ip6_tunnel not MPLS.
+Fixes: 52608ba205461 ("i5100_edac: probe for device 19 function 0")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/edac/i5100_edac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-In ip6_tunnel, both ttl and flowinfo (tclass and flowlabel) are provided.
+diff --git a/drivers/edac/i5100_edac.c b/drivers/edac/i5100_edac.c
+index 191aa7c19ded..410bbe55cd3f 100644
+--- a/drivers/edac/i5100_edac.c
++++ b/drivers/edac/i5100_edac.c
+@@ -1061,13 +1061,13 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 				    PCI_DEVICE_ID_INTEL_5100_19, 0);
+ 	if (!einj) {
+ 		ret = -ENODEV;
+-		goto bail_einj;
++		goto bail_free;
+ 	}
+ 
+ 	rc = pci_enable_device(einj);
+ 	if (rc < 0) {
+ 		ret = rc;
+-		goto bail_disable_einj;
++		goto bail_einj;
+ 	}
+ 
+ 
+@@ -1136,14 +1136,14 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ bail_scrub:
+ 	priv->scrub_enable = 0;
+ 	cancel_delayed_work_sync(&(priv->i5100_scrubbing));
+-	edac_mc_free(mci);
+-
+-bail_disable_einj:
+ 	pci_disable_device(einj);
+ 
+ bail_einj:
+ 	pci_dev_put(einj);
+ 
++bail_free:
++	edac_mc_free(mci);
++
+ bail_disable_ch1:
+ 	pci_disable_device(ch1mm);
+ 
+-- 
+2.17.1
 
-Ideally, SRv6 code should have done the same with:
-TTL       := VLAUE | DEFAULT | inherit.
-TCLASS    := 0x00 .. 0xFF | inherit
-FLOWLABEL := { 0x00000 .. 0xfffff | inherit | compute.
-
->> Perhaps this would require various changes to seg6 infrastructure
->> including seg6_iptunnel_policy, seg6_build_state, fill_encap,
->> get_encap_size, etc.
->>
->> We have proposed a patch before to support optional parameters for SRv6
->> behaviors [1].
->> Unfortunately, this patch was rejected.
->>
-> 
-> not sure I follow why the patch was rejected. Does it change behavior of
-> existing code?
->
-
-The comment from David miller was "People taking advantage of this new 
-flexibility will write applications that DO NOT WORK on older kernels."
-
-Perhaps, here we can a bit of discussion. Because also applications that 
-leverage SRv6 encapsulation will not work on kernels before 4.10. 
-Applications that leverage SRv6 VPN behvaiors will not work on kernels 
-before 4.14. Applications that leverages SRv6 capabilites in iptables 
-will not work on kernels before 4.16.
-
-So when people write an application they have minimum requirement (e.g., 
-kernel 5.x)
-
-I would like to get David miller feedback as well as yours on how we 
-should proceed and I can work on these features.
-
-> I would expect that new attributes can be added without affecting
-> handling of current ones. Looking at seg6_iptunnel.c the new attribute
-> would be ignored on older kernels but should be fine on new ones and
-> forward.
-> 
-> ###
-> 
-> Since seg6 does not have strict attribute checking the only way to find
-> out if it is supported is to send down the config and then read it back.
-> If the attribute is missing, the kernel does not support. Ugly, but one
-> way to determine support. The next time an attribute is added to seg6
-> code, strict checking should be enabled so that going forward as new
-> attributes are added older kernels with strict checking would reject it.
-> 
