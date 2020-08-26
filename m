@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3E125322C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086F025322E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgHZOxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:53:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
+        id S1728197AbgHZOxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727008AbgHZOwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:52:36 -0400
+        id S1728135AbgHZOwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:52:41 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB1AE22B49;
-        Wed, 26 Aug 2020 14:52:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69A5B2078D;
+        Wed, 26 Aug 2020 14:52:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598453556;
-        bh=63gj/uTCsFYMkt/AT+w/CDkwgSGu5Zbr+ERRB5p1wnM=;
+        s=default; t=1598453561;
+        bh=puGjOEDLy1X0v7TsUcfxnMsdsGraY1mRsNBw6Wv3Cv4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=scRXfuu4/yARMyjVu4iOTRUPGt1hx6peEuIk9y8eFtgIVQYLomR53puCOev9UkHHJ
-         EyjYbSqVxfgLxRuXiNTv70BbRe4hgcfzIfnnMbBDQx+hwWmna8crZUBjRme5mKaV1S
-         2sU/mqv4LdijkoZN0cS4IuKctuQF3Jkf+P02J/tI=
+        b=ldIBv5k3e8+FgbZ2n0OafK9d/gfOuB8cpZ3ndZLJbp0j51kuUE4udvnkuwnRZhk6E
+         VCbrjo05ajjrlxIrvwUmAYd963AMJ/HR3rw3z8bcjYfSevDPJHo6BMt8NCVX/SfASx
+         OjqFXjQIkWcN0Q8QtJtMZ+iN5Uq6VI9zPsWy5veI=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Jonathan Cameron <jic23@kernel.org>,
         Hartmut Knaack <knaack.h@gmx.de>,
@@ -47,9 +47,9 @@ To:     Jonathan Cameron <jic23@kernel.org>,
         linux-samsung-soc@vger.kernel.org,
         linux-amlogic@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH 06/16] iio: adc: meson_saradc: Simplify with dev_err_probe()
-Date:   Wed, 26 Aug 2020 16:51:43 +0200
-Message-Id: <20200826145153.10444-6-krzk@kernel.org>
+Subject: [PATCH 07/16] iio: adc: rcar-gyroadc: Simplify with dev_err_probe()
+Date:   Wed, 26 Aug 2020 16:51:44 +0200
+Message-Id: <20200826145153.10444-7-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200826145153.10444-1-krzk@kernel.org>
 References: <20200826145153.10444-1-krzk@kernel.org>
@@ -63,27 +63,29 @@ dev_err_probe().  Less code and also it prints the error value.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/iio/adc/meson_saradc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/iio/adc/rcar-gyroadc.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
-index 93c2252c0b89..a9d06e8a576a 100644
---- a/drivers/iio/adc/meson_saradc.c
-+++ b/drivers/iio/adc/meson_saradc.c
-@@ -719,11 +719,8 @@ static int meson_sar_adc_temp_sensor_init(struct iio_dev *indio_dev)
- 		if (ret == -ENODEV)
- 			return 0;
+diff --git a/drivers/iio/adc/rcar-gyroadc.c b/drivers/iio/adc/rcar-gyroadc.c
+index d2c1419e72a0..dcaefc108ff6 100644
+--- a/drivers/iio/adc/rcar-gyroadc.c
++++ b/drivers/iio/adc/rcar-gyroadc.c
+@@ -495,12 +495,9 @@ static int rcar_gyroadc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->regs);
  
+ 	priv->clk = devm_clk_get(dev, "fck");
+-	if (IS_ERR(priv->clk)) {
+-		ret = PTR_ERR(priv->clk);
 -		if (ret != -EPROBE_DEFER)
--			dev_err(indio_dev->dev.parent,
--				"failed to get temperature_calib cell\n");
--
+-			dev_err(dev, "Failed to get IF clock (ret=%i)\n", ret);
 -		return ret;
-+		return dev_err_probe(indio_dev->dev.parent, ret,
-+				     "failed to get temperature_calib cell\n");
- 	}
+-	}
++	if (IS_ERR(priv->clk))
++		return dev_err_probe(dev, PTR_ERR(priv->clk),
++				     "Failed to get IF clock\n");
  
- 	priv->tsc_regmap =
+ 	ret = rcar_gyroadc_parse_subdevs(indio_dev);
+ 	if (ret)
 -- 
 2.17.1
 
