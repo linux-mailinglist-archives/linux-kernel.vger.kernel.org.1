@@ -2,122 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106F2252CCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4526F252CD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgHZLsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728786AbgHZLsD (ORCPT
+        id S1729102AbgHZLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:49:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49784 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729022AbgHZLsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:48:03 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AC1C061574;
-        Wed, 26 Aug 2020 04:48:02 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id si26so2379842ejb.12;
-        Wed, 26 Aug 2020 04:48:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c1XozxQRBMRgCKFKdNle/Ejgq+G0usremp3MX2cyWos=;
-        b=ocRCgCm1md7sljlo+SIzz85uD6Xuib+W3pQzgHaGXjz9/C0I2MggKbwptLqFIiH/vw
-         EjI7LIiJ9CArRO9o4Roys6YXJ8ib3E5uBplGpHCSCI69vA3DBuHJIC9LfaLGWKTm6BjV
-         qIRex/PhQ1S35OkHEV2uuLNUoX7vxJWy7tBTECAYXQQK/nYWkjcljdMptHZOqTDMXV7A
-         oO53byRis2jOE8OXXbZAHrEO+jiLW00Grzf+6uPIzlXfuWB6gcdWpXLOboktsY9Unp62
-         tAQS2CnQMafG2gZ8FK0jUwtIuyZW0BQ0Y1YF+C4XhYY8+/xby0sFWl30AMbycGJJaJ17
-         uPuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c1XozxQRBMRgCKFKdNle/Ejgq+G0usremp3MX2cyWos=;
-        b=fR9oiNGWkTE47mJZ9gzzF7ZCQmBCxjxMYiPiVqKPeVCtBaIiRIs6GgCFXiJFBplDsT
-         1pwVJL6k7sO1mj8HzfIKmIqFEoVAEYRcveg4zdObd9ZKOYFZmedqOn4wou05dd5kLA6e
-         w2RFXQ7EUzqi6BJEnpUS7NGiAXU9UmhUrF/+Gl3B5yZCAck1Ig7T6oviRuONJ1HEZZ+w
-         RUXrqOOhivQgFNe1QkWhox7jqyKwCRcpEBgVeQOkGuC1ISyRixEKKsvk/U2w/YxwzsK7
-         UhXhW/sYBKXOZ8rhIqlZlcZGm1yMmZvVZlsnH+bMhAjzYWggW8HZgIKH4c4QHdsbycJJ
-         xLAA==
-X-Gm-Message-State: AOAM530uPS3xOKsQUsQgLJGTnFLrPNl8qm96qKXeaJNIH431KOn7nJSE
-        KO4Ed0OuBtfwag1Etj5ewC8=
-X-Google-Smtp-Source: ABdhPJzhid1dnmRXgGd4Cm6Jwp4Nteh8EDCcXbUEZ7SwOXXIZm7aWyXRxE8lLcwuzMu9jhpQXen34A==
-X-Received: by 2002:a17:906:f0c1:: with SMTP id dk1mr10704937ejb.44.1598442480970;
-        Wed, 26 Aug 2020 04:48:00 -0700 (PDT)
-Received: from skbuf ([86.126.22.216])
-        by smtp.gmail.com with ESMTPSA id dj16sm1863342edb.5.2020.08.26.04.47.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 04:48:00 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 14:47:58 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Tanveer Alam <tanveer.alam@puresoftware.com>
-Subject: Re: [PATCH] spi: spi-fsl-dspi: Add ACPI support
-Message-ID: <20200826114758.4agph53ag2fin6um@skbuf>
-References: <20200821131029.11440-1-kuldip.dwivedi@puresoftware.com>
- <20200821140718.GH4870@sirena.org.uk>
- <c810740d75f64e308fd362e6c6a5f437@mail.gmail.com>
- <20200822152118.rlwbcgfk4abjldtg@skbuf>
- <VE1PR04MB6768699B6D7A507A5BF82F9191540@VE1PR04MB6768.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6768699B6D7A507A5BF82F9191540@VE1PR04MB6768.eurprd04.prod.outlook.com>
+        Wed, 26 Aug 2020 07:48:37 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QBWVUD027720;
+        Wed, 26 Aug 2020 07:48:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=9yOlRrvt+jXe2hijORro92DQijLsOll6jL1QLjbaH1o=;
+ b=F/7cIlwicmoWlO0j0NyzN4AEswxClsk5B+rGjscTdIUItMdLK71uBW4J3N+V6pCUUjhS
+ YIwcpgDyn5aiWIov92SDo1UCxX6vGoIe15udM99teLVHY+Mgb4n9BFizv56Fx2BWLDE+
+ 3i6X7VxJPqLg93SY2EDbmOSclWlnQ9mbzS2B/q5QU1KJ3VLKZX18mBUZcB68d8S4KEw6
+ JaF9sFwffUIkFWjAXQUHpti8vRrYh2kT+lWa5asmObL+zkGJPOiqCnsaRkaE6r4ki30P
+ E3x/s/hfRceaUzDHvPlpcK+622VGOKBjOZdrzWrBWFpBQw3h1oMX9yMsFxL6OfteBq5N Zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335mwhcatr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 07:48:35 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QBXKes030390;
+        Wed, 26 Aug 2020 07:48:35 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335mwhcasr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 07:48:35 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QBgAHE022975;
+        Wed, 26 Aug 2020 11:48:33 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 332ujkvgyg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 11:48:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QBmUq030277994
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:48:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 210A052050;
+        Wed, 26 Aug 2020 11:48:30 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C409052051;
+        Wed, 26 Aug 2020 11:48:29 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        heiko.carstens@de.ibm.com, irogers@google.com,
+        Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH v2] perf test: Perf test 67 address sanitizer issue
+Date:   Wed, 26 Aug 2020 13:48:23 +0200
+Message-Id: <20200826114823.58907-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 11:10:49AM +0000, Qiang Zhao wrote:
-> On Sat, Aug 22, 2020 at 23:21PM, Vladimir Oltean <olteanv@gmail.com> wrote:
-> > Yes, definitely bloatware from the old days. I think this driver needs the existing
-> > device tree bindings rethought a little bit before mindlessly porting them to
-> > ACPI.
->
-> Could you give more details?
->
-> Best Regards
-> Qiang Zhao
+V1 -> V2: Added Fixes tag and Acked-by statement, changed title
+          and added Ian Rogers email.
 
-Yes.
-This driver has some device tree bindings.
-Some thought need to be given as to which one of those is necessary for
-a functional ACPI setup, and which one isn't.
-For example:
+Linux 5.9 introduced perf test case "Parse and process metrics" and
+on s390 this test case always dumps core:
 
-- fsl,spi-cs-sck-delay and fsl,spi-sck-cs-delay are many times
-  necessary. I don't see an attempt to read something equivalent to
-  those in this patch, or to do something about those, otherwise, in
-  case a peripheral needs special treatment. If we want to do something
-  like e.g. deprecate these bindings and just set up a large enough
-  CS-to-SCK and SCK-to-CS delay to make every peripheral happy, in order
-  to not carry this binding over to ACPI, at least we should establish
-  that and do it now, so that the DT code can benefit from that as well.
+[root@t35lp67 perf]# ./perf test -vvvv -F 67
+67: Parse and process metrics                             :
+--- start ---
+metric expr inst_retired.any / cpu_clk_unhalted.thread for IPC
+parsing metric: inst_retired.any / cpu_clk_unhalted.thread
+Segmentation fault (core dumped)
+[root@t35lp67 perf]#
 
-- The bus-num property was made optional by Sascha Hauer in commit
-  29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property optional").
-  I think this is because he couldn't just remove it completely. But
-  that doesn't mean we should carry it over to ACPI. The SPI core should
-  know to allocate a bus_num dynamically (using IDR, or by looking at
-  aliases) if we just set spi->bus_num = -1.
+I debugged this core dump and gdb shows this call chain:
 
-- The spi-num-chipselects can be deduced from compatible string and bus
-  number, and therefore we can avoid carrying it over to ACPI. But
-  again, DT should have this logic first, and then ACPI can be added.
+(gdb) where
+ #0  0x000003ffabc3192a in __strnlen_c_1 () from /lib64/libc.so.6
+ #1  0x000003ffabc293de in strcasestr () from /lib64/libc.so.6
+ #2  0x0000000001102ba2 in match_metric(list=0x1e6ea20 "inst_retired.any",
+          n=<optimized out>)
+     at util/metricgroup.c:368
+ #3  find_metric (map=<optimized out>, map=<optimized out>,
+         metric=0x1e6ea20 "inst_retired.any")
+    at util/metricgroup.c:765
+ #4  __resolve_metric (ids=0x0, map=<optimized out>, metric_list=0x0,
+         metric_no_group=<optimized out>, m=<optimized out>)
+    at util/metricgroup.c:844
+ #5  resolve_metric (ids=0x0, map=0x0, metric_list=0x0,
+        metric_no_group=<optimized out>)
+    at util/metricgroup.c:881
+ #6  metricgroup__add_metric (metric=<optimized out>,
+      metric_no_group=metric_no_group@entry=false, events=<optimized out>,
+      events@entry=0x3ffd84fb878, metric_list=0x0,
+      metric_list@entry=0x3ffd84fb868, map=0x0)
+    at util/metricgroup.c:943
+ #7  0x00000000011034ae in metricgroup__add_metric_list (map=0x13f9828 <map>,
+      metric_list=0x3ffd84fb868, events=0x3ffd84fb878,
+      metric_no_group=<optimized out>, list=<optimized out>)
+    at util/metricgroup.c:988
+ #8  parse_groups (perf_evlist=perf_evlist@entry=0x1e70260,
+        str=str@entry=0x12f34b2 "IPC", metric_no_group=<optimized out>,
+        metric_no_merge=<optimized out>,
+        fake_pmu=fake_pmu@entry=0x1462f18 <perf_pmu.fake>,
+        metric_events=0x3ffd84fba58, map=0x1)
+    at util/metricgroup.c:1040
+ #9  0x0000000001103eb2 in metricgroup__parse_groups_test(
+	evlist=evlist@entry=0x1e70260, map=map@entry=0x13f9828 <map>,
+	str=str@entry=0x12f34b2 "IPC",
+	metric_no_group=metric_no_group@entry=false,
+	metric_no_merge=metric_no_merge@entry=false,
+	metric_events=0x3ffd84fba58)
+    at util/metricgroup.c:1082
+ #10 0x00000000010c84d8 in __compute_metric (ratio2=0x0, name2=0x0,
+        ratio1=<synthetic pointer>, name1=0x12f34b2 "IPC",
+	vals=0x3ffd84fbad8, name=0x12f34b2 "IPC")
+    at tests/parse-metric.c:159
+ #11 compute_metric (ratio=<synthetic pointer>, vals=0x3ffd84fbad8,
+	name=0x12f34b2 "IPC")
+    at tests/parse-metric.c:189
+ #12 test_ipc () at tests/parse-metric.c:208
+.....
+..... omitted many more lines
 
-- The compatible string plays an integral part in the functionality of
-  the spi-fsl-dspi driver. I want to see a solution for ACPI where the
-  driver knows on which SoC it's running on. Otherwise it doesn't know
-  what are the silicon parameters of the DSPI module (XSPI present or
-  not, DMA present or not, FIFO depth). I don't see that now. I just see
-  something hardcoded for:
-  { "NXP0005", .driver_data = (kernel_ulong_t)&devtype_data[LS2085A], }
+This test case was added with
+commit 218ca91df477 ("perf tests: Add parse metric test for frontend metric").
 
-Thanks,
--Vladimir
+When I compile with make DEBUG=y it works fine and I do not get a
+core dump.
+It turned out that the above listed function call chain worked on
+a struct pmu_event array which requires a trailing element with zeroes
+which was missing. The marco map_for_each_event() loops over that
+array tests for members metric_expr/metric_name/metric_group
+being non-NULL. Adding this element fixes the issue.
+
+Output after:
+  [root@t35lp46 perf]# ./perf test 67
+  67: Parse and process metrics                             : Ok
+  [root@t35lp46 perf]#
+
+According  to Ian Rogers (complete quoted from his email):
+ This also shows up with address sanitizer on all architectures
+ (perhaps change the patch title) and perhaps add a "Fixes: <commit>"
+ tag.
+ =================================================================
+ ==4718==ERROR: AddressSanitizer: global-buffer-overflow on address
+ 0x55c93b4d59e8 at pc 0x55c93a1541e2 bp 0x7ffd24327c60 sp
+ 0x7ffd24327c58
+ READ of size 8 at 0x55c93b4d59e8 thread T0
+    #0 0x55c93a1541e1 in find_metric tools/perf/util/metricgroup.c:764:2
+    #1 0x55c93a153e6c in __resolve_metric tools/perf/util/metricgroup.c:844:9
+    #2 0x55c93a152f18 in resolve_metric tools/perf/util/metricgroup.c:881:9
+    #3 0x55c93a1528db in metricgroup__add_metric
+ tools/perf/util/metricgroup.c:943:9
+    #4 0x55c93a151996 in metricgroup__add_metric_list
+ tools/perf/util/metricgroup.c:988:9
+    #5 0x55c93a1511b9 in parse_groups tools/perf/util/metricgroup.c:1040:8
+    #6 0x55c93a1513e1 in metricgroup__parse_groups_test
+ tools/perf/util/metricgroup.c:1082:9
+    #7 0x55c93a0108ae in __compute_metric tools/perf/tests/parse-metric.c:159:8
+    #8 0x55c93a010744 in compute_metric tools/perf/tests/parse-metric.c:189:9
+    #9 0x55c93a00f5ee in test_ipc tools/perf/tests/parse-metric.c:208:2
+    #10 0x55c93a00f1e8 in test__parse_metric
+ tools/perf/tests/parse-metric.c:345:2
+    #11 0x55c939fd7202 in run_test tools/perf/tests/builtin-test.c:410:9
+    #12 0x55c939fd6736 in test_and_print tools/perf/tests/builtin-test.c:440:9
+    #13 0x55c939fd58c3 in __cmd_test tools/perf/tests/builtin-test.c:661:4
+    #14 0x55c939fd4e02 in cmd_test tools/perf/tests/builtin-test.c:807:9
+    #15 0x55c939e4763d in run_builtin tools/perf/perf.c:313:11
+    #16 0x55c939e46475 in handle_internal_command tools/perf/perf.c:365:8
+    #17 0x55c939e4737e in run_argv tools/perf/perf.c:409:2
+    #18 0x55c939e45f7e in main tools/perf/perf.c:539:3
+
+ 0x55c93b4d59e8 is located 0 bytes to the right of global variable
+ 'pme_test' defined in 'tools/perf/tests/parse-metric.c:17:25'
+ (0x55c93b4d54a0) of size 1352
+ SUMMARY: AddressSanitizer: global-buffer-overflow
+ tools/perf/util/metricgroup.c:764:2 in find_metric
+ Shadow bytes around the buggy address:
+   0x0ab9a7692ae0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0x0ab9a7692af0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0x0ab9a7692b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0x0ab9a7692b10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0x0ab9a7692b20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ =>0x0ab9a7692b30: 00 00 00 00 00 00 00 00 00 00 00 00 00[f9]f9 f9
+   0x0ab9a7692b40: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+   0x0ab9a7692b50: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+   0x0ab9a7692b60: f9 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
+   0x0ab9a7692b70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   0x0ab9a7692b80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ Shadow byte legend (one shadow byte represents 8 application bytes):
+   Addressable:           00
+   Partially addressable: 01 02 03 04 05 06 07
+   Heap left redzone:       fa
+   Freed heap region:       fd
+   Stack left redzone:      f1
+   Stack mid redzone:       f2
+   Stack right redzone:     f3
+   Stack after return:      f5
+   Stack use after scope:   f8
+   Global redzone:          f9
+   Global init order:       f6
+   Poisoned by user:        f7
+   Container overflow:      fc
+   Array cookie:            ac
+   Intra object redzone:    bb
+   ASan internal:           fe
+   Left alloca redzone:     ca
+   Right alloca redzone:    cb
+   Shadow gap:              cc
+End of quote
+
+Fixes: 0a507af9c681a ("perf tests: Add parse metric test for ipc metric")
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Reviewed-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Acked-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/parse-metric.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+index fc0838a7abc2..80c71a10999d 100644
+--- a/tools/perf/tests/parse-metric.c
++++ b/tools/perf/tests/parse-metric.c
+@@ -70,6 +70,11 @@ static struct pmu_event pme_test[] = {
+ {
+ 	.metric_expr	= "1/m3",
+ 	.metric_name	= "M3",
++},
++{
++	.metric_expr	= NULL,
++	.metric_name	= NULL,
++	.metric_group	= NULL
+ }
+ };
+ 
+-- 
+2.26.2
+
