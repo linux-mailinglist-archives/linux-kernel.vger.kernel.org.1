@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1128E252871
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159BD2528B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgHZH23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 03:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S1726772AbgHZHzQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 03:55:16 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:38647 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbgHZH22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:28:28 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E534B2071E;
-        Wed, 26 Aug 2020 07:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598426908;
-        bh=cBZ3Gb+SQy3R6NrwPSw69ZFfRmSEAixJtgbTl9nTZa4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=E7sWpsx9KISTMma4faGLO3PWiUxhHzKmDcjQwtIr+2b0Ulb67RkdGd4JwiWeFnGq2
-         5qzRgaIfjIucMnUe056rwt0xBAUyLqf8w0I/3R6XZXh04d++STsH4W6vJ+HPKEW4XO
-         OdhllpIrmDqJwnyxCl23/ZN5JbHGWDIpffQBF7Pk=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kApr7-001RrA-SP; Wed, 26 Aug 2020 09:28:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH] docs: trace: ring-buffer-design.rst: use the new SPDX tag
-Date:   Wed, 26 Aug 2020 09:28:24 +0200
-Message-Id: <290d101bee434e54acec13778c67c77802fbc953.1598426895.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726016AbgHZHzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 03:55:15 -0400
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 07Q63jcv060453;
+        Wed, 26 Aug 2020 14:03:45 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
+        by h3cspam01-ex.h3c.com with ESMTPS id 07Q62tCU058786
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 14:02:56 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 26 Aug 2020 14:02:58 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Wed, 26 Aug 2020 14:02:58 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
+Thread-Topic: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
+Thread-Index: AQHWe06EoNdwEm3z5kubymyHs5tnf6lJRjMAgACeIyA=
+Date:   Wed, 26 Aug 2020 06:02:57 +0000
+Message-ID: <3321aa16ad214cb1a0a5cda1309f0e45@h3c.com>
+References: <20200826020651.9856-1-tian.xianting@h3c.com>
+ <20200826042918.GA116347@T590>
+In-Reply-To: <20200826042918.GA116347@T590>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 07Q62tCU058786
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SPDX v3.10 gained support for GFDL-1.2 with no invariant sections:
+Hi Ming Lei
+Thanks for your quick comment.
+As the function request_to_qc_t() in 'include/linux/blk-mq.h ' used the magic '-1',
+Seems it is hard to replace it with BLK_MQ_NO_TAG :(
 
-	https://spdx.org/licenses/GFDL-1.2-invariants-only.html
+-----Original Message-----
+From: Ming Lei [mailto:ming.lei@redhat.com] 
+Sent: Wednesday, August 26, 2020 12:29 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: axboe@kernel.dk; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
 
-Let's use it, instead of keeping a license text for this file.
+On Wed, Aug 26, 2020 at 10:06:51AM +0800, Xianting Tian wrote:
+> Replace various magic -1 constants for tags with BLK_MQ_NO_TAG.
+> And move the definition of BLK_MQ_NO_TAG from 'block/blk-mq-tag.h'
+> to 'include/linux/blk-mq.h'
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/trace/ring-buffer-design.rst | 26 +---------------------
- 1 file changed, 1 insertion(+), 25 deletions(-)
+All three symbols are supposed for block core internal code only, so looks you shouldn't move them to public header.
 
-diff --git a/Documentation/trace/ring-buffer-design.rst b/Documentation/trace/ring-buffer-design.rst
-index 9c8d22a53d6c..a76435610b58 100644
---- a/Documentation/trace/ring-buffer-design.rst
-+++ b/Documentation/trace/ring-buffer-design.rst
-@@ -1,28 +1,4 @@
--.. This file is dual-licensed: you can use it either under the terms
--.. of the GPL 2.0 or the GFDL 1.2 license, at your option. Note that this
--.. dual licensing only applies to this file, and not this project as a
--.. whole.
--..
--.. a) This file is free software; you can redistribute it and/or
--..    modify it under the terms of the GNU General Public License as
--..    published by the Free Software Foundation version 2 of
--..    the License.
--..
--..    This file is distributed in the hope that it will be useful,
--..    but WITHOUT ANY WARRANTY; without even the implied warranty of
--..    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--..    GNU General Public License for more details.
--..
--.. Or, alternatively,
--..
--.. b) Permission is granted to copy, distribute and/or modify this
--..    document under the terms of the GNU Free Documentation License,
--..    Version 1.2 version published by the Free Software
--..    Foundation, with no Invariant Sections, no Front-Cover Texts
--..    and no Back-Cover Texts. A copy of the license is included at
--..    Documentation/userspace-api/media/fdl-appendix.rst.
--..
--.. TODO: replace it to GPL-2.0 OR GFDL-1.2 WITH no-invariant-sections
-+.. SPDX-License-Identifier: GPL-2.0 OR GFDL-1.2-invariants-only
- 
- ===========================
- Lockless Ring Buffer Design
--- 
-2.26.2
+
+Thanks,
+Ming
 
