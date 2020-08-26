@@ -2,137 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE16252CB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EB4252C91
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729080AbgHZLp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:45:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27662 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728937AbgHZLdd (ORCPT
+        id S1728964AbgHZLi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:38:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41520 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728959AbgHZLed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:33:33 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QBXNog102735;
-        Wed, 26 Aug 2020 07:33:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=xGvxLqGFlrJEgy/PRkSIuvKr93kWjxHeuG4oSS3mJ2s=;
- b=FQ8/WBuWGF7wIcUrArbIJBOHkfI9lz0DQQd5HrOyEvVlkXmpLRAk+5XEvjyWlGUjXmuY
- 5bhYOI+jowlAAUwXTZC8kEjfps2Jms6cU6xfglKoJ6n4QIOmhibgddM4BFaJCBUB2zQu
- /mT+R3zaIKOtLgb0NbEsPWALk7JewAfKJMsJlvmOSAI4O4i33iQRs7SfMofNCfdPTfMo
- IFgmA4x+mxVHt6AuN6pS8fPGA39BNl7S7qIz6dIWzfvmB2jLqkI5/Eb9xpZ1kB/DdAtf
- dGyjRmoBcBq/NSqN9uBxnlDivp9Dmc+N6ItTFs7J1KaZSM/OhVpXilvBppWTIP55P3Eh gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335nxh1uxd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 07:33:30 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QBXR8S102994;
-        Wed, 26 Aug 2020 07:33:27 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335nxh1uwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 07:33:27 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QBVpsn032007;
-        Wed, 26 Aug 2020 11:33:24 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02dal.us.ibm.com with ESMTP id 335kvc9md1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 11:33:24 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QBXOGW53477768
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:33:24 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9B09AE05C;
-        Wed, 26 Aug 2020 11:33:23 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2E60AE062;
-        Wed, 26 Aug 2020 11:33:20 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.43.94])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Aug 2020 11:33:20 +0000 (GMT)
-Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com
-References: <20200825074041.378520-1-kjain@linux.ibm.com>
- <20200826105712.GE703542@krava>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <5f902ab4-c156-8011-7cbc-8706cc96489f@linux.ibm.com>
-Date:   Wed, 26 Aug 2020 17:03:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 26 Aug 2020 07:34:33 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBU3OI079427;
+        Wed, 26 Aug 2020 11:33:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=4d0UEY0MXbhyacpjI1yRuNRF+3MeSwYn+K5Lelz7zok=;
+ b=SO5iEERq4BF1tLDEDNrPv4XwotVauqLillq4/v5Mc/+xjDq0Qy1jaGClXXyjs3l40zOc
+ gw/Tqyw1+jv+wZxtVypp51J9RU7r6eUKu1I+yXE+K5b1oK7n1FQlvcW6mkK/dC7kFY32
+ VLzwdWxDUHN6PC3ZP0i9ep87Et8R0II5dq8DQRSAGgpd/sVZj61jhrP0UN1fJBxj7dLO
+ P0X8DDJmqa6tt25759bT2RQuvJphDCgXjcXhHMhl8/5OALJXVRq39UMNpGp5FeBwr/N3
+ qGyu3eumDuRE/+u/f3QCsE6L6ceAbCPnHc0MNl00Xil9/8GwfJSwahcPsuLqmzYECf1m wA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 333dbrytst-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 11:33:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBUE92001015;
+        Wed, 26 Aug 2020 11:33:38 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 333rua2a2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:33:38 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QBXbQi012927;
+        Wed, 26 Aug 2020 11:33:37 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Aug 2020 04:33:36 -0700
+Date:   Wed, 26 Aug 2020 14:33:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] dma-pool: Fix an uninitialized variable bug in
+ atomic_pool_expand()
+Message-ID: <20200826113330.GD393664@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200826105712.GE703542@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 suspectscore=2 mlxscore=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260094
+ engine=8.12.0-2006250000 definitions=main-2008260093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The "page" pointer can be used with out being initialized.
 
+Fixes: d7e673ec2c8e ("dma-pool: Only allocate from CMA when in same memory zone")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ kernel/dma/pool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 8/26/20 4:27 PM, Jiri Olsa wrote:
-> On Tue, Aug 25, 2020 at 01:10:41PM +0530, Kajol Jain wrote:
-> 
-> SNIP
-> 
->>  	}
->>  }
->>  
->> -static int save_arch_std_events(void *data, char *name, char *event,
->> -				char *desc, char *long_desc, char *pmu,
->> -				char *unit, char *perpkg, char *metric_expr,
->> -				char *metric_name, char *metric_group,
->> -				char *deprecated, char *metric_constraint)
->> +static int save_arch_std_events(void *data, struct json_event *je)
->>  {
->>  	struct event_struct *es;
->>  
->> @@ -485,11 +476,8 @@ static char *real_event(const char *name, char *event)
->>  }
->>  
->>  static int
->> -try_fixup(const char *fn, char *arch_std, char **event, char **desc,
->> -	  char **name, char **long_desc, char **pmu, char **filter,
->> -	  char **perpkg, char **unit, char **metric_expr, char **metric_name,
->> -	  char **metric_group, unsigned long long eventcode,
->> -	  char **deprecated, char **metric_constraint)
->> +try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
->> +	  struct json_event *je)
->>  {
->>  	/* try to find matching event from arch standard values */
->>  	struct event_struct *es;
->> @@ -498,8 +486,7 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
->>  		if (!strcmp(arch_std, es->name)) {
->>  			if (!eventcode && es->event) {
->>  				/* allow EventCode to be overridden */
->> -				free(*event);
->> -				*event = NULL;
->> +				je->event = NULL;
-> 
-> should you free je->event in here?
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 06582b488e31..1281c0f0442b 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -84,7 +84,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ 			      gfp_t gfp)
+ {
+ 	unsigned int order;
+-	struct page *page;
++	struct page *page = NULL;
+ 	void *addr;
+ 	int ret = -ENOMEM;
+ 
+-- 
+2.28.0
 
-Sure, I will add that.
-
-Thanks,
-Kajol Jain
-> 
-> jirka
-> 
