@@ -2,150 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E964E252D11
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D521E252CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgHZLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:54:57 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:34666 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgHZLyd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:54:33 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07QBsHd2011740;
-        Wed, 26 Aug 2020 06:54:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598442857;
-        bh=7JbYWbrP9n+hcQ/zh3iXK/TqWpH2A4yaS5facefQiAo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=oFXSr8rr31TE3eJ9f/HW9iGEl6X0XzJiaN+N6kQ4kgMn8V6Vh1mUkjaohMHgZ5jzq
-         ZDpQYhNO9r4PCUDdM4Hw8ip8M6NfP8wV8sa0IPHJjSUM6qyC27ECzPlhhgY9w+xC6S
-         oS8CUiZHoSxLWmueCL/rIBNbarRG2d2nEqr0n/HQ=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07QBsHTg028820
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 06:54:17 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 26
- Aug 2020 06:54:17 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 26 Aug 2020 06:54:17 -0500
-Received: from [10.250.68.181] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07QBsG6i079719;
-        Wed, 26 Aug 2020 06:54:16 -0500
-Subject: Re: [PATCH 2/2] dt-bindings: leds: Add bindings for MT6360 LED
-To:     Gene Chen <gene.chen.richtek@gmail.com>,
-        <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>,
-        <matthias.bgg@gmail.com>
-CC:     <linux-leds@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <gene_chen@richtek.com>,
-        <Wilma.Wu@mediatek.com>, <shufan_lee@richtek.com>,
-        <cy_huang@richtek.com>, <benjamin.chao@mediatek.com>
-References: <1598441840-15226-1-git-send-email-gene.chen.richtek@gmail.com>
- <1598441840-15226-3-git-send-email-gene.chen.richtek@gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <06b19a38-6850-01b1-7a43-b61aec4079b8@ti.com>
-Date:   Wed, 26 Aug 2020 06:54:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728907AbgHZLv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:51:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11360 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728694AbgHZLvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:51:07 -0400
+IronPort-SDR: QoL1X9Zv8ygquzcf1q6YR/VP9A3MyDquxbeNb/cScKbWiYomv5zusIvqTBQKMDok1i/d98uQ7L
+ qjehaw8xzbnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="157312744"
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="157312744"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 04:50:57 -0700
+IronPort-SDR: WqxWxlQSsn0D29XUJwq/VtW0V/4Ap+iZZryDAnZT9Ks+PAXfsKjow4WzqywIIGzFT0mkiK8GjL
+ 6L+EZBMTGa3g==
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="444012955"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 04:50:53 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 4A2A32031C;
+        Wed, 26 Aug 2020 14:50:51 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1kAu0e-0001bH-Kg; Wed, 26 Aug 2020 14:54:32 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        linux-media@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
+Subject: [PATCH v6 0/6] Support running driver's probe for a device powered off
+Date:   Wed, 26 Aug 2020 14:54:26 +0300
+Message-Id: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1598441840-15226-3-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene
+Hi all,
 
-On 8/26/20 6:37 AM, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
->
-> Add bindings document for LED support on MT6360 PMIC
+These patches enable calling (and finishing) a driver's probe function
+without powering on the respective device on busses where the practice is
+to power on the device for probe. While it generally is a driver's job to
+check the that the device is there, there are cases where it might be
+undesirable. (In this case it stems from a combination of hardware design
+and user expectations; see below.) The downside with this change is that
+if there is something wrong with the device, it will only be found at the
+time the device is used. In this case (the camera sensors + EEPROM in a
+sensor) I don't see any tangible harm from that though.
 
-Usually bindings are 1/x in the patchset.
-
-And you should cc Rob Herring and the Device tree mail list other wise 
-the maintainer will not apply this patch without their ACKs
-
-
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->   .../devicetree/bindings/leds/leds-mt6360.yaml      | 50 ++++++++++++++++++++++
->   1 file changed, 50 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
->
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> new file mode 100644
-> index 0000000..4598be5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
-> +
-> +maintainers:
-> +  - Gene Chen <gene_chen@richtek.com>
-> +
-> +description: |
-> +  This module is part of the MT6360 MFD device. For more details
-> +  see Documentation/devicetree/bindings/mfd/mt6360.yaml.
-
-I think you need to include this yaml using allof tag
+An indication both from the driver and the firmware is required to allow
+the device's power state to remain off during probe (see the first patch).
 
 
-> +
-> +  The LED controller is represented as a sub-node of the PMIC node on
-> +  the device tree.
-> +
-> +  This device has six current sinks.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6360-led
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^led@[0-5]$":
-> +    type: object
-> +    description: |
-> +      Properties for a single LED.
-> +
-> +    properties:
-> +      reg:
-> +        description:
-> +          Index of the LED.
-> +        minimum: 0
-> +        maximum: 5
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +additionalProperties: false
-> +
-Need a new line
+The use case is such that there is a privacy LED next to an integrated
+user-facing laptop camera, and this LED is there to signal the user that
+the camera is recording a video or capturing images. That LED also happens
+to be wired to one of the power supplies of the camera, so whenever you
+power on the camera, the LED will be lit, whether images are captured from
+the camera --- or not. There's no way to implement this differently
+without additional software control (allowing of which is itself a
+hardware design decision) on most CSI-2-connected camera sensors as they
+simply have no pin to signal the camera streaming state.
 
+This is also what happens during driver probe: the camera will be powered
+on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+already powered on when the driver's own probe function is called. To the
+user this visible during the boot process as a blink of the privacy LED,
+suggesting that the camera is recording without the user having used an
+application to do that. From the end user's point of view the behaviour is
+not expected and for someone unfamiliar with internal workings of a
+computer surely seems quite suspicious --- even if images are not being
+actually captured.
 
-And an example
+I've tested these on linux-next master. They also apply to Wolfram's
+i2c/for-next branch, there's a patch that affects the I²C core changes
+here (see below). The patches apart from that apply to Bartosz's
+at24/for-next as well as Mauro's linux-media master branch.
 
-> +...
+since v5 <URL:https://lore.kernel.org/linux-acpi/20200810142747.12400-1-sakari.ailus@linux.intel.com/>:
+
+- Identify sensors when they're first powered on. In previous versions, if
+  this wasn't in probe, it was not done at all.
+
+- Return allow_low_power_probe() only for ACPI devices, i.e. OF systems
+  are not affected by these changes.
+
+- Document that I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag only applies to ACPI
+  drivers.
+
+- Fix extra regulator_disable in at24 driver's remove function when the
+  device was already in low power state.
+
+since v4 <URL:https://lore.kernel.org/linux-acpi/20200121134157.20396-1-sakari.ailus@linux.intel.com/>:
+
+- Rename "probe-low-power" property as "allow-low-power-probe". This is
+  taken into account in function and file naming, too.
+
+- Turn probe_low_power field in struct i2c_driver into flags field.
+
+- Rebase on Wolfram's i2c/for-next branch that contains the removal of the
+  support for disabling I²C core IRQ mappings (commit
+  0c2a34937f7e4c4776bb261114c475392da2355c).
+
+- Change wording for "allow-low-power-probe" property in ACPI
+  documentation.
+
+since v3 <URL:https://lore.kernel.org/linux-acpi/20200109154529.19484-1-sakari.ailus@linux.intel.com/T/#t>:
+
+- Rework the 2nd patch based on Rafael's comments
+
+	- Rework description of the ACPI low power state helper function,
+	  according to Rafael's text.
+
+	- Rename and rework the same function as
+	  acpi_dev_state_low_power().
+
+	- Reflect the changes in commit message as well.
+
+- Added a patch to document the probe-low-power _DSD property.
+
+since v2 <URL:https://patchwork.kernel.org/cover/11114255/>:
+
+- Remove extra CONFIG_PM ifdefs; these are not needed.
+
+- Move the checks for power state hints from drivers/base/dd.c to
+  drivers/i2c/i2c-base-core.c; these are I²C devices anyway.
+
+- Move the probe_low_power field from struct device_driver to struct
+  i2c_driver.
+
+since v1:
+
+- Rename probe_powered_off struct device field as probe_low_power and
+  reflect the similar naming to the patches overall.
+
+- Work with CONFIG_PM disabled, too.
+
+Rajmohan Mani (1):
+  media: i2c: imx319: Support probe while the device is off
+
+Sakari Ailus (5):
+  i2c: Allow an ACPI driver to manage the device's power state during
+    probe
+  ACPI: Add a convenience function to tell a device is in low power
+    state
+  ov5670: Support probe whilst the device is in a low power state
+  at24: Support probing while off
+  Documentation: ACPI: Document allow-low-power-probe _DSD property
+
+ .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++
+ Documentation/firmware-guide/acpi/index.rst   |  1 +
+ drivers/acpi/device_pm.c                      | 31 ++++++++
+ drivers/i2c/i2c-core-base.c                   | 18 ++++-
+ drivers/media/i2c/imx319.c                    | 74 +++++++++++-------
+ drivers/media/i2c/ov5670.c                    | 76 +++++++++++--------
+ drivers/misc/eeprom/at24.c                    | 43 ++++++-----
+ include/linux/acpi.h                          |  5 ++
+ include/linux/i2c.h                           | 14 ++++
+ 9 files changed, 211 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
+
+-- 
+2.20.1
+
