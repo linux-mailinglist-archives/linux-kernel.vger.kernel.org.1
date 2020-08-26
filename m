@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159BD2528B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DDC252876
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgHZHzQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 03:55:16 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:38647 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgHZHzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:55:15 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 07Q63jcv060453;
-        Wed, 26 Aug 2020 14:03:45 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
-        by h3cspam01-ex.h3c.com with ESMTPS id 07Q62tCU058786
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 14:02:56 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 26 Aug 2020 14:02:58 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Wed, 26 Aug 2020 14:02:58 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
-Thread-Topic: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
-Thread-Index: AQHWe06EoNdwEm3z5kubymyHs5tnf6lJRjMAgACeIyA=
-Date:   Wed, 26 Aug 2020 06:02:57 +0000
-Message-ID: <3321aa16ad214cb1a0a5cda1309f0e45@h3c.com>
-References: <20200826020651.9856-1-tian.xianting@h3c.com>
- <20200826042918.GA116347@T590>
-In-Reply-To: <20200826042918.GA116347@T590>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726749AbgHZHba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 03:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgHZHb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 03:31:29 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0AFC061574;
+        Wed, 26 Aug 2020 00:31:29 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k20so714472wmi.5;
+        Wed, 26 Aug 2020 00:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iugUDxAIQnsl/7ZTyF/vSE3EIH4/fyRR8BQQUZWp5EQ=;
+        b=Z2eetczZorq1PwBzNArWIukQAkQr+paPOisqwgvveDDD3GU3KOHoDs/79J2caxqSz1
+         iO1GLncjUMrj7RwcK1kbLNigUHVYYnWwVF39f+w41H2Gr86d6pu0j4f4j5sVlJwkXlq6
+         SwaV6AE3U4Nn31pMY3y96WnIM7ZXc+amAEGdWaIlzIAQDTfd6Hd29krGLP1RJoNaunW5
+         qD7saoAmwowVM9j+mV3naqQYj5d8wTTLpBtAMevaOQ6ggdOzMLCdUkmU3BGAbZzuuAX7
+         Bcj451PyKs6PK7CZlx+woOjvfOIWkTNTQUo8zrHw9cqGCnYtD3b+XGwsAMc/hDMC+3xH
+         DLBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iugUDxAIQnsl/7ZTyF/vSE3EIH4/fyRR8BQQUZWp5EQ=;
+        b=UH4TroUE770PKmbH68Ob3UExd6LU3WTsKiZFnWl++wwj9dXX3LkrTe42V1Dg996+3T
+         nMxZXH3nVPCTHVw9xCMhOO1xEh8CZ+0BrD03CINHwEt7BCXGW9+9A7GQz+rtWwZmsv3w
+         2BeKXLmCp4TwOv1mvpXXmikej3mJR+gdrXfywvxNK7YU3/G5L6CpL4mmwHeu8e7lcjTm
+         VOugwbEarfrHnwuOOG4GhEQgsAIBGuFi1JrE2KQDq4rtpW72TUIQhPguFEhD/Q8QY4Cw
+         EyImptqkwnpPZIJzTF68pOFZZi6zvLSeLw9gDYd/ZqwL+/P0sBvmBWj79XqUPZxbXdCJ
+         58bw==
+X-Gm-Message-State: AOAM5325U9xD55NoSTSEjqq9SZxY/2LG+V+dlGJVccAEQEusLhRnSYuu
+        5aTWXx3C7Id3Pj8vVP1gZ38=
+X-Google-Smtp-Source: ABdhPJy68Qvq8AcZg5rqsHqIO4qYh0hH2z1tsgQ09aHUGpv1lVQhmf9NzotCzkFjNfZwGbmAnPUEAA==
+X-Received: by 2002:a1c:de55:: with SMTP id v82mr5057597wmg.181.1598427087731;
+        Wed, 26 Aug 2020 00:31:27 -0700 (PDT)
+Received: from ?IPv6:2001:a61:253c:4c01:2cf1:7133:9da2:66a9? ([2001:a61:253c:4c01:2cf1:7133:9da2:66a9])
+        by smtp.gmail.com with ESMTPSA id f6sm4390016wme.32.2020.08.26.00.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 00:31:26 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, Karel Zak <kzak@redhat.com>
+Subject: Re: [PATCH 2/5] Add manpages for move_mount(2) and open_tree(2)
+To:     David Howells <dhowells@redhat.com>
+References: <CAKgNAkjHcxYpzVohhJnxcHXO4s-4Ti_pNsmTZrD-CMu-EUCOoA@mail.gmail.com>
+ <159680892602.29015.6551860260436544999.stgit@warthog.procyon.org.uk>
+ <159680894741.29015.5588747939240667925.stgit@warthog.procyon.org.uk>
+ <287644.1598263702@warthog.procyon.org.uk>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <91c4ada9-5b5d-e93e-0bf6-b0a36b240880@gmail.com>
+Date:   Wed, 26 Aug 2020 09:31:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 07Q62tCU058786
+In-Reply-To: <287644.1598263702@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ming Lei
-Thanks for your quick comment.
-As the function request_to_qc_t() in 'include/linux/blk-mq.h ' used the magic '-1',
-Seems it is hard to replace it with BLK_MQ_NO_TAG :(
+On 8/24/20 12:08 PM, David Howells wrote:
+> Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+> 
+>>> +To access the source mount object or the destination mountpoint, no
+>>> +permissions are required on the object itself, but if either pathname is
+>>> +supplied, execute (search) permission is required on all of the directories
+>>> +specified in
+>>> +.IR from_pathname " or " to_pathname .
+>>> +.PP
+>>> +The caller does, however, require the appropriate capabilities or permission
+>>> +to effect a mount.
+>>
+>> Maybe better: s/effect/create/
+> 
+> The mount has already been created.  We're moving/attaching it.  
 
------Original Message-----
-From: Ming Lei [mailto:ming.lei@redhat.com] 
-Sent: Wednesday, August 26, 2020 12:29 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: axboe@kernel.dk; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] blk-mq: use BLK_MQ_NO_TAG for no tag
+Ahh -- then the verb was wrong.
 
-On Wed, Aug 26, 2020 at 10:06:51AM +0800, Xianting Tian wrote:
-> Replace various magic -1 constants for tags with BLK_MQ_NO_TAG.
-> And move the definition of BLK_MQ_NO_TAG from 'block/blk-mq-tag.h'
-> to 'include/linux/blk-mq.h'
+to effect == to cause, bring about
+to affect == to change, have an impact on
 
-All three symbols are supposed for block core internal code only, so looks you shouldn't move them to public header.
+> Maybe:
+> 
+> 	The caller does, however, require the appropriate privilege (Linux:
+> 	the CAP_SYS_ADMIN capability) to move or attach mounts.
 
+Yes, better.
 
 Thanks,
-Ming
 
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
