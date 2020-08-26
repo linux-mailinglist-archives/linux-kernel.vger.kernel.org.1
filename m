@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF41125334E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1200253343
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgHZPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726905AbgHZPQB (ORCPT
+        id S1727827AbgHZPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:15:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52623 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726873AbgHZPPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:16:01 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEC1C061798
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:15:54 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id p15so1807820qvv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=7aZgefibZrTCs6XQP3SSXIsvAQ9RHGTwgc0UHLaNuJc=;
-        b=PZRtl3oEvcUqv3W5Kf6A433P7e2W3tl/mCCy3xK3DV/7P/aXv0u06wYmjDvvZEQWOT
-         ec/yeyDjZzlkcqBgnSCJVm01y8rwgXg0XhozXR3K/Qt+NSPOvhHC8OdoYrSdOhv7TZjP
-         mXNFSgjT8pyGVkBj5APT7WYyRtNTxMfIeHp+vXwRYaP0z6eee2VPXSr30DB6lbnor3YM
-         18ZIzWMCS3dqI9hPlOsgn5kk4s2gN+rMvTtl9/3sT+zhcVisuexKfn5RTr/4IVWvn76D
-         eiwl+5wyVMCTrHqG84CNQSdNJYTgnxdCwBdzLqSxPpQEE31nmdOkhMePpT4krSphqKqP
-         xYhQ==
+        Wed, 26 Aug 2020 11:15:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598454915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U5sNgrzn5FhTxLM1sS1TXXuO7hObBpky+B+k/luMmaw=;
+        b=YtJISmEMCGJjqGrzH9KfrvXCqvPgxffwQ0Z8VtRiPWO6FE8yFLpbavWGlALCJBLlr3/RR/
+        3Py4ztnJx1KRYd+Py7Gs7odJR1pkMod4Bm8Wwf9gtWp1kbIzHE9tYcnbJyQNMBiLFM2MKV
+        V8dx5qghZ+vFLCT7IhHM4atBPYmYiUo=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-z4VrO4fBMU2QSCz2y6Nclg-1; Wed, 26 Aug 2020 11:15:13 -0400
+X-MC-Unique: z4VrO4fBMU2QSCz2y6Nclg-1
+Received: by mail-qk1-f199.google.com with SMTP id s128so630710qke.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:15:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7aZgefibZrTCs6XQP3SSXIsvAQ9RHGTwgc0UHLaNuJc=;
-        b=LvVzLRdmpD1uhjbIJVnY7+rKGsfo1uZ6Xerd/WMEjUjLq8dMbFzIRHuh30t5saVh07
-         2UgokLPoaqifU7tighnWGPFQPaKfQayZdQn2PeHg4zO2vm4r6KBazawVE8iQsKZqBVUr
-         5JRXbK7/RgI1FR/E2t8VlPb2lTTIl+KwbUmcO4OdWoQGe7JKZvcZ3UekVcs0FiHYMQxH
-         a+xoQUTqXh7qx3SvGnvbGux/wZ4luhpA6bEhlRN9LPeVVKbR7rnlr8EccpTZXzPbDXZr
-         sDp+5OUAFMiXGI6Kwy3kgEph0xqYl3L8aZz3iMEYfYo0oumRRVaYp4/3HoBj90TgabHq
-         /b2A==
-X-Gm-Message-State: AOAM530gACoySOMS4VUkQRGtfsQ0s1FOlU4/shCyLKa9Q91AY1+AEcvx
-        YhBLoTbSC89KQdPhv266oBFaxKhUMA==
-X-Google-Smtp-Source: ABdhPJzslNHRMbDlTLSVH+ySRuZDYmPvdWgqFZD9I7LbDYlgShjS4rqt60Xa4GlkiwlcHLvW6gI3Hs+U2A==
-X-Received: from jannh2.zrh.corp.google.com ([2a00:79e0:1b:201:1a60:24ff:fea6:bf44])
- (user=jannh job=sendgmr) by 2002:a0c:f4d0:: with SMTP id o16mr14300775qvm.225.1598454952452;
- Wed, 26 Aug 2020 08:15:52 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 17:14:48 +0200
-In-Reply-To: <20200826151448.3404695-1-jannh@google.com>
-Message-Id: <20200826151448.3404695-6-jannh@google.com>
-Mime-Version: 1.0
-References: <20200826151448.3404695-1-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v4 5/5] mm/gup: Take mmap_lock in get_dump_page()
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U5sNgrzn5FhTxLM1sS1TXXuO7hObBpky+B+k/luMmaw=;
+        b=fFdybI/QdHvK67T8FSCH/tzZ3PH3uPseO0ebx0pjimJvQTvFqRReSiWNDK4pVpr+66
+         CF52EA3HGDw95tJcpJmIuyUmYskafGaDFMY8fgiDKQdd8Giyfj3bjo36Iyqz99nGgkNQ
+         8pE1ZE+8eslFFclrXvtor7AVdKAHHnKoYksSIqBcXe1CGr4rdQH92J0pMvH+RRDKd/Nn
+         geigSbCtkveJoAZvDStuJnV6AhphBsGBws0xokiQcjd0VHrcg7iQOYRL+7c/riaps68a
+         +PX68f3p/dm6Xm1wRtYS/ISYXw/GTXcL58nLahHsH464zBcE/vO9mFpIQ2YPAzHt4fZD
+         WeRA==
+X-Gm-Message-State: AOAM530i86a+ev4oTq8ZNhCA1zosHe/qLpokM/zAbRtDnG2ChKfvHHGt
+        BRWTazDtItfQPBUT7BitYNBa+3Z1HkmHKGbjbaO2HRGiBVnAkWbPxv6A5zR3NyRJ40xFB07N1HO
+        gywkZ7YZHcY7uizdys6H3wUon
+X-Received: by 2002:ad4:41c9:: with SMTP id a9mr14376482qvq.171.1598454912565;
+        Wed, 26 Aug 2020 08:15:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8D+KxCEvE3v1gysX35rDUKFgHfo42TjV0oOlLWCA309rI6rx4ComNW4vhIgH0v5SazHqK1Q==
+X-Received: by 2002:ad4:41c9:: with SMTP id a9mr14376450qvq.171.1598454912268;
+        Wed, 26 Aug 2020 08:15:12 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id g21sm2218058qts.18.2020.08.26.08.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 08:15:10 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 11:15:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     "Maoming (maoming, Cloud Infrastructure Service Product Dept.)" 
+        <maoming.maoming@huawei.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "Zhoujian (jay)" <jianjay.zhou@huawei.com>,
+        "Huangweidong (C)" <weidong.huang@huawei.com>,
+        "aarcange@redhat.com" <aarcange@redhat.com>,
+        wangyunjian <wangyunjian@huawei.com>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= V2] vfio
+ dma_map/unmap: optimized for hugetlbfs pages
+Message-ID: <20200826151509.GD8235@xz-x1>
+References: <20200814023729.2270-1-maoming.maoming@huawei.com>
+ <20200825205907.GB8235@xz-x1>
+ <8B561EC9A4D13649A62CF60D3A8E8CB28C2D9ABB@dggeml524-mbx.china.huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8B561EC9A4D13649A62CF60D3A8E8CB28C2D9ABB@dggeml524-mbx.china.huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properly take the mmap_lock before calling into the GUP code from
-get_dump_page(); and play nice, allowing the GUP code to drop the mmap_lock
-if it has to sleep.
+On Wed, Aug 26, 2020 at 01:56:43PM +0000, Maoming (maoming, Cloud Infrastructure Service Product Dept.) wrote:
+> > +	/*
+> > +	 * Unlike THP, the splitting should not happen for hugetlb pages.
+> > +	 * Since PG_reserved is not relevant for compound pages, and the pfn of
+> > +	 * PAGE_SIZE page which in hugetlb pages is valid,
+> > +	 * it is not necessary to check rsvd for hugetlb pages.
+> > +	 * We do not need to alloc pages because of vaddr and we can finish all
+> > +	 * work by a single operation to the head page.
+> > +	 */
+> > +	atomic_add(contiguous_npage, compound_pincount_ptr(head));
+> > +	page_ref_add(head, contiguous_npage);
+> > +	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_ACQUIRED, 
+> > +contiguous_npage);
+> 
+> I think I asked this question in v1, but I didn't get any answer... So I'm trying again...
+> 
+> Could I ask why manual referencing of pages is done here rather than using
+> pin_user_pages_remote() just like what we've done with vaddr_get_pfn(), and let
+> try_grab_page() to do the page reference and accountings?
+> 
+> I feel like this at least is against the FOLL_PIN workflow of gup, because those FOLL_PIN paths were bypassed, afaict.
+> 
+> 
+> Hi,
+> My apologies for not answering your question.
+> As I understand, pin_user_pages_remote() might spend much time.
+> Because all PAGE_SIZE-pages in a hugetlb page are pinned one by one in pin_user_pages_remote() and try_grab_page().
+> So I think maybe we can use these simple code to do all work.
+> Am I wrong? And is there something else we can use? For example :pin_user_pages_fast()
 
-As Linus pointed out, we don't actually need the VMA because
-__get_user_pages() will flush the dcache for us if necessary.
+Yeah I can understand your concern, however so far it's not about the perf but
+correctness.  Documentation/core-api/pin_user_pages.rst tells us that we should
+always use pin_user_page*() APIs to pin DMA pages (with FOLL_LONGTERM).  That's
+something we should follow for now, otherwise the major logic of either
+FOLL_PIN or FULL_LONGTERM could be bypassed without being noticed.
 
-Signed-off-by: Jann Horn <jannh@google.com>
----
- mm/gup.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+I'm not sure whether the perf issue is a big one.  So have you tried the pin
+page APIs first and did some measurement?  There is indeed a tight loop in
+follow_hugetlb_page() however not sure how much it'll affect VFIO_IOMMU_MAP_DMA
+in general.  Even if we want to do something, it seems to be more suitable to
+be done inside follow_hugetlb_page() rather than in vfio, imho.
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 92519e5a44b3..bd0f7311c5c6 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1552,19 +1552,23 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
-  * NULL wherever the ZERO_PAGE, or an anonymous pte_none, has been found -
-  * allowing a hole to be left in the corefile to save diskspace.
-  *
-- * Called without mmap_lock, but after all other threads have been killed.
-+ * Called without mmap_lock (takes and releases the mmap_lock by itself).
-  */
- #ifdef CONFIG_ELF_CORE
- struct page *get_dump_page(unsigned long addr)
- {
--	struct vm_area_struct *vma;
-+	struct mm_struct *mm = current->mm;
- 	struct page *page;
-+	int locked = 1;
-+	int ret;
- 
--	if (__get_user_pages_locked(current->mm, addr, 1, &page, &vma, NULL,
--				    FOLL_FORCE | FOLL_DUMP | FOLL_GET) < 1)
-+	if (mmap_read_lock_killable(mm))
- 		return NULL;
--	flush_cache_page(vma, addr, page_to_pfn(page));
--	return page;
-+	ret = __get_user_pages_locked(mm, addr, 1, &page, NULL, &locked,
-+				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
-+	if (locked)
-+		mmap_read_unlock(mm);
-+	return (ret == 1) ? page : NULL;
- }
- #endif /* CONFIG_ELF_CORE */
- 
+Another comment is about the design of the whole patch - I think Alex commented
+on that too on the awkwardness on appending the hugetlbfs logic to the end of
+the existing logic.  Considering that current logic of vfio_pin_pages_remote()
+is "let's pin some pages as long as continuous", not sure whether we can make
+it into:
+
+vfio_pin_pages_remote()
+{
+  if (PageHuge(first_page))
+    vfio_pin_pages_hugetlbfs();
+  else
+    vfio_pin_pages_normal();
+}
+
+The thing is, if the 1st page is normal page, then the follow-up pages
+shouldn't normally be hugetlbfs pages so they won't be physically continuous.
+Vice versa.  In other words, each call to vfio_pin_pages_remote() should only
+handle only one type of page after all.  So maybe we can diverge them at the
+beginning of the call directly.
+
 -- 
-2.28.0.297.g1956fa8f8d-goog
+Peter Xu
 
