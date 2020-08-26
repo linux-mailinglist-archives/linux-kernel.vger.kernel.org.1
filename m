@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000102537F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9FF253838
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgHZTNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 15:13:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726880AbgHZTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 15:13:00 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BABDF207BC;
-        Wed, 26 Aug 2020 19:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598469179;
-        bh=AE8WdGpJPbWaT/Lz0OQ6sCivaAFfLcL5G+HUYMNndH4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cyj6dxspCv8rogcCDSzXgfwWVul6bJpc3LnfQB7CHJ4CMDxBASbHcZtfaAtzjjhgt
-         s4Yb4w+dAeOTQG8kYdQQ4VNxfvEaHrNmPylfwhhpCw5QxN2PqtuhmHmFrft53FtKcw
-         wVuQDLZ0BZ458wjjKZYVMny/AkV9anY4rKYCrRJ8=
-Date:   Wed, 26 Aug 2020 14:18:59 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     dennis.dalessandro@intel.com, dledford@redhat.com,
-        gustavo@embeddedor.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, mike.marciniszyn@intel.com,
-        roland@purestorage.com
-Subject: Re: [PATCH v2 1/2] IB/qib: remove superfluous fallthrough statements
-Message-ID: <20200826191859.GB2671@embeddedor>
-References: <64d7e1c9-9c6a-93f3-ce0a-c24b1c236071@gmail.com>
- <20200825171242.448447-1-alex.dewar90@gmail.com>
- <20200825193327.GA5504@embeddedor>
+        id S1726873AbgHZTXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 15:23:03 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:45975 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbgHZTXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 15:23:02 -0400
+Received: by mail-ed1-f67.google.com with SMTP id i17so1228367edx.12;
+        Wed, 26 Aug 2020 12:23:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YoSbFEE6WxawXijyPOSjl6BnMKpo5u+32xWA9EukxUc=;
+        b=eDkd129y5p8wfoSExAwj4DezugO6ajkHBYeJA8JjXkf9Pk3or28D89ZBRliielkvlZ
+         o/EoAtOjrSt5MuX+1XoXw8OmzZu8cdnDvKiWAQykLceLtAxZ6h0TDTZLyM2BAKvYBQ/O
+         WbdrK/m1aAV8LvbBY4s1N+Bwv1J9C2VUDOr9/VKSUb2we+4DwpeGc3WA9shf7to0IqPX
+         NvwAZ01udl/4qtNou0KMP1y3WXgrTzHKp6PjgEsRePFrt6Cusr+J421Jcew4iM9pzgg9
+         raiCOF07Yvi+NMyBtibhff66N26Z1JdmRSOeBqHIjhp1vdH0Lzmc2X1YCioLtNCoc7Tu
+         714w==
+X-Gm-Message-State: AOAM533ZfAezDHFmI1WtZJFqawzTS3zCbCbAYCldT3HixtT9TeBdQ5zj
+        zHeNfehOgxMtO0sB/cRpewA=
+X-Google-Smtp-Source: ABdhPJx8/pzC23/MfkOErm5NZndYQOVvm0SrUDOipckwuovfnOyFr2pW/5b6DcISQkKxPM6zKPgt0g==
+X-Received: by 2002:a05:6402:1591:: with SMTP id c17mr16230169edv.111.1598469780133;
+        Wed, 26 Aug 2020 12:23:00 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id b9sm940428edw.93.2020.08.26.12.22.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 26 Aug 2020 12:22:59 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 21:22:56 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 02/24] Input: gpio_keys - Simplify with dev_err_probe()
+Message-ID: <20200826192256.GA14739@kozik-lap>
+References: <20200826181706.11098-1-krzk@kernel.org>
+ <20200826181706.11098-2-krzk@kernel.org>
+ <20200826191334.GX1891694@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200825193327.GA5504@embeddedor>
+In-Reply-To: <20200826191334.GX1891694@smile.fi.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 26, 2020 at 10:13:34PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 26, 2020 at 08:16:44PM +0200, Krzysztof Kozlowski wrote:
+> > Common pattern of handling deferred probe can be simplified with
+> > dev_err_probe().  Less code and also it prints the error value.
+> 
+> > --- a/drivers/input/keyboard/gpio_keys.c
+> > +++ b/drivers/input/keyboard/gpio_keys.c
+> > @@ -505,10 +505,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+> >  				 */
+> >  				bdata->gpiod = NULL;
+> 
+> gpiod_get_optional()?
+> Do not see much context though (but please double check your series for these
+> kind of things).
 
-On Tue, Aug 25, 2020 at 02:33:27PM -0500, Gustavo A. R. Silva wrote:
-> On Tue, Aug 25, 2020 at 06:12:42PM +0100, Alex Dewar wrote:
-> > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-> > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
-> > were later converted to fallthrough statements by commit df561f6688fe
-> > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
-> > warning about unreachable code.
-> >
-> 
-> It's worth mentioning that this warning is triggered only by compilers
-> that don't support __attribute__((__fallthrough__)), which has been
-> supported since GCC 7.1.
-> 
-> > Remove the fallthrough statements.
-> > 
-> > Addresses-Coverity: ("Unreachable code")
-> > Fixes: 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> 
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
+It would fit except it is devm_fwnode_gpiod_get() which does not have
+optional yet.
 
-I can take this in my tree for 5.9-rc3.
+I can add it although the scope of the patch grows from simple
+defer-path-simplification.
 
-Thanks
---
-Gustavo
+Thanks for the feedback.
+
+Best regards,
+Krzysztof
