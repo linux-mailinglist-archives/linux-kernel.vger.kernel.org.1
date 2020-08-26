@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C302524AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D0B2524AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHZAUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 20:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S1726666AbgHZAYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 20:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHZAUL (ORCPT
+        with ESMTP id S1726551AbgHZAYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 20:20:11 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F675C061574;
-        Tue, 25 Aug 2020 17:20:11 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5FE9811E44280;
-        Tue, 25 Aug 2020 17:03:20 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 17:20:03 -0700 (PDT)
-Message-Id: <20200825.172003.1417643181819895272.davem@davemloft.net>
-To:     vadym.kochan@plvision.eu
-Cc:     kuba@kernel.org, jiri@mellanox.com, idosch@mellanox.com,
-        andrew@lunn.ch, oleksandr.mazur@plvision.eu,
-        serhiy.boiko@plvision.eu, serhiy.pshyk@plvision.eu,
-        volodymyr.mytnyk@plvision.eu, taras.chornyi@plvision.eu,
-        andrii.savka@plvision.eu, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
-        mickeyr@marvell.com
-Subject: Re: [net-next v5 1/6] net: marvell: prestera: Add driver for
- Prestera family ASIC devices
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200825122013.2844-2-vadym.kochan@plvision.eu>
-References: <20200825122013.2844-1-vadym.kochan@plvision.eu>
-        <20200825122013.2844-2-vadym.kochan@plvision.eu>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 25 Aug 2020 17:03:20 -0700 (PDT)
+        Tue, 25 Aug 2020 20:24:35 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5A8C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 17:24:34 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id e11so306054ils.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 17:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6PhaVc46fB3y3C+IQtYQZZ5zU6t7TWG1wQZ/Bjf9fao=;
+        b=rGbJ2Yi3tEgAgxB4tjVSu9oxzSlEA/v8vXQjwgRt0dmviuoTszefr/h4MVmsMdHcIP
+         O/5zMbkShEMy61fbnpMD6bsp/L1BJE/HIl3ajGibH9pGHPJf1nfgAQ4eNBB0+szyYhYr
+         ryXLeNC+Q9B56lJTTe5lGxuEhHm1xjmzI/ZI2XBG2it/vZ7Y5jD56J+dufKiDqLJHnrZ
+         NP0+7wKSYfyNi1MFHF8L6smcFp5df/grB0wJuOr3pjFDYX8j2bgHPhCj5Ohv5bLGPpIG
+         AfU7A4BHTWfRftS5XbnVU7NYJsdPe+BMazyvfSxrDahCA4Zay7kv3INPh0NdjZf0sEBY
+         8nUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6PhaVc46fB3y3C+IQtYQZZ5zU6t7TWG1wQZ/Bjf9fao=;
+        b=JCTLSV6WfcTSN6CmplU5XzgPB3FNTaj4Mcx8AY5uGbfenJYosOdRAa6Hq0RzyiI7Wx
+         twi1vApOmewvEWVZHF0P39Quig1SrujtSFVAZofDRc2Zp/9sJ4TsSe7gGZw/7g5y8cxk
+         ZBa41d5i6I1Uxjzi5H161a3zT3qbV3PpYpupwmeFLJJfBdbI6tT9lJKqnzrNdATf1acF
+         2VxCjdMGCkRPnF3KFJgR1qcsE7PEki3MzS6H51y7p5ZwuQppjrpkKOF7kvizLbjNZI90
+         mOkx7X+HdYbSO0iy2MLe6+TvSywR7vDY28dbbnHR7VF8g0P4sC0CwFmZsfE20Xxt1upx
+         Pm+g==
+X-Gm-Message-State: AOAM532qRu6O/FKOE/nJioirUNWUIjDtj7XQ+UyPxjl4u7ofPvD1EUL3
+        JQcWo/G9bThkefxh5dG7m2ADNwgxlgqFCyI1VBf32A==
+X-Google-Smtp-Source: ABdhPJzdIClyagWUDzamz8fAV/d2I4gI7NVREIzSGQv3DSbz0qFNSFZoQmgbvGFPGEeCYhE+Mm6VlCgbpqGu28sMmLw=
+X-Received: by 2002:a92:d688:: with SMTP id p8mr11697017iln.82.1598401473429;
+ Tue, 25 Aug 2020 17:24:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200822014018.913868-1-lokeshgidra@google.com>
+ <20200822014018.913868-2-lokeshgidra@google.com> <20200824123247.finquufqpr6i7umb@linutronix.de>
+In-Reply-To: <20200824123247.finquufqpr6i7umb@linutronix.de>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Tue, 25 Aug 2020 17:24:22 -0700
+Message-ID: <CA+EESO5E5Kg1YaCP5FpPx4Qtnmf3H506f9ZA26=vugLDk=GkDg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] Add UFFD_USER_MODE_ONLY
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        kernel-team@android.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Daniel Colascione <dancol@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Date: Tue, 25 Aug 2020 15:20:08 +0300
+On Mon, Aug 24, 2020 at 5:32 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-08-21 18:40:17 [-0700], Lokesh Gidra wrote:
+> > --- a/fs/userfaultfd.c
+> > +++ b/fs/userfaultfd.c
+> > @@ -1966,6 +1969,7 @@ static void init_once_userfaultfd_ctx(void *mem)
+> >
+> >  SYSCALL_DEFINE1(userfaultfd, int, flags)
+> >  {
+> > +     static const int uffd_flags = UFFD_USER_MODE_ONLY;
+> >       struct userfaultfd_ctx *ctx;
+> >       int fd;
+> Why?
 
-> +int prestera_dsa_parse(struct prestera_dsa *dsa, const u8 *dsa_buf)
-> +{
-> +	__be32 *dsa_words = (__be32 *)dsa_buf;
-> +	enum prestera_dsa_cmd cmd;
-> +	u32 words[4] = { 0 };
-> +	u32 field;
-> +
-> +	words[0] = ntohl(dsa_words[0]);
-> +	words[1] = ntohl(dsa_words[1]);
-> +	words[2] = ntohl(dsa_words[2]);
-> +	words[3] = ntohl(dsa_words[3]);
+Not sure! I guess Daniel didn't want to repeat the long flag name twice.
 
-All 4 elements of words[] are explicitly and unconditionally set to something,
-so you don't need the "= { 0 }" initializer.
-
-> +	INIT_LIST_HEAD(&sw->port_list);
-
-What locking protects this list?
-
-> +	new_skb = alloc_skb(len, GFP_ATOMIC | GFP_DMA);
-> +	if (!new_skb)
-> +		goto err_alloc_skb;
-
-This seems very costly to do copies on every packet.  There should be
-something in the dma_*() API that would allow you to avoid this.
-
-And since you just need the buffer to DMA map it into the device,
-allocating an entire SKB object is overkill.  You can instead just
-allocate a ring of TX bounce buffers once, and then you just copy
-each packet there.  No allocations per packet.
+Thanks for catching that. I'll send another version fixing this.
+>
+> Sebastian
