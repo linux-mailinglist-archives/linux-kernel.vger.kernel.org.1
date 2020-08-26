@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B1A253058
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B049025306A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730529AbgHZNuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgHZNtg (ORCPT
+        id S1730567AbgHZNwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:52:03 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:49099 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730450AbgHZNwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:49:36 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C212C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:49:35 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x77so8909lfa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:49:35 -0700 (PDT)
+        Wed, 26 Aug 2020 09:52:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XYm7Tduo8NWl5UNwRfQK8+cTzqgeaWnEyTZDJt6ZL0A=;
-        b=cQw18JNOYdqf3sOurYRlourg5Md8zuitXIUOSC1+hAVeZIFeF7Y+VybvHHm/AsDTFh
-         x1R5+XVIFzrI5xR2M2+xU86dR9yFVT1Rw+Gr+TtzOykldPfvxeoilXjnA6PGisH539I0
-         DgtcYc1Dix0XcbBSo+sxcGJU2WLLHLrLJVnJTyoVzIUy5pUhG4Rk2T5RbgJywhruD56q
-         bg9+5MO5PUvW2zxb/fUIvTKZt9uRLAkSQDhh0CBm0882P2knFBlD2eqi4B/cz47hbsJk
-         dsz+t4E8spMvWm92CmYiLuxgckD9MVzt12YvP5PR8e88Is8XB/G272nfv35rPsD6FiSa
-         aFOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XYm7Tduo8NWl5UNwRfQK8+cTzqgeaWnEyTZDJt6ZL0A=;
-        b=UftigrXWzNXusBXWPW6UufDxm2kLLNhE1DnVbKWQnlveQ86feky6zjaoJVMp6PdH4o
-         SPLh5YNMGbXMwI1lS3Qorn8rvYcu0D889BsXzsl/430EF7kq7oBW7WqL74KfwsNd75zY
-         UMhhlorquW6S7ZpeOw7CdXGePmpGMtOsVSPFGsZUgJOay4nLaHHnCv4RlemjY0ya/nti
-         wUUJMdauTWSbJqlvdB6F9Y/nAG4no5BwFvuOTXQYcadSgi3nTSakcK7JG7IHpiW+Z0Bc
-         BAmgLaySbe1Z6Cz/bXebNxULO5mgW6KGldRysg0jStqTVePwQDoU5yF5H5+PvR/DI0o+
-         4xmQ==
-X-Gm-Message-State: AOAM5301e2FcAXvdcp/x97UET6GegtU0bbOfXNoh0Z8u+RODODxzExT4
-        KQLCdOzG3OZ2Gp9euGELJSVr/sjZawMRQbmTpZo=
-X-Google-Smtp-Source: ABdhPJxVedw5wDUoff9RgpfDnP2MJ8QistoF1SlV7wu7KGXETn4R6i8GLZTyfubdJ9A4bPs35o56F2wDe8uwVYlwGPY=
-X-Received: by 2002:a19:306:: with SMTP id 6mr7488144lfd.214.1598449772436;
- Wed, 26 Aug 2020 06:49:32 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1598449920; x=1629985920;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=R/UiUNzpRC6vnoctXzbPpJl22XZf2dpsVm7NtJe6n4g=;
+  b=Yo6TpDWroOZFM2I+bbzqxKo9c/mokN76clVs9lbB/f+VzQhXTMj0O5EN
+   CqDvexjrjm6aT2gT574AcjeVyySF5U+6BZLV0VuQpXNGWYsD0wfNWzbNs
+   IrrWAndZG7KprioUdxjRcFpszFR+sCsTk3RKGr1AbIH0YDKTSZGzgkkvR
+   E=;
+X-IronPort-AV: E=Sophos;i="5.76,355,1592870400"; 
+   d="scan'208";a="62901837"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 Aug 2020 13:51:24 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id 0362BA2204;
+        Wed, 26 Aug 2020 13:51:15 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 26 Aug 2020 13:51:15 +0000
+Received: from edge-m2-r3-214.e-iad50.amazon.com (10.43.160.229) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 26 Aug 2020 13:51:07 +0000
+Subject: Re: [PATCH] x86/irq: Preserve vector in orig_ax for APIC code
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+CC:     X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Andrew Cooper" <andrew.cooper3@citrix.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Avi Kivity <avi@scylladb.com>,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>, <robketr@amazon.de>,
+        <amos@scylladb.com>, Brian Gerst <brgerst@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20200826115357.3049-1-graf@amazon.com>
+ <20200826132210.k4pxphxvxuvb2fe6@treble>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <19292905-9cfc-ff36-217b-73b944e41442@amazon.com>
+Date:   Wed, 26 Aug 2020 15:51:05 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.1.1
 MIME-Version: 1.0
-References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
- <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
- <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
- <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
- <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
- <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
- <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com>
- <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
- <CAOMZO5ADeXEHWiG7Xja1W1GnahV08ZEYSkNsrOzautn2mROCNA@mail.gmail.com>
- <aa0b7ad149a7bd4e681e4ebee12ffaaab2803832.camel@ew.tq-group.com>
- <CAOMZO5B_Jm8SX9N9V5oq+LAa0Yc4CmrEp2n=2t3XUyBCtnGVTA@mail.gmail.com> <d433e8a47d721a65903db68c38eb1c337c81e395.camel@ew.tq-group.com>
-In-Reply-To: <d433e8a47d721a65903db68c38eb1c337c81e395.camel@ew.tq-group.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 26 Aug 2020 10:49:21 -0300
-Message-ID: <CAOMZO5AfuPXfOmRSXAmyG-bdqGSzvTRm51NuTJ-B2PzKbLy9mw@mail.gmail.com>
-Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH 2/2]
- ARM: dts: imx6qdl: tqma6: minor fixes
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200826132210.k4pxphxvxuvb2fe6@treble>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.229]
+X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:13 AM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
+CgpPbiAyNi4wOC4yMCAxNToyMiwgSm9zaCBQb2ltYm9ldWYgd3JvdGU6Cj4gCj4gT24gV2VkLCBB
+dWcgMjYsIDIwMjAgYXQgMDE6NTM6NTdQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+
+IC0ubWFjcm8gaWR0ZW50cnlfYm9keSBjZnVuYyBoYXNfZXJyb3JfY29kZTpyZXEKPj4gKy5tYWNy
+byBpZHRlbnRyeV9ib2R5IGNmdW5jIGhhc19lcnJvcl9jb2RlOnJlcSBwcmVzZXJ2ZV9lcnJvcl9j
+b2RlOnJlcQo+Pgo+PiAgICAgICAgY2FsbCAgICBlcnJvcl9lbnRyeQo+PiAgICAgICAgVU5XSU5E
+X0hJTlRfUkVHUwo+PiBAQCAtMzI4LDcgKzMyOCw5IEBAIFNZTV9DT0RFX0VORChyZXRfZnJvbV9m
+b3JrKQo+Pgo+PiAgICAgICAgLmlmIFxoYXNfZXJyb3JfY29kZSA9PSAxCj4+ICAgICAgICAgICAg
+ICAgIG1vdnEgICAgT1JJR19SQVgoJXJzcCksICVyc2kgICAgLyogZ2V0IGVycm9yIGNvZGUgaW50
+byAybmQgYXJndW1lbnQqLwo+PiAtICAgICAgICAgICAgIG1vdnEgICAgJC0xLCBPUklHX1JBWCgl
+cnNwKSAgICAgLyogbm8gc3lzY2FsbCB0byByZXN0YXJ0ICovCj4+ICsgICAgICAgICAgICAgLmlm
+IFxwcmVzZXJ2ZV9lcnJvcl9jb2RlID09IDAKPj4gKyAgICAgICAgICAgICAgICAgICAgIG1vdnEg
+ICAgJC0xLCBPUklHX1JBWCglcnNwKSAgICAgLyogbm8gc3lzY2FsbCB0byByZXN0YXJ0ICovCj4+
+ICsgICAgICAgICAgICAgLmVuZGlmCj4gCj4gV2hlbiBkb2VzIHRoaXMgaGFwcGVuIChoYXNfZXJy
+b3JfY29kZT0xICYmIHByZXNlcnZlX2Vycm9yX2NvZGU9MCk/ICBJCj4gZG9uJ3Qgc2VlIGFueSB1
+c2VycyBvZiB0aGlzIG1hY3JvIChvciBpZHRlbnRyeSkgd2l0aCB0aGlzIGNvbWJpbmF0aW9uLgoK
+SXQncyB3ZWxsIGhpZGRlbiBpbiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9pZHRlbnRyeS5oOgoKI2Rl
+ZmluZSBERUNMQVJFX0lEVEVOVFJZX0VSUk9SQ09ERSh2ZWN0b3IsIGZ1bmMpICAgICAgICAgICAg
+ICAgICAgICAgICAgXAogICAgICAgICBpZHRlbnRyeSB2ZWN0b3IgYXNtXyMjZnVuYyBmdW5jIGhh
+c19lcnJvcl9jb2RlPTEKCi8qIFNpbXBsZSBleGNlcHRpb24gZW50cmllcyB3aXRoIGVycm9yIGNv
+ZGUgcHVzaGVkIGJ5IGhhcmR3YXJlICovCkRFQ0xBUkVfSURURU5UUllfRVJST1JDT0RFKFg4Nl9U
+UkFQX1RTLCBleGNfaW52YWxpZF90c3MpOwpERUNMQVJFX0lEVEVOVFJZX0VSUk9SQ09ERShYODZf
+VFJBUF9OUCwgZXhjX3NlZ21lbnRfbm90X3ByZXNlbnQpOwpERUNMQVJFX0lEVEVOVFJZX0VSUk9S
+Q09ERShYODZfVFJBUF9TUywgZXhjX3N0YWNrX3NlZ21lbnQpOwpERUNMQVJFX0lEVEVOVFJZX0VS
+Uk9SQ09ERShYODZfVFJBUF9HUCwgZXhjX2dlbmVyYWxfcHJvdGVjdGlvbik7CkRFQ0xBUkVfSURU
+RU5UUllfRVJST1JDT0RFKFg4Nl9UUkFQX0FDLCBleGNfYWxpZ25tZW50X2NoZWNrKTsKWy4uLl0K
+REVDTEFSRV9JRFRFTlRSWV9SQVdfRVJST1JDT0RFKFg4Nl9UUkFQX1BGLCAgICAgZXhjX3BhZ2Vf
+ZmF1bHQpOwoKCkFsZXgKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgK
+S3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFu
+IFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hh
+cmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4
+OSAyMzcgODc5CgoK
 
-> Using GPIOs for chipselect would require different pinmuxing. Also, why
-> use GPIOs, when the SPI controller has this built in?
-
-In the initial chips with the ECSPI controller there was a bug with
-the native chipselect controller and we had to use GPIO.
