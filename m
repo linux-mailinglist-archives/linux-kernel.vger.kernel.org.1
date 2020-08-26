@@ -2,75 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3990C2539DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 23:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739662539DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 23:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgHZVhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 17:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726783AbgHZVhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 17:37:09 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85FF321741;
-        Wed, 26 Aug 2020 21:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598477828;
-        bh=HPaU+WLmH8Up9dbawX9m8TWCy298k6grQDHV0In6+KU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i+WldLivHRTc3R1bfkdzm5Kym06TT4gGIqZrgYUSMlRObzrm46C3XYbgA7KZJ21/w
-         R439ybGpDUNecYLNeGxbOMM1TPJsoVFL8uhhuQEzOkHFhkzTwoRZqZZRu9XSJi4saN
-         YNSECrzL0rHunIOsZkIfZhGuk/7akHqNgQVazlWU=
-Received: by mail-oi1-f173.google.com with SMTP id h3so2840333oie.11;
-        Wed, 26 Aug 2020 14:37:08 -0700 (PDT)
-X-Gm-Message-State: AOAM530c08qMotJLlKryC0zMu8hDrqNBulw4Z22WsWlr5qfyk2JmPfXd
-        w/RzF7K+MNnlJ/wYSszuxYBwYgv6fhSIr8RUiw==
-X-Google-Smtp-Source: ABdhPJx0muTX50Xibauscdj9Ch7KyrdQTtAYP1PDy7xQ1tspzduZDSEmMIEfhMj1BvPf0p6iq6Naml8IzwohGlR+4eU=
-X-Received: by 2002:aca:4cc7:: with SMTP id z190mr5257004oia.147.1598477827897;
- Wed, 26 Aug 2020 14:37:07 -0700 (PDT)
+        id S1726851AbgHZVhH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 17:37:07 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28416 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726753AbgHZVhH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 17:37:07 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-161-enTojJ1dOhq1TVkyyVBsDg-1; Wed, 26 Aug 2020 22:37:01 +0100
+X-MC-Unique: enTojJ1dOhq1TVkyyVBsDg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 26 Aug 2020 22:37:00 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 26 Aug 2020 22:37:00 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Gleixner' <tglx@linutronix.de>,
+        Alexander Graf <graf@amazon.com>, X86 ML <x86@kernel.org>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Will Deacon" <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Avi Kivity <avi@scylladb.com>,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>,
+        "robketr@amazon.de" <robketr@amazon.de>,
+        "amos@scylladb.com" <amos@scylladb.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Alex bykov" <alex.bykov@scylladb.com>
+Subject: RE: x86/irq: Unbreak interrupt affinity setting
+Thread-Topic: x86/irq: Unbreak interrupt affinity setting
+Thread-Index: AQHWe+aKb+AhwM2rPkq6/MK3Hcp5nKlK5iEA
+Date:   Wed, 26 Aug 2020 21:37:00 +0000
+Message-ID: <db3e28b59d404f55aff83120c077d6f6@AcuMS.aculab.com>
+References: <20200826115357.3049-1-graf@amazon.com>
+ <87k0xlv5w5.fsf@nanos.tec.linutronix.de>
+ <fd87a87d-7d8a-9959-6c81-f49003a43c21@amazon.com>
+ <87blixuuny.fsf@nanos.tec.linutronix.de>
+ <873649utm4.fsf@nanos.tec.linutronix.de>
+ <87wo1ltaxz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87wo1ltaxz.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20200826183805.19369-1-andre.przywara@arm.com> <20200826183805.19369-2-andre.przywara@arm.com>
-In-Reply-To: <20200826183805.19369-2-andre.przywara@arm.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 26 Aug 2020 15:36:56 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLiEQQBarRkp5NzVb+FPs6PaXdh6Fem2KKAvMR+OywCDA@mail.gmail.com>
-Message-ID: <CAL_JsqLiEQQBarRkp5NzVb+FPs6PaXdh6Fem2KKAvMR+OywCDA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: timers: sp-804: Convert to json-schema
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 12:38 PM Andre Przywara <andre.przywara@arm.com> wrote:
->
-> This converts the DT binding documentation for the ARM SP-804 timer IP
-> over to json-schema.
-> Most properties are just carried over, the clocks property requirement
-> (either one or three clocks) is now formalised and enforced.
-> As the former binding didn't specify clock-names, and there is no
-> common name used by the existing DTs, I refrained from adding them.
-> The requirement for the APB clock is enforced by the primecell binding
-> already.
+From: Thomas Gleixner
+> Sent: 26 August 2020 21:22
+...
+> Moving interrupts on x86 happens in several steps. A new vector on a
+> different CPU is allocated and the relevant interrupt source is
+> reprogrammed to that. But that's racy and there might be an interrupt
+> already in flight to the old vector. So the old vector is preserved until
+> the first interrupt arrives on the new vector and the new target CPU. Once
+> that happens the old vector is cleaned up, but this cleanup still depends
+> on the vector number being stored in pt_regs::orig_ax, which is now -1.
 
-At least add 'clock-names: true' so you can add 'additionalProperties:
-false'. Otherwise, looks good to me.
+I suspect that it is much more 'racy' than that for PCI-X interrupts.
+On the hardware side there is an interrupt disable bit, and address
+and a value.
+To raise an interrupt the hardware must write the value to the address.
 
-Rob
+If the cpu needs to move an interrupt both the address and value
+need changing, but the cpu wont write the address and value using
+the same TLP, so the hardware could potentially write a value to
+the wrong address.
+Worse than that, the hardware could easily only look at the address
+and value in the clocks after checking the interrupt is enabled.
+So masking the interrupt immediately prior to changing the vector
+info may not be enough.
+
+It is likely that a read-back of the mask before updating the vector
+is enough.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
