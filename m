@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D221252491
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638CE252498
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgHZABY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 20:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgHZABU (ORCPT
+        id S1726717AbgHZADc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 20:03:32 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52168 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgHZADb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 20:01:20 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B91DC061574;
-        Tue, 25 Aug 2020 17:01:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BbmGz0SKWz9sPB;
-        Wed, 26 Aug 2020 10:01:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1598400076;
-        bh=TwFxGEb4cUq9387ARgHf6vpuujgya5+1GaLjkV+Xl7I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YQ0m9+zZT4sdW0hbJ8zCKXqxtgYeUBUEq2OXge6GMFdlZw+58ghsY3f+GdH5xu3nY
-         QBG3pKrwr7Cgeh3sFrU4BbZOwHaO7LHk+C81Qbaj0NkhBQ4/HZeA2ih/xORqyB/yqB
-         oed0Hkc/o06ooYldpIqkz7fXWMQc7m0g9PMjJeqcnm4jhNLnYAo8nMrIaP1aK6Kr9l
-         D++fgJRsUTopUaP/HtaWpIp/VUQkPDPkLWDd+BSc48HTeXF6FGUBlziB/kR8Q7JknL
-         nXHvTVUgrPzQl0n9HBFN2uE1pMgakUf/x4tMTJTVPcZKQIFvrqv/zbeOCq15O3Etac
-         TpNuKChpsb0zw==
-Date:   Wed, 26 Aug 2020 10:01:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20200826100113.6126afad@canb.auug.org.au>
+        Tue, 25 Aug 2020 20:03:31 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PNwX1V070204;
+        Wed, 26 Aug 2020 00:03:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wIl8s2B8eTFWWunkTo8ECzb8nM7pgkrznApLJURGLI8=;
+ b=VlVyQ6zFW0TmHw9lJyLhVD8Hjvf4jbLpujhx2XbnIg8IWn+SgSgN4kRbMUkBT/vD9S38
+ dlz0Vr/a8ySwm9z5OmURZPE5x/Y10No+/tU2vD4UYdhlJ7Enap7hAQfFm+rjVLk9h2Vn
+ IP9nvIF/fBcVOMf5Sqo9sgNowK6yp8tmZSIAK6vCvugxOXMUnlT4HlynRBinOS68XFmt
+ 3eYDG4TA/FukhbphSUZ+xCuFVdgQo05SUqn/MyIpuvT9BftFZLzHYzSfbp/4KMMZkNrF
+ 6vMKrmtMOIit/1SPzPj3hPHzF3IVtAb8Dq/tOqeoOcEAfsZAUD70ZnN5Eg7C/cgzvPlZ AA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 333csj5k55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 00:03:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07PNsn8c048791;
+        Wed, 26 Aug 2020 00:01:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 333r9kh2hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 00:01:23 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07Q01KNa023789;
+        Wed, 26 Aug 2020 00:01:22 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 25 Aug 2020 17:01:20 -0700
+Subject: Re: [External] Re: [PATCH] mm/hugetlb: Fix a race between hugetlb
+ sysctl handlers
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, ak@linux.intel.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200822095328.61306-1-songmuchun@bytedance.com>
+ <20200824135924.b485e000d358cee817c4f05c@linux-foundation.org>
+ <79800508-54c9-4cda-02de-29b1a6912e75@oracle.com>
+ <CAMZfGtXh+FP0O92ccj532Y=K4m2S==eSK8LjYEM+p6cttV0p8Q@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <231ec1f1-fe7a-c48a-2427-1311360d4b9b@oracle.com>
+Date:   Tue, 25 Aug 2020 17:01:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3ptXOJpu8Wggpt40t=+s=uM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAMZfGtXh+FP0O92ccj532Y=K4m2S==eSK8LjYEM+p6cttV0p8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008250177
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008250177
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3ptXOJpu8Wggpt40t=+s=uM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 8/24/20 8:01 PM, Muchun Song wrote:
+> On Tue, Aug 25, 2020 at 5:21 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>
+>> I too am looking at this now and do not completely understand the race.
+>> It could be that:
+>>
+>> hugetlb_sysctl_handler_common
+>> ...
+>>         table->data = &tmp;
+>>
+>> and, do_proc_doulongvec_minmax()
+>> ...
+>>         return __do_proc_doulongvec_minmax(table->data, table, write, ...
+>> with __do_proc_doulongvec_minmax(void *data, struct ctl_table *table, ...
+>> ...
+>>         i = (unsigned long *) data;
+>>         ...
+>>                 *i = val;
+>>
+>> So, __do_proc_doulongvec_minmax can be dereferencing and writing to the pointer
+>> in one thread when hugetlb_sysctl_handler_common is setting it in another?
+> 
+> Yes, you are right.
+> 
+>>
+>> Another confusing part of the message is the stack trace which includes
+>> ...
+>>      ? set_max_huge_pages+0x3da/0x4f0
+>>      ? alloc_pool_huge_page+0x150/0x150
+>>
+>> which are 'downstream' from these routines.  I don't understand why these
+>> are in the trace.
+> 
+> I am also confused. But this issue can be reproduced easily by letting more
+> than one thread write to `/proc/sys/vm/nr_hugepages`. With this patch applied,
+> the issue can not be reproduced and disappears.
 
-Hi all,
+There certainly is an issue here as one thread can modify data in another.
+However, I am having a hard time seeing what causes the 'kernel NULL pointer
+dereference'.
 
-Today's linux-next merge of the drm-misc tree got conflicts in:
+I tried to reproduce the issue myself but was unsuccessful.  I have 16 threads
+writing to /proc/sys/vm/nr_hugepages in an infinite loop.  After several hours
+running, I did not hit the issue.  Just curious, what architecture is the
+system?  any special config or compiler options?
 
-  drivers/video/fbdev/arcfb.c
-  drivers/video/fbdev/atmel_lcdfb.c
-  drivers/video/fbdev/savage/savagefb_driver.c
+If you can easily reproduce, can you post the detailed oops message?
 
-between commit:
+The 'NULL pointer' seems strange because after the first assignment to
+table->data the value should never be NULL.  Certainly it can be modified
+by another thread, but I can not see how it can be NULL.  At the beginning
+of __do_proc_doulongvec_minmax, there is a check for NULL pointer with:
 
-  df561f6688fe ("treewide: Use fallthrough pseudo-keyword")
+	if (!data || !table->maxlen || !*lenp || (*ppos && !write)) {
+		*lenp = 0;
+		return 0;
+	}
 
-from Linus' tree and commit:
+I looked at the code my compiler produced for __do_proc_doulongvec_minmax.
+It appears to use the same value/register for the pointer throughout the
+routine.  IOW, I do not see how the pointer can be NULL for the assignment
+when the routine does:
 
-  ad04fae0de07 ("fbdev: Use fallthrough pseudo-keyword")
+			*i = val;
 
-from the drm-misc tree.
-
-I fixed it up (they are much the same, I just used the version from Linus'
-tree) and can carry the fix as necessary. This is now fixed as far as
-linux-next is concerned, but any non trivial conflicts should be mentioned
-to your upstream maintainer when your tree is submitted for merging.
-You may also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
-
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3ptXOJpu8Wggpt40t=+s=uM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9FpkkACgkQAVBC80lX
-0Gw9bgf/aNCbX377c4IdSb1IJKi9m2loeOLAZ6oUTJII1MBCyizcDavmyZb6vLW9
-ODBXdC8+1FMrHcLElvvgMpCTqTwfjgCHW+2cJc7kRVoCSyfwMoF6noWgof7ATDHa
-H+zhNvsb1kLuR3LGCkARBhaHjyyWbgAunSTWtCbBRL6jE2JGqsP1SFVMZq/YBmRT
-RzlNiad8d8bTR57MngIn4PNtwv9ZRPDeNTR5Dv1+QDxYHVWSjbzElnZwyvkVwxvY
-daAzpHLtQobic5OppUm1aaG6rUtuk7lawrnBOWTP8Adac/cpiaqqSw3leLQhWPnt
-Nz+0y+3MLOq/qm/Pu6K/cqydjBBEfA==
-=nvdp
------END PGP SIGNATURE-----
-
---Sig_/3ptXOJpu8Wggpt40t=+s=uM--
+Again, your analysis/patch points out a real issue.  I just want to get
+a better understanding to make sure there is not another issue causing
+the NULL pointer dereference.
+-- 
+Mike Kravetz
