@@ -2,81 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6DB252C7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3705C252CBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728994AbgHZLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:32:19 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:45460 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728999AbgHZLb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:31:58 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCnr98JSEZf_ms_Aw--.46227S4;
-        Wed, 26 Aug 2020 19:31:24 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rxrpc: Fix memleak in rxkad_verify_response
-Date:   Wed, 26 Aug 2020 19:31:20 +0800
-Message-Id: <20200826113120.24297-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCnr98JSEZf_ms_Aw--.46227S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrWktw15JrW5WrWrtF18Krg_yoWDJFc_A3
-        yxKayUZ3yYqFy8C3y2g3y5Kw1xurnrArnYgrn3KFsxJ3yUA347C39rJr1fJryF9a1jgryY
-        yrnIqryxur1ayjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUbeT5PUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAIsN
+        id S1729140AbgHZLqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:46:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51550 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728954AbgHZLcL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:32:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBTGKw052284;
+        Wed, 26 Aug 2020 11:32:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=7kpJnUdWpHetd5cIVb8DwPCwBujDgY3ez9LpDs6af+o=;
+ b=YvljJX1lzqLFf1jwL9TuDihCf6S9dohrC44y5WELRXTpOF0jvIgw3e+FQNb847F0XAEN
+ 9uyIsJHD6xxknU3Foajngx5659T78M2JqPfGOXChMmsQNLHTHS9mqHWH6rHszIGWx0BI
+ KhYmxGriVxea6DfW5b9/Ji43UY25WCP40xy9+b5qc35yn8gZaXZHAnw01MUGPC86gfHK
+ RNGHZKZqCVn5WA+H1jXMSo2iOsTpzulPcI+eWRWjlOgursvdrBV5On4z0VCK7Uip3aKG
+ ysMUqrS0rqcsRSkzvvqFkZ6A47P0jU/UVrs5p3eSfMhrAOXf00CHaDh1XQruOMd8GQ21 GQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 333w6txbjy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 11:32:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBUFYQ001060;
+        Wed, 26 Aug 2020 11:31:59 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 333rua27y2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:31:59 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QBVuif024247;
+        Wed, 26 Aug 2020 11:31:56 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Aug 2020 04:31:55 -0700
+Date:   Wed, 26 Aug 2020 14:31:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] selinux: fix error handling bugs in security_load_policy()
+Message-ID: <20200826113148.GA393664@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 suspectscore=2 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=2 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008260093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kmalloc() on ticket fails, response should be freed
-to prevent memleak.
+There are a few bugs in the error handling for security_load_policy().
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+1) If the newpolicy->sidtab allocation fails then it leads to a NULL
+   dereference.  Also the error code was not set to -ENOMEM on that
+   path.
+2) If policydb_read() failed then we call policydb_destroy() twice
+   which meands we call kvfree(p->sym_val_to_name[i]) twice.
+3) If policydb_load_isids() failed then we call sidtab_destroy() twice
+   and that results in a double free in the sidtab_destroy_tree()
+   function because entry.ptr_inner and entry.ptr_leaf are not set to
+   NULL.
+
+One thing that makes this code nice to deal with is that none of the
+functions return partially allocated data.  In other words, the
+policydb_read() either allocates everything successfully or it frees
+all the data it allocates.  It never returns a mix of allocated and
+not allocated data.
+
+I re-wrote this to only free the successfully allocated data which
+avoids the double frees.  I also re-ordered selinux_policy_free() so
+it's in the reverse order of the allocation function.
+
+Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- net/rxrpc/rxkad.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I was wrong about context_cpy().  There is no double free in the error
+handling there.  Sorry about that.
 
-diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
-index 52a24d4ef5d8..e08130e5746b 100644
---- a/net/rxrpc/rxkad.c
-+++ b/net/rxrpc/rxkad.c
-@@ -1137,7 +1137,7 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
- 	ret = -ENOMEM;
- 	ticket = kmalloc(ticket_len, GFP_NOFS);
- 	if (!ticket)
--		goto temporary_error;
-+		goto temporary_error_free_resp;
+ security/selinux/ss/services.c | 34 +++++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
+
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index a48fc1b337ba..645e436cdb85 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -2127,10 +2127,10 @@ static void selinux_policy_free(struct selinux_policy *policy)
+ 	if (!policy)
+ 		return;
  
- 	eproto = tracepoint_string("rxkad_tkt_short");
- 	abort_code = RXKADPACKETSHORT;
-@@ -1230,6 +1230,7 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
+-	policydb_destroy(&policy->policydb);
+ 	sidtab_destroy(policy->sidtab);
+-	kfree(policy->sidtab);
+ 	kfree(policy->map.mapping);
++	policydb_destroy(&policy->policydb);
++	kfree(policy->sidtab);
+ 	kfree(policy);
+ }
  
- temporary_error_free_ticket:
- 	kfree(ticket);
-+temporary_error_free_resp:
- 	kfree(response);
- temporary_error:
- 	/* Ignore the response packet if we got a temporary error such as
+@@ -2224,23 +2224,25 @@ int security_load_policy(struct selinux_state *state, void *data, size_t len,
+ 		return -ENOMEM;
+ 
+ 	newpolicy->sidtab = kzalloc(sizeof(*newpolicy->sidtab), GFP_KERNEL);
+-	if (!newpolicy->sidtab)
+-		goto err;
++	if (!newpolicy->sidtab) {
++		rc = -ENOMEM;
++		goto err_policy;
++	}
+ 
+ 	rc = policydb_read(&newpolicy->policydb, fp);
+ 	if (rc)
+-		goto err;
++		goto err_sidtab;
+ 
+ 	newpolicy->policydb.len = len;
+ 	rc = selinux_set_mapping(&newpolicy->policydb, secclass_map,
+ 				&newpolicy->map);
+ 	if (rc)
+-		goto err;
++		goto err_policydb;
+ 
+ 	rc = policydb_load_isids(&newpolicy->policydb, newpolicy->sidtab);
+ 	if (rc) {
+ 		pr_err("SELinux:  unable to load the initial SIDs\n");
+-		goto err;
++		goto err_mapping;
+ 	}
+ 
+ 
+@@ -2254,7 +2256,7 @@ int security_load_policy(struct selinux_state *state, void *data, size_t len,
+ 	rc = security_preserve_bools(state, &newpolicy->policydb);
+ 	if (rc) {
+ 		pr_err("SELinux:  unable to preserve booleans\n");
+-		goto err;
++		goto err_free_isids;
+ 	}
+ 
+ 	/*
+@@ -2279,13 +2281,23 @@ int security_load_policy(struct selinux_state *state, void *data, size_t len,
+ 		pr_err("SELinux:  unable to convert the internal"
+ 			" representation of contexts in the new SID"
+ 			" table\n");
+-		goto err;
++		goto err_free_isids;
+ 	}
+ 
+ 	*newpolicyp = newpolicy;
+ 	return 0;
+-err:
+-	selinux_policy_free(newpolicy);
++
++err_free_isids:
++	sidtab_destroy(newpolicy->sidtab);
++err_mapping:
++	kfree(newpolicy->map.mapping);
++err_policydb:
++	policydb_destroy(&newpolicy->policydb);
++err_sidtab:
++	kfree(newpolicy->sidtab);
++err_policy:
++	kfree(newpolicy);
++
+ 	return rc;
+ }
+ 
 -- 
-2.17.1
+2.28.0
 
