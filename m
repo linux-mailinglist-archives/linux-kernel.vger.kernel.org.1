@@ -2,69 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1582537C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4887E2537C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgHZTBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 15:01:38 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:37884 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbgHZTBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 15:01:32 -0400
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kB0fd-00039M-Py; Wed, 26 Aug 2020 19:01:17 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kB0fd-0004bF-Mv; Wed, 26 Aug 2020 21:01:17 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Cox <alan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christopher Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Reshetova\, Elena" <elena.reshetova@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH] mm: extend memfd with ability to create "secret" memory areas
-References: <20200130162340.GA14232@rapoport-lnx>
-        <CALCETrVOWodgnRBFpPLEnc_Bfg=fgfAJiD1p-eE1uwCMc6c9Tg@mail.gmail.com>
-        <6e020a65-b516-9407-228f-2a3a32947ab9@intel.com>
-        <CALCETrUwO_y_b=kazRjen-de50r9b9TVXUXz_WT_hD3d3tTWxQ@mail.gmail.com>
-Date:   Wed, 26 Aug 2020 21:01:17 +0200
-In-Reply-To: <CALCETrUwO_y_b=kazRjen-de50r9b9TVXUXz_WT_hD3d3tTWxQ@mail.gmail.com>
-        (Andy Lutomirski's message of "Wed, 26 Aug 2020 09:54:57 -0700")
-Message-ID: <87y2m1qlj6.fsf@mid.deneb.enyo.de>
+        id S1727022AbgHZTDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 15:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbgHZTDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 15:03:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2ADC061574;
+        Wed, 26 Aug 2020 12:03:00 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 19:02:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598468578;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RJrpPCcKjLqXf0wZytcbv1zXOaX1uadoyDCrO/SFY7s=;
+        b=EVNqWmfYyP1DpYc8OYUX3Nn+5GF65B4vOmk3SOtTZIkfnClQZCdDErOz1E6lVFtdSPt3/y
+        mhORedqVLTIeGUWAYUMxi/nZp75xYSWUycmc3DZgeK0rLFpkjxZ+aPEytFmGr5zsNiuYbs
+        oL/8LPg2uSemZXQloZZ+RBVTZAYqSd7gFIa1cYVy2j94qM9Q1jivgXojuXpf61Ik1jtEbk
+        eTkVqKi/pS4zzmzxT9dXPhCGoXnRrU/f+b4zEUKajUol7txjlmIfRjRxZ0LvXKqxAORO4n
+        BvIzcr6xm0e9bdPt+XHImeeqAR5lowDU0Hti5FhK83VX0FzoFrS7oE76eNUV9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598468578;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RJrpPCcKjLqXf0wZytcbv1zXOaX1uadoyDCrO/SFY7s=;
+        b=EzDtDF0/AQsKODFiw32RLnCa6D1VN8prUgwkjl8nI620ELnxnk5GXzLDabg/I8HeKroVKc
+        N0RxL6wAhJBF4dCg==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fsgsbase] selftests/x86/fsgsbase: Test PTRACE_PEEKUSER for
+ GSBASE with invalid LDT GS
+Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        stable@vger.kernel.org, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <c618ae86d1f757e01b1a8e79869f553cb88acf9a.1598461151.git.luto@kernel.org>
+References: <c618ae86d1f757e01b1a8e79869f553cb88acf9a.1598461151.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <159846857768.389.6578227698972431779.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
+The following commit has been merged into the x86/fsgsbase branch of tip:
 
->> I _believe_ there are also things like AES-NI that can get strong
->> protection from stuff like this.  They load encryption keys into (AVX)
->> registers and then can do encrypt/decrypt operations without the keys
->> leaving the registers.  If the key was loaded from a secret memory area
->> right into the registers, I think the protection from cache attacks
->> would be pretty strong.
->
-> Except for context switches :)
+Commit-ID:     1b9abd1755ad947d7c9913e92e7837b533124c90
+Gitweb:        https://git.kernel.org/tip/1b9abd1755ad947d7c9913e92e7837b533124c90
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Wed, 26 Aug 2020 10:00:46 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 26 Aug 2020 20:54:18 +02:00
 
-An rseq sequence could request that the AVX registers should be
-cleared on context switch.  (I'm mostly kidding.)
+selftests/x86/fsgsbase: Test PTRACE_PEEKUSER for GSBASE with invalid LDT GS
 
-I think the main issue is that we do not have a good established
-programming model to actually use such features and completely avoid
-making copies of secret data.
+This tests commit:
+
+  8ab49526b53d ("x86/fsgsbase/64: Fix NULL deref in 86_fsgsbase_read_task")
+
+Unpatched kernels will OOPS.
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/c618ae86d1f757e01b1a8e79869f553cb88acf9a.1598461151.git.luto@kernel.org
+---
+ tools/testing/selftests/x86/fsgsbase.c | 65 +++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+)
+
+diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
+index 0056e25..7161cfc 100644
+--- a/tools/testing/selftests/x86/fsgsbase.c
++++ b/tools/testing/selftests/x86/fsgsbase.c
+@@ -443,6 +443,68 @@ static void test_unexpected_base(void)
+ 
+ #define USER_REGS_OFFSET(r) offsetof(struct user_regs_struct, r)
+ 
++static void test_ptrace_write_gs_read_base(void)
++{
++	int status;
++	pid_t child = fork();
++
++	if (child < 0)
++		err(1, "fork");
++
++	if (child == 0) {
++		printf("[RUN]\tPTRACE_POKE GS, read GSBASE back\n");
++
++		printf("[RUN]\tARCH_SET_GS to 1\n");
++		if (syscall(SYS_arch_prctl, ARCH_SET_GS, 1) != 0)
++			err(1, "ARCH_SET_GS");
++
++		if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != 0)
++			err(1, "PTRACE_TRACEME");
++
++		raise(SIGTRAP);
++		_exit(0);
++	}
++
++	wait(&status);
++
++	if (WSTOPSIG(status) == SIGTRAP) {
++		unsigned long base;
++		unsigned long gs_offset = USER_REGS_OFFSET(gs);
++		unsigned long base_offset = USER_REGS_OFFSET(gs_base);
++
++		/* Read the initial base.  It should be 1. */
++		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
++		if (base == 1) {
++			printf("[OK]\tGSBASE started at 1\n");
++		} else {
++			nerrs++;
++			printf("[FAIL]\tGSBASE started at 0x%lx\n", base);
++		}
++
++		printf("[RUN]\tSet GS = 0x7, read GSBASE\n");
++
++		/* Poke an LDT selector into GS. */
++		if (ptrace(PTRACE_POKEUSER, child, gs_offset, 0x7) != 0)
++			err(1, "PTRACE_POKEUSER");
++
++		/* And read the base. */
++		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
++
++		if (base == 0 || base == 1) {
++			printf("[OK]\tGSBASE reads as 0x%lx with invalid GS\n", base);
++		} else {
++			nerrs++;
++			printf("[FAIL]\tGSBASE=0x%lx (should be 0 or 1)\n", base);
++		}
++	}
++
++	ptrace(PTRACE_CONT, child, NULL, NULL);
++
++	wait(&status);
++	if (!WIFEXITED(status))
++		printf("[WARN]\tChild didn't exit cleanly.\n");
++}
++
+ static void test_ptrace_write_gsbase(void)
+ {
+ 	int status;
+@@ -529,6 +591,9 @@ int main()
+ 	shared_scratch = mmap(NULL, 4096, PROT_READ | PROT_WRITE,
+ 			      MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+ 
++	/* Do these tests before we have an LDT. */
++	test_ptrace_write_gs_read_base();
++
+ 	/* Probe FSGSBASE */
+ 	sethandler(SIGILL, sigill, 0);
+ 	if (sigsetjmp(jmpbuf, 1) == 0) {
