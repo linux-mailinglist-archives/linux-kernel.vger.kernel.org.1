@@ -2,163 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EBE252CA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375B6252C9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgHZLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:41:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:44602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728955AbgHZLiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:38:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A645A1FB;
-        Wed, 26 Aug 2020 04:38:04 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB0CB3F71F;
-        Wed, 26 Aug 2020 04:38:00 -0700 (PDT)
-Subject: Re: [PATCH] iommu: Add support to filter non-strict/lazy mode based
- on device names
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
-Date:   Wed, 26 Aug 2020 12:37:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729075AbgHZLlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:41:10 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50556 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728957AbgHZLiI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:38:08 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBZOVJ136150;
+        Wed, 26 Aug 2020 11:38:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=thorspxO+uvUnATnsYlvaYPnVx7I0eI7wvBM1PYZRrc=;
+ b=n3uQCDTnkt28xo5dttLlyTSH1UuxmEQ15gS0zeX2h6m/jiatFijVN7V9yQsimB76xQpu
+ QfZKYf0h8aeQ8z9YCohw1cQ93DuPaYjH2z989DhO9nG/EYS54CPDzu4Wic+VIfCOIjTH
+ KDpRtnNsI9yl9e1GAVAzGL26e05TIfiInijYkUaFYv2kKEaESF2wx+l31BriQmLMnv6D
+ EGNxMB6OVCMNcv/h099KiQWHb8GLJVgNSHk6pnsJZU137mFJJcmYDel7Sx0zh981cpn7
+ y7iS4Lv5L5TnauiQw5r6o5pGlieYq1ekFNRnwGE02WlNNMnIIOeoXrwC743DVllKBdow SA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 335gw81pf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 11:38:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBZLMo028791;
+        Wed, 26 Aug 2020 11:38:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 333r9ksn1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:38:06 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07QBc5T6023801;
+        Wed, 26 Aug 2020 11:38:05 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Aug 2020 04:38:05 -0700
+Date:   Wed, 26 Aug 2020 14:37:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] memory: emif: Remove bogus debugfs error handling
+Message-ID: <20200826113759.GF393664@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 clxscore=1011 spamscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-25 16:42, Sai Prakash Ranjan wrote:
-> Currently the non-strict or lazy mode of TLB invalidation can only be set
-> for all or no domains. This works well for development platforms where
-> setting to non-strict/lazy mode is fine for performance reasons but on
-> production devices, we need a more fine grained control to allow only
-> certain peripherals to support this mode where we can be sure that it is
-> safe. So add support to filter non-strict/lazy mode based on the device
-> names that are passed via cmdline parameter "iommu.nonstrict_device".
+Callers are generally not supposed to check the return values from
+debugfs functions.  Debugfs functions never return NULL so this error
+handling will never trigger.  (Historically debugfs functions used to
+return a mix of NULL and error pointers but it was eventually deemed too
+complicated for something which wasn't intended to be used in normal
+situations).
 
-There seems to be considerable overlap here with both the existing 
-patches for per-device default domain control [1], and the broader 
-ongoing development on how to define, evaluate and handle "trusted" vs. 
-"untrusted" devices (e.g. [2],[3]). I'd rather see work done to make 
-sure those integrate properly together and work well for everyone's 
-purposes, than add more disjoint mechanisms that only address small 
-pieces of the overall issue.
+Delete all the error handling.
 
-Robin.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/memory/emif.c | 33 +++++----------------------------
+ 1 file changed, 5 insertions(+), 28 deletions(-)
 
-[1] 
-https://lore.kernel.org/linux-iommu/20200824051726.7xaJRTTszJuzdFWGJ8YNsshCtfNR0BNeMrlILAyqt_0@z/
-[2] 
-https://lore.kernel.org/linux-iommu/20200630044943.3425049-1-rajatja@google.com/
-[3] 
-https://lore.kernel.org/linux-iommu/20200626002710.110200-2-rajatja@google.com/
+diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+index bb6a71d26798..5c4d8319c9cf 100644
+--- a/drivers/memory/emif.c
++++ b/drivers/memory/emif.c
+@@ -163,35 +163,12 @@ static const struct file_operations emif_mr4_fops = {
+ 
+ static int __init_or_module emif_debugfs_init(struct emif_data *emif)
+ {
+-	struct dentry	*dentry;
+-	int		ret;
+-
+-	dentry = debugfs_create_dir(dev_name(emif->dev), NULL);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err0;
+-	}
+-	emif->debugfs_root = dentry;
+-
+-	dentry = debugfs_create_file("regcache_dump", S_IRUGO,
+-			emif->debugfs_root, emif, &emif_regdump_fops);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err1;
+-	}
+-
+-	dentry = debugfs_create_file("mr4", S_IRUGO,
+-			emif->debugfs_root, emif, &emif_mr4_fops);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err1;
+-	}
+-
++	emif->debugfs_root = debugfs_create_dir(dev_name(emif->dev), NULL);
++	debugfs_create_file("regcache_dump", S_IRUGO, emif->debugfs_root, emif,
++			    &emif_regdump_fops);
++	debugfs_create_file("mr4", S_IRUGO, emif->debugfs_root, emif,
++			    &emif_mr4_fops);
+ 	return 0;
+-err1:
+-	debugfs_remove_recursive(emif->debugfs_root);
+-err0:
+-	return ret;
+ }
+ 
+ static void __exit emif_debugfs_exit(struct emif_data *emif)
+-- 
+2.28.0
 
-> Example: iommu.nonstrict_device="7c4000.sdhci,a600000.dwc3,6048000.etr"
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->   drivers/iommu/iommu.c | 37 +++++++++++++++++++++++++++++++++----
->   1 file changed, 33 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 609bd25bf154..fd10a073f557 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -32,6 +32,9 @@ static unsigned int iommu_def_domain_type __read_mostly;
->   static bool iommu_dma_strict __read_mostly = true;
->   static u32 iommu_cmd_line __read_mostly;
->   
-> +#define DEVICE_NAME_LEN		1024
-> +static char nonstrict_device[DEVICE_NAME_LEN] __read_mostly;
-> +
->   struct iommu_group {
->   	struct kobject kobj;
->   	struct kobject *devices_kobj;
-> @@ -327,6 +330,32 @@ static int __init iommu_dma_setup(char *str)
->   }
->   early_param("iommu.strict", iommu_dma_setup);
->   
-> +static int __init iommu_nonstrict_filter_setup(char *str)
-> +{
-> +	strlcpy(nonstrict_device, str, DEVICE_NAME_LEN);
-> +	return 1;
-> +}
-> +__setup("iommu.nonstrict_device=", iommu_nonstrict_filter_setup);
-> +
-> +static bool iommu_nonstrict_device(struct device *dev)
-> +{
-> +	char *filter, *device;
-> +
-> +	if (!dev)
-> +		return false;
-> +
-> +	filter = kstrdup(nonstrict_device, GFP_KERNEL);
-> +	if (!filter)
-> +		return false;
-> +
-> +	while ((device = strsep(&filter, ","))) {
-> +		if (!strcmp(device, dev_name(dev)))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   static ssize_t iommu_group_attr_show(struct kobject *kobj,
->   				     struct attribute *__attr, char *buf)
->   {
-> @@ -1470,7 +1499,7 @@ static int iommu_get_def_domain_type(struct device *dev)
->   
->   static int iommu_group_alloc_default_domain(struct bus_type *bus,
->   					    struct iommu_group *group,
-> -					    unsigned int type)
-> +					    unsigned int type, struct device *dev)
->   {
->   	struct iommu_domain *dom;
->   
-> @@ -1489,7 +1518,7 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
->   	if (!group->domain)
->   		group->domain = dom;
->   
-> -	if (!iommu_dma_strict) {
-> +	if (!iommu_dma_strict || iommu_nonstrict_device(dev)) {
->   		int attr = 1;
->   		iommu_domain_set_attr(dom,
->   				      DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
-> @@ -1509,7 +1538,7 @@ static int iommu_alloc_default_domain(struct iommu_group *group,
->   
->   	type = iommu_get_def_domain_type(dev);
->   
-> -	return iommu_group_alloc_default_domain(dev->bus, group, type);
-> +	return iommu_group_alloc_default_domain(dev->bus, group, type, dev);
->   }
->   
->   /**
-> @@ -1684,7 +1713,7 @@ static void probe_alloc_default_domain(struct bus_type *bus,
->   	if (!gtype.type)
->   		gtype.type = iommu_def_domain_type;
->   
-> -	iommu_group_alloc_default_domain(bus, group, gtype.type);
-> +	iommu_group_alloc_default_domain(bus, group, gtype.type, NULL);
->   
->   }
->   
-> 
-> base-commit: e46b3c0d011eab9933c183d5b47569db8e377281
-> 
