@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FF525330C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169042532B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgHZPLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:11:24 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9758 "EHLO mga04.intel.com"
+        id S1727892AbgHZPBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:01:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44046 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbgHZPLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:11:21 -0400
-IronPort-SDR: H1Yipx6mPrnOIvHMmy0IHteadnYW3ANZaBEFkUjkAP595VDcoWnWfg6Pi7uJGqJwBykTL4Kdy8
- BvlNEqNAo1Rg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153729687"
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="153729687"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:21 -0700
-IronPort-SDR: Kqzb7ZXAZ8xX5SlEi/WxQq5DXzfNtH2AFLCDJqB4ItflV1I+fWFym6ZPnOZw0sYNJuGfbTurLm
- 4y58MMJou79A==
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="299505099"
-Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51]) ([10.255.231.51])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:19 -0700
-Subject: Re: [PATCH 3/4] soundwire: SDCA: add helper macro to access controls
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        alsa-devel@alsa-project.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
-        srinivas.kandagatla@linaro.org, jank@cadence.com,
-        slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>
-References: <20200825171656.75836-1-pierre-louis.bossart@linux.intel.com>
- <20200825171656.75836-4-pierre-louis.bossart@linux.intel.com>
- <20200826085540.GY2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9c078341-7e90-a4e8-da30-19e9720d93e4@linux.intel.com>
-Date:   Wed, 26 Aug 2020 10:00:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726752AbgHZPBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:01:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598454099; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Es/0pFaKnR2kzEaSjZ72M+ID+T80ab88lrWvsjkbJzY=;
+ b=VlMSZg8VEvvoYkuAAVbTYtnXVytEWM1XS7upZ8DfMczf2Qmg2O9qQNjAMRGXgBiRxLX3BedS
+ 0+B//vCTN4A8mVgehYBe0RQgSKS2GAK627FBhK8Fev9Nl5T6gUBcGHuDnsNR4alWSKzo/rmJ
+ IGg7gGoiOhxtroGIfZpysRwGy7U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f46793138ba93790fc76c4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 Aug 2020 15:01:05
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E7010C4339C; Wed, 26 Aug 2020 15:01:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73DB9C433A1;
+        Wed, 26 Aug 2020 15:01:03 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200826085540.GY2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 Aug 2020 20:31:03 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] iommu: Add support to filter non-strict/lazy mode based
+ on device names
+In-Reply-To: <a03ce8f0-cab5-2782-ac50-930cf94b7dcd@arm.com>
+References: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
+ <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
+ <d9b1f1b614057d87279c26e13cbbb1f5@codeaurora.org>
+ <a03ce8f0-cab5-2782-ac50-930cf94b7dcd@arm.com>
+Message-ID: <f8ac8f57bcf10b2218b4795197efb854@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
->> +/* v1.2 device - SDCA address mapping */
+On 2020-08-26 19:21, Robin Murphy wrote:
+> On 2020-08-26 13:17, Sai Prakash Ranjan wrote:
+>> On 2020-08-26 17:07, Robin Murphy wrote:
+>>> On 2020-08-25 16:42, Sai Prakash Ranjan wrote:
+>>>> Currently the non-strict or lazy mode of TLB invalidation can only 
+>>>> be set
+>>>> for all or no domains. This works well for development platforms 
+>>>> where
+>>>> setting to non-strict/lazy mode is fine for performance reasons but 
+>>>> on
+>>>> production devices, we need a more fine grained control to allow 
+>>>> only
+>>>> certain peripherals to support this mode where we can be sure that 
+>>>> it is
+>>>> safe. So add support to filter non-strict/lazy mode based on the 
+>>>> device
+>>>> names that are passed via cmdline parameter 
+>>>> "iommu.nonstrict_device".
+>>> 
+>>> There seems to be considerable overlap here with both the existing
+>>> patches for per-device default domain control [1], and the broader
+>>> ongoing development on how to define, evaluate and handle "trusted"
+>>> vs. "untrusted" devices (e.g. [2],[3]). I'd rather see work done to
+>>> make sure those integrate properly together and work well for
+>>> everyone's purposes, than add more disjoint mechanisms that only
+>>> address small pieces of the overall issue.
+>>> 
+>>> Robin.
+>>> 
+>>> [1]
+>>> https://lore.kernel.org/linux-iommu/20200824051726.7xaJRTTszJuzdFWGJ8YNsshCtfNR0BNeMrlILAyqt_0@z/ 
+>>> [2]
+>>> https://lore.kernel.org/linux-iommu/20200630044943.3425049-1-rajatja@google.com/ 
+>>> [3]
+>>> https://lore.kernel.org/linux-iommu/20200626002710.110200-2-rajatja@google.com/
+>> 
+>> Thanks for the links, [1] definitely sounds interesting, I was under 
+>> the impression
+>> that changing such via sysfs is late, but seems like other Sai has got 
+>> it working
+>> for the default domain type. So we can extend that and add a strict 
+>> attribute as well,
+>> we should be definitely OK with system booting with default strict 
+>> mode for all
+>> peripherals as long as we have an option to change that later, Doug?
 > 
-> Can you please add description of bits used by each field here,
-> something like we have done for DevId
-
-were you referring to something like this?
-
-  * Spec definition
-  *   Register		Bit	Contents
-  *   DevId_0 [7:4]	47:44	sdw_version
-  *   DevId_0 [3:0]	43:40	unique_id
-  *   DevId_1		39:32	mfg_id [15:8]
-  *   DevId_2		31:24	mfg_id [7:0]
-  *   DevId_3		23:16	part_id [15:8]
-  *   DevId_4		15:08	part_id [7:0]
-  *   DevId_5		07:00	class_id
-
+> Right, IIRC there was initially a proposal of a command line option
+> there too, and it faced the same criticism around not being very
+> generic or scalable. I believe sysfs works as a reasonable compromise
+> since in many cases it can be tweaked relatively early from an initrd,
+> and non-essential devices can effectively be switched at any time by
+> removing and reprobing their driver.
 > 
->> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
->> +						 (((fun) & 0x7) << 22) |	\
->> +						 (((ent) & 0x40) << 15) |	\
->> +						 (((ent) & 0x3f) << 7) |	\
->> +						 (((ctl) & 0x30) << 15) |	\
->> +						 (((ctl) & 0x0f) << 3) |	\
->> +						 (((ch) & 0x38) << 12) |	\
->> +						 ((ch) & 0x07))
-> 
-> GENMASK() for the bitmaps here please. Also it would look very neat by
-> using FIELD_PREP() here, you can skip the bit shifts and they would be
-> done by FIELD_PREP() for you.
 
-ok.
+Ah I see, so the catch is that device must not be bound to the driver
+and won't work for the internal devices or builtin drivers probed early.
+
+-Sai
+
+> As for a general approach for internal devices where you do believe
+> the hardware is honest but don't necessarily trust whatever firmware
+> it happens to be running, I'm pretty sure that's come up already, but
+> I'll be sure to mention it at Rajat's imminent LPC talk if nobody else
+> does.
+> 
+> Robin.
+
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
