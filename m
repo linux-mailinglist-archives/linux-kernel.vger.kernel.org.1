@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282D7253642
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4959253648
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgHZSE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 14:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
+        id S1726820AbgHZSGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 14:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHZSEy (ORCPT
+        with ESMTP id S1726187AbgHZSGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:04:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D734C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:04:53 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m22so3416946ljj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WS/uJxuwiLHzldorNgMUOjPOOvCspP/oXyUz1rKFvLY=;
-        b=gsl5MMtpFNjAqrtJTRY10b6SSrB695wNhgGZ6I864ob20EWqPgWYXe7hztu360LCIz
-         Bjd31nxkTx3ZxjFZilSSbLw0bSNbgFN95BuF3Ay9Zjo/uP/uhRyADieYZsLTvpujmFRZ
-         nNRbOTiwJDThrxDAFViWi7YqXoD/BG3OChA7w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WS/uJxuwiLHzldorNgMUOjPOOvCspP/oXyUz1rKFvLY=;
-        b=XvU8vIrvHGG6nICs0lFr5ijRAXv9hX7F/tm69mMBN3PwiR3tPR6PeZuS+Rs7adXQR9
-         WyH1Xlxhjy3noHD3mzaDO/LX2TMiWdmhr5ppOHC8eKEXuU+oEBkeaBJvgorncILko4gb
-         VeW6d5/RuQonY+7U9A1AOcRJxZsRZIgScKOPMoXYKNgNbOvvxjOhZC/NyHsv16mPkumj
-         oR2ewegrUCRwu72p6TIln33srlxeY+ltVMZrc0DvTQHtOdzOROfiHzaNSp0WxNEfCMo8
-         6TBSrw+3sW2oM7lVGQuvxfUPjmB5wD3cMrkNVYRNWwBPwnhho9CrKlelAiz6wSoJUkpo
-         bLFw==
-X-Gm-Message-State: AOAM530OJ0ikQEJmI3iGtegky3XL2Gbp/WaCUDLIFqXIeMuWEyi//JLI
-        0ryT56BzsUT2Pj6yxBgdp3evdgO30JIAQw==
-X-Google-Smtp-Source: ABdhPJyAyGLPrUmnu+6I1q0nVRRozt9sSCTUopcLhlnuVfVm9MNcRm3xqq+OWDV5F8V1wO5hSR6Bww==
-X-Received: by 2002:a05:651c:231:: with SMTP id z17mr7194727ljn.109.1598465091385;
-        Wed, 26 Aug 2020 11:04:51 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id d13sm724749lfl.89.2020.08.26.11.04.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 11:04:49 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id i10so3441224ljn.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:04:49 -0700 (PDT)
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr6907538ljk.421.1598465088967;
- Wed, 26 Aug 2020 11:04:48 -0700 (PDT)
+        Wed, 26 Aug 2020 14:06:36 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68EDC061574;
+        Wed, 26 Aug 2020 11:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Yzdof1CrmZPvQSdWOfnC4TP7kZhRZYrI2aPOvWW4r0c=; b=HCgGTSL+FAaNQNPUZggHMSb/qU
+        IOTBhz+Gg+i0Vgo1UqD00Xd1bY4o0NmLCN8nqXTxmBC9NFAKFsSUyOKarB2Wposx0hpyb+zOmjPQg
+        N1Pj5XE7fwFSollzF5tTgqRkMuu3E7DOs1Hv/6P26G6/qt/ghuswHev9pEistMeEjTY1CssjjxRBc
+        xwh89LItYYWmXe4EzAChp0L/kw46jqk6qV3ytzIhypWPSvzAq+po7+V6OPpo2DNMcRrjU6ANbB9n5
+        m82JxLjOc3XD6u9xeBAE80WxpjiuIGjy+VPGHlMe46+dWX+djVwLoICRL5d606rF0oLtfkH1hq+ld
+        YZ6UJ8rA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAzoa-0000W1-VS; Wed, 26 Aug 2020 18:06:29 +0000
+Subject: Re: [PATCH v6 6/6] Documentation: ACPI: Document
+ allow-low-power-probe _DSD property
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        linux-media@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
+References: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
+ <20200826115432.6103-7-sakari.ailus@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ac5a7cb9-7fd1-fb73-b872-d5a58846d99f@infradead.org>
+Date:   Wed, 26 Aug 2020 11:06:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200817161132.GA4711@amd> <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
- <CAPM=9tw8LVWsuA6m_nkUDgm00iz2txYRNZY0b0WWZbyiUVzLEw@mail.gmail.com>
- <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
- <20200820092349.GA3792@amd> <CAHk-=wjX=ck_u8uvp=PjGCQ3M9igE-yqyRPsJ54th1gQWpwMnA@mail.gmail.com>
- <20200821091900.hzbivycs5ky5d3iw@duo.ucw.cz> <87tuwr59te.fsf@intel.com>
- <7efa547d-b7a4-b873-f1aa-4f19eb849fa3@skogtun.org> <CAHk-=wj3WskPCtHncCWLdaP6xVecLp8bDBTT57vyiU-0=Ld6QQ@mail.gmail.com>
- <d4db4a52-3001-cb02-4888-a9dfd55cdd7c@skogtun.org> <656b8f9f-d696-c75d-aef6-2b8b5170f2f6@skogtun.org>
-In-Reply-To: <656b8f9f-d696-c75d-aef6-2b8b5170f2f6@skogtun.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 26 Aug 2020 11:04:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiAK=AiqTD47o-BFFZciQXpEC0SiiDnXLWJUcQtCo-Pig@mail.gmail.com>
-Message-ID: <CAHk-=wiAK=AiqTD47o-BFFZciQXpEC0SiiDnXLWJUcQtCo-Pig@mail.gmail.com>
-Subject: Re: [Intel-gfx] 5.9-rc1: graphics regression moved from -next to mainline
-To:     Harald Arnesen <harald@skogtun.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Dave Airlie <airlied@gmail.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200826115432.6103-7-sakari.ailus@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 2:30 AM Harald Arnesen <harald@skogtun.org> wrote:
->
-> Somehow related to lightdm or xfce4? However, it is a regression, since
-> kernel 5.8 works.
+On 8/26/20 4:54 AM, Sakari Ailus wrote:
+> Document the probe-low-power _DSD property and how it is used with I²C
+> drivers.
+> 
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+>  .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++++++++
+>  Documentation/firmware-guide/acpi/index.rst   |  1 +
+>  2 files changed, 29 insertions(+)
+>  create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
+> 
+> diff --git a/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
+> new file mode 100644
+> index 0000000000000..6fcc89162b898
+> --- /dev/null
+> +++ b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
+> @@ -0,0 +1,28 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +======================================
+> +Probing I²C devices in low power state
+> +======================================
+> +
+> +Introduction
+> +============
+> +
+> +In some cases it may be preferred to leave certain devices powered off for the
+> +entire system bootup if powering on these devices has adverse side effects,
+> +beyond just powering on the said device. Linux recognizes the _DSD property
+> +"allow-low-power-probe" that can be used for this purpose.
+> +
+> +How it works
+> +============
+> +
+> +The property "allow-low-power-probe" boolean property may be used to tell Linux
 
-Yeah, apparently there's something else wrong with the relocation changes too.
+Drop the first "property".
 
-That said, does that patch at
+> +that the I²C framework should instruct the kernel ACPI framework to leave the
+> +device in the low power state. If the driver indicates its support for this by
+> +setting the I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag in struct i2c_driver.flags
+> +field and the "allow-low-power-probe" property is present, the device will not
+> +be powered on for probe.
 
-  https://lore.kernel.org/intel-gfx/20200821123746.16904-1-joro@8bytes.org/
+thanks.
+-- 
+~Randy
 
-change things at all? If there are two independent bugs, maybe
-applying that patch might at least give you an oops that gets saved in
-the logs?
-
-(it might be worth waiting a bit after the machine locks up in case
-the machine is alive enough so sync logs after a bit.. If ssh works,
-that's obviously better yet)
-
-              Linus
