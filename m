@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1233253691
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123AB2536AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgHZST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 14:19:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727937AbgHZSS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:18:57 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66921214F1;
-        Wed, 26 Aug 2020 18:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598465937;
-        bh=IUvTqqXBFc4hRe8hE39JcMQiPU85dhjMfKQTxHNFxas=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WfADOt/TlUwzElF8vASKklglMVOxWZhclG0AOj7/fTodFk6dogEnDdIvtp/4g4bnv
-         nEhaXLlXSZe/gB4AOMS5FVFjL/3KpSonsWT9JLBivFJYWSNa2HYazJHuLm6q5QbwUB
-         6yBSk+sK1pU/Oxb0ir9kS8sicymtREOp73Wkcxkw=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 24/24] Input: sx8643 - Simplify with dev_err_probe()
-Date:   Wed, 26 Aug 2020 20:17:06 +0200
-Message-Id: <20200826181706.11098-24-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200826181706.11098-1-krzk@kernel.org>
-References: <20200826181706.11098-1-krzk@kernel.org>
+        id S1728052AbgHZSUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 14:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgHZSRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 14:17:31 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9C4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:17:27 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so2806276wro.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y6ou1YIg6/FSZwY6sCFlxyJXSS2U1nvtnVmIFITiGPk=;
+        b=MxnkLlVmtCcScdoWsKa8tkyeuJTdWCXa+GhoLiRAMUculUoCi6QlgZqMBu50pdj1E2
+         ENHqlArPo/uwpjZ7fjUAItyvX4NA/RGIirDmsw3a58G37cfKzv/UDyAqjYGifh8t+30d
+         MJdnHS+XiGwEP2ZyX3m2e9ASoK19I/qva0lWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y6ou1YIg6/FSZwY6sCFlxyJXSS2U1nvtnVmIFITiGPk=;
+        b=m23aeBDsP70JKFcVxnWWGeN7Rnne17iAzIwtl4aT7P5re7AJrONVTO7+Tk0k0/xdyP
+         636seERMngJLYb6T6TYH8FECkHDohUM3sTWdNi9QrZs731aEBfS/P3E+iQr77VpnTdrT
+         gyVCjRYKi737ZPskeynDk6J1dMaqTD2TeZ6Jkzuu0SEePaLOroR97/pzkC+KcoA6NlkI
+         wSGCIDZuo1uEXFIyY4jMFCqHrLmC7V1s/klvnOTpBE+4v4ca9jYIJjwiCVwDFgs2Cn0s
+         nHIBmJuFf21vzFDoBFjh3T7YHuumM2Br3XjQ44Lx8fa6LPb7P2JuKvtGg7gwblsYj9R+
+         BWcQ==
+X-Gm-Message-State: AOAM530vStcjoA4GB9dpj0S19GTc6wUqDPtHTpgIsYxi/t8fuuiTVKlc
+        leSREHBfqDPD4rml2rm0rH2k3Q==
+X-Google-Smtp-Source: ABdhPJyGF58PxyEr+qbqcdQwHAQEk+hu1MR5ecSAWIYbHlJJCdRwZbU1YlLYxCkFy3QQ2wJ40JOTKw==
+X-Received: by 2002:adf:b1cf:: with SMTP id r15mr17866122wra.118.1598465846190;
+        Wed, 26 Aug 2020 11:17:26 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id o2sm7485419wrj.21.2020.08.26.11.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 11:17:25 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 19:17:25 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: memcg: Fix memcg reclaim soft lockup
+Message-ID: <20200826181725.GA893402@chrisdown.name>
+References: <1598449622-108748-1-git-send-email-xlpang@linux.alibaba.com>
+ <20200826141044.GA831829@chrisdown.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200826141044.GA831829@chrisdown.name>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and also it prints the error value.
+Chris Down writes:
+>Xunlei Pang writes:
+>>Add cond_resched() at the upper shrink_node_memcgs() to solve this
+>>issue, and any other possible issue like meomry.min protection.
+>
+>I understand the general intent of the patch, but could you clarify 
+>your concern around memory protection?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/input/touchscreen/sx8654.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Oh, I see, your concern is just preemption in general rather than a fixing 
+anything for the memory protection side. In which case, go for it, but I agree 
+with Michael that it would be nice to send v3 with a clarifying comment.
 
-diff --git a/drivers/input/touchscreen/sx8654.c b/drivers/input/touchscreen/sx8654.c
-index de85e57b2486..d2ed9be64c3a 100644
---- a/drivers/input/touchscreen/sx8654.c
-+++ b/drivers/input/touchscreen/sx8654.c
-@@ -323,13 +323,9 @@ static int sx8654_probe(struct i2c_client *client,
- 
- 	sx8654->gpio_reset = devm_gpiod_get_optional(&client->dev, "reset",
- 						     GPIOD_OUT_HIGH);
--	if (IS_ERR(sx8654->gpio_reset)) {
--		error = PTR_ERR(sx8654->gpio_reset);
--		if (error != -EPROBE_DEFER)
--			dev_err(&client->dev, "unable to get reset-gpio: %d\n",
--				error);
--		return error;
--	}
-+	if (IS_ERR(sx8654->gpio_reset))
-+		return dev_err_probe(&client->dev, PTR_ERR(sx8654->gpio_reset),
-+				     "unable to get reset-gpio\n");
- 	dev_dbg(&client->dev, "got GPIO reset pin\n");
- 
- 	sx8654->data = device_get_match_data(&client->dev);
--- 
-2.17.1
-
+Acked-by: Chris Down <chris@chrisdown.name>
