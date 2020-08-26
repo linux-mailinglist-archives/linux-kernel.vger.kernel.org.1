@@ -2,172 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE15B253180
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B56B2531B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgHZOhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:37:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726690AbgHZOhq (ORCPT
+        id S1727017AbgHZOpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:45:04 -0400
+Received: from alln-iport-4.cisco.com ([173.37.142.91]:20967 "EHLO
+        alln-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726700AbgHZOpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:37:46 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QEYtOg142777;
-        Wed, 26 Aug 2020 10:37:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Z558S2nodXLm4F/1ZPPki9oJvRdlnNOJaMdxJSjvL/g=;
- b=aVQlORT09BYK3fDkFGQefoV5xK4mz0LJfg9CSLhbdRX1GoPDxxVaG13f9xTOIyQEQlLg
- JpC3jEXRQOv2e8VsRwtFS/rjbsJ+A5xnvvT3vjTPfww4I5PCsIFdUD5Rcy42Ork3Sdvl
- QPVBc0i3J9k7XJOI9utc+eEeQ951tTRXbW7Dbq3LdNeNASShBpqHSIvAW6zDqfv7VVod
- zjdW9rwzmT5NptpCPzoITftnjjKzMhKDlhXrlb6rHmXqf3iotRaKf37EMy6BGasmmetq
- tcPhuGVVXxq3TQOx92IBzzxao/yMQzUm/1Ua4XgtNgtYaPR2n8vuicMZWoWHvLbs8E39 Ng== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335sccrjxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 10:37:28 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QEZ6Fm143953;
-        Wed, 26 Aug 2020 10:37:28 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335sccrjwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 10:37:28 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QELqgK024981;
-        Wed, 26 Aug 2020 14:37:27 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma02dal.us.ibm.com with ESMTP id 335kvcb299-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 14:37:27 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QEbQ3749021196
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 14:37:26 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DC3AB206A;
-        Wed, 26 Aug 2020 14:37:26 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88462B2064;
-        Wed, 26 Aug 2020 14:37:22 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.63.208])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Aug 2020 14:37:22 +0000 (GMT)
-Subject: Re: [RFC] perf/core: Fixes hung issue on perf stat command during cpu
- hotplug
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com
-References: <20200826093236.446024-1-kjain@linux.ibm.com>
- <20200826132107.GH1059382@kernel.org>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <135a1238-9a43-8335-e8a6-961678e95f65@linux.ibm.com>
-Date:   Wed, 26 Aug 2020 20:07:20 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200826132107.GH1059382@kernel.org>
-Content-Type: text/plain; charset=utf-8
+        Wed, 26 Aug 2020 10:45:00 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Aug 2020 10:44:59 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1372; q=dns/txt; s=iport;
+  t=1598453099; x=1599662699;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=9yim39Oi0ab7s77M3U/AMtE/O7yogxRbNiyxIf6affk=;
+  b=OsCV4udQ9nZnyesUVxoFlIYnZF3T88Tvi4xmZDHNhNVJ/F76V6XBRsDx
+   acfBAcN8L0ohhj+P/Xgjvg3TNJjgmUTbI02BnweVdEMn48IpQtowlLxOt
+   eGMjJJlJPtXUBi9GpEqpWRu4OIkYL/QpAmUfN0Ka5dkBxoNUrpCCO2hak
+   w=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0CHCQBRc0Zf/4QNJK1fHgEBCxIMQIM?=
+ =?us-ascii?q?/NYFILzaGQ5QSAZckCwEBAQwBAS0CBAEBhEwCgjgCJDgTAgMBAQsBAQUBAQE?=
+ =?us-ascii?q?CAQYEbYVohXMGeRACAQgOEyUPIyUCBA6GKLBHdIE0ikiBOI0kG4FBP4QhPoQ?=
+ =?us-ascii?q?9hXcEj2mCYwGkAQoggkOaKyGgPrISAhEVgTM4I4FXcBWDJU8XAg2OVo4QgSs?=
+ =?us-ascii?q?CBgoBAQMJfI5yAYEQAQE?=
+X-IronPort-AV: E=Sophos;i="5.76,356,1592870400"; 
+   d="scan'208";a="532081834"
+Received: from alln-core-10.cisco.com ([173.36.13.132])
+  by alln-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 26 Aug 2020 14:37:50 +0000
+Received: from XCH-ALN-004.cisco.com (xch-aln-004.cisco.com [173.36.7.14])
+        by alln-core-10.cisco.com (8.15.2/8.15.2) with ESMTPS id 07QEbnek013265
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 14:37:50 GMT
+Received: from xch-aln-004.cisco.com (173.36.7.14) by XCH-ALN-004.cisco.com
+ (173.36.7.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 Aug
+ 2020 09:37:49 -0500
+Received: from xch-aln-004.cisco.com ([173.36.7.14]) by XCH-ALN-004.cisco.com
+ ([173.36.7.14]) with mapi id 15.00.1497.000; Wed, 26 Aug 2020 09:37:49 -0500
+From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+To:     David Miller <davem@davemloft.net>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "mkubecek@suse.cz" <mkubecek@suse.cz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] net: core: SIOCADDMULTI/SIOCDELMULTI distinguish
+ between uc and mc
+Thread-Topic: [PATCH v2] net: core: SIOCADDMULTI/SIOCDELMULTI distinguish
+ between uc and mc
+Thread-Index: AQHWdL9DX5EiyZGf0UOak/RKEYMGSak9MBOAgA1Ly40=
+Date:   Wed, 26 Aug 2020 14:37:49 +0000
+Message-ID: <1598452669073.46639@cisco.com>
+References: <20200817175224.49608-1-dzagorui@cisco.com>,<20200817.150803.1838250925233891556.davem@davemloft.net>
+In-Reply-To: <20200817.150803.1838250925233891556.davem@davemloft.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_09:2020-08-26,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
- phishscore=0 malwarescore=0 mlxscore=0 clxscore=1015 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260108
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [173.38.209.7]
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Outbound-SMTP-Client: 173.36.7.14, xch-aln-004.cisco.com
+X-Outbound-Node: alln-core-10.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/26/20 6:51 PM, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Aug 26, 2020 at 03:02:36PM +0530, Kajol Jain escreveu:
->> Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
->> added assignment of ret value as -EAGAIN in case function
->> call to 'smp_call_function_single' fails.
->> For non-zero ret value, it did 
->> 'ret = !ret ? data.ret : -EAGAIN;', which always
->> assign -EAGAIN to ret and make second if condition useless.
->>
->> In scenarios like when executing a perf stat with --per-thread option, and 
->> if any of the monitoring cpu goes offline, the 'smp_call_function_single'
->> function could return -ENXIO, and with the above check,
->> task_function_call hung and increases CPU
->> usage (because of repeated 'smp_call_function_single()')
->>
->> Recration scenario:
->> 	# perf stat -a --per-thread && (offline a CPU )
-> 
-> Peter, this is kernel stuff, can you take a look?
-> 
-> - Arnaldo
->  
->> Patch here removes the tertiary condition added as part of that 
->> commit and added a check for NULL and -EAGAIN.
->>
->> Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
->> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
->> ---
->>  kernel/events/core.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 5bfe8e3c6e44..330c53f7df9c 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -115,9 +115,9 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
->>  	for (;;) {
->>  		ret = smp_call_function_single(task_cpu(p), remote_function,
->>  					       &data, 1);
->> -		ret = !ret ? data.ret : -EAGAIN;
->> -
->> -		if (ret != -EAGAIN)
->> +		if (!ret)
->> +			ret = data.ret;
->> +		else if (ret != -EAGAIN)
->>  			break;
->>  
->>  		cond_resched();
->> -- 
-
-Hi,
-  Sorry for the confusion, I send wrong version of the patch. We don't have else in second
-condition.
-
-The right patch changes are:
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 5bfe8e3c6e44..53d960394af9 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -115,8 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
-        for (;;) {
-                ret = smp_call_function_single(task_cpu(p), remote_function,
-                                               &data, 1);
--               ret = !ret ? data.ret : -EAGAIN;
--
-+               if (!ret)
-+                       ret = data.ret;
-                if (ret != -EAGAIN)
-                        break;
-
-I will again send the patch, please ignore this one.
-
-Thanks,
-Kajol Jain
- 
->> 2.26.2
->>
-> 
+>This doesn't seem appropriate at all.  If anything UC addresses=0A=
+>should be blocked and the Intel driver change reverted.  We have=0A=
+>a well defined way to add secondary UC addresses and the MC interfaces=0A=
+>are not it.=0A=
+=0A=
+As I understand by =91well defined way=92 you mean macvlan feature. But mac=
+vlan =0A=
+is more virtualisation thing where an additional netdevice is created and f=
+or each=0A=
+skb passed to linux stack hash_lookup is made to find a netdevice to which =
+this=0A=
+skb belongs to based on mac_dst. In case if someone want to have a network=
+=0A=
+protocol on top of physical layer (AF_PACKET) where NIC should allow severa=
+l uc=0A=
+mac addr without enabling promiscuous mode i am not sure that for this simp=
+le=0A=
+task macvlan is needed.=0A=
+=0A=
+>Furthermore, even if this was appropriate, "fixing" this only for=0A=
+>ethernet is definitely not appropriate.  The fix would need to be able=0A=
+>to handle any address type.  Having a generic interface work=0A=
+>inconsistently for one link type vs. another is a non-starter.=0A=
+=0A=
+Maybe overusing multicast api isn=92t the best choice for this purpose, but=
+ i noticed=0A=
+that it is already overused by i40 for the same purpose, that is why i sugg=
+ested=0A=
+this diff. Anyway i can add separate ioctls for add/del secondary uc, if th=
+is is worth it.=
