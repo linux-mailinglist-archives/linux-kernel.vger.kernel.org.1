@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F23252E8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C720252E90
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgHZMPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:15:43 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:47994 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729373AbgHZMPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:15:41 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCXP6gxUkZfNt8_Aw--.39637S4;
-        Wed, 26 Aug 2020 20:14:44 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rrichter@marvell.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ericsson.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] EDAC: i5100_edac: Fix error handling code in i5100_init_one
-Date:   Wed, 26 Aug 2020 20:14:37 +0800
-Message-Id: <20200826121437.31606-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCXP6gxUkZfNt8_Aw--.39637S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4rCrWrXFyUuw17WFW8Xrb_yoW8Gr4xpr
-        9xG34fAry8WayY9r1UAr18XF15tFWqva43KFWxC3yag3ZxZFyktFWSqay7CFnFvFWkJFW3
-        Xwn7ta48uF18AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxE
-        wVAFwVW5JwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I
-        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
-        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
-        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0
-        rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5rWrDUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAKsP
+        id S1729799AbgHZMRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:17:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55630 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729204AbgHZMRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:17:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598444267; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=r/4qUAmqAI0V7gRbqKrmT3zgfbrjj739xnjXpNtJKmA=;
+ b=GDiKgTSHWLx1s+asZxT8GL9dkYuH39hOzz7wP1w1AYNoAQnZCdZmEPhAWjg+adJZEUvR2A8D
+ QqZL+gjPCfFKFfVVfCYrjASBeUlZoun7xGNsKTpLStOR1sC/B//zHhHq87HLmaldDZc8mviT
+ 4ofeG/+soviVgA8amqiA0rbAKK4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f4652dcf4c0f8ce20da78b3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 Aug 2020 12:17:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3762FC433A1; Wed, 26 Aug 2020 12:17:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D919C433CA;
+        Wed, 26 Aug 2020 12:17:30 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 Aug 2020 17:47:30 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] iommu: Add support to filter non-strict/lazy mode based
+ on device names
+In-Reply-To: <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
+References: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
+ <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
+Message-ID: <d9b1f1b614057d87279c26e13cbbb1f5@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pci_get_device_func() fails, we don't need to execute
-pci_dev_put(). But mci should be freed to prevent memleak.
-When pci_enable_device() fails, we don't need to disable
-einj either.
+On 2020-08-26 17:07, Robin Murphy wrote:
+> On 2020-08-25 16:42, Sai Prakash Ranjan wrote:
+>> Currently the non-strict or lazy mode of TLB invalidation can only be 
+>> set
+>> for all or no domains. This works well for development platforms where
+>> setting to non-strict/lazy mode is fine for performance reasons but on
+>> production devices, we need a more fine grained control to allow only
+>> certain peripherals to support this mode where we can be sure that it 
+>> is
+>> safe. So add support to filter non-strict/lazy mode based on the 
+>> device
+>> names that are passed via cmdline parameter "iommu.nonstrict_device".
+> 
+> There seems to be considerable overlap here with both the existing
+> patches for per-device default domain control [1], and the broader
+> ongoing development on how to define, evaluate and handle "trusted"
+> vs. "untrusted" devices (e.g. [2],[3]). I'd rather see work done to
+> make sure those integrate properly together and work well for
+> everyone's purposes, than add more disjoint mechanisms that only
+> address small pieces of the overall issue.
+> 
+> Robin.
+> 
+> [1]
+> https://lore.kernel.org/linux-iommu/20200824051726.7xaJRTTszJuzdFWGJ8YNsshCtfNR0BNeMrlILAyqt_0@z/
+> [2]
+> https://lore.kernel.org/linux-iommu/20200630044943.3425049-1-rajatja@google.com/
+> [3]
+> https://lore.kernel.org/linux-iommu/20200626002710.110200-2-rajatja@google.com/
+> 
 
-Fixes: 52608ba205461 ("i5100_edac: probe for device 19 function 0")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/edac/i5100_edac.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Thanks for the links, [1] definitely sounds interesting, I was under the 
+impression
+that changing such via sysfs is late, but seems like other Sai has got 
+it working
+for the default domain type. So we can extend that and add a strict 
+attribute as well,
+we should be definitely OK with system booting with default strict mode 
+for all
+peripherals as long as we have an option to change that later, Doug?
 
-diff --git a/drivers/edac/i5100_edac.c b/drivers/edac/i5100_edac.c
-index 191aa7c19ded..410bbe55cd3f 100644
---- a/drivers/edac/i5100_edac.c
-+++ b/drivers/edac/i5100_edac.c
-@@ -1061,13 +1061,13 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 				    PCI_DEVICE_ID_INTEL_5100_19, 0);
- 	if (!einj) {
- 		ret = -ENODEV;
--		goto bail_einj;
-+		goto bail_free;
- 	}
- 
- 	rc = pci_enable_device(einj);
- 	if (rc < 0) {
- 		ret = rc;
--		goto bail_disable_einj;
-+		goto bail_einj;
- 	}
- 
- 
-@@ -1136,14 +1136,14 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- bail_scrub:
- 	priv->scrub_enable = 0;
- 	cancel_delayed_work_sync(&(priv->i5100_scrubbing));
--	edac_mc_free(mci);
--
--bail_disable_einj:
- 	pci_disable_device(einj);
- 
- bail_einj:
- 	pci_dev_put(einj);
- 
-+bail_free:
-+	edac_mc_free(mci);
-+
- bail_disable_ch1:
- 	pci_disable_device(ch1mm);
- 
+Thanks,
+Sai
+
 -- 
-2.17.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
