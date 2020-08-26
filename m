@@ -2,68 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8302532F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F8D253313
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgHZPJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:09:01 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:18242 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726739AbgHZPI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:08:58 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea5f467afd636-5b72a; Wed, 26 Aug 2020 23:08:45 +0800 (CST)
-X-RM-TRANSID: 2eea5f467afd636-5b72a
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.0.144.112])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25f467afb20d-10b8c;
-        Wed, 26 Aug 2020 23:08:45 +0800 (CST)
-X-RM-TRANSID: 2ee25f467afb20d-10b8c
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, timur@kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: fsl_spdif: Fix unnecessary check in fsl_spdif_probe()
-Date:   Wed, 26 Aug 2020 23:09:18 +0800
-Message-Id: <20200826150918.16116-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1728050AbgHZPLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:11:43 -0400
+Received: from mga04.intel.com ([192.55.52.120]:9758 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728041AbgHZPL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:11:26 -0400
+IronPort-SDR: 8TcetRDtRqlaVLV3C5qbcHWcBlSJ9+4lJqhUnpVe3RTVw86gmX9deZDGLrKibxh24rjOqwUz3V
+ 1TE/2QOKhkSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153729699"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="153729699"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:25 -0700
+IronPort-SDR: IGgxmkZop+YsRcGGramX/nJvANvQUeHyyD2q3q/ecm42zKIu7W2EkwkP3wmno/+0Q1JcO3f81m
+ +5TVTJQlfGbQ==
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="299505130"
+Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51]) ([10.255.231.51])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:24 -0700
+Subject: Re: [PATCH 4/4] ASoC: rt715: Fix return check for
+ devm_regmap_init_sdw()
+To:     Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Oder Chiou <oder_chiou@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+References: <20200826122811.3223663-1-vkoul@kernel.org>
+ <20200826122811.3223663-4-vkoul@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <e71ba625-ec1e-1adf-9e4c-b65a91562d9c@linux.intel.com>
+Date:   Wed, 26 Aug 2020 10:09:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200826122811.3223663-4-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function fsl_spdif_probe() is only called with an openfirmware
-platform device. Therefore there is no need to check that the passed
-in device is NULL.
-
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- sound/soc/fsl/fsl_spdif.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 7858a5499..395c50167 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1221,9 +1221,6 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	void __iomem *regs;
- 	int irq, ret, i;
- 
--	if (!np)
--		return -ENODEV;
--
- 	spdif_priv = devm_kzalloc(&pdev->dev, sizeof(*spdif_priv), GFP_KERNEL);
- 	if (!spdif_priv)
- 		return -ENOMEM;
--- 
-2.20.1.windows.1
 
 
+On 8/26/20 7:28 AM, Vinod Koul wrote:
+> devm_regmap_init_sdw() returns a valid pointer on success or ERR_PTR on
+> failure which should be checked with IS_ERR. Also use PTR_ERR for
+> returning error codes.
 
+Do you mind changing these two additional codecs that were missed in 
+this series? Thanks!
+
+rt700-sdw.c:	sdw_regmap = devm_regmap_init_sdw(slave, &rt700_sdw_regmap);
+rt700-sdw.c-	if (!sdw_regmap)
+rt700-sdw.c-		return -EINVAL;
+
+--
+rt711-sdw.c:	sdw_regmap = devm_regmap_init_sdw(slave, &rt711_sdw_regmap);
+rt711-sdw.c-	if (!sdw_regmap)
+rt711-sdw.c-		return -EINVAL;
+--
+
+> 
+> Reported-by: Takashi Iwai <tiwai@suse.de>
+> Fixes: d1ede0641b05 ("ASoC: rt715: add RT715 codec driver")
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   sound/soc/codecs/rt715-sdw.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+> index d11b23d6b240..68a36739f1b0 100644
+> --- a/sound/soc/codecs/rt715-sdw.c
+> +++ b/sound/soc/codecs/rt715-sdw.c
+> @@ -527,8 +527,8 @@ static int rt715_sdw_probe(struct sdw_slave *slave,
+>   
+>   	/* Regmap Initialization */
+>   	sdw_regmap = devm_regmap_init_sdw(slave, &rt715_sdw_regmap);
+> -	if (!sdw_regmap)
+> -		return -EINVAL;
+> +	if (IS_ERR(sdw_regmap))
+> +		return PTR_ERR(sdw_regmap);
+>   
+>   	regmap = devm_regmap_init(&slave->dev, NULL, &slave->dev,
+>   		&rt715_regmap);
+> 
