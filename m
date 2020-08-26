@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABA82531B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EAA2531B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHZOpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgHZOpN (ORCPT
+        id S1727068AbgHZOpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:45:30 -0400
+Received: from smtprelay0086.hostedemail.com ([216.40.44.86]:49674 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726700AbgHZOp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:45:13 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE34C061574;
-        Wed, 26 Aug 2020 07:45:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ds1so993166pjb.1;
-        Wed, 26 Aug 2020 07:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Dy92T63KJ9Q9h7SiErNQEXUlQ8OKcTJsbD/s/H02xn0=;
-        b=fvklMTl2auqGqE+SBvACHUKPWbFXsam2tzn7UcYmNAVOzHFjkMC7MSpsQY/Benw2lA
-         9p3SEyXDCInCdMug2N4B9SU7n1dFfAInLV6MTrAHd6lvO2vb/GHHn+76+YLXMmlUwb+e
-         Qif0rlucZ62ioFBP3BP4wHfnbxjx092UVcvdE6EkRw0KEAMMybEghcZv8dec/XwPpSSt
-         p7ltEv8pDxY6oIrjHEkarSat8fh0xo6NsYrNU8WeOjUd5eTCvCaoOF6uysYUvJiYiiDf
-         JEVkSm5FDJebXOvcOhzUsiuB2/fzrVB9DmdFk9LSG24pddyB5/zpQwenvHoFxhgytrTS
-         zHdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Dy92T63KJ9Q9h7SiErNQEXUlQ8OKcTJsbD/s/H02xn0=;
-        b=Aofwkar8Bym7MyLL+JnZq1lykh+hKcrQ6vqMjmmzzr7+uZxW5s9br7aNPUTqDC9sBF
-         W12ZuSQrG7KXH1tXEtmcZw3CXlBB1L6LmTkfzPzRhaHhJuRasMnpGwpI6XsZmvkvyok8
-         Zvau/FZrT9FOWCN2OxcumNgeXGnico/cduFZRohzEfjbGtvpI4+burQ4WoCuaGn9Erh9
-         xyIkLitp0tD7v71dl5Y9v0186y/tyB2g3htAajkK3QrZntTCDhqnQZaPOFpsT9P7ZSMx
-         ELBGa3eKU8Xv+0dQuMSzgauWHeAewuKo12fAaSQr0Cp7oaoMaZRUlyTHH/WTycWKjIdG
-         FPuA==
-X-Gm-Message-State: AOAM5302Sc9qvGpQLkCBi2JrdPBEHDc+h987zdJ0Wm0iyFBwguYMw5+S
-        /r1m/GWAi0xydbB8/oze8Q==
-X-Google-Smtp-Source: ABdhPJz5C8TKsukA3b1o1I8Av5bkzcF9Bzvrc6yl3VHd2AxHSqhgS3tdG4b2plRg/55UjC+HcS47fA==
-X-Received: by 2002:a17:902:c284:: with SMTP id i4mr12024270pld.287.1598453111944;
-        Wed, 26 Aug 2020 07:45:11 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:cfa:a9b5:1951:3e81:92cc:b4c1])
-        by smtp.gmail.com with ESMTPSA id o66sm2561214pgo.25.2020.08.26.07.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:45:11 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     jacmet@sunsite.dk, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH] usb/c67x00/c67x00-drv: Fix Data Race bug
-Date:   Wed, 26 Aug 2020 20:14:59 +0530
-Message-Id: <20200826144459.8245-1-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 26 Aug 2020 10:45:28 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 325391822326E;
+        Wed, 26 Aug 2020 14:45:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4184:4321:5007:7903:7974:10004:10400:10848:11232:11658:11914:12043:12295:12297:12740:12760:12895:13069:13073:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21080:21324:21325:21627:21972:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: owl38_5e0175327065
+X-Filterd-Recvd-Size: 2293
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 26 Aug 2020 14:45:25 +0000 (UTC)
+Message-ID: <7b78e43a01865ec0c296ad9acad0616a6c2c3b86.camel@perches.com>
+Subject: Re: [PATCH 29/29] tools: Avoid comma separated statements
+From:   Joe Perches <joe@perches.com>
+To:     Thomas Renninger <trenn@suse.com>,
+        Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Date:   Wed, 26 Aug 2020 07:45:24 -0700
+In-Reply-To: <6011591.XMClsHuqKX@c100>
+References: <cover.1598331148.git.joe@perches.com>
+         <52b68acfeb441b483de188f7e100600291f8c3ec.1598331149.git.joe@perches.com>
+         <6011591.XMClsHuqKX@c100>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Wed, 2020-08-26 at 11:30 +0200, Thomas Renninger wrote:
+> Hi,
+> 
+> getting rid of lines with multiple instructions, separated by comma is
+> certainly a good idea.
+> One nit pick, though:
+> 
+> Am Dienstag, 25. August 2020, 06:56:26 CEST schrieb Joe Perches:
+> > Use semicolons and braces.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+[]
+> I can remember patches being rejected with one line statements in a condition,
+> surounded by braces.
+> I just read up Documentation/process/coding-style.rst, to be sure this still is up-to-date.
+> It's not a must, but line 180 says:
+> "Do not unnecessarily use braces where a single statement will do."
 
-Currently in c67x00_drv_probe() IRQ is requested before calling
-c67x00_probe_sie() and hence if interrupt happens the reading of certain
-variables in the handler can race with initialization of the variables,
-for e.g. sie->sie_num is written in c67x00_probe_sie() and read in
- c67x00_hcd_irq().
-Hence, this patch calls c67x00_probe_sie() before requesting IRQ in
-probe.
+Read the block immediately below that too:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+"This does not apply if only one branch of a conditional statement is a
+single statement; in the latter case use braces in both branches:"
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- drivers/usb/c67x00/c67x00-drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> I haven't reviewed every line, but I expect you only split up comma separated instructions
+> into separate lines and added braces?
 
-diff --git a/drivers/usb/c67x00/c67x00-drv.c b/drivers/usb/c67x00/c67x00-drv.c
-index 53838e7d4eef..2e816d5ca0eb 100644
---- a/drivers/usb/c67x00/c67x00-drv.c
-+++ b/drivers/usb/c67x00/c67x00-drv.c
-@@ -146,6 +146,9 @@ static int c67x00_drv_probe(struct platform_device *pdev)
- 	c67x00_ll_init(c67x00);
- 	c67x00_ll_hpi_reg_init(c67x00);
- 
-+	for (i = 0; i < C67X00_SIES; i++)
-+		c67x00_probe_sie(&c67x00->sie[i], c67x00, i);
-+
- 	ret = request_irq(res2->start, c67x00_irq, 0, pdev->name, c67x00);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Cannot claim IRQ\n");
-@@ -158,9 +161,6 @@ static int c67x00_drv_probe(struct platform_device *pdev)
- 		goto reset_failed;
- 	}
- 
--	for (i = 0; i < C67X00_SIES; i++)
--		c67x00_probe_sie(&c67x00->sie[i], c67x00, i);
--
- 	platform_set_drvdata(pdev, c67x00);
- 
- 	return 0;
--- 
-2.17.1
+I do not.
+
+While there was a defect using this style though in another patch,
+this is a style only change.
+
+> Afaik there isn't a specific tag, but having:
+> cleanup only: No functional change
+> 
+> in the changelog would be nice for people looking for fixes to backport.
+
+This is not a fix, so it's not for backporting.
+
 
