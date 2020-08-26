@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB012252815
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A541F252842
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgHZHCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 03:02:16 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44414 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbgHZHAk (ORCPT
+        id S1726750AbgHZHQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 03:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgHZHQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:00:40 -0400
-Received: by mail-wr1-f68.google.com with SMTP id c15so620126wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 00:00:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RHWmtyQkL2Gd7DQBgRTCb7zJvVv0AbfFavH+YrU+dDE=;
-        b=k94ZV2KI5xbc/l5DBwfp4ArwcBaJJqFNQ5rMqDeBm7JqsWetwF8gKA4I90Ez3MYHks
-         weWQeygbA6GQp+krrJcOLP9gRxvOZDfPDLc9diqC28Y3/6bypvYVZki9qr5jjykIVGaF
-         qWkoQQ1zVQNVY5fGPVm7YSxx/g5ZYliv3ITl5aiaGVUudSZKl3C89WrqzY8y6Jt2bSNI
-         OCTi2St4hPoABFCw8GjOB2RfGKYQE+tWFE5FLvyadVAL5v/U45P7cZPQ03B9RDz1xcMn
-         2stYjr3u7Ry3VLKCfTZcx3PeRorcCBTwyynrVfdCgJaDx81IF+ovrYzx2H6U9HqNGWPL
-         pdEg==
-X-Gm-Message-State: AOAM532n54Dtt4CME9nLECNmfshJRLubZu1x80fHXXouZx7YXPIUxIot
-        6WUGa9iUMvQ54Znr4UA81Oc=
-X-Google-Smtp-Source: ABdhPJywWnmjvr7ryXpthx0BBDXvxzqXt1J69LWiqXq4Np8F+Hf4lfRnLQwtvfows6TLUo07slvldA==
-X-Received: by 2002:adf:f289:: with SMTP id k9mr14252752wro.203.1598425238303;
-        Wed, 26 Aug 2020 00:00:38 -0700 (PDT)
-Received: from pi3 ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id z6sm3079983wml.41.2020.08.26.00.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 00:00:37 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 09:00:35 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, myungjoo.ham@samsung.com,
-        cw00.choi@samsung.com, andriy.shevchenko@intel.com,
-        thomas.langer@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, yin1.li@intel.com
-Subject: Re: [PATCH v1 5/9] extcon: extcon-ptn5150: Switch to GENMASK() for
- port attachment macro
-Message-ID: <20200826070035.GE12271@pi3>
-References: <20200818065727.50520-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200818065727.50520-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+        Wed, 26 Aug 2020 03:16:15 -0400
+X-Greylist: delayed 744 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Aug 2020 00:16:15 PDT
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B269C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 00:16:14 -0700 (PDT)
+Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 07Q73N8G024392
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Wed, 26 Aug 2020 09:03:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1598425404; bh=JSuM4dKUM2nfywxTFJ0hWSXUwcdiL5ludU2CopjahqY=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=eUJFmJDSPFK1jgdbN2iYYyLcENd+E373WgO9hlVhHhEsORapOdeEamKR3VaMY2siS
+         HyLzxCYK53OT5U+fMuRBBrChG8rEwz+Q5s3cOPgkW+esFa+ViA5bHdbZnULxuXh4aa
+         hivXqjsBwKJXqBHICDBq6Bsbwk5mtmXarUugplrM=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1kApSt-0001tZ-4K; Wed, 26 Aug 2020 09:03:23 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <masahiroy@kernel.org>,
+        <miguel@det.uvigo.gal>, <linux-usb@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: cdc_ncm: Fix build error
+Organization: m
+References: <20200826065231.14344-1-yuehaibing@huawei.com>
+Date:   Wed, 26 Aug 2020 09:03:23 +0200
+In-Reply-To: <20200826065231.14344-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Wed, 26 Aug 2020 14:52:31 +0800")
+Message-ID: <87k0xl7utg.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200818065727.50520-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 02:57:23PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Switch to GENMASK() macro for the port attachment.
+YueHaibing <yuehaibing@huawei.com> writes:
 
-Squash it.
+> If USB_NET_CDC_NCM is y and USB_NET_CDCETHER is m, build fails:
+>
+> drivers/net/usb/cdc_ncm.o:(.rodata+0x1d8): undefined reference to `usbnet=
+_cdc_update_filter'
+>
+> Select USB_NET_CDCETHER for USB_NET_CDC_NCM to fix this.
 
-Best regards,
-Krzysztof
+Ouch.  For some reason I assumed that was always selected with usbnet.
+Thanks for fixing.
 
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  drivers/extcon/extcon-ptn5150.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-> index 50fff148b772..31b7cbf1551d 100644
-> --- a/drivers/extcon/extcon-ptn5150.c
-> +++ b/drivers/extcon/extcon-ptn5150.c
-> @@ -38,9 +38,7 @@ enum ptn5150_reg {
->  #define PTN5150_REG_DEVICE_ID_VERSION		GENMASK(7, 3)
->  #define PTN5150_REG_DEVICE_ID_VENDOR		GENMASK(2, 0)
->  
-> -#define PTN5150_REG_CC_PORT_ATTACHMENT_SHIFT	2
-> -#define PTN5150_REG_CC_PORT_ATTACHMENT_MASK	\
-> -	(0x7 << PTN5150_REG_CC_PORT_ATTACHMENT_SHIFT)
-> +#define PTN5150_REG_CC_PORT_ATTACHMENT		GENMASK(4, 2)
->  
->  #define PTN5150_REG_CC_VBUS_DETECTION		BIT(7)
->  
-> @@ -108,9 +106,8 @@ static void ptn5150_irq_work(struct work_struct *work)
->  			unsigned int port_status;
->  			unsigned int vbus;
->  
-> -			port_status = ((reg_data &
-> -					PTN5150_REG_CC_PORT_ATTACHMENT_MASK) >>
-> -					PTN5150_REG_CC_PORT_ATTACHMENT_SHIFT);
-> +			port_status = FIELD_GET(PTN5150_REG_CC_PORT_ATTACHMENT,
-> +						reg_data);
->  
->  			switch (port_status) {
->  			case PTN5150_DFP_ATTACHED:
-> -- 
-> 2.11.0
-> 
+
+
+Bj=C3=B8rn
