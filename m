@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6FB252FF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92243252FF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgHZNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:31:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1730319AbgHZNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730294AbgHZNbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:31:38 -0400
-Received: from kernel.org (unknown [87.70.91.42])
+        id S1730288AbgHZNb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:31:57 -0400
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B608208E4;
-        Wed, 26 Aug 2020 13:31:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97A0621741;
+        Wed, 26 Aug 2020 13:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598448691;
-        bh=dWH3kPosHZ3kLVYVGJgLt9lnS06L7c5CBX8c2+eFubk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zn6wiWsDb8gU2eoT08bIGEZJLq0IyZOEq4e5NVQcS4LBgtpdYsd88WW+rwM0sJIQ2
-         EYWvF7H9bNRobS2RtnuAFWRnAjGYzj/GzCob51QqqwBbty8u0c2D4leLdnO8AuHFrS
-         HsmbSG1rIgBP0OuNGGJfPU+Q4og8GbpCSbSr24Cg=
-Date:   Wed, 26 Aug 2020 16:31:25 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: mm: Remove superfluous memblock_alloc*() casts
-Message-ID: <20200826133125.GB69706@kernel.org>
-References: <20200826130444.25618-1-geert@linux-m68k.org>
+        s=default; t=1598448716;
+        bh=N7hZxylonpulq+kvN5bIqiP/e2mXO2Jt1hFduoiS2vk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HHHbW4O+lFudLOGG8w10yrHscW841Md6gaw0W5oaXoZM0peA8oJAYZJza+fpfjTek
+         I8e+fqSVTuGp3U9k4VGGuUeYAwzpaVI0jkaJwC4DQb+5m3+jra3hoNLkYd+ElQ8Dbm
+         b4xlH4UAyzGHgp7yjTOR593NTzAvN7l44aXcTst4=
+Date:   Wed, 26 Aug 2020 15:31:52 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] docs: trace: ring-buffer-design.rst: use the new SPDX
+ tag
+Message-ID: <20200826153152.54ce996a@coco.lan>
+In-Reply-To: <20200826064733.33c22a2c@lwn.net>
+References: <290d101bee434e54acec13778c67c77802fbc953.1598426895.git.mchehab+huawei@kernel.org>
+        <20200826064733.33c22a2c@lwn.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826130444.25618-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 03:04:44PM +0200, Geert Uytterhoeven wrote:
-> The return type of memblock_alloc*() is a void pointer, so there is no
-> need to cast it to "void *" or some other pointer type, before assigning
-> it to a pointer variable.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Em Wed, 26 Aug 2020 06:47:33 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-
-> ---
->  arch/m68k/mm/mcfmmu.c   | 2 +-
->  arch/m68k/mm/motorola.c | 5 ++---
->  2 files changed, 3 insertions(+), 4 deletions(-)
+> On Wed, 26 Aug 2020 09:28:24 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-> index 2b9cb4a622811390..eac9dde65193443e 100644
-> --- a/arch/m68k/mm/mcfmmu.c
-> +++ b/arch/m68k/mm/mcfmmu.c
-> @@ -42,7 +42,7 @@ void __init paging_init(void)
->  	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
->  	int i;
->  
-> -	empty_zero_page = (void *) memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->  	if (!empty_zero_page)
->  		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
->  		      __func__, PAGE_SIZE, PAGE_SIZE);
-> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-> index a9bdde54ca350197..3a653f0a4188d4af 100644
-> --- a/arch/m68k/mm/motorola.c
-> +++ b/arch/m68k/mm/motorola.c
-> @@ -227,7 +227,7 @@ static pte_t * __init kernel_page_table(void)
->  	pte_t *pte_table = last_pte_table;
->  
->  	if (PAGE_ALIGNED(last_pte_table)) {
-> -		pte_table = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
-> +		pte_table = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->  		if (!pte_table) {
->  			panic("%s: Failed to allocate %lu bytes align=%lx\n",
->  					__func__, PAGE_SIZE, PAGE_SIZE);
-> @@ -275,8 +275,7 @@ static pmd_t * __init kernel_ptr_table(void)
->  
->  	last_pmd_table += PTRS_PER_PMD;
->  	if (PAGE_ALIGNED(last_pmd_table)) {
-> -		last_pmd_table = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
-> -							   PAGE_SIZE);
-> +		last_pmd_table = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->  		if (!last_pmd_table)
->  			panic("%s: Failed to allocate %lu bytes align=%lx\n",
->  			      __func__, PAGE_SIZE, PAGE_SIZE);
-> -- 
-> 2.17.1
+> > SPDX v3.10 gained support for GFDL-1.2 with no invariant sections:
+> > 
+> > 	https://spdx.org/licenses/GFDL-1.2-invariants-only.html
+> > 
+> > Let's use it, instead of keeping a license text for this file.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/trace/ring-buffer-design.rst | 26 +---------------------
+> >  1 file changed, 1 insertion(+), 25 deletions(-)  
 > 
+> [CC expanded]
+> 
+> If we're going to do this, I think we should also add GFDL to the right
+> place in the LICENSES directory - deprecated/ or at best dual/.  But even
+> SPDX (https://spdx.org/licenses/GFDL-1.2.html) says this license is
+> deprecated.
 
--- 
-Sincerely yours,
-Mike.
+Right. I'll send a separate patch adding it to deprecated/
+together with GFDL-1.1-no-invariants-or-later, which is used
+at the media uAPI documentation. There, GFDL 1.1 is used both
+together with GPL (dual licensed is required for new files) and 
+alone (for the legacy document files).
+
+> 
+> Beyond that, https://spdx.org/licenses/GFDL-1.2-invariants-only.html seems
+> to disagree with your interpretation; it seems you would want 
+> GFDL-1.2-only-no-invariants ?
+
+Thanks for reviewing! Yeah, indeed I mangled this one. It
+should be, instead:
+
+	GFDL-1.2-no-invariants-only
+
+https://spdx.org/licenses/GFDL-1.2-no-invariants-only.html
+
+I'll send a second version fix it.
+
+Thanks,
+Mauro
