@@ -2,176 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46B925311C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219F2253123
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgHZOUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:20:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728008AbgHZOUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:20:30 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33E28208E4;
-        Wed, 26 Aug 2020 14:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598451629;
-        bh=U1WyvVQpTJcvW/3SSoIx+r4B+XBN/pfqdpgz99RoBzM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WcAJP06vBqbso9IrCOqXaB+y/KsHF+wkLVozIWv/Pk8JONWFIgrQc/hG7L+HdvP3T
-         +t9EkCSqPUeKIzvxJIjvLBB36nlFIRYvywmAKgCLH+1wbOhLENZNhuIp58eeaXfMo3
-         8RIDS5Vt0wjJQ0qHR/irSgzocG4w7hX7e31Uxz4Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id ED9DC3522612; Wed, 26 Aug 2020 07:20:28 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 07:20:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
-        dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: Re: [PATCH v4 -rcu 1/4] rcu/segcblist: Do not depend on rcl->len to
- store the segcb len during merge
-Message-ID: <20200826142028.GN2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200825024842.3408659-1-joel@joelfernandes.org>
- <20200825024842.3408659-2-joel@joelfernandes.org>
- <20200825200809.GW2855@paulmck-ThinkPad-P72>
- <20200825224723.GB579506@google.com>
+        id S1728040AbgHZOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:21:23 -0400
+Received: from mail-mw2nam10on2041.outbound.protection.outlook.com ([40.107.94.41]:11169
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728050AbgHZOUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:20:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n5ctDo/ZaI8d2iB80udx21W7lf4BFGHQsK9cSRs5WdcU+gDMmEbKF8IAxCVko+UT4cJhZOCtMgJYED/YP0vtx+VlSZRFkYvkQoJ+5w5Iv+NSLRhyX7/USzTSVYlPkbMGyvkzJug0FVlefbciHHGtmV0nQBehhGfx01hHhx5sHHcPCBfJzNWO6KM+RzXXk7KZEjxJJxC+jVrZzPb9wqgEqJ5FBXi9TjpFDYzjVHo/mge4ocIyyrjLJHlG0+ptV1RV5uYhjyJPkxxJux4ydKPJQrYshkhz+FKWCfDdJJZGgvznUgLNKlwhfH783ZDBSWGHyJYYBkIvb49QfoejGK/2Pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2YWIDvlh5pUDzY7w45iFRjJ7sbgKO20b1piiU6nk3pk=;
+ b=J+fqZ7Jn/7mrsFxzt21/Z4aQLtwQuqiZPaWapaTV/FyrfuNzSGCnPFoESRv9UiOIiRLkfMRoM9SMfVZcNx0m+9qQ7Y+Lt89W337+mTAvNKOK5DMmlp22yx16a9A1yVxfMNWTXZCdX4JYU/V+psczNUXiFzl5Kw3Kg0g9LvLoHadFFNB2yAtkmUp5jKN6jXGOIRYd2Kveg/eVeQ3ZBwcSyZtFzzPFmp1Luw7LI53OeCoxGaqkjNZFkLzZ7Q6tErEbj0IMA1E+ho7IkVcTevinPqqpGVf//xVkaXJ5J7rlGPeHg3iwSpZiFwaCIFmNBfVJ3pHWKMoZeKd+j8RH0JJzwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2YWIDvlh5pUDzY7w45iFRjJ7sbgKO20b1piiU6nk3pk=;
+ b=d4oybdDxM52V3+f010y7Z1TvQvxllCYkPyOIgSmYZ/vP+H81zrW6M9Gdv7d3TynnRmtPPdRrdg9qGBBE1FDK4dr+8CJejf4fEYpmGOE0G/CdtLyD9p1SQE/N9PuMj/eTEVsjSdG1wpxWPUgEg8g+abQEpHL5mzTBNYZkQQEXP1c=
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
+ by MN2PR12MB3917.namprd12.prod.outlook.com (2603:10b6:208:166::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Wed, 26 Aug
+ 2020 14:20:51 +0000
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::889d:3c2f:a794:67fb]) by MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::889d:3c2f:a794:67fb%7]) with mapi id 15.20.3305.032; Wed, 26 Aug 2020
+ 14:20:51 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+CC:     "jroedel@suse.de" <jroedel@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] iommu/amd: Do not use IOMMUv2 functionality when SME
+ is active
+Thread-Topic: [PATCH 2/2] iommu/amd: Do not use IOMMUv2 functionality when SME
+ is active
+Thread-Index: AQHWegTrOX3Oax7ItE+ghg+6kipvEKlKc/iw
+Date:   Wed, 26 Aug 2020 14:20:51 +0000
+Message-ID: <MN2PR12MB4488AA440120E3775675CB3FF7540@MN2PR12MB4488.namprd12.prod.outlook.com>
+References: <20200824105415.21000-1-joro@8bytes.org>
+ <20200824105415.21000-3-joro@8bytes.org>
+In-Reply-To: <20200824105415.21000-3-joro@8bytes.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2020-08-26T14:20:44Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=a3b3e905-9df5-4be6-a8b5-0000d4520fc3;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_enabled: true
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_setdate: 2020-08-26T14:20:38Z
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_method: Standard
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_name: Internal Use Only -
+ Unrestricted
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_actionid: 5f141d97-40f7-4517-b376-0000eafaf01b
+msip_label_76546daa-41b6-470c-bb85-f6f40f044d7f_contentbits: 0
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_enabled: true
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_setdate: 2020-08-26T14:20:46Z
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_method: Privileged
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_name: Public_0
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_actionid: 62e0af8e-27da-4358-b518-0000281ab297
+msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_contentbits: 0
+authentication-results: 8bytes.org; dkim=none (message not signed)
+ header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [165.204.10.250]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 532fcf0f-c1c0-46e6-2255-08d849cb3ca4
+x-ms-traffictypediagnostic: MN2PR12MB3917:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR12MB39175C57E949CE0773164C45F7540@MN2PR12MB3917.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NhlhTDINMvM5cxTo98PlK4a4+xf2OZbsQleVls3w7jpKoLoxdOu8z7QSddf4W5iTzIG5Pf8OrrDpfaKZbJBD+QL6rw2T8qO9wFbk7klEjNgx0SZ8ffD45uxi8sM2S7RsiN+rQeZu22F7hloi260GnDN5vhheIB0UqzJXb2C3NdKvFcR8Eh/FyabPUpKNJfAmR14Pjspi0wpgxtO60YdBty96XszgcM60phZnXB3CRhxkjAeIvCC1POadz33iz+yLyuzqbHQJ88tpAWHfDAC7bInigPFTUBdlj5q5Mcxoj3QAUZFLLoYKBVaAY9URzy/t
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(4326008)(33656002)(64756008)(83380400001)(66446008)(66556008)(66946007)(66476007)(76116006)(8676002)(7696005)(8936002)(71200400001)(2906002)(186003)(54906003)(110136005)(52536014)(55016002)(86362001)(9686003)(6506007)(26005)(53546011)(5660300002)(316002)(478600001)(6636002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: bToiZ6cL8csWIh9E3+KkH5euCoZm4ZOrI0E96PJRKWS/ro86MtaiOm0fDrdFyl00J0KTyKBCLyIC8MzWxeRKBtoLoViKE/f0FL1MdhmHz1CyDkuWCY2zhswGdL+A1QgLNTR+RhnMDBbEKi0HPgoIOipzbfGdZLyb5lXpnM38ommMg1mi2Sr/7Cew+qhxb4PWd559c2ycEqbO4hTvGEH9IiLJK+MmraXxkzD9n05zwGQ/e3Lyhpkl8z2xnSv3f8AoP3YrLlEXQTdUsrqL2JgzpVRLeA6BdRH3duYcBvccHfiLqOGV3LPDlGYMY68XM/FmJhA3KOM33eGeTcoCeJRANXfZN++tGmnGI3chlHs7GIOnt0s3/RULcn4ElpeK9n/kSq094EKOjqED+/1OXpI74cnUXnYW4Cz2BqjUUod1GW6PJkuxfO0p4FqZTirkZ5drvfSrfBqxP2JDqsnXl35ywPFVcyXlPYhX+16yPDM2+rpede5nTptnH1cOfrjnBk/b8rgF+MZgEjiAT9hDtItCehu+qY/ruuNHMcepS6Bd/zOiOa5gpJfxe/7h4OT7x9Mh7QpT4oWmTosYVsLa6DuIO0JKjXo7f4SQB5qoAbF4aF6XyfogmK11b8elmpp6muou/zdPA7ZxdPVYxFLw1l01sg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825224723.GB579506@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 532fcf0f-c1c0-46e6-2255-08d849cb3ca4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2020 14:20:51.6249
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Llu3i++yK1Uy9gH4ywdFw53Kb4xdznrCBkvVRpIH8XQo14wuXpeDDBxGIeQesR2raGosIF+oCmAEOc3v2MSY7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3917
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 06:47:23PM -0400, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> On Tue, Aug 25, 2020 at 01:08:09PM -0700, Paul E. McKenney wrote:
-> > On Mon, Aug 24, 2020 at 10:48:39PM -0400, Joel Fernandes (Google) wrote:
-> > > The donecbs's ->len field is used to store the total count of the segmented
-> > > callback list's length. This ->len field is then added to the destination segcb
-> > > list.
-> > > 
-> > > However, this presents a problem for per-segment length counting which is added
-> > > in a future patch. This future patch sets the rcl->len field as we move
-> > > segments of callbacks between source and destination lists, thus becoming
-> > > incompatible with the donecb's ->len field.
-> > 
-> > OK, I will bite.  What is "rcl"?  A placeholder for donecbs and pendcbs?
-> > If so, please just name them both.  If not, please explain.
-> 
-> Ok will fix.
-> 
-> > > This commit therefore avoids depending on the ->len field in this way. IMHO,
-> > > this is also less error-prone and is more accurate - the donecb's ->len field
-> > > should be the length of the done segment and not just used as a temporarily
-> > > variable.
-> > 
-> > Please also mention why ->len is handled specially at all, namely
-> > interactions between rcu_barrier() and callback invocation.  This is
-> > the answer to "why not just make all this work like normal lists?"
-> > This might go well in the first paragraph.
-> 
-> Are you referring to the cblist structures ->len?  I know the segcblist's
-> ->len field is what rcu_barrier() samples but I am not changing that behavior
-> at all in this patch. This patch is only about the donecb's len (which is a
-> cblist structure on the stack).
+[AMD Public Use]
 
-Yes, we agree.  I am just suggesting that you call this out in the
-commit log.  It is probably not obvious to those who have not been
-through the code yet.  ;-)
++ Felix, Christian
 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  kernel/rcu/rcu_segcblist.c | 8 ++++++--
-> > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > > index 2d2a6b6b9dfb..b70d4154433c 100644
-> > > --- a/kernel/rcu/rcu_segcblist.c
-> > > +++ b/kernel/rcu/rcu_segcblist.c
-> > > @@ -513,14 +513,18 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
-> > >  {
-> > >  	struct rcu_cblist donecbs;
-> > >  	struct rcu_cblist pendcbs;
-> > > +	long src_len;
-> > >  
-> > >  	rcu_cblist_init(&donecbs);
-> > >  	rcu_cblist_init(&pendcbs);
-> > > -	rcu_segcblist_extract_count(src_rsclp, &donecbs);
-> > > +
-> > > +	src_len = rcu_segcblist_xchg_len(src_rsclp, 0);
-> > 
-> > Given that both rcu_segcblist_xchg_len() and rcu_segcblist_extract_count()
-> > have only one callsite each, why not get rid of one of them?
-> 
-> Good point, I will do that.
-> 
-> > Or better yet, please see below, which should allow getting rid of both
-> > of them.
-> > 
-> > >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
-> > >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-> > > -	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-> > > +
-> > > +	rcu_segcblist_add_len(dst_rsclp, src_len);
-> > >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
-> > >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-> > 
-> > Rather than adding the blank lines, why not have the rcu_cblist structures
-> > carry the lengths?  You are already adjusting one of the two call sites
-> > that care (rcu_do_batch()), and the other is srcu_invoke_callbacks().
-> > That should shorten this function a bit more.  And make callback handling
-> > much more approachable, I suspect.
-> 
-> Sorry, I did not understand. The rcu_cblist structure already has a length
-> field. I do modify rcu_segcblist_extract_done_cbs() and
-> rcu_segcblist_extract_pend_cbs() to carry the length already, in a later
-> patch.
-> 
-> Just to emphasize, this patch is just a small refactor to avoid an issue in
-> later patches. It aims to keep current functionality unchanged.
-
-True enough.  I am just suggesting that an equally small refactor in
-a slightly different direction should get to a better place.  The key
-point enabling this slightly different direction is that this code is
-an exception to the "preserve ->cblist.len" rule because it is invoked
-only from the CPU hotplug code.
-
-So you could use the rcu_cblist .len field to update the ->cblist.len
-field, thus combining the _cbs and _count updates.  One thing that helps
-is that setting th e rcu_cblist .len field doesn't hurt the other use
-cases that require careful handling of ->cblist.len.
-
-							Thanx, Paul
-
-> thanks,
-> 
->  - Joel
-> 
-> > 
-> > There would still be the callback-invocation need to be careful with
-> > ->cblist.len due to rcu_barrier() and srcu_barrier().  But both of
-> > those should be excluded by this code.  (But don't take my word for it,
-> > ask KCSAN.)
-> > 
-> > 							Thanx, Paul
-> > 
-> > > +
-> > >  	rcu_segcblist_init(src_rsclp);
-> > >  }
-> > > -- 
-> > > 2.28.0.297.g1956fa8f8d-goog
-> > > 
+> -----Original Message-----
+> From: Joerg Roedel <joro@8bytes.org>
+> Sent: Monday, August 24, 2020 6:54 AM
+> To: iommu@lists.linux-foundation.org
+> Cc: Joerg Roedel <joro@8bytes.org>; jroedel@suse.de; Lendacky, Thomas
+> <Thomas.Lendacky@amd.com>; Suthikulpanit, Suravee
+> <Suravee.Suthikulpanit@amd.com>; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; linux-kernel@vger.kernel.org
+> Subject: [PATCH 2/2] iommu/amd: Do not use IOMMUv2 functionality when
+> SME is active
+>=20
+> From: Joerg Roedel <jroedel@suse.de>
+>=20
+> When memory encryption is active the device is likely not in a direct map=
+ped
+> domain. Forbid using IOMMUv2 functionality for now until finer grained
+> checks for this have been implemented.
+>=20
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  drivers/iommu/amd/iommu_v2.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/drivers/iommu/amd/iommu_v2.c
+> b/drivers/iommu/amd/iommu_v2.c index c259108ab6dd..0d175aed1d92
+> 100644
+> --- a/drivers/iommu/amd/iommu_v2.c
+> +++ b/drivers/iommu/amd/iommu_v2.c
+> @@ -737,6 +737,13 @@ int amd_iommu_init_device(struct pci_dev *pdev,
+> int pasids)
+>=20
+>  	might_sleep();
+>=20
+> +	/*
+> +	 * When memory encryption is active the device is likely not in a
+> +	 * direct-mapped domain. Forbid using IOMMUv2 functionality for
+> now.
+> +	 */
+> +	if (mem_encrypt_active())
+> +		return -ENODEV;
+> +
+>  	if (!amd_iommu_v2_supported())
+>  		return -ENODEV;
+>=20
+> --
+> 2.28.0
