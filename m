@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE185252FED
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B303252FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgHZNaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729646AbgHZN3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:29:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AECC061574;
-        Wed, 26 Aug 2020 06:29:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q14so1798780wrn.9;
-        Wed, 26 Aug 2020 06:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M20VE+d1SyikYkPKQp699LgJh3dwsjKIjrFsf14di5g=;
-        b=FHhyO1L8sY6MS5WHEtlc4/NqyzCjRgvoNYTuHP/1jtgFJVRj4V50vmQTTaPaHz6fJr
-         HFs4AVo9mww7WCtJpbD5pwq8lPYEVdFdGAxBPUo2KoDz9srxOPAiiCRbXlBg6ZePDSVM
-         xjJQR9XSizQnfbxfYmlisuuEVToUXVWPc0JBpErb0RPzCLVu3kXufV0Ix2PpaJ40eN43
-         fKrkwXshFbA7VtqWVZ9q9ZQHCgOBqcPCgYFECsH+vSLNtttBxn5fWZZcWa+4ZLP+uNEU
-         zxYyAtAGzcJp2JR8yrHKNX7/PdXgic78a0DYNbWwv4GeePrZHPU+Tz4hFJkOEyBezK4r
-         ptFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M20VE+d1SyikYkPKQp699LgJh3dwsjKIjrFsf14di5g=;
-        b=bAhI2rTO1bGIbqKdiSUp75jEDkJkS0zbOnf8YgJaYGfAmTJ+iVZePWpREnf1PqAw2/
-         a7s9CBKOF5dmUUnVhM4nqfCP6PHmpMgFw3si+9UXZkwwcKBFjfoK9q9ZXUH3lO9to5ol
-         78vSRA6TjiFWNHJD9T0GScGhp+LC1ZHZthr3aOIo+W84v9uIkEGa/UrvtOMdJICsWp6f
-         ArG/zQMTO4An5/MhqRWtCLNkWtWyKGEdH/MYvV9exKywu/qVVFIIUPAeHCfTO1Hh2lW+
-         JdeANzDfO9ck/c5B92MHXDHKIGeTq2/AId28WqqAjj+Wk+FE2s/KNPVZCzZ80cApanqc
-         3COw==
-X-Gm-Message-State: AOAM530fpxU46559lUOW7rvQ2DZaWoAEwXwI7g7dFtR7Oh9M1DskUb8h
-        327Iu9lWCe7VMy9tSedtl5pE0YmjhS8=
-X-Google-Smtp-Source: ABdhPJzPk54iIX/ihiy1jYrgubw5zGiw5BO3bEK5G402jVzuUDX27vGZrhSkq1vRpVx7mbIeReCj3Q==
-X-Received: by 2002:adf:fd48:: with SMTP id h8mr4287642wrs.121.1598448579894;
-        Wed, 26 Aug 2020 06:29:39 -0700 (PDT)
-Received: from [192.168.2.41] ([46.227.18.67])
-        by smtp.gmail.com with ESMTPSA id 5sm5874350wmg.32.2020.08.26.06.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 06:29:39 -0700 (PDT)
-Subject: Re: [PATCH 2/4] tty: atmel_serial: convert tasklets to use new
- tasklet_setup() API
-To:     Allen Pais <allen.cryptic@gmail.com>, gregkh@linuxfoundation.org
-Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-References: <20200817085921.26033-1-allen.cryptic@gmail.com>
- <20200817085921.26033-3-allen.cryptic@gmail.com>
-From:   Richard Genoud <richard.genoud@gmail.com>
-Message-ID: <422885e6-9ffe-e525-1ea1-3cf4e6d3bf7c@gmail.com>
-Date:   Wed, 26 Aug 2020 15:29:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730331AbgHZNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:32:38 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33154 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730289AbgHZNa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:30:57 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kAvUu-00052u-Ib; Wed, 26 Aug 2020 23:29:53 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 26 Aug 2020 23:29:52 +1000
+Date:   Wed, 26 Aug 2020 23:29:52 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Andrew Zaborowski <andrew.zaborowski@intel.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Caleb Jorden <caljorden@hotmail.com>,
+        Sasha Levin <sashal@kernel.org>, iwd@lists.01.org,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: af_alg - Work around empty control messages without
+ MSG_MORE
+Message-ID: <20200826132952.GA4752@gondor.apana.org.au>
+References: <20200826055150.2753.90553@ml01.vlan13.01.org>
+ <b34f7644-a495-4845-0a00-0aebf4b9db52@molgen.mpg.de>
+ <CAMj1kXEUQdmQDCDXPBNb3hRrbui=HVyDjCDoiFwDr+mDSjP43A@mail.gmail.com>
+ <20200826114952.GA2375@gondor.apana.org.au>
+ <CAMj1kXGjytfJEbLMbz50it3okQfiLScHB5YK2FMqR5CsmFEBbg@mail.gmail.com>
+ <20200826120832.GA2996@gondor.apana.org.au>
+ <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200817085921.26033-3-allen.cryptic@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 17/08/2020 à 10:59, Allen Pais a écrit :
-> From: Allen Pais <allen.lkml@gmail.com>
-> 
-> In preparation for unconditionally passing the
-> struct tasklet_struct pointer to all tasklet
-> callbacks, switch to using the new tasklet_setup()
-> and from_tasklet() to pass the tasklet pointer explicitly.
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-Acked-by: Richard Genoud <richard.genoud@gmail.com>
+The iwd daemon uses libell which sets up the skcipher operation with
+two separate control messages.  This is fine by itself but the first
+control message is sent without MSG_MORE.  This means that the first
+control message is interpreted as an empty request.
 
-> ---
->  drivers/tty/serial/atmel_serial.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-> index e43471b33710..a9c47f56e994 100644
-> --- a/drivers/tty/serial/atmel_serial.c
-> +++ b/drivers/tty/serial/atmel_serial.c
-> @@ -1722,10 +1722,11 @@ static int atmel_prepare_rx_pdc(struct uart_port *port)
->  /*
->   * tasklet handling tty stuff outside the interrupt handler.
->   */
-> -static void atmel_tasklet_rx_func(unsigned long data)
-> +static void atmel_tasklet_rx_func(struct tasklet_struct *t)
->  {
-> -	struct uart_port *port = (struct uart_port *)data;
-> -	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
-> +	struct atmel_uart_port *atmel_port = from_tasklet(atmel_port, t,
-> +							  tasklet_rx);
-> +	struct uart_port *port = &atmel_port->uart;
->  
->  	/* The interrupt handler does not take the lock */
->  	spin_lock(&port->lock);
-> @@ -1733,10 +1734,11 @@ static void atmel_tasklet_rx_func(unsigned long data)
->  	spin_unlock(&port->lock);
->  }
->  
-> -static void atmel_tasklet_tx_func(unsigned long data)
-> +static void atmel_tasklet_tx_func(struct tasklet_struct *t)
->  {
-> -	struct uart_port *port = (struct uart_port *)data;
-> -	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
-> +	struct atmel_uart_port *atmel_port = from_tasklet(atmel_port, t,
-> +							  tasklet_tx);
-> +	struct uart_port *port = &atmel_port->uart;
->  
->  	/* The interrupt handler does not take the lock */
->  	spin_lock(&port->lock);
-> @@ -1911,10 +1913,8 @@ static int atmel_startup(struct uart_port *port)
->  	}
->  
->  	atomic_set(&atmel_port->tasklet_shutdown, 0);
-> -	tasklet_init(&atmel_port->tasklet_rx, atmel_tasklet_rx_func,
-> -			(unsigned long)port);
-> -	tasklet_init(&atmel_port->tasklet_tx, atmel_tasklet_tx_func,
-> -			(unsigned long)port);
-> +	tasklet_setup(&atmel_port->tasklet_rx, atmel_tasklet_rx_func);
-> +	tasklet_setup(&atmel_port->tasklet_tx, atmel_tasklet_tx_func);
->  
->  	/*
->  	 * Initialize DMA (if necessary)
-> 
+While libell should be fixed to use MSG_MORE where appropriate, this
+patch works around the bug in the kernel so that existing binaries
+continue to work.
 
-Thanks !
+We will print a warning however.
+
+Reported-by: Caleb Jorden <caljorden@hotmail.com>
+Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index a6f581ab200c..3da21cadc326 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/net.h>
+ #include <linux/rwsem.h>
++#include <linux/sched.h>
+ #include <linux/sched/signal.h>
+ #include <linux/security.h>
+ 
+@@ -846,8 +847,14 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 
+ 	lock_sock(sk);
+ 	if (ctx->init && (init || !ctx->more)) {
+-		err = -EINVAL;
+-		goto unlock;
++		if (ctx->used) {
++			err = -EINVAL;
++			goto unlock;
++		}
++
++		pr_info_once(
++			"%s sent an empty control message without MSG_MORE.\n",
++			current->comm);
+ 	}
+ 	ctx->init = true;
+ 
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
