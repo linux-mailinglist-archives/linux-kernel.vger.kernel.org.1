@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DA2252CB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F23252CB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgHZLqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:46:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728932AbgHZLdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:33:10 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 063352087C;
-        Wed, 26 Aug 2020 11:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598441586;
-        bh=rkdJpqDKGPr3YuL3BMdQcX/bSGlko7vm4k18JNIejrg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0G+G6QnbzQCztoPazul2NDxfGxy+ETcF1gEEIZZayu7JlY9ANQnRvDrI6lUgYRi08
-         xEwmaStf8q60ERX1sQjaPflMPh5yrwA7y1clzs1AnlAMTNQQG71hmcZId0Hpizshnv
-         JBupRTtfjGyzEnB7/+k8pm3BG3bpH+HzHx6gfC0U=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1BD4940D3D; Wed, 26 Aug 2020 08:33:04 -0300 (-03)
-Date:   Wed, 26 Aug 2020 08:33:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com
-Subject: Re: [PATCH] perf test: Perf test 67 dumps core on s390
-Message-ID: <20200826113304.GC1059382@kernel.org>
-References: <20200825071211.16959-1-tmricht@linux.ibm.com>
- <CAP-5=fUkOyVUgagpkh6zgbjA1Dd0oP_WmP4HVA8f6J3WifwM9w@mail.gmail.com>
+        id S1729092AbgHZLpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:45:33 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2692 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728995AbgHZLgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:36:38 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id D483D9C856A5C6E4C3C4;
+        Wed, 26 Aug 2020 12:35:39 +0100 (IST)
+Received: from [127.0.0.1] (10.47.10.200) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Wed, 26 Aug
+ 2020 12:35:39 +0100
+Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
+To:     kajoljain <kjain@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
+CC:     <acme@kernel.org>, <ak@linux.intel.com>, <yao.jin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <irogers@google.com>, <maddy@linux.ibm.com>,
+        <ravi.bangoria@linux.ibm.com>
+References: <20200825074041.378520-1-kjain@linux.ibm.com>
+ <bc078472-e859-b7dc-c451-d737dd573edf@huawei.com>
+ <20200826110046.GF703542@krava>
+ <5d91b929-cffd-265a-dd0c-f63bc3d1565d@linux.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ac9acc5f-7ce1-c9c9-91f5-598ca13a4a89@huawei.com>
+Date:   Wed, 26 Aug 2020 12:33:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUkOyVUgagpkh6zgbjA1Dd0oP_WmP4HVA8f6J3WifwM9w@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <5d91b929-cffd-265a-dd0c-f63bc3d1565d@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.10.200]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 25, 2020 at 02:04:30PM -0700, Ian Rogers escreveu:
-> On Tue, Aug 25, 2020 at 12:12 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
-> >
-> > Linux 5.9 introduced perf test case "Parse and process metrics" and
-> > on s390 this test case always dumps core:
-
-<SNIP>
-
-> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> > Reviewed-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+On 26/08/2020 12:24, kajoljain wrote:
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> 
+> On 8/26/20 4:30 PM, Jiri Olsa wrote:
+>> On Tue, Aug 25, 2020 at 09:14:11AM +0100, John Garry wrote:
+>>
+>> SNIP
+>>
+>>>>    				goto free_strings;
+>>>>    		}
+>>>> -		err = func(data, name, real_event(name, event), desc, long_desc,
+>>>> -			   pmu, unit, perpkg, metric_expr, metric_name,
+>>>> -			   metric_group, deprecated, metric_constraint);
+>>>> +		je->event = real_event(je->name, je->event);
+>>>> +		err = func(data, je);
+>>>>    free_strings:
+>>>> -		free(event);
+>>>> -		free(desc);
+>>>> -		free(name);
+>>>> -		free(long_desc);
+>>>>    		free(extra_desc);
+>>>> -		free(pmu);
+>>>>    		free(filter);
+>>>> -		free(perpkg);
+>>>> -		free(deprecated);
+>>>> -		free(unit);
+>>>> -		free(metric_expr);
+>>>> -		free(metric_name);
+>>>> -		free(metric_group);
+>>>> -		free(metric_constraint);
 
-I'll add your comments and...
- 
-> This also shows up with address sanitizer on all architectures
-> (perhaps change the patch title) and perhaps add a "Fixes: <commit>"
-> tag.
-> =================================================================
-> ==4718==ERROR: AddressSanitizer: global-buffer-overflow on address
-> 0x55c93b4d59e8 at pc 0x55c93a1541e2 bp 0x7ffd24327c60 sp
-> 0x7ffd24327c58
-> READ of size 8 at 0x55c93b4d59e8 thread T0
->     #0 0x55c93a1541e1 in find_metric tools/perf/util/metricgroup.c:764:2
-> > +++ b/tools/perf/tests/parse-metric.c
-> > @@ -70,6 +70,11 @@ static struct pmu_event pme_test[] = {
-> >  {
-> >         .metric_expr    = "1/m3",
-> >         .metric_name    = "M3",
-> > +},
-> > +{
-> > +       .metric_expr    = NULL,
-> > +       .metric_name    = NULL,
-> > +       .metric_group   = NULL
+Hi Kajol Jain,
 
-No need to set all three to NULL, just one is enough and then the
-compiler will zero out all the rest.
+Do we need to free je->metric_name and the rest still? From a glance, 
+that memory is still separately alloc'ed in addfield.
 
-- Arnaldo
+>>>>    		free(arch_std);
+>>>> +		free(je);
+>>>>    		if (err)
+>>>>    			break;
+>>>> diff --git a/tools/perf/pmu-events/jevents.h b/tools/perf/pmu-events/jevents.h
+>>>> index 2afc8304529e..e696edf70e9a 100644
+>>>> --- a/tools/perf/pmu-events/jevents.h
+>>>> +++ b/tools/perf/pmu-events/jevents.h
+>>>
+>>> Somewhat unrelated - this file only seems to be included in jevents.c, so I
+>>> don't see why it exists...
+>>
+>> ah right.. I won't mind getting rid of it
+> 
+> Hi John and  Jiri
+>       Thanks for reviewing the patch. I can remove this file and add these structure inside jevents.c
+
+thanks
+
+> 
+> Thanks,
+> Kajol Jain
+>>   
+>>>> @@ -2,14 +2,28 @@
+>>>>    #ifndef JEVENTS_H
+>>>>    #define JEVENTS_H 1
+>>>> +#include "pmu-events.h"
+>>>> +
+>>>> +struct json_event {
+>>>> +	char *name;
+>>>> +	char *event;
+>>>> +	char *desc;
+>>>> +	char *topic;
+>>>> +	char *long_desc;
+>>>> +	char *pmu;
+>>>> +	char *unit;
+>>>> +	char *perpkg;
+>>>> +	char *metric_expr;
+>>>> +	char *metric_name;
+>>>> +	char *metric_group;
+>>>> +	char *deprecated;
+>>>> +	char *metric_constraint;
+>>>
+>>> This looks very much like struct event_struct, so could look to consolidate:
+>>>
+>>> struct event_struct {
+>>> 	struct list_head list;
+>>> 	char *name;
+>>> 	char *event;
+>>> 	char *desc;
+>>> 	char *long_desc;
+>>> 	char *pmu;
+>>> 	char *unit;
+>>> 	char *perpkg;
+>>> 	char *metric_expr;
+>>> 	char *metric_name;
+>>> 	char *metric_group;
+>>> 	char *deprecated;
+>>> 	char *metric_constraint;
+>>> };
+>>
+>> as Andi said they come from different layers, I think it's
+>> better to keep them separated even if they share some fields
+
+I was just suggesting to make:
+  struct event_struct {
+	struct list_head list;
+	struct json_event je;
+  }
+
+No biggie if against this.
+
+Cheers,
+John
