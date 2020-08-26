@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A81252A27
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB2B252A56
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgHZJfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
+        id S1728085AbgHZJiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgHZJew (ORCPT
+        with ESMTP id S1728364AbgHZJe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:34:52 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E88DC06179A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:27 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k20so1066321wmi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:27 -0700 (PDT)
+        Wed, 26 Aug 2020 05:34:58 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5A5C061345
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:28 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id b79so483275wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1sh6GJ0mJWJb3ICmo91l9UDo6bvtBy9zVj1QpKnJ7Ig=;
-        b=E7S6Pkng7Y0zFItSSiJ6u4PAD6CRFndCXBLJmIKAADhgYzB7tAwnaOstq39x7K8YiA
-         aYOiEa6IQ9pL2hp7r4/h6gkkN38ntfPXaVOzMazdJu+zmREhsaSzSyEHFJRalsGXtdGq
-         RH0GewQfte2wlRM98ENsZ362ARQtgwlM1+Sverg5BwZw6BS9GhUr+h+OwQTC+WD+R5LD
-         xP6mO7vA/v8yQcC0oB3mckaIE4cr9uwDkWUMvsQSMjSzBT8BmE3dJhUPo5k9PsJ3dL4n
-         7i40Rog29DFzVrx7zYzM4LzRshP1DRoEa6cMkG1OOmgevWJPDDV//yehqKjWH3ay8Sb8
-         WoAw==
+        bh=WVfVHRbfLs77xvEowdNmRYJl1Eqf3t8uGBw9b5yOc7s=;
+        b=JuY0r5yXntpWWzZXsdA88BXsBYv590V4Ep8F6jfWf6kGIWp1JSFtrAQadAVxFywmbN
+         RtkCN5MVz8Kb5gEYOUJAvT5dlvGbvkWMLI/pGdjCNsDAXh6K9kvNfg/crGE7jeGkn9uH
+         YqfwFTj4gh/eR0PkX25QY/QvgCmNAqJjUMxUmUuBD7hHDWFW5mfuZcIj04QlMlM6jNji
+         KT1WWvFzTJ9kZXWxDpKk0Alp8YvzaEa1JeM4SwjWhQGblNi93mk/Xr4Q4s2zw+WJB36o
+         Knnsb802yKk5B/vVGx1+qzXlMyRLPWnxnY32BR97sUmGXn7J8XMufW1T5tzJAEiN7aV0
+         BN0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1sh6GJ0mJWJb3ICmo91l9UDo6bvtBy9zVj1QpKnJ7Ig=;
-        b=GATM/IBCQPWSfDhQADnwzCf3+HB3TcYjndUKYx07sUk1hGvA/OyXF/XDHmKXOeHUEa
-         DP/+8S6ogOkGpxZxJoPodm9TwRoUeDGDlUEXBD1CIu//GSM8/wbVljTNE5E9MYZu2kGf
-         s2VdAfHCvdKrGeoTjtEVMilzZX+31Mc24ya309FPUEsXyfXxNIpxJN7fR/+zq+WjfrAU
-         afDp2TEmvYaTjU6ycg276Fs7kvKbQBc0szMeHV1LsSpd6GthRs7OxYHk7whMng8pGcIl
-         iiktMUE7JTFVNoHZvmyBFQfoE1pV3W3OoSDf4Ay1xlGEyJM4mxsdfTWsc8ITquMDOHxV
-         THfQ==
-X-Gm-Message-State: AOAM530O7eENy7hMCEQinpjtl8F7U//qrVxIKYK4ORKcdolSVDHBHLof
-        4ysHaWRv+tWSijqGXgb6J2h17g==
-X-Google-Smtp-Source: ABdhPJzKS5OctiAZPFx3Qk+kjCmzI82WamC6hYGDP51dNtvT2E3Ogaz8sYsUpYWCXWko3lNaCQH5Og==
-X-Received: by 2002:a1c:ed15:: with SMTP id l21mr6221723wmh.56.1598434465884;
-        Wed, 26 Aug 2020 02:34:25 -0700 (PDT)
+        bh=WVfVHRbfLs77xvEowdNmRYJl1Eqf3t8uGBw9b5yOc7s=;
+        b=APPGflrCV9Jy55MYsObs+DEwHBECWX3fQ/JdRwcBUl5XnEDeDbAvmNnATHQOeh7DUk
+         qZYJGY9AnstSr/xO9gzoirDuIyAjcL25n5OxJ333HmP9ICaTBc2MZ2YRGiTujqlL/HLH
+         O0x2WtmO+LN43o/wJiLZy/z/EiK4qVAGpCYJCfqZembZ5U6+4mTz4gsR5PVc2RrXF/Dq
+         y6UXRGbZDXaQPjvOVRm2maB2h/6WlHBSAEXYkqYNqWYdDbYpeql4fWbFdrQ/9JpC44PD
+         GC1qRmT5g31BfrgncJ/drkiJTKwWbWlpqbt0GpehCikHtnmNBQpaGSX/wAgTfZP+ds9f
+         bfRQ==
+X-Gm-Message-State: AOAM5309Fd5uTy6SueCvZJpytIU5c7U+URPruCGfLhRwqeHIpvIEP/kU
+        DP+EfpJ6UrutZVVLkKYOkbZHFQ==
+X-Google-Smtp-Source: ABdhPJyU2nSGobc0dtKGFmaO2f5zOBwubTya6uY4DUiS+jy3Wni+yfPQlhnFiLfmGxtP5tH2dPQoLg==
+X-Received: by 2002:a1c:7c11:: with SMTP id x17mr4307425wmc.122.1598434467042;
+        Wed, 26 Aug 2020 02:34:27 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id u3sm3978759wml.44.2020.08.26.02.34.24
+        by smtp.gmail.com with ESMTPSA id u3sm3978759wml.44.2020.08.26.02.34.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 02:34:25 -0700 (PDT)
+        Wed, 26 Aug 2020 02:34:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-Subject: [PATCH 17/30] wireless: ath: ath9k: ar9002_initvals: Remove unused array 'ar9280PciePhy_clkreq_off_L1_9280'
-Date:   Wed, 26 Aug 2020 10:33:48 +0100
-Message-Id: <20200826093401.1458456-18-lee.jones@linaro.org>
+Subject: [PATCH 18/30] wireless: ath: ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
+Date:   Wed, 26 Aug 2020 10:33:49 +0100
+Message-Id: <20200826093401.1458456-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200826093401.1458456-1-lee.jones@linaro.org>
 References: <20200826093401.1458456-1-lee.jones@linaro.org>
@@ -69,7 +69,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/ath/ath9k/ar9002_initvals.h:900:18: warning: ‘ar9280PciePhy_clkreq_off_L1_9280’ defined but not used [-Wunused-const-variable=]
+ drivers/net/wireless/ath/ath9k/ar9001_initvals.h:462:18: warning: ‘ar5416Bank6_9100’ defined but not used [-Wunused-const-variable=]
 
 Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
@@ -79,34 +79,57 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/ath/ath9k/ar9002_initvals.h | 14 --------------
- 1 file changed, 14 deletions(-)
+ .../net/wireless/ath/ath9k/ar9001_initvals.h  | 37 -------------------
+ 1 file changed, 37 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ar9002_initvals.h b/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
-index 4d18c66a67903..e01b5c3728b86 100644
---- a/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
-+++ b/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
-@@ -897,20 +897,6 @@ static const u32 ar9280Modes_original_tx_gain_9280_2[][5] = {
- 	{0x00007844, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
+diff --git a/drivers/net/wireless/ath/ath9k/ar9001_initvals.h b/drivers/net/wireless/ath/ath9k/ar9001_initvals.h
+index 59524e1d4678c..aa5f086fa3b0b 100644
+--- a/drivers/net/wireless/ath/ath9k/ar9001_initvals.h
++++ b/drivers/net/wireless/ath/ath9k/ar9001_initvals.h
+@@ -459,43 +459,6 @@ static const u32 ar5416Common_9100[][2] = {
+ 	{0x0000a3e0, 0x000001ce},
  };
  
--static const u32 ar9280PciePhy_clkreq_off_L1_9280[][2] = {
--	/* Addr      allmodes  */
--	{0x00004040, 0x9248fd00},
--	{0x00004040, 0x24924924},
--	{0x00004040, 0xa8000019},
--	{0x00004040, 0x13160820},
--	{0x00004040, 0xe5980560},
--	{0x00004040, 0xc01dcffc},
--	{0x00004040, 0x1aaabe41},
--	{0x00004040, 0xbe105554},
--	{0x00004040, 0x00043007},
--	{0x00004044, 0x00000000},
+-static const u32 ar5416Bank6_9100[][3] = {
+-	/* Addr      5G          2G        */
+-	{0x0000989c, 0x00000000, 0x00000000},
+-	{0x0000989c, 0x00000000, 0x00000000},
+-	{0x0000989c, 0x00000000, 0x00000000},
+-	{0x0000989c, 0x00e00000, 0x00e00000},
+-	{0x0000989c, 0x005e0000, 0x005e0000},
+-	{0x0000989c, 0x00120000, 0x00120000},
+-	{0x0000989c, 0x00620000, 0x00620000},
+-	{0x0000989c, 0x00020000, 0x00020000},
+-	{0x0000989c, 0x00ff0000, 0x00ff0000},
+-	{0x0000989c, 0x00ff0000, 0x00ff0000},
+-	{0x0000989c, 0x00ff0000, 0x00ff0000},
+-	{0x0000989c, 0x00ff0000, 0x00ff0000},
+-	{0x0000989c, 0x005f0000, 0x005f0000},
+-	{0x0000989c, 0x00870000, 0x00870000},
+-	{0x0000989c, 0x00f90000, 0x00f90000},
+-	{0x0000989c, 0x007b0000, 0x007b0000},
+-	{0x0000989c, 0x00ff0000, 0x00ff0000},
+-	{0x0000989c, 0x00f50000, 0x00f50000},
+-	{0x0000989c, 0x00dc0000, 0x00dc0000},
+-	{0x0000989c, 0x00110000, 0x00110000},
+-	{0x0000989c, 0x006100a8, 0x006100a8},
+-	{0x0000989c, 0x004210a2, 0x004210a2},
+-	{0x0000989c, 0x0014000f, 0x0014000f},
+-	{0x0000989c, 0x00c40002, 0x00c40002},
+-	{0x0000989c, 0x003000f2, 0x003000f2},
+-	{0x0000989c, 0x00440016, 0x00440016},
+-	{0x0000989c, 0x00410040, 0x00410040},
+-	{0x0000989c, 0x000180d6, 0x000180d6},
+-	{0x0000989c, 0x0000c0aa, 0x0000c0aa},
+-	{0x0000989c, 0x000000b1, 0x000000b1},
+-	{0x0000989c, 0x00002000, 0x00002000},
+-	{0x0000989c, 0x000000d4, 0x000000d4},
+-	{0x000098d0, 0x0000000f, 0x0010000f},
 -};
 -
- static const u32 ar9280PciePhy_clkreq_always_on_L1_9280[][2] = {
- 	/* Addr      allmodes  */
- 	{0x00004040, 0x9248fd00},
+ static const u32 ar5416Bank6TPC_9100[][3] = {
+ 	/* Addr      5G          2G        */
+ 	{0x0000989c, 0x00000000, 0x00000000},
 -- 
 2.25.1
 
