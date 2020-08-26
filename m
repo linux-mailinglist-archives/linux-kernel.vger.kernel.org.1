@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C127253826
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EE5253821
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgHZTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 15:17:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728012AbgHZTR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 15:17:27 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56E212078B;
-        Wed, 26 Aug 2020 19:17:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598469446;
-        bh=tje2jJ12gd9XIemyHJQgMO4DHFwCLig6InjjheE2uhk=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=DUJ9kj1n3SZ8m6ES5OKTBqsRNGHhONmJF42ZVse4w8PHTqm2f203MRlmMNl3QMkTp
-         sUj8vKPh5gUZBygvT6feb2rdhyDFBFmhtuOm3I3y83CGzHyGiTfZy89b7tHPMLoZYH
-         kTswt1rnNuZ3Jyb0GjW/rOLRoLm7/4v8OKpA2DYM=
-Date:   Wed, 26 Aug 2020 20:16:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org, lee.jones@linaro.org,
-        Xu Yilun <yilun.xu@intel.com>
-Cc:     hao.wu@intel.com, lgoncalv@redhat.com,
-        matthew.gerlach@linux.intel.com, trix@redhat.com,
-        russell.h.weight@intel.com
-In-Reply-To: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
-References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
-Subject: Re: [PATCH v4 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
-Message-Id: <159846941049.39902.15220563960562003689.b4-ty@kernel.org>
+        id S1727122AbgHZTRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 15:17:19 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:41635 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726940AbgHZTRP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 15:17:15 -0400
+Received: by mail-ed1-f68.google.com with SMTP id c8so2737913edn.8;
+        Wed, 26 Aug 2020 12:17:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8xGqYRG8ajCrh4u0eYU/fQCzra6d0D+pOOx7R79TMK0=;
+        b=LWI7uyd2XbwmfWGIjp1icTngzDGk5eGORHVfPlgpgDbCa3STYxhv+C7FE0ehEm65TZ
+         eHNb3N66avShzv1GJU0XyddvV6XAovXttfJlBEt0eSGGvoonv6osFqWK7SsvS7Eq5gkI
+         nq15w+uQHx3p6VJs5i97cmbnEbRhBHANhG/ikAioy+kX9WXROR/gpm4LIhoLgim6sGjK
+         eeEMoLdMj9lyWKG/TbrlEwYU50MRNNcPFnHtPlEhlbyONjtaE/U5ihjML8H/DsoR02Ff
+         1UBrNjMNYIy+eODjQppFcFbW2wHUkI+goGV0+P7aKvnNbkc4IkGBTAK7129UOznFc9/9
+         31Sw==
+X-Gm-Message-State: AOAM532cwLkdi+rn8cihtJFq6lE3PT5QZh1hr8bsiS0XhmVlKUMlT6oF
+        nmgNx+VtZTteGXQH7y3TIVo=
+X-Google-Smtp-Source: ABdhPJyQDj5GAFJqp19VI5XGmXKh+NP7EjEyumm45r/4D70WWFdTs7PKal7GGssl9pz9tBPBd/x9qA==
+X-Received: by 2002:a05:6402:2031:: with SMTP id ay17mr15889987edb.46.1598469432489;
+        Wed, 26 Aug 2020 12:17:12 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id r9sm2722466edq.44.2020.08.26.12.17.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 26 Aug 2020 12:17:11 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 21:17:08 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 01/24] Input: bcm-keypad - Simplify with dev_err_probe()
+Message-ID: <20200826191708.GA13466@kozik-lap>
+References: <20200826181706.11098-1-krzk@kernel.org>
+ <20200826191217.GW1891694@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200826191217.GW1891694@smile.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 15:34:55 +0800, Xu Yilun wrote:
-> This patchset adds the regmap-spi-avmm to support the Intel SPI Slave to
-> AVMM Bus Bridge (spi-avmm) IP block. It also implements the usercase - the
-> driver of Intel Max10 BMC chip which integrates this IP block.
+On Wed, Aug 26, 2020 at 10:12:17PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 26, 2020 at 08:16:43PM +0200, Krzysztof Kozlowski wrote:
+> > Common pattern of handling deferred probe can be simplified with
+> > dev_err_probe().  Less code and also it prints the error value.
 > 
-> Patch #1 implements the regmap-spi-avmm.
-> Patch #2 implements the mfd driver of Intel Max10 BMC chip.
+> > +++ b/drivers/input/keyboard/bcm-keypad.c
+> > @@ -379,11 +379,9 @@ static int bcm_kp_probe(struct platform_device *pdev)
+> >  	kp->clk = devm_clk_get(&pdev->dev, "peri_clk");
+> >  	if (IS_ERR(kp->clk)) {
+> >  		error = PTR_ERR(kp->clk);
+> > -		if (error != -ENOENT) {
+> > -			if (error != -EPROBE_DEFER)
+> > -				dev_err(&pdev->dev, "Failed to get clock\n");
+> > -			return error;
+> > -		}
+> > +		if (error != -ENOENT)
+> > +			return dev_err_probe(&pdev->dev, error, "Failed to get clock\n");
+> > +
+> >  		dev_dbg(&pdev->dev,
+> >  			"No clock specified. Assuming it's enabled\n");
 > 
-> [...]
+> Shouldn't be this rather switch to devm_clk_get_optional() + dev_err_probe?
 
-Applied to
+Indeed, it could be simplified even more. I'll send v2.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
-
-Thanks!
-
-[1/2] regmap: add Intel SPI Slave to AVMM Bus Bridge support
-      commit: 7f9fb67358a2bcaacbdfeee12e0f19e98c8bdf55
-[2/2] mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
-      commit: 53be8bbc2f4058d4a6bfff3dadf34164bcaafa87
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards,
+Krzysztof
