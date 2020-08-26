@@ -2,74 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBF5252B48
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A460252B4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgHZKUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 06:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgHZKUW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:20:22 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CC8C061574;
-        Wed, 26 Aug 2020 03:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dK54gVnnFy7pciYtW/SwTc/MtpITyhwOr681Mcut1ZE=; b=QnI59is+0973mjiRBzv9QwXVLR
-        S+2jm2IM/mKa/MbnFewPVnjTyj/m10ob5OT1T7EXdoqH6jxF80BLPOEakYl7L5i/kJzkUI8KOtNI6
-        nswXPNly7Esre9mxaDdyPWFYhCF4Ih4J0Zr++bt0TUzTqd3W4EPoktnjjqF3LZjr9OMx1pqtJlZsQ
-        dISCVH1eTmjnmICeCn6Qf6/Afq92UXK8R0WznI3I2z5RpI+241hVlok7nPFdAvEYGDx49BTpERhne
-        vsRXie25PLSSnspCTPXjGFMrdup/t0dw+jbE7N5qbP3615e6wYRWw0lzSYs1nVgcx5Jx4AyduYQq+
-        P2sub1wg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kAsXS-0006Lq-Kt; Wed, 26 Aug 2020 10:20:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71D243006D0;
-        Wed, 26 Aug 2020 12:20:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 125D12BFE5A34; Wed, 26 Aug 2020 12:20:17 +0200 (CEST)
-Date:   Wed, 26 Aug 2020 12:20:17 +0200
-From:   peterz@infradead.org
-To:     yamada.masahiro@socionext.com
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH -v2] scipts/tags.sh: Add custom sort order
-Message-ID: <20200826102017.GT35926@hirez.programming.kicks-ass.net>
-References: <20200805102550.GO2674@hirez.programming.kicks-ass.net>
- <20200806120438.GG35926@hirez.programming.kicks-ass.net>
+        id S1728380AbgHZKV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 06:21:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12113 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728132AbgHZKV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 06:21:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598437317; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MkBteFA49aiDVrV3uQvOo1CKvWxeAW0hpmXtiWdWsqg=;
+ b=XIDAmlXHVjfrmzZ4T0KxyW6VTgxiNakXqFvvm+KuOejGW51OD3yC4JdXIgtBIecdbA8MjaQb
+ JyGdWdOB3pla96MJHd58JHpciI0MRJyD35AolApdf09BmWpQLs53SEEaG+IBE+5ULRvx6GU9
+ smwsJAoJjow9r3Wvm1OXWFYsvqU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f4637c2e2d4d29fc898b68c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 Aug 2020 10:21:54
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B653AC433CA; Wed, 26 Aug 2020 10:21:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: merez)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACA26C433C6;
+        Wed, 26 Aug 2020 10:21:53 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806120438.GG35926@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 Aug 2020 13:21:53 +0300
+From:   merez@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, wil6210@qti.qualcomm.com
+Subject: Re: [PATCH 25/32] wireless: ath: wil6210: wmi: Fix formatting and
+ demote non-conforming function headers
+In-Reply-To: <20200821071644.109970-26-lee.jones@linaro.org>
+References: <20200821071644.109970-1-lee.jones@linaro.org>
+ <20200821071644.109970-26-lee.jones@linaro.org>
+Message-ID: <330bc340a4d16f383c9adef2324db60e@codeaurora.org>
+X-Sender: merez@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 02:04:38PM +0200, peterz@infradead.org wrote:
+On 2020-08-21 10:16, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> One long standing annoyance I have with using vim-tags is that our tags
-> file is not properly sorted. That is, the sorting exhuberant Ctags does
-> is only on the tag itself.
+>  drivers/net/wireless/ath/wil6210/wmi.c:52: warning: Incorrect use of
+> kernel-doc format:  * Addressing - theory of operations
+>  drivers/net/wireless/ath/wil6210/wmi.c:70: warning: Incorrect use of
+> kernel-doc format:  * @sparrow_fw_mapping provides memory remapping
+> table for sparrow
+>  drivers/net/wireless/ath/wil6210/wmi.c:80: warning: cannot understand
+> function prototype: 'const struct fw_map sparrow_fw_mapping[] = '
+>  drivers/net/wireless/ath/wil6210/wmi.c:107: warning: Cannot
+> understand  * @sparrow_d0_mac_rgf_ext - mac_rgf_ext section for
+> Sparrow D0
+>  drivers/net/wireless/ath/wil6210/wmi.c:115: warning: Cannot
+> understand  * @talyn_fw_mapping provides memory remapping table for
+> Talyn
+>  drivers/net/wireless/ath/wil6210/wmi.c:158: warning: Cannot
+> understand  * @talyn_mb_fw_mapping provides memory remapping table for
+> Talyn-MB
+>  drivers/net/wireless/ath/wil6210/wmi.c:236: warning: Function
+> parameter or member 'x' not described in 'wmi_addr_remap'
+>  drivers/net/wireless/ath/wil6210/wmi.c:255: warning: Function
+> parameter or member 'section' not described in 'wil_find_fw_mapping'
+>  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
+> parameter or member 'wil' not described in 'wmi_buffer_block'
+>  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
+> parameter or member 'ptr_' not described in 'wmi_buffer_block'
+>  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
+> parameter or member 'size' not described in 'wmi_buffer_block'
+>  drivers/net/wireless/ath/wil6210/wmi.c:307: warning: Function
+> parameter or member 'wil' not described in 'wmi_addr'
+>  drivers/net/wireless/ath/wil6210/wmi.c:307: warning: Function
+> parameter or member 'ptr' not described in 'wmi_addr'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
+> parameter or member 'wil' not described in 'wil_find_cid_ringid_sta'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
+> parameter or member 'vif' not described in 'wil_find_cid_ringid_sta'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
+> parameter or member 'cid' not described in 'wil_find_cid_ringid_sta'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
+> parameter or member 'ringid' not described in
+> 'wil_find_cid_ringid_sta'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
+> parameter or member 'vif' not described in 'wmi_evt_ignore'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
+> parameter or member 'id' not described in 'wmi_evt_ignore'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
+> parameter or member 'd' not described in 'wmi_evt_ignore'
+>  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
+> parameter or member 'len' not described in 'wmi_evt_ignore'
+>  drivers/net/wireless/ath/wil6210/wmi.c:2588: warning: Function
+> parameter or member 'wil' not described in 'wmi_rxon'
 > 
-> The problem with that is that, for example, the tag 'mutex' appears a
-> mere 505 times, 492 of those are structure members. However it is _far_
-> more likely that someone wants the struct definition when looking for
-> the mutex tag than any of those members. However, due to the nature of
-> the sorting, the struct definition will not be first.
-> 
-> So add a script that does a custom sort of the tags file, taking the tag
-> kind into account.
-> 
-> The kind ordering is roughly: 'type', 'function', 'macro', 'enum', rest.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Maya Erez <merez@codeaurora.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: wil6210@qti.qualcomm.com
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
+>  drivers/net/wireless/ath/wil6210/wmi.c | 28 ++++++++++++++------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wil6210/wmi.c
+> b/drivers/net/wireless/ath/wil6210/wmi.c
+> index c7136ce567eea..3a6ee85acf6c7 100644
+> --- a/drivers/net/wireless/ath/wil6210/wmi.c
+> +++ b/drivers/net/wireless/ath/wil6210/wmi.c
+> @@ -31,7 +31,7 @@ MODULE_PARM_DESC(led_id,
+>  #define WIL_WAIT_FOR_SUSPEND_RESUME_COMP 200
+>  #define WIL_WMI_PCP_STOP_TO_MS 5000
+> 
+> -/**
+> +/*
+>   * WMI event receiving - theory of operations
+>   *
+>   * When firmware about to report WMI event, it fills memory area
 
-ping?
+The correct format for such documentation blocks is:
+/**
+  * DOC: Theory of Operation
+
+This comment is also applicable for the rest of such documentation 
+blocks changed in this patch.
+
+> @@ -66,7 +66,7 @@ MODULE_PARM_DESC(led_id,
+>   * AHB address must be used.
+>   */
+> 
+> -/**
+> +/*
+>   * @sparrow_fw_mapping provides memory remapping table for sparrow
+>   *
+>   * array size should be in sync with the declaration in the wil6210.h
+For files in net/ and drivers/net/ the preferred style for long 
+(multi-line) comments is a different and
+the text should be in the same line as /*, as follows:
+/* sparrow_fw_mapping provides memory remapping table for sparrow
+I would also remove the @ from @sparrow_fw_mapping.
+This comment is also applicable for the rest of such documentation 
+blocks changed in this patch.
