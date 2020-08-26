@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EB7252AE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676D3252AEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgHZJ5B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 05:57:01 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:45803 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728063AbgHZJ5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:57:00 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-284-9K-l9__PNqGXuC3Fiyhmng-1; Wed, 26 Aug 2020 10:56:57 +0100
-X-MC-Unique: 9K-l9__PNqGXuC3Fiyhmng-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 26 Aug 2020 10:56:56 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 26 Aug 2020 10:56:56 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-sctp@vger.kernel.org'" <linux-sctp@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        'Catalin Marinas' <catalin.marinas@arm.com>,
-        "'kent.overstreet@gmail.com'" <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        'Neil Horman' <nhorman@tuxdriver.com>
-Subject: RE: [PATCH 00/13] lib/generic-radix-tree: genradix bug fix and
- optimisations.
-Thread-Topic: [PATCH 00/13] lib/generic-radix-tree: genradix bug fix and
- optimisations.
-Thread-Index: AdZ67b0yl7qlbV/xQHyOe3+CAeHrEgAABLWAACe8Y3A=
-Date:   Wed, 26 Aug 2020 09:56:56 +0000
-Message-ID: <7894f0bc41764c0a8cb87f1482df7679@AcuMS.aculab.com>
-References: <21289d79b0474811b21ed8478c465159@AcuMS.aculab.com>
- <20200825154127.GB2444@localhost.localdomain>
-In-Reply-To: <20200825154127.GB2444@localhost.localdomain>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728269AbgHZJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:59:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:17533 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727956AbgHZJ7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:59:34 -0400
+IronPort-SDR: oj++tV3VGisUwMhyaTNi35ReeiyhmD3xkcq1qOWzGmTrm8Zkfa8KU4ZgGnv7lJQO/T8/+Qhcqs
+ nSY5XMhBWWeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="155524333"
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="155524333"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 02:59:33 -0700
+IronPort-SDR: kH/j+hEO1qmnCM7V3yKKfuxAQzCPuWtNFIk+jd94YLJc/vf6pFZhFJpjW4L3bT+wdZ1seluoiq
+ +x1grDJrlaJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="329168889"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.93]) ([10.238.2.93])
+  by orsmga008.jf.intel.com with ESMTP; 26 Aug 2020 02:59:31 -0700
+Subject: Re: [RESEND RFC v2 0/2] add bus lock VM exit support
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200817033604.5836-1-chenyi.qiang@intel.com>
+Message-ID: <28b3864d-8cc2-a062-5d29-4f92dce74630@intel.com>
+Date:   Wed, 26 Aug 2020 17:57:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200817033604.5836-1-chenyi.qiang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 'Marcelo Ricardo Leitner'
-> Sent: 25 August 2020 16:41
+Ping for comments
+
+On 8/17/2020 11:36 AM, Chenyi Qiang wrote:
+> Resend to rebase on 5.9-rc1.
 > 
-> On Tue, Aug 25, 2020 at 02:52:34PM +0000, David Laight wrote:
-> > The genradix code is used by SCTP for accessing per-stream data.
-> > This means there are quite a lot of lookups but the code wasn't
-> > really optimised at all.
+> ---
 > 
-> My test box is down for the moment and will bring it on later today or
-> tomorrow, so I can't test it yet. What should we expect as performance
-> gains here?
-
-I've just done quick test that shows ~1% improvement on an MTP3+M2PA
-'double reflect' test using the 'test' userpart and a test program.
-So there is quite a lot of extra protocol stack in the way.
-
-The test is running ~200k very small data chunks/sec (tx and rx)
-on a poor little 2.4GHz 8 core atom C2758.
-
-However the 'baseline' kernel just locked up.
-(Reports 5.8.0+ so must be late in the merge for rc1).
-
-Annoyingly the Ubuntu 20.04 userspace won't show the kernel messages
-(only a graphical login) - so I can see any kernel ooops messages.
-I'm going to have to setup a serial console.
-That'll need a trip into the office.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> Add the support for bus lock VM exit in KVM. It is a sub-feature of bus
+> lock detection. Another sub-feature named bus lock debug exception is
+> blocked due to requirement to rework the HW design:
+> https://lore.kernel.org/lkml/87r1stmi1x.fsf@nanos.tec.linutronix.de/
+> 
+> In this patch series, the first patch applies Sean's refactor to
+> vcpu_vmx.exit_reason available at
+> https://patchwork.kernel.org/patch/11500659.
+> It is necessary as bus lock VM exit adds a new modifier bit(bit 26) in
+> exit_reason field in VMCS.
+> 
+> The second patch is the enabling work for bus lock VM exit. Add the
+> support to set the capability to enable bus lock vm exit. The current
+> implementation just exit to user space when handling the bus lock
+> detected in guest.
+> 
+> The concrete throttling policy in user space still needs to be
+> discussed. We can enforce ratelimit on bus lock in guest, just inject
+> some sleep time, or any other ideas?
+> 
+> Document for Bus Lock Detection is now available at the latest "Intel
+> Architecture Instruction Set Extensions Programming Reference".
+> 
+> Document Link:
+> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+> 
+> 
+> v1->v2 Changelogs:
+> - resolve Vitaly's comment to introduce the KVM_EXIT_BUS_LOCK and a
+>    capability to enable it.
+> - add the support to exit to user space when handling bus locks.
+> - extend the vcpu->run->flags to indicate bus lock detected for other
+>    exit reasons when exiting to user space.
+> 
+> Chenyi Qiang (1):
+>    KVM: VMX: Enable bus lock VM exit
+> 
+> Sean Christopherson (1):
+>    KVM: VMX: Convert vcpu_vmx.exit_reason to a union
+> 
+>   arch/x86/include/asm/kvm_host.h    |  9 +++
+>   arch/x86/include/asm/vmx.h         |  1 +
+>   arch/x86/include/asm/vmxfeatures.h |  1 +
+>   arch/x86/include/uapi/asm/kvm.h    |  1 +
+>   arch/x86/include/uapi/asm/vmx.h    |  4 +-
+>   arch/x86/kvm/vmx/capabilities.h    |  6 ++
+>   arch/x86/kvm/vmx/nested.c          | 42 ++++++++-----
+>   arch/x86/kvm/vmx/vmx.c             | 97 ++++++++++++++++++++----------
+>   arch/x86/kvm/vmx/vmx.h             | 25 +++++++-
+>   arch/x86/kvm/x86.c                 | 36 ++++++++++-
+>   arch/x86/kvm/x86.h                 |  5 ++
+>   include/uapi/linux/kvm.h           |  2 +
+>   12 files changed, 179 insertions(+), 50 deletions(-)
+> 
