@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3F5252C71
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6DB252C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728973AbgHZLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:30:38 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40895 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728958AbgHZL3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:29:24 -0400
-Received: by mail-oi1-f194.google.com with SMTP id u24so1191200oic.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:29:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wyjOsgy6kraSv8aHLd4PWHdbJs82utSf/F+JcIOpHiA=;
-        b=DNjOO+sCZZV5ns+6Nj5Oqq51IoFGCJP9229mdWleU2P9djUWayvKzgklQID793Dh6D
-         qN/VadGOsI/ojva3Vodjk1RabppMG1tOlKr7d8LIV4nfWxwJ33SM1IDAd8uWU913oHap
-         e+dHl4rbtYh+9J/LPlNh4ZWfcfNwb7BrmT3qG5GuoHb4NlJbiOOg3ZS/rdf9LiW1grEA
-         T5SlX+Th/07jDmVHHnrCRh4nBNgqsHVRBkSHCyr60lgrpviVVbX17M0mcXmIPeEnO7IS
-         k4mMDBywPsCSSAhdMM65Gs4GzKVsq5D2QHLjQKIW7CpiTGhEYXcTp017DXDz0+rnjxy5
-         flIQ==
-X-Gm-Message-State: AOAM532vgqq1eIYsW+pIa1foVVmDlbY/2bMOqMvfsh479Vpn2/xraAaU
-        Oo9xrxflcr2N6jWiCEDXpse1xqNXU7wEEVAgqi9QRKad
-X-Google-Smtp-Source: ABdhPJxUzKIMVu67ODsr0wOFJt8hPX16fug+D9cQxfCn3rdJ08t5AlCoWW8peZbcE3uJSJcg/lQbt4vM1sCVXcK6K8Y=
-X-Received: by 2002:a05:6808:575:: with SMTP id j21mr3590400oig.54.1598441363259;
- Wed, 26 Aug 2020 04:29:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200720114314.196686-1-hch@lst.de>
-In-Reply-To: <20200720114314.196686-1-hch@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 13:29:11 +0200
-Message-ID: <CAMuHMdUAeP34s_6Mk6BZR+6AScGOUbiUyrD-Wee=errk-jGA0Q@mail.gmail.com>
-Subject: Re: [PATCH] m68k: use get_kernel_nofault in show_registers
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728994AbgHZLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:32:19 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:45460 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728999AbgHZLb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:31:58 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app3 (Coremail) with SMTP id cC_KCgCnr98JSEZf_ms_Aw--.46227S4;
+        Wed, 26 Aug 2020 19:31:24 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rxrpc: Fix memleak in rxkad_verify_response
+Date:   Wed, 26 Aug 2020 19:31:20 +0800
+Message-Id: <20200826113120.24297-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgCnr98JSEZf_ms_Aw--.46227S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrWktw15JrW5WrWrtF18Krg_yoWDJFc_A3
+        yxKayUZ3yYqFy8C3y2g3y5Kw1xurnrArnYgrn3KFsxJ3yUA347C39rJr1fJryF9a1jgryY
+        yrnIqryxur1ayjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VUbeT5PUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAIsN
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
-> Use the proper get_kernel_nofault helper to access an unsafe kernel
-> pointer without faulting instead of playing with set_fs and get_user.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+When kmalloc() on ticket fails, response should be freed
+to prevent memleak.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. applied, and queued in the m68k for-v5.10 branch.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ net/rxrpc/rxkad.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
+diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
+index 52a24d4ef5d8..e08130e5746b 100644
+--- a/net/rxrpc/rxkad.c
++++ b/net/rxrpc/rxkad.c
+@@ -1137,7 +1137,7 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
+ 	ret = -ENOMEM;
+ 	ticket = kmalloc(ticket_len, GFP_NOFS);
+ 	if (!ticket)
+-		goto temporary_error;
++		goto temporary_error_free_resp;
+ 
+ 	eproto = tracepoint_string("rxkad_tkt_short");
+ 	abort_code = RXKADPACKETSHORT;
+@@ -1230,6 +1230,7 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
+ 
+ temporary_error_free_ticket:
+ 	kfree(ticket);
++temporary_error_free_resp:
+ 	kfree(response);
+ temporary_error:
+ 	/* Ignore the response packet if we got a temporary error such as
+-- 
+2.17.1
 
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
