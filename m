@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B049025306A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95676253066
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730567AbgHZNwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:52:03 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:49099 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730450AbgHZNwA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:52:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1598449920; x=1629985920;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=R/UiUNzpRC6vnoctXzbPpJl22XZf2dpsVm7NtJe6n4g=;
-  b=Yo6TpDWroOZFM2I+bbzqxKo9c/mokN76clVs9lbB/f+VzQhXTMj0O5EN
-   CqDvexjrjm6aT2gT574AcjeVyySF5U+6BZLV0VuQpXNGWYsD0wfNWzbNs
-   IrrWAndZG7KprioUdxjRcFpszFR+sCsTk3RKGr1AbIH0YDKTSZGzgkkvR
-   E=;
-X-IronPort-AV: E=Sophos;i="5.76,355,1592870400"; 
-   d="scan'208";a="62901837"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 Aug 2020 13:51:24 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id 0362BA2204;
-        Wed, 26 Aug 2020 13:51:15 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 26 Aug 2020 13:51:15 +0000
-Received: from edge-m2-r3-214.e-iad50.amazon.com (10.43.160.229) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 26 Aug 2020 13:51:07 +0000
-Subject: Re: [PATCH] x86/irq: Preserve vector in orig_ax for APIC code
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Andrew Cooper" <andrew.cooper3@citrix.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>, <robketr@amazon.de>,
-        <amos@scylladb.com>, Brian Gerst <brgerst@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20200826115357.3049-1-graf@amazon.com>
- <20200826132210.k4pxphxvxuvb2fe6@treble>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <19292905-9cfc-ff36-217b-73b944e41442@amazon.com>
-Date:   Wed, 26 Aug 2020 15:51:05 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.1.1
+        id S1730550AbgHZNvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:51:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:46614 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730371AbgHZNva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:51:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56820101E;
+        Wed, 26 Aug 2020 06:51:29 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CB003F68F;
+        Wed, 26 Aug 2020 06:51:27 -0700 (PDT)
+Subject: Re: [PATCH] iommu: Add support to filter non-strict/lazy mode based
+ on device names
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
+ <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
+ <d9b1f1b614057d87279c26e13cbbb1f5@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a03ce8f0-cab5-2782-ac50-930cf94b7dcd@arm.com>
+Date:   Wed, 26 Aug 2020 14:51:22 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200826132210.k4pxphxvxuvb2fe6@treble>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.229]
-X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+In-Reply-To: <d9b1f1b614057d87279c26e13cbbb1f5@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyNi4wOC4yMCAxNToyMiwgSm9zaCBQb2ltYm9ldWYgd3JvdGU6Cj4gCj4gT24gV2VkLCBB
-dWcgMjYsIDIwMjAgYXQgMDE6NTM6NTdQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+
-IC0ubWFjcm8gaWR0ZW50cnlfYm9keSBjZnVuYyBoYXNfZXJyb3JfY29kZTpyZXEKPj4gKy5tYWNy
-byBpZHRlbnRyeV9ib2R5IGNmdW5jIGhhc19lcnJvcl9jb2RlOnJlcSBwcmVzZXJ2ZV9lcnJvcl9j
-b2RlOnJlcQo+Pgo+PiAgICAgICAgY2FsbCAgICBlcnJvcl9lbnRyeQo+PiAgICAgICAgVU5XSU5E
-X0hJTlRfUkVHUwo+PiBAQCAtMzI4LDcgKzMyOCw5IEBAIFNZTV9DT0RFX0VORChyZXRfZnJvbV9m
-b3JrKQo+Pgo+PiAgICAgICAgLmlmIFxoYXNfZXJyb3JfY29kZSA9PSAxCj4+ICAgICAgICAgICAg
-ICAgIG1vdnEgICAgT1JJR19SQVgoJXJzcCksICVyc2kgICAgLyogZ2V0IGVycm9yIGNvZGUgaW50
-byAybmQgYXJndW1lbnQqLwo+PiAtICAgICAgICAgICAgIG1vdnEgICAgJC0xLCBPUklHX1JBWCgl
-cnNwKSAgICAgLyogbm8gc3lzY2FsbCB0byByZXN0YXJ0ICovCj4+ICsgICAgICAgICAgICAgLmlm
-IFxwcmVzZXJ2ZV9lcnJvcl9jb2RlID09IDAKPj4gKyAgICAgICAgICAgICAgICAgICAgIG1vdnEg
-ICAgJC0xLCBPUklHX1JBWCglcnNwKSAgICAgLyogbm8gc3lzY2FsbCB0byByZXN0YXJ0ICovCj4+
-ICsgICAgICAgICAgICAgLmVuZGlmCj4gCj4gV2hlbiBkb2VzIHRoaXMgaGFwcGVuIChoYXNfZXJy
-b3JfY29kZT0xICYmIHByZXNlcnZlX2Vycm9yX2NvZGU9MCk/ICBJCj4gZG9uJ3Qgc2VlIGFueSB1
-c2VycyBvZiB0aGlzIG1hY3JvIChvciBpZHRlbnRyeSkgd2l0aCB0aGlzIGNvbWJpbmF0aW9uLgoK
-SXQncyB3ZWxsIGhpZGRlbiBpbiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9pZHRlbnRyeS5oOgoKI2Rl
-ZmluZSBERUNMQVJFX0lEVEVOVFJZX0VSUk9SQ09ERSh2ZWN0b3IsIGZ1bmMpICAgICAgICAgICAg
-ICAgICAgICAgICAgXAogICAgICAgICBpZHRlbnRyeSB2ZWN0b3IgYXNtXyMjZnVuYyBmdW5jIGhh
-c19lcnJvcl9jb2RlPTEKCi8qIFNpbXBsZSBleGNlcHRpb24gZW50cmllcyB3aXRoIGVycm9yIGNv
-ZGUgcHVzaGVkIGJ5IGhhcmR3YXJlICovCkRFQ0xBUkVfSURURU5UUllfRVJST1JDT0RFKFg4Nl9U
-UkFQX1RTLCBleGNfaW52YWxpZF90c3MpOwpERUNMQVJFX0lEVEVOVFJZX0VSUk9SQ09ERShYODZf
-VFJBUF9OUCwgZXhjX3NlZ21lbnRfbm90X3ByZXNlbnQpOwpERUNMQVJFX0lEVEVOVFJZX0VSUk9S
-Q09ERShYODZfVFJBUF9TUywgZXhjX3N0YWNrX3NlZ21lbnQpOwpERUNMQVJFX0lEVEVOVFJZX0VS
-Uk9SQ09ERShYODZfVFJBUF9HUCwgZXhjX2dlbmVyYWxfcHJvdGVjdGlvbik7CkRFQ0xBUkVfSURU
-RU5UUllfRVJST1JDT0RFKFg4Nl9UUkFQX0FDLCBleGNfYWxpZ25tZW50X2NoZWNrKTsKWy4uLl0K
-REVDTEFSRV9JRFRFTlRSWV9SQVdfRVJST1JDT0RFKFg4Nl9UUkFQX1BGLCAgICAgZXhjX3BhZ2Vf
-ZmF1bHQpOwoKCkFsZXgKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgK
-S3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFu
-IFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hh
-cmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4
-OSAyMzcgODc5CgoK
+On 2020-08-26 13:17, Sai Prakash Ranjan wrote:
+> On 2020-08-26 17:07, Robin Murphy wrote:
+>> On 2020-08-25 16:42, Sai Prakash Ranjan wrote:
+>>> Currently the non-strict or lazy mode of TLB invalidation can only be 
+>>> set
+>>> for all or no domains. This works well for development platforms where
+>>> setting to non-strict/lazy mode is fine for performance reasons but on
+>>> production devices, we need a more fine grained control to allow only
+>>> certain peripherals to support this mode where we can be sure that it is
+>>> safe. So add support to filter non-strict/lazy mode based on the device
+>>> names that are passed via cmdline parameter "iommu.nonstrict_device".
+>>
+>> There seems to be considerable overlap here with both the existing
+>> patches for per-device default domain control [1], and the broader
+>> ongoing development on how to define, evaluate and handle "trusted"
+>> vs. "untrusted" devices (e.g. [2],[3]). I'd rather see work done to
+>> make sure those integrate properly together and work well for
+>> everyone's purposes, than add more disjoint mechanisms that only
+>> address small pieces of the overall issue.
+>>
+>> Robin.
+>>
+>> [1]
+>> https://lore.kernel.org/linux-iommu/20200824051726.7xaJRTTszJuzdFWGJ8YNsshCtfNR0BNeMrlILAyqt_0@z/ 
+>>
+>> [2]
+>> https://lore.kernel.org/linux-iommu/20200630044943.3425049-1-rajatja@google.com/ 
+>>
+>> [3]
+>> https://lore.kernel.org/linux-iommu/20200626002710.110200-2-rajatja@google.com/ 
+>>
+>>
+> 
+> Thanks for the links, [1] definitely sounds interesting, I was under the 
+> impression
+> that changing such via sysfs is late, but seems like other Sai has got 
+> it working
+> for the default domain type. So we can extend that and add a strict 
+> attribute as well,
+> we should be definitely OK with system booting with default strict mode 
+> for all
+> peripherals as long as we have an option to change that later, Doug?
 
+Right, IIRC there was initially a proposal of a command line option 
+there too, and it faced the same criticism around not being very generic 
+or scalable. I believe sysfs works as a reasonable compromise since in 
+many cases it can be tweaked relatively early from an initrd, and 
+non-essential devices can effectively be switched at any time by 
+removing and reprobing their driver.
+
+As for a general approach for internal devices where you do believe the 
+hardware is honest but don't necessarily trust whatever firmware it 
+happens to be running, I'm pretty sure that's come up already, but I'll 
+be sure to mention it at Rajat's imminent LPC talk if nobody else does.
+
+Robin.
