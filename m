@@ -2,277 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9742524EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 03:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2C52524F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 03:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgHZBLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 21:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726633AbgHZBL2 (ORCPT
+        id S1726823AbgHZBMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 21:12:13 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:44106 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgHZBMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 21:11:28 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E05C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 18:03:17 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id m23so437802iol.8
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 18:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=95iD9grKs874OZRXLaKmh7iAntQIC8bb1aAQXOrsWwE=;
-        b=lHrcSwx6f+2je3HDnro8+xvQr/Rb/uzaQBMsDxmMIjnAskry1/9NbsY8sqELCe7BXk
-         d0UUA8UTs2blL34Iykm+nzrbCaLn9n7iX1zb/E+Uy7vBiJnnYAEQEq+uo6/C7kzv3LUv
-         ywLStIBD7hnJvAZiHvDaNPOIeJm8c2w3fOd+s6n5jO78HzwQAsivDKegiHNXV2qK8iIP
-         L4Lt+PDM9f1zl+uw0bO10QGvhwuwsDESBbrNqNu4USKl+/eW8PmVoLwYcHeLdh0PdaEv
-         ReZC7rvTY9hs0q9qEqTLIiyJVEAeg7OwfZiarndpdCdn51/Ewy9a5+59W49WOlKpdD20
-         tUfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=95iD9grKs874OZRXLaKmh7iAntQIC8bb1aAQXOrsWwE=;
-        b=UzQ7uFFaJrGnk//B/n49i64XEvEkDuPj6Rlo6WoXbtQjzsHdL4yZgDkGeZDvcs5RVI
-         RXvZOu9HziBy1vSOJwwoYnUaxNv0trTOjsE2srIxGlExzpww0KYIkR4bcSlU0agtmB7X
-         oqqB25n3TOD0FHX+6fvql4586aaUZKSWrrrZcnwiRjVQOlpXPqZ5V6XDimVOxcC5Qyht
-         401AnR1w6NTZAH/6TEKA+SnaW4kTJFsj5wXtQJLZ2H/wnHcUVOAoE/Z0VCfexgbTiDdD
-         pJyxPEoL2e4XxaqzD1mHYHQdGTVty8nB5jTAN7HMeKZsB227dYKfdtD2GrOWyXFxR7Ba
-         jNlw==
-X-Gm-Message-State: AOAM531sI5hJXZ6SnQ6rOrM+h9D0CWh+nQVx0VLxy4gwmAkyprwF9JHG
-        3xInXur4CH5TjBBJVyoNbr6NmcAeMcitkW+6dA==
-X-Google-Smtp-Source: ABdhPJx0STFJXc8n9KRdJxmsoPCIo2ciwcv0Edi29efO7FnJqTlfX7dDYa0Uq9vyNgtqfl6BF4RtXHgi+n0ot/eygxc=
-X-Received: by 2002:a02:730b:: with SMTP id y11mr13196057jab.126.1598403796593;
- Tue, 25 Aug 2020 18:03:16 -0700 (PDT)
+        Tue, 25 Aug 2020 21:12:12 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200826010315epoutp04954924f07519d055d947c079eb53bc6e~uq8ifZNy81579315793epoutp04I
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 01:03:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200826010315epoutp04954924f07519d055d947c079eb53bc6e~uq8ifZNy81579315793epoutp04I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598403795;
+        bh=GArVnUQlfGs75UJ6SGWrUgWlyvN3uE4bsrDRJWD991Q=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=nA68HLMrNwUT90gpV/gL4cK1YOyqISHeFVr4Uh7VIuNTmC0GtrekNUrWokazh8z+m
+         5thI7llF4dMwSr9kOkgWAi/CNqdYm3Q/q5OdesF9GAcPCkVZeEhZ4E0dADc0OU2efK
+         M3cTHlUKml2ZFZ372li7cJADwNxm89OQ8Kk8A908=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200826010315epcas1p1f23fe85bb12878fcb63d995541324379~uq8iClkD42321123211epcas1p1p;
+        Wed, 26 Aug 2020 01:03:15 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4BbnfV3GGszMqYkZ; Wed, 26 Aug
+        2020 01:03:14 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D7.69.18978.1D4B54F5; Wed, 26 Aug 2020 10:03:13 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200826010313epcas1p1e1df3c0235f84b2dbc1bd6eaa770ca88~uq8f7yREE2321123211epcas1p1m;
+        Wed, 26 Aug 2020 01:03:13 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200826010313epsmtrp1652abb59429cc427b0ee9e93510a7e86~uq8f7H3kP0915909159epsmtrp1V;
+        Wed, 26 Aug 2020 01:03:13 +0000 (GMT)
+X-AuditID: b6c32a35-b8298a8000004a22-75-5f45b4d1c9cf
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A5.CB.08382.0D4B54F5; Wed, 26 Aug 2020 10:03:13 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200826010312epsmtip177affdc1e9bc98b957a90900e74f4edd~uq8fuQZVM0946209462epsmtip1a;
+        Wed, 26 Aug 2020 01:03:12 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
+        <mori.takahiro@ab.mitsubishielectric.co.jp>,
+        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
+        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <fdaff3a3-99ba-8b9e-bdaf-9bcf9d7208e0@gmail.com>
+Subject: RE: [PATCH v3] exfat: integrates dir-entry getting and validation
+Date:   Wed, 26 Aug 2020 10:03:13 +0900
+Message-ID: <000101d67b44$ac458c80$04d0a580$@samsung.com>
 MIME-Version: 1.0
-References: <20200521200513.656533920@linutronix.de> <20200521202118.796915981@linutronix.de>
- <f0079706-4cb3-b3e3-9a5e-97aaba0aa0eb@amazon.com> <87a6yj58af.fsf@nanos.tec.linutronix.de>
- <051182cc-6c90-e48b-d191-8ca004385261@amazon.com> <CALCETrXutDjE5Z6WR+47MJvp3xt4n=EGiF_oEYm88vGvCqUgHA@mail.gmail.com>
- <b1fdf037-9c11-9f47-f285-e9a0843d648a@amazon.com>
-In-Reply-To: <b1fdf037-9c11-9f47-f285-e9a0843d648a@amazon.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 25 Aug 2020 21:03:05 -0400
-Message-ID: <CAMzpN2i3AL3cED-XAo-YmaAD5PhjxfwPs9e0JPPNZOkOpu=9HQ@mail.gmail.com>
-Subject: Re: [patch V9 21/39] x86/irq: Convey vector as argument and not in ptregs
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>, robketr@amazon.de,
-        amos@scylladb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH6G9isXEQ9sMxkt33jRW4ItYjr3QIF0gSvAfjtwRwBp6Lp0QLf0PstAjwGXzmorDU8MA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLJsWRmVeSWpSXmKPExsWy7bCmge7FLa7xBm+65S1+zL3NYvHm5FQW
+        iz17T7JYXN41h83i8v9PLBbLvkxmsdjy7wirA7vHlznH2T3aJv9j92g+tpLNY+esu+wefVtW
+        MXp83iQXwBaVY5ORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6Dr
+        lpkDdIuSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK
+        0MDAyBSoMiEn482jDywFF/grJs58zNjAuJWni5GTQ0LAROL/tYnsXYxcHEICOxgl5l6YyArh
+        fGKUaLt5jwnC+cYoseHcNmaYlidtE1kgEnsZJVbsW8II4bxklLhzZRM7SBWbgK7Evz/72UBs
+        EQE9iZMnr7OBFDELNDJJLD/xBWwUp4CtxMt5U4BsDg5hAS+Jeb1SIGEWAVWJhxv2gZXwClhK
+        rL1zmAXCFpQ4OfMJmM0sIC+x/e0cqIsUJH4+XcYKsStMom9pBztEjYjE7M42ZpC9EgILOSRW
+        7/jNBtHgItFxpJcFwhaWeHV8CzuELSXxsr+NHeQeCYFqiY/7oeZ3MEq8+G4LYRtL3Fy/gRWk
+        hFlAU2L9Ln2IsKLEzt9zGSHW8km8+9rDCjGFV6KjTQiiRFWi79JhJghbWqKr/QP7BEalWUge
+        m4XksVlIHpiFsGwBI8sqRrHUguLc9NRiwwJD5MjexAhOp1qmOxgnvv2gd4iRiYPxEKMEB7OS
+        CK/gRed4Id6UxMqq1KL8+KLSnNTiQ4ymwKCeyCwlmpwPTOh5JfGGpkbGxsYWJmbmZqbGSuK8
+        D28pxAsJpCeWpGanphakFsH0MXFwSjUw5ffFHyxkdI567Hskvdf3R3PDDS25hUfZE2dttwxJ
+        vb7Q37Ow++T+ukau5dxa83x/nd4snFX1Vlpr5Wabxry3ixceq5Dz7NI+MMl5t9M8jVop7Vub
+        fr7r2T9N+KHtWZ5qW77oj/fmrmbhn1Am35KY9j4s4HSw9sTeim9xCUc/L/v6rWKFyc+M/49V
+        fIJf3lhVVLGtj4P98a+0aXu3G4g+rDkmVHPwRNPzQ9M7HD3muc+fayhsNN+yO6H39xVpeU71
+        o/nvj73n3XzoguvpjK3BexrTf1pGbv7YdnCqvEfniRNstivWtc1WUFrFuG1d9yOeaUvana99
+        ehZU1KlldPxA2d7Nj5PL7dX1W37P3N1crMRSnJFoqMVcVJwIADjAygQwBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJTvfiFtd4g29TmC1+zL3NYvHm5FQW
+        iz17T7JYXN41h83i8v9PLBbLvkxmsdjy7wirA7vHlznH2T3aJv9j92g+tpLNY+esu+wefVtW
+        MXp83iQXwBbFZZOSmpNZllqkb5fAlfHm0QeWggv8FRNnPmZsYNzK08XIySEhYCLxpG0iSxcj
+        F4eQwG5Gia3725kgEtISx06cYe5i5ACyhSUOHy6GqHnOKLG78wFYDZuArsS/P/vZQGwRAT2J
+        kyevs4EUMQs0M0l8e7aEGaLjBJPE14WdrCBVnAK2Ei/nTQGbKizgJTGvVwokzCKgKvFwwz5m
+        EJtXwFJi7Z3DLBC2oMTJmU/AbGYBbYmnN59C2fIS29/OYYY4VEHi59NlrBBHhEn0Le1gh6gR
+        kZjd2cY8gVF4FpJRs5CMmoVk1CwkLQsYWVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+du
+        YgRHlpbmDsbtqz7oHWJk4mA8xCjBwawkwit40TleiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+N
+        woVxQgLpiSWp2ampBalFMFkmDk6pBqaOFV0mf/Z53Qg7W3mqWnrqzveRO2boxh58YRmrNevO
+        sWZW5gm2O9Uc7vZGfVDW+P1ulYbkfNaEx5wVglvnPjzR9mOWgsfroj6336unqsQUzz7xxcVf
+        L3xv/wWxuZ4PG1Q+RM6W33bth8T1xQ1KYs8yNFQYDO5K7SutVzJnusTk986M9WUJz4+eB7M+
+        FP6Zk7F3Q8LfOUIm6WVSrZYpVyTCmp77XbdoNeBwORJ5uX7tVGZ2jv0sn5xyN8rN2bvvDBNX
+        KG/j+8185ok2qleXPs/XSs1cFiUtc4H7us4HTg8W3+bny+2ja9LXX+l4zcq6hvtO4IcKB5Gz
+        1z5Hnwtl+2W3OLLG9fzsuXEibG/rliqxFGckGmoxFxUnAgDH553jGwMAAA==
+X-CMS-MailID: 20200826010313epcas1p1e1df3c0235f84b2dbc1bd6eaa770ca88
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200806010250epcas1p482847d6d906fbf0ccd618c7d1cacd12e
+References: <CGME20200806010250epcas1p482847d6d906fbf0ccd618c7d1cacd12e@epcas1p4.samsung.com>
+        <20200806010229.24690-1-kohada.t2@gmail.com>
+        <003c01d66edc$edbb1690$c93143b0$@samsung.com>
+        <ca3b2b52-1abc-939c-aa11-8c7d12e4eb2e@gmail.com>
+        <000001d67787$d3abcbb0$7b036310$@samsung.com>
+        <fdaff3a3-99ba-8b9e-bdaf-9bcf9d7208e0@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 8:04 PM Alexander Graf <graf@amazon.com> wrote:
->
-> Hi Andy,
->
-> On 26.08.20 01:41, Andy Lutomirski wrote:
-> >
-> > On Tue, Aug 25, 2020 at 4:18 PM Alexander Graf <graf@amazon.com> wrote:
-> >>
-> >> Hi Thomas,
-> >>
-> >> On 25.08.20 12:28, Thomas Gleixner wrote:
-> >>> void irq_complete_move(struct irq_cfg *cfg)
-> > {
-> >          __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
-> > }
-> >
-> >>> Alex,
-> >>>
-> >>> On Mon, Aug 24 2020 at 19:29, Alexander Graf wrote:
-> >>>> I'm currently trying to understand a performance regression with
-> >>>> ScyllaDB on i3en.3xlarge (KVM based VM on Skylake) which we reliably
-> >>>> bisected down to this commit:
-> >>>>
-> >>>>      https://github.com/scylladb/scylla/issues/7036
-> >>>>
-> >>>> What we're seeing is that syscalls such as membarrier() take forever
-> >>>> (0-10 =C2=B5s would be normal):
-> >>> ...
-> >>>> That again seems to stem from a vastly slowed down
-> >>>> smp_call_function_many_cond():
-> >>>>
-> >>>> Samples: 218K of event 'cpu-clock', 4000 Hz
-> >>>> Overhead  Shared Object        Symbol
-> >>>>      94.51%  [kernel]             [k] smp_call_function_many_cond
-> >>>>       0.76%  [kernel]             [k] __do_softirq
-> >>>>       0.32%  [kernel]             [k] native_queued_spin_lock_slowpa=
-th
-> >>>> [...]
-> >>>>
-> >>>> which is stuck in
-> >>>>
-> >>>>           =E2=94=82     csd_lock_wait():
-> >>>>           =E2=94=82             smp_cond_load_acquire(&csd->flags, !=
-(VAL &
-> >>>>      0.00 =E2=94=82       mov    0x8(%rcx),%edx
-> >>>>      0.00 =E2=94=82       and    $0x1,%edx
-> >>>>           =E2=94=82     =E2=86=93 je     2b9
-> >>>>           =E2=94=82     rep_nop():
-> >>>>      0.70 =E2=94=822af:   pause
-> >>>>           =E2=94=82     csd_lock_wait():
-> >>>>     92.82 =E2=94=82       mov    0x8(%rcx),%edx
-> >>>>      6.48 =E2=94=82       and    $0x1,%edx
-> >>>>      0.00 =E2=94=82     =E2=86=91 jne    2af
-> >>>>      0.00 =E2=94=822b9: =E2=86=91 jmp    282
-> >>>>
-> >>>>
-> >>>> Given the patch at hand I was expecting lost IPIs, but I can't quite=
- see
-> >>>> anything getting lost.
-> >>>
-> >>> I have no idea how that patch should be related to IPI and smp functi=
-on
-> >>> calls. It's changing the way how regular device interrupts and their
-> >>> spurious counterpart are handled and not the way how IPIs are
-> >>> handled. They are handled by direct vectors and do not go through
-> >>> do_IRQ() at all.
-> >>>
-> >>> Aside of that the commit just changes the way how the interrupt vecto=
-r
-> >>> of a regular device interrupt is stored and conveyed. The extra read =
-and
-> >>> write on the cache hot stack is hardly related to anything IPI.
-> >>
-> >> I am as puzzled as you are, but the bisect is very clear: 79b9c183021e
-> >> works fast and 633260fa1 (as well as mainline) shows the weird behavio=
-r
-> >> above.
-> >>
-> >> It gets even better. This small (demonstrative only, mangled) patch on
-> >> top of 633260fa1 also resolves the performance issue:
-> >>
-> >> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-> >> index c766936..7e91e9a 100644
-> >> --- a/arch/x86/kernel/irq.c
-> >> +++ b/arch/x86/kernel/irq.c
-> >> @@ -239,6 +239,7 @@ __visible void __irq_entry do_IRQ(struct pt_regs
-> >> *regs, unsigned long vector)
-> >>           * lower 8 bits.
-> >>           */
-> >>          vector &=3D 0xFF;
-> >> +       regs->orig_ax =3D ~vector;
-> >>
-> >>          /* entering_irq() tells RCU that we're not quiescent.  Check =
-it. */
-> >>          RCU_LOCKDEP_WARN(!rcu_is_watching(), "IRQ failed to wake up R=
-CU");
-> >>
-> >>
-> >> To me that sounds like some irq exit code somewhere must still be
-> >> looking at orig_ax to decide on something - and that something is wron=
-g
-> >> now that we removed the negation of the vector. It also seems to have =
-an
-> >> impact on remote function calls.
-> >>
-> >> I'll have a deeper look tomorrow again if I can find any such place, b=
-ut
-> >> I wouldn't mind if anyone could point me into the right direction
-> >> earlier :).
-> >
-> > How about this:
-> >
-> > void irq_complete_move(struct irq_cfg *cfg)
-> > {
-> >          __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
-> > }
-> >
-> > in arch/x86/kernel/apic/vector.c.
-> >
->
-> Thanks a lot, I stumbled over the same thing just after I sent the email
-> as well and had been trying to see if I can quickly patch it up before I
-> fall asleep :).
->
-> The code path above is used by the APIC vector move (irqbalance) logic,
-> which explains why not everyone was seeing issues.
->
-> So with 633260fa1 applied, we never get out of moving state for our IRQ
-> because orig_ax is always -1. That means we send an IPI to the cleanup
-> vector on every single device interrupt, completely occupying the poor
-> CPU that we moved the IRQ from.
->
-> I've confirmed that the patch below fixes the issue and will send a
-> proper, more complete patch on top of mainline with fancy description
-> and stable tag tomorrow.
->
->
-> Alex
->
->
->
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index e7434cd..a474e6e 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -734,7 +734,6 @@ SYM_CODE_START_LOCAL(common_spurious)
->         call    interrupt_entry
->         UNWIND_HINT_REGS indirect=3D1
->         movq    ORIG_RAX(%rdi), %rsi            /* get vector from stack =
-*/
-> -       movq    $-1, ORIG_RAX(%rdi)             /* no syscall to restart =
-*/
->         call    smp_spurious_interrupt          /* rdi points to pt_regs =
-*/
->         jmp     ret_from_intr
->   SYM_CODE_END(common_spurious)
-> @@ -746,7 +745,6 @@ SYM_CODE_START_LOCAL(common_interrupt)
->         call    interrupt_entry
->         UNWIND_HINT_REGS indirect=3D1
->         movq    ORIG_RAX(%rdi), %rsi            /* get vector from stack =
-*/
-> -       movq    $-1, ORIG_RAX(%rdi)             /* no syscall to restart =
-*/
->         call    do_IRQ                          /* rdi points to pt_regs =
-*/
->         /* 0(%rsp): old RSP */
->   ret_from_intr:
-> diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.=
-c
-> index 67768e5443..5b6f74e 100644
-> --- a/arch/x86/kernel/apic/vector.c
-> +++ b/arch/x86/kernel/apic/vector.c
-> @@ -934,7 +934,7 @@ static void __irq_complete_move(struct irq_cfg *cfg,
-> unsigned vector)
->
->   void irq_complete_move(struct irq_cfg *cfg)
->   {
-> -       __irq_complete_move(cfg, ~get_irq_regs()->orig_ax);
-> +       __irq_complete_move(cfg, get_irq_regs()->orig_ax);
->   }
+> Second: Range validation and type validation should not be separated.
+> When I started making this patch, I intended to add only range validation.
+> However, after the caller gets the ep, the type validation follows.
+> Get ep, null check of ep (= range verification), type verification is a series of procedures.
+> There would be no reason to keep them independent anymore.
+> Range and type validation is enforced when the caller uses ep.
+You can add a validate flags as argument of exfat_get_dentry_set(), e.g. none, basic and strict.
+none : only range validation.
+basic : range + type validation.
+strict : range + type + checksum and name length, etc.
+ 
+> > -	/* validiate cached dentries */
+> > -	for (i = 1; i < num_entries; i++) {
+> > -		ep = exfat_get_dentry_cached(es, i);
+> > -		if (!exfat_validate_entry(exfat_get_entry_type(ep), &mode))
+> > +	ep = exfat_get_dentry_cached(es, ENTRY_STREAM);
+> > +	if (!ep || ep->type != EXFAT_STREAM)
+> > +		goto free_es;
+> > +	es->de[ENTRY_STREAM] = ep;
+> 
+> The value contained in stream-ext dir-entry should not be used before validating the EntrySet checksum.
+> So I would insert EntrySet checksum validation here.
+> In that case, the checksum verification loop would be followed by the TYPE_NAME verification loop, can
+> you acceptable?
+Yes. That would be great.
 
-I think you need to also truncate the vector to 8-bits, since it now
-gets sign-extended when pushed into the orig_ax slot.
+Thanks!
+> 
+> 
+> > diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h index
+> > 44dc04520175..0e4cc8ba2f8e 100644
+> > --- a/fs/exfat/exfat_fs.h
+> > +++ b/fs/exfat/exfat_fs.h
+> > @@ -33,6 +33,12 @@ enum {
+> >   	NLS_NAME_OVERLEN,	/* the length is over than its limit */
+> >   };
+> >
+> > +enum {
+> > +	ENTRY_FILE,
+> > +	ENTRY_STREAM,
+> > +	ENTRY_NAME,
+> > +};
+> 
+> This is necessary!
+> With this, some magic numbers will be gone.
+> But, I think it's better to use a name that can be recognized as an offset/index in the EntrySet.
+> And, I think it's better to define this in "exfat_raw.h"
+Okay, You can rename it and move it to there.
 
---
-Brian Gerst
