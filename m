@@ -2,291 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3298252D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0B3252D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgHZMAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:00:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40075 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729362AbgHZMAI (ORCPT
+        id S1729443AbgHZMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:02:12 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60394 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729375AbgHZMBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:00:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598443204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vxOMv7aIE5VKOI8Z8uOxqjwFJ74Uuc9uROH2S5YI5WA=;
-        b=Wv28GJcKi2HF7ZDlmFlOxdTpW/O4g+uoJcS+qURpT+cRtow3boBrvDmQdPL9GJ2k+yJ9K0
-        WMpD6iXvVOlSZfePY3s7C6hB63GZkNjaycXyM6MHGGWpi5CW2eOFXdY++RelPzpZOHFHSg
-        loNGaRzht4w0CCAN4ndoJgi9KIQkJPM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-688zvG8OMhCFXbTeDPUExA-1; Wed, 26 Aug 2020 08:00:00 -0400
-X-MC-Unique: 688zvG8OMhCFXbTeDPUExA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C72681CAF9;
-        Wed, 26 Aug 2020 11:59:58 +0000 (UTC)
-Received: from krava (unknown [10.40.194.188])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 15D1C77DD1;
-        Wed, 26 Aug 2020 11:59:55 +0000 (UTC)
-Date:   Wed, 26 Aug 2020 13:59:54 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com
-Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
-Message-ID: <20200826115954.GA766216@krava>
-References: <20200825074041.378520-1-kjain@linux.ibm.com>
- <20200826105656.GC703542@krava>
- <6a4e977e-4f77-6a2a-252c-cfdda26db3e2@linux.ibm.com>
+        Wed, 26 Aug 2020 08:01:07 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QBqkD7004452;
+        Wed, 26 Aug 2020 08:00:51 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3330955b3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 08:00:51 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 07QC0o59065465
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 26 Aug 2020 08:00:50 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 26 Aug
+ 2020 08:00:49 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 26 Aug 2020 08:00:49 -0400
+Received: from saturn.ad.analog.com ([10.48.65.100])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07QC0hNZ024342;
+        Wed, 26 Aug 2020 08:00:44 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <jic23@kernel.org>, <alexandre.torgue@st.com>,
+        <fabrice.gasnier@st.com>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: stm32-dac: Replace indio_dev->mlock with own device lock
+Date:   Wed, 26 Aug 2020 15:00:42 +0300
+Message-ID: <20200826120042.200364-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200826063850.47625-1-alexandru.ardelean@analog.com>
+References: <20200826063850.47625-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a4e977e-4f77-6a2a-252c-cfdda26db3e2@linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=582 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 05:02:04PM +0530, kajoljain wrote:
-> 
-> 
-> On 8/26/20 4:26 PM, Jiri Olsa wrote:
-> > On Tue, Aug 25, 2020 at 01:10:41PM +0530, Kajol Jain wrote:
-> > 
-> > SNIP
-> > 
-> >>  {
-> >>  	/* try to find matching event from arch standard values */
-> >>  	struct event_struct *es;
-> >> @@ -498,8 +486,7 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
-> >>  		if (!strcmp(arch_std, es->name)) {
-> >>  			if (!eventcode && es->event) {
-> >>  				/* allow EventCode to be overridden */
-> >> -				free(*event);
-> >> -				*event = NULL;
-> >> +				je->event = NULL;
-> >>  			}
-> >>  			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
-> >>  			return 0;
-> >> @@ -513,13 +500,8 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
-> >>  
-> >>  /* Call func with each event in the json file */
-> >>  int json_events(const char *fn,
-> >> -	  int (*func)(void *data, char *name, char *event, char *desc,
-> >> -		      char *long_desc,
-> >> -		      char *pmu, char *unit, char *perpkg,
-> >> -		      char *metric_expr,
-> >> -		      char *metric_name, char *metric_group,
-> >> -		      char *deprecated, char *metric_constraint),
-> >> -	  void *data)
-> >> +		int (*func)(void *data, struct json_event *je),
-> >> +			void *data)
-> >>  {
-> >>  	int err;
-> >>  	size_t size;
-> >> @@ -537,24 +519,16 @@ int json_events(const char *fn,
-> >>  	EXPECT(tokens->type == JSMN_ARRAY, tokens, "expected top level array");
-> >>  	tok = tokens + 1;
-> >>  	for (i = 0; i < tokens->size; i++) {
-> >> -		char *event = NULL, *desc = NULL, *name = NULL;
-> >> -		char *long_desc = NULL;
-> >>  		char *extra_desc = NULL;
-> >> -		char *pmu = NULL;
-> >>  		char *filter = NULL;
-> >> -		char *perpkg = NULL;
-> >> -		char *unit = NULL;
-> >> -		char *metric_expr = NULL;
-> >> -		char *metric_name = NULL;
-> >> -		char *metric_group = NULL;
-> >> -		char *deprecated = NULL;
-> >> -		char *metric_constraint = NULL;
-> >> +		struct json_event *je;
-> >>  		char *arch_std = NULL;
-> >>  		unsigned long long eventcode = 0;
-> >>  		struct msrmap *msr = NULL;
-> >>  		jsmntok_t *msrval = NULL;
-> >>  		jsmntok_t *precise = NULL;
-> >>  		jsmntok_t *obj = tok++;
-> >> +		je = (struct json_event *)calloc(1, sizeof(struct json_event));
-> > 
-> > hum, you don't check je pointer in here.. but does it need to be allocated?
-> > looks like you could just have je on stack as well..
-> 
-> Hi Jiri,
->    Yes I will add check for je pointer here.The reason for allocating memory to 'je' is,
-> later we are actually referring one by one to its field and in case if won't allocate memory
-> we will get segmentaion fault as otherwise je will be NULL. Please let me know if I am
-> getting correct.
+From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-I don't see reason why not to use automatic variable in here,
-I tried and it seems to work.. below is diff to your changes,
-feel free to squash it with your changes
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock. The lock protects against potential races when
+reading the CR reg and then updating, so that the state of pm_runtime
+is consistent between the two operations.
 
-jirka
-
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 606805af69fe..eaac5c126a52 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -521,14 +521,13 @@ int json_events(const char *fn,
- 	for (i = 0; i < tokens->size; i++) {
- 		char *extra_desc = NULL;
- 		char *filter = NULL;
--		struct json_event *je;
-+		struct json_event je = {};
- 		char *arch_std = NULL;
- 		unsigned long long eventcode = 0;
- 		struct msrmap *msr = NULL;
- 		jsmntok_t *msrval = NULL;
- 		jsmntok_t *precise = NULL;
- 		jsmntok_t *obj = tok++;
--		je = (struct json_event *)calloc(1, sizeof(struct json_event));
+ drivers/iio/dac/stm32-dac.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+index 092c796fa3d9..7a8aed476850 100644
+--- a/drivers/iio/dac/stm32-dac.c
++++ b/drivers/iio/dac/stm32-dac.c
+@@ -26,9 +26,11 @@
+ /**
+  * struct stm32_dac - private data of DAC driver
+  * @common:		reference to DAC common data
++ * @lock:		lock to protect the data buffer during regmap ops
+  */
+ struct stm32_dac {
+ 	struct stm32_dac_common *common;
++	struct mutex		lock;
+ };
  
- 		EXPECT(obj->type == JSMN_OBJECT, obj, "expected object");
- 		for (j = 0; j < obj->size; j += 2) {
-@@ -544,7 +543,7 @@ int json_events(const char *fn,
- 			       "Expected string value");
+ static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+@@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 	int ret;
  
- 			nz = !json_streq(map, val, "0");
--			if (match_field(map, field, nz, &je->event, val)) {
-+			if (match_field(map, field, nz, &je.event, val)) {
- 				/* ok */
- 			} else if (json_streq(map, field, "EventCode")) {
- 				char *code = NULL;
-@@ -557,14 +556,14 @@ int json_events(const char *fn,
- 				eventcode |= strtoul(code, NULL, 0) << 21;
- 				free(code);
- 			} else if (json_streq(map, field, "EventName")) {
--				addfield(map, &je->name, "", "", val);
-+				addfield(map, &je.name, "", "", val);
- 			} else if (json_streq(map, field, "BriefDescription")) {
--				addfield(map, &je->desc, "", "", val);
--				fixdesc(je->desc);
-+				addfield(map, &je.desc, "", "", val);
-+				fixdesc(je.desc);
- 			} else if (json_streq(map, field,
- 					     "PublicDescription")) {
--				addfield(map, &je->long_desc, "", "", val);
--				fixdesc(je->long_desc);
-+				addfield(map, &je.long_desc, "", "", val);
-+				fixdesc(je.long_desc);
- 			} else if (json_streq(map, field, "PEBS") && nz) {
- 				precise = val;
- 			} else if (json_streq(map, field, "MSRIndex") && nz) {
-@@ -584,34 +583,34 @@ int json_events(const char *fn,
+ 	/* already enabled / disabled ? */
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&dac->lock);
+ 	ret = stm32_dac_is_enabled(indio_dev, ch);
+ 	if (ret < 0 || enable == !!ret) {
+-		mutex_unlock(&indio_dev->mlock);
++		mutex_unlock(&dac->lock);
+ 		return ret < 0 ? ret : 0;
+ 	}
  
- 				ppmu = field_to_perf(unit_to_pmu, map, val);
- 				if (ppmu) {
--					je->pmu = strdup(ppmu);
-+					je.pmu = strdup(ppmu);
- 				} else {
--					if (!je->pmu)
--						je->pmu = strdup("uncore_");
--					addfield(map, &je->pmu, "", "", val);
--					for (s = je->pmu; *s; s++)
-+					if (!je.pmu)
-+						je.pmu = strdup("uncore_");
-+					addfield(map, &je.pmu, "", "", val);
-+					for (s = je.pmu; *s; s++)
- 						*s = tolower(*s);
- 				}
--				addfield(map, &je->desc, ". ", "Unit: ", NULL);
--				addfield(map, &je->desc, "", je->pmu, NULL);
--				addfield(map, &je->desc, "", " ", NULL);
-+				addfield(map, &je.desc, ". ", "Unit: ", NULL);
-+				addfield(map, &je.desc, "", je.pmu, NULL);
-+				addfield(map, &je.desc, "", " ", NULL);
- 			} else if (json_streq(map, field, "Filter")) {
- 				addfield(map, &filter, "", "", val);
- 			} else if (json_streq(map, field, "ScaleUnit")) {
--				addfield(map, &je->unit, "", "", val);
-+				addfield(map, &je.unit, "", "", val);
- 			} else if (json_streq(map, field, "PerPkg")) {
--				addfield(map, &je->perpkg, "", "", val);
-+				addfield(map, &je.perpkg, "", "", val);
- 			} else if (json_streq(map, field, "Deprecated")) {
--				addfield(map, &je->deprecated, "", "", val);
-+				addfield(map, &je.deprecated, "", "", val);
- 			} else if (json_streq(map, field, "MetricName")) {
--				addfield(map, &je->metric_name, "", "", val);
-+				addfield(map, &je.metric_name, "", "", val);
- 			} else if (json_streq(map, field, "MetricGroup")) {
--				addfield(map, &je->metric_group, "", "", val);
-+				addfield(map, &je.metric_group, "", "", val);
- 			} else if (json_streq(map, field, "MetricConstraint")) {
--				addfield(map, &je->metric_constraint, "", "", val);
-+				addfield(map, &je.metric_constraint, "", "", val);
- 			} else if (json_streq(map, field, "MetricExpr")) {
--				addfield(map, &je->metric_expr, "", "", val);
--				for (s = je->metric_expr; *s; s++)
-+				addfield(map, &je.metric_expr, "", "", val);
-+				for (s = je.metric_expr; *s; s++)
- 					*s = tolower(*s);
- 			} else if (json_streq(map, field, "ArchStdEvent")) {
- 				addfield(map, &arch_std, "", "", val);
-@@ -620,7 +619,7 @@ int json_events(const char *fn,
- 			}
- 			/* ignore unknown fields */
+@@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 		ret = pm_runtime_get_sync(dev);
+ 		if (ret < 0) {
+ 			pm_runtime_put_noidle(dev);
+-			mutex_unlock(&indio_dev->mlock);
++			mutex_unlock(&dac->lock);
+ 			return ret;
  		}
--		if (precise && je->desc && !strstr(je->desc, "(Precise Event)")) {
-+		if (precise && je.desc && !strstr(je.desc, "(Precise Event)")) {
- 			if (json_streq(map, precise, "2"))
- 				addfield(map, &extra_desc, " ",
- 						"(Must be precise)", NULL);
-@@ -629,34 +628,33 @@ int json_events(const char *fn,
- 						"(Precise event)", NULL);
- 		}
- 		snprintf(buf, sizeof buf, "event=%#llx", eventcode);
--		addfield(map, &je->event, ",", buf, NULL);
--		if (je->desc && extra_desc)
--			addfield(map, &je->desc, " ", extra_desc, NULL);
--		if (je->long_desc && extra_desc)
--			addfield(map, &je->long_desc, " ", extra_desc, NULL);
-+		addfield(map, &je.event, ",", buf, NULL);
-+		if (je.desc && extra_desc)
-+			addfield(map, &je.desc, " ", extra_desc, NULL);
-+		if (je.long_desc && extra_desc)
-+			addfield(map, &je.long_desc, " ", extra_desc, NULL);
- 		if (filter)
--			addfield(map, &je->event, ",", filter, NULL);
-+			addfield(map, &je.event, ",", filter, NULL);
- 		if (msr != NULL)
--			addfield(map, &je->event, ",", msr->pname, msrval);
--		if (je->name)
--			fixname(je->name);
-+			addfield(map, &je.event, ",", msr->pname, msrval);
-+		if (je.name)
-+			fixname(je.name);
+ 	}
  
- 		if (arch_std) {
- 			/*
- 			 * An arch standard event is referenced, so try to
- 			 * fixup any unassigned values.
- 			 */
--			err = try_fixup(fn, arch_std, eventcode, je);
-+			err = try_fixup(fn, arch_std, eventcode, &je);
- 			if (err)
- 				goto free_strings;
- 		}
--		je->event = real_event(je->name, je->event);
--		err = func(data, je);
-+		je.event = real_event(je.name, je.event);
-+		err = func(data, &je);
- free_strings:
- 		free(extra_desc);
- 		free(filter);
- 		free(arch_std);
--		free(je);
+ 	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&dac->lock);
+ 	if (ret < 0) {
+ 		dev_err(&indio_dev->dev, "%s failed\n", en ?
+ 			"Enable" : "Disable");
+@@ -327,6 +329,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+ 	indio_dev->info = &stm32_dac_iio_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
  
- 		if (err)
- 			break;
++	mutex_init(&dac->lock);
++
+ 	ret = stm32_dac_chan_of_init(indio_dev);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.25.1
 
