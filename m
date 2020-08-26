@@ -2,203 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D64252906
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51E525290E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgHZIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 04:15:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39514 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgHZIPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 04:15:40 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id B5B41299459
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        laurent.pinchart@ideasonboard.com, sam@ravnborg.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 5/5] drm/bridge: ps8640: Rework power state handling
-Date:   Wed, 26 Aug 2020 10:15:26 +0200
-Message-Id: <20200826081526.674866-6-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200826081526.674866-1-enric.balletbo@collabora.com>
-References: <20200826081526.674866-1-enric.balletbo@collabora.com>
+        id S1726948AbgHZIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 04:17:59 -0400
+Received: from mail-vi1eur05on2111.outbound.protection.outlook.com ([40.107.21.111]:48032
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726016AbgHZIR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 04:17:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nfvokVG1TbJgJAl9QpvIoAV9zSopZ6d9uC2tbcIZaGsWSTJlN9wTku3nwie680gUi0vYcemitLelaAKkvDVHxE8avHgHOkqkI6G+Fq+bWNQGUMm34+ZJ+O2Ko2yIRHF7rAySH0lO9BaRXpb9GqSDNjdWTi2Wa862Q+mQ4Orf8kmrAmcfD98nv3tRYuBiCy9ioREE+rU98snwTPYhQnU7/vkMc4d+2DnVQ2imI+0QDfTp+wBZa24IrmNDHcTmMyJ5F0jrgnwBti3EfEtVCWjWjkO7GkQuBIVkfkURIdckCq21nTq9DPuiIs88Qbbr50mA2a4byr+nYYeGxV4K6mIzSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GaFhmyvTxIsYL8VLptqh00nGlcTSDujn5+8USxGZisg=;
+ b=FsO8Pob2hISn17GxxgV5YkFshgo7XBrltQ5KXDuprTmIDbOitPlqL7JS3sxoApbuLPr+oE26rIqhVilS4Tl7pE/8wLzA7wD1JLNINN+WtZURsL3bYkQExB+T8MX4j8pz2TEk18HhsPyLQhZx2rnxVqvQToPsJqRiMNxIxOYPCnIsdiDSTN3oRmQ9Xu3YkL2r5tbtQpCLZkkvBP2JfxRMDOX91Gmpr4ySf+sbumvnEIBSVt4zAX8qIXuURqn1adAmt/nI3lZzAEGosTLE0xy3Wbgq1EWywNcxfvnmwyCeqK4qriOwCMz3hoedNDP4f+CqdcwkCrxRQUQrna2sn/7ZDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GaFhmyvTxIsYL8VLptqh00nGlcTSDujn5+8USxGZisg=;
+ b=CXHYZTW5yW4gHyX1Wpt7EIkCZSqMIy16L5X+OwI7iOuZejjGB+EGbCbM8HF/cCeucrUQQejn5PnZKLphNB6XOTvula6CVgXLwmupm6256sKhP8DqGMBJBHU4zFradZ4f7YoWr+A6b2fh9cvQ6TaDYLw4GD0d64O/4kNDSfC68IA=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0153.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:cb::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3283.23; Wed, 26 Aug 2020 08:17:53 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::b1a4:e5e3:a12b:1305]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::b1a4:e5e3:a12b:1305%6]) with mapi id 15.20.3305.026; Wed, 26 Aug 2020
+ 08:17:53 +0000
+Date:   Wed, 26 Aug 2020 11:17:44 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, jiri@mellanox.com, idosch@mellanox.com,
+        andrew@lunn.ch, oleksandr.mazur@plvision.eu,
+        serhiy.boiko@plvision.eu, serhiy.pshyk@plvision.eu,
+        volodymyr.mytnyk@plvision.eu, taras.chornyi@plvision.eu,
+        andrii.savka@plvision.eu, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
+        mickeyr@marvell.com
+Subject: Re: [net-next v5 1/6] net: marvell: prestera: Add driver for
+ Prestera family ASIC devices
+Message-ID: <20200826081744.GA2729@plvision.eu>
+References: <20200825122013.2844-1-vadym.kochan@plvision.eu>
+ <20200825122013.2844-2-vadym.kochan@plvision.eu>
+ <20200825.172003.1417643181819895272.davem@davemloft.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825.172003.1417643181819895272.davem@davemloft.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM5PR0402CA0022.eurprd04.prod.outlook.com
+ (2603:10a6:203:90::32) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM5PR0402CA0022.eurprd04.prod.outlook.com (2603:10a6:203:90::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25 via Frontend Transport; Wed, 26 Aug 2020 08:17:51 +0000
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8f7a3c20-9b4e-441b-e1b2-08d849988758
+X-MS-TrafficTypeDiagnostic: HE1P190MB0153:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0153831B7F69C8FB8068062995540@HE1P190MB0153.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zOJGqsKurXCDABRCA2rLHZSKa89GxoAVaqoUeh6JeWaNZgcznRPQ4/n6/em3Fjf/r9ywrbFo773Hk056tOuzgqjVqfj4iBQxfBWtJJUbuWNr9WgifoJVsYBGvMSOSKyyHUSHk50n5TN5TJboWyd8/ZUoCAmv9LtkUkeHul24W99V6AR02x6jHF8/YP8yi/9yaRzAcUWWpQ9GLAHMGN4lnFRFKB4wYfK7nNoJuc1L8FTiHZqRWrI+GdPzDGHjzVIEft16zNzNh475Pty7AVTbZXUqniDsX69OkXIYPneB2ePPPDd6gxUABqHj+Rhs8pNKupustXRhonp6p7N1nWRznw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(346002)(396003)(376002)(136003)(366004)(186003)(44832011)(478600001)(8936002)(86362001)(6666004)(16526019)(83380400001)(1076003)(33656002)(55016002)(6916009)(2616005)(316002)(5660300002)(36756003)(956004)(66476007)(2906002)(26005)(7696005)(52116002)(66946007)(8676002)(4326008)(66556008)(8886007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: fgQnbXoxvpdMqV3bXsxP9Dg6gIyOJaWfM+hyNqo+gBqG8fIKMEkOeaqn6GWPOA5jvs0O2baIDr8ybnQsI/pJUSHp8DwxMFFxTLa8uzXCWz8Kf6vZoUsU8nNNSoYj+b9AsacWBMGk3jC2/dUlojc+5rMJ7w/dZb5chbske7gqMvY79uxbj/PtJnYcvJ442X/qHr3QNc0Z12hvv3/vMlnjDDccF3gDCRG1rRiOCIwT7g50QkTJRX0oZ4fKXulGP0hUenLVEGuVgeme3RZLOHbcMgur9NJaemVDCfKAGaJ/P26px0y3PHJ8kTiDtYmXzDgJTXiNxP5FQu5x927SwErQjtF0FzyKxIgdABxdvFh8nxEyiB68F1HXrDmkYrjnSvMWGkcI+NsRjSL74l/mGbai0eaGDVX2DvDTNSoInaCaEghooopDEdPxu08+52c69wLVfucbDsk6xmKTn4uWIFP5FbzH1/rM8aTS/Ww7jRo32f9hZxzg7Am0L6SwafVE+KIBFGrEW3lxfZbCwoF8pXr1fGxJCNJQfrxrC/mRUN2rU0BXgRqOrfa3XS12VjXDnybl3Gvg7Nd5kuqz5YiP+lz2slaaTV8QkDJccUT+FQsAcUNdW8hYKg1mUpTWliHtrZ9DO1QBxyo1wQLYbdDjaGdyUA==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f7a3c20-9b4e-441b-e1b2-08d849988758
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 08:17:53.3030
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Un74EjpZgA+UIyGy7aVlf3ThupaJ24r1HSwbO7BRF92NNR+MA97apgbVrOrnLK97oTdOPXYHHrGgdnkmfEL429JbTR19aHwzkSYeG20Zi2Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0153
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_edid() callback can be triggered anytime by an ioctl, i.e
+On Tue, Aug 25, 2020 at 05:20:03PM -0700, David Miller wrote:
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+> Date: Tue, 25 Aug 2020 15:20:08 +0300
+> 
+> > +int prestera_dsa_parse(struct prestera_dsa *dsa, const u8 *dsa_buf)
+> > +{
+> > +	__be32 *dsa_words = (__be32 *)dsa_buf;
+> > +	enum prestera_dsa_cmd cmd;
+> > +	u32 words[4] = { 0 };
+> > +	u32 field;
+> > +
+> > +	words[0] = ntohl(dsa_words[0]);
+> > +	words[1] = ntohl(dsa_words[1]);
+> > +	words[2] = ntohl(dsa_words[2]);
+> > +	words[3] = ntohl(dsa_words[3]);
+> 
+> All 4 elements of words[] are explicitly and unconditionally set to something,
+> so you don't need the "= { 0 }" initializer.
 
-  drm_mode_getconnector (ioctl)
-    -> drm_helper_probe_single_connector_modes
-       -> drm_bridge_connector_get_modes
-          -> ps8640_bridge_get_edid
+Right, will fix it.
 
-Actually if the bridge pre_enable() function was not called before
-get_edid(), the driver will not be able to get the EDID properly and
-display will not work until a second get_edid() call is issued and if
-pre_enable() is called before. The side effect of this, for example, is
-that you see anything when `Frecon` starts, neither the splash screen,
-until the graphical session manager starts.
+> 
+> > +	INIT_LIST_HEAD(&sw->port_list);
+> 
+> What locking protects this list?
+> 
 
-To fix this we need to make sure that all we need is enabled before
-reading the EDID. This means the following:
+Initially there was (in RFC patch set), not locking, but _rcu list API
+used, because the port list is modified only by 1 writer when creating
+the port or deleting it on switch uninit (the really theoretical case
+which might happen is that event might be received at that time which
+causes to loop over this list to find the port), as I understand
+correctly list_add_rcu is safe to use with no additional locking if there is 1
+writer and many readers ? So can I use back this approach ?
 
-1. If get_edid() is called before having the device powered we need to
-   power on the device. In such case, the driver will power off again the
-   device.
+> > +	new_skb = alloc_skb(len, GFP_ATOMIC | GFP_DMA);
+> > +	if (!new_skb)
+> > +		goto err_alloc_skb;
+> 
+> This seems very costly to do copies on every packet.  There should be
+> something in the dma_*() API that would allow you to avoid this.
 
-2. If get_edid() is called after having the device powered, all should
-   just work. We added a powered flag in order to avoid recurrent calls
-   to ps8640_bridge_poweron() and unneeded delays.
+There is a limitation on the DMA range. Current device can't handle
+whole ZONE_DMA range, so there is a "backup" mechanism which copies the
+entire packet if the mapping was failed or if the packet's mapped
+address is out of this range, this is done on both rx and tx directions.
 
-3. This seems to be specific for this device, but we need to make sure
-   the panel is powered on before do a power on cycle on this device.
-   Otherwise the device fails to retrieve the EDID.
+> 
+> And since you just need the buffer to DMA map it into the device,
+> allocating an entire SKB object is overkill.  You can instead just
+> allocate a ring of TX bounce buffers once, and then you just copy
+> each packet there.  No allocations per packet.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
-
-Changes in v2:
-- Use drm_bridge_chain_pre_enable/post_disable() helpers (Sam Ravnborg)
-
- drivers/gpu/drm/bridge/parade-ps8640.c | 64 +++++++++++++++++++++++---
- 1 file changed, 58 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 9f7b7a9c53c5..c5d76e209bda 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -65,6 +65,7 @@ struct ps8640 {
- 	struct regulator_bulk_data supplies[2];
- 	struct gpio_desc *gpio_reset;
- 	struct gpio_desc *gpio_powerdown;
-+	bool powered;
- };
- 
- static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
-@@ -91,13 +92,15 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
- 	return 0;
- }
- 
--static void ps8640_pre_enable(struct drm_bridge *bridge)
-+static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
- {
--	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
- 	struct i2c_client *client = ps_bridge->page[PAGE2_TOP_CNTL];
- 	unsigned long timeout;
- 	int ret, status;
- 
-+	if (ps_bridge->powered)
-+		return;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(ps_bridge->supplies),
- 				    ps_bridge->supplies);
- 	if (ret < 0) {
-@@ -164,6 +167,8 @@ static void ps8640_pre_enable(struct drm_bridge *bridge)
- 		goto err_regulators_disable;
- 	}
- 
-+	ps_bridge->powered = true;
-+
- 	return;
- 
- err_regulators_disable:
-@@ -171,12 +176,12 @@ static void ps8640_pre_enable(struct drm_bridge *bridge)
- 			       ps_bridge->supplies);
- }
- 
--static void ps8640_post_disable(struct drm_bridge *bridge)
-+static void ps8640_bridge_poweroff(struct ps8640 *ps_bridge)
- {
--	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
- 	int ret;
- 
--	ps8640_bridge_vdo_control(ps_bridge, DISABLE);
-+	if (!ps_bridge->powered)
-+		return;
- 
- 	gpiod_set_value(ps_bridge->gpio_reset, 1);
- 	gpiod_set_value(ps_bridge->gpio_powerdown, 1);
-@@ -184,6 +189,28 @@ static void ps8640_post_disable(struct drm_bridge *bridge)
- 				     ps_bridge->supplies);
- 	if (ret < 0)
- 		DRM_ERROR("cannot disable regulators %d\n", ret);
-+
-+	ps_bridge->powered = false;
-+}
-+
-+static void ps8640_pre_enable(struct drm_bridge *bridge)
-+{
-+	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
-+	int ret;
-+
-+	ps8640_bridge_poweron(ps_bridge);
-+
-+	ret = ps8640_bridge_vdo_control(ps_bridge, DISABLE);
-+	if (ret < 0)
-+		ps8640_bridge_poweroff(ps_bridge);
-+}
-+
-+static void ps8640_post_disable(struct drm_bridge *bridge)
-+{
-+	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
-+
-+	ps8640_bridge_vdo_control(ps_bridge, DISABLE);
-+	ps8640_bridge_poweroff(ps_bridge);
- }
- 
- static int ps8640_bridge_attach(struct drm_bridge *bridge,
-@@ -249,9 +276,34 @@ static struct edid *ps8640_bridge_get_edid(struct drm_bridge *bridge,
- 					   struct drm_connector *connector)
- {
- 	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
-+	bool poweroff = !ps_bridge->powered;
-+	struct edid *edid;
-+
-+	/*
-+	 * When we end calling get_edid() triggered by an ioctl, i.e
-+	 *
-+	 *   drm_mode_getconnector (ioctl)
-+	 *     -> drm_helper_probe_single_connector_modes
-+	 *        -> drm_bridge_connector_get_modes
-+	 *           -> ps8640_bridge_get_edid
-+	 *
-+	 * We need to make sure that what we need is enabled before reading
-+	 * EDID, for this chip, we need to do a full poweron, otherwise it will
-+	 * fail.
-+	 */
-+	drm_bridge_chain_pre_enable(bridge);
- 
--	return drm_get_edid(connector,
-+	edid = drm_get_edid(connector,
- 			    ps_bridge->page[PAGE0_DP_CNTL]->adapter);
-+
-+	/*
-+	 * If we call the get_edid() function without having enabled the chip
-+	 * before, return the chip to its original power state.
-+	 */
-+	if (poweroff)
-+		drm_bridge_chain_post_disable(bridge);
-+
-+	return edid;
- }
- 
- static const struct drm_bridge_funcs ps8640_bridge_funcs = {
--- 
-2.28.0
-
+Yes, this makes sense, thanks.
