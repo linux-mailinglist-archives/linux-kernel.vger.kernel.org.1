@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C689F2527D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8132527DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHZGwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 02:52:49 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:60140 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgHZGws (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 02:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1598424769; x=1629960769;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HBnyjxMa7uVI/eu1uBnT609d4ARMKM0v5wDO/MK1iLM=;
-  b=soGar4OlokHCTsFtuzDD9ymzl3TCl3YFC3N0NjiLqjrq0SHuCmbi8H+K
-   SfeuJbnr0FLaRMlMwMBkQmOen2QtAzEDOQ6U8Tg7rxNSc8QRIGcZdbC28
-   WP5wul4yFFDrsja7hj32sUl0PLlZl0Sawkkl/c9dcvqdGCHNTeducBP7w
-   0ML5FcWdfMBlygNVFuZU0YtkDAYrgD92epV+EPKufwRPLNT+WSu+6hPdN
-   nr6ipUSJnJ8QwFTV/9sXRcu0CUJVPThkm73QvY05to8rMMAHhH81XHIka
-   GxaoH0cz60qPcIHuamC00qSs1NqxyJkkjnGKzR51YyaDU82EvnQULDK9c
-   Q==;
-IronPort-SDR: ltFITmBxW421ggd23VoOb62FaLmXM2x8/RabVddrGsBdJh32y4SXsDc6IRb4cr0kGI0NwMplHy
- ChKs4JpINBDKcbMhvoPvKke9MLA9Vn3PgpW+5rx/4pb2kzfvFGPFLto2ROgM53E9vZZpanToXi
- TycWEhxxvFDpozssBO00NTWNxlaJGWrWVyWycj3jDgIyYDk1eMO8DLtzKTJ3bsYiCAAIMYhmel
- 2y/v9ENHW+gxKlRMm/Mc63xMZJk2mCYjen/yY5EEJQhuulotq6ThHl6PsPHo9iJS4sFgb5m12D
- BkU=
-X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
-   d="scan'208";a="88565264"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Aug 2020 23:52:46 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 25 Aug 2020 23:51:56 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 25 Aug 2020 23:52:28 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <robh+dt@kernel.org>, <sakari.ailus@iki.fi>,
-        <linux-media@vger.kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH v3 3/3] MAINTAINERS: add microchip csi2dc
-Date:   Wed, 26 Aug 2020 09:51:42 +0300
-Message-ID: <20200826065142.205000-3-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200826065142.205000-1-eugen.hristev@microchip.com>
-References: <20200826065142.205000-1-eugen.hristev@microchip.com>
+        id S1726887AbgHZGyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 02:54:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56972 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726214AbgHZGyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 02:54:04 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6A604E763DA31AF03A3C;
+        Wed, 26 Aug 2020 14:54:02 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 26 Aug 2020
+ 14:53:51 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <masahiroy@kernel.org>,
+        <bjorn@mork.no>, <miguel@det.uvigo.gal>
+CC:     <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] net: cdc_ncm: Fix build error
+Date:   Wed, 26 Aug 2020 14:52:31 +0800
+Message-ID: <20200826065231.14344-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Microchip CSI2DC driver in the list.
+If USB_NET_CDC_NCM is y and USB_NET_CDCETHER is m, build fails:
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+drivers/net/usb/cdc_ncm.o:(.rodata+0x1d8): undefined reference to `usbnet_cdc_update_filter'
+
+Select USB_NET_CDCETHER for USB_NET_CDC_NCM to fix this.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: e10dcb1b6ba7 ("net: cdc_ncm: hook into set_rx_mode to admit multicast traffic")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/usb/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..a07d3f5597a6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11375,6 +11375,13 @@ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	sound/soc/atmel
- 
-+MICROCHIP CSI2DC DRIVER
-+M:	Eugen Hristev <eugen.hristev@microchip.com>
-+L:	linux-media@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-+F:	drivers/media/platform/atmel/microchip-csi2dc.c
-+
- MICROCHIP ECC DRIVER
- M:	Tudor Ambarus <tudor.ambarus@microchip.com>
- L:	linux-crypto@vger.kernel.org
+diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
+index a7fbc3ccd29e..c7bcfca7d70b 100644
+--- a/drivers/net/usb/Kconfig
++++ b/drivers/net/usb/Kconfig
+@@ -252,6 +252,7 @@ config USB_NET_CDC_EEM
+ config USB_NET_CDC_NCM
+ 	tristate "CDC NCM support"
+ 	depends on USB_USBNET
++	select USB_NET_CDCETHER
+ 	default y
+ 	help
+ 	  This driver provides support for CDC NCM (Network Control Model
 -- 
-2.25.1
+2.17.1
+
 
