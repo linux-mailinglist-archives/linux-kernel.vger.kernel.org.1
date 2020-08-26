@@ -2,154 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10FE253252
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B242F253249
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgHZOys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727959AbgHZOy1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:54:27 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A304C061757;
-        Wed, 26 Aug 2020 07:54:27 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh1so1008268plb.12;
-        Wed, 26 Aug 2020 07:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g4c//fvG4fjXYLBPyQJ141PEsJK2A9XDWhulJsN1c2g=;
-        b=npDO1sJ/9Lj/B2a9PZJG70emc1czb76ScCXnQ2oCD1xY+i1qLbbqM6g9M7zppI5izy
-         +H+esxZ+abKKnJ5VdUfsAi6AFEbYwDt7k3pcmYxC4WK8g76ILaH3yedmYAh5ddC/tzBI
-         wJOfm8z4D9+QM/OwCTdUl16NQhm40qGVfU73NJ1ZzU96KMhh5X0HVZYcD7kp5ktLLWGe
-         HJnEUyoyS4FjoLwWmSjBl+63WW4Ck6wfJ+zkn/SkZVzUXtq9Djbcm6p/76OxocPdqgt+
-         5XjZgVR8vtdU6hRrFcu6mF9I5Y4mMocjBbQoV9CYyb92jNN3BfJSYyOBqQvhF1iydVy2
-         hRXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g4c//fvG4fjXYLBPyQJ141PEsJK2A9XDWhulJsN1c2g=;
-        b=EqNHThxrkIpkL+dFvz76PQaly5Bnc0hxJUV9RSPAuNTfvy/xWNZGZqzvvDJVlP0vhD
-         L1xRThGFjka4yODrvleo+rJcqr17ceDmhdIqLWGES8Tvlg0+S00VXU0V5V6iP0fZBt+9
-         RUtA27lxhSPTxvJ+5+0QX420TCwohOumwZJ3YXxj3qpfBpS3gF6suE9dOmjzvoxhmzd+
-         u80SpmcOznUbMbtG5LiCcZWVNwfdfkWzG5G3tq2jFxarVYpXn+rGu2Wzp52bNadwPhBb
-         Ix1KC5piM2EjrirtrjTgH932loGyHBKFuUniM6/0VuCVS2BsMsRSNbXeb6xa0fqMkWLg
-         OtSA==
-X-Gm-Message-State: AOAM533rC8FPzNSjdxUDMHotwdizg5XYqiAD/uwrY5l3BFV2/KYPx9xw
-        N1IPsAk7m35WtV8jXKsn5ciJ1l00rGs=
-X-Google-Smtp-Source: ABdhPJxvlK/X1ouPjuda7L40DWOtJsOi9bxydEWaZH+cGgSmUaZIqEtdMn3J1zKle1a/UidEnCdOFg==
-X-Received: by 2002:a17:902:7b82:: with SMTP id w2mr12358648pll.258.1598453666968;
-        Wed, 26 Aug 2020 07:54:26 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
-        by smtp.gmail.com with ESMTPSA id r7sm3327140pfl.186.2020.08.26.07.54.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:54:26 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-arch@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org
-Subject: [PATCH v2 23/23] xtensa: use asm-generic/mmu_context.h for no-op implementations
-Date:   Thu, 27 Aug 2020 00:52:49 +1000
-Message-Id: <20200826145249.745432-24-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200826145249.745432-1-npiggin@gmail.com>
-References: <20200826145249.745432-1-npiggin@gmail.com>
+        id S1727999AbgHZOyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:54:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727944AbgHZOxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:53:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAB98221E2;
+        Wed, 26 Aug 2020 14:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598453616;
+        bh=2keurcFsfkeACh52+4p5T0ngZFhF0/cvWdgnziyfZAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W+jQFBX9Y2cFQQnnBpOO8pRXn7pkU3ktYS6fim4jFRisgluZ5eT/WDBaaLAjzeXDT
+         WvB6ehRk9ClWtUh6A8MwBFdceThH+yepXYWz0ahlL0dj01Yciozp4zN36CSyrhd+W2
+         3+ktczweQwjZoa/4RGN1dY0ACA98suwt+CZGrbFY=
+Date:   Wed, 26 Aug 2020 16:53:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "David K. Kahurani" <k.kahurani@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, admin@rapidseedbox.com,
+        gichini.ngaruiya@gmail.com
+Subject: Re: [PATCH 5.7 00/15] 5.7.19-rc1 review
+Message-ID: <20200826145351.GA4181729@kroah.com>
+References: <20200826114849.295321031@linuxfoundation.org>
+ <20200826144915.GD16589@metal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826144915.GD16589@metal>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/xtensa/include/asm/mmu_context.h   | 11 +++--------
- arch/xtensa/include/asm/nommu_context.h | 26 +------------------------
- 2 files changed, 4 insertions(+), 33 deletions(-)
+On Wed, Aug 26, 2020 at 05:49:15PM +0300, David K. Kahurani wrote:
+> On Wed, Aug 26, 2020 at 02:02:28PM +0200, Greg Kroah-Hartman wrote:
+> > -------------------
+> > Note, ok, this is really going to be the final 5.7.y kernel release.  I
+> > mean it this time....
+> > -------------------
+> 
+> Hello,
+> 
+> This is probably not very relevant but let me just bring this up here
+> since your manner of posting mail on the list seems to differ quite a
+> bit from what most people on the list are doing.
 
-diff --git a/arch/xtensa/include/asm/mmu_context.h b/arch/xtensa/include/asm/mmu_context.h
-index 74923ef3b228..e337ba9686e9 100644
---- a/arch/xtensa/include/asm/mmu_context.h
-+++ b/arch/xtensa/include/asm/mmu_context.h
-@@ -111,6 +111,7 @@ static inline void activate_context(struct mm_struct *mm, unsigned int cpu)
-  * to -1 says the process has never run on any core.
-  */
- 
-+#define init_new_context init_new_context
- static inline int init_new_context(struct task_struct *tsk,
- 		struct mm_struct *mm)
- {
-@@ -136,24 +137,18 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 		activate_context(next, cpu);
- }
- 
--#define activate_mm(prev, next)	switch_mm((prev), (next), NULL)
--#define deactivate_mm(tsk, mm)	do { } while (0)
--
- /*
-  * Destroy context related info for an mm_struct that is about
-  * to be put to rest.
-  */
-+#define destroy_context destroy_context
- static inline void destroy_context(struct mm_struct *mm)
- {
- 	invalidate_page_directory();
- }
- 
- 
--static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
--{
--	/* Nothing to do. */
--
--}
-+#include <asm-generic/mmu_context.h>
- 
- #endif /* CONFIG_MMU */
- #endif /* _XTENSA_MMU_CONTEXT_H */
-diff --git a/arch/xtensa/include/asm/nommu_context.h b/arch/xtensa/include/asm/nommu_context.h
-index 37251b2ef871..7c9d1918dc41 100644
---- a/arch/xtensa/include/asm/nommu_context.h
-+++ b/arch/xtensa/include/asm/nommu_context.h
-@@ -7,28 +7,4 @@ static inline void init_kio(void)
- {
- }
- 
--static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
--{
--}
--
--static inline int init_new_context(struct task_struct *tsk,struct mm_struct *mm)
--{
--	return 0;
--}
--
--static inline void destroy_context(struct mm_struct *mm)
--{
--}
--
--static inline void activate_mm(struct mm_struct *prev, struct mm_struct *next)
--{
--}
--
--static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
--				struct task_struct *tsk)
--{
--}
--
--static inline void deactivate_mm(struct task_struct *tsk, struct mm_struct *mm)
--{
--}
-+#include <asm-generic/nommu_context.h>
--- 
-2.23.0
+It's not all that relevant as what I am doing here is not what anyone
+else on this list is doing :)
 
+> From my understanding, an email regarding to a certain patch or kernel
+> issue should be sent to a list and not to a maintainer. This is
+> however not the habit that people are in, though but instead, most
+> people will send the email to the maintainers, then cc a few probably
+> random mailing lists. This leads to emails flooding on the mailing
+> list and consequently, beats the purpose of one ever having sent the
+> mail to a list because lists will get increasingly difficult to
+> follow.
+
+So is the complaint that these stable -rc emails are drowning out seeing
+other patches that are relevant?
+
+If so, there are some wonderfully helpfuly headers that I add to all of
+these emails so you can easily filter them away to /dev/null if you so
+desire.
+
+If not, then I don't understand the complaint.
+
+> Is it just me who has made this observation? From your mail, it
+> clearly looks and seems like you are following the above. Not
+> following the above could make it very hard for a new kernel developer
+> to pick up working on the kernel.
+
+Have you read the Documentation/process/1.Intro.rst file?  If not,
+please start there, as trying to read the firehose that is lkml all at
+once is _not_ how anyone does kernel development.
+
+thanks,
+
+greg k-h
