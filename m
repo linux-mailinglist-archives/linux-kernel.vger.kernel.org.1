@@ -2,100 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C882534EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C6D2534EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgHZQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:29:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60044 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbgHZQ3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:29:46 -0400
-Date:   Wed, 26 Aug 2020 16:29:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598459384;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jM1CwzRuc0ZwuNRunLya8qz+PY3Gs5Xe9bwbmHs0eNE=;
-        b=eDFAS1/KI9J0KqCcYWx+qq9o1/cnsO+tyZfnqdPbSRa2l2eidbuQkER33wg5h8X74GAXi9
-        xW2cU9SUOKDpgK/hKZNGfMfrI+tYmNzXDX/chxMWqHUCuEAbhTy5H+0NooUrsXB3H/xURN
-        KpzIOHEpJUAFQl+XKMSTP2AHJ4DUcD1k3v8P+fNQ+on8RJfOdOmJ/YmRW74RQ9aHrlpZN7
-        UNLK7BMN27JA6mV/T62AkmTRVcpE39mNOdsxrfMX50eZOzb4dotYjJobqwHldPGSAQWQVS
-        qEIX9viWcaft7/Oi1wlR5OH5iijZ935XlU0fa1YsmP9M/0zmrX/I8Gc54nYCew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598459384;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jM1CwzRuc0ZwuNRunLya8qz+PY3Gs5Xe9bwbmHs0eNE=;
-        b=wLWQqKjVzO3vLj915fn6bfYiGeAJXzmodAS/hIh2lA5yGin2A59dpHwoNLVa9EcgbE3HM3
-        X8o+R/TCDoSI6DAg==
-From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] MAINTAINERS: Add entry for HPE Superdome Flex (UV)
- maintainers
-Cc:     Steve Wahl <steve.wahl@hpe.com>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200824221439.GA52810@swahl-home.5wahls.com>
-References: <20200824221439.GA52810@swahl-home.5wahls.com>
-MIME-Version: 1.0
-Message-ID: <159845938349.389.3215010202341830050.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1726802AbgHZQaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726739AbgHZQaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:30:01 -0400
+Received: from localhost.localdomain (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E6AF2074A;
+        Wed, 26 Aug 2020 16:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598459401;
+        bh=hRr/a/YAnLdURZWW/rmGtbraj2KU8FLUxIgB33GwWXQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ugkcwvyy2eF4kcFRRMkgRJ1yQXheRkwuhRoP0kXW++xMfPQHBqdS4QxeP9ZlTQONT
+         x2lAaQnOSBlzovndPDpdNWf8pmgDu0qQL8oR6ik/g/LjJAu7UBfJos+yhWxS6yB7MU
+         fRi9Soxj1q72tXU7iYl9ouFkd5hOJMJhil8YU++M=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/3] crypto: sa2ul - Hide pointer and fix -Wpointer-to-int-cast in dev_dbg()
+Date:   Wed, 26 Aug 2020 18:29:52 +0200
+Message-Id: <20200826162954.28636-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Pointers should not be printed because they might leak important
+information about address space layout.  Use %p to hash the value.  This
+also fixes compilation warnings on 32-bit architecture:
 
-Commit-ID:     d4f07268d035721dd055ceb0de98ace6ac5f858b
-Gitweb:        https://git.kernel.org/tip/d4f07268d035721dd055ceb0de98ace6ac5f858b
-Author:        Steve Wahl <steve.wahl@hpe.com>
-AuthorDate:    Mon, 24 Aug 2020 17:14:39 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 26 Aug 2020 18:24:43 +02:00
+    drivers/crypto/sa2ul.c:1486:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 
-MAINTAINERS: Add entry for HPE Superdome Flex (UV) maintainers
-
-Add an entry and email addresses for people at HPE who are supporting
-Linux on the Superdome Flex (a.k.a) UV platform.
-
- [ bp: Capitalize "linux" too :) ]
-
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200824221439.GA52810@swahl-home.5wahls.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- MAINTAINERS |  9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/crypto/sa2ul.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b0a742c..4c8a682 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18873,6 +18873,15 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
- F:	arch/x86/platform
+diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
+index 5bc099052bd2..4a950437bf44 100644
+--- a/drivers/crypto/sa2ul.c
++++ b/drivers/crypto/sa2ul.c
+@@ -1482,8 +1482,8 @@ static int sa_sha_init(struct ahash_request *req)
+ 	struct sa_sha_req_ctx *rctx = ahash_request_ctx(req);
+ 	struct sa_tfm_ctx *ctx = crypto_ahash_ctx(tfm);
  
-+X86 PLATFORM UV HPE SUPERDOME FLEX
-+M:	Steve Wahl <steve.wahl@hpe.com>
-+R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
-+R:	Russ Anderson <russ.anderson@hpe.com>
-+S:	Supported
-+F:	arch/x86/include/asm/uv/
-+F:	arch/x86/kernel/apic/x2apic_uv_x.c
-+F:	arch/x86/platform/uv/
-+
- X86 VDSO
- M:	Andy Lutomirski <luto@kernel.org>
- L:	linux-kernel@vger.kernel.org
+-	dev_dbg(sa_k3_dev, "init: digest size: %d, rctx=%llx\n",
+-		crypto_ahash_digestsize(tfm), (u64)rctx);
++	dev_dbg(sa_k3_dev, "init: digest size: %d, rctx=%p\n",
++		crypto_ahash_digestsize(tfm), rctx);
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback.ahash);
+ 	rctx->fallback_req.base.flags =
+-- 
+2.17.1
+
