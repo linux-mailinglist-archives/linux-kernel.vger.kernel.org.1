@@ -2,170 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE711252C15
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C75252C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbgHZLEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:04:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47014 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728647AbgHZLAa (ORCPT
+        id S1728799AbgHZLDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728635AbgHZK7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:00:30 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QAuVY1015194;
-        Wed, 26 Aug 2020 10:58:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=7Zw+V3BeHtC6SbyuG2LYpNjTSDAtiw84SRplymVth08=;
- b=C75aLRqmGXFoNhsBYqhBE5I6j7qUe5SWO9m/BXlAqYMAgrYM0T9Tsu48we96DWAHiz7/
- 3ATl4WN5j4yXJVPlt79nIV/B3WL2U8FEoHykiejoFPROWzMThRimlb78qQNLuX3rZ9F7
- xP1cW5FeOaQTYybr0TH8hq9gLAM+bHbNQFmpfwlai1SkeeCBNLvGSeHp9kjAaRtF1TTz
- N6r4sjptlQ0l8t3h2PAKx9iOcTJ79IFtHlfh2vCqbqL+7FbPChRMeQqgJjXWPwQr48vT
- PXfMdxtcCS1tbb45+DW+qQ9A5sfTHMEZ4PMbqV6rEd4Vtlbcm9l4OlKO0ikpn6qAc7/7 2g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 333dbrypjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 10:58:58 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QAudk2012355;
-        Wed, 26 Aug 2020 10:58:58 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 333rtyyns2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 10:58:57 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QAwub2027777;
-        Wed, 26 Aug 2020 10:58:56 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Aug 2020 03:58:55 -0700
-Date:   Wed, 26 Aug 2020 13:58:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     FelixCuioc <FelixCui-oc@zhaoxin.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>, kbuild@lists.01.org,
-        kbuild-all@lists.01.org, CobeChen-oc@zhaoxin.com,
-        RaymondPang-oc@zhaoxin.com, TonyWWang-oc@zhaoxin.com
-Subject: Re: [PATCH 2/3] iommu/vt-d:Add support for probing ACPI device in
- RMRR
-Message-ID: <20200826105847.GA5493@kadam>
-References: <20200826102752.3776-1-FelixCui-oc@zhaoxin.com>
- <20200826102752.3776-3-FelixCui-oc@zhaoxin.com>
+        Wed, 26 Aug 2020 06:59:43 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C397CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:59:42 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v4so1859829ljd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uJ07glJRUlujBHQIx5bKBzGB4Fimv+n7xk0tDfDGawQ=;
+        b=imC5TArqeZzinupXCuhbCqJNrpAWmo9t9jlD7hJhFyWU81ail+EURE1f7j22wwVriD
+         26x03YW4SsJeVCT72uhIV+SWLV6VJazC+aXCxNij5qAb0QsQXUBB5R9KOKf5EzCAmxxQ
+         yfwtwINlWLYIaA9yOzXqF9etCk5BltbOGEjv/Jyd0NwQ+eByVYdUV55bzbl1keU8tPfz
+         cHUm70tvDnby9saPlRC13G+MJlPHKV2Q3G0YqIwksa9JZ7XGdc7Zi2/+2TLL/gyKquhD
+         PGpGQ/7DeBPAcKsaMGNzz/6rrm3riqx4sWAtLWkSUJB8us6ArRkDlsQ/tSiuTCf9Jhda
+         EHhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uJ07glJRUlujBHQIx5bKBzGB4Fimv+n7xk0tDfDGawQ=;
+        b=K7kw8SGum4hdJ6M1UBGWCXzWt1cxHBlOwCOND0Ohn5kDizMlxagAF8q13SIkGgqICc
+         0VGb24mgL85MICUjDbTbMOLZV4oAasEnCdDbSHfRufjxSuv1bHcce2GJpaxBO6V/ziR7
+         A9Xw2cg487rCnpq6j+bYRKNCfwIW0gkf0j/QAPUPD0MRW2jaeyAhQJRdEDIYUk+7PwBR
+         6rXhLbKFnhkANylA0aiXedfnx+LlwBn59QKHl3MxbekNr5ECSX0DoW8M04MgKFWzOoWf
+         Gkir/En9aQ5qziHr74hFB6ZsOCYHlGuvoJiz1v8AgV+tMxAZ7/Uj0oDcWTrNL+fZIMBt
+         W0Vw==
+X-Gm-Message-State: AOAM530+xBXiPlDrggHGLNSJmFH4tN5k5Gz4vGmnHXs9UdCHJpyjSQ3q
+        U/BuP2hAQsbq3/NefBtewLNUU1iZvc3AcgnjhH8=
+X-Google-Smtp-Source: ABdhPJwnAhNtvGts/m9GSYWVu4CbYcH2h0n/znDkPvUH2bw1aDzmSWvWr0jJIzTxWBkAGcuiQemJqusogm4e4Jlk4Og=
+X-Received: by 2002:a2e:9c8b:: with SMTP id x11mr6377914lji.218.1598439579576;
+ Wed, 26 Aug 2020 03:59:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826102752.3776-3-FelixCui-oc@zhaoxin.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260088
+References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
+ <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
+ <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
+ <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
+ <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
+ <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
+ <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com> <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
+In-Reply-To: <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 26 Aug 2020 07:59:28 -0300
+Message-ID: <CAOMZO5ADeXEHWiG7Xja1W1GnahV08ZEYSkNsrOzautn2mROCNA@mail.gmail.com>
+Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH 2/2] ARM: dts: imx6qdl:
+ tqma6: minor fixes
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 06:27:51AM -0400, FelixCuioc wrote:
-> After acpi device in RMRR is detected,it is necessary
-> to establish a mapping for these devices.
-> In acpi_device_create_direct_mappings(),create a mapping
-> for the acpi device in RMRR.
-> Add a helper to achieve the acpi namespace device can
-> access the RMRR region.
-> 
-> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
-> ---
->  drivers/iommu/intel/iommu.c | 27 +++++++++++++++++++++++++++
->  drivers/iommu/iommu.c       |  6 ++++++
->  include/linux/iommu.h       |  3 +++
->  3 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index f774ef63d473..b31f02f41c96 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4797,6 +4797,20 @@ static int __init platform_optin_force_iommu(void)
->  
->  	return 1;
->  }
-> +static int acpi_device_create_direct_mappings(struct device *pn_dev, struct device *acpi_device)
+Hi Matthias,
 
-Blank line.
+On Wed, Aug 26, 2020 at 7:32 AM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 
-> +{
-> +	struct iommu_group *group;
-> +
-> +	acpi_device->bus->iommu_ops = &intel_iommu_ops;
-> +	group = iommu_group_get(pn_dev);
-> +	if (!group) {
-> +		pr_warn("ACPI name space devices create direct mappings wrong!\n");
-> +		return -1;
+> But the previous platform data that was removed in 8cdcd8aeee281 ("spi:
+> imx/fsl-lpspi: Convert to GPIO descriptors") set different values for
+> different boards. So maybe some DTS should be using num-cs?
 
-Use a proper error code.  -ENOMEM?  -EINVAL?
-
-> +	}
-> +	__acpi_device_create_direct_mappings(group, acpi_device);
-> +
-> +	return 0;
-> +}
->  
->  static int __init probe_acpi_namespace_devices(void)
->  {
-> @@ -4812,6 +4826,7 @@ static int __init probe_acpi_namespace_devices(void)
->  			struct acpi_device_physical_node *pn;
->  			struct iommu_group *group;
->  			struct acpi_device *adev;
-> +			struct device *pn_dev = NULL;
->  
->  			if (dev->bus != &acpi_bus_type)
->  				continue;
-> @@ -4822,6 +4837,7 @@ static int __init probe_acpi_namespace_devices(void)
->  					    &adev->physical_node_list, node) {
->  				group = iommu_group_get(pn->dev);
->  				if (group) {
-> +					pn_dev = pn->dev;
->  					iommu_group_put(group);
->  					continue;
->  				}
-> @@ -4830,7 +4846,18 @@ static int __init probe_acpi_namespace_devices(void)
->  				ret = iommu_probe_device(pn->dev);
->  				if (ret)
->  					break;
-> +				pn_dev = pn->dev;
-> +			}
-> +			if (pn_dev == NULL) {
-
-Run checkpatch.pl --strict on this patch.  Use "if (!pn_dev) {".
-
-> +				dev->bus->iommu_ops = &intel_iommu_ops;
-> +				ret = iommu_probe_device(dev);
-> +				if (ret) {
-> +					pr_err("acpi_device probe fail! ret:%d\n", ret);
-> +					return ret;
-                                        ^^^^^^^^^^
-This should be goto unlock;
-
-> +				}
-> +				return 0;
-                                ^^^^^^^^
->  			}
-> +			ret = acpi_device_create_direct_mappings(pn_dev, dev);
-
-unlock:
-
->  			mutex_unlock(&adev->physical_node_lock);
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-regards,
-dan carpenter
-
+Could you provide an example of an imx dts that should use num-cs?
