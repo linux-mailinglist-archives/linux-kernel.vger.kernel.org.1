@@ -2,119 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7887925319D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5197F2531AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgHZOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:42:07 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43844 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbgHZOmE (ORCPT
+        id S1726887AbgHZOoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:44:24 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:43502 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726718AbgHZOoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:42:04 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 8345E2994D6
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 57832480113; Wed, 26 Aug 2020 16:42:00 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1 2/2] power: supply: smb347-charger: Use generic property framework
-Date:   Wed, 26 Aug 2020 16:41:59 +0200
-Message-Id: <20200826144159.353837-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200826144159.353837-1-sebastian.reichel@collabora.com>
-References: <20200826144159.353837-1-sebastian.reichel@collabora.com>
+        Wed, 26 Aug 2020 10:44:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598453062; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=U/m4jJyjO54IDfksgY4gT/Ig37eP0pugC9C6u4Tuz0M=; b=N2ddSfTDrx3ypW0qBMqUhSgVs+F/PnfFX+npbgycSyZ/jGmJJNN83ExBjygmLUG0jswJtVwr
+ owXAmRwLqGhuIW8jFihTIROXF2B/HRlFewLZSwReTDLs16AIymHkwq2QpYzlBGsFSajgU9af
+ b406LEEQaWyjNhgy/vABT2dIAuI=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f4675240f94f6538daf66e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 Aug 2020 14:43:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 451C4C43387; Wed, 26 Aug 2020 14:43:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DDAC2C433CA;
+        Wed, 26 Aug 2020 14:43:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DDAC2C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Rakesh Pillai" <pillair@codeaurora.org>
+Cc:     "'Peter Oh'" <peter.oh@eero.com>,
+        'Brian Norris' <briannorris@chromium.org>,
+        'linux-wireless' <linux-wireless@vger.kernel.org>,
+        'Doug Anderson' <dianders@chromium.org>,
+        'ath10k' <ath10k@lists.infradead.org>,
+        'LKML' <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+        <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com>
+        <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+        <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+        <871rlcx8uv.fsf@codeaurora.org>
+        <CALhWmc1PbTKhrkaPn9yfpx3gZHAMuR-bPY=4_o4wQHv_H5D9dA@mail.gmail.com>
+        <CALhWmc3i9Z+KiG1cJNvpSWNsiFhOa5jBw=XfcFz_gKwi_5QibA@mail.gmail.com>
+        <CALhWmc1B0+SONV6_AF+nUzgxZdekPD3sZuhrsmwVQx1Q-cgT_g@mail.gmail.com>
+        <CALhWmc0qF5stKRcikjwbeFmE-32hNCDazgQdqTMidUyt7u-T1Q@mail.gmail.com>
+        <CALhWmc0JtQZE5CfLPb1WnwhE9wCYsjE-53kYWbwtFCs1k7FrCQ@mail.gmail.com>
+        <CALhWmc11OefTh6Ov5GqP-yHMVTUO4r9CxqkdHT1F3yzor72v7g@mail.gmail.com>
+        <000201d65f51$83d2ac60$8b780520$@codeaurora.org>
+Date:   Wed, 26 Aug 2020 17:43:42 +0300
+In-Reply-To: <000201d65f51$83d2ac60$8b780520$@codeaurora.org> (Rakesh Pillai's
+        message of "Tue, 21 Jul 2020 16:54:30 +0530")
+Message-ID: <877dtlcvs1.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the driver and remove the DT specific code by
-using the generic device property framework.
+(Guys, PLEASE edit your quotes. These long emails my use of patchwork
+horrible.)
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- drivers/power/supply/smb347-charger.c | 40 +++++++++++++--------------
- 1 file changed, 19 insertions(+), 21 deletions(-)
+"Rakesh Pillai" <pillair@codeaurora.org> writes:
 
-diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
-index b182727dfc90..d3bf35ed12ce 100644
---- a/drivers/power/supply/smb347-charger.c
-+++ b/drivers/power/supply/smb347-charger.c
-@@ -17,6 +17,7 @@
- #include <linux/interrupt.h>
- #include <linux/i2c.h>
- #include <linux/power_supply.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- 
- #include <dt-bindings/power/summit,smb347-charger.h>
-@@ -1176,7 +1177,7 @@ static bool smb347_readable_reg(struct device *dev, unsigned int reg)
- 
- static void smb347_dt_parse_dev_info(struct smb347_charger *smb)
- {
--	struct device_node *np = smb->dev->of_node;
-+	struct device *dev = smb->dev;
- 
- 	smb->soft_temp_limit_compensation =
- 					SMB3XX_SOFT_TEMP_COMPENSATE_DEFAULT;
-@@ -1190,32 +1191,29 @@ static void smb347_dt_parse_dev_info(struct smb347_charger *smb)
- 	smb->hard_hot_temp_limit  = SMB3XX_TEMP_USE_DEFAULT;
- 
- 	/* Charging constraints */
--	of_property_read_u32(np, "summit,fast-voltage-threshold-microvolt",
--			     &smb->pre_to_fast_voltage);
--	of_property_read_u32(np, "summit,mains-current-limit-microamp",
--			     &smb->mains_current_limit);
--	of_property_read_u32(np, "summit,usb-current-limit-microamp",
--			     &smb->usb_hc_current_limit);
-+	device_property_read_u32(dev, "summit,fast-voltage-threshold-microvolt",
-+				 &smb->pre_to_fast_voltage);
-+	device_property_read_u32(dev, "summit,mains-current-limit-microamp",
-+				 &smb->mains_current_limit);
-+	device_property_read_u32(dev, "summit,usb-current-limit-microamp",
-+				 &smb->usb_hc_current_limit);
- 
- 	/* For thermometer monitoring */
--	of_property_read_u32(np, "summit,chip-temperature-threshold-celsius",
--			     &smb->chip_temp_threshold);
--	of_property_read_u32(np, "summit,soft-compensation-method",
--			     &smb->soft_temp_limit_compensation);
--	of_property_read_u32(np, "summit,charge-current-compensation-microamp",
--			     &smb->charge_current_compensation);
-+	device_property_read_u32(dev, "summit,chip-temperature-threshold-celsius",
-+				 &smb->chip_temp_threshold);
-+	device_property_read_u32(dev, "summit,soft-compensation-method",
-+				 &smb->soft_temp_limit_compensation);
-+	device_property_read_u32(dev, "summit,charge-current-compensation-microamp",
-+				 &smb->charge_current_compensation);
- 
- 	/* Supported charging mode */
--	smb->use_mains =
--		of_property_read_bool(np, "summit,enable-mains-charging");
--	smb->use_usb =
--		of_property_read_bool(np, "summit,enable-usb-charging");
--	smb->use_usb_otg =
--		of_property_read_bool(np, "summit,enable-otg-charging");
-+	smb->use_mains = device_property_read_bool(dev, "summit,enable-mains-charging");
-+	smb->use_usb = device_property_read_bool(dev, "summit,enable-usb-charging");
-+	smb->use_usb_otg = device_property_read_bool(dev, "summit,enable-otg-charging");
- 
- 	/* Select charging control */
--	of_property_read_u32(np, "summit,enable-charge-control",
--			     &smb->enable_control);
-+	device_property_read_u32(dev, "summit,enable-charge-control",
-+				 &smb->enable_control);
- }
- 
- static int smb347_get_battery_info(struct smb347_charger *smb)
+>> -----Original Message-----
+>> From: Peter Oh <peter.oh@eero.com>
+>> Sent: Tuesday, July 21, 2020 7:03 AM
+>> To: Kalle Valo <kvalo@codeaurora.org>
+>> Cc: Brian Norris <briannorris@chromium.org>; Doug Anderson
+>> <dianders@chromium.org>; linux-wireless <linux-
+>> wireless@vger.kernel.org>; Rakesh Pillai <pillair@codeaurora.org>; ath10k
+>> <ath10k@lists.infradead.org>; LKML <linux-kernel@vger.kernel.org>
+>> Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+>> 
+>> I'll take my word back.
+>> It's not this patch problem, but by others.
+>> I have 2 extra patches before the 3 patches so my system looks like
+>> 
+>> backports from ath.git 5.6-rc1 + linux kernel 4.4 (similar to OpenWrt)
+>> On top of the working system, I cherry-picked these 5.
+>> 
+>> #1.
+>> ath10k: Avoid override CE5 configuration for QCA99X0 chipsets
+>> ath.git commit 521fc37be3d879561ca5ab42d64719cf94116af0
+>> #2.
+>> ath10k: Fix NULL pointer dereference in AHB device probe
+>> wireless-drivers.git commit 1cfd3426ef989b83fa6176490a38777057e57f6c
+>> #3.
+>> ath10k: Add interrupt summary based CE processing
+>> https://patchwork.kernel.org/patch/11628299/
+>
+> This patch is applicable only for snoc target WCN3990, since there is
+> a check for per_ce_irq. For PCI targets, per_ce_irq is false, and
+> hence follows a different path.
+
+This information should be in the commit log. But I have a patch in the
+pending branch which removes per_ce_irq:
+
+[v2,2/2] ath10k: Get rid of "per_ce_irq" hw param
+
+https://patchwork.kernel.org/patch/11654621/
+
+So how will multilple hardware support work then?
+
+In theory I like the patch but there's no information in the patch if
+this works or breaks other hardware, especially QCA9884 or QCA6174 PCI
+devices. I really need some kind of assurance that this works with all
+ath10k devices, not just WCN3990 which you are working on.
+
+I have written about this in the wiki:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches#hardware_families
+
 -- 
-2.28.0
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
