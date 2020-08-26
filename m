@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011CC252DB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEF1252DAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbgHZMFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:05:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39648 "EHLO mail.kernel.org"
+        id S1729635AbgHZMEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:04:35 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:17356 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729583AbgHZMEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:04:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2AC02087C;
-        Wed, 26 Aug 2020 12:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598443440;
-        bh=RLhBF8BrYcQu3ik2K38CBUQEniwHM8YmqxQC9DDM8B0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSnBUDqmYs3eAxqaD2m5Y1FgNMEvCVGnjjerpPx6nuMd1jLwCsfKB+k3dE2W3dTwF
-         n0hbe88JU7Bk2nU5iKOMfN/oDI8LgGXC1w35boEixkdb49CknmxXBf1RaXfZOQWoVG
-         Vfm4aaEpsAjLVsI8l9/pttv/LWRqBX96qQuRPCV8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 5.8 16/16] binfmt_flat: revert "binfmt_flat: dont offset the data start"
-Date:   Wed, 26 Aug 2020 14:02:53 +0200
-Message-Id: <20200826114912.015762856@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200826114911.216745274@linuxfoundation.org>
-References: <20200826114911.216745274@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1729504AbgHZMDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:03:11 -0400
+IronPort-SDR: URNFkK02/qKTkzCsexIPWXqr730J11mIkL6vCp38Rb5cL7k6xEmB8bpMpYfB4oytzBZNXCj6X9
+ FfXuWPXinXBwsWuEwieQqEzcE1nise8DbX0DJbKXkbZRTR7cigohPRZ72OOD4jjQ7kO980p9Io
+ m7kj4KGZFxaugVTUD5tXtZt+x85KSKOMhSYySgdEegg7LYvOWkCcIygbrbIykvMjG4jbqQPjJP
+ QnEDcJjskS5A7d8nuRs5K0n7i52ryWY3d9VI25K6g40QnKiARRMOoZuKvqiBex81oICWfcc6tP
+ iro=
+X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
+   d="scan'208";a="13607754"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 26 Aug 2020 14:03:08 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 26 Aug 2020 14:03:08 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 26 Aug 2020 14:03:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1598443388; x=1629979388;
+  h=from:to:cc:subject:date:message-id;
+  bh=w5WmpfTmC7AUFRQxsIbP8PaB8d2cw3oNSZ0fBWcQoSg=;
+  b=qpMLC0/vBhzJXsDuHEzgh2z7CTIzVoLQ9OYqOZD+EoeU6SaafneL4ESt
+   CgaJgyknDyIxeH9F+YC8bY4VeQAChXtslz94wRvXYljrNtrW+qR80Yut9
+   756Hm5FmJseCGdnxNrftZ1of69nTHb5qqzRGtRLEOc1STv92c9FySVE/e
+   QYyc7rlX5j7M+QhXR2wU9y+jxcNs5CA+MsmcORh1ubu5UEIhGTZoJ8xGD
+   LLxbHbwAWUaLhNc+/pGLf+5/DdWFTm3VI+JlGCXg1pqavWyen8H7dr8f8
+   ESfChHkrEfXD87N14Yf+xuhW0XQpdwxps/H+AizOz3tjs5HeAiOl/ap98
+   Q==;
+IronPort-SDR: 6fD0atj3+mV3gr/f5F2lITSzQKoLxCP8yKXDkCMBjXFMWXCEnoZZv6t6lZa6j5HCxCNnhBfn4v
+ 86mPI2jUovz0aWN1E1UWXy7JEAaIIaTJ71G1pDkEwtfckEApJwZWGuDbg8RXczFusLi53g81KV
+ ORI5AB1YceMkIQ0WuphRFHIqY0PzZ1UWC/1bV43+xS5rNRPA5edSWoahfXrsBEikoWBUYjQ0b6
+ Rdc94g1gJs3tplRUazGZQlhS7Gw0AYw565NP48uJHhbDec64BOt4U3BuwgCSBwjKZenYcFeGOV
+ Sb4=
+X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
+   d="scan'208";a="13607753"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 26 Aug 2020 14:03:08 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 44BE2280065;
+        Wed, 26 Aug 2020 14:03:08 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] of: skip disabled CPU nodes
+Date:   Wed, 26 Aug 2020 14:02:54 +0200
+Message-Id: <20200826120254.8902-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+Allow disabling CPU nodes using status = "disabled".
 
-commit 2217b982624680d19a80ebb4600d05c8586c4f96 upstream.
+This allows a bootloader to change the number of available CPUs (for
+example when a common DTS is used for SoC variants with different numbers
+of cores) without deleting the nodes altogether (which may require
+additional fixups where the CPU nodes are referenced, e.g. a cooling
+map).
 
-binfmt_flat loader uses the gap between text and data to store data
-segment pointers for the libraries. Even in the absence of shared
-libraries it stores at least one pointer to the executable's own data
-segment. Text and data can go back to back in the flat binary image and
-without offsetting data segment last few instructions in the text
-segment may get corrupted by the data segment pointer.
-
-Fix it by reverting commit a2357223c50a ("binfmt_flat: don't offset the
-data start").
-
-Cc: stable@vger.kernel.org
-Fixes: a2357223c50a ("binfmt_flat: don't offset the data start")
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- fs/binfmt_flat.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/of/base.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/binfmt_flat.c
-+++ b/fs/binfmt_flat.c
-@@ -576,7 +576,7 @@ static int load_flat_file(struct linux_b
- 			goto err;
- 		}
- 
--		len = data_len + extra;
-+		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
- 		len = PAGE_ALIGN(len);
- 		realdatastart = vm_mmap(NULL, 0, len,
- 			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
-@@ -590,7 +590,9 @@ static int load_flat_file(struct linux_b
- 			vm_munmap(textpos, text_len);
- 			goto err;
- 		}
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(unsigned long),
-+				FLAT_DATA_ALIGN);
- 
- 		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
- 			 data_len + bss_len + stack_len, datapos);
-@@ -620,7 +622,7 @@ static int load_flat_file(struct linux_b
- 		memp_size = len;
- 	} else {
- 
--		len = text_len + data_len + extra;
-+		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
- 		len = PAGE_ALIGN(len);
- 		textpos = vm_mmap(NULL, 0, len,
- 			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
-@@ -635,7 +637,9 @@ static int load_flat_file(struct linux_b
- 		}
- 
- 		realdatastart = textpos + ntohl(hdr->data_start);
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(u32),
-+				FLAT_DATA_ALIGN);
- 
- 		reloc = (__be32 __user *)
- 			(datapos + (ntohl(hdr->reloc_start) - text_len));
-@@ -652,9 +656,8 @@ static int load_flat_file(struct linux_b
- 					 (text_len + full_data
- 						  - sizeof(struct flat_hdr)),
- 					 0);
--			if (datapos != realdatastart)
--				memmove((void *)datapos, (void *)realdatastart,
--						full_data);
-+			memmove((void *) datapos, (void *) realdatastart,
-+					full_data);
- #else
- 			/*
- 			 * This is used on MMU systems mainly for testing.
-@@ -710,7 +713,8 @@ static int load_flat_file(struct linux_b
- 		if (IS_ERR_VALUE(result)) {
- 			ret = result;
- 			pr_err("Unable to read code+data+bss, errno %d\n", ret);
--			vm_munmap(textpos, text_len + data_len + extra);
-+			vm_munmap(textpos, text_len + data_len + extra +
-+				MAX_SHARED_LIBS * sizeof(u32));
- 			goto err;
- 		}
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index ea44fea99813..d547e9deced1 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -796,6 +796,8 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+ 		of_node_put(node);
  	}
-
+ 	for (; next; next = next->sibling) {
++		if (!__of_device_is_available(next))
++			continue;
+ 		if (!(of_node_name_eq(next, "cpu") ||
+ 		      __of_node_is_type(next, "cpu")))
+ 			continue;
+-- 
+2.17.1
 
