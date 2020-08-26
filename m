@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD06252949
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103EB252939
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgHZIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 04:37:18 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36550 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727045AbgHZIhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 04:37:16 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AFA9991A271F0DDD8FA3;
-        Wed, 26 Aug 2020 16:37:10 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 26 Aug 2020 16:37:00 +0800
-From:   Hanjun Guo <guohanjun@huawei.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <linux-kernel@vger.kernel.org>, Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH v2 2/2] drm/amdkfd: Put ACPI table after using it
-Date:   Wed, 26 Aug 2020 16:29:16 +0800
-Message-ID: <1598430556-18788-2-git-send-email-guohanjun@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1598430556-18788-1-git-send-email-guohanjun@huawei.com>
-References: <1598430556-18788-1-git-send-email-guohanjun@huawei.com>
+        id S1727013AbgHZIa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 04:30:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:9066 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726813AbgHZIa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 04:30:59 -0400
+X-UUID: 0f79fa79b1674757a54b18818e31429c-20200826
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nm4wPKgjzNpL+M+MH1P1YfFvO1+9lob2dGm1Je/jS9g=;
+        b=UYY8pk8RrFN5Ktsq4mYdkLCk+MG55jVXvkOYUj6iGpzSXBatS7p/oTN+UeevR2ouKpz5Oajh1vhOiwkP5oiMsIDshYQvmecKBdxDTbtMwsXhBlWL+0slwcBkrE6MXGmNnX0rTE3vywnD1Df7/7UDYj2gw2b4ToUJCD351KPbMgs=;
+X-UUID: 0f79fa79b1674757a54b18818e31429c-20200826
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <andrew-ct.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 560009724; Wed, 26 Aug 2020 16:30:57 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 26 Aug 2020 16:30:51 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 26 Aug 2020 16:30:51 +0800
+Message-ID: <1598430653.18394.5.camel@mtksdaap41>
+Subject: Re: [PATCH v2] nvmem: mtk-efuse: Remove EFUSE register write support
+From:   andrew-ct chen <andrew-ct.chen@mediatek.com>
+To:     Chih-En Hsu <chih-en.hsu@mediatek.com>
+CC:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Michael.Mei@mediatek.com>
+Date:   Wed, 26 Aug 2020 16:30:53 +0800
+In-Reply-To: <20200826062148.27293-1-chih-en.hsu@mediatek.com>
+References: <20200826062148.27293-1-chih-en.hsu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The acpi_get_table() should be coupled with acpi_put_table() if
-the mapped table is not used at runtime to release the table
-mapping which can prevent the memory leak.
-
-In kfd_create_crat_image_acpi(), crat_table is copied to pcrat_image,
-and in kfd_create_vcrat_image_cpu(), the acpi_table is only used to
-get the OEM information, so those two table mappings need to be released
-after using it.
-
-Fixes: 174de876d6d0 ("drm/amdkfd: Group up CRAT related functions")
-Fixes: 520b8fb755cc ("drm/amdkfd: Add topology support for CPUs")
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_crat.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-index ed77b109..c3f3ffb6 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-@@ -758,6 +758,7 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
- 	struct acpi_table_header *crat_table;
- 	acpi_status status;
- 	void *pcrat_image;
-+	int rc = 0;
- 
- 	if (!crat_image)
- 		return -EINVAL;
-@@ -782,13 +783,16 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
- 	}
- 
- 	pcrat_image = kmemdup(crat_table, crat_table->length, GFP_KERNEL);
--	if (!pcrat_image)
--		return -ENOMEM;
-+	if (!pcrat_image) {
-+		rc = -ENOMEM;
-+		goto out;
-+	}
- 
- 	*crat_image = pcrat_image;
- 	*size = crat_table->length;
--
--	return 0;
-+out:
-+	acpi_put_table(crat_table);
-+	return rc;
- }
- 
- /* Memory required to create Virtual CRAT.
-@@ -972,6 +976,7 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
- 				CRAT_OEMID_LENGTH);
- 		memcpy(crat_table->oem_table_id, acpi_table->oem_table_id,
- 				CRAT_OEMTABLEID_LENGTH);
-+		acpi_put_table(acpi_table);
- 	}
- 	crat_table->total_entries = 0;
- 	crat_table->num_domains = 0;
--- 
-1.7.12.4
+SGkgQ2hpaC1FbiwNCg0KT24gV2VkLCAyMDIwLTA4LTI2IGF0IDE0OjIxICswODAwLCBDaGloLUVu
+IEhzdSB3cm90ZToNCj4gVGhpcyBwYXRjaCBpcyB0byByZW1vdmUgZnVuY3Rpb24gIm10a19yZWdf
+d3JpdGUiIHNpbmNlDQo+IE1lZGlhdGVrIEVGVVNFIGhhcmR3YXJlIG9ubHkgc3VwcG9ydHMgcmVh
+ZCBmdW5jdGlvbmFsaXR5DQo+IGZvciBOVk1FTSBjb25zdW1lcnMuDQoNClRoZSBmaXhlZCBwYXRj
+aCBzaG91bGQgYmUgYmEzNjBmZDA0MGUzNCAoIm52bWVtOiBtdGstZWZ1c2U6IHJlbW92ZSBudm1l
+bQ0KcmVnbWFwIGRlcGVuZGVuY3kiKQ0KDQo+IEZpeGVzOiA0YzdlNGZlMzc3NjYgKCJudm1lbTog
+bWVkaWF0ZWs6IEFkZCBNZWRpYXRlayBFRlVTRSBkcml2ZXIiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBD
+aGloLUVuIEhzdSA8Y2hpaC1lbi5oc3VAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMv
+bnZtZW0vbXRrLWVmdXNlLmMgfCAxNCAtLS0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQs
+IDE0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbnZtZW0vbXRrLWVm
+dXNlLmMgYi9kcml2ZXJzL252bWVtL210ay1lZnVzZS5jDQo+IGluZGV4IDg1NmQ5YzNmYzM4ZS4u
+NmE1MzdkOTU5ZjE0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL252bWVtL210ay1lZnVzZS5jDQo+
+ICsrKyBiL2RyaXZlcnMvbnZtZW0vbXRrLWVmdXNlLmMNCj4gQEAgLTI4LDE5ICsyOCw2IEBAIHN0
+YXRpYyBpbnQgbXRrX3JlZ19yZWFkKHZvaWQgKmNvbnRleHQsDQo+ICAJcmV0dXJuIDA7DQo+ICB9
+DQo+ICANCj4gLXN0YXRpYyBpbnQgbXRrX3JlZ193cml0ZSh2b2lkICpjb250ZXh0LA0KPiAtCQkJ
+IHVuc2lnbmVkIGludCByZWcsIHZvaWQgKl92YWwsIHNpemVfdCBieXRlcykNCj4gLXsNCj4gLQlz
+dHJ1Y3QgbXRrX2VmdXNlX3ByaXYgKnByaXYgPSBjb250ZXh0Ow0KPiAtCXUzMiAqdmFsID0gX3Zh
+bDsNCj4gLQlpbnQgaSA9IDAsIHdvcmRzID0gYnl0ZXMgLyA0Ow0KPiAtDQo+IC0Jd2hpbGUgKHdv
+cmRzLS0pDQo+IC0JCXdyaXRlbCgqdmFsKyssIHByaXYtPmJhc2UgKyByZWcgKyAoaSsrICogNCkp
+Ow0KPiAtDQo+IC0JcmV0dXJuIDA7DQo+IC19DQo+IC0NCj4gIHN0YXRpYyBpbnQgbXRrX2VmdXNl
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICB7DQo+ICAJc3RydWN0IGRl
+dmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCj4gQEAgLTYxLDcgKzQ4LDYgQEAgc3RhdGljIGludCBt
+dGtfZWZ1c2VfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gIAllY29uZmln
+LnN0cmlkZSA9IDQ7DQo+ICAJZWNvbmZpZy53b3JkX3NpemUgPSA0Ow0KPiAgCWVjb25maWcucmVn
+X3JlYWQgPSBtdGtfcmVnX3JlYWQ7DQo+IC0JZWNvbmZpZy5yZWdfd3JpdGUgPSBtdGtfcmVnX3dy
+aXRlOw0KPiAgCWVjb25maWcuc2l6ZSA9IHJlc291cmNlX3NpemUocmVzKTsNCj4gIAllY29uZmln
+LnByaXYgPSBwcml2Ow0KPiAgCWVjb25maWcuZGV2ID0gZGV2Ow0KDQo=
 
