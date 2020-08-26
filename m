@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D41B25373D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CB725373C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgHZSeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 14:34:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        id S1726241AbgHZSe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 14:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726845AbgHZSeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:34:16 -0400
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.9-rc3
+        id S1726939AbgHZSeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 14:34:17 -0400
+Subject: Re: [GIT PULL] TTY/Serial driver fixes for 5.9-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598466856;
-        bh=Kn9WaOAKN7gXslPeBiPkoNqVfs7VTSHXV4/e5nBFjyI=;
+        s=default; t=1598466857;
+        bh=nblUIzJcIcS3BMOezZkRUak/FzxeAggb8FWBH0Mhmwk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Z9XIbgaVkfXWNe/BEoZsNeaIYzMzdqf4uZ3oD0dttVfK01Gol2aI4LW6cybrFeYin
-         8w1GsEslf6o2L+sLRDi+3UoEr+rrnCo9ByzkyEDFeo4MPgVbaGfhken3W/VM6xKkbY
-         I1xJqyu1iUMjCU4rcaGO9dnyBj+Dgs/c8C9E3LDo=
+        b=z7u/sjm1BWrueYz5vSOR4+1rBIsONJo5XtDpDqlFZQM6BRRB8qfck9g7CQt3iUJBr
+         HTPATEuIvBBgeyBwZAd4jjSGPjoQ4XkwUuerNw/zFPGjUzo0au4M4M63DiFJnr/pnu
+         yLfsEsbEWxtZbBl8lT6KzO5p2ghimGhjY3Z0r1Uc=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200826134111.465ose3oyoyx6h7b@liuwe-devbox-debian-v2>
-References: <20200826134111.465ose3oyoyx6h7b@liuwe-devbox-debian-v2>
+In-Reply-To: <20200826134257.GA3882407@kroah.com>
+References: <20200826134257.GA3882407@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200826134111.465ose3oyoyx6h7b@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
-X-PR-Tracked-Commit-Id: b46b4a8a57c377b72a98c7930a9f6969d2d4784e
+X-PR-Tracked-Message-Id: <20200826134257.GA3882407@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.9-rc3
+X-PR-Tracked-Commit-Id: ea1fc02e12b647d8dd7515d1dba137847d8e951d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 51c4518ab77c6d3e917675891a9a529daabfaef1
-Message-Id: <159846685643.8056.6413043000779754006.pr-tracker-bot@kernel.org>
-Date:   Wed, 26 Aug 2020 18:34:16 +0000
-To:     Wei Liu <wei.liu@kernel.org>
+X-PR-Merge-Commit-Id: 15bc20c6af4ceee97a1f90b43c0e386643c071b4
+Message-Id: <159846685722.8056.5881686741048472172.pr-tracker-bot@kernel.org>
+Date:   Wed, 26 Aug 2020 18:34:17 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
+        Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 26 Aug 2020 13:41:11 +0000:
+The pull request you sent on Wed, 26 Aug 2020 15:42:57 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.9-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/51c4518ab77c6d3e917675891a9a529daabfaef1
+https://git.kernel.org/torvalds/c/15bc20c6af4ceee97a1f90b43c0e386643c071b4
 
 Thank you!
 
