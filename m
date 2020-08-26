@@ -2,78 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F034A252AB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF58252ABB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgHZJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727997AbgHZJtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:49:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 193312075E;
-        Wed, 26 Aug 2020 09:49:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598435385;
-        bh=JYJ+Y46FS1ZwPvEWPhdO+SM1Aq3byD/lyloKt5oIRNU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LDQYBf05hoLxi7MpEm3q+7QW2BOSZZNQwZAxibdUlL0H/mz5bcBEkIQYkBhr1lPtS
-         yEy+1f/zbE3AHuieRDhUU+qV1jAuVPbW/MD5DcbILQk7LHxsImOazhJ/H9NC+EpkiQ
-         ZrIXVpECQAXuInXTFQfkvn7zILAGX/BMLaL/J7Cc=
-Date:   Wed, 26 Aug 2020 11:50:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.8 000/149] 5.8.4-rc2 review
-Message-ID: <20200826095000.GB2047935@kroah.com>
-References: <20200824164745.715432380@linuxfoundation.org>
- <CA+G9fYuQ5+7HW_K2GieeAX3jubxqUXADd-7_Sx89ypyAmKUJgw@mail.gmail.com>
+        id S1728272AbgHZJwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:52:16 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37998 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgHZJwP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:52:15 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9malW168699;
+        Wed, 26 Aug 2020 09:52:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=puG6dn/0ZJ/S9eYVShDLSjSPKteNXnTDwq9+go1akjA=;
+ b=wz3K0+h++jsK1mSFm80F42A8wKBHb/1KQIqOGgwGSfnKYECH26biQ3pFDGAS55vS4Xf3
+ RM7QuvSza1jG41Z7CMlMx8ULnxzPOaZeSQIEjZFdiwvPhf0oSD63jesA2Ponpu5y4NXO
+ tFR4CMbj++gRzz8ZhugnxdLtVU+ym/1LJcUXsWRzE0RxF6m1CFIUpRnJlk7e/0Xno4n9
+ Nu/2Vt35D+QE4YxjTzlQV+xqTHeq/EE3a5+FzjiX/3IXF5JfODJU2RTuBijkXi4z/NR+
+ W4wYdgqXNx9sEERAVC9PBQtrjSAvR/mAxZffqeLel7F7nIEwI+9am4zdeXET1YdQ9x1D Qg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 335gw819ft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 09:52:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9ko6O101234;
+        Wed, 26 Aug 2020 09:50:09 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 333r9kxw1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 09:50:09 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07Q9o7ql023582;
+        Wed, 26 Aug 2020 09:50:08 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Aug 2020 02:50:07 -0700
+Date:   Wed, 26 Aug 2020 12:50:00 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] staging: media-atomisp : fix "dubious: !x | !y" sparse
+ warning
+Message-ID: <20200826095000.GW1793@kadam>
+References: <20200825220437.11214-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYuQ5+7HW_K2GieeAX3jubxqUXADd-7_Sx89ypyAmKUJgw@mail.gmail.com>
+In-Reply-To: <20200825220437.11214-1-anant.thazhemadam@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008260077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 clxscore=1011 spamscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260078
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:55:58AM +0530, Naresh Kamboju wrote:
-> On Mon, 24 Aug 2020 at 22:18, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.8.4 release.
-> > There are 149 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 26 Aug 2020 16:47:07 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.4-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On Wed, Aug 26, 2020 at 03:34:26AM +0530, Anant Thazhemadam wrote:
+> Upon running sparse, "warning: dubious: !x | !y" is brought to notice
+> for this file. This patch fixes that warning.
 > 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+> If there's a specific reason that this change is considered undesirable, 
+> please do let me know why.
+> Thanks.
+
+Please don't put this sort of comments in the commit message.  You can
+put it under the --- cut off
+
 > 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+  ^^^
+here.  Then it will be removed instead of going into the permanent git
+log.
 
-Thanks for testing all of these and letting me know.
+Please always say int the commit message how the patch will affect the
+runtime behavior of the kernel.  In this case it will not affect it at
+all.  It's just a clean up.  Her is my proposed commit message if you
+want:
 
-greg k-h
+Subject: [PATCH] staging: media-atomisp : silence "dubious: !x | !y" warning
+
+Upon running sparse, "warning: dubious: !x | !y" is brought to notice
+for this file.  Logical and bitwise OR are basically the same in this
+context so it doesn't cause a runtime bug.  But let's change it to
+logical OR to make it cleaner and silence the Sparse warning.
+
+regards,
+dan carpenter
+
+
+
+
+
+>  .../media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c    | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+> index 358cb7d2cd4c..3b850bb2d39d 100644
+> --- a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+> +++ b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+> @@ -58,7 +58,7 @@ sh_css_vf_downscale_log2(
+>  	unsigned int ds_log2 = 0;
+>  	unsigned int out_width;
+>  
+> -	if ((!out_info) | (!vf_info))
+> +	if ((!out_info) || (!vf_info))
+>  		return -EINVAL;
+>  
+>  	out_width = out_info->res.width;
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> devel mailing list
+> devel@linuxdriverproject.org
+> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
