@@ -2,429 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7C2530E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD742530D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgHZOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S1730140AbgHZOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgHZOGk (ORCPT
+        with ESMTP id S1726187AbgHZOEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:06:40 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655AC061386
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:00:33 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id t23so2498371ljc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:00:33 -0700 (PDT)
+        Wed, 26 Aug 2020 10:04:50 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69427C061370
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:04:49 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id b16so2220340ioj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qVfPLSfnWnXJeT5c1RJB7YyrqFBfvnlWvS99GyBiiO0=;
-        b=WUH5XXUD4DhJkcZTRzZWzsSQ9iRu2X6W3NSaomGIoBQQJrYsKZ5l0wpwG1C5atHkFv
-         VzsbFQJER7wWAqdQMaMnCwJIYh70tkyIpnmFpv7uc/paBrhmrZ9dyoERbKB9uQ9J1hjV
-         sOoUbsEOaYC0Brq5/AZLjulJFXE7oWPYjewZam+mypLjL/o2cqU8hmKTRKep4bg8g3A3
-         2gqT5J6eomAVU5UYBLKJ+nsL4VGk7+2s8kA1N2lCD2CLMD/DnvLSQERatAwKXlGy9bP3
-         yoqHqWgPLMZ8bp5jGkQggZf17IF8FdK4mipv1RNnE++F60vauCcn1AhKJSaw4Ni8Pk3f
-         HzMQ==
+        d=barpilot-io.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sUoQDI6cHULAWbsQVMHlrq6f3u6pa1KOOaDthjJhCeg=;
+        b=SCiMJVqLnG3vv1EFCx1MpqFf98xpLZ1HrXdnrDPnlUjo+CPwIIGiZmEBrPLEZHNgJl
+         ZiIKRbk9z/J/HZatOpmwRj3mJzsKiyA1Cqpg3xDNSqZ56uvvF/2AIrih2tuBW29lz7YG
+         uB999VFYO59Q+apafWr+rCDNety9ehkRpc6EPMbFj1Trlt7o7mbIC1h/fg0Q4Z9Pgn86
+         6/hxDRazbpy1r6GWdmy6EHTWdeIjlRcCNqjwsumzHqI+tLRCkb5D/0FZEIgAj26dDFW0
+         nQS1UBVvYpSwigKxwFA1ZKEDBPl20CzfvVSQzHFv4k+6ocyYooawlRBS4MJlZlz63kJv
+         oQxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qVfPLSfnWnXJeT5c1RJB7YyrqFBfvnlWvS99GyBiiO0=;
-        b=lUAso9Z5eYEgnXtAqKN985jqMSHRF87Rwhr9TwaaoMYZy1uIhMKS867kJ8rbOINjGf
-         X2PpMr0oLdsvXANJ4MvIzBq1GMJNvBpcNgKgpyJURRAoHe5iJFJ5zBbaEx2/3W/63RGQ
-         gW5Ngciyt7fkRbKSP36wmOF6wV9O4uEzBd4ox6aEPMy3BIUjtFho7q4Up24Ck29PjNnu
-         e76AP3/P1nIKHwcpjzLQHO4YkrMWCHg6RjKBHhuUyP447GonhVkDuOwNah8D/OAQhWE8
-         wIJaiczgcYpKIRaqeBt/Y/ytip8qaMXkYTCgEB5qpq0xcV6TNbiXAjvqB76Cr9nIGSGz
-         NkOA==
-X-Gm-Message-State: AOAM532NFhYfhLgsjV1PlPBAiIhrXu8VdBOiTvAnNx7MQDMdZGKTCP18
-        MomcZHUUVmGqd7digrkofZ12BIXA4AYHtA==
-X-Google-Smtp-Source: ABdhPJwM5AzljUPniiThBGHQK+WTRn7mNG7prfdccV0Yfs0bBoYSebnP3a00SB66u3EnzRRtjEp6IQ==
-X-Received: by 2002:a2e:851a:: with SMTP id j26mr6775056lji.251.1598450429491;
-        Wed, 26 Aug 2020 07:00:29 -0700 (PDT)
-Received: from a2klaptop.epam.com ([185.199.97.5])
-        by smtp.gmail.com with ESMTPSA id z25sm532604ljz.13.2020.08.26.07.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:00:28 -0700 (PDT)
-From:   Oleksandr Andrushchenko <andr2000@gmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     intel-gfx@lists.freedesktop.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Subject: [PATCH] drm/xen-front: Add support for EDID based configuration
-Date:   Wed, 26 Aug 2020 17:00:27 +0300
-Message-Id: <20200826140027.11728-1-andr2000@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sUoQDI6cHULAWbsQVMHlrq6f3u6pa1KOOaDthjJhCeg=;
+        b=NsPFAODDP8LacpX/gGvr+wq72wrZlKODT721+Bb9/a7S72Fkag4iZuPKcqXqv+TxgS
+         0IsKW0ChKjS4msCLGO4OLF9znAHcfP95XVOliqlCg6rnN2K9prw/8u2MLkBsr1wgCxiA
+         LRJqDWuQ0N4tleYxvFKhaBBedNcmnRpsiyQQOGtg37uvfhJi+BNPndRLEOGq73UsQlZi
+         WinK+3I7B/vKxpWe+8YTAvbKf+uA3abq274J+hnd4Cku4DHdU0pXNpPYY3WiJxp1/Xgk
+         ysLDH/D/7lE3183W0Hb9kbWV+Ba9PqC2Vk/BismQLHIJate2Z/6cmbYREyT+ekBxnCXL
+         ZyyQ==
+X-Gm-Message-State: AOAM532f8UNT9tauAITnaVhpf/0Vl7ttrr/Y/lD/lEL7cMqk8TEr5o/l
+        UBLpatMUpz7ILAFOi0EmGu7kMvCfgVeuDdzDUeb+Mg==
+X-Google-Smtp-Source: ABdhPJy98SW2IO04BMV1kFrvo81C4JKdGbTKUHE9S8z2roVnCguSsj/Zoh3I9L3qIVROiijCaHNrElcZc9vPuLbL/AE=
+X-Received: by 2002:a6b:2c1:: with SMTP id 184mr3241652ioc.137.1598450688439;
+ Wed, 26 Aug 2020 07:04:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200826120421.44356-1-guilhem@barpilot.io> <CAJZ5v0i8XUF39Vv=EM4TgyXgK6zHniZW3tGYFPweO3kg+BrxOQ@mail.gmail.com>
+ <CAGX5Wg2OOgY6d1RH514Kh9D6b+siga+jzH7qubcmE+ukq+6KKA@mail.gmail.com>
+ <d0ca671465e6ce72c6c4d5178440ebc1e4814da8.camel@gmail.com>
+ <e82c121057c4496238d3de7f7c919b7039d23b7c.camel@gmail.com>
+ <CAGX5Wg0LrzPwf=2pGrQHAbFMVkOoYDxOoFa+ZmLBYshPvZQUXg@mail.gmail.com> <8fa7622dacc03f2fbd67e810f53389e3ede544e8.camel@intel.com>
+In-Reply-To: <8fa7622dacc03f2fbd67e810f53389e3ede544e8.camel@intel.com>
+From:   Guilhem Lettron <guilhem@barpilot.io>
+Date:   Wed, 26 Aug 2020 16:04:37 +0200
+Message-ID: <CAGX5Wg0=K5AaTut5KH3R3+oasM5MM7PaJ9Z_L56xSNckMbWC9g@mail.gmail.com>
+Subject: Re: [PATCH] intel_idle: Add ICL support
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     dedekind1@gmail.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000007a125f05adc84d8d"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+--0000000000007a125f05adc84d8d
+Content-Type: text/plain; charset="UTF-8"
 
-Version 2 of the Xen displif protocol adds XENDISPL_OP_GET_EDID
-request which allows frontends to request EDID structure per
-connector. This request is optional and if not supported by the
-backend then visible area is still defined by the relevant
-XenStore's "resolution" property.
-If backend provides EDID with XENDISPL_OP_GET_EDID request then
-its values must take precedence over the resolutions defined in
-XenStore.
+On Wed, 26 Aug 2020 at 15:41, Zhang Rui <rui.zhang@intel.com> wrote:
+>
+>
+> This is really hard to read.
+> can you please attach the two turbostat output as attachments?
 
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
----
- drivers/gpu/drm/xen/xen_drm_front.c         | 62 ++++++++++++++++
- drivers/gpu/drm/xen/xen_drm_front.h         |  9 ++-
- drivers/gpu/drm/xen/xen_drm_front_cfg.c     | 82 +++++++++++++++++++++
- drivers/gpu/drm/xen/xen_drm_front_cfg.h     |  7 ++
- drivers/gpu/drm/xen/xen_drm_front_conn.c    | 26 ++++++-
- drivers/gpu/drm/xen/xen_drm_front_evtchnl.c |  4 +
- drivers/gpu/drm/xen/xen_drm_front_evtchnl.h |  3 +
- drivers/gpu/drm/xen/xen_drm_front_kms.c     |  5 ++
- 8 files changed, 195 insertions(+), 3 deletions(-)
+of course :)
 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
-index 013c9e0e412c..cc5981bdbfb3 100644
---- a/drivers/gpu/drm/xen/xen_drm_front.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front.c
-@@ -381,6 +381,59 @@ void xen_drm_front_on_frame_done(struct xen_drm_front_info *front_info,
- 					fb_cookie);
- }
- 
-+int xen_drm_front_get_edid(struct xen_drm_front_info *front_info,
-+			   int conn_idx, struct page **pages,
-+			   u32 buffer_sz, u32 *edid_sz)
-+{
-+	struct xen_drm_front_evtchnl *evtchnl;
-+	struct xen_front_pgdir_shbuf_cfg buf_cfg;
-+	struct xen_front_pgdir_shbuf shbuf;
-+	struct xendispl_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	if (unlikely(conn_idx >= front_info->num_evt_pairs))
-+		return -EINVAL;
-+
-+	memset(&buf_cfg, 0, sizeof(buf_cfg));
-+	buf_cfg.xb_dev = front_info->xb_dev;
-+	buf_cfg.num_pages = DIV_ROUND_UP(buffer_sz, PAGE_SIZE);
-+	buf_cfg.pages = pages;
-+	buf_cfg.pgdir = &shbuf;
-+	buf_cfg.be_alloc = false;
-+
-+	ret = xen_front_pgdir_shbuf_alloc(&buf_cfg);
-+	if (ret < 0)
-+		return ret;
-+
-+	evtchnl = &front_info->evt_pairs[conn_idx].req;
-+
-+	mutex_lock(&evtchnl->u.req.req_io_lock);
-+
-+	spin_lock_irqsave(&front_info->io_lock, flags);
-+	req = be_prepare_req(evtchnl, XENDISPL_OP_GET_EDID);
-+	req->op.get_edid.gref_directory =
-+		xen_front_pgdir_shbuf_get_dir_start(&shbuf);
-+	req->op.get_edid.buffer_sz = buffer_sz;
-+
-+	ret = be_stream_do_io(evtchnl, req);
-+	spin_unlock_irqrestore(&front_info->io_lock, flags);
-+
-+	if (ret < 0)
-+		goto fail;
-+
-+	ret = be_stream_wait_io(evtchnl);
-+	if (ret < 0)
-+		goto fail;
-+
-+	*edid_sz = evtchnl->u.req.resp.get_edid.edid_sz;
-+
-+fail:
-+	mutex_unlock(&evtchnl->u.req.req_io_lock);
-+	xen_front_pgdir_shbuf_free(&shbuf);
-+	return ret;
-+}
-+
- static int xen_drm_drv_dumb_create(struct drm_file *filp,
- 				   struct drm_device *dev,
- 				   struct drm_mode_create_dumb *args)
-@@ -466,6 +519,7 @@ static void xen_drm_drv_release(struct drm_device *dev)
- 		xenbus_switch_state(front_info->xb_dev,
- 				    XenbusStateInitialising);
- 
-+	xen_drm_front_cfg_free(front_info, &front_info->cfg);
- 	kfree(drm_info);
- }
- 
-@@ -562,6 +616,7 @@ static int xen_drm_drv_init(struct xen_drm_front_info *front_info)
- 	drm_mode_config_cleanup(drm_dev);
- 	drm_dev_put(drm_dev);
- fail:
-+	xen_drm_front_cfg_free(front_info, &front_info->cfg);
- 	kfree(drm_info);
- 	return ret;
- }
-@@ -622,7 +677,14 @@ static int displback_initwait(struct xen_drm_front_info *front_info)
- 
- static int displback_connect(struct xen_drm_front_info *front_info)
- {
-+	int ret;
-+
- 	xen_drm_front_evtchnl_set_state(front_info, EVTCHNL_STATE_CONNECTED);
-+
-+	/* We are all set to read additional configuration from the backend. */
-+	ret = xen_drm_front_cfg_tail(front_info, &front_info->cfg);
-+	if (ret < 0)
-+		return ret;
- 	return xen_drm_drv_init(front_info);
- }
- 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front.h b/drivers/gpu/drm/xen/xen_drm_front.h
-index 54486d89650e..be0c982f4d82 100644
---- a/drivers/gpu/drm/xen/xen_drm_front.h
-+++ b/drivers/gpu/drm/xen/xen_drm_front.h
-@@ -112,9 +112,12 @@ struct xen_drm_front_drm_pipeline {
- 	struct drm_simple_display_pipe pipe;
- 
- 	struct drm_connector conn;
--	/* These are only for connector mode checking */
-+	/* These are only for connector mode checking if no EDID present */
- 	int width, height;
- 
-+	/* Is not NULL if EDID is used for connector configuration. */
-+	struct edid *edid;
-+
- 	struct drm_pending_vblank_event *pending_event;
- 
- 	struct delayed_work pflip_to_worker;
-@@ -160,4 +163,8 @@ int xen_drm_front_page_flip(struct xen_drm_front_info *front_info,
- void xen_drm_front_on_frame_done(struct xen_drm_front_info *front_info,
- 				 int conn_idx, u64 fb_cookie);
- 
-+int xen_drm_front_get_edid(struct xen_drm_front_info *front_info,
-+			   int conn_idx, struct page **pages,
-+			   u32 buffer_sz, u32 *edid_sz);
-+
- #endif /* __XEN_DRM_FRONT_H_ */
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_cfg.c b/drivers/gpu/drm/xen/xen_drm_front_cfg.c
-index ec53b9cc9e0e..f7c45a2fdab3 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_cfg.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_cfg.c
-@@ -45,6 +45,64 @@ static int cfg_connector(struct xen_drm_front_info *front_info,
- 	return 0;
- }
- 
-+static void
-+cfg_connector_free_edid(struct xen_drm_front_cfg_connector *connector)
-+{
-+	vfree(connector->edid);
-+	connector->edid = NULL;
-+}
-+
-+static void cfg_connector_edid(struct xen_drm_front_info *front_info,
-+			       struct xen_drm_front_cfg_connector *connector,
-+			       int index)
-+{
-+	struct page **pages;
-+	u32 edid_sz;
-+	int i, npages, ret = -ENOMEM;
-+
-+	connector->edid = vmalloc(XENDISPL_EDID_MAX_SIZE);
-+	if (!connector->edid)
-+		goto fail;
-+
-+	npages = DIV_ROUND_UP(XENDISPL_EDID_MAX_SIZE, PAGE_SIZE);
-+	pages = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
-+	if (!pages)
-+		goto fail_free_edid;
-+
-+	for (i = 0; i < npages; i++)
-+		pages[i] = vmalloc_to_page((u8 *)connector->edid +
-+					   i * PAGE_SIZE);
-+
-+	ret = xen_drm_front_get_edid(front_info, index, pages,
-+				     XENDISPL_EDID_MAX_SIZE, &edid_sz);
-+
-+	kvfree(pages);
-+
-+	if (ret < 0)
-+		goto fail_free_edid;
-+
-+	ret = -EINVAL;
-+	if (!edid_sz || (edid_sz % EDID_LENGTH))
-+		goto fail_free_edid;
-+
-+	if (!drm_edid_is_valid(connector->edid))
-+		goto fail_free_edid;
-+
-+	DRM_INFO("Connector %s: using EDID for configuration, size %d\n",
-+		 connector->xenstore_path, edid_sz);
-+	return;
-+
-+fail_free_edid:
-+	cfg_connector_free_edid(connector);
-+fail:
-+	/*
-+	 * If any error this is not critical as we can still read
-+	 * connector settings from XenStore, so just warn.
-+	 */
-+	DRM_WARN("Connector %s: cannot read or wrong EDID: %d\n",
-+		 connector->xenstore_path, ret);
-+}
-+
- int xen_drm_front_cfg_card(struct xen_drm_front_info *front_info,
- 			   struct xen_drm_front_cfg *cfg)
- {
-@@ -75,3 +133,27 @@ int xen_drm_front_cfg_card(struct xen_drm_front_info *front_info,
- 	return 0;
- }
- 
-+int xen_drm_front_cfg_tail(struct xen_drm_front_info *front_info,
-+			   struct xen_drm_front_cfg *cfg)
-+{
-+	int i;
-+
-+	/*
-+	 * Try reading EDID(s) from the backend: it is not an error
-+	 * if backend doesn't support or provides no EDID.
-+	 */
-+	for (i = 0; i < cfg->num_connectors; i++)
-+		cfg_connector_edid(front_info, &cfg->connectors[i], i);
-+
-+	return 0;
-+}
-+
-+void xen_drm_front_cfg_free(struct xen_drm_front_info *front_info,
-+			    struct xen_drm_front_cfg *cfg)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cfg->connectors); i++)
-+		cfg_connector_free_edid(&cfg->connectors[i]);
-+}
-+
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_cfg.h b/drivers/gpu/drm/xen/xen_drm_front_cfg.h
-index aa8490ba9146..57662506eee6 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_cfg.h
-+++ b/drivers/gpu/drm/xen/xen_drm_front_cfg.h
-@@ -19,6 +19,7 @@ struct xen_drm_front_cfg_connector {
- 	int width;
- 	int height;
- 	char *xenstore_path;
-+	struct edid *edid;
- };
- 
- struct xen_drm_front_cfg {
-@@ -34,4 +35,10 @@ struct xen_drm_front_cfg {
- int xen_drm_front_cfg_card(struct xen_drm_front_info *front_info,
- 			   struct xen_drm_front_cfg *cfg);
- 
-+int xen_drm_front_cfg_tail(struct xen_drm_front_info *front_info,
-+			   struct xen_drm_front_cfg *cfg);
-+
-+void xen_drm_front_cfg_free(struct xen_drm_front_info *front_info,
-+			    struct xen_drm_front_cfg *cfg);
-+
- #endif /* __XEN_DRM_FRONT_CFG_H_ */
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_conn.c b/drivers/gpu/drm/xen/xen_drm_front_conn.c
-index 44f1f70c0aed..c98d989a005f 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_conn.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_conn.c
-@@ -66,6 +66,16 @@ static int connector_get_modes(struct drm_connector *connector)
- 	struct videomode videomode;
- 	int width, height;
- 
-+	if (pipeline->edid) {
-+		int count;
-+
-+		drm_connector_update_edid_property(connector,
-+						   pipeline->edid);
-+		count = drm_add_edid_modes(connector, pipeline->edid);
-+		if (count)
-+			return count;
-+	}
-+
- 	mode = drm_mode_create(connector->dev);
- 	if (!mode)
- 		return 0;
-@@ -103,6 +113,7 @@ int xen_drm_front_conn_init(struct xen_drm_front_drm_info *drm_info,
- {
- 	struct xen_drm_front_drm_pipeline *pipeline =
- 			to_xen_drm_pipeline(connector);
-+	int ret;
- 
- 	drm_connector_helper_add(connector, &connector_helper_funcs);
- 
-@@ -111,6 +122,17 @@ int xen_drm_front_conn_init(struct xen_drm_front_drm_info *drm_info,
- 	connector->polled = DRM_CONNECTOR_POLL_CONNECT |
- 			DRM_CONNECTOR_POLL_DISCONNECT;
- 
--	return drm_connector_init(drm_info->drm_dev, connector,
--				  &connector_funcs, DRM_MODE_CONNECTOR_VIRTUAL);
-+	ret = drm_connector_init(drm_info->drm_dev, connector,
-+				 &connector_funcs, DRM_MODE_CONNECTOR_VIRTUAL);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * Virtual connectors do not have EDID property, but we do,
-+	 * so add it manually if EDID is present.
-+	 */
-+	if (pipeline->edid)
-+		drm_connector_attach_edid_property(connector);
-+
-+	return 0;
- }
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_evtchnl.c b/drivers/gpu/drm/xen/xen_drm_front_evtchnl.c
-index e10d95dddb99..25e512445cb3 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_evtchnl.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_evtchnl.c
-@@ -44,6 +44,10 @@ static irqreturn_t evtchnl_interrupt_ctrl(int irq, void *dev_id)
- 			continue;
- 
- 		switch (resp->operation) {
-+		case XENDISPL_OP_GET_EDID:
-+			evtchnl->u.req.resp.get_edid =
-+				resp->op.get_edid;
-+			fallthrough;
- 		case XENDISPL_OP_PG_FLIP:
- 		case XENDISPL_OP_FB_ATTACH:
- 		case XENDISPL_OP_FB_DETACH:
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_evtchnl.h b/drivers/gpu/drm/xen/xen_drm_front_evtchnl.h
-index b0af6994332b..8267f40b6549 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_evtchnl.h
-+++ b/drivers/gpu/drm/xen/xen_drm_front_evtchnl.h
-@@ -53,6 +53,9 @@ struct xen_drm_front_evtchnl {
- 			struct completion completion;
- 			/* latest response status */
- 			int resp_status;
-+			union {
-+				struct xendispl_get_edid_resp get_edid;
-+			} resp;
- 			/* serializer for backend IO: request/response */
- 			struct mutex req_io_lock;
- 		} req;
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_kms.c b/drivers/gpu/drm/xen/xen_drm_front_kms.c
-index ef11b1e4de39..d7ff1a656d40 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_kms.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_kms.c
-@@ -288,6 +288,10 @@ display_mode_valid(struct drm_simple_display_pipe *pipe,
- 			container_of(pipe, struct xen_drm_front_drm_pipeline,
- 				     pipe);
- 
-+	/* We have nothing to check if EDID is present. */
-+	if (pipeline->edid)
-+		return MODE_OK;
-+
- 	if (mode->hdisplay != pipeline->width)
- 		return MODE_ERROR;
- 
-@@ -319,6 +323,7 @@ static int display_pipe_init(struct xen_drm_front_drm_info *drm_info,
- 	pipeline->index = index;
- 	pipeline->height = cfg->height;
- 	pipeline->width = cfg->width;
-+	pipeline->edid = cfg->edid;
- 
- 	INIT_DELAYED_WORK(&pipeline->pflip_to_worker, pflip_to_worker);
- 
--- 
-2.17.1
+Guilhem Lettron
 
+--0000000000007a125f05adc84d8d
+Content-Type: text/plain; charset="US-ASCII"; name="with patch.txt"
+Content-Disposition: attachment; filename="with patch.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kebg8e5n0>
+X-Attachment-Id: f_kebg8e5n0
+
+dHVyYm9zdGF0IHZlcnNpb24gMjAuMDMuMjAgLSBMZW4gQnJvd24gPGxlbmJAa2VybmVsLm9yZz4K
+Q1BVSUQoMCk6IEdlbnVpbmVJbnRlbCAweDFiIENQVUlEIGxldmVsczsgMHg4MDAwMDAwOCB4bGV2
+ZWxzOwpmYW1pbHk6bW9kZWw6c3RlcHBpbmcgMHg2OjdlOjUgKDY6MTI2OjUpCkNQVUlEKDEpOiBT
+U0UzIE1PTklUT1IgLSBFSVNUIFRNMiBUU0MgTVNSIEFDUEktVE0gSFQgVE0KQ1BVSUQoNik6IEFQ
+RVJGLCBUVVJCTywgRFRTLCBQVE0sIEhXUCwgTm8tSFdQbm90aWZ5LCBIV1B3aW5kb3csCkhXUGVw
+cCwgSFdQcGtnLCBFUEIKY3B1MjogTVNSX0lBMzJfTUlTQ19FTkFCTEU6IDB4MDA4NTAwODkgKFRD
+QyBFSVNUIE1XQUlUIFBSRUZFVENIIFRVUkJPKQpDUFVJRCg3KTogU0dYCmNwdTI6IE1TUl9JQTMy
+X0ZFQVRVUkVfQ09OVFJPTDogMHgwMDAyMDAwNSAoTG9ja2VkICkKQ1BVSUQoMHgxNSk6IGVheF9j
+cnlzdGFsOiAyIGVieF90c2M6IDc4IGVjeF9jcnlzdGFsX2h6OiAzODQwMDAwMApUU0M6IDE0OTcg
+TUh6ICgzODQwMDAwMCBIeiAqIDc4IC8gMiAvIDEwMDAwMDApCkNQVUlEKDB4MTYpOiBiYXNlX21o
+ejogMTUwMCBtYXhfbWh6OiAzOTAwIGJ1c19taHo6IDEwMApjcHUyOiBNU1JfTUlTQ19QV1JfTUdN
+VDogMHgwMDQwMWM0MCAoRU5hYmxlLUVJU1RfQ29vcmRpbmF0aW9uCkRJU2FibGUtRVBCIERJU2Fi
+bGUtT09CKQpSQVBMOiAxNzQ3NiBzZWMuIEpvdWxlIENvdW50ZXIgUmFuZ2UsIGF0IDE1IFdhdHRz
+CmNwdTI6IE1TUl9QTEFURk9STV9JTkZPOiAweDQwNDNjZjE4MTBmMDAKNCAqIDEwMC4wID0gNDAw
+LjAgTUh6IG1heCBlZmZpY2llbmN5IGZyZXF1ZW5jeQoxNSAqIDEwMC4wID0gMTUwMC4wIE1IeiBi
+YXNlIGZyZXF1ZW5jeQpjcHUyOiBNU1JfSUEzMl9QT1dFUl9DVEw6IDB4MDAyNDAwNWQgKEMxRSBh
+dXRvLXByb21vdGlvbjogRElTYWJsZWQpCmNwdTI6IE1TUl9UVVJCT19SQVRJT19MSU1JVDogMHgy
+MzIzMjMyMzIzMjMyNjI3CjM1ICogMTAwLjAgPSAzNTAwLjAgTUh6IG1heCB0dXJibyA4IGFjdGl2
+ZSBjb3JlcwozNSAqIDEwMC4wID0gMzUwMC4wIE1IeiBtYXggdHVyYm8gNyBhY3RpdmUgY29yZXMK
+MzUgKiAxMDAuMCA9IDM1MDAuMCBNSHogbWF4IHR1cmJvIDYgYWN0aXZlIGNvcmVzCjM1ICogMTAw
+LjAgPSAzNTAwLjAgTUh6IG1heCB0dXJibyA1IGFjdGl2ZSBjb3JlcwozNSAqIDEwMC4wID0gMzUw
+MC4wIE1IeiBtYXggdHVyYm8gNCBhY3RpdmUgY29yZXMKMzUgKiAxMDAuMCA9IDM1MDAuMCBNSHog
+bWF4IHR1cmJvIDMgYWN0aXZlIGNvcmVzCjM4ICogMTAwLjAgPSAzODAwLjAgTUh6IG1heCB0dXJi
+byAyIGFjdGl2ZSBjb3JlcwozOSAqIDEwMC4wID0gMzkwMC4wIE1IeiBtYXggdHVyYm8gMSBhY3Rp
+dmUgY29yZXMKY3B1MjogTVNSX0NPTkZJR19URFBfTk9NSU5BTDogMHgwMDAwMDAwZCAoYmFzZV9y
+YXRpbz0xMykKY3B1MjogTVNSX0NPTkZJR19URFBfTEVWRUxfMTogMHgwMDBhMDA2MCAoUEtHX01J
+Tl9QV1JfTFZMMT0wClBLR19NQVhfUFdSX0xWTDE9MCBMVkwxX1JBVElPPTEwIFBLR19URFBfTFZM
+MT05NikKY3B1MjogTVNSX0NPTkZJR19URFBfTEVWRUxfMjogMHgwMDBmMDBjOCAoUEtHX01JTl9Q
+V1JfTFZMMj0wClBLR19NQVhfUFdSX0xWTDI9MCBMVkwyX1JBVElPPTE1IFBLR19URFBfTFZMMj0y
+MDApCmNwdTI6IE1TUl9DT05GSUdfVERQX0NPTlRST0w6IDB4MDAwMDAwMDAgKCBsb2NrPTApCmNw
+dTI6IE1TUl9UVVJCT19BQ1RJVkFUSU9OX1JBVElPOiAweDAwMDAwMDBjIChNQVhfTk9OX1RVUkJP
+X1JBVElPPTEyIGxvY2s9MCkKY3B1MjogTVNSX1BLR19DU1RfQ09ORklHX0NPTlRST0w6IDB4NzQw
+MDgwMDggKFVOZGVtb3RlLUMxLCBkZW1vdGUtQzEsCmxvY2tlZCwgcGtnLWNzdGF0ZS1saW1pdD04
+ICh1bmxpbWl0ZWQpKQpjdXJyZW50X2RyaXZlcjogaW50ZWxfaWRsZQpjdXJyZW50X2dvdmVybm9y
+OiBtZW51CmN1cnJlbnRfZ292ZXJub3Jfcm86IG1lbnUKY3B1MjogUE9MTDogQ1BVSURMRSBDT1JF
+IFBPTEwgSURMRQpjcHUyOiBDMTogTVdBSVQgMHgwMApjcHUyOiBDMUU6IE1XQUlUIDB4MDEKY3B1
+MjogQzY6IE1XQUlUIDB4MjAKY3B1MjogQzdzOiBNV0FJVCAweDMzCmNwdTI6IEM4OiBNV0FJVCAw
+eDQwCmNwdTI6IEM5OiBNV0FJVCAweDUwCmNwdTI6IEMxMDogTVdBSVQgMHg2MApjcHUyOiBjcHVm
+cmVxIGRyaXZlcjogaW50ZWxfY3B1ZnJlcQpjcHUyOiBjcHVmcmVxIGdvdmVybm9yOiBzY2hlZHV0
+aWwKY3B1ZnJlcSBpbnRlbF9wc3RhdGUgbm9fdHVyYm86IDAKY3B1MjogTVNSX01JU0NfRkVBVFVS
+RV9DT05UUk9MOiAweDAwMDAwMDAwIChMMi1QcmVmZXRjaApMMi1QcmVmZXRjaC1wYWlyIEwxLVBy
+ZWZldGNoIEwxLUlQLVByZWZldGNoKQpjcHUwOiBNU1JfUE1fRU5BQkxFOiAweDAwMDAwMDAxIChI
+V1ApCmNwdTA6IE1TUl9IV1BfQ0FQQUJJTElUSUVTOiAweDAxMGUwZDI3IChoaWdoIDM5IGd1YXIg
+MTMgZWZmIDE0IGxvdyAxKQpjcHUwOiBNU1JfSFdQX1JFUVVFU1Q6IDB4ODAwMDI3MjcgKG1pbiAz
+OSBtYXggMzkgZGVzIDAgZXBwIDB4ODAgd2luZG93CjB4MCBwa2cgMHgwKQpjcHUwOiBNU1JfSFdQ
+X1JFUVVFU1RfUEtHOiAweDgwMDBmZjAxIChtaW4gMSBtYXggMjU1IGRlcyAwIGVwcCAweDgwIHdp
+bmRvdyAweDApCmNwdTA6IE1TUl9IV1BfU1RBVFVTOiAweDAwMDAwMDAwIChOby1HdWFyYW50ZWVk
+X1BlcmZfQ2hhbmdlLCBOby1FeGN1cnNpb25fTWluKQpjcHUwOiBNU1JfSUEzMl9FTkVSR1lfUEVS
+Rl9CSUFTOiAweDAwMDAwMDA2IChiYWxhbmNlZCkKY3B1MDogTVNSX1JBUExfUE9XRVJfVU5JVDog
+MHgwMDBhMGUwMyAoMC4xMjUwMDAgV2F0dHMsIDAuMDAwMDYxCkpvdWxlcywgMC4wMDA5Nzcgc2Vj
+LikKY3B1MDogTVNSX1BLR19QT1dFUl9JTkZPOiAweDAwMDAwMDc4ICgxNSBXIFREUCwgUkFQTCAw
+IC0gMCBXLCAwLjAwMDAwMCBzZWMuKQpjcHUwOiBNU1JfUEtHX1BPV0VSX0xJTUlUOiAweDVhODEx
+ODAwOWQ4MGM4IChVTmxvY2tlZCkKY3B1MDogUEtHIExpbWl0ICMxOiBFTmFibGVkICgyNS4wMDAw
+MDAgV2F0dHMsIDI0LjAwMDAwMCBzZWMsIGNsYW1wIEVOYWJsZWQpCmNwdTA6IFBLRyBMaW1pdCAj
+MjogRU5hYmxlZCAoMzUuMDAwMDAwIFdhdHRzLCAxMC4wMDAwMDAqIHNlYywgY2xhbXAgRElTYWJs
+ZWQpCmNwdTA6IE1TUl9EUkFNX1BPV0VSX0xJTUlUOiAweDU0MDBkZTAwMDAwMDAwIChVTmxvY2tl
+ZCkKY3B1MDogRFJBTSBMaW1pdDogRElTYWJsZWQgKDAuMDAwMDAwIFdhdHRzLCAwLjAwMDk3NyBz
+ZWMsIGNsYW1wIERJU2FibGVkKQpjcHUwOiBNU1JfUFAwX1BPTElDWTogMApjcHUwOiBNU1JfUFAw
+X1BPV0VSX0xJTUlUOiAweDAwMDAwMDAwIChVTmxvY2tlZCkKY3B1MDogQ29yZXMgTGltaXQ6IERJ
+U2FibGVkICgwLjAwMDAwMCBXYXR0cywgMC4wMDA5Nzcgc2VjLCBjbGFtcCBESVNhYmxlZCkKY3B1
+MDogTVNSX1BQMV9QT0xJQ1k6IDAKY3B1MDogTVNSX1BQMV9QT1dFUl9MSU1JVDogMHgwMDAwMDAw
+MCAoVU5sb2NrZWQpCmNwdTA6IEdGWCBMaW1pdDogRElTYWJsZWQgKDAuMDAwMDAwIFdhdHRzLCAw
+LjAwMDk3NyBzZWMsIGNsYW1wIERJU2FibGVkKQpjcHUwOiBNU1JfSUEzMl9URU1QRVJBVFVSRV9U
+QVJHRVQ6IDB4MDU2NDAwMDAgKDEwMCBDKQpjcHUwOiBNU1JfSUEzMl9QQUNLQUdFX1RIRVJNX1NU
+QVRVUzogMHg4ODI5MDgwMCAoNTkgQykKY3B1MDogTVNSX0lBMzJfUEFDS0FHRV9USEVSTV9JTlRF
+UlJVUFQ6IDB4MDAwMDAwMDMgKDEwMCBDLCAxMDAgQykKY3B1MjogTVNSX1BLR0MzX0lSVEw6IDB4
+MDAwMDAwMDAgKE5PVHZhbGlkLCAwIG5zKQpjcHUyOiBNU1JfUEtHQzZfSVJUTDogMHgwMDAwMDAw
+MCAoTk9UdmFsaWQsIDAgbnMpCmNwdTI6IE1TUl9QS0dDN19JUlRMOiAweDAwMDAwMDAwIChOT1R2
+YWxpZCwgMCBucykKY3B1MjogTVNSX1BLR0M4X0lSVEw6IDB4MDAwMDAwMDAgKE5PVHZhbGlkLCAw
+IG5zKQpjcHUyOiBNU1JfUEtHQzlfSVJUTDogMHgwMDAwMDAwMCAoTk9UdmFsaWQsIDAgbnMpCmNw
+dTI6IE1TUl9QS0dDMTBfSVJUTDogMHgwMDAwMDAwMCAoTk9UdmFsaWQsIDAgbnMpCjEwLjAwMzQ2
+NiBzZWMKQ29yZSAJQ1BVIAlBdmdfTUh6IAlCdXN5JSAJQnp5X01IeiAJVFNDX01IeiAJSVJRIAlT
+TUkgCVBPTEwgCUMxIAlDMUUgCUM2IAlDN3MgCUM4IAlDOSAJQzEwIAlQT0xMJSAJQzElIAlDMUUl
+IAlDNiUgCUM3cyUgCUM4JSAJQzklIAlDMTAlIAlDUFUlYzEgCUNQVSVjNiAJQ1BVJWM3IAlDb3Jl
+VG1wIAlQa2dUbXAgCUdGWCVyYzYgCUdGWE1IeiAJVG90bCVDMCAJQW55JUMwIAlHRlglQzAgCUNQ
+VUdGWCUgCVBrZyVwYzIKUGtnJXBjMyAJUGtnJXBjNiAJUGtnJXBjNyAJUGtnJXBjOCAJUGtnJXBj
+OSAJUGslcGMxMCAJQ1BVJUxQSSAJU1lTJUxQSSAJUGtnV2F0dCAJQ29yV2F0dCAJR0ZYV2F0dCAJ
+UkFNV2F0dCAJUEtHXyUgCVJBTV8lCi0gCS0gCTIxOSAJOC41OSAJMjU0OSAJMTQ5OCAJNDg0ODkg
+CTE2MCAJNzEgCTEyNTYgCTExMzg5IAkyMTQxNCAJNSAJMzEzMTcgCTQ4OSAJODI1MiAJMC4wMCAJ
+MC4xMCAJMS42MSAJMTcuMjYgCTAuMDEgCTUyLjAyIAkwLjUzIAkxOS4yNyAJMTYuMDcgCTI2LjI0
+IAk0OS4xMCAJNTYgCTU2IAk5Ni42NCAJMzAwIAk2OC4yOSAJNDguNTggCTMuMDggCTIuMTAgCTMw
+LjM2IAkwLjA0IAkwLjAwIAkwLjAwIAkwLjAwIAkwLjAwIAkwLjAwIAkwLjAwIAkwLjAwIAk3LjM4
+IAk0LjkxIAkwLjA3IAkwLjAwIAkwLjAwIAkwLjAwCjAgCTAgCTE4OSAJNS44MyAJMzIzOSAJMTQ5
+OCAJNjEzMSAJMjAgCTI2IAkyMjIgCTE5MjIgCTI2NDggCTAgCTQyMzIgCTAgCTI5OCAJMC4wMCAJ
+MC4yMCAJMS45NyAJMTYuODUgCTAuMDAgCTY5Ljc2IAkwLjAwIAk0LjUxIAkyMC4zMCAJMjAuNTcg
+CTUzLjMwIAk1NiAJNTYgCTk2LjY0IAkzMDAgCTY4LjI5IAk0OC41OCAJMy4wOCAJMi4xMCAJMzAu
+MzYgCTAuMDQgCTAuMDAgCTAuMDAgCTAuMDAgCTAuMDAgCTAuMDAgCTAuMDAgCTAuMDAgCTcuMzgg
+CTQuOTEgCTAuMDcgCTAuMDAgCTAuMDAgCTAuMDAKMCAJNCAJMzk3IAkxMi4wMiAJMzMwNyAJMTQ5
+OCAJNDI0OCAJMjAgCTUgCTE3MyAJMTI1MiAJMTU1MiAJMCAJMzI2NiAJMiAJMTM2NyAJMC4wMCAJ
+MC4wOCAJMS4yMiAJMTAuMTMgCTAuMDAgCTQ2LjQ3IAkwLjAxIAkyOC4zOSAJMTQuMTEKMSAJMSAJ
+MzAyIAk4LjUzIAkzNTQ1IAkxNDk4IAk2MTA4IAkyMCAJMTEgCTE1NSAJMTIxNSAJMzU4OCAJMCAJ
+NDQ2MiAJMCAJMiAJMC4wMCAJMC4xMSAJMS45MCAJMjguOTEgCTAuMDAgCTU5LjA0IAkwLjAwIAkw
+LjA4IAkxNC4xMyAJMzEuMDQgCTQ2LjMxIAk1NQoxIAk1IAkxNDkgCTYuMjkgCTIzNzggCTE0OTgg
+CTM5NTMgCTIwIAk4IAkxNDQgCTEzOTEgCTE3MTAgCTAgCTMyMzkgCTkgCTEzMDQgCTAuMDAgCTAu
+MDYgCTEuNDggCTEwLjQ1IAkwLjAwIAk0OS41MCAJMC4yMyAJMzEuNDUgCTE2LjM3CjIgCTIgCTE1
+OSAJNy44NiAJMjAyMiAJMTQ5OCAJMzY4OCAJMjAgCTUgCTExMSAJMTA4OCAJMTQ1MCAJMCAJMzEy
+MiAJMSAJMTE5MSAJMC4wMCAJMC4xNCAJMC45NSAJOS40OSAJMC4wMCAJNDkuNzMgCTAuMDcgCTMx
+LjY0IAkxMy42MSAJMTkuMjQgCTU5LjI5IAk1NAoyIAk2IAkxNzUgCTcuNDQgCTIzNTUgCTE0OTgg
+CTYxMDcgCTIwIAk0IAkxMzcgCTE3MjYgCTI0MjQgCTAgCTM4NjMgCTQgCTY1MSAJMC4wMCAJMC4w
+NiAJMS45MCAJMTUuODMgCTAuMDAgCTU2LjM5IAkwLjA0IAkxOC4wMCAJMTQuMDMKMyAJMyAJMjEz
+IAkxMS44NCAJMTc5NyAJMTQ5OCAJMTM4MTQgCTIwIAk3IAkxNzAgCTE0MzEgCTYxMjUgCTIgCTU2
+MzQgCTQ2NCAJMjQyMiAJMC4wMCAJMC4wOSAJMS44OSAJMzQuNjcgCTAuMDEgCTMxLjU0IAkzLjgy
+IAkxNi4yOCAJMTYuNTQgCTM0LjExIAkzNy41MSAJNTIKMyAJNyAJMTY3IAk4LjkxIAkxODcxIAkx
+NDk4IAk0NDQwIAkyMCAJNSAJMTQ0IAkxMzY0IAkxOTE3IAkzIAkzNDk5IAk5IAkxMDE3IAkwLjAw
+IAkwLjA3IAkxLjU1IAkxMS43OCAJMC4wMyAJNTMuNzMgCTAuMDcgCTIzLjgzIAkxOS40NwkKCg==
+--0000000000007a125f05adc84d8d
+Content-Type: text/plain; charset="US-ASCII"; name="without patch.txt"
+Content-Disposition: attachment; filename="without patch.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kebg90j31>
+X-Attachment-Id: f_kebg90j31
+
+dHVyYm9zdGF0IHZlcnNpb24gMjAuMDMuMjAgLSBMZW4gQnJvd24gPGxlbmJAa2VybmVsLm9yZz4K
+Q1BVSUQoMCk6IEdlbnVpbmVJbnRlbCAweDFiIENQVUlEIGxldmVsczsgMHg4MDAwMDAwOCB4bGV2
+ZWxzOyBmYW1pbHk6bW9kZWw6c3RlcHBpbmcgMHg2OjdlOjUgKDY6MTI2OjUpCkNQVUlEKDEpOiBT
+U0UzIE1PTklUT1IgLSBFSVNUIFRNMiBUU0MgTVNSIEFDUEktVE0gSFQgVE0KQ1BVSUQoNik6IEFQ
+RVJGLCBUVVJCTywgRFRTLCBQVE0sIEhXUCwgTm8tSFdQbm90aWZ5LCBIV1B3aW5kb3csIEhXUGVw
+cCwgSFdQcGtnLCBFUEIKY3B1MTogTVNSX0lBMzJfTUlTQ19FTkFCTEU6IDB4MDA4NTAwODkgKFRD
+QyBFSVNUIE1XQUlUIFBSRUZFVENIIFRVUkJPKQpDUFVJRCg3KTogU0dYCmNwdTE6IE1TUl9JQTMy
+X0ZFQVRVUkVfQ09OVFJPTDogMHgwMDAyMDAwNSAoTG9ja2VkICkKQ1BVSUQoMHgxNSk6IGVheF9j
+cnlzdGFsOiAyIGVieF90c2M6IDc4IGVjeF9jcnlzdGFsX2h6OiAzODQwMDAwMApUU0M6IDE0OTcg
+TUh6ICgzODQwMDAwMCBIeiAqIDc4IC8gMiAvIDEwMDAwMDApCkNQVUlEKDB4MTYpOiBiYXNlX21o
+ejogMTUwMCBtYXhfbWh6OiAzOTAwIGJ1c19taHo6IDEwMApjcHUxOiBNU1JfTUlTQ19QV1JfTUdN
+VDogMHgwMDQwMWM0MCAoRU5hYmxlLUVJU1RfQ29vcmRpbmF0aW9uIERJU2FibGUtRVBCIERJU2Fi
+bGUtT09CKQpSQVBMOiAxNzQ3NiBzZWMuIEpvdWxlIENvdW50ZXIgUmFuZ2UsIGF0IDE1IFdhdHRz
+CmNwdTE6IE1TUl9QTEFURk9STV9JTkZPOiAweDQwNDNjZjE4MTBmMDAKNCAqIDEwMC4wID0gNDAw
+LjAgTUh6IG1heCBlZmZpY2llbmN5IGZyZXF1ZW5jeQoxNSAqIDEwMC4wID0gMTUwMC4wIE1IeiBi
+YXNlIGZyZXF1ZW5jeQpjcHUxOiBNU1JfSUEzMl9QT1dFUl9DVEw6IDB4MDAyNDAwNWYgKEMxRSBh
+dXRvLXByb21vdGlvbjogRU5hYmxlZCkKY3B1MTogTVNSX1RVUkJPX1JBVElPX0xJTUlUOiAweDIz
+MjMyMzIzMjMyMzI2MjcKMzUgKiAxMDAuMCA9IDM1MDAuMCBNSHogbWF4IHR1cmJvIDggYWN0aXZl
+IGNvcmVzCjM1ICogMTAwLjAgPSAzNTAwLjAgTUh6IG1heCB0dXJibyA3IGFjdGl2ZSBjb3Jlcwoz
+NSAqIDEwMC4wID0gMzUwMC4wIE1IeiBtYXggdHVyYm8gNiBhY3RpdmUgY29yZXMKMzUgKiAxMDAu
+MCA9IDM1MDAuMCBNSHogbWF4IHR1cmJvIDUgYWN0aXZlIGNvcmVzCjM1ICogMTAwLjAgPSAzNTAw
+LjAgTUh6IG1heCB0dXJibyA0IGFjdGl2ZSBjb3JlcwozNSAqIDEwMC4wID0gMzUwMC4wIE1IeiBt
+YXggdHVyYm8gMyBhY3RpdmUgY29yZXMKMzggKiAxMDAuMCA9IDM4MDAuMCBNSHogbWF4IHR1cmJv
+IDIgYWN0aXZlIGNvcmVzCjM5ICogMTAwLjAgPSAzOTAwLjAgTUh6IG1heCB0dXJibyAxIGFjdGl2
+ZSBjb3JlcwpjcHUxOiBNU1JfQ09ORklHX1REUF9OT01JTkFMOiAweDAwMDAwMDBkIChiYXNlX3Jh
+dGlvPTEzKQpjcHUxOiBNU1JfQ09ORklHX1REUF9MRVZFTF8xOiAweDAwMGEwMDYwIChQS0dfTUlO
+X1BXUl9MVkwxPTAgUEtHX01BWF9QV1JfTFZMMT0wIExWTDFfUkFUSU89MTAgUEtHX1REUF9MVkwx
+PTk2KQpjcHUxOiBNU1JfQ09ORklHX1REUF9MRVZFTF8yOiAweDAwMGYwMGM4IChQS0dfTUlOX1BX
+Ul9MVkwyPTAgUEtHX01BWF9QV1JfTFZMMj0wIExWTDJfUkFUSU89MTUgUEtHX1REUF9MVkwyPTIw
+MCkKY3B1MTogTVNSX0NPTkZJR19URFBfQ09OVFJPTDogMHgwMDAwMDAwMCAoIGxvY2s9MCkKY3B1
+MTogTVNSX1RVUkJPX0FDVElWQVRJT05fUkFUSU86IDB4MDAwMDAwMGMgKE1BWF9OT05fVFVSQk9f
+UkFUSU89MTIgbG9jaz0wKQpjcHUxOiBNU1JfUEtHX0NTVF9DT05GSUdfQ09OVFJPTDogMHg3NDAw
+ODAwOCAoVU5kZW1vdGUtQzEsIGRlbW90ZS1DMSwgbG9ja2VkLCBwa2ctY3N0YXRlLWxpbWl0PTgg
+KHVubGltaXRlZCkpCmN1cnJlbnRfZHJpdmVyOiBpbnRlbF9pZGxlCmN1cnJlbnRfZ292ZXJub3I6
+IG1lbnUKY3VycmVudF9nb3Zlcm5vcl9ybzogbWVudQpjcHUxOiBQT0xMOiBDUFVJRExFIENPUkUg
+UE9MTCBJRExFCmNwdTE6IEMxX0FDUEk6IEFDUEkgRkZIIE1XQUlUIDB4MApjcHUxOiBDMl9BQ1BJ
+OiBBQ1BJIEZGSCBNV0FJVCAweDMxCmNwdTE6IEMzX0FDUEk6IEFDUEkgRkZIIE1XQUlUIDB4NjAK
+Y3B1MTogY3B1ZnJlcSBkcml2ZXI6IGludGVsX2NwdWZyZXEKY3B1MTogY3B1ZnJlcSBnb3Zlcm5v
+cjogc2NoZWR1dGlsCmNwdWZyZXEgaW50ZWxfcHN0YXRlIG5vX3R1cmJvOiAwCmNwdTE6IE1TUl9N
+SVNDX0ZFQVRVUkVfQ09OVFJPTDogMHgwMDAwMDAwMCAoTDItUHJlZmV0Y2ggTDItUHJlZmV0Y2gt
+cGFpciBMMS1QcmVmZXRjaCBMMS1JUC1QcmVmZXRjaCkKY3B1MDogTVNSX1BNX0VOQUJMRTogMHgw
+MDAwMDAwMSAoSFdQKQpjcHUwOiBNU1JfSFdQX0NBUEFCSUxJVElFUzogMHgwMTBlMGQyNyAoaGln
+aCAzOSBndWFyIDEzIGVmZiAxNCBsb3cgMSkKY3B1MDogTVNSX0hXUF9SRVFVRVNUOiAweDgwMDAy
+NzI3IChtaW4gMzkgbWF4IDM5IGRlcyAwIGVwcCAweDgwIHdpbmRvdyAweDAgcGtnIDB4MCkKY3B1
+MDogTVNSX0hXUF9SRVFVRVNUX1BLRzogMHg4MDAwZmYwMSAobWluIDEgbWF4IDI1NSBkZXMgMCBl
+cHAgMHg4MCB3aW5kb3cgMHgwKQpjcHUwOiBNU1JfSFdQX1NUQVRVUzogMHgwMDAwMDAwMCAoTm8t
+R3VhcmFudGVlZF9QZXJmX0NoYW5nZSwgTm8tRXhjdXJzaW9uX01pbikKY3B1MDogTVNSX0lBMzJf
+RU5FUkdZX1BFUkZfQklBUzogMHgwMDAwMDAwNiAoYmFsYW5jZWQpCmNwdTA6IE1TUl9SQVBMX1BP
+V0VSX1VOSVQ6IDB4MDAwYTBlMDMgKDAuMTI1MDAwIFdhdHRzLCAwLjAwMDA2MSBKb3VsZXMsIDAu
+MDAwOTc3IHNlYy4pCmNwdTA6IE1TUl9QS0dfUE9XRVJfSU5GTzogMHgwMDAwMDA3OCAoMTUgVyBU
+RFAsIFJBUEwgMCAtIDAgVywgMC4wMDAwMDAgc2VjLikKY3B1MDogTVNSX1BLR19QT1dFUl9MSU1J
+VDogMHg0MjgxNzAwMGRkODE3MCAoVU5sb2NrZWQpCmNwdTA6IFBLRyBMaW1pdCAjMTogRU5hYmxl
+ZCAoNDYuMDAwMDAwIFdhdHRzLCAyOC4wMDAwMDAgc2VjLCBjbGFtcCBFTmFibGVkKQpjcHUwOiBQ
+S0cgTGltaXQgIzI6IEVOYWJsZWQgKDQ2LjAwMDAwMCBXYXR0cywgMC4wMDI0NDEqIHNlYywgY2xh
+bXAgRElTYWJsZWQpCmNwdTA6IE1TUl9EUkFNX1BPV0VSX0xJTUlUOiAweDU0MDBkZTAwMDAwMDAw
+IChVTmxvY2tlZCkKY3B1MDogRFJBTSBMaW1pdDogRElTYWJsZWQgKDAuMDAwMDAwIFdhdHRzLCAw
+LjAwMDk3NyBzZWMsIGNsYW1wIERJU2FibGVkKQpjcHUwOiBNU1JfUFAwX1BPTElDWTogMApjcHUw
+OiBNU1JfUFAwX1BPV0VSX0xJTUlUOiAweDAwMDAwMDAwIChVTmxvY2tlZCkKY3B1MDogQ29yZXMg
+TGltaXQ6IERJU2FibGVkICgwLjAwMDAwMCBXYXR0cywgMC4wMDA5Nzcgc2VjLCBjbGFtcCBESVNh
+YmxlZCkKY3B1MDogTVNSX1BQMV9QT0xJQ1k6IDAKY3B1MDogTVNSX1BQMV9QT1dFUl9MSU1JVDog
+MHgwMDAwMDAwMCAoVU5sb2NrZWQpCmNwdTA6IEdGWCBMaW1pdDogRElTYWJsZWQgKDAuMDAwMDAw
+IFdhdHRzLCAwLjAwMDk3NyBzZWMsIGNsYW1wIERJU2FibGVkKQpjcHUwOiBNU1JfSUEzMl9URU1Q
+RVJBVFVSRV9UQVJHRVQ6IDB4MDA2NDAwMDAgKDEwMCBDKQpjcHUwOiBNU1JfSUEzMl9QQUNLQUdF
+X1RIRVJNX1NUQVRVUzogMHg4ODFkMDgwMCAoNzEgQykKY3B1MDogTVNSX0lBMzJfUEFDS0FHRV9U
+SEVSTV9JTlRFUlJVUFQ6IDB4MDAwMDAwMDMgKDEwMCBDLCAxMDAgQykKY3B1MTogTVNSX1BLR0Mz
+X0lSVEw6IDB4MDAwMDAwMDAgKE5PVHZhbGlkLCAwIG5zKQpjcHUxOiBNU1JfUEtHQzZfSVJUTDog
+MHgwMDAwMDAwMCAoTk9UdmFsaWQsIDAgbnMpCmNwdTE6IE1TUl9QS0dDN19JUlRMOiAweDAwMDAw
+MDAwIChOT1R2YWxpZCwgMCBucykKY3B1MTogTVNSX1BLR0M4X0lSVEw6IDB4MDAwMDAwMDAgKE5P
+VHZhbGlkLCAwIG5zKQpjcHUxOiBNU1JfUEtHQzlfSVJUTDogMHgwMDAwMDAwMCAoTk9UdmFsaWQs
+IDAgbnMpCmNwdTE6IE1TUl9QS0dDMTBfSVJUTDogMHgwMDAwMDAwMCAoTk9UdmFsaWQsIDAgbnMp
+CjEwLjAwMjQyNCBzZWMKQ29yZQlDUFUJQXZnX01IeglCdXN5JQlCenlfTUh6CVRTQ19NSHoJSVJR
+CVNNSQlQT0xMCUMxX0FDUEkJQzJfQUNQSQlDM19BQ1BJCVBPTEwlCUMxX0FDUEklCUMyX0FDUEkl
+CUMzX0FDUEklCUNQVSVjMQlDUFUlYzYJQ1BVJWM3CUNvcmVUbXAJUGtnVG1wCUdGWCVyYzYJR0ZY
+TUh6CVRvdGwlQzAJQW55JUMwCUdGWCVDMAlDUFVHRlglCVBrZyVwYzIJUGtnJXBjMwlQa2clcGM2
+CVBrZyVwYzcJUGtnJXBjOAlQa2clcGM5CVBrJXBjMTAJQ1BVJUxQSQlTWVMlTFBJCVBrZ1dhdHQJ
+Q29yV2F0dAlHRlhXYXR0CVJBTVdhdHQJUEtHXyUJUkFNXyUKLQktCTIwNAk5LjgxCTIwODMJMTQ5
+Nwk1MDM4OQkxNzYJODIwCTI1NzMzCTIwNjI4CTE0NzUxCTAuMDEJMTAuNzEJMzYuMTkJNDIuODQJ
+MjkuNDgJMC4wMAk2MC43MQk1OAk1OAk5Ny45NgkzMDAJNzMuNjUJNTIuODQJMS44NjEuNDEJMTYu
+OTYJMC4wMAkwLjAwCTAuMDAJMC4wMAkwLjAwCTAuMDAJMC4wMAkwLjAwCTYuMDgJMy43OQkwLjAz
+CTAuMDAJMC4wMAkwLjAwCjAJMAkyMTgJNy45MAkyNzYwCTE0OTcJNjgyNAkyMgk0CTM4ODIJMzE0
+Ngk4NjQJMC4wMAkxMi42OAk1My44NgkyNC43NgkyNi4zMgkwLjAwCTY1Ljc3CTU4CTU4CTk3Ljk2
+CTMwMAk3My42NQk1Mi44NAkxLjg2MS40MQkxNi45NgkwLjAwCTAuMDAJMC4wMAkwLjAwCTAuMDAJ
+MC4wMAkwLjAwCTAuMDAJNi4wOAkzLjc5CTAuMDMJMC4wMAkwLjAwCTAuMDAKMAk0CTE0NAk2Ljkx
+CTIwODQJMTQ5Nwk0NDA5CTIyCTcJMjQxMAkyMDc4CTE2MDgJMC4wMAk3LjU1CTMyLjI2CTUyLjg4
+CTI3LjMyCjEJMQkxNTQJOC4wOQkxOTAzCTE0OTcJNDc4MwkyMgkzCTI1MjgJMjE3OAkxODAxCTAu
+MDAJNy41NAkzNC42Ngk0OS41MQk0Mi40MQkwLjAwCTQ5LjUwCTU3CjEJNQkyOTAJMTQuNDkJMjAw
+MAkxNDk3CTE0NzUwCTIyCTc1NQk1OTY0CTQyNjEJNDU1OAkwLjA0CTIyLjQ3CTI3LjU3CTM1LjA1
+CTM2LjAxCjIJMgkyMDkJMTEuMzUJMTg0MAkxNDk3CTQ2NjMJMjIJMQkyNzcxCTIxMzIJMTQ2Nwkw
+LjAwCTguMzkJMzEuMzcJNDguNjkJMjguNzAJMC4wMAk1OS45Ngk1NQoyCTYJMjMyCTEzLjM1CTE3
+MzgJMTQ5Nwk1NjI1CTIyCTQwCTMzMTMJMjE0MAkxMzM4CTAuMDAJMTAuMzYJMzMuMTMJNDIuODcJ
+MjYuNzAKMwkzCTIyMQk5LjAxCTI0NTEJMTQ5Nwk0OTQ0CTIyCTcJMjYyNwkyNTM2CTE0NDcJMC4w
+MAk5LjMyCTQxLjQxCTM5LjU1CTIzLjM4CTAuMDAJNjcuNjEJNTQKMwk3CTE2Nwk3LjM5CTIyNjYJ
+MTQ5Nwk0MzkxCTIyCTMJMjIzOAkyMTU3CTE2NjgJMC4wMAk3LjM5CTM1LjI1CTQ5LjQyCTI1LjAw
+Cgo=
+--0000000000007a125f05adc84d8d--
