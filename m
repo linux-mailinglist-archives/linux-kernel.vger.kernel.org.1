@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D517253830
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA5C253847
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgHZTTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 15:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbgHZTT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 15:19:29 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9D312078A;
-        Wed, 26 Aug 2020 19:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598469569;
-        bh=F6Y1Xklmrbbf3bsS48BdgWI0k9w+fz3aEY1yMgt01O4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vIL3cgtkt1CcbsrdZdmz0umqHMv1hzSTBKLpLxK/HDPFuGEhlIjqhtartZ81nfZeL
-         1y8QnUmpx3OUBJ8tWaDLheTw2Pep19qpjDAOkBi0UbaTO08B6fLs4BYCI8VxS34COE
-         FDFNlU+SnV4ACynvPbIKjcPOggry/Z6+Yb/q2qiE=
-Date:   Wed, 26 Aug 2020 14:25:29 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: dpot-dac: fix code comment in dpot_dac_read_raw()
-Message-ID: <20200826192529.GC2671@embeddedor>
-References: <20200826000844.GA16807@embeddedor>
- <3fb79fa8-e86b-111b-a4a7-5da767d40b52@axentia.se>
- <3528f053-70d8-bd12-8683-3c1ed0b4d6e7@embeddedor.com>
- <13e9b0cf-9fae-5dcf-d0ac-4beaf18295d0@axentia.se>
+        id S1726947AbgHZT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 15:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgHZT0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 15:26:43 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4813C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 12:26:41 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id si26so4415039ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 12:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TYKPTufiMBAMoTNCgDN7PLKKjOS7TYvnr9DjmBNmXfM=;
+        b=FaUxUnjKb0N9Xw2K3ckURq7XBP2BC7VSd74QmXqnGlHpmfsTcG0/cbq0wjQ72NwmtM
+         /XRHgHj1rfJMGI+1Wj3VNHM4uo0IrKuS9FTep4/wvrAttKznUFlA2UZIfJWJPZoJ06Ei
+         s2yVxWhOI+28JDFT+R83RAGBwXVvIqe78CshI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TYKPTufiMBAMoTNCgDN7PLKKjOS7TYvnr9DjmBNmXfM=;
+        b=b+KsuaEHcx/TNyQHcmDk+m3jMvZlenWkvafqJmYRADLluqze0J5A+HXuoxjTSX4O+d
+         S0LK/PzcqVvyK0CgGdw9ngzClIIad+WqO7YuQO0arNsj9hLqgrJJr0rIeczzFMlembgl
+         DFvjwGc4UdIlqW8CIeUKUYZxuVPb9QB0swoKL+numLFE7oqkVCo9xSR5+z/rf4PjbBr4
+         NmhsRZZCi0IeKtCiuWodVoPrtQS5y7U4tzsCdMz3kN4kd2u7Tfr9IpNjpLf3WA402P/U
+         Aet/IxRjJ+qgJDKU92Y3ukDQTIsrrSF24pzrIQDmY0M8Ws11QVs8RGwv+jXubePYEBew
+         KKiA==
+X-Gm-Message-State: AOAM530bGjAoWHPnGjfDXiYxCYCE4KEMW71uAZg0GMFDFUYP5y+u1USp
+        TttO9MlCaOZGzHD5Tie0FymdJFOJ/I898kmxlkHuNQ==
+X-Google-Smtp-Source: ABdhPJySXvtS1wt72dlTMaNXkc4ygI3g/9G+dTkz6T/HxF6o7ikX7c/MufNQgXY1U/W7PJiGBF7gwXubMG5akFPdVoI=
+X-Received: by 2002:a17:906:b2d7:: with SMTP id cf23mr17037501ejb.113.1598470000611;
+ Wed, 26 Aug 2020 12:26:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13e9b0cf-9fae-5dcf-d0ac-4beaf18295d0@axentia.se>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200819221956.845195-1-vgoyal@redhat.com> <20200819221956.845195-12-vgoyal@redhat.com>
+ <CAJfpegsgHE0MkZLFgE4yrZXO5ThDxCj85-PjizrXPRC2CceT1g@mail.gmail.com>
+ <20200826155142.GA1043442@redhat.com> <20200826173408.GA11480@stefanha-x1.localdomain>
+ <20200826191711.GF3932@work-vm>
+In-Reply-To: <20200826191711.GF3932@work-vm>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 26 Aug 2020 21:26:29 +0200
+Message-ID: <CAJfpegvqZUXsvbWg8K-xosNR+RVwRm2KH+S9mKs6n6Sv65s+Qg@mail.gmail.com>
+Subject: Re: [PATCH v3 11/18] fuse: implement FUSE_INIT map_alignment field
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 04:16:23PM +0200, Peter Rosin wrote:
-> On 2020-08-26 16:17, Gustavo A. R. Silva wrote:
-> >> And just to be explicit, this fix is for 5.9.
-> >>
-> >> Acked-by: Peter Rosin <peda@axentia.se>
-> >>
-> > 
-> > If you don't mind I can add this to my tree for 5.9-rc4
-> > and send it directly to Linus.
-> 
-> Fine by me, Jonathan might think differently but I can't find a reason why.
-> Just about nothing is happening in that file and the risk for conflicts is
-> negligible.
-> 
+On Wed, Aug 26, 2020 at 9:17 PM Dr. David Alan Gilbert
+<dgilbert@redhat.com> wrote:
 
-OK. In the meantime, I have added this to my -next tree and queued it up
-for 5.9-rc3.
+> Agreed, because there's not much that the server can do about it if the
+> client would like a smaller granularity - the servers granularity might
+> be dictated by it's mmap/pagesize/filesystem.  If the client wants a
+> larger granularity that's it's choice when it sends the setupmapping
+> calls.
 
-Thanks
---
-Gustavo
+What bothers me is that the server now comes with the built in 2MiB
+granularity (obviously much larger than actually needed).
+
+What if at some point we'd want to reduce that somewhat in the client?
+  Yeah, we can't.   Maybe this is not a kernel problem after all, the
+proper thing would be to fix the server to actually send something
+meaningful.
+
+Thanks,
+Miklos
