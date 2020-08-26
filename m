@@ -2,174 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E482E252A5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14141252A22
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbgHZJiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:38:13 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:20125 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728292AbgHZJer (ORCPT
+        id S1728368AbgHZJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728183AbgHZJeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:34:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598434472;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=yBt+2etaBY9zgYdXE/iL82GyuWazNPY8Ty2z45dc9Fs=;
-        b=deJ2I6kgPVKJpRe618C4ByI1ZN6r0M+aHEnB1/bL421s84REdHHGWXgNlujL0Qf/7Y
-        yf9uv1c0/ncrqoEBzvPfau6FPsN5IkiVkYkcDXnOfDZy4lm3Hkisxtp4A/zVilJ61ojU
-        WWaaydq7SHCKmmpOHiLHIQPZ7HwmidWvTpKETwWzlfyx4KhQifd+m9YNykJW89x66IOH
-        ZEHCHvWLf3W0P8aF6etjAQEPdSjILgm5zy9PDh/4PtIhvCbSnzkBLQRlUfaQ+qDUbHpO
-        UenfjMmqXj/FInx+8jp1vJZZiuh5FV7BcsJO9yB5qmvrR/lh+yrQ309lco6OP+r1RJFE
-        mZww==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4W6NYn8D"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7Q9YUkzf
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 26 Aug 2020 11:34:30 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Niklas Cassel <nks@flawful.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2] opp: Power on (virtual) power domains managed by the OPP core
-Date:   Wed, 26 Aug 2020 11:33:28 +0200
-Message-Id: <20200826093328.88268-1-stephan@gerhold.net>
-X-Mailer: git-send-email 2.28.0
+        Wed, 26 Aug 2020 05:34:06 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210F2C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x5so1083204wmi.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nj39KvvJBDQl5ELAslfY4/i9vvM4QKppfETPhCXArpc=;
+        b=jVsOQgq3bmDNN84kXzuXjYV8L219/+agEp0AYrZTWi5mNYBgR3wJWjK+E3NUMNqTSe
+         3KFmoA6/7YIs9JZpCb74AcRq9O9xaj6fPkyteXmvcuajLsbeghuzoHxVAHPPXeSg2gQO
+         T2GCNNXYeuCb2bro/kdqyOU2+rUESJ8vJX3xsQDV6i6dhGQdBJgDo+knImzjnlvTLXDH
+         M1XL3XkTrIlxP3VfixZNTU+3iwZAM27dY/Zol2KPSQp0YzUqPKr3ww3GVEjZ+GsLa6zB
+         BRq9+P37N55Se0YARaCTvStQAhPkLSLc6KTxuOjimy3oJ/Ie2JUhsvOqLOfyBBrC3HHt
+         KLjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nj39KvvJBDQl5ELAslfY4/i9vvM4QKppfETPhCXArpc=;
+        b=jKFKMcdtGurdK0F49thx8OqeOGO5+fslRVbDKY9UsCWQCqFBiJdyHDKwxRNqWQZ0he
+         /r25r/SVRcB4AWIEjWQccc+IWpjNkS84k6XciR8ro3EJt0VCBWUU6c2+bhZoLaDUed5Y
+         43SaDY0NlEvc3jiE0uheAiwOJyTMQOw01M+oVk1sGj/1T5p1H8WvP3g6GeUtfWW68XBk
+         51lI1unyu6rqVNLZstWXnYXFSPpNhWSJ75neTW/lP9VYvK8JLujo6HTLHWIr0QuhwyXz
+         h7Nrkhsv6rblWVdfZOLWvpfV+Vk1locXTHmy6GIxD1zDs5+rCMw/RMnIIX/3WVKBLOg1
+         TIzg==
+X-Gm-Message-State: AOAM533HaeiQj8bQarQWdbSkbFCUW0G7WXiKBJtZwwvFdtg2y87ihOCs
+        BcQxIGB9HPdUDlJLgeRN93eZvA==
+X-Google-Smtp-Source: ABdhPJzkQOqGFOcEg9whbSvuGXmCwHXjNrJoG5glhH0qTG+uI4IMx4m3mRLJ96FmImpnqfyHHaoxLQ==
+X-Received: by 2002:a05:600c:2212:: with SMTP id z18mr6041484wml.186.1598434444635;
+        Wed, 26 Aug 2020 02:34:04 -0700 (PDT)
+Received: from dell.default ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id u3sm3978759wml.44.2020.08.26.02.34.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 02:34:04 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/30] Set 3: Rid W=1 warnings in Wireless
+Date:   Wed, 26 Aug 2020 10:33:31 +0100
+Message-Id: <20200826093401.1458456-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_pm_opp_attach_genpd() allows attaching an arbitrary number of
-power domains to an OPP table. In that case, the genpd core will
-create a virtual device for each of the power domains.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-At the moment, the OPP core only calls
-dev_pm_genpd_set_performance_state() on these virtual devices.
-It does not attempt to power on the power domains. Therefore
-the required power domain might never get turned on.
+There are quite a few W=1 warnings in the Wireless.  My plan
+is to work through all of them over the next few weeks.
+Hopefully it won't be too long before drivers/net/wireless
+builds clean with W=1 enabled.
 
-So far, dev_pm_opp_attach_genpd() is only used in qcom-cpufreq-nvmem.c
-to attach the CPR power domain to the CPU OPP table. The CPR driver
-does not check if it was actually powered on so this did not cause
-any problems. However, other drivers (e.g. rpmpd) might ignore the
-performance state until the power domain is actually powered on.
+This set brings the total number of (arm, arm64, x86, mips and
+ppc *combined* i.e. some duplicated) warnings down from 2066
+(since the last set) to 1018.
 
-Since these virtual devices are managed exclusively by the OPP core,
-I would say that it should also be responsible to ensure they are
-enabled.
+Lee Jones (30):
+  wireless: marvell: mwifiex: pcie: Move tables to the only place
+    they're used
+  wireless: broadcom: brcmsmac: ampdu: Remove a couple set but unused
+    variables
+  wireless: intel: iwlegacy: 3945-mac: Remove all non-conformant
+    kernel-doc headers
+  wireless: intel: iwlegacy: 3945-rs: Remove all non-conformant
+    kernel-doc headers
+  wireless: intel: iwlegacy: 3945: Remove all non-conformant kernel-doc
+    headers
+  wireless: broadcom: brcmfmac: p2p: Fix a couple of function headers
+  wireless: intersil: orinoco_usb: Downgrade non-conforming kernel-doc
+    headers
+  wireless: broadcom: brcmsmac: phy_cmn: Remove a unused variables
+    'vbat' and 'temp'
+  wireless: zydas: zd1211rw: zd_chip: Fix formatting
+  wireless: zydas: zd1211rw: zd_mac: Add missing or incorrect function
+    documentation
+  wireless: zydas: zd1211rw: zd_chip: Correct misspelled function
+    argument
+  wireless: ath: wil6210: wmi: Correct misnamed function parameter
+    'ptr_'
+  wireless: broadcom: brcm80211: brcmfmac: fwsignal: Finish documenting
+    'brcmf_fws_mac_descriptor'
+  wireless: ath: ath6kl: wmi: Remove unused variable 'rate'
+  wireless: ti: wlcore: debugfs: Remove unused variable 'res'
+  wireless: rsi: rsi_91x_sdio: Fix a few kernel-doc related issues
+  wireless: ath: ath9k: ar9002_initvals: Remove unused array
+    'ar9280PciePhy_clkreq_off_L1_9280'
+  wireless: ath: ath9k: ar9001_initvals: Remove unused array
+    'ar5416Bank6_9100'
+  wireless: intersil: hostap: hostap_hw: Remove unused variable 'fc'
+  wireless: wl3501_cs: Fix a bunch of formatting issues related to
+    function docs
+  wireless: realtek: rtw88: debug: Remove unused variables 'val'
+  wireless: rsi: rsi_91x_sdio_ops: File headers are not good kernel-doc
+    candidates
+  wireless: intersil: prism54: isl_ioctl:  Remove unused variable 'j'
+  wireless: marvell: mwifiex: wmm: Mark 'mwifiex_1d_to_wmm_queue' as
+    __maybe_unused
+  wireless: ath: ath9k: ar5008_initvals: Remove unused table entirely
+  wireless: ath: ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to
+    where they are used
+  wireless: broadcom: brcm80211: phy_lcn: Remove a bunch of unused
+    variables
+  wireless: broadcom: brcm80211: phy_n: Remove a bunch of unused
+    variables
+  wireless: broadcom: brcm80211: phytbl_lcn: Remove unused array
+    'dot11lcnphytbl_rx_gain_info_rev1'
+  wireless: broadcom: brcm80211: phytbl_n: Remove a few unused arrays
 
-This commit implements this similar to the non-virtual power domains;
-we create device links for each of attached power domains so that they
-are turned on whenever the consumer device is active.
+ drivers/net/wireless/ath/ath6kl/wmi.c         |  10 +-
+ .../net/wireless/ath/ath9k/ar5008_initvals.h  |  68 -----
+ drivers/net/wireless/ath/ath9k/ar5008_phy.c   |  31 +-
+ .../net/wireless/ath/ath9k/ar9001_initvals.h  |  37 ---
+ .../net/wireless/ath/ath9k/ar9002_initvals.h  |  14 -
+ drivers/net/wireless/ath/wil6210/wmi.c        |   2 +-
+ .../broadcom/brcm80211/brcmfmac/fwsignal.c    |   6 +
+ .../broadcom/brcm80211/brcmfmac/p2p.c         |   5 +-
+ .../broadcom/brcm80211/brcmsmac/ampdu.c       |   9 +-
+ .../broadcom/brcm80211/brcmsmac/phy/phy_cmn.c |   6 +-
+ .../broadcom/brcm80211/brcmsmac/phy/phy_lcn.c |  40 +--
+ .../broadcom/brcm80211/brcmsmac/phy/phy_n.c   |  47 +--
+ .../brcm80211/brcmsmac/phy/phytbl_lcn.c       |  13 -
+ .../brcm80211/brcmsmac/phy/phytbl_n.c         | 268 ------------------
+ .../net/wireless/intel/iwlegacy/3945-mac.c    |  24 +-
+ drivers/net/wireless/intel/iwlegacy/3945-rs.c |   8 +-
+ drivers/net/wireless/intel/iwlegacy/3945.c    |  46 +--
+ .../net/wireless/intersil/hostap/hostap_hw.c  |   3 +-
+ .../wireless/intersil/orinoco/orinoco_usb.c   |   6 +-
+ .../net/wireless/intersil/prism54/isl_ioctl.c |   3 +-
+ drivers/net/wireless/marvell/mwifiex/pcie.c   | 149 ++++++++++
+ drivers/net/wireless/marvell/mwifiex/pcie.h   | 149 ----------
+ drivers/net/wireless/marvell/mwifiex/wmm.h    |   3 +-
+ drivers/net/wireless/realtek/rtw88/debug.c    |   6 +-
+ drivers/net/wireless/rsi/rsi_91x_sdio.c       |   7 +-
+ drivers/net/wireless/rsi/rsi_91x_sdio_ops.c   |   2 +-
+ drivers/net/wireless/ti/wlcore/debugfs.h      |   6 +-
+ drivers/net/wireless/wl3501_cs.c              |  22 +-
+ drivers/net/wireless/zydas/zd1211rw/zd_chip.c |   4 +-
+ drivers/net/wireless/zydas/zd1211rw/zd_mac.c  |  15 +-
+ 30 files changed, 288 insertions(+), 721 deletions(-)
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
-Related discussion: https://lore.kernel.org/linux-arm-msm/20200426123140.GA190483@gerhold.net/
-
-v1: https://lore.kernel.org/linux-pm/20200730080146.25185-4-stephan@gerhold.net/
-Changes in v2:
-  - Use device links instead of enabling the power domains in
-    dev_pm_opp_set_rate()
----
- drivers/opp/core.c | 34 +++++++++++++++++++++++++++++++++-
- drivers/opp/opp.h  |  1 +
- 2 files changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 8b3c3986f589..7e53a7b94c59 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -17,6 +17,7 @@
- #include <linux/device.h>
- #include <linux/export.h>
- #include <linux/pm_domain.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- 
- #include "opp.h"
-@@ -1964,10 +1965,13 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
- 		if (!opp_table->genpd_virt_devs[index])
- 			continue;
- 
-+		if (opp_table->genpd_virt_links && opp_table->genpd_virt_links[index])
-+			device_link_del(opp_table->genpd_virt_links[index]);
- 		dev_pm_domain_detach(opp_table->genpd_virt_devs[index], false);
- 		opp_table->genpd_virt_devs[index] = NULL;
- 	}
- 
-+	kfree(opp_table->genpd_virt_links);
- 	kfree(opp_table->genpd_virt_devs);
- 	opp_table->genpd_virt_devs = NULL;
- }
-@@ -1999,8 +2003,10 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
- {
- 	struct opp_table *opp_table;
- 	struct device *virt_dev;
--	int index = 0, ret = -EINVAL;
-+	struct device_link *dev_link;
-+	int index = 0, ret = -EINVAL, num_devs;
- 	const char **name = names;
-+	u32 flags;
- 
- 	opp_table = dev_pm_opp_get_opp_table(dev);
- 	if (IS_ERR(opp_table))
-@@ -2049,6 +2055,32 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
- 		name++;
- 	}
- 
-+	/* Create device links to enable the power domains when necessary */
-+	opp_table->genpd_virt_links = kcalloc(opp_table->required_opp_count,
-+					      sizeof(*opp_table->genpd_virt_links),
-+					      GFP_KERNEL);
-+	if (!opp_table->genpd_virt_links)
-+		goto err;
-+
-+	/* Turn on power domain initially if consumer is active */
-+	pm_runtime_get_noresume(dev);
-+	flags = DL_FLAG_PM_RUNTIME | DL_FLAG_STATELESS;
-+	if (pm_runtime_active(dev))
-+		flags |= DL_FLAG_RPM_ACTIVE;
-+
-+	num_devs = index;
-+	for (index = 0; index < num_devs; index++) {
-+		dev_link = device_link_add(dev, opp_table->genpd_virt_devs[index],
-+					   flags);
-+		if (!dev_link) {
-+			dev_err(dev, "Failed to create device link\n");
-+			pm_runtime_put(dev);
-+			goto err;
-+		}
-+		opp_table->genpd_virt_links[index] = dev_link;
-+	}
-+	pm_runtime_put(dev);
-+
- 	if (virt_devs)
- 		*virt_devs = opp_table->genpd_virt_devs;
- 	mutex_unlock(&opp_table->genpd_virt_dev_lock);
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index 78e876ec803e..be5526cdbdba 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -186,6 +186,7 @@ struct opp_table {
- 
- 	struct mutex genpd_virt_dev_lock;
- 	struct device **genpd_virt_devs;
-+	struct device_link **genpd_virt_links;
- 	struct opp_table **required_opp_tables;
- 	unsigned int required_opp_count;
- 
 -- 
-2.28.0
+2.25.1
 
