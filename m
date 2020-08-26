@@ -2,70 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A888253528
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CE325352D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgHZQoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:44:10 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:37432 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbgHZQoE (ORCPT
+        id S1728127AbgHZQpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgHZQpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:44:04 -0400
-Received: by mail-ot1-f68.google.com with SMTP id k2so2036621ots.4;
-        Wed, 26 Aug 2020 09:44:03 -0700 (PDT)
+        Wed, 26 Aug 2020 12:45:32 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7C9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:45:31 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kx11so1115820pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15mxbSikUleqN8D1YAzOW2MaGksrprUeUYpM9VqWUIg=;
+        b=e4ZNNroaLq7afzbqudQmKu/XebEU12dV4cwOEZO5PGjjQksIMMrMzZU4zFt84smS4R
+         kJVs4Ug8ZSSGHmLd6C07EpbBJQVs1vEmyg7qeE6G4SmKBKRNgy5Ao6ECqbMp0N8Rpcnx
+         NQTIwmwlzQpbWA69PryOSYx4c7GIq5T1D9bQR2X2NYqTNbPCTtmW/GiNZJ/gzBalkyoN
+         n1J1HXfljeORqhzj7W5PjQYY80g3nmyJJ/R+axemXsyt3qNIqev8sQTKc12P96eanaCG
+         K+3h6MGVzeMIJFDNMLwA3SIUVYVq7lE93XaU2YiI9bpsbNVgvydex2htBIOQGIoCEUwa
+         h8FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jH4wibIHuCcEwllO6DgrXF/htZORsEMet+armapO0n0=;
-        b=mJz0ibDAzHUK5eOzee7cy9gJNm/wZbWf3Tse5wx0FUeIma8PLLVQymxWvE2ZpNSR65
-         APMnHye9F1nDw8omv7M/Ei9Nt//puJEDDnxXdEwr4L40RjbjU/qcx/IbG+fCKHI3UmqK
-         9xBJ6u7KsKdO1rQ9/vuZ7RZMI4MYPBU38pID2ucqP78BWInx8hdeBCvXp1sXOUfwOPh+
-         iOBpvN4JcsjwiSvL57GuzXatQYkSNS7kMi+s9xc/5mNTnbBtkDAzIY0eZmuV0pfqlwFj
-         EM+4eXKXacDOMZIBisFhB3/0GaoCTgNET+naR5xXivtwIDtoUmT1QP6rhNopPuvozu1D
-         V08g==
-X-Gm-Message-State: AOAM531+rT9YWOY1Uhh73NObLxsXel3zhgIkuLQkhBdTglZUBXpIlh6I
-        uvrSvwk3cJHA/FJ3jfq5A9gylHTsRo2sCVEVAEI=
-X-Google-Smtp-Source: ABdhPJz5xiffM35sGX3JT3AaPNyDW+xPveZU3bIPUBQ9aDyDpJEp5TWnii7aoLt8i3odYg6WgzZj4iL5bRKsHms97C4=
-X-Received: by 2002:a9d:5c06:: with SMTP id o6mr10542989otk.262.1598460243163;
- Wed, 26 Aug 2020 09:44:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15mxbSikUleqN8D1YAzOW2MaGksrprUeUYpM9VqWUIg=;
+        b=joYXVrSscc/Dh5KcXs0dXupr1hU40wJi/rM+lDv4Yn2gL2pb/y3+LQ8OXPeEALdnro
+         ioatkIUcM97b8jxm+YIPkvJNCRp77nbEpuRQyqAJ3XkRuwRuQMLixkZOJL9WeJfANqh9
+         fmNWoNXxYuPCFtrCwiGr0qpGgOOeyS7y5F3xWg85foTxNK2PiE7wXx7aRLdM0UxfbG8S
+         CeeSyrvwbMjPeAu/A8VDo6rbNHkDJMP9Sv86D3/loMhYzgNMWtlcH1grkI0n+YhTbJXH
+         sOlOZV3TV8vHcCkrwIpMLFITxSVML+NQaEGByiFhGdyCu6TbW31VT/p3ozq1HKFRIhIi
+         Ji7Q==
+X-Gm-Message-State: AOAM532E0pyB8ja42z4gYyv3NAStf0WcrvJf0zqx5BFxXi+SHsmh2VNv
+        7yr7PmuQbrI7exDeVnPWvxZRuysUKCWV3A==
+X-Google-Smtp-Source: ABdhPJwNzJHoyZuX62NxwhhcibMKbVEGHA8utGAYoW5T6sJQeXAri/BtpTXijArCoGFLdp+nNwZ8fQ==
+X-Received: by 2002:a17:90a:4488:: with SMTP id t8mr7064939pjg.191.1598460331448;
+        Wed, 26 Aug 2020 09:45:31 -0700 (PDT)
+Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id u3sm2548878pjn.29.2020.08.26.09.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 09:45:30 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/13] remoteproc: Add support for detaching from rproc 
+Date:   Wed, 26 Aug 2020 10:45:16 -0600
+Message-Id: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200826120421.44356-1-guilhem@barpilot.io> <CAJZ5v0i8XUF39Vv=EM4TgyXgK6zHniZW3tGYFPweO3kg+BrxOQ@mail.gmail.com>
- <CAGX5Wg2OOgY6d1RH514Kh9D6b+siga+jzH7qubcmE+ukq+6KKA@mail.gmail.com>
- <d0ca671465e6ce72c6c4d5178440ebc1e4814da8.camel@gmail.com>
- <e82c121057c4496238d3de7f7c919b7039d23b7c.camel@gmail.com>
- <CAGX5Wg0LrzPwf=2pGrQHAbFMVkOoYDxOoFa+ZmLBYshPvZQUXg@mail.gmail.com>
- <8fa7622dacc03f2fbd67e810f53389e3ede544e8.camel@intel.com>
- <CAGX5Wg0=K5AaTut5KH3R3+oasM5MM7PaJ9Z_L56xSNckMbWC9g@mail.gmail.com>
- <CAJZ5v0j4FXH26rZCjM9Csd56skPVbRpM7iFcKYAFMmLFX54+bg@mail.gmail.com> <e9e6823d63fe2b9938e43a14c136b89aec0c503b.camel@gmail.com>
-In-Reply-To: <e9e6823d63fe2b9938e43a14c136b89aec0c503b.camel@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Aug 2020 18:43:52 +0200
-Message-ID: <CAJZ5v0gPY+7YBeWwszoNBwsbKLFOEeuLaekdX62_gvbHXB8xoA@mail.gmail.com>
-Subject: Re: [PATCH] intel_idle: Add ICL support
-To:     Artem Bityutskiy <dedekind1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guilhem Lettron <guilhem@barpilot.io>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 6:39 PM Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> On Wed, 2020-08-26 at 18:02 +0200, Rafael J. Wysocki wrote:
-> > To that end, I would try to upgrade the graphics firmware and see if
-> > you can get some nonzero PC8 residency then.
->
-> I am curious, somehow that patch makes a difference.
+Following the work done here [1] this set provides support for the
+remoteproc core to release resources associated with a remote processor
+without having to switch it off. That way a platform driver can be removed
+or the applcation processor power cycled while the remote processor is
+still operating.
 
-It does make a difference, because it makes the processor spend more
-time in PC2.  Which very well may be because the processor cannot
-enter deeper C-states.
+I have not tested the solution because of the work involved in getting
+a new firmware image to support the feature.  I will do so once it is
+determined that this is the right approach to follow.
+
+Applies cleanly on rproc-next (62b8f9e99329)
+
+Thanks,
+Mathieu 
+
+[1]. https://lkml.org/lkml/2020/7/14/1600
+
+Mathieu Poirier (13):
+  remoteproc: Re-check state in rproc_shutdown()
+  remoteproc: Remove useless check in rproc_del()
+  remoteproc: Add new RPROC_ATTACHED state
+  remoteproc: Properly represent the attached state
+  remoteproc: Add new detach() remoteproc operation
+  remoteproc: Introduce function __rproc_detach()
+  remoteproc: Introduce function rproc_detach()
+  remoteproc: Rename function rproc_actuate()
+  remoteproc: Add return value to function rproc_shutdown()
+  remoteproc: Properly deal with a stop request when attached
+  remoteproc: Properly deal with detach request
+  remoteproc: Refactor rproc delete and cdev release path
+  remoteproc: Properly deal with a kernel panic when attached
+
+ drivers/remoteproc/remoteproc_cdev.c  |  18 ++-
+ drivers/remoteproc/remoteproc_core.c  | 151 +++++++++++++++++++++-----
+ drivers/remoteproc/remoteproc_sysfs.c |  17 ++-
+ include/linux/remoteproc.h            |  14 ++-
+ 4 files changed, 157 insertions(+), 43 deletions(-)
+
+-- 
+2.25.1
+
