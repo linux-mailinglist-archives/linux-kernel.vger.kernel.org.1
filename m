@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E05252680
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33026252687
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgHZFQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 01:16:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40377 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725764AbgHZFQP (ORCPT
+        id S1726198AbgHZFWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 01:22:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60378 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgHZFWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 01:16:15 -0400
-X-UUID: 392dc6a20bc64b52951449721d79efb2-20200826
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=k/lzlNQfUA+eaAvH30M5cVyH3/6TlNm4huvvLtGsZks=;
-        b=Xj4+5wTQUzeqvFk67KFuXVdmOX2liX2DYTo0uGNEsOkusr9G6B1x6TfDfd8C1iA31jIlntIuqjg9Po3FrPm4yPKkzRKbxT3PgQBFdfpUIyYmGOzQnZq6+rz+inxa+t/4sWY6GKKuBTvD5WdcXaMatfc6yGq3j479tnS1aMb5tHk=;
-X-UUID: 392dc6a20bc64b52951449721d79efb2-20200826
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 28928350; Wed, 26 Aug 2020 13:16:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 26 Aug 2020 13:16:08 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 26 Aug 2020 13:16:02 +0800
-Message-ID: <1598418963.20150.2.camel@mtksdaap41>
-Subject: Re: [PATCH] nvmem: mtk-efuse: Remove EFUSE register write support
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Chih-En Hsu <chih-en.hsu@mediatek.com>
-CC:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <Andrew-CT.Chen@mediatek.com>, <srv_heupstream@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <Michael.Mei@mediatek.com>
-Date:   Wed, 26 Aug 2020 13:16:03 +0800
-In-Reply-To: <20200826050145.24655-1-chih-en.hsu@mediatek.com>
-References: <20200826050145.24655-1-chih-en.hsu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 26 Aug 2020 01:22:09 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kAnsp-0003bH-4M; Wed, 26 Aug 2020 05:22:03 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/i915/lspcon: Limits to 8 bpc for RGB/YCbCr444
+Date:   Wed, 26 Aug 2020 13:21:15 +0800
+Message-Id: <20200826052143.17607-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIENoaWgtRW46DQoNCk9uIFdlZCwgMjAyMC0wOC0yNiBhdCAxMzowMSArMDgwMCwgQ2hpaC1F
-biBIc3Ugd3JvdGU6DQo+IFRoaXMgcGF0Y2ggaXMgdG8gcmVtb3ZlIGZ1bmN0aW9uICJtdGtfcmVn
-X3dyaXRlIiBzaW5jZQ0KPiBNZWRpYXRlayBFRlVTRSBoYXJkd2FyZSBvbmx5IHN1cHBvcnRzIHJl
-YWQgZnVuY3Rpb25hbGl0eQ0KPiBmb3IgTlZNRU0gY29uc3VtZXJzLg0KPiANCg0KVGhpcyBpcyBh
-IGJ1Zy1maXggcGF0Y2gsIHNvIG5lZWQgYSAnRml4ZXMnIHRhZy4gWW91IGNvdWxkIHJlZmVyIHRv
-IFsxXS4NCg0KWzFdDQpodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1sL2xhdGVzdC9wcm9j
-ZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5odG1sI2Rlc2NyaWJlLWNoYW5nZXMNCg0KUmVnYXJkcywN
-CkNLLg0KDQo+IFNpZ25lZC1vZmYtYnk6IENoaWgtRW4gSHN1IDxjaGloLWVuLmhzdUBtZWRpYXRl
-ay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9udm1lbS9tdGstZWZ1c2UuYyB8IDE0IC0tLS0tLS0t
-LS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9udm1lbS9tdGstZWZ1c2UuYyBiL2RyaXZlcnMvbnZtZW0vbXRrLWVmdXNl
-LmMNCj4gaW5kZXggODU2ZDljM2ZjMzhlLi42YTUzN2Q5NTlmMTQgMTAwNjQ0DQo+IC0tLSBhL2Ry
-aXZlcnMvbnZtZW0vbXRrLWVmdXNlLmMNCj4gKysrIGIvZHJpdmVycy9udm1lbS9tdGstZWZ1c2Uu
-Yw0KPiBAQCAtMjgsMTkgKzI4LDYgQEAgc3RhdGljIGludCBtdGtfcmVnX3JlYWQodm9pZCAqY29u
-dGV4dCwNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4gIA0KPiAtc3RhdGljIGludCBtdGtfcmVnX3dy
-aXRlKHZvaWQgKmNvbnRleHQsDQo+IC0JCQkgdW5zaWduZWQgaW50IHJlZywgdm9pZCAqX3ZhbCwg
-c2l6ZV90IGJ5dGVzKQ0KPiAtew0KPiAtCXN0cnVjdCBtdGtfZWZ1c2VfcHJpdiAqcHJpdiA9IGNv
-bnRleHQ7DQo+IC0JdTMyICp2YWwgPSBfdmFsOw0KPiAtCWludCBpID0gMCwgd29yZHMgPSBieXRl
-cyAvIDQ7DQo+IC0NCj4gLQl3aGlsZSAod29yZHMtLSkNCj4gLQkJd3JpdGVsKCp2YWwrKywgcHJp
-di0+YmFzZSArIHJlZyArIChpKysgKiA0KSk7DQo+IC0NCj4gLQlyZXR1cm4gMDsNCj4gLX0NCj4g
-LQ0KPiAgc3RhdGljIGludCBtdGtfZWZ1c2VfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldikNCj4gIHsNCj4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Ow0KPiBAQCAt
-NjEsNyArNDgsNiBAQCBzdGF0aWMgaW50IG10a19lZnVzZV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
-ZGV2aWNlICpwZGV2KQ0KPiAgCWVjb25maWcuc3RyaWRlID0gNDsNCj4gIAllY29uZmlnLndvcmRf
-c2l6ZSA9IDQ7DQo+ICAJZWNvbmZpZy5yZWdfcmVhZCA9IG10a19yZWdfcmVhZDsNCj4gLQllY29u
-ZmlnLnJlZ193cml0ZSA9IG10a19yZWdfd3JpdGU7DQo+ICAJZWNvbmZpZy5zaXplID0gcmVzb3Vy
-Y2Vfc2l6ZShyZXMpOw0KPiAgCWVjb25maWcucHJpdiA9IHByaXY7DQo+ICAJZWNvbmZpZy5kZXYg
-PSBkZXY7DQoNCg==
+LSPCON only supports 8 bpc for RGB/YCbCr444.
+
+Set the correct bpp otherwise it renders blank screen.
+
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2195
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/gpu/drm/i915/display/intel_lspcon.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+index b781bf469644..c7a44fcaade8 100644
+--- a/drivers/gpu/drm/i915/display/intel_lspcon.c
++++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+@@ -196,7 +196,8 @@ void lspcon_ycbcr420_config(struct drm_connector *connector,
+ 		crtc_state->port_clock /= 2;
+ 		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR444;
+ 		crtc_state->lspcon_downsampling = true;
+-	}
++	} else
++		crtc_state->pipe_bpp = 24;
+ }
+ 
+ static bool lspcon_probe(struct intel_lspcon *lspcon)
+-- 
+2.17.1
 
