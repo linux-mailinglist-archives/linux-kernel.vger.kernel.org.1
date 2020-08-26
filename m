@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15939252F81
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1262C252F91
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgHZNUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:20:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
+        id S1730265AbgHZNVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:21:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728132AbgHZNUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:20:17 -0400
+        id S1728276AbgHZNVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:21:10 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C4092080C;
-        Wed, 26 Aug 2020 13:20:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA3412080C;
+        Wed, 26 Aug 2020 13:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598448016;
-        bh=Nja/SnEBOyihPdcNaszkrZBOjWgEKyXql5enCZ9k5jg=;
+        s=default; t=1598448070;
+        bh=s0l3MRlai5y9sJL8ojERRg++aQ7zKvgtUOFyEiGCDjE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f9VYaTmXizRgEyG4Le+iYFI0f4o7212l2eaaa8zjzZHwda9ZP5gksKzlJpGnTrpem
-         QX+mTe0fCQRH2m4+UZ5a1dzp20F4fn1CwfBeYJaKhCkVyuy9MS7Lc97CQy8zznR8C0
-         JDwmDc3U3Sfzko9AB2JPuUh2NJh5uQLinNi7fykc=
+        b=dBmDlq7C52cAgdico/iqHb4N3ZZwmfrDiaZyeiD0cnZiDAGfaf32maM6ddwis58Db
+         QOtPIXBA6WIBeuKS+ETcBnDZxsoL60dXdJLEc0JeuuD36PnpOn1D2kQQGz+KOVdIj8
+         Abssa8DxULUajRDLTBuqsBZn4DK9iy+EEOzrbPTE=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6F5340D3D; Wed, 26 Aug 2020 10:20:13 -0300 (-03)
-Date:   Wed, 26 Aug 2020 10:20:13 -0300
+        id 0118840D3D; Wed, 26 Aug 2020 10:21:07 -0300 (-03)
+Date:   Wed, 26 Aug 2020 10:21:07 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 2/2] perf parse-events: Avoid an uninitialized read.
-Message-ID: <20200826132013.GG1059382@kernel.org>
-References: <20200826042910.1902374-1-irogers@google.com>
- <20200826042910.1902374-2-irogers@google.com>
- <20200826113418.GC753783@krava>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Kajol Jain <kjain@linux.ibm.com>
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com
+Subject: Re: [RFC] perf/core: Fixes hung issue on perf stat command during
+ cpu hotplug
+Message-ID: <20200826132107.GH1059382@kernel.org>
+References: <20200826093236.446024-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200826113418.GC753783@krava>
+In-Reply-To: <20200826093236.446024-1-kjain@linux.ibm.com>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 26, 2020 at 01:34:18PM +0200, Jiri Olsa escreveu:
-> On Tue, Aug 25, 2020 at 09:29:10PM -0700, Ian Rogers wrote:
-> > With a fake_pmu the pmu_info isn't populated by perf_pmu__check_alias.
-> > In this case, don't try to copy the uninitialized values to the evsel.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+Em Wed, Aug 26, 2020 at 03:02:36PM +0530, Kajol Jain escreveu:
+> Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+> added assignment of ret value as -EAGAIN in case function
+> call to 'smp_call_function_single' fails.
+> For non-zero ret value, it did 
+> 'ret = !ret ? data.ret : -EAGAIN;', which always
+> assign -EAGAIN to ret and make second if condition useless.
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> In scenarios like when executing a perf stat with --per-thread option, and 
+> if any of the monitoring cpu goes offline, the 'smp_call_function_single'
+> function could return -ENXIO, and with the above check,
+> task_function_call hung and increases CPU
+> usage (because of repeated 'smp_call_function_single()')
+> 
+> Recration scenario:
+> 	# perf stat -a --per-thread && (offline a CPU )
 
-Thanks, applied.
+Peter, this is kernel stuff, can you take a look?
 
 - Arnaldo
  
-> thanks,
-> jirka
+> Patch here removes the tertiary condition added as part of that 
+> commit and added a check for NULL and -EAGAIN.
 > 
-> > ---
-> >  tools/perf/util/parse-events.c | 30 +++++++++++++++++-------------
-> >  1 file changed, 17 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 9f7260e69113..3d7a48b488ed 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -1533,19 +1533,23 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
-> >  	evsel = __add_event(list, &parse_state->idx, &attr, true,
-> >  			    get_config_name(head_config), pmu,
-> >  			    &config_terms, auto_merge_stats, NULL);
-> > -	if (evsel) {
-> > -		evsel->unit = info.unit;
-> > -		evsel->scale = info.scale;
-> > -		evsel->per_pkg = info.per_pkg;
-> > -		evsel->snapshot = info.snapshot;
-> > -		evsel->metric_expr = info.metric_expr;
-> > -		evsel->metric_name = info.metric_name;
-> > -		evsel->pmu_name = name ? strdup(name) : NULL;
-> > -		evsel->use_uncore_alias = use_uncore_alias;
-> > -		evsel->percore = config_term_percore(&evsel->config_terms);
-> > -	}
-> > -
-> > -	return evsel ? 0 : -ENOMEM;
-> > +	if (!evsel)
-> > +		return -ENOMEM;
-> > +
-> > +	evsel->pmu_name = name ? strdup(name) : NULL;
-> > +	evsel->use_uncore_alias = use_uncore_alias;
-> > +	evsel->percore = config_term_percore(&evsel->config_terms);
-> > +
-> > +	if (parse_state->fake_pmu)
-> > +		return 0;
-> > +
-> > +	evsel->unit = info.unit;
-> > +	evsel->scale = info.scale;
-> > +	evsel->per_pkg = info.per_pkg;
-> > +	evsel->snapshot = info.snapshot;
-> > +	evsel->metric_expr = info.metric_expr;
-> > +	evsel->metric_name = info.metric_name;
-> > +	return 0;
-> >  }
-> >  
-> >  int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
-> > -- 
-> > 2.28.0.297.g1956fa8f8d-goog
-> > 
+> Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+>  kernel/events/core.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 5bfe8e3c6e44..330c53f7df9c 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -115,9 +115,9 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+>  	for (;;) {
+>  		ret = smp_call_function_single(task_cpu(p), remote_function,
+>  					       &data, 1);
+> -		ret = !ret ? data.ret : -EAGAIN;
+> -
+> -		if (ret != -EAGAIN)
+> +		if (!ret)
+> +			ret = data.ret;
+> +		else if (ret != -EAGAIN)
+>  			break;
+>  
+>  		cond_resched();
+> -- 
+> 2.26.2
 > 
 
 -- 
