@@ -2,230 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E182530F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374612530F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgHZOKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1730494AbgHZOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgHZOKW (ORCPT
+        with ESMTP id S1727008AbgHZOKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:10:22 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5738C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:10:21 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id p4so1975721qkf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=4SOxWdwKrVd7Rs8H8CO46YzvqktHGZXPaEWImz9lP9k=;
-        b=c2eno+caDxPjGqUaShOtwkH+Ua48sWEUnbnfaCKsi5NelMzzT/qYhVCKwJksUtcG0p
-         +qSIAsA5H8+4SyTzTnu5hJsx8VVfSnjgDirRhIvT8gk10eiDtPKpmnR+1wkSUUOc7CXd
-         6bK602fned3kG28/v9wFl42h6+nwD0hC67+ugTYdQKuvYo6Je4ikXSbO/wMhe/VbehDG
-         v27jiXWuRCU2tiWEUYQ/TM+mPoIRXJbmT75sLqCK1K8GOL+/UQKEUeVZcsTK80p1EsfW
-         hAGgcm8iFgQIMvY7r0nSQ2DPYPLykTRsLgzqnWcCVtLZ9dEgRnzURMjSl7SCARLxU728
-         8i3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=4SOxWdwKrVd7Rs8H8CO46YzvqktHGZXPaEWImz9lP9k=;
-        b=Xa23GV5sPAqcDJ1hvRWL4gTslRthnvgAld7Hd+vYZGAiEgf0Ba1wxZ72KyEQS85G3Y
-         q23vyAiOo8Q8juW/q/EXZD5Fl9ElCSeMxtCTZvRBDcgZuuYkqkCEbbjMTGkC35eeC02M
-         xT29JSF7THibeBv1yA83BeHW6gIgPcSF/S5pbXgKl5Sy2NfyX2/sxbf5lpK6UEOhr8oL
-         H7sjP8Frl6r2bTDVbHjRUoPfVBV//ratgFk3UzQAdU1JbU5IgzzbuK7b8m9ld6ZYXRV2
-         aFaJLQbugK83sxTpf1E/vZtuzdEoBMgZM/cMW3FRu+VHx6VetwQaojIZWv1K9WBHE0At
-         3iZQ==
-X-Gm-Message-State: AOAM532kGF72M55eiKCm3fZJTIAQ8QhzTyEw5lLf9KTOER8DGKbjXW52
-        eVErpSybTYbjZ4DNBRVzhNdhrYl7JZLPP/P1
-X-Google-Smtp-Source: ABdhPJwkSNT72+PEdYl3Nm1abDOh/V+5kPeI+dZtxPtbEPcesP4QqqA85A+ELO0dTvB7bCighuhYFQ==
-X-Received: by 2002:a37:5fc4:: with SMTP id t187mr14697742qkb.224.1598451019676;
-        Wed, 26 Aug 2020 07:10:19 -0700 (PDT)
-Received: from skullcanyon ([192.222.193.21])
-        by smtp.gmail.com with ESMTPSA id r8sm1773767qke.117.2020.08.26.07.10.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:10:18 -0700 (PDT)
-Message-ID: <ae3814b877ea264b0231321d12d946761941e004.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 3/3] media: v4l: xilinx: Add Xilinx UHD-SDI Rx
- Subsystem driver
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vishal Sagar <vsagar@xilinx.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Hyun Kwon <hyunk@xilinx.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        Michal Simek <michals@xilinx.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "joe@perches.com" <joe@perches.com>,
-        Sandip Kothari <sandipk@xilinx.com>,
-        Dinesh Kumar <dineshk@xilinx.com>
-Date:   Wed, 26 Aug 2020 10:10:17 -0400
-In-Reply-To: <20200819165641.GS6049@pendragon.ideasonboard.com>
-References: <20200618053304.14551-1-vishal.sagar@xilinx.com>
-         <20200618053304.14551-4-vishal.sagar@xilinx.com>
-         <50cc4f4b-e788-c5ad-cd6a-b428b96d5377@xs4all.nl>
-         <20200715213315.GF6144@pendragon.ideasonboard.com>
-         <BY5PR02MB6867211CA1F22DC01D6A8F15A75D0@BY5PR02MB6867.namprd02.prod.outlook.com>
-         <20200819165641.GS6049@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Wed, 26 Aug 2020 10:10:47 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B738C061574;
+        Wed, 26 Aug 2020 07:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AzWxCen/DOsEQXqFBCdcE4/JIaFFVV3Ee1zoRKCLtqs=; b=k7BgzdKV/oHF1hDGvvyJ8uNhTH
+        GHG4mC5roIqFInvdGRyHoGY6HyWEWhv1G57MB9E9x0nBuLS7itGaRnU12bvOdJKahxedudmNXnyAf
+        KxbZHEQe+i3Ot4e42e19YkA/ySjpPS+gyqzrn1UTam6hpYWjG8zgfa8TaY759RdzLqZlqdKF4Pa1Q
+        9bt8uYMrwUhgNtFKdq8FglA2ly+QRqiZZS/qltGWXL8bGdV4vs1uuucuF7DZYTC7YkrnWMqfCFV8n
+        ODGgGFgF1nhS/ZH0seRMbj5a4TPOlojm4XsPHxBPKCi7GSELUNI3mk/skSLLYPB0bW49cDS1HJOPW
+        MbJC5Q5A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAw8C-0003IW-SO; Wed, 26 Aug 2020 14:10:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 97C3B30015A;
+        Wed, 26 Aug 2020 16:10:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 876D8203A64CA; Wed, 26 Aug 2020 16:10:25 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 16:10:25 +0200
+From:   peterz@infradead.org
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH 03/14] arm: kprobes: Use generic kretprobe trampoline
+ handler
+Message-ID: <20200826141025.GU35926@hirez.programming.kicks-ass.net>
+References: <159844957216.510284.17683703701627367133.stgit@devnote2>
+ <159844960343.510284.15315372011917043979.stgit@devnote2>
+ <20200826140852.GG1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826140852.GG1362448@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 19 août 2020 à 19:56 +0300, Laurent Pinchart a écrit :
-> Hi Vishal,
+On Wed, Aug 26, 2020 at 04:08:52PM +0200, peterz@infradead.org wrote:
+> On Wed, Aug 26, 2020 at 10:46:43PM +0900, Masami Hiramatsu wrote:
+> >  static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
+> >  {
+> > +	return (void *)kretprobe_trampoline_handler(regs,
+> > +				(unsigned long)&kretprobe_trampoline,
+> > +				regs->ARM_fp);
+> >  }
 > 
-> (Hans, there's a question for you below)
-> 
-> On Wed, Aug 19, 2020 at 01:47:49PM +0000, Vishal Sagar wrote:
-> > On Thursday, July 16, 2020 3:03 AM Laurent Pinchart wrote:
-> > > On Thu, Jun 25, 2020 at 11:43:01AM +0200, Hans Verkuil wrote:
-> > > > On 18/06/2020 07:33, Vishal Sagar wrote:
-> > > > > The Xilinx UHD-SDI Rx subsystem soft IP is used to capture native SDI
-> > > > > streams from SDI sources like SDI broadcast equipment like cameras and
-> > > > > mixers. This block outputs either native SDI, native video or
-> > > > > AXI4-Stream compliant data stream for further processing. Please refer
-> > > > > to PG290 for details.
-> > > > > 
-> > > > > The driver is used to configure the IP to add framer, search for
-> > > > > specific modes, get the detected mode, stream parameters, errors, etc.
-> > > > > It also generates events for video lock/unlock, bridge over/under flow.
-> > > > > 
-> > > > > The driver supports 10/12 bpc YUV 422 media bus format currently. It
-> > > > > also decodes the stream parameters based on the ST352 packet embedded in the
-> > > > > stream. In case the ST352 packet isn't present in the stream, the core's
-> > > > > detected properties are used to set stream properties.
-> > > > > 
-> > > > > The driver currently supports only the AXI4-Stream IP configuration.
-> > > > > 
-> > > > > Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
-> > > > > ---
-> > > > > v3
-> > > > > - fixed KConfig with better description
-> > > > > - removed unnecessary header files
-> > > > > - converted uppercase to lowercase for all hex values
-> > > > > - merged core struct to state struct
-> > > > > - removed most one line functions and replaced with direct reg
-> > > > >   read/write or macros
-> > > > > - dt property bpp to bpc. default 10. not mandatory.
-> > > > > - fixed subscribe events, log_status, s_stream
-> > > > > - merged overflow/underflow to one event
-> > > > > - moved all controls to xilinx-sdirxss.h
-> > > > > - max events from 128 to 8
-> > > > > - used FIELD_GET() instead of custom macro
-> > > > > - updated the controls documentation
-> > > > > - added spinlock
-> > > > > - removed 3GB control and added mode to detect bitmask
-> > > > > - fixed format for (width, height, colorspace, xfer func, etc)
-> > > > > - added dv_timings_cap, s/g_dv_timings
-> > > > > - fixed set/get_format
-> > > > > - fix v4l control registrations
-> > > > > - fix order of registration / deregistration in probe() remove()
-> > > > > - fixed other comments from Hyun, Laurent and Hans
-> > > > > - things yet to close
-> > > > >   - adding source port for connector (Laurent's suggestion)
-> > > > >   - adding new FIELD type for Transport Stream V4L2_FIELD_ALTERNATE_PROG (Han's suggestion)
-> > > > >   - Update / remove EDH or CRC related controls
-> > > > > 
-> > > > > v2
-> > > > > - Added DV timing support based on Hans Verkuilś feedback
-> > > > > - More documentation to custom v4l controls and events
-> > > > > - Fixed Hyunś comments
-> > > > > - Added macro for masking and shifting as per Joe Perches comments
-> > > > > - Updated to latest as per Xilinx github repo driver like
-> > > > >   adding new DV timings not in mainline yet uptill 03/21/20
-> > > > > 
-> > > > >  drivers/media/platform/xilinx/Kconfig         |   11 +
-> > > > >  drivers/media/platform/xilinx/Makefile        |    1 +
-> > > > >  .../media/platform/xilinx/xilinx-sdirxss.c    | 2121 +++++++++++++++++
-> > > > >  include/uapi/linux/v4l2-controls.h            |    6 +
-> > > > >  include/uapi/linux/xilinx-sdirxss.h           |  283 +++
-> > > > >  5 files changed, 2422 insertions(+)
-> > > > >  create mode 100644 drivers/media/platform/xilinx/xilinx-sdirxss.c
-> > > > >  create mode 100644 include/uapi/linux/xilinx-sdirxss.h
-> 
-> [snip]
-> 
-> > > > > diff --git a/drivers/media/platform/xilinx/xilinx-sdirxss.c b/drivers/media/platform/xilinx/xilinx-sdirxss.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..e39aab7c656a
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/media/platform/xilinx/xilinx-sdirxss.c
-> > > > > @@ -0,0 +1,2121 @@
-> 
-> [snip]
-> 
-> > > > > +	case V4L2_CID_XILINX_SDIRX_TS_IS_INTERLACED:
-> > > > > +		ctrl->val = xsdirxss->ts_is_interlaced;
-> > > > > +		break;
-> > > > 
-> > > > I assume this control will disappear once you added support for
-> > > > FIELD_ALTERNATE_PROG?
-> > > 
-> > > I'm not sure FIELD_ALTERNATE_PROG is a good idea. The v4l2_field
-> > > specifies today how frames are split into multiple buffers. There's an
-> > > implicit assumption that a frame split into two buffers is captured with
-> > > interlacing. In the SDI case, the two concepts get decoupled, a
-> > > progressive frame can be transmitted (and captured) in two separate
-> > > parts. If we add a *_PROG field, we'll need to duplicate most of the
-> > > v4l2_field values with a _PROG suffix, as the progressive frame can be
-> > > captured in alternate buffers on a video node, but also in separate odd
-> > > and even buffers on two video nodes. Tt the hardware level, data is
-> > > transmitted with odd lines on one link, and even lines on a second link.
-> > > There are then two instances of this IP core, one for each link. One
-> > > instance would receive and process the even lines, the other instance
-> > > the odd lines. The output of the two instances can then be connected to
-> > > two separate DMA engines, or combined in the FPGA fabric, depending on
-> > > how the user designs the system.
-> > 
-> > My apologies to give incorrect info regarding this.
-> > In the progressive segmented frame, a progressive captured frame is sent
-> > across to receiver over an interlaced transport. The 2 fields received
-> > are similar to how V4L2_FIELD_ALTERNATE is except that the fields weren't
-> > captured at 2 different times.
-> 
-> I've now read more about progressive segmented frames, and I was indeed
-> wrong about the fact that the two segments are transported over
-> different links.
-> 
-> I still wonder, however, if a _PROG suffix is the best option. Wouldn't
-> we need to also add V4L2_FIELD_TOP_PROG, V4L2_FIELD_BOTTOM_PROG,
-> V4L2_FIELD_SEQ_TB_PROG and V4L2_FIELD_SEQ_BT_PROG, not necessarily for
-> this driver, but for other devices that would support capturing the
-> odd/even segments only, or support capturing both segments in a single
-> buffer, one after the other ?
-> 
-> Maybe that's unavoidable, as enum v4l2_field combines both the buffer
-> layout and the fact that the frame is interlaced or progressive. If we
-> had to redesign it we could do better, but having to keep backward
-> compatibility, duplicating most values with a _PROG suffix may be the
-> best option.
-> 
-> Hans, any opinion ?
+> Does it make sense to have the generic code have a weak
+> trampoline_handler() implemented like the above? It looks like a number
+> of architectures have this trivial variant and it seems pointless to
+> duplicate this.
 
-Can't your receiver store these two fragment directly into a
-progressive buffer instead of leaking this HW specific thing into uAPI
-? All you'd need is support for stride (bytesperline) at the HW
-writeback level, and then you can hide this complexicuty to userspace
-by filling the top/bottom line only. You simply multiply the stride by
-two in this context.
+Argh, I replied to the wrong variant, I mean the one that uses
+kernel_stack_pointer(regs).
 
-> 
-> > So I will add the V4L2_FIELD_ALTERNATE_PROG in next patch version.
-> 
-> [snip]
-> 
-
+Then the architecture only needs to implement kernel_stack_pointer() if
+there is nothing else to do.
