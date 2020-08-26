@@ -2,121 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4CC25302B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E1E253039
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730375AbgHZNp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730308AbgHZNpY (ORCPT
+        id S1730430AbgHZNrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:47:13 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:43811 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730400AbgHZNq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:45:24 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36495C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:45:24 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x7so1878426wro.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=++y7/K31LPJngXEb//+paNGMvF79bvnqTxG0ZZl/pyQ=;
-        b=HGuzgciRBqpk93tftVYp8/pBWAnJfTd05f9qK3uR5cedrE8qBeZeUKfSEBopDI/bkD
-         jJKkw1KbGfmLS6eMSwn8soRusFl+v6czYv98W0Ac6ECtjnskM06BuG+216I+UXiXtNU5
-         T0zajnuQOPLN6rub/ottCNDWzAHNI4ij/mLWAmprx2S+85WDSuQgaRraBPNdJR2bVtEF
-         hriV2QK/gcK0aANLnSoi+J5WDdySEFXC/kyGGq1W3uEoHnRp4dp+rVORfMByABi/ldwN
-         07rEoKOqiZ0HAnlveDS/DYiI6ukKAKfPzEHlwPMTz9zwVfhTzl4fgK5KczRbvpzpJH2l
-         cFFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=++y7/K31LPJngXEb//+paNGMvF79bvnqTxG0ZZl/pyQ=;
-        b=nMd4Yhz9ojdnuytOf/AGmquyLPN8jUtHDaACNj5kx4MGBT0OTE6akBlQn2awZZTWQn
-         0F3yAjAvE0Pnui8WGHrb0l+tT6qgabnp3OgBv6TwyIZPbPzP5r2J4uiL5S1ZEXhvuvq5
-         6thOpA54yXsRU3/63vWn5S1Q4+BdvxNXbeiUg8rhuUsbWCm5KJcLSxJcjK2c6NS90zHk
-         q1MnJ8m+t8H+NTzqDmZnpPi8tYFTSobkDPIAvKhro0qMTllHZhKBSIawA6uGZ7j+86zj
-         /gad3xTojh0rlHwzYcMqVcKJdumDB5/D9ioO7RWUn/z0ymKtKuHeEtaof7y4eB3M8l+r
-         /Pnw==
-X-Gm-Message-State: AOAM532W2e3+oGl/RxibA1jiCb1Yv7eJl69htv4rx6xiQUP7jUQIjEyz
-        rk7Lael1S6S4lWIcmjYPfol5dcQWgwG2rNABhuI=
-X-Google-Smtp-Source: ABdhPJyWLZf68RNxOWOSnhdQdEdsARIS1o2p7/AZSaEeiSmSPPJ3xUskhAhaxBnxVSxkyAMdrF4A8Zw/JIKcxfqlQNw=
-X-Received: by 2002:a5d:6085:: with SMTP id w5mr15374902wrt.362.1598449522813;
- Wed, 26 Aug 2020 06:45:22 -0700 (PDT)
+        Wed, 26 Aug 2020 09:46:57 -0400
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 07QDkPCh008653;
+        Wed, 26 Aug 2020 22:46:25 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 07QDkPCh008653
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1598449585;
+        bh=o7eCdAdgOheG7FAIfRne3QfZg51jDgTmJuPqiAC/sK8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=21bA7VpEWxm5UeK7oPZWUFdIhQajYdPhqd3SV11eya86xNPqIzTN61Ph8de6zpGEz
+         ErmqVG9CEY1PU4acX9fn1RjP1NiHCEt6A7n+jxuatW35C1Ibmexw2WFRQ5kELQrioY
+         nhyyZIHuk/VR/WdHnlXnht+t+83UBcH62kZpZ//xifmRUuh1tOgl6Vf9FKEswPQI/e
+         1HW+Kh3ukNNsu7d799pH6Lt8J4iufcPAHoPKoIfVMBLRzxgtROhN0b/eC4qbJ/xFXC
+         9uBapHPM+v+BgmVo87jKiZV1cojEK3iS8gv9OsHt49K7yPELvIeywks56mcwBoFz1F
+         NvE1zvPqM2Yqw==
+X-Nifty-SrcIP: [209.85.216.51]
+Received: by mail-pj1-f51.google.com with SMTP id 2so900074pjx.5;
+        Wed, 26 Aug 2020 06:46:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531iH2q2SxVzfu1gBpOSo0Qcp/iYTPkRQNzYTVI8/9B2e6Y42MOn
+        iNhZkfMnMu3mEExeab7sGc0PTQDyh6e3eeyBWKg=
+X-Google-Smtp-Source: ABdhPJxYguAPl7915j/hpYyN6BaOhYmXutUAd9G9j1QCXn8OaMyaNTPAez6SpGyucG7F48mn5JH7tlL0yZwPTX1xjPU=
+X-Received: by 2002:a17:90a:fb53:: with SMTP id iq19mr6288925pjb.153.1598449584709;
+ Wed, 26 Aug 2020 06:46:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200826132501.11564-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200826132501.11564-1-dinghao.liu@zju.edu.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 26 Aug 2020 09:45:11 -0400
-Message-ID: <CADnq5_NxEGXboksEV61XpixU+Vwj8q9A=cTvz_-BeapwN59+Mw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Fix memleak in amdgpu_dm_mode_config_init
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Kangjie Lu <kjlu@umn.edu>, Stylon Wang <stylon.wang@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200821024358.616384-1-masahiroy@kernel.org>
+In-Reply-To: <20200821024358.616384-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 26 Aug 2020 22:45:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASkc_LVJ1dvzn3aETgKkrkqNt8hOpjBF0Pn2gh40gJYEw@mail.gmail.com>
+Message-ID: <CAK7LNASkc_LVJ1dvzn3aETgKkrkqNt8hOpjBF0Pn2gh40gJYEw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: hide commands to run Kconfig, and show short log
+ for syncconfig
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Wed, Aug 26, 2020 at 9:37 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+On Fri, Aug 21, 2020 at 11:44 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> When amdgpu_display_modeset_create_props() fails, state and
-> state->context should be freed to prevent memleak. It's the
-> same when amdgpu_dm_audio_init() fails.
+> Some targets (localyesconfig, localmodconfig, defconfig) hide the
+> command running, but the others do not.
 >
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Users know which Kconfig flavor they are running, so it is OK to hide
+> the command. Add $(Q) to all commands consistently. If you want to see
+> the full command running, pass V=1 from the command line.
+>
+> syncconfig is the exceptional case, which occurs without explicit
+> command invocation by the user. Display the Kbuild-style log for it.
+> The ugly bare log will go away.
+>
+> [Before]
+>
+> scripts/kconfig/conf  --syncconfig Kconfig
+>
+> [After]
+>
+>   SYNC    include/config/auto.conf
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+Applied to linux-kbuild.
+
+
+
 > ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index df9338257ae0..2476e40c67ef 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -2834,12 +2834,18 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
->                                     &dm_atomic_state_funcs);
+>  Makefile                 |  5 ++++-
+>  scripts/kconfig/Makefile | 16 ++++++++--------
+>  2 files changed, 12 insertions(+), 9 deletions(-)
 >
->         r = amdgpu_display_modeset_create_props(adev);
-> -       if (r)
-> +       if (r) {
-> +               dc_release_state(state->context);
-> +               kfree(state);
->                 return r;
-> +       }
+> diff --git a/Makefile b/Makefile
+> index 9cac6fde3479..0693314d51c3 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -708,8 +708,11 @@ $(KCONFIG_CONFIG):
+>  # This exploits the 'multi-target pattern rule' trick.
+>  # The syncconfig should be executed only once to make all the targets.
+>  # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
+> +quiet_cmd_syncconfig = SYNC    $@
+> +      cmd_syncconfig = $(MAKE) -f $(srctree)/Makefile syncconfig
+> +
+>  %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
+> -       $(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
+> +       +$(call cmd,syncconfig)
+>  else # !may-sync-config
+>  # External modules and some install targets need include/generated/autoconf.h
+>  # and include/config/auto.conf but do not care if they are up-to-date.
+> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+> index 52b59bf9efe4..e46df0a2d4f9 100644
+> --- a/scripts/kconfig/Makefile
+> +++ b/scripts/kconfig/Makefile
+> @@ -20,19 +20,19 @@ endif
+>  unexport CONFIG_
 >
->         r = amdgpu_dm_audio_init(adev);
-> -       if (r)
-> +       if (r) {
-> +               dc_release_state(state->context);
-> +               kfree(state);
->                 return r;
-> +       }
+>  xconfig: $(obj)/qconf
+> -       $< $(silent) $(Kconfig)
+> +       $(Q)$< $(silent) $(Kconfig)
 >
->         return 0;
->  }
+>  gconfig: $(obj)/gconf
+> -       $< $(silent) $(Kconfig)
+> +       $(Q)$< $(silent) $(Kconfig)
+>
+>  menuconfig: $(obj)/mconf
+> -       $< $(silent) $(Kconfig)
+> +       $(Q)$< $(silent) $(Kconfig)
+>
+>  config: $(obj)/conf
+> -       $< $(silent) --oldaskconfig $(Kconfig)
+> +       $(Q)$< $(silent) --oldaskconfig $(Kconfig)
+>
+>  nconfig: $(obj)/nconf
+> -       $< $(silent) $(Kconfig)
+> +       $(Q)$< $(silent) $(Kconfig)
+>
+>  build_menuconfig: $(obj)/mconf
+>
+> @@ -68,12 +68,12 @@ simple-targets := oldconfig allnoconfig allyesconfig allmodconfig \
+>  PHONY += $(simple-targets)
+>
+>  $(simple-targets): $(obj)/conf
+> -       $< $(silent) --$@ $(Kconfig)
+> +       $(Q)$< $(silent) --$@ $(Kconfig)
+>
+>  PHONY += savedefconfig defconfig
+>
+>  savedefconfig: $(obj)/conf
+> -       $< $(silent) --$@=defconfig $(Kconfig)
+> +       $(Q)$< $(silent) --$@=defconfig $(Kconfig)
+>
+>  defconfig: $(obj)/conf
+>  ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)),)
+> @@ -111,7 +111,7 @@ tinyconfig:
+>  # CHECK: -o cache_dir=<path> working?
+>  PHONY += testconfig
+>  testconfig: $(obj)/conf
+> -       $(PYTHON3) -B -m pytest $(srctree)/$(src)/tests \
+> +       $(Q)$(PYTHON3) -B -m pytest $(srctree)/$(src)/tests \
+>         -o cache_dir=$(abspath $(obj)/tests/.cache) \
+>         $(if $(findstring 1,$(KBUILD_VERBOSE)),--capture=no)
+>  clean-files += tests/.cache
 > --
-> 2.17.1
+> 2.25.1
 >
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+
+
+-- 
+Best Regards
+Masahiro Yamada
