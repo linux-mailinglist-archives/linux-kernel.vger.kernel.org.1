@@ -2,163 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00913253022
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4CC25302B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbgHZNnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:43:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730242AbgHZNnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:43:14 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E583C21741;
-        Wed, 26 Aug 2020 13:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598449380;
-        bh=MQx/+pcESt0M2O0VHxn1QIOJuotT12ugSC5HBwX/f9U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=p1XZcPvEewpwhfCYF34BU6TplCWPARuwRG9CdyI60OLDJ1UbnkUJud8MPB9io4thh
-         dJz+6zhuROlq+4onefEvuSTkq7JMBMVd20igLDKjhB1k89WlVygEZ88OYiUdCP6iw9
-         M6wh1OupsdLdTnD1uElVHx+zpSWisu6G8TkKWUVg=
-Date:   Wed, 26 Aug 2020 15:43:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB fixes for 5.9-rc3
-Message-ID: <20200826134315.GA3882506@kroah.com>
+        id S1730375AbgHZNp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730308AbgHZNpY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:45:24 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36495C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:45:24 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x7so1878426wro.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=++y7/K31LPJngXEb//+paNGMvF79bvnqTxG0ZZl/pyQ=;
+        b=HGuzgciRBqpk93tftVYp8/pBWAnJfTd05f9qK3uR5cedrE8qBeZeUKfSEBopDI/bkD
+         jJKkw1KbGfmLS6eMSwn8soRusFl+v6czYv98W0Ac6ECtjnskM06BuG+216I+UXiXtNU5
+         T0zajnuQOPLN6rub/ottCNDWzAHNI4ij/mLWAmprx2S+85WDSuQgaRraBPNdJR2bVtEF
+         hriV2QK/gcK0aANLnSoi+J5WDdySEFXC/kyGGq1W3uEoHnRp4dp+rVORfMByABi/ldwN
+         07rEoKOqiZ0HAnlveDS/DYiI6ukKAKfPzEHlwPMTz9zwVfhTzl4fgK5KczRbvpzpJH2l
+         cFFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=++y7/K31LPJngXEb//+paNGMvF79bvnqTxG0ZZl/pyQ=;
+        b=nMd4Yhz9ojdnuytOf/AGmquyLPN8jUtHDaACNj5kx4MGBT0OTE6akBlQn2awZZTWQn
+         0F3yAjAvE0Pnui8WGHrb0l+tT6qgabnp3OgBv6TwyIZPbPzP5r2J4uiL5S1ZEXhvuvq5
+         6thOpA54yXsRU3/63vWn5S1Q4+BdvxNXbeiUg8rhuUsbWCm5KJcLSxJcjK2c6NS90zHk
+         q1MnJ8m+t8H+NTzqDmZnpPi8tYFTSobkDPIAvKhro0qMTllHZhKBSIawA6uGZ7j+86zj
+         /gad3xTojh0rlHwzYcMqVcKJdumDB5/D9ioO7RWUn/z0ymKtKuHeEtaof7y4eB3M8l+r
+         /Pnw==
+X-Gm-Message-State: AOAM532W2e3+oGl/RxibA1jiCb1Yv7eJl69htv4rx6xiQUP7jUQIjEyz
+        rk7Lael1S6S4lWIcmjYPfol5dcQWgwG2rNABhuI=
+X-Google-Smtp-Source: ABdhPJyWLZf68RNxOWOSnhdQdEdsARIS1o2p7/AZSaEeiSmSPPJ3xUskhAhaxBnxVSxkyAMdrF4A8Zw/JIKcxfqlQNw=
+X-Received: by 2002:a5d:6085:: with SMTP id w5mr15374902wrt.362.1598449522813;
+ Wed, 26 Aug 2020 06:45:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20200826132501.11564-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200826132501.11564-1-dinghao.liu@zju.edu.cn>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 26 Aug 2020 09:45:11 -0400
+Message-ID: <CADnq5_NxEGXboksEV61XpixU+Vwj8q9A=cTvz_-BeapwN59+Mw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix memleak in amdgpu_dm_mode_config_init
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>, Stylon Wang <stylon.wang@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+Applied.  Thanks!
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+Alex
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc3
-
-for you to fetch changes up to 23e26d0577535f5ffe4ff8ed6d06e009553c0bca:
-
-  usb: typec: tcpm: Fix Fix source hard reset response for TDA 2.3.1.1 and TDA 2.3.1.2 failures (2020-08-25 16:02:35 +0200)
-
-----------------------------------------------------------------
-USB fixes for 5.9-rc3
-
-Here are a small set of USB fixes for 5.9-rc3.
-
-Like most set of USB bugfixes, they include the usual:
-	- usb gadget driver fixes
-	- xhci driver fixes
-	- typec fixes
-	- new qurks and ids
-	- fixes for USB patches merged in 5.9-rc1
-
-Nothing huge, all of these have been in linux-next with no reported
-issues:
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alan Stern (1):
-      USB: yurex: Fix bad gfp argument
-
-Andy Shevchenko (1):
-      usb: hcd: Fix use after free in usb_hcd_pci_remove()
-
-Badhri Jagan Sridharan (1):
-      usb: typec: tcpm: Fix Fix source hard reset response for TDA 2.3.1.1 and TDA 2.3.1.2 failures
-
-Bastien Nocera (2):
-      USB: Also match device drivers using the ->match vfunc
-      USB: Fix device driver race
-
-Brooke Basile (2):
-      USB: gadget: u_f: add overflow checks to VLA macros
-      USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()
-
-Christophe JAILLET (1):
-      usb: gadget: f_tcm: Fix some resource leaks in some error paths
-
-Ding Hui (1):
-      xhci: Always restore EP_SOFT_CLEAR_TOGGLE even if ep reset failed
-
-Evgeny Novikov (1):
-      USB: lvtest: return proper error code in probe
-
-Greg Kroah-Hartman (1):
-      Merge tag 'fixes-for-v5.9-rc2' of git://git.kernel.org/.../balbi/usb into usb-linus
-
-Hans de Goede (4):
-      usb: typec: ucsi: Fix AB BA lock inversion
-      usb: typec: ucsi: Fix 2 unlocked ucsi_run_command calls
-      usb: typec: ucsi: Rework ppm_lock handling
-      usb: typec: ucsi: Hold con->lock for the entire duration of ucsi_register_port()
-
-Heikki Krogerus (1):
-      tools: usb: move to tools buildsystem
-
-JC Kuo (2):
-      usb: host: xhci-tegra: otg usb2/usb3 port init
-      usb: host: xhci-tegra: fix tegra_xusb_get_phy()
-
-Kai-Heng Feng (2):
-      USB: quirks: Add no-lpm quirk for another Raydium touchscreen
-      xhci: Do warm-reset when both CAS and XDEV_RESUME are set
-
-Li Jun (1):
-      usb: host: xhci: fix ep context print mismatch in debugfs
-
-M. Vefa Bicakci (1):
-      usbip: Implement a match function to fix usbip
-
-Thinh Nguyen (4):
-      usb: dwc3: gadget: Don't setup more than requested
-      usb: dwc3: gadget: Fix handling ZLP
-      usb: dwc3: gadget: Handle ZLP for sg requests
-      usb: uas: Add quirk for PNY Pro Elite
-
-Tom Rix (1):
-      USB: cdc-acm: rework notification_buffer resizing
-
-Vinod Koul (1):
-      usb: renesas-xhci: remove version check
-
-周琰杰 (Zhou Yanjie) (1):
-      USB: PHY: JZ4770: Fix static checker warning.
-
- drivers/usb/class/cdc-acm.c          |  22 ++++---
- drivers/usb/core/driver.c            |  40 ++++++++++++-
- drivers/usb/core/generic.c           |   5 +-
- drivers/usb/core/hcd-pci.c           |   5 +-
- drivers/usb/core/quirks.c            |   2 +
- drivers/usb/dwc3/gadget.c            | 107 +++++++++++++++++++++++++++++------
- drivers/usb/gadget/function/f_ncm.c  |  81 ++++++++++++++++++++++----
- drivers/usb/gadget/function/f_tcm.c  |   7 ++-
- drivers/usb/gadget/u_f.h             |  38 +++++++++----
- drivers/usb/host/xhci-debugfs.c      |   8 +--
- drivers/usb/host/xhci-hub.c          |  19 ++++---
- drivers/usb/host/xhci-pci-renesas.c  |  19 +------
- drivers/usb/host/xhci-tegra.c        |   4 +-
- drivers/usb/host/xhci.c              |   3 +-
- drivers/usb/misc/lvstest.c           |   2 +-
- drivers/usb/misc/yurex.c             |   2 +-
- drivers/usb/phy/phy-jz4770.c         |   1 +
- drivers/usb/storage/unusual_uas.h    |   7 +++
- drivers/usb/typec/tcpm/tcpm.c        |  28 ++++++++-
- drivers/usb/typec/ucsi/displayport.c |   9 +--
- drivers/usb/typec/ucsi/ucsi.c        | 103 +++++++++++++++++----------------
- drivers/usb/usbip/stub_dev.c         |   6 ++
- tools/usb/Build                      |   2 +
- tools/usb/Makefile                   |  53 ++++++++++++++---
- 24 files changed, 408 insertions(+), 165 deletions(-)
- create mode 100644 tools/usb/Build
+On Wed, Aug 26, 2020 at 9:37 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>
+> When amdgpu_display_modeset_create_props() fails, state and
+> state->context should be freed to prevent memleak. It's the
+> same when amdgpu_dm_audio_init() fails.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index df9338257ae0..2476e40c67ef 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -2834,12 +2834,18 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
+>                                     &dm_atomic_state_funcs);
+>
+>         r = amdgpu_display_modeset_create_props(adev);
+> -       if (r)
+> +       if (r) {
+> +               dc_release_state(state->context);
+> +               kfree(state);
+>                 return r;
+> +       }
+>
+>         r = amdgpu_dm_audio_init(adev);
+> -       if (r)
+> +       if (r) {
+> +               dc_release_state(state->context);
+> +               kfree(state);
+>                 return r;
+> +       }
+>
+>         return 0;
+>  }
+> --
+> 2.17.1
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
