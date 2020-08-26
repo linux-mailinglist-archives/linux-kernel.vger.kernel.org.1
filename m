@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99DA2524CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7122524D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 02:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHZAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 20:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHZAqM (ORCPT
+        id S1726793AbgHZArz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 20:47:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53734 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726570AbgHZAry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 20:46:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDB1C061574;
-        Tue, 25 Aug 2020 17:46:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id w186so173858pgb.8;
-        Tue, 25 Aug 2020 17:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tYkmP2T+taGzQPsdNtmk2OPLPT6ITCwubwhEvkJJlCk=;
-        b=GGCI67e+oEId6snat38qMmRD/cojMw+wU62EvwvFdd0q3is7kDXAaVI72o2D2BgLcg
-         WrFBmzhN+Xs57YQPxevp7oGA6ZvYp5MsCxsnsOzC/DS9LaaYCj9Gag50gOggeQeF1BvU
-         LvjCgOzTTFsdPIy6a3fSWpjzW5K1mqQauP/+P+93ZeIwRUt9wnr0nIEvnSp5NvldFFXI
-         gSyL5jlwp4Pi1YoCFt1xc/1A9VRfNVUXL6E97gifx9rFCjHRvv6jwA34q/2gLCj7XRF0
-         5+AlZPMWPOka9YqAjK4ersPfW+rlKqLTycYryUzFAbwCGB04MUuG471+7RqdNe/rOLKJ
-         rTOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tYkmP2T+taGzQPsdNtmk2OPLPT6ITCwubwhEvkJJlCk=;
-        b=JTLRHycZ6fR4524ilioNhdHTMMLhqYGQjAnsVUMWe9I25aH9XNX1lc2YKc1hobMK9P
-         W+tOWk7NQrRywcqWWYigYZdsSxTFHGgBUxbcrp+568VCGrShZ6FA9H9/zYA0r/TYV71Y
-         /9RTNU6cNlDH2KYTt8gx3Ztw4UroCGQ8vZbUjzIi+4346cVIyQRTvMlsbMQqWQT4cPU1
-         kSlb7QT27bnpjg5ENPQ4+tcfGLUsjODfmbd4rcPEmz+k5ZTZKxpcUParTnh20Pf8yCiI
-         5kx41q11RgOJQRobaMh0buqnL7xVR4RHVV7Nfeskx7GAW3aIk6l/eMq/8jw5vsRM0Vyd
-         DIyQ==
-X-Gm-Message-State: AOAM530xHJtXbD53LM0JBHBo4ubyvYqdPT0sMZl0u68VYkM1sSAK4tNv
-        xn4f/evbXdW3CVr3X1jRDzFeEajF/mQ=
-X-Google-Smtp-Source: ABdhPJwrkfHpS2LCPLcl2zwqpbRRX0x+ND+JnKe6KIxu6P4VzxGh1LKiTQleevwGOAEAH/WWCZtYTg==
-X-Received: by 2002:a63:511a:: with SMTP id f26mr8721575pgb.15.1598402772496;
-        Tue, 25 Aug 2020 17:46:12 -0700 (PDT)
-Received: from linux-691t.suse.de ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id x4sm454044pff.112.2020.08.25.17.46.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Aug 2020 17:46:11 -0700 (PDT)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabian Vogt <fvogt@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH v2] efi/efivars: Create efivars mount point via efivars abstraction
-Date:   Wed, 26 Aug 2020 08:46:07 +0800
-Message-Id: <20200826004607.7483-1-jlee@suse.com>
-X-Mailer: git-send-email 2.16.4
+        Tue, 25 Aug 2020 20:47:54 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598402871;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lVTZSlUYnp8Y49gXsZjeOWeu61gcNbwkaYRG72a9CQk=;
+        b=M3RsWdO94aKRYM8MPjyY+j2gQVrVYS2xL6b+af8300nlorNFlfykHtvgjyiAZeLlgivUxt
+        Od4s8FXykn9dkli/ffnR978mpiCl3i6+mZxawOH99re2eOLh/U/2CmR7PDF0VNQwhfL/Id
+        Y4pxww0/45hrbtk4Zcl4ymrGku6bJDy6KaRyXZczq9D6tZuDCexP9mvAC2aDtHhDI7JXh/
+        YFxynjpJDfMHiqvRlxzOAlWzAH4qmnVaaacJYWG5rMH7jPD8gEN9AJ5iz5ELjDXx/qAtk/
+        RsMCx2VFQ6Ntlt5EJgfGysLt+Byvou97BdrOQ9KtVB+Wa2a0xaxSA52SFN1ekw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598402871;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lVTZSlUYnp8Y49gXsZjeOWeu61gcNbwkaYRG72a9CQk=;
+        b=ZxJnjc/KSvcSh7P9bwxAHBh4NWWfinO5ixaNHEKN5cl8TpUSXkMZI2Z4wTEhCyJhg74gFe
+        8ysMrKfkrHL2IqBg==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org
+Cc:     npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, peterz@infradead.org
+Subject: Re: [PATCH v2 10/11] lockdep: Only trace IRQ edges
+In-Reply-To: <20200821085348.723775490@infradead.org>
+References: <20200821084738.508092956@infradead.org> <20200821085348.723775490@infradead.org>
+Date:   Wed, 26 Aug 2020 02:47:51 +0200
+Message-ID: <87k0xmw7uw.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch creates efivars mount point when active efivars abstraction
-be set. It is useful for userland to determine the availability of efivars
-filesystem.
+On Fri, Aug 21 2020 at 10:47, Peter Zijlstra wrote:
+> Now, given that the only reason to use the raw_* variant is because you don't
+> want tracing, A) seems like a weird option (although it can be done), so we
+> pick B) and declare any code that ends up doing:
+>
+> 	raw_local_irq_save()
+> 	local_irq_save()
+> 	lockdep_assert_irqs_disabled();
+>
+> broken. AFAICT this problem has existed forever, the only reason it came
+> up is because I changed IRQ tracing vs lockdep recursion and the first
 
-Cc: Matthias Brugger <mbrugger@suse.com>
-Cc: Fabian Vogt <fvogt@suse.com>
-Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
----
+Who is 'I'? I know you made that change and you also rewrote the
+changelog, but I only figured that out after scrolling further down. As
+this patch is authored by Nick, the above is simply inconsistent. Can we
+please have just a reference to the commit which changed that code
+instead of a puzzle?
 
-v2:
-Using efivars_kobject() helper instead of checking GetVariable or
-GetNextVariable EFI runtime services. Because the efivarfs code could be
-instantiated using a different efivars abstraction.
+Other than that:
 
- drivers/firmware/efi/efi.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3aa07c3b5136..db483fc68501 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -405,11 +405,13 @@ static int __init efisubsys_init(void)
- 	if (error)
- 		goto err_remove_group;
- 
--	/* and the standard mountpoint for efivarfs */
--	error = sysfs_create_mount_point(efi_kobj, "efivars");
--	if (error) {
--		pr_err("efivars: Subsystem registration failed.\n");
--		goto err_remove_group;
-+	if (efivars_kobject()) {
-+		/* and the standard mountpoint for efivarfs */
-+		error = sysfs_create_mount_point(efi_kobj, "efivars");
-+		if (error) {
-+			pr_err("efivars: Subsystem registration failed.\n");
-+			goto err_remove_group;
-+		}
- 	}
- 
- 	if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
--- 
-2.16.4
-
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
