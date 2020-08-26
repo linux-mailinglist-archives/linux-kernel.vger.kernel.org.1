@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19337253069
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3632530B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730561AbgHZNvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:51:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730554AbgHZNvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:51:49 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31A40208E4;
-        Wed, 26 Aug 2020 13:51:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598449908;
-        bh=JfrtYoof4J1qKW2voT8243gmgO0ySPSskG0PqMYl7jQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j/E+zt4UuuQbMklEfPBZsLYVlz1BsUK3CPW+SRpjuODk4VgDqLZw0PM7/G2GgnGdb
-         5YUQfoEKYZvFdChl6JIUwa4S9vSoibnk3+X0WC+PfzQ8nVBetsbnMBy5FD5lxePLtn
-         Fd+ggB9OJPpECHpCuRcc5bpKArQeB0JHRfqmfwF4=
-Date:   Wed, 26 Aug 2020 22:51:44 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
- entry is not optimized (trigger by int3 breakpoint)
-Message-Id: <20200826225144.6df009f67b3516a3d0d58e6e@kernel.org>
-In-Reply-To: <42c65d9e434945c183ead8bef3d89de2@trendmicro.com>
-References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
-        <20200825005426.f592075d13be740cb3c9aa77@kernel.org>
-        <7396e7b2079644a6aafd9670a111232b@trendmicro.com>
-        <20200825151538.f856d701a34f4e0561a64932@kernel.org>
-        <20200825120911.GX1362448@hirez.programming.kicks-ass.net>
-        <d3027772a6834f89a1ddc07c0fefaa0a@trendmicro.com>
-        <20200826172239.ff175be78ee5f3a4380579c3@kernel.org>
-        <20200826180645.9b609fc05df2a149564df1b8@kernel.org>
-        <20200826190041.2d0ff0fbe154ba62163b0c00@kernel.org>
-        <20200826102545.GF1362448@hirez.programming.kicks-ass.net>
-        <42c65d9e434945c183ead8bef3d89de2@trendmicro.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730512AbgHZNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:55:27 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53086 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730401AbgHZNxt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:53:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598450026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=a6/9RWVH+HHXGBzEDVLsEfL1x5d6HiPRbZYXddcAxi4=;
+        b=Fgh0EBDHnwgzntyr2ZRCNIs93/lZx+s491I7tBV+igCpaSoTWUpvBSi77Bps6IRAlUia8h
+        9inKnEAv9UNvdF7GstDwxv8CS2UGJRWItATl5S7Zntby0paW7pYziVHncu19r7hqALGSa1
+        dcnA3GxjYXniB6KAKVby01uBNX5llck=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-21eCWtFsODCtr-C72N-74A-1; Wed, 26 Aug 2020 09:53:43 -0400
+X-MC-Unique: 21eCWtFsODCtr-C72N-74A-1
+Received: by mail-qk1-f199.google.com with SMTP id s186so1675424qka.17
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:53:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a6/9RWVH+HHXGBzEDVLsEfL1x5d6HiPRbZYXddcAxi4=;
+        b=KUNkuKhde6X1umqVdQxWpCqigZQnmxj8v1eyFNfee3KUGNrhN6uSMs3tarHQw9zz18
+         3G6YMQaBdmz9SdgMUhLMEmW8bjJTPzkg+HrZ2fUqCgpZ+70sVvVpyO8XMkq6lgxj4Oy3
+         8XbVad89tuVxTPYMpWGA7uN5CLkf7s4TWozc3chHBTga2Ccn19bEk7BIkly4oxXfFMXy
+         GY97Rn3TLD/j/JxLKXAC909hb6OM2+1vRi0x1MYLSFS9xg9y8HE8Mr6OdjcdqLySbl6K
+         VAupmPzDePytKkBM4nr6UJzKNxAfjeZzRtP4rGoM/DlZE+XxGbUR6cRY8sE8DgvewQKr
+         +O7A==
+X-Gm-Message-State: AOAM532B5SxdvkoyVTSOEvg+8BhSn+nlk2ZlNb5cdS69/EI+0slNvvUy
+        lgEv+INOb+NKkz56KzLHF+wen66qtJx9MhbNidozTUgcScA9V9aNmBLzVpM8D1jk5OxcEhbu+em
+        4XELm9z9z7K9UpvwBZYf+lEc6
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr14551678qtd.48.1598450023032;
+        Wed, 26 Aug 2020 06:53:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLU0PrX4ZdOSvRvZ8983Or49LFMt1CgFYZh5EvWoyUBtaJfQNhfYmHygx4Cu2kvYhZdlFppg==
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr14551653qtd.48.1598450022746;
+        Wed, 26 Aug 2020 06:53:42 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id o16sm1725687qkj.18.2020.08.26.06.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 06:53:42 -0700 (PDT)
+From:   trix@redhat.com
+To:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        rikard.falkeborn@gmail.com, rogerable@realtek.com,
+        lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] misc: rtsx: improve status check
+Date:   Wed, 26 Aug 2020 06:53:37 -0700
+Message-Id: <20200826135337.17105-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 13:36:15 +0000
-"Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com> wrote:
+From: Tom Rix <trix@redhat.com>
 
-> 
-> 
-> > -----Original Message-----
-> > From: peterz@infradead.org <peterz@infradead.org>
-> > Sent: Wednesday, August 26, 2020 6:26 PM
-> > To: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Eddy Wu (RD-TW) <Eddy_Wu@trendmicro.com>; linux-kernel@vger.kernel.org; x86@kernel.org
-> > Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function entry is not optimized (trigger by int3 breakpoint)
-> >
-> > On Wed, Aug 26, 2020 at 07:00:41PM +0900, Masami Hiramatsu wrote:
-> > > Of course, this doesn't solve the llist_del_first() contention in the
-> > > pre_kretprobe_handler(). So anyway we need a lock for per-probe llist
-> > > (if I understand llist.h comment correctly.)
-> >
-> > Bah, lemme think about that. Kprobes really shouldn't be using locks :/
-> 
-> Maybe we can have per-cpu free list for retprobe_instance?
-> This ensure we only have one user requesting free instance at a time, given that pre_kretprobe_handler() wont recursive.
+clang static analysis flags this error
 
-That will restrict kretprobe not to probe the recursive call loop... 
-and if a thread is scheduled, another thread will not be probed too.
+rtsx_usb.c:505:10: warning: The left operand of '&'
+  is a garbage value
+        if (val & cd_mask[card])
+            ~~~ ^
 
-I think lockless kretprobe is finally implemented by merging it's
-shadow-stack with func-graph tracer.
+val is set when rtsx_usb_get_card_status() is successful.  The
+problem is how it checks its callers returns.
 
-Thank you,
+	/* usb_control_msg may return positive when success */
+	if (ret < 0)
+		return ret;
 
-> 
-> We may be wasting memory if target function perfer some cpu though.
-> 
-> 
-> TREND MICRO EMAIL NOTICE
-> 
-> The information contained in this email and any attachments is confidential and may be subject to copyright or other intellectual property protection. If you are not the intended recipient, you are not authorized to use or disclose this information, and we request that you notify us by reply mail or telephone and delete the original message from your mail system.
-> 
-> For details about what personal information we collect and why, please see our Privacy Notice on our website at: Read privacy policy<http://www.trendmicro.com/privacy>
+This is correct for the usb_control_msg() the call. However,
+the call to rtsx_usb_get_status_with_bulk is only successful
+when 0 is returned.
 
+So make status checking block specific.
 
+Fixes: 730876be2566 ("mfd: Add realtek USB card reader driver")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/misc/cardreader/rtsx_usb.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/misc/cardreader/rtsx_usb.c b/drivers/misc/cardreader/rtsx_usb.c
+index 59eda55d92a3..bd392b0c66af 100644
+--- a/drivers/misc/cardreader/rtsx_usb.c
++++ b/drivers/misc/cardreader/rtsx_usb.c
+@@ -304,14 +304,15 @@ int rtsx_usb_get_card_status(struct rtsx_ucr *ucr, u16 *status)
+ 		*status = *buf;
+ 
+ 		kfree(buf);
++
++		/* usb_control_msg may return positive when success */
++		if (ret < 0)
++			return ret;
+ 	} else {
+ 		ret = rtsx_usb_get_status_with_bulk(ucr, status);
++		if (ret)
++			return ret;
+ 	}
+-
+-	/* usb_control_msg may return positive when success */
+-	if (ret < 0)
+-		return ret;
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(rtsx_usb_get_card_status);
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.18.1
+
