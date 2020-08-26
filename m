@@ -2,189 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E12252C61
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67167252C6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgHZLXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728906AbgHZLVk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:21:40 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4D4C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:21:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o21so1397456wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SEDuZLoEMjEHog4pApJjNCMgFg9dzBqJXIk1pFgNb80=;
-        b=tj1ZX9QaB4QGO9d4/spzrqx89NYfYamXLXhILYwshGhtiGjacdxXcGR/ehyTyM9sU/
-         cH2MkkHG8d4hUjmtFhEUgcIrg/US6K/ZezMARZ3YETc2gT8IolPxBNJpBHBk/7I9YcMx
-         8ppmQhFRyLlquFbvQyz6iSJVqJ7Y9XgwPZca62eQJtkzoR3uG9SjxR/6or9jaocJLico
-         gTv+O7jcD+kq3DpraaKuNZOcdxdQL+K/dRZV1l2aQT+mqirwCICbLGGkN+kKuYsCOsit
-         Vd5YRrNP0DmW8AOFBDRzM1LLtt4IifdYL6i7093b3j/NPtKkiNEw8JbuVCErU2VwuSOL
-         pU5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SEDuZLoEMjEHog4pApJjNCMgFg9dzBqJXIk1pFgNb80=;
-        b=scOj7/Phzc9L0xyY8VY2pyRJGhA3Ev1A2TTjbfjsnWQvRaPDXbg6TjgNE0pzFLpjfn
-         3KgEEAQPfQhRrq8MYXLxiO7m77OLuUGi8P36bVMXnLDgR0VoE83Vd3rMBFLCJgqvVH9z
-         ImAqwq3jHw4VxhdcC/VHFP1TG4tO5QwSefK4N1xg/CNzwHt6NWscKj2E4TzJEsz7GNFw
-         4+02gBQiekY2zvbFa0c8TORxVHUN/19MLidZTgMmaRLQI9r+nVxKlW/5ml+G+LDr5qVB
-         RXwuKCMgDUl8AFNGhZbpsKjYXpcQqnC5S4ucW27wnEIHWeEgM5W50NAT2NcUazn5pWSe
-         EPxg==
-X-Gm-Message-State: AOAM531zzM5PQHD/Cv7Z5c6A3PNUqU0gcUNphnI2SuAkpDq07/k4WYHL
-        ATNwB2rN19MBKDUP9pykFTj/YA==
-X-Google-Smtp-Source: ABdhPJzMnJP2DhJKlKa0q/INIKLrcWwlyHS0fmuV/bjwj4iefa5IJkdfbtDVq8kV6WpCJ0owLKxtUw==
-X-Received: by 2002:a1c:bc45:: with SMTP id m66mr6121110wmf.36.1598440886485;
-        Wed, 26 Aug 2020 04:21:26 -0700 (PDT)
-Received: from dell ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id 3sm4623945wms.36.2020.08.26.04.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 04:21:25 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 12:21:24 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     merez@codeaurora.org
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, wil6210@qti.qualcomm.com
-Subject: Re: [PATCH 25/32] wireless: ath: wil6210: wmi: Fix formatting and
- demote non-conforming function headers
-Message-ID: <20200826112124.GN3248864@dell>
-References: <20200821071644.109970-1-lee.jones@linaro.org>
- <20200821071644.109970-26-lee.jones@linaro.org>
- <330bc340a4d16f383c9adef2324db60e@codeaurora.org>
+        id S1728924AbgHZL3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728923AbgHZLWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:22:21 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 576AF214F1;
+        Wed, 26 Aug 2020 11:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598440939;
+        bh=YEAKEbQU1F2hSM6r+mcMaGYUF+R7NfLvAdEson/SMRc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l2ayK7m9jiYucVZ+crv4iqq1N05oAnMIb6WfV3MoLZW6TMQm9Zl35LrNL3mPnkWwv
+         2Ep5ea2KSm96DWbRRnvM5plU+a7sleePZlYMuVpFfXpTBGSyVVu9Vqtt+MjUYrrpuv
+         0Ip0hLGaJ2EhLQ+SbgcUvEsL/+6YSqXns0+TtBTA=
+Received: by mail-ot1-f54.google.com with SMTP id k2so1183662ots.4;
+        Wed, 26 Aug 2020 04:22:19 -0700 (PDT)
+X-Gm-Message-State: AOAM533aZl4Q4Cic9nlXqwe5rNzVY9le+uBoWNNxdqjDSFq9NNyfZyOs
+        fYCTPcgtgR1XkJ7+rS0ZDHjUMfgkgceS5/L52eM=
+X-Google-Smtp-Source: ABdhPJys2rIMwSofVFm4a2BI8pi1pvyn/VMXm27w7Ci8IQOX5rEjLSYLMc3nFymhYPXe4pxNNATmfdg+rkL09qsm76I=
+X-Received: by 2002:a9d:774d:: with SMTP id t13mr9270988otl.108.1598440938462;
+ Wed, 26 Aug 2020 04:22:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <330bc340a4d16f383c9adef2324db60e@codeaurora.org>
+References: <20200819222425.30721-1-atish.patra@wdc.com> <mhng-e74548a1-7be6-4cc1-a47b-917e0a02dc68@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-e74548a1-7be6-4cc1-a47b-917e0a02dc68@palmerdabbelt-glaptop1>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 26 Aug 2020 13:22:07 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFstJ-hh=+HyNMA_E8eLWZFobrGBcFKFf13OgrHiTce8g@mail.gmail.com>
+Message-ID: <CAMj1kXFstJ-hh=+HyNMA_E8eLWZFobrGBcFKFf13OgrHiTce8g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] Add UEFI support for RISC-V
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Atish Patra <Atish.Patra@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Greentime Hu <greentime.hu@sifive.com>, hca@linux.ibm.com,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Steven Price <steven.price@arm.com>,
+        Waiman Long <longman@redhat.com>, Zong Li <zong.li@sifive.com>,
+        Daniel Schaefer <daniel.schaefer@hpe.com>,
+        Abner Chang <abner.chang@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020, merez@codeaurora.org wrote:
+On Tue, 25 Aug 2020 at 20:04, Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Wed, 19 Aug 2020 15:24:16 PDT (-0700), Atish Patra wrote:
+> > This series adds UEFI support for RISC-V.
+> >
+> > Linux kernel: v5.9-rc1
+> > U-Boot: v2020.07
+> > OpenSBI: master
+> >
+> > Patch 1-3 are generic riscv feature addition required for UEFI support.
+> > Patch 4-7 adds the efi stub support for RISC-V which was reviewed few months back.
+> > https://www.spinics.net/lists/linux-efi/msg19144.html
+> > Patch 8 just renames arm-init code so that it can be used across different
+> > architectures.
+> > Patch 9 adds the runtime services for RISC-V.
+> >
+> > The working set of patches can also be found in following git repo.
+> > https://github.com/atishp04/linux/tree/uefi_riscv_5.10_v6
+> >
+> > The patches have been verified on following platforms:
+> > 1. Qemu (both RV32 & RV64) for the following bootflow
+> >    OpenSBI->U-Boot->Linux
+> >    EDK2->Linux
+> > 2. HiFive unleashed using (RV64) for the following bootflow
+> >    OpenSBI->U-Boot->Linux
+> >    EDK2->Linux
+> >
+> > Thanks Abner & Daniel for all work done for EDK2.
+> > The EDK2 instructions are available here.
+> > https://github.com/JohnAZoidberg/riscv-edk2-docker/
+> >
+> > Note:
+> > 1. Currently, EDK2 RISC-V port doesn't support OVMF package. That's why
+> > EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER should be enabled to load initrd via
+> > commandline until OVMF patches are available.
+> >
+> > 2. For RV32, maximum allocated memory should be 1G as RISC-V kernel can not map
+> > beyond 1G of physical memory for RV32.
+> >
+> > 3. Runtime services have been verified with fwts on EDK2.
+> >
+> > ***********************************************************************
+> > [root@fedora-riscv ~]# fwts uefirtvariable
+> > Running 1 tests, results appended to results.log
+> > Test: UEFI Runtime service variable interface tests.
+> >   Test UEFI RT service get variable interface.            1 passed
+> >   Test UEFI RT service get next variable name interface.  4 passed
+> >   Test UEFI RT service set variable interface.            7 passed, 1 warning
+> >   Test UEFI RT service query variable info interface.     1 passed
+> >   Test UEFI RT service variable interface stress test.    2 passed
+> >   Test UEFI RT service set variable interface stress t..  4 passed
+> >   Test UEFI RT service query variable info interface s..  1 passed
+> >   Test UEFI RT service get variable interface, invalid..  5 passed
+> >   Test UEFI RT variable services supported status.        1 skipped
+> >
+> > Test           |Pass |Fail |Abort|Warn |Skip |Info |
+> > uefirtvariable |   25|     |     |    1|    1|     |
+> > Total:         |   25|    0|    0|    1|    1|    0|
+> >
+> > ***********************************************************************
+> >
+> > Changes from v5->v6:
+> > 1. Fixed the static declaration for pt_ops.
+> > 2. Added Reviewed/Acked-by.
+> >
+> > Changes from v4->v5:
+> > 1. Late mappings allocations are now done through function pointers.
+> > 2. EFI run time services are verified using full linux boot and fwts using EDK2.
+> >
+> > Changes from v3->v4:
+> > 1. Used pgd mapping to avoid copying DT to bss.
+> >
+> > Changes from v2->v3:
+> > 1. Fixed few bugs in run time services page table mapping.
+> > 2. Dropped patch 1 as it is already taken into efi-tree.
+> > 3. Sent few generic mmu fixes as a separate series to ease the merge conflicts.
+> >
+> > Changes from v1->v2:
+> > 1. Removed patch 1 as it is already taken into efi-tree.
+> > 2. Fixed compilation issues with patch 9.
+> > 3. Moved few function prototype declaration to header file to keep kbuild happy.
+> >
+> > Changes from previous version:
+> > 1. Added full ioremap support.
+> > 2. Added efi runtime services support.
+> > 3. Fixes mm issues
+> >
+> > Anup Patel (1):
+> > RISC-V: Move DT mapping outof fixmap
+> >
+> > Atish Patra (8):
+> > RISC-V: Add early ioremap support
+> > RISC-V: Implement late mapping page table allocation functions
+> > include: pe.h: Add RISC-V related PE definition
+> > RISC-V: Add PE/COFF header for EFI stub
+> > RISC-V: Add EFI stub support.
+> > efi: Rename arm-init to efi-init common for all arch
+> > RISC-V: Add EFI runtime services
+> > RISC-V: Add page table dump support for uefi
+> >
+> > arch/riscv/Kconfig                            |  25 +++
+> > arch/riscv/Makefile                           |   1 +
+> > arch/riscv/configs/defconfig                  |   1 +
+> > arch/riscv/include/asm/Kbuild                 |   1 +
+> > arch/riscv/include/asm/efi.h                  |  56 +++++
+> > arch/riscv/include/asm/fixmap.h               |  16 +-
+> > arch/riscv/include/asm/io.h                   |   1 +
+> > arch/riscv/include/asm/mmu.h                  |   2 +
+> > arch/riscv/include/asm/pgtable.h              |   5 +
+> > arch/riscv/include/asm/sections.h             |  13 ++
+> > arch/riscv/kernel/Makefile                    |   5 +
+> > arch/riscv/kernel/efi-header.S                | 104 ++++++++++
+> > arch/riscv/kernel/efi.c                       | 105 ++++++++++
+> > arch/riscv/kernel/head.S                      |  17 +-
+> > arch/riscv/kernel/head.h                      |   2 -
+> > arch/riscv/kernel/image-vars.h                |  51 +++++
+> > arch/riscv/kernel/setup.c                     |  17 +-
+> > arch/riscv/kernel/vmlinux.lds.S               |  22 +-
+> > arch/riscv/mm/init.c                          | 191 +++++++++++++-----
+> > arch/riscv/mm/ptdump.c                        |  48 ++++-
+> > drivers/firmware/efi/Kconfig                  |   3 +-
+> > drivers/firmware/efi/Makefile                 |   4 +-
+> > .../firmware/efi/{arm-init.c => efi-init.c}   |   0
+> > drivers/firmware/efi/libstub/Makefile         |  10 +
+> > drivers/firmware/efi/libstub/efi-stub.c       |  11 +-
+> > drivers/firmware/efi/libstub/riscv-stub.c     | 110 ++++++++++
+> > drivers/firmware/efi/riscv-runtime.c          | 143 +++++++++++++
+> > include/linux/pe.h                            |   3 +
+> > 28 files changed, 900 insertions(+), 67 deletions(-)
+> > create mode 100644 arch/riscv/include/asm/efi.h
+> > create mode 100644 arch/riscv/include/asm/sections.h
+> > create mode 100644 arch/riscv/kernel/efi-header.S
+> > create mode 100644 arch/riscv/kernel/efi.c
+> > create mode 100644 arch/riscv/kernel/image-vars.h
+> > rename drivers/firmware/efi/{arm-init.c => efi-init.c} (100%)
+> > create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
+> > create mode 100644 drivers/firmware/efi/riscv-runtime.c
+>
+> I've put these on for-next.  It's still pretty early in the cycle so there's
+> some time to fix stuff up, but it looks like we've pretty much come to
+> consensus on this.
+>
 
-> On 2020-08-21 10:16, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/net/wireless/ath/wil6210/wmi.c:52: warning: Incorrect use of
-> > kernel-doc format:  * Addressing - theory of operations
-> >  drivers/net/wireless/ath/wil6210/wmi.c:70: warning: Incorrect use of
-> > kernel-doc format:  * @sparrow_fw_mapping provides memory remapping
-> > table for sparrow
-> >  drivers/net/wireless/ath/wil6210/wmi.c:80: warning: cannot understand
-> > function prototype: 'const struct fw_map sparrow_fw_mapping[] = '
-> >  drivers/net/wireless/ath/wil6210/wmi.c:107: warning: Cannot
-> > understand  * @sparrow_d0_mac_rgf_ext - mac_rgf_ext section for
-> > Sparrow D0
-> >  drivers/net/wireless/ath/wil6210/wmi.c:115: warning: Cannot
-> > understand  * @talyn_fw_mapping provides memory remapping table for
-> > Talyn
-> >  drivers/net/wireless/ath/wil6210/wmi.c:158: warning: Cannot
-> > understand  * @talyn_mb_fw_mapping provides memory remapping table for
-> > Talyn-MB
-> >  drivers/net/wireless/ath/wil6210/wmi.c:236: warning: Function
-> > parameter or member 'x' not described in 'wmi_addr_remap'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:255: warning: Function
-> > parameter or member 'section' not described in 'wil_find_fw_mapping'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
-> > parameter or member 'wil' not described in 'wmi_buffer_block'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
-> > parameter or member 'ptr_' not described in 'wmi_buffer_block'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:278: warning: Function
-> > parameter or member 'size' not described in 'wmi_buffer_block'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:307: warning: Function
-> > parameter or member 'wil' not described in 'wmi_addr'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:307: warning: Function
-> > parameter or member 'ptr' not described in 'wmi_addr'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
-> > parameter or member 'wil' not described in 'wil_find_cid_ringid_sta'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
-> > parameter or member 'vif' not described in 'wil_find_cid_ringid_sta'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
-> > parameter or member 'cid' not described in 'wil_find_cid_ringid_sta'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1589: warning: Function
-> > parameter or member 'ringid' not described in
-> > 'wil_find_cid_ringid_sta'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
-> > parameter or member 'vif' not described in 'wmi_evt_ignore'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
-> > parameter or member 'id' not described in 'wmi_evt_ignore'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
-> > parameter or member 'd' not described in 'wmi_evt_ignore'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:1876: warning: Function
-> > parameter or member 'len' not described in 'wmi_evt_ignore'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:2588: warning: Function
-> > parameter or member 'wil' not described in 'wmi_rxon'
-> > 
-> > Cc: Maya Erez <merez@codeaurora.org>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: wil6210@qti.qualcomm.com
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/net/wireless/ath/wil6210/wmi.c | 28 ++++++++++++++------------
-> >  1 file changed, 15 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/net/wireless/ath/wil6210/wmi.c
-> > b/drivers/net/wireless/ath/wil6210/wmi.c
-> > index c7136ce567eea..3a6ee85acf6c7 100644
-> > --- a/drivers/net/wireless/ath/wil6210/wmi.c
-> > +++ b/drivers/net/wireless/ath/wil6210/wmi.c
-> > @@ -31,7 +31,7 @@ MODULE_PARM_DESC(led_id,
-> >  #define WIL_WAIT_FOR_SUSPEND_RESUME_COMP 200
-> >  #define WIL_WMI_PCP_STOP_TO_MS 5000
-> > 
-> > -/**
-> > +/*
-> >   * WMI event receiving - theory of operations
-> >   *
-> >   * When firmware about to report WMI event, it fills memory area
-> 
-> The correct format for such documentation blocks is:
-> /**
->  * DOC: Theory of Operation
-> 
-> This comment is also applicable for the rest of such documentation blocks
-> changed in this patch.
+I requested the following when acking these changes:
 
-Ah yes, good point.  Will fix.
+"""
+Note to the maintainer: to the extent possible, please put the patches
+in this series that touch drivers/firmware/efi on a separate branch
+based on v5.9-rc1, and merge that into your for-v5.10 branch at the
+appropriate spot. I don't have anything queued in the EFI tree at the
+moment, and so these changes can happily go through the riscv tree, as
+long as I am not forced to merge a bunch of unrelated changes on the
+off chance that something does come up.
+"""
 
-> > @@ -66,7 +66,7 @@ MODULE_PARM_DESC(led_id,
-> >   * AHB address must be used.
-> >   */
-> > 
-> > -/**
-> > +/*
-> >   * @sparrow_fw_mapping provides memory remapping table for sparrow
-> >   *
-> >   * array size should be in sync with the declaration in the wil6210.h
-> For files in net/ and drivers/net/ the preferred style for long (multi-line)
-> comments is a different and
-> the text should be in the same line as /*, as follows:
-> /* sparrow_fw_mapping provides memory remapping table for sparrow
-> I would also remove the @ from @sparrow_fw_mapping.
-> This comment is also applicable for the rest of such documentation blocks
-> changed in this patch.
+Something has come up, and given that the patch
 
-Sounds fair.  Will also fix.
+efi: Rename arm-init to efi-init common for all arch
 
-Thank you.
+lives on your for-next branch after a bunch of RISCV changes, I cannot
+merge anything for EFI without pulling all of that into the EFI tree
+as well.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Also, it is not clear to me whether the current ordering does not
+break bisect, given that efi-init.o is referenced in patch #8 but is
+not created until patch #9
+
+So could you please do the following:
+
+- drop 'efi: Rename arm-init to efi-init common for all arch' from the
+top of your for-next branch
+- create a separate topic branch that carries the dropped patch
+- recreate the for-next branch so the topic branch is merged into it
+at the right spot (i.e., before patch #8)
+
+That way, I can merge your topic branch into the EFI tree as well, and
+apply the other EFI changes on top of it.
+
+Thanks,
+Ard.
