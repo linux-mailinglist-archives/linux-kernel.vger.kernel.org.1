@@ -2,164 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A23925295F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495B625296C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgHZIl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 04:41:28 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:45764 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgHZIlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 04:41:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1598431284; x=1629967284;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8mdaeBmcxu3o47l7H/D8BVFS4SLTi4OP6sCmaG9VR4A=;
-  b=b5fx/8JM97ZR9uOK7trTU2O41G+f2Q17XgeveHlrzsuGnbK7wDD6q7U7
-   /kIUGOrD8rtkOzS5xRkNtanAJrMlAKVXBQGFVWMjWGZ5vFUn483HbjGyl
-   yk808jEEHkqrKp9kz3AaSuim59VfE+S/jZa6gVyP0KgutMEJ42OkC3oiJ
-   KW9N/30nX4NcezMlIAN+6ULZa2D3Uc0v7/NqdOzXIsgermV5l3iaZ5uJZ
-   /rtoDKImlMuOilIC2t8ou+hB5NNUtMpwXdbaREsxXjjnYVNzTNIABlJYk
-   itt0NcFS778M3XxHVIyQL14ZxPkOL/D8srX/viWnVnAfCIbEj1fV4S4bw
-   g==;
-IronPort-SDR: WIDO+QrcQqlAsFQOW4uG6PkiwAXG52D435peGfA8HicTtoO+67hxVzEwIvvUdjsOQ+59h2utb6
- DxUQJK9BZ3sTGcKDJRyBzD0FQQMHBA+BJykzsPN9zLshRc8MrbsyrvTN1RhUbr5/tzT7Nm8xV7
- rxmAniXYITtmYA5uns6NU8yRYWbUPk/LZNeg2VNB8Am6ckwV0P4NaOuq3eS4+FxIecAuEvHCpP
- a63dc17L6GDCeoXTRwHmDIgwrw7uoWTEWIcbYPqHo11FEkJ6yGxegcKE+VftnkNiRJBFdMnmbs
- OiE=
-X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
-   d="scan'208";a="89395762"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Aug 2020 01:41:24 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 26 Aug 2020 01:41:23 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 26 Aug 2020 01:41:21 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v6] dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
-Date:   Wed, 26 Aug 2020 10:41:07 +0200
-Message-ID: <20200826084107.20185-1-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        id S1727125AbgHZIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 04:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726817AbgHZIqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 04:46:40 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33F552071E;
+        Wed, 26 Aug 2020 08:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598431600;
+        bh=HoUnL2q1WxrGMZkSItOoLBcbNE9id2blFCNhr5ujsSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dih5vfgd2MSYnjNKJIwqN2EcDZjiYbs4WmUSide/Pmx/pPy68SGTT5MpMvQ2wpIqw
+         TISsDTMzie7mChKUidct21AZ1AMPSbh/sYoup4B07jNaMmQhG5QvGAQx436EGER4yw
+         DnqW7haaYdXOpEL3cHpWNavOYSSeRzpJojzVu8fQ=
+Date:   Wed, 26 Aug 2020 14:16:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH v2] soundwire: intel: fix intel_suspend/resume defined
+ but not used warning
+Message-ID: <20200826084635.GX2639@vkoul-mobl>
+References: <20200824133234.28115-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20200824133234.28115-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Sparx5 SDHCI controller is based on the Designware controller IP.
+On 24-08-20, 21:32, Bard Liao wrote:
+> When CONFIG_PM_SLEEP is not defined, GCC throws compilation warnings:
+> 
+> drivers/soundwire/intel.c:1799:12: warning: ‘intel_resume’ defined but not
+> used [-Wunused-function]
+>  static int intel_resume(struct device *dev)
+>             ^~~~~~~~~~~~
+> drivers/soundwire/intel.c:1683:12: warning: ‘intel_suspend’ defined but not
+> used [-Wunused-function]
+>  static int intel_suspend(struct device *dev)
+>             ^~~~~~~~~~~~~
+> 
+> Fix by using __maybe_unused macro.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
+Applied, thanks
 
-Note: This patch is now separated from original patch series.
-
-v6 changes:
-- Change "mmc0@600800000" => "mmc@600800000"
-
-[from earlier patch series, only applicable changes]
-
-Changes in v5:
-- Change (mmc|sdhci)@600800000 to mmc0@600800000
-
-Changes in v4:
-n/a
-
-Changes in v3:
-- Add dt-bindings for property "microchip,clock-delay"
-
-Changes in v2:
-n/a
-
- .../mmc/microchip,dw-sparx5-sdhci.yaml        | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-
-diff --git a/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-new file mode 100644
-index 000000000000..55883290543b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/microchip,dw-sparx5-sdhci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip Sparx5 Mobile Storage Host Controller Binding
-+
-+allOf:
-+  - $ref: "mmc-controller.yaml"
-+
-+maintainers:
-+  - Lars Povlsen <lars.povlsen@microchip.com>
-+
-+# Everything else is described in the common file
-+properties:
-+  compatible:
-+    const: microchip,dw-sparx5-sdhci
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+    description:
-+      Handle to "core" clock for the sdhci controller.
-+
-+  clock-names:
-+    items:
-+      - const: core
-+
-+  microchip,clock-delay:
-+    description: Delay clock to card to meet setup time requirements.
-+      Each step increase by 1.25ns.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 1
-+    maximum: 15
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/microchip,sparx5.h>
-+    sdhci0: mmc@600800000 {
-+        compatible = "microchip,dw-sparx5-sdhci";
-+        reg = <0x00800000 0x1000>;
-+        pinctrl-0 = <&emmc_pins>;
-+        pinctrl-names = "default";
-+        clocks = <&clks CLK_ID_AUX1>;
-+        clock-names = "core";
-+        assigned-clocks = <&clks CLK_ID_AUX1>;
-+        assigned-clock-rates = <800000000>;
-+        interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+        bus-width = <8>;
-+        microchip,clock-delay = <10>;
-+    };
---
-2.27.0
+-- 
+~Vinod
