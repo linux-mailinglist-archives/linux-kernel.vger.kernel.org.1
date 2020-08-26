@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54918252A8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2F1252A9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgHZJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:40:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14080 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727884AbgHZJk1 (ORCPT
+        id S1728613AbgHZJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728259AbgHZJlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:40:27 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9XOaD059228;
-        Wed, 26 Aug 2020 05:40:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=N7+aa+XxNWIP45367pCc49nejHJb7V3eQKgrc57njM8=;
- b=li3s+CpxcaYPFTQiUOSd8O/26MuRYsCODFBOiXge6osQelC0cLYmzWrkj7s2KJUkHKmY
- DY0ghXLXL9zT4tBi0Fjqjif5QYVGA55C7V5trHrAEkW/yYf/DK5/ysHlSfehQprHPuZw
- 1S7abgmYRGeYiHNbxT05fCVs2ct0hL47yOdNIQrE+N7K+z/ws3bcXDWmYYd1DJ4OpWAC
- kTwZbEotA3v0IhD4ZR867ZLirc4Zpq1nFXkPsMcHXiXeZOsjCDbcPx0xxevnbPJi7MAV
- RR88NjPFVKCvKFzHGbelWSIyPbsRgxdptkTSd93scGg1xDOIfKI9c+9Msy6PiqXtx6vw wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335m1w2dhc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 05:40:18 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07Q9Y2J7062048;
-        Wed, 26 Aug 2020 05:40:18 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335m1w2dfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 05:40:17 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9c0Lr005769;
-        Wed, 26 Aug 2020 09:40:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 335j2704ed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 09:40:15 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07Q9cgVD66126184
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 09:38:42 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF8A95204F;
-        Wed, 26 Aug 2020 09:40:12 +0000 (GMT)
-Received: from drishya.in.ibm.com (unknown [9.199.54.64])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 55DA052054;
-        Wed, 26 Aug 2020 09:40:11 +0000 (GMT)
-Date:   Wed, 26 Aug 2020 15:10:09 +0530
-From:   Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        npiggin@gmail.com, mikey@neuling.org, ego@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-Subject: Re: [PATCH] Revert "powerpc/powernv/idle: Replace CPU feature check
- with PVR check"
-Message-ID: <20200826094009.GC48285@drishya.in.ibm.com>
-Reply-To: svaidy@linux.ibm.com
-References: <20200826082918.89306-1-psampat@linux.ibm.com>
+        Wed, 26 Aug 2020 05:41:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2DDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:41:42 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598434896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5T6JrWkd1tVkRpZewBe6NAmILES/5wwAPylURy3cHTs=;
+        b=vs+Ds/LbD0tTKUu7T/oAp0naRYHaICf4Uzked2Z7DlqMXJfCSN3dedfrgqzdFJfVooN7MH
+        fdVNfdI99UDRb4kCm0JgWh8hofy8RqHby4n7Fb/szzfOm/oO3eAfAVYsju1UpkeFOPd0hv
+        UF0/q+9Lghs6MsqdUuvTMxNA4pHhx3kT0QR8A6S2JQ5k+VBKtoYomwghPKEKoK++SPU5TX
+        zuPuFsN0U9WdgvtWdcuMvlmRWdiMU4mabvT12RIiwxuw7RnzsjbpZyF2Jpwche+Kt1bNsG
+        7Mz3bEM/D0G9xTqOC0YLx0UnFpLsghkWMstQjNHSvO1u5uOwqvinAYdpqqoHsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598434896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5T6JrWkd1tVkRpZewBe6NAmILES/5wwAPylURy3cHTs=;
+        b=wDx8T36QjzCa/Lb0ilvtOsRnZ2SqWyJ+O94RgCcrG6oJs6bx4Coz4gPpuM7jaHRiaHOTbH
+        ARvjcQCKmO/4uCBA==
+To:     "Zhang\, Qiang" <Qiang.Zhang@windriver.com>,
+        Waiman Long <longman@redhat.com>,
+        "elver\@google.com" <elver@google.com>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06?= [PATCH] debugobjects: install
+ cpu hotplug callback
+In-Reply-To: <BYAPR11MB2632ABDD5A8334F74B4F539AFF540@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200820032453.5222-1-qiang.zhang@windriver.com> <BYAPR11MB263237C2A74C32CC14DD0F2EFF570@BYAPR11MB2632.namprd11.prod.outlook.com> <e75c1601-b466-8476-f75b-514b1c21646e@redhat.com> <87pn7ewae6.fsf@nanos.tec.linutronix.de> <BYAPR11MB2632ABDD5A8334F74B4F539AFF540@BYAPR11MB2632.namprd11.prod.outlook.com>
+Date:   Wed, 26 Aug 2020 11:41:36 +0200
+Message-ID: <874kopwxpr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200826082918.89306-1-psampat@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_06:2020-08-25,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 bulkscore=0 clxscore=1011 suspectscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260075
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pratik Rajesh Sampat <psampat@linux.ibm.com> [2020-08-26 13:59:18]:
+On Wed, Aug 26 2020 at 08:34, Qiang Zhang wrote:
 
-> Cpuidle stop state implementation has minor optimizations for P10
-> where hardware preserves more SPR registers compared to P9.
-> The current P9 driver works for P10, although does few extra
-> save-restores. P9 driver can provide the required power management
-> features like SMT thread folding and core level power savings
-> on a P10 platform.
-> 
-> Until the P10 stop driver is available, revert the commit which
-> allows for only P9 systems to utilize cpuidle and blocks all
-> idle stop states for P10.
-> Cpu idle states are enabled and tested on the P10 platform
-> with this fix.
-> 
-> This reverts commit 8747bf36f312356f8a295a0c39ff092d65ce75ae.
-> 
-> Fixes: 8747bf36f312 ("powerpc/powernv/idle: Replace CPU feature check with PVR check")
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+> ________________________________________
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: linux-kernel-owner@vger.kernel.org <linux-ke=
+rnel-owner@vger.kernel.org> =E4=BB=A3=E8=A1=A8 Thomas Gleixner <tglx@linutr=
+onix.de>
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2020=E5=B9=B48=E6=9C=8826=E6=97=A5 =
+7:53
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: Waiman Long; Zhang, Qiang; elver@google.com
+> =E6=8A=84=E9=80=81: linux-kernel@vger.kernel.org; akpm@linux-foundation.o=
+rg
+> =E4=B8=BB=E9=A2=98: Re: =E5=9B=9E=E5=A4=8D: [PATCH] debugobjects: install=
+ cpu hotplug callback
 
-Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Can you please fix your mail client not to copy the headers into the
+mail body? The headers are already in the mail itself.
 
+> On Tue, Aug 25 2020 at 18:26, Waiman Long wrote:
 
-> ---
->  @mpe: This revert would resolve a staging issue wherein the P10 stop
->  driver is not yet ready while cpuidle stop states need not be blocked
->  on 5.9 for Power10 systems which could cause SMT folding related
->  performance issues.
-> 
->  The P10 stop driver is in the works here:
->  https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-August/216773.html
-> 
->  arch/powerpc/platforms/powernv/idle.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
-> index 77513a80cef9..345ab062b21a 100644
-> --- a/arch/powerpc/platforms/powernv/idle.c
-> +++ b/arch/powerpc/platforms/powernv/idle.c
-> @@ -1223,7 +1223,7 @@ static void __init pnv_probe_idle_states(void)
->  		return;
->  	}
->  
-> -	if (pvr_version_is(PVR_POWER9))
-> +	if (cpu_has_feature(CPU_FTR_ARCH_300))
->  		pnv_power9_idle_init();
->  
->  	for (i = 0; i < nr_pnv_idle_states; i++)
+Something like this is completely sufficient.
 
+>>That's a really good question nevertheless. The only case where this
+>>ever matters is physical hotplug. All other CPU hotplug stuff is
+>>temporarily or in case of a late (post boottime) SMT disable it's going
+>>to be a handful of free objects on that pool. As debugobjects is as the
+>>name says a debug facility the benefit is questionable unless there is a
+>>good reason to do so.
+>
+>  I don't know there may not be too many objects in the percpu pool,
+>  but that doesn't mean they no need to be free, a CPU may never be
+>  online after it is offline. some objects in percpu pool is never
+>  free.
 
-This revert solves the stated problem and makes kernel v5.9 work
-reasonable well on P10 with stop states which are required for SMT
-mode changes.
+And this matters because? Because your fully debug enabled kernel will
+have an uptime of years after disabling the CPU?
 
-Complete P10 driver has been in the works and will build on this fix
-and complete the required platform support and optimizations.
+That said, I'm not opposed against this patch, but
 
---Vaidy
+     'we should free objects'
+
+is not a convincing technical argument for doing this. If we want to
+have that then please add proper technical arguments to the changelog.
+
+Thanks,
+
+        tglx
 
