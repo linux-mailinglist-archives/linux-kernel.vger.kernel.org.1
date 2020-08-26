@@ -2,136 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9DD252C9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EBE252CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729070AbgHZLkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729018AbgHZLh5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:37:57 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F91C0613ED;
-        Wed, 26 Aug 2020 04:37:35 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id v16so758328plo.1;
-        Wed, 26 Aug 2020 04:37:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Vt41UNzwhd7H8iOJWWQaJ2po5o89qJA4//y1ixZpDJA=;
-        b=f2B57zh/EGUaA7PQLarcSXY8LmHSM4t/5IYJRkigwlX2JbvU4mCjJbK99OdAz5Fx9I
-         xjmHmh9I8H1AHvVdd2PwLXb0gFNV/mooRXS2OwqCi5+sGqi39TovZMUZfMDS286/VsS/
-         xMJzF+yEA+5BhFqoAotNw/qi5ik02UPO+cDWl6MH0W9R0uiTGXjliFJEZbh91OL0MA4k
-         kWvRguE7ObqrX2wgJUeHpv0AKoGz+KLfMXfSCDMOjfUCVsmql4n3K7H7olz/rVwk1Hzi
-         ZmAeKUuIDxvF7WPhTifjjM4xGxN5zt8G9UJZVmK6p65sCH7wHudUKFXNZ8yM/VUC28qN
-         ewgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Vt41UNzwhd7H8iOJWWQaJ2po5o89qJA4//y1ixZpDJA=;
-        b=STciMdolYsDbj5UxKTYrb3KEILfAsQvaWioFYnyPVW9IXo6waLKL+Jry8RtQniJfr9
-         tDr+N9TABaWGC0ywahSeTELhpG1XuQHCYn9dTNPAxVhUwW8rDwQVtRjvgpZy/cssz1K4
-         1vPsPB1cNyMYKxhrKxKlgXVlAkowKmOvkpW77aXJNJSGv1/CLoBOk0uMO/9CxaNOqJh7
-         rx983QArY6YSYwz2Yky07QO1vZwIyEZAG1FOA9+TbveYezvjZstHSWmdivMcX6vVL6vs
-         wFSajKUom0mfZvagZPmSstgYZ89gPLrxyr4wy3z6Jpi+wai1txkNoeGmMOetTAj1bZxc
-         0ffA==
-X-Gm-Message-State: AOAM531Qfll3PYHZwBj/s8L06OR+nrkLPOMcM7gHpyc7kQq+n/tY+agd
-        ViKEtld11htoOS7ZtSw5CPD+c59MI0I=
-X-Google-Smtp-Source: ABdhPJzBGZnfnxqRta01CVr9x9ijWsljVtnE050DIPGOxgcWkmTkxadvUO5k7vIIYadCfhHoJ3ZuRg==
-X-Received: by 2002:a17:90a:9483:: with SMTP id s3mr5694994pjo.98.1598441854639;
-        Wed, 26 Aug 2020 04:37:34 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:56a:2197:d2eb:7e49:dfa1:a882])
-        by smtp.gmail.com with ESMTPSA id x5sm2591047pfj.1.2020.08.26.04.37.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Aug 2020 04:37:34 -0700 (PDT)
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, matthias.bgg@gmail.com
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: [PATCH 2/2] dt-bindings: leds: Add bindings for MT6360 LED
-Date:   Wed, 26 Aug 2020 19:37:20 +0800
-Message-Id: <1598441840-15226-3-git-send-email-gene.chen.richtek@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598441840-15226-1-git-send-email-gene.chen.richtek@gmail.com>
-References: <1598441840-15226-1-git-send-email-gene.chen.richtek@gmail.com>
+        id S1729072AbgHZLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:41:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:44602 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728955AbgHZLiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:38:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A645A1FB;
+        Wed, 26 Aug 2020 04:38:04 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB0CB3F71F;
+        Wed, 26 Aug 2020 04:38:00 -0700 (PDT)
+Subject: Re: [PATCH] iommu: Add support to filter non-strict/lazy mode based
+ on device names
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e3e4da33-a44f-0a07-9e2e-0f806875ab0b@arm.com>
+Date:   Wed, 26 Aug 2020 12:37:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200825154249.20011-1-saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gene Chen <gene_chen@richtek.com>
+On 2020-08-25 16:42, Sai Prakash Ranjan wrote:
+> Currently the non-strict or lazy mode of TLB invalidation can only be set
+> for all or no domains. This works well for development platforms where
+> setting to non-strict/lazy mode is fine for performance reasons but on
+> production devices, we need a more fine grained control to allow only
+> certain peripherals to support this mode where we can be sure that it is
+> safe. So add support to filter non-strict/lazy mode based on the device
+> names that are passed via cmdline parameter "iommu.nonstrict_device".
 
-Add bindings document for LED support on MT6360 PMIC
+There seems to be considerable overlap here with both the existing 
+patches for per-device default domain control [1], and the broader 
+ongoing development on how to define, evaluate and handle "trusted" vs. 
+"untrusted" devices (e.g. [2],[3]). I'd rather see work done to make 
+sure those integrate properly together and work well for everyone's 
+purposes, than add more disjoint mechanisms that only address small 
+pieces of the overall issue.
 
-Signed-off-by: Gene Chen <gene_chen@richtek.com>
----
- .../devicetree/bindings/leds/leds-mt6360.yaml      | 50 ++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+Robin.
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-new file mode 100644
-index 0000000..4598be5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LED driver for MT6360 PMIC from MediaTek Integrated.
-+
-+maintainers:
-+  - Gene Chen <gene_chen@richtek.com>
-+
-+description: |
-+  This module is part of the MT6360 MFD device. For more details
-+  see Documentation/devicetree/bindings/mfd/mt6360.yaml.
-+
-+  The LED controller is represented as a sub-node of the PMIC node on
-+  the device tree.
-+
-+  This device has six current sinks.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt6360-led
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+patternProperties:
-+  "^led@[0-5]$":
-+    type: object
-+    description: |
-+      Properties for a single LED.
-+
-+    properties:
-+      reg:
-+        description:
-+          Index of the LED.
-+        minimum: 0
-+        maximum: 5
-+
-+required:
-+  - compatible
-+  - "#address-cells"
-+  - "#size-cells"
-+additionalProperties: false
-+
-+...
--- 
-2.7.4
+[1] 
+https://lore.kernel.org/linux-iommu/20200824051726.7xaJRTTszJuzdFWGJ8YNsshCtfNR0BNeMrlILAyqt_0@z/
+[2] 
+https://lore.kernel.org/linux-iommu/20200630044943.3425049-1-rajatja@google.com/
+[3] 
+https://lore.kernel.org/linux-iommu/20200626002710.110200-2-rajatja@google.com/
 
+> Example: iommu.nonstrict_device="7c4000.sdhci,a600000.dwc3,6048000.etr"
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/iommu/iommu.c | 37 +++++++++++++++++++++++++++++++++----
+>   1 file changed, 33 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 609bd25bf154..fd10a073f557 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -32,6 +32,9 @@ static unsigned int iommu_def_domain_type __read_mostly;
+>   static bool iommu_dma_strict __read_mostly = true;
+>   static u32 iommu_cmd_line __read_mostly;
+>   
+> +#define DEVICE_NAME_LEN		1024
+> +static char nonstrict_device[DEVICE_NAME_LEN] __read_mostly;
+> +
+>   struct iommu_group {
+>   	struct kobject kobj;
+>   	struct kobject *devices_kobj;
+> @@ -327,6 +330,32 @@ static int __init iommu_dma_setup(char *str)
+>   }
+>   early_param("iommu.strict", iommu_dma_setup);
+>   
+> +static int __init iommu_nonstrict_filter_setup(char *str)
+> +{
+> +	strlcpy(nonstrict_device, str, DEVICE_NAME_LEN);
+> +	return 1;
+> +}
+> +__setup("iommu.nonstrict_device=", iommu_nonstrict_filter_setup);
+> +
+> +static bool iommu_nonstrict_device(struct device *dev)
+> +{
+> +	char *filter, *device;
+> +
+> +	if (!dev)
+> +		return false;
+> +
+> +	filter = kstrdup(nonstrict_device, GFP_KERNEL);
+> +	if (!filter)
+> +		return false;
+> +
+> +	while ((device = strsep(&filter, ","))) {
+> +		if (!strcmp(device, dev_name(dev)))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>   static ssize_t iommu_group_attr_show(struct kobject *kobj,
+>   				     struct attribute *__attr, char *buf)
+>   {
+> @@ -1470,7 +1499,7 @@ static int iommu_get_def_domain_type(struct device *dev)
+>   
+>   static int iommu_group_alloc_default_domain(struct bus_type *bus,
+>   					    struct iommu_group *group,
+> -					    unsigned int type)
+> +					    unsigned int type, struct device *dev)
+>   {
+>   	struct iommu_domain *dom;
+>   
+> @@ -1489,7 +1518,7 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
+>   	if (!group->domain)
+>   		group->domain = dom;
+>   
+> -	if (!iommu_dma_strict) {
+> +	if (!iommu_dma_strict || iommu_nonstrict_device(dev)) {
+>   		int attr = 1;
+>   		iommu_domain_set_attr(dom,
+>   				      DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+> @@ -1509,7 +1538,7 @@ static int iommu_alloc_default_domain(struct iommu_group *group,
+>   
+>   	type = iommu_get_def_domain_type(dev);
+>   
+> -	return iommu_group_alloc_default_domain(dev->bus, group, type);
+> +	return iommu_group_alloc_default_domain(dev->bus, group, type, dev);
+>   }
+>   
+>   /**
+> @@ -1684,7 +1713,7 @@ static void probe_alloc_default_domain(struct bus_type *bus,
+>   	if (!gtype.type)
+>   		gtype.type = iommu_def_domain_type;
+>   
+> -	iommu_group_alloc_default_domain(bus, group, gtype.type);
+> +	iommu_group_alloc_default_domain(bus, group, gtype.type, NULL);
+>   
+>   }
+>   
+> 
+> base-commit: e46b3c0d011eab9933c183d5b47569db8e377281
+> 
