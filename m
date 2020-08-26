@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0926252FFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8F1253006
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbgHZNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730289AbgHZNcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:32:41 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 656F2208E4;
-        Wed, 26 Aug 2020 13:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598448760;
-        bh=b1nmyfPK5FQ7cjqNh+7j1qIyG/iexxlz9aw19IXSc24=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tL+y8cFx68cVj/yVRenvmIZEEKy9hGzoiqxQdyuSQZ+isFRgrSnJXt0VWCkLRp8iR
-         ZHAsWilvx7FAxEBcpf2aXVgBsK+TolYL3TYHW44mW4q8bkqk/V6OAtFJBNzh/gEFeW
-         0lucH461F4WvGvITYPOsZwVziOE4hG8PHrScxR88=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kAvXa-006rI6-9y; Wed, 26 Aug 2020 14:32:38 +0100
+        id S1730333AbgHZNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729540AbgHZNem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:34:42 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F026C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:34:42 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id j9so1735114ilc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=barpilot-io.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SMSWi9+6a7fi1K3fVedLr45HOo02Azh4dOLlARFQGTA=;
+        b=GHB1USjRDQ9ReFPUSIb537h3FyxSfKQOZYZsTLPYUXlYh/DxmcA1ZBjDs0tOjwCSMn
+         4SInLnowznEcUnKZFLmcWFVsvyHrK2zVgqtKXOcYFlDMtficXVVlKxYzngUJACVFmT3P
+         e5DbazIiAdUwy5/+T2BuIptn4qT6fdGDMyHcl/I2r21O54HVr7cJsqy3mA+eu4iYcPuj
+         Qsm4U+HsnYXUdSI3PAScyNPX3L0Suo2l2OinKKH2lsrQec16Lbo1jXC+i1rUvCk7aFwI
+         wPnoEC+a3DBq6Hsqli4heRQ3Di18BhMJ9YLHAyOdnT0rzw/mZKS43cuITqutlw8Sv4oJ
+         lIVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SMSWi9+6a7fi1K3fVedLr45HOo02Azh4dOLlARFQGTA=;
+        b=SfjS7y/B8Hw/s1vZYVWo3d2km5A49IgdhEp96fAeaEXBn1kpBOirChqVrYxvccEb3k
+         Zu5oCJs5meaGoY6G6Wd40QhXzMCUmsJnIMaUpAfqXOBLRFnOZQptF2sZfqsG2XS2Hmqm
+         jYG/kwaZxWS0H1yHvVnDJQCZdl5Zpy/u4HHlOfuR/YjtlahhaxVSGIF4lNgPRc9ZuEtK
+         do4oIARVhIXTNGj1nzB38Cto/OYmws8EG1Q49PuVS2ZRS9brPypE6xvjRxWl0DDzE2NB
+         Fg8AM738SR9IZdBKXJMBQL3JPTZwkckysKOCvMnA/aYHSf8yijb33/8gKEkTrGb2SCUe
+         YzBA==
+X-Gm-Message-State: AOAM531yJnImGC8Qoq41R+1dl469yoHPqkAJ2mN99ADMOIa8aXqkzUtq
+        xIyR4ogmmu1/8wKH8VeVIc1cBD7Exn/sKRo7fVmj/1d51NsbFi+h
+X-Google-Smtp-Source: ABdhPJzuRzLNXCwTLOBci662EV2n8ED3qyz3twdJElWhNauwpNkSqtHvjnzo37MqSOqutxbjlkkrU8EDapbkV5opPm0=
+X-Received: by 2002:a92:9fdb:: with SMTP id z88mr13062947ilk.57.1598448881300;
+ Wed, 26 Aug 2020 06:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 26 Aug 2020 14:32:38 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] Input; Sanitize event code before modifying bitmaps
-In-Reply-To: <20200824195102.GY1665100@dtor-ws>
-References: <20200817112700.468743-1-maz@kernel.org>
- <20200817112700.468743-2-maz@kernel.org> <20200824195102.GY1665100@dtor-ws>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <bcf65dce766d0376027e80bf205b095d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dmitry.torokhov@gmail.com, jikos@kernel.org, benjamin.tissoires@redhat.com, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200826120421.44356-1-guilhem@barpilot.io> <CAJZ5v0i8XUF39Vv=EM4TgyXgK6zHniZW3tGYFPweO3kg+BrxOQ@mail.gmail.com>
+ <CAGX5Wg0655U71nFcaAJXmj1XMA3MjnCVn=q1Pf=7LLyryHhroQ@mail.gmail.com> <CAJZ5v0hEEDp6thXSOM2ruVjKU02f1Jfn_nEms1yHUrQR2Q_XaQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hEEDp6thXSOM2ruVjKU02f1Jfn_nEms1yHUrQR2Q_XaQ@mail.gmail.com>
+From:   Guilhem Lettron <guilhem@barpilot.io>
+Date:   Wed, 26 Aug 2020 15:34:30 +0200
+Message-ID: <CAGX5Wg27wFbZUo2NAiBHsR=6F8hhwnZh3XTcioAQkejGOCvVNg@mail.gmail.com>
+Subject: Re: [PATCH] intel_idle: Add ICL support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Wed, 26 Aug 2020 at 15:17, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, Aug 26, 2020 at 2:59 PM Guilhem Lettron <guilhem@barpilot.io> wrote:
+> >
+> > On my laptop, a Dell XPS 13 7390 2-in-1 with i7-1065G7, ACPI only report "C1_ACPI", "C2_ACPI" and "C3_ACPI".
+>
+> Can you list the properties of the idle states in this configuration, that is:
+>
+> $ grep -r '.*' /sys/devices/system/cpu/cpu0/cpuidle/state1/
+>
+> and analogously for state2 and state3, and send the output of this?
+>
+> On my desktop system the above comment produces the following output:
+>
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/above:1022634
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/time:2556533185
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/power:0
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/residency:2
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/usage:17625391
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/desc:MWAIT 0x00
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/below:6578613
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/name:C1
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/s2idle/time:0
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/s2idle/usage:0
+>
+> Thanks!
 
-On 2020-08-24 20:51, Dmitry Torokhov wrote:
-> Hi Marc,
-> 
-> On Mon, Aug 17, 2020 at 12:26:59PM +0100, Marc Zyngier wrote:
->> When calling into input_set_capability(), the passed event code is
->> blindly used to set a bit in a number of bitmaps, without checking
->> whether this actually fits the expected size of the bitmap.
->> 
->> This event code can come from a variety of sources, including devices
->> masquerading as input devices, only a bit more "programmable".
->> 
->> Instead of taking the raw event code, sanitize it to the actual bitmap
->> size and output a warning to let the user know.
->> 
->> These checks are, at least in spirit, in keeping with cb222aed03d7
->> ("Input: add safety guards to input_set_keycode()").
->> 
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> ---
->>  drivers/input/input.c | 16 +++++++++++++++-
->>  1 file changed, 15 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/input/input.c b/drivers/input/input.c
->> index 3cfd2c18eebd..1e77cf47aa44 100644
->> --- a/drivers/input/input.c
->> +++ b/drivers/input/input.c
->> @@ -1974,14 +1974,18 @@ EXPORT_SYMBOL(input_get_timestamp);
->>   * In addition to setting up corresponding bit in appropriate 
->> capability
->>   * bitmap the function also adjusts dev->evbit.
->>   */
->> -void input_set_capability(struct input_dev *dev, unsigned int type, 
->> unsigned int code)
->> +void input_set_capability(struct input_dev *dev, unsigned int type, 
->> unsigned int raw_code)
->>  {
->> +	unsigned int code = raw_code;
->> +
->>  	switch (type) {
->>  	case EV_KEY:
->> +		code &= KEY_MAX;
->>  		__set_bit(code, dev->keybit);
-> 
-> 
-> I would much rather prefer we did not simply set some random bits in
-> this case, but instead complained loudly and refused to alter anything.
-> 
-> The function is not exported directly to userspace, so we expect 
-> callers
-> to give us sane inputs, and I believe WARN() splash in case of bad
-> inputs would be the best solution here.
+grep -r '.*' /sys/devices/system/cpu/cpu0/cpuidle/state1/
 
-Fair enough. I've moved the checking to the HID layer (using
-hid_map_usage() as the validation primitive), which makes
-changing input_set_capability() irrelevant.
+/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+/sys/devices/system/cpu/cpu0/cpuidle/state1/above:524
+/sys/devices/system/cpu/cpu0/cpuidle/state1/time:63400881
+/sys/devices/system/cpu/cpu0/cpuidle/state1/power:0
+/sys/devices/system/cpu/cpu0/cpuidle/state1/residency:1
+/sys/devices/system/cpu/cpu0/cpuidle/state1/latency:1
+/sys/devices/system/cpu/cpu0/cpuidle/state1/usage:195432
+/sys/devices/system/cpu/cpu0/cpuidle/state1/desc:ACPI FFH MWAIT 0x0
+/sys/devices/system/cpu/cpu0/cpuidle/state1/below:27374
+/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+/sys/devices/system/cpu/cpu0/cpuidle/state1/name:C1_ACPI
+/sys/devices/system/cpu/cpu0/cpuidle/state1/s2idle/time:0
+/sys/devices/system/cpu/cpu0/cpuidle/state1/s2idle/usage:0
 
-I'll post v2 shortly in the form of a single patch.
+grep -r '.*' /sys/devices/system/cpu/cpu0/cpuidle/state2/
 
-Thanks,
+/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
+/sys/devices/system/cpu/cpu0/cpuidle/state2/above:43616
+/sys/devices/system/cpu/cpu0/cpuidle/state2/time:144893598
+/sys/devices/system/cpu/cpu0/cpuidle/state2/power:0
+/sys/devices/system/cpu/cpu0/cpuidle/state2/residency:759
+/sys/devices/system/cpu/cpu0/cpuidle/state2/latency:253
+/sys/devices/system/cpu/cpu0/cpuidle/state2/usage:102740
+/sys/devices/system/cpu/cpu0/cpuidle/state2/desc:ACPI FFH MWAIT 0x31
+/sys/devices/system/cpu/cpu0/cpuidle/state2/below:11351
+/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
+/sys/devices/system/cpu/cpu0/cpuidle/state2/name:C2_ACPI
+/sys/devices/system/cpu/cpu0/cpuidle/state2/s2idle/time:0
+/sys/devices/system/cpu/cpu0/cpuidle/state2/s2idle/usage:0
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+grep -r '.*' /sys/devices/system/cpu/cpu0/cpuidle/state3/
+
+/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:0
+/sys/devices/system/cpu/cpu0/cpuidle/state3/above:18551
+/sys/devices/system/cpu/cpu0/cpuidle/state3/time:43225299
+/sys/devices/system/cpu/cpu0/cpuidle/state3/power:0
+/sys/devices/system/cpu/cpu0/cpuidle/state3/residency:3144
+/sys/devices/system/cpu/cpu0/cpuidle/state3/latency:1048
+/sys/devices/system/cpu/cpu0/cpuidle/state3/usage:24205
+/sys/devices/system/cpu/cpu0/cpuidle/state3/desc:ACPI FFH MWAIT 0x60
+/sys/devices/system/cpu/cpu0/cpuidle/state3/below:0
+/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:enabled
+/sys/devices/system/cpu/cpu0/cpuidle/state3/name:C3_ACPI
+/sys/devices/system/cpu/cpu0/cpuidle/state3/s2idle/time:0
+/sys/devices/system/cpu/cpu0/cpuidle/state3/s2idle/usage:0
+
+Guilhem Lettron
