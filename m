@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E0E253727
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BB5253764
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 20:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgHZSaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 14:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgHZSa1 (ORCPT
+        id S1727068AbgHZSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 14:43:39 -0400
+Received: from mail.tourhouse.com.br ([187.32.239.34]:35431 "EHLO
+        mail.tourhouse.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgHZSne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:30:27 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63372C061574;
-        Wed, 26 Aug 2020 11:30:27 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598466625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sNGll/xT6FzW7aAsxR2/1F9E14nVz0yEahFp4wbolY=;
-        b=VvpWO4LMHDFZHVSgSqAx6+8nELbGExgJi7K66pgCPkHFID1PJUKXJGAAnT4vMZgCwmea9P
-        TBxTZBZWPOiP80H2aoosS87VFLjX+l4EmLSilMWcl68LAmPJYAJMAwXtxbdubAiAtYoF2r
-        4ZH6ILu2IRqW+/dBgNjJWdEkYqsIVEoDty6wJzDYQOSU335qt8x+GPgwsD2QEZHHw+jhfJ
-        /K90bfkGt3u73xxKmeaOJSjKSQRCg4q0HgHSxCxBz7CPSWBnq8VF5o8hdEqx4G/7Fz0Ghs
-        0464uvXvBgRbh5xL/AFkOKu7tbZ5fAJmIiwUxKMxMKMFQ1CZ9M3CDF0Ys0vNYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598466625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sNGll/xT6FzW7aAsxR2/1F9E14nVz0yEahFp4wbolY=;
-        b=kkGbJWCIw5MpdAVJzhVcLwSNabgyB0+VqViYUz+WHTsHX01pahPauNZELQZFui7zJUUazJ
-        sdrr2+8lPMn2RLBQ==
-To:     Alexander Graf <graf@amazon.com>, X86 ML <x86@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt\, Benjamin" <benh@amazon.com>, robketr@amazon.de,
-        amos@scylladb.com, Brian Gerst <brgerst@gmail.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/irq: Preserve vector in orig_ax for APIC code
-In-Reply-To: <fd87a87d-7d8a-9959-6c81-f49003a43c21@amazon.com>
-References: <20200826115357.3049-1-graf@amazon.com> <87k0xlv5w5.fsf@nanos.tec.linutronix.de> <fd87a87d-7d8a-9959-6c81-f49003a43c21@amazon.com>
-Date:   Wed, 26 Aug 2020 20:30:25 +0200
-Message-ID: <87blixuuny.fsf@nanos.tec.linutronix.de>
+        Wed, 26 Aug 2020 14:43:34 -0400
+Received: from localhost (thmail.tourhouse.com.br [127.0.0.1])
+        by mail.tourhouse.com.br (iRedMail) with ESMTP id 102F8484258;
+        Wed, 26 Aug 2020 13:45:22 -0300 (-03)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tourhouse.com.br;
+        s=202007; t=1598460322;
+        bh=d9F8tBy24C+QRNkQxvFLCLfoD8TpLLFwaQ/2qvUaBoE=;
+        h=Reply-To:From:Subject:Date:MIME-Version:Content-Type:
+         Content-Transfer-Encoding:Message-Id;
+        b=IK1nsP1Nastbyz/wNOrNsC+SjwegF4qfV4A7hIJ1RSo0GoSCaCApV//u4/fh2QrxY
+         lhXZLzOcBojIaEVLXcwKlXaSemT6SO6W0gZW16spnJCufjpKsCBGGpiSK7WpU4xXa6
+         JaQtRRiki5+kNQk/mKa9zhskrSm8LCJaLVTP7fiTxmBI6NDSynmYLsU2O1I6y0bKzn
+         9AKYFUp/Ynk5dY8MOFKyMY6E+fRMHPVl1gFH4ORmSyQeaMzQ6loh811M1trlic23wf
+         0WxQQSj107S5fcG5G08I9fe8S7vH80/6bDCMWL1dojtHECrLsKexZzcO8CgsrZnFKf
+         gmVDwcEtmdKlg==
+X-Virus-Scanned: Debian amavisd-new at thmail3.tourhouse.com.br
+Received: from mail.tourhouse.com.br ([127.0.0.1])
+        by localhost (thmail.tourhouse.com.br [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nZlzi+0dvVET; Wed, 26 Aug 2020 13:45:21 -0300 (-03)
+Received: from User (unknown [167.114.43.82])
+        by mail.tourhouse.com.br (iRedMail) with ESMTPA id C788B48425A;
+        Wed, 26 Aug 2020 13:45:13 -0300 (-03)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tourhouse.com.br;
+        s=202007; t=1598460321;
+        bh=d9F8tBy24C+QRNkQxvFLCLfoD8TpLLFwaQ/2qvUaBoE=;
+        h=Reply-To:From:Subject:Date:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=S6LAaQE3+l30ifmHdvSfnlZ19CmQn0JR8Isvfm/egHDIDwbkkqb3PRMZqp9ZxznTL
+         EQDoOfhGhJIuHrp/jPEsdZE1JAHWFfY/9B16RPvKRfLkmBj5yyr2FfU/MiKmhf7BHQ
+         10MvIVp35uNbEjVssEan7U+yMsy479W7GYe1heyj3nM0bwYOtrJaBzoD31gGS86xCt
+         5xNIVQEwc69+RbmMNLf/NhJlOcSETf4ikdLzAkDEt4zZqO2fSncKjexMRl6LtzSZgq
+         YP29H4aNBHicaAY55wMnMJOD5D0lEfhlmDyq0Zf3vrMOMTeF33tIAdUh6ZlwbA8HxL
+         MkMcsfaSzcGLg==
+Reply-To: <zhuq308@gmail.com>
+From:   "Mr.Qi zhu" <crm@tourhouse.com.br>
+Subject: Greetings
+Date:   Wed, 26 Aug 2020 18:45:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20200826164522.102F8484258@mail.tourhouse.com.br>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26 2020 at 18:33, Alexander Graf wrote:
-> On 26.08.20 16:27, Thomas Gleixner wrote:
->> The below nasty hack cures it, but I hate it with a passion. I'll look
->> deeper for a sane variant.
->
-> An alternative (that doesn't make the code easier to read, but would fix 
-> the issue at hand) would be touse a pushq imm16 with vector | 0x8000 
-> instead to always make the value negative, no?
+Hello
 
-Which makes each entry larger than 8 byte which was frowned upon before.
+Please confirm if you still use this e-mail. There is an inheritance that has your surname. Contact me for details at:(zhuq308@gmail.com)
 
-And it does not solve the issue that we abuse orig_ax which Andy
-mentioned.
+greetings
 
-Thanks,
-
-        tglx
+Mr.Qi zhu
