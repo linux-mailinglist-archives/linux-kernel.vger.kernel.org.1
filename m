@@ -2,141 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CF725342C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3C825342E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgHZP6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgHZP5n (ORCPT
+        id S1726943AbgHZP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:58:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13026 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727882AbgHZP54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:57:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44593C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:57:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh1so1094143plb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ijQWHet8Hvpkx4cDZTd5XJNqC2I4V5jJoFi9k0Qv97U=;
-        b=dsH4IocR3yy5Uc/4AvuYTBfKzPse7HEba7qvf7wpzpP8B29g1cHc6SgiNo0RQIw3T3
-         TNL0WYjJ3NhcszT0LS3ibCtC8EPshS7UNRLDe7CC7Zh+ICR1e5VW2M78xC7EaOs17myC
-         y4z3pH6ialJEj5LV/sQ+Fpjbv+lpwmu0WqGxU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ijQWHet8Hvpkx4cDZTd5XJNqC2I4V5jJoFi9k0Qv97U=;
-        b=Dp71DWBzQy3pNcCojXJwEL/8jKnff+vzCYXGTgnxTP10UjOa81ySl6ApY4n7lk1j2s
-         dYP5n6aG+AVY2Wb3qJDUJpaC5+X71nDPKxJ1akEQLqVrWUUHqpZjRv8c89UpNWpouXAD
-         Khf6IdEbnASEJD+npktzVJTaI4yBsMZxY3q6cOx4G7rpyi/uhIck3rZTbsuwuF9xcYec
-         yCFqCRks5t/qp2kYyWuPkXlfBRAiJvm0bMH3V8uUg5gQ7gB3T0cy4d5kvOeSAl6rUhhH
-         PcIrxGTZRFvaQDB8yD0FpT5OKaH4c7SfiSsT9SMj99oCB1pF48t6Tea+wt86wCS9Y6JR
-         ETbg==
-X-Gm-Message-State: AOAM532sF3i1Tzyr/tAv8qUbvG+eaf+CgS5iXJx1M8PG3Q9PZ3L98ntB
-        +qXkxRnXnqtKWDCSvIib42JC1g==
-X-Google-Smtp-Source: ABdhPJwABUwANAy+24sJPx0Nl4567R6wVmJBHxxgSG6TzcsdqKOKz4COI7yyclh24bzKWHMuAiAuWw==
-X-Received: by 2002:a17:90a:c7c4:: with SMTP id gf4mr6546054pjb.17.1598457462620;
-        Wed, 26 Aug 2020 08:57:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i1sm2667916pgq.41.2020.08.26.08.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 08:57:41 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 08:57:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Brooke Basile <brookebasile@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [GIT PULL] USB fixes for 5.9-rc3
-Message-ID: <202008260856.5DAEFCEFF@keescook>
-References: <20200826134315.GA3882506@kroah.com>
- <CGME20200826150239eucas1p24c59716cc31edfeb2eece84d97936b93@eucas1p2.samsung.com>
- <1425ab4f-ef7e-97d9-238f-0328ab51eb35@samsung.com>
- <20200826153347.GB4187816@kroah.com>
+        Wed, 26 Aug 2020 11:57:56 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QFW2UE189368;
+        Wed, 26 Aug 2020 11:57:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HccGIv1kXZpAh+2ptA3ZwBl+YCt3qQZHYAt/DHYIo6A=;
+ b=ANtUBcFPSlnyCBhe5XzhRefOY2CgJjUqIOmxh1eIBlq0ufnA9irIv25sJwTzxLxVs4p6
+ C0HUMNg7YT8OzXYjH5hIeUu/5kiVVPv4P3U3s9g1YYkVPhkLsbGnmhKXeNamTTYZ3+yy
+ I3kaShD2c3D67HVwlSDeTlPyRNX+noqw9Zc9kqrsvjOPRppGshX74HTFT5RTBSwnkTYy
+ dZFQIrHOO/Kl3gRRd+uW946QfWb9U3SjWwc91o7JuimsHddlbM5xvNygwBK+sX8GIRNy
+ Kcl+Eo386LY5WQvXv/iU2gA/3W0PWt6RNsjdyQhFNLpBjsmaWT0SCZelxQwa5dpgsULv qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335t9v8x77-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 11:57:49 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QFW54D189756;
+        Wed, 26 Aug 2020 11:57:48 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335t9v8x5r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 11:57:48 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QFVqnL020411;
+        Wed, 26 Aug 2020 15:57:46 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02dal.us.ibm.com with ESMTP id 335kvcbp2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 15:57:46 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QFvjWl56099296
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 15:57:45 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E942124055;
+        Wed, 26 Aug 2020 15:57:45 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB9CD124052;
+        Wed, 26 Aug 2020 15:57:44 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.160.97.86])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 26 Aug 2020 15:57:44 +0000 (GMT)
+Subject: Re: [PATCH v2 0/2] ima: Fix keyrings race condition and other key
+ related bugs
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200811192621.281675-1-tyhicks@linux.microsoft.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <48c98a62-01f0-825b-7648-7d8fa9f13b40@linux.vnet.ibm.com>
+Date:   Wed, 26 Aug 2020 11:57:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826153347.GB4187816@kroah.com>
+In-Reply-To: <20200811192621.281675-1-tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_09:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 clxscore=1015 bulkscore=0 impostorscore=0 suspectscore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 05:33:47PM +0200, Greg KH wrote:
-> On Wed, Aug 26, 2020 at 05:02:38PM +0200, Marek Szyprowski wrote:
-> > Hi Greg,
-> > 
-> > On 26.08.2020 15:43, Greg KH wrote:
-> > > The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-> > >
-> > >    Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-> > >
-> > > are available in the Git repository at:
-> > >
-> > >    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc3
-> > >
-> > > for you to fetch changes up to 23e26d0577535f5ffe4ff8ed6d06e009553c0bca:
-> > >
-> > >    usb: typec: tcpm: Fix Fix source hard reset response for TDA 2.3.1.1 and TDA 2.3.1.2 failures (2020-08-25 16:02:35 +0200)
-> > >
-> > > ----------------------------------------------------------------
-> > > USB fixes for 5.9-rc3
-> > >
-> > > Here are a small set of USB fixes for 5.9-rc3.
-> > >
-> > > Like most set of USB bugfixes, they include the usual:
-> > > 	- usb gadget driver fixes
-> > > 	- xhci driver fixes
-> > > 	- typec fixes
-> > > 	- new qurks and ids
-> > > 	- fixes for USB patches merged in 5.9-rc1
-> > >
-> > > Nothing huge, all of these have been in linux-next with no reported
-> > > issues:
-> > >
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > >
-> > > ----------------------------------------------------------------
-> > > Alan Stern (1):
-> > >        USB: yurex: Fix bad gfp argument
-> > >
-> > > Andy Shevchenko (1):
-> > >        usb: hcd: Fix use after free in usb_hcd_pci_remove()
-> > >
-> > > Badhri Jagan Sridharan (1):
-> > >        usb: typec: tcpm: Fix Fix source hard reset response for TDA 2.3.1.1 and TDA 2.3.1.2 failures
-> > >
-> > > Bastien Nocera (2):
-> > >        USB: Also match device drivers using the ->match vfunc
-> > >        USB: Fix device driver race
-> > >
-> > > Brooke Basile (2):
-> > >        USB: gadget: u_f: add overflow checks to VLA macros
-> > 
-> > Sorry, but the above patch breaks USB Ethernet Gadget operation. It also 
-> > didn't get the proper testing in linux-next (next-20200826 is the first 
-> > one with this patch).
-> > 
-> > This is how it explodes on Samsung Exynos (ARM 32bit) based board with 
-> > g_ether module loaded:
-> > 
-> > ------------[ cut here ]------------
-> > kernel BUG at mm/slub.c:4116!
-> 
-> Why is slub.c erroring?  How is this related to freeing memory?
 
-I assume this is related to the size calculations in the VLA macros...
-nothing _looks_ wrong with that patch, but obviously something is. :)
-Hmmm
+On 8/11/20 3:26 PM, Tyler Hicks wrote:
+> v2:
+>   - Always return an ERR_PTR from ima_alloc_rule_opt_list() (Nayna)
+>   - Add Lakshmi's Reviewed-by to both patches
+>   - Rebased on commit 3db0d0c276a7 ("integrity: remove redundant
+>     initialization of variable ret") of next-integrity
+> v1: https://lore.kernel.org/lkml/20200727140831.64251-1-tyhicks@linux.microsoft.com/
+>
+> Nayna pointed out that the "keyrings=" option in an IMA policy rule
+> should only be accepted when CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS is
+> enabled:
+>
+>   https://lore.kernel.org/linux-integrity/336cc947-1f70-0286-6506-6df3d1d23a1d@linux.vnet.ibm.com/
+>
+> While fixing this, the compiler warned me about the potential for the
+> ima_keyrings pointer to be NULL despite it being used, without a check
+> for NULL, as the destination address for the strcpy() in
+> ima_match_keyring().
+>
+> It also became apparent that there was not adequate locking around the
+> use of the pre-allocated buffer that ima_keyrings points to. The kernel
+> keyring has a lock (.sem member of struct key) that ensures only one key
+> can be added to a given keyring at a time but there's no protection
+> against adding multiple keys to different keyrings at the same time.
+>
+> The first patch in this series fixes both ima_keyrings related issues by
+> parsing the list of keyrings in a KEY_CHECK rule at policy load time
+> rather than deferring the parsing to policy check time. Once that fix is
+> in place, the second patch can enforce that
+> CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS must be enabled in order to use
+> "func=KEY_CHECK" or "keyrings=" options in IMA policy.
+>
+> The new "keyrings=" value handling is done in a generic manner that can
+> be reused by other options in the future. This seems to make sense as
+> "appraise_type=" has similar style (though it doesn't need to be fully
+> parsed at this time) and using "|" as an alternation delimiter is
+> becoming the norm in IMA policy.
+>
+> This series is based on commit 311aa6aafea4 ("ima: move
+> APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime") in
+> next-integrity.
+>
+> Tyler
+>
+> Tyler Hicks (2):
+>    ima: Pre-parse the list of keyrings in a KEY_CHECK rule
+>    ima: Fail rule parsing when asymmetric key measurement isn't
+>      supportable
+>
+>   security/integrity/ima/ima_policy.c | 142 +++++++++++++++++++---------
+>   1 file changed, 96 insertions(+), 46 deletions(-)
+>
 
--- 
-Kees Cook
+Sorry for delay in responding.
+
+The patches look good. Feel free to add my tag
+
+Reviewed-by: Nayna Jain <nayna@linux.ibm.com>
+
+Thanks & Regards,
+
+     - Nayna
+
+
+
+
