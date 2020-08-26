@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB6C2525A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBEB2525A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHZCvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 22:51:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18781 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgHZCvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 22:51:45 -0400
-IronPort-SDR: AasJpHHOBEj02sbPg1uL/0mUmcNsO43ZsnORI6uwn/7wd2qkGlJ4K1rc0xTov9VOg1rhsTDLRN
- N7mvtO2p1OUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="156217402"
-X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
-   d="scan'208";a="156217402"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 19:51:44 -0700
-IronPort-SDR: JFM28Ox3Mhd7iGJnJpLzR7hZPTe21FVLR3OZHs8OeVrNdX4IhPyCNvv2M7LU8nSGTsUhaVccqm
- zMTC6AkuFo/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
-   d="scan'208";a="336704207"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Aug 2020 19:51:43 -0700
-Received: from [10.215.173.55] (vramuthx-MOBL1.gar.corp.intel.com [10.215.173.55])
-        by linux.intel.com (Postfix) with ESMTP id DF3BD5806F0;
-        Tue, 25 Aug 2020 19:51:39 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v1 0/9] extcon: extcon-ptn5150: Add the USB external
- connector support
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>, thomas.langer@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
-        krzk@kernel.org
-References: <20200818065727.50520-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200818084044.GD1891694@smile.fi.intel.com>
- <69e13a74-8b8d-cbc0-915d-ce289e7d4a70@linux.intel.com>
- <CAHp75VfwBnDgR6WR_On1nh+dX4meWrX1Q-CiUKqkV39=o2m5Hg@mail.gmail.com>
- <b9187c39-8d94-6b41-9e1c-b95161b17c1c@linux.intel.com>
- <20200825081935.GE189773@kuha.fi.intel.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <bc66fcec-fa52-71a3-57d1-514a4d716605@linux.intel.com>
-Date:   Wed, 26 Aug 2020 10:51:37 +0800
+        id S1726750AbgHZC41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 22:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgHZC40 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 22:56:26 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B76FC061574;
+        Tue, 25 Aug 2020 19:56:26 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id n3so442356pjq.1;
+        Tue, 25 Aug 2020 19:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hbFEodepPvZbmGlOCAW6pdL+PginykbrTuYJhMivWLU=;
+        b=JRtgxN04gxU/IDzMXlbNw78semo21YBgHHcNoAJbnR8jpjdjspaNQ1Mftdhsz9QGPH
+         jlSF1BkqJEhpSeIj0gismWgIY1pyC4ypjxqBmwTFct/ARCWxtawBzaXiXjMWGSDKTESn
+         cm/hayB1tXowLPiC1gKmKFBJo1YOJLlnQMyLKmDHMvdV38Y1F7qfmQZiHFtCDkMfWA/R
+         LBMwbalKomRo2k8WmJ5V4tFsIATzLx4qh+LxdhaPLM2eZYGDJa08RG134oy7zYAjtzSA
+         obq5uhESHqOOIEF8Ddyg4Muc+sOAgPW4LQRgDEQ2LcsBc7ZOV4v74iwJi2DAzWCofocD
+         PR1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hbFEodepPvZbmGlOCAW6pdL+PginykbrTuYJhMivWLU=;
+        b=Lh4ZMXM8cam+6GBjh/MGfbavfA+0pGzDIDmHVgkkL2FYWSygtvl4mbgsDoKZkXzq35
+         RpknLIzgFOtIURHUMbuTJ5NoZebIhGXmYv+7ImkCIZop1VBzbhRIXusWtfxTiN01plUu
+         EizJsjDUKHA02WKth19MbuE8PRDOxDPOOGD6g6+5FsV62oi24OrlEkvLyh8yHAEusp/C
+         bMlPUK2M1dp++YF2/shRJPYTf/OG74hhtEd7Y2NCCVbeMd6fMWoc9WhR7CUBB065qpTN
+         gnoF16L8ITsu79yfrqKPEscG40RVh2U8f3yfYDj7jL70YJ7Vq9Hnx02Yht3RLIFlnpuX
+         mVKA==
+X-Gm-Message-State: AOAM530UX62vJ2YUqdIdft9peeQVeL3bjMldj7LaI2ocOBXT5x+v2pmX
+        BnghHGrDosMlx4VTqAJNV5VmKFDXGKE=
+X-Google-Smtp-Source: ABdhPJxZm0kD5dvuB19oPRwFNo47AjWTDEpT6SxPsjOG3h5zKWKc4algdeVl7DB4SDtIoJIXo3fWyA==
+X-Received: by 2002:a17:90a:19c8:: with SMTP id 8mr3746355pjj.152.1598410585817;
+        Tue, 25 Aug 2020 19:56:25 -0700 (PDT)
+Received: from [192.168.1.200] (FL1-111-169-205-196.hyg.mesh.ad.jp. [111.169.205.196])
+        by smtp.gmail.com with ESMTPSA id fz19sm397834pjb.40.2020.08.25.19.56.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 19:56:25 -0700 (PDT)
+Subject: Re: [PATCH v3] exfat: integrates dir-entry getting and validation
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        'Sungjong Seo' <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20200806010250epcas1p482847d6d906fbf0ccd618c7d1cacd12e@epcas1p4.samsung.com>
+ <20200806010229.24690-1-kohada.t2@gmail.com>
+ <003c01d66edc$edbb1690$c93143b0$@samsung.com>
+ <ca3b2b52-1abc-939c-aa11-8c7d12e4eb2e@gmail.com>
+ <000001d67787$d3abcbb0$7b036310$@samsung.com>
+ <fdaff3a3-99ba-8b9e-bdaf-9bcf9d7208e0@gmail.com>
+ <000101d67b44$ac458c80$04d0a580$@samsung.com>
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+Message-ID: <d1df9cca-3020-9e1e-0f3d-9db6752a22b6@gmail.com>
+Date:   Wed, 26 Aug 2020 11:56:22 +0900
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200825081935.GE189773@kuha.fi.intel.com>
+In-Reply-To: <000101d67b44$ac458c80$04d0a580$@samsung.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -63,40 +78,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+On 2020/08/26 10:03, Namjae Jeon wrote:
+>> Second: Range validation and type validation should not be separated.
+>> When I started making this patch, I intended to add only range validation.
+>> However, after the caller gets the ep, the type validation follows.
+>> Get ep, null check of ep (= range verification), type verification is a series of procedures.
+>> There would be no reason to keep them independent anymore.
+>> Range and type validation is enforced when the caller uses ep.
+> You can add a validate flags as argument of exfat_get_dentry_set(), e.g. none, basic and strict.
+> none : only range validation.
+> basic : range + type validation.
+> strict : range + type + checksum and name length, etc.
 
-  Thank you very much for the review comment...
-
-On 25/8/2020 4:19 pm, Heikki Krogerus wrote:
-> On Wed, Aug 19, 2020 at 04:45:38PM +0800, Ramuthevar, Vadivel MuruganX wrote:
->> Hi Andy,
+Currently, various types of verification will not be needed.
+Let's add it when we need it.
+>   
+>>> -	/* validiate cached dentries */
+>>> -	for (i = 1; i < num_entries; i++) {
+>>> -		ep = exfat_get_dentry_cached(es, i);
+>>> -		if (!exfat_validate_entry(exfat_get_entry_type(ep), &mode))
+>>> +	ep = exfat_get_dentry_cached(es, ENTRY_STREAM);
+>>> +	if (!ep || ep->type != EXFAT_STREAM)
+>>> +		goto free_es;
+>>> +	es->de[ENTRY_STREAM] = ep;
 >>
->> On 19/8/2020 3:55 pm, Andy Shevchenko wrote:
->>> On Wed, Aug 19, 2020 at 8:38 AM Ramuthevar, Vadivel MuruganX
->>> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
->>>> On 18/8/2020 4:40 pm, Andy Shevchenko wrote:
->>>>> On Tue, Aug 18, 2020 at 02:57:18PM +0800, Ramuthevar,Vadivel MuruganX wrote:
->>>>>> USB external connector chip PTN5150 used on the Intel LGM SoC
->>>>>> boards to detect the USB type and connection.
->>>>> Internally I meant you can send cleanups, but couple of patches here are the
->>>>> features and were still under discussion... But here we are.
->>>>
->>>> you mean asking us to implement the Heikki suggested as below..
->>>>
->>>> Heikki Krogerus: register the port and the partner attached to it with
->>>> the USB Type-C connector class in the driver. Is my understaanding
->>>> right? if not, please explain it. Thanks!
->>>
->>> When you mention somebody, don't forget to Cc them (now done by me).
->> Sure, Thank you
-> 
-> So the patches 1-5 are fine. The rest needs to be rewritten.
-Already Krzysztof submitted all the patches and got approved, so we 
-started sending only one patch which support to Intel LGM SoC based 
-boards, Thanks!
+>> The value contained in stream-ext dir-entry should not be used before validating the EntrySet checksum.
+>> So I would insert EntrySet checksum validation here.
+>> In that case, the checksum verification loop would be followed by the TYPE_NAME verification loop, can
+>> you acceptable?
+> Yes. That would be great.
 
-Regards
-Vadivel
-> 
-> thanks,
+OK.
+I'll add TYPE_NAME verification after checksum verification, in next patch.
+However, I think it is enough to validate TYPE_NAME when extracting name.
+Could you please tell me why you think you need TYPE_NAME validation here?
+
+
+BR
+---
+Tetsuhiro Kohada <kohada.t2@gmail.com>
 > 
