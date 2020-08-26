@@ -2,146 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF891252C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DED252C70
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgHZL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:27:40 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:47419 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728937AbgHZLXo (ORCPT
+        id S1728912AbgHZLaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:30:16 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:43880 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728937AbgHZL3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:23:44 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200826112342euoutp01bd149cb47bd696aefd25d08aa593f5ef~uzaQV1LZ00932909329euoutp01b
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 11:23:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200826112342euoutp01bd149cb47bd696aefd25d08aa593f5ef~uzaQV1LZ00932909329euoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598441022;
-        bh=OaqqbA/pn8yxkZtcsoCbwwD4lOczMZiTQ0XXc8L0Zi4=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=MCwrx6B9MdiqnJCCXJRt1mISZiIrLHSCcsW/BqJRohufxFFq0a/mgyqN6l0q6XTs7
-         MpdVnMg/thc0TUl1f1hAYS+CW1/FLc1RYHBpTbeQnkU8CdX2InwRWeonDYhAp/e6XM
-         LAqrpTbmuRZdBYWPjWW8IIkV0FQkHD3fix3RzC94=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200826112342eucas1p2ecba0e12b32fd7e500247bd0c2a666be~uzaQO_AOg0890108901eucas1p2C;
-        Wed, 26 Aug 2020 11:23:42 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id C4.05.06456.E36464F5; Wed, 26
-        Aug 2020 12:23:42 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200826112341eucas1p2c66787ef33dc49a6f36f565f1d3989ff~uzaP4adjg1709517095eucas1p2u;
-        Wed, 26 Aug 2020 11:23:41 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200826112341eusmtrp29932ef2bb2e379d5de7960c2313f87e7~uzaP3qQJG1966219662eusmtrp2Q;
-        Wed, 26 Aug 2020 11:23:41 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-1f-5f46463e6383
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id A8.BF.06314.D36464F5; Wed, 26
-        Aug 2020 12:23:41 +0100 (BST)
-Received: from [106.210.85.205] (unknown [106.210.85.205]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200826112341eusmtip120289db9a2db6497c4260b65cabf62f5~uzaPaXVh81214412144eusmtip1r;
-        Wed, 26 Aug 2020 11:23:41 +0000 (GMT)
-Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with
- __must_check
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-From:   Andrzej Hajda <a.hajda@samsung.com>
-Message-ID: <1e3708e5-24f2-18e0-40c0-284853171338@samsung.com>
-Date:   Wed, 26 Aug 2020 13:23:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.11.0
+        Wed, 26 Aug 2020 07:29:23 -0400
+Received: by mail-oi1-f194.google.com with SMTP id j21so1178847oii.10
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:29:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1FLY0eW4GFuoR8mTu1lJlREb+UEGmC42E+5Rra5UznE=;
+        b=XU0hHOssQQ1fWDN//FfT7reueVj+pS4F1dFxIdtsvGFou3Ud5xpIx17zuyVUCVFB94
+         x3DJDEt8+noMnYXiDBiX7sQyrrYZkIQiTRMBSZm7Lsfhy47AWJBnVkGPUsZWEyILOb73
+         gnrls34xQ9zunoUHV8rRfwApALE4iJwa7gD7zEIC6MKaM9L4KOQ/rendmMeDmTkYaXbd
+         tE6TycpClPloiIJl8J+thvixNf8TMHcZNkirteuYUMqe+CuqokAE0Dy7QJ9+fwumYhXf
+         QpD8GKP+GYgBYdspBmVStgHK1jTn7wj8quuWMkan1UfiTD8GagtagVgsyjnC/e2Qv2WF
+         D74w==
+X-Gm-Message-State: AOAM530QzcvyciHgDxZOjw7U327f+UuRZDqkRV1jZoZIJHpCMl5KgKkZ
+        mBW2jWfRV6jakKOI6vOnntla5JjK8I0clWrdqcM=
+X-Google-Smtp-Source: ABdhPJx7jX+qSl6hSkIJjjuVHvApPexAU/jsCaAJ1qdjT3qf5oCZgY38PO9ALloX5AEO8e8WFaJLeRawU/yp8PkK28E=
+X-Received: by 2002:aca:b742:: with SMTP id h63mr3423281oif.148.1598441339761;
+ Wed, 26 Aug 2020 04:28:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGKsWRmVeSWpSXmKPExsWy7djP87p2bm7xBr8u8Fr0Nk1nsmhevJ7N
-        4vKuOWwWc79MZXZg8di0qpPNY97JQI/9c9ewe3zeJBfAEsVlk5Kak1mWWqRvl8CVsWn1W8aC
-        rawV3xrmsjYwNrN0MXJySAiYSCx8u5Opi5GLQ0hgBaPEhxP9jBDOF0aJdVMPs0E4nxklTsy6
-        zA7T0rtsNytEYjmjxOH1m6Cq3jNK7Gu9CDZYWCBQYuXxfmaQhIjAFkaJKVPbmUESbAKaEn83
-        32QDsXkF7CQu7vzBBGKzCKhKnL70AaxGVCBOYuvxq0wQNYISJ2c+ARvKKeAu8fjuP7BeZgF5
-        ieats5khbHGJpi8rwU6SEGhmlzhzeDaQwwHkuEisOVwEcbawxKvjW6BekJH4v3M+E4RdL3F/
-        RQszRG8Ho8TWDTuZIRLWEnfO/WIDmcMMdPT6XfoQYUeJqQd2MUKM55O48VYQ4gQ+iUnbpjND
-        hHklOtqEIKoVJe6f3Qo1UFxi6YWvbBC2h8ShH1OZJzAqzkLy5Cwkj81C8tgshBsWMLKsYhRP
-        LS3OTU8tNsxLLdcrTswtLs1L10vOz93ECEwtp/8d/7SD8eulpEOMAhyMSjy8C9hc44VYE8uK
-        K3MPMUpwMCuJ8DqdPR0nxJuSWFmVWpQfX1Sak1p8iFGag0VJnNd40ctYIYH0xJLU7NTUgtQi
-        mCwTB6dUA+P0Y1yFCZ1BEll75XR3bZn6xppHdYtUfuHmok2z6u4y7+/YL+W/f/lbgWg+lo/c
-        oWv+vWW1OsNeUXw14L3pVseXK2VmSRvxpU1hf8Lb1PGDuSH2jtpb3iWdPn+DPJWsjuf4v9wj
-        4ciQ4/BqyYx1jm/5eqd2nFpo+TfLzLf3YMDOjqg73MatjUosxRmJhlrMRcWJAGOeLxkpAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsVy+t/xu7q2bm7xBj8/mFj0Nk1nsmhevJ7N
-        4vKuOWwWc79MZXZg8di0qpPNY97JQI/9c9ewe3zeJBfAEqVnU5RfWpKqkJFfXGKrFG1oYaRn
-        aGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXsWn1W8aCrawV3xrmsjYwNrN0MXJySAiY
-        SPQu283axcjFISSwlFFi3rFbzBAJcYnd899C2cISf651sUEUvWWUWHBmI1hCWCBQYuXxfjBb
-        RGALo8S2jTwgtpDALEaJVx1uIDabgKbE38032UBsXgE7iYs7fzCB2CwCqhKnL30A6xUViJN4
-        3PufGaJGUOLkzCdg13EKuEs8vvsPrJdZwExi3uaHzBC2vETz1tlQtrhE05eVrBMYBWchaZ+F
-        pGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIyZbcd+bt7BeGlj8CFGAQ5G
-        JR7eBWyu8UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9NxEZinR5Hxg
-        POeVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5NLUgtgulj4uCUamCc9j/J6Tdf0tZA
-        ZsfYdxE7e+t+JmpweMmKcRxjvJc766GxV+a63bqsRW+SJpTGqzNtsrrPuEj+qsOiJ822Feev
-        PrqgYC4mzmng/uDWvYeabdoft0YbP0949+XxMpfMM/5HKt7XFd20M3xQnL/KV/ewWErg1NPl
-        DvwnWqvOW618XDvN9lob22QlluKMREMt5qLiRAA1k10YrwIAAA==
-X-CMS-MailID: 20200826112341eucas1p2c66787ef33dc49a6f36f565f1d3989ff
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200826104505eucas1p2e6ac15abfb6104fdbc4229fc148cbe02
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200826104505eucas1p2e6ac15abfb6104fdbc4229fc148cbe02
-References: <CGME20200826104505eucas1p2e6ac15abfb6104fdbc4229fc148cbe02@eucas1p2.samsung.com>
-        <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
+References: <20200713072429.6182-1-geert@linux-m68k.org>
+In-Reply-To: <20200713072429.6182-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 Aug 2020 13:28:48 +0200
+Message-ID: <CAMuHMdXWfLa8dCZPF6jSQYuowGBR4dJnS1hx_rN1kDpPFZnVGg@mail.gmail.com>
+Subject: Re: [PATCH] zorro: Fix address space collision message with RAM
+ expansion boards
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Stefan Reinauer <stefan.k.reinauer@gmail.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On 26.08.2020 12:44, Andy Shevchenko wrote:
-> We have got already new users of this API which interpret it differently
-> and miss the opportunity to optimize their code.
+On Mon, Jul 13, 2020 at 9:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> When booting Linux on an Amiga with BigRAMPlus Zorro expansion board:
 >
-> In order to avoid similar cases in the future, annotate dev_err_probe()
-> with __must_check.
+>     zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
+>
+> This happens because the address space occupied by the BigRAMPlus Zorro
+> device is already in use, as it is part of system RAM.  Hence the
+> message is harmless.
+>
+> Zorro memory expansion boards have the ERTF_MEMLIST flag set, which
+> tells AmigaOS to link the board's RAM into the free memory list.  While
+> we could skip registering the board resource if this flag is set, that
+> may cause issues with Zorro II RAM excluded in a memfile.
+>
+> Hence fix the issue by just ignoring the error if ERTF_MEMLIST is set.
+>
+> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Applied, and queued in the m68k for-v5.10 branch.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
-There are many cases where __must_check can be annoying, for example:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-ret = ...;
-
-if (ret < 0) {
-
-     dev_err_probe(...);
-
-     goto cleanup;
-
-}
-
-
-Or (less frequently):
-
-ptr = ...;
-
-if (IS_ERR(ptr)) {
-
-     dev_err_probe(...);
-
-     return ptr;
-
-}
-
-
-Of course in both cases one can add workarounds, but I am not sure what 
-is better.
-
-
-Regards
-
-Andrzej
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
