@@ -2,65 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7F9252A17
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6DC252A31
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgHZJdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:33:10 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:15396 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727956AbgHZJdH (ORCPT
+        id S1728006AbgHZJgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:36:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9428 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728414AbgHZJfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:35:31 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q93fqv062189;
         Wed, 26 Aug 2020 05:33:07 -0400
-X-IronPort-AV: E=Sophos;i="5.76,355,1592838000"; 
-   d="scan'208";a="55579352"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 26 Aug 2020 18:33:05 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id BEA6A400419A;
-        Wed, 26 Aug 2020 18:33:03 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] ARM: shmobile: defconfig: enable CONFIG_PCIE_RCAR_HOST
-Date:   Wed, 26 Aug 2020 10:32:20 +0100
-Message-Id: <20200826093220.10266-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200826093220.10266-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200826093220.10266-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=f6n5hA9DQ+0MPkLhlYXYoSErJsIfh7/Cf8XqwUfu8TU=;
+ b=oXu9uOqcDBZ3rzFg2UKvVK0x0FIYDygwK4Lhd4yAF+Xoht64BCyEKZCyM2VDCye2lpqv
+ UDYSMhAo2TYgmmyHS81nqfaw9Y4+2dsOzIq0x68gUtd6+LXu+qGJALsiRe2LkOd6OXHy
+ QlZyQulJmhqe8OgK/S6Ur+xJC6ilqWMb8VMgvKrakypAsctk/CyNszQlw2s8Uwwu4WWm
+ ujhqLScihwxyDNqKC2nnFeC17BEyvmQIZXJ8ncCv87LoWwOnS7FoJPlI5jbMXiOp2ui1
+ PXlCEzdOEoPSWSzP2ASxnNarFgc0wtbn1dfldFWZ3kvZZAGHUbhEVSd+i+NYBRU0KtQh Ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335kkv369t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 05:33:07 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07Q9NEGF126698;
+        Wed, 26 Aug 2020 05:33:07 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335kkv3661-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 05:33:05 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9X1M9010480;
+        Wed, 26 Aug 2020 09:33:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 332utq2nma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 09:33:01 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07Q9WwTs29622674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 09:32:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8651D4C044;
+        Wed, 26 Aug 2020 09:32:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1738A4C040;
+        Wed, 26 Aug 2020 09:32:55 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.77.206.242])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 26 Aug 2020 09:32:54 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com,
+        kjain@linux.ibm.com
+Subject: [RFC] perf/core: Fixes hung issue on perf stat command during cpu hotplug
+Date:   Wed, 26 Aug 2020 15:02:36 +0530
+Message-Id: <20200826093236.446024-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_06:2020-08-25,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1
+ mlxlogscore=999 mlxscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 adultscore=0
+ clxscore=1011 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008260072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-config option PCIE_RCAR internally selects PCIE_RCAR_HOST which builds the
-same driver. So this patch renames CONFIG_PCIE_RCAR to
-CONFIG_PCIE_RCAR_HOST so that PCIE_RCAR can be safely dropped from Kconfig
-file.
+Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+added assignment of ret value as -EAGAIN in case function
+call to 'smp_call_function_single' fails.
+For non-zero ret value, it did 
+'ret = !ret ? data.ret : -EAGAIN;', which always
+assign -EAGAIN to ret and make second if condition useless.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+In scenarios like when executing a perf stat with --per-thread option, and 
+if any of the monitoring cpu goes offline, the 'smp_call_function_single'
+function could return -ENXIO, and with the above check,
+task_function_call hung and increases CPU
+usage (because of repeated 'smp_call_function_single()')
+
+Recration scenario:
+	# perf stat -a --per-thread && (offline a CPU )
+
+Patch here removes the tertiary condition added as part of that 
+commit and added a check for NULL and -EAGAIN.
+
+Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
- arch/arm/configs/shmobile_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/events/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/configs/shmobile_defconfig b/arch/arm/configs/shmobile_defconfig
-index bbedc42bb2d9..a49c90714e63 100644
---- a/arch/arm/configs/shmobile_defconfig
-+++ b/arch/arm/configs/shmobile_defconfig
-@@ -37,7 +37,7 @@ CONFIG_CAN_RCAR=y
- CONFIG_PCI=y
- CONFIG_PCI_MSI=y
- CONFIG_PCI_RCAR_GEN2=y
--CONFIG_PCIE_RCAR=y
-+CONFIG_PCIE_RCAR_HOST=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_SIMPLE_PM_BUS=y
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 5bfe8e3c6e44..330c53f7df9c 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -115,9 +115,9 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	for (;;) {
+ 		ret = smp_call_function_single(task_cpu(p), remote_function,
+ 					       &data, 1);
+-		ret = !ret ? data.ret : -EAGAIN;
+-
+-		if (ret != -EAGAIN)
++		if (!ret)
++			ret = data.ret;
++		else if (ret != -EAGAIN)
+ 			break;
+ 
+ 		cond_resched();
 -- 
-2.17.1
+2.26.2
 
