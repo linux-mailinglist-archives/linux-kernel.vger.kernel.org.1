@@ -2,63 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B76C2531E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CD32531EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgHZOth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727074AbgHZOt2 (ORCPT
+        id S1727964AbgHZOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:50:33 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:55446 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727892AbgHZOuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:49:28 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E198C061574;
-        Wed, 26 Aug 2020 07:49:28 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i13so1000998pjv.0;
-        Wed, 26 Aug 2020 07:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gei3eGyj/TCO0svrvjvzgxjgeg9dEgx8lLot5t+WCKQ=;
-        b=OggeQFpN8Ur5khUHkwMA7O7SqErBYYpznV7etHRBSCqbcD8GFdhVN9/3xtrmF9i2N7
-         IiyRysA8iehiPES/uOreenm+KFkuTDtEd+cpVjAuwfrKYeOZwwHtc44W0JTR/l4H7n9C
-         Vpb0AUNIgaT/ujfTLH+vMrBGW7766ZEoLCTKOnCq48v3gWLF+IV0wuy20Mbl5oU00q/v
-         xpU/D7NYv+inADKhd9U0sQr+C8ZC9dfG5XnT28iwqG7dg7WscTnY7YrN4YdxAq7AZou4
-         hmgdYPI5GsVVhMUWake9uplUpA5mBbxkOAoXfu5Udd1HQHNULDPnBwsgYJWp4IoES2Xc
-         Xevw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gei3eGyj/TCO0svrvjvzgxjgeg9dEgx8lLot5t+WCKQ=;
-        b=bAPLvPf12hN5lBtIPfMkzFq7GLMqPnTqweYLQT3dEOhcqNKUZ1GxdXjorn11kh78MN
-         ubN+AQlejpKb0aWWSuBgQjwwDlJw1rowcnrpJo04EEbHlfvCF4kvJbtC2jcS8f/m+rI9
-         cqt5ZSpHaLI5XBNFM4Q8jShTtmwQne1rBqBlOWJjCgidLvUZ1Lw/TrFhDdFTzsIRrYLY
-         BAPI4UrNHW0j4lvNujMDbNkDhsu8F9nCplTd+sNejxPoVmpo9rV79eG1wdVOG0aKNz1k
-         wl4io4vaN/dOD3uVmXux7TAnpQ1N6cTQGtveotRIJsY4O7093bEBvSzsD5kwWyoeg5ax
-         tYqA==
-X-Gm-Message-State: AOAM531xdTLXpZNSlbDZMfjHXrDac23Y/jTSSiBhpZKz6BJhctaTHzc7
-        y3p01PFcDkSMwyIlkYLWMBowuuiyk+U=
-X-Google-Smtp-Source: ABdhPJwP99rlLlcLD1eYGTg+i3JAy8A6E7AHdmdnVNzCUlHMSIoyL2hexawhLXhMLUqiUaweftLueQ==
-X-Received: by 2002:a17:90b:4a07:: with SMTP id kk7mr6645313pjb.125.1598453367815;
-        Wed, 26 Aug 2020 07:49:27 -0700 (PDT)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id d13sm3343236pfq.118.2020.08.26.07.49.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:49:27 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>, Jean Delvare <jdelvare@suse.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCH] i2c: do not acpi/of match device in i2c_device_probe()
-Date:   Wed, 26 Aug 2020 23:49:20 +0900
-Message-Id: <20200826144920.110605-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Wed, 26 Aug 2020 10:50:06 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65f46765af00-5abea; Wed, 26 Aug 2020 22:48:59 +0800 (CST)
+X-RM-TRANSID: 2ee65f46765af00-5abea
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.144.112])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65f467658e6c-12e8e;
+        Wed, 26 Aug 2020 22:48:59 +0800 (CST)
+X-RM-TRANSID: 2ee65f467658e6c-12e8e
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
+        kgene@kernel.org, krzk@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] usb: host: ohci-exynos: Fix error handling in exynos_ohci_probe()
+Date:   Wed, 26 Aug 2020 22:49:31 +0800
+Message-Id: <20200826144931.1828-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,71 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i2c, apparently, can match the same device twice - the first
-time in ->match bus hook (i2c_device_match()), and the second
-one in ->probe (i2c_device_probe()) bus hook.
+If the function platform_get_irq() failed, the negative value
+returned will not be detected here. So fix error handling in
+exynos_ohci_probe(). And when get irq failed, the function
+platform_get_irq() logs an error message, so remove redundant
+message here.
 
-To make things more complicated, the second matching does not
-do exactly same checks as the first one. Namely, i2c_device_match()
-calls acpi_driver_match_device() which considers devices that
-provide of_match_table and performs of_compatible() matching for
-such devices. One important thing to note here is that ACPI
-of_compatible() matching (acpi_of_match_device()) is part of ACPI
-and does not depend on CONFIG_OF.
-
-i2c_device_probe(), on the other hand, calls acpi_match_device()
-which does not perform of_compatible() matching, but instead
-i2c_device_probe() relies on CONFIG_OF API to perform of_match_table
-matching, IOW ->probe matching, unlike ->match matching, depends on
-CONFIG_OF. This can break i2c device probing on !CONFIG_OF systems
-if the device does not provide .id_table.
-
- i2c_device_probe()
- ...
-   if (!driver->id_table &&
-       !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
-       !i2c_of_match_device(dev->driver->of_match_table, client)) {
-       status = -ENODEV;
-       goto put_sync_adapter;
-   }
-
-i2c_of_match_device() on !CONFIG_OF systems is always false, so we never
-perform of_match_table matching. i2c_acpi_match_device() does ACPI match
-only, no of_compatible() matching takes place, even though the device
-provides .of_match_table and ACPI is capable of matching such device.
-
-It is not entirely clear why the device is matched again in bus
-->probe after successful and proper matching in bus ->match. Let's
-remove ->probe matching.
-
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: 62194244cf87 ("USB: Add Samsung Exynos OHCI diver")
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/i2c/i2c-core-base.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/usb/host/ohci-exynos.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 5ec082e2039d..77eea5c0bc71 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -475,17 +475,6 @@ static int i2c_device_probe(struct device *dev)
+diff --git a/drivers/usb/host/ohci-exynos.c b/drivers/usb/host/ohci-exynos.c
+index bd40e597f..5f5e8a64c 100644
+--- a/drivers/usb/host/ohci-exynos.c
++++ b/drivers/usb/host/ohci-exynos.c
+@@ -171,9 +171,8 @@ static int exynos_ohci_probe(struct platform_device *pdev)
+ 	hcd->rsrc_len = resource_size(res);
  
- 	driver = to_i2c_driver(dev->driver);
- 
--	/*
--	 * An I2C ID table is not mandatory, if and only if, a suitable OF
--	 * or ACPI ID table is supplied for the probing device.
--	 */
--	if (!driver->id_table &&
--	    !acpi_driver_match_device(dev, dev->driver) &&
--	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
--		status = -ENODEV;
--		goto put_sync_adapter;
--	}
--
- 	if (client->flags & I2C_CLIENT_WAKE) {
- 		int wakeirq;
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
+-		dev_err(&pdev->dev, "Failed to get IRQ\n");
+-		err = -ENODEV;
++	if (irq < 0) {
++		err = irq;
+ 		goto fail_io;
+ 	}
  
 -- 
-2.28.0
+2.20.1.windows.1
+
+
 
