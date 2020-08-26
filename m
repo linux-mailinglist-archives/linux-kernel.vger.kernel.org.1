@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CECC252682
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC9325267C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 07:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgHZFUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 01:20:07 -0400
-Received: from regular1.263xmail.com ([211.150.70.206]:57094 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgHZFUF (ORCPT
+        id S1726704AbgHZFM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 01:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgHZFM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 01:20:05 -0400
-X-Greylist: delayed 471 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Aug 2020 01:20:02 EDT
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 59B2E485;
-        Wed, 26 Aug 2020 13:11:59 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P32155T139860231112448S1598418712200462_;
-        Wed, 26 Aug 2020 13:11:58 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <f49bec8a578b978e6412b11cab7573f0>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: linux-kernel@vger.kernel.org
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     yilikernel@gmail.com, yili@winhong.com, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, davem@davemloft.net, kuba@kernel.org,
-        Li Bing <libing@winhong.com>
-Subject: [PATCH] net: hns3: Fix for geneve tx checksum bug
-Date:   Wed, 26 Aug 2020 13:11:50 +0800
-Message-Id: <20200826051150.2646128-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
+        Wed, 26 Aug 2020 01:12:56 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBF1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 22:12:55 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id k18so562591qtm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 22:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yfilLBz5JZdi/avFWO9tv5bRcdRvux+Y1JNGa63+Zro=;
+        b=hYKvrPyvirHQ+xAzWDhhq/Ve3fZvfDkw5fuDGO3+OfWWm1ofs9zDsoDjyMvL+nPnSD
+         gs0YfdCzHTHaFwZTQP+iqBv82s7JY+1XrsnNfWmUyj4qJF40prRBc63skwRCZJbNHsuA
+         Me92vZt7MTLa083lH4yQNIH/6bOKrvKscPPAXJvjmhYeTA1Xguf/YUQBzFyNDYoU+3Lj
+         vzHg4aUmM3RX451EBuADsyD3WpYoPIXv+r/3t/HK1qvwno5cQ0DT0P3qnAHKQZf7utgB
+         zkPp/qpPx/xiQe/xa8V8yerURt0qsvUun9nocWJKFvK84ZN0zm8AXmtk2s3USdvh6xQC
+         VHng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yfilLBz5JZdi/avFWO9tv5bRcdRvux+Y1JNGa63+Zro=;
+        b=kOyprwa39/HBdd0xFkKvGfpmwwkwSn7s+RZgdoMOCCyA/hyJBnSy8Zo9TyyxUwc3L4
+         L/PO3kzzPBFpdVLR3N3iFzqyPJYUH65NFs9hfQPCGrDT71LR4Hyedd/uPPwMTGgVkLD8
+         wvlQtwCGwEN/ed5AMVC3yy+HCfbvn2Ft6jYlWA/f06ObH63SHk5sWz9TuXC83OzSQ7PA
+         /Jmg5Te0u6LXxsuFgD7dgrR9/X3JUgZcKy5anh4Jnb0kdS+gJRyEZ6J0ymn9Y8BX/CUU
+         cwsYB2rW9JR+4VU72hOjt70oulrfQPjAJe/fl4J6yADRZQMbW3vuWtfIXHZYtZc8YsrA
+         Tieg==
+X-Gm-Message-State: AOAM533IqWIFmlAbT2HFEy7PbWBlV7OUnUDs9wUfFbhyosmJzs//Q9hI
+        9Be590RTN9XugbHDqahsNRies5tHz6UZCYQl3rXwOrvq
+X-Google-Smtp-Source: ABdhPJxGUZBBfmxks+iAEFmtTgt/Wjzl0KmJDjKRrAC0gaBWPCGHEAsFKNWw7ZZqj5Ufn6gZsd0UcTpwmn2DeOsDsRE=
+X-Received: by 2002:ac8:36b4:: with SMTP id a49mr9983461qtc.124.1598418774817;
+ Tue, 25 Aug 2020 22:12:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com> <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz>
+In-Reply-To: <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 26 Aug 2020 14:12:44 +0900
+Message-ID: <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when skb->encapsulation is 0, skb->ip_summed is CHECKSUM_PARTIAL
-and it is udp packet, which has a dest port as the IANA assigned.
-the hardware is expected to do the checksum offload, but the
-hardware will not do the checksum offload when udp dest port is
-6081.
+2020=EB=85=84 8=EC=9B=94 25=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 6:43, V=
+lastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+>
+> On 8/25/20 6:59 AM, js1304@gmail.com wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >
+> > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+> > on CMA area, but, there is a missing case and the page on CMA area coul=
+d
+> > be allocated even if APIs are used. This patch handles this case to fix
+> > the potential issue.
+> >
+> > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+> > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn=
+'t
+> > specified.
+> >
+> > This patch implements this behaviour by checking allocated page from
+> > the pcplist rather than skipping an allocation from the pcplist entirel=
+y.
+> > Skipping the pcplist entirely would result in a mismatch between waterm=
+ark
+> > check and actual page allocation.
+>
+> Are you sure? I think a mismatch exists already. Pages can be on the pcpl=
+ist but
+> they are not considered as free in the watermark check. So passing waterm=
+ark
+> check means there should be also pages on free lists. So skipping pcplist=
+s would
+> be safe, no?
 
-This patch fixes it by doing the checksum in software.
+You are right.
 
-Reported-by: Li Bing <libing@winhong.com>
-Signed-off-by: Yi Li <yili@winhong.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> > And, it requires to break current code
+> > layering that order-0 page is always handled by the pcplist. I'd prefer
+> > to avoid it so this patch uses different way to skip CMA page allocatio=
+n
+> > from the pcplist.
+>
+> Well it would be much simpler and won't affect most of allocations. Bette=
+r than
+> flushing pcplists IMHO.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 87776ce3539b..7d83c45369c2 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -21,6 +21,7 @@
- #include <net/pkt_cls.h>
- #include <net/tcp.h>
- #include <net/vxlan.h>
-+#include <net/geneve.h>
- 
- #include "hnae3.h"
- #include "hns3_enet.h"
-@@ -780,7 +781,7 @@ static int hns3_get_l4_protocol(struct sk_buff *skb, u8 *ol4_proto,
-  * and it is udp packet, which has a dest port as the IANA assigned.
-  * the hardware is expected to do the checksum offload, but the
-  * hardware will not do the checksum offload when udp dest port is
-- * 4789.
-+ * 4789 or 6081.
-  */
- static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
- {
-@@ -789,7 +790,8 @@ static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
- 	l4.hdr = skb_transport_header(skb);
- 
- 	if (!(!skb->encapsulation &&
--	      l4.udp->dest == htons(IANA_VXLAN_UDP_PORT)))
-+	      (l4.udp->dest == htons(IANA_VXLAN_UDP_PORT) ||
-+	      l4.udp->dest == htons(GENEVE_UDP_PORT))))
- 		return false;
- 
- 	skb_checksum_help(skb);
--- 
-2.25.3
+Hmm...Still, I'd prefer my approach. There are two reasons. First,
+layering problem
+mentioned above. In rmqueue(), there is a code for MIGRATE_HIGHATOMIC.
+As the name shows, it's for high order atomic allocation. But, after
+skipping pcplist
+allocation as you suggested, we could get there with order 0 request.
+We can also
+change this code, but, I'd hope to maintain current layering. Second,
+a performance
+reason. After the flag for nocma is up, a burst of nocma allocation
+could come. After
+flushing the pcplist one times, we can use the free page on the
+pcplist as usual until
+the context is changed.
 
+How about my reasoning?
 
-
+Thanks.
