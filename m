@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE0B252AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F034A252AB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728281AbgHZJti convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 05:49:38 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:38435 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727997AbgHZJth (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:49:37 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kAs3g-001QRa-BS; Wed, 26 Aug 2020 11:49:32 +0200
-Received: from tmo-117-196.customers.d1-online.com ([80.187.117.196] helo=localhost.localdomain)
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kAs3g-0020Ib-1g; Wed, 26 Aug 2020 11:49:32 +0200
+        id S1728312AbgHZJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727997AbgHZJtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:49:46 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 193312075E;
+        Wed, 26 Aug 2020 09:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598435385;
+        bh=JYJ+Y46FS1ZwPvEWPhdO+SM1Aq3byD/lyloKt5oIRNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LDQYBf05hoLxi7MpEm3q+7QW2BOSZZNQwZAxibdUlL0H/mz5bcBEkIQYkBhr1lPtS
+         yEy+1f/zbE3AHuieRDhUU+qV1jAuVPbW/MD5DcbILQk7LHxsImOazhJ/H9NC+EpkiQ
+         ZrIXVpECQAXuInXTFQfkvn7zILAGX/BMLaL/J7Cc=
+Date:   Wed, 26 Aug 2020 11:50:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.8 000/149] 5.8.4-rc2 review
+Message-ID: <20200826095000.GB2047935@kroah.com>
+References: <20200824164745.715432380@linuxfoundation.org>
+ <CA+G9fYuQ5+7HW_K2GieeAX3jubxqUXADd-7_Sx89ypyAmKUJgw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 17/19] z2ram: reindent
-Date:   Wed, 26 Aug 2020 11:49:29 +0200
-Message-Id: <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
-References: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-In-Reply-To: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>
-To:     Joe Perches <joe@perches.com>
-X-Mailer: iPhone Mail (18A5351d)
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 80.187.117.196
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYuQ5+7HW_K2GieeAX3jubxqUXADd-7_Sx89ypyAmKUJgw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> On Aug 26, 2020, at 11:21 AM, Joe Perches <joe@perches.com> wrote:
+On Tue, Aug 25, 2020 at 10:55:58AM +0530, Naresh Kamboju wrote:
+> On Mon, 24 Aug 2020 at 22:18, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.8.4 release.
+> > There are 149 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 26 Aug 2020 16:47:07 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.4-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> ﻿On Wed, 2020-08-26 at 08:24 +0200, Christoph Hellwig wrote:
->> reindent the driver using Lident as the code style was far away from
->> normal Linux code.
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> Why?  Does anyone use this anymore?
 
-Yes, the Amiga and Linux/m68k is very well and alive. There is new hardware being developed and new drivers being developed and so on.
+Thanks for testing all of these and letting me know.
 
-Please let’s don’t have another discussion about that. The code is maintained which is what counts and not whether any corporation is still making money with it.
-
-Adrian
+greg k-h
