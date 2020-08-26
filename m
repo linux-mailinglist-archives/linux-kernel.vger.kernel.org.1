@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D342534E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C882534EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgHZQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgHZQ3L (ORCPT
+        id S1727903AbgHZQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:29:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60044 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726862AbgHZQ3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:29:11 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBE5C061574;
-        Wed, 26 Aug 2020 09:29:10 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4BcBBp3DBPzQlWV;
-        Wed, 26 Aug 2020 18:29:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aixah.de; s=MBO0001;
-        t=1598459344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 26 Aug 2020 12:29:46 -0400
+Date:   Wed, 26 Aug 2020 16:29:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598459384;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uSOvEcQaqddPwizXQnRzqoFfD6pthJq2HRRXeaGIx8M=;
-        b=F7Rn3/52abVlbiyS+9PvjmJ6SOCVWHECo3aqTkkprLLdU93By4s4UXs/jsBBxN1SoCxXrW
-        +ySjwsVnkIOD45Bm5JppLMDrvq7lbscCoVXHdW+x43Wd9H3kAdAVK9iwp9Gf2lVvslwEcf
-        nH0yWKaapXuXZv+3fkOYoPmpHUwfwpfO4xbsR0SIPK5wZxNmz71L5sOxUq1VLQv8gGiSSe
-        9fSu5FMoMJWSWJvtTLiYZ4Y+ur3Nrq8cWHZKSju1tCbsFgaJGsxl8y+0Oa4eI8Te8dIMds
-        fPxhOyUGGiZ4GVQf1IpRn79XYY3IOQoJfDAFiSRkK9glUJ4rGNgpU3EKRduJRw==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id X6Skw1EjWZS6; Wed, 26 Aug 2020 18:29:02 +0200 (CEST)
-Date:   Wed, 26 Aug 2020 16:29:01 +0000
-From:   Mira Ressel <aranea@aixah.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] veth: Initialize dev->perm_addr
-Message-ID: <20200826162901.4js4u5u2whusp4l4@vega>
-References: <20200824143828.5964-1-aranea@aixah.de>
- <20200824.102545.1450838041398463071.davem@davemloft.net>
- <20200826152000.ckxrcfyetdvuvqum@vega>
- <20200826.082857.584544823490249841.davem@davemloft.net>
+        bh=jM1CwzRuc0ZwuNRunLya8qz+PY3Gs5Xe9bwbmHs0eNE=;
+        b=eDFAS1/KI9J0KqCcYWx+qq9o1/cnsO+tyZfnqdPbSRa2l2eidbuQkER33wg5h8X74GAXi9
+        xW2cU9SUOKDpgK/hKZNGfMfrI+tYmNzXDX/chxMWqHUCuEAbhTy5H+0NooUrsXB3H/xURN
+        KpzIOHEpJUAFQl+XKMSTP2AHJ4DUcD1k3v8P+fNQ+on8RJfOdOmJ/YmRW74RQ9aHrlpZN7
+        UNLK7BMN27JA6mV/T62AkmTRVcpE39mNOdsxrfMX50eZOzb4dotYjJobqwHldPGSAQWQVS
+        qEIX9viWcaft7/Oi1wlR5OH5iijZ935XlU0fa1YsmP9M/0zmrX/I8Gc54nYCew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598459384;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jM1CwzRuc0ZwuNRunLya8qz+PY3Gs5Xe9bwbmHs0eNE=;
+        b=wLWQqKjVzO3vLj915fn6bfYiGeAJXzmodAS/hIh2lA5yGin2A59dpHwoNLVa9EcgbE3HM3
+        X8o+R/TCDoSI6DAg==
+From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] MAINTAINERS: Add entry for HPE Superdome Flex (UV)
+ maintainers
+Cc:     Steve Wahl <steve.wahl@hpe.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200824221439.GA52810@swahl-home.5wahls.com>
+References: <20200824221439.GA52810@swahl-home.5wahls.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826.082857.584544823490249841.davem@davemloft.net>
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.01 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 5F31466D
-X-Rspamd-UID: cce744
+Message-ID: <159845938349.389.3215010202341830050.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 08:28:57AM -0700, David Miller wrote:
-> From: Mira Ressel <aranea@aixah.de>
-> Date: Wed, 26 Aug 2020 15:20:00 +0000
-> 
-> > I'm setting the peer->perm_addr, which would otherwise be zero, to its
-> > dev_addr, which has been either generated randomly by the kernel or
-> > provided by userland in a netlink attribute.
-> 
-> Which by definition makes it not necessarily a "permanent address" and
-> therefore is subject to being different across boots, which is exactly
-> what you don't want to happen for automatic address generation.
+The following commit has been merged into the x86/urgent branch of tip:
 
-That's true, but since veth devices aren't backed by any hardware, I
-unfortunately don't have a good source for a permanent address. The only
-inherently permanent thing about them is their name.
+Commit-ID:     d4f07268d035721dd055ceb0de98ace6ac5f858b
+Gitweb:        https://git.kernel.org/tip/d4f07268d035721dd055ceb0de98ace6ac5f858b
+Author:        Steve Wahl <steve.wahl@hpe.com>
+AuthorDate:    Mon, 24 Aug 2020 17:14:39 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 26 Aug 2020 18:24:43 +02:00
 
-People who use the default eui64-based address generation don't get
-persistent link-local addresses for their veth devices out of the box
-either -- the EUI64 is derived from the device's dev_addr, which is
-randomized by default.
+MAINTAINERS: Add entry for HPE Superdome Flex (UV) maintainers
 
-If that presents a problem for anyone, they can configure their userland
-to set the dev_addr to a static value, which handily fixes this problem
-for both address generation algorithms.
+Add an entry and email addresses for people at HPE who are supporting
+Linux on the Superdome Flex (a.k.a) UV platform.
 
-I'm admittedly glancing over one problem here -- I'm only setting the
-perm_addr during device creation, whereas userland can change the
-dev_addr at any time. I'm not sure if it'd make sense here to update the
-perm_addr if the dev_addr is changed later on?
+ [ bp: Capitalize "linux" too :) ]
 
--- 
-Regards,
-Mira
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200824221439.GA52810@swahl-home.5wahls.com
+---
+ MAINTAINERS |  9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b0a742c..4c8a682 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18873,6 +18873,15 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+ F:	arch/x86/platform
+ 
++X86 PLATFORM UV HPE SUPERDOME FLEX
++M:	Steve Wahl <steve.wahl@hpe.com>
++R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
++R:	Russ Anderson <russ.anderson@hpe.com>
++S:	Supported
++F:	arch/x86/include/asm/uv/
++F:	arch/x86/kernel/apic/x2apic_uv_x.c
++F:	arch/x86/platform/uv/
++
+ X86 VDSO
+ M:	Andy Lutomirski <luto@kernel.org>
+ L:	linux-kernel@vger.kernel.org
