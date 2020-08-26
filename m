@@ -2,88 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A33F2529AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF322529B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgHZJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
+        id S1727915AbgHZJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgHZJBI (ORCPT
+        with ESMTP id S1727122AbgHZJC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:01:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4579AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LWB8kupl2aQ0xANaNIkiPTanQ2SqGuz+Vpym63rGg1A=; b=ocHhET+OTpJXn3pM9znuAp/GOA
-        YieMAdUpg28WEz+Ejj2hnPBJoLZ+a7uZZHyCnC25hQuBkq9VE8T3rHadPCUsZVTPhsJ5ToCXasFa2
-        AVtGuNUZN3AM4bOJq8VTikLN0LSxL/99P60FW/B6pyCW4Gnflc0MAxdXEba7UYX96pjv7jsemAiAN
-        xMQUmJbwEHTv4lj5wU7gcjQXcEQutbi1kY361MYbCTAxm82U9a/Nj0q3tDI+NrR/NCmzUxFGzdS9X
-        zqMlFd6TY/wuiNOOntoGdcr5gjvtwnqjcOI/dGsxOIfYMx6VdYh2xhpQT4+SsWqX71/ryHaZEaoxE
-        EPIeL3FA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kArIl-0002rX-Mk; Wed, 26 Aug 2020 09:01:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F28C303A02;
-        Wed, 26 Aug 2020 11:01:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8016D2B79CD3F; Wed, 26 Aug 2020 11:01:02 +0200 (CEST)
-Date:   Wed, 26 Aug 2020 11:01:02 +0200
-From:   peterz@infradead.org
-To:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
- entry is not optimized (trigger by int3 breakpoint)
-Message-ID: <20200826090102.GC1362448@hirez.programming.kicks-ass.net>
-References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
- <20200825005426.f592075d13be740cb3c9aa77@kernel.org>
- <7396e7b2079644a6aafd9670a111232b@trendmicro.com>
- <20200825151538.f856d701a34f4e0561a64932@kernel.org>
- <20200825120911.GX1362448@hirez.programming.kicks-ass.net>
- <d3027772a6834f89a1ddc07c0fefaa0a@trendmicro.com>
+        Wed, 26 Aug 2020 05:02:26 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A49C061574;
+        Wed, 26 Aug 2020 02:02:25 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 2E5C2299659
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] arm64: dts: mt8173-elm: Remove ddc property from panel
+Date:   Wed, 26 Aug 2020 11:02:17 +0200
+Message-Id: <20200826090218.682931-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3027772a6834f89a1ddc07c0fefaa0a@trendmicro.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 07:07:09AM +0000, Eddy_Wu@trendmicro.com wrote:
-> llist operations require atomic cmpxchg, for some arch doesn't have
-> CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, in_nmi() check might still needed.
-> (HAVE_KRETPROBES && !CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG): arc, arm,
-> csky, mips
-> 
+The elm and hana devices uses an Embedded DisplayPort (eDP) as interface
+for its panel, so the DDC channel specified in the binding is useless.
 
-Look at the MIPS NMI handler, it's brilliant ;-)
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-Anyway, I think that CONFIG could use a little help, the point was to
-opt-in to some code, and it was supposed to leave out known broken
-architectures.
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-If your architecture has NMIs (not all of them do) or SMP, and doesn't
-have sane atomic ops (CAS or LL/SC), then it's broken crap and I don't
-care about it, full stop.
-
-Those architectures are known broken and limp along on pure luck, that
-CONFIG flag lets them disable some code that makes them crash faster.
-
-The same with non-coherent SMP, some archs tried to limp along, nobody
-cared about them, and I think we've since deleted them. I long for the
-day we get to delete the last of these broken atomic archs.
-
-Known broken archs include: Sparc32-SMP, PARISC, ARC-v1-SMP.
-There might be a few more, but I've forgotten.
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index a5a12b2599a4..1fe5dac24ba1 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -86,7 +86,6 @@ volume_up {
+ 	panel: panel {
+ 		compatible = "lg,lp120up1";
+ 		power-supply = <&panel_fixed_3v3>;
+-		ddc-i2c-bus = <&i2c0>;
+ 		backlight = <&backlight>;
+ 
+ 		port {
+-- 
+2.28.0
 
