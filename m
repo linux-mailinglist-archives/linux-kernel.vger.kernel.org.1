@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB9F252FF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FB252FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgHZNby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:31:54 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33593 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730288AbgHZNbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730300AbgHZNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730294AbgHZNbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Aug 2020 09:31:38 -0400
-X-UUID: 6760890371604d4e9983398bc164f82d-20200826
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=03acJo/Im0QezgGzNXuxpYDJ+zjBjETD20zLt87IkE4=;
-        b=D8Qo80RO3as1IxFATP06pxn1c2gA24MFACFEz8djSUrxIORXzYQiHDgWEy7eOvkci1+S9Ff3dWodQIjCDwZlRlKdqvlO0MCopG8xvteHKnUkdxukcMoFc3OqUih+9QpGBTMQDKC+RTz5MQfdC8l5WUbTeDNZZJBJcZgrKjV8h7A=;
-X-UUID: 6760890371604d4e9983398bc164f82d-20200826
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <andrew-ct.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 702879083; Wed, 26 Aug 2020 21:31:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 26 Aug 2020 21:31:07 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 26 Aug 2020 21:31:07 +0800
-Message-ID: <1598448669.18394.8.camel@mtksdaap41>
-Subject: Re: [PATCH v3] nvmem: mtk-efuse: Remove EFUSE register write support
-From:   andrew-ct chen <andrew-ct.chen@mediatek.com>
-To:     Chih-En Hsu <chih-en.hsu@mediatek.com>
-CC:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Michael.Mei@mediatek.com>
-Date:   Wed, 26 Aug 2020 21:31:09 +0800
-In-Reply-To: <20200826083943.810-1-chih-en.hsu@mediatek.com>
-References: <20200826083943.810-1-chih-en.hsu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+Received: from kernel.org (unknown [87.70.91.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B608208E4;
+        Wed, 26 Aug 2020 13:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598448691;
+        bh=dWH3kPosHZ3kLVYVGJgLt9lnS06L7c5CBX8c2+eFubk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zn6wiWsDb8gU2eoT08bIGEZJLq0IyZOEq4e5NVQcS4LBgtpdYsd88WW+rwM0sJIQ2
+         EYWvF7H9bNRobS2RtnuAFWRnAjGYzj/GzCob51QqqwBbty8u0c2D4leLdnO8AuHFrS
+         HsmbSG1rIgBP0OuNGGJfPU+Q4og8GbpCSbSr24Cg=
+Date:   Wed, 26 Aug 2020 16:31:25 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: mm: Remove superfluous memblock_alloc*() casts
+Message-ID: <20200826133125.GB69706@kernel.org>
+References: <20200826130444.25618-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826130444.25618-1-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2hpaC1FbiwNCg0KDQpPbiBXZWQsIDIwMjAtMDgtMjYgYXQgMTY6MzkgKzA4MDAsIENoaWgt
-RW4gSHN1IHdyb3RlOg0KPiBUaGlzIHBhdGNoIGlzIHRvIHJlbW92ZSBmdW5jdGlvbiAibXRrX3Jl
-Z193cml0ZSIgc2luY2UNCj4gTWVkaWF0ZWsgRUZVU0UgaGFyZHdhcmUgb25seSBzdXBwb3J0cyBy
-ZWFkIGZ1bmN0aW9uYWxpdHkNCj4gZm9yIE5WTUVNIGNvbnN1bWVycy4NCg0KQWNrZWQtYnk6IEFu
-ZHJldy1DVCBDaGVuIDxhbmRyZXctY3QuY2hlbkBtZWRpYXRlay5jb20+DQoNCj4gDQo+IEZpeGVz
-OiBiYTM2MGZkMDQwZTMgKCJudm1lbTogbXRrLWVmdXNlOiByZW1vdmUgbnZtZW0gcmVnbWFwIGRl
-cGVuZGVuY3kiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBDaGloLUVuIEhzdSA8Y2hpaC1lbi5oc3VAbWVk
-aWF0ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbnZtZW0vbXRrLWVmdXNlLmMgfCAxNCAtLS0t
-LS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbnZtZW0vbXRrLWVmdXNlLmMgYi9kcml2ZXJzL252bWVtL210ay1l
-ZnVzZS5jDQo+IGluZGV4IDg1NmQ5YzNmYzM4ZS4uNmE1MzdkOTU5ZjE0IDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL252bWVtL210ay1lZnVzZS5jDQo+ICsrKyBiL2RyaXZlcnMvbnZtZW0vbXRrLWVm
-dXNlLmMNCj4gQEAgLTI4LDE5ICsyOCw2IEBAIHN0YXRpYyBpbnQgbXRrX3JlZ19yZWFkKHZvaWQg
-KmNvbnRleHQsDQo+ICAJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4gLXN0YXRpYyBpbnQgbXRrX3Jl
-Z193cml0ZSh2b2lkICpjb250ZXh0LA0KPiAtCQkJIHVuc2lnbmVkIGludCByZWcsIHZvaWQgKl92
-YWwsIHNpemVfdCBieXRlcykNCj4gLXsNCj4gLQlzdHJ1Y3QgbXRrX2VmdXNlX3ByaXYgKnByaXYg
-PSBjb250ZXh0Ow0KPiAtCXUzMiAqdmFsID0gX3ZhbDsNCj4gLQlpbnQgaSA9IDAsIHdvcmRzID0g
-Ynl0ZXMgLyA0Ow0KPiAtDQo+IC0Jd2hpbGUgKHdvcmRzLS0pDQo+IC0JCXdyaXRlbCgqdmFsKyss
-IHByaXYtPmJhc2UgKyByZWcgKyAoaSsrICogNCkpOw0KPiAtDQo+IC0JcmV0dXJuIDA7DQo+IC19
-DQo+IC0NCj4gIHN0YXRpYyBpbnQgbXRrX2VmdXNlX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpDQo+ICB7DQo+ICAJc3RydWN0IGRldmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCj4g
-QEAgLTYxLDcgKzQ4LDYgQEAgc3RhdGljIGludCBtdGtfZWZ1c2VfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikNCj4gIAllY29uZmlnLnN0cmlkZSA9IDQ7DQo+ICAJZWNvbmZpZy53
-b3JkX3NpemUgPSA0Ow0KPiAgCWVjb25maWcucmVnX3JlYWQgPSBtdGtfcmVnX3JlYWQ7DQo+IC0J
-ZWNvbmZpZy5yZWdfd3JpdGUgPSBtdGtfcmVnX3dyaXRlOw0KPiAgCWVjb25maWcuc2l6ZSA9IHJl
-c291cmNlX3NpemUocmVzKTsNCj4gIAllY29uZmlnLnByaXYgPSBwcml2Ow0KPiAgCWVjb25maWcu
-ZGV2ID0gZGV2Ow0KDQo=
+On Wed, Aug 26, 2020 at 03:04:44PM +0200, Geert Uytterhoeven wrote:
+> The return type of memblock_alloc*() is a void pointer, so there is no
+> need to cast it to "void *" or some other pointer type, before assigning
+> it to a pointer variable.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+
+> ---
+>  arch/m68k/mm/mcfmmu.c   | 2 +-
+>  arch/m68k/mm/motorola.c | 5 ++---
+>  2 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+> index 2b9cb4a622811390..eac9dde65193443e 100644
+> --- a/arch/m68k/mm/mcfmmu.c
+> +++ b/arch/m68k/mm/mcfmmu.c
+> @@ -42,7 +42,7 @@ void __init paging_init(void)
+>  	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+>  	int i;
+>  
+> -	empty_zero_page = (void *) memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+> +	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+>  	if (!empty_zero_page)
+>  		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+>  		      __func__, PAGE_SIZE, PAGE_SIZE);
+> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> index a9bdde54ca350197..3a653f0a4188d4af 100644
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -227,7 +227,7 @@ static pte_t * __init kernel_page_table(void)
+>  	pte_t *pte_table = last_pte_table;
+>  
+>  	if (PAGE_ALIGNED(last_pte_table)) {
+> -		pte_table = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+> +		pte_table = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+>  		if (!pte_table) {
+>  			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+>  					__func__, PAGE_SIZE, PAGE_SIZE);
+> @@ -275,8 +275,7 @@ static pmd_t * __init kernel_ptr_table(void)
+>  
+>  	last_pmd_table += PTRS_PER_PMD;
+>  	if (PAGE_ALIGNED(last_pmd_table)) {
+> -		last_pmd_table = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
+> -							   PAGE_SIZE);
+> +		last_pmd_table = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+>  		if (!last_pmd_table)
+>  			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+>  			      __func__, PAGE_SIZE, PAGE_SIZE);
+> -- 
+> 2.17.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
