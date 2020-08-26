@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5116253053
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B1A253058
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbgHZNuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730465AbgHZNsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:48:39 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 505FC2177B;
-        Wed, 26 Aug 2020 13:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598449718;
-        bh=OxjpBA84KDi5ZWWyg3y0i/wou8N/yNawXlcHxpgAmK0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzoUqElRFTWzqYcNSmyQBQc0FO5l7OLR6oYQb3U+bihhWnON1SAQzX19x+RqoiWKo
-         F3F/ouhW/EuNYYKSc146espP+BieUrlHz9NUk/uugJP2NtA++XzcJcxJ7RoYkAiPEU
-         4ZhNsYz8tluLhnA597QL+czpsCEmoeh9DizsyhcI=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch@vger.kernel.org
-Subject: [RFC PATCH 14/14] kprobes: Remove NMI context check
-Date:   Wed, 26 Aug 2020 22:48:34 +0900
-Message-Id: <159844971403.510284.5234890839996258509.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159844957216.510284.17683703701627367133.stgit@devnote2>
-References: <159844957216.510284.17683703701627367133.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1730529AbgHZNuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730454AbgHZNtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:49:36 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C212C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:49:35 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x77so8909lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XYm7Tduo8NWl5UNwRfQK8+cTzqgeaWnEyTZDJt6ZL0A=;
+        b=cQw18JNOYdqf3sOurYRlourg5Md8zuitXIUOSC1+hAVeZIFeF7Y+VybvHHm/AsDTFh
+         x1R5+XVIFzrI5xR2M2+xU86dR9yFVT1Rw+Gr+TtzOykldPfvxeoilXjnA6PGisH539I0
+         DgtcYc1Dix0XcbBSo+sxcGJU2WLLHLrLJVnJTyoVzIUy5pUhG4Rk2T5RbgJywhruD56q
+         bg9+5MO5PUvW2zxb/fUIvTKZt9uRLAkSQDhh0CBm0882P2knFBlD2eqi4B/cz47hbsJk
+         dsz+t4E8spMvWm92CmYiLuxgckD9MVzt12YvP5PR8e88Is8XB/G272nfv35rPsD6FiSa
+         aFOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XYm7Tduo8NWl5UNwRfQK8+cTzqgeaWnEyTZDJt6ZL0A=;
+        b=UftigrXWzNXusBXWPW6UufDxm2kLLNhE1DnVbKWQnlveQ86feky6zjaoJVMp6PdH4o
+         SPLh5YNMGbXMwI1lS3Qorn8rvYcu0D889BsXzsl/430EF7kq7oBW7WqL74KfwsNd75zY
+         UMhhlorquW6S7ZpeOw7CdXGePmpGMtOsVSPFGsZUgJOay4nLaHHnCv4RlemjY0ya/nti
+         wUUJMdauTWSbJqlvdB6F9Y/nAG4no5BwFvuOTXQYcadSgi3nTSakcK7JG7IHpiW+Z0Bc
+         BAmgLaySbe1Z6Cz/bXebNxULO5mgW6KGldRysg0jStqTVePwQDoU5yF5H5+PvR/DI0o+
+         4xmQ==
+X-Gm-Message-State: AOAM5301e2FcAXvdcp/x97UET6GegtU0bbOfXNoh0Z8u+RODODxzExT4
+        KQLCdOzG3OZ2Gp9euGELJSVr/sjZawMRQbmTpZo=
+X-Google-Smtp-Source: ABdhPJxVedw5wDUoff9RgpfDnP2MJ8QistoF1SlV7wu7KGXETn4R6i8GLZTyfubdJ9A4bPs35o56F2wDe8uwVYlwGPY=
+X-Received: by 2002:a19:306:: with SMTP id 6mr7488144lfd.214.1598449772436;
+ Wed, 26 Aug 2020 06:49:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
+ <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
+ <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
+ <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
+ <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
+ <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
+ <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com>
+ <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
+ <CAOMZO5ADeXEHWiG7Xja1W1GnahV08ZEYSkNsrOzautn2mROCNA@mail.gmail.com>
+ <aa0b7ad149a7bd4e681e4ebee12ffaaab2803832.camel@ew.tq-group.com>
+ <CAOMZO5B_Jm8SX9N9V5oq+LAa0Yc4CmrEp2n=2t3XUyBCtnGVTA@mail.gmail.com> <d433e8a47d721a65903db68c38eb1c337c81e395.camel@ew.tq-group.com>
+In-Reply-To: <d433e8a47d721a65903db68c38eb1c337c81e395.camel@ew.tq-group.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 26 Aug 2020 10:49:21 -0300
+Message-ID: <CAOMZO5AfuPXfOmRSXAmyG-bdqGSzvTRm51NuTJ-B2PzKbLy9mw@mail.gmail.com>
+Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH 2/2]
+ ARM: dts: imx6qdl: tqma6: minor fixes
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the commit 9b38cc704e84 ("kretprobe: Prevent triggering
-kretprobe from within kprobe_flush_task") sets a dummy current
-kprobe in the trampoline handler by kprobe_busy_begin/end(),
-it is not possible to run a kretprobe pre handler in kretprobe
-trampoline handler context even with the NMI. If the NMI interrupts
-a kretprobe_trampoline_handler() and it hits a kretprobe, the
-2nd kretprobe will detect recursion correctly and it will be
-skipped.
-This means we have almost no double-lock issue on kretprobes by NMI.
+On Wed, Aug 26, 2020 at 10:13 AM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 
-The last one point is in cleanup_rp_inst() which also takes
-kretprobe_table_lock without setting up current kprobes.
-So adding kprobe_busy_begin/end() there allows us to remove
-in_nmi() check.
+> Using GPIOs for chipselect would require different pinmuxing. Also, why
+> use GPIOs, when the SPI controller has this built in?
 
-The above commit applies kprobe_busy_begin/end() on x86, but
-now all arch implementation are unified to generic one, we can
-safely remove the in_nmi() check from arch independent code.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kprobes.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index cbd2ad1af7b7..311033e4b8e4 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1359,7 +1359,8 @@ static void cleanup_rp_inst(struct kretprobe *rp)
- 	struct hlist_node *next;
- 	struct hlist_head *head;
- 
--	/* No race here */
-+	/* To avoid recursive kretprobe by NMI, set kprobe busy here */
-+	kprobe_busy_begin();
- 	for (hash = 0; hash < KPROBE_TABLE_SIZE; hash++) {
- 		kretprobe_table_lock(hash, &flags);
- 		head = &kretprobe_inst_table[hash];
-@@ -1369,6 +1370,8 @@ static void cleanup_rp_inst(struct kretprobe *rp)
- 		}
- 		kretprobe_table_unlock(hash, &flags);
- 	}
-+	kprobe_busy_end();
-+
- 	free_rp_inst(rp);
- }
- NOKPROBE_SYMBOL(cleanup_rp_inst);
-@@ -2038,17 +2041,6 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	unsigned long hash, flags = 0;
- 	struct kretprobe_instance *ri;
- 
--	/*
--	 * To avoid deadlocks, prohibit return probing in NMI contexts,
--	 * just skip the probe and increase the (inexact) 'nmissed'
--	 * statistical counter, so that the user is informed that
--	 * something happened:
--	 */
--	if (unlikely(in_nmi())) {
--		rp->nmissed++;
--		return 0;
--	}
--
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
- 	raw_spin_lock_irqsave(&rp->lock, flags);
-
+In the initial chips with the ECSPI controller there was a bug with
+the native chipselect controller and we had to use GPIO.
