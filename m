@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3889E253198
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC1E25318E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgHZOke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:40:34 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3727 "EHLO mga11.intel.com"
+        id S1726783AbgHZOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:39:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726905AbgHZOkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:40:25 -0400
-IronPort-SDR: RfPfYohHD/s0/CXUENx3YY6C9Wt28AebuilvA8xR42ZRqxFtDoi23FoYBzhSxqFepRsgg2/rP9
- HukA5ooFl3hg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153869877"
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="153869877"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 07:40:24 -0700
-IronPort-SDR: KHxkWteeU8emhyHgGfiOwbt/dsY21nC8/UY5bgPeCNc+exWvdcy9vNMmiijVfwhXIoSVnfVsLW
- iZeVF4gNESwA==
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="299494879"
-Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51]) ([10.255.231.51])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 07:40:23 -0700
-Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
- clock-stop invalid configs
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
- <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
- <20200826094817.GC2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <21038e8d-dbd9-76c7-c758-9933fb45024a@linux.intel.com>
-Date:   Wed, 26 Aug 2020 09:38:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726125AbgHZOjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:39:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6614A2177B;
+        Wed, 26 Aug 2020 14:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598452790;
+        bh=MPfx5aMRKvl6ZwBRmQ7wZoUEayNIgC3zvUTNwgksdSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KiYrI2soBiXl7DPVV0RzATq2/1Ocm5qQ6CI5eH7flFsCHyC+pNxXpDA/ZoRk10tFT
+         pp18pv46oDlUwUlOjMRphDG2sA2C7jBTigsPDVHy/urYkMKQ3I9t6LDwD/Ln4pDUMk
+         z9JV2hcMyjmNq/Gq+1Ry83IdXuMcbDZzhXZXKOSc=
+Date:   Wed, 26 Aug 2020 16:40:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     arnd@arndb.de, rikard.falkeborn@gmail.com, rogerable@realtek.com,
+        lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: rtsx: improve status check
+Message-ID: <20200826144006.GA4178874@kroah.com>
+References: <20200826135337.17105-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200826094817.GC2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826135337.17105-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/26/20 4:48 AM, Vinod Koul wrote:
-> On 18-08-20, 10:41, Bard Liao wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> Detect cases where the clock is assumed to be stopped but the IP is
->> not in the relevant state, and add a dynamic debug trace.
+On Wed, Aug 26, 2020 at 06:53:37AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> you meant a debug print..and it looks like error print below (also in title).
-
-I don't understand the comment. Is the 'trace' confusing and are you 
-asking to e.g. change the commit message to 'add dynamic debug log'?
-
+> clang static analysis flags this error
 > 
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>   drivers/soundwire/intel.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
->> index 7c63581270fd..b82d02af3c4f 100644
->> --- a/drivers/soundwire/intel.c
->> +++ b/drivers/soundwire/intel.c
->> @@ -1964,6 +1964,11 @@ static int intel_resume_runtime(struct device *dev)
->>   			}
->>   		}
->>   	} else if (!clock_stop_quirks) {
->> +
->> +		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
->> +		if (!clock_stop0)
->> +			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
->> +
->>   		ret = intel_init(sdw);
->>   		if (ret) {
->>   			dev_err(dev, "%s failed: %d", __func__, ret);
->> -- 
->> 2.17.1
+> rtsx_usb.c:505:10: warning: The left operand of '&'
+>   is a garbage value
+>         if (val & cd_mask[card])
+>             ~~~ ^
 > 
+> val is set when rtsx_usb_get_card_status() is successful.  The
+> problem is how it checks its callers returns.
+> 
+> 	/* usb_control_msg may return positive when success */
+> 	if (ret < 0)
+> 		return ret;
+> 
+> This is correct for the usb_control_msg() the call. However,
+> the call to rtsx_usb_get_status_with_bulk is only successful
+> when 0 is returned.
+> 
+> So make status checking block specific.
+> 
+> Fixes: 730876be2566 ("mfd: Add realtek USB card reader driver")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/misc/cardreader/rtsx_usb.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/misc/cardreader/rtsx_usb.c b/drivers/misc/cardreader/rtsx_usb.c
+> index 59eda55d92a3..bd392b0c66af 100644
+> --- a/drivers/misc/cardreader/rtsx_usb.c
+> +++ b/drivers/misc/cardreader/rtsx_usb.c
+> @@ -304,14 +304,15 @@ int rtsx_usb_get_card_status(struct rtsx_ucr *ucr, u16 *status)
+>  		*status = *buf;
+>  
+>  		kfree(buf);
+> +
+> +		/* usb_control_msg may return positive when success */
+
+it _WILL_ return positive.  it will return negative for an error.  It
+will never return 0.
+
+> +		if (ret < 0)
+> +			return ret;
+>  	} else {
+>  		ret = rtsx_usb_get_status_with_bulk(ucr, status);
+> +		if (ret)
+> +			return ret;
+>  	}
+> -
+> -	/* usb_control_msg may return positive when success */
+> -	if (ret < 0)
+> -		return ret;
+> -
+
+I fail to see how this code is incorrect today.
+
+Well, I do see a bug in here, but you aren't fixing it (short read is
+not checked), see the recent linux-usb@vger mail thread about that
+problem that we will be fixing tree-wide over time soon...
+
+How can your move of these lines modify anything?
+
+thanks,
+
+greg k-h
