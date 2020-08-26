@@ -2,159 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44159253A52
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 00:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F60253A58
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 00:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgHZWip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 18:38:45 -0400
-Received: from ozlabs.org ([203.11.71.1]:40287 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725980AbgHZWip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 18:38:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BcLPD5XXxz9sSP;
-        Thu, 27 Aug 2020 08:38:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1598481521;
-        bh=1x4FCQ0LAj50zy7UhVV7cFjx5dWto9itEBWu0qpUJDY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YYjx3AVhgGoKq7Z8CU9EPZWL8rEppaeG9St+rZ9eO2c+aWZ9YzNR2COeFQ04J+Kbr
-         5iq34v9FsyMZu2YL6z9+RXUn4JkRqHvTfig2+0IiJLmIhkB8kDjHEvReN1guqc8baW
-         YHZLmziW+SQ+lY3EphxujJsMVK7IrFlFmqKx7jZ66sFyHErGxrXYkBvSVhnlquOtmS
-         4fc2XzfwTazwFe61nTpAsKH2aEH/NbkzWBBosr/nn5bgZ9OWlOfe9d4bgmCP/XTFc8
-         6PQ8flZyfR8uzdxWZsBjYek0jQg5Bq+Bc3E4DzIPxJ9TFsEQB1CEcs5+84yKWXvlJj
-         /bQm3nw8ePpEw==
-Date:   Thu, 27 Aug 2020 08:38:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warnings from perf build in Linus' tree
-Message-ID: <20200827083839.276cc0d0@canb.auug.org.au>
+        id S1726783AbgHZWre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 18:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgHZWr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 18:47:29 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A39C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 15:47:29 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 2so1590083pjx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 15:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTV2RlnMnYfEfU+n6J7LxKvHGWuogRfWUjxo9oBtDWg=;
+        b=hunhi80imRT79pQZiQ6L3lKxUljVv11uqwzOckeYlSW2xC/1XGMNrtCJoldSMClPz6
+         LLho8FdrvVzbnWU6iQtwlGYc5JfAhX03Cz8UiUfxOW/JAs04Gjx6L1onY5EalO1ukw5S
+         lRgunltwr0SCkQ5/7jkBVzavGV8Nkhvy6GTGE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTV2RlnMnYfEfU+n6J7LxKvHGWuogRfWUjxo9oBtDWg=;
+        b=n3vn26x3fPsJnNKXjLgoOCRvApP9rQ3mHGu8r3F9mpLHm9OKYFJLe9fSdOFpunkx8h
+         Kaku2j9Oajs5+O1GFCjEH/u+ZvQfrenlKgSZvklb29HyApKxUo+UYterhEQQ2rxaC6Qx
+         2HhKkREnXhg96GXt22IOl8ONOl1J7L5NW82npPcFsMbevI/I9Ghh4H2XR+UZ6h8cpi19
+         I0dS9FFs5m63NYcnQSzuLzsmdvWubfFH1oVXnyViNRbMDUs7rP7oo9E7n57+28YIW3AX
+         sJUcJiWQyr/QFWVeVAhuAoAGUUJzBW2PYliq+21X1bzOl1iPnCSlAeZ9MIoyqu13HVue
+         U1xg==
+X-Gm-Message-State: AOAM532rV2+z7C7V9BBNW/+kMSvOPQyHF5e8H7MkhMxMXexS+VRjPNKM
+        r9jv3qF8YncEYqwcDOVfQjtgaforca5wnw==
+X-Google-Smtp-Source: ABdhPJzp3CSsjDcKg/29/X87IL09PfgN+zVZmYuop0NFK3+uXle3rQu5a8WZU1dDdQPrIdlRbbCi9g==
+X-Received: by 2002:a17:90a:8817:: with SMTP id s23mr8065795pjn.158.1598482048667;
+        Wed, 26 Aug 2020 15:47:28 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id s10sm123093pjl.37.2020.08.26.15.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 15:47:28 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Miao-chen Chou <mcchou@chromium.org>
+Subject: [PATCH] Bluetooth: Clear suspend tasks on unregister
+Date:   Wed, 26 Aug 2020 15:47:22 -0700
+Message-Id: <20200826154719.1.I24fb6cc377d03d64d74f83cec748afd12ee33e37@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J2kbYrSdFrhfNIp2WYrruP.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/J2kbYrSdFrhfNIp2WYrruP.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+While unregistering, make sure to clear the suspend tasks before
+cancelling the work. If the unregister is called during resume from
+suspend, this will unnecessarily add 2s to the resume time otherwise.
 
-Hi all,
+Fixes: 4e8c36c3b0d73d (Bluetooth: Fix suspend notifier race)
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+---
+This was discovered with RT8822CE using the btusb driver. This chipset
+will reset on resume during system suspend and was unnecessarily adding
+2s to every resume. Since we're unregistering anyway, there's no harm in
+just clearing the pending events.
 
-Doing the perf native (PowerPC le) build today produces these warnings:
+ net/bluetooth/hci_core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-util/dsos.c: In function 'dsos__findnew_id':
-util/dsos.c:39:14: note: the layout of aggregates containing vectors with 8=
--byte alignment has changed in GCC 5
-   39 |  dso->id.maj =3D id->maj;
-      |  ~~~~~~~~~~~~^~~~~~~~~
-util/namespaces.c: In function 'nsinfo__new':
-util/namespaces.c:139:12: note: the layout of aggregates containing vectors=
- with 8-byte alignment has changed in GCC 5
-  139 |   nsi->pid =3D pid;
-      |   ~~~~~~~~~^~~~~
-util/evlist.c: In function 'perf_evlist__set_id_pos':
-util/evlist.c:116:17: note: the layout of aggregates containing vectors wit=
-h 8-byte alignment has changed in GCC 5
-  116 |  evlist->id_pos =3D first->id_pos;
-      |  ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
-util/annotate.c: In function 'annotation__init_column_widths':
-util/annotate.c:2701:44: note: the layout of aggregates containing vectors =
-with 2-byte alignment has changed in GCC 5
- 2701 |  notes->widths.addr =3D notes->widths.target =3D
-      |                       ~~~~~~~~~~~~~~~~~~~~~^
- 2702 |   notes->widths.min_addr =3D hex_width(symbol__size(sym));
-      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-util/session.c: In function 'perf_event__read_swap':
-util/session.c:620:20: note: the layout of aggregates containing vectors wi=
-th 8-byte alignment has changed in GCC 5
-  620 |  event->read.pid   =3D bswap_32(event->read.pid);
-      |                    ^
-util/jitdump.c: In function 'jit_process':
-util/jitdump.c:329:23: note: the layout of aggregates containing vectors wi=
-th 8-byte alignment has changed in GCC 5
-  329 |    jr->load.pid       =3D bswap_32(jr->load.pid);
-      |                       ^
-util/auxtrace.c: In function 'auxtrace_queues__add_buffer.part.0':
-util/auxtrace.c:360:12: note: the layout of aggregates containing vectors w=
-ith 8-byte alignment has changed in GCC 5
-  360 | static int auxtrace_queues__add_buffer(struct auxtrace_queues *queu=
-es,
-      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-util/synthetic-events.c: In function 'perf_event__synthesize_sample':
-util/synthetic-events.c:1441:22: note: the layout of aggregates containing =
-vectors with 8-byte alignment has changed in GCC 5
- 1441 |   u.val32[0] =3D sample->pid;
-      |                ~~~~~~^~~~~
-util/probe-finder.c: In function 'line_range_search_cb':
-util/probe-finder.c:1887:17: note: the layout of aggregates containing vect=
-ors with 8-byte alignment has changed in GCC 5
- 1887 |   lr->start =3D lf->lno_s;
-      |               ~~^~~~~~~
-util/machine.c: In function 'machine__process_mmap2_event':
-util/machine.c:1716:5: note: the layout of aggregates containing vectors wi=
-th 8-byte alignment has changed in GCC 5
- 1716 | int machine__process_mmap2_event(struct machine *machine,
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-util/intel-pt-decoder/intel-pt-decoder.c: In function 'intel_pt_get_next_pa=
-cket':
-util/intel-pt-decoder/intel-pt-decoder.c:916:21: note: the layout of aggreg=
-ates containing vectors with 8-byte alignment has changed in GCC 5
-  916 |   decoder->pkt_step =3D ret;
-      |   ~~~~~~~~~~~~~~~~~~^~~~~
-util/pmu.c: In function '__perf_pmu__new_alias':
-util/pmu.c:308:12: note: the layout of aggregates containing vectors with 2=
--byte alignment has changed in GCC 5
-  308 | static int __perf_pmu__new_alias(struct list_head *list, char *dir,=
- char *name,
-      |            ^~~~~~~~~~~~~~~~~~~~~
-util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
-util/intel-pt.c:1284:14: note: the layout of aggregates containing vectors =
-with 8-byte alignment has changed in GCC 5
- 1284 |  sample->pid =3D ptq->pid;
-      |  ~~~~~~~~~~~~^~~~~~~~~~
-util/parse-events.c: In function 'parse_events__modifier_event':
-util/parse-events.c:1885:5: note: the layout of aggregates containing vecto=
-rs with 8-byte alignment has changed in GCC 5
- 1885 | int parse_events__modifier_event(struct list_head *list, char *str,=
- bool add)
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/sfr/next/next/tools/perf/util/namespaces.c: In function 'nsinfo__new':
-/home/sfr/next/next/tools/perf/util/namespaces.c:139:12: note: the layout o=
-f aggregates containing vectors with 8-byte alignment has changed in GCC 5
-  139 |   nsi->pid =3D pid;
-      |   ~~~~~~~~~^~~~~
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 68bfe57b66250f..ed4cb3479433c0 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3442,6 +3442,16 @@ void hci_copy_identity_address(struct hci_dev *hdev, bdaddr_t *bdaddr,
+ 	}
+ }
+ 
++static void hci_suspend_clear_tasks(struct hci_dev *hdev)
++{
++	int i;
++
++	for (i = 0; i < __SUSPEND_NUM_TASKS; ++i)
++		clear_bit(i, hdev->suspend_tasks);
++
++	wake_up(&hdev->suspend_wait_q);
++}
++
+ static int hci_suspend_wait_event(struct hci_dev *hdev)
+ {
+ #define WAKE_COND                                                              \
+@@ -3785,6 +3795,7 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	cancel_work_sync(&hdev->power_on);
+ 
+ 	unregister_pm_notifier(&hdev->suspend_notifier);
++	hci_suspend_clear_tasks(hdev);
+ 	cancel_work_sync(&hdev->suspend_prepare);
+ 
+ 	hci_dev_do_close(hdev);
+-- 
+2.28.0.297.g1956fa8f8d-goog
 
-I assume they are because I have changed all my toolcahins to gcc
-v10 today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/J2kbYrSdFrhfNIp2WYrruP.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9G5G8ACgkQAVBC80lX
-0GwNRwf9G1zbd8OE1SDujx2Bk7PC4VYak4TxBjUjluC7FluPSY32IPhYqPnU5aEx
-cuaxNPg3QDctPa1DY/gtOjCAT/qzeGn+FeeLO04Ek9AIPr4jMnN2Fb/Vrq7W7/gv
-zVrxbY4sVwNXgiOpGgJd9Nsd06FH8ZezUtUcZKhNkXyufCx22w6zrh2rOO4SApTe
-mp75wJWzb2WsH+fIQ0t+sBuv86qbNMJ2CMCoiUN6vAh7h2vY4ZARu4hp93bvsPfr
-gNV4/B0SdTZLKwOSxR8H4O37Tk8JTZqgyd0SexZ/JRigEEdBJ0XuxfYDgbhlJa/U
-wXyy5ATb75bbjCD+4OM5Is1CrswXBQ==
-=GQX2
------END PGP SIGNATURE-----
-
---Sig_/J2kbYrSdFrhfNIp2WYrruP.--
