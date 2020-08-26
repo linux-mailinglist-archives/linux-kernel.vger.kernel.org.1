@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278FD252B97
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59555252B9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgHZKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 06:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
+        id S1728675AbgHZKrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 06:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728602AbgHZKrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:47:21 -0400
+        id S1728607AbgHZKrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 06:47:24 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 865C5206EB;
-        Wed, 26 Aug 2020 10:47:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 079EA206EB;
+        Wed, 26 Aug 2020 10:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598438840;
-        bh=jxKgwQpqmG7edKBQ2bcpJ5DtU3FDZhmfZZD+7bojMRs=;
+        s=default; t=1598438844;
+        bh=2ybAv5AUSr/9AXTd/F5iA77kKZOVn7+1fkhHLl5o5j4=;
         h=From:To:Cc:Subject:Date:From;
-        b=grLmVFx23Q4+R3zgco4J19ZsMNvDq+0oLaf+AE4DudRly3a7YT9HUsWWELNw2kmxT
-         DrzUlmoPIL3vog2sdfCSb1WldnlHTtkVEOA9ubbHjDSP1uccfq1kpQbek9JTcHjHea
-         6v6hv9ZUULTxpPQ/CabatIEGPU4OwKPPBIUu04dY=
+        b=MEw8i8+AnDWFoShsQ20g8fvsaagnyPejp2BcBcuctumA4TE4wz+ecIwukfqa+mZvh
+         73oBQcG3usuXOgcDSF5pFzeZT8MJzY0DUiYLN4atiT8gFsYIgxzvR00VHpNq7Jr5y6
+         W48FBO8asdFRXpOV/ohOqvxqQNq2iUFZFW6eZ/is=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kAsxa-002Dnc-Kd; Wed, 26 Aug 2020 12:47:18 +0200
+        id 1kAsxd-002Dtj-VP; Wed, 26 Aug 2020 12:47:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] docs: hwmon: adm1266.rst: fix a broken reference
-Date:   Wed, 26 Aug 2020 12:47:17 +0200
-Message-Id: <20200826104717.529661-1-mchehab+huawei@kernel.org>
+Subject: [PATCH] docs: scheduler: fix the directory name on two files
+Date:   Wed, 26 Aug 2020 12:47:20 +0200
+Message-Id: <20200826104720.530040-1-mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,27 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference was missing the extension, causing the
-check script to complain.
+The name of the directory where the schedule docs are
+stored are wrong on those files.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/hwmon/adm1266.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/scheduler/sched-capacity.rst | 2 +-
+ Documentation/scheduler/sched-energy.rst   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/hwmon/adm1266.rst b/Documentation/hwmon/adm1266.rst
-index 9257f8a48650..2b877011cfdf 100644
---- a/Documentation/hwmon/adm1266.rst
-+++ b/Documentation/hwmon/adm1266.rst
-@@ -20,7 +20,7 @@ ADM1266 is a sequencer that features voltage readback from 17 channels via an
- integrated 12 bit SAR ADC, accessed using a PMBus interface.
+diff --git a/Documentation/scheduler/sched-capacity.rst b/Documentation/scheduler/sched-capacity.rst
+index 00bf0d011e2a..9b7cbe43b2d1 100644
+--- a/Documentation/scheduler/sched-capacity.rst
++++ b/Documentation/scheduler/sched-capacity.rst
+@@ -365,7 +365,7 @@ giving it a high uclamp.min value.
+ .. note::
  
- The driver is a client driver to the core PMBus driver. Please see
--Documentation/hwmon/pmbus for details on PMBus client drivers.
-+Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+   Wakeup CPU selection in CFS can be eclipsed by Energy Aware Scheduling
+-  (EAS), which is described in Documentation/scheduling/sched-energy.rst.
++  (EAS), which is described in Documentation/scheduler/sched-energy.rst.
  
+ 5.1.3 Load balancing
+ ~~~~~~~~~~~~~~~~~~~~
+diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
+index 78f850778982..001e09c95e1d 100644
+--- a/Documentation/scheduler/sched-energy.rst
++++ b/Documentation/scheduler/sched-energy.rst
+@@ -331,7 +331,7 @@ asymmetric CPU topologies for now. This requirement is checked at run-time by
+ looking for the presence of the SD_ASYM_CPUCAPACITY flag when the scheduling
+ domains are built.
  
- Sysfs entries
+-See Documentation/sched/sched-capacity.rst for requirements to be met for this
++See Documentation/scheduler/sched-capacity.rst for requirements to be met for this
+ flag to be set in the sched_domain hierarchy.
+ 
+ Please note that EAS is not fundamentally incompatible with SMP, but no
 -- 
 2.26.2
 
