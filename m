@@ -2,224 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9343C252CC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106F2252CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729153AbgHZLre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:47:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49298 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728933AbgHZLr0 (ORCPT
+        id S1728909AbgHZLsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728786AbgHZLsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:47:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598442442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=owZflYvt8RopEJffCSctLRqiuBqMsYk/WFfZTFUGzek=;
-        b=Isc17wQJ0aO8lUcJJxbfC9/TfDnSPyx220facS71TNJGdCylhJJ9DhzMblfO26hhs3gfRF
-        1e9rGORLSz8xnytWVtuqcnHkxE4zLOCQNheCiPMWKkh+qlS0jF/hfwFPe4XzqFeYdFuXn4
-        zp372vHcowHetiq3BFn6EqiY/BOilCQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-7znGlChsMXybvdmZHQr8kg-1; Wed, 26 Aug 2020 07:47:20 -0400
-X-MC-Unique: 7znGlChsMXybvdmZHQr8kg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C22768030B4;
-        Wed, 26 Aug 2020 11:47:18 +0000 (UTC)
-Received: from krava (unknown [10.40.194.188])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5A9696F142;
-        Wed, 26 Aug 2020 11:47:15 +0000 (UTC)
-Date:   Wed, 26 Aug 2020 13:47:13 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Remi Bernon <rbernon@codeweavers.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jacek Caban <jacek@codeweavers.com>
-Subject: Re: [PATCH v3 1/3] perf dso: Use libbfd to read build_id and
- .gnu_debuglink section
-Message-ID: <20200826114713.GD753783@krava>
-References: <20200821165238.1340315-1-rbernon@codeweavers.com>
+        Wed, 26 Aug 2020 07:48:03 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AC1C061574;
+        Wed, 26 Aug 2020 04:48:02 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id si26so2379842ejb.12;
+        Wed, 26 Aug 2020 04:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c1XozxQRBMRgCKFKdNle/Ejgq+G0usremp3MX2cyWos=;
+        b=ocRCgCm1md7sljlo+SIzz85uD6Xuib+W3pQzgHaGXjz9/C0I2MggKbwptLqFIiH/vw
+         EjI7LIiJ9CArRO9o4Roys6YXJ8ib3E5uBplGpHCSCI69vA3DBuHJIC9LfaLGWKTm6BjV
+         qIRex/PhQ1S35OkHEV2uuLNUoX7vxJWy7tBTECAYXQQK/nYWkjcljdMptHZOqTDMXV7A
+         oO53byRis2jOE8OXXbZAHrEO+jiLW00Grzf+6uPIzlXfuWB6gcdWpXLOboktsY9Unp62
+         tAQS2CnQMafG2gZ8FK0jUwtIuyZW0BQ0Y1YF+C4XhYY8+/xby0sFWl30AMbycGJJaJ17
+         uPuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c1XozxQRBMRgCKFKdNle/Ejgq+G0usremp3MX2cyWos=;
+        b=fR9oiNGWkTE47mJZ9gzzF7ZCQmBCxjxMYiPiVqKPeVCtBaIiRIs6GgCFXiJFBplDsT
+         1pwVJL6k7sO1mj8HzfIKmIqFEoVAEYRcveg4zdObd9ZKOYFZmedqOn4wou05dd5kLA6e
+         w2RFXQ7EUzqi6BJEnpUS7NGiAXU9UmhUrF/+Gl3B5yZCAck1Ig7T6oviRuONJ1HEZZ+w
+         RUXrqOOhivQgFNe1QkWhox7jqyKwCRcpEBgVeQOkGuC1ISyRixEKKsvk/U2w/YxwzsK7
+         UhXhW/sYBKXOZ8rhIqlZlcZGm1yMmZvVZlsnH+bMhAjzYWggW8HZgIKH4c4QHdsbycJJ
+         xLAA==
+X-Gm-Message-State: AOAM530uPS3xOKsQUsQgLJGTnFLrPNl8qm96qKXeaJNIH431KOn7nJSE
+        KO4Ed0OuBtfwag1Etj5ewC8=
+X-Google-Smtp-Source: ABdhPJzhid1dnmRXgGd4Cm6Jwp4Nteh8EDCcXbUEZ7SwOXXIZm7aWyXRxE8lLcwuzMu9jhpQXen34A==
+X-Received: by 2002:a17:906:f0c1:: with SMTP id dk1mr10704937ejb.44.1598442480970;
+        Wed, 26 Aug 2020 04:48:00 -0700 (PDT)
+Received: from skbuf ([86.126.22.216])
+        by smtp.gmail.com with ESMTPSA id dj16sm1863342edb.5.2020.08.26.04.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 04:48:00 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 14:47:58 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        Mark Brown <broonie@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Tanveer Alam <tanveer.alam@puresoftware.com>
+Subject: Re: [PATCH] spi: spi-fsl-dspi: Add ACPI support
+Message-ID: <20200826114758.4agph53ag2fin6um@skbuf>
+References: <20200821131029.11440-1-kuldip.dwivedi@puresoftware.com>
+ <20200821140718.GH4870@sirena.org.uk>
+ <c810740d75f64e308fd362e6c6a5f437@mail.gmail.com>
+ <20200822152118.rlwbcgfk4abjldtg@skbuf>
+ <VE1PR04MB6768699B6D7A507A5BF82F9191540@VE1PR04MB6768.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200821165238.1340315-1-rbernon@codeweavers.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <VE1PR04MB6768699B6D7A507A5BF82F9191540@VE1PR04MB6768.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon wrote:
-> Wine generates PE binaries for most of its modules and perf is unable
-> to parse these files to get build_id or .gnu_debuglink section.
-> 
-> Using libbfd when available, instead of libelf, makes it possible to
-> resolve debug file location regardless of the dso binary format.
-> 
-> Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Jacek Caban <jacek@codeweavers.com>
-> ---
-> 
-> v3: Rebase and small changes to PATCH 2/3 and and PATCH 3/3.
+On Wed, Aug 26, 2020 at 11:10:49AM +0000, Qiang Zhao wrote:
+> On Sat, Aug 22, 2020 at 23:21PM, Vladimir Oltean <olteanv@gmail.com> wrote:
+> > Yes, definitely bloatware from the old days. I think this driver needs the existing
+> > device tree bindings rethought a little bit before mindlessly porting them to
+> > ACPI.
+>
+> Could you give more details?
+>
+> Best Regards
+> Qiang Zhao
 
-all 3 patches look ok to me especially since I found out the new
-code for loading symbols is for non ELF objects only ;-)
+Yes.
+This driver has some device tree bindings.
+Some thought need to be given as to which one of those is necessary for
+a functional ACPI setup, and which one isn't.
+For example:
 
-it'd be great if somebody with libbfd skills could review this,
-but for me it looks ok.. for patchset:
+- fsl,spi-cs-sck-delay and fsl,spi-sck-cs-delay are many times
+  necessary. I don't see an attempt to read something equivalent to
+  those in this patch, or to do something about those, otherwise, in
+  case a peripheral needs special treatment. If we want to do something
+  like e.g. deprecate these bindings and just set up a large enough
+  CS-to-SCK and SCK-to-CS delay to make every peripheral happy, in order
+  to not carry this binding over to ACPI, at least we should establish
+  that and do it now, so that the DT code can benefit from that as well.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+- The bus-num property was made optional by Sascha Hauer in commit
+  29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property optional").
+  I think this is because he couldn't just remove it completely. But
+  that doesn't mean we should carry it over to ACPI. The SPI core should
+  know to allocate a bus_num dynamically (using IDR, or by looking at
+  aliases) if we just set spi->bus_num = -1.
 
-thanks,
-jirka
+- The spi-num-chipselects can be deduced from compatible string and bus
+  number, and therefore we can avoid carrying it over to ACPI. But
+  again, DT should have this logic first, and then ACPI can be added.
 
-> 
->  tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 77 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index 8cc4b0059fb0..f7432c4a4154 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
->  #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
->  #endif
->  
-> +#ifdef HAVE_LIBBFD_SUPPORT
-> +#define PACKAGE 'perf'
-> +#include <bfd.h>
-> +#else
->  #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
->  extern char *cplus_demangle(const char *, int);
->  
-> @@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
->  {
->  	return NULL;
->  }
-> -#else
-> -#define PACKAGE 'perf'
-> -#include <bfd.h>
-> +#endif
->  #endif
->  #endif
->  
-> @@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
->  	return err;
->  }
->  
-> +#ifdef HAVE_LIBBFD_SUPPORT
-> +
-> +int filename__read_build_id(const char *filename, void *bf, size_t size)
-> +{
-> +	int err = -1;
-> +	bfd *abfd;
-> +
-> +	abfd = bfd_openr(filename, NULL);
-> +	if (!abfd)
-> +		return -1;
-> +
-> +	if (!bfd_check_format(abfd, bfd_object)) {
-> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
-> +		goto out_close;
-> +	}
-> +
-> +	if (!abfd->build_id || abfd->build_id->size > size)
-> +		goto out_close;
-> +
-> +	memcpy(bf, abfd->build_id->data, abfd->build_id->size);
-> +	memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
-> +	err = abfd->build_id->size;
-> +
-> +out_close:
-> +	bfd_close(abfd);
-> +	return err;
-> +}
-> +
-> +#else
-> +
->  int filename__read_build_id(const char *filename, void *bf, size_t size)
->  {
->  	int fd, err = -1;
-> @@ -557,6 +589,8 @@ int filename__read_build_id(const char *filename, void *bf, size_t size)
->  	return err;
->  }
->  
-> +#endif
-> +
->  int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
->  {
->  	int fd, err = -1;
-> @@ -608,6 +642,44 @@ int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
->  	return err;
->  }
->  
-> +#ifdef HAVE_LIBBFD_SUPPORT
-> +
-> +int filename__read_debuglink(const char *filename, char *debuglink,
-> +			     size_t size)
-> +{
-> +	int err = -1;
-> +	asection *section;
-> +	bfd *abfd;
-> +
-> +	abfd = bfd_openr(filename, NULL);
-> +	if (!abfd)
-> +		return -1;
-> +
-> +	if (!bfd_check_format(abfd, bfd_object)) {
-> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
-> +		goto out_close;
-> +	}
-> +
-> +	section = bfd_get_section_by_name(abfd, ".gnu_debuglink");
-> +	if (!section)
-> +		goto out_close;
-> +
-> +	if (section->size > size)
-> +		goto out_close;
-> +
-> +	if (!bfd_get_section_contents(abfd, section, debuglink, 0,
-> +				      section->size))
-> +		goto out_close;
-> +
-> +	err = 0;
-> +
-> +out_close:
-> +	bfd_close(abfd);
-> +	return err;
-> +}
-> +
-> +#else
-> +
->  int filename__read_debuglink(const char *filename, char *debuglink,
->  			     size_t size)
->  {
-> @@ -660,6 +732,8 @@ int filename__read_debuglink(const char *filename, char *debuglink,
->  	return err;
->  }
->  
-> +#endif
-> +
->  static int dso__swap_init(struct dso *dso, unsigned char eidata)
->  {
->  	static unsigned int const endian = 1;
-> -- 
-> 2.28.0
-> 
+- The compatible string plays an integral part in the functionality of
+  the spi-fsl-dspi driver. I want to see a solution for ACPI where the
+  driver knows on which SoC it's running on. Otherwise it doesn't know
+  what are the silicon parameters of the DSPI module (XSPI present or
+  not, DMA present or not, FIFO depth). I don't see that now. I just see
+  something hardcoded for:
+  { "NXP0005", .driver_data = (kernel_ulong_t)&devtype_data[LS2085A], }
 
+Thanks,
+-Vladimir
