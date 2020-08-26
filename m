@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123BF2538B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 22:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3672538BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 22:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgHZUEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 16:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726609AbgHZUEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 16:04:42 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B38762078D;
-        Wed, 26 Aug 2020 20:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598472282;
-        bh=BuazxSfj/OEU27FnFDQ+WViB1Hj50ORDU+tcOTvq3vo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gs2ilaArdue+FNQexN+90DECakO3Kso/luPtxQYNRGLQ5PxSV0hFnmMeeZTFfaJ/j
-         XGSXpOuP6QgR+LRNeE76d+16f0VNzPd1ocT/KPuwevnLasrhad3DRdFc8Tuy6iYAnS
-         MYTzzy1fPY/fcfIt3gi66/XLTTnSv6xokhDO5ZaQ=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] Input: bcm-keypad - Simplify with dev_err_probe()
-Date:   Wed, 26 Aug 2020 22:04:36 +0200
-Message-Id: <20200826200436.30669-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1727000AbgHZUFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 16:05:40 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15640 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgHZUFe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 16:05:34 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f46c0800000>; Wed, 26 Aug 2020 13:05:20 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 26 Aug 2020 13:05:34 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 26 Aug 2020 13:05:34 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 26 Aug
+ 2020 20:05:31 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 26 Aug 2020 20:05:31 +0000
+Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.174.186]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f46c08a0001>; Wed, 26 Aug 2020 13:05:31 -0700
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+CC:     <skomatineni@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH v5 0/7] Fix timeout clock used by hardware data timeout
+Date:   Wed, 26 Aug 2020 13:05:07 -0700
+Message-ID: <1598472314-30235-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
+MIME-Version: 1.0
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598472320; bh=OdHdRc/UaKnVvZSMHA9sLxAncOLEzYZlr2zxYS7NCA8=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=sAdcDtKkrSV7v71/ylV5CdddbSsNGcdWUtD93tmrrU8I6vAzTN8ABnIMcY2RfqVzO
+         APeQBIJ564TncDxfV852Dy9g1tvAQURmvfcHfeEn3XjnNuTUEsQzfAx4102501Q/JS
+         MLejpnY9Dd885BSoSZvP+1nREqNop/ENTV7T0QYf4knbeNYK9AlEmqITZvucBEk55q
+         RyGGydmX8japWg2pX3H16C8xSTBBtFhZ6HuF0lhS+E0/ezimf/U/MITo2nLFVKZ+JV
+         G+zmIxhlMsovytOJitiQjiedRhQ/tiBgMIcC6lY/CCbb8a0RtgitpbJO3Z6NPSqu27
+         xKmS6XlQwNOfg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe() and devm_clk_get_optional().  Less code and the error
-value gets printed.
+Tegra210/Tegra186/Tegra194 has incorrectly enabled
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
+all the time for hardware data timeout instead of SDCLK and this TMCLK
+need to be kept enabled by Tegra sdmmc driver.
 
----
+This series includes patches to fix this for Tegra210/Tegra186/Tegra194.
 
-Changes since v1:
-1. Use also devm_clk_get_optional()
----
- drivers/input/keyboard/bcm-keypad.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+These patches need to be manually backported for 4.9, 4.14 and 4.19.
 
-diff --git a/drivers/input/keyboard/bcm-keypad.c b/drivers/input/keyboard/bcm-keypad.c
-index 2b771c3a5578..23e11b4efd13 100644
---- a/drivers/input/keyboard/bcm-keypad.c
-+++ b/drivers/input/keyboard/bcm-keypad.c
-@@ -376,17 +376,11 @@ static int bcm_kp_probe(struct platform_device *pdev)
- 		return PTR_ERR(kp->base);
- 
- 	/* Enable clock */
--	kp->clk = devm_clk_get(&pdev->dev, "peri_clk");
-+	kp->clk = devm_clk_get_optional(&pdev->dev, "peri_clk");
- 	if (IS_ERR(kp->clk)) {
--		error = PTR_ERR(kp->clk);
--		if (error != -ENOENT) {
--			if (error != -EPROBE_DEFER)
--				dev_err(&pdev->dev, "Failed to get clock\n");
--			return error;
--		}
--		dev_dbg(&pdev->dev,
--			"No clock specified. Assuming it's enabled\n");
--		kp->clk = NULL;
-+		return dev_err_probe(&pdev->dev, error, "Failed to get clock\n");
-+	} else if (!kp->clk) {
-+		dev_dbg(&pdev->dev, "No clock specified. Assuming it's enabled\n");
- 	} else {
- 		unsigned int desired_rate;
- 		long actual_rate;
+Will send patches to backport separately once these patches are ack'd.
+
+Delta between patch versions:
+[v5]:	Include below changes based on v4 feedback
+	- updated dt-binding doc to be more clear
+	- updated Tegra sdhci driver to retrieve sdhci and tmclk clocks
+	  based on no. of clocks in sdhci device node as old device trees
+	  do not use sdhci clock name and this allows proper clock retrival
+	  irrespective of sdhci and tmclk clocks order in device tree.	  
+	- Added separate quirk for identifying SoC's supporting separate
+	  timeout clock to be more clear.
+
+[v4]:	Include additional dt-binding patch
+
+[v3]:	Same as v2 with fixes tag
+
+[v2]:	Includes minor fix
+	- Patch-0006: parentheses around operand of '!'
+
+Sowjanya Komatineni (7):
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+  dt-bindings: mmc: tegra: Add tmclk for Tegra210 and later
+  arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+  arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+  arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+  sdhci: tegra: Add missing TMCLK for data timeout
+
+ .../bindings/mmc/nvidia,tegra20-sdhci.txt          | 32 +++++++-
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 20 +++--
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           | 15 ++--
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 20 +++--
+ drivers/mmc/host/sdhci-tegra.c                     | 91 +++++++++++++++++++---
+ 5 files changed, 143 insertions(+), 35 deletions(-)
+
 -- 
-2.17.1
+2.7.4
 
