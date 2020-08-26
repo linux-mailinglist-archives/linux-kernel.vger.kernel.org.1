@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2F1252C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CD7252C03
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgHZLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:04:21 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46886 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgHZLAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728850AbgHZLDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:03:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47426 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728668AbgHZLAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Aug 2020 07:00:20 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QB01qb030251;
-        Wed, 26 Aug 2020 11:00:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=/fCtBAfUW9DNJUfT9YZ2XuOf8t/lJOxdFK2upLxSyFk=;
- b=fq2ISN5JKb5GnTBZyyPq3NdLSmJTI/PZFQKX2oBj/LK1JWBJNo1u80XccBy7q1FkU1Qn
- QbAlTwB3C+KDuHb3m1dh4Ccw1bancmQzeyYIUzr1HFLlG3gSM9uEB5v9ne2cw1Jk3ZuB
- ylWSIs8recNuMed8oX01uw01QLRAdltaZQhkDGvfYzaERxU0VLBoFw7a+MT0ACMKB7im
- ebMwWc8EHQCFGVQw3uvw40QqWTBIwSFD5hae0NL1edDRdHH4KVVLPox34PotvXzFO3BM
- 12wfy1pCSAHSe0uAF+K+edaS9a53aeJk+wRsxZONxtt8tnURMjkO5bVlvTG8DsikrXtp jA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 333dbrypp7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 11:00:10 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QAtLoB081719;
-        Wed, 26 Aug 2020 11:00:10 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 333r9kred8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:00:10 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QB07uK028348;
-        Wed, 26 Aug 2020 11:00:07 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Aug 2020 04:00:07 -0700
-Date:   Wed, 26 Aug 2020 13:59:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     FelixCuioc <FelixCui-oc@zhaoxin.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>, kbuild@lists.01.org,
-        kbuild-all@lists.01.org, CobeChen-oc@zhaoxin.com,
-        RaymondPang-oc@zhaoxin.com, TonyWWang-oc@zhaoxin.com
-Subject: Re: [PATCH 3/3] iommu/vt-d:Add mutex_unlock() before returning
-Message-ID: <20200826105959.GB5493@kadam>
-References: <20200826102752.3776-1-FelixCui-oc@zhaoxin.com>
- <20200826102752.3776-4-FelixCui-oc@zhaoxin.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C457DACA0;
+        Wed, 26 Aug 2020 11:00:47 +0000 (UTC)
+Date:   Wed, 26 Aug 2020 13:00:15 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     xunlei <xlpang@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcg: Fix memcg reclaim soft lockup
+Message-ID: <20200826110015.GO22869@dhcp22.suse.cz>
+References: <1598426822-93737-1-git-send-email-xlpang@linux.alibaba.com>
+ <20200826081102.GM22869@dhcp22.suse.cz>
+ <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200826102752.3776-4-FelixCui-oc@zhaoxin.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260089
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 06:27:52AM -0400, FelixCuioc wrote:
-> In the probe_acpi_namespace_devices function,when the physical
-> node of the acpi device is NULL,the unlock function is missing.
-> Add mutex_unlock(&adev->physical_node_lock).
+On Wed 26-08-20 18:41:18, xunlei wrote:
+> On 2020/8/26 下午4:11, Michal Hocko wrote:
+> > On Wed 26-08-20 15:27:02, Xunlei Pang wrote:
+> >> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
+> >> the target memcg doesn't have any reclaimable memory.
+> > 
+> > Do you have any scenario when this happens or is this some sort of a
+> > test case?
 > 
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
+> It can happen on tiny guest scenarios.
 
-Oh...  Crap.  I wondered why I was being CC'd on this patchset.  Just
-fold this into the ealier patch.  Don't worry about the Reported-by.
-
-regards,
-dan carpenter
-
+OK, you made me more curious. If this is a tiny guest and this is a hard
+limit reclaim path then we should trigger an oom killer which should
+kill the offender and that in turn bail out from the try_charge lopp
+(see should_force_charge). So how come this repeats enough in your setup
+that it causes soft lockups?
+-- 
+Michal Hocko
+SUSE Labs
