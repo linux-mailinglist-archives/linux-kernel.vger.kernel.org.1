@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2262534FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C092534FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgHZQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
+        id S1728072AbgHZQeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:34:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727929AbgHZQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:34:02 -0400
+        id S1728036AbgHZQeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:34:06 -0400
 Received: from localhost.localdomain (unknown [122.171.38.130])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF73F2080C;
-        Wed, 26 Aug 2020 16:33:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 266CF22B40;
+        Wed, 26 Aug 2020 16:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598459642;
-        bh=eERNqPuV2Tb4YZcgNEQBp+g8TpguHYmJm+5Gq1gos44=;
+        s=default; t=1598459645;
+        bh=dNR1EPkaEyjAR7zusDZlfIVj6xMA5JwWBGp6NPEmEMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=of9yA3y330u6kVdE837pcVIZLuvQytXpjQoFriOgQYaDQSeiG7lLc59QtqOuRxWDy
-         cB+G4wl+rZK5OSQeefoOeH3rCpLwVLiy9VQQESX+8snMfIKGKklve9vvp7oqIy57jj
-         69PZvtrIMxr63HCBpaMXu/2PWW51RwYRByFaGq00=
+        b=2k4UxVk2CgPkm94EyTRAZeqnQdLr/JZTgmwErPOhE4TyVV10SfCc0kgs4AHN0H6zu
+         uxqFw/yJ5tlcIWgrXEtsFu5HSpu4I4FypQEpoKC3JfCNXVYdIsiRfBFeURf1MF0NQz
+         Ge3Th2htsFc7xz4/sCHC9DUp6gl1Zt7wItkPwB+U=
 From:   Vinod Koul <vkoul@kernel.org>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>,
@@ -31,9 +31,9 @@ Cc:     Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>,
         Oder Chiou <oder_chiou@realtek.com>,
         Shuming Fan <shumingf@realtek.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 4/5] ASoC: rt715: Fix return check for devm_regmap_init_sdw()
-Date:   Wed, 26 Aug 2020 22:03:39 +0530
-Message-Id: <20200826163340.3249608-5-vkoul@kernel.org>
+Subject: [PATCH v2 5/5] ASoC: rt700: Fix return check for devm_regmap_init_sdw()
+Date:   Wed, 26 Aug 2020 22:03:40 +0530
+Message-Id: <20200826163340.3249608-6-vkoul@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200826163340.3249608-1-vkoul@kernel.org>
 References: <20200826163340.3249608-1-vkoul@kernel.org>
@@ -49,27 +49,27 @@ failure which should be checked with IS_ERR. Also use PTR_ERR for
 returning error codes.
 
 Reported-by: Takashi Iwai <tiwai@suse.de>
-Fixes: d1ede0641b05 ("ASoC: rt715: add RT715 codec driver")
+Fixes: 7d2a5f9ae41e ("ASoC: rt700: add rt700 codec driver")
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- sound/soc/codecs/rt715-sdw.c | 4 ++--
+ sound/soc/codecs/rt700-sdw.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-index d11b23d6b240..68a36739f1b0 100644
---- a/sound/soc/codecs/rt715-sdw.c
-+++ b/sound/soc/codecs/rt715-sdw.c
-@@ -527,8 +527,8 @@ static int rt715_sdw_probe(struct sdw_slave *slave,
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 4d14048d1197..1d24bf040718 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -452,8 +452,8 @@ static int rt700_sdw_probe(struct sdw_slave *slave,
  
  	/* Regmap Initialization */
- 	sdw_regmap = devm_regmap_init_sdw(slave, &rt715_sdw_regmap);
+ 	sdw_regmap = devm_regmap_init_sdw(slave, &rt700_sdw_regmap);
 -	if (!sdw_regmap)
 -		return -EINVAL;
 +	if (IS_ERR(sdw_regmap))
 +		return PTR_ERR(sdw_regmap);
  
- 	regmap = devm_regmap_init(&slave->dev, NULL, &slave->dev,
- 		&rt715_regmap);
+ 	regmap = devm_regmap_init(&slave->dev, NULL,
+ 		&slave->dev, &rt700_regmap);
 -- 
 2.26.2
 
