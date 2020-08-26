@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159B9252C7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFCE252C87
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgHZLcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:32:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55480 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728951AbgHZL0e (ORCPT
+        id S1728834AbgHZLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728946AbgHZL0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:26:34 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QB3lm6132483;
-        Wed, 26 Aug 2020 07:25:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kR+pjLBctfx3lnZ9jetzXm8pnsrD+WSR4LXeo+/s3Hw=;
- b=NCf1lq8l/KxpifR1/9KcOuGFK525iQtqiwQS8JazKrpohzC+LSSeqf2nUtK16NBekdr8
- fnYUIncJjJoGD3VSkWD6gI6mo30Xm0M3Pi7H3kJlf2LJwvo5xIcm/SQtM3wGgHKvQCQy
- twxMGgwCTRNZcFZeaIsOw8jhgWlGiX6z1vcEJQp1a0OlZKXt8ezKO/ZfCirUkdd9kbHu
- 0kqsLHO0uqN+mQVMQXkSDvJYkj1oCzSl98bTgHYc1e8howlKIJWhAU+MSZrK3pivSe+p
- 32lc7QGYXZVQAr7Lq9MkcI0v+tNk2sN3NuI3BG9A+kXUytyra0jtLfExbrMAE+QmUXRb dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335mhv3q4w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 07:25:38 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QB4Aed133560;
-        Wed, 26 Aug 2020 07:25:36 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 335mhv3q4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 07:25:36 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QBLY2Q014267;
-        Wed, 26 Aug 2020 11:25:36 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 332ujr9k20-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 11:25:36 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QBPZoC53412334
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:25:35 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5868AAE067;
-        Wed, 26 Aug 2020 11:25:35 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48FB1AE060;
-        Wed, 26 Aug 2020 11:25:32 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.43.94])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Aug 2020 11:25:31 +0000 (GMT)
-Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@redhat.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com
-References: <20200825074041.378520-1-kjain@linux.ibm.com>
- <20200825154721.GP1509399@tassilo.jf.intel.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <d4e97b8c-1b7f-d5a6-9fc4-f98e2982a292@linux.ibm.com>
-Date:   Wed, 26 Aug 2020 16:55:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 26 Aug 2020 07:26:33 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EECC061574;
+        Wed, 26 Aug 2020 04:25:52 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w14so1923164ljj.4;
+        Wed, 26 Aug 2020 04:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BwPP+Wy6wA+3eWc/onU66ibaN4gluQuh0nP0l3YOUgY=;
+        b=E7VxO8g4aPMfq4QDhK8BsuM/jTaOOwMzE+iUebvg+1KPXgHLZ/uheF+srixOBQG7Pw
+         mLT7kFfr9VzTvSHgpAYSYS7u9G88jbHWq6gmLad6k+pHRahNDthV0vEzV6IaS4pfcq4n
+         kjQoVV+4Fu1N8eW2tX21cbqFOBCfg+4cZQ2eKCH9863QtfIlYDwhQg7fl8+mo1nXwFga
+         t04AS7oMBGiNPQUFds5R425WHFGNzo8sktu/aAwLxsDkLJGJU46IhGZ/82XC53oRzL9b
+         yzxBJPtoIWzKEXDoSWgBA7pLE6yDyFjunnZWtjoGLwIiFoIuzG4x/rfy/upwZ/PNOerC
+         7ozQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BwPP+Wy6wA+3eWc/onU66ibaN4gluQuh0nP0l3YOUgY=;
+        b=c9Z0dF+HrTEFzkgArBpE9UB9aWLRD/k/Gn1sXpglnliApxb15xWkbzxWabv/pTjW2H
+         KHZEnD4rrvuKOxNcSi+KIxTpNlXnya1s86oBzzXsi0Hj4oPWjKO1c9R5RZC8FWwkB8Tu
+         KUMb7ziWW28tRR0jnlWUztgqqh8B2DqSAi1Z/Nx4fKeR3BRERizNdhhcWRnpT+80eQs6
+         QMACT3wzl1ud8Bb/lOpRLO6dEGPRqKkg0uMNACxRIEasXt1xpNpHu31SOPbErzVBMSfH
+         EIkPsDQAEMp9cHOFXrL9gxOo0nlmOct0711reyK5s1t7GRqs5Dd/3yTNUMi9vgtrXpFe
+         R0Rw==
+X-Gm-Message-State: AOAM5302LD5l3hG4Cbpt33YkytOaaEvVNdeg/gAJ3WeCzF9f5LgCVblW
+        EL1yQuPqTn9rf2HhBDD7PPdh0/6heIx2fdpm8hLyjZso
+X-Google-Smtp-Source: ABdhPJyf3RocfiFYJoOXhENx1YiwGXmbCnofX5NfPHEkKZ/YZSvrN2VK++bIgmUgSR+KxwDjqy0ss+1Z2wzh5TICNTA=
+X-Received: by 2002:a2e:9904:: with SMTP id v4mr6738335lji.321.1598441149742;
+ Wed, 26 Aug 2020 04:25:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200825154721.GP1509399@tassilo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- bulkscore=0 suspectscore=0 adultscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260085
+References: <20200825145556.637323-1-gnurou@gmail.com> <CAAEAJfBbxExQP7cAQnsAE1_Zh-onBKPt8is3S9qBEpx6MAywRg@mail.gmail.com>
+In-Reply-To: <CAAEAJfBbxExQP7cAQnsAE1_Zh-onBKPt8is3S9qBEpx6MAywRg@mail.gmail.com>
+From:   Alexandre Courbot <gnurou@gmail.com>
+Date:   Wed, 26 Aug 2020 20:25:38 +0900
+Message-ID: <CAAVeFu+0UqVwoUmOXm38E-vikaQZ4Graaz_9ERWozNAeTFkrPQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] media: v4l2-mem2mem: fix poll() bug
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 26, 2020 at 7:10 AM Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+>
+> Hello Alex,
+>
+> Thanks for the patch.
+>
+> On Tue, Aug 25, 2020, 11:56 AM Alexandre Courbot <gnurou@gmail.com> wrote:
+> >
+> > This addresses a very corner case that probably nobody ever encounters,
+> > but I have hit it when playing with vicoded so here is a tentative fix.
+> >
+>
+> I'll try to make a more complete review soon, but meanwhile
+> I was thinking if it was possible to include a little kselftest program
+> for this issue, something CIs can pick-up and test corner cases like this,
+> making sure we don't regress on the issue.
+>
+> (Or alternatively, v4l2-compliance?)
 
+I am not very familiar with kselftest, but IIUC the conditions that
+lead to this issue are easier to reproduce using v4l2-compliance,
+where we can have a user-space driving the queues. It would also have
+the benefit to exercise all drivers. I'll think about adding such a
+test, thanks for the suggestion!
 
-On 8/25/20 9:17 PM, Andi Kleen wrote:
-> On Tue, Aug 25, 2020 at 01:10:41PM +0530, Kajol Jain wrote:
->> This patch adds new structure called 'json_event' inside jevents.h
->> file to improve the callback prototype inside jevent files.
->> Initially, whenever user want to add new field, they need to update
->> in all function callback which make it more and more complex with
->> increased number of parmeters.
->> With this change, we just need to add it in new structure 'json_event'.
-> 
-> Looks good to me. Thanks.
-> 
-> I wouldn't consolidate with event_struct, these are logically
-> different layers.
-> 
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> 
-Hi Andi,
-   Thanks for reviewing the patch.
-
-Thanks,
-Kajol Jain
+>
+> Thanks!
+> Ezequiel
+>
+> > Patch 1/2 addresses the issue that when the last buffer of a m2m device
+> > has been dequeued, any attempt to poll with EPOLLOUT will result in only
+> > EPOLLIN being returned, even if OUTPUT buffers are still pending. The
+> > issue stems from the fact that the last buffer check if done first, and
+> > returns immediately if true.
+> >
+> > Patch 2/2 builds on the first one to (hopefully) clean up the code a bit
+> > and make the function flow easier to follow. Functionally speaking it is
+> > supposed to be a no-op and it can safely be dropped if the former code
+> > is preferred - the actual fix is in 1/2.
+> >
+> > Alexandre Courbot (2):
+> >   media: v4l2-mem2mem: consider OUTPUT queue first when polling
+> >   media: v4l2-mem2mem: simplify poll logic a bit
+> >
+> >  drivers/media/v4l2-core/v4l2-mem2mem.c | 42 +++++++++++---------------
+> >  1 file changed, 18 insertions(+), 24 deletions(-)
+> >
+> > --
+> > 2.28.0
+> >
