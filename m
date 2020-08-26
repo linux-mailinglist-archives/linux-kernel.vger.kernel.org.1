@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D15F252C48
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A44252C4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgHZLMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:12:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45920 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728851AbgHZLMP (ORCPT
+        id S1728772AbgHZLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:15:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728668AbgHZLOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:12:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598440334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lR+U00Oaa72ALhBmgywIm4H6+XPgRieMfQDwiYXJfM0=;
-        b=JvY4HW1uljZt1zv82sMc8r6G0t+WIHjp6qD9MXfHb2grI5PmzOlryvfZoW3NHM4rR6o8DD
-        oWzgvP0r+i33vS1Lye3DDusgHh427k0obaKVt7LFSEDV6olhxMb770/qULwwQp4/0Ymda0
-        3XJJuvsfU55ZVjEH6WZnKo+9DyhVXhI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-U3-JTAKsMl-qeISpKjGcsw-1; Wed, 26 Aug 2020 07:12:12 -0400
-X-MC-Unique: U3-JTAKsMl-qeISpKjGcsw-1
-Received: by mail-wr1-f71.google.com with SMTP id o10so397635wrs.21
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:12:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lR+U00Oaa72ALhBmgywIm4H6+XPgRieMfQDwiYXJfM0=;
-        b=oDbvbX9JDggZwbmB5j7QZFaUML+9X4gzMnhouEEuPfcwuntPxsyFA8ji9J8zJsjo4Q
-         qpQXYp84UJh4P+E5FR0Isz6tMhqR1UspqF87VJr6ZlbEPuhG/QGFwzZF+zqJhkjzdgAz
-         3RR/5eozm7gKFvZbcjx2/nJoCpdU6jp9c52pOqGfnms5DvrRzgggTT5SS57b6iAaY1RG
-         BLj+Js3Vu35BCMDTZxnrBdlwa9J1+hEpgDitIU5Ni0RpN6rf/JSAWQYCeMxo4xuMjUZt
-         S1Tx99GNv3JZ6TjGh3YiLnAIaDiJ+7wEcP2KO0rkrWiZQ8A50ZECfShlsDC0pMNwxxuz
-         E1eg==
-X-Gm-Message-State: AOAM530ZZQjDNMqAkG94Ze+P0KbsthWx5vnzG6BDvsZraShNn460wFb0
-        4ffkeAnZrqmKMOKr+reNG0ogniK66D8FUyoKPA1osREy657Tof4nJ/FGw/IL75I6Wy4v1uoigXH
-        ljPP/G0y83FRMG6tvxE3meV0v
-X-Received: by 2002:adf:fa8f:: with SMTP id h15mr11854990wrr.365.1598440330948;
-        Wed, 26 Aug 2020 04:12:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0rObmmQMjGOaXLjfOhZSPZT6w5SFheSV59yGDYZ9gFY089eygMzryPx1d3YNhKUDJ9uAvUg==
-X-Received: by 2002:adf:fa8f:: with SMTP id h15mr11854967wrr.365.1598440330699;
-        Wed, 26 Aug 2020 04:12:10 -0700 (PDT)
-Received: from redhat.com (bzq-109-67-46-169.red.bezeqint.net. [109.67.46.169])
-        by smtp.gmail.com with ESMTPSA id 128sm4844463wmz.43.2020.08.26.04.12.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 04:12:09 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 07:12:06 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH 1/2] vdpa: ifcvf: return err when fail to request config
- irq
-Message-ID: <20200826071200-mutt-send-email-mst@kernel.org>
-References: <20200723091254.20617-1-jasowang@redhat.com>
- <87ec5f62-4d99-e7b4-00dc-28664f8eb111@redhat.com>
+        Wed, 26 Aug 2020 07:14:31 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QB3IIM112212;
+        Wed, 26 Aug 2020 07:14:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TusebNyuzSZj6zQ1qcq5fCJU7Qk0mlvSif7um9HzO9I=;
+ b=NQSsqa27uQfGSHl+6tFWbHyHia+PmDtjkmPoXRg20wlXf3gMnRaye48i44VnECKaaFZL
+ mXSObA0Lh9jhK0js2Xx07hKPtRrC/qtisDnye3DjV+qH71/t82w88RyYed1+GH6rbyXm
+ +HdbdyPyLa2wFBXk3LHHHv5zZ6DtIh6qbh55+PEId0zzVtrxkM4BDhKAPYznqv1lKhBh
+ 1uYNNtWNMFHS1xTNEPrBM8e+6V16NHUzbD7eHnZ2ggEL2txwFmvVYMuj1gGqFRRWmOOo
+ xWP4sm75+C0e5H0EDSJpu0A7Y85PFazG9ectbhoQu3xVfNr4zHE1rHZR3fbqp1to16wf VQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335pfn8cxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 07:14:19 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QBBZ28000618;
+        Wed, 26 Aug 2020 11:14:16 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 33498uadc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 11:14:16 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QBEEE349545564
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:14:14 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 82C98A405F;
+        Wed, 26 Aug 2020 11:14:14 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D56CA405B;
+        Wed, 26 Aug 2020 11:14:13 +0000 (GMT)
+Received: from [9.199.33.201] (unknown [9.199.33.201])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 26 Aug 2020 11:14:13 +0000 (GMT)
+Subject: Re: [PATCH 4.19 65/71] powerpc/pseries: Do not initiate shutdown when
+ system is running on UPS
+To:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20200824082355.848475917@linuxfoundation.org>
+ <20200824082359.202438041@linuxfoundation.org>
+ <20200825195620.GB27453@duo.ucw.cz>
+From:   Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+Message-ID: <268a861f-59ac-679c-7507-d685d059a2ab@linux.vnet.ibm.com>
+Date:   Wed, 26 Aug 2020 16:44:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ec5f62-4d99-e7b4-00dc-28664f8eb111@redhat.com>
+In-Reply-To: <20200825195620.GB27453@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_08:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
+ mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 11:52:09AM +0800, Jason Wang wrote:
-> 
-> On 2020/7/23 下午5:12, Jason Wang wrote:
-> > We ignore the err of requesting config interrupt, fix this.
-> > 
-> > Fixes: e7991f376a4d ("ifcvf: implement config interrupt in IFCVF")
-> > Cc: Zhu Lingshan <lingshan.zhu@intel.com>
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > ---
-> >   drivers/vdpa/ifcvf/ifcvf_main.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> > index f5a60c14b979..ae7110955a44 100644
-> > --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> > +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> > @@ -76,6 +76,10 @@ static int ifcvf_request_irq(struct ifcvf_adapter *adapter)
-> >   	ret = devm_request_irq(&pdev->dev, irq,
-> >   			       ifcvf_config_changed, 0,
-> >   			       vf->config_msix_name, vf);
-> > +	if (ret) {
-> > +		IFCVF_ERR(pdev, "Failed to request config irq\n");
-> > +		return ret;
-> > +	}
-> >   	for (i = 0; i < IFCVF_MAX_QUEUE_PAIRS * 2; i++) {
-> >   		snprintf(vf->vring[i].msix_name, 256, "ifcvf[%s]-%d\n",
-> 
-> 
-> Hi Michael:
-> 
-> Any comments on this series?
-> 
-> Thanks
+On 8/26/20 1:26 AM, Pavel Machek wrote:
+> Hi!
 > 
 
-Applied, thanks!
+Hi Pavel,
+
+>> We have a user space tool (rtas_errd) on LPAR to monitor for
+>> EPOW_SHUTDOWN_ON_UPS. Once it gets an event it initiates shutdown
+>> after predefined time. It also starts monitoring for any new EPOW
+> 
+> Yeah, so there's userspace tool, and currently systems _with_ that
+> tool work poorly with UPS.
+> 
+> So you have fixed that, and now, systems _without_ that tool will work
+> poorly.
+
+User space tool exists for long long time (more than decade) and its default tool
+on pseries system. Also user space tool behavior is not changed for long time.
+
+The original design was to forward UPS event to userspace and let user space wait
+for predefined time and then initiate shutdown.
+
+Previous fix accidentally initiated shutdown as soon as system switch to UPS power.
+
+> 
+> That's not a fix for serious bug, that's behaviour change. You are
+> fixing one set of systems and breaking another.
+
+Without fix, as soon as system switches to UPS power supply, kernel will start 
+shutdown process. which is not correct. Its actually impacting customers running 
+Linux on pseries LPAR mode. Hence I have requested this fix for stable tree.
+
+Hope this clarifies your concern.
+
+-Vasant
+
+
+> 
+> I don't believe it is suitable for stable.
+> 
+> 								Pavel
+> 
+>> @@ -118,7 +118,6 @@ static void handle_system_shutdown(char
+>>   	case EPOW_SHUTDOWN_ON_UPS:
+>>   		pr_emerg("Loss of system power detected. System is running on"
+>>   			 " UPS/battery. Check RTAS error log for details\n");
+>> -		orderly_poweroff(true);
+>>   		break;
+>>   
+>>   	case EPOW_SHUTDOWN_LOSS_OF_CRITICAL_FUNCTIONS:
+>>
+> 
 
