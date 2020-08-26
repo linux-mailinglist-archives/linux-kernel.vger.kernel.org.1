@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327612529F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BCD2529E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgHZJ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:26:23 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56208 "EHLO inva020.nxp.com"
+        id S1728019AbgHZJ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:26:09 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43220 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727793AbgHZJ0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727884AbgHZJ0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Aug 2020 05:26:04 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 389BC1A08E7;
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D3062007BB;
         Wed, 26 Aug 2020 11:26:02 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2B7051A16B9;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9075D2007B7;
         Wed, 26 Aug 2020 11:26:02 +0200 (CEST)
 Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id CA6A5202CA;
-        Wed, 26 Aug 2020 11:26:01 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 39EA62030A;
+        Wed, 26 Aug 2020 11:26:02 +0200 (CEST)
 From:   Diana Craciun <diana.craciun@oss.nxp.com>
 To:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com
 Cc:     stuyoder@gmail.com, leoyang.li@nxp.com, gregkh@linuxfoundation.org,
         linux-arm-kernel@lists.infradead.org, bharatb.linux@gmail.com,
         Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v4 00/13] bus/fsl-mc: Extend mc-bus driver functionalities in preparation for mc-bus VFIO support
-Date:   Wed, 26 Aug 2020 12:25:14 +0300
-Message-Id: <20200826092527.4992-1-diana.craciun@oss.nxp.com>
+Subject: [PATCH v4 01/13] bus/fsl-mc: Do no longer export the total number of irqs outside dprc_scan_objects
+Date:   Wed, 26 Aug 2020 12:25:15 +0300
+Message-Id: <20200826092527.4992-2-diana.craciun@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200826092527.4992-1-diana.craciun@oss.nxp.com>
+References: <20200826092527.4992-1-diana.craciun@oss.nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio-mc bus driver needs some additional services to be exported by the
-mc-bus driver like:
-- a way to reset the DPRC container
-- driver_override support
-- functions to setup/tear down a DPRC
-- functions for allocating the pool of interrupts. In case of VFIO the
-interrupts are not configured at probe time, but later by userspace
-request
+The total number of interrupts is only used for some checks
+outside the dprc_scan_objects function. Furthermore, in some
+situations the check is made twice. Move the bounds check inside
+the function for all situations.
 
-v3 -> v4
-- Rebased on the latest kernel.
-- Exported a dprc_remove function
+Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+---
+ drivers/bus/fsl-mc/dprc-driver.c | 30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
-v2 -> v3
-- Add a new version for dprc_get_obj_region
-- Export the cacheability bus specific bits defines
-
-v1 -> v2
-- Remove driver_override propagation through various functions
-- Cache the DPRC API version
-
-The patches are related with "vfio/fsl-mc: VFIO support for FSL-MC
-devices" patches, but the series were split because they are targeting
-different subsystems. However, the mc-bus patches may suffer changes
-when addressing the VFIO review comments.
-
-The patches do not address the comment regarding moving driver_override
-in the core code. I prefer not to tie these patches on that change and
-address that separately.
-
-Bharat Bhushan (3):
-  bus/fsl-mc: add support for 'driver_override' in the mc-bus
-  bus/fsl-mc: Add dprc-reset-container support
-  bus/fsl-mc: Extend ICID size from 16bit to 32bit
-
-Diana Craciun (10):
-  bus/fsl-mc: Do no longer export the total number of irqs outside
-    dprc_scan_objects
-  bus/fsl-mc: Add a new parameter to dprc_scan_objects function
-  bus/fsl-mc: Set the QMAN/BMAN region flags
-  bus/fsl-mc: Cache the DPRC API version
-  bus/fsl-mc: Export dprc_scan/dprc_remove functions to be used by
-    multiple entities
-  bus/fsl-mc: Export a cleanup function for DPRC
-  bus/fsl-mc: Add a container setup function
-  bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
-  bus/fsl-mc: Export IRQ pool handling functions to be used by VFIO
-  bus/fsl-mc: Add a new version for dprc_get_obj_region command
-
- drivers/bus/fsl-mc/dprc-driver.c      | 175 ++++++++++++++++----------
- drivers/bus/fsl-mc/dprc.c             | 141 +++++++++++++++++----
- drivers/bus/fsl-mc/fsl-mc-allocator.c |  12 +-
- drivers/bus/fsl-mc/fsl-mc-bus.c       |  64 +++++++++-
- drivers/bus/fsl-mc/fsl-mc-private.h   |  31 ++---
- drivers/bus/fsl-mc/mc-io.c            |   7 +-
- include/linux/fsl/mc.h                |  41 +++++-
- 7 files changed, 349 insertions(+), 122 deletions(-)
-
+diff --git a/drivers/bus/fsl-mc/dprc-driver.c b/drivers/bus/fsl-mc/dprc-driver.c
+index 2a473c09bc33..54c576d68122 100644
+--- a/drivers/bus/fsl-mc/dprc-driver.c
++++ b/drivers/bus/fsl-mc/dprc-driver.c
+@@ -3,6 +3,7 @@
+  * Freescale data path resource container (DPRC) driver
+  *
+  * Copyright (C) 2014-2016 Freescale Semiconductor, Inc.
++ * Copyright 2019-2020 NXP
+  * Author: German Rivera <German.Rivera@freescale.com>
+  *
+  */
+@@ -220,8 +221,6 @@ static void dprc_add_new_devices(struct fsl_mc_device *mc_bus_dev,
+  * dprc_scan_objects - Discover objects in a DPRC
+  *
+  * @mc_bus_dev: pointer to the fsl-mc device that represents a DPRC object
+- * @total_irq_count: If argument is provided the function populates the
+- * total number of IRQs created by objects in the DPRC.
+  *
+  * Detects objects added and removed from a DPRC and synchronizes the
+  * state of the Linux bus driver, MC by adding and removing
+@@ -235,8 +234,7 @@ static void dprc_add_new_devices(struct fsl_mc_device *mc_bus_dev,
+  * populated before they can get allocation requests from probe callbacks
+  * of the device drivers for the non-allocatable devices.
+  */
+-static int dprc_scan_objects(struct fsl_mc_device *mc_bus_dev,
+-			     unsigned int *total_irq_count)
++static int dprc_scan_objects(struct fsl_mc_device *mc_bus_dev)
+ {
+ 	int num_child_objects;
+ 	int dprc_get_obj_failures;
+@@ -317,22 +315,21 @@ static int dprc_scan_objects(struct fsl_mc_device *mc_bus_dev,
+ 	 * Allocate IRQ's before binding the scanned devices with their
+ 	 * respective drivers.
+ 	 */
+-	if (dev_get_msi_domain(&mc_bus_dev->dev) && !mc_bus->irq_resources) {
++	if (dev_get_msi_domain(&mc_bus_dev->dev)) {
+ 		if (irq_count > FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS) {
+ 			dev_warn(&mc_bus_dev->dev,
+ 				 "IRQs needed (%u) exceed IRQs preallocated (%u)\n",
+ 				 irq_count, FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS);
+ 		}
+ 
+-		error = fsl_mc_populate_irq_pool(mc_bus,
++		if (!mc_bus->irq_resources) {
++			error = fsl_mc_populate_irq_pool(mc_bus,
+ 				FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS);
+-		if (error < 0)
+-			return error;
++			if (error < 0)
++				return error;
++		}
+ 	}
+ 
+-	if (total_irq_count)
+-		*total_irq_count = irq_count;
+-
+ 	dprc_remove_devices(mc_bus_dev, child_obj_desc_array,
+ 			    num_child_objects);
+ 
+@@ -365,7 +362,7 @@ static int dprc_scan_container(struct fsl_mc_device *mc_bus_dev)
+ 	 * Discover objects in the DPRC:
+ 	 */
+ 	mutex_lock(&mc_bus->scan_mutex);
+-	error = dprc_scan_objects(mc_bus_dev, NULL);
++	error = dprc_scan_objects(mc_bus_dev);
+ 	mutex_unlock(&mc_bus->scan_mutex);
+ 	if (error < 0) {
+ 		fsl_mc_cleanup_all_resource_pools(mc_bus_dev);
+@@ -434,9 +431,8 @@ static irqreturn_t dprc_irq0_handler_thread(int irq_num, void *arg)
+ 		      DPRC_IRQ_EVENT_CONTAINER_DESTROYED |
+ 		      DPRC_IRQ_EVENT_OBJ_DESTROYED |
+ 		      DPRC_IRQ_EVENT_OBJ_CREATED)) {
+-		unsigned int irq_count;
+ 
+-		error = dprc_scan_objects(mc_dev, &irq_count);
++		error = dprc_scan_objects(mc_dev);
+ 		if (error < 0) {
+ 			/*
+ 			 * If the error is -ENXIO, we ignore it, as it indicates
+@@ -451,12 +447,6 @@ static irqreturn_t dprc_irq0_handler_thread(int irq_num, void *arg)
+ 
+ 			goto out;
+ 		}
+-
+-		if (irq_count > FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS) {
+-			dev_warn(dev,
+-				 "IRQs needed (%u) exceed IRQs preallocated (%u)\n",
+-				 irq_count, FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS);
+-		}
+ 	}
+ 
+ out:
 -- 
 2.17.1
 
