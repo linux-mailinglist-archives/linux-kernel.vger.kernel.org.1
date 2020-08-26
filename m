@@ -2,280 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C792525A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C0C2525A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgHZCxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 22:53:50 -0400
-Received: from mga05.intel.com ([192.55.52.43]:43725 "EHLO mga05.intel.com"
+        id S1726783AbgHZCu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 22:50:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43488 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726793AbgHZCxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 22:53:49 -0400
-IronPort-SDR: ZWSpoXqefCkNCqaIOIFdmIgf8mF4XCYiKcr8i1yAYe9p6+C4j3++73BLdy0i56Vy6t/XOhaBWk
- jW+v9cJxL1NA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="241042622"
+        id S1726664AbgHZCuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 22:50:25 -0400
+IronPort-SDR: AD3rC23vJSXTCTdY/qmhmzqSj6y31LaVsL+uRoLWBWF3+TdENYaP8XdabuNjXjZYicbccjwXU/
+ 4rlWSKE4YE9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="241042416"
 X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
-   d="scan'208";a="241042622"
+   d="scan'208";a="241042416"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 19:53:42 -0700
-IronPort-SDR: 3jHNgUz/QtngVIFtUyejaI2JwGGqvmSLiE81xtG4juH9HB0EVbULMEy6+CoSS5E4jNaKDAK7uJ
- CBcTpkXNiFOg==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 19:50:24 -0700
+IronPort-SDR: FaxD9fawf0eT3/3ggGueIVqhNP/8d9Yz0iZS5Nb5dppbghNmvSF2YVOiYKS/G5zxn1hjjU3vpD
+ NNbf45X9y1Cg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,354,1592895600"; 
-   d="scan'208";a="323019916"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Aug 2020 19:53:39 -0700
-Cc:     baolu.lu@linux.intel.com, CobeChen-oc@zhaoxin.com,
-        RaymondPang-oc@zhaoxin.com
-Subject: Re: [PATCH] iommu/vt-d:Add support for detecting ACPI device in RMRR
-To:     FelixCuioc <FelixCui-oc@zhaoxin.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20200818024441.2317-1-FelixCui-oc@zhaoxin.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <1d0d696a-8459-24f9-355d-63dc114dc008@linux.intel.com>
-Date:   Wed, 26 Aug 2020 10:48:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="373243623"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga001.jf.intel.com with ESMTP; 25 Aug 2020 19:50:24 -0700
+Date:   Tue, 25 Aug 2020 19:50:24 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Sukumar Ghorai <sukumar.ghorai@intel.com>,
+        Srikanth Nandamuri <srikanth.nandamuri@intel.com>,
+        Evan Green <evgreen@chromium.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v2] x86/hotplug: Silence APIC only after all irq's are
+ migrated
+Message-ID: <20200826025024.GB40407@otc-nc-03>
+References: <1597970523-24797-1-git-send-email-ashok.raj@intel.com>
+ <87mu2iw86q.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200818024441.2317-1-FelixCui-oc@zhaoxin.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mu2iw86q.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felix,
+Hi Thomas,
 
-On 8/18/20 10:44 AM, FelixCuioc wrote:
-> Some ACPI devices need to issue dma requests to access
-> the reserved memory area.BIOS uses the device scope type
-> ACPI_NAMESPACE_DEVICE in RMRR to report these ACPI devices.
-> This patch add support for detecting ACPI devices in RMRR.
+On Wed, Aug 26, 2020 at 02:40:45AM +0200, Thomas Gleixner wrote:
+> Ashok,
 > 
-
-If you are willing to submit a new version of this series, can you
-please add the version tag (commit title) and a change log (under the
-tear line)?
-
-Best regards,
-baolu
-
-> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
-> ---
->   drivers/iommu/intel/dmar.c  | 74 ++++++++++++++++++++-----------------
->   drivers/iommu/intel/iommu.c | 22 ++++++++++-
->   include/linux/dmar.h        | 12 +++++-
->   3 files changed, 72 insertions(+), 36 deletions(-)
+> On Thu, Aug 20 2020 at 17:42, Ashok Raj wrote:
+> > When offlining CPUs, fixup_irqs() migrates all interrupts away from the
+> > outgoing CPU to an online CPU. It's always possible the device sent an
+> > interrupt to the previous CPU destination. Pending interrupt bit in IRR in
+> > LAPIC identifies such interrupts. apic_soft_disable() will not capture any
+> > new interrupts in IRR. This causes interrupts from device to be lost during
+> > CPU offline. The issue was found when explicitly setting MSI affinity to a
+> > CPU and immediately offlining it. It was simple to recreate with a USB
+> > ethernet device and doing I/O to it while the CPU is offlined. Lost
+> > interrupts happen even when Interrupt Remapping is enabled.
 > 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 93e6345f3414..024ca38dba12 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -215,7 +215,7 @@ static bool dmar_match_pci_path(struct dmar_pci_notify_info *info, int bus,
->   }
->   
->   /* Return: > 0 if match found, 0 if no match found, < 0 if error happens */
-> -int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
-> +int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
->   			  void *start, void*end, u16 segment,
->   			  struct dmar_dev_scope *devices,
->   			  int devices_cnt)
-> @@ -304,7 +304,7 @@ static int dmar_pci_bus_add_dev(struct dmar_pci_notify_info *info)
->   
->   		drhd = container_of(dmaru->hdr,
->   				    struct acpi_dmar_hardware_unit, header);
-> -		ret = dmar_insert_dev_scope(info, (void *)(drhd + 1),
-> +		ret = dmar_pci_insert_dev_scope(info, (void *)(drhd + 1),
->   				((void *)drhd) + drhd->header.length,
->   				dmaru->segment,
->   				dmaru->devices, dmaru->devices_cnt);
-> @@ -696,48 +696,56 @@ dmar_find_matched_drhd_unit(struct pci_dev *dev)
->   
->   	return dmaru;
->   }
-> -
-> -static void __init dmar_acpi_insert_dev_scope(u8 device_number,
-> -					      struct acpi_device *adev)
-> +int dmar_acpi_insert_dev_scope(u8 device_number,
-> +				struct acpi_device *adev,
-> +				void *start, void *end,
-> +				struct dmar_dev_scope *devices,
-> +				int devices_cnt)
->   {
-> -	struct dmar_drhd_unit *dmaru;
-> -	struct acpi_dmar_hardware_unit *drhd;
->   	struct acpi_dmar_device_scope *scope;
->   	struct device *tmp;
->   	int i;
->   	struct acpi_dmar_pci_path *path;
->   
-> +	for (; start < end; start += scope->length) {
-> +		scope = start;
-> +		if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
-> +			continue;
-> +		if (scope->enumeration_id != device_number)
-> +			continue;
-> +		path = (void *)(scope + 1);
-> +		for_each_dev_scope(devices, devices_cnt, i, tmp)
-> +			if (tmp == NULL) {
-> +				devices[i].bus = scope->bus;
-> +				devices[i].devfn = PCI_DEVFN(path->device, path->function);
-> +				rcu_assign_pointer(devices[i].dev,
-> +						   get_device(&adev->dev));
-> +				return 1;
-> +			}
-> +		WARN_ON(i >= devices_cnt);
-> +	}
-> +	return 0;
-> +}
-> +static int dmar_acpi_bus_add_dev(u8 device_number, struct acpi_device *adev)
-> +{
-> +	struct dmar_drhd_unit *dmaru;
-> +	struct acpi_dmar_hardware_unit *drhd;
-> +	int ret = 0;
-> +
->   	for_each_drhd_unit(dmaru) {
->   		drhd = container_of(dmaru->hdr,
->   				    struct acpi_dmar_hardware_unit,
->   				    header);
-> +		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(drhd+1),
-> +						((void *)drhd)+drhd->header.length,
-> +						dmaru->devices, dmaru->devices_cnt);
-> +		if (ret)
-> +			break;
-> +	}
-> +	ret = dmar_rmrr_add_acpi_dev(device_number, adev);
->   
-> -		for (scope = (void *)(drhd + 1);
-> -		     (unsigned long)scope < ((unsigned long)drhd) + drhd->header.length;
-> -		     scope = ((void *)scope) + scope->length) {
-> -			if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
-> -				continue;
-> -			if (scope->enumeration_id != device_number)
-> -				continue;
-> +	return ret;
->   
-> -			path = (void *)(scope + 1);
-> -			pr_info("ACPI device \"%s\" under DMAR at %llx as %02x:%02x.%d\n",
-> -				dev_name(&adev->dev), dmaru->reg_base_addr,
-> -				scope->bus, path->device, path->function);
-> -			for_each_dev_scope(dmaru->devices, dmaru->devices_cnt, i, tmp)
-> -				if (tmp == NULL) {
-> -					dmaru->devices[i].bus = scope->bus;
-> -					dmaru->devices[i].devfn = PCI_DEVFN(path->device,
-> -									    path->function);
-> -					rcu_assign_pointer(dmaru->devices[i].dev,
-> -							   get_device(&adev->dev));
-> -					return;
-> -				}
-> -			BUG_ON(i >= dmaru->devices_cnt);
-> -		}
-> -	}
-> -	pr_warn("No IOMMU scope found for ANDD enumeration ID %d (%s)\n",
-> -		device_number, dev_name(&adev->dev));
->   }
->   
->   static int __init dmar_acpi_dev_scope_init(void)
-> @@ -766,7 +774,7 @@ static int __init dmar_acpi_dev_scope_init(void)
->   				       andd->device_name);
->   				continue;
->   			}
-> -			dmar_acpi_insert_dev_scope(andd->device_number, adev);
-> +			dmar_acpi_bus_add_dev(andd->device_number, adev);
->   		}
->   	}
->   	return 0;
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index ca557d351518..f774ef63d473 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4507,6 +4507,24 @@ int dmar_find_matched_atsr_unit(struct pci_dev *dev)
->   
->   	return ret;
->   }
-> +int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
-> +{
-> +	int ret;
-> +	struct dmar_rmrr_unit *rmrru;
-> +	struct acpi_dmar_reserved_memory *rmrr;
-> +
-> +	list_for_each_entry(rmrru, &dmar_rmrr_units, list) {
-> +		rmrr = container_of(rmrru->hdr,
-> +				struct acpi_dmar_reserved_memory,
-> +				header);
-> +		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(rmrr + 1),
-> +						((void *)rmrr) + rmrr->header.length,
-> +						rmrru->devices, rmrru->devices_cnt);
-> +		if (ret)
-> +			break;
-> +	}
-> +	return 0;
-> +}
->   
->   int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
->   {
-> @@ -4523,7 +4541,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
->   		rmrr = container_of(rmrru->hdr,
->   				    struct acpi_dmar_reserved_memory, header);
->   		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
-> -			ret = dmar_insert_dev_scope(info, (void *)(rmrr + 1),
-> +			ret = dmar_pci_insert_dev_scope(info, (void *)(rmrr + 1),
->   				((void *)rmrr) + rmrr->header.length,
->   				rmrr->segment, rmrru->devices,
->   				rmrru->devices_cnt);
-> @@ -4541,7 +4559,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
->   
->   		atsr = container_of(atsru->hdr, struct acpi_dmar_atsr, header);
->   		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
-> -			ret = dmar_insert_dev_scope(info, (void *)(atsr + 1),
-> +			ret = dmar_pci_insert_dev_scope(info, (void *)(atsr + 1),
->   					(void *)atsr + atsr->header.length,
->   					atsr->segment, atsru->devices,
->   					atsru->devices_cnt);
-> diff --git a/include/linux/dmar.h b/include/linux/dmar.h
-> index 65565820328a..881ac61a4336 100644
-> --- a/include/linux/dmar.h
-> +++ b/include/linux/dmar.h
-> @@ -113,10 +113,14 @@ extern int dmar_parse_dev_scope(void *start, void *end, int *cnt,
->   				struct dmar_dev_scope **devices, u16 segment);
->   extern void *dmar_alloc_dev_scope(void *start, void *end, int *cnt);
->   extern void dmar_free_dev_scope(struct dmar_dev_scope **devices, int *cnt);
-> -extern int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
-> +extern int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
->   				 void *start, void*end, u16 segment,
->   				 struct dmar_dev_scope *devices,
->   				 int devices_cnt);
-> +extern int dmar_acpi_insert_dev_scope(u8 device_number,
-> +				struct acpi_device *adev, void *start, void *end,
-> +				struct dmar_dev_scope *devices, int devices_cnt);
-> +
->   extern int dmar_remove_dev_scope(struct dmar_pci_notify_info *info,
->   				 u16 segment, struct dmar_dev_scope *devices,
->   				 int count);
-> @@ -140,6 +144,7 @@ extern int dmar_parse_one_atsr(struct acpi_dmar_header *header, void *arg);
->   extern int dmar_check_one_atsr(struct acpi_dmar_header *hdr, void *arg);
->   extern int dmar_release_one_atsr(struct acpi_dmar_header *hdr, void *arg);
->   extern int dmar_iommu_hotplug(struct dmar_drhd_unit *dmaru, bool insert);
-> +extern int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev);
->   extern int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info);
->   #else /* !CONFIG_INTEL_IOMMU: */
->   static inline int intel_iommu_init(void) { return -ENODEV; }
-> @@ -150,6 +155,11 @@ static inline void intel_iommu_shutdown(void) { }
->   #define	dmar_check_one_atsr		dmar_res_noop
->   #define	dmar_release_one_atsr		dmar_res_noop
->   
-> +static inline int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
-> +{
-> +	return 0;
-> +}
-> +
->   static inline int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
->   {
->   	return 0;
+> New lines exist for a reason. They help to structure information. For
+> the content, please see below.
+
+Will work on that :-)
+
 > 
+> > Current code does apic_soft_disable() before migrating interrupts.
+> >
+> > native_cpu_disable()
+> > {
+> > 	...
+> > 	apic_soft_disable();
+> > 	cpu_disable_common();
+> > 	  --> fixup_irqs(); // Too late to capture anything in IRR.
+> > }
+> >
+> > Just flipping the above call sequence seems to hit the IRR checks
+> > and the lost interrupt is fixed for both legacy MSI and when
+> > interrupt remapping is enabled.
+> 
+> Seems to hit? Come on, we really want changelogs which are based on
+> facts and not on assumptions.
+
+What I intended to convay was by placing a debug trace_printk() at
+fixup_irqs(), it was *indeed* observed. Before the change I never noticed
+that path being covered.
+
+Just my Inglish (Indian English) tricking you :-).
+Will make them sensible in the next update.
+
+> 
+> Aside of that, yes that's a really subtle one and thanks for tracking it
+> down! For some reason I never looked at that ordering, but now that you
+> stick it in front of me, it's pretty clear that this is the root cause.
+> 
+> >  	/*
+> >  	 * Disable the local APIC. Otherwise IPI broadcasts will reach
+> >  	 * it. It still responds normally to INIT, NMI, SMI, and SIPI
+> > -	 * messages.
+> > +	 * messages. It's important to do apic_soft_disable() after
+> > +	 * fixup_irqs(), because fixup_irqs() called from cpu_disable_common()
+> > +	 * depends on IRR being set.
+> 
+> That sentence does not make sense to me.
+
+Right, I was just stating the obvious. Since fixup_irqs() isn't called
+right in that function, it was suggested to make that connection explicit.
+
+Your writeup below is crystal.. so will replace with what you have below.
+
+
+> 
+> > +       .... After apic_soft_disable() CPU preserves
+> > +	 * currently set IRR/ISR but new interrupts will not set IRR.
+> 
+> I agree with the IRR part, but ISR is simply impossible to be set in
+> this situation. 
+
+You are correct. I was trying to convey what the SDM said, but its probably
+irrelavant for this discussion. 
+
+> 
+> > +	 * This causes interrupts sent to outgoing CPU before completion
+> > +	 * of IRQ migration to be lost. Check SDM Vol 3 "10.4.7.2 Local
+> > +	 * APIC State after It Has been Software Disabled" section for more
+> > +	 * details.
+> 
+> Please do not use the SDM chapter number of today. It's going to be a
+> different one with the next version.
+> 
+> Something like this perhaps?
+> 
+>   	/*
+>   	 * Disable the local APIC. Otherwise IPI broadcasts will reach
+>   	 * it. It still responds normally to INIT, NMI, SMI, and SIPI
+>  	 * messages.
+>          *
+>          * Disabling the APIC must happen after cpu_disable_common()
+>   	 * which invokes fixup_irqs().
+>          *
+>          * Disabling the APIC preserves already set bits in IRR, but
+>          * an interrupt arriving after disabling the local APIC does not
+>          * set the corresponding IRR bit.
+>          *
+>          * fixup_irqs() scans IRR for set bits so it can raise a not
+>   	 * yet handled interrupt on the new destination CPU via an IPI
+>          * but obviously it can't do so for IRR bits which are not set.
+>          * IOW, interrupts arriving after disabling the local APIC will
+>          * be lost.
+>          */
+> 
+> Hmm?
+> 
+> The changelog wants to have a corresponding update.
+
+Will do ...
+
+Cheers,
+Ashok
