@@ -2,109 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB91252AA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54918252A8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgHZJpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:45:50 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:50826 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727997AbgHZJpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:45:50 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Aug 2020 05:45:50 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 6C7ED46E1;
-        Wed, 26 Aug 2020 11:37:42 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Wtvtf5oFOyjP; Wed, 26 Aug 2020 11:37:42 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 3E5BE471B; Wed, 26 Aug 2020 11:37:41 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RELAYS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from adahl by ada.ifak-system.com with local (Exim 4.92)
-        (envelope-from <ada@thorsis.com>)
-        id 1kArs9-0007Yb-BO; Wed, 26 Aug 2020 11:37:37 +0200
-From:   Alexander Dahl <ada@thorsis.com>
-To:     linux-leds@vger.kernel.org
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-kernel@vger.kernel.org, Alexander Dahl <post@lespocky.de>
-Subject: [PATCH] leds: pwm: Allow automatic labels for DT based devices
-Date:   Wed, 26 Aug 2020 11:37:37 +0200
-Message-Id: <20200826093737.29008-1-ada@thorsis.com>
-Content-Transfer-Encoding: 8bit
+        id S1728132AbgHZJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:40:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14080 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727884AbgHZJk1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:40:27 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9XOaD059228;
+        Wed, 26 Aug 2020 05:40:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=N7+aa+XxNWIP45367pCc49nejHJb7V3eQKgrc57njM8=;
+ b=li3s+CpxcaYPFTQiUOSd8O/26MuRYsCODFBOiXge6osQelC0cLYmzWrkj7s2KJUkHKmY
+ DY0ghXLXL9zT4tBi0Fjqjif5QYVGA55C7V5trHrAEkW/yYf/DK5/ysHlSfehQprHPuZw
+ 1S7abgmYRGeYiHNbxT05fCVs2ct0hL47yOdNIQrE+N7K+z/ws3bcXDWmYYd1DJ4OpWAC
+ kTwZbEotA3v0IhD4ZR867ZLirc4Zpq1nFXkPsMcHXiXeZOsjCDbcPx0xxevnbPJi7MAV
+ RR88NjPFVKCvKFzHGbelWSIyPbsRgxdptkTSd93scGg1xDOIfKI9c+9Msy6PiqXtx6vw wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335m1w2dhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 05:40:18 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07Q9Y2J7062048;
+        Wed, 26 Aug 2020 05:40:18 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 335m1w2dfc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 05:40:17 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07Q9c0Lr005769;
+        Wed, 26 Aug 2020 09:40:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 335j2704ed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 09:40:15 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07Q9cgVD66126184
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 09:38:42 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF8A95204F;
+        Wed, 26 Aug 2020 09:40:12 +0000 (GMT)
+Received: from drishya.in.ibm.com (unknown [9.199.54.64])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 55DA052054;
+        Wed, 26 Aug 2020 09:40:11 +0000 (GMT)
+Date:   Wed, 26 Aug 2020 15:10:09 +0530
+From:   Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        npiggin@gmail.com, mikey@neuling.org, ego@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+Subject: Re: [PATCH] Revert "powerpc/powernv/idle: Replace CPU feature check
+ with PVR check"
+Message-ID: <20200826094009.GC48285@drishya.in.ibm.com>
+Reply-To: svaidy@linux.ibm.com
+References: <20200826082918.89306-1-psampat@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200826082918.89306-1-psampat@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_06:2020-08-25,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 bulkscore=0 clxscore=1011 suspectscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260075
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Dahl <post@lespocky.de>
+* Pratik Rajesh Sampat <psampat@linux.ibm.com> [2020-08-26 13:59:18]:
 
-If LEDs are configured through device tree and the property 'label' is
-omitted, the label is supposed to be generated from the properties
-'function' and 'color' if present.  While this works fine for e.g. the
-'leds-gpio' driver, it did not for 'leds-pwm'.
+> Cpuidle stop state implementation has minor optimizations for P10
+> where hardware preserves more SPR registers compared to P9.
+> The current P9 driver works for P10, although does few extra
+> save-restores. P9 driver can provide the required power management
+> features like SMT thread folding and core level power savings
+> on a P10 platform.
+> 
+> Until the P10 stop driver is available, revert the commit which
+> allows for only P9 systems to utilize cpuidle and blocks all
+> idle stop states for P10.
+> Cpu idle states are enabled and tested on the P10 platform
+> with this fix.
+> 
+> This reverts commit 8747bf36f312356f8a295a0c39ff092d65ce75ae.
+> 
+> Fixes: 8747bf36f312 ("powerpc/powernv/idle: Replace CPU feature check with PVR check")
+> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
 
-The reason is, you get this label naming magic only if you add a LED
-device through 'devm_led_classdev_register_ext()' and pass a pointer to
-the current device tree node.  The approach to fix this was adopted from
-the 'leds-gpio' driver.
+Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
 
-For the following node from dts the LED appeared as 'led5' in sysfs
-before and as 'red:debug' after this change.
 
-        pwm_leds {
-                compatible = "pwm-leds";
+> ---
+>  @mpe: This revert would resolve a staging issue wherein the P10 stop
+>  driver is not yet ready while cpuidle stop states need not be blocked
+>  on 5.9 for Power10 systems which could cause SMT folding related
+>  performance issues.
+> 
+>  The P10 stop driver is in the works here:
+>  https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-August/216773.html
+> 
+>  arch/powerpc/platforms/powernv/idle.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
+> index 77513a80cef9..345ab062b21a 100644
+> --- a/arch/powerpc/platforms/powernv/idle.c
+> +++ b/arch/powerpc/platforms/powernv/idle.c
+> @@ -1223,7 +1223,7 @@ static void __init pnv_probe_idle_states(void)
+>  		return;
+>  	}
+>  
+> -	if (pvr_version_is(PVR_POWER9))
+> +	if (cpu_has_feature(CPU_FTR_ARCH_300))
+>  		pnv_power9_idle_init();
+>  
+>  	for (i = 0; i < nr_pnv_idle_states; i++)
 
-                led5 {
-                        function = LED_FUNCTION_DEBUG;
-                        color = <LED_COLOR_ID_RED>;
-                        pwms = <&pwm0 2 10000000 0>;
-                        max-brightness = <127>;
 
-                        linux,default-trigger = "heartbeat";
-                        panic-indicator;
-                };
-        };
+This revert solves the stated problem and makes kernel v5.9 work
+reasonable well on P10 with stop states which are required for SMT
+mode changes.
 
-Signed-off-by: Alexander Dahl <post@lespocky.de>
----
+Complete P10 driver has been in the works and will build on this fix
+and complete the required platform support and optimizations.
 
-Notes:
-    v1: based on v5.9-rc2, backport on v5.4.59 also works
-
- drivers/leds/leds-pwm.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
-index ef7b91bd2064..a27a1d75a3e9 100644
---- a/drivers/leds/leds-pwm.c
-+++ b/drivers/leds/leds-pwm.c
-@@ -65,6 +65,7 @@ static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
- 		       struct led_pwm *led, struct fwnode_handle *fwnode)
- {
- 	struct led_pwm_data *led_data = &priv->leds[priv->num_leds];
-+	struct led_init_data init_data = {};
- 	int ret;
- 
- 	led_data->active_low = led->active_low;
-@@ -90,7 +91,13 @@ static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
- 
- 	pwm_init_state(led_data->pwm, &led_data->pwmstate);
- 
--	ret = devm_led_classdev_register(dev, &led_data->cdev);
-+	if (fwnode) {
-+		init_data.fwnode = fwnode;
-+		ret = devm_led_classdev_register_ext(dev, &led_data->cdev,
-+						     &init_data);
-+	} else {
-+		ret = devm_led_classdev_register(dev, &led_data->cdev);
-+	}
- 	if (ret) {
- 		dev_err(dev, "failed to register PWM led for %s: %d\n",
- 			led->name, ret);
--- 
-2.27.0
+--Vaidy
 
