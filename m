@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80059252C08
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A6B252C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbgHZLDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:03:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56724 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728693AbgHZLDM (ORCPT
+        id S1728777AbgHZLFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728679AbgHZLFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:03:12 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598439782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZaAkTdOab/XFooWlber6W3bQre4hvoIBpg4is6GPMvI=;
-        b=onrC78SbMNK189bx5B9J/G6s8NfSzOML8/QswGPLaM7CNLUadKjp4RZkqQj1RpwAnqf9ND
-        WHrr0sfogurwO1T9+nL2EocVhhdSgZ0KPGI/iuexx/2JUw0YevIydPq4BgtmRVhBYRr2H9
-        kzNgRK7OBnzZ3BpBp2bRNNIjEyY+2G0JVleePH9tjONso7qd32vc+4yxT0SovbmgDtn7kX
-        BJpgVC6m9/waC/lQVCd9lNZKfx7RbcHmiwjuCHpFim0i4wEaR0GZkqDXWSSOJg7RJpHX5h
-        tUQjMpAvUqHIn7Kv266SPEKtJ5Pdfwe2BFa3tlGUAsQUziWsuUenKnL6a4+DPw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598439782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZaAkTdOab/XFooWlber6W3bQre4hvoIBpg4is6GPMvI=;
-        b=PfZ2hYH1I2ewe0aCaU53HrJiEJCFqmFzJ7d2d3J0q6ZM3xseBlhIbp4F8hJcGr9lQ4766W
-        KACq5LU557imvSAA==
-To:     syzbot <syzbot+51c9bdfa559769d2f897@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, anna.schumaker@netapp.com,
-        bfields@fieldses.org, bp@alien8.de, davem@davemloft.net,
-        douly.fnst@cn.fujitsu.com, hpa@zytor.com, jlayton@kernel.org,
-        konrad.wilk@oracle.com, len.brown@intel.com,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, peterz@infradead.org, puwen@hygon.cn,
-        rafael.j.wysocki@intel.com, syzkaller-bugs@googlegroups.com,
-        trond.myklebust@hammerspace.com, trond.myklebust@primarydata.com,
-        vbabka@suse.cz, x86@kernel.org, David Howells <dhowells@redhat.com>
-Subject: Re: WARNING: ODEBUG bug in __do_softirq
-In-Reply-To: <000000000000e7fab005adc3f636@google.com>
-References: <000000000000e7fab005adc3f636@google.com>
-Date:   Wed, 26 Aug 2020 13:03:02 +0200
-Message-ID: <87v9h5vfdl.fsf@nanos.tec.linutronix.de>
+        Wed, 26 Aug 2020 07:05:03 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA97EC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:05:02 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id v16so724055plo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mqlq1PfT56HOoFMV6L94hJv96dlmh01C5Xs6bahtBkI=;
+        b=UeOWj1bLiRwpjx0xxo7VgpqGSSWO0JgJ1jDlPJnXdrM6c/bGEfxHVRjO52822EdGos
+         hMjeRcRFC8MnALlN0EL5KFiJ7OeDjlvlw/2zKk58tdxtxb/emtza+ibHAB+OxblK09Lb
+         CEPrqLjTKx3bpE5zD7EXrW2cyycWVsGx+84oc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mqlq1PfT56HOoFMV6L94hJv96dlmh01C5Xs6bahtBkI=;
+        b=fUBbJG4V/UgGKLnEoBAG7ovzwg0gDbfkZj6IS+Yl6+bpg+iwVOzHLyWCX9xYt+8ImJ
+         Tb4hqX+KDeZGVmYci7N0Z4/aB0oHoGjWsEt/M5jF7t5RL3WbU39cFnuQD1V/Vf6lOi9v
+         OzeaOpYCi3HFfzqgupp8ku2hM8GIRkuIVkMdg/2nwonMx/t6RYv5uGxNtqHTkEp5d5lZ
+         kb8LmzKsI8dAQSwJZ75pXa0dmXs2AT8cKmy0RH1oM9rouelP7nwwwwK/Ig0vcwpRoAYD
+         3iitOJ4Ao1/WBW/UEti87ajhbBA9SS73TMySCL+sUx3vQuPRAkmmpWB4iZaE6FPMnoun
+         K2cg==
+X-Gm-Message-State: AOAM531hY5BbctjGZFgAxD1TMtsjqqGyRm9c1C8Y+dxhkbmCvX5YrxnD
+        UWPNryDTtd0TCjl7ukIwbDrZiSlI78Oby61b
+X-Google-Smtp-Source: ABdhPJzkWckbe2f7/EY4eUKIYZ4JNt+7W4ArRJA9yhosyjN47O+337w2fSQAeHRBzXhqgEJos8I9Lw==
+X-Received: by 2002:a17:902:9309:: with SMTP id bc9mr11228131plb.51.1598439901835;
+        Wed, 26 Aug 2020 04:05:01 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+        by smtp.gmail.com with ESMTPSA id x5sm1888539pgf.65.2020.08.26.04.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 04:05:00 -0700 (PDT)
+From:   Cheng-Yi Chiang <cychiang@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v6 0/2] Add documentation and machine driver for SC7180 sound card
+Date:   Wed, 26 Aug 2020 19:04:52 +0800
+Message-Id: <20200826110454.1811352-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26 2020 at 01:54, syzbot wrote:
+Note:
+- The machine driver patch is made by the collaboration of
+  Cheng-Yi Chiang <cychiang@chromium.org>
+  Rohit kumar <rohitkr@codeaurora.org>
+  Ajit Pandey <ajitp@codeaurora.org>
+  But Ajit has left codeaurora.
 
-Cc+: David Howells
+Changes from v1 to v2:
+- Ducumentation: Addressed all suggestions from Doug.
+- Machine driver:
+  - Fix comment style for license.
+  - Sort includes.
+  - Remove sc7180_snd_hw_params.
+  - Remove sc7180_dai_init and use aux device instead for headset jack registration.
+  - Statically define format for Primary MI2S.
+  - Atomic is not a concern because there is mutex in card to make sure
+    startup and shutdown happen sequentially.
+  - Fix missing return -EINVAL in startup.
+  - Use static sound card.
+  - Use devm_kzalloc to avoid kfree.
 
-> syzbot has found a reproducer for the following issue on:
->
-> HEAD commit:    3a00d3df Add linux-next specific files for 20200825
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15080fa9900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9ef0a5f95935d447
-> dashboard link: https://syzkaller.appspot.com/bug?extid=51c9bdfa559769d2f897
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17927a2e900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132b8ede900000
->
-> The issue was bisected to:
->
-> commit 5b317cbf2bcb85a1e96ce87717cb991ecab1dd4d
-> Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Date:   Fri Feb 22 09:17:11 2019 +0000
->
->     Merge branch 'pm-cpufreq-fixes'
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=171ead5d200000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=149ead5d200000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=109ead5d200000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+51c9bdfa559769d2f897@syzkaller.appspotmail.com
-> Fixes: 5b317cbf2bcb ("Merge branch 'pm-cpufreq-fixes'")
->
-> ------------[ cut here ]------------
-> ODEBUG: free active (active state 0) object type: work_struct hint: afs_manage_cell+0x0/0x11c0 fs/afs/cell.c:498
+Changes from v2 to v3:
+- Ducumentation: Addressed suggestions from Srini.
+- Machine driver:
+  - Reuse qcom_snd_parse_of to parse properties.
+  - Remove playback-only and capture-only.
+  - Misc fixes to address comments.
 
-AFS is leaking an active work struct in a to be freed data struct.
+Changes from v3 to v4:
+- Ducumentation: Addressed suggestions from Rob.
+ - Remove definition of dai.
+ - Use 'sound-dai: true' for sound-dai schema.
+ - Add reg property to pass 'make dt_binding_check' check although reg is not used in the driver.
+- Machine driver:
+ - Add Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 
-Thanks,
+Changes from v4 to v5:
+- Documentation: Addressed suggestions from Rob.
+ - Add definition for "#address-cells" and "#size-cells".
+ - Add additionalProperties: false
+ - Add required properties.
 
-        tglx
+Changes from v5 to v6:
+- Documentation: Addressed suggestions from Rob.
+ - Drop contains in compatible strings.
+ - Only allow dai-link@[0-9]
+ - Remove reg ref since it has a type definition already.
+Ajit Pandey (1):
+  ASoC: qcom: sc7180: Add machine driver for sound card registration
+
+Cheng-Yi Chiang (1):
+  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+
+ .../bindings/sound/qcom,sc7180.yaml           | 124 +++++++++
+ sound/soc/qcom/Kconfig                        |  12 +
+ sound/soc/qcom/Makefile                       |   2 +
+ sound/soc/qcom/sc7180.c                       | 244 ++++++++++++++++++
+ 4 files changed, 382 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+ create mode 100644 sound/soc/qcom/sc7180.c
+
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
