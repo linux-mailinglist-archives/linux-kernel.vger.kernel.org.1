@@ -2,232 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A85252585
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A71525259E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 04:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgHZCi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 22:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S1726740AbgHZCrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 22:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbgHZCi4 (ORCPT
+        with ESMTP id S1726700AbgHZCrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 22:38:56 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FC2C061574;
-        Tue, 25 Aug 2020 19:38:55 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cs12so137096qvb.2;
-        Tue, 25 Aug 2020 19:38:55 -0700 (PDT)
+        Tue, 25 Aug 2020 22:47:18 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C36DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 19:47:14 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 67so288827pgd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 19:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZfdEeRkGYYJGqA9dRHE+OHZVDWc9//QHNY+B5Tdcg7c=;
-        b=BeGWowEwb9tCzzJMFPX4d67otru8ppw6l5bqmwbIc7/9vgRTitRITqEt1dxhubYx8X
-         UNDP/LRYicQckoyLd33GxPv9ljUGMUemrcn6aWuBS9rBUaVLANnakDS27y1G9Iac3ChR
-         015tRTcDnv6NT9r4FwpQXKh6sDDJ6GJHvz37/OhOSw6wphpCxZD/HLCx17LYGTUNpXQH
-         shmDrv6TCFH3zmY15E9CN5zrKvVoznBsxJO+zEmR5wq1rTOPUMNJOlHnh4osacCSo0ZT
-         SGqKRJwlVIfbz6zmaayHPfkGX/dFQ9FZ1UFvJp9aDJnz2JBnbZW0uW3a7BSDdSO91PAB
-         2GJQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=86P25dc8M78uQGYbOQ5ml86T4VEo9bys5i/SwJ/LbYw=;
+        b=LF7uD0YyINCvnZ5gc8It2mRUwkRYtaiNOxNYHb+KBxbZrHd6JN6fRR84dLvrMJV8yL
+         X6JGIL8i5XL0IuCQ2+bg9J22/ynNl42KiTz/GosZh6Bs2d3X90r59iD2YdZHQys13Au0
+         xnkaHNFHpU6nhtk3ZJpyRFBw0yjhF98Geekdc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZfdEeRkGYYJGqA9dRHE+OHZVDWc9//QHNY+B5Tdcg7c=;
-        b=Cgb/ypJsGc7GfcYDhn4JpNW35HVGQ7GNd8QlUXWJTSIiColeq0tZQil+ZkltxUoZsR
-         ltZ6xvERWpWve6QQT2OGYs/bLRC9k8gdJiawrNMJN4UkUZTQBUkUdVMt4nRVrfoGx7eQ
-         Fx3r/BhaMMfqVAQyIP/uhsOT0tXtOrdok06p2fpbGq4w7ZRLFo1porUfQ9V6LCQz3Fvo
-         9yocYxdON/VzAC6TH9IrA7YqN2HMlgy2Avo/7i+C755KHbxtLFKPagMGvm1y8BxeXhpa
-         Pt3m8t0xLxqDGOJsaGS2QzD1R1miEH+o8Tt2/ixOXX/azqrjorOnxSwLNbDltdtlpspk
-         OXtQ==
-X-Gm-Message-State: AOAM53344JFoodrSUCtsqzcOKczT0hy6fiLnOouGnhXaD5AE92VZuEGC
-        +x9BDrPuybQuwO33GShUL3sbqzwWRngoPbAElns=
-X-Google-Smtp-Source: ABdhPJyryS+THO4tooNNmhvHHlRhElXnGkWzzGY0fyPBKoMaie30LtiYvAFdp8ePYIYtStjn5OLmLJruVBYoeaCrkhM=
-X-Received: by 2002:a05:6214:1108:: with SMTP id e8mr12289973qvs.237.1598409534967;
- Tue, 25 Aug 2020 19:38:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=86P25dc8M78uQGYbOQ5ml86T4VEo9bys5i/SwJ/LbYw=;
+        b=ob5Ubi1FDNX7ywSyrnJA9/ShEOa9ksSmNny1uePsyvG3aZbRo4XvIXZBnvwzUXMnaD
+         w8C19R/eUz70awJADZ8Wsuace9093FbOcESx5XOjEHQYwZ0UDX94nhE7trRfTsDzF8JM
+         8IZW9NswX9PbaHtxDt6hPkuyXHcG7/ljDeJeMmhcuzewd1c0oEw73Epl58BE1AdwOrIl
+         s2qfhLtd0E/+WuD8sYIzeF9p33DwnHL92rbg972BPuOqcQn01jRpaQ4svC47eEqv1Suj
+         ZGWmOUgpG3rzm3ibu60qIeM9AnUoCxZa8Qiw3Lc4XIzazBXgFvM21y3jNQiQy9ZBFgCp
+         +/LA==
+X-Gm-Message-State: AOAM530LoT1zWNz7OTxwLIRp9PoKeZM3CYWGgwdpkDm08SMhUX5f2VYO
+        SeSA5KHDT+6MrEiGHp9pNABWoQ==
+X-Google-Smtp-Source: ABdhPJxxubdCAWSJc6KDf0OvM1irs6Nwgg0uICeVlTgRnBzhdpe7kDBBzkegmuVYmScyZxCpS/yy2Q==
+X-Received: by 2002:a62:1b0e:: with SMTP id b14mr10493740pfb.281.1598410033606;
+        Tue, 25 Aug 2020 19:47:13 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id u65sm684381pfb.102.2020.08.25.19.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 19:47:12 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH v1 0/9]  Support qcom USB3+DP combo phy (or type-c phy)
+Date:   Tue, 25 Aug 2020 19:47:02 -0700
+Message-Id: <20200826024711.220080-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
- <20200623134259.8197-1-mzhivich@akamai.com> <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
- <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
- <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
- <7fd86d97-6785-0b5f-1e95-92bc1da9df35@netrounds.com> <500b4843cb7c425ea5449fe199095edd5f7feb0c.camel@redhat.com>
- <25ca46e4-a8c1-1c88-d6a9-603289ff44c3@akamai.com> <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
- <20200822032800.16296-1-hdanton@sina.com> <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
- <20200825032312.11776-1-hdanton@sina.com> <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
- <20200825162329.11292-1-hdanton@sina.com>
-In-Reply-To: <20200825162329.11292-1-hdanton@sina.com>
-From:   Kehuan Feng <kehuan.feng@gmail.com>
-Date:   Wed, 26 Aug 2020 10:38:43 +0800
-Message-ID: <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
-Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hillf,
+This patch series is based on v11 of the msm DP driver submission[1]
+plus a compliance patch[2]. In the v5 patch series review I suggested
+that the DP PHY and PLL be split out of the drm driver and moved to the
+qmp phy driver. This patch series does that, but it is still marked as
+an RFC because there are a couple more things to do, mostly updating the
+DT binding and getting agreement on how to structure the code.
 
-Thanks for the patch.
-I just tried it and it looks better than previous one. The issue
-appeared only once over ~30 mins stressing (without the patch , it
-shows up within 1 mins in usual, so I feel like we are getting close
-to the final fix)
-(pasted the modifications on my tree in case of any missing)
+Eventually I believe the qmp phy driver will need to listen for type-c
+notifiers or somehow know the type-c pinout being used so this driver
+can program things slightly differently. Right now, I don't have any way
+to test it though, so I've left it as future work. For some more
+details, the DP phy and the USB3 phy share the same physical pins on the
+SoC and those pins pretty much line up with a type-c pinout modulo some
+CC pins for cable orientation detection logic that lives on the PMIC. So
+the DP phy can use all four lanes or it can use two lanes and the USB3
+phy can use two lanes. In the hardware designs that I have access to it
+is always two lanes for USB3 and two lanes for DP going through what
+looks like a type-c pinout so this just hard codes that configuration in
+the driver.
 
---- ./include/net/sch_generic.h.orig 2020-08-21 15:13:51.787952710 +0800
-+++ ./include/net/sch_generic.h 2020-08-26 09:41:04.647173869 +0800
-@@ -79,6 +79,7 @@
- #define TCQ_F_INVISIBLE 0x80 /* invisible by default in dump */
- #define TCQ_F_NOLOCK 0x100 /* qdisc does not require locking */
- #define TCQ_F_OFFLOADED 0x200 /* qdisc is offloaded to HW */
-+ int                     pkt_seq;
-  u32 limit;
-  const struct Qdisc_ops *ops;
-  struct qdisc_size_table __rcu *stab;
---- ./include/net/pkt_sched.h.orig 2020-08-21 15:13:51.787952710 +0800
-+++ ./include/net/pkt_sched.h 2020-08-26 09:42:14.491377514 +0800
-@@ -117,8 +117,15 @@
- static inline void qdisc_run(struct Qdisc *q)
- {
-  if (qdisc_run_begin(q)) {
-+ q->pkt_seq =3D 0;
-+
-  __qdisc_run(q);
-  qdisc_run_end(q);
-+
-+ /* reschedule qdisc if there are packets enqueued */
-+ if (q->pkt_seq !=3D 0)
-+ __netif_schedule(q);
-+
-  }
- }
+Here's the example node that I'm using on sc7180:
 
---- ./net/core/dev.c.orig 2020-03-19 16:31:27.000000000 +0800
-+++ ./net/core/dev.c 2020-08-26 09:47:57.783165885 +0800
-@@ -2721,6 +2721,7 @@
+	usb_1_qmpphy: phy-wrapper@88e9000 {
+		compatible = "qcom,sc7180-qmp-usb3-dp-phy";
+		reg = <0 0x088e9000 0 0x18c>, // usb pll (or serdes)
+		      <0 0x088e8000 0 0x38>, // dp com
+		      <0 0x088ea000 0 0x40>;  // dp pll (or serdes)
+		status = "disabled";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
 
-  local_irq_save(flags);
-  sd =3D this_cpu_ptr(&softnet_data);
-+ q->pkt_seq =3D 0;
-  q->next_sched =3D NULL;
-  *sd->output_queue_tailp =3D q;
-  sd->output_queue_tailp =3D &q->next_sched;
---- ./net/sched/sch_generic.c.orig 2020-08-24 22:02:04.589830751 +0800
-+++ ./net/sched/sch_generic.c 2020-08-26 09:43:40.987852551 +0800
-@@ -403,6 +403,9 @@
-  */
-  quota -=3D packets;
-  if (quota <=3D 0 || need_resched()) {
-+ /* info caller to reschedule qdisc outside q->seqlock */
-+ q->pkt_seq =3D 1;
-+
-  __netif_schedule(q);
-  break;
-  }
+		clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
+			 <&gcc GCC_USB_PHY_CFG_AHB2PHY_CLK>,
+			 <&gcc GCC_USB3_PRIM_CLKREF_CLK>,
+			 <&gcc GCC_USB3_PRIM_PHY_COM_AUX_CLK>;
+		clock-names = "aux", "cfg_ahb", "ref", "com_aux";
+
+		resets = <&gcc GCC_USB3_PHY_PRIM_BCR>,
+			 <&gcc GCC_USB3_DP_PHY_PRIM_BCR>;
+		reset-names = "phy", "common";
+
+		usb_1_ssphy: usb3-phy@88e9200 {
+			reg = <0 0x088e9200 0 0x128>, // tx0
+			      <0 0x088e9400 0 0x200>, // rx0
+			      <0 0x088e9c00 0 0x218>, // pcs
+			      <0 0x088e9600 0 0x128>, // tx1
+			      <0 0x088e9800 0 0x200>, // rx1
+			      <0 0x088e9a00 0 0x18>;  // pcs misc
+			#clock-cells = <0>;
+			#phy-cells = <0>;
+			clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+			clock-names = "pipe0";
+			clock-output-names = "usb3_phy_pipe_clk_src";
+		};
+
+		dp_phy: dp-phy@88ea200 {
+			reg = <0 0x088ea200 0 0x200>, // tx0
+			      <0 0x088ea400 0 0x200>, // rx0
+			      <0 0x088eaa00 0 0x200>, // dp phy
+			      <0 0x088ea600 0 0x200>, // tx1
+			      <0 0x088ea800 0 0x200>; // rx1
+			#clock-cells = <1>;
+			#phy-cells = <0>;
+		};
+	};
+
+I had to put the serdes register region in the wrapper node and jam the
+common area (dp_com) in the middle. Sort of a mess but it was the best I
+could do to make the driver changes minimially invasive. I also had to
+change the node names to 'usb3-phy' and 'dp-phy' from 'phy' so that I
+could differentiate the different phys in the driver. Otherwise the qmp
+driver was already mostly prepared for two different phys to sit next to
+each other inside the phy wrapper so it was mostly just a chore of
+moving code from one place to another.
+
+I'll also point out that I found out the DP controller driver is
+resetting the aux phy settings right after it configures it. The last
+patch in this series rips out the DP PHY and PLL code from the drm
+driver and wires in the phy API calls instead. In that same patch I also
+fixed this aux reset behavior by removing the bit that resets the aux
+phy. I believe that the aux configuration is broken in the DP driver
+but I fixed it now I think.
+
+Changes from RFC (https://lore.kernel.org/r/20200611091919.108018-1-swboyd@chromium.org)
+ * New patch for DT binding
+ * Rebased onto latest DP patch series
+
+TODO:
+ * Clean up phy power on sequence a bit so that it is done in one place
+   instead of two
+ * Allow link rate to change after phy is powered on?
+ * Make the runtime PM logic detect combo phy and power down both?
 
 
-Hillf Danton <hdanton@sina.com> =E4=BA=8E2020=E5=B9=B48=E6=9C=8826=E6=97=A5=
-=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=8812:26=E5=86=99=E9=81=93=EF=BC=9A
->
->
-> Hi Feng,
->
-> On Tue, 25 Aug 2020 15:14:12 +0800 Fengkehuan Feng wrote:
-> > Hi Hillf,
-> >
-> > I just tried the updated version and the system can boot up now.
->
-> Thanks again for your testing.
->
-> > It does mitigate the issue a lot but still couldn't get rid of it
-> > thoroughly. It seems to me like the effect of Cong's patch.
->
-> Your echoes show we're still march in the dark and let's try another
-> direction in which qdisc is rescheduled outside seqlock to make sure
-> tx softirq is raised when there're more packets on the pfifo_fast to
-> be transmitted.
->
->         CPU0                            CPU1
->         ----                            ----
->         seqlock
->         test __QDISC_STATE_SCHED
->                 raise tx softirq
->                                         clear __QDISC_STATE_SCHED
->                                         try seqlock
->                                         __qdisc_run(q);
->                                         sequnlock
->         sequnlock
->
->
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -79,6 +79,7 @@ struct Qdisc {
->  #define TCQ_F_INVISIBLE                0x80 /* invisible by default in d=
-ump */
->  #define TCQ_F_NOLOCK           0x100 /* qdisc does not require locking *=
-/
->  #define TCQ_F_OFFLOADED                0x200 /* qdisc is offloaded to HW=
- */
-> +       int                     pkt_seq;
->         u32                     limit;
->         const struct Qdisc_ops  *ops;
->         struct qdisc_size_table __rcu *stab;
-> --- a/include/net/pkt_sched.h
-> +++ b/include/net/pkt_sched.h
-> @@ -118,6 +118,8 @@ void __qdisc_run(struct Qdisc *q);
->  static inline void qdisc_run(struct Qdisc *q)
->  {
->         if (qdisc_run_begin(q)) {
-> +               q->pkt_seq =3D 0;
-> +
->                 /* NOLOCK qdisc must check 'state' under the qdisc seqloc=
-k
->                  * to avoid racing with dev_qdisc_reset()
->                  */
-> @@ -125,6 +127,10 @@ static inline void qdisc_run(struct Qdis
->                     likely(!test_bit(__QDISC_STATE_DEACTIVATED, &q->state=
-)))
->                         __qdisc_run(q);
->                 qdisc_run_end(q);
-> +
-> +               /* reschedule qdisc if there are packets enqueued */
-> +               if (q->pkt_seq !=3D 0)
-> +                       __netif_schedule(q);
->         }
->  }
->
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -384,6 +384,8 @@ void __qdisc_run(struct Qdisc *q)
->         while (qdisc_restart(q, &packets)) {
->                 quota -=3D packets;
->                 if (quota <=3D 0) {
-> +                       /* info caller to reschedule qdisc outside q->seq=
-lock */
-> +                       q->pkt_seq =3D 1;
->                         __netif_schedule(q);
->                         break;
->                 }
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3031,6 +3031,7 @@ static void __netif_reschedule(struct Qd
->
->         local_irq_save(flags);
->         sd =3D this_cpu_ptr(&softnet_data);
-> +       q->pkt_seq =3D 0;
->         q->next_sched =3D NULL;
->         *sd->output_queue_tailp =3D q;
->         sd->output_queue_tailp =3D &q->next_sched;
-> --
->
+Stephen Boyd (9):
+  dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy information
+  phy: qcom-qmp: Move phy mode into struct qmp_phy
+  phy: qcom-qmp: Remove 'initialized' in favor of 'init_count'
+  phy: qcom-qmp: Move 'serdes' and 'cfg' into 'struct qcom_phy'
+  phy: qcom-qmp: Get dp_com I/O resource by index
+  phy: qcom-qmp: Add support for DP in USB3+DP combo phy
+  phy: qcom-qmp: Add support for sc7180 DP phy
+  clk: qcom: dispcc: Update DP clk ops for phy design
+  drm/msm/dp: Use qmp phy for DP PLL and PHY
+
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    |   91 +-
+ drivers/clk/qcom/clk-rcg2.c                   |   19 +-
+ drivers/clk/qcom/dispcc-sc7180.c              |    3 -
+ drivers/gpu/drm/msm/Makefile                  |    4 +-
+ drivers/gpu/drm/msm/dp/dp_aux.c               |    7 +-
+ drivers/gpu/drm/msm/dp/dp_catalog.c           |  253 +---
+ drivers/gpu/drm/msm/dp/dp_catalog.h           |    7 +-
+ drivers/gpu/drm/msm/dp/dp_ctrl.c              |   47 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           |   17 -
+ drivers/gpu/drm/msm/dp/dp_display.h           |    3 -
+ drivers/gpu/drm/msm/dp/dp_link.c              |    2 +
+ drivers/gpu/drm/msm/dp/dp_panel.c             |    1 +
+ drivers/gpu/drm/msm/dp/dp_parser.c            |   12 +-
+ drivers/gpu/drm/msm/dp/dp_parser.h            |   12 +-
+ drivers/gpu/drm/msm/dp/dp_pll.c               |   99 --
+ drivers/gpu/drm/msm/dp/dp_pll.h               |   61 -
+ drivers/gpu/drm/msm/dp/dp_pll_10nm.c          |  930 --------------
+ drivers/gpu/drm/msm/dp/dp_pll_private.h       |   89 --
+ drivers/gpu/drm/msm/dp/dp_power.c             |   39 +-
+ drivers/gpu/drm/msm/dp/dp_power.h             |    9 -
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 1114 ++++++++++++++---
+ drivers/phy/qualcomm/phy-qcom-qmp.h           |   80 ++
+ 22 files changed, 1207 insertions(+), 1692 deletions(-)
+ delete mode 100644 drivers/gpu/drm/msm/dp/dp_pll.c
+ delete mode 100644 drivers/gpu/drm/msm/dp/dp_pll.h
+ delete mode 100644 drivers/gpu/drm/msm/dp/dp_pll_10nm.c
+ delete mode 100644 drivers/gpu/drm/msm/dp/dp_pll_private.h
+
+Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
+Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+Cc: Vara Reddy <varar@codeaurora.org>
+Cc: Tanmay Shah <tanmay@codeaurora.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Manu Gautam <mgautam@codeaurora.org>
+Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Sean Paul <seanpaul@chromium.org>
+Cc: Rob Clark <robdclark@chromium.org>
+
+[1] https://lore.kernel.org/r/20200818051137.21478-1-tanmay@codeaurora.org
+[2] https://lore.kernel.org/r/20200818230900.29294-1-khsieh@codeaurora.org
+
+base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+prerequisite-patch-id: aa650e8353e003be0075deea0dee92a82e321432
+prerequisite-patch-id: aa08019ebd00b502b4b76337dcef12939b5ed27d
+prerequisite-patch-id: 87e6b1a10063ca350cacd64408024714599a14f4
+prerequisite-patch-id: ac467cb99ea60ee186ab9bbe47a3e4d9c13a1313
+prerequisite-patch-id: 48e1faa902cf53f64914f5a18e7a4296fa6a7bdd
+prerequisite-patch-id: 6b2fb441138a10db425c5302638ea99ca00bf81d
+-- 
+Sent by a computer, using git, on the internet
+
