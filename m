@@ -2,69 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D3E252CB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9343C252CC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgHZLqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:46:32 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49636 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729048AbgHZLpt (ORCPT
+        id S1729153AbgHZLre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:47:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49298 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728933AbgHZLr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:45:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04392;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U6vmqQL_1598442306;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U6vmqQL_1598442306)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Aug 2020 19:45:07 +0800
-Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH] mm: memcg: Fix memcg reclaim soft lockup
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <1598426822-93737-1-git-send-email-xlpang@linux.alibaba.com>
- <20200826081102.GM22869@dhcp22.suse.cz>
- <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
- <20200826110015.GO22869@dhcp22.suse.cz>
-From:   xunlei <xlpang@linux.alibaba.com>
-Message-ID: <5b22890d-190f-be1d-3be8-995765dbb957@linux.alibaba.com>
-Date:   Wed, 26 Aug 2020 19:45:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        Wed, 26 Aug 2020 07:47:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598442442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=owZflYvt8RopEJffCSctLRqiuBqMsYk/WFfZTFUGzek=;
+        b=Isc17wQJ0aO8lUcJJxbfC9/TfDnSPyx220facS71TNJGdCylhJJ9DhzMblfO26hhs3gfRF
+        1e9rGORLSz8xnytWVtuqcnHkxE4zLOCQNheCiPMWKkh+qlS0jF/hfwFPe4XzqFeYdFuXn4
+        zp372vHcowHetiq3BFn6EqiY/BOilCQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-7znGlChsMXybvdmZHQr8kg-1; Wed, 26 Aug 2020 07:47:20 -0400
+X-MC-Unique: 7znGlChsMXybvdmZHQr8kg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C22768030B4;
+        Wed, 26 Aug 2020 11:47:18 +0000 (UTC)
+Received: from krava (unknown [10.40.194.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5A9696F142;
+        Wed, 26 Aug 2020 11:47:15 +0000 (UTC)
+Date:   Wed, 26 Aug 2020 13:47:13 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Remi Bernon <rbernon@codeweavers.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jacek Caban <jacek@codeweavers.com>
+Subject: Re: [PATCH v3 1/3] perf dso: Use libbfd to read build_id and
+ .gnu_debuglink section
+Message-ID: <20200826114713.GD753783@krava>
+References: <20200821165238.1340315-1-rbernon@codeweavers.com>
 MIME-Version: 1.0
-In-Reply-To: <20200826110015.GO22869@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821165238.1340315-1-rbernon@codeweavers.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/26 下午7:00, Michal Hocko wrote:
-> On Wed 26-08-20 18:41:18, xunlei wrote:
->> On 2020/8/26 下午4:11, Michal Hocko wrote:
->>> On Wed 26-08-20 15:27:02, Xunlei Pang wrote:
->>>> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
->>>> the target memcg doesn't have any reclaimable memory.
->>>
->>> Do you have any scenario when this happens or is this some sort of a
->>> test case?
->>
->> It can happen on tiny guest scenarios.
+On Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon wrote:
+> Wine generates PE binaries for most of its modules and perf is unable
+> to parse these files to get build_id or .gnu_debuglink section.
 > 
-> OK, you made me more curious. If this is a tiny guest and this is a hard
-> limit reclaim path then we should trigger an oom killer which should
-> kill the offender and that in turn bail out from the try_charge lopp
-> (see should_force_charge). So how come this repeats enough in your setup
-> that it causes soft lockups?
+> Using libbfd when available, instead of libelf, makes it possible to
+> resolve debug file location regardless of the dso binary format.
+> 
+> Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Jacek Caban <jacek@codeweavers.com>
+> ---
+> 
+> v3: Rebase and small changes to PATCH 2/3 and and PATCH 3/3.
+
+all 3 patches look ok to me especially since I found out the new
+code for loading symbols is for non ELF objects only ;-)
+
+it'd be great if somebody with libbfd skills could review this,
+but for me it looks ok.. for patchset:
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
+> 
+>  tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 77 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> index 8cc4b0059fb0..f7432c4a4154 100644
+> --- a/tools/perf/util/symbol-elf.c
+> +++ b/tools/perf/util/symbol-elf.c
+> @@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
+>  #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
+>  #endif
+>  
+> +#ifdef HAVE_LIBBFD_SUPPORT
+> +#define PACKAGE 'perf'
+> +#include <bfd.h>
+> +#else
+>  #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
+>  extern char *cplus_demangle(const char *, int);
+>  
+> @@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
+>  {
+>  	return NULL;
+>  }
+> -#else
+> -#define PACKAGE 'perf'
+> -#include <bfd.h>
+> +#endif
+>  #endif
+>  #endif
+>  
+> @@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+>  	return err;
+>  }
+>  
+> +#ifdef HAVE_LIBBFD_SUPPORT
+> +
+> +int filename__read_build_id(const char *filename, void *bf, size_t size)
+> +{
+> +	int err = -1;
+> +	bfd *abfd;
+> +
+> +	abfd = bfd_openr(filename, NULL);
+> +	if (!abfd)
+> +		return -1;
+> +
+> +	if (!bfd_check_format(abfd, bfd_object)) {
+> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
+> +		goto out_close;
+> +	}
+> +
+> +	if (!abfd->build_id || abfd->build_id->size > size)
+> +		goto out_close;
+> +
+> +	memcpy(bf, abfd->build_id->data, abfd->build_id->size);
+> +	memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
+> +	err = abfd->build_id->size;
+> +
+> +out_close:
+> +	bfd_close(abfd);
+> +	return err;
+> +}
+> +
+> +#else
+> +
+>  int filename__read_build_id(const char *filename, void *bf, size_t size)
+>  {
+>  	int fd, err = -1;
+> @@ -557,6 +589,8 @@ int filename__read_build_id(const char *filename, void *bf, size_t size)
+>  	return err;
+>  }
+>  
+> +#endif
+> +
+>  int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
+>  {
+>  	int fd, err = -1;
+> @@ -608,6 +642,44 @@ int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
+>  	return err;
+>  }
+>  
+> +#ifdef HAVE_LIBBFD_SUPPORT
+> +
+> +int filename__read_debuglink(const char *filename, char *debuglink,
+> +			     size_t size)
+> +{
+> +	int err = -1;
+> +	asection *section;
+> +	bfd *abfd;
+> +
+> +	abfd = bfd_openr(filename, NULL);
+> +	if (!abfd)
+> +		return -1;
+> +
+> +	if (!bfd_check_format(abfd, bfd_object)) {
+> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
+> +		goto out_close;
+> +	}
+> +
+> +	section = bfd_get_section_by_name(abfd, ".gnu_debuglink");
+> +	if (!section)
+> +		goto out_close;
+> +
+> +	if (section->size > size)
+> +		goto out_close;
+> +
+> +	if (!bfd_get_section_contents(abfd, section, debuglink, 0,
+> +				      section->size))
+> +		goto out_close;
+> +
+> +	err = 0;
+> +
+> +out_close:
+> +	bfd_close(abfd);
+> +	return err;
+> +}
+> +
+> +#else
+> +
+>  int filename__read_debuglink(const char *filename, char *debuglink,
+>  			     size_t size)
+>  {
+> @@ -660,6 +732,8 @@ int filename__read_debuglink(const char *filename, char *debuglink,
+>  	return err;
+>  }
+>  
+> +#endif
+> +
+>  static int dso__swap_init(struct dso *dso, unsigned char eidata)
+>  {
+>  	static unsigned int const endian = 1;
+> -- 
+> 2.28.0
 > 
 
-    oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
-               get_order(nr_pages * PAGE_SIZE));
-    switch (oom_status) {
-    case OOM_SUCCESS:
-        nr_retries = MAX_RECLAIM_RETRIES;
-        goto retry;
-
-It retries here endlessly, because oom reaper has no cpu to schedule.
