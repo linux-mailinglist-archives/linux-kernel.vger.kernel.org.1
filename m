@@ -2,246 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67167252C6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89197252C66
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgHZL3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33862 "EHLO mail.kernel.org"
+        id S1728942AbgHZLYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:24:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728923AbgHZLWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:22:21 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728927AbgHZLXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:23:43 -0400
+Received: from localhost (p54b33436.dip0.t-ipconnect.de [84.179.52.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 576AF214F1;
-        Wed, 26 Aug 2020 11:22:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7694720786;
+        Wed, 26 Aug 2020 11:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598440939;
-        bh=YEAKEbQU1F2hSM6r+mcMaGYUF+R7NfLvAdEson/SMRc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l2ayK7m9jiYucVZ+crv4iqq1N05oAnMIb6WfV3MoLZW6TMQm9Zl35LrNL3mPnkWwv
-         2Ep5ea2KSm96DWbRRnvM5plU+a7sleePZlYMuVpFfXpTBGSyVVu9Vqtt+MjUYrrpuv
-         0Ip0hLGaJ2EhLQ+SbgcUvEsL/+6YSqXns0+TtBTA=
-Received: by mail-ot1-f54.google.com with SMTP id k2so1183662ots.4;
-        Wed, 26 Aug 2020 04:22:19 -0700 (PDT)
-X-Gm-Message-State: AOAM533aZl4Q4Cic9nlXqwe5rNzVY9le+uBoWNNxdqjDSFq9NNyfZyOs
-        fYCTPcgtgR1XkJ7+rS0ZDHjUMfgkgceS5/L52eM=
-X-Google-Smtp-Source: ABdhPJys2rIMwSofVFm4a2BI8pi1pvyn/VMXm27w7Ci8IQOX5rEjLSYLMc3nFymhYPXe4pxNNATmfdg+rkL09qsm76I=
-X-Received: by 2002:a9d:774d:: with SMTP id t13mr9270988otl.108.1598440938462;
- Wed, 26 Aug 2020 04:22:18 -0700 (PDT)
+        s=default; t=1598441009;
+        bh=XjWiltlvDLTSBB6KiZZ8gzZ9+KLlp3UZ1iL481kqZXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b4bV6T1XD1TxGTE4F0MhG2SNkFCwZPiSdpvziN65N5AMejO6NvAsROqZSUW4/O8wq
+         Jme7HlaZ7p1o32w6L/AKgC207JjlbwCw7oo69WMRDjIYc1tH29cTdXf79Ja8nRRDU/
+         kjiAK3gXhgIvuCQ/r993ie/yAdvqAZc4Gz85UpiM=
+Date:   Wed, 26 Aug 2020 13:23:26 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] i2c: consider devices with of_match_table during i2c
+ device probing
+Message-ID: <20200826112326.GC1081@ninjato>
+References: <20200826042938.3259-1-sergey.senozhatsky@gmail.com>
+ <20200826050851.GA1081@ninjato>
+ <20200826052544.GA500@jagdpanzerIV.localdomain>
+ <20200826095356.GG1891694@smile.fi.intel.com>
+ <20200826095617.GH1891694@smile.fi.intel.com>
+ <20200826102411.GC8849@jagdpanzerIV.localdomain>
+ <20200826103807.GD8849@jagdpanzerIV.localdomain>
+ <20200826105426.GJ1891694@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20200819222425.30721-1-atish.patra@wdc.com> <mhng-e74548a1-7be6-4cc1-a47b-917e0a02dc68@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-e74548a1-7be6-4cc1-a47b-917e0a02dc68@palmerdabbelt-glaptop1>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 26 Aug 2020 13:22:07 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFstJ-hh=+HyNMA_E8eLWZFobrGBcFKFf13OgrHiTce8g@mail.gmail.com>
-Message-ID: <CAMj1kXFstJ-hh=+HyNMA_E8eLWZFobrGBcFKFf13OgrHiTce8g@mail.gmail.com>
-Subject: Re: [PATCH v6 0/9] Add UEFI support for RISC-V
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Atish Patra <Atish.Patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Greentime Hu <greentime.hu@sifive.com>, hca@linux.ibm.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Steven Price <steven.price@arm.com>,
-        Waiman Long <longman@redhat.com>, Zong Li <zong.li@sifive.com>,
-        Daniel Schaefer <daniel.schaefer@hpe.com>,
-        Abner Chang <abner.chang@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FsscpQKzF/jJk6ya"
+Content-Disposition: inline
+In-Reply-To: <20200826105426.GJ1891694@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020 at 20:04, Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Wed, 19 Aug 2020 15:24:16 PDT (-0700), Atish Patra wrote:
-> > This series adds UEFI support for RISC-V.
-> >
-> > Linux kernel: v5.9-rc1
-> > U-Boot: v2020.07
-> > OpenSBI: master
-> >
-> > Patch 1-3 are generic riscv feature addition required for UEFI support.
-> > Patch 4-7 adds the efi stub support for RISC-V which was reviewed few months back.
-> > https://www.spinics.net/lists/linux-efi/msg19144.html
-> > Patch 8 just renames arm-init code so that it can be used across different
-> > architectures.
-> > Patch 9 adds the runtime services for RISC-V.
-> >
-> > The working set of patches can also be found in following git repo.
-> > https://github.com/atishp04/linux/tree/uefi_riscv_5.10_v6
-> >
-> > The patches have been verified on following platforms:
-> > 1. Qemu (both RV32 & RV64) for the following bootflow
-> >    OpenSBI->U-Boot->Linux
-> >    EDK2->Linux
-> > 2. HiFive unleashed using (RV64) for the following bootflow
-> >    OpenSBI->U-Boot->Linux
-> >    EDK2->Linux
-> >
-> > Thanks Abner & Daniel for all work done for EDK2.
-> > The EDK2 instructions are available here.
-> > https://github.com/JohnAZoidberg/riscv-edk2-docker/
-> >
-> > Note:
-> > 1. Currently, EDK2 RISC-V port doesn't support OVMF package. That's why
-> > EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER should be enabled to load initrd via
-> > commandline until OVMF patches are available.
-> >
-> > 2. For RV32, maximum allocated memory should be 1G as RISC-V kernel can not map
-> > beyond 1G of physical memory for RV32.
-> >
-> > 3. Runtime services have been verified with fwts on EDK2.
-> >
-> > ***********************************************************************
-> > [root@fedora-riscv ~]# fwts uefirtvariable
-> > Running 1 tests, results appended to results.log
-> > Test: UEFI Runtime service variable interface tests.
-> >   Test UEFI RT service get variable interface.            1 passed
-> >   Test UEFI RT service get next variable name interface.  4 passed
-> >   Test UEFI RT service set variable interface.            7 passed, 1 warning
-> >   Test UEFI RT service query variable info interface.     1 passed
-> >   Test UEFI RT service variable interface stress test.    2 passed
-> >   Test UEFI RT service set variable interface stress t..  4 passed
-> >   Test UEFI RT service query variable info interface s..  1 passed
-> >   Test UEFI RT service get variable interface, invalid..  5 passed
-> >   Test UEFI RT variable services supported status.        1 skipped
-> >
-> > Test           |Pass |Fail |Abort|Warn |Skip |Info |
-> > uefirtvariable |   25|     |     |    1|    1|     |
-> > Total:         |   25|    0|    0|    1|    1|    0|
-> >
-> > ***********************************************************************
-> >
-> > Changes from v5->v6:
-> > 1. Fixed the static declaration for pt_ops.
-> > 2. Added Reviewed/Acked-by.
-> >
-> > Changes from v4->v5:
-> > 1. Late mappings allocations are now done through function pointers.
-> > 2. EFI run time services are verified using full linux boot and fwts using EDK2.
-> >
-> > Changes from v3->v4:
-> > 1. Used pgd mapping to avoid copying DT to bss.
-> >
-> > Changes from v2->v3:
-> > 1. Fixed few bugs in run time services page table mapping.
-> > 2. Dropped patch 1 as it is already taken into efi-tree.
-> > 3. Sent few generic mmu fixes as a separate series to ease the merge conflicts.
-> >
-> > Changes from v1->v2:
-> > 1. Removed patch 1 as it is already taken into efi-tree.
-> > 2. Fixed compilation issues with patch 9.
-> > 3. Moved few function prototype declaration to header file to keep kbuild happy.
-> >
-> > Changes from previous version:
-> > 1. Added full ioremap support.
-> > 2. Added efi runtime services support.
-> > 3. Fixes mm issues
-> >
-> > Anup Patel (1):
-> > RISC-V: Move DT mapping outof fixmap
-> >
-> > Atish Patra (8):
-> > RISC-V: Add early ioremap support
-> > RISC-V: Implement late mapping page table allocation functions
-> > include: pe.h: Add RISC-V related PE definition
-> > RISC-V: Add PE/COFF header for EFI stub
-> > RISC-V: Add EFI stub support.
-> > efi: Rename arm-init to efi-init common for all arch
-> > RISC-V: Add EFI runtime services
-> > RISC-V: Add page table dump support for uefi
-> >
-> > arch/riscv/Kconfig                            |  25 +++
-> > arch/riscv/Makefile                           |   1 +
-> > arch/riscv/configs/defconfig                  |   1 +
-> > arch/riscv/include/asm/Kbuild                 |   1 +
-> > arch/riscv/include/asm/efi.h                  |  56 +++++
-> > arch/riscv/include/asm/fixmap.h               |  16 +-
-> > arch/riscv/include/asm/io.h                   |   1 +
-> > arch/riscv/include/asm/mmu.h                  |   2 +
-> > arch/riscv/include/asm/pgtable.h              |   5 +
-> > arch/riscv/include/asm/sections.h             |  13 ++
-> > arch/riscv/kernel/Makefile                    |   5 +
-> > arch/riscv/kernel/efi-header.S                | 104 ++++++++++
-> > arch/riscv/kernel/efi.c                       | 105 ++++++++++
-> > arch/riscv/kernel/head.S                      |  17 +-
-> > arch/riscv/kernel/head.h                      |   2 -
-> > arch/riscv/kernel/image-vars.h                |  51 +++++
-> > arch/riscv/kernel/setup.c                     |  17 +-
-> > arch/riscv/kernel/vmlinux.lds.S               |  22 +-
-> > arch/riscv/mm/init.c                          | 191 +++++++++++++-----
-> > arch/riscv/mm/ptdump.c                        |  48 ++++-
-> > drivers/firmware/efi/Kconfig                  |   3 +-
-> > drivers/firmware/efi/Makefile                 |   4 +-
-> > .../firmware/efi/{arm-init.c => efi-init.c}   |   0
-> > drivers/firmware/efi/libstub/Makefile         |  10 +
-> > drivers/firmware/efi/libstub/efi-stub.c       |  11 +-
-> > drivers/firmware/efi/libstub/riscv-stub.c     | 110 ++++++++++
-> > drivers/firmware/efi/riscv-runtime.c          | 143 +++++++++++++
-> > include/linux/pe.h                            |   3 +
-> > 28 files changed, 900 insertions(+), 67 deletions(-)
-> > create mode 100644 arch/riscv/include/asm/efi.h
-> > create mode 100644 arch/riscv/include/asm/sections.h
-> > create mode 100644 arch/riscv/kernel/efi-header.S
-> > create mode 100644 arch/riscv/kernel/efi.c
-> > create mode 100644 arch/riscv/kernel/image-vars.h
-> > rename drivers/firmware/efi/{arm-init.c => efi-init.c} (100%)
-> > create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
-> > create mode 100644 drivers/firmware/efi/riscv-runtime.c
->
-> I've put these on for-next.  It's still pretty early in the cycle so there's
-> some time to fix stuff up, but it looks like we've pretty much come to
-> consensus on this.
->
 
-I requested the following when acking these changes:
+--FsscpQKzF/jJk6ya
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"""
-Note to the maintainer: to the extent possible, please put the patches
-in this series that touch drivers/firmware/efi on a separate branch
-based on v5.9-rc1, and merge that into your for-v5.10 branch at the
-appropriate spot. I don't have anything queued in the EFI tree at the
-moment, and so these changes can happily go through the riscv tree, as
-long as I am not forced to merge a bunch of unrelated changes on the
-off chance that something does come up.
-"""
+On Wed, Aug 26, 2020 at 01:54:26PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 26, 2020 at 07:38:07PM +0900, Sergey Senozhatsky wrote:
+> > On (20/08/26 19:24), Sergey Senozhatsky wrote:
+> > > > But then the question is why we have this code in the ->probe() at =
+all?
+> > > > ->match() is run before probe by bus core, no?
+> > >=20
+> > > That's a good question.
+> >=20
+> > Everything seem to be working OK on my test board with this patch:
+>=20
+> I'm okay with it, but I want to hear Wolfram about this.
+> If it gets a green light to go, feel free to add
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Something has come up, and given that the patch
+Sergey,
 
-efi: Rename arm-init to efi-init common for all arch
+Can you send a proper patch (with patch description) and me and Jean
+Delvare <jdelvare@suse.de> in the To: field?
 
-lives on your for-next branch after a bunch of RISCV changes, I cannot
-merge anything for EFI without pulling all of that into the EFI tree
-as well.
+The origins of this matching code are pretty old and Jean is more
+experienced there than I am. Nonetheless, I will check it, too, of
+course.
 
-Also, it is not clear to me whether the current ordering does not
-break bisect, given that efi-init.o is referenced in patch #8 but is
-not created until patch #9
+Thanks for the work!
 
-So could you please do the following:
+>=20
+> > ---
+> >=20
+> > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> > index 5ec082e2039d..77eea5c0bc71 100644
+> > --- a/drivers/i2c/i2c-core-base.c
+> > +++ b/drivers/i2c/i2c-core-base.c
+> > @@ -475,17 +475,6 @@ static int i2c_device_probe(struct device *dev)
+> > =20
+> >  	driver =3D to_i2c_driver(dev->driver);
+> > =20
+> > -	/*
+> > -	 * An I2C ID table is not mandatory, if and only if, a suitable OF
+> > -	 * or ACPI ID table is supplied for the probing device.
+> > -	 */
+> > -	if (!driver->id_table &&
+> > -	    !acpi_driver_match_device(dev, dev->driver) &&
+> > -	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
+> > -		status =3D -ENODEV;
+> > -		goto put_sync_adapter;
+> > -	}
+> > -
+> >  	if (client->flags & I2C_CLIENT_WAKE) {
+> >  		int wakeirq;
+> > =20
+>=20
+> --=20
+> With Best Regards,
+> Andy Shevchenko
+>=20
+>=20
 
-- drop 'efi: Rename arm-init to efi-init common for all arch' from the
-top of your for-next branch
-- create a separate topic branch that carries the dropped patch
-- recreate the for-next branch so the topic branch is merged into it
-at the right spot (i.e., before patch #8)
+--FsscpQKzF/jJk6ya
+Content-Type: application/pgp-signature; name="signature.asc"
 
-That way, I can merge your topic branch into the EFI tree as well, and
-apply the other EFI changes on top of it.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Ard.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9GRioACgkQFA3kzBSg
+KbZy4RAAn6aFpd7s1gWp9gMH30jYS9LbwKQ3auZA2AtR+LZgzudzdlAjVeQ4HKlk
+XU1KRp5lw5HR5FdT8Ggsy2+89L/je5AkGr3ijJfbE6XNsBhPNQDrxnf0ljDeX/cA
+yBMCpqAPSyrl16KUXK42Fz9XaLgQxajbF0gtsmunLX2FpqE8pE4+SNMNTJnFJyNN
+280p/hxGja8qmONcDJFZlxaYP7aHwpMUy/YcOTFWgGBwyXzJFC+JU1qquDfQ90G+
+7v8V5eDfQJZaYLL2iFgrQmfBDMlp2kqPZxJrN5TmWsuHsz2lrsTnhPW5xf0CmiPk
+YZh1z+X7VVulc8vvOXuh1njSJkBth1U2e51GQzQdIVVTe7Is8DR6EDhiWymXQcZX
+L/iF6XkI7wgfOvbWUY5xitcXdTOVk8Dw6HKBFKbUa85Vmbj+yx8J9/0kbVsQiHK3
+2jGtON2FrjOrtG6DMga2xDH+SLp84WdKFdfICWBk+v7sDa8BUGgL9uFWROe8zr5/
+49Adgj2VHEc6oDgq83SWJkfbpJcEw7cvH6+YLZjINM/KaWkO96cBuoSOCHw6Pah9
+Sb6q98gZf/XkU2AHeBR8E4jbb1fx8z3mD0AupOoRVKtoBgjJYxODG0Nbf4LczlCt
+SiGBItQ6pdTPN4jRtvXOr2mCtg2rQ09PNoFMwlH6f35r0wJ+G5g=
+=dgCM
+-----END PGP SIGNATURE-----
+
+--FsscpQKzF/jJk6ya--
