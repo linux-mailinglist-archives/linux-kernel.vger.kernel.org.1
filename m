@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A541F252842
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0553A252822
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 09:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgHZHQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 03:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbgHZHQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:16:15 -0400
-X-Greylist: delayed 744 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Aug 2020 00:16:15 PDT
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B269C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 00:16:14 -0700 (PDT)
-Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 07Q73N8G024392
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Wed, 26 Aug 2020 09:03:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1598425404; bh=JSuM4dKUM2nfywxTFJ0hWSXUwcdiL5ludU2CopjahqY=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=eUJFmJDSPFK1jgdbN2iYYyLcENd+E373WgO9hlVhHhEsORapOdeEamKR3VaMY2siS
-         HyLzxCYK53OT5U+fMuRBBrChG8rEwz+Q5s3cOPgkW+esFa+ViA5bHdbZnULxuXh4aa
-         hivXqjsBwKJXqBHICDBq6Bsbwk5mtmXarUugplrM=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
-        (envelope-from <bjorn@mork.no>)
-        id 1kApSt-0001tZ-4K; Wed, 26 Aug 2020 09:03:23 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <masahiroy@kernel.org>,
-        <miguel@det.uvigo.gal>, <linux-usb@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: cdc_ncm: Fix build error
-Organization: m
-References: <20200826065231.14344-1-yuehaibing@huawei.com>
-Date:   Wed, 26 Aug 2020 09:03:23 +0200
-In-Reply-To: <20200826065231.14344-1-yuehaibing@huawei.com>
-        (yuehaibing@huawei.com's message of "Wed, 26 Aug 2020 14:52:31 +0800")
-Message-ID: <87k0xl7utg.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
+        id S1726823AbgHZHEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 03:04:14 -0400
+Received: from mail-eopbgr50110.outbound.protection.outlook.com ([40.107.5.110]:65195
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726751AbgHZHEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 03:04:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K26D+is/YdbWnb1Pi7vtsmBdmjlaTbumKYuJjbhg3unxopX6RxwcacfkH1mICI6W4X3R5cdqYOL502yYqzzNroqKriGEeC5gM3hmR27LGHaB86dUwr7Boipy2Qh0YnvPtTwdtzwR7nsZRqLrfP6mLETOf6AtxDIF9SvLN3o1zeQkhqCXyCM67szUfx+q+O9WMxhAhoFN1dcPKzxdF2XSVTleLw2C04+D9szslk7ekh9BhiXaw+naQNE6NzH7IxUjEo2pY2FAMlOFX2dw4oMh6Xmso5aPY72Pnp4CFth5HBZYk6NYHaxDCcL468m5PYktB0etqKH/IdWqgRUKor176A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2MFGdBTVaSxo/0snqsSPGuQHI5k6d6ekW5sdAyUe+ZM=;
+ b=EMMGUANTPIYriGi11hgDswn/ClNSLLTSHi8MPCQmViyMPwcRLdCZZIUUROFD8e5nPqZJ7y6PWRxhMbldGZMhl+zUjsjpf1oFvhFXN8D1nMKlaMBfi/p+3M47bTBPyJk57fTQJy/MBQQkwHIMWPylheMHY/VoFbpEu9ZQ7PKbypkrFAO71soHP8YlstN1uQupF1t50rR1LKgTf0L/TRbPYEU9lhadgAZvrApVNzJN4vs4Y++lPmsrzmK+qTvVAQrO8X59N6njCI/CwMQgyT/7dOLXxHBf7TPZzJmgXBqNq+uNVOsGD3CIygi3zEUSEgpbxmu7lKNldwOFd+Y6exEPYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2MFGdBTVaSxo/0snqsSPGuQHI5k6d6ekW5sdAyUe+ZM=;
+ b=Z9haUe+k0481/oTlMmFdTv7RBpFEScnEtLr5ggE6/llGAT4aDRlLKU8qRtO4fdR6EfuGcK18/ki6ZEXZJotwrkz9ImeHj1jRrhT4mRiiTaBMlqqMc9mj1uOBwoyjhQMxFR4Mmdtmj6TXDFDoN3noe/UhfJIJwULcjkviSX8QJo8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from VE1PR02MB5487.eurprd02.prod.outlook.com (2603:10a6:803:115::17)
+ by VI1PR02MB5358.eurprd02.prod.outlook.com (2603:10a6:803:92::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Wed, 26 Aug
+ 2020 07:04:10 +0000
+Received: from VE1PR02MB5487.eurprd02.prod.outlook.com
+ ([fe80::808c:ab48:64b2:ecf0]) by VE1PR02MB5487.eurprd02.prod.outlook.com
+ ([fe80::808c:ab48:64b2:ecf0%3]) with mapi id 15.20.3326.019; Wed, 26 Aug 2020
+ 07:04:10 +0000
+Subject: Re: [PATCH] iio: dpot-dac: fix code comment in dpot_dac_read_raw()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200826000844.GA16807@embeddedor>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <3fb79fa8-e86b-111b-a4a7-5da767d40b52@axentia.se>
+Date:   Wed, 26 Aug 2020 09:04:05 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200826000844.GA16807@embeddedor>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.4 at canardo
-X-Virus-Status: Clean
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HE1PR05CA0207.eurprd05.prod.outlook.com
+ (2603:10a6:3:f9::31) To VE1PR02MB5487.eurprd02.prod.outlook.com
+ (2603:10a6:803:115::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.226.217.78) by HE1PR05CA0207.eurprd05.prod.outlook.com (2603:10a6:3:f9::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 07:04:09 +0000
+X-Originating-IP: [85.226.217.78]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a24b5f59-8530-4cdb-ec68-08d8498e3b06
+X-MS-TrafficTypeDiagnostic: VI1PR02MB5358:
+X-Microsoft-Antispam-PRVS: <VI1PR02MB53582411C60E2E8423E99703BC540@VI1PR02MB5358.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FHFDPaNbFRZJ3QqohMXisMMq/4DWnFlD6IgxtRVsGPoQluYfFF6EZDHQyi3293mlGLIn4Kjeb8ethAWOO37pQDWq8x535KbtAdHHP18nTcw20Pu6qUoAxrcQgRoZX4KHrvNfAYxFHPFYLOaSGv5IwsNwNagdT1XWoYE9CvhsTcoStVsmyXtVjewep4ujJORr4PgdsYvOkx5QtxBcNM04d8vUoADyKDmpgee7D2/qmLgGDdm9KCG9GZRCAYMSJYls6/ThTYbiJu+e38SCOXPFELCuHinNwIsQPva7AyjEyxCzxi9gf4pV/StXNu6iprYfNA0kZ8m1Qgq08XSi+IvTbO8g7N2+l5rGfiC7PMU1C26gkcFLn2Ho5HRhfGEOxyaV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR02MB5487.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39830400003)(346002)(396003)(376002)(2616005)(110136005)(66556008)(31696002)(52116002)(66946007)(4744005)(16576012)(4326008)(31686004)(478600001)(86362001)(6486002)(36916002)(8936002)(6666004)(186003)(8676002)(53546011)(956004)(5660300002)(66476007)(26005)(36756003)(2906002)(16526019)(316002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: fpr38LN0ccT5IhFwYU1JWqI1c1SyPt7L/y97d9Sf2YZvcrIgBSt1WAf3ozsYxfdXefz9lawKrVcqS2BWe5IjKegHK3S1rIF7NgNyNRPfZ3r1NtrEfZbpY6riEtyek9s6ZE4m70JuLU7RmeyO7Pr1esJs60NxE46MgcVNQAKSC61vUljX3UeU+WRs9kqJqmUfwHInpgjtk52/hbmvvBPJ9mcTHxYAFiJCi5+BDxb8ISwhwsKnbgrjjKr0rS0+TTdCRw2+ylFqLB61jx3KMKIIAYrnYQvGrqnKUVAvKdqCa4rD/mO+dNaECX9h1IUMjF58x1EXk0pOhsgwQiIS3Le/61z9sa9bWY8Ih+9pDaCMcAYYAWnQELWMxX+Hxem2XxiLSkwvjokFpNYSVjNDSptasUPTPCl1NaDqtL2xEioyuJvRp2TFT+snQQTL57HV+MpmYV7LZ4aIWQLAK1f3GMqxr27WNA0HpRBM6QrNorAxd9OFgrSwsWHM8LUvyS6gpQSZzDYHJmjYlI4hiUdxBITIqoS1Fb01KE2VmhzS3YseuReLPv0FtAJy45rUK0HZpWSgJBxRKSF7aSa/ddwpptDO9amM+m5NawUlLeZtFU3KiOS4+CJSHmIQg0u4Fhan+4akaiwuowCdrWI2czBokE8yWA==
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: a24b5f59-8530-4cdb-ec68-08d8498e3b06
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR02MB5487.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 07:04:10.0696
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iJ24Kg+aCEWDTnxS9uVUN6KTeFcVyhD8iKXH/f8UxoNZ4qP/SRMcfbWK+HNtdvYD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR02MB5358
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YueHaibing <yuehaibing@huawei.com> writes:
+Hi!
 
-> If USB_NET_CDC_NCM is y and USB_NET_CDCETHER is m, build fails:
->
-> drivers/net/usb/cdc_ncm.o:(.rodata+0x1d8): undefined reference to `usbnet=
-_cdc_update_filter'
->
-> Select USB_NET_CDCETHER for USB_NET_CDC_NCM to fix this.
+On 2020-08-26 02:08, Gustavo A. R. Silva wrote:
+> After the replacement of the /* fall through */ comment with the
+> fallthrough pseudo-keyword macro, the natural reading of a code
+> comment was broken.
+> 
+> Fix the natural reading of such a comment and make it intelligible.
+> 
+> Reported-by: Peter Rosin <peda@axentia.se>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Ouch.  For some reason I assumed that was always selected with usbnet.
-Thanks for fixing.
+Excellent, thanks for the quick turnaround!
 
+And just to be explicit, this fix is for 5.9.
 
+Acked-by: Peter Rosin <peda@axentia.se>
 
-Bj=C3=B8rn
+Cheers,
+Peter
