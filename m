@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA652253501
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1768525350B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgHZQfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:35:10 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31156 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726772AbgHZQe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:34:59 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QGUOTL026509;
-        Wed, 26 Aug 2020 09:34:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=H9QKRsn3Hoq2NW5w/2vX6w6Cdab5FAgIDXygM4SSaM4=;
- b=YypZ4VZY5KIiioCIigwXPjpWp+cFlIem+jvkWUnsne0l+0Ysg25KsrRKroFDTUXQVLwt
- PleAzdORW+g5IexUwvGkaabvhcp8J0QW3jS+7tbACJuNxVH2r6Mo0zJqcHu5mLdAUGpl
- c+9lKf9NSCKjy2wSIurZPbiWF3ySU5HY20Nj/EuH49kHtMfK912RncTmy8byBq3WBbig
- jp8wEmSWbQIj+Iv+q8OrdHfTBXoX6YeE22Dh5iDIyuJNWg2xtB2BtqL3WI+CwCj30b8g
- fDIJmvfTcr80x2NjwNIeukF+/JYcfmrU21ccs1OyYeygKiD945pTU2Z/fKBm9JXOVph2 pA== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3332vn1md5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 09:34:56 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 Aug
- 2020 09:34:54 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 26 Aug 2020 09:34:54 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id 620893F703F;
-        Wed, 26 Aug 2020 09:34:54 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 07QGYrZa029186;
-        Wed, 26 Aug 2020 09:34:53 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Wed, 26 Aug 2020 09:34:53 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Alex Dewar <alex.dewar90@gmail.com>
-CC:     Nilesh Javali <njavali@marvell.com>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: qla2xxx: Remove unnecessary call to memset
-In-Reply-To: <c6f52893-6fa4-f5f8-42a8-9a2482f16c45@gmail.com>
-Message-ID: <alpine.LRH.2.21.9999.2008260934420.31539@irv1user01.caveonetworks.com>
-References: <20200820185149.932178-1-alex.dewar90@gmail.com>
- <c6f52893-6fa4-f5f8-42a8-9a2482f16c45@gmail.com>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        id S1727049AbgHZQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:37:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726772AbgHZQhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:37:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D666206FA;
+        Wed, 26 Aug 2020 16:37:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598459852;
+        bh=pBc8gM5KOX/QRk7tf+c7+MrN051X6wSwRL8XjLMwkpA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZFZ8/xASQAxvIcEud6yRT7vUyq4aWJI1IWNLpTVMDlYbIMy6fjnvfBTeXUdx//xYw
+         V2YdkX+e4/z0cYtfxi5MXYXFYyWfVsAecZgNKOVo0AIyKG7Dldiu6GcpX4kvJA4pu6
+         JAGJW1Ier1tVZvfblXe2e3pC60/5zBEt6idCvOl4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kAyQU-006uP9-GY; Wed, 26 Aug 2020 17:37:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_10:2020-08-26,2020-08-26 signatures=0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 Aug 2020 17:37:30 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 5/9] fsl-msi: Provide default retrigger callback
+In-Reply-To: <jhj7dtlejxc.mognet@arm.com>
+References: <20200824102317.1038259-1-maz@kernel.org>
+ <20200824102317.1038259-6-maz@kernel.org> <jhj7dtlejxc.mognet@arm.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <70107b944534c6a0eeff83e43b05865e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, gregory.clement@bootlin.com, jason@lakedaemon.net, laurentiu.tudor@nxp.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, 2:42pm, Alex Dewar wrote:
+Hi Valentin,
 
+On 2020-08-26 12:16, Valentin Schneider wrote:
+> Hi Marc,
 > 
-> On 2020-08-20 19:51, Alex Dewar wrote:
-> > In qla25xx_set_els_cmds_supported(), a call is made to
-> > dma_alloc_coherent() followed by zeroing the memory with memset. This is
-> > unnecessary as dma_alloc_coherent() already zeros memory. Remove.
-> > 
-> > Issue identified with Coccinelle.
-> > 
-> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> Gentle ping?
-> > ---
-> >   drivers/scsi/qla2xxx/qla_mbx.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-> > index 226f1428d3e5..e00f604bbf7a 100644
-> > --- a/drivers/scsi/qla2xxx/qla_mbx.c
-> > +++ b/drivers/scsi/qla2xxx/qla_mbx.c
-> > @@ -4925,8 +4925,6 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
-> >   		return QLA_MEMORY_ALLOC_FAILED;
-> >   	}
-> >   -	memset(els_cmd_map, 0, ELS_CMD_MAP_SIZE);
-> > -
-> >   	/* List of Purex ELS */
-> >   	cmd_opcode[0] = ELS_FPIN;
-> >   	cmd_opcode[1] = ELS_RDP;
+> Many thanks for picking this up!
+> Below's the only comment I have, the rest LGTM.
+> 
+> On 24/08/20 11:23, Marc Zyngier wrote:
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  drivers/bus/fsl-mc/fsl-mc-msi.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>> 
+>> diff --git a/drivers/bus/fsl-mc/fsl-mc-msi.c 
+>> b/drivers/bus/fsl-mc/fsl-mc-msi.c
+>> index 8edadf05cbb7..5306ba7dea3e 100644
+>> --- a/drivers/bus/fsl-mc/fsl-mc-msi.c
+>> +++ b/drivers/bus/fsl-mc/fsl-mc-msi.c
+>> @@ -144,6 +144,8 @@ static void fsl_mc_msi_update_chip_ops(struct 
+>> msi_domain_info *info)
+>>        */
+>>       if (!chip->irq_write_msi_msg)
+>>               chip->irq_write_msi_msg = fsl_mc_msi_write_msg;
+>> +	if (!chip->irq_retrigger)
+>> +		chip->irq_retrigger = irq_chip_retrigger_hierarchy;
+> 
+> AFAICT the closest generic hook we could use here is
+> 
+>   msi_create_irq_domain() -> msi_domain_update_chip_ops()
+> 
+> which happens just below the fsl-specific ops update.
 > 
 > 
+> However, placing a default .irq_retrigger callback in there would 
+> affect any
+> and all MSI domain. IOW that would cover PCI and platform MSIs (covered 
+> by
+> separate patches in this series), but also some x86 ("dmar" & "hpet") 
+> and
+> TI thingies.
+> 
+> I can't tell right now how bad of an idea it is, but I figured I'd 
+> throw
+> this out there.
 
-Looks good.
+The problem with this approach is that it requires the resend path to be
+cooperative and actually check for more than the top-level irq_data.
+Otherwise you'd never actually trigger the HW resend if it is below
+the top level.
 
-Regards,
--Arun
+But I like the idea though. Something like this should do the trick, and
+is admittedly a bug fix:
+
+diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
+index c48ce19a257f..d11c729f9679 100644
+--- a/kernel/irq/resend.c
++++ b/kernel/irq/resend.c
+@@ -86,6 +86,18 @@ static int irq_sw_resend(struct irq_desc *desc)
+  }
+  #endif
+
++static int try_retrigger(struct irq_desc *desc)
++{
++#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
++	return irq_chip_retrigger_hierarchy(&desc->irq_data);
++#else
++	if (desc->irq_data.chip->irq_retrigger)
++		return desc->irq_data.chip->irq_retrigger(&desc->irq_data);
++
++	return 0;
++#endif
++}
++
+  /*
+   * IRQ resend
+   *
+@@ -113,8 +125,7 @@ int check_irq_resend(struct irq_desc *desc, bool 
+inject)
+
+  	desc->istate &= ~IRQS_PENDING;
+
+-	if (!desc->irq_data.chip->irq_retrigger ||
+-	    !desc->irq_data.chip->irq_retrigger(&desc->irq_data))
++	if (!try_retrigger(desc))
+  		err = irq_sw_resend(desc);
+
+  	/* If the retrigger was successfull, mark it with the REPLAY bit */
+
+In general, introducing a irq_chip_retrigger_hierarchy() call
+shouldn't be problematic as long as we don't overwrite an existing
+callback.
+
+I'll have a look at respining the series with that in mind.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
