@@ -2,81 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DED252C70
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C97252C77
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgHZLaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:30:16 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:43880 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728937AbgHZL3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:29:23 -0400
-Received: by mail-oi1-f194.google.com with SMTP id j21so1178847oii.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:29:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1FLY0eW4GFuoR8mTu1lJlREb+UEGmC42E+5Rra5UznE=;
-        b=XU0hHOssQQ1fWDN//FfT7reueVj+pS4F1dFxIdtsvGFou3Ud5xpIx17zuyVUCVFB94
-         x3DJDEt8+noMnYXiDBiX7sQyrrYZkIQiTRMBSZm7Lsfhy47AWJBnVkGPUsZWEyILOb73
-         gnrls34xQ9zunoUHV8rRfwApALE4iJwa7gD7zEIC6MKaM9L4KOQ/rendmMeDmTkYaXbd
-         tE6TycpClPloiIJl8J+thvixNf8TMHcZNkirteuYUMqe+CuqokAE0Dy7QJ9+fwumYhXf
-         QpD8GKP+GYgBYdspBmVStgHK1jTn7wj8quuWMkan1UfiTD8GagtagVgsyjnC/e2Qv2WF
-         D74w==
-X-Gm-Message-State: AOAM530QzcvyciHgDxZOjw7U327f+UuRZDqkRV1jZoZIJHpCMl5KgKkZ
-        mBW2jWfRV6jakKOI6vOnntla5JjK8I0clWrdqcM=
-X-Google-Smtp-Source: ABdhPJx7jX+qSl6hSkIJjjuVHvApPexAU/jsCaAJ1qdjT3qf5oCZgY38PO9ALloX5AEO8e8WFaJLeRawU/yp8PkK28E=
-X-Received: by 2002:aca:b742:: with SMTP id h63mr3423281oif.148.1598441339761;
- Wed, 26 Aug 2020 04:28:59 -0700 (PDT)
+        id S1728993AbgHZLbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:31:20 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34969 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728955AbgHZL3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:29:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kAtbM-0004Yl-00; Wed, 26 Aug 2020 13:28:24 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 20EB8C0DE4; Wed, 26 Aug 2020 13:12:35 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 13:12:35 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] MIPS: SGI-IP27: No need for kmalloc.h
+Message-ID: <20200826111235.GA7046@alpha.franken.de>
+References: <20200825090907.66681-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-References: <20200713072429.6182-1-geert@linux-m68k.org>
-In-Reply-To: <20200713072429.6182-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 13:28:48 +0200
-Message-ID: <CAMuHMdXWfLa8dCZPF6jSQYuowGBR4dJnS1hx_rN1kDpPFZnVGg@mail.gmail.com>
-Subject: Re: [PATCH] zorro: Fix address space collision message with RAM
- expansion boards
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Stefan Reinauer <stefan.k.reinauer@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825090907.66681-1-tsbogend@alpha.franken.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> When booting Linux on an Amiga with BigRAMPlus Zorro expansion board:
->
->     zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
->
-> This happens because the address space occupied by the BigRAMPlus Zorro
-> device is already in use, as it is part of system RAM.  Hence the
-> message is harmless.
->
-> Zorro memory expansion boards have the ERTF_MEMLIST flag set, which
-> tells AmigaOS to link the board's RAM into the free memory list.  While
-> we could skip registering the board resource if this flag is set, that
-> may cause issues with Zorro II RAM excluded in a memfile.
->
-> Hence fix the issue by just ignoring the error if ERTF_MEMLIST is set.
->
-> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Tue, Aug 25, 2020 at 11:09:04AM +0200, Thomas Bogendoerfer wrote:
+> SG -IP27 is always cache coherent so we can use generic kmalloc.h and
+> remove the ip27 specific one.
+> 
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  arch/mips/include/asm/mach-ip27/kmalloc.h | 8 --------
+>  1 file changed, 8 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-ip27/kmalloc.h
 
-Applied, and queued in the m68k for-v5.10 branch.
+patches 1-4 applied to mips-next.
 
-Gr{oetje,eeting}s,
+Thomas.
 
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
