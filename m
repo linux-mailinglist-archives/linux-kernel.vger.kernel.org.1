@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BB1252A59
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A81252A27
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgHZJiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S1728410AbgHZJfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728338AbgHZJer (ORCPT
+        with ESMTP id S1728344AbgHZJew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:34:47 -0400
+        Wed, 26 Aug 2020 05:34:52 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A1EC061797
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:26 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id s13so1077575wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E88DC06179A
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:27 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k20so1066321wmi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:34:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gXj0QTNi35Mkf/0PfjV36Op7KYk+Sf8/3WVle5YvISs=;
-        b=LwLU6UgNWRhkAICyUcI0WTYo9m6TXWqPAHELcWqUYunSe14/NoTP2Wi3SxwnjRCPYp
-         P8ToArmn9LBzbGkBXZ5NsJr3JcJPxfj4PgpcLvujetjrJ+klZkFbwpqK7c0ENSxr3mNx
-         TZxfs6nglopjKXRQRLOaqoCUM9q4GccbGnin36RbIYanIqRUXWquVts5sYLDdBZYOzzb
-         vAyKkiZ+aFleQE2DfWIpFhUJ+MAVRqtkvonJgyFAONhAPazcEjwPOHxWz+EVcNksSV7I
-         vfNUXi6Qw+KqfZKelE0ChGdvsvJPlz3owrqDYGcVtd3723oXffVMm074IevYrbmxxaLj
-         Gs8w==
+        bh=1sh6GJ0mJWJb3ICmo91l9UDo6bvtBy9zVj1QpKnJ7Ig=;
+        b=E7S6Pkng7Y0zFItSSiJ6u4PAD6CRFndCXBLJmIKAADhgYzB7tAwnaOstq39x7K8YiA
+         aYOiEa6IQ9pL2hp7r4/h6gkkN38ntfPXaVOzMazdJu+zmREhsaSzSyEHFJRalsGXtdGq
+         RH0GewQfte2wlRM98ENsZ362ARQtgwlM1+Sverg5BwZw6BS9GhUr+h+OwQTC+WD+R5LD
+         xP6mO7vA/v8yQcC0oB3mckaIE4cr9uwDkWUMvsQSMjSzBT8BmE3dJhUPo5k9PsJ3dL4n
+         7i40Rog29DFzVrx7zYzM4LzRshP1DRoEa6cMkG1OOmgevWJPDDV//yehqKjWH3ay8Sb8
+         WoAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gXj0QTNi35Mkf/0PfjV36Op7KYk+Sf8/3WVle5YvISs=;
-        b=irfajyaE3NzR4+627dyFCuiJJTJW+X0bwBCUFtZIKXsxBa+9FYgEKMM/iXrGCHRtem
-         /vudEYlfdpeY06WhsD5amG/LtADlzexhin3eTiJlfBQP9XIN0vz0l7pAbLvsoUMy0W9g
-         AnnI1FlRa4ozB1BB/EG8qLJkKVr4tIF+JyZtE4DEEUnr5ot/IWKvlNkGqQPHW278/uCS
-         3ZsrkNURZdgpc188KRbV0lV40EtTSDHD5BLfXmniAgBKcFE+57O9SJqrv0x9vuXUukii
-         vWdm39pnQHoMuFCPstlo5iD8obvit6SRqyxm+azU8nIxDEQOaYLwyvzHaZg3OH9IwS3m
-         ga6Q==
-X-Gm-Message-State: AOAM533jvLHZsg4Wq7IeqfqmfKE/MedYNifLZhX63JOAkvqgLxa1034o
-        S14CDHlR56w6FxuaUnpHDmDGmA==
-X-Google-Smtp-Source: ABdhPJzhoiIojiVg/XClYdahPZ4ZyRm0woGPRNGbBc3tfiZLNL944VFpp2XhnfvuIRtgcAevDM0t/Q==
-X-Received: by 2002:a1c:c913:: with SMTP id f19mr5945307wmb.173.1598434464899;
-        Wed, 26 Aug 2020 02:34:24 -0700 (PDT)
+        bh=1sh6GJ0mJWJb3ICmo91l9UDo6bvtBy9zVj1QpKnJ7Ig=;
+        b=GATM/IBCQPWSfDhQADnwzCf3+HB3TcYjndUKYx07sUk1hGvA/OyXF/XDHmKXOeHUEa
+         DP/+8S6ogOkGpxZxJoPodm9TwRoUeDGDlUEXBD1CIu//GSM8/wbVljTNE5E9MYZu2kGf
+         s2VdAfHCvdKrGeoTjtEVMilzZX+31Mc24ya309FPUEsXyfXxNIpxJN7fR/+zq+WjfrAU
+         afDp2TEmvYaTjU6ycg276Fs7kvKbQBc0szMeHV1LsSpd6GthRs7OxYHk7whMng8pGcIl
+         iiktMUE7JTFVNoHZvmyBFQfoE1pV3W3OoSDf4Ay1xlGEyJM4mxsdfTWsc8ITquMDOHxV
+         THfQ==
+X-Gm-Message-State: AOAM530O7eENy7hMCEQinpjtl8F7U//qrVxIKYK4ORKcdolSVDHBHLof
+        4ysHaWRv+tWSijqGXgb6J2h17g==
+X-Google-Smtp-Source: ABdhPJzKS5OctiAZPFx3Qk+kjCmzI82WamC6hYGDP51dNtvT2E3Ogaz8sYsUpYWCXWko3lNaCQH5Og==
+X-Received: by 2002:a1c:ed15:: with SMTP id l21mr6221723wmh.56.1598434465884;
+        Wed, 26 Aug 2020 02:34:25 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id u3sm3978759wml.44.2020.08.26.02.34.23
+        by smtp.gmail.com with ESMTPSA id u3sm3978759wml.44.2020.08.26.02.34.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 02:34:24 -0700 (PDT)
+        Wed, 26 Aug 2020 02:34:25 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>
-Subject: [PATCH 16/30] wireless: rsi: rsi_91x_sdio: Fix a few kernel-doc related issues
-Date:   Wed, 26 Aug 2020 10:33:47 +0100
-Message-Id: <20200826093401.1458456-17-lee.jones@linaro.org>
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Subject: [PATCH 17/30] wireless: ath: ath9k: ar9002_initvals: Remove unused array 'ar9280PciePhy_clkreq_off_L1_9280'
+Date:   Wed, 26 Aug 2020 10:33:48 +0100
+Message-Id: <20200826093401.1458456-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200826093401.1458456-1-lee.jones@linaro.org>
 References: <20200826093401.1458456-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- - File headers do not make for good kernel-doc candidates
- - Kernel-doc header lines should start with " *"
- - Fix doc-rot issue
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/rsi/rsi_91x_sdio.c:25: warning: cannot understand function prototype: 'u16 dev_oper_mode = DEV_OPMODE_STA_BT_DUAL; '
- drivers/net/wireless/rsi/rsi_91x_sdio.c:802: warning: bad line:                                    from the device.
- drivers/net/wireless/rsi/rsi_91x_sdio.c:842: warning: Function parameter or member 'pfunction' not described in 'rsi_init_sdio_interface'
- drivers/net/wireless/rsi/rsi_91x_sdio.c:842: warning: Excess function parameter 'pkt' description in 'rsi_init_sdio_interface'
+ drivers/net/wireless/ath/ath9k/ar9002_initvals.h:900:18: warning: ‘ar9280PciePhy_clkreq_off_L1_9280’ defined but not used [-Wunused-const-variable=]
 
-Cc: Amitkumar Karwar <amitkarwar@gmail.com>
-Cc: Siva Rebbagondla <siva8118@gmail.com>
+Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
@@ -87,41 +79,34 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_sdio.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath9k/ar9002_initvals.h | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_sdio.c b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-index a04ff75c409f4..a7b8684143f46 100644
---- a/drivers/net/wireless/rsi/rsi_91x_sdio.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-@@ -1,4 +1,4 @@
--/**
-+/*
-  * Copyright (c) 2014 Redpine Signals Inc.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-@@ -799,7 +799,7 @@ static int rsi_sdio_host_intf_write_pkt(struct rsi_hw *adapter,
+diff --git a/drivers/net/wireless/ath/ath9k/ar9002_initvals.h b/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
+index 4d18c66a67903..e01b5c3728b86 100644
+--- a/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
++++ b/drivers/net/wireless/ath/ath9k/ar9002_initvals.h
+@@ -897,20 +897,6 @@ static const u32 ar9280Modes_original_tx_gain_9280_2[][5] = {
+ 	{0x00007844, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
+ };
  
- /**
-  * rsi_sdio_host_intf_read_pkt() - This function reads the packet
--				   from the device.
-+ *				   from the device.
-  * @adapter: Pointer to the adapter data structure.
-  * @pkt: Pointer to the packet data to be read from the the device.
-  * @length: Length of the data to be read from the device.
-@@ -832,11 +832,10 @@ int rsi_sdio_host_intf_read_pkt(struct rsi_hw *adapter,
-  * rsi_init_sdio_interface() - This function does init specific to SDIO.
-  *
-  * @adapter: Pointer to the adapter data structure.
-- * @pkt: Pointer to the packet data to be read from the the device.
-+ * @pfunction: Pointer to the sdio_func structure.
-  *
-  * Return: 0 on success, -1 on failure.
-  */
+-static const u32 ar9280PciePhy_clkreq_off_L1_9280[][2] = {
+-	/* Addr      allmodes  */
+-	{0x00004040, 0x9248fd00},
+-	{0x00004040, 0x24924924},
+-	{0x00004040, 0xa8000019},
+-	{0x00004040, 0x13160820},
+-	{0x00004040, 0xe5980560},
+-	{0x00004040, 0xc01dcffc},
+-	{0x00004040, 0x1aaabe41},
+-	{0x00004040, 0xbe105554},
+-	{0x00004040, 0x00043007},
+-	{0x00004044, 0x00000000},
+-};
 -
- static int rsi_init_sdio_interface(struct rsi_hw *adapter,
- 				   struct sdio_func *pfunction)
- {
+ static const u32 ar9280PciePhy_clkreq_always_on_L1_9280[][2] = {
+ 	/* Addr      allmodes  */
+ 	{0x00004040, 0x9248fd00},
 -- 
 2.25.1
 
