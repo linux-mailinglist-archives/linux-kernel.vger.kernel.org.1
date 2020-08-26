@@ -2,72 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F3F25330A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD761253317
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgHZPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:11:08 -0400
-Received: from vern.gendns.com ([98.142.107.122]:45858 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726802AbgHZPLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:11:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=70Brejj40/UxoRT5H6gZ3Zo/jXzzFg1p4XCC31HmDqA=; b=CiZVPrHrO4fSCa6MEXAaCKLBga
-        rwnyRpTRVXNOpI2mbi/wN99ZJdoqPaKXDIoQv3MWl/9rDQr6LpO3M/PN4tC8Zmr5Llxn9Jlue1fJJ
-        2kC6FpttrRI4788eCpcGmprnnUswv4tbm1pHW6O+iBS2EFgblPYoAvAgezMiPD+7QEEPorFWtdqrU
-        knXeTP1lch6aS5X3fnGpyRTQl0uJZsRTBCSp+EdV7O/+cD9tOGFTXMCqe1QZs21r3QkpTw9W2yQAg
-        MU6NImW3Xuo49B+4KKHuODJq9T9Wj/Bzlr3QDtFfRuXBJVbQ2/9tYOD7PQwrkc8Y7ipFif9SnjD9P
-        aaWUJORg==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51472 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kAx4p-0002Yn-HO; Wed, 26 Aug 2020 11:11:03 -0400
-Subject: Re: [PATCH 5/5] power: supply: lego_ev3: Simplify with
- dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        "Andrew F. Davis" <afd@ti.com>, Sebastian Reichel <sre@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200826144858.9584-1-krzk@kernel.org>
- <20200826144858.9584-5-krzk@kernel.org>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <bf10bb56-a8fc-02b4-809c-2592c2618f19@lechnology.com>
-Date:   Wed, 26 Aug 2020 10:11:02 -0500
+        id S1728051AbgHZPMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:12:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33428 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726988AbgHZPMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:12:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598454737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RXqh9vDKtsqu0uMtgz4E47GKyNBkVyPjz1iexD+khD8=;
+        b=SFJhp6e5XOGqCM177TKOB9J9hTVPFCkFWCQQxfjd2eglk6QnPMRb/PuMiseTHDE4LbGF64
+        P7m6sXY5ZX6+GjMxyWBd1Ut/o6PNZKmyvPpChAJLRO5U76DQa+nS6DlCm99Pop3Le7wcmp
+        1lVasamctHDgia+X8mH9Xfji+aL3ZEo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-gxaIz9T8MzuVINxBz-C73Q-1; Wed, 26 Aug 2020 11:12:16 -0400
+X-MC-Unique: gxaIz9T8MzuVINxBz-C73Q-1
+Received: by mail-ed1-f69.google.com with SMTP id f1so474238edn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:12:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RXqh9vDKtsqu0uMtgz4E47GKyNBkVyPjz1iexD+khD8=;
+        b=o8e40StboVTFoRxwZkOak4BRZtpHYgbT5X9jkirLc7WERlWzjWwR+LxvrKaTHiTnwt
+         r40juH9e6wgbkvYwQodVt7hUOJBEzEFOohiQOxVljG41SWtF9G/L5MQ5CmR59fP4X/nX
+         ne0RYyVKH6ySRfiokcuRT+kbImrUBYbj/4t2OULRMsFF816brwalndFcqOvTlTZhlLRI
+         MnqGFIf8R0/TPOKE/jFGklRJZnf/mzPFHMv5pS6ZT8k8Tq1mm1wxarwa2PAByCThBdfV
+         NXTvytBrTQK7GpwluOzgOFpyJNqal3SQowEAk4Gl+lU6JP2GAKJmtMzo3OLlvRfilK+i
+         ZlOg==
+X-Gm-Message-State: AOAM530ipN/2p0FXdbvHwigca5hAjTl3zjdpOLYQ0/YX+MnB2lGDVXKE
+        UbFrSt9HSJg/d1xQdCloy9dR5t/O5XbbA04T7H/17UgLFmczQa/9e3cOcnq+w6Mt+2mUEUigH79
+        UPCwYi4Axlq+Ka/E3/vUuJag9
+X-Received: by 2002:aa7:ce15:: with SMTP id d21mr15171106edv.55.1598454734922;
+        Wed, 26 Aug 2020 08:12:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZxU1frY0JaTpG9m3IBN2zGr2l9QVoi8/sXv8kJCax1c1y8cZtHEgZdzWOSoBUISm94BHThg==
+X-Received: by 2002:aa7:ce15:: with SMTP id d21mr15171076edv.55.1598454734731;
+        Wed, 26 Aug 2020 08:12:14 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id t23sm2241356eds.50.2020.08.26.08.12.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 08:12:13 -0700 (PDT)
+Subject: Re: [PATCH 0/3] Add 3 new keycodes and use them for 3 new hotkeys on
+ new Lenovo Thinkpads
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        linux-input@vger.kernel.org,
+        Marco Trevisan <marco.trevisan@canonical.com>,
+        Mark Pearson <mpearson@lenovo.com>,
+        Christian Kellner <ckellner@redhat.com>,
+        Benjamin Berg <bberg@redhat.com>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200717114155.56222-1-hdegoede@redhat.com>
+ <20200719225649.GA4341@khazad-dum.debian.net>
+ <20200722054144.GQ1665100@dtor-ws>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7726b68c-4b84-4acc-d08c-59f746a75000@redhat.com>
+Date:   Wed, 26 Aug 2020 17:12:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200826144858.9584-5-krzk@kernel.org>
+In-Reply-To: <20200722054144.GQ1665100@dtor-ws>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/20 9:48 AM, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and also it prints the error value.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
+Hi Dmitry,
 
-Reviewed-by: David Lechner <david@lechnology.com>
+On 7/22/20 7:41 AM, Dmitry Torokhov wrote:
+> On Sun, Jul 19, 2020 at 07:56:49PM -0300, Henrique de Moraes Holschuh wrote:
+>> On Fri, 17 Jul 2020, Hans de Goede wrote:
+>>> This is a simple patch-series adding support for 3 new hotkeys found
+>>> on various new Lenovo Thinkpad models.
+>>
+>> For all three patches, pending an ack for the new keycodes by the input
+>> maintainers:
+>>
+>> Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+> 
+> Do you want me to merge all 3 through input tree?
+
+Despite Andy's acked-by:
+
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+For merging these through the input tree I'm not seeing these in 5.9-rc2 ?
+
+Regards,
+
+Hans
 
