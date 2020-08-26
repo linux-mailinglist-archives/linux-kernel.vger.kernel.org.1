@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C61252E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0F0252E9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgHZMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729204AbgHZMSJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:18:09 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8144C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 05:18:09 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n23so1272184otq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 05:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7/q8ddA2FVVePJulVHbf1w2DVxs+k2gCtz8r5i1ccF8=;
-        b=cUFP7Oiw1nGQBRVAjjWi4uM5zQAqXphiVe5sfmdel3PFSgL2f5Hc7lgzgDy9fc0qhb
-         lJ9N8s3+lCqQAUn1b11KbLv8tr52O0JlPgWbKJUYy+kD4jIS2eOPAIg7iv70NvPAKyg0
-         mcI8hVIPBXs9+1hQduhVWVBpH/OK85kGGuxqTzhalXNZOh0za+2xYHOugfpQ99+eoejT
-         1NIidxHyeH3222oxS7vlk09XfFxD2yzTzij8oaq7TcAhFB9DpoA7VrvK000co/yi5brk
-         yYMF+R5iVgZaFQAp0n52szNbvg1PVtA3osFR/eQCRnRzLywuSVdy+tiTe0lXQ4H89aJd
-         O79g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7/q8ddA2FVVePJulVHbf1w2DVxs+k2gCtz8r5i1ccF8=;
-        b=fxcajWjC7VaLw7lBZNPxBS3i4Z+bY6r0D+sy55DwjtvHCD8slCmZjkoikotONVFAj6
-         wU5LoDGxa/JVPfdoP/VV/w08IiQsgvrUR8MK05f7YbHjxShrHasltBwM2lvilaJrmTLf
-         2ZtRKAwnwccQA7PGL2ZMphbO3rBzegZpX3RaWRqEegf+fchN3J36fHJzVBc/s84U9lAo
-         D2hzenMANkWFubDLmc152QtBHhJOjwQgT8ASqqiry7Uu680OVsf1t/0GcQdjqsFlfly6
-         t4JSQc9Tz+24j1LyatGjMt7c9HMupnG7Gc8qSab49bEUBuc7aGwJSd0gkl++QbK+Tsiu
-         bmRQ==
-X-Gm-Message-State: AOAM530EoGvbyx5ZgNyN2oC7WA+GXJRidHZl1806dbLSiGWk5f4B6uy6
-        DFo0Fzmbx6m5UopibgUFY3rQTg/z5iBUcmx5IayKoQ==
-X-Google-Smtp-Source: ABdhPJwY8yOqgMAG5GbBC8S7wFO7rp5OTMSq8t+9EXlSRQ4LdqzRa+XFWCAY31bpPC+oZnvjdAVdY6DAc7krgBKagCk=
-X-Received: by 2002:a9d:739a:: with SMTP id j26mr10379141otk.17.1598444288848;
- Wed, 26 Aug 2020 05:18:08 -0700 (PDT)
+        id S1729928AbgHZMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:19:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10265 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729369AbgHZMTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:19:00 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6307F1CE024FDD78DF13;
+        Wed, 26 Aug 2020 20:18:55 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 26 Aug 2020
+ 20:18:44 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
+        <dave.jiang@intel.com>, <ira.weiny@intel.com>, <mingo@kernel.org>
+CC:     <linux-nvdimm@lists.01.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] libnvdimm/e820: Fix build error without MEMORY_HOTPLUG
+Date:   Wed, 26 Aug 2020 20:18:00 +0800
+Message-ID: <20200826121800.732-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20200821123126.3121494-1-elver@google.com>
-In-Reply-To: <20200821123126.3121494-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 26 Aug 2020 14:17:57 +0200
-Message-ID: <CANpmjNMLL+Xqg0MQrtBMxLunUGXVP-mAXKqRH5s0xNSfAUhrzg@mail.gmail.com>
-Subject: Re: [PATCH] kcsan: Use tracing-safe version of prandom
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 at 14:31, Marco Elver <elver@google.com> wrote:
-> In the core runtime, we must minimize any calls to external library
-> functions to avoid any kind of recursion. This can happen even though
-> instrumentation is disabled for called functions, but tracing is
-> enabled.
->
-> Most recently, prandom_u32() added a tracepoint, which can cause
-> problems for KCSAN even if the rcuidle variant is used. For example:
->         kcsan -> prandom_u32() -> trace_prandom_u32_rcuidle ->
->         srcu_read_lock_notrace -> __srcu_read_lock -> kcsan ...
->
-> While we could disable KCSAN in kcsan_setup_watchpoint(), this does not
-> solve other unexpected behaviour we may get due recursing into functions
-> that may not be tolerant to such recursion:
->         __srcu_read_lock -> kcsan -> ... -> __srcu_read_lock
->
-> Therefore, switch to using prandom_u32_state(), which is uninstrumented,
-> and does not have a tracepoint.
->
-> Link: https://lkml.kernel.org/r/20200821063043.1949509-1-elver@google.com
-> Link: https://lkml.kernel.org/r/20200820172046.GA177701@elver.google.com
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Applies to latest -rcu/dev only.
->
-> Let's wait a bit to see what happens with
->   https://lkml.kernel.org/r/20200821063043.1949509-1-elver@google.com,
-> just in case there's a better solution that might make this patch redundant.
+If MEMORY_HOTPLUG is n, build fails:
 
-Paul, feel free to pick this up.
+drivers/nvdimm/e820.c: In function ‘e820_register_one’:
+drivers/nvdimm/e820.c:24:12: error: implicit declaration of function ‘phys_to_target_node’; did you mean ‘set_page_node’? [-Werror=implicit-function-declaration]
+  int nid = phys_to_target_node(res->start);
+            ^~~~~~~~~~~~~~~~~~~
+            set_page_node
 
-I wanted to wait until after plumbers to see what happens, but maybe
-it's better to give the heads-up now, so this is in time for the next
-pull-request. It seems that prandom_u32() will keep its tracepoint,
-which means we definitely need this to make KCSAN compatible with
-tracing again.
+Fixes: 7b27a8622f80 ("libnvdimm/e820: Retrieve and populate correct 'target_node' info")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/nvdimm/e820.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thanks,
--- Marco
+diff --git a/drivers/nvdimm/e820.c b/drivers/nvdimm/e820.c
+index 4cd18be9d0e9..c741f029f215 100644
+--- a/drivers/nvdimm/e820.c
++++ b/drivers/nvdimm/e820.c
+@@ -17,6 +17,13 @@ static int e820_pmem_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifndef CONFIG_MEMORY_HOTPLUG
++static inline int phys_to_target_node(u64 start)
++{
++	return 0;
++}
++#endif
++
+ static int e820_register_one(struct resource *res, void *data)
+ {
+ 	struct nd_region_desc ndr_desc;
+-- 
+2.17.1
+
+
