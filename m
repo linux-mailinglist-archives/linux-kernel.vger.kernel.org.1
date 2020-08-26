@@ -2,151 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD462252795
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989BA2527A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHZGnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 02:43:06 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:2790 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725786AbgHZGnF (ORCPT
+        id S1726786AbgHZGqw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 02:46:52 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37673 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgHZGqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 02:43:05 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q6UGXc026770;
-        Wed, 26 Aug 2020 02:43:04 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 332w764kfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Aug 2020 02:43:04 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07Q6h2sU015706
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 26 Aug 2020 02:43:03 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 25 Aug 2020 23:43:01 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 25 Aug 2020 23:42:37 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 25 Aug 2020 23:43:01 -0700
-Received: from saturn.ad.analog.com ([10.48.65.100])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07Q6gwen018958;
-        Wed, 26 Aug 2020 02:42:59 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: frequency: adf4350: Replace indio_dev->mlock with own device lock
-Date:   Wed, 26 Aug 2020 09:42:57 +0300
-Message-ID: <20200826064257.53475-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 Aug 2020 02:46:51 -0400
+Received: by mail-wm1-f68.google.com with SMTP id x9so618599wmi.2;
+        Tue, 25 Aug 2020 23:46:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=woDwpwEGnSTSc4kljToA4r5StN2rkeplc2dBRDufFZA=;
+        b=axwIzwdJXwjZsXIrMW6pOdz/Fl6s46kYixkoGoQQN/7r9Q/vxadPrX3i+bebYsbCiu
+         F4qZsZvN95U99837oYJKDflwgzafkp8BGFvkifvpW9oEhMLE333cpq/DJ6shNJJfSU5K
+         fnmuUSViSObLp0Ewaib3nIfSmb8PtCnnfdI5BujC6YtDd+HCiTYKVXGRsyhEHO+jm7pY
+         zQmoJVHnBmZRFKyutbDAAbYCLy1mkWk3CT00a6x0Cu1r3oCwcCfSknTc66vPeMBdwA5U
+         nLq76H0aID+17EaVGxsDpqxCaKdydyCQWRbilU7I08vj/SVRvwa1e2WoBzJMws98UpK1
+         2LPQ==
+X-Gm-Message-State: AOAM531ug6AshDEqLNSwI/selChhVUmSRNzRglZTYEfaWpy+w8gqY/Fn
+        x7ybN70ny7ur9SgYvotdq0ZJbNX2crg=
+X-Google-Smtp-Source: ABdhPJwwnq5+FT5AJu3knzHTD/+s17qG77/RpFqNYzEjYg24N/OVflA007W8XbHJWMrOxuCfflZj9Q==
+X-Received: by 2002:a7b:cf13:: with SMTP id l19mr5238783wmg.115.1598424408857;
+        Tue, 25 Aug 2020 23:46:48 -0700 (PDT)
+Received: from pi3 ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id g17sm3402102wrr.28.2020.08.25.23.46.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 23:46:48 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 08:46:45 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, m.szyprowski@samsung.com,
+        b.zolnierkie@samsung.com
+Subject: Re: [PATCH 3/3] ARM: defconfig: Enable ax88796c driver
+Message-ID: <20200826064645.GA12103@pi3>
+References: <20200825185152.GC2693@kozik-lap>
+ <CGME20200826051134eucas1p23a1c91b2179678eecc5dd5eeb2d0e4c9@eucas1p2.samsung.com>
+ <dleftjk0xmuh3d.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-26_03:2020-08-25,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=590 spamscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1015
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008260050
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <dleftjk0xmuh3d.fsf%l.stelmach@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+On Wed, Aug 26, 2020 at 07:11:18AM +0200, Lukasz Stelmach wrote:
+> It was <2020-08-25 wto 20:51>, when Krzysztof Kozlowski wrote:
+> > On Tue, Aug 25, 2020 at 07:03:11PM +0200, Łukasz Stelmach wrote:
+> >> Enable ax88796c driver for the ethernet chip on Exynos3250-based
+> >> ARTIK5 boards.
+> >> 
+> >> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> >> ---
+> >>  arch/arm/configs/exynos_defconfig   | 2 ++
+> >>  arch/arm/configs/multi_v7_defconfig | 2 ++
+> >>  2 files changed, 4 insertions(+)
+> >> 
+> >> Please DO NOT merge before these two
+> >
+> > Sure, it can wait but shouldn't actually DT wait? It's only defconfig so
+> > it does not change anything except automated systems booting these
+> > defconfigs... The boards might be broken by DT.
+> 
+> I was told, to ask for deferred merge of defconfig and it makes sense to
+> me. DT won't break anything if the driver isn't compiled. However, I can
+> see that you have a word you may decide about DT too. My point is to
+> wait until spi-s3c64xx patches are merged and not to break ARTIK5
+> boards.
 
-As part of the general cleanup of indio_dev->mlock, this change replaces
-it with a local lock on the device's state structure.
+The config is chosen and adjusted by each person, during build. Merging
+defconfig does not necessarily affect them. However merging DT affects -
+you cannot disable it without source code modification.
 
-Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/frequency/adf4350.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Anyway, no problem for me with waiting with defconfig.
 
-diff --git a/drivers/iio/frequency/adf4350.c b/drivers/iio/frequency/adf4350.c
-index 409c9c47161e..3f37a57cd3c3 100644
---- a/drivers/iio/frequency/adf4350.c
-+++ b/drivers/iio/frequency/adf4350.c
-@@ -47,6 +47,7 @@ struct adf4350_state {
- 	unsigned long			regs[6];
- 	unsigned long			regs_hw[6];
- 	unsigned long long		freq_req;
-+	struct mutex			lock;
- 	/*
- 	 * DMA (thus cache coherency maintenance) requires the
- 	 * transfer buffers to live in their own cache lines.
-@@ -99,7 +100,7 @@ static int adf4350_reg_access(struct iio_dev *indio_dev,
- 	if (reg > ADF4350_REG5)
- 		return -EINVAL;
- 
--	mutex_lock(&indio_dev->mlock);
-+	mutex_lock(&st->lock);
- 	if (readval == NULL) {
- 		st->regs[reg] = writeval & ~(BIT(0) | BIT(1) | BIT(2));
- 		ret = adf4350_sync_config(st);
-@@ -107,7 +108,7 @@ static int adf4350_reg_access(struct iio_dev *indio_dev,
- 		*readval =  st->regs_hw[reg];
- 		ret = 0;
- 	}
--	mutex_unlock(&indio_dev->mlock);
-+	mutex_unlock(&st->lock);
- 
- 	return ret;
- }
-@@ -254,7 +255,7 @@ static ssize_t adf4350_write(struct iio_dev *indio_dev,
- 	if (ret)
- 		return ret;
- 
--	mutex_lock(&indio_dev->mlock);
-+	mutex_lock(&st->lock);
- 	switch ((u32)private) {
- 	case ADF4350_FREQ:
- 		ret = adf4350_set_freq(st, readin);
-@@ -295,7 +296,7 @@ static ssize_t adf4350_write(struct iio_dev *indio_dev,
- 	default:
- 		ret = -EINVAL;
- 	}
--	mutex_unlock(&indio_dev->mlock);
-+	mutex_unlock(&st->lock);
- 
- 	return ret ? ret : len;
- }
-@@ -309,7 +310,7 @@ static ssize_t adf4350_read(struct iio_dev *indio_dev,
- 	unsigned long long val;
- 	int ret = 0;
- 
--	mutex_lock(&indio_dev->mlock);
-+	mutex_lock(&st->lock);
- 	switch ((u32)private) {
- 	case ADF4350_FREQ:
- 		val = (u64)((st->r0_int * st->r1_mod) + st->r0_fract) *
-@@ -338,7 +339,7 @@ static ssize_t adf4350_read(struct iio_dev *indio_dev,
- 		ret = -EINVAL;
- 		val = 0;
- 	}
--	mutex_unlock(&indio_dev->mlock);
-+	mutex_unlock(&st->lock);
- 
- 	return ret < 0 ? ret : sprintf(buf, "%llu\n", val);
- }
-@@ -539,6 +540,8 @@ static int adf4350_probe(struct spi_device *spi)
- 	indio_dev->channels = &adf4350_chan;
- 	indio_dev->num_channels = 1;
- 
-+	mutex_init(&st->lock);
-+
- 	st->chspc = pdata->channel_spacing;
- 	if (clk) {
- 		st->clk = clk;
--- 
-2.25.1
+Best regards,
+Krzysztof
+
+
+> 
+> >> 
+> >>   https://lore.kernel.org/lkml/20200821161401.11307-2-l.stelmach@samsung.com/
+> >>   https://lore.kernel.org/lkml/20200821161401.11307-3-l.stelmach@samsung.com/
+> >> 
+> >> diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
+> >> index 6e8b5ff0859c..82480b2bf545 100644
+> >> --- a/arch/arm/configs/exynos_defconfig
+> >> +++ b/arch/arm/configs/exynos_defconfig
+> >> @@ -107,6 +107,8 @@ CONFIG_MD=y
+> >>  CONFIG_BLK_DEV_DM=y
+> >>  CONFIG_DM_CRYPT=m
+> >>  CONFIG_NETDEVICES=y
+> >> +CONFIG_NET_VENDOR_ASIX=y
+> >> +CONFIG_SPI_AX88796C=y
+> >>  CONFIG_SMSC911X=y
+> >>  CONFIG_USB_RTL8150=m
+> >>  CONFIG_USB_RTL8152=y
+> >> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> >> index e9e76e32f10f..a8b4e95d4148 100644
+> >> --- a/arch/arm/configs/multi_v7_defconfig
+> >> +++ b/arch/arm/configs/multi_v7_defconfig
+> >> @@ -241,6 +241,8 @@ CONFIG_SATA_HIGHBANK=y
+> >>  CONFIG_SATA_MV=y
+> >>  CONFIG_SATA_RCAR=y
+> >>  CONFIG_NETDEVICES=y
+> >> +CONFIG_NET_VENDOR_ASIX=y
+> >> +CONFIG_SPI_AX88796C=m
+> >>  CONFIG_VIRTIO_NET=y
+> >>  CONFIG_B53_SPI_DRIVER=m
+> >>  CONFIG_B53_MDIO_DRIVER=m
+> >> -- 
+> >> 2.26.2
+> >> 
+> >
+> >
+> 
+> -- 
+> Łukasz Stelmach
+> Samsung R&D Institute Poland
+> Samsung Electronics
+
 
