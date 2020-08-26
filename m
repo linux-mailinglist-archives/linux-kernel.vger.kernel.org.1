@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8A25337F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB162533B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgHZPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbgHZPWM (ORCPT
+        id S1727927AbgHZPaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:30:23 -0400
+Received: from grey-smtp-cloud9.xs4all.net ([194.109.24.44]:56933 "EHLO
+        grey-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726874AbgHZPaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:22:12 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2B2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:22:11 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k1so1160594pfu.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 08:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vtJDwZCH/3FF1e3t+ULJa3AUehUyh5L1H4fEzIfmn4o=;
-        b=GIGN8wX3pyjKhCF0wAkRfMN1el9RjJWFj8wzMB0EPBzLhBY51FePhM2oaxSjBktdec
-         RDZDUzX5TFXl/ymZSVgMFbtiqSqjXdFJv0OmSwVPBuLjXNQaSaxW/gsV3N3KUXtHSpXZ
-         MIPBqbugEmDk8K+4S4vugfFpV7QHbzMIaOO1g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vtJDwZCH/3FF1e3t+ULJa3AUehUyh5L1H4fEzIfmn4o=;
-        b=cKieQzVOoq7CyYxLViGyvbn5qoVCpfB74SYGgv6DbUTdt7FHkDf8aBYkEexHnF60lp
-         TMlZDltFDg+MYRsEulvvflgjX+T8ciLeCah7oJbUAU1CTWFGhxBWtjKF7dht/YNLNlVT
-         EzdU76XraQDIDUJIUQpooIc7dc8ZxmS2o/XOjPTV1C6OZ/VbRpR6AvtKIBRwpAfgFs50
-         mpyfWP0Rp4JwbuVJma8L/Nsa4hjOZopJAGEWvZZtfAGOjZH5D87ngr/tb/+X0kh0qetJ
-         7OBgUcKl0VGeyTjWhyFjOupp+6Rp0RNG4ImShwxvoT1BrSoO6v81N3V35BO7zxLKKKAH
-         LX4g==
-X-Gm-Message-State: AOAM530zLRLkZWhsA59kGFLA6JFL9ce3ZNBMS1Tf0gm3rNXSic6X6aQM
-        Y4RlIhAYO3cwhzlyZpn4z1whuPu7VrEWBw==
-X-Google-Smtp-Source: ABdhPJzLyHWcSj7Vm+MuzdkYBxrO9j5DgXJEwOBbTsbHaZtpPhDC5bH383FmCZxfzvk8bd4r7nwv+A==
-X-Received: by 2002:a63:330c:: with SMTP id z12mr11048145pgz.46.1598455331205;
-        Wed, 26 Aug 2020 08:22:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ck3sm2319962pjb.20.2020.08.26.08.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 08:22:10 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 08:22:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] lib/string.c: implement stpcpy
-Message-ID: <202008260821.CF6D817B36@keescook>
-References: <20200825140001.2941001-1-ndesaulniers@google.com>
+        Wed, 26 Aug 2020 11:30:20 -0400
+X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Aug 2020 11:30:18 EDT
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id AxGRkkRmJuuXOAxGSkEYdq; Wed, 26 Aug 2020 17:23:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1598455385; bh=trldSuk5qoiwVr84MQPYlc7WezHhEKq+3G3EIoKlsW4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=mb9DX2PDKBhnc9UkSLHtuSDLcn6+A2IClGrzLNwofSoiBuior11OkCJwhgUhy8D3V
+         TT7OgiVV/22wnzYq6Si/64C49NKjlv1dsheT1HVcy9KgotM6sosmAxZOHRgejUUhAa
+         TFtfHYSrOG8V19FTIsw0bJ8oomgidsmfhvGsy2+tIhODba/JBE217vmte6FkALn2os
+         Rp8HImHWAbs6mutMbsGPMwsQ+P5uR7vTkSpvaL6GxdzNi1S9MBnhZV028O+QadGExo
+         jXTB5XfF917dDZgNkQI1vz2LedeLY/z4GAACCrtqEZFIBZo1oFde+luH8v7wYQ4Ig5
+         dilPJnUk1n0ig==
+Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: simplify poll logic a bit
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Alexandre Courbot <gnurou@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200825145556.637323-1-gnurou@gmail.com>
+ <20200825145556.637323-3-gnurou@gmail.com>
+ <CAAEAJfD1kUJODa+-STV6Q+=9qWH8v2=KZzAA4ppgfbQxstO+Mg@mail.gmail.com>
+ <CAAVeFuJgBqN7KYhNi=mMNxy6wHTZOn5E1=pHP3q=n8X++b5pmg@mail.gmail.com>
+ <CAAEAJfCfjzGDOhD2WHYny-wVwL19qc_VA9c3uVNiHxpYdEHsLQ@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <3dd23b1e-debd-bd50-e8a1-25837d2fd01e@xs4all.nl>
+Date:   Wed, 26 Aug 2020 17:23:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825140001.2941001-1-ndesaulniers@google.com>
+In-Reply-To: <CAAEAJfCfjzGDOhD2WHYny-wVwL19qc_VA9c3uVNiHxpYdEHsLQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJRD2YFZD851Cya/ZVCglVkkKzP9XY+Am1EoxtVTE82JN0l6JGs8Wa9DTygHmsIuI2eMSu2aqeYm9kV1UIY15Pkdw0qtD8uqpLN7RgZcs9uZTwvDZl4k
+ LDYKr2QRy2JD1wDFrus+PahAoQ2RfKNl7yk2oktQ/rFkeWqta2jS3gtrergF2RlatO9lKR4dStq+5g0K2eigSIHlx/1J05jIXAYfsDbqrfYzuvfmVyDbV+3W
+ ud2gDP2wopXnyCdpAVjRcPEU+vKIUgJAgOjh/FQoJmAJpr8gwJDViMY+k5s5vGqxKc1adetvIFAhGoYJifEviufEQ7nVyN2QQ+5jsgpvm/X4oWF9h/sAqwe3
+ 2TayL524LPuy07ZoO9izXzhZD6E6sUyRGYy/q/4fKZQbHiBeIOVPOymQP96TkOQ7FvKyLoCSDQPGyKMbyY7cuVLRZRYnA73wTmbxbJuUFX7BihP0WdFtP1bN
+ Ea/6E3f1PknqcqCK
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 07:00:00AM -0700, Nick Desaulniers wrote:
-> LLVM implemented a recent "libcall optimization" that lowers calls to
-> `sprintf(dest, "%s", str)` where the return value is used to
-> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> in parsing format strings.  `stpcpy` is just like `strcpy` except it
-> returns the pointer to the new tail of `dest`.  This optimization was
-> introduced into clang-12.
+On 26/08/2020 16:32, Ezequiel Garcia wrote:
+> On Wed, 26 Aug 2020 at 08:19, Alexandre Courbot <gnurou@gmail.com> wrote:
+>>
+>> Hi Ezequiel, thanks for the review!
+>>
+>> On Wed, Aug 26, 2020 at 1:15 PM Ezequiel Garcia
+>> <ezequiel@vanguardiasur.com.ar> wrote:
+>>>
+>>> Hi Alexandre,
+>>>
+>>> On Tue, 25 Aug 2020 at 11:56, Alexandre Courbot <gnurou@gmail.com> wrote:
+>>>>
+>>>> Factorize redundant checks into a single code block, remove the early
+>>>> return, and declare variables in their innermost block. Hopefully this
+>>>> makes this code a little bit easier to follow.
+>>>>
+>>>
+>>> This _definitely_ makes the poll handling more readable.
+>>>
+>>> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>>>
+>>> See below a nitpick.
+>>>
+>>>> Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
+>>>> ---
+>>>>  drivers/media/v4l2-core/v4l2-mem2mem.c | 35 +++++++++++---------------
+>>>>  1 file changed, 15 insertions(+), 20 deletions(-)
+>>>>
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>>> index 0d0192119af20..aeac9707123d0 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>>> @@ -841,7 +841,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
+>>>>                                        struct poll_table_struct *wait)
+>>>>  {
+>>>>         struct vb2_queue *src_q, *dst_q;
+>>>> -       struct vb2_buffer *src_vb = NULL, *dst_vb = NULL;
+>>>>         __poll_t rc = 0;
+>>>>         unsigned long flags;
+>>>>
+>>>> @@ -863,33 +862,29 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
+>>>>                 return EPOLLERR;
+>>>>
+>>>>         spin_lock_irqsave(&src_q->done_lock, flags);
+>>>> -       if (!list_empty(&src_q->done_list))
+>>>> -               src_vb = list_first_entry(&src_q->done_list, struct vb2_buffer,
+>>>> -                                               done_entry);
+>>>> -       if (src_vb && (src_vb->state == VB2_BUF_STATE_DONE
+>>>> -                       || src_vb->state == VB2_BUF_STATE_ERROR))
+>>>> -               rc |= EPOLLOUT | EPOLLWRNORM;
+>>>> +       if (!list_empty(&src_q->done_list)) {
+>>>> +               struct vb2_buffer *src_vb = list_first_entry(
+>>>> +                       &src_q->done_list, struct vb2_buffer, done_entry);
+>>>> +               if (src_vb->state == VB2_BUF_STATE_DONE ||
+>>>> +                   src_vb->state == VB2_BUF_STATE_ERROR)
+>>>> +                       rc |= EPOLLOUT | EPOLLWRNORM;
+>>>> +       }
+>>>>         spin_unlock_irqrestore(&src_q->done_lock, flags);
+>>>>
+>>>>         spin_lock_irqsave(&dst_q->done_lock, flags);
+>>>> -       if (list_empty(&dst_q->done_list)) {
+>>>> +       if (!list_empty(&dst_q->done_list)) {
+>>>> +               struct vb2_buffer *dst_vb = list_first_entry(
+>>>> +                       &dst_q->done_list, struct vb2_buffer, done_entry);
+>>>> +               if (dst_vb->state == VB2_BUF_STATE_DONE ||
+>>>> +                   dst_vb->state == VB2_BUF_STATE_ERROR)
+>>>> +                       rc |= EPOLLIN | EPOLLRDNORM;
+>>>> +       } else if (dst_q->last_buffer_dequeued) {
+>>>>                 /*
+>>>>                  * If the last buffer was dequeued from the capture queue,
+>>>>                  * return immediately. DQBUF will return -EPIPE.
+>>>>                  */
+>>>
+>>> The part about "returning immediately" doesn't make
+>>> much sense now. Could we rephrase this, keeping the -EPIPE
+>>> comment?
+>>
+>> I understood this sentence as referring to the system call and not
+>> just this function, but maybe we can rephrase this as "... make
+>> user-space wake up immediately"?
+>>
 > 
-> Implement this so that we don't observe linkage failures due to missing
-> symbol definitions for `stpcpy`.
+> But is this really about user-space wakeup? I am under the impression
+> that past poll_wait on both queues, we are already about to return
+> (and wakeup).
 > 
-> Similar to last year's fire drill with:
-> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+> The way I see it, the original commit intention was to skip any
+> done_list handling, returning immediately on the last buffer condition.
 > 
-> The kernel is somewhere between a "freestanding" environment (no full libc)
-> and "hosted" environment (many symbols from libc exist with the same
-> type, function signature, and semantics).
+> How about just
 > 
-> As H. Peter Anvin notes, there's not really a great way to inform the
-> compiler that you're targeting a freestanding environment but would like
-> to opt-in to some libcall optimizations (see pr/47280 below), rather than
-> opt-out.
-> 
-> Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-> and Clang, and Clang is missing many __builtin_* definitions, which I
-> consider a bug in Clang and am working on fixing.
-> 
-> Masahiro summarizes the subtle distinction between compilers justly:
->   To prevent transformation from foo() into bar(), there are two ways in
->   Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
->   only one in GCC; -fno-buitin-foo.
-> 
-> (Any difference in that behavior in Clang is likely a bug from a missing
-> __builtin_* definition.)
-> 
-> Masahiro also notes:
->   We want to disable optimization from foo() to bar(),
->   but we may still benefit from the optimization from
->   foo() into something else. If GCC implements the same transform, we
->   would run into a problem because it is not -fno-builtin-bar, but
->   -fno-builtin-foo that disables that optimization.
-> 
->   In this regard, -fno-builtin-foo would be more future-proof than
->   -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
->   may want to prevent calls from foo() being optimized into calls to
->   bar(), but we still may want other optimization on calls to foo().
-> 
-> It seems that compilers today don't quite provide the fine grain control
-> over which libcall optimizations pseudo-freestanding environments would
-> prefer.
-> 
-> Finally, Kees notes that this interface is unsafe, so we should not
-> encourage its use.  As such, I've removed the declaration from any
-> header, but it still needs to be exported to avoid linkage errors in
-> modules.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-> Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-> Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-> Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-> Link: https://reviews.llvm.org/D85963
-> Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Reported-by: Sami Tolvanen <samitolvanen@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> """
+> If the last buffer was dequeued from the capture queue,
+> signal userspace. DQBUF will return -EPIPE.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+I'd write 'DQBUF(CAPTURE)' here to emphasize that only the capture
+queue will return -EPIPE when you try to dequeue from it.
 
--- 
-Kees Cook
+Also note that the original text was a copy-and-paste from vb2_core_poll().
+The phrase 'return immediately' makes sense in that context since that
+poll code deals with a single queue. In this case you have two queues,
+and 'return immediately' no longer applies (in fact, that effectively is
+the bug that being fixed here!).
+
+Regards,
+
+	Hans
+
+> """
+> 
+> ?
+> 
+>>>
+>>> Thanks,
+>>> Ezequiel
+>>>
+>>>> -               if (dst_q->last_buffer_dequeued) {
+>>>> -                       spin_unlock_irqrestore(&dst_q->done_lock, flags);
+>>>> -                       rc |= EPOLLIN | EPOLLRDNORM;
+>>>> -                       return rc;
+>>>> -               }
+>>>> -       }
+>>>> -
+>>>> -       if (!list_empty(&dst_q->done_list))
+>>>> -               dst_vb = list_first_entry(&dst_q->done_list, struct vb2_buffer,
+>>>> -                                               done_entry);
+>>>> -       if (dst_vb && (dst_vb->state == VB2_BUF_STATE_DONE
+>>>> -                       || dst_vb->state == VB2_BUF_STATE_ERROR))
+>>>>                 rc |= EPOLLIN | EPOLLRDNORM;
+>>>> +       }
+>>>>         spin_unlock_irqrestore(&dst_q->done_lock, flags);
+>>>>
+>>>>         return rc;
+>>>> --
+>>>> 2.28.0
+>>>>
+
