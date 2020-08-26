@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009EF2535A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 19:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8849A2535AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 19:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgHZRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 13:00:43 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41933 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgHZRAk (ORCPT
+        id S1727882AbgHZRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 13:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbgHZRAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 13:00:40 -0400
-Received: by mail-ot1-f67.google.com with SMTP id a65so2070528otc.8;
-        Wed, 26 Aug 2020 10:00:40 -0700 (PDT)
+        Wed, 26 Aug 2020 13:00:49 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334C1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 10:00:49 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id r13so2427792iln.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 10:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=26QxbXjs0m3B0fkeAQyxS9wdKxVZQIc+uM+Gzg+WrxE=;
+        b=lebqEwzMhnmkswoxV6vONuwriIJ3JbLyvJdUMvGSkvk4rWMzuvlc611vQT6UXue4kb
+         wuvGPZeBJwakM8I+RxywGmWpCfcM1xTEyQ69vOl82tWVJTod2B3ns3KNvKkqCrpgFY0l
+         eiy0e08N3NHS0uzIhvheHSOD5J5U4Y3SrC/Xd+VWhXW4VYZ7Nx+YHN8ue885Go737b5S
+         J9/7dQKzUKx6X5CmRhetUxkGMx2GuQpeLCzw3P9S7xWkqAUoLbFRkmIegcs6bMSm+bcq
+         DmgxmVlJbAyb9mGkZXT9lfX/0VEwS2S8sIPEldJiY43Zcb0JeubJsLM8DZoGErATcX8M
+         aK+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PK2AREGsgo2BJQkLoTxbptoSZnFMwBXWBdBmpLjVG8I=;
-        b=nwlyG10eRuy3mSZoU5VhwnbQG1JvPDN82fzO4Y4zZR2hQ+AStUCG+S4y6ExJbMBut/
-         40qg+4XTqqd4ofPf2AMzdiOaBhHO5rkcd/AyCW/2NndGdW2JPS27Hta0vKe6k0mrtw//
-         fkV1fWVtjr5ywj5ROm2ACH1zK328tyzl+hzAQgJRIIXRX8NNOdftJS0P9TqippCTEtGb
-         k7ZzRQ/xc6FMpyrOwlbMiP9cvDQv5C/YkqQ7CojIM9joGwErw8TcUbJHb14HoMJsw4HI
-         VcpX9CIHMlfP4NtOQ7oL6USYs34E1vTtkXPiOwoN+2JN8voNRfWjHnigwTSUvl2DG+b3
-         Dcqg==
-X-Gm-Message-State: AOAM533zTReSVj6ZKKtmgAhtqeKzhJ55ntUiOKEkRLPkVDXDVzLfsYfN
-        qrritDieDxDA58FnYawXO1wRrgxVw80JJ9k9h9k=
-X-Google-Smtp-Source: ABdhPJzmuAPF17O9pdrF64IuZb2lUyWVFmVfah1qh0Pr2tFPah79a2+KuSIS9LNFrK10E4CYrQcBaK4YUihkpasyw0g=
-X-Received: by 2002:a9d:5c06:: with SMTP id o6mr10580527otk.262.1598461239813;
- Wed, 26 Aug 2020 10:00:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=26QxbXjs0m3B0fkeAQyxS9wdKxVZQIc+uM+Gzg+WrxE=;
+        b=eAR+EOZMYbuKvdK/OogPULPevH+sDNJ3VFPvpN8B+LXslSd2C9ygpXuzIhJdR4DzQl
+         ioyLmU+MAcs08xoMCksa7ReuHOc0qlX/pZvzckmZk5jSNH1D3hTq+tdX0YKhCrcWPljt
+         bsQtSZkXKbIgsYgvdd+EpO0tLQJxOm/PlVX/DBjHWfC4aS5V3gX5AFSO1HBIVnQUjWkB
+         i7VPww7C1zQehD1wblQIvyKLWQ5rAnFoy4qxKXzbpLjBjEqqwI/NWOReY5qKP/OwIb6W
+         YuWWQolHsIAL2Y4dVZ3crqxVTocktfP2grvlDmUDaApPEABWtv6qJuTjdj99GfnJPt4u
+         StXg==
+X-Gm-Message-State: AOAM5321Oz7xQCOssVK0jV63TFvD0zeKK7rBKhjxJ0TJy5bYnN5IM6f8
+        HYSpz7rdoJXXnkxg5j958AYiU4ZofkJfWg==
+X-Google-Smtp-Source: ABdhPJzXNx08f0nZ6xcJw6hnAsHg+EfmelTxJ3ljsr5xDxklbhFCTqfDudRRdcHUuI/h2miSh0PL+w==
+X-Received: by 2002:a92:c74e:: with SMTP id y14mr14195110ilp.251.1598461248027;
+        Wed, 26 Aug 2020 10:00:48 -0700 (PDT)
+Received: from frodo.hsd1.co.comcast.net ([2601:284:8203:5970::c4c])
+        by smtp.googlemail.com with ESMTPSA id p78sm1479606iod.0.2020.08.26.10.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 10:00:47 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        jbaron@akamai.com
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 0/4] dyndbg: POC use dynamic_debug_exec_queries in DRM
+Date:   Wed, 26 Aug 2020 11:00:37 -0600
+Message-Id: <20200826170041.2497546-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200826120421.44356-1-guilhem@barpilot.io> <CAJZ5v0i8XUF39Vv=EM4TgyXgK6zHniZW3tGYFPweO3kg+BrxOQ@mail.gmail.com>
- <CAGX5Wg2OOgY6d1RH514Kh9D6b+siga+jzH7qubcmE+ukq+6KKA@mail.gmail.com>
- <d0ca671465e6ce72c6c4d5178440ebc1e4814da8.camel@gmail.com>
- <e82c121057c4496238d3de7f7c919b7039d23b7c.camel@gmail.com>
- <CAGX5Wg0LrzPwf=2pGrQHAbFMVkOoYDxOoFa+ZmLBYshPvZQUXg@mail.gmail.com>
- <8fa7622dacc03f2fbd67e810f53389e3ede544e8.camel@intel.com>
- <CAGX5Wg0=K5AaTut5KH3R3+oasM5MM7PaJ9Z_L56xSNckMbWC9g@mail.gmail.com>
- <CAJZ5v0j4FXH26rZCjM9Csd56skPVbRpM7iFcKYAFMmLFX54+bg@mail.gmail.com>
- <e9e6823d63fe2b9938e43a14c136b89aec0c503b.camel@gmail.com>
- <CAJZ5v0gPY+7YBeWwszoNBwsbKLFOEeuLaekdX62_gvbHXB8xoA@mail.gmail.com> <CAGX5Wg3bVpgaFXHb1=4ikGk0P+4=XRqROBU4pqw1mpsY06dbHQ@mail.gmail.com>
-In-Reply-To: <CAGX5Wg3bVpgaFXHb1=4ikGk0P+4=XRqROBU4pqw1mpsY06dbHQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Aug 2020 19:00:28 +0200
-Message-ID: <CAJZ5v0gJscMWLsjCm_L6jCDdZ2hdRB2mPtUBSgd1va7Xm7GyVA@mail.gmail.com>
-Subject: Re: [PATCH] intel_idle: Add ICL support
-To:     Guilhem Lettron <guilhem@barpilot.io>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 6:46 PM Guilhem Lettron <guilhem@barpilot.io> wrote:
->
-> I've done more tests, maybe it can give you more hints.
-> I don't see that much differences between both (with and without
-> patches) in this cases.
+This patchset tests/demonstrates using dynamic_debug_exec_queries() to
+alter 2 drivers' pr_debugs without a user directly using >control.
 
-OK, thanks!
+For drm.core, I copied drm.debug module parameter model, adding
+drm.debug2 as a POC user interface to control 2 pr_debug additions to
+drm_printk:drm_dbg,dev_dbg, allowing both category and >control to
+work in parallel.  This patch makes no attempt to integrate drm's
+category mechanism with the "format=^class" callsite selection; thats
+the "theory", but it needs testing.
 
-I'm assuming that the topmost two sets of data are for the "without
-the patch" case whereas the other three correspond to the "with the
-patch" case.
+For i915/gvt, I repeated the pattern.  I focussed on gvt only, because
+it had the most compelling use of format strings as pr_debug classes;
+~120 pr_debugs in 9 classes.  These are mapped onto bits of the param.
 
-If so, the processor clearly enters PC10 in both cases and the
-residency percentages are similar.
+bash-5.0# echo 0x0 > /sys/module/i915/parameters/debug_dyn 
+[ 3137.044185] set_dyndbg: result:0x0 from 0x0
+[ 3137.044185] 
+[ 3137.047370] dyndbg: query 0: "format='^gvt: cmd: ' -p"
+[ 3137.050302] dyndbg: entry, buf:'format='^gvt: cmd: ' -p'
+[ 3137.053331] dyndbg: start-of-word:0 'format='^gvt: cmd: ' -p'
 
-The numbers of times the POLL state was selected in the first test
-look kind of unusual (relatively very large), but other than this the
-patch doesn't seem to make much of a difference, so I'm not going to
-apply it.
+These patches were the test/use case for-59 fixes:
+https://lore.kernel.org/lkml/20200825173339.2082585-1-jim.cromie@gmail.com/
 
-Thanks!
+
+Jim Cromie (4):
+  drm-printk: POC caller of dynamic-debug-exec-queries
+  drm-printk: call pr_debug() from drm_dev_dbg, __drm_dbg
+  i915: add -DDYNAMIC_DEBUG_MODULE to i915/gvt/Makefile
+  i915: POC use dynamic_debug_exec_queries to control pr_debugs in gvt
+
+ drivers/gpu/drm/drm_print.c        | 54 ++++++++++++++++++---
+ drivers/gpu/drm/i915/gvt/Makefile  |  5 +-
+ drivers/gpu/drm/i915/i915_params.c | 76 ++++++++++++++++++++++++++++++
+ 3 files changed, 127 insertions(+), 8 deletions(-)
+
+-- 
+2.26.2
+
