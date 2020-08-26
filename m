@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E25E252777
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFC125277E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726940AbgHZGih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 02:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbgHZGiP (ORCPT
+        id S1726990AbgHZGjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 02:39:16 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1622 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgHZGjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 02:38:15 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE6FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 23:38:14 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id p186so370620vsa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 23:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hDQRRI78D3Sk/YTewL1Qk0xdUUz1zPK2EJmRrgeUM0s=;
-        b=vTGLn1x/zJIY52K4Di+3Teh/ssAgCH5yCwousRZq+WecxuiBZEquiPQ9UNFYv6go+3
-         cxi9hrbf2PwEWTBq9ymWzvNM9qStJcOI/VzzqoFk3NpF4g3qH7J2F19ht/JJlu3ryxSN
-         QQLSDGi9S/5vRxqgCcBcSrmgspZbBbXmmZfE8YjUe415ruvrb1/taSGkJjYKYCnCwmBy
-         W7N5w2m83JU88vI4Y8ZBW1sRBlpZoDDr1BQl/dAiLyjyZNPvRccfwRVDjiW5oBZL5gCY
-         PIaopB27colyHJy/KItN20mbxURukeTX37yvpDdatb1doKoHcDElNQX5XjOOpgJiSKl9
-         pByg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hDQRRI78D3Sk/YTewL1Qk0xdUUz1zPK2EJmRrgeUM0s=;
-        b=Pf8I293H6eJAIvOqgvThR4ZEwXwu1He8kMnspSFVCnlkXaTkBa+P9HhHE5F1qnz30v
-         MK1cFiiheGL6nQHGKretLN7N42UOgzY2egE9LBKopzfGbcqN9VABWwNWel8yJawmOFh4
-         X3Sy6tvYmnp6si2XMuVxLxBkC9VJUzZZ7i7Csm5ae36+Vz9k7liIpnKzobRhuYvhghZa
-         u2hmF0k/LblfGm1nnaaDZd00eR/vS5DnzrdTl6HCtR9SPCz8z1r00cA84dEfcRuDxdS/
-         X6UkqCJ4e8BQVTd6chtOp1u/pnR838+YcEiyGxGKJHHfkZvJEkgIo2ruVzcXXGy1n5fB
-         5JPg==
-X-Gm-Message-State: AOAM531UoF9qP59+LBpe8n+8SDenBmUy/7W8fxiCQw3ljLbacwvyG4SD
-        XmFV9JKNKxmvX3e1sJeQG1nsm2jRfWBefGcClSGHXA==
-X-Google-Smtp-Source: ABdhPJxskoXtY/RFvHibrA9E3iOGod97S56DxYjdnW850ds8AvXYJR6KR4cZHsxljH82T1HmX9SZMy0I8dsWlSV6bzI=
-X-Received: by 2002:a67:fb43:: with SMTP id e3mr7397682vsr.91.1598423892321;
- Tue, 25 Aug 2020 23:38:12 -0700 (PDT)
+        Wed, 26 Aug 2020 02:39:15 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q6UQDL027131;
+        Wed, 26 Aug 2020 02:39:02 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 332w764k56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 02:39:01 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07Q6d0qo014968
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 26 Aug 2020 02:39:00 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 25 Aug 2020 23:38:58 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 25 Aug 2020 23:38:58 -0700
+Received: from saturn.ad.analog.com ([10.48.65.100])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07Q6cs7n018839;
+        Wed, 26 Aug 2020 02:38:55 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <jic23@kernel.org>, <alexandre.torgue@st.com>,
+        <fabrice.gasnier@st.com>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: stm32-dac: Replace indio_dev->mlock with own device lock
+Date:   Wed, 26 Aug 2020 09:38:50 +0300
+Message-ID: <20200826063850.47625-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200819104057.318230-1-ulf.hansson@linaro.org>
- <20200819104057.318230-4-ulf.hansson@linaro.org> <20200825161602.GE12523@codeaurora.org>
-In-Reply-To: <20200825161602.GE12523@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 26 Aug 2020 08:37:35 +0200
-Message-ID: <CAPDyKFrMUf4y5kVjr=dW-wf2kqBwcGePf=55U1Ck8O6tp-OuqQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] PM / Domains: Add support for PM domain on/off
- notifiers for genpd
-To:     Lina Iyer <ilina@codeaurora.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_03:2020-08-25,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=506 spamscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008260050
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Aug 2020 at 18:16, Lina Iyer <ilina@codeaurora.org> wrote:
->
-> On Wed, Aug 19 2020 at 04:41 -0600, Ulf Hansson wrote:
-> >A device may have specific HW constraints that must be obeyed to, before
-> >its corresponding PM domain (genpd) can be powered off - and vice verse at
-> >power on. These constraints can't be managed through the regular runtime PM
-> >based deployment for a device, because the access pattern for it, isn't
-> >always request based. In other words, using the runtime PM callbacks to
-> >deal with the constraints doesn't work for these cases.
-> >
-> >For these reasons, let's instead add a PM domain power on/off notification
-> >mechanism to genpd. To add/remove a notifier for a device, the device must
-> >already have been attached to the genpd, which also means that it needs to
-> >be a part of the PM domain topology.
-> >
-> >To add/remove a notifier, let's introduce two genpd specific functions:
-> > - dev_pm_genpd_add|remove_notifier()
-> >
-> >Note that, to further clarify when genpd power on/off notifiers may be
-> >used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
-> >notifiers. In the long run, the genpd power on/off notifiers should be able
-> >to replace them, but that requires additional genpd based platform support
-> >for the current users.
-> >
-> >Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >---
-> > drivers/base/power/domain.c | 130 ++++++++++++++++++++++++++++++++++--
-> > include/linux/pm_domain.h   |  15 +++++
-> > 2 files changed, 141 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> >index 4b787e1ff188..9cb85a5e8342 100644
-> >--- a/drivers/base/power/domain.c
-> >+++ b/drivers/base/power/domain.c
-> >@@ -545,13 +545,21 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
-> >       if (!genpd->gov)
-> >               genpd->state_idx = 0;
-> >
-> >+      /* Notify consumers that we are about to power off. */
-> >+      ret = raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_OFF,
-> >+                                    NULL);
-> >+      if (ret)
-> >+              return ret;
-> >+
-> >       /* Don't power off, if a child domain is waiting to power on. */
-> >-      if (atomic_read(&genpd->sd_count) > 0)
-> >-              return -EBUSY;
-> >+      if (atomic_read(&genpd->sd_count) > 0) {
-> >+              ret = -EBUSY;
-> >+              goto busy;
-> >+      }
-> >
-> >       ret = _genpd_power_off(genpd, true);
-> >       if (ret)
-> >-              return ret;
-> >+              goto busy;
-> >
-> >       genpd->status = GENPD_STATE_OFF;
-> >       genpd_update_accounting(genpd);
-> >@@ -564,6 +572,9 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
-> >       }
-> >
-> >       return 0;
-> >+busy:
-> >+      raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
-> It would be helpful to abstract these notification related calls into
-> functions of their own. So, for CPU PM domains, it would help to add
-> RCU_NONIDLE() around the notifiers, allowing the callbacks to add trace
-> functions.
+From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-Thanks for the suggestion! It makes perfect sense to me - and would
-also be consistent with how CPU PM notifiers are managed,
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock on the device's state structure.
 
-[,,,]
+The patch also does a minor whitespace change to align the 'lock' with the
+'common' field via tabs.
 
-Kind regards
-Uffe
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/dac/stm32-dac.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+index 092c796fa3d9..fc636812c17e 100644
+--- a/drivers/iio/dac/stm32-dac.c
++++ b/drivers/iio/dac/stm32-dac.c
+@@ -26,9 +26,11 @@
+ /**
+  * struct stm32_dac - private data of DAC driver
+  * @common:		reference to DAC common data
++ * @lock:		lock to protect the data buffer during regmap ops
+  */
+ struct stm32_dac {
+-	struct stm32_dac_common *common;
++	struct stm32_dac_common	*common;
++	struct mutex		lock;
+ };
+ 
+ static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+@@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 	int ret;
+ 
+ 	/* already enabled / disabled ? */
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&dac->lock);
+ 	ret = stm32_dac_is_enabled(indio_dev, ch);
+ 	if (ret < 0 || enable == !!ret) {
+-		mutex_unlock(&indio_dev->mlock);
++		mutex_unlock(&dac->lock);
+ 		return ret < 0 ? ret : 0;
+ 	}
+ 
+@@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 		ret = pm_runtime_get_sync(dev);
+ 		if (ret < 0) {
+ 			pm_runtime_put_noidle(dev);
+-			mutex_unlock(&indio_dev->mlock);
++			mutex_unlock(&dac->lock);
+ 			return ret;
+ 		}
+ 	}
+ 
+ 	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&dac->lock);
+ 	if (ret < 0) {
+ 		dev_err(&indio_dev->dev, "%s failed\n", en ?
+ 			"Enable" : "Disable");
+@@ -327,6 +329,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+ 	indio_dev->info = &stm32_dac_iio_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 
++	mutex_init(&dac->lock);
++
+ 	ret = stm32_dac_chan_of_init(indio_dev);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.25.1
+
