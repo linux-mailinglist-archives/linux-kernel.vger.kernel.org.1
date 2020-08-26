@@ -2,217 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4045252CF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56DA252D12
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgHZLvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:51:22 -0400
-Received: from mga06.intel.com ([134.134.136.31]:17928 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729181AbgHZLvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:51:05 -0400
-IronPort-SDR: CedqNMWSajI1h6eUL0+jOS2jdozmk69QzHpskD+iRrMudJn1CBKAUtZHO5d4VmCeOE+k5MRk+u
- ApRHU1N4XohQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="217822885"
-X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
-   d="scan'208";a="217822885"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 04:50:58 -0700
-IronPort-SDR: 45btBJ3Fh4xEeSU/JjsxGTjrvYWzd+ac0ValhMUhBCn3aJFlHtVtBZ+gaGx7Je4pMJuR1e+VhX
- 04DpG52DM7tQ==
-X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
-   d="scan'208";a="331754184"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 04:50:53 -0700
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id 6B3E9209B8;
-        Wed, 26 Aug 2020 14:50:51 +0300 (EEST)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1kAu0e-0001bP-Q6; Wed, 26 Aug 2020 14:54:32 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
-        linux-media@vger.kernel.org,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
-Subject: [PATCH v6 3/6] ov5670: Support probe whilst the device is in a low power state
-Date:   Wed, 26 Aug 2020 14:54:29 +0300
-Message-Id: <20200826115432.6103-4-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
-References: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
+        id S1729271AbgHZLzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:55:03 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41029 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729195AbgHZLye (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:54:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U6vV5Ro_1598442870;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U6vV5Ro_1598442870)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 26 Aug 2020 19:54:31 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH] mm: memcg: Fix memcg reclaim soft lockup
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1598426822-93737-1-git-send-email-xlpang@linux.alibaba.com>
+ <20200826081102.GM22869@dhcp22.suse.cz>
+ <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
+ <20200826110015.GO22869@dhcp22.suse.cz>
+ <5b22890d-190f-be1d-3be8-995765dbb957@linux.alibaba.com>
+Message-ID: <0cf41b39-f039-7e53-ea80-9d5d0c784e73@linux.alibaba.com>
+Date:   Wed, 26 Aug 2020 19:54:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <5b22890d-190f-be1d-3be8-995765dbb957@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tell ACPI device PM code that the driver supports the device being in a
-low power state when the driver's probe function is entered.
+On 2020/8/26 下午7:45, xunlei wrote:
+> On 2020/8/26 下午7:00, Michal Hocko wrote:
+>> On Wed 26-08-20 18:41:18, xunlei wrote:
+>>> On 2020/8/26 下午4:11, Michal Hocko wrote:
+>>>> On Wed 26-08-20 15:27:02, Xunlei Pang wrote:
+>>>>> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
+>>>>> the target memcg doesn't have any reclaimable memory.
+>>>>
+>>>> Do you have any scenario when this happens or is this some sort of a
+>>>> test case?
+>>>
+>>> It can happen on tiny guest scenarios.
+>>
+>> OK, you made me more curious. If this is a tiny guest and this is a hard
+>> limit reclaim path then we should trigger an oom killer which should
+>> kill the offender and that in turn bail out from the try_charge lopp
+>> (see should_force_charge). So how come this repeats enough in your setup
+>> that it causes soft lockups?
+>>
+> 
+>     oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+>                get_order(nr_pages * PAGE_SIZE));
+>     switch (oom_status) {
+>     case OOM_SUCCESS:
+>         nr_retries = MAX_RECLAIM_RETRIES;
 
-Also do identification on the first access of the device, whether in probe
-or when starting streaming.
+Actually we can add "cond_resched()" here, but I think it's better to
+have one at the memcg reclaim path to avoid other unexpected issues.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/media/i2c/ov5670.c | 76 +++++++++++++++++++++++---------------
- 1 file changed, 46 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/media/i2c/ov5670.c b/drivers/media/i2c/ov5670.c
-index f26252e35e08d..74b0325c22565 100644
---- a/drivers/media/i2c/ov5670.c
-+++ b/drivers/media/i2c/ov5670.c
-@@ -1832,6 +1832,8 @@ struct ov5670 {
- 
- 	/* Streaming on/off */
- 	bool streaming;
-+	/* True if the device has been identified */
-+	bool identified;
- };
- 
- #define to_ov5670(_sd)	container_of(_sd, struct ov5670, sd)
-@@ -2270,6 +2272,32 @@ static int ov5670_get_skip_frames(struct v4l2_subdev *sd, u32 *frames)
- 	return 0;
- }
- 
-+/* Verify chip ID */
-+static int ov5670_identify_module(struct ov5670 *ov5670)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&ov5670->sd);
-+	int ret;
-+	u32 val;
-+
-+	if (ov5670->identified)
-+		return 0;
-+
-+	ret = ov5670_read_reg(ov5670, OV5670_REG_CHIP_ID,
-+			      OV5670_REG_VALUE_24BIT, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != OV5670_CHIP_ID) {
-+		dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
-+			OV5670_CHIP_ID, val);
-+		return -ENXIO;
-+	}
-+
-+	ov5670->identified = true;
-+
-+	return 0;
-+}
-+
- /* Prepare streaming by writing default values and customized values */
- static int ov5670_start_streaming(struct ov5670 *ov5670)
- {
-@@ -2278,6 +2306,10 @@ static int ov5670_start_streaming(struct ov5670 *ov5670)
- 	int link_freq_index;
- 	int ret;
- 
-+	ret = ov5670_identify_module(ov5670);
-+	if (ret)
-+		return ret;
-+
- 	/* Get out of from software reset */
- 	ret = ov5670_write_reg(ov5670, OV5670_REG_SOFTWARE_RST,
- 			       OV5670_REG_VALUE_08BIT, OV5670_SOFTWARE_RST);
-@@ -2401,27 +2433,6 @@ static int __maybe_unused ov5670_resume(struct device *dev)
- 	return 0;
- }
- 
--/* Verify chip ID */
--static int ov5670_identify_module(struct ov5670 *ov5670)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&ov5670->sd);
--	int ret;
--	u32 val;
--
--	ret = ov5670_read_reg(ov5670, OV5670_REG_CHIP_ID,
--			      OV5670_REG_VALUE_24BIT, &val);
--	if (ret)
--		return ret;
--
--	if (val != OV5670_CHIP_ID) {
--		dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
--			OV5670_CHIP_ID, val);
--		return -ENXIO;
--	}
--
--	return 0;
--}
--
- static const struct v4l2_subdev_video_ops ov5670_video_ops = {
- 	.s_stream = ov5670_set_stream,
- };
-@@ -2456,6 +2467,7 @@ static int ov5670_probe(struct i2c_client *client)
- 	struct ov5670 *ov5670;
- 	const char *err_msg;
- 	u32 input_clk = 0;
-+	bool low_power;
- 	int ret;
- 
- 	device_property_read_u32(&client->dev, "clock-frequency", &input_clk);
-@@ -2472,11 +2484,14 @@ static int ov5670_probe(struct i2c_client *client)
- 	/* Initialize subdev */
- 	v4l2_i2c_subdev_init(&ov5670->sd, client, &ov5670_subdev_ops);
- 
--	/* Check module identity */
--	ret = ov5670_identify_module(ov5670);
--	if (ret) {
--		err_msg = "ov5670_identify_module() error";
--		goto error_print;
-+	low_power = acpi_dev_state_low_power(&client->dev);
-+	if (!low_power) {
-+		/* Check module identity */
-+		ret = ov5670_identify_module(ov5670);
-+		if (ret) {
-+			err_msg = "ov5670_identify_module() error";
-+			goto error_print;
-+		}
- 	}
- 
- 	mutex_init(&ov5670->mutex);
-@@ -2513,10 +2528,10 @@ static int ov5670_probe(struct i2c_client *client)
- 	ov5670->streaming = false;
- 
- 	/*
--	 * Device is already turned on by i2c-core with ACPI domain PM.
--	 * Enable runtime PM and turn off the device.
-+	 * Don't set the device's state to active if it's in a low power state.
- 	 */
--	pm_runtime_set_active(&client->dev);
-+	if (!low_power)
-+		pm_runtime_set_active(&client->dev);
- 	pm_runtime_enable(&client->dev);
- 	pm_runtime_idle(&client->dev);
- 
-@@ -2558,7 +2573,7 @@ static const struct dev_pm_ops ov5670_pm_ops = {
- 
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id ov5670_acpi_ids[] = {
--	{"INT3479"},
-+	{ "INT3479" },
- 	{ /* sentinel */ }
- };
- 
-@@ -2573,6 +2588,7 @@ static struct i2c_driver ov5670_i2c_driver = {
- 	},
- 	.probe_new = ov5670_probe,
- 	.remove = ov5670_remove,
-+	.flags = I2C_DRV_FL_ALLOW_LOW_POWER_PROBE,
- };
- 
- module_i2c_driver(ov5670_i2c_driver);
--- 
-2.20.1
-
+>         goto retry;
+> 
+> It retries here endlessly, because oom reaper has no cpu to schedule.
+> 
