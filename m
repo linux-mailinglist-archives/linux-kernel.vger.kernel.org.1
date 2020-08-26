@@ -2,81 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EBC252C56
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31516252C5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgHZLS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:18:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:44394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgHZLQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:16:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2ADE1FB;
-        Wed, 26 Aug 2020 04:16:50 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BE143F71F;
-        Wed, 26 Aug 2020 04:16:49 -0700 (PDT)
-References: <20200824102317.1038259-1-maz@kernel.org> <20200824102317.1038259-6-maz@kernel.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 5/9] fsl-msi: Provide default retrigger callback
-In-reply-to: <20200824102317.1038259-6-maz@kernel.org>
-Date:   Wed, 26 Aug 2020 12:16:47 +0100
-Message-ID: <jhj7dtlejxc.mognet@arm.com>
+        id S1728905AbgHZLWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728902AbgHZLVZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:21:25 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4A1C061799;
+        Wed, 26 Aug 2020 04:19:46 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y26so782934lfe.2;
+        Wed, 26 Aug 2020 04:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uu4WskBztKVUoVSil4cy4MR9LWqcw8xk2hr+l0UQ5ho=;
+        b=nLSKDQaBmzQREFSjfYHKCqFSUKm9X0iKZKktP8MRR7TUCwjXuSJJQWe4LWG8yLQR5B
+         6ya721Xer1i/YscNwBz3wTajvo9dCz7ieCkXcXzy4pLGrwOxfu2LJ4wCam9Tacykvw5i
+         RHga6ZekM3QBEWrT0WnzqT3K73yNX+D/45UWy5PUzN3iQeEMNBieoWxxtND4qaSYXy2H
+         O1SMNuSUhs2bbLEusZUxwdWD9wrryrVS9yA34iQ/p/dnOVnRDpuTq2N/erfwBHywv+Wx
+         GO8s99zdB/EYGMwGsdhphInw4RWcHUmk2wNPyfSxs/Pon7KfXSW4mfBiqDnQBE839FX/
+         Z/Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uu4WskBztKVUoVSil4cy4MR9LWqcw8xk2hr+l0UQ5ho=;
+        b=uTuCaSNhOkJwnKb2eS65M5aK7RC+RS1dUb4Cdf0f3t6zh+mdOaaudwy47F1yQA851T
+         qQBBu7GQ+sBn2Bq0Kntbt6CQv6yxq+v7nv4gOnQs4a4uaVzABK9HpO3ufc8nJBiwNzN+
+         G5dSTQA6dYzSdnvKo5kcLoi797MLFByEXzQ8BUObZXhVnLsUS1sD2TT6bUb13FfFFvAZ
+         H9hpvx1CYnBVJDh0fnqfW+sOYstPQ7c7g03/VfMHKzW9Q6JPXV2r+qDsdMaMHlcRfR1d
+         wd4ZWajFZBvRbONMP4GkX2UMozZDNXN9EJVeKAN3MVd4kMxKF10uF1Q1Pq9t27Ngoirn
+         cRwg==
+X-Gm-Message-State: AOAM531e4eOgD/T1SxnaDFp7xAksEAnaBWBvMOm/ZdTzAR5y1otQFgmE
+        /goc6Lg3UCeTuyp40r7cKXzS3ZBheU/eR6Ko+RU=
+X-Google-Smtp-Source: ABdhPJxuVHbetnc2ILjUr/BDvb4NcfasRruvdoGDD4w183KvosLLP3yazMpa2v2J3UgwEYKy/joOCyF1a6VogES9xps=
+X-Received: by 2002:ac2:5a0c:: with SMTP id q12mr2905449lfn.173.1598440784506;
+ Wed, 26 Aug 2020 04:19:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200825145556.637323-1-gnurou@gmail.com> <20200825145556.637323-3-gnurou@gmail.com>
+ <CAAEAJfD1kUJODa+-STV6Q+=9qWH8v2=KZzAA4ppgfbQxstO+Mg@mail.gmail.com>
+In-Reply-To: <CAAEAJfD1kUJODa+-STV6Q+=9qWH8v2=KZzAA4ppgfbQxstO+Mg@mail.gmail.com>
+From:   Alexandre Courbot <gnurou@gmail.com>
+Date:   Wed, 26 Aug 2020 20:19:33 +0900
+Message-ID: <CAAVeFuJgBqN7KYhNi=mMNxy6wHTZOn5E1=pHP3q=n8X++b5pmg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: simplify poll logic a bit
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ezequiel, thanks for the review!
 
-Hi Marc,
-
-Many thanks for picking this up!
-Below's the only comment I have, the rest LGTM.
-
-On 24/08/20 11:23, Marc Zyngier wrote:
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/bus/fsl-mc/fsl-mc-msi.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Wed, Aug 26, 2020 at 1:15 PM Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
 >
-> diff --git a/drivers/bus/fsl-mc/fsl-mc-msi.c b/drivers/bus/fsl-mc/fsl-mc-msi.c
-> index 8edadf05cbb7..5306ba7dea3e 100644
-> --- a/drivers/bus/fsl-mc/fsl-mc-msi.c
-> +++ b/drivers/bus/fsl-mc/fsl-mc-msi.c
-> @@ -144,6 +144,8 @@ static void fsl_mc_msi_update_chip_ops(struct msi_domain_info *info)
->        */
->       if (!chip->irq_write_msi_msg)
->               chip->irq_write_msi_msg = fsl_mc_msi_write_msg;
-> +	if (!chip->irq_retrigger)
-> +		chip->irq_retrigger = irq_chip_retrigger_hierarchy;
-
-AFAICT the closest generic hook we could use here is
-
-  msi_create_irq_domain() -> msi_domain_update_chip_ops()
-
-which happens just below the fsl-specific ops update.
-
-
-However, placing a default .irq_retrigger callback in there would affect any
-and all MSI domain. IOW that would cover PCI and platform MSIs (covered by
-separate patches in this series), but also some x86 ("dmar" & "hpet") and
-TI thingies.
-
-I can't tell right now how bad of an idea it is, but I figured I'd throw
-this out there.
-
-
->  }
+> Hi Alexandre,
 >
->  /**
+> On Tue, 25 Aug 2020 at 11:56, Alexandre Courbot <gnurou@gmail.com> wrote:
+> >
+> > Factorize redundant checks into a single code block, remove the early
+> > return, and declare variables in their innermost block. Hopefully this
+> > makes this code a little bit easier to follow.
+> >
+>
+> This _definitely_ makes the poll handling more readable.
+>
+> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>
+> See below a nitpick.
+>
+> > Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
+> > ---
+> >  drivers/media/v4l2-core/v4l2-mem2mem.c | 35 +++++++++++---------------
+> >  1 file changed, 15 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > index 0d0192119af20..aeac9707123d0 100644
+> > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > @@ -841,7 +841,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
+> >                                        struct poll_table_struct *wait)
+> >  {
+> >         struct vb2_queue *src_q, *dst_q;
+> > -       struct vb2_buffer *src_vb = NULL, *dst_vb = NULL;
+> >         __poll_t rc = 0;
+> >         unsigned long flags;
+> >
+> > @@ -863,33 +862,29 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
+> >                 return EPOLLERR;
+> >
+> >         spin_lock_irqsave(&src_q->done_lock, flags);
+> > -       if (!list_empty(&src_q->done_list))
+> > -               src_vb = list_first_entry(&src_q->done_list, struct vb2_buffer,
+> > -                                               done_entry);
+> > -       if (src_vb && (src_vb->state == VB2_BUF_STATE_DONE
+> > -                       || src_vb->state == VB2_BUF_STATE_ERROR))
+> > -               rc |= EPOLLOUT | EPOLLWRNORM;
+> > +       if (!list_empty(&src_q->done_list)) {
+> > +               struct vb2_buffer *src_vb = list_first_entry(
+> > +                       &src_q->done_list, struct vb2_buffer, done_entry);
+> > +               if (src_vb->state == VB2_BUF_STATE_DONE ||
+> > +                   src_vb->state == VB2_BUF_STATE_ERROR)
+> > +                       rc |= EPOLLOUT | EPOLLWRNORM;
+> > +       }
+> >         spin_unlock_irqrestore(&src_q->done_lock, flags);
+> >
+> >         spin_lock_irqsave(&dst_q->done_lock, flags);
+> > -       if (list_empty(&dst_q->done_list)) {
+> > +       if (!list_empty(&dst_q->done_list)) {
+> > +               struct vb2_buffer *dst_vb = list_first_entry(
+> > +                       &dst_q->done_list, struct vb2_buffer, done_entry);
+> > +               if (dst_vb->state == VB2_BUF_STATE_DONE ||
+> > +                   dst_vb->state == VB2_BUF_STATE_ERROR)
+> > +                       rc |= EPOLLIN | EPOLLRDNORM;
+> > +       } else if (dst_q->last_buffer_dequeued) {
+> >                 /*
+> >                  * If the last buffer was dequeued from the capture queue,
+> >                  * return immediately. DQBUF will return -EPIPE.
+> >                  */
+>
+> The part about "returning immediately" doesn't make
+> much sense now. Could we rephrase this, keeping the -EPIPE
+> comment?
+
+I understood this sentence as referring to the system call and not
+just this function, but maybe we can rephrase this as "... make
+user-space wake up immediately"?
+
+>
+> Thanks,
+> Ezequiel
+>
+> > -               if (dst_q->last_buffer_dequeued) {
+> > -                       spin_unlock_irqrestore(&dst_q->done_lock, flags);
+> > -                       rc |= EPOLLIN | EPOLLRDNORM;
+> > -                       return rc;
+> > -               }
+> > -       }
+> > -
+> > -       if (!list_empty(&dst_q->done_list))
+> > -               dst_vb = list_first_entry(&dst_q->done_list, struct vb2_buffer,
+> > -                                               done_entry);
+> > -       if (dst_vb && (dst_vb->state == VB2_BUF_STATE_DONE
+> > -                       || dst_vb->state == VB2_BUF_STATE_ERROR))
+> >                 rc |= EPOLLIN | EPOLLRDNORM;
+> > +       }
+> >         spin_unlock_irqrestore(&dst_q->done_lock, flags);
+> >
+> >         return rc;
+> > --
+> > 2.28.0
+> >
