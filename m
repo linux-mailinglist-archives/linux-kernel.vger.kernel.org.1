@@ -2,130 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375B6252C9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D3E252CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgHZLlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:41:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50556 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728957AbgHZLiI (ORCPT
+        id S1728959AbgHZLqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:46:32 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49636 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729048AbgHZLpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:38:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBZOVJ136150;
-        Wed, 26 Aug 2020 11:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=thorspxO+uvUnATnsYlvaYPnVx7I0eI7wvBM1PYZRrc=;
- b=n3uQCDTnkt28xo5dttLlyTSH1UuxmEQ15gS0zeX2h6m/jiatFijVN7V9yQsimB76xQpu
- QfZKYf0h8aeQ8z9YCohw1cQ93DuPaYjH2z989DhO9nG/EYS54CPDzu4Wic+VIfCOIjTH
- KDpRtnNsI9yl9e1GAVAzGL26e05TIfiInijYkUaFYv2kKEaESF2wx+l31BriQmLMnv6D
- EGNxMB6OVCMNcv/h099KiQWHb8GLJVgNSHk6pnsJZU137mFJJcmYDel7Sx0zh981cpn7
- y7iS4Lv5L5TnauiQw5r6o5pGlieYq1ekFNRnwGE02WlNNMnIIOeoXrwC743DVllKBdow SA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 335gw81pf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 11:38:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBZLMo028791;
-        Wed, 26 Aug 2020 11:38:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 333r9ksn1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:38:06 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07QBc5T6023801;
-        Wed, 26 Aug 2020 11:38:05 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Aug 2020 04:38:05 -0700
-Date:   Wed, 26 Aug 2020 14:37:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Santosh Shilimkar <ssantosh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] memory: emif: Remove bogus debugfs error handling
-Message-ID: <20200826113759.GF393664@mwanda>
+        Wed, 26 Aug 2020 07:45:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04392;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U6vmqQL_1598442306;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U6vmqQL_1598442306)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 26 Aug 2020 19:45:07 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH] mm: memcg: Fix memcg reclaim soft lockup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1598426822-93737-1-git-send-email-xlpang@linux.alibaba.com>
+ <20200826081102.GM22869@dhcp22.suse.cz>
+ <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
+ <20200826110015.GO22869@dhcp22.suse.cz>
+From:   xunlei <xlpang@linux.alibaba.com>
+Message-ID: <5b22890d-190f-be1d-3be8-995765dbb957@linux.alibaba.com>
+Date:   Wed, 26 Aug 2020 19:45:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- mlxscore=0 phishscore=0 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 clxscore=1011 spamscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260094
+In-Reply-To: <20200826110015.GO22869@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Callers are generally not supposed to check the return values from
-debugfs functions.  Debugfs functions never return NULL so this error
-handling will never trigger.  (Historically debugfs functions used to
-return a mix of NULL and error pointers but it was eventually deemed too
-complicated for something which wasn't intended to be used in normal
-situations).
+On 2020/8/26 下午7:00, Michal Hocko wrote:
+> On Wed 26-08-20 18:41:18, xunlei wrote:
+>> On 2020/8/26 下午4:11, Michal Hocko wrote:
+>>> On Wed 26-08-20 15:27:02, Xunlei Pang wrote:
+>>>> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
+>>>> the target memcg doesn't have any reclaimable memory.
+>>>
+>>> Do you have any scenario when this happens or is this some sort of a
+>>> test case?
+>>
+>> It can happen on tiny guest scenarios.
+> 
+> OK, you made me more curious. If this is a tiny guest and this is a hard
+> limit reclaim path then we should trigger an oom killer which should
+> kill the offender and that in turn bail out from the try_charge lopp
+> (see should_force_charge). So how come this repeats enough in your setup
+> that it causes soft lockups?
+> 
 
-Delete all the error handling.
+    oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+               get_order(nr_pages * PAGE_SIZE));
+    switch (oom_status) {
+    case OOM_SUCCESS:
+        nr_retries = MAX_RECLAIM_RETRIES;
+        goto retry;
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/memory/emif.c | 33 +++++----------------------------
- 1 file changed, 5 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
-index bb6a71d26798..5c4d8319c9cf 100644
---- a/drivers/memory/emif.c
-+++ b/drivers/memory/emif.c
-@@ -163,35 +163,12 @@ static const struct file_operations emif_mr4_fops = {
- 
- static int __init_or_module emif_debugfs_init(struct emif_data *emif)
- {
--	struct dentry	*dentry;
--	int		ret;
--
--	dentry = debugfs_create_dir(dev_name(emif->dev), NULL);
--	if (!dentry) {
--		ret = -ENOMEM;
--		goto err0;
--	}
--	emif->debugfs_root = dentry;
--
--	dentry = debugfs_create_file("regcache_dump", S_IRUGO,
--			emif->debugfs_root, emif, &emif_regdump_fops);
--	if (!dentry) {
--		ret = -ENOMEM;
--		goto err1;
--	}
--
--	dentry = debugfs_create_file("mr4", S_IRUGO,
--			emif->debugfs_root, emif, &emif_mr4_fops);
--	if (!dentry) {
--		ret = -ENOMEM;
--		goto err1;
--	}
--
-+	emif->debugfs_root = debugfs_create_dir(dev_name(emif->dev), NULL);
-+	debugfs_create_file("regcache_dump", S_IRUGO, emif->debugfs_root, emif,
-+			    &emif_regdump_fops);
-+	debugfs_create_file("mr4", S_IRUGO, emif->debugfs_root, emif,
-+			    &emif_mr4_fops);
- 	return 0;
--err1:
--	debugfs_remove_recursive(emif->debugfs_root);
--err0:
--	return ret;
- }
- 
- static void __exit emif_debugfs_exit(struct emif_data *emif)
--- 
-2.28.0
-
+It retries here endlessly, because oom reaper has no cpu to schedule.
