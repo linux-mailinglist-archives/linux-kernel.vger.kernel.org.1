@@ -2,120 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739662539DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 23:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2102539E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 23:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgHZVhH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Aug 2020 17:37:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28416 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726753AbgHZVhH (ORCPT
+        id S1726838AbgHZVm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 17:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726753AbgHZVmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 17:37:07 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-161-enTojJ1dOhq1TVkyyVBsDg-1; Wed, 26 Aug 2020 22:37:01 +0100
-X-MC-Unique: enTojJ1dOhq1TVkyyVBsDg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 26 Aug 2020 22:37:00 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 26 Aug 2020 22:37:00 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Gleixner' <tglx@linutronix.de>,
-        Alexander Graf <graf@amazon.com>, X86 ML <x86@kernel.org>
-CC:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>,
-        "robketr@amazon.de" <robketr@amazon.de>,
-        "amos@scylladb.com" <amos@scylladb.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Alex bykov" <alex.bykov@scylladb.com>
-Subject: RE: x86/irq: Unbreak interrupt affinity setting
-Thread-Topic: x86/irq: Unbreak interrupt affinity setting
-Thread-Index: AQHWe+aKb+AhwM2rPkq6/MK3Hcp5nKlK5iEA
-Date:   Wed, 26 Aug 2020 21:37:00 +0000
-Message-ID: <db3e28b59d404f55aff83120c077d6f6@AcuMS.aculab.com>
-References: <20200826115357.3049-1-graf@amazon.com>
- <87k0xlv5w5.fsf@nanos.tec.linutronix.de>
- <fd87a87d-7d8a-9959-6c81-f49003a43c21@amazon.com>
- <87blixuuny.fsf@nanos.tec.linutronix.de>
- <873649utm4.fsf@nanos.tec.linutronix.de>
- <87wo1ltaxz.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87wo1ltaxz.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 26 Aug 2020 17:42:25 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D80C061574;
+        Wed, 26 Aug 2020 14:42:24 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id d11so4824348ejt.13;
+        Wed, 26 Aug 2020 14:42:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qkQL+Dz21LFiMHXtvS7buva83SIiDacIGRIi5LVRWg8=;
+        b=PyCFzgkN4OSai9YlhJND550USk3u7FaciC9YgUIZvY0Dh8d5TA0I24RDsNx6i7gQIt
+         43S8wVNDsP9AW3izt9SO0uBb+igdIKuhEB9S9recizqdcc9vwij9FM3ShhZkWckO1N14
+         SR+MdGCz0v1X9nSFShTSMQ3QQmsRDPyW5OiIze0AIfebwEKaTXtdGSftF99HKtHuv+Lm
+         xnspvSP0TAOxJb57VIv4Z1fnzrve8CwGT/gdAxHVPtPo2dKgtPUHss9jeXI34ynG/B2Z
+         5WVyjXhHSfTi6KpxG7FK4HNBW2et8UQeEkghOGdMDQbhZfvIgKymf42g1MrUo2IcMTXz
+         m/bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qkQL+Dz21LFiMHXtvS7buva83SIiDacIGRIi5LVRWg8=;
+        b=QcDaZSsBDpkvJiM0aDNctydEWXKpoF8AXMt2dt1GZhlcRUmofGQ/SZVcXgmXIhheyP
+         4sKCF5Vc/yqewR/XkHr8/N/nyO73+c20RjntF3vxqs/NGhgPHvns9K0Gk4isbUpuX3Qd
+         5689aFECNyF4pOeKTj1IKZGge/J2QRCymyDX/NCtxXRECYDPSYMh6/kk8rxpjYRw07wz
+         ACd/saql6fA4yf2n9L69WXxnKN/UPuh68cae9NJiveb+7KXe2qQwZwMRhyZAZZTuPedk
+         phL+UuHP7LCvB086BDWuXOdEynsBCzRzx7zQDIOTxNXOMUJwbQ/9YeoGrNX2RxdXglH6
+         O0VQ==
+X-Gm-Message-State: AOAM530AHDpFDK0EstjrkacQ6WmIFCC8Tz/YrUKYM0d4B3f87E0F1Dsx
+        OuH1oqMPFeoh/cIiJ2X1Lpo=
+X-Google-Smtp-Source: ABdhPJwDStQ0rjD3Lur2BK6467nAxbWULaSG6srrhmhkiq7NgIt/9VvkrfTyfXgZXbN5LfIVRGWiBA==
+X-Received: by 2002:a17:906:2349:: with SMTP id m9mr17411173eja.425.1598478143345;
+        Wed, 26 Aug 2020 14:42:23 -0700 (PDT)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id ci27sm173363ejc.23.2020.08.26.14.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 14:42:22 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 00:42:20 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org
+Subject: Re: [PATCH v5 1/3] dt-bindings: interrupt-controller: Add Actions
+ SIRQ controller binding
+Message-ID: <20200826214220.GA2444747@BV030612LT>
+References: <cover.1597852360.git.cristian.ciocaltea@gmail.com>
+ <6bd99d4a7e50904b57bb3ad050725fbb418874b7.1597852360.git.cristian.ciocaltea@gmail.com>
+ <20200825220913.GA1423455@bogus>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825220913.GA1423455@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner
-> Sent: 26 August 2020 21:22
-...
-> Moving interrupts on x86 happens in several steps. A new vector on a
-> different CPU is allocated and the relevant interrupt source is
-> reprogrammed to that. But that's racy and there might be an interrupt
-> already in flight to the old vector. So the old vector is preserved until
-> the first interrupt arrives on the new vector and the new target CPU. Once
-> that happens the old vector is cleaned up, but this cleanup still depends
-> on the vector number being stored in pt_regs::orig_ax, which is now -1.
+Hi Rob,
 
-I suspect that it is much more 'racy' than that for PCI-X interrupts.
-On the hardware side there is an interrupt disable bit, and address
-and a value.
-To raise an interrupt the hardware must write the value to the address.
+Thanks for the review!
 
-If the cpu needs to move an interrupt both the address and value
-need changing, but the cpu wont write the address and value using
-the same TLP, so the hardware could potentially write a value to
-the wrong address.
-Worse than that, the hardware could easily only look at the address
-and value in the clocks after checking the interrupt is enabled.
-So masking the interrupt immediately prior to changing the vector
-info may not be enough.
+On Tue, Aug 25, 2020 at 04:09:13PM -0600, Rob Herring wrote:
+> On Wed, Aug 19, 2020 at 07:37:56PM +0300, Cristian Ciocaltea wrote:
+> > Actions Semi Owl SoCs SIRQ interrupt controller is found in S500, S700
+> > and S900 SoCs and provides support for handling up to 3 external
+> > interrupt lines.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> > Changes in v5:
+> >  - Updated controller description statements both in the commit message
+> >    and the binding doc
+> > 
+> >  .../actions,owl-sirq.yaml                     | 68 +++++++++++++++++++
+> >  1 file changed, 68 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml b/Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+> > new file mode 100644
+> > index 000000000000..cf9b7a514e4e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+> > @@ -0,0 +1,68 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/interrupt-controller/actions,owl-sirq.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Actions Semi Owl SoCs SIRQ interrupt controller
+> > +
+> > +maintainers:
+> > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > +
+> > +description: |
+> > +  This interrupt controller is found in the Actions Semi Owl SoCs (S500, S700
+> > +  and S900) and provides support for handling up to 3 external interrupt lines.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +        - enum:
+> > +          - actions,s500-sirq
+> > +          - actions,s700-sirq
+> > +          - actions,s900-sirq
+> > +        - const: actions,owl-sirq
+> > +      - const: actions,owl-sirq
+> 
+> This should be dropped. You should always have the SoC specific 
+> compatible.
 
-It is likely that a read-back of the mask before updating the vector
-is enough.
+Sure, I will get rid of the 'owl-sirq' compatible.
 
-	David
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +  '#interrupt-cells':
+> > +    const: 2
+> > +    description:
+> > +      The first cell is the input IRQ number, between 0 and 2, while the second
+> > +      cell is the trigger type as defined in interrupt.txt in this directory.
+> > +
+> > +  'actions,ext-interrupts':
+> > +    description: |
+> > +      Contains the GIC SPI IRQ numbers mapped to the external interrupt
+> > +      lines. They shall be specified sequentially from output 0 to 2.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    minItems: 3
+> > +    maxItems: 3
+> 
+> Can't you use 'interrupts' here?
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+This was actually my initial idea, but it might confuse the users since
+this is not following the parent controller IRQ specs, i.e. the trigger
+type is set internally by the SIRQ driver, it's not taken from DT.
 
+Please see the DTS sample bellow where both devices are on the same
+level and have GIC as interrupt parent. The 'interrupts' property
+in the sirq node looks incomplete now. That is why I decided to use
+a custom name for it, although I'm not sure it's the most relevant one,
+I am open to any other suggestion.
+
+i2c0: i2c@b0170000 {
+  [...]
+  interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+  [...]
+};
+
+sirq: interrupt-controller@b01b0200 {
+  [...]
+  interrupt-controller;
+  #interrupt-cells = <2>;
+  interrupts = <13>, /* SIRQ0 */
+               <14>, /* SIRQ1 */
+               <15>; /* SIRQ2 */
+};
+
+Regards,
+Cristi
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupt-controller
+> > +  - '#interrupt-cells'
+> > +  - 'actions,ext-interrupts'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    sirq: interrupt-controller@b01b0200 {
+> > +      compatible = "actions,s500-sirq", "actions,owl-sirq";
+> > +      reg = <0xb01b0200 0x4>;
+> > +      interrupt-controller;
+> > +      #interrupt-cells = <2>;
+> > +      actions,ext-interrupts = <13>, /* SIRQ0 */
+> > +                               <14>, /* SIRQ1 */
+> > +                               <15>; /* SIRQ2 */
+> > +    };
+> > +
+> > +...
+> > -- 
+> > 2.28.0
+> > 
