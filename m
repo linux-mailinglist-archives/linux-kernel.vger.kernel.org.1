@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EB4252C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD49252C98
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728964AbgHZLi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:38:27 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:41520 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728959AbgHZLed (ORCPT
+        id S1729047AbgHZLjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:39:33 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34552 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729027AbgHZLed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Aug 2020 07:34:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBU3OI079427;
-        Wed, 26 Aug 2020 11:33:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=4d0UEY0MXbhyacpjI1yRuNRF+3MeSwYn+K5Lelz7zok=;
- b=SO5iEERq4BF1tLDEDNrPv4XwotVauqLillq4/v5Mc/+xjDq0Qy1jaGClXXyjs3l40zOc
- gw/Tqyw1+jv+wZxtVypp51J9RU7r6eUKu1I+yXE+K5b1oK7n1FQlvcW6mkK/dC7kFY32
- VLzwdWxDUHN6PC3ZP0i9ep87Et8R0II5dq8DQRSAGgpd/sVZj61jhrP0UN1fJBxj7dLO
- P0X8DDJmqa6tt25759bT2RQuvJphDCgXjcXhHMhl8/5OALJXVRq39UMNpGp5FeBwr/N3
- qGyu3eumDuRE/+u/f3QCsE6L6ceAbCPnHc0MNl00Xil9/8GwfJSwahcPsuLqmzYECf1m wA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 333dbrytst-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Aug 2020 11:33:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QBUE92001015;
-        Wed, 26 Aug 2020 11:33:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 333rua2a2w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Aug 2020 11:33:38 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QBXbQi012927;
-        Wed, 26 Aug 2020 11:33:37 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Aug 2020 04:33:36 -0700
-Date:   Wed, 26 Aug 2020 14:33:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] dma-pool: Fix an uninitialized variable bug in
- atomic_pool_expand()
-Message-ID: <20200826113330.GD393664@mwanda>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598441644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8w9qvTgsSj+61KuULjmZxV/U5oE0aAJ8Za6AVF1mAmg=;
+        b=XJESFxd5c2yO8R4VUTVWPX6GwuuWgAqzt5LthPGdOLCVlLxIsg/AQm1Ry+VCV7AJlDLJP5
+        8accPBGG4gNDWJKJxQzfErt3JmOLZ3sBw7QjV/HsuL9rfYI0MF7BKVZZI70VVCDLNJwi5/
+        3MkKxZ50jwcMz5gKtQS1LcA6TwjDIiU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-SqgwGgjuNICBN0BCeauBWg-1; Wed, 26 Aug 2020 07:34:02 -0400
+X-MC-Unique: SqgwGgjuNICBN0BCeauBWg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94691801AFC;
+        Wed, 26 Aug 2020 11:33:59 +0000 (UTC)
+Received: from krava (unknown [10.40.194.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E6B627D4E7;
+        Wed, 26 Aug 2020 11:33:55 +0000 (UTC)
+Date:   Wed, 26 Aug 2020 13:33:54 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 1/2] perf expr: Force encapsulation on expr_id_data
+Message-ID: <20200826113354.GB753783@krava>
+References: <20200826042910.1902374-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260093
+In-Reply-To: <20200826042910.1902374-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "page" pointer can be used with out being initialized.
+On Tue, Aug 25, 2020 at 09:29:09PM -0700, Ian Rogers wrote:
+> This patch resolves some undefined behavior where variables in
+> expr_id_data were accessed (for debugging) without being defined. To
+> better enforce the tagged union behavior, the struct is moved into
+> expr.c and accessors provided. Tag values (kinds) are explicitly
+> identified.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/expr.c        | 64 ++++++++++++++++++++++++++++++-----
+>  tools/perf/util/expr.h        | 17 +++-------
+>  tools/perf/util/expr.y        |  2 +-
+>  tools/perf/util/metricgroup.c |  4 +--
+>  4 files changed, 62 insertions(+), 25 deletions(-)
+> 
+> diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> index 53482ef53c41..1ca0992db86b 100644
+> --- a/tools/perf/util/expr.c
+> +++ b/tools/perf/util/expr.c
+> @@ -17,6 +17,25 @@
+>  extern int expr_debug;
+>  #endif
+>  
+> +struct expr_id_data {
+> +	union {
+> +		double val;
+> +		struct {
+> +			double val;
+> +			const char *metric_name;
+> +			const char *metric_expr;
+> +		} ref;
+> +		struct expr_id	*parent;
+> +	};
+> +
+> +	enum {
+> +		EXPR_ID_DATA__VALUE,
+> +		EXPR_ID_DATA__REF,
+> +		EXPR_ID_DATA__REF_VALUE,
+> +		EXPR_ID_DATA__PARENT,
+> +	} kind;
 
-Fixes: d7e673ec2c8e ("dma-pool: Only allocate from CMA when in same memory zone")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- kernel/dma/pool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I like that, it's more clear than current state ;-)
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 06582b488e31..1281c0f0442b 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -84,7 +84,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 			      gfp_t gfp)
- {
- 	unsigned int order;
--	struct page *page;
-+	struct page *page = NULL;
- 	void *addr;
- 	int ret = -ENOMEM;
- 
--- 
-2.28.0
+could you still put a small comment for each enum above,
+as a hint what it's used for?
+
+thanks,
+jirka
 
