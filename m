@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5E72533EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D272533F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgHZPon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:44:43 -0400
-Received: from smtprelay0028.hostedemail.com ([216.40.44.28]:36062 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726739AbgHZPog (ORCPT
+        id S1727814AbgHZPtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgHZPt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:44:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 57C931DF9;
-        Wed, 26 Aug 2020 15:44:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4031:4250:4321:5007:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12555:12740:12760:12895:13069:13149:13230:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:21740:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: knot54_5a184f527065
-X-Filterd-Recvd-Size: 2176
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 26 Aug 2020 15:44:32 +0000 (UTC)
-Message-ID: <9635eaa4ccc1141fb0dd8c3687f46da7149206ad.camel@perches.com>
-Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with
- __must_check
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Aug 2020 08:44:30 -0700
-In-Reply-To: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
-References: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 26 Aug 2020 11:49:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C558C061574;
+        Wed, 26 Aug 2020 08:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I18u0dNCe4slxMxufMguyF6f9uk6YgWYDMxiYXb8r/M=; b=UkAgccpf8C57KDxqkodEH9olO/
+        1uRw550MvDayPZHtymBnFfxwmNtcgF2M6M96967ti7Q0kRqhAJD7EntbGZL40Lyy/dSXmziTiz7Hk
+        lbnctZsn662cXzfd6hEb2utiYDSGSBQ9MMuBEMkU4epwpDT9aRW6rBD0kAE2/WhSDIlgYgN0uvYHv
+        c5TtMuUjgUaaySu/tXn9XT3Fdu34TLsipV80GR1LCDvPxHlwYwEnRuupZUec5g7a9rqmgnBVv2OwM
+        AfLYitWZTrvbKthc6NKOJtYTa0Bz0jsofeKe/qhWz/aTsyo6BYZPDxDJfSEiDV625F6g9O9aiVfKH
+        0a4QY2Ng==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAxfX-0005m4-3j; Wed, 26 Aug 2020 15:48:59 +0000
+Date:   Wed, 26 Aug 2020 16:48:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] mm: Convert find_get_entry to return the head page
+Message-ID: <20200826154859.GT17456@casper.infradead.org>
+References: <20200819184850.24779-1-willy@infradead.org>
+ <20200819184850.24779-7-willy@infradead.org>
+ <20200826150925.GE988805@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826150925.GE988805@cmpxchg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-26 at 13:44 +0300, Andy Shevchenko wrote:
-> We have got already new users of this API which interpret it differently
-> and miss the opportunity to optimize their code.
+On Wed, Aug 26, 2020 at 11:09:25AM -0400, Johannes Weiner wrote:
+> On Wed, Aug 19, 2020 at 07:48:48PM +0100, Matthew Wilcox (Oracle) wrote:
+> > There are only three callers remaining of find_get_entry().
+> > find_get_swap_page() is happy to get the head page instead of the subpage.
+> > Add find_subpage() calls to find_lock_entry() and pagecache_get_page()
+> > to avoid auditing all their callers.
 > 
-> In order to avoid similar cases in the future, annotate dev_err_probe()
-> with __must_check.
+> I believe this would cause a subtle bug in memcg charge moving for pte
+> mapped huge pages. We currently skip over tail pages in the range
+> (they don't have page->mem_cgroup set) and account for the huge page
+> once from the headpage. After this change, we would see the headpage
+> and account for it 512 times (or whatever the number is on non-x86).
+
+Hmm ... so if you have the last 511 pages of a huge page mapped, you
+actually don't charge for it at all today?
+
+I think you're right that I'd introduce this bug, and so that needs to
+be fixed.
+
+> But that aside, I don't quite understand the intent.
 > 
-> Fixes: a787e5400a1c ("driver core: add device probe log helper")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/device.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Before, all these functions simply return the base page at @index,
+> whether it's a regular page or a tail page.
 > 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index ca18da4768e3..f9d2e5703bbf 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -978,7 +978,7 @@ void device_links_supplier_sync_state_pause(void);
->  void device_links_supplier_sync_state_resume(void);
->  
->  extern __printf(3, 4)
-> -int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> +int __must_check dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> Afterwards, find_lock_entry(), find_get_page() et al still do, but
+> find_get_entry() returns headpage at @index & HPAGE_CACHE_INDEX_MASK.
+> 
+> Shouldn't we be consistent about how we handle huge pages when
+> somebody queries the tree for a given base page index?
+> 
+> [ Wouldn't that mean that e.g. find_get_swap_page() would return tail
+>   pages for regular files and head pages for shmem files? ]
 
-Generally, the __must_check should go before the return type
-and the extern isn't necessary and is also generally not used
-in device.h, so I'd prefer:
+What I'd _like_ to do is convert all the callers to cope with tail
+pages never being returned from all the find_* functions.  That seems
+like a lot of disruption.
 
-__printf(3, 4)
-__must_check int dev_err_probe(...);
+My intent in this series is to get all the find_*_entr{y,ies}
+functions to the point where they don't return tail pages.
+Also find_get_pages_tag() because tags are only set on head pages.
 
+This is generally what the callers want anyway.  There's even a hack
+in find_get_entries() in current to terminate early on finding a THP
+(see commit 71725ed10c40696dc6bdccf8e225815dcef24dba).  If I want
+to remove that, I need to do _something_ to not put all the subpages
+of a THP into the pagevec.
 
+So the new rule will be that find_*_entry() don't return tail pages but
+find_*_page() do.  With the full THP patchset in place, THPs become quite
+common, so bugs in this area will surface quickly instead of lingering
+for years and only popping out in rare circumstances.
