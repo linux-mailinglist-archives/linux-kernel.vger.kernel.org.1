@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C75252C0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2F1252C13
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgHZLDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728635AbgHZK7n (ORCPT
+        id S1728898AbgHZLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:04:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46886 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728721AbgHZLAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:59:43 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C397CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:59:42 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v4so1859829ljd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uJ07glJRUlujBHQIx5bKBzGB4Fimv+n7xk0tDfDGawQ=;
-        b=imC5TArqeZzinupXCuhbCqJNrpAWmo9t9jlD7hJhFyWU81ail+EURE1f7j22wwVriD
-         26x03YW4SsJeVCT72uhIV+SWLV6VJazC+aXCxNij5qAb0QsQXUBB5R9KOKf5EzCAmxxQ
-         yfwtwINlWLYIaA9yOzXqF9etCk5BltbOGEjv/Jyd0NwQ+eByVYdUV55bzbl1keU8tPfz
-         cHUm70tvDnby9saPlRC13G+MJlPHKV2Q3G0YqIwksa9JZ7XGdc7Zi2/+2TLL/gyKquhD
-         PGpGQ/7DeBPAcKsaMGNzz/6rrm3riqx4sWAtLWkSUJB8us6ArRkDlsQ/tSiuTCf9Jhda
-         EHhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uJ07glJRUlujBHQIx5bKBzGB4Fimv+n7xk0tDfDGawQ=;
-        b=K7kw8SGum4hdJ6M1UBGWCXzWt1cxHBlOwCOND0Ohn5kDizMlxagAF8q13SIkGgqICc
-         0VGb24mgL85MICUjDbTbMOLZV4oAasEnCdDbSHfRufjxSuv1bHcce2GJpaxBO6V/ziR7
-         A9Xw2cg487rCnpq6j+bYRKNCfwIW0gkf0j/QAPUPD0MRW2jaeyAhQJRdEDIYUk+7PwBR
-         6rXhLbKFnhkANylA0aiXedfnx+LlwBn59QKHl3MxbekNr5ECSX0DoW8M04MgKFWzOoWf
-         Gkir/En9aQ5qziHr74hFB6ZsOCYHlGuvoJiz1v8AgV+tMxAZ7/Uj0oDcWTrNL+fZIMBt
-         W0Vw==
-X-Gm-Message-State: AOAM530+xBXiPlDrggHGLNSJmFH4tN5k5Gz4vGmnHXs9UdCHJpyjSQ3q
-        U/BuP2hAQsbq3/NefBtewLNUU1iZvc3AcgnjhH8=
-X-Google-Smtp-Source: ABdhPJwnAhNtvGts/m9GSYWVu4CbYcH2h0n/znDkPvUH2bw1aDzmSWvWr0jJIzTxWBkAGcuiQemJqusogm4e4Jlk4Og=
-X-Received: by 2002:a2e:9c8b:: with SMTP id x11mr6377914lji.218.1598439579576;
- Wed, 26 Aug 2020 03:59:39 -0700 (PDT)
+        Wed, 26 Aug 2020 07:00:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QB01qb030251;
+        Wed, 26 Aug 2020 11:00:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=/fCtBAfUW9DNJUfT9YZ2XuOf8t/lJOxdFK2upLxSyFk=;
+ b=fq2ISN5JKb5GnTBZyyPq3NdLSmJTI/PZFQKX2oBj/LK1JWBJNo1u80XccBy7q1FkU1Qn
+ QbAlTwB3C+KDuHb3m1dh4Ccw1bancmQzeyYIUzr1HFLlG3gSM9uEB5v9ne2cw1Jk3ZuB
+ ylWSIs8recNuMed8oX01uw01QLRAdltaZQhkDGvfYzaERxU0VLBoFw7a+MT0ACMKB7im
+ ebMwWc8EHQCFGVQw3uvw40QqWTBIwSFD5hae0NL1edDRdHH4KVVLPox34PotvXzFO3BM
+ 12wfy1pCSAHSe0uAF+K+edaS9a53aeJk+wRsxZONxtt8tnURMjkO5bVlvTG8DsikrXtp jA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 333dbrypp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 11:00:10 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07QAtLoB081719;
+        Wed, 26 Aug 2020 11:00:10 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 333r9kred8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 11:00:10 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07QB07uK028348;
+        Wed, 26 Aug 2020 11:00:07 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Aug 2020 04:00:07 -0700
+Date:   Wed, 26 Aug 2020 13:59:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     FelixCuioc <FelixCui-oc@zhaoxin.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>, kbuild@lists.01.org,
+        kbuild-all@lists.01.org, CobeChen-oc@zhaoxin.com,
+        RaymondPang-oc@zhaoxin.com, TonyWWang-oc@zhaoxin.com
+Subject: Re: [PATCH 3/3] iommu/vt-d:Add mutex_unlock() before returning
+Message-ID: <20200826105959.GB5493@kadam>
+References: <20200826102752.3776-1-FelixCui-oc@zhaoxin.com>
+ <20200826102752.3776-4-FelixCui-oc@zhaoxin.com>
 MIME-Version: 1.0
-References: <20200824091013.20640-1-matthias.schiffer@ew.tq-group.com>
- <20200824091013.20640-2-matthias.schiffer@ew.tq-group.com>
- <CAOMZO5DSX1pf3xxo=CGvgPmHcjMJoWFx74grVJBckSmjtF-RGg@mail.gmail.com>
- <4b7d57738ce8e2130c4740a0f3f973fbaf60a7cf.camel@ew.tq-group.com>
- <CAOMZO5DYrkEb_G+EYAGrc+qjSsbjRdeBUU3tJUfkU6tjgNm_7g@mail.gmail.com>
- <7a59492e46f34d213b83f7182c7db73954c5a9c7.camel@ew.tq-group.com>
- <CAOMZO5CP=wtJ5ZScyb0NrRMW0FR0FAGVKRFq9JpFcAoZppn_bA@mail.gmail.com> <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
-In-Reply-To: <53f5f17735fc2f0ca061a321969bbb131e55efff.camel@ew.tq-group.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 26 Aug 2020 07:59:28 -0300
-Message-ID: <CAOMZO5ADeXEHWiG7Xja1W1GnahV08ZEYSkNsrOzautn2mROCNA@mail.gmail.com>
-Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH 2/2] ARM: dts: imx6qdl:
- tqma6: minor fixes
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826102752.3776-4-FelixCui-oc@zhaoxin.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260088
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+On Wed, Aug 26, 2020 at 06:27:52AM -0400, FelixCuioc wrote:
+> In the probe_acpi_namespace_devices function,when the physical
+> node of the acpi device is NULL,the unlock function is missing.
+> Add mutex_unlock(&adev->physical_node_lock).
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
 
-On Wed, Aug 26, 2020 at 7:32 AM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
+Oh...  Crap.  I wondered why I was being CC'd on this patchset.  Just
+fold this into the ealier patch.  Don't worry about the Reported-by.
 
-> But the previous platform data that was removed in 8cdcd8aeee281 ("spi:
-> imx/fsl-lpspi: Convert to GPIO descriptors") set different values for
-> different boards. So maybe some DTS should be using num-cs?
+regards,
+dan carpenter
 
-Could you provide an example of an imx dts that should use num-cs?
