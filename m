@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60EA252DE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40416252DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729748AbgHZMGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729525AbgHZMD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:03:28 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA8C920897;
-        Wed, 26 Aug 2020 12:03:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598443407;
-        bh=D1uJfmjgC/26o2z3u1zFuw7ebz3MKhc1sl8fKcEtvqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=duxjQB0p/RG9lpGyNMl+3wLI/iY6Ywj0fIehqcHQRy6ik4BDUpo57UKpANLlRQY8O
-         1EqLuq51Wy4AoOO/kkgVX/g7QDGd7sZiqZsXWQyan50Wc2rpumt4wwqr+KMxZIN7m/
-         5Y2Bz85mXHQCqsQvBiD9JNTOcc2O9QLUW0B6pt0Q=
-Date:   Wed, 26 Aug 2020 17:33:23 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
-Message-ID: <20200826120323.GD2639@vkoul-mobl>
-References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
- <20200825214858.GK5379@sirena.org.uk>
- <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
- <20200826095600.GA4965@sirena.org.uk>
- <s5ha6yhu3af.wl-tiwai@suse.de>
- <20200826101301.GB4965@sirena.org.uk>
- <s5h8se1u2or.wl-tiwai@suse.de>
+        id S1729708AbgHZMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:05:46 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42821 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729677AbgHZMFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:05:01 -0400
+Received: by mail-wr1-f67.google.com with SMTP id q14so1528555wrn.9;
+        Wed, 26 Aug 2020 05:05:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yeR3qMxY8QK4/wvsoj5cuxH3mWn/t2ot23DexX4h7MA=;
+        b=IxdmjIAk61phj86Vx2aVeUtyV1ZPH6KSc6YbsU2upSKiejQ2+9+5qYpeJ0vwQ1Ft4K
+         yBA/x5JdIzT2RFVMchiz886iNCuDWnEyLHUHakwU3eL9BNqVIQGscVT6s/uhE7zHPeyZ
+         1Peh8dJwsx6AgyoXqQkD6BVloLi9NBXaLjv0z9xgAKm9EF+d62CaFjPNm7ifPMrfgxzF
+         Lt3RKsbOBJNyf9ZFCrLIRKpfeshH0BFblASsrNDaY5gKMIkxRGKi8GyDlLW/VtlG3S9A
+         sQl674qG4AUx1TxijPipxKuofwQyhfGH1BofPnrl+xkzqvyWbYaxo5smqopN51ieUnWm
+         E0oA==
+X-Gm-Message-State: AOAM532RTMuiB3z/59l1yZhmZQCDDr5vZLxbi5MTtxhb0hWRedR50Qi8
+        5RWPrFjQLB55qJTyzQgffj6b+4oQm6983A==
+X-Google-Smtp-Source: ABdhPJzsVm84CbbIOidcz8nD79LPK/Ny1lXC+ZG5qTLEMI14VHYwfiCaAadaxv6yHSvDMychEJr93w==
+X-Received: by 2002:adf:e452:: with SMTP id t18mr14333704wrm.109.1598443498258;
+        Wed, 26 Aug 2020 05:04:58 -0700 (PDT)
+Received: from localhost.localdomain (static-176-175-69-188.ftth.abo.bbox.fr. [176.175.69.188])
+        by smtp.googlemail.com with ESMTPSA id k24sm4728420wmj.19.2020.08.26.05.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 05:04:57 -0700 (PDT)
+From:   Guilhem Lettron <guilhem@barpilot.io>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guilhem Lettron <guilhem@barpilot.io>
+Subject: [PATCH] intel_idle: Add ICL support
+Date:   Wed, 26 Aug 2020 14:04:21 +0200
+Message-Id: <20200826120421.44356-1-guilhem@barpilot.io>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h8se1u2or.wl-tiwai@suse.de>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-08-20, 12:22, Takashi Iwai wrote:
-> On Wed, 26 Aug 2020 12:13:01 +0200,
-> Mark Brown wrote:
-> > 
-> > On Wed, Aug 26, 2020 at 12:09:28PM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > 
-> > > > checkpatch is broken.
-> > 
-> > > Heh, I'm not objecting it :)
-> > 
-> > > OTOH, it's also true that ENOTSUPP is no good error code if returned
-> > > to user-space.  Unfortunately many codes (including what I wrote) use
-> > > this code mistakenly, and they can't be changed any longer...
-> > 
-> > It's also used internally in various places without being returned to
-> > userspace, that's what's going on here - the regmap core has some
-> > specific checks for -ENOTSUPP.
-> 
-> Sure, for such an internal usage any code can be used.
-> The question is a case like this -- where the return code might be
-> carried to outside.  Though, looking through the grep output, all
-> callers simply return -EINVAL for any errors, so it doesn't matter
-> much for now.
-> 
-> 
-> BTW, there are a few callers of devm_regmap_init_sdw() checking the
-> return value with NULL.  This will crash as the function returns the
-> error pointer, and they must be checked with IS_ERR() instead.
+Use the same C-states as SKL
 
-Yes that is correct, all expect wsa codec do the incorrect thing. Will
-send patches for these shortly
+Signed-off-by: Guilhem Lettron <guilhem@barpilot.io>
+---
+ drivers/idle/intel_idle.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index 8e0fb1a5bdbd..1bb539f09a4f 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1145,6 +1145,8 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&idle_cpu_skx),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&idle_cpu_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&idle_cpu_icx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&idle_cpu_knl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&idle_cpu_knl),
 -- 
-~Vinod
+2.27.0
+
