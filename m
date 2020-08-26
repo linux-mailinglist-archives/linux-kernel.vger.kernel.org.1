@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F93252DAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19170252DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 14:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgHZMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 08:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38932 "EHLO mail.kernel.org"
+        id S1729605AbgHZMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 08:04:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729544AbgHZMDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:03:41 -0400
+        id S1729496AbgHZMDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 08:03:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F05D20838;
-        Wed, 26 Aug 2020 12:03:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D65420838;
+        Wed, 26 Aug 2020 12:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598443421;
-        bh=nHZ1XCR0ar56nN1+7P20uXLCe6Zcn+8Xf7Xo61kQ/uI=;
+        s=default; t=1598443382;
+        bh=O8ZwRVfglmC1HCV5rl0wMfnoGxS661gLxObTPdOyfoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qH4n7a/u3lahZK23N6J1XU+Ou/HtAPWraI5ux6U2H+RHcmW2aY+ezGLIGVRC1kOJA
-         9gvi+o+9jMdL9SXfCrLuO++jLRBsX9qntpnex0n68SRRwL44uFgF+UFyTJL1sL4ZsP
-         k5N+TzZplZuUSBZRmnyRy5Zcg8550mImnHPWbPx0=
+        b=zYluZ/NuCv/MliwDnMie7fwWN3Vzdw+PagAvBHjb1ww24omVpgxnRxfr4eNRPfhgT
+         I3BgQr72xqfQa0IpaZmlgb06XhnImSDB2LtejSQkThxUsZPTTQkdf9mZIDYA15Lq/B
+         ucxvI/GyCaP1s/qVvI4BQOU1l/JqHSFTYPGpLtzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+f31428628ef672716ea8@syzkaller.appspotmail.com,
-        Necip Fazil Yildiran <necip@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 04/16] net: qrtr: fix usage of idr in port assignment to socket
+Subject: [PATCH 5.7 13/15] ethtool: Dont omit the netlink reply if no features were changed
 Date:   Wed, 26 Aug 2020 14:02:41 +0200
-Message-Id: <20200826114911.435453704@linuxfoundation.org>
+Message-Id: <20200826114849.943950651@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200826114911.216745274@linuxfoundation.org>
-References: <20200826114911.216745274@linuxfoundation.org>
+In-Reply-To: <20200826114849.295321031@linuxfoundation.org>
+References: <20200826114849.295321031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,64 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <necip@google.com>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit 8dfddfb79653df7c38a9c8c4c034f242a36acee9 ]
+[ Upstream commit f01204ec8be7ea5e8f0230a7d4200e338d563bde ]
 
-Passing large uint32 sockaddr_qrtr.port numbers for port allocation
-triggers a warning within idr_alloc() since the port number is cast
-to int, and thus interpreted as a negative number. This leads to
-the rejection of such valid port numbers in qrtr_port_assign() as
-idr_alloc() fails.
+The legacy ethtool userspace tool shows an error when no features could
+be changed. It's useful to have a netlink reply to be able to show this
+error when __netdev_update_features wasn't called, for example:
 
-To avoid the problem, switch to idr_alloc_u32() instead.
+1. ethtool -k eth0
+   large-receive-offload: off
+2. ethtool -K eth0 rx-fcs on
+3. ethtool -K eth0 lro on
+   Could not change any device features
+   rx-lro: off [requested on]
+4. ethtool -K eth0 lro on
+   # The output should be the same, but without this patch the kernel
+   # doesn't send the reply, and ethtool is unable to detect the error.
 
-Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-Reported-by: syzbot+f31428628ef672716ea8@syzkaller.appspotmail.com
-Signed-off-by: Necip Fazil Yildiran <necip@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+This commit makes ethtool-netlink always return a reply when requested,
+and it still avoids unnecessary calls to __netdev_update_features if the
+wanted features haven't changed.
+
+Fixes: 0980bfcd6954 ("ethtool: set netdev features with FEATURES_SET request")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/qrtr/qrtr.c |   20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ net/ethtool/features.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -692,23 +692,25 @@ static void qrtr_port_remove(struct qrtr
-  */
- static int qrtr_port_assign(struct qrtr_sock *ipc, int *port)
- {
-+	u32 min_port;
- 	int rc;
- 
- 	mutex_lock(&qrtr_port_lock);
- 	if (!*port) {
--		rc = idr_alloc(&qrtr_ports, ipc,
--			       QRTR_MIN_EPH_SOCKET, QRTR_MAX_EPH_SOCKET + 1,
--			       GFP_ATOMIC);
--		if (rc >= 0)
--			*port = rc;
-+		min_port = QRTR_MIN_EPH_SOCKET;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, QRTR_MAX_EPH_SOCKET, GFP_ATOMIC);
-+		if (!rc)
-+			*port = min_port;
- 	} else if (*port < QRTR_MIN_EPH_SOCKET && !capable(CAP_NET_ADMIN)) {
- 		rc = -EACCES;
- 	} else if (*port == QRTR_PORT_CTRL) {
--		rc = idr_alloc(&qrtr_ports, ipc, 0, 1, GFP_ATOMIC);
-+		min_port = 0;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, 0, GFP_ATOMIC);
- 	} else {
--		rc = idr_alloc(&qrtr_ports, ipc, *port, *port + 1, GFP_ATOMIC);
--		if (rc >= 0)
--			*port = rc;
-+		min_port = *port;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, *port, GFP_ATOMIC);
-+		if (!rc)
-+			*port = min_port;
+--- a/net/ethtool/features.c
++++ b/net/ethtool/features.c
+@@ -268,14 +268,11 @@ int ethnl_set_features(struct sk_buff *s
+ 	bitmap_and(req_wanted, req_wanted, req_mask, NETDEV_FEATURE_COUNT);
+ 	bitmap_andnot(new_wanted, old_wanted, req_mask, NETDEV_FEATURE_COUNT);
+ 	bitmap_or(req_wanted, new_wanted, req_wanted, NETDEV_FEATURE_COUNT);
+-	if (bitmap_equal(req_wanted, old_wanted, NETDEV_FEATURE_COUNT)) {
+-		ret = 0;
+-		goto out_rtnl;
++	if (!bitmap_equal(req_wanted, old_wanted, NETDEV_FEATURE_COUNT)) {
++		dev->wanted_features &= ~dev->hw_features;
++		dev->wanted_features |= ethnl_bitmap_to_features(req_wanted) & dev->hw_features;
++		__netdev_update_features(dev);
  	}
- 	mutex_unlock(&qrtr_port_lock);
+-
+-	dev->wanted_features &= ~dev->hw_features;
+-	dev->wanted_features |= ethnl_bitmap_to_features(req_wanted) & dev->hw_features;
+-	__netdev_update_features(dev);
+ 	ethnl_features_to_bitmap(new_active, dev->features);
+ 	mod = !bitmap_equal(old_active, new_active, NETDEV_FEATURE_COUNT);
  
 
 
