@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B872529DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E212529F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgHZJTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        id S1728134AbgHZJ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728024AbgHZJTG (ORCPT
+        with ESMTP id S1728061AbgHZJ0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:19:06 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4888AC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:19:05 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a65so1020011wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:19:05 -0700 (PDT)
+        Wed, 26 Aug 2020 05:26:33 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C22C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:26:33 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id r8so959878ota.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:26:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aQcWyWsk38YmTkWkQQedY4JUFqd5lel0GI59fGELsZY=;
-        b=Re5YAll6kM+/qHPCwaFGTdAnaHmZFyhlrOR8z0SsaMrpkbz9oS7+ticj73RwOxcTDi
-         RsOCnIs8KaS/IqFMdZfnjdweWuO9R3Kjcx64KRlceaGgkhy31LEhdxX+uTl+lAGRafEc
-         lGLwqWRl4u6I3+rFr+hEryjlZXhDFSEBtpmFVAPd4BS+gsjT9cgbd6KOSLWBZldrMFfc
-         pkezhSnTJ7ARy9H55SYkJoxVM+NfD0V45Q9cQd48Ci1O5Okj8A3qS1GRxFwlFFagJzPE
-         DzYfsQtpLWJdpIIZ6tBHIlw6PejlOz+cejV8SeLwemZ4xXVghtUvtTa0XWwqYC5fPXGj
-         lkrQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZhkQxNLw77frpz6ZMdHyemforQJCP3lk4DGDC08wQk=;
+        b=SQFo15B+++qeSPzHZf2QXnMtumb0EW49HHCk4BopK4PnC5U07MD1/tISq37ka7/WrU
+         d0eQqlPHSmALWhupGDYFc80znGHBtRopb7r9iCO41v1ug9FPvzWfeIyaVbj35wY1WXe6
+         PcOc3mMXNt1FuByQMrYJh89OMZA1uiRBQRFF0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aQcWyWsk38YmTkWkQQedY4JUFqd5lel0GI59fGELsZY=;
-        b=gUdEbjr1PfxC2qzS2d0iFsT9cHTA5e733sPz1KI0qjEIRHoPFJqNnAUhw+kqMUAHc3
-         OoOtjjtA9w5e0t4cWV569+kNl5vgTwj+anuUAbLxzCBpzC5SRbhdcaolBVqyyy3eIQ7l
-         w3NW/1m/OwvPyef+cZeL/AfZgo3B9dUsQcbM3/r2ET1vHaIIzCrmanqklAhoFgLlwZWl
-         gRi/5akcCpLGI4AzVB7vuZVagyxLL8ufHfXWUsakGVvYW6OZEw+IMeBFVAAcrlrfMvwR
-         22RicBd5qw3GEgS5sEfJSHNgy3Bop3pXjVAtnNY/UdC12qOJCojEXuRrMV2bKrTv/e8I
-         JpeA==
-X-Gm-Message-State: AOAM5315sK5gBxtpPiNubDkRNd94yNRbVMz+0kZp0hqrjvwA+oExwrZC
-        SuAmxsEZ+/6+AGsUUIalc/mwAw==
-X-Google-Smtp-Source: ABdhPJx/tuIFtWZKSy7AJh6YwPDzBe15yli6WSJ1VCxEeq3keSaGzRbAVGb3KLflm17pbZnrvz1zbA==
-X-Received: by 2002:a1c:b143:: with SMTP id a64mr5924451wmf.43.1598433543749;
-        Wed, 26 Aug 2020 02:19:03 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5838:da98:5a96:aea3? ([2a01:e34:ed2f:f020:5838:da98:5a96:aea3])
-        by smtp.googlemail.com with ESMTPSA id a85sm4581111wmd.26.2020.08.26.02.19.02
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZhkQxNLw77frpz6ZMdHyemforQJCP3lk4DGDC08wQk=;
+        b=CXUD/jv2+HG+fejCREd65EZkp0nIpdpsuEuocBvpDb9IzREW+LC34ECffls9RJPx+2
+         YRMR7dq10DqB/uL+xES8zqi+t/dhGofZpJ4YEtXPhvpkE+fyrYh3awQ6/OKSGDnJ2+TR
+         n08qoWgubWkg6hOqJi/RdAkJQZq2OyvfdmArs63vg6qG2jUXgEScU6J9HBxHBZi7bmmf
+         nMM754TJjHEYFZh70bX3w4vpbkXs3p81bR7+ftzxHP2ZtmjcCyKFP4ibN1kOW2fa+xnj
+         nJf0ugYMGeRZwCRcYY5YX22Dx9JHJM+LjR2SIiJam7gWoN7kqFvvmnUz4CEPc+yoTuzc
+         4oqw==
+X-Gm-Message-State: AOAM530BcCqm4BB3ZZyc215qthdFdwS/4zSNA6hN/V4LJm/O4SgSs+lw
+        50LfqejGQ52dVvOd3cVTDegFzY/exPAxbA==
+X-Google-Smtp-Source: ABdhPJwDyRbmucSw0fUuOOy/Hj3JvrK5tS8SAbv+eVLXoMVo8v6KlpalyfI/Z2UuMBfjrtT/5JlHjA==
+X-Received: by 2002:a9d:4:: with SMTP id 4mr9475985ota.66.1598433990466;
+        Wed, 26 Aug 2020 02:26:30 -0700 (PDT)
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com. [209.85.167.170])
+        by smtp.gmail.com with ESMTPSA id w15sm378265otp.57.2020.08.26.02.26.30
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 02:19:03 -0700 (PDT)
-Subject: Re: [PATCH] thermal: sysfs: fall back to vzalloc for cooling device's
- statistics
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
-References: <20200818063005.13828-1-zbestahu@gmail.com>
- <40b69f97-46e5-d62e-0d2f-604dfd4dafa1@linaro.org>
- <20200826101319.00003048.zbestahu@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c3fd7949-b33a-aca3-8dd5-1c2df35fb63d@linaro.org>
-Date:   Wed, 26 Aug 2020 11:19:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 26 Aug 2020 02:26:30 -0700 (PDT)
+Received: by mail-oi1-f170.google.com with SMTP id v13so916105oiv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 02:26:30 -0700 (PDT)
+X-Received: by 2002:a05:6808:482:: with SMTP id z2mr3200722oid.94.1598433579877;
+ Wed, 26 Aug 2020 02:19:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200826101319.00003048.zbestahu@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200821103608.2310097-4-acourbot@chromium.org> <202008212314.jscpXSEF%lkp@intel.com>
+In-Reply-To: <202008212314.jscpXSEF%lkp@intel.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Wed, 26 Aug 2020 18:19:29 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXD1RpGGCOb+7=cUUNOymbtgiDGvG_+S4DtsTU49-ORKA@mail.gmail.com>
+Message-ID: <CAPBb6MXD1RpGGCOb+7=cUUNOymbtgiDGvG_+S4DtsTU49-ORKA@mail.gmail.com>
+Subject: Re: [PATCH v4 03/17] media: mtk-vcodec: add SCP firmware ops
+To:     kernel test robot <lkp@intel.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kbuild-all@lists.01.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 22, 2020 at 12:14 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Alexandre,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on linuxtv-media/master]
+> [also build test ERROR on robh/for-next v5.9-rc1 next-20200821]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Alexandre-Courbot/media-mtk-vcodec-venc-support-for-MT8183/20200821-184118
+> base:   git://linuxtv.org/media_tree.git master
+> config: sh-allmodconfig (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>
+> >> ERROR: modpost: "scp_get_venc_hw_capa" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_ipi_send" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_put" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_get" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_get_vdec_hw_capa" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_ipi_register" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_mapping_dm_addr" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "scp_get_rproc" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> >> ERROR: modpost: "rproc_boot" [drivers/media/platform/mtk-vcodec/mtk-vcodec-common.ko] undefined!
+> ERROR: modpost: "__delay" [drivers/net/phy/mdio-cavium.ko] undefined!
 
-Hi Yue,
+This issue should be fixed by the following patch, sent to the
+remoteproc tree:
 
-On 26/08/2020 04:13, Yue Hu wrote:
-> On Mon, 24 Aug 2020 12:40:35 +0200
-> Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> 
->> On 18/08/2020 08:30, Yue Hu wrote:
->>> From: Yue Hu <huyue2@yulong.com>
->>>
->>> We observed warning about kzalloc() when register thermal cooling device
->>> in backlight_device_register(). backlight display can be a cooling device
->>> since reducing screen brightness will can help reduce temperature.
->>>
->>> However, ->get_max_state of backlight will assign max brightness of 1024
->>> to states. The memory size can be getting 1MB+ due to states * states.  
->>
->> What are the benefits of a 1024 states cooling device ? Is the
->> difference noticeable with a such small step ?
-> 
-> Okay, this issue is happened under MSM/Android platform. QCOM spmi wled driver
-> will define the max brightness. We needs to fix the issue to get thermal statistics.
-
-Let me rephrase my questions:
-
-Don't you think there is something wrong in creating a 1024 x 1024
-matrix to show transitions ?
-
-What is the benefit of such stats ?
-
-What is the benefit of having a 1024 states cooling device ?
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+https://lkml.org/lkml/2020/8/21/489
