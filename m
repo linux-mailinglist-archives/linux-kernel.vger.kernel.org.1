@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5C125312F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C29E25313B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgHZOYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:24:36 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29572 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgHZOYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:24:13 -0400
-IronPort-SDR: IuTm3YLT79DNJDRri+THGfYZpgse6I+8SJ22p+3hnN798BZPJ6qMrwBPXyjoBlr7ynjbsmR6kW
- MOw8T03+CNNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="217843100"
-X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
-   d="scan'208";a="217843100"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 07:24:12 -0700
-IronPort-SDR: wKoZm4fHQkjC8bBISivoH8C49NqFFN6MaKVHRHTwKBO7+8aA+6DPyJhX8nv/ItyI1iYryFhG+f
- XGsyr7y6uqZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
-   d="scan'208";a="329242274"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 26 Aug 2020 07:24:10 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kAwLQ-00BaL8-PZ; Wed, 26 Aug 2020 17:24:08 +0300
-Date:   Wed, 26 Aug 2020 17:24:08 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
-Subject: Re: [PATCH 2/2] sched/topology: Move SD_DEGENERATE_GROUPS_MASK out
- of linux/sched/topology.h
-Message-ID: <20200826142408.GO1891694@smile.fi.intel.com>
-References: <20200825133216.9163-1-valentin.schneider@arm.com>
- <20200825133216.9163-2-valentin.schneider@arm.com>
+        id S1727882AbgHZOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726988AbgHZOZo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:25:44 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD27C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:25:43 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id b2so766564qvp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0MQzhYw1eFCZ4OasAAPt/4uM+WwEYftpqDc/VYHMtbk=;
+        b=AEeeIKetXtIdWWb5SAUNf0CT75v612rlaNccc1LnuJpBb5OvgTvnreoT4A4OjAHh83
+         2gkDSfW8afxE84LI039FqJeIhxV2oGZ4RnkHwrgT7gaJY5kFVxvgD7z3kcBB0nmwawYl
+         CS15Jy0Be3rJh0nkvXUGExE957xE1b+7UhD8hCHGOAkgpPAPwOWMKzZ3o/gby8vQ+sfN
+         wDB5+JA+w8e/Hdgudw8JPIy+J6slyE1vtbucRIPeRAxApuJujob6n7+1FX7GzcKFLkOs
+         Chs9V5WR7ttQDJxLdP5QRuGU/ZbDFDC5QqvZOLj2rWLfNycVtJZza+7sI/jmL4cSLtEa
+         UEUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0MQzhYw1eFCZ4OasAAPt/4uM+WwEYftpqDc/VYHMtbk=;
+        b=uAnVeEDt3p7Vlv1V7+AtJvORMsSOVjwbIotJWa9XzhhDnXin2Q9bOPRWZOWdODx3Yu
+         sP9qWtmDCC4Z4VKKaUs55I6Mo5TJ4qI17f5ybRE8drhJlOGqSoG67M3J301oDQHgt/iy
+         xbtZpSC1oiiHDp7FSj6e92nlUqKgpi47NfBhZcNE0K9k7hSrApA2Fi1oBzwupduEhsHP
+         kEoRN0J5bnofEpKZ9Q8osx/VaOic5eyfh9g1ESeY335XsI4EfrA6pdcwEKosxx9UflW3
+         CwK6bJBNLA93Dj/lJWNljBUwQvCcpsqAUo4gxFRwyuNQSEv2kPj93sTcpRvjQQ9uJblm
+         IFjg==
+X-Gm-Message-State: AOAM531K/cxzaGNdQWGipEDnIJl8zcersWihR3jGeo17mSVz3C6Gel9h
+        ltwIEygC9gMzwYQ5HnaxdEDqHQ==
+X-Google-Smtp-Source: ABdhPJyT1CcTFQngIw1LDN+6nfpS4iP5F+zti+vFgyKwmJgBJWLjcNUPyeRDliUrfesVkOYVF2X/xA==
+X-Received: by 2002:a0c:ea21:: with SMTP id t1mr14182769qvp.62.1598451942396;
+        Wed, 26 Aug 2020 07:25:42 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:67b9])
+        by smtp.gmail.com with ESMTPSA id a25sm2076443qtd.8.2020.08.26.07.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 07:25:41 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 10:24:27 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] proc: Optimise smaps for shmem entries
+Message-ID: <20200826142427.GC988805@cmpxchg.org>
+References: <20200819184850.24779-1-willy@infradead.org>
+ <20200819184850.24779-5-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825133216.9163-2-valentin.schneider@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200819184850.24779-5-willy@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 02:32:16PM +0100, Valentin Schneider wrote:
-> SD_DEGENERATE_GROUPS_MASK is only useful for sched/topology.c, but still
-> gets defined for anyone who imports topology.h, leading to a flurry of
-> unused variable warnings.
+On Wed, Aug 19, 2020 at 07:48:46PM +0100, Matthew Wilcox (Oracle) wrote:
+> Avoid bumping the refcount on pages when we're only interested in the
+> swap entries.
 > 
-> Move it out of the header and place it next to the SD degeneration
-> functions in sched/topology.c.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Fixes: 4ee4ea443a5d ("sched/topology: Introduce SD metaflag for flags needing > 1 groups")
-> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  include/linux/sched/topology.h | 7 -------
->  kernel/sched/topology.c        | 7 +++++++
->  2 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index b9b0dab4d067..9ef7bf686a9f 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -25,13 +25,6 @@ enum {
->  };
->  #undef SD_FLAG
->  
-> -/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
-> -#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
-> -static const unsigned int SD_DEGENERATE_GROUPS_MASK =
-> -#include <linux/sched/sd_flags.h>
-> -0;
-> -#undef SD_FLAG
-> -
->  #ifdef CONFIG_SCHED_DEBUG
->  
->  struct sd_flag_debug {
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 4e1260cb4b44..da3cd60e4b78 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -154,6 +154,13 @@ static inline bool sched_debug(void)
->  }
->  #endif /* CONFIG_SCHED_DEBUG */
->  
-> +/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
-> +#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
-> +static const unsigned int SD_DEGENERATE_GROUPS_MASK =
-> +#include <linux/sched/sd_flags.h>
-> +0;
-> +#undef SD_FLAG
-> +
->  static int sd_degenerate(struct sched_domain *sd)
->  {
->  	if (cpumask_weight(sched_domain_span(sd)) == 1)
-> -- 
-> 2.27.0
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
