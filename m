@@ -2,57 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CD7252C03
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB77252C12
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgHZLDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:03:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47426 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728668AbgHZLAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:00:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C457DACA0;
-        Wed, 26 Aug 2020 11:00:47 +0000 (UTC)
-Date:   Wed, 26 Aug 2020 13:00:15 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     xunlei <xlpang@linux.alibaba.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: memcg: Fix memcg reclaim soft lockup
-Message-ID: <20200826110015.GO22869@dhcp22.suse.cz>
-References: <1598426822-93737-1-git-send-email-xlpang@linux.alibaba.com>
- <20200826081102.GM22869@dhcp22.suse.cz>
- <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
+        id S1728895AbgHZLEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728660AbgHZLAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:00:38 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6961C061574;
+        Wed, 26 Aug 2020 04:00:37 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id w25so1802186ljo.12;
+        Wed, 26 Aug 2020 04:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IrP6ayckjNJ1DXpVyleRBUcFlQaxWlVGGvYCRU/uzd4=;
+        b=twlNdYtBtcwaVvGPQQqBMGYo+BCqGNAMnQ06scY1fvZsCpKwWZRwSByvNXbYYnRfPu
+         9bHzuP2ndjv2STYV5bjZ0ZArEPuWmY++WTwVe6+fioivo83/P+iA4jK9tENhV4b40Qar
+         YuRhz3Qgr6mWXHMLKdDoV4yUjhv6aAXsVl20wj6VxzH/5KGABewzMz2J+8caqlFiWqMh
+         XhFfcXdRWAvNaBCe+jUzB5jEAABOgKFbixVC6GIwJhflNmvOXylZ9k75sijC6TnL5CMa
+         kfGa/rHeWDHedGF59eqknU2Aupage26bsMENg5mNG9ohiFwl9Q/o8O2WOmNHorNqQ0Un
+         AR0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IrP6ayckjNJ1DXpVyleRBUcFlQaxWlVGGvYCRU/uzd4=;
+        b=caiMLUZm0QvXudMQxYri6GAp2g7KfVoIY5onI3wx/FzcA/MMVe3NIXAujX1lw8o+KP
+         Glw2qICivtJYlQxXtcJKSpQEw7qiUdqFhhhmuItUGitrz8DhWPgwMacg2+OdaS4yKa1t
+         bPFqGS8irAx/GziluopyQM8VG0ZfKbLYXAjJ/p0QU/8G6ISMdJklaX1d4F3e6SW4vM+A
+         Bnm0wbpLXhVkSfpfOCp7Wqta7VxHT0iPXoG9e6TfWURGSwnKx2U3zAfa5KVimqMQn31p
+         ZoYutt/SiZB/c5h2LoUtldcGgi9CdDJd6INbtXRne7kntOcI3IkSGuFCcHLYaj7qAvy1
+         J2GQ==
+X-Gm-Message-State: AOAM532GN/p0KXZBojAnQu+Or3WitpPdos6TTSdTVRs9t39RrWEZrKtj
+        oCfiIBUQJzERi64N5NhobbpKj8U3iXsJ5CTQOVr/IAz4
+X-Google-Smtp-Source: ABdhPJyYPUaNdwhtweLVaLU70yKQWGzSfUwIGGvMtGw/Dd2GWNDaKIongg6kM6TSRpOEJEd3h9eF8RvYzzWvJQt2VgA=
+X-Received: by 2002:a2e:80d3:: with SMTP id r19mr7356055ljg.310.1598439635750;
+ Wed, 26 Aug 2020 04:00:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <99efed0e-050a-e313-46ab-8fe6228839d5@linux.alibaba.com>
+References: <20200826092606.2910-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200826092606.2910-1-dinghao.liu@zju.edu.cn>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 26 Aug 2020 08:00:24 -0300
+Message-ID: <CAOMZO5BCZYVj-C70XhwiaWVAZ8ViiBcErRP79eu3=m=aCWvZnw@mail.gmail.com>
+Subject: Re: [PATCH] [v2] media: mx2_emmaprp: Fix memleak in emmaprp_probe
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26-08-20 18:41:18, xunlei wrote:
-> On 2020/8/26 下午4:11, Michal Hocko wrote:
-> > On Wed 26-08-20 15:27:02, Xunlei Pang wrote:
-> >> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
-> >> the target memcg doesn't have any reclaimable memory.
-> > 
-> > Do you have any scenario when this happens or is this some sort of a
-> > test case?
-> 
-> It can happen on tiny guest scenarios.
+Hi Dinghao,
 
-OK, you made me more curious. If this is a tiny guest and this is a hard
-limit reclaim path then we should trigger an oom killer which should
-kill the offender and that in turn bail out from the try_charge lopp
-(see should_force_charge). So how come this repeats enough in your setup
-that it causes soft lockups?
--- 
-Michal Hocko
-SUSE Labs
+On Wed, Aug 26, 2020 at 6:31 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>
+> When platform_get_irq() fails, we should release
+> vfd and unregister pcdev->v4l2_dev just like the
+> subsequent error paths.
+>
+> Fixes: d4e192cc44914 ("media: mx2_emmaprp: Check for platform_get_irq() error")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+
+Thanks for the fix:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
