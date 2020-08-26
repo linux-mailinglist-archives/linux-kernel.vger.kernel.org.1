@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48139252BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030B1252BB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgHZKu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 06:50:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728754AbgHZKt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:49:56 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96C69206EB;
-        Wed, 26 Aug 2020 10:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598438996;
-        bh=TqPevqx6D2J7PXGgLZWIHZHYHYk8i8daoX9CkV8jVM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2sgsrLL8+6Se7RV01jW3bbRE2mvcZfKUPxov22vTodcl7jsNoAEyoN0nVtDuiV9Uy
-         YbCjL5vyGCjtkW9Gxm5wwLDgAmsvpiB284grpS1ZcdGjsR1BQyldPXZ4OTsLiXQNpw
-         4Ie/fRL6Whnaa9pcDNOXdoOByiDooJoftVzQm78I=
-Date:   Wed, 26 Aug 2020 11:49:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     syzbot <syzbot+fbe34b643e462f65e542@syzkaller.appspotmail.com>
-Cc:     alsa-devel@alsa-project.org, asmadeus@codewreck.org,
-        daniel.baluta@nxp.com, davem@davemloft.net, ericvh@gmail.com,
-        kuba@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        lucho@ionkov.net, netdev@vger.kernel.org, perex@perex.cz,
-        rminnich@sandia.gov, syzkaller-bugs@googlegroups.com,
-        tiwai@suse.com, v9fs-developer@lists.sourceforge.net
-Subject: Re: INFO: task can't die in p9_fd_close
-Message-ID: <20200826104919.GE4965@sirena.org.uk>
-References: <000000000000ca0c6805adc56a38@google.com>
+        id S1728772AbgHZKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 06:50:41 -0400
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:32193 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728647AbgHZKug (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 06:50:36 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 26 Aug
+ 2020 18:50:33 +0800
+Received: from localhost.localdomain (61.148.243.98) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 26 Aug
+ 2020 18:50:32 +0800
+From:   FelixCuioc <FelixCui-oc@zhaoxin.com>
+To:     Joerg Roedel <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
+CC:     <kbuild-all@lists.01.org>, <CobeChen-oc@zhaoxin.com>,
+        <RaymondPang-oc@zhaoxin.com>, <TonyWWang-oc@zhaoxin.com>
+Subject: [PATCH v2 0/3] Add support for ACPI device in RMRR to access reserved memory
+Date:   Wed, 26 Aug 2020 06:50:22 -0400
+Message-ID: <20200826105025.3912-1-FelixCui-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ryJZkp9/svQ58syV"
-Content-Disposition: inline
-In-Reply-To: <000000000000ca0c6805adc56a38@google.com>
-X-Cookie: Should I do my BOBBIE VINTON medley?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [61.148.243.98]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+BIOS allocate reserved memory ranges that may be DMA targets.
+BIOS may report each such reserved memory region through the
+RMRR structures,along with the devices that requires access to
+the specified reserved memory region.
 
---ryJZkp9/svQ58syV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The purpose of this series is to achieve ACPI device in RMRR
+access reserved memory.Therefore,it is necessary to increase
+the analysis of acpi device in RMRR and establish a mapping
+for this device.
 
-On Wed, Aug 26, 2020 at 03:38:15AM -0700, syzbot wrote:
+The first patch adds interfaces for detecting ACPI device in RMRR
+and in order to distinguish it from pci device,some interface
+functions are modified.
 
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D10615b36900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da61d44f28687f=
-508
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dfbe34b643e462f6=
-5e542
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15920a05900=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13a78539900000
->=20
-> The issue was bisected to:
->=20
-> commit af3acca3e35c01920fe476f730dca7345d0a48df
-> Author: Daniel Baluta <daniel.baluta@nxp.com>
-> Date:   Tue Feb 20 12:53:10 2018 +0000
->=20
->     ASoC: ak5558: Fix style for SPDX identifier
+The second patch adds support for probing ACPI device in RMRR.
+In probe_acpi_namespace_devices(),add support for direct mapping
+of ACPI device and add support for physical node of acpi device
+to be NULL.
 
-This bisection is clearly not accurate, I'm guessing the bug is
-intermittent and it was just luck that landed it on this commit.
+The last patch adds mutex_unlock(&adev->physical_node_lock)
+before returning in probe_acpi_namespace_devices().
 
---ryJZkp9/svQ58syV
-Content-Type: application/pgp-signature; name="signature.asc"
+v1->v2:
+   - Split the patch set to small series of patches
+   - Move the processing of physical node of acpi device for NULL
+     to probe_acpi_namespace_devices().
+   - Add mutex_unlock(&adev->physical_node_lock) before returning
+     in probe_acpi_namespace_devices().
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9GPi8ACgkQJNaLcl1U
-h9DyfAf8C2paLbOwHHdDVOi687LcmeI2dZuyjT7chCNm5YaFacrU8e5nRF/fnG6y
-G350XTQP7ygvtDz3oeIoEzMn8bJa7Xzeo03wiNm2JrUiMFRT6/S77JOk5g1d75xv
-tVwBelb7UdHY869OzQLeLc7exArpn9SsuSpRXkwqrY3EO4Ki/ZwwQPgOPrtYNdLM
-x1gX63pYxXoLCaHV3QHnselGfBIcz551NPsJJFowk4+ztuCDvaCp1pCYQpfaA+mS
-RU3Ttf+3q8xnCtvFF/Fz8deIGx9sXK9SMlc/uLC9GwhuP57oJ3G3O+JKLiaD9ONf
-rdK9/4syv9inh3Wwk3n22yqnKN96hw==
-=g5nP
------END PGP SIGNATURE-----
+FelixCuioc (3):
+  iommu/vt-d:Add support for detecting ACPI device in RMRR
+  iommu/vt-d:Add support for probing ACPI device in RMRR
+  iommu/vt-d:Add mutex_unlock() before returning
 
---ryJZkp9/svQ58syV--
+ drivers/iommu/intel/dmar.c  | 74 ++++++++++++++++++++-----------------
+ drivers/iommu/intel/iommu.c | 50 ++++++++++++++++++++++++-
+ drivers/iommu/iommu.c       |  6 +++
+ include/linux/dmar.h        | 12 +++++-
+ include/linux/iommu.h       |  3 ++
+ 5 files changed, 109 insertions(+), 36 deletions(-)
+
+-- 
+2.17.1
+
