@@ -2,439 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5E52534D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8262534DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgHZQ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
+        id S1728012AbgHZQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgHZQ0x (ORCPT
+        with ESMTP id S1727906AbgHZQ2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:26:53 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C877C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:26:53 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id 186so568877vkx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:26:53 -0700 (PDT)
+        Wed, 26 Aug 2020 12:28:05 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D90C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:28:05 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id u3so2429483qkd.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nBtM5QJ/xiVuP3K1PE564TMlBtbJGnuvhvG8Ae7aYWM=;
-        b=J/D97GrEOsPoUD2L5M6VIi5iFiNZP5CSQIZGrh2C2r4K8rx9GYGCe70QVOn0hnt30y
-         eHsXL/NjlKoxwmNQf+DE9ODovHv92BT9hZUH6eoOIdXYa6lcGahg2P4POtFYvWw+w5D6
-         460MsFeglFZrVJiV0Afcb4qu/suVp/PuSQm5qFzO0EYMWMumdXgMtZggYOK/MU7QTTqY
-         ylXzu5epDETwYAPcs+6Zod619iigzHokmqauf5fzNCRcl8GfIEtGU2AtB4dZVOwU4hI5
-         /i6a3dmlTjoc+ncICS1bjJkWB+eD1YraSHZHeZ23a9mnRmqUvukGrFvMbuyLUndMXMRJ
-         L+0g==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+AffAjKsRXV4iuuUyWXhmFhrbRKp4ijCwhOH6K1QUoM=;
+        b=zTWK1kAaol1sXKzKa6Zh0erJPvRLYszBA6l3yTnCoVH1T8/16/AW1V2nsDX9y2EX9B
+         vDiOxAlRGWwrxcKHjAxU7j78zHdQwgGe/v70HlXNkP5X2hCozTh8lik5JFO2+R01Ei67
+         h9aE6og5sbeZ7AFl8Lu8+u4Ek1C+h9N66vnSS2jqAX7DwFlLUw8wTnH7RS4/hMhxJygL
+         N2Y5K4YgzBaAhiNjLgLPYJO5vbwE102QQsoK+Ha2mp3sz4VVikKedZRfUVAz/iWuX19Y
+         DmmVCSiYFWZc6j+9h4hnBnvooK7Kb0Jc2IWSn+vIp4ddlDhyvd2dEAXNN8LGa3SwG/Mw
+         02QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nBtM5QJ/xiVuP3K1PE564TMlBtbJGnuvhvG8Ae7aYWM=;
-        b=WLokgqX8aNiL16HvyBaON3Gmvkua6f9bIGwrA1qadkNQXBD/b0H4EjOKQcnrOrHiKm
-         /Vu4NfEl3xa2xAfP1yhXyi1bLizPXiWfIfgnrIMq1vDRHHC8NaC0DDr2AQow8aJGQ6zc
-         0+oDotJ5hCst0vGmDmG8Fiou1MFoyM4g7Cs4qqW52SflJgyB1hSXX39+4WQyZydaWQwN
-         YAxmCvE8JYHdl8p9KnqXXgddEsAjziXEI6nBDd4AsNKkeLvmo+f8WZ9+isBaSh4+iu7P
-         Ui2JcksLiCxoy4gY7XZseGUAX7PqOGboPR0MUPlD2XmLCYhBbY4pp3B5X7R5z1dTghFa
-         JWIg==
-X-Gm-Message-State: AOAM531oon/dlvF/9wU8dGl7yIaNtEtCFzxdVHTjD6HOvbMYhbmURyfa
-        2THSLs1MfYdQzRkp125+crbN+Is+9Cw7HKFyGVIIgg==
-X-Google-Smtp-Source: ABdhPJy7feJMatq9jkl30SBZNHF64hdYBt3o4B+iBw98xqtgg1VXUgnbIeOd8SM1thTwE1LBpCgkqv9cCU2OCbbbZog=
-X-Received: by 2002:a1f:93c1:: with SMTP id v184mr9780571vkd.62.1598459211968;
- Wed, 26 Aug 2020 09:26:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+AffAjKsRXV4iuuUyWXhmFhrbRKp4ijCwhOH6K1QUoM=;
+        b=ipLcEuQyD9TAAlrx856TX5BsiqF3u3Xseuu2Tmge9Jh5ZesH8FquchPLnaxTf5L2pE
+         UPDUm+iTTXazF2QR48lcQVUcDAZsHHtYh9NYT4Bqllkfogp3+TsvBy7ArT2yd671Kw3l
+         wsUNl+G8B6L6B+dyv1rXyBWKo1KdKLUxn0DCYy2eVtX4l9EkAykjwwZgliE6tjGQpQke
+         5bFctWf2qP2thlZ3JMTwy13hiGQmpIM4U04CDuMHEfXhWdE2+YHIO3YXiVH4jOGT0Dti
+         ZV+gexML/Y+EWBczsAyExOvdAEU/dBsOluSLqcnkUn64dYtIs9Z+Km89Cpkg4xoDixjF
+         bp+A==
+X-Gm-Message-State: AOAM531GBJpHOs4qPM8sONlkk5jr7Im1A8jyrY4ke2/+DFavwzP4qfVh
+        mWaIilt3y1MCI09Fv3+Rcsqv0Q==
+X-Google-Smtp-Source: ABdhPJwTQbQQGi2mb8+E7rQGX5gKMRxHvunIgPTVd+EFjbe2YlyqEYeZ1Qwf3MGM0SxxfCONGSdhZg==
+X-Received: by 2002:a37:b307:: with SMTP id c7mr15128487qkf.33.1598459282888;
+        Wed, 26 Aug 2020 09:28:02 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:412a])
+        by smtp.gmail.com with ESMTPSA id o31sm2354152qte.65.2020.08.26.09.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 09:28:01 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 12:26:47 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
+Message-ID: <20200826162647.GA995045@cmpxchg.org>
+References: <20200819184850.24779-1-willy@infradead.org>
+ <20200819184850.24779-3-willy@infradead.org>
+ <20200826142002.GA988805@cmpxchg.org>
+ <20200826145414.GS17456@casper.infradead.org>
 MIME-Version: 1.0
-References: <20200813222155.268183-1-pc@us.ibm.com> <CAP-5=fU4P7o1TwVz+PzcrJsBKnrHW4yrNx3R165i9d3BwgP2RQ@mail.gmail.com>
- <cfa27e83-ac2c-7495-b453-ceeaf2412311@linux.ibm.com> <20200814124307.GF13995@kernel.org>
-In-Reply-To: <20200814124307.GF13995@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 26 Aug 2020 09:26:40 -0700
-Message-ID: <CAP-5=fWw-W3wfy_WeirM_jbEmsbQCC8L_AGo2zsMvv2MW1x04A@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: update POWER9 metrics to utilize other metrics
-To:     Paul Clarke <pc@us.ibm.com>
-Cc:     kajoljain <kjain@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, maddy@linux.ibm.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826145414.GS17456@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 5:43 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Aug 14, 2020 at 11:20:42AM +0530, kajoljain escreveu:
-> >
-> >
-> > On 8/14/20 9:13 AM, Ian Rogers wrote:
-> > > On Thu, Aug 13, 2020 at 3:21 PM Paul A. Clarke <pc@us.ibm.com> wrote:
-> > >>
-> > >> These changes take advantage of the new capability added in
-> > >> merge commit 00e4db51259a5f936fec1424b884f029479d3981
-> > >> "Allow using computed metrics in calculating other metrics".
-> > >>
-> > >> The net is a simplification of the expressions for a handful
-> > >> of metrics, but no functional change.
-> > >>
-> > >> Signed-off-by: Paul A. Clarke <pc@us.ibm.com>
-> > >
-> >
-> > Hi Paul,
-> >   The patch looks good to me.
-> >
-> > Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
->
-> Thanks, applied. Added Ian's Acked-by as well.
->
-> - Arnaldo
+On Wed, Aug 26, 2020 at 03:54:14PM +0100, Matthew Wilcox wrote:
+> On Wed, Aug 26, 2020 at 10:20:02AM -0400, Johannes Weiner wrote:
+> > On Wed, Aug 19, 2020 at 07:48:44PM +0100, Matthew Wilcox (Oracle) wrote:
+> > > +	return find_get_swap_page(vma->vm_file->f_mapping,
+> > > +			linear_page_index(vma, addr));
+> > 
+> > The refactor makes sense to me, but the name is confusing. We're not
+> > looking for a swap page, we're primarily looking for a file page in
+> > the page cache mapping that's handed in. Only in the special case
+> > where it's a shmem mapping and there is a swap entry do we consult the
+> > auxiliary swap cache.
+> > 
+> > How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
+> > Maybe you have a better idea. It's a fairly specialized operation that
+> > isn't widely used, so a longer name isn't a bad thing IMO.
+> 
+> Yeah, I had trouble with the naming here too.
+> 
+> get_page_even_from_swap()
+> find_get_shmem_page()
+> 
+> or maybe refactor the whole thing:
+> 
+> 	struct page *page = find_get_entry(mapping, index);
+> 	page = find_swap_page(mapping, page);
+> 
+> struct page *find_swap_page(struct address_space *mapping, struct page *page)
+> {
+> 	swp_entry_t swp;
+> 	struct swap_info_struct *si;
+> 
+> 	if (!xa_is_value(page))
+> 		return page;
+> 	if (!shmem_mapping(mapping))
+> 		return NULL;
+> 
+> 	...
+> }
 
-Hi Paul,
+Yeah, I like the idea of two lookups if we can't find a good name for
+the operation that combines them. I'd just bubble the control flow
+that links them up to the callsite - that still seems plenty compact
+for two callsites, and keeps all the shmem magic in shmem code:
 
-I've synced perf and testing on a remote machine (not easy for me to
-log into) I see failures in perf test "10.3: Parsing of PMU event
-table metrics" like:
-...
-parsing metric: dfu_stall_cpi - dflong_stall_cpi
-Parse event failed metric 'dfu_other_stall_cpi' id 'dflong_stall_cpi'
-expr 'dfu_stall_cpi - dflong_stall_cpi'
-Error string 'parser error' help '(null)'
-Parse event failed metric 'dfu_other_stall_cpi' id 'dfu_stall_cpi'
-expr 'dfu_stall_cpi - dflong_stall_cpi'
-Error string 'parser error' help '(null)'
-...
-This may be that the test doesn't handle the metric in terms of metric
-addition and so I'll look for a fix. I thought I'd send a heads up in
-case you had already seen/addressed this. Is perf test on PowerPC
-clean for you at the moment?
+	page = find_get_entry(mapping, index);
+	if (xa_is_value(page))
+		if (shmem_mapping(mapping))
+			page = lookup_shmem_swap_cache(page);
+		else
+			page = NULL;
 
-Thanks,
-Ian
-
-
-> > Thanks,
-> > Kajol Jain
-> >
-> > > Acked-by: Ian Rogers <irogers@google.com>
-> > > (Re-sent with plain text enabled to avoid lkml bounce)
-> > >
-> > > Thanks,
-> > > Ian
-> > >
-> > >
-> > >>
-> > >> ---
-> > >>  .../arch/powerpc/power9/metrics.json          | 48 +++++++++-------=
----
-> > >>  1 file changed, 24 insertions(+), 24 deletions(-)
-> > >>
-> > >> diff --git a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json =
-b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > >> index 80816d6402e9..f8784c608479 100644
-> > >> --- a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > >> +++ b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > >> @@ -60,7 +60,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Stalls due to short latency decimal fl=
-oating ops.",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_DFU - PM_CMPLU_STALL_DFLONG)=
-/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dfu_stall_cpi - dflong_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "dfu_other_stall_cpi"
-> > >>      },
-> > >> @@ -72,7 +72,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall by Dcache miss which =
-resolved off node memory/cache",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_DMISS_L3MISS - PM_CMPLU_STAL=
-L_DMISS_L21_L31 - PM_CMPLU_STALL_DMISS_LMEM - PM_CMPLU_STALL_DMISS_REMOTE)/=
-PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dmiss_non_local_stall_cpi - dmiss_remote_sta=
-ll_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "dmiss_distant_stall_cpi"
-> > >>      },
-> > >> @@ -90,7 +90,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall due to cache miss tha=
-t resolves in the L2 or L3 without conflict",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_DMISS_L2L3 - PM_CMPLU_STALL_=
-DMISS_L2L3_CONFLICT)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dmiss_l2l3_stall_cpi - dmiss_l2l3_conflict_s=
-tall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "dmiss_l2l3_noconflict_stall_cpi"
-> > >>      },
-> > >> @@ -114,7 +114,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall by Dcache miss which =
-resolved outside of local memory",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_DMISS_L3MISS - PM_CMPLU_STAL=
-L_DMISS_L21_L31 - PM_CMPLU_STALL_DMISS_LMEM)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dmiss_l3miss_stall_cpi - dmiss_l21_l31_stall=
-_cpi - dmiss_lmem_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "dmiss_non_local_stall_cpi"
-> > >>      },
-> > >> @@ -126,7 +126,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Stalls due to short latency double pre=
-cision ops.",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_DP - PM_CMPLU_STALL_DPLONG)/=
-PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dp_stall_cpi - dplong_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "dp_other_stall_cpi"
-> > >>      },
-> > >> @@ -155,7 +155,7 @@
-> > >>          "MetricName": "emq_full_stall_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_ERAT_MISS + PM_CMPLU_STALL_E=
-MQ_FULL)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "erat_miss_stall_cpi + emq_full_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "emq_stall_cpi"
-> > >>      },
-> > >> @@ -173,7 +173,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall due to execution unit=
-s for other reasons.",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_EXEC_UNIT - PM_CMPLU_STALL_F=
-XU - PM_CMPLU_STALL_DP - PM_CMPLU_STALL_DFU - PM_CMPLU_STALL_PM - PM_CMPLU_=
-STALL_CRYPTO - PM_CMPLU_STALL_VFXU - PM_CMPLU_STALL_VDP)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "exec_unit_stall_cpi - scalar_stall_cpi - vec=
-tor_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "exec_unit_other_stall_cpi"
-> > >>      },
-> > >> @@ -197,7 +197,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Stalls due to short latency integer op=
-s",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_FXU - PM_CMPLU_STALL_FXLONG)=
-/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "fxu_stall_cpi - fxlong_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "fxu_other_stall_cpi"
-> > >>      },
-> > >> @@ -221,7 +221,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Instruction Completion Table other sta=
-lls",
-> > >> -        "MetricExpr": "(PM_ICT_NOSLOT_CYC - PM_ICT_NOSLOT_IC_MISS -=
- PM_ICT_NOSLOT_BR_MPRED_ICMISS - PM_ICT_NOSLOT_BR_MPRED - PM_ICT_NOSLOT_DIS=
-P_HELD)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "nothing_dispatched_cpi - ict_noslot_ic_miss_=
-cpi - ict_noslot_br_mpred_icmiss_cpi - ict_noslot_br_mpred_cpi - ict_noslot=
-_disp_held_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "ict_noslot_cyc_other_cpi"
-> > >>      },
-> > >> @@ -245,7 +245,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "ICT_NOSLOT_DISP_HELD_OTHER_CPI",
-> > >> -        "MetricExpr": "(PM_ICT_NOSLOT_DISP_HELD - PM_ICT_NOSLOT_DIS=
-P_HELD_HB_FULL - PM_ICT_NOSLOT_DISP_HELD_SYNC - PM_ICT_NOSLOT_DISP_HELD_TBE=
-GIN - PM_ICT_NOSLOT_DISP_HELD_ISSQ)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "ict_noslot_disp_held_cpi - ict_noslot_disp_h=
-eld_hb_full_cpi - ict_noslot_disp_held_sync_cpi - ict_noslot_disp_held_tbeg=
-in_cpi - ict_noslot_disp_held_issq_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "ict_noslot_disp_held_other_cpi"
-> > >>      },
-> > >> @@ -263,7 +263,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "ICT_NOSLOT_IC_L2_CPI",
-> > >> -        "MetricExpr": "(PM_ICT_NOSLOT_IC_MISS - PM_ICT_NOSLOT_IC_L3=
- - PM_ICT_NOSLOT_IC_L3MISS)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "ict_noslot_ic_miss_cpi - ict_noslot_ic_l3_cp=
-i - ict_noslot_ic_l3miss_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "ict_noslot_ic_l2_cpi"
-> > >>      },
-> > >> @@ -286,7 +286,7 @@
-> > >>          "MetricName": "ict_noslot_ic_miss_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_NTC_ISSUE_HELD_DARQ_FULL + PM_NTC_ISSUE_=
-HELD_ARB + PM_NTC_ISSUE_HELD_OTHER)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "ntc_issue_held_darq_full_cpi + ntc_issue_hel=
-d_arb_cpi + ntc_issue_held_other_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "issue_hold_cpi"
-> > >>      },
-> > >> @@ -327,7 +327,7 @@
-> > >>          "MetricName": "lrq_other_stall_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_LMQ_FULL + PM_CMPLU_STALL_ST=
-_FWD + PM_CMPLU_STALL_LHS + PM_CMPLU_STALL_LSU_MFSPR + PM_CMPLU_STALL_LARX =
-+ PM_CMPLU_STALL_LRQ_OTHER)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "lmq_full_stall_cpi + st_fwd_stall_cpi + lhs_=
-stall_cpi + lsu_mfspr_stall_cpi + larx_stall_cpi + lrq_other_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "lrq_stall_cpi"
-> > >>      },
-> > >> @@ -338,7 +338,7 @@
-> > >>          "MetricName": "lsaq_arb_stall_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_LRQ_FULL + PM_CMPLU_STALL_SR=
-Q_FULL + PM_CMPLU_STALL_LSAQ_ARB)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "lrq_full_stall_cpi + srq_full_stall_cpi + ls=
-aq_arb_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "lsaq_stall_cpi"
-> > >>      },
-> > >> @@ -362,7 +362,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion LSU stall for other reasons=
-",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_LSU - PM_CMPLU_STALL_LSU_FIN=
- - PM_CMPLU_STALL_STORE_FINISH - PM_CMPLU_STALL_STORE_DATA - PM_CMPLU_STALL=
-_EIEIO - PM_CMPLU_STALL_STCX - PM_CMPLU_STALL_SLB - PM_CMPLU_STALL_TEND - P=
-M_CMPLU_STALL_PASTE - PM_CMPLU_STALL_TLBIE - PM_CMPLU_STALL_STORE_PIPE_ARB =
-- PM_CMPLU_STALL_STORE_FIN_ARB - PM_CMPLU_STALL_LOAD_FINISH + PM_CMPLU_STAL=
-L_DCACHE_MISS - PM_CMPLU_STALL_LMQ_FULL - PM_CMPLU_STALL_ST_FWD - PM_CMPLU_=
-STALL_LHS - PM_CMPLU_STALL_LSU_MFSPR - PM_CMPLU_STALL_LARX - PM_CMPLU_STALL=
-_LRQ_OTHER + PM_CMPLU_STALL_ERAT_MISS + PM_CMPLU_STALL_EMQ_FULL - PM_CMPLU_=
-STALL_LRQ_FULL - PM_CMPLU_STALL_SRQ_FULL - PM_CMPLU_STALL_LSAQ_ARB) / PM_RU=
-N_INST_CMPL",
-> > >> +        "MetricExpr": "lsu_stall_cpi - lsu_fin_stall_cpi - store_fi=
-nish_stall_cpi - srq_stall_cpi - load_finish_stall_cpi + lsu_stall_dcache_m=
-iss_cpi - lrq_stall_cpi + emq_stall_cpi - lsaq_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "lsu_other_stall_cpi"
-> > >>      },
-> > >> @@ -434,13 +434,13 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Cycles unaccounted for.",
-> > >> -        "MetricExpr": "(PM_RUN_CYC - PM_1PLUS_PPC_CMPL - PM_CMPLU_S=
-TALL_THRD - PM_CMPLU_STALL - PM_ICT_NOSLOT_CYC)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "run_cpi - completion_cpi - thread_block_stal=
-l_cpi - stall_cpi - nothing_dispatched_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "other_cpi"
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall for other reasons",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL - PM_CMPLU_STALL_NTC_DISP_FI=
-N - PM_CMPLU_STALL_NTC_FLUSH - PM_CMPLU_STALL_LSU - PM_CMPLU_STALL_EXEC_UNI=
-T - PM_CMPLU_STALL_BRU)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "stall_cpi - ntc_disp_fin_stall_cpi - ntc_flu=
-sh_stall_cpi - lsu_stall_cpi - exec_unit_stall_cpi - bru_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "other_stall_cpi"
-> > >>      },
-> > >> @@ -469,7 +469,7 @@
-> > >>          "MetricName": "run_cyc_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_FXU + PM_CMPLU_STALL_DP + PM=
-_CMPLU_STALL_DFU + PM_CMPLU_STALL_PM + PM_CMPLU_STALL_CRYPTO)/PM_RUN_INST_C=
-MPL",
-> > >> +        "MetricExpr": "fxu_stall_cpi + dp_stall_cpi + dfu_stall_cpi=
- + pm_stall_cpi + crypto_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "scalar_stall_cpi"
-> > >>      },
-> > >> @@ -492,7 +492,7 @@
-> > >>          "MetricName": "srq_full_stall_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_STORE_DATA + PM_CMPLU_STALL_=
-EIEIO + PM_CMPLU_STALL_STCX + PM_CMPLU_STALL_SLB + PM_CMPLU_STALL_TEND + PM=
-_CMPLU_STALL_PASTE + PM_CMPLU_STALL_TLBIE + PM_CMPLU_STALL_STORE_PIPE_ARB +=
- PM_CMPLU_STALL_STORE_FIN_ARB)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "store_data_stall_cpi + eieio_stall_cpi + stc=
-x_stall_cpi + slb_stall_cpi + tend_stall_cpi + paste_stall_cpi + tlbie_stal=
-l_cpi + store_pipe_arb_stall_cpi + store_fin_arb_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "srq_stall_cpi"
-> > >>      },
-> > >> @@ -558,7 +558,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Vector stalls due to small latency dou=
-ble precision ops",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_VDP - PM_CMPLU_STALL_VDPLONG=
-)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "vdp_stall_cpi - vdplong_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "vdp_other_stall_cpi"
-> > >>      },
-> > >> @@ -575,7 +575,7 @@
-> > >>          "MetricName": "vdplong_stall_cpi"
-> > >>      },
-> > >>      {
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_VFXU + PM_CMPLU_STALL_VDP)/P=
-M_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "vfxu_stall_cpi + vdp_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "vector_stall_cpi"
-> > >>      },
-> > >> @@ -587,7 +587,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Vector stalls due to small latency int=
-eger ops",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_VFXU - PM_CMPLU_STALL_VFXLON=
-G)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "vfxu_stall_cpi - vfxlong_stall_cpi",
-> > >>          "MetricGroup": "cpi_breakdown",
-> > >>          "MetricName": "vfxu_other_stall_cpi"
-> > >>      },
-> > >> @@ -1844,7 +1844,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "% of DL1 reloads from Private L3, othe=
-r core per Inst",
-> > >> -        "MetricExpr": "(PM_DATA_FROM_L31_MOD + PM_DATA_FROM_L31_SHR=
-) * 100 / PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "dl1_reload_from_l31_mod_rate_percent + dl1_r=
-eload_from_l31_shr_rate_percent",
-> > >>          "MetricName": "dl1_reload_from_l31_rate_percent"
-> > >>      },
-> > >>      {
-> > >> @@ -1979,7 +1979,7 @@
-> > >>      },
-> > >>      {
-> > >>          "BriefDescription": "Completion stall because a different t=
-hread was using the completion pipe",
-> > >> -        "MetricExpr": "(PM_CMPLU_STALL_THRD - PM_CMPLU_STALL_EXCEPT=
-ION - PM_CMPLU_STALL_ANY_SYNC - PM_CMPLU_STALL_SYNC_PMU_INT - PM_CMPLU_STAL=
-L_SPEC_FINISH - PM_CMPLU_STALL_FLUSH_ANY_THREAD - PM_CMPLU_STALL_LSU_FLUSH_=
-NEXT - PM_CMPLU_STALL_NESTED_TBEGIN - PM_CMPLU_STALL_NESTED_TEND - PM_CMPLU=
-_STALL_MTFPSCR)/PM_RUN_INST_CMPL",
-> > >> +        "MetricExpr": "thread_block_stall_cpi - exception_stall_cpi=
- - any_sync_stall_cpi - sync_pmu_int_stall_cpi - spec_finish_stall_cpi - fl=
-ush_any_thread_stall_cpi - lsu_flush_next_stall_cpi - nested_tbegin_stall_c=
-pi - nested_tend_stall_cpi - mtfpscr_stall_cpi",
-> > >>          "MetricName": "other_thread_cmpl_stall"
-> > >>      },
-> > >>      {
-> > >> --
-> > >> 2.18.4
-> > >>
->
-> --
->
-> - Arnaldo
+So close to making radix_to_swp_entry() & co. private to shmem.c, too
+- if it weren't for force_shm_swapin_readahead(). Ah well.
