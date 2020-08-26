@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A5425323B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CB7253283
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgHZOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40306 "EHLO mail.kernel.org"
+        id S1728476AbgHZO47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728209AbgHZOxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:53:15 -0400
+        id S1726809AbgHZOxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:53:23 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86DCB2177B;
-        Wed, 26 Aug 2020 14:53:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DB7921741;
+        Wed, 26 Aug 2020 14:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598453594;
-        bh=Qo3LbyvmpBGQKG4D/yZypYAesoTm5jVx4P7R/QfNlcY=;
+        s=default; t=1598453602;
+        bh=L62NHGTlHRmxfW0UXMzF8rz6Eg4TzDjh28d5OkWRb1E=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=qMZgura2EYsW2bxG0xHLWT3v4KZYKNJn4qop8HRQH5iq+4faVf9nQrwTotbcbEPkY
-         MZsl9iKjz8CrXVxC2l/VPlpgA+2HXRrHV7Y8WdFm9cVVtqlF94M9CeMdr1QLXcUsso
-         byEgtFP2Z/C+qUUmdT2VClwjlQ5CO1F4n3kxGbIo=
+        b=vP/Bl97+JtTx4OaxuqQf637JfAncWM+cvwXtDyt0M8X8AQGOnemx5q4V2euAPCZtf
+         WMttIrtvRRJoKWifKDkfX1+8Lk9eoqJepIe0UPQtCofwtHrOo0FSV5Ulu90tABrKky
+         CgwWyQQVxz02bZRXieUrcDYksXCsOiCqHlrCVigs=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Jonathan Cameron <jic23@kernel.org>,
         Hartmut Knaack <knaack.h@gmx.de>,
@@ -47,9 +47,9 @@ To:     Jonathan Cameron <jic23@kernel.org>,
         linux-samsung-soc@vger.kernel.org,
         linux-amlogic@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH 13/16] iio: imu: inv_mpu6050: Simplify with dev_err_probe()
-Date:   Wed, 26 Aug 2020 16:51:50 +0200
-Message-Id: <20200826145153.10444-13-krzk@kernel.org>
+Subject: [PATCH 14/16] iio: light: isl29018: Simplify with dev_err_probe()
+Date:   Wed, 26 Aug 2020 16:51:51 +0200
+Message-Id: <20200826145153.10444-14-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200826145153.10444-1-krzk@kernel.org>
 References: <20200826145153.10444-1-krzk@kernel.org>
@@ -63,42 +63,29 @@ dev_err_probe().  Less code and also it prints the error value.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/iio/imu/inv_mpu6050/inv_mpu_core.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ drivers/iio/light/isl29018.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-index 3fee3947f772..18a1898e3e34 100644
---- a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-+++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-@@ -1475,22 +1475,14 @@ int inv_mpu_core_probe(struct regmap *regmap, int irq, const char *name,
- 	}
+diff --git a/drivers/iio/light/isl29018.c b/drivers/iio/light/isl29018.c
+index ac8ad0f32689..2689867467a8 100644
+--- a/drivers/iio/light/isl29018.c
++++ b/drivers/iio/light/isl29018.c
+@@ -746,12 +746,9 @@ static int isl29018_probe(struct i2c_client *client,
+ 	chip->suspended = false;
  
- 	st->vdd_supply = devm_regulator_get(dev, "vdd");
--	if (IS_ERR(st->vdd_supply)) {
--		if (PTR_ERR(st->vdd_supply) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to get vdd regulator %d\n",
--				(int)PTR_ERR(st->vdd_supply));
--
--		return PTR_ERR(st->vdd_supply);
+ 	chip->vcc_reg = devm_regulator_get(&client->dev, "vcc");
+-	if (IS_ERR(chip->vcc_reg)) {
+-		err = PTR_ERR(chip->vcc_reg);
+-		if (err != -EPROBE_DEFER)
+-			dev_err(&client->dev, "failed to get VCC regulator!\n");
+-		return err;
 -	}
-+	if (IS_ERR(st->vdd_supply))
-+		return dev_err_probe(dev, PTR_ERR(st->vdd_supply),
-+				     "Failed to get vdd regulator\n");
++	if (IS_ERR(chip->vcc_reg))
++		return dev_err_probe(&client->dev, PTR_ERR(chip->vcc_reg),
++				     "failed to get VCC regulator!\n");
  
- 	st->vddio_supply = devm_regulator_get(dev, "vddio");
--	if (IS_ERR(st->vddio_supply)) {
--		if (PTR_ERR(st->vddio_supply) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to get vddio regulator %d\n",
--				(int)PTR_ERR(st->vddio_supply));
--
--		return PTR_ERR(st->vddio_supply);
--	}
-+	if (IS_ERR(st->vddio_supply))
-+		return dev_err_probe(dev, PTR_ERR(st->vddio_supply),
-+				     "Failed to get vddio regulator\n");
- 
- 	result = regulator_enable(st->vdd_supply);
- 	if (result) {
+ 	err = regulator_enable(chip->vcc_reg);
+ 	if (err) {
 -- 
 2.17.1
 
