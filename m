@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A52534B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F1D2534B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgHZQUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgHZQUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:20:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D48C061574;
-        Wed, 26 Aug 2020 09:20:46 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so1123226plk.10;
-        Wed, 26 Aug 2020 09:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=+gFxa6mV/dX1dFCBtC2xOtSeE1QQdKAWrajpPbfycck=;
-        b=lyXYghMrnRsy3FpCr4AoQmKaZJOTWa0XdSKtjtXFSo7t5sdVS6sNr77I+PEJ4Pa6qV
-         17ADvEsT5pTzYjNFWe/3G6MjBv53R8PPjmH4NERp+ePjdPORiMZbrfBBf4nWwLsi5VfU
-         qyPUMgn4gBD/EylLGvUscir654O7fAKUkB8+j9eAPnyAaa1mW4ERgUdIawCuy2vACsyl
-         xWFhU4cMmlM2AwuDpn471FIeZxCisuZM5za5fJVL9Bg9IO8BbN5qdK2x9PalDbwvg84i
-         PEUmxcYoWG0RGC86JMwTMdQAD85Q6+KwtCDL+h3Yc+2jgrW+ZksycWAahqMIX6tuBbtD
-         2gwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=+gFxa6mV/dX1dFCBtC2xOtSeE1QQdKAWrajpPbfycck=;
-        b=Bgg5uuuyAY9wqCN7qzcc+2WSHTTF4351FvZodFNSf1nEpVuQ+EsIvsUkmKU7K9eOAP
-         BSOEZf+4XiW1ITy7D26sFa2uXUAG4azzN+UuN3p/GpPI1feF+kIaZxa5Wxm43Yy0AnXa
-         UMSgcYBZHAzpITtaoFga4OY+lYX3kiMQbaOKjtQVsK9A+n3TaqjpaLvDAqh9Rf9ol32V
-         w59KNW6Nvpu2cHXcyvRAc+24xuFJ0PDGmMQ5HKDrzN0tS2W8hqHUT2V2wVRLYnT5CHJ0
-         Bd3WhGGnaZqXi7dlQbMRohDJtstgVw4MVEZn1y8KS65PEE78VWhlUx/MNhRCtoM+CCD/
-         kPWw==
-X-Gm-Message-State: AOAM532c+RcKY5d/kQbh5p+SZiQ5SSo1jKb0XGQILakHE4RQWShpKWvg
-        M4ATU6wxAde9ytI549O9GCg=
-X-Google-Smtp-Source: ABdhPJxduybij+lj3whYtH300CUDZDncU2wg5pWzfaYs4zZ6iQOFKaGFzZiG9cdh/d4Xs3xWY4c/Jw==
-X-Received: by 2002:a17:90a:f310:: with SMTP id ca16mr6782701pjb.120.1598458845724;
-        Wed, 26 Aug 2020 09:20:45 -0700 (PDT)
-Received: from localhost (61-68-212-105.tpgi.com.au. [61.68.212.105])
-        by smtp.gmail.com with ESMTPSA id c143sm3674575pfb.84.2020.08.26.09.20.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 09:20:44 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 02:20:39 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 05/23] arm64: use asm-generic/mmu_context.h for no-op
- implementations
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Will Deacon <will@kernel.org>
-References: <20200826145249.745432-1-npiggin@gmail.com>
-        <20200826145249.745432-6-npiggin@gmail.com> <20200826152510.GB24545@gaia>
-In-Reply-To: <20200826152510.GB24545@gaia>
+        id S1727968AbgHZQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726971AbgHZQVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:21:06 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 169DF214F1;
+        Wed, 26 Aug 2020 16:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598458865;
+        bh=ebWQh3nk8D4zG1syvCLitTt388shKB71c0Otl//ugiw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yGu5Q+kQSKFQr3D2q9p/nApUJtOTWpsSyz3viYF2MAAYVGxjQ4bli5amwCn5mFqyG
+         e8g5Qi36QC8yHasloS/dMD6HuHvN3n+kL3dYpx97hnfzCccSQ9+zutGq1UtHSZp4/o
+         NMoGWAnNHFqIFID7MIj+FXmU+1c8CzIHasu90ZHw=
+Date:   Wed, 26 Aug 2020 21:51:01 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 4/4] ASoC: rt715: Fix return check for
+ devm_regmap_init_sdw()
+Message-ID: <20200826162101.GE2639@vkoul-mobl>
+References: <20200826122811.3223663-1-vkoul@kernel.org>
+ <20200826122811.3223663-4-vkoul@kernel.org>
+ <e71ba625-ec1e-1adf-9e4c-b65a91562d9c@linux.intel.com>
 MIME-Version: 1.0
-Message-Id: <1598458759.6wa1mql9py.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e71ba625-ec1e-1adf-9e4c-b65a91562d9c@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Catalin Marinas's message of August 27, 2020 1:25 am:
-> On Thu, Aug 27, 2020 at 12:52:31AM +1000, Nicholas Piggin wrote:
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->=20
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->=20
+On 26-08-20, 10:09, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 8/26/20 7:28 AM, Vinod Koul wrote:
+> > devm_regmap_init_sdw() returns a valid pointer on success or ERR_PTR on
+> > failure which should be checked with IS_ERR. Also use PTR_ERR for
+> > returning error codes.
+> 
+> Do you mind changing these two additional codecs that were missed in this
+> series? Thanks!
+> 
+> rt700-sdw.c:	sdw_regmap = devm_regmap_init_sdw(slave, &rt700_sdw_regmap);
+> rt700-sdw.c-	if (!sdw_regmap)
+> rt700-sdw.c-		return -EINVAL;
 
-Thank you, I see I stupidly mis-rebased this patch too :( Sorry
-I'll fix that.
+Yes missed this one
+> 
+> --
+> rt711-sdw.c:	sdw_regmap = devm_regmap_init_sdw(slave, &rt711_sdw_regmap);
+> rt711-sdw.c-	if (!sdw_regmap)
+> rt711-sdw.c-		return -EINVAL;
 
-Thanks,
-Nick
+And somehow patch series is messed, I have two 2/4 but no 3/4 which
+patches rt711-sdw.c, will send v2 with these fixed
+
+-- 
+~Vinod
