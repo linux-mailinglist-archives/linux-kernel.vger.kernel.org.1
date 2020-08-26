@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292A4252C76
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3F5252C71
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 13:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgHZLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 07:31:10 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:45867 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728834AbgHZL3W (ORCPT
+        id S1728973AbgHZLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 07:30:38 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40895 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728958AbgHZL3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:29:22 -0400
-Received: by mail-oo1-f65.google.com with SMTP id u28so354641ooe.12
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:28:49 -0700 (PDT)
+        Wed, 26 Aug 2020 07:29:24 -0400
+Received: by mail-oi1-f194.google.com with SMTP id u24so1191200oic.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 04:29:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QjVGS0HGbRfs0Re2eYmvuj93KRF7GbcoDgHD74CvDp8=;
-        b=SJYyrYUaehmYrQ0sSWh1e3BB9KXMKf4ik8vbGsu9A94tJ5c+X7H3RBwaUQ840+W32+
-         NGznR7Uae64hwP3vWoVj27eco2k06hgb3dQ3j3NoQO2QhmDCJWCoQJGeeDAyGIXB/p5+
-         CoYF3x4A0C8RP7jWSeWpFgUnTAMtKp7prh3uUFwQmQZ13smfj4mGIINHqGcnxCPbcVtg
-         DsKXM4UnY5Aq30znxl8G0OUwJT5myj7vor/Ud5JQuVJ8UvS8YuCRL2cHlXAMfv/XEOYM
-         lsA+sGEUNMNg0Xeleo9T/86t6CpO0OdbMSvVzU5e91pKELuGz1XP3B03zo0yGI35vW/b
-         Ysag==
-X-Gm-Message-State: AOAM530/JNvdM8pH4gLLN0U/X1Mlohp3B2bkyXLMXsDRwh0c+nHndOuQ
-        9m19+m0Rkw5Bc8WLZihG1bhE0sPVPQAqIZVG/rBhWmX9
-X-Google-Smtp-Source: ABdhPJxmbNmsTV+R1Umjsvz30EeXTsekhqFvAQXgtdz2jvKrQiOSnzIYQdzEZQRT4NEV7snJoFtg+IW4pNVW9ZE5vdQ=
-X-Received: by 2002:a4a:6c13:: with SMTP id q19mr10489990ooc.11.1598441328710;
- Wed, 26 Aug 2020 04:28:48 -0700 (PDT)
+        bh=wyjOsgy6kraSv8aHLd4PWHdbJs82utSf/F+JcIOpHiA=;
+        b=DNjOO+sCZZV5ns+6Nj5Oqq51IoFGCJP9229mdWleU2P9djUWayvKzgklQID793Dh6D
+         qN/VadGOsI/ojva3Vodjk1RabppMG1tOlKr7d8LIV4nfWxwJ33SM1IDAd8uWU913oHap
+         e+dHl4rbtYh+9J/LPlNh4ZWfcfNwb7BrmT3qG5GuoHb4NlJbiOOg3ZS/rdf9LiW1grEA
+         T5SlX+Th/07jDmVHHnrCRh4nBNgqsHVRBkSHCyr60lgrpviVVbX17M0mcXmIPeEnO7IS
+         k4mMDBywPsCSSAhdMM65Gs4GzKVsq5D2QHLjQKIW7CpiTGhEYXcTp017DXDz0+rnjxy5
+         flIQ==
+X-Gm-Message-State: AOAM532vgqq1eIYsW+pIa1foVVmDlbY/2bMOqMvfsh479Vpn2/xraAaU
+        Oo9xrxflcr2N6jWiCEDXpse1xqNXU7wEEVAgqi9QRKad
+X-Google-Smtp-Source: ABdhPJxUzKIMVu67ODsr0wOFJt8hPX16fug+D9cQxfCn3rdJ08t5AlCoWW8peZbcE3uJSJcg/lQbt4vM1sCVXcK6K8Y=
+X-Received: by 2002:a05:6808:575:: with SMTP id j21mr3590400oig.54.1598441363259;
+ Wed, 26 Aug 2020 04:29:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200112171705.22600-1-geert@linux-m68k.org>
-In-Reply-To: <20200112171705.22600-1-geert@linux-m68k.org>
+References: <20200720114314.196686-1-hch@lst.de>
+In-Reply-To: <20200720114314.196686-1-hch@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 13:28:37 +0200
-Message-ID: <CAMuHMdVZRnO7r-ihx4LiW2Jt+aG5jWnkjQJxCZ=JurtM_-ayXA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: amiga: Fix Denise detection on OCS
-To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 26 Aug 2020 13:29:11 +0200
+Message-ID: <CAMuHMdUAeP34s_6Mk6BZR+6AScGOUbiUyrD-Wee=errk-jGA0Q@mail.gmail.com>
+Subject: Re: [PATCH] m68k: use get_kernel_nofault in show_registers
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 12, 2020 at 6:17 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> The "default" statement for detecting an original Denise chip seems to
-> be misplaced, causing original Denise chips not being detected.
+On Mon, Jul 20, 2020 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
+> Use the proper get_kernel_nofault helper to access an unsafe kernel
+> pointer without faulting instead of playing with set_fs and get_user.
 >
-> Fix this by moving it from the outer to the inner "switch" statement.
->
-> Fortunately no code relies on this, but the detected version is printed
-> during boot, and available through /proc/hardware.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Applied, and queued in the m68k for-v5.10 branch.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. applied, and queued in the m68k for-v5.10 branch.
 
 Gr{oetje,eeting}s,
 
