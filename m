@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE6C253522
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBAD25352B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgHZQnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
+        id S1727980AbgHZQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgHZQnO (ORCPT
+        with ESMTP id S1726820AbgHZQot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:43:14 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA01C061574;
-        Wed, 26 Aug 2020 09:43:08 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a26so3791056ejc.2;
-        Wed, 26 Aug 2020 09:43:08 -0700 (PDT)
+        Wed, 26 Aug 2020 12:44:49 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FED4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:44:48 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id x7so1021754qvi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qkFKNXoEvLaLjtg+VSz16h2fveq81SS9ALzUgSNtgqs=;
-        b=CakgDGbRZTzTHaByk+lLgKHAFfB0XFPxYb9/t80ox0YhHH6u4XkpStD+n9gvJwp9JU
-         VtqToaWErw3FJC5UxOOpsUCF16upp6oUyIAFWdDggM7wTBxaiX1QV+qpZxJLV45hNDxC
-         ayAhXmZ6ca7mOKsEwullJQ/liwoiVexsABkb4fhgdWMsCMdkkoov3yrdFEjoelWh2evY
-         fIzqGDHTHD2AbVrW30YWvblbDe05bXcj6o6ddg0Bx3HxeYynyXQ8MvIkdkiuSHM6GDff
-         0F7pwhT+7dkEWxpHRS6yLOP1JQ5RfpmEenZp48bc5QtfWss9mCqpr/uGMTNOm/xkRg3O
-         jijg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JMlIvAM6M5w9dD2eayY13lUR07MsoMvR9kGoMcT+/Vc=;
+        b=sa4INENi9XADKc047/PpGSBs9OMWCrJoNYxa3t1qJ5P2krTtixPAqQnLcE52OIziLw
+         CFk5ZjD/kvInASBoNghbOcXThF4viWJW1YQOOJvmsGWxWaTYxn0Yz147rbv4xMi2KWgN
+         QbHm9FRDrpY3hXjAreEdCaIct/hfd7Q7eeMU7JHLXeKAR27Slz8XOGnkxa8/MREG7eEb
+         jMNB0qKlQvnHrOO2WVvHSjzDNvjVs25xHHGWlMZ3mv/mzhNPpsci2lPogBR2ObtwkxC1
+         gYjfNoBmaN3A/oZ6ddcGThYGqYbBWB3wmmsBWYUa4lIHN8vxzknbzsar8iqHuLfGWEEY
+         o3Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qkFKNXoEvLaLjtg+VSz16h2fveq81SS9ALzUgSNtgqs=;
-        b=s1d67bXwXfzoE7w7V46RRbgq2v0bYkIv1WWUqjqDPr/QiMq8CRfqDqx3UKYrX6McSj
-         WW/OzYVxGcvcUTsIJhGGC/Y8Y6htNHblu/r8FY7Ut/U2xgT7PAgBw4kN9RbknqJssWWL
-         k0w3Ch/vCCjnkrfThbbhIk1I8vtVvPsGQ6a+o6xHASzBVKAp/XetMXmb93btaybMzfLd
-         n8Y6iV1gn9bY4hUWvfwej6c9ayki4iTOswwGZ76ZG1XzYJiCq+ag/r0luB/GpAGrUlCJ
-         /ELN/sBwN6O+7G3vi8cH7CabVolP50XS5pUAaytW1als31QUOiRrq7z1LAvEX0CRGRCn
-         F28w==
-X-Gm-Message-State: AOAM5325euW2BwTDfxtdV436ejVLjtIougEq9qyL7bbL4aXckDkj4lrN
-        L7rMugrsQbrkfrHJah7eVOdctMCYyH/kU2o8GU4=
-X-Google-Smtp-Source: ABdhPJzSJAHgQkmx8WGIzyyLafbpaY1jDCkkSspzLKWqPbii9E6oNzLepZsKGVV6GZz8L/MNYEUf9aWeQHpJYteEUfs=
-X-Received: by 2002:a17:907:7094:: with SMTP id yj20mr16281482ejb.471.1598460187197;
- Wed, 26 Aug 2020 09:43:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JMlIvAM6M5w9dD2eayY13lUR07MsoMvR9kGoMcT+/Vc=;
+        b=NiCOLvWfWU5BhABTtZAg6ljSe2f5BfsdEhh4VlbbwWzH4eSpCOFl7zR7QRJW0m1XSL
+         GQY+8DAcjzVox7Z3DlWb7G05kY0sYzIwB+SdKrWbmE0TtbM6oMKX0PVfEhDecl7xI/Vg
+         2yD0yNmxorxm1wGapST+qBRRFo+7uXCU0uFPReNcmFlbqB/v4rqg74WAkYIWQ7YDOx/L
+         yuNCkfSQU5KNZJI4wkK7K+tMP8n/MOZ5ZaTTWV1c/ZTInf6nCSMAGit5ptEe4ik8rJRR
+         eyNylFjs0t15J8fcAM0aH2J31bSbXDWDQi2Vk+4EqKbrxyq+4/hx8NuAdEwvakJCFy/M
+         oINQ==
+X-Gm-Message-State: AOAM531aHOdOpltYsIWxovSyRF5m5VF762i2Y8TKpfMGQvHP+Qu+XsZJ
+        Q8tvjaSrvRCUIcxQjkWZMy2XOw==
+X-Google-Smtp-Source: ABdhPJwbxQodulUoC+XsfqRwscBSrsaPaaZPNTBqFg+7kWdcvIy46YEkKl6xK5uoywWItguN9+rDIg==
+X-Received: by 2002:a0c:fbd1:: with SMTP id n17mr15033373qvp.4.1598460287847;
+        Wed, 26 Aug 2020 09:44:47 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:412a])
+        by smtp.gmail.com with ESMTPSA id 73sm2396864qtf.74.2020.08.26.09.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 09:44:47 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 12:43:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: memcg: Fix memcg reclaim soft lockup
+Message-ID: <20200826164332.GB995045@cmpxchg.org>
+References: <1598449622-108748-1-git-send-email-xlpang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20200826145249.745432-1-npiggin@gmail.com> <20200826145249.745432-18-npiggin@gmail.com>
-In-Reply-To: <20200826145249.745432-18-npiggin@gmail.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Wed, 26 Aug 2020 19:42:50 +0300
-Message-ID: <CAOJsxLFoX5rk+k5GASBh5vxL-Vfj7OkD_UE3p=_cS3SwhBVEaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 17/23] riscv: use asm-generic/mmu_context.h for no-op implementations
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     "list@ebiederm.org:DOCUMENTATION <linux-doc@vger.kernel.org>,
-        list@ebiederm.org:MEMORY MANAGEMENT <linux-mm@kvack.org>," 
-        <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598449622-108748-1-git-send-email-xlpang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 5:54 PM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: linux-riscv@lists.infradead.org
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+On Wed, Aug 26, 2020 at 09:47:02PM +0800, Xunlei Pang wrote:
+> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
+> the target memcg doesn't have any reclaimable memory.
+> 
+> It can be easily reproduced as below:
+>  watchdog: BUG: soft lockup - CPU#0 stuck for 111s![memcg_test:2204]
+>  CPU: 0 PID: 2204 Comm: memcg_test Not tainted 5.9.0-rc2+ #12
+>  Call Trace:
+>   shrink_lruvec+0x49f/0x640
+>   shrink_node+0x2a6/0x6f0
+>   do_try_to_free_pages+0xe9/0x3e0
+>   try_to_free_mem_cgroup_pages+0xef/0x1f0
+>   try_charge+0x2c1/0x750
+>   mem_cgroup_charge+0xd7/0x240
+>   __add_to_page_cache_locked+0x2fd/0x370
+>   add_to_page_cache_lru+0x4a/0xc0
+>   pagecache_get_page+0x10b/0x2f0
+>   filemap_fault+0x661/0xad0
+>   ext4_filemap_fault+0x2c/0x40
+>   __do_fault+0x4d/0xf9
+>   handle_mm_fault+0x1080/0x1790
+> 
+> It only happens on our 1-vcpu instances, because there's no chance
+> for oom reaper to run to reclaim the to-be-killed process.
+> 
+> Add cond_resched() at the upper shrink_node_memcgs() to solve this
+> issue, and any other possible issue like meomry.min protection.
+> 
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
 
-Reviewed-by: Pekka Enberg <penberg@kernel.or>
+This generally makes sense to me but really should have a comment:
+
+	/*
+	 * This loop can become CPU-bound when there are thousands
+	 * of cgroups that aren't eligible for reclaim - either
+	 * because they don't have any pages, or because their
+	 * memory is explicitly protected. Avoid soft lockups.
+	 */
+	 cond_resched();
+
+The placement in the middle of the multi-part protection checks is a
+bit odd too. It would be better to have it either at the top of the
+loop, or at the end, by replacing the continues with goto next.
