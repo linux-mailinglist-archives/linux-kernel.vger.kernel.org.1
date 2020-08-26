@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E41525298A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9497E25298B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 10:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgHZIz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 04:55:29 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:38472 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbgHZIz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 04:55:26 -0400
-Received: by mail-oi1-f193.google.com with SMTP id j18so884829oig.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 01:55:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YZeUK8THxl3gGFBaWshaAnlIvnsQJXffWHqOKGUSxHI=;
-        b=NTl+kqcoTaKknilWqDUAdDjsgHZvdlFkb2r8nUNx15Y3bYCLkhUqUF7vrJ8KSRugVA
-         Ns8JpQFWm+rWQOIhfx/ZZ1RLIaQ1y7F/BxqzVULHQIIvpsmxgD51C3vkKuF5TcDKbZ6z
-         nEX4n64Dd+JhpZHiQLKNEq0JwvrFZKvZnOhTnnGC5YBUOBbqemJCCn7dLxzF/Rmim1ia
-         ddarLQGeIXV22AnJYRZQmX1LworTNlRxtYgCnd0YAPdYVOEGyB7+Aqb1TybgCwPzi2hB
-         lfmz28MTaPPAJPy7AfLLhIm32l5llpiIn/bF+kYNJfMLilV9o2s32vvowForaZcW6WCN
-         6n+w==
-X-Gm-Message-State: AOAM532iY2ilQPQuv3NhAvqAQLRFZEnCcMQCiDr5SEnqW8u9mfEjDmw2
-        smJ+lkRemvrNxVR0HVOyd3EjbSrl1OuryiQoHiXp4cAs
-X-Google-Smtp-Source: ABdhPJwrNm2flNDJyw4eAZDbk6R3tk8xpETILVv/y1XJ6PQKJxNXuttGBthgrUPeYDfaEMI314g0ojPmuoIcn6dFdUY=
-X-Received: by 2002:aca:3402:: with SMTP id b2mr790853oia.153.1598432125496;
- Wed, 26 Aug 2020 01:55:25 -0700 (PDT)
+        id S1727909AbgHZIzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 04:55:43 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:34038 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727793AbgHZIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 04:55:43 -0400
+Received: by ajax-webmail-mail-app2 (Coremail) ; Wed, 26 Aug 2020 16:55:14
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.184]
+Date:   Wed, 26 Aug 2020 16:55:14 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Chen-Yu Tsai" <wens@csie.org>
+Cc:     "Kangjie Lu" <kjlu@umn.edu>, linux-rtc@vger.kernel.org,
+        "Alessandro Zummo" <a.zummo@towertech.it>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Re: [PATCH] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.12 build 20200616(0f5d8152)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <CAGb2v640zTha1tzjOo3L+=T=N3hDRG+8qf2xu+bD8BMUnkhORQ@mail.gmail.com>
+References: <20200823075815.23457-1-dinghao.liu@zju.edu.cn>
+ <CAGb2v640zTha1tzjOo3L+=T=N3hDRG+8qf2xu+bD8BMUnkhORQ@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au>
-In-Reply-To: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 10:55:13 +0200
-Message-ID: <CAMuHMdW7eWtkUURxvAwAz6cAHABLBk4qs4bLUXR3wuowQbn5Fw@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Correct some typos in comments
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <6de4a430.8e03.17429fa786d.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgD3n51yI0ZfOXIzAg--.52907W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwEBlZdtPrA+AABsw
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
+        C_JF4lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
+        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
+        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
+        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
+        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r43MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
+        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
+        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
+        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
+        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
+        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-
-On Thu, Jul 23, 2020 at 1:50 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
-Thanks for your patch!
-
-> --- a/arch/m68k/kernel/head.S
-> +++ b/arch/m68k/kernel/head.S
-
-> @@ -1547,7 +1547,7 @@ func_return       get_bi_record
->   *     seven bits of the logical address (LA) are used as an
->   *     index into the "root table."  Each entry in the root
->   *     table has a bit which specifies if it's a valid pointer to a
-> - *     pointer table.  Each entry defines a 32KMeg range of memory.
-> + *     pointer table.  Each entry defines a 32Meg range of memory.
->   *     If an entry is invalid then that logical range of 32M is
-
-Ah, lots of opportunities to switch to SI prefixes (MiB) ;-)
-
->   *     invalid and references to that range of memory (when the MMU
->   *     is enabled) will fault.  If the entry is valid, then it does
-
-> @@ -2654,7 +2654,7 @@ func_start        mmu_get_page_table_entry,%d0/%a1
->         jne     2f
->
->         /* If the page table entry doesn't exist, we allocate a complete new
-> -        * page and use it as one continues big page table which can cover
-> +        * page and use it as one continuous big page table which can cover
-
-Usually I use "contiguous", but the dictionary seems to permit both.
-
->          * 4MB of memory, nearly almost all mappings have that alignment.
->          */
->         get_new_page
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+PiBPbiBTdW4sIEF1ZyAyMywgMjAyMCBhdCAzOjU5IFBNIERpbmdoYW8gTGl1IDxkaW5naGFvLmxp
+dUB6anUuZWR1LmNuPiB3cm90ZToKPiA+Cj4gPiBXaGVuIGNsa19od19yZWdpc3Rlcl9maXhlZF9y
+YXRlX3dpdGhfYWNjdXJhY3koKSBmYWlscywKPiA+IGNsa19kYXRhIHNob3VsZCBiZSBmcmVlZC4g
+SXQncyB0aGUgc2FtZSBmb3IgdGhlIHN1YnNlcXVlbnQKPiA+IGVycm9yIHBhdGhzLgo+IAo+IEkg
+c3VwcG9zZSB5b3Ugc2hvdWxkIGFsc28gdW5yZWdpc3RlciB0aGUgYWxyZWFkeSByZWdpc3RlcmVk
+IGNsb2Nrcwo+IGluIHRoZSBsYXR0ZXIgdHdvIGVycm9yIHBhdGhzPwo+IAoKU291bmRzIHJlYXNv
+bmFibGUuIEJ1dCBJIGZpbmQgdGhhdCB0aGUgZXhpc3Rpbmcga2VybmVsIGNvZGUgdGFrZXMgZGlm
+ZmVyZW50CnN0cmF0ZWdpZXMgZm9yIHRoaXMgY2FzZS4gb2Zfc2FtYTVkNF9zY2tjX3NldHVwKCkg
+dXNlcyBjbGtfaHdfdW5yZWdpc3RlcigpIAphZnRlciBjbGtfaHdfcmVnaXN0ZXJfZml4ZWRfcmF0
+ZV93aXRoX2FjY3VyYWN5KCksIHdoaWxlIF9vZl9maXhlZF9jbGtfc2V0dXAoKQp1c2VzIGNsa19o
+d191bnJlZ2lzdGVyX2ZpeGVkX3JhdGUoKS4gQnV0IGF0OTFzYW05MjZ4X3BtY19zZXR1cCgpIGp1
+c3QgZG9lcwpub3RoaW5nIGluIHRoaXMgY2FzZS4KCkFsc28sIHRjb25fY2gxX3NldHVwKCkgdXNl
+cyBjbGtfdW5yZWdpc3RlcigpIGFmdGVyIGNsa19yZWdpc3RlcigpLCB3aGlsZQpjbGtfcmVnaXN0
+ZXJfdmNvX3BsbCgpIGp1c3QgZG9lcyBub3RoaW5nLiAKClNvIEknbSBub3Qgc3VyZSBpZiB3ZSBz
+aG91bGQgcmVnaXN0ZXIgaGVyZSBhbmQgd2hpY2ggdW5yZWdpc3RlciBmdW5jdGlvbiB0byAKdXNl
+LiBXb3VsZCB5b3UgcGxlYXNlIGdpdmUgbWUgbW9yZSBzcGVjaWZpYyBhZHZpY2UgYWJvdXQgdGhp
+cyBwcm9ibGVtPwoKUmVnYXJkcywKRGluZ2hhbw==
