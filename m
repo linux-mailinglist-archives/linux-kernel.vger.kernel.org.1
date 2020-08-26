@@ -2,120 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB03252B01
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EB3252B0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 12:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgHZKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 06:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        id S1728555AbgHZKBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 06:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728041AbgHZKBS (ORCPT
+        with ESMTP id S1728400AbgHZKBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:01:18 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:01:17 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id m71so724151pfd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 03:01:17 -0700 (PDT)
+        Wed, 26 Aug 2020 06:01:45 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40E0C061574;
+        Wed, 26 Aug 2020 03:01:45 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id n128so1034038oif.0;
+        Wed, 26 Aug 2020 03:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lN7CDYsBp+g8H+Q27SUJ+E2mec/tKF8dfPsVSHDg050=;
-        b=rZYrbaDKZEGSb9NrM2Wt0vKPzu5pSLr7Z4soaF4BK4oG6IipXyLFdENSTzR4AXtYBp
-         L9wZEWqNiqlq+e1Ehqss9bk8toyUAh/MRXvdjVU41UmfjkIgOL/Nl5nYwY56g+5OtCXD
-         1VduYt2QKNS+wORnDVcOEmFtpCMlsdM5TU7WADFxW/w0ZxNJLSgJgd1vtaN5ziSTYERh
-         qrh2gko/0nAWQ1FnuPVeqNhihUO4Vi7+glLJ6C3Pp9lQ8K1jlDB8aW7JSpDS2FgDeOOF
-         9oamUieaJr3PetzWIJeYJCYnvbEM1IMuunwNh9GXFGkXDPE04lA225VhJBGuHhoI1z6V
-         cqAQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aU6SzC4HPKAdpsfd1/EKwFJCt0CfheymGe5/PRIykis=;
+        b=kLkk6P2rg8BhuVDfo6yGiUK2wsxe4gSq3InBYsZSplXAV7lOxYYp1J3Q5DPL1Atuio
+         wzsMCRLELwnf36uijOPxK5cp7rbI3xFBGVt/1xNk5NI1EEpw2+MFPYKkn0DV+bQnL8jS
+         gByBV5G13T1sJJOtdkimgb3sWtgAKnqVtVqsjuz/8P0ot8gu3lO55v3Zz1BAI0voo4sC
+         BgZLRZ6Zevw4I5LCGST2ULe4UDW0ldYsDc/Vfwdr18TYV92+8x24tYclqB9sPTYDWngS
+         viVa9iCihofF9hXA0iHyWvHUPhFmgqY2F+y3lBMzCc0HVroFxSCvo5yUYKJIvlimNnYU
+         9Rsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lN7CDYsBp+g8H+Q27SUJ+E2mec/tKF8dfPsVSHDg050=;
-        b=kdEJjiH70OKAq+g+jErybiHRBolGRRYkSEXlDktSrImVL+xXq3fjcBSB68FqZHnuF2
-         C4IngypyKdn2LEn0OBepUHQSpcAbOabQNlhu4nBbu6OQ/SDBGffQIqR7cZGYHFjWqBxc
-         VnVP9kiUL8yy9d0sWRuvNxhUhGZkY8zwI4qg1kA2DpO7AZ7GoObfzZ1O7t7bHsC4a8xI
-         5NYMzkdZRL2o5SysBrQe/A3a+HtHPdM0tFyGptaZAsSu6DA8tAKLfwY/OO9WqsmU93So
-         Wsz9x5c5RjsrUh8gmLMRWeOFXyKR8j7KZPcsytLTFrNWLMhBhVsrfG4+2qXleBJ9/MVd
-         3Dcg==
-X-Gm-Message-State: AOAM5310GcDK96awuLxXuIi5DdWBaBgMInMhmc0mL8bXx4LOn5OwdA2v
-        99G0/4V2lSXvphP8KB2iDqY=
-X-Google-Smtp-Source: ABdhPJxYhjBzb/1wST94Ldy6U50tkVIofIqQYck5r6/B+ywfwdF7ykYwG15AippqtuGIGa8U2xmnKg==
-X-Received: by 2002:aa7:8490:: with SMTP id u16mr5709733pfn.258.1598436077192;
-        Wed, 26 Aug 2020 03:01:17 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id o2sm1762049pjh.4.2020.08.26.03.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 03:01:16 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 19:01:13 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7][next] printk: ringbuffer: add
- finalization/extension support
-Message-ID: <20200826100113.GA8849@jagdpanzerIV.localdomain>
-References: <20200824103538.31446-1-john.ogness@linutronix.de>
- <20200824103538.31446-6-john.ogness@linutronix.de>
- <87lfi1ls2g.fsf@jogness.linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aU6SzC4HPKAdpsfd1/EKwFJCt0CfheymGe5/PRIykis=;
+        b=JvyZanwJiIap6wmAlKUF0jWRXR6RVuoNz7p2pmi4lgOJaYHakw0Vea/c5F/60R0190
+         i1sZPDLL0Cv2SQiaBNyLB5edqJj2zVdhDe+Zqb9Fi1wNEQclbjkFoxnyVTWW28csMuDJ
+         VJyBRAT5I3oSQLUgQ3WQhnRwm9iDmKADhPY08fycPwRx37/QlFWAcL4En30mP5mAvakf
+         8UGGINV2iz/vgptcTF0dhwgrM6YptlKJgH0MCkh/SfT8NhUJNSh+l2oJnUGra12lEFsy
+         5sWYUhoQAhSz5gYbq2DwPavInGfEEldKw3o0pfGtwal07jrA+UqRQs730MkebJ6yX9K/
+         rSwA==
+X-Gm-Message-State: AOAM533JVxuUePS3lWiXIPcIhNfDiePUxtCgusH9EsQ5Ra2G57UTnFoG
+        wJzJaP6D7EmYnGOjyrVjEzGrnQJUKAEQ0bQxtCY=
+X-Google-Smtp-Source: ABdhPJxgjAA4fAItoCC7+tMC6PKsZHjoR2FEmj+no0NTVKhbsiNR3TWflTznFRRmW3BfFUjZy+oAel/kSKbg107bAHA=
+X-Received: by 2002:aca:304b:: with SMTP id w72mr3257414oiw.117.1598436105035;
+ Wed, 26 Aug 2020 03:01:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfi1ls2g.fsf@jogness.linutronix.de>
+References: <20200826063850.47625-1-alexandru.ardelean@analog.com> <1c32f6b5-deb6-e310-4bc4-a871719cc8f3@st.com>
+In-Reply-To: <1c32f6b5-deb6-e310-4bc4-a871719cc8f3@st.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 26 Aug 2020 13:01:33 +0300
+Message-ID: <CA+U=Dspxp4u5BoxwHCKMJBC5HWywX7ULSS=YBfOGzP1zLP=yVA@mail.gmail.com>
+Subject: Re: [PATCH] iio: stm32-dac: Replace indio_dev->mlock with own device lock
+To:     Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jonathan Cameron <jic23@kernel.org>, alexandre.torgue@st.com,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/26 10:45), John Ogness wrote:
-> On 2020-08-24, John Ogness <john.ogness@linutronix.de> wrote:
-> > @@ -1157,6 +1431,14 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
-> >  		goto fail;
-> >  	}
-> >  
-> > +	/*
-> > +	 * New data is about to be reserved. Once that happens, previous
-> > +	 * descriptors are no longer able to be extended. Finalize the
-> > +	 * previous descriptor now so that it can be made available to
-> > +	 * readers (when committed).
-> > +	 */
-> > +	desc_finalize(desc_ring, DESC_ID(id - 1));
+On Wed, Aug 26, 2020 at 12:01 PM Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+>
+> On 8/26/20 8:38 AM, Alexandru Ardelean wrote:
+> > From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> >
+> > As part of the general cleanup of indio_dev->mlock, this change replaces
+> > it with a local lock on the device's state structure.
+> >
+> > The patch also does a minor whitespace change to align the 'lock' with the
+> > 'common' field via tabs.
+> >
+> > Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/dac/stm32-dac.c | 14 +++++++++-----
+> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+> > index 092c796fa3d9..fc636812c17e 100644
+> > --- a/drivers/iio/dac/stm32-dac.c
+> > +++ b/drivers/iio/dac/stm32-dac.c
+> > @@ -26,9 +26,11 @@
+> >  /**
+> >   * struct stm32_dac - private data of DAC driver
+> >   * @common:          reference to DAC common data
+> > + * @lock:            lock to protect the data buffer during regmap ops
+>
+> Hi Alexandru,
+>
+> I think the same patch has been sent by Sergiu already [1].
+> Jonathan and I had a minor comment at that time: E.g. could you please
+> update the comment ?
+
+Oh.
+My bad. I didn't follow the discussion closely.
+Will send a V2.
+
+>
+> [1] https://lkml.org/lkml/2020/5/18/254
+>
+> >   */
+> >  struct stm32_dac {
+> > -     struct stm32_dac_common *common;
+> > +     struct stm32_dac_common *common;
+>
+> Is above change needed?
+
+No.
+I can remove it.
+
+Thanks
+Alex
+
+>
+> Best Regards,
+> Fabrice
+>
+> > +     struct mutex            lock;
+> >  };
+> >
+> >  static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+> > @@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+> >       int ret;
+> >
+> >       /* already enabled / disabled ? */
+> > -     mutex_lock(&indio_dev->mlock);
+> > +     mutex_lock(&dac->lock);
+> >       ret = stm32_dac_is_enabled(indio_dev, ch);
+> >       if (ret < 0 || enable == !!ret) {
+> > -             mutex_unlock(&indio_dev->mlock);
+> > +             mutex_unlock(&dac->lock);
+> >               return ret < 0 ? ret : 0;
+> >       }
+> >
+> > @@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+> >               ret = pm_runtime_get_sync(dev);
+> >               if (ret < 0) {
+> >                       pm_runtime_put_noidle(dev);
+> > -                     mutex_unlock(&indio_dev->mlock);
+> > +                     mutex_unlock(&dac->lock);
+> >                       return ret;
+> >               }
+> >       }
+> >
+> >       ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+> > -     mutex_unlock(&indio_dev->mlock);
+> > +     mutex_unlock(&dac->lock);
+> >       if (ret < 0) {
+> >               dev_err(&indio_dev->dev, "%s failed\n", en ?
+> >                       "Enable" : "Disable");
+> > @@ -327,6 +329,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+> >       indio_dev->info = &stm32_dac_iio_info;
+> >       indio_dev->modes = INDIO_DIRECT_MODE;
+> >
+> > +     mutex_init(&dac->lock);
 > > +
-> >  	d = to_desc(desc_ring, id);
-> >  
-> >  	/*
-> 
-> Apparently this is not enough to guarantee that past descriptors are
-> finalized. I am able to reproduce a scenario where the finalization of a
-> certain descriptor never happens. That leaves the descriptor permanently
-> in the reserved queried state, which prevents any new records from being
-> created. I am investigating.
-
-Good to know. I also run into problems:
-- broken dmesg (and broken journalctl -f /dev/kmsg poll) and broken
-  syslog read
-
-$ strace dmesg
-
-...
-openat(AT_FDCWD, "/dev/kmsg", O_RDONLY|O_NONBLOCK) = 3
-lseek(3, 0, SEEK_DATA)                  = 0
-read(3, 0x55dda8c240a8, 8191)           = -1 EAGAIN (Resource temporarily unavailable)
-close(3)                                = 0
-syslog(10 /* SYSLOG_ACTION_SIZE_BUFFER */) = 524288
-mmap(NULL, 528384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f43ea847000
-syslog(3 /* SYSLOG_ACTION_READ_ALL */, "", 524296) = 0
-munmap(0x7f43ea847000, 528384)          = 0
-...
-
-	-ss
+> >       ret = stm32_dac_chan_of_init(indio_dev);
+> >       if (ret < 0)
+> >               return ret;
+> >
