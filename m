@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B242F253249
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6109253258
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgHZOyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727944AbgHZOxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:53:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAB98221E2;
-        Wed, 26 Aug 2020 14:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598453616;
-        bh=2keurcFsfkeACh52+4p5T0ngZFhF0/cvWdgnziyfZAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W+jQFBX9Y2cFQQnnBpOO8pRXn7pkU3ktYS6fim4jFRisgluZ5eT/WDBaaLAjzeXDT
-         WvB6ehRk9ClWtUh6A8MwBFdceThH+yepXYWz0ahlL0dj01Yciozp4zN36CSyrhd+W2
-         3+ktczweQwjZoa/4RGN1dY0ACA98suwt+CZGrbFY=
-Date:   Wed, 26 Aug 2020 16:53:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David K. Kahurani" <k.kahurani@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, admin@rapidseedbox.com,
-        gichini.ngaruiya@gmail.com
-Subject: Re: [PATCH 5.7 00/15] 5.7.19-rc1 review
-Message-ID: <20200826145351.GA4181729@kroah.com>
-References: <20200826114849.295321031@linuxfoundation.org>
- <20200826144915.GD16589@metal>
+        id S1728048AbgHZOzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:55:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726934AbgHZOzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:55:06 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QEZ01A178064;
+        Wed, 26 Aug 2020 10:54:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=+vAD9mgWouUbLENGzMvN+3S309Vo6tTngoxoVO8howw=;
+ b=e2E/2Tr4m8IfADvUC+FpAdyUoQaN8Yp7PrD7HLZ88VMZBO83j4SkdGcZsNes0/WaAa5H
+ CJyRHIznggDg9TEyEOFJ2UPn4kXeRYr9Mrk4sLEl9ntQUdJZA7xDqq+w6y98E2CFwbKY
+ mSfxaRoCfDMjSyB2SG6SCyp3LvPLLw07tSSBO9wNWER1lFswn7pChpcNesmrjxm1j+jp
+ n7ifXC+DJDslCfLD/m88X2NV8uGZw3ma/7sCDH+AwcA23/ROhWD0yifZofK5sJK2iEXC
+ TdzhhN62Cnrx1QgPl1SBbz1ciff6pbo55Oa56Mpbqv5yI/Y1veFLcsoCrGY/wmZMYgnZ ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 335s9x9cma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 10:54:37 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07QEaAkh185748;
+        Wed, 26 Aug 2020 10:54:37 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 335s9x9ck0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 10:54:37 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07QErFbs015495;
+        Wed, 26 Aug 2020 14:54:35 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 335j270ak1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Aug 2020 14:54:34 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07QEsWes9896430
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 14:54:32 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7C25AE04D;
+        Wed, 26 Aug 2020 14:54:31 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D48FCAE057;
+        Wed, 26 Aug 2020 14:54:27 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.63.208])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 26 Aug 2020 14:54:27 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org, peterz@infradead.org
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com,
+        kjain@linux.ibm.com
+Subject: [RFC v2] perf/core: Fixes hung issue on perf stat command during cpu hotplug
+Date:   Wed, 26 Aug 2020 20:24:11 +0530
+Message-Id: <20200826145411.489169-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826144915.GD16589@metal>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-26_09:2020-08-26,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 05:49:15PM +0300, David K. Kahurani wrote:
-> On Wed, Aug 26, 2020 at 02:02:28PM +0200, Greg Kroah-Hartman wrote:
-> > -------------------
-> > Note, ok, this is really going to be the final 5.7.y kernel release.  I
-> > mean it this time....
-> > -------------------
-> 
-> Hello,
-> 
-> This is probably not very relevant but let me just bring this up here
-> since your manner of posting mail on the list seems to differ quite a
-> bit from what most people on the list are doing.
+Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+added assignment of ret value as -EAGAIN in case function
+call to 'smp_call_function_single' fails.
+For non-zero ret value, it did
+'ret = !ret ? data.ret : -EAGAIN;', which always
+assign -EAGAIN to ret and make second if condition useless.
 
-It's not all that relevant as what I am doing here is not what anyone
-else on this list is doing :)
+In scenarios like when executing a perf stat with --per-thread option, and
+if any of the monitoring cpu goes offline, the 'smp_call_function_single'
+function could return -ENXIO, and with the above check,
+task_function_call hung and increases CPU
+usage (because of repeated 'smp_call_function_single()')
 
-> From my understanding, an email regarding to a certain patch or kernel
-> issue should be sent to a list and not to a maintainer. This is
-> however not the habit that people are in, though but instead, most
-> people will send the email to the maintainers, then cc a few probably
-> random mailing lists. This leads to emails flooding on the mailing
-> list and consequently, beats the purpose of one ever having sent the
-> mail to a list because lists will get increasingly difficult to
-> follow.
+Recration scenario:
+	# perf stat -a --per-thread && (offline a CPU )
 
-So is the complaint that these stable -rc emails are drowning out seeing
-other patches that are relevant?
+Patch here removes the tertiary condition added as part of that
+commit and added a check for NULL and -EAGAIN.
 
-If so, there are some wonderfully helpfuly headers that I add to all of
-these emails so you can easily filter them away to /dev/null if you so
-desire.
+Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ kernel/events/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If not, then I don't understand the complaint.
+Changelog:
+- Remove addition of else in the first patch for
+  if(ret != -EAGAIN) condition.
 
-> Is it just me who has made this observation? From your mail, it
-> clearly looks and seems like you are following the above. Not
-> following the above could make it very hard for a new kernel developer
-> to pick up working on the kernel.
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 856d98c36f56..fe104fee097a 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -115,8 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	for (;;) {
+ 		ret = smp_call_function_single(task_cpu(p), remote_function,
+ 					       &data, 1);
+-		ret = !ret ? data.ret : -EAGAIN;
+-
++		if(!ret)
++			ret = data.ret;
+ 		if (ret != -EAGAIN)
+ 			break;
+ 
+-- 
+2.26.2
 
-Have you read the Documentation/process/1.Intro.rst file?  If not,
-please start there, as trying to read the firehose that is lkml all at
-once is _not_ how anyone does kernel development.
-
-thanks,
-
-greg k-h
