@@ -2,150 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5A32531C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643F32531C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHZOrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S1727099AbgHZOsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgHZOrn (ORCPT
+        with ESMTP id S1727008AbgHZOrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:47:43 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1822EC061574;
-        Wed, 26 Aug 2020 07:47:43 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id y65so1560114qtd.2;
-        Wed, 26 Aug 2020 07:47:43 -0700 (PDT)
+        Wed, 26 Aug 2020 10:47:55 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77411C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:47:53 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so3231437eje.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:47:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xc2Hb9o/7Ud3w/FXjCQl5Yr4FI/SfE6ovQyC4Jq0IVE=;
-        b=M5lUnHIQ/AgrRdVc1DXk/Fxye2VdpNklMkr+fsPbADxxVl54//+QmKmArjsaO7IrB/
-         HMGrDSSGc3BvHkRXktG1Ojo+AYwqkIMoI2SoPtLx2GuCT0KV5pnsWA4Doe8Ibic6xb4q
-         x117qeHQsGHMqLOT8uyto49hfN9quRZPOq1E9rJe7rRCsfou8pctxrXL7Ma6kOk5hjJS
-         nF3Dcp2bEbWmv141bj1O7K2HghTbqAgauFbctEBVpRr6JhRD/g69T9/0kSQp5ipIW+Z9
-         JICDu0HU859q7Kk7zNEt2bTTPdC9r7qsgfqIf7XWCsv+FEwHqhDb2tpOl14nEiviuAWF
-         O0KQ==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jpXoOzxjmaSPieMUrMwjgj+f7eMHv3D0MiHLZevapy8=;
+        b=uuviY+HHY4G/qSfupdmikJBac7QR65ENkowJ6J/jYfnCePd8Xn9EiwqHhGK6jIRITH
+         a5Ep6mk1NvA/fuR+G8ichkTPQwvkzP/b3MyrRRTinYparaXT/281yKXIj/TpRYdqsI6I
+         5g6azBhlombBDx76l6r3mMxwJbwbzZ332F9aN5vanV+W1jG8CuvLqfa45p36iPiLfgcX
+         aFEkVindyv2dVZDV1qIptDPZ9WkKPuSIrA6dN4bs21tIv/aKU9gbU+RKZxkgnY6iIs4S
+         ++3D7x6o/4rTIV7zlf0n6Xr4eWd8x+fZliorBKrrERgW/wA9Mr4GSs4fq3+oqfodZeNI
+         dGng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xc2Hb9o/7Ud3w/FXjCQl5Yr4FI/SfE6ovQyC4Jq0IVE=;
-        b=WpP1eTDtDxRLGq0fVT9F3V7GuPOhYDCrtOGVuCAmEzp3KyFn0j8/noevovUlxUV9Fb
-         HUWj12kRZmo6TDeWCYt2iLtd4VxVQ4omM9ZMsU0aikXZSPb6Ctic/sFhjoNbhzuQgU/B
-         C3bJENqrHF2t49MkpD6TaapTpko/CgEzAfLu9+tHDoB3T4fFFl8KbeG9j6D9q7FHW6w+
-         WUB0hIjyiztI3CEpZy/fPLAZZTpe6KQKsxkxgHQzBqs3oWLT2nlp46TrDCto5laW67b8
-         TfQJUHmfjO6vRZ2fjpM4UCsZTDBlVwlAqlo+peH5uglmKEpAAfS48FHrXUvCtdi/H8LZ
-         4pNQ==
-X-Gm-Message-State: AOAM5336kPPlHdI0Fi6wkqys3V2/kh/DsMLYZdOUyJll7nphSDzQlNNW
-        PRWSpJOps83LU8tVPIm4RTPCh0zALTyspA==
-X-Google-Smtp-Source: ABdhPJyT5a9WePwjGlwmbnuS5NX7RQ8zzM7hSEpnNk6/4mOkh8NTEaP5HnVV5RKaGcDjhOpsyAO3ag==
-X-Received: by 2002:ac8:4f4b:: with SMTP id i11mr13930514qtw.379.1598453262096;
-        Wed, 26 Aug 2020 07:47:42 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id o187sm1807312qkf.14.2020.08.26.07.47.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 07:47:41 -0700 (PDT)
-Subject: Re: (EXT) Re: [PATCH] of: skip disabled CPU nodes
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200826120254.8902-1-matthias.schiffer@ew.tq-group.com>
- <4dd06b79-1402-d7cf-9676-1f9a9526da12@gmail.com>
- <9eb72c6561333661599411e49072928385629999.camel@ew.tq-group.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <ac64852a-7f2a-6005-f914-268670cd4f95@gmail.com>
-Date:   Wed, 26 Aug 2020 09:47:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jpXoOzxjmaSPieMUrMwjgj+f7eMHv3D0MiHLZevapy8=;
+        b=a6cpsY2h/RJXh0yuraPVWYPYBv7lvVzUqwBOwWe+HHWi5DEqCtv9AK9QlMkcERGT05
+         4bSXOWFk/3UKC22gwvrRQMBBM74Kfs/aw7sNPx9n+VXQBE9yIZPKOprEUM8e0u0R4YzW
+         2NecLZtISF9Q/TrPKB0mSBTpn98yMXMuyfc1PCraZz3/pRi4kQBvPaIFLgHpA6l8/CQk
+         kuK4hfFo1gTfqYVTbs1ZEOIR/0UzLgzGRgdCRMGK7krXPj6Svw71k2/JSVcr/XLS5/zy
+         w6Oxdamkey3BaXyY15ZQsDSTTiC/6RSHyJ0nScrEW/L9c9cFq8tTewRnApO2qpx3Kv0L
+         C2aQ==
+X-Gm-Message-State: AOAM530X0B5N0lIvk/wEa86j0UdRtaoZ3RsQ/CwVotqml9Q7yFsvjLXe
+        +NLnRyJmX+H8ZnfrWTnA2CmdE+7OISQQg9XMfipP
+X-Google-Smtp-Source: ABdhPJwhDdM4MFlfS7uVJxwKo58ItpXS0jchBQaNhFwzkwJQ2+x5TiuLQ5UN8rBk15kg9aXEbq2ho8wi0ftQGSuFQAI=
+X-Received: by 2002:a17:906:f955:: with SMTP id ld21mr766045ejb.398.1598453272483;
+ Wed, 26 Aug 2020 07:47:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9eb72c6561333661599411e49072928385629999.camel@ew.tq-group.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200826113148.GA393664@mwanda> <CAEjxPJ45hfBr6S1jT3iSOcSiccfWWFcqJC-q9R5qbRndT_DNCA@mail.gmail.com>
+In-Reply-To: <CAEjxPJ45hfBr6S1jT3iSOcSiccfWWFcqJC-q9R5qbRndT_DNCA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 26 Aug 2020 10:47:41 -0400
+Message-ID: <CAHC9VhScNuz0X610=ZjrH2-xT1Gz6y=AMA1=Eg=ubNxpM02VYw@mail.gmail.com>
+Subject: Re: [PATCH] selinux: fix error handling bugs in security_load_policy()
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, Aug 26, 2020 at 8:49 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+> On Wed, Aug 26, 2020 at 7:32 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > There are a few bugs in the error handling for security_load_policy().
+> >
+> > 1) If the newpolicy->sidtab allocation fails then it leads to a NULL
+> >    dereference.  Also the error code was not set to -ENOMEM on that
+> >    path.
+> > 2) If policydb_read() failed then we call policydb_destroy() twice
+> >    which meands we call kvfree(p->sym_val_to_name[i]) twice.
+> > 3) If policydb_load_isids() failed then we call sidtab_destroy() twice
+> >    and that results in a double free in the sidtab_destroy_tree()
+> >    function because entry.ptr_inner and entry.ptr_leaf are not set to
+> >    NULL.
+> >
+> > One thing that makes this code nice to deal with is that none of the
+> > functions return partially allocated data.  In other words, the
+> > policydb_read() either allocates everything successfully or it frees
+> > all the data it allocates.  It never returns a mix of allocated and
+> > not allocated data.
+> >
+> > I re-wrote this to only free the successfully allocated data which
+> > avoids the double frees.  I also re-ordered selinux_policy_free() so
+> > it's in the reverse order of the allocation function.
+> >
+> > Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> I guess this wasn't against current selinux next branch?
+>
+> patching file security/selinux/ss/services.c
+> Hunk #1 succeeded at 2145 (offset 18 lines).
+> Hunk #2 succeeded at 2263 (offset 39 lines).
+> Hunk #3 succeeded at 2303 with fuzz 1 (offset 47 lines).
+> Hunk #4 succeeded at 2323 (offset 42 lines).
+>
+> But otherwise it looked good to me.
+>
+> Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
 
-On 2020-08-26 08:54, Matthias Schiffer wrote:
-> On Wed, 2020-08-26 at 08:01 -0500, Frank Rowand wrote:
->> On 2020-08-26 07:02, Matthias Schiffer wrote:
->>> Allow disabling CPU nodes using status = "disabled".
->>>
->>> This allows a bootloader to change the number of available CPUs
->>> (for
->>> example when a common DTS is used for SoC variants with different
->>> numbers
->>> of cores) without deleting the nodes altogether (which may require
->>> additional fixups where the CPU nodes are referenced, e.g. a
->>> cooling
->>> map).
->>>
->>> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
->>>>
->>> ---
->>>  drivers/of/base.c | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/of/base.c b/drivers/of/base.c
->>> index ea44fea99813..d547e9deced1 100644
->>> --- a/drivers/of/base.c
->>> +++ b/drivers/of/base.c
->>> @@ -796,6 +796,8 @@ struct device_node *of_get_next_cpu_node(struct
->>> device_node *prev)
->>>  		of_node_put(node);
->>>  	}
->>>  	for (; next; next = next->sibling) {
->>> +		if (!__of_device_is_available(next))
->>> +			continue;
->>>  		if (!(of_node_name_eq(next, "cpu") ||
->>>  		      __of_node_is_type(next, "cpu")))
->>>  			continue;
->>>
->>
->> The original implementation of of_get_next_cpu_node() had
->> that check, but status disabled for cpu nodes has different
->> semantics than other nodes, and the check broke some systems.
->> The check was removed by c961cb3be906 "of: Fix cpu node
->> iterator to not ignore disabled cpu nodes".
->>
->> It would be useful to document that difference in the
->> header comment of of_get_next_cpu_node().
->>
->> -Frank
-> 
-> Hmm, I see. This difference in behaviour is quite unfortunate, as I'm
-> currently looking for a way to *really* disable a CPU core.
-> 
-> In arch/arm64/boot/dts/freescale/imx8mn.dtsi (and other variants of the
-> i.MX8M), there are 4 CPU nodes for the full-featured quad-core version.
-> The reduced single- and dual-core versions are currently handled in
-> NXP's U-Boot fork by deleting the additional nodes.
-> 
-> Not doing so causes the kernel to hang for a while when trying to
-> online the non-existent cores during boot (at least in linux-imx 5.4 -
-> I have not checked a more recent mainline kernel yet), but the deletion
-> is non-trivial to do without leaving dangling phandle references.
+My guess is that Dan was using selinux/next, just not the latest.
 
-Any thoughts on implementing another universal property that means
-something like "the hardware described by this node does not exist
-or is so broken that you better not use it".
+Anyway, the patch is now merged into selinux/next but I had to do some
+manual fixes so please double check that it looks okay to you.  Thanks
+everyone.
 
-Matthias, if Rob thinks that is a good idea, then you should start
-with a new proposal that is also sent to
-devicetree-spec@vger.kernel.org <devicetree-spec@vger.kernel.org>
-
--Frank
-
-> 
-> Kind regards,
-> Matthias
-> 
-
+-- 
+paul moore
+www.paul-moore.com
