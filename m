@@ -2,452 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174DE253212
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42CE253235
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgHZOwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:52:12 -0400
-Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:57342 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727115AbgHZOwA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:52:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 6E608182CF66C;
-        Wed, 26 Aug 2020 14:51:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:152:355:379:599:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2196:2199:2393:2538:2553:2559:2562:2636:2691:2898:2901:3138:3139:3140:3141:3142:3369:3622:3855:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4385:4605:5007:6119:6742:7576:7875:7903:7904:7914:7974:8603:9010:9036:9545:9592:10004:10967:11026:11232:11473:11658:11914:12043:12262:12296:12297:12438:12555:12679:12683:12740:12895:12986:13181:13229:13894:13972:14659:21080:21433:21451:21611:21627:21990:30012:30041:30054:30067:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: spy71_140719227065
-X-Filterd-Recvd-Size: 11777
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 26 Aug 2020 14:51:47 +0000 (UTC)
-Message-ID: <b88538f92386f41b938c502ae2daec5800a85dcf.camel@perches.com>
-Subject: Re: [PATCH 17/19] z2ram: reindent
-From:   Joe Perches <joe@perches.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Date:   Wed, 26 Aug 2020 07:51:46 -0700
-In-Reply-To: <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
-References: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>
-         <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728239AbgHZOx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726870AbgHZOwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:52:53 -0400
+Received: from localhost.localdomain (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FABE2177B;
+        Wed, 26 Aug 2020 14:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598453572;
+        bh=kkISLubLn02Pqd4uTanIQMpVWj7X3BN+1/yofvSuWc8=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=H83nW6V5S3urOUpULphtz3zccovbw9g0fFCefrjuYoLXand4Ge+9p3+Qyf/Srtffc
+         YmReJ+BHI1bG1UUo4u3E1DyrY/ZG2fhUgi/JEZbJBWLnHhmG2Rw6sbUKkSHiVsfKm3
+         XeueJ6nAcItK/oN4JmekPru4Me0xq7pfmGDQHOR8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Beniamin Bia <beniamin.bia@analog.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH 09/16] iio: afe: iio-rescale: Simplify with dev_err_probe()
+Date:   Wed, 26 Aug 2020 16:51:46 +0200
+Message-Id: <20200826145153.10444-9-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200826145153.10444-1-krzk@kernel.org>
+References: <20200826145153.10444-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-26 at 11:49 +0200, John Paul Adrian Glaubitz wrote:
-> > On Aug 26, 2020, at 11:21 AM, Joe Perches <joe@perches.com> wrote:
-> > 
-> > ﻿On Wed, 2020-08-26 at 08:24 +0200, Christoph Hellwig wrote:
-> > > reindent the driver using Lident as the code style was far away from
-> > > normal Linux code.
-> > 
-> > Why?  Does anyone use this anymore?
-> 
-> Yes, the Amiga and Linux/m68k is very well and alive.
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and also it prints the error value.
 
-That's fine.  My question was why ancient code should be modified
-if it's not in use.
-
->  There is new hardware being developed and new drivers being developed and so on.
-
-OK, fine.
-
-btw:
-
-If style only changes are to be done on this code then
-I believe these changes on top should also be made done
-for style:
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
-From 0eb1b25575abe52415ecb0139e14ae57ba4f57cb Mon Sep 17 00:00:00 2001
-Message-Id: <0eb1b25575abe52415ecb0139e14ae57ba4f57cb.1598453361.git.joe@perches.com>
-From: Joe Perches <joe@perches.com>
-Date: Wed, 26 Aug 2020 02:20:14 -0700
-Subject: [PATCH] z2ram: Use more current coding style
+ drivers/iio/afe/iio-rescale.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Use pr_fmt and pr_<level>, continue, and remove tests against NULL.
-Use more typical brace styles, add and remove them as appropriate.
-Simplify logic in z2_open, rename err_out label to out, unindent a
-large block by reversing the test and using goto.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/block/z2ram.c | 261 +++++++++++++++++++-----------------------
- 1 file changed, 118 insertions(+), 143 deletions(-)
-
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index 566c653399d8..ea490fe4417e 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -1,7 +1,7 @@
- /*
- ** z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
- **         as a block device, to be used as a RAM disk or swap space
--** 
-+**
- ** Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
- **
- ** ++Geert: support for zorro_unused_z2ram, better range checking
-@@ -25,6 +25,8 @@
- ** implied warranty.
- */
+diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+index 69c0f277ada0..e42ea2b1707d 100644
+--- a/drivers/iio/afe/iio-rescale.c
++++ b/drivers/iio/afe/iio-rescale.c
+@@ -276,11 +276,9 @@ static int rescale_probe(struct platform_device *pdev)
+ 	int ret;
  
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #define DEVICE_NAME "Z2RAM"
+ 	source = devm_iio_channel_get(dev, NULL);
+-	if (IS_ERR(source)) {
+-		if (PTR_ERR(source) != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get source channel\n");
+-		return PTR_ERR(source);
+-	}
++	if (IS_ERR(source))
++		return dev_err_probe(dev, PTR_ERR(source),
++				     "failed to get source channel\n");
  
- #include <linux/major.h>
-@@ -75,7 +77,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	blk_mq_start_request(req);
- 
- 	if (start + len > z2ram_size) {
--		pr_err(DEVICE_NAME ": bad access: block=%llu, count=%u\n",
-+		pr_err("bad access: block=%llu, count=%u\n",
- 		       (unsigned long long)blk_rq_pos(req),
- 		       blk_rq_cur_sectors(req));
- 		return BLK_STS_IOERR;
-@@ -109,34 +111,28 @@ static void get_z2ram(void)
- 	int i;
- 
- 	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
--		if (test_bit(i, zorro_unused_z2ram)) {
--			z2_count++;
--			z2ram_map[z2ram_size++] =
--			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
--			    (i << Z2RAM_CHUNKSHIFT);
--			clear_bit(i, zorro_unused_z2ram);
--		}
-+		if (!test_bit(i, zorro_unused_z2ram))
-+			continue;
-+		z2_count++;
-+		z2ram_map[z2ram_size++] =
-+			(unsigned long)ZTWO_VADDR(Z2RAM_START) +
-+			(i << Z2RAM_CHUNKSHIFT);
-+		clear_bit(i, zorro_unused_z2ram);
- 	}
--
--	return;
- }
- 
- static void get_chipram(void)
- {
--
- 	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
- 		chip_count++;
- 		z2ram_map[z2ram_size] =
- 		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
- 
--		if (z2ram_map[z2ram_size] == 0) {
-+		if (z2ram_map[z2ram_size] == 0)
- 			break;
--		}
- 
- 		z2ram_size++;
- 	}
--
--	return;
- }
- 
- static int z2_open(struct block_device *bdev, fmode_t mode)
-@@ -152,144 +148,127 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
- 	mutex_lock(&z2ram_mutex);
- 	if (current_device != -1 && current_device != device) {
- 		rc = -EBUSY;
--		goto err_out;
-+		goto out;
- 	}
- 
--	if (current_device == -1) {
--		z2_count = 0;
--		chip_count = 0;
--		list_count = 0;
--		z2ram_size = 0;
--
--		/* Use a specific list entry. */
--		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
--			int index = device - Z2MINOR_MEMLIST1 + 1;
--			unsigned long size, paddr, vaddr;
--
--			if (index >= m68k_realnum_memory) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": no such entry in z2ram_map\n");
--				goto err_out;
--			}
-+	if (current_device != -1) {
-+		rc = 0;
-+		goto out;
-+	}
- 
--			paddr = m68k_memory[index].addr;
--			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
-+	z2_count = 0;
-+	chip_count = 0;
-+	list_count = 0;
-+	z2ram_size = 0;
- 
--#ifdef __powerpc__
--			/*
--			 * FIXME: ioremap doesn't build correct memory tables.
--			 */
--			vfree(vmalloc(size));
--			vaddr = (unsigned long)ioremap_wt(paddr, size);
-+	/* Use a specific list entry. */
-+	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
-+		int index = device - Z2MINOR_MEMLIST1 + 1;
-+		unsigned long size, paddr, vaddr;
-+
-+		if (index >= m68k_realnum_memory) {
-+			pr_err("no such entry in z2ram_map\n");
-+			goto out;
-+		}
- 
-+		paddr = m68k_memory[index].addr;
-+		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
-+
-+#ifdef __powerpc__
-+		/*
-+		 * FIXME: ioremap doesn't build correct memory tables.
-+		 */
-+		vfree(vmalloc(size));
-+		vaddr = (unsigned long)ioremap_wt(paddr, size);
- #else
--			vaddr =
--			    (unsigned long)z_remap_nocache_nonser(paddr, size);
-+		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
- #endif
--			z2ram_map =
--			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
-+		z2ram_map = kmalloc_array(size / Z2RAM_CHUNKSIZE,
- 					  sizeof(z2ram_map[0]), GFP_KERNEL);
--			if (z2ram_map == NULL) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": cannot get mem for z2ram_map\n");
--				goto err_out;
-+		if (!z2ram_map) {
-+			pr_err("cannot get mem for z2ram_map\n");
-+			goto out;
-+		}
-+
-+		while (size) {
-+			z2ram_map[z2ram_size++] = vaddr;
-+			size -= Z2RAM_CHUNKSIZE;
-+			vaddr += Z2RAM_CHUNKSIZE;
-+			list_count++;
-+		}
-+
-+		if (z2ram_size != 0)
-+			pr_info("using %iK List Entry %d Memory\n",
-+				list_count * Z2RAM_CHUNK1024, index);
-+	} else {
-+		switch (device) {
-+		case Z2MINOR_COMBINED:
-+			z2ram_map = kmalloc(max_z2_map + max_chip_map,
-+					    GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
- 
--			while (size) {
--				z2ram_map[z2ram_size++] = vaddr;
--				size -= Z2RAM_CHUNKSIZE;
--				vaddr += Z2RAM_CHUNKSIZE;
--				list_count++;
-+			get_z2ram();
-+			get_chipram();
-+
-+			if (z2ram_size != 0)
-+				pr_info("using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
-+					z2_count * Z2RAM_CHUNK1024,
-+					chip_count * Z2RAM_CHUNK1024,
-+					(z2_count + chip_count) * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		case Z2MINOR_Z2ONLY:
-+			z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
- 
-+			get_z2ram();
-+
- 			if (z2ram_size != 0)
--				printk(KERN_INFO DEVICE_NAME
--				       ": using %iK List Entry %d Memory\n",
--				       list_count * Z2RAM_CHUNK1024, index);
--		} else
--			switch (device) {
--			case Z2MINOR_COMBINED:
--
--				z2ram_map =
--				    kmalloc(max_z2_map + max_chip_map,
--					    GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
--					       z2_count * Z2RAM_CHUNK1024,
--					       chip_count * Z2RAM_CHUNK1024,
--					       (z2_count +
--						chip_count) * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_Z2ONLY:
--				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK of Zorro II RAM\n",
--					       z2_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_CHIPONLY:
--				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Chip RAM\n",
--					       chip_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			default:
--				rc = -ENODEV;
--				goto err_out;
--
--				break;
-+				pr_info("using %iK of Zorro II RAM\n",
-+					z2_count * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		case Z2MINOR_CHIPONLY:
-+			z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
- 
--		if (z2ram_size == 0) {
--			printk(KERN_NOTICE DEVICE_NAME
--			       ": no unused ZII/Chip RAM found\n");
--			goto err_out_kfree;
-+			get_chipram();
-+
-+			if (z2ram_size != 0)
-+				pr_info("using %iK Chip RAM\n",
-+					chip_count * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		default:
-+			rc = -ENODEV;
-+			goto out;
- 		}
-+	}
- 
--		current_device = device;
--		z2ram_size <<= Z2RAM_CHUNKSHIFT;
--		set_capacity(z2ram_gendisk, z2ram_size >> 9);
-+	if (z2ram_size == 0) {
-+		pr_notice("no unused ZII/Chip RAM found\n");
-+		kfree(z2ram_map);
-+		goto out;
- 	}
- 
--	mutex_unlock(&z2ram_mutex);
--	return 0;
-+	current_device = device;
-+	z2ram_size <<= Z2RAM_CHUNKSHIFT;
-+	set_capacity(z2ram_gendisk, z2ram_size >> 9);
-+	rc = 0;
- 
--err_out_kfree:
--	kfree(z2ram_map);
--err_out:
-+out:
- 	mutex_unlock(&z2ram_mutex);
- 	return rc;
- }
-@@ -372,7 +351,6 @@ static int __init z2_init(void)
- 
- static void __exit z2_exit(void)
- {
--	int i, j;
- 	blk_unregister_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT);
- 	unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
- 	del_gendisk(z2ram_gendisk);
-@@ -381,24 +359,21 @@ static void __exit z2_exit(void)
- 	blk_mq_free_tag_set(&tag_set);
- 
- 	if (current_device != -1) {
-+		int i, j;
-+
- 		i = 0;
- 
--		for (j = 0; j < z2_count; j++) {
-+		for (j = 0; j < z2_count; j++)
- 			set_bit(i++, zorro_unused_z2ram);
--		}
- 
- 		for (j = 0; j < chip_count; j++) {
--			if (z2ram_map[i]) {
-+			if (z2ram_map[i])
- 				amiga_chip_free((void *)z2ram_map[i++]);
--			}
- 		}
- 
--		if (z2ram_map != NULL) {
-+		if (z2ram_map)
- 			kfree(z2ram_map);
--		}
- 	}
--
--	return;
- }
- 
- module_init(z2_init);
+ 	sizeof_ext_info = iio_get_channel_ext_info_count(source);
+ 	if (sizeof_ext_info) {
 -- 
-2.26.0
-
+2.17.1
 
