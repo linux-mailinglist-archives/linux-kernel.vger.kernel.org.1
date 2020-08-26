@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D112525B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 05:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA302525BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 05:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgHZDEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 23:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbgHZDEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 23:04:04 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5A3C061574;
-        Tue, 25 Aug 2020 20:04:04 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id m34so307947pgl.11;
-        Tue, 25 Aug 2020 20:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tWZBSAFPB25Ix8dxJn0Apg8q5RD1rLXKwul0a9thtfs=;
-        b=qeU+YGnR6JDsoGqwquHCY9zcM2jhoA3P3cgTEY8sz4dSdMJld9Q/4yAcx1Slz95rA6
-         lVl34RkyDejG9atiuiQZ7BJZb96z1kCMNKamgcBMeCp0xT9rrasgdlgaYbXgpGhBwsgY
-         d1F/ZSgVN/Xzy0vxJyDp521+HpbqwK/9loN8pHXCV3YklhjCLGonakXYtdcaeAh65myp
-         8prbYv7Z23r1JJrcZfW5YaEoobBP60lVxM/R0C1eTHR/DUffJLfLTxju5kpSmc+JJlLv
-         6VsWAssMTaVUa4lEJQkCVHbgwxdGsVqoatb5GxQcyVmDAvnrdO1pAAxLybnCwXmzHszI
-         7GzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tWZBSAFPB25Ix8dxJn0Apg8q5RD1rLXKwul0a9thtfs=;
-        b=QYYeYUdV3dx/OPo/zEaBikOafjXoh0SVS9VLJk1/sQvoaEul1RRHHyfA6Q4akR4Qf/
-         WtjjAZlubS06jBUQGCxz+HG+BcoBm/OjQup+cC9q667SnZhDqy//6t10Pac11XPEGrom
-         N/KxSmfB5fXfKABv0ADYliblQEgujMz6nww6IOdpP0eMo7J/xeB7sFfqMRKsd5xg4LMU
-         XezGDuhmENbgpacADorCxV/VLZ3gQfmCMDO/jS3eW0tD2w3L7JlIBNAv3Sd6uHv33GDb
-         s6ho5FhNtlytufLRF5T0pQte1d3jEz/1etxQ5i4ffH4uO0tH242lCVJgFyItyT/Pn8eT
-         6jvQ==
-X-Gm-Message-State: AOAM530qP8Nseb4jDGIH+f6AvTBthWoBAR+YV38EMGwWjgXKgBC1ToVr
-        3Al/0xs/shMV5t0fTRorbEQ=
-X-Google-Smtp-Source: ABdhPJxaloAhp6tK707mtwlbVKfSHOpsGeu3FG2FKBWoAK1Ry5aBidpHaLlK+ODw3SH6MJqvkYQTaQ==
-X-Received: by 2002:a63:1523:: with SMTP id v35mr9264734pgl.317.1598411043590;
-        Tue, 25 Aug 2020 20:04:03 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8880:9ae0:117e:686d:dc72:3bd8])
-        by smtp.gmail.com with ESMTPSA id s10sm411776pjl.37.2020.08.25.20.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 20:04:02 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>, Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net] drivers/net/wan/lapbether: Set network_header before transmitting
-Date:   Tue, 25 Aug 2020 20:03:53 -0700
-Message-Id: <20200826030353.75645-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726751AbgHZDN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 23:13:29 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:56508 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726672AbgHZDN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Aug 2020 23:13:29 -0400
+Received: from localhost.localdomain (unknown [159.226.5.100])
+        by APP-03 (Coremail) with SMTP id rQCowADX3ho200Vfqr_JBA--.3629S2;
+        Wed, 26 Aug 2020 11:12:54 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     richardcochran@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ptp: ptp_ines: Remove redundant null check
+Date:   Wed, 26 Aug 2020 03:12:51 +0000
+Message-Id: <20200826031251.4362-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADX3ho200Vfqr_JBA--.3629S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4xAFWUAw4DZr43Kry7GFg_yoWxZrXEkw
+        10qF1I9r4UXw40yw12kw4rurWv9a4kXr1rX3Wvqa13A39rWr15ArWv9rWkXw1Duw43CFsx
+        Jr93Wr18Ca9I9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Gryq6s0DMcIj6I8E87Iv67AKxVWaoV
+        W8JcWlOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jtYFZUUUUU=
+X-Originating-IP: [159.226.5.100]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAxAAA13qZUwcAQAAsT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the skb's network_header before it is passed to the underlying
-Ethernet device for transmission.
+Because kfree_skb already checked NULL skb parameter,
+so the additional check is unnecessary, just remove it.
 
-This patch fixes the following issue:
-
-When we use this driver with AF_PACKET sockets, there would be error
-messages of:
-   protocol 0805 is buggy, dev (Ethernet interface name)
-printed in the system "dmesg" log.
-
-This is because skbs passed down to the Ethernet device for transmission
-don't have their network_header properly set, and the dev_queue_xmit_nit
-function in net/core/dev.c complains about this.
-
-Reason of setting the network_header to this place (at the end of the
-Ethernet header, and at the beginning of the Ethernet payload):
-
-Because when this driver receives an skb from the Ethernet device, the
-network_header is also set at this place.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- drivers/net/wan/lapbether.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/ptp/ptp_ines.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index cc297ea9c6ec..e61616b0b91c 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -210,6 +210,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
+diff --git a/drivers/ptp/ptp_ines.c b/drivers/ptp/ptp_ines.c
+index 7711651ff19e..2c1fb99aa37c 100644
+--- a/drivers/ptp/ptp_ines.c
++++ b/drivers/ptp/ptp_ines.c
+@@ -663,8 +663,7 @@ static void ines_txtstamp(struct mii_timestamper *mii_ts,
  
- 	skb->dev = dev = lapbeth->ethdev;
+ 	spin_unlock_irqrestore(&port->lock, flags);
  
-+	skb_reset_network_header(skb);
-+
- 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
+-	if (old_skb)
+-		kfree_skb(old_skb);
++	kfree_skb(old_skb);
  
- 	dev_queue_xmit(skb);
+ 	schedule_delayed_work(&port->ts_work, 1);
+ }
 -- 
-2.25.1
+2.17.1
 
