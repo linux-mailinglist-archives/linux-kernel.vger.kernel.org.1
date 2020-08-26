@@ -2,212 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947612526F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88DB2526DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 08:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHZGfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 02:35:34 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:39322 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgHZGfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 02:35:30 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200826063528euoutp0217425fa86afae40f3bdf0f5ab710d0a8~uvemEFnOs1443214432euoutp02k
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 06:35:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200826063528euoutp0217425fa86afae40f3bdf0f5ab710d0a8~uvemEFnOs1443214432euoutp02k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598423728;
-        bh=1Hig8DSaUQrSWNGiVEYKJYaWSxEcAqEZHyfhwOgJEQc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0xH1esPq11vJvvaMmbxa+HqC7mLMNKCxdjMbXhMVYpU8hS7/y4FOKxG6fRCiMeVx
-         w6kLtfhFRlUJlgCQ+c9UVA5x+DAdX6C3TRUR28GKAxjvgfgyZyh4FwNbDd8e77fi4S
-         rufcE5kcdqioUnTtI+Hj6U42jNgV3Nln6KzAosI8=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200826063528eucas1p17aee62b7c9f7ab73d0c399539d8dfa51~uvelzGFPf1480714807eucas1p1I;
-        Wed, 26 Aug 2020 06:35:28 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id BE.9D.05997.0B2064F5; Wed, 26
-        Aug 2020 07:35:28 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48~uveli2xBH1474114741eucas1p1b;
-        Wed, 26 Aug 2020 06:35:27 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200826063527eusmtrp29179cc95e6c3d2559c9d36bf123c17bc~uveliI-NV0396003960eusmtrp2f;
-        Wed, 26 Aug 2020 06:35:27 +0000 (GMT)
-X-AuditID: cbfec7f4-677ff7000000176d-b3-5f4602b0cec5
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 59.43.06017.FA2064F5; Wed, 26
-        Aug 2020 07:35:27 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200826063527eusmtip2a6650922ead90b48834553f5ca67743c~uvek3IQJF0302303023eusmtip2t;
-        Wed, 26 Aug 2020 06:35:27 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v9 01/32] drm: prime: add common helper to check scatterlist
- contiguity
-Date:   Wed, 26 Aug 2020 08:32:45 +0200
-Message-Id: <20200826063316.23486-2-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200826063316.23486-1-m.szyprowski@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0WSfSxVcRjH+51zz7nHnavTZfyGZbuVVctrNWcjS6Wd9U/a2lpvuHLGFZfu
-        QV7aSGO58l7zUuNm5paXvFNkIVwmalHkLcLIS8jL0kROB/33eb7f7/N79jz7EaikATMm5IpA
-        RqmQ+UpxkaCqZbXTogQ562Y99klAxXe2IVRpejFGbVQlo1T38hxOPS9oRij1G3tqqXsEocpG
-        P2NUV80TnCpqGhRSTxcqBVRMbB5GNcyPYVTFTDJ2Uo8uzCoEdN2KWkCX5cfidPXKMEZntV2g
-        v8ZpEbo8N4LuXx9F6dReDaBrv0TidEJFPqDL28PpxbK9LuIrIgdPxlcezCitHN1F3kOVg8KA
-        KZOQ8oVRYST4aagCBAHJYzBxwkQFRISEfAZgRbwG8MUSgKnjfQhfLAK4MN6Ebne8/uOhAjqb
-        ugbAuIKQnYa8qG8YZ+CkDVTNqnCODchoAFvjdbkQSqpRuLoYAzhDn7wMU97+EnAsIA/ApvEf
-        /3QxeQJ29dchHEPSDBaU1KMc65COUBuXiHMPQXJICJMe5wj50BlYHfsO41kfTmkrtnRTuPEq
-        G+Eb7gE40lkk5IsHAHZFpQM+ZQ8HOn/j3G4oeQgW11jxshNc7RkT8ivrwd7ZPZyMbmJKVdrW
-        JcTwfoyET5vDTO2LnbENHz6iPNPwUWQfyl8rGcCpKjYJmGX+n6UGIB8YMUGsnxfD2iqY25as
-        zI8NUnhZ3vD3KwObH6t9Xbv0EtSseTQCkgBSXbEad3aTYLJgNtSvEUAClRqIT3W0u0rEnrLQ
-        MEbp76YM8mXYRmBCCKRG4qM5369LSC9ZIHOTYQIY5baLEDrGkcA1wjc62cpHVmtnlD3tLp/D
-        6piZtIEmW8/Gcxm5KXOtlteW1abBLiKLsY4SnYT6ieniUM34wF31xbaidvtSoY857rx/eLeW
-        su+Te8iHXWImmx374vWPHL+zqyes/6rhvlS3h9YH7cIznDSTl3KRxfnyKIX72nnlrdGRlqL3
-        px0GpALWW2ZzGFWysr8cNXMKVAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKIsWRmVeSWpSXmKPExsVy+t/xe7rrmdziDdbu07HoPXeSyWLjjPWs
-        Fv+3TWS2uPL1PZvFytVHmSwW7Le2+HLlIZPFpsfXWC0u75rDZrH2yF12i4Uft7JYtHUuY7U4
-        +OEJq8WWNxNZHfg81sxbw+ix99sCFo9NqzrZPLZ/e8DqMe9koMf97uNMHpuX1Hvc/veY2WPy
-        jeWMHrtvNrB59G1Zxeix+XS1x+dNcgG8UXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG
-        5rFWRqZK+nY2Kak5mWWpRfp2CXoZ97beZS94JV2x+eNj9gbGT2JdjBwcEgImEnv+JnUxcnEI
-        CSxllDi1/QpbFyMnUFxG4uS0BlYIW1jiz7UuNoiiT4wS1/68YQJJsAkYSnS9hUiICHQySkzr
-        /sgO4jALrGCWeLVvLgtIlbBAuETr+1VgNouAqsSRp+8YQWxeAVuJy7f3MkGskJdYveEAM4jN
-        KWAncby7H+wMIaCa02tnME9g5FvAyLCKUSS1tDg3PbfYSK84Mbe4NC9dLzk/dxMjMIq2Hfu5
-        ZQdj17vgQ4wCHIxKPLwL2FzjhVgTy4orcw8xSnAwK4nwOp09HSfEm5JYWZValB9fVJqTWnyI
-        0RToqInMUqLJ+cAIzyuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnV
-        wDj7tHTzR4aF/mJCEQv2+KwujBFvv/LoS3nZ9dwHmss9drBt+NTfxDb534f3PyuPBjSruXhw
-        al9fuNriRw7/N62tC/bb8nFEGl7KPSJzkLvpx2penbLlNu0PNWfdZGUqeHCzeW7A8zUHLq8L
-        mNp0+Vqw+J/+RqW0Gbv11i3/cdFva8pu1uQyj9NKLMUZiYZazEXFiQBDcb39uAIAAA==
-X-CMS-MailID: 20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48
-References: <20200826063316.23486-1-m.szyprowski@samsung.com>
-        <CGME20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48@eucas1p1.samsung.com>
+        id S1726718AbgHZGcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 02:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725786AbgHZGcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 02:32:51 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2070620707;
+        Wed, 26 Aug 2020 06:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598423571;
+        bh=tlmi1dXDnwffZjtMmqckGcLrR8NIpwc3mBYPK75NtQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aO+yIuBS6V6tG2ZgXpu76vXf7CjrchXrcfFtHilQ/ixmTi/qAs4uVsF3b+VHxWg4K
+         woRVhTPjqkMpI3uM18tj2FXD0PkCDlhdefR9/Spqna3399ooBCwwkS9XflrLCCOzbf
+         NdXDFvVMSVUaOe5VuJIpFvNpV9W3NEO4R1oLIacQ=
+Date:   Wed, 26 Aug 2020 12:02:46 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: dmaengine: Document qcom,gpi dma binding
+Message-ID: <20200826063246.GW2639@vkoul-mobl>
+References: <20200824084712.2526079-1-vkoul@kernel.org>
+ <20200824084712.2526079-2-vkoul@kernel.org>
+ <20200824174009.GA2948650@bogus>
+ <20200825145131.GS2639@vkoul-mobl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825145131.GS2639@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is a common operation done by DRM drivers to check the contiguity
-of the DMA-mapped buffer described by a scatterlist in the
-sg_table object. Let's add a common helper for this operation.
+On 25-08-20, 20:21, Vinod Koul wrote:
+> Hey Rob,
+> 
+> On 24-08-20, 11:40, Rob Herring wrote:
+> > On Mon, 24 Aug 2020 14:17:10 +0530, Vinod Koul wrote:
+> > > Add devicetree binding documentation for GPI DMA controller
+> > > implemented on Qualcomm SoCs
+> > > 
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  .../devicetree/bindings/dma/qcom-gpi.yaml     | 87 +++++++++++++++++++
+> > >  1 file changed, 87 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/dma/qcom-gpi.yaml
+> > > 
+> > 
+> > 
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/qcom-gpi.yaml: properties:qcom,ev-factor: {'description': 'Event ring transfer size compare to channel transfer ring. Event ring length = ev-factor * transfer ring size', 'maxItems': 1} is not valid under any of the given schemas (Possible causes of the failure):
+> > 	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/qcom-gpi.yaml: properties:qcom,ev-factor: 'not' is a required property
+> 
+> Okay updating dt-schema I do see this, now the question is what is this
+> and what does it mean ;-) I am not sure I comprehend the error message.
+> I see this for all the new properties I added as required for this
+> device node
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
----
- drivers/gpu/drm/drm_gem_cma_helper.c | 23 +++------------------
- drivers/gpu/drm/drm_prime.c          | 31 ++++++++++++++++++++++++++++
- include/drm/drm_prime.h              |  2 ++
- 3 files changed, 36 insertions(+), 20 deletions(-)
+Okay I think I have figured it out, I need to provide ref to
+/schemas/types.yaml#definitions/uint32 for this to work, which does
+makes sense to me.
 
-diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
-index 822edeadbab3..59b9ca207b42 100644
---- a/drivers/gpu/drm/drm_gem_cma_helper.c
-+++ b/drivers/gpu/drm/drm_gem_cma_helper.c
-@@ -471,26 +471,9 @@ drm_gem_cma_prime_import_sg_table(struct drm_device *dev,
- {
- 	struct drm_gem_cma_object *cma_obj;
+  qcom,max-num-gpii:
+    $ref: /schemas/types.yaml#definitions/uint32
+    maxItems: 1
+    description:
+      Number of GPII instances
+
+Looks good to schema tool
  
--	if (sgt->nents != 1) {
--		/* check if the entries in the sg_table are contiguous */
--		dma_addr_t next_addr = sg_dma_address(sgt->sgl);
--		struct scatterlist *s;
--		unsigned int i;
--
--		for_each_sg(sgt->sgl, s, sgt->nents, i) {
--			/*
--			 * sg_dma_address(s) is only valid for entries
--			 * that have sg_dma_len(s) != 0
--			 */
--			if (!sg_dma_len(s))
--				continue;
--
--			if (sg_dma_address(s) != next_addr)
--				return ERR_PTR(-EINVAL);
--
--			next_addr = sg_dma_address(s) + sg_dma_len(s);
--		}
--	}
-+	/* check if the entries in the sg_table are contiguous */
-+	if (drm_prime_get_contiguous_size(sgt) < attach->dmabuf->size)
-+		return ERR_PTR(-EINVAL);
- 
- 	/* Create a CMA GEM buffer. */
- 	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size);
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 1693aa7c14b5..4ed5ed1f078c 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -825,6 +825,37 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
- }
- EXPORT_SYMBOL(drm_prime_pages_to_sg);
- 
-+/**
-+ * drm_prime_get_contiguous_size - returns the contiguous size of the buffer
-+ * @sgt: sg_table describing the buffer to check
-+ *
-+ * This helper calculates the contiguous size in the DMA address space
-+ * of the the buffer described by the provided sg_table.
-+ *
-+ * This is useful for implementing
-+ * &drm_gem_object_funcs.gem_prime_import_sg_table.
-+ */
-+unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt)
-+{
-+	dma_addr_t expected = sg_dma_address(sgt->sgl);
-+	struct scatterlist *sg;
-+	unsigned long size = 0;
-+	int i;
-+
-+	for_each_sgtable_dma_sg(sgt, sg, i) {
-+		unsigned int len = sg_dma_len(sg);
-+
-+		if (!len)
-+			break;
-+		if (sg_dma_address(sg) != expected)
-+			break;
-+		expected += len;
-+		size += len;
-+	}
-+	return size;
-+}
-+EXPORT_SYMBOL(drm_prime_get_contiguous_size);
-+
- /**
-  * drm_gem_prime_export - helper library implementation of the export callback
-  * @obj: GEM object to export
-diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
-index 9af7422b44cf..47ef11614627 100644
---- a/include/drm/drm_prime.h
-+++ b/include/drm/drm_prime.h
-@@ -92,6 +92,8 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
- struct dma_buf *drm_gem_prime_export(struct drm_gem_object *obj,
- 				     int flags);
- 
-+unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt);
-+
- /* helper functions for importing */
- struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
- 						struct dma_buf *dma_buf,
 -- 
-2.17.1
-
+~Vinod
