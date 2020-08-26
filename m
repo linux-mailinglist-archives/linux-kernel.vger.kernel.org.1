@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF82253231
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE12253250
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgHZOxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:53:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43130 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728146AbgHZOwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:52:45 -0400
-Received: from zn.tnic (p200300ec2f0cee00b9d687b85fd363f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:ee00:b9d6:87b8:5fd3:63f9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 75F681EC0347;
-        Wed, 26 Aug 2020 16:52:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598453562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jnsI/iKNmqsnOjPIZNdv4vnNfxJjeQ2wcvfdfUU1q0Y=;
-        b=C9cifg0tLhB4V2DukbiUnvLsZKGU3rGL+iqq1vZ5Xb4ptofIdUpqe1J4oHKWyTq+S/ybrZ
-        mxOSh8gF/AQsmCKeaBbyQY8uy8wgt9hWES9YJc91bh7fqaFwwrgGbjyh1dKgIb5+Ixy1P6
-        /nxSYaBvAQ0N9NP68DG2coKAFVN63ac=
-Date:   Wed, 26 Aug 2020 16:52:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-Message-ID: <20200826145239.GC22390@zn.tnic>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+        id S1728036AbgHZOyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728329AbgHZOxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:53:50 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E73C061574;
+        Wed, 26 Aug 2020 07:53:50 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id q3so1005715pls.11;
+        Wed, 26 Aug 2020 07:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TcbxX+lW5qgeFyGHy3Sgew1O8jaIFOQUWGSD9fmh4Ds=;
+        b=q6an9A4xnvWqk3kD2Ahthf2EBYHipvLOJq8gjmXpTdU04Nb3S0hQP/tdZJTVPB7Joq
+         XC8ygVnKRZGdRLkl49eU+TNhLdVAdDiyLUgS6CwO0WwOWKgFRtDvkpYeg4/QTuxVVxMR
+         VONWRTlBOJd+PhC/tDxD26+EDSkLdSTR4HxFZzt8wfkhxZ7wdbW2ZmbBlq4BlH8CT5ud
+         v/9wvVpl7dYLBm6CK6vdLN6Ino1ljMHl3uUsqcdG/mukXHoW9fcHwjQn1+m4sm8eiesc
+         xBr/J/RV0sgRv/bTpbQXVo3EXoECA/odOegWY8UDepBWkdlD1HoKruo+lyujzOPtRV/j
+         4hsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TcbxX+lW5qgeFyGHy3Sgew1O8jaIFOQUWGSD9fmh4Ds=;
+        b=WdyGUIkhhG8JNJFrP5AcyOA+M/G9aM56Qqe64/bJ7e0uWzN6FVkweU8KCIJKMbkIlA
+         m4xn6iCTow2FLNRsorfwUW9BK5/sgJsetC0m/9fnvR5Ehn4NZ8cs6UCImGxNq2O0mACv
+         rdQVOre8MIh0jxpeHZED5WDiALmggJdYsORP8Pe+U6Ne1d4g51VNO9rsl+pYeGWknXqJ
+         bawM544jTZRRarwrTUsmJ8VhHXXPvoaVmGdGLBQrV4zJYh+amRySHTe0rsDWQYTWojat
+         9FWc/5nHrkkRMbQnKHi7OGjsSBcKBlpEq74lJLJQ4QUo3OWhGfR47edlPG6XF7W2MNXg
+         qO7w==
+X-Gm-Message-State: AOAM531C2ZrAMA2Faj/zFhM96W40sMvtzavNMhQenPAgTR80pCMeHb4L
+        1T76zkdAgkW6hurZsVq4/TjKTpoOshU=
+X-Google-Smtp-Source: ABdhPJzN+aMSyEY8aUnGBKztdrqgQqKNljAox7LWDC4FKdqEOI7IHNbzRh50th/9lmPgjJlxGrT0sA==
+X-Received: by 2002:a17:90a:5298:: with SMTP id w24mr6075538pjh.221.1598453629825;
+        Wed, 26 Aug 2020 07:53:49 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
+        by smtp.gmail.com with ESMTPSA id r7sm3327140pfl.186.2020.08.26.07.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 07:53:49 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-arch@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org
+Subject: [PATCH v2 14/23] openrisc: use asm-generic/mmu_context.h for no-op implementations
+Date:   Thu, 27 Aug 2020 00:52:40 +1000
+Message-Id: <20200826145249.745432-15-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20200826145249.745432-1-npiggin@gmail.com>
+References: <20200826145249.745432-1-npiggin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 04:52:51PM +0300, Jarkko Sakkinen wrote:
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 59472cd6a11d..35f713e3a267 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
->                                                                       <mailto:tlewis@mindspring.com>
->  0xA3  90-9F  linux/dtlk.h
->  0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
-> +0xA4  00-1F  uapi/asm/sgx.h                                          Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: openrisc@lists.librecores.org
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ arch/openrisc/include/asm/mmu_context.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Again, maybe add <mailto:linux-sgx@vger.kernel.org> ?
-
-This is from a previous review - please be more careful when addressing
-review comments - either do them or object to them but silently ignoring
-them is not cool.
-
->  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
->  0xAB  00-1F  linux/nbd.h
->  0xAC  00-1F  linux/raw.h
-> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-> new file mode 100644
-> index 000000000000..3787d278e84b
-> --- /dev/null
-> +++ b/arch/x86/include/uapi/asm/sgx.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
-
-checkpatch is not happy about something:
-
-WARNING: 'SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */' is not supported in LICENSES/...
-#79: FILE: arch/x86/include/uapi/asm/sgx.h:1:
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
-
-...
-
-> +/**
-> + * sgx_ioc_enclave_create - handler for %SGX_IOC_ENCLAVE_CREATE
-> + * @filep:	open file to /dev/sgx
-
-Also from a previous review:
-
-"That's
-
-@encl: enclave pointer
-
-or so."
-
-> + * @arg:	userspace pointer to a struct sgx_enclave_create instance
-> + *
-> + * Allocate kernel data structures for a new enclave and execute ECREATE after
-> + * verifying the correctness of the provided SECS.
-> + *
-> + * Note, enforcement of restricted and disallowed attributes is deferred until
-> + * sgx_ioc_enclave_init(), only the architectural correctness of the SECS is
-> + * checked by sgx_ioc_enclave_create().
-
-From that same review:
-
-"Well, I don't see that checking. Where is it?"
-
-Ok, I'm going to stop here. Please go over v33's review and either
-address *all* feedback or incorporate it into your patches if you agree
-with it but do not silently ignore it. One of the things I very strongly
-detest is ignored review comments.
-
+diff --git a/arch/openrisc/include/asm/mmu_context.h b/arch/openrisc/include/asm/mmu_context.h
+index ced577542e29..a6702384c77d 100644
+--- a/arch/openrisc/include/asm/mmu_context.h
++++ b/arch/openrisc/include/asm/mmu_context.h
+@@ -17,13 +17,13 @@
+ 
+ #include <asm-generic/mm_hooks.h>
+ 
++#define init_new_context init_new_context
+ extern int init_new_context(struct task_struct *tsk, struct mm_struct *mm);
++#define destroy_context destroy_context
+ extern void destroy_context(struct mm_struct *mm);
+ extern void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 		      struct task_struct *tsk);
+ 
+-#define deactivate_mm(tsk, mm)	do { } while (0)
+-
+ #define activate_mm(prev, next) switch_mm((prev), (next), NULL)
+ 
+ /* current active pgd - this is similar to other processors pgd
+@@ -32,8 +32,6 @@ extern void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 
+ extern volatile pgd_t *current_pgd[]; /* defined in arch/openrisc/mm/fault.c */
+ 
+-static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+-{
+-}
++#include <asm-generic/mmu_context.h>
+ 
+ #endif
 -- 
-Regards/Gruss,
-    Boris.
+2.23.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
