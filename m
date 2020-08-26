@@ -2,88 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EE5253821
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2101D253827
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 21:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgHZTRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 15:17:19 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:41635 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726940AbgHZTRP (ORCPT
+        id S1727881AbgHZTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 15:17:41 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57059 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726988AbgHZTRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 15:17:15 -0400
-Received: by mail-ed1-f68.google.com with SMTP id c8so2737913edn.8;
-        Wed, 26 Aug 2020 12:17:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8xGqYRG8ajCrh4u0eYU/fQCzra6d0D+pOOx7R79TMK0=;
-        b=LWI7uyd2XbwmfWGIjp1icTngzDGk5eGORHVfPlgpgDbCa3STYxhv+C7FE0ehEm65TZ
-         eHNb3N66avShzv1GJU0XyddvV6XAovXttfJlBEt0eSGGvoonv6osFqWK7SsvS7Eq5gkI
-         nq15w+uQHx3p6VJs5i97cmbnEbRhBHANhG/ikAioy+kX9WXROR/gpm4LIhoLgim6sGjK
-         eeEMoLdMj9lyWKG/TbrlEwYU50MRNNcPFnHtPlEhlbyONjtaE/U5ihjML8H/DsoR02Ff
-         1UBrNjMNYIy+eODjQppFcFbW2wHUkI+goGV0+P7aKvnNbkc4IkGBTAK7129UOznFc9/9
-         31Sw==
-X-Gm-Message-State: AOAM532cwLkdi+rn8cihtJFq6lE3PT5QZh1hr8bsiS0XhmVlKUMlT6oF
-        nmgNx+VtZTteGXQH7y3TIVo=
-X-Google-Smtp-Source: ABdhPJyQDj5GAFJqp19VI5XGmXKh+NP7EjEyumm45r/4D70WWFdTs7PKal7GGssl9pz9tBPBd/x9qA==
-X-Received: by 2002:a05:6402:2031:: with SMTP id ay17mr15889987edb.46.1598469432489;
-        Wed, 26 Aug 2020 12:17:12 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id r9sm2722466edq.44.2020.08.26.12.17.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Aug 2020 12:17:11 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 21:17:08 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 01/24] Input: bcm-keypad - Simplify with dev_err_probe()
-Message-ID: <20200826191708.GA13466@kozik-lap>
-References: <20200826181706.11098-1-krzk@kernel.org>
- <20200826191217.GW1891694@smile.fi.intel.com>
+        Wed, 26 Aug 2020 15:17:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598469447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JwcANZhA8W6K53dylWiceQBVhU3tV8RvSRl3XFIVabA=;
+        b=gc9pDjXClXSuNWCSuZK2KQCmfAyun7G35NgEifGhLQSerwyVN2qn07NPM4ZDZdLGhKPEaf
+        HUACVDU8gs+rxaugyxkShjDBYLYQqIOXfHR7MJjwtHzfz1bx6MxkFYHuH+Nxe+cLYbWdVY
+        janOoxl0p1IEKACc94j8DwGg+ottlfg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-UyPiH8JVNKCHGWvTJiA_xA-1; Wed, 26 Aug 2020 15:17:23 -0400
+X-MC-Unique: UyPiH8JVNKCHGWvTJiA_xA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21AEE1DDFC;
+        Wed, 26 Aug 2020 19:17:22 +0000 (UTC)
+Received: from work-vm (ovpn-112-133.ams2.redhat.com [10.36.112.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6267618B59;
+        Wed, 26 Aug 2020 19:17:14 +0000 (UTC)
+Date:   Wed, 26 Aug 2020 20:17:11 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 11/18] fuse: implement FUSE_INIT map_alignment field
+Message-ID: <20200826191711.GF3932@work-vm>
+References: <20200819221956.845195-1-vgoyal@redhat.com>
+ <20200819221956.845195-12-vgoyal@redhat.com>
+ <CAJfpegsgHE0MkZLFgE4yrZXO5ThDxCj85-PjizrXPRC2CceT1g@mail.gmail.com>
+ <20200826155142.GA1043442@redhat.com>
+ <20200826173408.GA11480@stefanha-x1.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200826191217.GW1891694@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200826173408.GA11480@stefanha-x1.localdomain>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:12:17PM +0300, Andy Shevchenko wrote:
-> On Wed, Aug 26, 2020 at 08:16:43PM +0200, Krzysztof Kozlowski wrote:
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe().  Less code and also it prints the error value.
+* Stefan Hajnoczi (stefanha@redhat.com) wrote:
+> On Wed, Aug 26, 2020 at 11:51:42AM -0400, Vivek Goyal wrote:
+> > On Wed, Aug 26, 2020 at 04:06:35PM +0200, Miklos Szeredi wrote:
+> > > On Thu, Aug 20, 2020 at 12:21 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > > >
+> > > > The device communicates FUSE_SETUPMAPPING/FUSE_REMOVMAPPING alignment
+> > > > constraints via the FUST_INIT map_alignment field.  Parse this field and
+> > > > ensure our DAX mappings meet the alignment constraints.
+> > > >
+> > > > We don't actually align anything differently since our mappings are
+> > > > already 2MB aligned.  Just check the value when the connection is
+> > > > established.  If it becomes necessary to honor arbitrary alignments in
+> > > > the future we'll have to adjust how mappings are sized.
+> > > >
+> > > > The upshot of this commit is that we can be confident that mappings will
+> > > > work even when emulating x86 on Power and similar combinations where the
+> > > > host page sizes are different.
+> > > >
+> > > > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> > > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > > > ---
+> > > >  fs/fuse/fuse_i.h          |  5 ++++-
+> > > >  fs/fuse/inode.c           | 18 ++++++++++++++++--
+> > > >  include/uapi/linux/fuse.h |  4 +++-
+> > > >  3 files changed, 23 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> > > > index 478c940b05b4..4a46e35222c7 100644
+> > > > --- a/fs/fuse/fuse_i.h
+> > > > +++ b/fs/fuse/fuse_i.h
+> > > > @@ -47,7 +47,10 @@
+> > > >  /** Number of dentries for each connection in the control filesystem */
+> > > >  #define FUSE_CTL_NUM_DENTRIES 5
+> > > >
+> > > > -/* Default memory range size, 2MB */
+> > > > +/*
+> > > > + * Default memory range size.  A power of 2 so it agrees with common FUSE_INIT
+> > > > + * map_alignment values 4KB and 64KB.
+> > > > + */
+> > > >  #define FUSE_DAX_SZ    (2*1024*1024)
+> > > >  #define FUSE_DAX_SHIFT (21)
+> > > >  #define FUSE_DAX_PAGES (FUSE_DAX_SZ/PAGE_SIZE)
+> > > > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> > > > index b82eb61d63cc..947abdd776ca 100644
+> > > > --- a/fs/fuse/inode.c
+> > > > +++ b/fs/fuse/inode.c
+> > > > @@ -980,9 +980,10 @@ static void process_init_reply(struct fuse_conn *fc, struct fuse_args *args,
+> > > >  {
+> > > >         struct fuse_init_args *ia = container_of(args, typeof(*ia), args);
+> > > >         struct fuse_init_out *arg = &ia->out;
+> > > > +       bool ok = true;
+> > > >
+> > > >         if (error || arg->major != FUSE_KERNEL_VERSION)
+> > > > -               fc->conn_error = 1;
+> > > > +               ok = false;
+> > > >         else {
+> > > >                 unsigned long ra_pages;
+> > > >
+> > > > @@ -1045,6 +1046,13 @@ static void process_init_reply(struct fuse_conn *fc, struct fuse_args *args,
+> > > >                                         min_t(unsigned int, FUSE_MAX_MAX_PAGES,
+> > > >                                         max_t(unsigned int, arg->max_pages, 1));
+> > > >                         }
+> > > > +                       if ((arg->flags & FUSE_MAP_ALIGNMENT) &&
+> > > > +                           (FUSE_DAX_SZ % (1ul << arg->map_alignment))) {
+> > > 
+> > > This just obfuscates "arg->map_alignment != FUSE_DAX_SHIFT".
+> > > 
+> > > So the intention was that userspace can ask the kernel for a
+> > > particular alignment, right?
+> > 
+> > My understanding is that device will specify alignment for
+> > the foffset/moffset fields in fuse_setupmapping_in/fuse_removemapping_one.
+> > And DAX mapping can be any size meeting that alignment contraint.
+> > 
+> > > 
+> > > In that case kernel can definitely succeed if the requested alignment
+> > > is smaller than the kernel provided one, no? 
+> > 
+> > Yes. So if map_alignemnt is 64K and DAX mapping size is 2MB, that's just
+> > fine because it meets 4K alignment contraint. Just that we can't use
+> > 4K size DAX mapping in that case.
+> > 
+> > > It would also make
+> > > sense to make this a two way negotiation.  I.e. send the largest
+> > > alignment (FUSE_DAX_SHIFT in this implementation) that the kernel can
+> > > provide in fuse_init_in.   In that case the only error would be if
+> > > userspace ignored the given constraints.
+> > 
+> > We could make it two way negotiation if it helps. So if we support
+> > multiple mapping sizes in future, say 4K, 64K, 2MB, 1GB. So idea is
+> > to send alignment of largest mapping size to device/user_space (1GB)
+> > in this case? And that will allow device to choose an alignment
+> > which best fits its needs?
+> > 
+> > But problem here is that sending (log2(1GB)) does not mean we support
+> > all the alignments in that range. For example, if device selects say
+> > 256MB as minimum alignment, kernel might not support it.
+> > 
+> > So there seem to be two ways to handle this.
+> > 
+> > A.Let device be conservative and always specify the minimum aligment
+> >   it can work with and let guest kernel automatically choose a mapping
+> >   size which meets that min_alignment contraint.
+> > 
+> > B.Send all the mapping sizes supported by kernel to device and then
+> >   device chooses an alignment as it sees fit. We could probably send
+> >   a 64bit field and set a bit for every size we support as dax mapping.
+> >   If we were to go down this path, I think in that case client should
+> >   respond back with exact mapping size we should use (and not with
+> >   minimum alignment).
+> > 
+> > I thought intent behind this patch was to implement A.
+> > 
+> > Stefan/David, this patch came from you folks. What do you think?
 > 
-> > +++ b/drivers/input/keyboard/bcm-keypad.c
-> > @@ -379,11 +379,9 @@ static int bcm_kp_probe(struct platform_device *pdev)
-> >  	kp->clk = devm_clk_get(&pdev->dev, "peri_clk");
-> >  	if (IS_ERR(kp->clk)) {
-> >  		error = PTR_ERR(kp->clk);
-> > -		if (error != -ENOENT) {
-> > -			if (error != -EPROBE_DEFER)
-> > -				dev_err(&pdev->dev, "Failed to get clock\n");
-> > -			return error;
-> > -		}
-> > +		if (error != -ENOENT)
-> > +			return dev_err_probe(&pdev->dev, error, "Failed to get clock\n");
-> > +
-> >  		dev_dbg(&pdev->dev,
-> >  			"No clock specified. Assuming it's enabled\n");
+> Yes, I agree with Vivek.
 > 
-> Shouldn't be this rather switch to devm_clk_get_optional() + dev_err_probe?
+> The FUSE server is telling the client the minimum alignment for
+> foffset/moffset. The client can map any size it likes as long as
+> foffset/moffset meet the alignment constraint. I can't think of a reason
+> to do two-way negotiation.
 
-Indeed, it could be simplified even more. I'll send v2.
+Agreed, because there's not much that the server can do about it if the
+client would like a smaller granularity - the servers granularity might
+be dictated by it's mmap/pagesize/filesystem.  If the client wants a
+larger granularity that's it's choice when it sends the setupmapping
+calls.
 
-Best regards,
-Krzysztof
+Dave
+
+> Stefan
+
+
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
