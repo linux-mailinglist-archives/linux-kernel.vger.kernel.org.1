@@ -2,196 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB162533B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0873C253389
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgHZPaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:30:23 -0400
-Received: from grey-smtp-cloud9.xs4all.net ([194.109.24.44]:56933 "EHLO
-        grey-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726874AbgHZPaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:30:20 -0400
-X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Aug 2020 11:30:18 EDT
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id AxGRkkRmJuuXOAxGSkEYdq; Wed, 26 Aug 2020 17:23:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1598455385; bh=trldSuk5qoiwVr84MQPYlc7WezHhEKq+3G3EIoKlsW4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=mb9DX2PDKBhnc9UkSLHtuSDLcn6+A2IClGrzLNwofSoiBuior11OkCJwhgUhy8D3V
-         TT7OgiVV/22wnzYq6Si/64C49NKjlv1dsheT1HVcy9KgotM6sosmAxZOHRgejUUhAa
-         TFtfHYSrOG8V19FTIsw0bJ8oomgidsmfhvGsy2+tIhODba/JBE217vmte6FkALn2os
-         Rp8HImHWAbs6mutMbsGPMwsQ+P5uR7vTkSpvaL6GxdzNi1S9MBnhZV028O+QadGExo
-         jXTB5XfF917dDZgNkQI1vz2LedeLY/z4GAACCrtqEZFIBZo1oFde+luH8v7wYQ4Ig5
-         dilPJnUk1n0ig==
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: simplify poll logic a bit
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Alexandre Courbot <gnurou@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200825145556.637323-1-gnurou@gmail.com>
- <20200825145556.637323-3-gnurou@gmail.com>
- <CAAEAJfD1kUJODa+-STV6Q+=9qWH8v2=KZzAA4ppgfbQxstO+Mg@mail.gmail.com>
- <CAAVeFuJgBqN7KYhNi=mMNxy6wHTZOn5E1=pHP3q=n8X++b5pmg@mail.gmail.com>
- <CAAEAJfCfjzGDOhD2WHYny-wVwL19qc_VA9c3uVNiHxpYdEHsLQ@mail.gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <3dd23b1e-debd-bd50-e8a1-25837d2fd01e@xs4all.nl>
-Date:   Wed, 26 Aug 2020 17:23:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727093AbgHZPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:24:00 -0400
+Received: from mga05.intel.com ([192.55.52.43]:33106 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726972AbgHZPX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:23:59 -0400
+IronPort-SDR: tO/hLou7WVK37JKV/8S9kO90s6vJFPZ1c7xCQfzx3cnBlaM8sARmSFoxUE0fzty9BmV/v1rZKg
+ kuqkRhHZsY9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="241125959"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="241125959"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:23:44 -0700
+IronPort-SDR: H0rijT/dpmI4L0i0byIEo0BNHcitpXMTRVQ0zS7qErMT7hXFX9PYJ8+aXo0fssRY/Mz7v7Bjdy
+ wzVJuyi6dqiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="403094607"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Aug 2020 08:23:43 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 98250166; Wed, 26 Aug 2020 18:23:42 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2] extcon: ptn5150: Deduplicate parts of dev_err_probe()
+Date:   Wed, 26 Aug 2020 18:23:41 +0300
+Message-Id: <20200826152341.56741-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfCfjzGDOhD2WHYny-wVwL19qc_VA9c3uVNiHxpYdEHsLQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfJRD2YFZD851Cya/ZVCglVkkKzP9XY+Am1EoxtVTE82JN0l6JGs8Wa9DTygHmsIuI2eMSu2aqeYm9kV1UIY15Pkdw0qtD8uqpLN7RgZcs9uZTwvDZl4k
- LDYKr2QRy2JD1wDFrus+PahAoQ2RfKNl7yk2oktQ/rFkeWqta2jS3gtrergF2RlatO9lKR4dStq+5g0K2eigSIHlx/1J05jIXAYfsDbqrfYzuvfmVyDbV+3W
- ud2gDP2wopXnyCdpAVjRcPEU+vKIUgJAgOjh/FQoJmAJpr8gwJDViMY+k5s5vGqxKc1adetvIFAhGoYJifEviufEQ7nVyN2QQ+5jsgpvm/X4oWF9h/sAqwe3
- 2TayL524LPuy07ZoO9izXzhZD6E6sUyRGYy/q/4fKZQbHiBeIOVPOymQP96TkOQ7FvKyLoCSDQPGyKMbyY7cuVLRZRYnA73wTmbxbJuUFX7BihP0WdFtP1bN
- Ea/6E3f1PknqcqCK
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2020 16:32, Ezequiel Garcia wrote:
-> On Wed, 26 Aug 2020 at 08:19, Alexandre Courbot <gnurou@gmail.com> wrote:
->>
->> Hi Ezequiel, thanks for the review!
->>
->> On Wed, Aug 26, 2020 at 1:15 PM Ezequiel Garcia
->> <ezequiel@vanguardiasur.com.ar> wrote:
->>>
->>> Hi Alexandre,
->>>
->>> On Tue, 25 Aug 2020 at 11:56, Alexandre Courbot <gnurou@gmail.com> wrote:
->>>>
->>>> Factorize redundant checks into a single code block, remove the early
->>>> return, and declare variables in their innermost block. Hopefully this
->>>> makes this code a little bit easier to follow.
->>>>
->>>
->>> This _definitely_ makes the poll handling more readable.
->>>
->>> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
->>>
->>> See below a nitpick.
->>>
->>>> Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
->>>> ---
->>>>  drivers/media/v4l2-core/v4l2-mem2mem.c | 35 +++++++++++---------------
->>>>  1 file changed, 15 insertions(+), 20 deletions(-)
->>>>
->>>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
->>>> index 0d0192119af20..aeac9707123d0 100644
->>>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
->>>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
->>>> @@ -841,7 +841,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
->>>>                                        struct poll_table_struct *wait)
->>>>  {
->>>>         struct vb2_queue *src_q, *dst_q;
->>>> -       struct vb2_buffer *src_vb = NULL, *dst_vb = NULL;
->>>>         __poll_t rc = 0;
->>>>         unsigned long flags;
->>>>
->>>> @@ -863,33 +862,29 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
->>>>                 return EPOLLERR;
->>>>
->>>>         spin_lock_irqsave(&src_q->done_lock, flags);
->>>> -       if (!list_empty(&src_q->done_list))
->>>> -               src_vb = list_first_entry(&src_q->done_list, struct vb2_buffer,
->>>> -                                               done_entry);
->>>> -       if (src_vb && (src_vb->state == VB2_BUF_STATE_DONE
->>>> -                       || src_vb->state == VB2_BUF_STATE_ERROR))
->>>> -               rc |= EPOLLOUT | EPOLLWRNORM;
->>>> +       if (!list_empty(&src_q->done_list)) {
->>>> +               struct vb2_buffer *src_vb = list_first_entry(
->>>> +                       &src_q->done_list, struct vb2_buffer, done_entry);
->>>> +               if (src_vb->state == VB2_BUF_STATE_DONE ||
->>>> +                   src_vb->state == VB2_BUF_STATE_ERROR)
->>>> +                       rc |= EPOLLOUT | EPOLLWRNORM;
->>>> +       }
->>>>         spin_unlock_irqrestore(&src_q->done_lock, flags);
->>>>
->>>>         spin_lock_irqsave(&dst_q->done_lock, flags);
->>>> -       if (list_empty(&dst_q->done_list)) {
->>>> +       if (!list_empty(&dst_q->done_list)) {
->>>> +               struct vb2_buffer *dst_vb = list_first_entry(
->>>> +                       &dst_q->done_list, struct vb2_buffer, done_entry);
->>>> +               if (dst_vb->state == VB2_BUF_STATE_DONE ||
->>>> +                   dst_vb->state == VB2_BUF_STATE_ERROR)
->>>> +                       rc |= EPOLLIN | EPOLLRDNORM;
->>>> +       } else if (dst_q->last_buffer_dequeued) {
->>>>                 /*
->>>>                  * If the last buffer was dequeued from the capture queue,
->>>>                  * return immediately. DQBUF will return -EPIPE.
->>>>                  */
->>>
->>> The part about "returning immediately" doesn't make
->>> much sense now. Could we rephrase this, keeping the -EPIPE
->>> comment?
->>
->> I understood this sentence as referring to the system call and not
->> just this function, but maybe we can rephrase this as "... make
->> user-space wake up immediately"?
->>
-> 
-> But is this really about user-space wakeup? I am under the impression
-> that past poll_wait on both queues, we are already about to return
-> (and wakeup).
-> 
-> The way I see it, the original commit intention was to skip any
-> done_list handling, returning immediately on the last buffer condition.
-> 
-> How about just
-> 
-> """
-> If the last buffer was dequeued from the capture queue,
-> signal userspace. DQBUF will return -EPIPE.
+dev_err_probe() is designed to be used like
 
-I'd write 'DQBUF(CAPTURE)' here to emphasize that only the capture
-queue will return -EPIPE when you try to dequeue from it.
+	return dev_err_probe(dev, ret, "Error message\n");
 
-Also note that the original text was a copy-and-paste from vb2_core_poll().
-The phrase 'return immediately' makes sense in that context since that
-poll code deals with a single queue. In this case you have two queues,
-and 'return immediately' no longer applies (in fact, that effectively is
-the bug that being fixed here!).
+Hence no need to have a separate return statement. Besides that
+dev_err_probe() prints already returned error code, no need to repeat
+that either.
 
-Regards,
+Cc: Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+v2: dropped Fixed tag (Krzysztof)
+ drivers/extcon/extcon-ptn5150.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-	Hans
-
-> """
-> 
-> ?
-> 
->>>
->>> Thanks,
->>> Ezequiel
->>>
->>>> -               if (dst_q->last_buffer_dequeued) {
->>>> -                       spin_unlock_irqrestore(&dst_q->done_lock, flags);
->>>> -                       rc |= EPOLLIN | EPOLLRDNORM;
->>>> -                       return rc;
->>>> -               }
->>>> -       }
->>>> -
->>>> -       if (!list_empty(&dst_q->done_list))
->>>> -               dst_vb = list_first_entry(&dst_q->done_list, struct vb2_buffer,
->>>> -                                               done_entry);
->>>> -       if (dst_vb && (dst_vb->state == VB2_BUF_STATE_DONE
->>>> -                       || dst_vb->state == VB2_BUF_STATE_ERROR))
->>>>                 rc |= EPOLLIN | EPOLLRDNORM;
->>>> +       }
->>>>         spin_unlock_irqrestore(&dst_q->done_lock, flags);
->>>>
->>>>         return rc;
->>>> --
->>>> 2.28.0
->>>>
+diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
+index 8ba706fad887..051bf374b43f 100644
+--- a/drivers/extcon/extcon-ptn5150.c
++++ b/drivers/extcon/extcon-ptn5150.c
+@@ -242,8 +242,7 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+ 			dev_info(dev, "No VBUS GPIO, ignoring VBUS control\n");
+ 			info->vbus_gpiod = NULL;
+ 		} else {
+-			dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
+-			return ret;
++			return dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
+ 		}
+ 	}
+ 
+@@ -253,10 +252,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+ 
+ 	info->regmap = devm_regmap_init_i2c(i2c, &ptn5150_regmap_config);
+ 	if (IS_ERR(info->regmap)) {
+-		ret = PTR_ERR(info->regmap);
+-		dev_err_probe(info->dev, ret, "failed to allocate register map: %d\n",
+-			      ret);
+-		return ret;
++		return dev_err_probe(info->dev, PTR_ERR(info->regmap),
++				     "failed to allocate register map\n");
+ 	}
+ 
+ 	if (i2c->irq > 0) {
+@@ -264,9 +261,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+ 	} else {
+ 		info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
+ 		if (IS_ERR(info->int_gpiod)) {
+-			ret = PTR_ERR(info->int_gpiod);
+-			dev_err_probe(dev, ret, "failed to get INT GPIO\n");
+-			return ret;
++			return dev_err_probe(dev, PTR_ERR(info->int_gpiod),
++					     "failed to get INT GPIO\n");
+ 		}
+ 
+ 		info->irq = gpiod_to_irq(info->int_gpiod);
+-- 
+2.28.0
 
