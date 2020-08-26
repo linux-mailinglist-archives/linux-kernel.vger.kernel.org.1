@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9B22534BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3278C2534CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 18:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgHZQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 12:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726910AbgHZQW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:22:28 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38EFC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:22:27 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g29so268958pgl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 09:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M2pM6oqlNN6MFOKK7t3LmYxIe8hLNoDE+c6Oy6sDbps=;
-        b=0XBaJLdphBcrsfjbCsPV/DnDtCuoTybU7kmvMapFYxXvE3qZVFr9blFuHjPXHdTCei
-         +jJzOZv28p3I5AapTR4ZbPqikFLUJjy4pvnArkspXnEkiY7GYz3ETVp7OVydR5uMTZM2
-         kNbkLJK4XIMHrkChkpj+RwFk29h+27rr1PHt8H2kBjI/enJtfY/WnH80fl+UpX3RP0NU
-         TjeoCU06rYZPWboZIgjOEMBygqnFDHBdvdAXceru+Hk8HcCZNQ/RQ1mTpWbBaGnCmI2z
-         llHFdLKaXFPfd+lmlicsjJx0Gpg8eX+6uxm66QadJ0HlK1kjZ+gq6LrJ+vvmkLGvJN0a
-         UMvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=M2pM6oqlNN6MFOKK7t3LmYxIe8hLNoDE+c6Oy6sDbps=;
-        b=KfcIs9eKfvq/bLGl3uVVdFkMJGxsgBZ48lRrBVA+CUNszEMmoo7073oxxk81UsE3cB
-         z2VsefK9DQB4dHat5X4wMmKrFVAXkDAN726yPkRRZ5azdur99Kpflz2MxUJ/kXG55H8o
-         IBUXZqhpFOmroXZM1vVktaL74eYDVFm72s3nMAbFtiSHzBXPR75F1h73a+P18O1+ORrb
-         p+60Z1VGPp370Km11xuR2O9fVFhRzuEW40vQL/RMsCOPD0bm1wu9Q+Fa1ONqKjJIPNRx
-         5zc6mzga+uXUTHXirnvegnNmc8jqlHyOn29iG0bt6nLWcbQQroBeG4AnMM56YQbzRPCi
-         lbVg==
-X-Gm-Message-State: AOAM533vDMf0da6s/1bCcNw06Z0xOlOllVAyhxLkDrmMzS6Uef8Pirgl
-        a/l/rP/17PaEnzYeCnm6PRo+lQ==
-X-Google-Smtp-Source: ABdhPJxhvy1Fr0y470BQcg3U7zUExK/HTGZMY1TA2Yh1PBJT1AC0z2GSyGYGUWggFbvX+ZwTbRjMWA==
-X-Received: by 2002:a63:4543:: with SMTP id u3mr10396963pgk.398.1598458946525;
-        Wed, 26 Aug 2020 09:22:26 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id j12sm2803760pjd.44.2020.08.26.09.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 09:22:24 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 09:22:24 -0700 (PDT)
-X-Google-Original-Date: Wed, 26 Aug 2020 09:22:22 PDT (-0700)
-Subject:     Re: [PATCH 4/6] pwm: sifive: Simplify with dev_err_probe()
-In-Reply-To: <20200826144747.9436-4-krzk@kernel.org>
-CC:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, paul@crapouillou.net,
-        heiko@sntech.de, Paul Walmsley <paul.walmsley@sifive.com>,
-        orsonzhai@gmail.com, baolin.wang7@gmail.com, zhang.lyra@gmail.com,
-        mripard@kernel.org, wens@csie.org, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-riscv@lists.infradead.org, krzk@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     krzk@kernel.org
-Message-ID: <mhng-452a4fec-be33-4b49-a904-edb4b4c81e0c@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727822AbgHZQZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 12:25:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:63758 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727817AbgHZQZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:25:19 -0400
+IronPort-SDR: wYltJ6V+nAlxPHbY8ejAj7pP085E7QAv6hBVcvtLgK9kKbuJQrEfn/IoquZLpW6GVCqLmyby0I
+ jntnbw7SmVFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="135876678"
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="135876678"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 09:25:04 -0700
+IronPort-SDR: 6lt9+j4eGT0v5tDACuVd3B8bxb9Q1oeuYvvvqx15jOzrfAwovc5udQTe/+x3iWHyqTR74WnxUj
+ xV5hGEGnYrBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
+   d="scan'208";a="336877690"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 26 Aug 2020 09:24:59 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 26 Aug 2020 19:24:58 +0300
+Date:   Wed, 26 Aug 2020 19:24:58 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     jani.nikula@linux.intel.com,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/i915/lspcon: Limits to 8 bpc for RGB/YCbCr444
+Message-ID: <20200826162458.GP6112@intel.com>
+References: <20200826052143.17607-1-kai.heng.feng@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200826052143.17607-1-kai.heng.feng@canonical.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 07:47:45 PDT (-0700), krzk@kernel.org wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and also it prints the error value.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/pwm/pwm-sifive.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/pwm/pwm-sifive.c b/drivers/pwm/pwm-sifive.c
-> index 62de0bb85921..2485fbaaead2 100644
-> --- a/drivers/pwm/pwm-sifive.c
-> +++ b/drivers/pwm/pwm-sifive.c
-> @@ -254,11 +254,9 @@ static int pwm_sifive_probe(struct platform_device *pdev)
->  		return PTR_ERR(ddata->regs);
->
->  	ddata->clk = devm_clk_get(dev, NULL);
-> -	if (IS_ERR(ddata->clk)) {
-> -		if (PTR_ERR(ddata->clk) != -EPROBE_DEFER)
-> -			dev_err(dev, "Unable to find controller clock\n");
-> -		return PTR_ERR(ddata->clk);
-> -	}
-> +	if (IS_ERR(ddata->clk))
-> +		return dev_err_probe(dev, PTR_ERR(ddata->clk),
-> +				     "Unable to find controller clock\n");
->
->  	ret = clk_prepare_enable(ddata->clk);
->  	if (ret) {
+On Wed, Aug 26, 2020 at 01:21:15PM +0800, Kai-Heng Feng wrote:
+> LSPCON only supports 8 bpc for RGB/YCbCr444.
+> 
+> Set the correct bpp otherwise it renders blank screen.
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Hmm. Does 
+git://github.com/vsyrjala/linux.git dp_downstream_ports_5
+work?
+
+Actually better make that dp_downstream_ports_5^^^^^^^^^^^ aka.
+54d846ce62a2 ("drm/i915: Do YCbCr 444->420 conversion via DP protocol
+converters") to avoid the experiments and hacks I have sitting on top.
+
+> 
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2195
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_lspcon.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+> index b781bf469644..c7a44fcaade8 100644
+> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
+> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+> @@ -196,7 +196,8 @@ void lspcon_ycbcr420_config(struct drm_connector *connector,
+>  		crtc_state->port_clock /= 2;
+>  		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR444;
+>  		crtc_state->lspcon_downsampling = true;
+> -	}
+> +	} else
+> +		crtc_state->pipe_bpp = 24;
+>  }
+>  
+>  static bool lspcon_probe(struct intel_lspcon *lspcon)
+> -- 
+> 2.17.1
+
+-- 
+Ville Syrjälä
+Intel
