@@ -2,163 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621BD253130
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5C125312F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgHZOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:24:22 -0400
-Received: from mail-co1nam11on2087.outbound.protection.outlook.com ([40.107.220.87]:20031
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728198AbgHZOXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:23:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OKT0DuWZVJrDwwD9ijG10RxLvR2CZTaAeivrM5k2YuAMB+A2axr0UHUvIhvD9jvYWN5TAA4msc31yijqyR5csOM2qY6BUL+zRlXaWlIfxhAlRg749mYU+mqgYgbQq7h/tUUyiCNKxlkCVObpfdhYz5hefSN/IQ2WAjg1lmGVqR5gRv9lxDKw8QZrnHt60PtbdrwT/QWtgPsXsMrvAjv1bYZJNi/rSPOPePQn+unNX9EqZDXuVSC2JJmrZNV7SKc4paetcH5kul6N3X03LHlGEdH5BNm3ATLdM7b2i6Z8oQhQYMq5ZEFMXocis+uwrciuHmr1Z4PYc+92qN5v7lOT3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mvsxsrD4+yaAfXt5bAJ1kJPuHeH79aRd6vAdtW4y5Qo=;
- b=ES6YiiUss7s1OME4enetq1xdtnsdVxo6WH8pTeudxUpHzF9H0dil/aameBJqL18p1srgTLasYIsGJDUFI3MyxGcZDQLdD7BFyngZfvWj5k+ByPLHciZU+hy4wrxU2fMUQKtG1VW9Wub5Zw/VQLMCrcQzldDdqHvbAFVtZvkENZMxwD8Nn8x8QJe1XphUUmRJInFSoZLXHiaNOXpTYFUxWH1ZOslAUjWQtiTYhV3qzWpgrP1uawz6PjHXNSpc7NvEv/uXlRW/hg2KgrAU7EPocoQ2D+G5KZe4ILU9m9qUGIRcByWzeKYOYmqw0A0vYl+Mx2Xsvmmg4hFZD8LqQkcBpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mvsxsrD4+yaAfXt5bAJ1kJPuHeH79aRd6vAdtW4y5Qo=;
- b=DEUlJ33l3IJNEizPTTB9cxs6sharKUySquuLDTBELI/vbNGcUmdLwQtTKH2T3hNrgMh7OlAfpMoSbhgj6ySqT5vdltPrPsijluP4Nj149d4pZwdsfWoT996OZF5LjTOOnmwvgkvr7MrbRKcxjRzKpUcrqQyUS+K2Gwb84kKo4/w=
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
- by MN2PR12MB4472.namprd12.prod.outlook.com (2603:10b6:208:267::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.22; Wed, 26 Aug
- 2020 14:23:44 +0000
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::889d:3c2f:a794:67fb]) by MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::889d:3c2f:a794:67fb%7]) with mapi id 15.20.3305.032; Wed, 26 Aug 2020
- 14:23:44 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Joerg Roedel <joro@8bytes.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-CC:     "jroedel@suse.de" <jroedel@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] iommu/amd: Do not force direct mapping when SME is
- active
-Thread-Topic: [PATCH 1/2] iommu/amd: Do not force direct mapping when SME is
- active
-Thread-Index: AQHWegTsBj7N+qef/0+36KKtrMBTq6lKc7sQ
-Date:   Wed, 26 Aug 2020 14:23:44 +0000
-Message-ID: <MN2PR12MB44887D5839767CFF49C24696F7540@MN2PR12MB4488.namprd12.prod.outlook.com>
-References: <20200824105415.21000-1-joro@8bytes.org>
- <20200824105415.21000-2-joro@8bytes.org>
-In-Reply-To: <20200824105415.21000-2-joro@8bytes.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2020-08-26T14:20:54Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=0ef889e4-247e-4615-9728-0000bae6c8b2;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_enabled: true
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_setdate: 2020-08-26T14:23:41Z
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_method: Privileged
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_name: Public_0
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_actionid: 08e3a570-2169-4890-9234-00006685c9d7
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_contentbits: 0
-authentication-results: 8bytes.org; dkim=none (message not signed)
- header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [165.204.10.250]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c78fe514-f17a-40ff-10f3-08d849cba3d2
-x-ms-traffictypediagnostic: MN2PR12MB4472:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR12MB4472D42FF78461C44CA4A922F7540@MN2PR12MB4472.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xU+cMJwtd3vDeJ2EPliN6gbHPlGOdaZG3zvOLVjG4jQYeF0u4MQplIz4OJnq0rZCe1IEbsFIHh1FQ/fTgTEkLkwhEoHehB2FCOlmnh73iwJ19amei08C9iwadM/KhZzMcYyhigOlHBUf6lqoF5zcamFP/qGwCocnsaqLndw4HGtyxULlb0eKXzoQIa6KhUvs2WPpRIbKvBZM439AroicLvb89W6iBBHraFW0GHPpcLEdf0pTZnSZ8gnDm1JFjMVQH7lNHPwiMASOuwMXQz2KFKy+tNUXTQVjfk8kG/Ym0HTUHZJPIbk2Kn3AeZFH3CKCTwIv0+2YoACIZOyf6TC9DA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(478600001)(55016002)(2906002)(6506007)(26005)(53546011)(6636002)(52536014)(76116006)(8936002)(316002)(71200400001)(86362001)(66946007)(33656002)(66446008)(54906003)(66476007)(110136005)(64756008)(83380400001)(8676002)(66556008)(5660300002)(4326008)(7696005)(9686003)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: UqghtZlKRi5ySrRS30Lb31rtGr6AaB5IUHHPFAaP4Aj7nHf2CTxTwzV3yktpUAO8brhPOsCHD4P7LAEDoCr6IJbkrUbezQVPBMjmAJrlAzHahOgxT0M6f4uwlrT78c4f1c8JEKYaOu8iG1yXJXFqLE7txJx/6/PoB+cEwM5wv+nOWUDKof52SX+EFpqOdACz48WmJJE3ZIh++z1RMVkLPzbTKMk9hDTaVVn6g28/vOBYAdS7kf+CZyyViqiH4UiUjPq/hujV1u1B7PkhMokMcVO5XhGeICqVZyz5YRDRh/2prAulGBplV2ylEAFD0tRr7VCvX2AxToouPo87pSXAML7aQ9pv1o6IM7vnMofjdw2QQ2hcZPCN0iMPOvLF0/plN22yPpA8hGPgs2GxledTjnvlMGZkf93/fIkzulf+HvTzzM1Knx8UX0V4YRBi2++WfvKlmcW0NZ7nPpKw2qNeI1dng9O8YUPaj/5Nb2Dk40QdveLv2Hw7xGXOvxHk1pGzel5/l3uWr3osQOVVqaybI+PR7XKmJj+iE1wXViiacRFw5ANuMPewWbnjLxZ5As78SEuTWyfLGSceWVGe5mctkgammvCkjiOWSRV2TtVvbOYoLZGrhbaUQp+mlTc7W8mP0Jb4QM8a3W0Ie0+i6/h8mg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728397AbgHZOYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:24:36 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29572 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726707AbgHZOYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:24:13 -0400
+IronPort-SDR: IuTm3YLT79DNJDRri+THGfYZpgse6I+8SJ22p+3hnN798BZPJ6qMrwBPXyjoBlr7ynjbsmR6kW
+ MOw8T03+CNNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="217843100"
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="217843100"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 07:24:12 -0700
+IronPort-SDR: wKoZm4fHQkjC8bBISivoH8C49NqFFN6MaKVHRHTwKBO7+8aA+6DPyJhX8nv/ItyI1iYryFhG+f
+ XGsyr7y6uqZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="329242274"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 26 Aug 2020 07:24:10 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kAwLQ-00BaL8-PZ; Wed, 26 Aug 2020 17:24:08 +0300
+Date:   Wed, 26 Aug 2020 17:24:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH 2/2] sched/topology: Move SD_DEGENERATE_GROUPS_MASK out
+ of linux/sched/topology.h
+Message-ID: <20200826142408.GO1891694@smile.fi.intel.com>
+References: <20200825133216.9163-1-valentin.schneider@arm.com>
+ <20200825133216.9163-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c78fe514-f17a-40ff-10f3-08d849cba3d2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2020 14:23:44.7551
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GdhocXPeA7wM8mdLWj+2ZEKi9uzwCkS5WCekyW1NMMzkrzkATJVUuHHNuDKatV2wo26mJAq6ahGXd+S6zTbEKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4472
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825133216.9163-2-valentin.schneider@arm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Public Use]
+On Tue, Aug 25, 2020 at 02:32:16PM +0100, Valentin Schneider wrote:
+> SD_DEGENERATE_GROUPS_MASK is only useful for sched/topology.c, but still
+> gets defined for anyone who imports topology.h, leading to a flurry of
+> unused variable warnings.
+> 
+> Move it out of the header and place it next to the SD degeneration
+> functions in sched/topology.c.
 
-+ Felix, Christian
+Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> -----Original Message-----
-> From: Joerg Roedel <joro@8bytes.org>
-> Sent: Monday, August 24, 2020 6:54 AM
-> To: iommu@lists.linux-foundation.org
-> Cc: Joerg Roedel <joro@8bytes.org>; jroedel@suse.de; Lendacky, Thomas
-> <Thomas.Lendacky@amd.com>; Suthikulpanit, Suravee
-> <Suravee.Suthikulpanit@amd.com>; Deucher, Alexander
-> <Alexander.Deucher@amd.com>; linux-kernel@vger.kernel.org
-> Subject: [PATCH 1/2] iommu/amd: Do not force direct mapping when SME is
-> active
->=20
-> From: Joerg Roedel <jroedel@suse.de>
->=20
-> Do not force devices supporting IOMMUv2 to be direct mapped when
-> memory encryption is active. This might cause them to be unusable because
-> their DMA mask does not include the encryption bit.
->=20
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> Fixes: 4ee4ea443a5d ("sched/topology: Introduce SD metaflag for flags needing > 1 groups")
+> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  drivers/iommu/amd/iommu.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index ba9f3dbc5b94..77e4268e41cf 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -2659,7 +2659,12 @@ static int amd_iommu_def_domain_type(struct
-> device *dev)
->  	if (!dev_data)
->  		return 0;
->=20
-> -	if (dev_data->iommu_v2)
-> +	/*
-> +	 * Do not identity map IOMMUv2 capable devices when memory
-> encryption is
-> +	 * active, because some of those devices (AMD GPUs) don't have the
-> +	 * encryption bit in their DMA-mask and require remapping.
-> +	 */
+>  include/linux/sched/topology.h | 7 -------
+>  kernel/sched/topology.c        | 7 +++++++
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index b9b0dab4d067..9ef7bf686a9f 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -25,13 +25,6 @@ enum {
+>  };
+>  #undef SD_FLAG
+>  
+> -/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
+> -#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
+> -static const unsigned int SD_DEGENERATE_GROUPS_MASK =
+> -#include <linux/sched/sd_flags.h>
+> -0;
+> -#undef SD_FLAG
+> -
+>  #ifdef CONFIG_SCHED_DEBUG
+>  
+>  struct sd_flag_debug {
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 4e1260cb4b44..da3cd60e4b78 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -154,6 +154,13 @@ static inline bool sched_debug(void)
+>  }
+>  #endif /* CONFIG_SCHED_DEBUG */
+>  
+> +/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
+> +#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
+> +static const unsigned int SD_DEGENERATE_GROUPS_MASK =
+> +#include <linux/sched/sd_flags.h>
+> +0;
+> +#undef SD_FLAG
+> +
+>  static int sd_degenerate(struct sched_domain *sd)
+>  {
+>  	if (cpumask_weight(sched_domain_span(sd)) == 1)
+> -- 
+> 2.27.0
+> 
 
-I think on the integrated GPUs in APUs I'd prefer to have the identity mapp=
-ing over SME, but I guess this is fine because you have to explicitly enabl=
-e SME and if you do that you know what you are getting into.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Alex
 
-> +	if (!mem_encrypt_active() && dev_data->iommu_v2)
->  		return IOMMU_DOMAIN_IDENTITY;
->=20
->  	return 0;
-> --
-> 2.28.0
