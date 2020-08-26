@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B04C252F99
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749BC252F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgHZNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:22:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728276AbgHZNW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:22:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598448144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CHp29HAS07vWUIoTCsxgobszhTbIxk61EdZKCoFcLHI=;
-        b=Nm7mN4ONvkwO0e0IA3GXb8GXxilDlTkMlhnpNbPJpgF9fnuGqAFIii07MWDR4ExYkOLgKw
-        FXIaqq4LgSmlGYxfRLHtCTkmFCTw/yMbo9lgKFQFTY1rCxNe+LghVFkT6yedwT06zLeDpn
-        iuZb9Y3ANQfNEELQZdgl9twhDRdMu+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-nNYGLMeoN76hkrRQlpxCvQ-1; Wed, 26 Aug 2020 09:22:20 -0400
-X-MC-Unique: nNYGLMeoN76hkrRQlpxCvQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1483710ABDBF;
-        Wed, 26 Aug 2020 13:22:16 +0000 (UTC)
-Received: from treble (ovpn-117-128.rdu2.redhat.com [10.10.117.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5533A5D9E8;
-        Wed, 26 Aug 2020 13:22:12 +0000 (UTC)
-Date:   Wed, 26 Aug 2020 08:22:10 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Avi Kivity <avi@scylladb.com>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>, robketr@amazon.de,
-        amos@scylladb.com, Brian Gerst <brgerst@gmail.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/irq: Preserve vector in orig_ax for APIC code
-Message-ID: <20200826132210.k4pxphxvxuvb2fe6@treble>
-References: <20200826115357.3049-1-graf@amazon.com>
+        id S1730178AbgHZNXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:23:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47064 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728132AbgHZNXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:23:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0E079ABCC;
+        Wed, 26 Aug 2020 13:24:03 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 33FB61E12AF; Wed, 26 Aug 2020 15:23:30 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 15:23:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xianting Tian <xianting_tian@126.com>
+Cc:     bcrl@kvack.org, viro@zeniv.linux.org.uk, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] aio: use wait_for_completion_io() when waiting for
+ completion of io
+Message-ID: <20200826132330.GD15126@quack2.suse.cz>
+References: <1596634551-27526-1-git-send-email-xianting_tian@126.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200826115357.3049-1-graf@amazon.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <1596634551-27526-1-git-send-email-xianting_tian@126.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 01:53:57PM +0200, Alexander Graf wrote:
-> -.macro idtentry_body cfunc has_error_code:req
-> +.macro idtentry_body cfunc has_error_code:req preserve_error_code:req
->  
->  	call	error_entry
->  	UNWIND_HINT_REGS
-> @@ -328,7 +328,9 @@ SYM_CODE_END(ret_from_fork)
->  
->  	.if \has_error_code == 1
->  		movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
-> -		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
-> +		.if \preserve_error_code == 0
-> +			movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
-> +		.endif
+On Wed 05-08-20 09:35:51, Xianting Tian wrote:
+> When waiting for the completion of io, we need account iowait time. As
+> wait_for_completion() calls schedule_timeout(), which doesn't account
+> iowait time. While wait_for_completion_io() calls io_schedule_timeout(),
+> which will account iowait time.
+> 
+> So using wait_for_completion_io() instead of wait_for_completion()
+> when waiting for completion of io before exit_aio and io_destroy.
+> 
+> Signed-off-by: Xianting Tian <xianting_tian@126.com>
 
-When does this happen (has_error_code=1 && preserve_error_code=0)?  I
-don't see any users of this macro (or idtentry) with this combination.
+Thanks for the patch! It looks good to me but IMO this is just scratching
+the surface.  E.g. for AIO we are mostly going to wait in read_events() by
+wait_event_interruptible_hrtimeout() and *that* doesn't account as IO wait
+either? Which is IMO far bigger misaccounting... The two case you fix seem
+to be just rare cornercases so what they do isn't a big deal either way.
 
+So I agree it may be worth it to properly account waiting for AIO but if
+you want to do that, then please handle mainly the common cases in AIO
+code.
+
+								Honza
+
+> ---
+>  fs/aio.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/aio.c b/fs/aio.c
+> index 91e7cc4..498b8a0 100644
+> --- a/fs/aio.c
+> +++ b/fs/aio.c
+> @@ -892,7 +892,7 @@ void exit_aio(struct mm_struct *mm)
+>  
+>  	if (!atomic_sub_and_test(skipped, &wait.count)) {
+>  		/* Wait until all IO for the context are done. */
+> -		wait_for_completion(&wait.comp);
+> +		wait_for_completion_io(&wait.comp);
+>  	}
+>  
+>  	RCU_INIT_POINTER(mm->ioctx_table, NULL);
+> @@ -1400,7 +1400,7 @@ static long read_events(struct kioctx *ctx, long min_nr, long nr,
+>  		 * is destroyed.
+>  		 */
+>  		if (!ret)
+> -			wait_for_completion(&wait.comp);
+> +			wait_for_completion_io(&wait.comp);
+>  
+>  		return ret;
+>  	}
+> -- 
+> 1.8.3.1
+> 
 -- 
-Josh
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
