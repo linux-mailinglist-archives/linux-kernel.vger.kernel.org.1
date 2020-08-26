@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D999E2530A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E8B2530BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 15:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730481AbgHZNyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 09:54:53 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:18337 "EHLO mx1.tq-group.com"
+        id S1730509AbgHZN4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 09:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730575AbgHZNyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:54:46 -0400
-IronPort-SDR: 4qZEJQfbxShC9ygBEgk8Bq0woVrWk10KVvg60Pk6LDwUzH88EDTbmntil5v6zOkSa0vdLEo3Wv
- oMMTG0Je0e+Lfy8DEtQ+he48QvbIt60OrqHuVwJPjsMswWzBskxYWUEnacYGbkqGy8b47bOtDR
- BPO6OOI9xGEcx+4B4G4Tp3NLmSeKZGirGv71UshA/6bFXQQFRjCM9PaYpRo4O8FaxHeCwqwC4B
- 6fLrtIueUdyr48buvs0fsGiu5QRR9uLcSKUxjPCS+HMXB25cnmtCQTlcBnUmYQDJEDRXHqc1cQ
- 9XU=
-X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
-   d="scan'208";a="13610172"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 26 Aug 2020 15:54:44 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 26 Aug 2020 15:54:44 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 26 Aug 2020 15:54:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598450084; x=1629986084;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oyBCdI37qgrjRW4ghqxsqRMW6f2Kj9dxEiEcFm2sbnA=;
-  b=CN37Jl22/apgtqmLB84TILsD4PXVk9tulsTP69yGaKuAB3gWKo0vDP1m
-   fLuNLcNd7keJBu0/jdTUILSZnxarNLOklw7AvbpCVNAaSAnsoCB3gW49i
-   clmoaUCH/OGp1x6FV3UE5hoGeThyuAf5hoFApigKkA1iLqPuj1ObRiuJZ
-   hyHZPZKkEdaA1eV+7ftFH11xlhwPll8xwofnQs7WjYViCNzD8rcDf62sv
-   a59tWmJY+UdO+/MvxaW92vNedDZ1dFe8NqBUA2G8Ps2Bi0fuCoYGuaX4T
-   p/DoRrZSpR56y247TeaMjkSAUAA4e4CxOK5jOufFCSv9LZeN32JjpqTmw
-   g==;
-IronPort-SDR: fQCFrSQyelniZqboToTRYXgqlViufbT06V39C9FC1eWA3/HJ3YSpykrd7ggg4fxhTZh54mvkvO
- f3RI+rODB/e0R9GxJmUK+RWrvrt7GyfVibTkuDE6eGSiXreBJ4LXDWTot8fKaAL99l2uQk8zJB
- EGGHWYKd9EdDymqI59FszoD2emXI/P47GlqMkAfmvbL8rJGYEICkP2wp0/RLZqfG+99MFTx4Wd
- qTUkozq4EdeoUCx5ko6M3pRrqNC+50ipRyrFqbk1DXzRjkr6tOIH11vjHRPbplBjxJYdS5XnQw
- /3w=
-X-IronPort-AV: E=Sophos;i="5.76,355,1592863200"; 
-   d="scan'208";a="13610171"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 26 Aug 2020 15:54:44 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 71109280065;
-        Wed, 26 Aug 2020 15:54:44 +0200 (CEST)
-Message-ID: <9eb72c6561333661599411e49072928385629999.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: [PATCH] of: skip disabled CPU nodes
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 26 Aug 2020 15:54:42 +0200
-In-Reply-To: <4dd06b79-1402-d7cf-9676-1f9a9526da12@gmail.com>
-References: <20200826120254.8902-1-matthias.schiffer@ew.tq-group.com>
-         <4dd06b79-1402-d7cf-9676-1f9a9526da12@gmail.com>
+        id S1730377AbgHZN4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:56:34 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A65322BEA;
+        Wed, 26 Aug 2020 13:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598450192;
+        bh=0/lFWSsH4RVCGAcyHva9O7Jg31/lNNrAVoSxoUqNhJI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IxnANnHn1Bm4AvbZmLstcZM1sTr6itieawWuD+oSkrox1qWiOEDM4IMk0ZMoNisFE
+         PXBULxchRPraIAeI/3MK4TDmVOxdesb7ymYFU9Ly1TxheWGHg9GshBJs1/bJoqU4p+
+         ZoLRDzDvGQSLCuiE0LBWEtAXOgUBR3UUkD0WnLHU=
+Received: by mail-oi1-f171.google.com with SMTP id k4so1587404oik.2;
+        Wed, 26 Aug 2020 06:56:32 -0700 (PDT)
+X-Gm-Message-State: AOAM5330Ek1NV7x8fLbzSOY1MyBSguLBPO1Y3mbQAqRGsGKFKgSqhVNI
+        bo7dgkRCEGtU9CNvl19cXYMWO+1j/2Xi9A2wavI=
+X-Google-Smtp-Source: ABdhPJwle7rCF3+SyAzbuFqT8TVilYDkMLKrsLA21+8YtQanwKKPDFdcN6NyYe5gh2Q6RIdugSG7PScOco7snDnVOGw=
+X-Received: by 2002:a05:6808:b37:: with SMTP id t23mr4174250oij.174.1598450191762;
+ Wed, 26 Aug 2020 06:56:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200826055150.2753.90553@ml01.vlan13.01.org> <b34f7644-a495-4845-0a00-0aebf4b9db52@molgen.mpg.de>
+ <CAMj1kXEUQdmQDCDXPBNb3hRrbui=HVyDjCDoiFwDr+mDSjP43A@mail.gmail.com>
+ <20200826114952.GA2375@gondor.apana.org.au> <CAMj1kXGjytfJEbLMbz50it3okQfiLScHB5YK2FMqR5CsmFEBbg@mail.gmail.com>
+ <20200826120832.GA2996@gondor.apana.org.au> <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
+ <20200826132952.GA4752@gondor.apana.org.au>
+In-Reply-To: <20200826132952.GA4752@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 26 Aug 2020 15:56:20 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHCazXbeTDfcjD=rUyLVcOqrHcHqfgOnsDWt51dALfSpg@mail.gmail.com>
+Message-ID: <CAMj1kXHCazXbeTDfcjD=rUyLVcOqrHcHqfgOnsDWt51dALfSpg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: af_alg - Work around empty control messages
+ without MSG_MORE
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Andrew Zaborowski <andrew.zaborowski@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Caleb Jorden <caljorden@hotmail.com>,
+        Sasha Levin <sashal@kernel.org>, iwd@lists.01.org,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-26 at 08:01 -0500, Frank Rowand wrote:
-> On 2020-08-26 07:02, Matthias Schiffer wrote:
-> > Allow disabling CPU nodes using status = "disabled".
-> > 
-> > This allows a bootloader to change the number of available CPUs
-> > (for
-> > example when a common DTS is used for SoC variants with different
-> > numbers
-> > of cores) without deleting the nodes altogether (which may require
-> > additional fixups where the CPU nodes are referenced, e.g. a
-> > cooling
-> > map).
-> > 
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
-> > >
-> > ---
-> >  drivers/of/base.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/of/base.c b/drivers/of/base.c
-> > index ea44fea99813..d547e9deced1 100644
-> > --- a/drivers/of/base.c
-> > +++ b/drivers/of/base.c
-> > @@ -796,6 +796,8 @@ struct device_node *of_get_next_cpu_node(struct
-> > device_node *prev)
-> >  		of_node_put(node);
-> >  	}
-> >  	for (; next; next = next->sibling) {
-> > +		if (!__of_device_is_available(next))
-> > +			continue;
-> >  		if (!(of_node_name_eq(next, "cpu") ||
-> >  		      __of_node_is_type(next, "cpu")))
-> >  			continue;
-> > 
-> 
-> The original implementation of of_get_next_cpu_node() had
-> that check, but status disabled for cpu nodes has different
-> semantics than other nodes, and the check broke some systems.
-> The check was removed by c961cb3be906 "of: Fix cpu node
-> iterator to not ignore disabled cpu nodes".
-> 
-> It would be useful to document that difference in the
-> header comment of of_get_next_cpu_node().
-> 
-> -Frank
+On Wed, 26 Aug 2020 at 15:30, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> The iwd daemon uses libell which sets up the skcipher operation with
+> two separate control messages.  This is fine by itself but the first
+> control message is sent without MSG_MORE.  This means that the first
+> control message is interpreted as an empty request.
+>
+> While libell should be fixed to use MSG_MORE where appropriate, this
+> patch works around the bug in the kernel so that existing binaries
+> continue to work.
+>
+> We will print a warning however.
+>
+> Reported-by: Caleb Jorden <caljorden@hotmail.com>
+> Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>
 
-Hmm, I see. This difference in behaviour is quite unfortunate, as I'm
-currently looking for a way to *really* disable a CPU core.
+Applied this onto v5.4.60, and it makes the iwd selftests pass again
 
-In arch/arm64/boot/dts/freescale/imx8mn.dtsi (and other variants of the
-i.MX8M), there are 4 CPU nodes for the full-featured quad-core version.
-The reduced single- and dual-core versions are currently handled in
-NXP's U-Boot fork by deleting the additional nodes.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Ard Biesheuvel <ardb@kernel.org>
 
-Not doing so causes the kernel to hang for a while when trying to
-online the non-existent cores during boot (at least in linux-imx 5.4 -
-I have not checked a more recent mainline kernel yet), but the deletion
-is non-trivial to do without leaving dangling phandle references.
-
-Kind regards,
-Matthias
-
+> diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+> index a6f581ab200c..3da21cadc326 100644
+> --- a/crypto/af_alg.c
+> +++ b/crypto/af_alg.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/net.h>
+>  #include <linux/rwsem.h>
+> +#include <linux/sched.h>
+>  #include <linux/sched/signal.h>
+>  #include <linux/security.h>
+>
+> @@ -846,8 +847,14 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+>
+>         lock_sock(sk);
+>         if (ctx->init && (init || !ctx->more)) {
+> -               err = -EINVAL;
+> -               goto unlock;
+> +               if (ctx->used) {
+> +                       err = -EINVAL;
+> +                       goto unlock;
+> +               }
+> +
+> +               pr_info_once(
+> +                       "%s sent an empty control message without MSG_MORE.\n",
+> +                       current->comm);
+>         }
+>         ctx->init = true;
+>
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
