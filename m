@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C57253311
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E472532D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 17:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgHZPL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 11:11:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9758 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728015AbgHZPLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 11:11:24 -0400
-IronPort-SDR: AxVSGKCavgPvVemR11xD3T77ZwggUX+pzQxoM26uzLvT03+reuVnP0dcMgO9LnBD0We9+Vu9Ua
- 5djlRqx0i+5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153729694"
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="153729694"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:23 -0700
-IronPort-SDR: 8BOuzBscj9k1lVGdB5yJS0/sLIDM5VLn6aH07+vWPTj0D+L0nElcFtADnHP9l4yhtte+n6Vrfd
- A7qzJE3PNBsQ==
-X-IronPort-AV: E=Sophos;i="5.76,356,1592895600"; 
-   d="scan'208";a="299505123"
-Received: from gillelas-mobl1.amr.corp.intel.com (HELO [10.255.231.51]) ([10.255.231.51])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 08:11:22 -0700
-Subject: Re: [PATCH 1/4] regmap: sdw: move to -EOPNOTSUPP
-To:     Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        alsa-devel@alsa-project.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org,
-        srinivas.kandagatla@linaro.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        jank@cadence.com, slawomir.blauciak@intel.com,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>
-References: <20200825171656.75836-2-pierre-louis.bossart@linux.intel.com>
- <20200825214858.GK5379@sirena.org.uk>
- <6f7e5830-4dd8-1ecc-20c3-df75bc9ef265@linux.intel.com>
- <20200826095600.GA4965@sirena.org.uk> <s5ha6yhu3af.wl-tiwai@suse.de>
- <20200826101301.GB4965@sirena.org.uk> <s5h8se1u2or.wl-tiwai@suse.de>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <927c93bc-9ad8-7e5d-a5ea-d566e5f543df@linux.intel.com>
-Date:   Wed, 26 Aug 2020 10:05:50 -0500
+        id S1727952AbgHZPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 11:06:16 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:3158 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727835AbgHZPGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 11:06:15 -0400
+Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
+To:     Paul Moore <paul@paul-moore.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
+ <20200824132252.31261-1-peter.enderborg@sony.com>
+ <20200824132252.31261-2-peter.enderborg@sony.com>
+ <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
+ <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com>
+ <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com>
+Date:   Wed, 26 Aug 2020 17:06:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <s5h8se1u2or.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=dtal9Go4 c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=D19gQVrFAAAA:8 a=K-nJozlINqW-tucNYmoA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22 a=W4TVW4IDbPiebHqcZpNg:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/26/20 4:45 PM, Paul Moore wrote:
+> On Wed, Aug 26, 2020 at 10:34 AM peter enderborg
+> <peter.enderborg@sony.com> wrote:
+>> On 8/26/20 3:42 PM, Paul Moore wrote:
+>>> On Mon, Aug 24, 2020 at 9:23 AM Peter Enderborg
+>>> <peter.enderborg@sony.com> wrote:
+>>>> This adds tracing of all denies. They are grouped with trace_seq for
+>>>> each audit.
+>>>>
+>>>> A filter can be inserted with a write to it's filter section.
+>>>>
+>>>> echo "permission==\"entrypoint\"" > events/avc/selinux_denied/filter
+>>>>
+>>>> A output will be like:
+>>>>           runcon-1046  [002] .N..   156.351738: selinux_denied:
+>>>>           trace_seq=2 result=-13
+>>>>           scontext=system_u:system_r:cupsd_t:s0-s0:c0.
+>>>>           c1023 tcontext=system_u:object_r:bin_t:s0
+>>>>           tclass=file permission=entrypoint
+>>>>
+>>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+>>>> ---
+>>>>  include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
+>>>>  security/selinux/avc.c     | 27 +++++++++++++++++++++++++--
+>>>>  2 files changed, 62 insertions(+), 2 deletions(-)
+>>> My most significant comment is that I don't think we want, or need,
+>>> two trace points in the avc_audit_post_callback() function.  Yes, I
+>>> understand they are triggered slightly differently, but from my
+>>> perspective there isn't enough difference between the two tracepoints
+>>> to warrant including both.  However, while the tracepoints may be
+>> We tried that but that was problematic too.
+> My apologies if I was on that thread, but can you remind me why it was
+> a problem?  Why can't we use a single tracepoint to capture the AVC
+> information?
+
+The problem is parsing the event.
+
+https://lkml.org/lkml/2020/8/18/842
+
+https://lkml.org/lkml/2020/8/21/526
+
+and the "single list" version
+
+https://lkml.org/lkml/2020/8/17/1346
+
+With this patch we follow standard message format so no plugin should be needed.
 
 
+>> Having partly overlapping traces is not unheard off.  Check
+>> compaction.c where we have a     trace_mm_compaction_begin
+>> and a more detailed trace_mm_compaction_migratepages.
+>> (And a  trace_mm_compaction_end)
+> It may not be unique to SELinux, but that doesn't mean I like it :)
+>
+> One of my concerns with adding tracepoints is that the code would get
+> littered with tracepoints; I accepted that it the AVC decision
+> codepath was an obvious place for one, so we added a tracepoint.
+> Having two tracepoints here is getting awfully close to my original
+> fears.
+>
+>>> redundant in my mind, this new event does do the permission lookup in
+>>> the kernel so that the contexts/class/permissions are all available as
+>>> a string which is a good thing.
+>>>
+>>> Without going into the details, would the tracing folks be okay with
+>>> doing something similar with the existing selinux_audited tracepoint?
+>>> It's extra work in the kernel, but since it would only be triggered
+>>> when the tracepoint was active it seems bearable to me.
+>> I think the method for expanding lists is what we tried first on
+>> suggestion from Steven Rostedt.  Maybe we can do a trace_event
+>> from a TP_prink but that would be recursive.
+> Wait, why would you be adding a trace event to a trace event, or am I
+> misunderstanding you?
+>
+> All I was talking about was adding the permission resolution code to
+> the already existing SELinux AVC tracepoint.
+>
 
->>>> checkpatch is broken.
->>
->>> Heh, I'm not objecting it :)
->>
->>> OTOH, it's also true that ENOTSUPP is no good error code if returned
->>> to user-space.  Unfortunately many codes (including what I wrote) use
->>> this code mistakenly, and they can't be changed any longer...
->>
->> It's also used internally in various places without being returned to
->> userspace, that's what's going on here - the regmap core has some
->> specific checks for -ENOTSUPP.
-> 
-> Sure, for such an internal usage any code can be used.
-> The question is a case like this -- where the return code might be
-> carried to outside.  Though, looking through the grep output, all
-> callers simply return -EINVAL for any errors, so it doesn't matter
-> much for now.
-
-I assumed this change to -EOPNOTSUPP reflected a consensus in 
-kernel-land, it's obviously not the case. This patch was supposed to be 
-a trivial clean-up...
-
-So to be clear, what is the direction for existing code
-a) keep -ENOTSUPP as is?
-b) move to -EOPNOTSUPP?
-
-And what is the preference for new code?
