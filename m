@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D11B2529D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009BF2529E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 11:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgHZJRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 05:17:46 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:36032 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727793AbgHZJRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 05:17:45 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCXP6iuKEZfbc49Aw--.38158S4;
-        Wed, 26 Aug 2020 17:17:40 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ide: pci: Fix memleak in ide_pci_init_two
-Date:   Wed, 26 Aug 2020 17:17:33 +0800
-Message-Id: <20200826091733.924-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCXP6iuKEZfbc49Aw--.38158S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF4kKr1fuFy7tryfXFW3trb_yoW3CwbEk3
-        9rursrWrWj9FyUJr12kr4xZry09a90vr1kWr42kr1xZa9xZa4kursxZF17CF48Wr17Cry2
-        yF4DJr4rA342kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbI8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fUOOzVUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAADsG
+        id S1728012AbgHZJWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 05:22:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36044 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727854AbgHZJWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:22:30 -0400
+IronPort-SDR: 5kqdthG520EFvOd0+cBX9F0BWPKX6ff3QNmF2jcG34YDM4AFaUc4CdgxCtJAfBpooaVKTE930E
+ VdGmp5ZYuG5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9724"; a="174308237"
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="174308237"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 02:22:29 -0700
+IronPort-SDR: iGxGPqwz0Se3mmhRbGj07Qjo9Mx6Pbd65dfS1RpDmv0aUu8nqc+dPgNk07Sxgft5JnbII566nT
+ 2RmQxfDFRsaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,355,1592895600"; 
+   d="scan'208";a="329159129"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 26 Aug 2020 02:22:27 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kArZE-00BWYQ-Pt; Wed, 26 Aug 2020 12:18:04 +0300
+Date:   Wed, 26 Aug 2020 12:18:04 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>, thomas.langer@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
+        krzk@kernel.org
+Subject: Re: [PATCH v1 0/9] extcon: extcon-ptn5150: Add the USB external
+ connector support
+Message-ID: <20200826091804.GF1891694@smile.fi.intel.com>
+References: <20200818065727.50520-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200818084044.GD1891694@smile.fi.intel.com>
+ <69e13a74-8b8d-cbc0-915d-ce289e7d4a70@linux.intel.com>
+ <CAHp75VfwBnDgR6WR_On1nh+dX4meWrX1Q-CiUKqkV39=o2m5Hg@mail.gmail.com>
+ <b9187c39-8d94-6b41-9e1c-b95161b17c1c@linux.intel.com>
+ <20200825081935.GE189773@kuha.fi.intel.com>
+ <bc66fcec-fa52-71a3-57d1-514a4d716605@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc66fcec-fa52-71a3-57d1-514a4d716605@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When do_ide_setup_pci_device() fails, host should be
-freed just like when ide_host_register() fails.
+On Wed, Aug 26, 2020 at 10:51:37AM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> On 25/8/2020 4:19 pm, Heikki Krogerus wrote:
+> > On Wed, Aug 19, 2020 at 04:45:38PM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> > > On 19/8/2020 3:55 pm, Andy Shevchenko wrote:
+> > > > On Wed, Aug 19, 2020 at 8:38 AM Ramuthevar, Vadivel MuruganX
+> > > > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> > > > > On 18/8/2020 4:40 pm, Andy Shevchenko wrote:
+> > > > > > On Tue, Aug 18, 2020 at 02:57:18PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> > > > > > > USB external connector chip PTN5150 used on the Intel LGM SoC
+> > > > > > > boards to detect the USB type and connection.
+> > > > > > Internally I meant you can send cleanups, but couple of patches here are the
+> > > > > > features and were still under discussion... But here we are.
+> > > > > 
+> > > > > you mean asking us to implement the Heikki suggested as below..
+> > > > > 
+> > > > > Heikki Krogerus: register the port and the partner attached to it with
+> > > > > the USB Type-C connector class in the driver. Is my understaanding
+> > > > > right? if not, please explain it. Thanks!
+> > > > 
+> > > > When you mention somebody, don't forget to Cc them (now done by me).
+> > > Sure, Thank you
+> > 
+> > So the patches 1-5 are fine. The rest needs to be rewritten.
+> Already Krzysztof submitted all the patches and got approved, so we started
+> sending only one patch which support to Intel LGM SoC based boards, Thanks!
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/ide/setup-pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I'm not sure what you meant by above.
 
-diff --git a/drivers/ide/setup-pci.c b/drivers/ide/setup-pci.c
-index fdc8e813170c..e6cba7e24c39 100644
---- a/drivers/ide/setup-pci.c
-+++ b/drivers/ide/setup-pci.c
-@@ -585,8 +585,10 @@ int ide_pci_init_two(struct pci_dev *dev1, struct pci_dev *dev2,
- 		 * FIXME: Mom, mom, they stole me the helper function to undo
- 		 * do_ide_setup_pci_device() on the first device!
- 		 */
--		if (ret < 0)
-+		if (ret < 0) {
-+			ide_host_free(host);
- 			goto out_free_bars;
-+		}
- 
- 		/* fixup IRQ */
- 		if (ide_pci_is_in_compatibility_mode(pdev[i])) {
+Krzysztof suggested you to squash all first patches into 1 (or two) and he
+approves it. What you have to do is follow his advise and send v2 where it will
+be one (or two) patch with his tag attached.
+
+Krzysztof, is it correct what I'm saying?
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
