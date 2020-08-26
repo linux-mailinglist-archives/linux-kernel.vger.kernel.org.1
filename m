@@ -2,136 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236BA2531BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3312531E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Aug 2020 16:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgHZOp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 10:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgHZOp4 (ORCPT
+        id S1727073AbgHZOt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 10:49:26 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:28191 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726845AbgHZOtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:45:56 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FBCC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:45:56 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id u1so1978777edi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 07:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B3VGI4ZO4Lizn7CsokRl50LFyMV/C/p/NGzm7IxRmNw=;
-        b=vY2tmCmo4W0jtZqs5TvQwnmYEnIQJzhLDUBY7CYym88eFsRdpJ4ZxJrn7MvyB+MFio
-         bcxEvPMJy9wnjmR2lby9fDmqvN9fg3QVolvVd3QBvsX0462o88VSpraYnhKztalmhGd2
-         Euybs+3DAaFUIuwJWRy3ToEqMxmBdJEa96Q2r7KTvb1z5/lfff1Puuerrb05ezIkrRTk
-         E+twZsFag+XZzywBLPDuOLAzwZ5m9DSERvBFMzEr1Fo8FEjx7IePtPDKT6K/vxMpCEQB
-         KqFF0L3zjlU+ho8M6oi1XdKm5YzeqHgXo3TyWNQJRh/GRIf9XqI/LLA4xIABFjBsHYms
-         bzZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B3VGI4ZO4Lizn7CsokRl50LFyMV/C/p/NGzm7IxRmNw=;
-        b=og8966k6tf8X9pLbSltPspDA8UUWBPYl2RjefnX5E8oLuyHKZEJ6jLoe2LUStlvlkC
-         lzFSajt0+TxdceGxtEZPF9EgiJz3VQXMVBIlPmKGcfigGB0TnTUmQgCtEfdFXwqcSy2s
-         ZtxBlxkP/ga0LSEoN3PyoQWFp81dkOmrBSNOGGD72khhPKRqFABPPKf34sDf9ge/U340
-         SR+NDksF8qvZvUWDh8GK1b6k57/bcd45juX24aY/PRkoIYZmHSAlg7plM82ib5JjFmuX
-         9GR452VJCoGX/PIOL2HqkJqE660OTGZqkBRn1Apo2vhxYw1Trx1I0Lj/ULZzDnWYOniN
-         6KSg==
-X-Gm-Message-State: AOAM533gqqONOVtkyXNQaicIqqA9oS70Zv3Edzh3xLlyGMUoU9sPktsz
-        E98/QGm+YrYZ54MdwT2KyE511joVBf3qkocEe4Vv
-X-Google-Smtp-Source: ABdhPJz7Lmrx2VSlzkwy+2+vA0HLtnclpWweWaL589faXH/mQoRuZjSVZToxRxXNSNqrVFhEzngnyK3dFQc5fOxqniU=
-X-Received: by 2002:aa7:db10:: with SMTP id t16mr14707237eds.196.1598453154646;
- Wed, 26 Aug 2020 07:45:54 -0700 (PDT)
+        Wed, 26 Aug 2020 10:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598453348;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=WtPyyCfNYRDGNlRLhnTbAOZUqz018Ne4S7uPqstOy3k=;
+        b=ZKF7HKI63jLWVLrusi6lW0rDx12aW26hCGhQUqpCuj8/t2eqlep86sAzuXgB59nfeH
+        mYYR7tcfWNxOogMqPUzBBIR6+Map0GZ2Jc5YNsjrZPBWAEsHwMGjCY2kYlGpC13jGPbO
+        ySXRBCZ3i5hcQGlLV2XcFexH3yxiIHwCKvKrMzToV3QXnEgynMIDB8rasLBZfUFN4gdg
+        lgOQtyWaWEJ3gvYgyBE0GbbP604wh/ercxpyJ2wefv2KSon2xUc2JaV9ofb4yI48pDSZ
+        iUxT2pCitRbQHiqd7Cez087tqFkLeaP22mcKQF6vzwWz/6xj+/eLNutqcLjVsLk+8pum
+        Cacw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id g0b6c1w7QElPnl9
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 26 Aug 2020 16:47:25 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 16:47:18 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Cheng-Yi Chiang <cychiang@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, Ajit Pandey <ajitp@codeaurora.org>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH v6 2/2] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+Message-ID: <20200826144718.GA854@gerhold.net>
+References: <20200826110454.1811352-1-cychiang@chromium.org>
+ <20200826110454.1811352-3-cychiang@chromium.org>
 MIME-Version: 1.0
-References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
- <20200824132252.31261-1-peter.enderborg@sony.com> <20200824132252.31261-2-peter.enderborg@sony.com>
- <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com> <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com>
-In-Reply-To: <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 26 Aug 2020 10:45:43 -0400
-Message-ID: <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     linux-kernel@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826110454.1811352-3-cychiang@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:34 AM peter enderborg
-<peter.enderborg@sony.com> wrote:
-> On 8/26/20 3:42 PM, Paul Moore wrote:
-> > On Mon, Aug 24, 2020 at 9:23 AM Peter Enderborg
-> > <peter.enderborg@sony.com> wrote:
-> >> This adds tracing of all denies. They are grouped with trace_seq for
-> >> each audit.
-> >>
-> >> A filter can be inserted with a write to it's filter section.
-> >>
-> >> echo "permission==\"entrypoint\"" > events/avc/selinux_denied/filter
-> >>
-> >> A output will be like:
-> >>           runcon-1046  [002] .N..   156.351738: selinux_denied:
-> >>           trace_seq=2 result=-13
-> >>           scontext=system_u:system_r:cupsd_t:s0-s0:c0.
-> >>           c1023 tcontext=system_u:object_r:bin_t:s0
-> >>           tclass=file permission=entrypoint
-> >>
-> >> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> >> ---
-> >>  include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
-> >>  security/selinux/avc.c     | 27 +++++++++++++++++++++++++--
-> >>  2 files changed, 62 insertions(+), 2 deletions(-)
-> > My most significant comment is that I don't think we want, or need,
-> > two trace points in the avc_audit_post_callback() function.  Yes, I
-> > understand they are triggered slightly differently, but from my
-> > perspective there isn't enough difference between the two tracepoints
-> > to warrant including both.  However, while the tracepoints may be
->
-> We tried that but that was problematic too.
+On Wed, Aug 26, 2020 at 07:04:54PM +0800, Cheng-Yi Chiang wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+> 
+> Add new driver to register sound card on sc7180 trogdor board and
+> do the required configuration for lpass cpu dai and external codecs
+> connected over MI2S interfaces.
+> 
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
+>  sound/soc/qcom/Kconfig  |  12 ++
+>  sound/soc/qcom/Makefile |   2 +
+>  sound/soc/qcom/sc7180.c | 244 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 258 insertions(+)
+>  create mode 100644 sound/soc/qcom/sc7180.c
+> 
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index a607ace8b089..63678b746299 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -116,4 +116,16 @@ config SND_SOC_SDM845
+>  	  SDM845 SoC-based systems.
+>  	  Say Y if you want to use audio device on this SoCs.
+>  
+> +config SND_SOC_SC7180
+> +	tristate "SoC Machine driver for SC7180 boards"
+> +	depends on SND_SOC_QCOM
+> +	select SND_SOC_QCOM_COMMON
+> +	select SND_SOC_LPASS_SC7180
+> +	select SND_SOC_MAX98357A
+> +	select SND_SOC_RT5682
+> +	help
+> +	  To add support for audio on Qualcomm Technologies Inc.
+> +	  SC7180 SoC-based systems.
+> +	  Say Y if you want to use audio device on this SoCs.
+> +
+>  endif #SND_SOC_QCOM
+> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+> index 7972c9479ab0..0cdcbf367ef1 100644
+> --- a/sound/soc/qcom/Makefile
+> +++ b/sound/soc/qcom/Makefile
+> @@ -17,12 +17,14 @@ snd-soc-storm-objs := storm.o
+>  snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+>  snd-soc-apq8096-objs := apq8096.o
+>  snd-soc-sdm845-objs := sdm845.o
+> +snd-soc-sc7180-objs := sc7180.o
+>  snd-soc-qcom-common-objs := common.o
+>  
+>  obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+>  obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+>  obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+>  obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
+> +obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
+>  obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
+>  
+>  #DSP lib
+> diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+> new file mode 100644
+> index 000000000000..7849376f63ba
+> --- /dev/null
+> +++ b/sound/soc/qcom/sc7180.c
+> @@ -0,0 +1,244 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> +//
+> +// sc7180.c -- ALSA SoC Machine driver for SC7180
+> +
+> +#include <dt-bindings/sound/sc7180-lpass.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/jack.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <uapi/linux/input-event-codes.h>
+> +
+> +#include "../codecs/rt5682.h"
+> +#include "common.h"
+> +#include "lpass.h"
+> +
+> +#define DEFAULT_SAMPLE_RATE_48K		48000
+> +#define DEFAULT_MCLK_RATE		19200000
+> +#define RT5682_PLL1_FREQ (48000 * 512)
+> +
+> +struct sc7180_snd_data {
+> +	struct snd_soc_jack jack;
+> +	u32 pri_mi2s_clk_count;
+> +};
+> +
+> +static void sc7180_jack_free(struct snd_jack *jack)
+> +{
+> +	struct snd_soc_component *component = jack->private_data;
+> +
+> +	snd_soc_component_set_jack(component, NULL, NULL);
+> +}
+> +
+> +static int sc7180_headset_init(struct snd_soc_component *component)
+> +{
+> +	struct snd_soc_card *card = component->card;
+> +	struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
+> +	struct snd_jack *jack;
+> +	int rval;
+> +
+> +	rval = snd_soc_card_jack_new(
+> +			card, "Headset Jack",
+> +			SND_JACK_HEADSET |
+> +			SND_JACK_HEADPHONE |
+> +			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> +			SND_JACK_BTN_2 | SND_JACK_BTN_3,
+> +			&pdata->jack, NULL, 0);
+> +
+> +	if (rval < 0) {
+> +		dev_err(card->dev, "Unable to add Headset Jack\n");
+> +		return rval;
+> +	}
+> +
+> +	jack = pdata->jack.jack;
+> +
+> +	snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> +	snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+> +
+> +	jack->private_data = component;
+> +	jack->private_free = sc7180_jack_free;
+> +
+> +	rval = snd_soc_component_set_jack(component,
+> +					  &pdata->jack, NULL);
+> +	if (rval != 0 && rval != -EOPNOTSUPP) {
+> +		dev_warn(card->dev, "Failed to set jack: %d\n", rval);
+> +		return rval;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_aux_dev sc7180_headset_dev = {
+> +	.dlc = COMP_EMPTY(),
+> +	.init = sc7180_headset_init,
+> +};
+> +
 
-My apologies if I was on that thread, but can you remind me why it was
-a problem?  Why can't we use a single tracepoint to capture the AVC
-information?
+[...]
 
-> Having partly overlapping traces is not unheard off.  Check
-> compaction.c where we have a     trace_mm_compaction_begin
-> and a more detailed trace_mm_compaction_migratepages.
-> (And a  trace_mm_compaction_end)
+> +static struct snd_soc_card sc7180_card = {
+> +	.owner = THIS_MODULE,
+> +	.aux_dev = &sc7180_headset_dev,
+> +	.num_aux_devs = 1,
+> +	.dapm_widgets = sc7180_snd_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets),
+> +};
+> +
+> +static int sc7180_parse_aux_of(struct device *dev)
+> +{
+> +	sc7180_headset_dev.dlc.of_node = of_parse_phandle(
+> +			dev->of_node, "aux-dev", 0);
+> +
+> +	if (!sc7180_headset_dev.dlc.of_node)
+> +		return -EINVAL;
+> +	return 0;
+> +}
+> +
 
-It may not be unique to SELinux, but that doesn't mean I like it :)
+Thanks for noting that this conflicts with my patch set that adds the
+"aux-devs" property for the device tree [1], I didn't see this before.
 
-One of my concerns with adding tracepoints is that the code would get
-littered with tracepoints; I accepted that it the AVC decision
-codepath was an obvious place for one, so we added a tracepoint.
-Having two tracepoints here is getting awfully close to my original
-fears.
+The use of aux-dev in this patch looks a bit weird to me...
 
-> > redundant in my mind, this new event does do the permission lookup in
-> > the kernel so that the contexts/class/permissions are all available as
-> > a string which is a good thing.
-> >
-> > Without going into the details, would the tracing folks be okay with
-> > doing something similar with the existing selinux_audited tracepoint?
-> > It's extra work in the kernel, but since it would only be triggered
-> > when the tracepoint was active it seems bearable to me.
->
-> I think the method for expanding lists is what we tried first on
-> suggestion from Steven Rostedt.  Maybe we can do a trace_event
-> from a TP_prink but that would be recursive.
+As I understand, the "auxiliary devices" of a sound card are intended to
+be used for components that should be probed even though they don't
+appear within one of the DAI links. Examples for that are especially
+analog amplifiers and other components that do not have digital audio
+input/output.
 
-Wait, why would you be adding a trace event to a trace event, or am I
-misunderstanding you?
+On the other hand, in this patch it seems to be just a way to mark the
+DAI component that will provide the headphone jack detection. In your
+example, the component that provides the headphone jack then appears
+both as DAI component and as auxiliary device:
 
-All I was talking about was adding the permission resolution code to
-the already existing SELinux AVC tracepoint.
+	aux-dev = <&alc5682>;
 
--- 
-paul moore
-www.paul-moore.com
+	dai-link@0 {
+		link-name = "MultiMedia0";
+		reg = <0>;
+		cpu {
+			sound-dai = <&lpass_cpu 0>;
+		};
+		codec {
+			sound-dai = <&alc5682 0>;
+		};
+	};
+
+Adding &alc5682 to snd_soc_card->aux_dev is kind of pointless in this
+case because it will already be probed as part of the DAI link.
+
+The only thing you gain is that you have the init() callback which gives
+you the component that provides the headphone jack. But if someone wants
+to add an actual auxiliary device later (e.g. an analog amplifier),
+they would run into trouble...
+
+I wonder if it would be better to just have some sort of phandle, e.g.
+
+	audio-jack = <&alc5682>;
+
+but instead of creating an auxiliary device for this you would e.g.
+iterate over the list of components to find the one the phandle refers to.
+
+Or maybe someone else can comment if using an auxiliary device for this
+does really make sense?
+
+Thanks,
+Stephan
+
+[1]: https://lore.kernel.org/alsa-devel/20200826095141.94017-1-stephan@gerhold.net/
