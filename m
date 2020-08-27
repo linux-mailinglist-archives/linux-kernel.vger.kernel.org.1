@@ -2,305 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5262548E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335C9254907
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgH0PPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:15:44 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13684 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgH0PPE (ORCPT
+        id S1728292AbgH0PTd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 11:19:33 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:40950 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727814AbgH0PTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:15:04 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f47cde30000>; Thu, 27 Aug 2020 08:14:43 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 27 Aug 2020 08:14:57 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 08:14:57 -0700
-Received: from [10.26.74.41] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
- 2020 15:14:53 +0000
-Subject: Re: [PATCH v6 7/7] sdhci: tegra: Add missing TMCLK for data timeout
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
-        <thierry.reding@gmail.com>, <robh+dt@kernel.org>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
- <1598500201-5987-8-git-send-email-skomatineni@nvidia.com>
- <93d0188b-c833-33b4-211e-b9293c4f3a1c@nvidia.com>
- <3deac67c-bb1e-ef23-7dcc-8d4024203ab1@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <5ec4d869-f134-6e6d-6496-2410f271b196@nvidia.com>
-Date:   Thu, 27 Aug 2020 16:14:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 Aug 2020 11:19:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kBJfz-007FA8-US; Thu, 27 Aug 2020 09:18:55 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kBJfy-0007id-QG; Thu, 27 Aug 2020 09:18:55 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Wang Long <w@laoqinren.net>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org, edumazet@google.com,
+        eric.dumazet@gmail.com, opurdila@ixiacom.com,
+        vegard.nossum@gmail.com, LKML <linux-kernel@vger.kernel.org>
+References: <40f6ec87-0c27-ca6f-383b-0602e78b0802@laoqinren.net>
+Date:   Thu, 27 Aug 2020 10:15:11 -0500
+In-Reply-To: <40f6ec87-0c27-ca6f-383b-0602e78b0802@laoqinren.net>+B0013AC41EFFDC1F
+        (Wang Long's message of "Thu, 27 Aug 2020 19:03:25 +0800")
+Message-ID: <878se0ktmo.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <3deac67c-bb1e-ef23-7dcc-8d4024203ab1@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598541283; bh=xVoI1WZkGHOqNohPt0+gex2ZSLXV6wVFwXRA9Hx8SBA=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=kqWOz9u1bINwK2K3lmHd1dbL57lLBYMMl2KAWX/leAhFGwUgBeggB/4LpX9LOp3GB
-         1ch2zDN1VNOgfcrod23at6YhLgpcU189s/eKCQnxAp0OL7LZ/iyRFqnxRAiiWElQpy
-         SXkYo0J+9p0qQB97snF103KCQgiKEKVTuzBX4t8WkkiYyipnBt3w4WmCYKwEeDkj/B
-         1WCa8UK2VDzym3noqz5Ztmf/X5NMGTdb5kBad/H+GYN7bQdwAsbFuFTMBhEK0xQ+kB
-         dXnpJRfWj4o3BmobrlLrhe39OTk8LhnG3ps7ATHEG6ouWd3JiemKJveHNtBsL1VR4b
-         VIed7kguBu50w==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1kBJfy-0007id-QG;;;mid=<878se0ktmo.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/Nt7wifU2j/ZN8Vtlw5gW64Ra5vWe7El4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.4 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
+        T_TM2_M_HEADER_IN_MSG,XM_B_Unicode autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Wang Long <w@laoqinren.net>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 721 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 10 (1.5%), b_tie_ro: 9 (1.3%), parse: 0.94 (0.1%),
+         extract_message_metadata: 22 (3.0%), get_uri_detail_list: 2.5 (0.3%),
+        tests_pri_-1000: 27 (3.8%), tests_pri_-950: 1.20 (0.2%),
+        tests_pri_-900: 0.99 (0.1%), tests_pri_-90: 120 (16.7%), check_bayes:
+        118 (16.4%), b_tokenize: 10 (1.4%), b_tok_get_all: 11 (1.5%),
+        b_comp_prob: 2.6 (0.4%), b_tok_touch_all: 91 (12.6%), b_finish: 0.93
+        (0.1%), tests_pri_0: 525 (72.8%), check_dkim_signature: 0.75 (0.1%),
+        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.78 (0.1%), tests_pri_10:
+        2.1 (0.3%), tests_pri_500: 6 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: RFC: inet_timewait_sock->tw_timer list corruption
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Wang Long <w@laoqinren.net> writes:
 
-On 27/08/2020 16:03, Sowjanya Komatineni wrote:
->=20
-> On 8/27/20 1:40 AM, Jon Hunter wrote:
->> On 27/08/2020 04:50, Sowjanya Komatineni wrote:
->>> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
->>>
->>> Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegra
->>> SDMMC hawdware for data timeout to achive better timeout than using
->>> SDCLK and using TMCLK is recommended.
->>>
->>> USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
->>> SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
->>> SDCLK for data timeout.
->>>
->>> Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
->>> for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
->>> is not recommended.
->>>
->>> So, this patch adds quirk NVQUIRK_HAS_TMCLK for SoC having separate
->>> timeout clock and keeps TMCLK enabled all the time.
->>>
->>> Fixes: b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
->>> Cc: stable <stable@vger.kernel.org> # 5.4
->>> Tested-by: Jon Hunter <jonathanh@nvidia.com>
->>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
->>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>> ---
->>> =C2=A0 drivers/mmc/host/sdhci-tegra.c | 90
->>> ++++++++++++++++++++++++++++++++++++++----
->>> =C2=A0 1 file changed, 82 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/sdhci-tegra.c
->>> b/drivers/mmc/host/sdhci-tegra.c
->>> index 31ed321..f69ca8d 100644
->>> --- a/drivers/mmc/host/sdhci-tegra.c
->>> +++ b/drivers/mmc/host/sdhci-tegra.c
->>> @@ -13,6 +13,7 @@
->>> =C2=A0 #include <linux/clk.h>
->>> =C2=A0 #include <linux/io.h>
->>> =C2=A0 #include <linux/of.h>
->>> +#include <linux/of_clk.h>
->>> =C2=A0 #include <linux/of_device.h>
->>> =C2=A0 #include <linux/pinctrl/consumer.h>
->>> =C2=A0 #include <linux/regulator/consumer.h>
->>> @@ -110,6 +111,12 @@
->>> =C2=A0 #define NVQUIRK_DIS_CARD_CLK_CONFIG_TAP=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BIT(8)
->>> =C2=A0 #define NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 BIT(9)
->>> =C2=A0 +/*
->>> + * NVQUIRK_HAS_TMCLK is for SoC's having separate timeout clock for
->>> Tegra
->>> + * SDMMC hardware data timeout.
->>> + */
->>> +#define NVQUIRK_HAS_TMCLK=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BIT(10)
->>> +
->>> =C2=A0 /* SDMMC CQE Base Address for Tegra Host Ver 4.1 and Higher */
->>> =C2=A0 #define SDHCI_TEGRA_CQE_BASE_ADDR=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0xF000
->>> =C2=A0 @@ -140,6 +147,7 @@ struct sdhci_tegra_autocal_offsets {
->>> =C2=A0 struct sdhci_tegra {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct sdhci_tegra_soc_data *soc_d=
-ata;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc *power_gpio;
->>> +=C2=A0=C2=A0=C2=A0 struct clk *tmclk;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool ddr_signaling;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool pad_calib_required;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool pad_control_available;
->>> @@ -1433,7 +1441,8 @@ static const struct sdhci_tegra_soc_data
->>> soc_data_tegra210 =3D {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_HAS_PADCALIB |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_ENABLE_SDR104,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_ENABLE_SDR104 |
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_HAS_TMCLK,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 106,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 185,
->>> =C2=A0 };
->>> @@ -1471,6 +1480,7 @@ static const struct sdhci_tegra_soc_data
->>> soc_data_tegra186 =3D {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_ENABLE_SDR104 |
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_HAS_TMCLK |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 84,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 136,
->>> @@ -1483,7 +1493,8 @@ static const struct sdhci_tegra_soc_data
->>> soc_data_tegra194 =3D {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_HAS_PADCALIB |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_ENABLE_SDR104,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_ENABLE_SDR104 |
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NVQ=
-UIRK_HAS_TMCLK,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 96,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 139,
->>> =C2=A0 };
->>> @@ -1611,15 +1622,76 @@ static int sdhci_tegra_probe(struct
->>> platform_device *pdev)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_power_r=
-eq;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0 -=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(mmc_dev(host->mmc), NUL=
-L);
->>> -=C2=A0=C2=A0=C2=A0 if (IS_ERR(clk)) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rc =3D PTR_ERR(clk);
->>> +=C2=A0=C2=A0=C2=A0 /*
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Tegra210 and later has separate SDMMC_LEGAC=
-Y_TM clock used for
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * hardware data timeout clock and SW can choo=
-se TMCLK or SDCLK for
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * hardware data timeout through the bit USE_T=
-MCLK_FOR_DATA_TIMEOUT
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * of the register SDHCI_TEGRA_VENDOR_SYS_SW_C=
-TRL.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is s=
-et to 1 and SDMMC
->>> uses
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * 12Mhz TMCLK which is advertised in host cap=
-ability register.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * With TMCLK of 12Mhz provides maximum data t=
-imeout period that
->>> can
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * be achieved is 11s better than using SDCLK =
-for data timeout.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * So, TMCLK is set to 12Mhz and kept enabled =
-all the time on SoC's
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * supporting separate TMCLK.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Old device tree has single sdhci clock. So =
-with addition of
->>> TMCLK,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * retrieving sdhci clock by "sdhci" clock nam=
-e based on number of
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * clocks in sdhci device node.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->>> +
->>> +=C2=A0=C2=A0=C2=A0 if (of_clk_get_parent_count(pdev->dev.of_node) =3D=
-=3D 1) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (soc_data->nvquirks & NV=
-QUIRK_HAS_TMCLK)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev=
-_warn(&pdev->dev,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 "missing tmclk in the device tree\n");
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(&pdev-=
->dev, NULL);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(clk)) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rc =
-=3D PTR_ERR(clk);
->>> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (rc !=3D -EPROBE_=
-DEFER)
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev=
-_err(&pdev->dev, "failed to get clock: %d\n", rc);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if =
-(rc !=3D -EPROBE_DEFER)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 dev_err(&pdev->dev,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "failed to get sdhci clock: %=
-d\n", rc);
->>> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_clk_get;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 got=
-o err_power_req;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> +=C2=A0=C2=A0=C2=A0 } else {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (soc_data->nvquirks & NV=
-QUIRK_HAS_TMCLK) {
->>
->> I think that I would do the inverse of this ...
->>
->> =C2=A0=C2=A0=C2=A0 } else {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(soc_data->nvquirk=
-s & NVQUIRK_HAS_TMCLK)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(&pdev->dev, "Device has unexpected clocks!=
-\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 rc =3D -EINVAL;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto_power_req;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(&p=
-dev->dev, "tmclk");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>
->> If the device does not have a single clock, then we expect it to support
->> the tmclk. If this is not the case, then this is a bug.
->>
->> Cheers
->> Jon
->=20
-> I don't see other drivers validating for unexpected device tree entries.
->=20
-> Also only for SoC with quirk HAS_TMCLK, we are retrieving TMCLK with
-> clock name and enabling it.
->=20
-> So for other SoC even if device tree has additional clock entry other
-> than sdhci driver don't use it and also dt-binding do not have any tmclk
-> entry for other SoC. So why would this be a bug?
+> Hi，
+>
+> we encountered a kernel panic as following:
+>
+> [4394470.273792] general protection fault: 0000 [#1] SMP NOPTI
+> [4394470.274038] CPU: 0 PID: 0 Comm: swapper/0 Kdump: loaded Tainted: G    W
+> --------- -  - 4.18.0-80.el8.x86_64 #1
+> [4394470.274477] Hardware name: Sugon I620-G30/60P24-US, BIOS MJGS1223
+> 04/07/2020
+> [4394470.274727] RIP: 0010:run_timer_softirq+0x34e/0x440
+> [4394470.274957] Code: 84 3f ff ff ff 49 8b 04 24 48 85 c0 74 58 49 8b 1c 24 48
+> 89 5d 08 0f 1f 44 00 00 48 8b 03 48 8b 53 08 48 85 c0 48 89 02 74 04 <48> 89 50
+> 08 f6 43 22 20 48 c7 43 08 00 00 00 00 48 89 ef 4c 89 2b
+> [4394470.275505] RSP: 0018:ffff88f000803ee0 EFLAGS: 00010086
+> [4394470.275783] RAX: dead000000000200 RBX: ffff88e5e33ea078 RCX:
+> 0000000000000100
+> [4394470.276087] RDX: ffff88f000803ee8 RSI: 0000000000000000 RDI:
+> ffff88f00081aa00
+> [4394470.276391] RBP: ffff88f00081aa00 R08: 0000000000000001 R09:
+> 0000000000000000
+> [4394470.276697] R10: ffff88e5e33eb1f0 R11: 0000000000000000 R12:
+> ffff88f000803ee8
+> [4394470.277030] R13: dead000000000200 R14: ffff88f000803ee0 R15:
+> 0000000000000000
+> [4394470.277350] FS:  0000000000000000(0000) GS:ffff88f000800000(0000)
+> knlGS:0000000000000000
+> [4394470.277684] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [4394470.278020] CR2: 00007f200eddd160 CR3: 0000000e0b20a002 CR4:
+> 00000000007606f0
+> [4394470.278412] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [4394470.278799] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [4394470.279194] PKRU: 55555554
+> [4394470.279543] Call Trace:
+> [4394470.279889]  <IRQ>
+> [4394470.280237]  ? __hrtimer_init+0xb0/0xb0
+> [4394470.280618]  ? sched_clock+0x5/0x10
+> [4394470.281000]  __do_softirq+0xe8/0x2ef
+> [4394470.281397]  irq_exit+0xf1/0x100
+> [4394470.281761]  smp_apic_timer_interrupt+0x74/0x130
+> [4394470.282132]  apic_timer_interrupt+0xf/0x20
+> [4394470.282548]  </IRQ>
+> [4394470.282954] RIP: 0010:cpuidle_enter_state+0xa0/0x2b0
+> [4394470.283341] Code: 8b 3d 6c fb 59 4c e8 0f ed a6 ff 48 89 c3 0f 1f 44 00 00
+> 31 ff e8 80 00 a7 ff 45 84 f6 0f 85 c3 01 00 00 fb 66 0f 1f 44 00 00 <4c> 29 fb
+> 48 ba cf f7 53 e3 a5 9b c4 20 48 89 d8 48 c1 fb 3f 48 f7
+> [4394470.284219] RSP: 0018:ffffffffb4603e78 EFLAGS: 00000246 ORIG_RAX:
+> ffffffffffffff13
+> [4394470.284671] RAX: ffff88f000823080 RBX: 000f9cbf579e86c6 RCX:
+> 000000000000001f
+> [4394470.285129] RDX: 000f9cbf579e86c6 RSI: 0000000037a6f674 RDI:
+> 0000000000000000
+> [4394470.285623] RBP: 0000000000000002 R08: 00000000000000c4 R09:
+> 0000000000000027
+> [4394470.286088] R10: ffffffffb4603e58 R11: 000000000000004c R12:
+> ffff88f00082df00
+> [4394470.286566] R13: ffffffffb4724118 R14: 0000000000000000 R15:
+> 000f9cbf579d44e0
+> [4394470.287045]  ? cpuidle_enter_state+0x90/0x2b0
+> [4394470.287527]  do_idle+0x200/0x280
+> [4394470.288010]  cpu_startup_entry+0x6f/0x80
+> [4394470.288501]  start_kernel+0x533/0x553
+> [4394470.288994]  secondary_startup_64+0xb7/0xc0
+>
+>
+> After analysis, we found that the timer which expires has timer->entry.next ==
+> POISON2 !(the list corruption )
+>
+> the crash scenario is the same as https://lkml.org/lkml/2017/3/21/732,
+>
+> I cannot reproduce this issue, but I found that the timer cause crash is the
+> inet_timewait_sock->tw_timer(its callback function is tw_timer_handler), and the
+> value of tcp_tw_reuse is 1.
+>
+> # cat /proc/sys/net/ipv4/tcp_tw_reuse
+> 1
+>
+> In the production environment, we encountered this problem many times, and every
+> time it was a problem with the inet_timewait_sock->tw_timer.
+>
+> Do anyone have any ideas for this issue? Thanks.
 
-In the device tree binding doc, we say has two clocks for Tegra210,
-Tegra186 and Tegra194 and one clock for all other devices. So if we no
-there is more than 1 but the device does not have this quirk, then the
-device-tree does not reflect what is stated in the binding doc or the
-quirk is no populated as it should be. I feel that either case is a bug.
+You might enble list debugging if it isn't already.  That might give you
+enough information to track this down.
 
-Now of course it could be possible for someone to add a 3rd clock for
-Tegra210 and we would not detect this but like you said we don't check
-all conditions. So yes we don't catch all cases, but the ones that matter.
+You might also contact redhat support as it appears you are running a
+redhat kernel.
 
-Jon
+Eric
 
---=20
-nvpublic
