@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D28D25491B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91B42548F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgH0PUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:20:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44549 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728649AbgH0LdI (ORCPT
+        id S1727944AbgH0PRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728758AbgH0Lge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598527981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tK2E5OHaYdIMnHynVyzOX85+jSQpnlWbWxI1ka3rMpQ=;
-        b=iJGHl6OPlX/bSFOwWs6Tl5Z5Fd+juMSODETyFwMqsD6H0OtAMMBztX6PTiI/tM+0FSGL6H
-        cWodOzu+cBJhPRhANWsb0Nu/pBdtpgR/+P7oby2wJvrWPv5ylQFyGW3dv66DvRLQ+V7mM+
-        4ossNlXy9iHK2P5ycyQ5Ixu0T4eTOvE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-GHCIpvapPlWFtEXqEva68w-1; Thu, 27 Aug 2020 07:24:30 -0400
-X-MC-Unique: GHCIpvapPlWFtEXqEva68w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 455E080EFBE;
-        Thu, 27 Aug 2020 11:24:29 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CC68F5D9E8;
-        Thu, 27 Aug 2020 11:24:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 27 Aug 2020 13:24:28 +0200 (CEST)
-Date:   Thu, 27 Aug 2020 13:24:26 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     syzbot <syzbot+e3cf8f93cf86936710db@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING: ODEBUG bug in get_signal
-Message-ID: <20200827112426.GE28468@redhat.com>
-References: <00000000000068340d05add74c29@google.com>
+        Thu, 27 Aug 2020 07:36:34 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCA4C061237
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:25:34 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id t23so5999410ljc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YhRPi+iPivlqG8bK16eTYTOlYGA4i6j4kZaE7AObBLg=;
+        b=Eis52n3ZktmyztMq1qI1UemlajzME0c49pz8n6js8ZD5yG8BFyNOQsJjR9xO+E49RR
+         NxwGJK3uJP0YzwlSom1UDiMZpco4G+3JSVz/+g1i3JvsxO7+wSOZ6LgksLoepg/M9H5w
+         0mOzt0+UDZ/Dnq2O7EupgKXEtFrDTjZ+q+kQkYtcs02aLtMU+6+E2/yEDIAXtIAQGeGi
+         nPwiqw6AeVSmZ6zTG/FPVZCXtc/YEdRsHjA8vyj+Gn4ioX9XNFc7JjJWTejsfXq6mIL2
+         Vdp7wgPNhTfefV+Xxis94UnR8vSYhnc0Frb9INAKdusn+UeY6rpCFDlglvJrb92YRhtp
+         xRRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YhRPi+iPivlqG8bK16eTYTOlYGA4i6j4kZaE7AObBLg=;
+        b=P7xBhNBC8gASNsUSi4WFTkykcfjU0LAoDKUiP0Jcni4ee9jem2rGzDayHY+nHzqkOb
+         EHaEF1AmoqYXWEvT9kEX/5jpH2UsowEt0NSp5ZvzPDceCJMJR43dKo4MpfuYF1SOluzi
+         zRSfNpcthp3URgOvQdASvQ2Cblaqp0522s0vsEHu494yRLM6mkbaiUuai/9r6NWjH3jY
+         BYKw40hIoEdi9ItT5Bot0fHQS2vkGDhIs5kNJhnXVIdX+KP9vt8E1nlZ/6Biz5vIJX1i
+         63CDeHrkrIu/O3WbfYKg1q8Mv0gZYJCvzIo59tbhccEOEVIteAeDOy0kqZLgTgJgzWix
+         B7lA==
+X-Gm-Message-State: AOAM533U9Ajos+nYW+il4QbYo0oOi/HJnZ7XAOVoE8Y2kR9UT3VoGili
+        wuLE8DkypwK2HWqvDOmj6sA=
+X-Google-Smtp-Source: ABdhPJzmZLy9GvIvyrmGs8hXjVy/ig6/izuQc7KdVIg69wVwPAB7TUaQ26ALhhKYHnsiXtXaq07AOA==
+X-Received: by 2002:a2e:b80b:: with SMTP id u11mr9986674ljo.286.1598527533010;
+        Thu, 27 Aug 2020 04:25:33 -0700 (PDT)
+Received: from WORK-PC.study.tst ([91.198.14.21])
+        by smtp.gmail.com with ESMTPSA id e14sm411801ljl.96.2020.08.27.04.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 04:25:32 -0700 (PDT)
+From:   Valery Ivanov <ivalery111@gmail.com>
+To:     greg@kroah.com
+Cc:     arve@android.com, riandrews@android.com, ivalery111@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: android: ion: remove unnecessary intermediate variable 'objs'
+Date:   Thu, 27 Aug 2020 14:24:48 +0300
+Message-Id: <20200827112448.85831-1-ivalery111@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000068340d05add74c29@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/27, syzbot wrote:
->
->  __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
->  debug_check_no_obj_freed+0x301/0x41c lib/debugobjects.c:998
->  kmem_cache_free.part.0+0x16d/0x1f0 mm/slab.c:3692
->  task_work_run+0xdd/0x190 kernel/task_work.c:141
+It is not necesssary to use 'objs' as an intermediate variable for assignment operation.
 
-I don't understand this trace, work->func(work) can call kmem_cache_free()
-but task_work_run() doesn't do this.
+Signed-off-by: Valery Ivanov <ivalery111@gmail.com>
+---
+ drivers/staging/android/ion/ion.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-In theory the patch below makes sense anyway, but I have no idea if it can
-explain the problem.
-
-Oleg.
-
---- x/kernel/task_work.c
-+++ x/kernel/task_work.c
-@@ -137,7 +137,7 @@ void task_work_run(void)
- 		raw_spin_unlock_irq(&task->pi_lock);
+diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
+index 3c9f09506ffa..137bef25dcbc 100644
+--- a/drivers/staging/android/ion/ion.c
++++ b/drivers/staging/android/ion/ion.c
+@@ -523,15 +523,12 @@ static int debug_shrink_set(void *data, u64 val)
+ {
+ 	struct ion_heap *heap = data;
+ 	struct shrink_control sc;
+-	int objs;
  
- 		do {
--			next = work->next;
-+			next = READ_ONCE(work->next);
- 			work->func(work);
- 			work = next;
- 			cond_resched();
+ 	sc.gfp_mask = GFP_HIGHUSER;
+ 	sc.nr_to_scan = val;
+ 
+-	if (!val) {
+-		objs = heap->shrinker.count_objects(&heap->shrinker, &sc);
+-		sc.nr_to_scan = objs;
+-	}
++	if (!val)
++		sc.nr_to_scan = heap->shrinker.count_objects(&heap->shrinker, &sc);
+ 
+ 	heap->shrinker.scan_objects(&heap->shrinker, &sc);
+ 	return 0;
+-- 
+2.25.1
 
