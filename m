@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD0D254ADE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF76254ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgH0QjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgH0QjM (ORCPT
+        id S1726903AbgH0Qh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:37:58 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52634 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgH0Qh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:39:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5CAC061264;
-        Thu, 27 Aug 2020 09:39:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d10so5081205wrw.2;
-        Thu, 27 Aug 2020 09:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X8tAmJgMDdPWe1jtHOmktcd5X+D5VAolQ0RvwPi2Oio=;
-        b=JKHKyGbqLhC8llQwzjTZcHPS3n5LliWOo8QUU8lxH4wR4BGkhgmS3LGOKj18gTURKe
-         xVcjzF562daBaRz07SZmAhkD3bS92Y2Qroadwk8FmiRluw7uMMqJI6fnZdX7GUgOdEmB
-         65U9iFAioqN1hpSZazaOwmo7FywtnfGMAiS90nYHo18ijdIHCLHt8fPn7NhkjcxnxwPB
-         AIV9KNgkeuQIARMN0q41x1+YzdGmLkcwTQWbO4/oqX4Jh6h8tGqQiPonxE3zJzjw78CK
-         6GftCFXPaXv8r+Q+3LYEJMk6aSg4y0wFWo5VAQOJQ2h+Uy5VrrtDnH0lm3aWj5UvhsEL
-         OesQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X8tAmJgMDdPWe1jtHOmktcd5X+D5VAolQ0RvwPi2Oio=;
-        b=eoUgsZCEYmE+QjtU7Dk8NZVofa9lNIjFNoNxcXuGTMYHkPfdyaEWiMwGiEU/FazSBr
-         mJ8FOShXWNeNhe4YpuRbaZZOP3BWBCR4WyeMj5/B/zmCrpJsYJLhW4iVdT1vBLis1+Pd
-         WcId2jX/amc/oWEiVFraQxX21k9rWcgYCYcpS0ZVVBF48muobwLC5zeIY8cNr11/FbSx
-         b0h1YMicuuARZFC51bV3NqqATN3kfsvuHmXO1yP1LujTNfnpSYq/zR1QKAfn/LgbFLUl
-         e4mxK4YNFftFFOhh00IYlQog7EOLDX5VTQ7VNw8w59H64G/sOjI1dy2V4AzrcaUfdGoF
-         1hWQ==
-X-Gm-Message-State: AOAM530V+fjpOyN+3oeD8fhifnjUO06rhmvLVpZuWNDg2W8ZubNcJ8rj
-        /pUYsUNs8tzQa3/fArpJY8k=
-X-Google-Smtp-Source: ABdhPJxhNW1oeT8TgLHU84jXFHu+0GvYbZS44y22iMS6YOeBEZEaapcLixbe4qJH4FbAX3T7hpXgdA==
-X-Received: by 2002:adf:f808:: with SMTP id s8mr14411769wrp.218.1598546350163;
-        Thu, 27 Aug 2020 09:39:10 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id d21sm6509238wmd.41.2020.08.27.09.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 09:39:09 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] netlabel: remove unused param from audit_log_format()
-Date:   Thu, 27 Aug 2020 17:37:12 +0100
-Message-Id: <20200827163712.106303-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 27 Aug 2020 12:37:56 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07RGbLba105509;
+        Thu, 27 Aug 2020 11:37:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598546241;
+        bh=Mx//Pdg+H+WkwhXnTFfk3IX8zqYVvEgOrHOAmDMt3XE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KyfY5s0Gb9luwYKdK1rAQT4Zj+f1oPnNq78Pbr60bnNy52+9eapXOUV6H2Ru5g2yS
+         4pOyM7Gp4NbsADNvGdEwxhvLOvLOF8bKwei924xKyA5kqHL3/XLZycl2T495BNRmOX
+         4V8sVKqszHpzKPHg8qB/u+RHllu9hYG+8aH6FJYs=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07RGbL3Q073020
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Aug 2020 11:37:21 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 27
+ Aug 2020 11:37:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 27 Aug 2020 11:37:21 -0500
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RGbJRN116794;
+        Thu, 27 Aug 2020 11:37:19 -0500
+Subject: Re: [PATCH v3] memory: omap-gpmc: Fix build error without CONFIG_OF
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+CC:     <tony@atomide.com>, <ladis@linux-mips.org>,
+        <bbrezillon@kernel.org>, <peter.ujfalusi@ti.com>,
+        <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200826125919.22172-1-yuehaibing@huawei.com>
+ <20200827125316.20780-1-yuehaibing@huawei.com>
+ <20200827132154.GB4384@kozik-lap>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <45d3fa05-01e8-c879-e314-ae627ca4c266@ti.com>
+Date:   Thu, 27 Aug 2020 19:37:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200827132154.GB4384@kozik-lap>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d3b990b7f327 ("netlabel: fix problems with mapping removal")
-added a check to return an error if ret_val != 0, before ret_val is
-later used in a log message. Now it will unconditionally print "...
-res=0". So don't print res anymore.
-
-Addresses-Coverity: ("Dead code")
-Fixes: d3b990b7f327 ("netlabel: fix problems with mapping removal")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
-
-I wasn't sure whether it was intended that something other than ret_val
-be printed in the log, so that's why I'm sending this as an RFC.
 
 
- net/netlabel/netlabel_domainhash.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+On 27/08/2020 16:21, Krzysztof Kozlowski wrote:
+> On Thu, Aug 27, 2020 at 08:53:16PM +0800, YueHaibing wrote:
+>> If CONFIG_OF is n, gcc fails:
+>>
+>> drivers/memory/omap-gpmc.o: In function `gpmc_omap_onenand_set_timings':
+>> omap-gpmc.c:(.text+0x2a88): undefined reference to `gpmc_read_settings_dt'
+>>
+>> Add gpmc_read_settings_dt() helper function, which zero the gpmc_settings
+>> so the caller doesn't proceed with random/invalid settings.
+>>
+>> Fixes: a758f50f10cf ("mtd: onenand: omap2: Configure driver from DT")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>> v3: zero gpmc_settings
+>> v2: add gpmc_read_settings_dt() stub
+>> ---
+>>   drivers/memory/omap-gpmc.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+>> index cd9e80748591..e026b4cd3612 100644
+>> --- a/drivers/memory/omap-gpmc.c
+>> +++ b/drivers/memory/omap-gpmc.c
+>> @@ -2310,6 +2310,10 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
+>>   	}
+>>   }
+>>   #else
+>> +void gpmc_read_settings_dt(struct device_node *np, struct gpmc_settings *p)
+>> +{
+>> +	memset(p, 0, sizeof(struct gpmc_settings));
+> 
+> sizeof(*p) but if patch is otherwise ok (got review/ack) then I can fix
+> it while applying.
+> 
+> If there is resend, please fix it as well.
 
-diff --git a/net/netlabel/netlabel_domainhash.c b/net/netlabel/netlabel_domainhash.c
-index f73a8382c275..526762b2f3a9 100644
---- a/net/netlabel/netlabel_domainhash.c
-+++ b/net/netlabel/netlabel_domainhash.c
-@@ -612,9 +612,8 @@ int netlbl_domhsh_remove_entry(struct netlbl_dom_map *entry,
- 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
- 	if (audit_buf != NULL) {
- 		audit_log_format(audit_buf,
--				 " nlbl_domain=%s res=%u",
--				 entry->domain ? entry->domain : "(default)",
--				 ret_val == 0 ? 1 : 0);
-+				 " nlbl_domain=%s",
-+				 entry->domain ? entry->domain : "(default)");
- 		audit_log_end(audit_buf);
- 	}
- 
+With the sizeof(*p) change.
+
+Acked-by: Roger Quadros <rogerq@ti.com>
+
+cheers,
+-roger
 -- 
-2.28.0
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
