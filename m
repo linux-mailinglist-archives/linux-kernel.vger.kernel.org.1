@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9262254473
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BB625447B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgH0LmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:42:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:57106 "EHLO foss.arm.com"
+        id S1728358AbgH0LqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728660AbgH0Lb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:31:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3FAE1045;
-        Thu, 27 Aug 2020 04:31:03 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E08D53F68F;
-        Thu, 27 Aug 2020 04:31:01 -0700 (PDT)
-Subject: Re: [PATCH 25/35] kasan: introduce CONFIG_KASAN_HW_TAGS
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev@googlegroups.com
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1597425745.git.andreyknvl@google.com>
- <8a499341bbe4767a4ee1d3b8acb8bd83420ce3a5.1597425745.git.andreyknvl@google.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <b7884e93-008f-6b9f-32d8-6c03c7e14243@arm.com>
-Date:   Thu, 27 Aug 2020 12:33:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728508AbgH0LfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:35:24 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FE0722B40;
+        Thu, 27 Aug 2020 11:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598528124;
+        bh=dFaCtuuppbrD9PUodVjJhQzg/FVgaLSvUY9+chkC3vQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0q/xqTUwqCBVTSHCGZC8EQaC9mJL1umNzRZIgiXqZYnwmOgkvSf8URXxItL3vG1PT
+         oDgXHagGN6pPrkOP6fj/6UAdmWzpiAx+5gSnp0ZSj2gX4NdZgYEId+/rZYp4fAcS7A
+         vRJItWmRmOaRpWDUI+2S6uqAM0L0aYuVNDTDaajg=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v2 00/15] kprobes: Unify kretprobe trampoline handlers
+Date:   Thu, 27 Aug 2020 20:35:18 +0900
+Message-Id: <159852811819.707944.12798182250041968537.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <8a499341bbe4767a4ee1d3b8acb8bd83420ce3a5.1597425745.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrey,
+Hi,
 
-On 8/14/20 6:27 PM, Andrey Konovalov wrote:
-> +config·KASAN_HW_TAGS
-> +» bool·"Hardware·tag-based·mode"
-> +» depends·on·HAVE_ARCH_KASAN_HW_TAGS
-> +» depends·on·SLUB
-> +» help
-> +» ··Enables·hardware·tag-based·KASAN·mode.
-> +
-> +» ··This·mode·requires·both·Memory·Tagging·Extension·and·Top·Byte·Ignore
-> +» ··support·by·the·CPU·and·therefore·is·only·supported·for·modern·arm64
-> +» ··CPUs·(MTE·added·in·ARMv8.5·ISA).
-> +
+Here is the 2nd version of the series to unify the kretprobe trampoline handler
+implementation across all architectures which are currently kprobes supported.
+Previous version is here;
 
-I do not thing we should make KASAN_HW_TAGS MTE specific especially because it
-is in the common code (e.g. SPARC ADI might want to implement it in future).
+ https://lkml.kernel.org/r/159844957216.510284.17683703701627367133.stgit@devnote2
 
-Probably would be better to provide some indirection in the generic code an
-implement the MTE backend entirely in arch code.
+This series removes the in_nmi() check from pre_kretprobe_handler() since we
+can avoid double-lock deadlock from NMI by kprobe_busy_begin/end().
+In this version, I also add a patch to use kfree_rcu() for freeing kretprobe
+instance objects so that we don't call kfree() in NMI context directly.
 
-Thoughts?
+The unified generic kretprobe trampoline handler is based on x86 code, which
+already support frame-pointer checker. The checker is enabled on arm and arm64
+too because I can test it. For other architecutres, currently the checker
+is not enabled. If someone wants to enable it, please set the correct
+frame pointer to ri->fp and pass it to kretprobe_trampoline_handler() as the
+3rd parameter, instead of NULL.
 
--- 
-Regards,
-Vincenzo
+Thank you,
+
+---
+
+Masami Hiramatsu (15):
+      kprobes: Add generic kretprobe trampoline handler
+      x86/kprobes: Use generic kretprobe trampoline handler
+      arm: kprobes: Use generic kretprobe trampoline handler
+      arm64: kprobes: Use generic kretprobe trampoline handler
+      arc: kprobes: Use generic kretprobe trampoline handler
+      csky: kprobes: Use generic kretprobe trampoline handler
+      ia64: kprobes: Use generic kretprobe trampoline handler
+      mips: kprobes: Use generic kretprobe trampoline handler
+      parisc: kprobes: Use generic kretprobe trampoline handler
+      powerpc: kprobes: Use generic kretprobe trampoline handler
+      s390: kprobes: Use generic kretprobe trampoline handler
+      sh: kprobes: Use generic kretprobe trampoline handler
+      sparc: kprobes: Use generic kretprobe trampoline handler
+      kprobes: Remove NMI context check
+      kprobes: Free kretprobe_instance with rcu callback
+
+
+ arch/arc/kernel/kprobes.c          |   55 +---------------
+ arch/arm/probes/kprobes/core.c     |   79 +----------------------
+ arch/arm64/kernel/probes/kprobes.c |   79 +----------------------
+ arch/csky/kernel/probes/kprobes.c  |   78 +---------------------
+ arch/ia64/kernel/kprobes.c         |   79 +----------------------
+ arch/mips/kernel/kprobes.c         |   55 +---------------
+ arch/parisc/kernel/kprobes.c       |   78 ++--------------------
+ arch/powerpc/kernel/kprobes.c      |   55 +---------------
+ arch/s390/kernel/kprobes.c         |   81 +----------------------
+ arch/sh/kernel/kprobes.c           |   59 +----------------
+ arch/sparc/kernel/kprobes.c        |   52 +--------------
+ arch/x86/kernel/kprobes/core.c     |  109 +------------------------------
+ include/linux/kprobes.h            |   35 +++++++++-
+ kernel/kprobes.c                   |  126 +++++++++++++++++++++++++++++-------
+ 14 files changed, 182 insertions(+), 838 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
