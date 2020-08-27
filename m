@@ -2,153 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D0E2543AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A6A2543B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbgH0KXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S1728623AbgH0K3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728666AbgH0KXl (ORCPT
+        with ESMTP id S1727911AbgH0K3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:23:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29438C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:23:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r15so4810111wrp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:23:41 -0700 (PDT)
+        Thu, 27 Aug 2020 06:29:05 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A8BC061264;
+        Thu, 27 Aug 2020 03:29:04 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id h20so2264757ybj.8;
+        Thu, 27 Aug 2020 03:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0vdvNJDaA2R7UXSkN77bjSvK1qeX8JyEc0qDlajxxQs=;
-        b=rL9s269pC6oLPkDI3tfzuJ3tZopAeQgT12ll7VhkWMrh63n8tMcGzsY2JpzvUyY+2V
-         BnJoTVPMzTTKxL2ZYBqaJb/jvPfj/1afWfg89ZMHpUb3Svwd6G3PRT3EnIhj9OvUMJ54
-         ookJUfCmWVwiMG/53gmkqcqX5C6OZjjwKAMZzpAvBtwBJ86bjd7HemRjxRpSGfSLmA9i
-         qXBv62SNbammdu2urTkc3+B87Y8ZtDUgCFBF7f6yzegW6wqTA5QKgw2GxtxNTbWOZDaB
-         9Caq/5XYLKnqKdOMzAiYdzHptBi95kgEr3utkviH2i+wTx5Qa3VoZmWOBbPe1L/dNfiI
-         VaQw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9p4OFhVWpfoFModMO68JgN4kLUfWn4ZrdXLtONTzats=;
+        b=cfWl0T/uduUii6AXuAat69qCUSaqTEdxBOxERMz8xs9hUTeNu4BCzoJcLPwR00qgaV
+         e3eVum1dak1LKAu6424cfl806r5wrJQjNM2K8QVrKluzB3jgu6C3boB0V2FEr9rrfxL7
+         lIXQPqg7SeiBTIppjggaUv9YEH/mBrPYIKUDHoeO8TO3qeIdPjYyO2uLYq/c0tLtyZgK
+         yTMSksf7A3iJiUAafJDVQbjzP3gldibdgWZtol3EGo79vI2HpSRKC9BWaG4o7nGdFQOD
+         HB/hCPrmJJLgxvzee4ibdYUvgpLcL+vEmQ0FoV3MwVvx1Psro+P6iikMcwUAL/H1Qp5J
+         Xz8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0vdvNJDaA2R7UXSkN77bjSvK1qeX8JyEc0qDlajxxQs=;
-        b=pNkjcjw8MaMSWxaVxBoc8iktc6egsdWKSnp6JLkidpUGMlgpbFxROrrTmqR0geABKk
-         o9HYiZHJBd5/aybsoArq8TEgTaxHRRFejzyMw4jrqsE81LEgISWKThq2NNso/aXMMciZ
-         eoqmvzCG7Bm1YSJXnoD2xPJ/LhA/FkC4hvnMn836wylNEEvzHKEBRMwutm4Y4H79fQEM
-         8gJQ9fIOcJM3LlXkAyfr8riKTSDbvivhMheGFQpyMRZUVsbloyP80NU0xlHVGcET8jyE
-         mzyh63hsLVivwRRvrckVEnih6RfWNOtaO0BitOEKpeUaZh3uoTqondiEgrncGBzEaYw/
-         EORQ==
-X-Gm-Message-State: AOAM5335BLc15cPr5ZtmfKQGrI6nRQsGFg0/u3oOMNPQ4kC6LyVNhRR8
-        Gg86FoSRrGAHZNKMJWTZDH0WUQ==
-X-Google-Smtp-Source: ABdhPJyoJ9GbQB398A5GCtwxbatRdwlRJ0T5rbxABDfukLqBP6BMHFxbSgZX80fPQmQT5e64awRLCQ==
-X-Received: by 2002:adf:a48d:: with SMTP id g13mr3444805wrb.212.1598523819563;
-        Thu, 27 Aug 2020 03:23:39 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id k13sm4157086wmj.14.2020.08.27.03.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 03:23:38 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 12:23:33 +0200
-From:   Marco Elver <elver@google.com>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        andriy.shevchenko@linux.intel.com, geert@linux-m68k.org,
-        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, arnd@arndb.de,
-        elfring@users.sourceforge.net, mhocko@suse.com
-Subject: Re: [PATCH] lib: kunit: add list_sort test conversion to KUnit
-Message-ID: <20200827102333.GA3564678@elver.google.com>
-References: <20200729192357.477350-1-vitor@massaru.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9p4OFhVWpfoFModMO68JgN4kLUfWn4ZrdXLtONTzats=;
+        b=qQmoppeR/Hb/vgPdSB9ZJAmNDP/BPZ/frZVFavedzCRF6UVTM3E+xw9r3zY9/WW/mS
+         3dTb17GXYSNl3HsyQcj01RJoASsQsnNdFGPctCNs6CQz3JknG3FesM2S4hpj92TLMXKU
+         6BuzGoEE34dZB/QLls8ICd2zuj9BJP2X6wp/CEhGJQuB6IOO+lRLijYrdrDEZWvI4EPp
+         MLGkK2srGLTy+5dC3QCVmK38Cffd6zhaCEQb+t8pXKZAw7d5uhij0wJXu+brxhNaZm9z
+         u20LCMy55n16mGaoaMGYLdAtm3xgVM4Ue/ja2GheLuaF276DmOj0k+6mgxpnmGEKLuB0
+         uz0A==
+X-Gm-Message-State: AOAM533iQo7THlZdajGH/PrFmrkBVEOACl5BtTPP7g5nwtQTk4aJnrSw
+        FX6vPL7FiSFNgvEIVAMHTXV1i/jHuPrMRCnw3+4=
+X-Google-Smtp-Source: ABdhPJx324llbhik3pGqUwsEqNwv5W5jnr6M095ctSXSrBgZc/2KENC6v9kVZnh8wCEtOOI2vH7CQaoNO4SKSVMh3Go=
+X-Received: by 2002:a25:8149:: with SMTP id j9mr28778381ybm.214.1598524144200;
+ Thu, 27 Aug 2020 03:29:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729192357.477350-1-vitor@massaru.org>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+References: <1594676120-5862-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594676120-5862-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594676120-5862-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 27 Aug 2020 11:28:37 +0100
+Message-ID: <CA+V-a8voHnHdmSBmewE3BStksxE4dEM1CtE7KwPZ5dn6PmV_0A@mail.gmail.com>
+Subject: Re: [PATCH 8/9] dt-bindings: net: renesas,ravb: Add support for
+ r8a774e1 SoC
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 04:23PM -0300, Vitor Massaru Iha wrote:
-> This adds the conversion of the runtime tests of test_list_sort,
-> from `lib/test_list_sort.c` to KUnit tests.
-> 
-> Please apply this commit first (linux-kselftest/kunit-fixes):
-> 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
-> 
-> Code Style Documentation: [0]
-> 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+Hi David,
+
+On Mon, Jul 13, 2020 at 10:36 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> Document RZ/G2H (R8A774E1) SoC bindings.
+>
+> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > ---
->  lib/Kconfig.debug                           | 29 +++++---
->  lib/Makefile                                |  2 +-
->  lib/{test_list_sort.c => list_sort_kunit.c} | 73 +++++++++++----------
->  3 files changed, 58 insertions(+), 46 deletions(-)
->  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 9ad9210d70a1..de4fd020a4af 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1854,16 +1854,6 @@ config LKDTM
->  	Documentation on how to use the module can be found in
->  	Documentation/fault-injection/provoke-crashes.rst
->  
-> -config TEST_LIST_SORT
-> -	tristate "Linked list sorting test"
-> -	depends on DEBUG_KERNEL || m
-> -	help
-> -	  Enable this to turn on 'list_sort()' function test. This test is
-> -	  executed only once during system boot (so affects only boot time),
-> -	  or at module load time.
-> -
-> -	  If unsure, say N.
-> -
->  config TEST_MIN_HEAP
->  	tristate "Min heap test"
->  	depends on DEBUG_KERNEL || m
-> @@ -2173,6 +2163,25 @@ config LIST_KUNIT_TEST
->  
->  	  If unsure, say N.
->  
-> +config LIST_SORT_KUNIT
-> +	tristate "KUnit Linked list sorting test"
-> +	depends on KUNIT
-> +	depends on DEBUG_KERNEL || m
+>  Documentation/devicetree/bindings/net/renesas,ravb.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>
+Gentle ping, this patch is not queued up yet at [1].
 
-I think the style [0] you linked suggests '*_KUNIT_TEST' for config
-variables.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/log/
 
-Only noticed this because I was doing a
-	
-	git grep 'config.*TEST'
-
-to find tests in the kernel + new tests floating on the LKML.
-
-Apologies for picking this patch to comment on, but if it's still
-changeable it might be worth adjusting.
-
-> +	help
-> +	  Enable this to turn on 'list_sort()' function test. This test is
-> +	  executed only once during system boot (so affects only boot time),
-> +	  or at module load time.
-> +
-> +          KUnit tests run during boot and output the results to the debug log
-> +	  in TAP format (http://testanything.org/). Only useful for kernel devs
-> +	  running the KUnit test harness, and not intended for inclusion into a
-> +	  production build.
-
-Not a big deal, but I'm not sure if summarizing KUnit here is useful.
-You already link to the documentation below.
-
-> +	  For more information on KUnit and unit tests in general please refer
-> +	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-...
-
-Thanks,
--- Marco
+Cheers,
+Prabhakar
