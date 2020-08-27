@@ -2,168 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5AB25453A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0DC25454F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgH0Mnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S1729182AbgH0Mst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728977AbgH0MXs (ORCPT
+        with ESMTP id S1728973AbgH0M1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:23:48 -0400
-Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937E7C061235;
-        Thu, 27 Aug 2020 05:23:47 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 0CE80634C87;
-        Thu, 27 Aug 2020 15:23:37 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kBGwL-0000XK-Cs; Thu, 27 Aug 2020 15:23:37 +0300
-Date:   Thu, 27 Aug 2020 15:23:37 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 4/4] media: open.rst: document mc-centric and
- video-node-centric
-Message-ID: <20200827122337.GD851@valkosipuli.retiisi.org.uk>
-References: <cover.1598512802.git.mchehab+huawei@kernel.org>
- <ce0a0412fb21ba3256c42aa7aeceb7b33bd358ab.1598512802.git.mchehab+huawei@kernel.org>
+        Thu, 27 Aug 2020 08:27:36 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B5BC061232
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:27:26 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z9so4942383wmk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1BFNwvu8rBwN9stUjG3d5lzv7XiXDcsYMpVKhxq+mug=;
+        b=V8UTjeOO7pt4cwjykrFJxMqmeekLT8aWiye+vmiOZVahIZF9KN0OKSV85fVs2AEaEG
+         +zsmm3OyV6PIEDOoGA3vwhNZIW1Uqk5dFSxhOVqZO0odMq53qQeuKXRcXhuSL7jndXcH
+         ArlgSRf8BnVoKQ8gMQN7yfSPNUEjPlAc4Cjwop15/3gMjDG3sgBmr/mxyP2XZdsL1/VW
+         d4p5CHmDQPa0ibo7mER4eW+AcH/qw8YdaMagTV7NHGqBervzjJIhf9UYit9hUazLgwtd
+         xBr+c9hU8tAKa7b9ZUcPeKd7OWA1p0waqTH04NAGKFeB0SfRO+5W0sBKXysRkh8TEpIv
+         7izg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1BFNwvu8rBwN9stUjG3d5lzv7XiXDcsYMpVKhxq+mug=;
+        b=oKbP47LM9X3CBC+MsZeUbaLvJMUQ/6bXHJTdbcxQWcnD52DMw3rBrYy0PV2s1hh2p7
+         IhTtkP0D31KrR5qKjRHn4bFTogaaad+WmUhSSLVhnb+5k5TSXS7k7lt3VP947hP1lk8l
+         GgqV8TkhmlAyUAZmDdK9RRvI6q67iPXXczt7eLdTGxl8nJM4asCCnmmmG1BtE2UxnD2k
+         wPcVLq79CegfhmeatPDZ/m+xE62as4ZIS1Yr4Q43tanaS5riP9WIv+Y02RFBH1i8cbm6
+         ZxtZtHb3cZudvogeLL1+b7tII7wT0Pro17gv0iRdBPu3tYqPGc6KfqL5Q3E6n53wL9Y0
+         XDew==
+X-Gm-Message-State: AOAM533iBqWAaW9n9Pjw7rk0t1drvWjEpI2eZwOoTqY156wYg+wly/Jz
+        rw6v2JtVJO/LNaLjNwgIwtz3Ig==
+X-Google-Smtp-Source: ABdhPJwvpTWcMGLE3zucq/3pV3891tweVjmimX9yI3nUKK4pyaTJ+vc6Q4F0Sf6zd7TJj06U8785eA==
+X-Received: by 2002:a7b:c147:: with SMTP id z7mr12068616wmi.151.1598531244671;
+        Thu, 27 Aug 2020 05:27:24 -0700 (PDT)
+Received: from dell ([91.110.221.141])
+        by smtp.gmail.com with ESMTPSA id h5sm5660395wrt.31.2020.08.27.05.27.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 05:27:23 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 13:27:22 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        hao.wu@intel.com, lgoncalv@redhat.com,
+        matthew.gerlach@linux.intel.com, trix@redhat.com,
+        russell.h.weight@intel.com
+Subject: Re: [PATCH v4 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+Message-ID: <20200827122722.GG1627017@dell>
+References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
+ <159846941049.39902.15220563960562003689.b4-ty@kernel.org>
+ <20200827065647.GQ3248864@dell>
+ <20200827122013.GB4674@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce0a0412fb21ba3256c42aa7aeceb7b33bd358ab.1598512802.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200827122013.GB4674@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Thu, 27 Aug 2020, Mark Brown wrote:
 
-On Thu, Aug 27, 2020 at 09:21:48AM +0200, Mauro Carvalho Chehab wrote:
-> When we added support for omap3, back in 2010, we added a new
-> type of V4L2 devices that aren't fully controlled via the V4L2
-> device node.
+> On Thu, Aug 27, 2020 at 07:56:47AM +0100, Lee Jones wrote:
+> > On Wed, 26 Aug 2020, Mark Brown wrote:
 > 
-> Yet, we have never clearly documented in the V4L2 specification
-> the differences between the two types.
+> > > [2/2] mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
+> > >       commit: 53be8bbc2f4058d4a6bfff3dadf34164bcaafa87
 > 
-> Let's document them based on the the current implementation.
+> > Que?  This is yet to be reviewed.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../userspace-api/media/v4l/open.rst          | 58 +++++++++++++++++--
->  1 file changed, 52 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/open.rst b/Documentation/userspace-api/media/v4l/open.rst
-> index b9367e02b884..e9cfbe954918 100644
-> --- a/Documentation/userspace-api/media/v4l/open.rst
-> +++ b/Documentation/userspace-api/media/v4l/open.rst
-> @@ -13,6 +13,52 @@
->  Opening and Closing Devices
->  ***************************
->  
-> +.. _v4l2_hardware_control:
-> +
-> +Controlling a hardware peripheral via V4L2
-> +==========================================
-> +
-> +A V4L2 hardware peripheral is usually complex: support for it is
-> +implemented via a bridge driver and often by several additional drivers.
+> Sorry, meant to only fetch the first patch.  Dropped now.
 
-How about this, instead:
-
-Hardware that is supported using the V4L2 uAPI often consists of multiple
-devices or peripherals, each of which have their own driver.
-
-> +The bridge driver exposes one or more V4L2 device nodes
-> +(see :ref:`v4l2_device_naming`).
-> +
-> +There are other drivers providing support for other components of
-> +the hardware, which may also expose device nodes, called V4L2 sub-devices.
-> +
-> +When such V4L2 sub-devices are exposed, they allow controlling those
-> +other hardware components - usually connected via a serial bus (like
-> +I�C, SMBus or SPI). Depending on the bridge driver, those sub-devices
-> +can be controlled indirectly via the bridge driver or explicitly via
-> +the :ref:`Media Controller <media_controller>` and via the
-> +:ref:`V4L2 sub-devices <subdev>`.
-> +
-> +The devices that require the use of the
-> +:ref:`Media Controller <media_controller>` are called **MC-centric**
-> +devices. The devices that are fully controlled via V4L2 device nodes
-> +are called **video-node-centric**.
-> +
-> +Userspace can check if a V4L2 hardware peripheral is MC-centric by
-> +calling :ref:`VIDIOC_QUERYCAP` and checking the
-> +:ref:`device_caps field <device-capabilities>`.
-> +
-> +If the device returns ``V4L2_CAP_IO_MC`` flag at ``device_caps``,
-> +then it is MC-centric, otherwise, it is video-node-centric.
-> +
-> +It is required for MC-centric hardware to identify the V4L2
-
-s/hardware/drivers/
-
-> +sub-devices and to configure the pipelines via the
-> +:ref:`media controller API <media_controller>` before using the peripheral.
-> +Also, the sub-devices' configuration shall be controlled via the
-> +:ref:`sub-device API <subdev>`.
-> +
-> +.. note::
-> +
-> +   A video-node-centric may still provide media-controller and
-> +   sub-device interfaces as well.
-> +
-> +  However, in that case the media-controller and the sub-device
-> +  interfaces are read-only and just provide information about the
-> +  device. The actual configuration is done via the video nodes.
->  
->  .. _v4l2_device_naming:
->  
-> @@ -109,7 +155,7 @@ Related Devices
->  Devices can support several functions. For example video capturing, VBI
->  capturing and radio support.
->  
-> -The V4L2 API creates different nodes for each of these functions.
-> +The V4L2 API creates different V4L2 device nodes for each of these functions.
->  
->  The V4L2 API was designed with the idea that one device node could
->  support all functions. However, in practice this never worked: this
-> @@ -119,17 +165,17 @@ switching a device node between different functions only works when
->  using the streaming I/O API, not with the
->  :ref:`read() <func-read>`/\ :ref:`write() <func-write>` API.
->  
-> -Today each device node supports just one function.
-> +Today each V4L2 device node supports just one function.
->  
->  Besides video input or output the hardware may also support audio
->  sampling or playback. If so, these functions are implemented as ALSA PCM
->  devices with optional ALSA audio mixer devices.
->  
->  One problem with all these devices is that the V4L2 API makes no
-> -provisions to find these related devices. Some really complex devices
-> -use the Media Controller (see :ref:`media_controller`) which can be
-> -used for this purpose. But most drivers do not use it, and while some
-> -code exists that uses sysfs to discover related devices (see
-> +provisions to find these related V4L2 device nodes. Some really complex
-> +hardware use the Media Controller (see :ref:`media_controller`) which can
-> +be used for this purpose. But several drivers do not use it, and while some
-> +code exists that uses sysfs to discover related V4L2 device nodes (see
->  libmedia_dev in the
->  `v4l-utils <http://git.linuxtv.org/cgit.cgi/v4l-utils.git/>`__ git
->  repository), there is no library yet that can provide a single API
-> 
+Thanks.
 
 -- 
-Sakari Ailus
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
