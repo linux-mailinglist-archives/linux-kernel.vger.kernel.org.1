@@ -2,140 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072AD254774
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13A2254750
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgH0Ou2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:50:28 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:60056 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbgH0Npl (ORCPT
+        id S1728148AbgH0OsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:48:25 -0400
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:49520 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728043AbgH0OsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:45:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1598535941; x=1630071941;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=akviaS+P70RNeG7SwRi/XIf2nVfV/oZr/bJ5NWuUj3o=;
-  b=UzPU2o8ZK9lhE6VFE9JLhllM1Tm3IdjnUwQEPQn4Iu5KVyAgVZi34I88
-   5KWOuqMXRwmmxCBzeLPQLf/IbF3kV05MsdqlPcW5XT5R/4l67JrlPX3io
-   qtMy6413b8GwVdwhWbFC+5vMDxpyJQDQoN/mFL6kfe+qoqswJ/1vfeW6u
-   taTsO4Qvf5NGwrU+RasiBlDqlrxZ3TbxvTvbyJbxkKIVjhUuwFi2DToKi
-   /nn5fj5ia0NTSmmXCQe1umjiq2+SHgcTvCj9NpR07UOEc1FOwSBkqSKUL
-   jujzcNoFxLQ0ysLznNFn1paM8Nj6ZsLkIT2yzAGvCb06VnYo5jo8h2NbJ
-   w==;
-IronPort-SDR: h1IePQS9kqy3peKeDSzTPaGC8Bz8/FRNvXAzPcUgOBmQyOmWXFLKd/BcKwbryePxJD2DuaGuuG
- /uSfBtpGEnI+D68J/mHz9bcs07yvK2Th8Ve+/spd7HGdmkh+WAUyaRq76SI4dLe2a80WSZzNW9
- 3FMrCvLip8j8EWyiw1ZUTwgxTzzF6Efo1PSbXlPl/ku04mD6//tCAIE21+u0juZw+aMRaER/5Z
- x6AjbHMmqmsnbACdIY/8ot8fd5tbnBa7jU3wWervDlFuNZuarpw6IiJA5bsvbqoFzKyn9cQi7R
- AOQ=
-X-IronPort-AV: E=Sophos;i="5.76,359,1592841600"; 
-   d="scan'208";a="145975570"
-Received: from mail-co1nam11lp2169.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.169])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Aug 2020 21:45:12 +0800
+        Thu, 27 Aug 2020 10:48:01 -0400
+X-Greylist: delayed 3506 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 10:47:52 EDT
+Received: from pps.filterd (m0098781.ppops.net [127.0.0.1])
+        by mx0a-00010702.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RDitBC012196;
+        Thu, 27 Aug 2020 08:47:45 -0500
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2051.outbound.protection.outlook.com [104.47.36.51])
+        by mx0a-00010702.pphosted.com with ESMTP id 332yd26r2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 08:47:45 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XM43MPI4GTaejlG2AeHikqCH3r4LYTUhjap991ayH3SqRuRW7kjHXenTd+VXW///d7doxtgQAOQcfV2MQ2cn3JOBEOF7Y1y/2hJqBWAZkcvdnEX57lIlyW9N9luL763gF7iZ5iAW3W4iLjfNCm1gvpCGoEoel93tz1lJwOdCCPhGmQMds4wOazBd17bw8Q4kOWwFuGgsSwQJkhzX8B2o2L1+YhYooKAh4VGDsRg/XC438b6n0gMBf9nPD76RBoSIRkYkbxDlIehyIQ2puKjFSjT4Lzt/uuEdQK07Koyiy+FokwQHwVNK9pb2xfWEL354Tk2h1MNLXQRdYOw42CT3FA==
+ b=Ez6aI/WDLGWO4m0FyoH2ZPLStT9/1pZy7hasLUbIgc820KCUzVs/0cSvEBnhKuBc6aae4Fa9CeRJyNabk471UQCrZ+IVmPlNDrbWYD5oKch3VlY9qGb2UA5UlOY3H0A/MIHedkklioe5UsivkFIa+AwNcxq0evV67rEecTnUOtBgKNwEt+IXJbgH+MQCgDqGp04KYLMv+neF9hhNBv3t17p+iJCLO61nUPPOuGTpFEMTfaJGydJfM9MJ9WNAxiNP73iwicDZt88/s2/yBvKKk7kVjPhClVQjBJByo5UT6oiSQpDIIw0XSVOls4FUyQ4sQpn/MFIC+hwL/LYE+eIFEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=akviaS+P70RNeG7SwRi/XIf2nVfV/oZr/bJ5NWuUj3o=;
- b=GTE8oENyVlfBXh+rFytd9HBPKigJP0xZ7YhFpK1fgE0lz8cpkqhgPR5r3ra60AtsZhZCWTxwJGOwUZq47VDsuBJquv7ZMcXxwRujvFyF6PHsyWpA2aRVImt/rGWQp2B23MaGVurBiguYPUTseM8M72YzYEs+0IhIfuXbr+GTupM7aL7efT+sbsRoTw1b4sDO8DAxcp5aj3KYJXK5NjjnYX4DNGGRiEMGaho+Ptvmxg4QIlfWGt6Y3T+v9x/3u057w3ghJ+zhAPEXIf4lxUBcXKz6imhgrEd1zw7rEXF9u9U+yYfX5jy8jSyR1tqgzg6v9jnb0XcfDbIejXiU9fqp7w==
+ bh=KnzD30OSqbBlP3TKzzQR2rHtCNCizQB4pKMSVRPdM3Y=;
+ b=C7DnxnC6wWzWuRLABowfk+hJ95IEPXg0F+n/kOuLQLQgj+K6MQhQ+VViH7LHyjtdSg52kJ49SOluQ+9DLf7BIHZb7Fw/ZXD/yVJtGQ3ADrVxsZOOWbN2mqDxTV7waXqAGzNwxKtugDZraFLPmpNxe0+IPfWjoZMRdmbe3qOo4LTClwCo91xf9WE1revegTfe5734ImaUpSHNNJ9JiX//EbMZtMwa5Fi1HIOk1sqcilGrrK5ud8QReW0qHmDwawXBMemwtS9u+AMVesG2hqxVdls0o2zvHa4eqG3yLywzYFYmGN7RrqnMbfRPnI8tdkq/JPVZbbIm9QqNiHge6NGLOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=akviaS+P70RNeG7SwRi/XIf2nVfV/oZr/bJ5NWuUj3o=;
- b=n+X3CoY7uQ+EG1qDikmYJF5P4p2mRYrc7n5VFdLpD3Cg9Uov0feMEzfoSg+pgR1JG5UZBjCJYPumKfV1qlx65sM2Yd6AXOpSpWDWw70QsuaQqB0i6K3EZJ8PyvUgPtuI2BP05RhqH9u2s9LMOfJTamnCa4IFCzwAjfcOd/qaFw8=
-Received: from BN6PR04MB0724.namprd04.prod.outlook.com (2603:10b6:404:ce::23)
- by BN6PR04MB0933.namprd04.prod.outlook.com (2603:10b6:405:3e::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Thu, 27 Aug
- 2020 13:45:11 +0000
-Received: from BN6PR04MB0724.namprd04.prod.outlook.com
- ([fe80::cd08:5da9:34ed:4ec4]) by BN6PR04MB0724.namprd04.prod.outlook.com
- ([fe80::cd08:5da9:34ed:4ec4%2]) with mapi id 15.20.3305.032; Thu, 27 Aug 2020
- 13:45:11 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] null_blk: add support for max open/active zone limit for
- zoned devices
-Thread-Topic: [PATCH] null_blk: add support for max open/active zone limit for
- zoned devices
-Thread-Index: AQHWetp4dfc0OXrFHkmHJcJ6rQ91L6lL+tmA
-Date:   Thu, 27 Aug 2020 13:45:11 +0000
-Message-ID: <20200827134509.GA62540@localhost.localdomain>
-References: <20200825122244.126129-1-niklas.cassel@wdc.com>
- <CY4PR04MB37518DF84867B6E8573A13B0E7570@CY4PR04MB3751.namprd04.prod.outlook.com>
- <CY4PR04MB3751304895558D34A8EE8DB1E7570@CY4PR04MB3751.namprd04.prod.outlook.com>
-In-Reply-To: <CY4PR04MB3751304895558D34A8EE8DB1E7570@CY4PR04MB3751.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [85.224.200.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f0b1b285-2578-4f24-ca99-08d84a8f6b64
-x-ms-traffictypediagnostic: BN6PR04MB0933:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR04MB0933C6018CC1C645B9EDD5B6F2550@BN6PR04MB0933.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GZpydKrgDcj89+a0MW7v8WlkLiXQ/LEYgIyLjkOMpp2jGuUqKBrlvj01DXy9Lff577q+TPEa+O46INjk+90NqawpCO0zze6PeVKcPQ9S7+/m4QXpkkmMSyxu5QiPc6HeGn8FC9XhEa2rkqymrcFH4OEIsmEsUkk25m+HV+NE4NRrqk+vYJDqaJNtN8vhH4+ML/gvSTzadB37dI08yQop6ARGAPM9/uAnVT5P7vokTXbw8BIvD+ogZE9QmFmntn/W/34C2CLL5VJnUFBLxfGOy7hCFCkcZoCB2emnQdQuTK2gttN+4NWr1vJCFgaAs3+2XAO3g4wWwqa93864W6YIhg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0724.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(396003)(376002)(136003)(6512007)(8936002)(8676002)(6862004)(6636002)(76116006)(478600001)(9686003)(5660300002)(64756008)(66556008)(71200400001)(1076003)(6486002)(66946007)(66476007)(66446008)(91956017)(2906002)(4744005)(86362001)(33656002)(316002)(186003)(6506007)(53546011)(26005)(4326008)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: wZt+H5ljt3riQ5BH897XSRXAGbQ6cmuqBg5Tnz8Cpinf4Tmkm7yrW4vdZwZqNEVjkCdcnJiuwvkE8OGbA+428nics8kcdyIMYLPEHMc78cD09X2dSCUwOcPprrYWm5rCalT1TqUywDtY3zMAoL//DAc/y26DKu7s/Sym/TPmX0Bj4WzTXBNajuEd3btByEAEVWuRQxsYjqANuXrHELHYIt1EHl5YPh1yDYtKPHa2NSQzyrnPp0tEFLTVQf8XtiKYu7cVEG1W4ITvzGUnrscIVaZDaWCzoYpOu7j8/TZkYVc3/n3L7aDGiUWx++GybRn3hkLk0un9g/PPU2cKFx292290PP3RE3m4KTtAAuwzZ+eOgYWJmUrMgIXWpqbh3b5MTNdKQ4rzqIaKR+6o46uaaniMJw6rhjmHV/oDydEmqa7hE/E2mTPAKhdGIyZ5sSw2cM+ymAy5mbswrqZwD2S3F8TUitYQP/R48Iab0NSV+pAlXHRnHcMEhd3b7ifVssPCeNWDCejM3o/sdQO0FfaH9p5Q/jAx7TQgdJbnQAfY6vFuosmnwY0pi54VxQf9CQbHh+yAraHuRUUTtZxrNskRxfZFX+VnkHWd+mWp9uDKZ+qL9ko/0SE/sNWOxCyvSJRpmp/Oqt4+ijw+df+NoN/+Mw==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B2752D27D41D6A4893B977C6173741CF@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ bh=KnzD30OSqbBlP3TKzzQR2rHtCNCizQB4pKMSVRPdM3Y=;
+ b=EenSbI5igwG0DV2YbMoNxjrI6AXkRc2qhsprUisZELEjlWAjSF9AexR2VUfwPPO4fyB+/+olRlZvbz3Wv3SiEppZCMYlxs9aoEhE06IPYoEJ0atezP+hgjmdepEQ6YzwNaPrFzazALTn5PMgghRpye5+yiBAq65QGzjHDt4RGsQ=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=ni.com;
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29) by SN6PR04MB4829.namprd04.prod.outlook.com
+ (2603:10b6:805:b0::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Thu, 27 Aug
+ 2020 13:47:43 +0000
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::30f8:af2b:efff:2750]) by SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::30f8:af2b:efff:2750%3]) with mapi id 15.20.3305.026; Thu, 27 Aug 2020
+ 13:47:43 +0000
+Date:   Thu, 27 Aug 2020 08:47:42 -0500
+From:   Michael Auchter <michael.auchter@ni.com>
+To:     Ben Levinsky <ben.levinsky@xilinx.com>
+Cc:     stefano.stabellini@xilinx.com, michals@xilinx.com,
+        devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
+        emooring@xilinx.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jliang@xilinx.com,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <20200827134742.GB404249@xaphan>
+References: <20200827015810.11157-1-ben.levinsky@xilinx.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827015810.11157-1-ben.levinsky@xilinx.com>
+X-ClientProxiedBy: SA0PR11CA0016.namprd11.prod.outlook.com
+ (2603:10b6:806:d3::21) To SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by SA0PR11CA0016.namprd11.prod.outlook.com (2603:10b6:806:d3::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Thu, 27 Aug 2020 13:47:42 +0000
+X-Originating-IP: [2605:a601:ab6f:2000:2739:a39e:9b12:ab20]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd5453c7-6bb2-460d-4803-08d84a8fc59a
+X-MS-TrafficTypeDiagnostic: SN6PR04MB4829:
+X-Microsoft-Antispam-PRVS: <SN6PR04MB48294F21CE7DF9312522F53B87550@SN6PR04MB4829.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oQ9m2qXaJu5z/mODUVbNUvWAmLxtHoGgut3rEi2EZHNiN3UN1X+Ib1icNvIEoV+wBZxewXtn05a07v7+65IXXmw++HES8M896cAkkzFuc7kFnxUF3IA4ccl9cfGcp/6J8PdMihlyS8nNhjhW9pNMTulD1yI792+u06i2/fimjEjf0L9Xxz+KvuiMGAJNZ4oTFiFIDrz9gdOXHpzHRFKHmK4two4c45/nklb6bYM+hiLnTB2AP2cya/Fn/+XCnD6i9AkS5hg3ucHCrVSFDSIYf1WGo608haWDV4fKCDmpW6H20DiglX3SWcjxnVf66IrQeAbSGVHKmISfQrp5jaWzuw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3646.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(396003)(366004)(376002)(136003)(39860400002)(5660300002)(86362001)(7416002)(478600001)(33656002)(44832011)(2906002)(6486002)(9686003)(316002)(186003)(8676002)(52116002)(1076003)(6916009)(66556008)(4326008)(66946007)(66476007)(83380400001)(16576012)(956004)(8936002)(33716001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: D6q8zs2YATuyC2VFWcOHTd5gszxC2DPvLPTkymqe6O2TlI84u/JKFfZYjMytjYx3EQsM2kAAn2ejHw5WDmUmn8vuzHRyMJyqZrvHrBR4K1ABKcOpu/h9dTLdgWz6VToWXvoatZ9KDOyPteNmxFdasoqB7iSiYkjLMXfpbsmdSzNXNvc7iJkPrM5Zv2E6pdbFwD5tGSsuOFNksH0Ww0ctHOMONLWUFYt3hWgQKCKQDz1FMtJTrUTX6vbbbwfcawjNirD4Un4I9j4UpsCiRP8UUsfPUHJ3+9zbcQ++Aq00mtzrN9T/Y67wRohyRUE5OuUC7KeOwcbOT1dTfi0bSeuy2H4EsyeNeOmuJpBACZD+zNlHGl/h6EVnPgJaAOEDSPGmnUZIa61DRrTSkymYOXroFgD6LPLyp3jFAGHd0EyVUIXiiLPOI4A5OMY8o9nNkmMDHSup0CY9qLJM0B1x5n9q+UnzBFmFfBvjELOjmfVotiLDfgM8FzKK4bQ/0rv5yzaL+WyrNpYonUFDqAR13+yvcT2vaLN/vbmpZsqcOX8bDE6Mv9gpPpnNrp7ajCOVQpgEMZU3Z+IzSo9gFIw843M8x8LrwP2w29NoXMNsp1KzEaQiPvy4hEk15Y5XmBUGNPZRQQWsPpeGH8W96eQn/k3Yf2P+8t7aXZXXi3kdS9b8hSeEZkPEIQbSoXj1jOvfw7lY0YxMqpDN5eq6rY05FLGLQQ==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd5453c7-6bb2-460d-4803-08d84a8fc59a
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3646.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR04MB0724.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0b1b285-2578-4f24-ca99-08d84a8f6b64
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2020 13:45:11.3292
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 13:47:43.1654
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KHtKpf5z0xyoc/2mh5oDFSZQ1Aj3mTG5U2LosPo7XnT89zPU1Cp6trQKKoTF4GsHIsQ47U97GwpvQgDCRK1fOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR04MB0933
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: adb81k0fCiBBH+IGYajJWWI2eDQeUc0i1Dnnsa5ESW3HtUVBg6DLotRIa40qCBR+pZTVtAQ9ihNFqQGNwLGG9A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4829
+Subject: Re: [PATCH v9 0/5] Provide basic driver to control Arm R5 co-processor
+ found on Xilinx ZynqMP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 mlxscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=1 adultscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0
+ impostorscore=0 mlxlogscore=634 bulkscore=0 classifier=spam adjust=30
+ reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008270104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 11:03:58PM +0000, Damien Le Moal wrote:
-> On 2020/08/26 7:52, Damien Le Moal wrote:
-> > On 2020/08/25 21:22, Niklas Cassel wrote:
+Hey Ben,
 
-(snip)
+On Wed, Aug 26, 2020 at 06:58:05PM -0700, Ben Levinsky wrote:
+> v10:
+> - add include types.h to xlnx-zynqmp.h for compilation
 
-> Arg. No, you can't. There is the trace call after the switch. So please i=
-gnore
-> this comment :)
->=20
-> But you can still avoid repeating the "if (ret !=3D BLK_STS_OK) return re=
-t;" by
-> calling the trace only for BLK_STS_OK and returning ret at the end.
+I appreciate the quick turnaround on v10, but it looks like much of my
+feedback on v9 went unacknowledged. 
 
-Agreed.
+Most concerning is the fact that loading firmware on to R5 1 is _still_
+broken in v10 due to the incorrect TCM banks being used.
 
-Thank you for your review comments, much appreciated.
+Thanks,
+ Michael
 
-Will send out a V2 shortly.
-
-
-Kind regards,
-Niklas=
+> 
+> Ben Levinsky (5):
+>   firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+>     configuration.
+>   firmware: xilinx: Add shutdown/wakeup APIs
+>   firmware: xilinx: Add RPU configuration APIs
+>   dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+>     bindings
+>   remoteproc: Add initial zynqmp R5 remoteproc driver
+> 
+>  .../xilinx,zynqmp-r5-remoteproc.yaml          | 113 +++
+>  drivers/firmware/xilinx/zynqmp.c              |  86 ++
+>  drivers/remoteproc/Kconfig                    |  10 +
+>  drivers/remoteproc/Makefile                   |   1 +
+>  drivers/remoteproc/zynqmp_r5_remoteproc.c     | 898 ++++++++++++++++++
+>  include/linux/firmware/xlnx-zynqmp.h          |  63 ++
+>  6 files changed, 1171 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+>  create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+> 
+> -- 
+> 2.17.1
+> 
