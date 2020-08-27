@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FF22545EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0420D2545F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgH0N3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:29:55 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:41219 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727926AbgH0NUV (ORCPT
+        id S1728252AbgH0Nbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:31:31 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:50636 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728014AbgH0NWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:20:21 -0400
-Received: by mail-ej1-f65.google.com with SMTP id b17so7606537ejq.8;
-        Thu, 27 Aug 2020 06:20:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1+KqXoKi8jzmcX+Sa9PiCc9RKtqp2ZYsWQ4PPSxBca0=;
-        b=TKkFSj5YDXyDVPyOwbDMHWXv6dxo4ZN5sZJu1id0iJqhZknVkgsq+oS5tHo9wJp02c
-         ksuloFF6vb4NqYWDrnnZVyKmirLaK4a3Qb5RhcNkV1/a9EmPkY8yHqOf0tYV3o/asnK7
-         x6Rs2HKhYkFZGsbvY3rwiBYJzKme7xucN2mimswuJLvEyHNdgeLnNZO6JSbLMCRnBAh8
-         WiTDF3c1V/5YsRAch0THA4VoWa5woLBWhiCqk9DJUKZr8f+nW6chntnNXB27xKUIW9QS
-         7mVb5X2ZkopFFUpd2p7URFgGhmplCL8dTW5XqXxLtB5GHzHj8glGm5d1qkbGqjQInrTJ
-         eyJA==
-X-Gm-Message-State: AOAM530Ddcr44acDj+atUuL0bRZMQBE4OisbmsH+mWUTITquF5dS+Lz3
-        qP+olvyGcskElOA7sAUpE/E=
-X-Google-Smtp-Source: ABdhPJxPyw+OJB1aU+cC1IAmQc4RN+hp++iPrN/DqEjJmUPSL4qvfu4VUa27lZCy7xAoFrk/ffMtHg==
-X-Received: by 2002:a17:906:dbd2:: with SMTP id yc18mr22000122ejb.394.1598534418938;
-        Thu, 27 Aug 2020 06:20:18 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id w23sm1520480edr.24.2020.08.27.06.20.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Aug 2020 06:20:18 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:20:16 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Security Officers <security@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add security docs to SECURITY CONTACT
-Message-ID: <20200827132016.GA4384@kozik-lap>
-References: <20200827131330.3732-1-krzk@kernel.org>
- <20200827131827.GA546898@kroah.com>
+        Thu, 27 Aug 2020 09:22:23 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07RD0oGN084176;
+        Thu, 27 Aug 2020 08:00:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598533250;
+        bh=bNdiejgmrP6UyoxidBCnn4mIur5XympzIClUiV4GOpI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=b8mxLPPuz/qNstwFOEFuw9TyyfpFBYHln26sR0eUm3txSf4jqoADDhNjCPwN+SUYk
+         eHTbW63h9keDDONxlm20Pv3iQBclhrGa26WkupSWOb3jcFTsXE+3xGjKPifbeQ0jln
+         iKuYBWCNJl3LrEg3yaNW0JAlXSMuf+LjXouH1hLU=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RD0o70124320;
+        Thu, 27 Aug 2020 08:00:50 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 27
+ Aug 2020 08:00:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 27 Aug 2020 08:00:49 -0500
+Received: from [10.250.227.175] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RD0mS7108067;
+        Thu, 27 Aug 2020 08:00:48 -0500
+Subject: Re: [net v3 PATCH] net: ethernet: ti: cpsw_new: fix error handling in
+ cpsw_ndo_vlan_rx_kill_vid()
+To:     David Miller <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
+        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200824170100.21319-1-m-karicheri2@ti.com>
+ <20200825.093603.2026695844604591106.davem@davemloft.net>
+From:   Murali Karicheri <m-karicheri2@ti.com>
+Message-ID: <5be2b575-238c-247f-db9a-95680984e26d@ti.com>
+Date:   Thu, 27 Aug 2020 09:00:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200827131827.GA546898@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200825.093603.2026695844604591106.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 03:18:27PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Aug 27, 2020 at 03:13:30PM +0200, Krzysztof Kozlowski wrote:
-> > When changing the documents related to kernel security workflow, notify
-> > the security mailing list as its concerned by this.
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  MAINTAINERS | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8107b3d5d6df..a1e07d0f3205 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -15620,6 +15620,8 @@ F:	include/uapi/linux/sed*
-> >  
-> >  SECURITY CONTACT
-> >  M:	Security Officers <security@kernel.org>
-> > +F:	Documentation/admin-guide/security-bugs.rst
-> > +F:	Documentation/process/embargoed-hardware-issues.rst
+Hi Dave,
+
+On 8/25/20 12:36 PM, David Miller wrote:
+> From: Murali Karicheri <m-karicheri2@ti.com>
+> Date: Mon, 24 Aug 2020 13:01:00 -0400
 > 
-> The hardware-issues document is "owned" by a different group of
-> suckers^Wdevelopers, that is independant of security@k.o, so that file
-> shouldn't be added to them here.
+>> +	ret = cpsw_ale_del_vlan(cpsw->ale, vid, 0);
+>> +	if (ret)
+>> +		dev_err(priv->dev, "%s: failed %d: ret %d\n",
+>> +			__func__, __LINE__, ret);
+>> +	ret = cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
+>> +				 HOST_PORT_NUM, ALE_VLAN, vid);
+>> +	if (ret)
+>> +		dev_err(priv->dev, "%s: failed %d: ret %d\n",
+>> +			__func__, __LINE__, ret);
+>> +	ret = cpsw_ale_del_mcast(cpsw->ale, priv->ndev->broadcast,
+>> +				 0, ALE_VLAN, vid);
+>> +	if (ret)
+>> +		dev_err(priv->dev, "%s: failed %d: ret %d\n",
+>> +			__func__, __LINE__, ret);
+>>   	cpsw_ale_flush_multicast(cpsw->ale, ALE_PORT_HOST, vid);
+> 
+> These error messages are extremely unhelpful.  You're calling three
+> different functions, yet emitting basically the same __func__ for
+> each of those cases.  No user can send you a useful bug report
+> immediately if they just have func and line.
+> 
+> Please get rid of the "__func__" and "__line__" stuff completely, it's
+> never advisable to ever use that in my opinion.  Instead, describe
+> which delete operation failed, optionally with the error return.
+> 
+OK. I had considered your suggestion, but thought having a line number
+would be handy for a developer. Function name would be better. Will
+re-send with changes as you have suggested.
 
-True, but isn't this broader security group involved in designing and
-discussing the HW security process?
-
-Best regards,
-Krzysztof
-
+-- 
+Murali Karicheri
+Texas Instruments
