@@ -2,189 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BD625444F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A23925443D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgH0L36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:29:58 -0400
-Received: from mga06.intel.com ([134.134.136.31]:25895 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728001AbgH0LQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:16:39 -0400
-IronPort-SDR: fZA/Uwmv6ju5YRAP+EE6lkqv+etZSSE1Zz3eOsXxZfpX3+Lj1W8dGqLstaPFuEfEyRLK5bVGw6
- zj+Q95yUQrNw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="218008691"
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="218008691"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 03:57:05 -0700
-IronPort-SDR: 5VR6ccig7DZlLiO+sMhEo+Emle4xy6LXWOE2nLy+9HD06TFwaDF3kjkmYll9QnidBP84HuExZ0
- bWSumeroZ0Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="299810019"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga006.jf.intel.com with SMTP; 27 Aug 2020 03:57:01 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 27 Aug 2020 13:57:01 +0300
-Date:   Thu, 27 Aug 2020 13:57:01 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Algea Cao <algea.cao@rock-chips.com>
-Cc:     mripard@kernel.org, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
-        daniel@ffwll.ch, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] drm: Parse Colorimetry data block from EDID
-Message-ID: <20200827105701.GS6112@intel.com>
-References: <20200826142328.131144-1-algea.cao@rock-chips.com>
+        id S1728577AbgH0LWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgH0LQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:16:38 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA429C061238;
+        Thu, 27 Aug 2020 04:05:05 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id n26so80873edv.13;
+        Thu, 27 Aug 2020 04:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=naFt+Blfmi1/PTm3cjJaXUe+Z1yMpY7OBP3DllMN5U4=;
+        b=EL2B7xRo+FDvtMZrlXtQlPYPM4iOOoiSSWJ5UF7uGQoCFQ4j//Knd5kD8i7oMau2fj
+         KBauANVs051oyggZx5VXNuixtb9y4k+zQQCvCEIqCDQuWlsQvUBlblwIFh29Z+ianBVL
+         SF0WRfsRCE3Ptcr6d7QstgUX/UCsiAlZd3fEs5jEyAGnLkFD8c+kN1zlstODJSsoABiO
+         oRAuA8uDZ8cfaXj2tFh5e4CFt+q9MZg8XW/JhjO80zTU2rqzMtnPdY/1nfhDkPhwYB7/
+         ZmMdS+fYbaAxqZJVHk8v4/xP6ZWMs6dRwCIfO2P4NCmX1FWU7eRY5ENE4AlNuGJzRUcF
+         lm1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=naFt+Blfmi1/PTm3cjJaXUe+Z1yMpY7OBP3DllMN5U4=;
+        b=L3AE958VMnK67SlsoBz8zV+qduvQ7oIuc4+23cEcPeKe57zFtae9BVwzPS+yqbAagt
+         IBoVXNuwEIyaT0jmhKyS9grHhkbvjotDkP1jR747zst4m20WVc+lgbNOAprU9xFIl8u/
+         xS0tDPxFBK5LLsEB0m56V0iG9vGnOOwBUMc66/W8p0jhYQ9a8MQjrraU09PcrUeU1RH9
+         yPUwMcKEqz9xvYf+EhhIHNaLDLJhUkreqX58GG3nDmB/mkXPX3VB/M2M57M/6eGRjxVW
+         KgNyZ+KonwbBSzYZQ4LVhIR3mVXucECOhCrE7l85ATpsSOIE7dReO36HWi1k/yRyrB+V
+         ydVw==
+X-Gm-Message-State: AOAM530SIHY1OGHGOk0Q4U5taNyTrVnntNvLBEsJUL51qv8cLgF6wFNR
+        QYbMOGbh84UdDtSvGO2IS3GbXBNZy5Q=
+X-Google-Smtp-Source: ABdhPJyxNe338xjkH6Ig7p7JD0cl3SrMBMuSi5cISyTOlAePekrpvLg50LX8BTRRwUZOAHRb37tfaA==
+X-Received: by 2002:a50:de04:: with SMTP id z4mr19630405edk.10.1598526304073;
+        Thu, 27 Aug 2020 04:05:04 -0700 (PDT)
+Received: from ?IPv6:2001:a61:253c:4c01:2cf1:7133:9da2:66a9? ([2001:a61:253c:4c01:2cf1:7133:9da2:66a9])
+        by smtp.gmail.com with ESMTPSA id eb5sm1633894ejc.94.2020.08.27.04.05.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 04:05:03 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] Add manpage for fspick(2)
+To:     David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+ <159827189767.306468.1803062787718957199.stgit@warthog.procyon.org.uk>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <b968aced-c375-4c85-b086-9874d12e07f4@gmail.com>
+Date:   Thu, 27 Aug 2020 13:05:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200826142328.131144-1-algea.cao@rock-chips.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <159827189767.306468.1803062787718957199.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:23:28PM +0800, Algea Cao wrote:
-> CEA 861.3 spec adds colorimetry data block for HDMI.
-> Parsing the block to get the colorimetry data from
-> panel.
+Hello David,
 
-And what exactly do you want to do with that data?
-
+On 8/24/20 2:24 PM, David Howells wrote:
+> Add a manual page to document the fspick() system call.
 > 
-> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
 > ---
 > 
->  drivers/gpu/drm/drm_edid.c  | 45 +++++++++++++++++++++++++++++++++++++
->  include/drm/drm_connector.h |  3 +++
->  include/drm/drm_edid.h      | 14 ++++++++++++
->  3 files changed, 62 insertions(+)
+>  man2/fspick.2 |  180 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 180 insertions(+)
+>  create mode 100644 man2/fspick.2
 > 
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 31496b6cfc56..67e607c04492 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -3223,6 +3223,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
->  #define VIDEO_BLOCK     0x02
->  #define VENDOR_BLOCK    0x03
->  #define SPEAKER_BLOCK	0x04
-> +#define COLORIMETRY_DATA_BLOCK		0x5
->  #define HDR_STATIC_METADATA_BLOCK	0x6
->  #define USE_EXTENDED_TAG 0x07
->  #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
-> @@ -4309,6 +4310,48 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
->  	mode->clock = clock;
->  }
->  
-> +static bool cea_db_is_hdmi_colorimetry_data_block(const u8 *db)
-> +{
-> +	if (cea_db_tag(db) != USE_EXTENDED_TAG)
-> +		return false;
-> +
-> +	if (db[1] != COLORIMETRY_DATA_BLOCK)
-> +		return false;
-> +
-> +	if (cea_db_payload_len(db) < 2)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static void
-> +drm_parse_colorimetry_data_block(struct drm_connector *connector, const u8 *db)
-> +{
-> +	struct drm_hdmi_info *info = &connector->display_info.hdmi;
-> +
-> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_601)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_601;
-> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_709)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_709;
-> +	if (db[2] & DRM_EDID_CLRMETRY_sYCC_601)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_sYCC_601;
-> +	if (db[2] & DRM_EDID_CLRMETRY_ADBYCC_601)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADBYCC_601;
-> +	if (db[2] & DRM_EDID_CLRMETRY_ADB_RGB)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADB_RGB;
-> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_CYCC)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_CYCC;
-> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_YCC)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_YCC;
-> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_RGB)
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_RGB;
-> +	/* Byte 4 Bit 7: DCI-P3 */
-> +	if (db[3] & BIT(7))
-> +		info->colorimetry |= DRM_EDID_CLRMETRY_DCI_P3;
-> +
-> +	DRM_DEBUG_KMS("Supported Colorimetry 0x%x\n", info->colorimetry);
-> +}
-> +
->  static bool cea_db_is_hdmi_hdr_metadata_block(const u8 *db)
->  {
->  	if (cea_db_tag(db) != USE_EXTENDED_TAG)
-> @@ -4994,6 +5037,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
->  			drm_parse_vcdb(connector, db);
->  		if (cea_db_is_hdmi_hdr_metadata_block(db))
->  			drm_parse_hdr_metadata_block(connector, db);
-> +		if (cea_db_is_hdmi_colorimetry_data_block(db))
-> +			drm_parse_colorimetry_data_block(connector, db);
->  	}
->  }
->  
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index af145608b5ed..d599c3b9e881 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -207,6 +207,9 @@ struct drm_hdmi_info {
->  
->  	/** @y420_dc_modes: bitmap of deep color support index */
->  	u8 y420_dc_modes;
-> +
-> +	/* @colorimetry: bitmap of supported colorimetry modes */
-> +	u16 colorimetry;
->  };
->  
->  /**
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index cfa4f5af49af..98fa78c2f82d 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -229,6 +229,20 @@ struct detailed_timing {
->  				    DRM_EDID_YCBCR420_DC_36 | \
->  				    DRM_EDID_YCBCR420_DC_30)
->  
-> +/*
-> + * Supported Colorimetry from colorimetry data block
-> + * as per CEA 861-G spec
-> + */
-> +#define DRM_EDID_CLRMETRY_xvYCC_601   (1 << 0)
-> +#define DRM_EDID_CLRMETRY_xvYCC_709   (1 << 1)
-> +#define DRM_EDID_CLRMETRY_sYCC_601    (1 << 2)
-> +#define DRM_EDID_CLRMETRY_ADBYCC_601  (1 << 3)
-> +#define DRM_EDID_CLRMETRY_ADB_RGB     (1 << 4)
-> +#define DRM_EDID_CLRMETRY_BT2020_CYCC (1 << 5)
-> +#define DRM_EDID_CLRMETRY_BT2020_YCC  (1 << 6)
-> +#define DRM_EDID_CLRMETRY_BT2020_RGB  (1 << 7)
-> +#define DRM_EDID_CLRMETRY_DCI_P3      (1 << 15)
-> +
->  /* ELD Header Block */
->  #define DRM_ELD_HEADER_BLOCK_SIZE	4
->  
-> -- 
-> 2.25.1
-> 
-> 
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> diff --git a/man2/fspick.2 b/man2/fspick.2
+> new file mode 100644
+> index 000000000..72bf645dd
+> --- /dev/null
+> +++ b/man2/fspick.2
+> @@ -0,0 +1,180 @@
+> +'\" t
+> +.\" Copyright (c) 2020 David Howells <dhowells@redhat.com>
+> +.\"
+> +.\" %%%LICENSE_START(VERBATIM)
+> +.\" Permission is granted to make and distribute verbatim copies of this
+> +.\" manual provided the copyright notice and this permission notice are
+> +.\" preserved on all copies.
+> +.\"
+> +.\" Permission is granted to copy and distribute modified versions of this
+> +.\" manual under the conditions for verbatim copying, provided that the
+> +.\" entire resulting derived work is distributed under the terms of a
+> +.\" permission notice identical to this one.
+> +.\"
+> +.\" Since the Linux kernel and libraries are constantly changing, this
+> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+> +.\" responsibility for errors or omissions, or for damages resulting from
+> +.\" the use of the information contained herein.  The author(s) may not
+> +.\" have taken the same level of care in the production of this manual,
+> +.\" which is licensed free of charge, as they might when working
+> +.\" professionally.
+> +.\"
+> +.\" Formatted or processed versions of this manual, if unaccompanied by
+> +.\" the source, must acknowledge the copyright and authors of this work.
+> +.\" %%%LICENSE_END
+> +.\"
+> +.TH FSPICK 2 2020-08-24 "Linux" "Linux Programmer's Manual"
+> +.SH NAME
+> +fspick \- Select filesystem for reconfiguration
+> +.SH SYNOPSIS
+> +.nf
+> +.B #include <sys/types.h>
+> +.B #include <sys/mount.h>
+> +.B #include <unistd.h>
+> +.BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
+> +.PP
+> +.BI "int fspick(int " dirfd ", const char *" pathname ", unsigned int " flags );
+> +.fi
+> +.PP
+> +.IR Note :
+> +There is no glibc wrapper for this system call.
+> +.SH DESCRIPTION
+> +.PP
+> +.BR fspick ()
+> +creates a new filesystem configuration context within the kernel and attaches a
+> +pre-existing superblock to it so that it can be reconfigured (similar to
+> +.BR mount (8)
+> +with the "-o remount" option).  The configuration context is marked as being in
+> +reconfiguration mode and attached to a file descriptor, which is returned to
+> +the caller.  The file descriptor can be marked close-on-exec by setting
+> +.B FSPICK_CLOEXEC
+> +in
+> +.IR flags .
+> +.PP
+> +The target is whichever superblock backs the object determined by
+> +.IR dfd ", " pathname " and " flags .
+> +The following can be set in
+> +.I flags
+> +to control the pathwalk to that object:
+> +.TP
+> +.B FSPICK_SYMLINK_NOFOLLOW
+> +Don't follow symbolic links in the final component of the path.
+> +.TP
+> +.B FSPICK_NO_AUTOMOUNT
+> +Don't follow automounts in the final component of the path.
+> +.TP
+> +.B FSPICK_EMPTY_PATH
+> +Allow an empty string to be specified as the pathname.  This allows
+> +.I dirfd
+> +to specify the target mount exactly.
+> +.PP
+> +After calling fspick(), the file descriptor should be passed to the
+> +.BR fsconfig (2)
+> +system call, using that to specify the desired changes to filesystem and
+
+Better: s/using that/in order/
+
+> +security parameters.
+> +.PP
+> +When the parameters are all set, the
+> +.BR fsconfig ()
+> +system call should then be called again with
+> +.B FSCONFIG_CMD_RECONFIGURE
+> +as the command argument to effect the reconfiguration.
+> +.PP
+> +After the reconfiguration has taken place, the context is wiped clean (apart
+> +from the superblock attachment, which remains) and can be reused to make
+> +another reconfiguration.
+> +.PP
+> +The file descriptor also serves as a channel by which more comprehensive error,
+> +warning and information messages may be retrieved from the kernel using
+> +.BR read (2).
+> +.SS Message Retrieval Interface
+> +The context file descriptor may be queried for message strings at any time by
+
+s/descriptor/descriptor returned by fspick()/
+
+> +calling
+> +.BR read (2)
+> +on the file descriptor.  This will return formatted messages that are prefixed
+> +to indicate their class:
+> +.TP
+> +\fB"e <message>"\fP
+> +An error message string was logged.
+> +.TP
+> +\fB"i <message>"\fP
+> +An informational message string was logged.
+> +.TP
+> +\fB"w <message>"\fP
+> +An warning message string was logged.
+> +.PP
+> +Messages are removed from the queue as they're read and the queue has a limited
+> +depth of 8 messages, so it's possible for some to get lost.
+
+What if there are no pending error messages to retrieve? What does
+read() do in that case? Please add an explanation here.
+
+> +.SH RETURN VALUE
+> +On success, the function returns a file descriptor.  On error, \-1 is returned,
+> +and
+> +.I errno
+> +is set appropriately.
+> +.SH ERRORS
+> +The error values given below result from filesystem type independent errors.
+> +Additionally, each filesystem type may have its own special errors and its own
+> +special behavior.  See the Linux kernel source code for details.
+> +.TP
+> +.B EACCES
+> +A component of a path was not searchable.
+> +(See also
+> +.BR path_resolution (7).)
+> +.TP
+> +.B EFAULT
+> +.I pathname
+> +points outside the user address space.
+> +.TP
+> +.B EINVAL
+> +.I flags
+> +includes an undefined value.
+> +.TP
+> +.B ELOOP
+> +Too many links encountered during pathname resolution.
+> +.TP
+> +.B EMFILE
+> +The system has too many open files to create more.
+> +.TP
+> +.B ENFILE
+> +The process has too many open files to create more.
+> +.TP
+> +.B ENAMETOOLONG
+> +A pathname was longer than
+> +.BR MAXPATHLEN .
+
+MAXPATHLEN is not, I think, a constant known in user space. What is this?
+Should it be PATH_MAX?
+
+> +.TP
+> +.B ENOENT
+> +A pathname was empty or had a nonexistent component.
+> +.TP
+> +.B ENOMEM
+> +The kernel could not allocate sufficient memory to complete the call.
+> +.TP
+> +.B EPERM
+> +The caller does not have the required privileges.
+
+Please note the necessary capability here. Also, there was no mention of 
+capabilities/privileges in DESCRIPTION. Should there have been?
+
+> +.SH CONFORMING TO
+> +These functions are Linux-specific and should not be used in programs intended
+> +to be portable.
+> +.SH VERSIONS
+> +.BR fsopen "(), " fsmount "() and " fspick ()
+> +were added to Linux in kernel 5.2.
+> +.SH EXAMPLES
+> +To illustrate the process, here's an example whereby this can be used to
+> +reconfigure a filesystem:
+> +.PP
+> +.in +4n
+> +.nf
+> +sfd = fspick(AT_FDCWD, "/mnt", FSPICK_NO_AUTOMOUNT | FSPICK_CLOEXEC);
+> +fsconfig(sfd, FSCONFIG_SET_FLAG, "ro", NULL, 0);
+> +fsconfig(sfd, FSCONFIG_SET_STRING, "user_xattr", "false", 0);
+> +fsconfig(sfd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0);
+> +.fi
+> +.in
+> +.PP
+> +.SH NOTES
+> +Glibc does not (yet) provide a wrapper for the
+> +.BR fspick "()"
+> +system call; call it using
+> +.BR syscall (2).
+> +.SH SEE ALSO
+> +.BR mountpoint (1),
+> +.BR fsconfig (2),
+> +.BR fsopen (2),
+> +.BR path_resolution (7),
+> +.BR mount (8)
+
+Thanks,
+
+Michael
+
 
 -- 
-Ville Syrjälä
-Intel
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
