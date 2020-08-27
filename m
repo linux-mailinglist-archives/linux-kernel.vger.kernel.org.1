@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C51253DFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACBC253E08
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgH0GmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgH0GmL (ORCPT
+        id S1727797AbgH0Goa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:44:30 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:35778 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0Go3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:42:11 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564A8C061264
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:42:10 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 12so2317751lfb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s+hgvzWkolB0cW+3qV7g0DekmVFJtookw1vL+Sw6Usw=;
-        b=RXzLhjxMFcl4to2PONurI277x23q9RaODZqkcXjoY2O8xBAVFeyHJWNU/jsOh9wQH/
-         DE0Hio9ywPOnvEfn4MdLrwOWNgkq1WSCpRC/rAcoijAhhBNp+e/V9MzmlBHd31CA5FdU
-         3Mx+ncOUKS4yjoQDq9rn0rb9H5M2+l5F1FAp0=
+        Thu, 27 Aug 2020 02:44:29 -0400
+Received: by mail-lf1-f52.google.com with SMTP id y26so2338023lfe.2;
+        Wed, 26 Aug 2020 23:44:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=s+hgvzWkolB0cW+3qV7g0DekmVFJtookw1vL+Sw6Usw=;
-        b=FHAkrLfwSM0k59vV8vdhcJ8Q+pcNc9NkvXSHQR4BwudJwviLj7+taK6jDwx5lHvwM3
-         pYKHumWBAJ533YYnq5oDid/HVzvlcvhGqRh5eMQ0Emb9xa8VLghOT8e8zWXy4sqjbNO9
-         9xGOUj4XCLEKUKOvaWjm/8V87AEjRFJok3R3qUa1Z3ZLKyTaa0DnlyVzUVkqofhivhnj
-         jXYmUjAHpmpZq/VjcnC+2wjxA6J54JDDwoADgMBExhQS8jkgEb4SBQEMzx9KNc19/v7T
-         VxQ8UbEKw4ed0znNtSH9toXK/U9xoJ9fhYhD/8+HS5Imb8Gx/pyr+gNeUF5hL2uZQDVf
-         qdQA==
-X-Gm-Message-State: AOAM5319eCQROkBz+J/ndnwmVNhZc5Or0le70uG0/SUHiEqVgzRRW0Bv
-        VezxSJ7HLWM61ZsziP0Rw/zyaZuxJtocL4JGGJo=
-X-Google-Smtp-Source: ABdhPJz51JpiZS+VpQgNXGnTdjN0vJVizic22+7Wax906SaXrhHyADNSGWW1B3gL88D0VrRQl/EGyQ==
-X-Received: by 2002:a19:915b:: with SMTP id y27mr1713158lfj.134.1598510528332;
-        Wed, 26 Aug 2020 23:42:08 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id m8sm273770lfj.88.2020.08.26.23.42.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 23:42:07 -0700 (PDT)
-Subject: Re: [PATCH] usb: atm: don't use snprintf() for sysfs attrs
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        accessrunner-general@lists.sourceforge.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200824222322.22962-1-alex.dewar90@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <48f2dc90-7852-eaf1-55d7-2c85cf954688@rasmusvillemoes.dk>
-Date:   Thu, 27 Aug 2020 08:42:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=Hw2dSqOLu8TQUANLy3gyHtGtPAE8XLEwqainP8LxieE=;
+        b=sXRagVWLRNZFMx1gNOAD2zg4SEMSKPTKT7lCWxc+oaWIuC64F84MAel9lb2E19vLzv
+         ZvnJ9mCqMfWbNhBoh8CaGMt+6w6Q88dtqr7rHYaxXEO3CdJ4Eq+m8cjIaCKGPo33c62l
+         5sP6GkzIVmd6MLOuugx9j9fsEKxR5Fnhu+R1r4LaOR9MHw+leluZpSRBjI7L8QCPaQmE
+         imimngvK3jpNn0h5Kpb4idL8ly2j0tmUqOPnY0jYqfdRnOqkUeb3QC/+rBkBhLpjH6QX
+         GA3RD4f3tWxmSuPBdk4sSJqwPGfqzesrXlBMdY3w0UIEVoiyt/09DF5OyFMvjL8eKcHu
+         To1Q==
+X-Gm-Message-State: AOAM532OOZq67cFT8/lGOANKF1rqT8mM/3RcV1PNR0rr846Q6Rva17pY
+        b9PilydhUZglOHSHmB7aZSUHo+iH590=
+X-Google-Smtp-Source: ABdhPJwW0q+iTGAGnMZzhEbm1+lIcsuPPzizgnLmKt6FwmXUlGS+aCDB17AaI9QzU6Ct3Gn27tWvxQ==
+X-Received: by 2002:a19:58c:: with SMTP id 134mr9063271lff.215.1598510667284;
+        Wed, 26 Aug 2020 23:44:27 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.147.111])
+        by smtp.googlemail.com with ESMTPSA id j17sm282159lfr.32.2020.08.26.23.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 23:44:26 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     Denis Efremov <efremov@linux.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] crypto: use kfree_sensitive()
+Date:   Thu, 27 Aug 2020 09:43:58 +0300
+Message-Id: <20200827064402.7130-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200824222322.22962-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2020 00.23, Alex Dewar wrote:
-> kernel/cpu.c: don't use snprintf() for sysfs attrs
-> 
-> As per the documentation (Documentation/filesystems/sysfs.rst),
-> snprintf() should not be used for formatting values returned by sysfs.
->
+kfree_sensitive() is introduced in commit 453431a54934
+("mm, treewide: rename kzfree() to kfree_sensitive()") and uses
+memzero_explicit() internally. Thus, we can switch to this API
+instead of open-coding memzero_explicit() && kfree().
 
-Sure. But then the security guys come along and send a patch saying
-"sprintf is evil, always pass a buffer bound". Perhaps with a side of
-"this code could get copy-pasted, better not promote the use of sprintf
-more than strictly necessary".
+Changes in v2:
+ - if (op->len) check removed
 
-Can we have a sysfs_sprintf() (could just be a macro that does sprintf)
-to make it clear to the next reader that we know we're in a sysfs show
-method? It would make auditing uses of sprintf() much easier.
+Denis Efremov (4):
+  crypto: inside-secure - use kfree_sensitive()
+  crypto: amlogic - use kfree_sensitive()
+  crypto: sun8i-ce - use kfree_sensitive()
+  crypto: sun8i-ss - use kfree_sensitive()
 
->  static ssize_t cxacru_sysfs_showattr_LINE(u32 value, char *buf)
-> @@ -275,8 +275,8 @@ static ssize_t cxacru_sysfs_showattr_LINE(u32 value, char *buf)
->  		"waiting", "initialising"
->  	};
->  	if (unlikely(value >= ARRAY_SIZE(str)))
-> -		return snprintf(buf, PAGE_SIZE, "%u\n", value);
-> -	return snprintf(buf, PAGE_SIZE, "%s\n", str[value]);
-> +		return sprintf(buf, "%u\n", value);
-> +	return sprintf(buf, "%s\n", str[value]);
->  }
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c   | 15 +++------------
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c   | 15 +++------------
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c       | 10 ++--------
+ drivers/crypto/inside-secure/safexcel_hash.c      |  3 +--
+ 4 files changed, 9 insertions(+), 34 deletions(-)
 
-Not this patch in particular, but in some cases the string being printed
-is not immediately adjacent to the sprintf call, making it rather hard
-to subsequently verify that yes, that string is certainly reasonably
-bounded. If you really want to save the few bytes of code that is the
-practical effect of eliding the PAGE_SIZE argument, how about a
-sysfs_print_string(buf, str) helper that prints the string and appends a
-newline; that's another argument saved. And again it would make it
-obvious to a reader that that particular helper is only to be used in
-sysfs show methods.
+-- 
+2.26.2
 
-Rasmus
