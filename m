@@ -2,206 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F79253DA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDE9253D9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgH0GWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgH0GWF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:22:05 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B962C06125E;
-        Wed, 26 Aug 2020 23:21:56 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id cs12so2172137qvb.2;
-        Wed, 26 Aug 2020 23:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Epu5LMMnzcXJyXxIxmqqE2Un3GzqSZHgAZfFnavRrqA=;
-        b=rAbKI83yqP0ZA7NP/tDKWnJU+DHWyMqTRzR6f+Pzu+GmVHTi9rEo9fDX4sKdObZAdp
-         hxukX8Toy7Z3h4L5ON4yJB8RSmDR/sHb68+mNNVzYNL202z3PoRp3j9eSDD4ZxEh1q+E
-         /wTPTA0dK4qyBeVi5IKFZKsDT+gHu1BWjZtFwpeCvYOQyqYHJsTZL1Zy9kxPGpBVLOqU
-         JymJS4GrI0TFzbsOP2TpyG6FARte8dxHqhdyM9HxFsIRb+rIsbHkEhcNFRqU2dXFAQff
-         JDkIfIAwDJ5zHCS89NPYKn6dsJ82KT+CSuIj7ITE1X3Dz3kOjg7ZJfq1feJu9eRWwohd
-         TFRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Epu5LMMnzcXJyXxIxmqqE2Un3GzqSZHgAZfFnavRrqA=;
-        b=Q7UzsyPXcXDz6pmPSXb1MdXOsQoW1KXUfjJsbUEsm55YWN6iidUi095MUkWJOUgxf2
-         YJbu57+QkLAk2GGF4GDW0T0xbxelF7cUrlOkqFAEx/nbWkyFjUQ0GLMnHD5DXHuMN5Yd
-         PuCmCb+7ZzZCYW8/u8fhpLUl+2CcB/5fvMzTWSE3Hg5LYkCTrW3UNOjx27XsbJ1mRO9z
-         9s/E7snya4oMK6mCX8BzRyTYzVHadjVer2PFJG5horsJ/NgLLp3HNiEZZU/+D2V7s1WD
-         fs+rWK7L3Is9Gd6hqxTDbc8VBKp7WWMkL2H0lUkN031cAYj1N6RZaDNPUqE+AQYLFj5z
-         YC8g==
-X-Gm-Message-State: AOAM531FdzaZHzezzoYGj6sHUkQRGrQRidLS5Dhs/WOSW1EAe1lPvsJN
-        57cbkvLnt/reSs/N+PCOXHFJFpTMJqY=
-X-Google-Smtp-Source: ABdhPJy/5QPXrFEUP8b1kDdDCDWnDRvuEWTQqNEn3iYxVg8XOa5ZUpX00yykfPR+piIyTFRs5QJF4g==
-X-Received: by 2002:ad4:50a6:: with SMTP id d6mr16945786qvq.173.1598509315365;
-        Wed, 26 Aug 2020 23:21:55 -0700 (PDT)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id f7sm1186117qkj.32.2020.08.26.23.21.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Aug 2020 23:21:54 -0700 (PDT)
-From:   xiangxia.m.yue@gmail.com
-To:     greg@kroah.com, sashal@kernel.org, davem@davemloft.net
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, jknoos@google.com,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Subject: [PATCH net backport to 5.5 - 5.8.3 v2] net: openvswitch: introduce common code for flushing flows
-Date:   Thu, 27 Aug 2020 14:19:52 +0800
-Message-Id: <20200827061952.5789-1-xiangxia.m.yue@gmail.com>
-X-Mailer: git-send-email 2.15.0
+        id S1727099AbgH0GUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:20:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54123 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725909AbgH0GUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:20:54 -0400
+IronPort-SDR: yXyvbcqo+x01bsp3N9/ikElVNv/4O6WxU7xXqJCn1ygkAZyG12ffMs5bUwkFZR9FnQGOXn+H/G
+ UfVCKOqf3nPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="136495182"
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="136495182"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 23:20:48 -0700
+IronPort-SDR: owvnyDkMBZvFBkVZj3mFNML9xhcTeYnqHm9ns78xa/qgHPeAWXfT3DpRwLCddzjkT4UC6D2o0S
+ Dy2t0XNKPF3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="444329033"
+Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 26 Aug 2020 23:20:46 -0700
+Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kBBHB-0001uh-KO; Thu, 27 Aug 2020 06:20:45 +0000
+Date:   Thu, 27 Aug 2020 14:20:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Torsten Duwe <duwe@suse.de>
+Subject: arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable:
+ err
+Message-ID: <202008271452.TWk1LUAn%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   15bc20c6af4ceee97a1f90b43c0e386643c071b4
+commit: a1326b17ac03a9012cb3d01e434aacb4d67a416c module/ftrace: handle patchable-function-entry
+date:   10 months ago
+compiler: hppa-linux-gcc (GCC) 9.3.0
 
-[ Upstream commit 1f3a090b9033f69de380c03db3ea1a1015c850cf ]
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Backport this commit to 5.5 - 5.8.3.
 
-To avoid some issues, for example RCU usage warning and double free,
-we should flush the flows under ovs_lock. This patch refactors
-table_instance_destroy and introduces table_instance_flow_flush
-which can be invoked by __dp_destroy or ovs_flow_tbl_flush.
+cppcheck warnings: (new ones prefixed by >>)
 
-Fixes: 50b0e61b32ee ("net: openvswitch: fix possible memleak on destroy flow-table")
-Reported-by: Johan Knöös <jknoos@google.com>
-Reported-at: https://mail.openvswitch.org/pipermail/ovs-discuss/2020-August/050489.html
-Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Reviewed-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+>> arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable: err [uninitvar]
+      if (err)
+          ^
+
+# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a1326b17ac03a9012cb3d01e434aacb4d67a416c
+git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+git fetch --no-tags linus master
+git checkout a1326b17ac03a9012cb3d01e434aacb4d67a416c
+vim +965 arch/parisc/kernel/module.c
+
+^1da177e4c3f41 Linus Torvalds 2005-04-16  884  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  885  	register_unwind_table(me, sechdrs);
+^1da177e4c3f41 Linus Torvalds 2005-04-16  886  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  887  	/* haven't filled in me->symtab yet, so have to find it
+^1da177e4c3f41 Linus Torvalds 2005-04-16  888  	 * ourselves */
+^1da177e4c3f41 Linus Torvalds 2005-04-16  889  	for (i = 1; i < hdr->e_shnum; i++) {
+^1da177e4c3f41 Linus Torvalds 2005-04-16  890  		if(sechdrs[i].sh_type == SHT_SYMTAB
+fe579c69c6d437 Julia Lawall   2009-08-04  891  		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
+^1da177e4c3f41 Linus Torvalds 2005-04-16  892  			int strindex = sechdrs[i].sh_link;
+6ca6366220ed28 Sven Schnelle  2019-06-05  893  			symindex = i;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  894  			/* FIXME: AWFUL HACK
+^1da177e4c3f41 Linus Torvalds 2005-04-16  895  			 * The cast is to drop the const from
+^1da177e4c3f41 Linus Torvalds 2005-04-16  896  			 * the sechdrs pointer */
+^1da177e4c3f41 Linus Torvalds 2005-04-16  897  			symhdr = (Elf_Shdr *)&sechdrs[i];
+^1da177e4c3f41 Linus Torvalds 2005-04-16  898  			strtab = (char *)sechdrs[strindex].sh_addr;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  899  			break;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  900  		}
+^1da177e4c3f41 Linus Torvalds 2005-04-16  901  	}
+^1da177e4c3f41 Linus Torvalds 2005-04-16  902  
+6183d68b8b01e3 Sven Schnelle  2019-06-05  903  	pr_debug("module %s: strtab %p, symhdr %p\n",
+^1da177e4c3f41 Linus Torvalds 2005-04-16  904  	       me->name, strtab, symhdr);
+^1da177e4c3f41 Linus Torvalds 2005-04-16  905  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  906  	if(me->arch.got_count > MAX_GOTS) {
+f8fc18a1323c3f Helge Deller   2006-10-18  907  		printk(KERN_ERR "%s: Global Offset Table overflow (used %ld, allowed %d)\n",
+f8fc18a1323c3f Helge Deller   2006-10-18  908  				me->name, me->arch.got_count, MAX_GOTS);
+^1da177e4c3f41 Linus Torvalds 2005-04-16  909  		return -EINVAL;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  910  	}
+^1da177e4c3f41 Linus Torvalds 2005-04-16  911  
+c298be74492bec Helge Deller   2009-01-01  912  	kfree(me->arch.section);
+c298be74492bec Helge Deller   2009-01-01  913  	me->arch.section = NULL;
+c298be74492bec Helge Deller   2009-01-01  914  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  915  	/* no symbol table */
+^1da177e4c3f41 Linus Torvalds 2005-04-16  916  	if(symhdr == NULL)
+^1da177e4c3f41 Linus Torvalds 2005-04-16  917  		return 0;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  918  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  919  	oldptr = (void *)symhdr->sh_addr;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  920  	newptr = oldptr + 1;	/* we start counting at 1 */
+^1da177e4c3f41 Linus Torvalds 2005-04-16  921  	nsyms = symhdr->sh_size / sizeof(Elf_Sym);
+6183d68b8b01e3 Sven Schnelle  2019-06-05  922  	pr_debug("OLD num_symtab %lu\n", nsyms);
+^1da177e4c3f41 Linus Torvalds 2005-04-16  923  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  924  	for (i = 1; i < nsyms; i++) {
+^1da177e4c3f41 Linus Torvalds 2005-04-16  925  		oldptr++;	/* note, count starts at 1 so preincrement */
+^1da177e4c3f41 Linus Torvalds 2005-04-16  926  		if(strncmp(strtab + oldptr->st_name,
+^1da177e4c3f41 Linus Torvalds 2005-04-16  927  			      ".L", 2) == 0)
+^1da177e4c3f41 Linus Torvalds 2005-04-16  928  			continue;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  929  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  930  		if(newptr != oldptr)
+^1da177e4c3f41 Linus Torvalds 2005-04-16  931  			*newptr++ = *oldptr;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  932  		else
+^1da177e4c3f41 Linus Torvalds 2005-04-16  933  			newptr++;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  934  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  935  	}
+^1da177e4c3f41 Linus Torvalds 2005-04-16  936  	nsyms = newptr - (Elf_Sym *)symhdr->sh_addr;
+6183d68b8b01e3 Sven Schnelle  2019-06-05  937  	pr_debug("NEW num_symtab %lu\n", nsyms);
+^1da177e4c3f41 Linus Torvalds 2005-04-16  938  	symhdr->sh_size = nsyms * sizeof(Elf_Sym);
+8cc28269b95741 Helge Deller   2018-11-10  939  
+8cc28269b95741 Helge Deller   2018-11-10  940  	/* find .altinstructions section */
+8cc28269b95741 Helge Deller   2018-11-10  941  	secstrings = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
+8cc28269b95741 Helge Deller   2018-11-10  942  	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
+8cc28269b95741 Helge Deller   2018-11-10  943  		void *aseg = (void *) s->sh_addr;
+8cc28269b95741 Helge Deller   2018-11-10  944  		char *secname = secstrings + s->sh_name;
+8cc28269b95741 Helge Deller   2018-11-10  945  
+8cc28269b95741 Helge Deller   2018-11-10  946  		if (!strcmp(".altinstructions", secname))
+8cc28269b95741 Helge Deller   2018-11-10  947  			/* patch .altinstructions */
+8cc28269b95741 Helge Deller   2018-11-10  948  			apply_alternatives(aseg, aseg + s->sh_size, me->name);
+8cc28269b95741 Helge Deller   2018-11-10  949  
+a1326b17ac03a9 Mark Rutland   2019-10-16  950  #ifdef CONFIG_DYNAMIC_FTRACE
+6ca6366220ed28 Sven Schnelle  2019-06-05  951  		/* For 32 bit kernels we're compiling modules with
+6ca6366220ed28 Sven Schnelle  2019-06-05  952  		 * -ffunction-sections so we must relocate the addresses in the
+a1326b17ac03a9 Mark Rutland   2019-10-16  953  		 *  ftrace callsite section.
+6ca6366220ed28 Sven Schnelle  2019-06-05  954  		 */
+a1326b17ac03a9 Mark Rutland   2019-10-16  955  		if (symindex != -1 && !strcmp(secname, FTRACE_CALLSITE_SECTION)) {
+a1326b17ac03a9 Mark Rutland   2019-10-16  956  			int err;
+6ca6366220ed28 Sven Schnelle  2019-06-05  957  			if (s->sh_type == SHT_REL)
+6ca6366220ed28 Sven Schnelle  2019-06-05  958  				err = apply_relocate((Elf_Shdr *)sechdrs,
+6ca6366220ed28 Sven Schnelle  2019-06-05  959  							strtab, symindex,
+6ca6366220ed28 Sven Schnelle  2019-06-05  960  							s - sechdrs, me);
+6ca6366220ed28 Sven Schnelle  2019-06-05  961  			else if (s->sh_type == SHT_RELA)
+6ca6366220ed28 Sven Schnelle  2019-06-05  962  				err = apply_relocate_add((Elf_Shdr *)sechdrs,
+6ca6366220ed28 Sven Schnelle  2019-06-05  963  							strtab, symindex,
+6ca6366220ed28 Sven Schnelle  2019-06-05  964  							s - sechdrs, me);
+6ca6366220ed28 Sven Schnelle  2019-06-05 @965  			if (err)
+6ca6366220ed28 Sven Schnelle  2019-06-05  966  				return err;
+6ca6366220ed28 Sven Schnelle  2019-06-05  967  		}
+a1326b17ac03a9 Mark Rutland   2019-10-16  968  #endif
+6ca6366220ed28 Sven Schnelle  2019-06-05  969  	}
+5336377d622595 Linus Torvalds 2010-10-05  970  	return 0;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  971  }
+^1da177e4c3f41 Linus Torvalds 2005-04-16  972  
+
+:::::: The code at line 965 was first introduced by commit
+:::::: 6ca6366220ed285e29ee22f4cf5c68a0397cb005 parisc: add dynamic ftrace
+
+:::::: TO: Sven Schnelle <svens@stackframe.org>
+:::::: CC: Helge Deller <deller@gmx.de>
+
 ---
- net/openvswitch/datapath.c   | 10 +++++++++-
- net/openvswitch/flow_table.c | 35 +++++++++++++++--------------------
- net/openvswitch/flow_table.h |  3 +++
- 3 files changed, 27 insertions(+), 21 deletions(-)
-
-diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
-index e3a37d22539c..15615cae4c89 100644
---- a/net/openvswitch/datapath.c
-+++ b/net/openvswitch/datapath.c
-@@ -1737,6 +1737,7 @@ static int ovs_dp_cmd_new(struct sk_buff *skb, struct genl_info *info)
- /* Called with ovs_mutex. */
- static void __dp_destroy(struct datapath *dp)
- {
-+	struct flow_table *table = &dp->table;
- 	int i;
- 
- 	for (i = 0; i < DP_VPORT_HASH_BUCKETS; i++) {
-@@ -1755,7 +1756,14 @@ static void __dp_destroy(struct datapath *dp)
- 	 */
- 	ovs_dp_detach_port(ovs_vport_ovsl(dp, OVSP_LOCAL));
- 
--	/* RCU destroy the flow table */
-+	/* Flush sw_flow in the tables. RCU cb only releases resource
-+	 * such as dp, ports and tables. That may avoid some issues
-+	 * such as RCU usage warning.
-+	 */
-+	table_instance_flow_flush(table, ovsl_dereference(table->ti),
-+				  ovsl_dereference(table->ufid_ti));
-+
-+	/* RCU destroy the ports, meters and flow tables. */
- 	call_rcu(&dp->rcu, destroy_dp_rcu);
- }
- 
-diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
-index 5904e93e5765..1c4fbac53fbd 100644
---- a/net/openvswitch/flow_table.c
-+++ b/net/openvswitch/flow_table.c
-@@ -345,19 +345,15 @@ static void table_instance_flow_free(struct flow_table *table,
- 	flow_mask_remove(table, flow->mask);
- }
- 
--static void table_instance_destroy(struct flow_table *table,
--				   struct table_instance *ti,
--				   struct table_instance *ufid_ti,
--				   bool deferred)
-+/* Must be called with OVS mutex held. */
-+void table_instance_flow_flush(struct flow_table *table,
-+			       struct table_instance *ti,
-+			       struct table_instance *ufid_ti)
- {
- 	int i;
- 
--	if (!ti)
--		return;
--
--	BUG_ON(!ufid_ti);
- 	if (ti->keep_flows)
--		goto skip_flows;
-+		return;
- 
- 	for (i = 0; i < ti->n_buckets; i++) {
- 		struct sw_flow *flow;
-@@ -369,18 +365,16 @@ static void table_instance_destroy(struct flow_table *table,
- 
- 			table_instance_flow_free(table, ti, ufid_ti,
- 						 flow, false);
--			ovs_flow_free(flow, deferred);
-+			ovs_flow_free(flow, true);
- 		}
- 	}
-+}
- 
--skip_flows:
--	if (deferred) {
--		call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
--		call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
--	} else {
--		__table_instance_destroy(ti);
--		__table_instance_destroy(ufid_ti);
--	}
-+static void table_instance_destroy(struct table_instance *ti,
-+				   struct table_instance *ufid_ti)
-+{
-+	call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
-+	call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
- }
- 
- /* No need for locking this function is called from RCU callback or
-@@ -393,7 +387,7 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
- 
- 	free_percpu(table->mask_cache);
- 	kfree_rcu(rcu_dereference_raw(table->mask_array), rcu);
--	table_instance_destroy(table, ti, ufid_ti, false);
-+	table_instance_destroy(ti, ufid_ti);
- }
- 
- struct sw_flow *ovs_flow_tbl_dump_next(struct table_instance *ti,
-@@ -509,7 +503,8 @@ int ovs_flow_tbl_flush(struct flow_table *flow_table)
- 	flow_table->count = 0;
- 	flow_table->ufid_count = 0;
- 
--	table_instance_destroy(flow_table, old_ti, old_ufid_ti, true);
-+	table_instance_flow_flush(flow_table, old_ti, old_ufid_ti);
-+	table_instance_destroy(old_ti, old_ufid_ti);
- 	return 0;
- 
- err_free_ti:
-diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
-index 8a5cea6ae111..8ea8fc957377 100644
---- a/net/openvswitch/flow_table.h
-+++ b/net/openvswitch/flow_table.h
-@@ -86,4 +86,7 @@ bool ovs_flow_cmp(const struct sw_flow *, const struct sw_flow_match *);
- 
- void ovs_flow_mask_key(struct sw_flow_key *dst, const struct sw_flow_key *src,
- 		       bool full, const struct sw_flow_mask *mask);
-+void table_instance_flow_flush(struct flow_table *table,
-+			       struct table_instance *ti,
-+			       struct table_instance *ufid_ti);
- #endif /* flow_table.h */
--- 
-2.23.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
