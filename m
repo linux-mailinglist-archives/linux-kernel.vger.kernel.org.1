@@ -2,155 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421A525430A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CFD254317
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgH0KCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:02:37 -0400
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:51998 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728548AbgH0KCb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:02:31 -0400
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
- 2020 18:02:28 +0800
-Received: from localhost.localdomain (61.148.245.65) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
- 2020 18:02:27 +0800
-From:   FelixCuioc <FelixCui-oc@zhaoxin.com>
-To:     Joerg Roedel <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
-CC:     <CobeChen-oc@zhaoxin.com>, <RaymondPang-oc@zhaoxin.com>,
-        <TonyWWang-oc@zhaoxin.com>
-Subject: [PATCH v3 2/2] iommu/vt-d:Add support for probing ACPI device in RMRR
-Date:   Thu, 27 Aug 2020 06:02:17 -0400
-Message-ID: <20200827100217.21324-3-FelixCui-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
-References: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
+        id S1728741AbgH0KDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:03:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:10140 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728725AbgH0KDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:03:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598522598; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=rv0P6J7OYmXCE2KVpOiobH3kXlv30j41Xb0jzb6avXo=;
+ b=wwdSCENzb98tDKaJjqLQMAu1EY7dq3teasIi11LdlA9HABpWBW2aYkxaqAOEVvQkWNwN4Zxr
+ RrRrlhMXTgKCS1UsMEVNhkfyWkkp57xqkAuYKzF7y7dcSY3qgkrO37uRcH700681ppvZGDTG
+ 8jRZRR2F+tdAE9lDARjz3Hd9Whg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f4784d72fd6d21f0a9cc978 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 10:03:03
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C929C433A1; Thu, 27 Aug 2020 10:03:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3972EC433C6;
+        Thu, 27 Aug 2020 10:03:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3972EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [61.148.245.65]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] [v2] wilc1000: Fix memleak in wilc_bus_probe
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200820055256.24333-1-dinghao.liu@zju.edu.cn>
+References: <20200820055256.24333-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     dinghao.liu@zju.edu.cn, kjlu@umn.edu,
+        Ajay Singh <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Adham Abozaeid <adham.abozaeid@microchip.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200827100303.3C929C433A1@smtp.codeaurora.org>
+Date:   Thu, 27 Aug 2020 10:03:03 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After acpi device in RMRR is detected,it is necessary
-to establish a mapping for these devices.
-In acpi_device_create_direct_mappings(),create a mapping
-for the acpi device in RMRR.
-Add a helper to achieve the acpi namespace device can
-access the RMRR region.
+Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 
-Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
----
- drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
- drivers/iommu/iommu.c       |  6 ++++++
- include/linux/iommu.h       |  3 +++
- 3 files changed, 38 insertions(+)
+> When devm_clk_get() returns -EPROBE_DEFER, spi_priv
+> should be freed just like when wilc_cfg80211_init()
+> fails.
+> 
+> Fixes: 854d66df74aed ("staging: wilc1000: look for rtc_clk clock in spi mode")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Acked-by: Ajay Singh <ajay.kathat@microchip.com>
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 208a91605288..51d7a5b18f41 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4799,6 +4799,21 @@ static int __init platform_optin_force_iommu(void)
- 	return 1;
- }
- 
-+static int acpi_device_create_direct_mappings(struct device *pn_dev, struct device *acpi_device)
-+{
-+	struct iommu_group *group;
-+
-+	acpi_device->bus->iommu_ops = &intel_iommu_ops;
-+	group = iommu_group_get(pn_dev);
-+	if (!group) {
-+		pr_warn("ACPI name space devices create direct mappings wrong!\n");
-+		return -EINVAL;
-+	}
-+	__acpi_device_create_direct_mappings(group, acpi_device);
-+
-+	return 0;
-+}
-+
- static int __init probe_acpi_namespace_devices(void)
- {
- 	struct dmar_drhd_unit *drhd;
-@@ -4813,6 +4828,7 @@ static int __init probe_acpi_namespace_devices(void)
- 			struct acpi_device_physical_node *pn;
- 			struct iommu_group *group;
- 			struct acpi_device *adev;
-+			struct device *pn_dev = NULL;
- 
- 			if (dev->bus != &acpi_bus_type)
- 				continue;
-@@ -4823,6 +4839,7 @@ static int __init probe_acpi_namespace_devices(void)
- 					    &adev->physical_node_list, node) {
- 				group = iommu_group_get(pn->dev);
- 				if (group) {
-+					pn_dev = pn->dev;
- 					iommu_group_put(group);
- 					continue;
- 				}
-@@ -4831,7 +4848,19 @@ static int __init probe_acpi_namespace_devices(void)
- 				ret = iommu_probe_device(pn->dev);
- 				if (ret)
- 					break;
-+				pn_dev = pn->dev;
-+			}
-+			if (!pn_dev) {
-+				dev->bus->iommu_ops = &intel_iommu_ops;
-+				ret = iommu_probe_device(dev);
-+				if (ret) {
-+					pr_err("acpi_device probe fail! ret:%d\n", ret);
-+					goto unlock;
-+				}
-+				goto unlock;
- 			}
-+			ret = acpi_device_create_direct_mappings(pn_dev, dev);
-+unlock:
- 			mutex_unlock(&adev->physical_node_lock);
- 
- 			if (ret)
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 609bd25bf154..4f714a2d5ef7 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -779,6 +779,12 @@ static bool iommu_is_attach_deferred(struct iommu_domain *domain,
- 	return false;
- }
- 
-+void  __acpi_device_create_direct_mappings(struct iommu_group *group, struct device *acpi_device)
-+{
-+	iommu_create_device_direct_mappings(group, acpi_device);
-+}
-+EXPORT_SYMBOL_GPL(__acpi_device_create_direct_mappings);
-+
- /**
-  * iommu_group_add_device - add a device to an iommu group
-  * @group: the group into which to add the device (reference should be held)
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index fee209efb756..9be134775886 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -514,6 +514,9 @@ extern void iommu_domain_window_disable(struct iommu_domain *domain, u32 wnd_nr)
- extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
- 			      unsigned long iova, int flags);
- 
-+extern void __acpi_device_create_direct_mappings(struct iommu_group *group,
-+						struct device *acpi_device);
-+
- static inline void iommu_flush_tlb_all(struct iommu_domain *domain)
- {
- 	if (domain->ops->flush_iotlb_all)
+Patch applied to wireless-drivers-next.git, thanks.
+
+9a19a939abfa wilc1000: Fix memleak in wilc_bus_probe
+
 -- 
-2.17.1
+https://patchwork.kernel.org/patch/11725515/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
