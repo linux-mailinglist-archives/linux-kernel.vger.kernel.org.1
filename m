@@ -2,124 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F672546AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28392546AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgH0OVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727909AbgH0OJB (ORCPT
+        id S1726995AbgH0OUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:20:31 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32544 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728029AbgH0OI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:09:01 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B57C061234;
-        Thu, 27 Aug 2020 07:07:56 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g13so5907161ioo.9;
-        Thu, 27 Aug 2020 07:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iITVmmu5F1v+iFfIuLRs81s+K0iMXUs2nHXl8cgJB50=;
-        b=uy7iSHws8QJlH2OIPuDxtxRqUPcagcivIv2iPdlsV+MumRglXRHWq5eeU3uy3AByv/
-         ZwN9uspZfhyGL2FWrYeN2D1b1uBoEOpWV4Xwvyk6LVldJvZNOl0193t7Yl0MV1U+2Vim
-         fZsT7FDPzqrFrEEOqMlpzvya45PbafSHIyH+GOQjt+B/SnT0tzN3Z10+3tNNvazK/xDU
-         26xlbtiFaNBBiyeEFE7qMNwG+sfYobVyQOfPXbkvDnJNZPli0eHAWhxLWf1yaEPjseB1
-         zXfqc1tescWT8EDTnreY9CSJMY6ZUsOdhTorGmRIG0F5OeboElvAk4/MD9fuH52TDlpW
-         y7jg==
+        Thu, 27 Aug 2020 10:08:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598537287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvdhiPhYSGUOeaIN0B943JFU94tDWV4/UOsJxiz1v3Q=;
+        b=VLU/EdIIUF3TolhlPrwmiZP747TI/B2Ku9ggaDjMmAhFnO8LdifPtgVdu30bAKi6+7tZsj
+        kQmU+kHq8lBRzoCurGQQ3vrjmfTEvsG3iaW3aNgsDEc9K8r5vmnxUpkJtE0dFZsRvkJPnb
+        6ciVJMnw5i7lM9y8xfXXDz9RYv/iWxM=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-LevPGzZBNViChtpIXAFixg-1; Thu, 27 Aug 2020 10:08:05 -0400
+X-MC-Unique: LevPGzZBNViChtpIXAFixg-1
+Received: by mail-wm1-f69.google.com with SMTP id p23so2186340wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:08:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iITVmmu5F1v+iFfIuLRs81s+K0iMXUs2nHXl8cgJB50=;
-        b=SrNyrLH0UyvuEJ9HbYQPv1lXdTSpsgkCVuMpBhdDOuxLrmVMJFLYMYhZzLomloDmH3
-         j67XasVLty8s+XWqkuRDxBv4GSeoNYT3744oT/7gfNXGMD//HNS4oS2AEsXITzdmarq5
-         GOubZcMGKwnsJ39j7OuzDloWZdHWqn8SDSWtAad40DsE0+LOQXxvIQwqCnhBoC8sB9sX
-         vQCaCzCp3gz8keRUUJaLZIbKwjXEgtjXB10AT0YxgFikY8Xw59c/MwX0oQs+dS7HmJp2
-         LaVcP7fSo8aPp/aWlvmuhwpqOxqAJvPpMvkfuBC33vhdErs4HLsCAJY9wppSErCvOqCf
-         aJTw==
-X-Gm-Message-State: AOAM531vyK7BnFnJUDrh/FQ87EYN79I7MHGBppXYsPSc6assTMiJw1rG
-        5D8UtW/aU9Yq8yoH9t18ReGELmLJy2gYhFeW3qM=
-X-Google-Smtp-Source: ABdhPJxHW3P48zYk8f8mc/UUwTyYIhmmTX1pyklbu8A1w2KH5Tmw78GkHcjFUMXT9WemjmzZ+54pyuGyapkq4P1L7Yk=
-X-Received: by 2002:a05:6638:1690:: with SMTP id f16mr19835741jat.91.1598537276190;
- Thu, 27 Aug 2020 07:07:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200825002540.3351-1-yu-cheng.yu@intel.com> <20200825002540.3351-26-yu-cheng.yu@intel.com>
- <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
- <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com> <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com> <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
- <ef7f9e24-f952-d78c-373e-85435f742688@intel.com> <20200826164604.GW6642@arm.com>
- <87ft892vvf.fsf@oldenburg2.str.redhat.com> <20200826170841.GX6642@arm.com>
- <87tuwow7kg.fsf@oldenburg2.str.redhat.com> <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
- <873648w6qr.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <873648w6qr.fsf@oldenburg2.str.redhat.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Thu, 27 Aug 2020 07:07:20 -0700
-Message-ID: <CAMe9rOqpLyWR+Ek7aBiRY+Kr6sRxkSHAo2Sc6h0YCv3X3-3TuQ@mail.gmail.com>
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CvdhiPhYSGUOeaIN0B943JFU94tDWV4/UOsJxiz1v3Q=;
+        b=Q8A9moGVwK0A2hu9/QWpEmnSEZz7jhtHxsnAXXwmIa4/OXA4kohRo0q8KGeQ40jYoB
+         bw9m+R+a5dHBrzDyer262iwhvvr5ShSlkXjKTfgL88vkmBYmh4QwW4Jsrh6hzY53x/Lo
+         rKoehAi/pAx1jJFogg5+SoBB2aNS2FGeihiqeXGY859uOYzfWV0RbHYG6rn4ejE+MhS+
+         G0OPNowaxwdhbrFpKozxuPozrUH7ZsVtWCO661fsvCtVv938mkbZNfv5zBE/gkst6IaX
+         T/EuUCX0yvsp0VZwNjPc+dnvMC2ASTURfLY6ENsTQ7m4isehHDqQewO45qTJ85IQ9XWm
+         yh4Q==
+X-Gm-Message-State: AOAM532VrXbLPI3lQDS+zmUwExZPYKTxz0bNIUm0tIakm8dhvPSa2d4h
+        PE61bSqM75spkcHdI2sF+odlotqxKdyKI3Ow5eyvbjCVfueLz4Jr//IsCps++APt8dC/LoIK1aB
+        2o1G9C1RmSpVFq+LCe6gJW73z
+X-Received: by 2002:a5d:66c1:: with SMTP id k1mr19971165wrw.8.1598537283952;
+        Thu, 27 Aug 2020 07:08:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWw4gY+gfT3ioYFr28ZoapW9vPXQZrcRf4b8LhwoAGjeKf6Sd713KoEGCbzoU3U0KCeejqiw==
+X-Received: by 2002:a5d:66c1:: with SMTP id k1mr19971132wrw.8.1598537283631;
+        Thu, 27 Aug 2020 07:08:03 -0700 (PDT)
+Received: from steredhat.lan ([5.171.209.212])
+        by smtp.gmail.com with ESMTPSA id t14sm7282780wrg.38.2020.08.27.07.08.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 07:08:03 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 16:07:58 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Aleksa Sarai <asarai@suse.de>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
         Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v5 2/3] io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+Message-ID: <20200827140758.mboc7z2us2yqp356@steredhat.lan>
+References: <20200827134044.82821-1-sgarzare@redhat.com>
+ <20200827134044.82821-3-sgarzare@redhat.com>
+ <206a32b6-ba20-fc91-1906-e6bf377798ae@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <206a32b6-ba20-fc91-1906-e6bf377798ae@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 6:36 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * H. J. Lu:
->
-> > On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com> wrote:
-> >>
-> >> * Dave Martin:
-> >>
-> >> > You're right that this has implications: for i386, libc probably pulls
-> >> > more arguments off the stack than are really there in some situations.
-> >> > This isn't a new problem though.  There are already generic prctls with
-> >> > fewer than 4 args that are used on x86.
-> >>
-> >> As originally posted, glibc prctl would have to know that it has to pull
-> >> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  But
-> >> then the u64 argument is a problem for arch_prctl as well.
-> >>
-> >
-> > Argument of ARCH_X86_CET_DISABLE is int and passed in register.
->
-> The commit message and the C source say otherwise, I think (not sure
-> about the C source, not a kernel hacker).
+On Thu, Aug 27, 2020 at 07:49:45AM -0600, Jens Axboe wrote:
+> On 8/27/20 7:40 AM, Stefano Garzarella wrote:
+> > @@ -6414,6 +6425,19 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
+> >  	if (unlikely(sqe_flags & ~SQE_VALID_FLAGS))
+> >  		return -EINVAL;
+> >  
+> > +	if (unlikely(ctx->restricted)) {
+> > +		if (!test_bit(req->opcode, ctx->restrictions.sqe_op))
+> > +			return -EACCES;
+> > +
+> > +		if ((sqe_flags & ctx->restrictions.sqe_flags_required) !=
+> > +		    ctx->restrictions.sqe_flags_required)
+> > +			return -EACCES;
+> > +
+> > +		if (sqe_flags & ~(ctx->restrictions.sqe_flags_allowed |
+> > +				  ctx->restrictions.sqe_flags_required))
+> > +			return -EACCES;
+> > +	}
+> > +
+> 
+> This should be a separate function, ala:
+> 
+> if (unlikely(ctx->restricted)) {
+> 	ret = io_check_restriction(ctx, req);
+> 	if (ret)
+> 		return ret;
+> }
+> 
+> to move it totally out of the (very) hot path.
 
-It should read:
+I'll fix.
 
-arch_prctl(ARCH_X86_CET_DISABLE, unsigned long features)
+> 
+> >  	if ((sqe_flags & IOSQE_BUFFER_SELECT) &&
+> >  	    !io_op_defs[req->opcode].buffer_select)
+> >  		return -EOPNOTSUPP;
+> > @@ -8714,6 +8738,71 @@ static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
+> >  	return -EINVAL;
+> >  }
+> >  
+> > +static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
+> > +				    unsigned int nr_args)
+> > +{
+> > +	struct io_uring_restriction *res;
+> > +	size_t size;
+> > +	int i, ret;
+> > +
+> > +	/* We allow only a single restrictions registration */
+> > +	if (ctx->restricted)
+> > +		return -EBUSY;
+> > +
+> > +	if (!arg || nr_args > IORING_MAX_RESTRICTIONS)
+> > +		return -EINVAL;
+> > +
+> > +	size = array_size(nr_args, sizeof(*res));
+> > +	if (size == SIZE_MAX)
+> > +		return -EOVERFLOW;
+> > +
+> > +	res = memdup_user(arg, size);
+> > +	if (IS_ERR(res))
+> > +		return PTR_ERR(res);
+> > +
+> > +	for (i = 0; i < nr_args; i++) {
+> > +		switch (res[i].opcode) {
+> > +		case IORING_RESTRICTION_REGISTER_OP:
+> > +			if (res[i].register_op >= IORING_REGISTER_LAST) {
+> > +				ret = -EINVAL;
+> > +				goto out;
+> > +			}
+> > +
+> > +			__set_bit(res[i].register_op,
+> > +				  ctx->restrictions.register_op);
+> > +			break;
+> > +		case IORING_RESTRICTION_SQE_OP:
+> > +			if (res[i].sqe_op >= IORING_OP_LAST) {
+> > +				ret = -EINVAL;
+> > +				goto out;
+> > +			}
+> > +
+> > +			__set_bit(res[i].sqe_op, ctx->restrictions.sqe_op);
+> > +			break;
+> > +		case IORING_RESTRICTION_SQE_FLAGS_ALLOWED:
+> > +			ctx->restrictions.sqe_flags_allowed = res[i].sqe_flags;
+> > +			break;
+> > +		case IORING_RESTRICTION_SQE_FLAGS_REQUIRED:
+> > +			ctx->restrictions.sqe_flags_required = res[i].sqe_flags;
+> > +			break;
+> > +		default:
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	ctx->restricted = 1;
+> > +
+> > +	ret = 0;
+> 
+> I'd set ret = 0 above the switch, that's the usual idiom - start at
+> zero, have someone set it to -ERROR if something fails.
 
--- 
-H.J.
+Yes, it is better. I'll fix it.
+
+Thanks,
+Stefano
+
