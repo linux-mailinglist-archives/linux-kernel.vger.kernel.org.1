@@ -2,218 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C43F253F43
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0DF253F49
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728240AbgH0Hez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S1728264AbgH0HfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728077AbgH0Heq (ORCPT
+        with ESMTP id S1728246AbgH0HfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:34:46 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9779C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:34:45 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c15so4312201wrs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:34:45 -0700 (PDT)
+        Thu, 27 Aug 2020 03:35:11 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02312C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:35:10 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m22so5294188ljj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:35:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nMutSp2j8lDpsARJd2bf3g5RNBU3idpv78njSHIfOe8=;
-        b=eBmPFLnENcqBUmxoVeQzsC8krhJde4fyDRfTOapBPl3kr/0SvF8s+Uuh6i31uAGSc2
-         vWS2B5lBX0s59zd+AZGm8Lb2YtVGpXVfpvID0LnN9JrfBLX5fLGtk4OBSqaQlhXoq2va
-         tHiP+M9SfFwiCh+ZEWG5634cTaGa4qfqJ+/QrqSMdQrQ0WicHDkCKWSeAZtlpshQm59q
-         91TnkDu4pC+2H595isJymY2OSLFDLG6yItrmIq/f0JMd7HllxaFU9PkphgqcpvRCIlas
-         bhXtgFCYSRZ7wWDf/iVprkZWEmEV3Mom2RuVDWd4SPuSu8dPHnXmE8m16FkG01f3EOMj
-         OnkQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=7APyHOujPL1VeK8Eil0L8aFHD4Q0gYtExWSlFGcjgmg=;
+        b=B3bi80kjtgfp+lEYjnG2F+19d/sX90y5UROZig2euZ+1ZBZkpgt3aH1dzEyv63kUjk
+         +IcdxUFm+Yly2y8SWe6/UHVwmpqeWu9m1J9hXbinVmBwBC/x8pdPVWw4kC7BVx5QTF4K
+         /6ACxh/dX3WOUJO1MvvwYycomLb7V41/1I5mDWzKjvDGdNX1qcmaa4m1xpoqcthKpKeW
+         gBjmLEE0n8K65BEydcs+y5HqxvKRJ2TRitAGB/J7vG+2B6k99toYX9IxWTtlIRkucux6
+         MeJDWdCbiW/z6pSA+GVQG56wOnEN3aAWCkSTryd/A0nxdlKXO1M0eNq15yFU/x4MObn9
+         hxrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nMutSp2j8lDpsARJd2bf3g5RNBU3idpv78njSHIfOe8=;
-        b=mSS5VaMz5D+HGK592YvqgvJgIgpvsLZbgtzl2HtUP+Ym5xKXmKPZfCSdZL/Nz1Eff4
-         38c0hboWvRxRBMjXOy/in++yYir5uivubUjAsogweaVSwXAgFywWf3y9QpWWaluWLdWm
-         bS6mZ5LXHXRzaQOh+VCQqyU3ngCaJCK5nfKRhzpUZLRmmlKSx9i4Oj9Mw1VYhBvvXvoI
-         u17oTSkE/ppFD8WAZLZDH61R5eQU4AGgLUBhQtnCxVco1neI0yGmkglorlFjpqc9SsL5
-         KVzu+P179Or+UrYJDRNkcdoOtmQgEAgLY+QPn4N9GoQeKryP95Ye08/mTd8XU8ADpEWR
-         OldA==
-X-Gm-Message-State: AOAM530nvzRE7HIp3OQtuRAfdnQvU5xR35a/UcCVf17NM0G/pJM+PAYj
-        DwAUUC1o+abovx2O72O2cfRD4pBDzsTpVA==
-X-Google-Smtp-Source: ABdhPJwn8Lcoxc9EnpXbTBuzBujvMmlrHarXWaQxsG2Se2uk7zjIfOd6U61a761RLZzKeJ34Gwh4xA==
-X-Received: by 2002:adf:a287:: with SMTP id s7mr20425857wra.103.1598513684404;
-        Thu, 27 Aug 2020 00:34:44 -0700 (PDT)
-Received: from dell ([91.110.221.141])
-        by smtp.gmail.com with ESMTPSA id c9sm3383642wmf.3.2020.08.27.00.34.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=7APyHOujPL1VeK8Eil0L8aFHD4Q0gYtExWSlFGcjgmg=;
+        b=Sd4phxn6F9ClpW8eM1KRsQ7AFVWIzq0B7hExlTQaLgpbX+OpTkTRO/eUd8/oIlGhIp
+         bemcmUQLFdQlzKfrkXq0QwlGrsEU2D93dFZg1cckNUbE7wy/4uzAPZnAmWJyfLLWQ5fd
+         MFidFItSeOmh49R+gI0zOGis2pqB5Ev/4cBCMS1IOYiIr0pPxweu8oQxsWN38TC77lXV
+         rtgqnmq1yyu1j3kjnVTP8ZE6dGuGhBEt3G8oKixDF0SmX9LC35j8PIeCmGLqH4tp2+Bu
+         J+dtkx6Sxeff6pvTPnHyyV0u3llK16yUfAwvNTKb0UKZSzQiWv7TvhBusd9i5J8+iD7l
+         eVww==
+X-Gm-Message-State: AOAM5325QofBgUhhXgLkbBhsnF9eVTuCzKSVpq4AtrZwU6fftuRS2oqS
+        DWwsp3YOmFAVBQdpWnkDn8I=
+X-Google-Smtp-Source: ABdhPJzVuZLGlIVYCxQHJ6jt0P6Csdk4Q8l7EO2A2x3ucFfSbPYImf6ufnSiupv9tFerYJ7vq1kseQ==
+X-Received: by 2002:a2e:3a10:: with SMTP id h16mr2320532lja.221.1598513708321;
+        Thu, 27 Aug 2020 00:35:08 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id e25sm282458ljp.47.2020.08.27.00.35.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 00:34:43 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 08:34:42 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Maya Erez <merez@codeaurora.org>,
-        wil6210@qti.qualcomm.com
-Subject: [PATCH v2 27/32] wireless: ath: wil6210: txrx: Demote obvious abuse
- of kernel-doc
-Message-ID: <20200827073442.GT3248864@dell>
-References: <20200821071644.109970-1-lee.jones@linaro.org>
- <20200821071644.109970-28-lee.jones@linaro.org>
+        Thu, 27 Aug 2020 00:35:08 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 10:34:56 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Algea Cao <algea.cao@rock-chips.com>
+Cc:     mripard@kernel.org, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch, linux-rockchip@lists.infradead.org
+Subject: Printing bitfields in the kernel (Re: [PATCH] drm: Parse
+ Colorimetry data block from EDID)
+Message-ID: <20200827103456.57edaf59@eldfell>
+In-Reply-To: <20200826142328.131144-1-algea.cao@rock-chips.com>
+References: <20200826142328.131144-1-algea.cao@rock-chips.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821071644.109970-28-lee.jones@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/PKLpTK3oOKREpLRBpjtEfJP"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-None of these headers provide any parameter documentation.
+--Sig_/PKLpTK3oOKREpLRBpjtEfJP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes the following W=1 kernel build warning(s):
+On Wed, 26 Aug 2020 22:23:28 +0800
+Algea Cao <algea.cao@rock-chips.com> wrote:
 
- drivers/net/wireless/ath/wil6210/txrx.c:259: warning: Function parameter or member 'wil' not described in 'wil_vring_alloc_skb'
- drivers/net/wireless/ath/wil6210/txrx.c:259: warning: Function parameter or member 'vring' not described in 'wil_vring_alloc_skb'
- drivers/net/wireless/ath/wil6210/txrx.c:259: warning: Function parameter or member 'i' not described in 'wil_vring_alloc_skb'
- drivers/net/wireless/ath/wil6210/txrx.c:259: warning: Function parameter or member 'headroom' not described in 'wil_vring_alloc_skb'
- drivers/net/wireless/ath/wil6210/txrx.c:309: warning: Function parameter or member 'wil' not described in 'wil_rx_add_radiotap_header'
- drivers/net/wireless/ath/wil6210/txrx.c:309: warning: Function parameter or member 'skb' not described in 'wil_rx_add_radiotap_header'
- drivers/net/wireless/ath/wil6210/txrx.c:444: warning: Function parameter or member 'wil' not described in 'wil_vring_reap_rx'
- drivers/net/wireless/ath/wil6210/txrx.c:444: warning: Function parameter or member 'vring' not described in 'wil_vring_reap_rx'
- drivers/net/wireless/ath/wil6210/txrx.c:610: warning: Function parameter or member 'wil' not described in 'wil_rx_refill'
- drivers/net/wireless/ath/wil6210/txrx.c:610: warning: Function parameter or member 'count' not described in 'wil_rx_refill'
- drivers/net/wireless/ath/wil6210/txrx.c:1011: warning: Function parameter or member 'wil' not described in 'wil_rx_handle'
- drivers/net/wireless/ath/wil6210/txrx.c:1011: warning: Function parameter or member 'quota' not described in 'wil_rx_handle'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'd' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'skb' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'tso_desc_type' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'is_ipv4' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'tcp_hdr_len' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1643: warning: Function parameter or member 'skb_net_hdr_len' not described in 'wil_tx_desc_offload_setup_tso'
- drivers/net/wireless/ath/wil6210/txrx.c:1674: warning: Function parameter or member 'd' not described in 'wil_tx_desc_offload_setup'
- drivers/net/wireless/ath/wil6210/txrx.c:1674: warning: Function parameter or member 'skb' not described in 'wil_tx_desc_offload_setup'
- drivers/net/wireless/ath/wil6210/txrx.c:2240: warning: Function parameter or member 'wil' not described in '__wil_update_net_queues'
- drivers/net/wireless/ath/wil6210/txrx.c:2240: warning: Function parameter or member 'vif' not described in '__wil_update_net_queues'
- drivers/net/wireless/ath/wil6210/txrx.c:2240: warning: Function parameter or member 'ring' not described in '__wil_update_net_queues'
- drivers/net/wireless/ath/wil6210/txrx.c:2240: warning: Function parameter or member 'check_stop' not described in '__wil_update_net_queues'
- drivers/net/wireless/ath/wil6210/txrx.c:2430: warning: Function parameter or member 'vif' not described in 'wil_tx_complete'
- drivers/net/wireless/ath/wil6210/txrx.c:2430: warning: Function parameter or member 'ringid' not described in 'wil_tx_complete'
+> CEA 861.3 spec adds colorimetry data block for HDMI.
+> Parsing the block to get the colorimetry data from
+> panel.
+>=20
+> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+> ---
+>=20
+>  drivers/gpu/drm/drm_edid.c  | 45 +++++++++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h |  3 +++
+>  include/drm/drm_edid.h      | 14 ++++++++++++
+>  3 files changed, 62 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 31496b6cfc56..67e607c04492 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3223,6 +3223,7 @@ add_detailed_modes(struct drm_connector *connector,=
+ struct edid *edid,
+>  #define VIDEO_BLOCK     0x02
+>  #define VENDOR_BLOCK    0x03
+>  #define SPEAKER_BLOCK	0x04
+> +#define COLORIMETRY_DATA_BLOCK		0x5
+>  #define HDR_STATIC_METADATA_BLOCK	0x6
+>  #define USE_EXTENDED_TAG 0x07
+>  #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
+> @@ -4309,6 +4310,48 @@ static void fixup_detailed_cea_mode_clock(struct d=
+rm_display_mode *mode)
+>  	mode->clock =3D clock;
+>  }
+> =20
+> +static bool cea_db_is_hdmi_colorimetry_data_block(const u8 *db)
+> +{
+> +	if (cea_db_tag(db) !=3D USE_EXTENDED_TAG)
+> +		return false;
+> +
+> +	if (db[1] !=3D COLORIMETRY_DATA_BLOCK)
+> +		return false;
+> +
+> +	if (cea_db_payload_len(db) < 2)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void
+> +drm_parse_colorimetry_data_block(struct drm_connector *connector, const =
+u8 *db)
+> +{
+> +	struct drm_hdmi_info *info =3D &connector->display_info.hdmi;
+> +
+> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_601)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_xvYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_709)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_xvYCC_709;
+> +	if (db[2] & DRM_EDID_CLRMETRY_sYCC_601)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_sYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_ADBYCC_601)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_ADBYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_ADB_RGB)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_ADB_RGB;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_CYCC)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_BT2020_CYCC;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_YCC)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_BT2020_YCC;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_RGB)
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_BT2020_RGB;
+> +	/* Byte 4 Bit 7: DCI-P3 */
+> +	if (db[3] & BIT(7))
+> +		info->colorimetry |=3D DRM_EDID_CLRMETRY_DCI_P3;
+> +
+> +	DRM_DEBUG_KMS("Supported Colorimetry 0x%x\n", info->colorimetry);
 
-Cc: Maya Erez <merez@codeaurora.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: wil6210@qti.qualcomm.com
-Cc: netdev@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/net/wireless/ath/wil6210/txrx.c | 30 +++++++++----------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+Hi,
 
-diff --git a/drivers/net/wireless/ath/wil6210/txrx.c b/drivers/net/wireless/ath/wil6210/txrx.c
-index 080e5aa60bea4..cc830c795b33c 100644
---- a/drivers/net/wireless/ath/wil6210/txrx.c
-+++ b/drivers/net/wireless/ath/wil6210/txrx.c
-@@ -249,8 +249,7 @@ static void wil_vring_free(struct wil6210_priv *wil, struct wil_ring *vring)
- 	vring->ctx = NULL;
- }
- 
--/**
-- * Allocate one skb for Rx VRING
-+/* Allocate one skb for Rx VRING
-  *
-  * Safe to call from IRQ
-  */
-@@ -295,8 +294,7 @@ static int wil_vring_alloc_skb(struct wil6210_priv *wil, struct wil_ring *vring,
- 	return 0;
- }
- 
--/**
-- * Adds radiotap header
-+/* Adds radiotap header
-  *
-  * Any error indicated as "Bad FCS"
-  *
-@@ -432,8 +430,7 @@ static int wil_rx_get_cid_by_skb(struct wil6210_priv *wil, struct sk_buff *skb)
- 	return cid;
- }
- 
--/**
-- * reap 1 frame from @swhead
-+/* reap 1 frame from @swhead
-  *
-  * Rx descriptor copied to skb->cb
-  *
-@@ -597,8 +594,7 @@ static struct sk_buff *wil_vring_reap_rx(struct wil6210_priv *wil,
- 	return skb;
- }
- 
--/**
-- * allocate and fill up to @count buffers in rx ring
-+/* allocate and fill up to @count buffers in rx ring
-  * buffers posted at @swtail
-  * Note: we have a single RX queue for servicing all VIFs, but we
-  * allocate skbs with headroom according to main interface only. This
-@@ -1002,8 +998,7 @@ void wil_netif_rx_any(struct sk_buff *skb, struct net_device *ndev)
- 	wil_netif_rx(skb, ndev, cid, stats, true);
- }
- 
--/**
-- * Proceed all completed skb's from Rx VRING
-+/* Proceed all completed skb's from Rx VRING
-  *
-  * Safe to call from NAPI poll, i.e. softirq with interrupts enabled
-  */
-@@ -1629,8 +1624,7 @@ void wil_tx_desc_set_nr_frags(struct vring_tx_desc *d, int nr_frags)
- 	d->mac.d[2] |= (nr_frags << MAC_CFG_DESC_TX_2_NUM_OF_DESCRIPTORS_POS);
- }
- 
--/**
-- * Sets the descriptor @d up for csum and/or TSO offloading. The corresponding
-+/* Sets the descriptor @d up for csum and/or TSO offloading. The corresponding
-  * @skb is used to obtain the protocol and headers length.
-  * @tso_desc_type is a descriptor type for TSO: 0 - a header, 1 - first data,
-  * 2 - middle, 3 - last descriptor.
-@@ -1660,8 +1654,7 @@ static void wil_tx_desc_offload_setup_tso(struct vring_tx_desc *d,
- 	d->dma.d0 |= BIT(DMA_CFG_DESC_TX_0_PSEUDO_HEADER_CALC_EN_POS);
- }
- 
--/**
-- * Sets the descriptor @d up for csum. The corresponding
-+/* Sets the descriptor @d up for csum. The corresponding
-  * @skb is used to obtain the protocol and headers length.
-  * Returns the protocol: 0 - not TCP, 1 - TCPv4, 2 - TCPv6.
-  * Note, if d==NULL, the function only returns the protocol result.
-@@ -2216,8 +2209,7 @@ static int wil_tx_ring(struct wil6210_priv *wil, struct wil6210_vif *vif,
- 	return rc;
- }
- 
--/**
-- * Check status of tx vrings and stop/wake net queues if needed
-+/* Check status of tx vrings and stop/wake net queues if needed
-  * It will start/stop net queues of a specific VIF net_device.
-  *
-  * This function does one of two checks:
-@@ -2419,8 +2411,7 @@ void wil_tx_latency_calc(struct wil6210_priv *wil, struct sk_buff *skb,
- 		sta->stats.tx_latency_max_us = skb_time_us;
- }
- 
--/**
-- * Clean up transmitted skb's from the Tx VRING
-+/* Clean up transmitted skb's from the Tx VRING
-  *
-  * Return number of descriptors cleared
-  *
-@@ -2460,8 +2451,7 @@ int wil_tx_complete(struct wil6210_vif *vif, int ringid)
- 	while (!wil_ring_is_empty(vring)) {
- 		int new_swtail;
- 		struct wil_ctx *ctx = &vring->ctx[vring->swtail];
--		/**
--		 * For the fragmented skb, HW will set DU bit only for the
-+		/* For the fragmented skb, HW will set DU bit only for the
- 		 * last fragment. look for it.
- 		 * In TSO the first DU will include hdr desc
- 		 */
--- 
-2.25.1
+taking a tangent here, printing bitfields as hex is hard to read. How
+about using something like nvkm_snprintbf()? Of course not literally
+that function since it's Nouveau internal, but as an end user I would be
+happy to see DRM core or the kernel generics have similar functionality
+that actually decodes the bits and prints their proper names.
+
+Does such facility not exist yet?
+
+
+Thanks,
+pq
+
+> +}
+> +
+>  static bool cea_db_is_hdmi_hdr_metadata_block(const u8 *db)
+>  {
+>  	if (cea_db_tag(db) !=3D USE_EXTENDED_TAG)
+> @@ -4994,6 +5037,8 @@ static void drm_parse_cea_ext(struct drm_connector =
+*connector,
+>  			drm_parse_vcdb(connector, db);
+>  		if (cea_db_is_hdmi_hdr_metadata_block(db))
+>  			drm_parse_hdr_metadata_block(connector, db);
+> +		if (cea_db_is_hdmi_colorimetry_data_block(db))
+> +			drm_parse_colorimetry_data_block(connector, db);
+>  	}
+>  }
+> =20
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index af145608b5ed..d599c3b9e881 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -207,6 +207,9 @@ struct drm_hdmi_info {
+> =20
+>  	/** @y420_dc_modes: bitmap of deep color support index */
+>  	u8 y420_dc_modes;
+> +
+> +	/* @colorimetry: bitmap of supported colorimetry modes */
+> +	u16 colorimetry;
+>  };
+> =20
+>  /**
+> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> index cfa4f5af49af..98fa78c2f82d 100644
+> --- a/include/drm/drm_edid.h
+> +++ b/include/drm/drm_edid.h
+> @@ -229,6 +229,20 @@ struct detailed_timing {
+>  				    DRM_EDID_YCBCR420_DC_36 | \
+>  				    DRM_EDID_YCBCR420_DC_30)
+> =20
+> +/*
+> + * Supported Colorimetry from colorimetry data block
+> + * as per CEA 861-G spec
+> + */
+> +#define DRM_EDID_CLRMETRY_xvYCC_601   (1 << 0)
+> +#define DRM_EDID_CLRMETRY_xvYCC_709   (1 << 1)
+> +#define DRM_EDID_CLRMETRY_sYCC_601    (1 << 2)
+> +#define DRM_EDID_CLRMETRY_ADBYCC_601  (1 << 3)
+> +#define DRM_EDID_CLRMETRY_ADB_RGB     (1 << 4)
+> +#define DRM_EDID_CLRMETRY_BT2020_CYCC (1 << 5)
+> +#define DRM_EDID_CLRMETRY_BT2020_YCC  (1 << 6)
+> +#define DRM_EDID_CLRMETRY_BT2020_RGB  (1 << 7)
+> +#define DRM_EDID_CLRMETRY_DCI_P3      (1 << 15)
+> +
+>  /* ELD Header Block */
+>  #define DRM_ELD_HEADER_BLOCK_SIZE	4
+> =20
+
+
+--Sig_/PKLpTK3oOKREpLRBpjtEfJP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAl9HYiAACgkQI1/ltBGq
+qqc9jg//YlHW3L6UDL4d1hg+YWdsy3l/QUbxRtSsw0j8vQhULjaTs1YUNDb+S/WE
+KYBuHY5enEJ2kUH4USsBaI1uhhdFHrq3SM41DnUQKIqWB3lLJmNbJj2YgXNh+vg0
+l20I1uQQuhGH64xDVKLuPdCS4BnxxlFHSueGaZ4txhmQ2ruPfKF45Hm+IhBSyrJN
+VyCiazoNsVhQbGlhwhtB2P7sQSM1YY+Ul0nXb1R6a80ziBjV4Kx9OTTewqLLqT6J
+Xg74c2ELcVnfqDLXPNUF/NLSv+BsA8xxSPe4lyHddL4kgWOzofMrjng4JN7C6tVC
+fZdG+AVLeYgic2TCNkgW8dX9I6/47YjgHEfjDmXKE2InbjhbaudG+6jstISUBepi
+F5MKoTtItDxVnDkl9TZv7c0UxJp9lcNQ44vcb/qyvYagvZCrmnYNFC+SuPvGQ+ia
+xg5+uo+m8qAAka6dbGOByGRbaDgMCGWZIGKGDOGkQT10IUpqcNkZ56pvTdC2yaUr
+8Qnd5cITOgLZVlWp/P+ZuDc09s5lbbWStpBqW5fLJrumH2natvK5NksATucN/vvm
+ylS/eIvSJLZDCSq8veMdy2gOzWgaI9AaJHI0q4sgwfPOedBEsJEHE9DNvU8gONnu
+oXz7CjEuq1qzSvqNCzIYWT9+aa5bBfLyFWbOtO9wakgt1hspAGQ=
+=xWEr
+-----END PGP SIGNATURE-----
+
+--Sig_/PKLpTK3oOKREpLRBpjtEfJP--
