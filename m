@@ -2,99 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620CB2543F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5432543F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgH0KpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgH0Ko7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:44:59 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C50C061264;
-        Thu, 27 Aug 2020 03:44:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x7so4911198wro.3;
-        Thu, 27 Aug 2020 03:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jHZbJ00C/f1K1DaZMLb0eY9W+8FWEJIJdHMmXmrVo2E=;
-        b=CWltxGSqJqTnBvTSqb044t2/wgwetRPVnoGQy++DNRNCyk2xQLZOMzxwDszpWyIMJO
-         2UnJmIQpyDzlX2SsQo6KZUeIr4gB5+gCrxEgFrwNWAAe/75o7PMcNI0u65YjG9YG6ODH
-         njANnMzoXh7jMcj7ZyfAyhMG12cWr+EXjyn70VNNUr3yXFGxxY6qg7GnmKH+B9u3xn/U
-         WKiUgbgzYFBxrLqgKSvDhdRXg0Y0dwRMLrkX20F3xIqpiWw+wAw3CpO2POWq2m/ACM1d
-         pTcLwlz5FB5JaFIHz4nrDrI4aWrOUp3ueVsWSo+3Om8ulic6d893MVSHuV5kUDd3kOxt
-         c7aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jHZbJ00C/f1K1DaZMLb0eY9W+8FWEJIJdHMmXmrVo2E=;
-        b=OSCJQAVR8f+kpb6cdQrdTzTV34zbkfNxUKT8ZF6krSa1Gq07gtuY9srT6Xy5Da/zGS
-         WphTRjBnmXZC3+sEvNbhEx8f0hU76D/sNTd2yrjn+AodQkX8Uiqc7DFSrdN8AZ6lqSHf
-         wq5bA6s2X8f0a64CsRbxAuhBS+ZKPQHuH4Goe4lvhTrFUn8Nqbz+ZYOWatfxmUOdhL8c
-         l802GB1FB+g2vGYDXTt3o457VpjDyJw8MREHc7cVsRIccH22M/ESsj5uhBKfZ8k/86jG
-         YH3LYoYYKbyEs4QQNU8/fRDB9YlXWwdSI8oPhzf+7xpBqi4K6zNQnzMFsE0t8yapRjRH
-         jtOQ==
-X-Gm-Message-State: AOAM530LQddgZitI/PcVQvU3Yimx91Q3iqAYkTDTuZdCHXj06rxutHdX
-        adLNa9yEcSnJb8Y5f+EMevNFeZA5WzKLeqpMz/Y=
-X-Google-Smtp-Source: ABdhPJx/nnMNZzdz51vNTwqRRAqSdXIEeo5csO5i7hm5GF700/WOBx/88e08iEWcI7Y3UO4eC2wffxgx1/oGC+i/voc=
-X-Received: by 2002:adf:f483:: with SMTP id l3mr6596174wro.148.1598525097155;
- Thu, 27 Aug 2020 03:44:57 -0700 (PDT)
+        id S1728351AbgH0Kmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:42:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:56546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgH0Kmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:42:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 611E8101E;
+        Thu, 27 Aug 2020 03:42:49 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0285D3F66B;
+        Thu, 27 Aug 2020 03:42:45 -0700 (PDT)
+Subject: Re: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
+ <20200827095429.GC29264@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <b5c519b8-fbec-46ac-7c72-43864175748e@arm.com>
+Date:   Thu, 27 Aug 2020 11:44:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200817090637.26887-2-allen.cryptic@gmail.com> <20200827101540.6589BC433CB@smtp.codeaurora.org>
-In-Reply-To: <20200827101540.6589BC433CB@smtp.codeaurora.org>
-From:   Allen Pais <allen.cryptic@gmail.com>
-Date:   Thu, 27 Aug 2020 16:14:45 +0530
-Message-ID: <CAEogwTB=S6M6Xp4w5dd_W3b6Depmn6Gmu3RmAf96pRankoJQqg@mail.gmail.com>
-Subject: Re: [PATCH 01/16] wireless: ath5k: convert tasklets to use new
- tasklet_setup() API
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, jirislaby@kernel.org,
-        mickflemm@gmail.com, mcgrof@kernel.org, chunkeey@googlemail.com,
-        Larry.Finger@lwfinger.net, stas.yakovlev@gmail.com,
-        helmut.schaa@googlemail.com, pkshih@realtek.com,
-        yhchuang@realtek.com, dsd@gentoo.org, kune@deine-taler.de,
-        Kees Cook <keescook@chromium.org>, ath11k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200827095429.GC29264@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
->
-> Allen Pais <allen.cryptic@gmail.com> wrote:
->
-> > In preparation for unconditionally passing the
-> > struct tasklet_struct pointer to all tasklet
-> > callbacks, switch to using the new tasklet_setup()
-> > and from_tasklet() to pass the tasklet pointer explicitly.
-> >
-> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->
-> Patch applied to ath-next branch of ath.git, thanks.
->
-> c068a9ec3c94 ath5k: convert tasklets to use new tasklet_setup() API
->
-> --
-> https://patchwork.kernel.org/patch/11717393/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Could you please drop these and wait for V2. A change was proposed
-for from_tasklet() api. The new API should be picked shortly. I will send out
-the updated version early next week.
+On 8/27/20 10:54 AM, Catalin Marinas wrote:
+> On Fri, Aug 14, 2020 at 07:27:03PM +0200, Andrey Konovalov wrote:
+>> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+>> index 5e832b3387f1..c62c8ba85c0e 100644
+>> --- a/arch/arm64/mm/fault.c
+>> +++ b/arch/arm64/mm/fault.c
+>> @@ -33,6 +33,7 @@
+>>  #include <asm/debug-monitors.h>
+>>  #include <asm/esr.h>
+>>  #include <asm/kprobes.h>
+>> +#include <asm/mte.h>
+>>  #include <asm/processor.h>
+>>  #include <asm/sysreg.h>
+>>  #include <asm/system_misc.h>
+>> @@ -222,6 +223,20 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
+>>  	return 1;
+>>  }
+>>  
+>> +static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
+>> +{
+>> +	unsigned int ec = ESR_ELx_EC(esr);
+>> +	unsigned int fsc = esr & ESR_ELx_FSC;
+>> +
+>> +	if (ec != ESR_ELx_EC_DABT_CUR)
+>> +		return false;
+>> +
+>> +	if (fsc == ESR_ELx_FSC_MTE)
+>> +		return true;
+>> +
+>> +	return false;
+>> +}
+>> +
+>>  static bool is_el1_instruction_abort(unsigned int esr)
+>>  {
+>>  	return ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_CUR;
+>> @@ -294,6 +309,18 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+>>  	do_exit(SIGKILL);
+>>  }
+>>  
+>> +static void report_tag_fault(unsigned long addr, unsigned int esr,
+>> +			     struct pt_regs *regs)
+>> +{
+>> +	bool is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
+>> +
+>> +	pr_alert("Memory Tagging Extension Fault in %pS\n", (void *)regs->pc);
+>> +	pr_alert("  %s at address %lx\n", is_write ? "Write" : "Read", addr);
+>> +	pr_alert("  Pointer tag: [%02x], memory tag: [%02x]\n",
+>> +			mte_get_ptr_tag(addr),
+>> +			mte_get_mem_tag((void *)addr));
+>> +}
+>> +
+>>  static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+>>  			      struct pt_regs *regs)
+>>  {
+>> @@ -317,12 +344,16 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+>>  			msg = "execute from non-executable memory";
+>>  		else
+>>  			msg = "read from unreadable memory";
+>> +	} else if (is_el1_mte_sync_tag_check_fault(esr)) {
+>> +		report_tag_fault(addr, esr, regs);
+>> +		msg = "memory tagging extension fault";
+> 
+> IIUC, that's dead code. See my comment below on do_tag_check_fault().
+>
 
-Thanks,
-- Allen
+That's correct. This was useful with "panic_on_mte_fault" kernel command line
+parameter. Since it has now been replaced by a similar kasan feature, this code
+can be safely removed.
+
+>>  	} else if (addr < PAGE_SIZE) {
+>>  		msg = "NULL pointer dereference";
+>>  	} else {
+>>  		msg = "paging request";
+>>  	}
+>>  
+>> +
+> 
+> Unnecessary empty line.
+> 
+
+Agree.
+
+>>  	die_kernel_fault(msg, addr, esr, regs);
+>>  }
+>>  
+>> @@ -658,10 +689,27 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
+>>  	return 0;
+>>  }
+>>  
+>> +static int do_tag_recovery(unsigned long addr, unsigned int esr,
+>> +			   struct pt_regs *regs)
+>> +{
+>> +	report_tag_fault(addr, esr, regs);
+>> +
+>> +	/* Skip over the faulting instruction and continue: */
+>> +	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+> 
+> Ooooh, do we expect the kernel to still behave correctly after this? I
+> thought the recovery means disabling tag checking altogether and
+> restarting the instruction rather than skipping over it. We only skip if
+> we emulated it.
+> 
+
+I tried to dig it out but I am not sure why we need this as well.
+
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +
+>>  static int do_tag_check_fault(unsigned long addr, unsigned int esr,
+>>  			      struct pt_regs *regs)
+>>  {
+>> -	do_bad_area(addr, esr, regs);
+>> +	/* The tag check fault (TCF) is per TTBR */
+>> +	if (is_ttbr0_addr(addr))
+>> +		do_bad_area(addr, esr, regs);
+>> +	else
+>> +		do_tag_recovery(addr, esr, regs);
+> 
+> So we never invoke __do_kernel_fault() for a synchronous tag check in
+> the kernel. What's with all the is_el1_mte_sync_tag_check_fault() check
+> above?
+> 
+
+That's correct. This had a meaning with "panic_on_mte_fault" but since the
+feature has been replaced is_el1_mte_sync_tag_check_fault() is not useful anymore.
+
+-- 
+Regards,
+Vincenzo
