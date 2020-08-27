@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB16825414C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D8B254154
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgH0Izv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgH0Izu (ORCPT
+        id S1727969AbgH0I6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:58:14 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52835 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726882AbgH0I6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:55:50 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55298C061264;
-        Thu, 27 Aug 2020 01:55:49 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 5so3770008otp.12;
-        Thu, 27 Aug 2020 01:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yYRU5RWjdCABcW+SWFbp3Yrowl6dALpg4gGN9PPMym4=;
-        b=NU6KxZo/Iocb1DwO8n2E2MmxQxjBz2QmvF6tuBRu/iXnmUOHthNxzm8LmtICLTuW1q
-         W7cR9OOP5WiyZFhHBnj9HnPZgnLKBqljoZKc1H7WR2AgHS2gt2i+EI4VamX98hMKz+v4
-         MlSIRxfx4Wtwpw5DUksXVn2aKQSE7rjY3AuVpocTsN4WSthyGK3E98tFYBGTaiZIyvHk
-         e0s/kC6il6ZhcB3FvfbkGUI2NIEU5LgRiqENR8ShqRGjmnJH3uGl8J5cUA61r/zRms/M
-         HXBdTKOY3u+LnMkAnxlOYE28knMiU0xVrl0nt+mtNIF5/rjKCWvpxofnnE4VLDMHeVVT
-         6hTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yYRU5RWjdCABcW+SWFbp3Yrowl6dALpg4gGN9PPMym4=;
-        b=lspfdG3GVDDEusxG51MKZLvI42v2KUzkoWGoxtDyse15nwCS3/cQ+IReitRbfNUJtF
-         bc88qaSGxrW9+lMQQtoRXi/qGjHhBLmMz98j/X8pZSem5L/dPMAmyL25N22Uq3VY/AO4
-         q0Q10PXXJ/lPsRmTHiimb8MZltCk6nwxpolbgmctPTPjcYnLvQP9MQcmGQJ+saher/US
-         twdt3Sp38zueCbV7iCPXINAJ279wnLCAR4TXVE0vr62hD7AQg9WUssBXG/PEnUUQaEoh
-         /zBmkoyXhSiuM5UKcO/TOTp+wLgKnEqZDnFIa3yvlGAnTe4pOYaCgt0hswse7FGSAWrF
-         I4oA==
-X-Gm-Message-State: AOAM532nkMJI4bUpIwyoX0n8q7ZsB4OfKwMqiCEIl3ZQrPxiFLWAHwQG
-        Q/obR90Sp9Zq6go3sKoRQpn3G8dgzoRj/qWcyQM=
-X-Google-Smtp-Source: ABdhPJyYmnPw+UXq5Pnbrb1d8+Ls6OeV0jJ9/BCH19PZH76AENpdIFCNPcG4tB6nf4A3wQ8tAgaLGVlATIaLG7vJeOg=
-X-Received: by 2002:a9d:4c04:: with SMTP id l4mr12187928otf.207.1598518548666;
- Thu, 27 Aug 2020 01:55:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200826063850.47625-1-alexandru.ardelean@analog.com> <20200826120042.200364-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20200826120042.200364-1-alexandru.ardelean@analog.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Thu, 27 Aug 2020 11:55:37 +0300
-Message-ID: <CA+U=DsrMDSTQKEc2_3+W8u4bLraAowVB3nB4huKY--v8gnds2Q@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: stm32-dac: Replace indio_dev->mlock with own
- device lock
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Jonathan Cameron <jic23@kernel.org>, alexandre.torgue@st.com,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+        Thu, 27 Aug 2020 04:58:13 -0400
+X-UUID: 002c42f5b3e746409b131c11eb235ba8-20200827
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=z4HtARY63qecmM+UTuwL38oHkQEk8xUNbn1/BUzTchw=;
+        b=gnl17B6QIji7Vk8I0qsLqDwLBR+kzjndRD6X2fZvthnuA0e3y6d3sYZmQLv0O6HvAcFkZzjaLlbZP56WErBUbdZ4IjfNtGGyXKtYTFTUOgGlmWblo/uPsv+80K3u2DC2AGSQJRN+yjXMQ8ayDgYqRCe9SsoHJVRrQQjRaGXAU+A=;
+X-UUID: 002c42f5b3e746409b131c11eb235ba8-20200827
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 765371042; Thu, 27 Aug 2020 16:58:08 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 27 Aug 2020 16:58:04 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 27 Aug 2020 16:58:05 +0800
+Message-ID: <1598518685.4204.8.camel@mtkswgap22>
+Subject: Re: [PATCH v2 1/2] cpufreq: mediatek-hw: Add support for Mediatek
+ cpufreq HW driver
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Olof Johansson" <olof@lixom.net>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Thu, 27 Aug 2020 16:58:05 +0800
+In-Reply-To: <20200827042653.5ttsxnjjhpslmrcv@vireshk-i7>
+References: <1597302475-15484-1-git-send-email-hector.yuan@mediatek.com>
+         <1597302475-15484-2-git-send-email-hector.yuan@mediatek.com>
+         <20200824100619.o6uwnlsaxdgc3l7r@vireshk-i7>
+         <1598446624.24220.10.camel@mtkswgap22>
+         <20200827042653.5ttsxnjjhpslmrcv@vireshk-i7>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: BD4260F00D8F1BF7AF40A81B24370BFC97A30A7B409831315CBF6869CF9669432000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 3:03 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
->
-> As part of the general cleanup of indio_dev->mlock, this change replaces
-> it with a local lock. The lock protects against potential races when
-> reading the CR reg and then updating, so that the state of pm_runtime
-> is consistent between the two operations.
->
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
+T24gVGh1LCAyMDIwLTA4LTI3IGF0IDA5OjU2ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+IE9uIDI2LTA4LTIwLCAyMDo1NywgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gT24gTW9uLCAyMDIw
+LTA4LTI0IGF0IDE1OjM2ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+ID4gPiBPbiAxMy0w
+OC0yMCwgMTU6MDcsIEhlY3RvciBZdWFuIHdyb3RlOg0KPiA+ID4gPiAgQ09ORklHX0FSTV9BTExX
+SU5ORVJfU1VONTBJX0NQVUZSRVFfTlZNRU09bQ0KPiA+ID4gPiAgQ09ORklHX0FSTV9BUk1BREFf
+MzdYWF9DUFVGUkVRPXkNCj4gPiA+ID4gK0NPTkZJR19BUk1fTUVESUFURUtfQ1BVRlJFUV9IVz1t
+DQo+ID4gPiANCj4gPiA+IFdoYXQgYWJvdXQgYSAnZGVmYXVsdCBtJyBpbiBLY29uZmlnIGl0c2Vs
+ZiA/DQo+ID4gPiBPSywgd2lsbCB1cGRhdGUgaW4gVjMuDQo+IA0KPiBIZWN0b3IsIHlvdSBuZWVk
+IHRvIHJlbW92ZSAob3Igbm90IGFkZCkgdGhlIHJpZ2h0IGJyYWNrZXQgKD4pIGJlZm9yZSB0aGUN
+Cj4gYmVnaW5uaW5nIG9mIHlvdXIgbGluZXMuIFRoaXMgbWFrZXMgaXQgaW5jcmVkaWJseSBkaWZm
+aWN1bHQgdG8gcmVhZC4NCg0KT0ssIEkgZ2V0IGl0LiBTb3JyeSBmb3IgdGhlIGluY29udmVuaWVu
+Y2UuDQo+ID4gPiA+ICsJZm9yIChpID0gMDsgaSA8IExVVF9NQVhfRU5UUklFUzsgaSsrKSB7DQo+
+ID4gPiA+ICsJCWRhdGEgPSByZWFkbF9yZWxheGVkKGJhc2UgKyAoaSAqIExVVF9ST1dfU0laRSkp
+Ow0KPiA+ID4gPiArCQlmcmVxID0gRklFTERfR0VUKExVVF9GUkVRLCBkYXRhKSAqIDEwMDA7DQo+
+ID4gPiA+ICsJCXZvbHQgPSBGSUVMRF9HRVQoTFVUX1ZPTFQsIGRhdGEpOw0KPiA+ID4gPiArCQlp
+ZiAoZnJlcSAhPSBwcmV2X2ZyZXEpIHsNCj4gPiA+ID4gKwkJCXRhYmxlW2ldLmZyZXF1ZW5jeSA9
+IGZyZXE7DQo+ID4gPiA+ICsJCQlkZXZfcG1fb3BwX2FkZChjcHVfZGV2LCBmcmVxICogMTAwMCwg
+dm9sdCk7DQo+ID4gPiANCj4gPiA+IFdoeSBhcmUgeW91IGFkZGluZyBPUFBzIGhlcmUgYW5kIHJh
+dGhlciB3aHkgdXNpbmcgT1BQIHNwZWNpZmljIHN0dWZmDQo+ID4gPiBhdCBhbGwgaW4gdGhlIGRy
+aXZlciA/DQo+ID4gPiB5ZXMsIHRoZSBvcHAgaW5mb3JtYXRpb24gaXMgcmVhZCBmcm9tIENQVSBI
+VyBlbmdpbmUuVGhlbiBhZGQgaXQgdG8gdGhlIENQVSBkZXYgT1BQIG9uZSBieSBvbmUuICANCj4g
+DQo+IEkgYXNrZWQgYSBkaWZmZXJlbnQgcXVlc3Rpb24sIHdoeSBhcmUgeW91IGFkZGluZyBPUFBz
+ID8gWW91IGRvbid0IG5lZWQgdGhlIE9QUHMNCj4gYXQgYWxsIGluIG15IG9waW5pb24uIFlvdSBj
+YW4ganVzdCBjcmVhdGUgdGhlIGZyZXF1ZW5jeSB0YWJsZSBhbmQgdGhhdCdzIGl0Lg0KDQpJIGp1
+c3QgYWRkIE9QUCBpbmZvIHRvIE9QUCBmcmFtZXdvcmsgc28gdGhhdCBvdGhlcnMgbW9kdWxlcyBj
+YW4gZ2V0IGl0DQpmcm9tIE9QUCBmcmFtZXdvcmsuDQpCdXQgbGlrZSB5b3Ugc2FpZCwgSSBkb24n
+dCBuZWVkIGl0IGluIHRoaXMgZHJpdmVyLiBJIHdpbGwgcmVtb3ZlIHRoaXMNCmNvZGUgc2VnbWVu
+dCBpbiBWNC4NCkkgYWxyZWFkeSBzZW5kIFYzIHllc3RlcmRheSBidXQgbm90IGluY2x1ZGluZyB0
+aGlzIG1vZGlmaWNhdGlvbi4NCg0KPiA+ID4gPiArCWZvcl9lYWNoX3Bvc3NpYmxlX2NwdShjcHUp
+IHsNCj4gPiA+ID4gKwkJY3B1X25wID0gb2ZfY3B1X2RldmljZV9ub2RlX2dldChjcHUpOw0KPiA+
+ID4gPiArCQlpZiAoIWNwdV9ucCkNCj4gPiA+ID4gKwkJCWNvbnRpbnVlOw0KPiA+ID4gPiArDQo+
+ID4gPiA+ICsJCXJldCA9IG9mX3BhcnNlX3BoYW5kbGVfd2l0aF9hcmdzKGNwdV9ucCwgIm10ayxm
+cmVxLWRvbWFpbiIsDQo+ID4gPiANCj4gPiA+IFdoZXJlIGFyZSBiaW5kaW5ncyBvZiB0aGlzIG5v
+ZGUgYW5kIGhvdyBkb2VzIHRoaXMgbG9vayA/DQo+ID4gPiBDYW4gcmVmZXIgdG8gdGhlIHNhbWUg
+cGF0Y2ggc2VyaWVzLCBJIHNwbGl0IGl0IHRvIGFub3RoZXIgcGF0Y2guRWFjaCBjcHUgd2lsbCBi
+ZSBncm91cCBpbnRvIG9uZSBmcmVxdWVuY3kgZG9tYWluIGZvciB0aGUgQ1BVIERWRlMuIA0KPiAN
+Cj4gVGhhdCBiaW5kaW5nIG9ubHkgZGVmaW5lcyAibWVkaWF0ZWssY3B1ZnJlcS1odyIgYW5kIG5v
+dCAibXRrLGZyZXEtZG9tYWluIi4NCg0KUGxlYXNlIHJlZmVyIHRvIHRoZSBkdCBiaW5kaW5nIGlu
+IFYzLCB0aGFuayB5b3UuICAobGttbCBub3Qgc2hvdyB1cCB5ZXQsDQpzbyBJIHBvc3QgdGhlIGJl
+bG93IGxpbmsgaW5zdGVhZCkNCmh0dHBzOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL2FybS1rZXJu
+ZWwvbXNnODMyNTkyLmh0bWwNCj4gDQoNCg==
 
-Forgot the changelog here.
-Apologies.
-
-Changelog v1 -> v2:
-* removed whitespace change for 'common' field
-* updated comment about the lock usage
-
->  drivers/iio/dac/stm32-dac.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
-> index 092c796fa3d9..7a8aed476850 100644
-> --- a/drivers/iio/dac/stm32-dac.c
-> +++ b/drivers/iio/dac/stm32-dac.c
-> @@ -26,9 +26,11 @@
->  /**
->   * struct stm32_dac - private data of DAC driver
->   * @common:            reference to DAC common data
-> + * @lock:              lock to protect the data buffer during regmap ops
->   */
->  struct stm32_dac {
->         struct stm32_dac_common *common;
-> +       struct mutex            lock;
->  };
->
->  static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
-> @@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
->         int ret;
->
->         /* already enabled / disabled ? */
-> -       mutex_lock(&indio_dev->mlock);
-> +       mutex_lock(&dac->lock);
->         ret = stm32_dac_is_enabled(indio_dev, ch);
->         if (ret < 0 || enable == !!ret) {
-> -               mutex_unlock(&indio_dev->mlock);
-> +               mutex_unlock(&dac->lock);
->                 return ret < 0 ? ret : 0;
->         }
->
-> @@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
->                 ret = pm_runtime_get_sync(dev);
->                 if (ret < 0) {
->                         pm_runtime_put_noidle(dev);
-> -                       mutex_unlock(&indio_dev->mlock);
-> +                       mutex_unlock(&dac->lock);
->                         return ret;
->                 }
->         }
->
->         ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
-> -       mutex_unlock(&indio_dev->mlock);
-> +       mutex_unlock(&dac->lock);
->         if (ret < 0) {
->                 dev_err(&indio_dev->dev, "%s failed\n", en ?
->                         "Enable" : "Disable");
-> @@ -327,6 +329,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
->         indio_dev->info = &stm32_dac_iio_info;
->         indio_dev->modes = INDIO_DIRECT_MODE;
->
-> +       mutex_init(&dac->lock);
-> +
->         ret = stm32_dac_chan_of_init(indio_dev);
->         if (ret < 0)
->                 return ret;
-> --
-> 2.25.1
->
