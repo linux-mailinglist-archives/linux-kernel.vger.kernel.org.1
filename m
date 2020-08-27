@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92683253EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9437253EDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgH0HVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:21:35 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47824 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726851AbgH0HVc (ORCPT
+        id S1728067AbgH0HVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:21:36 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:22030 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727839AbgH0HVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Aug 2020 03:21:32 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R7HHh7017753;
-        Thu, 27 Aug 2020 09:21:18 +0200
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R7HlT7013427;
+        Thu, 27 Aug 2020 09:21:19 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=er4Ixrwfv9fQtVwv3DRVGw1gJfakQBAKllzYQn9OtiM=;
- b=a7EE7PAbll3c14ASBRIA+wF9bjVb1pnKUnvURwGJPoYW1D/UmRufs//ZJ3TW9RwpVSss
- zw+qNQfqpeau7nChrzJAmh/LNiS2VMk6cMwYWhy4pnnYpWC0aNRg7Em1zXaZuEG3qA+O
- 3cGmb2aiDw0wDsw0VNJ7+fg+fEDz+2UnLK6/N7syIDZk9/6CKsUUaBVlWnL5MRSp/6qt
- Xk7sMg6eaEBdC7aFbDZYhHZq2S2NNx9d+cIZD1Okxip5JsDc6sL8pK2AMCSi7NiXby17
- xniCOBKz3zLGvmt+uTZYftAyOzfS0JEmxhvDsSiRLTLnY46WfpnI4EtNcDecWmF/Zq+6 ew== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=KQ+9yJUzemMWVFCVMFRX7+xLDsvlII1rDD1EoRBdZsw=;
+ b=F29YgNNl3PbFfdfhnPmZPy3O97AqOiU6gnw1thd3npR26u+hmxW7+fuaYkyGH21oCPMM
+ T1dYz+o4fF9zxKtSM155dGj1OuoUmf2Eme5YLTiuYOMV27HH85/nDGsoxfuo2nEQJFKP
+ aSiNPwsoirxdpAupCBUa/ygF8cqmmXThgJUj/FFGJO6wvO/vz9/KlLewNoQvB2gdc2SP
+ 1/CcXA/Ft4s0vWbI/bMNFi6xJgwohLExE3+XMFX6jNEhG+zWEWQht6aljwTOdETPkoFp
+ wN4BEtNg+KmXoE1xpCB5FO0v6kFiBDkDgYp4yUhMRULHnF7X3BGsdZkU3AymzykWhOzF 3Q== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 332t8fy7b5-1
+        by mx07-00178001.pphosted.com with ESMTP id 333b2mvfux-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:21:18 +0200
+        Thu, 27 Aug 2020 09:21:19 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1DE1E100034;
-        Thu, 27 Aug 2020 09:21:18 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4DC20100034;
+        Thu, 27 Aug 2020 09:21:19 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 07B43212648;
-        Thu, 27 Aug 2020 09:21:18 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug 2020 09:21:17
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3D050212648;
+        Thu, 27 Aug 2020 09:21:19 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug 2020 09:21:18
  +0200
 From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
 To:     Rob Herring <robh@kernel.org>,
@@ -48,14 +49,16 @@ CC:     <devicetree@vger.kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 0/3] ARM: stm32: add DT properties for remote proc synchronisation
-Date:   Thu, 27 Aug 2020 09:20:58 +0200
-Message-ID: <20200827072101.26588-1-arnaud.pouliquen@st.com>
+Subject: [PATCH 1/3] dt-bindings: arm: stm32: Add compatible for syscon tamp node
+Date:   Thu, 27 Aug 2020 09:20:59 +0200
+Message-ID: <20200827072101.26588-2-arnaud.pouliquen@st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200827072101.26588-1-arnaud.pouliquen@st.com>
+References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG3NODE1.st.com
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
  (10.75.127.7)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-27_02:2020-08-27,2020-08-27 signatures=0
@@ -64,21 +67,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series implements the DT part associated to the commit 9276536f455b3
-("remoteproc: stm32: Parse syscon that will manage M4 synchronisation")
+Since commit ad440432d1f9 ("dt-bindings: mfd: Ensure 'syscon' has a
+more specific compatible")
+It is required to provide at least 2 compatibles string for syscon node.
+This patch documents the new compatible for stm32 SoC to support
+TAMP registers access.
 
-Arnaud Pouliquen (3):
-  dt-bindings: arm: stm32: Add compatible for syscon tamp node
-  dt-bindings: remoteproc: stm32_rproc: update for firmware
-    synchronization
-  ARM: dts: stm32: update stm32mp151 for remote proc synchronization
-    support
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/arm/stm32/st,stm32-syscon.yaml   |  1 +
- .../bindings/remoteproc/st,stm32-rproc.yaml   | 19 +++++++++++++++++++
- arch/arm/boot/dts/stm32mp151.dtsi             |  7 +++++++
- 3 files changed, 27 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 6f1cd0103c74..6634b3e0853e 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -19,6 +19,7 @@ properties:
+               - st,stm32mp151-pwr-mcu
+               - st,stm32-syscfg
+               - st,stm32-power-config
++              - st,stm32-tamp
+           - const: syscon
+ 
+   reg:
 -- 
 2.17.1
 
