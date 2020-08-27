@@ -2,173 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82952254673
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20D12546D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgH0OIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:08:48 -0400
-Received: from mga01.intel.com ([192.55.52.88]:13418 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728016AbgH0OBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:01:53 -0400
-IronPort-SDR: 04S46TZN9v2b7ldtXn7FJj3kvBLdDT1upYMXoofUJ1hjqMnuBJdeHjWkkchQ93V1+/uX7AuBac
- acIkdLqkvteQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="174529459"
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="174529459"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 06:50:55 -0700
-IronPort-SDR: ROk2sEy5DjeF13nIMr60DR/K8Q6X9Mh1wvDhBaEzk8LFWPUA0odTbyC00j591GLrPHPcRFt1xE
- mH9ogS5hdkAg==
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="475221159"
-Received: from jhaapako-mobl4.ger.corp.intel.com (HELO localhost) ([10.249.33.115])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 06:50:48 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Cc:     Sean Paul <sean@poorly.run>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 09/20] drm/i915/dp: Extract drm_dp_read_mst_cap()
-In-Reply-To: <20200826182456.322681-10-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200826182456.322681-1-lyude@redhat.com> <20200826182456.322681-10-lyude@redhat.com>
-Date:   Thu, 27 Aug 2020 16:50:46 +0300
-Message-ID: <87d03c5hah.fsf@intel.com>
+        id S1728007AbgH0O3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgH0OQj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:16:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB9C061236
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:51:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k15so1683934wrn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gVkUKTaskmscEtJ5ZzwNNX4gLUBJNoLUiPlck3rKbv8=;
+        b=U49jQz3y2e7EBaQRi0qQ8rVwz+yVCuKIkU3XMjTPV0+omeVKFMKkRkG1gj9Z1Qs0e+
+         9/0eC6U3p2vdfQyOzwun5pf9Tgf3/WZK43hOtQZrAmXwbrTx+ZcmOCjxqbEFi/mTvLdR
+         9QfHSL8A+03Qb/FkGs0R3usdDG+Cu4cehsMOL2SgT0SuW0RLJk3B2Yih4xj+1w0SiYhX
+         3uvT4T8iKUPGuYAPD/H9xXeId5nuIflMmqrtHnkj2zYKDt9ysmD0UvCQhdSFAhZ9b4P2
+         ahfSfh3d4Xf9Iti9vX/BS1QEv8Gd56wgLUwKxS28ZyBOsP7CixS9ed9DCUpS2gAyTvml
+         LAmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gVkUKTaskmscEtJ5ZzwNNX4gLUBJNoLUiPlck3rKbv8=;
+        b=cdk5R39jFpBAmlO2M2HmbP6XSPKn0pq7nD8UH6Ylrb/CpSRdbdJrG0OHCzzQk99MYW
+         tDQmAjgmgwMCKjZiKvf6Xl3mSiRZPjq8UQVxY1SD9IB4znqklLfXh4KpkhLqLMZyNrN7
+         UDqECJ5kFNIEft5sh4qNb9yLswHgV+UstzhacNJ+zWidwICWyDWWixnVuW6zLMJxiAq7
+         HMtquVav3bDHM6n4lTHvxw01kU/qfBP7DbnrEcIwpTQZt4//Q741zp4EcC8Y5A63KgB5
+         ZylqnRxreA7c9ZiEoDq6DiydAW+gfHyGklZlz64xhaerxAd0brIFY7SvVPjaoPlF9uy0
+         hNDw==
+X-Gm-Message-State: AOAM532neeTrOH9IzodMehdNLfiFCmoxVUxgGy1npsmuS3IdCD9gJq7J
+        pbi7xo5eovTRtUJjprDI/4qC7YI/4KhjwJuKyyI=
+X-Google-Smtp-Source: ABdhPJxUZbYiTHvH8yDDYRyp/OquPDJR8jlbS1sFzWfTl9o8bEGgVH+bzOnmOMvlXjdes3JSpG739Z6gh+aJGBfj90Q=
+X-Received: by 2002:adf:fecc:: with SMTP id q12mr21109309wrs.374.1598536279457;
+ Thu, 27 Aug 2020 06:51:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200825173349.24580-1-kai.heng.feng@canonical.com> <36ccb6ad-d005-4c39-fc32-7ecf4e71331f@amd.com>
+In-Reply-To: <36ccb6ad-d005-4c39-fc32-7ecf4e71331f@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 27 Aug 2020 09:51:08 -0400
+Message-ID: <CADnq5_NX8xmYbz8EiXZMRLXUV46W7cLUsBEj+AHX=we-sN=m8w@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Prefer lower feedback dividers
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020, Lyude Paul <lyude@redhat.com> wrote:
-> Just a tiny drive-by cleanup, we can consolidate i915's code for
-> checking for MST support into a helper to be shared across drivers.
->
-> v5:
-> * Drop !!()
-> * Move drm_dp_has_mst() out of header
-> * Change name from drm_dp_has_mst() to drm_dp_read_mst_cap()
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Reviewed-by: Sean Paul <sean@poorly.run>
+Applied.  Thanks!
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Alex
 
-> ---
->  drivers/gpu/drm/drm_dp_mst_topology.c   | 22 ++++++++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_dp.c | 18 ++----------------
->  include/drm/drm_dp_mst_helper.h         |  3 +--
->  3 files changed, 25 insertions(+), 18 deletions(-)
+On Thu, Aug 27, 2020 at 7:18 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-> index 67dd72ea200e0..17dbed0a9800d 100644
-> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> @@ -3486,6 +3486,28 @@ static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
->  	return dp_link_bw * dp_link_count / 2;
->  }
->  
-> +/**
-> + * drm_dp_read_mst_cap() - check whether or not a sink supports MST
-> + * @aux: The DP AUX channel to use
-> + * @dpcd: A cached copy of the DPCD capabilities for this sink
-> + *
-> + * Returns: %True if the sink supports MST, %false otherwise
-> + */
-> +bool drm_dp_read_mst_cap(struct drm_dp_aux *aux,
-> +			 const u8 dpcd[DP_RECEIVER_CAP_SIZE])
-> +{
-> +	u8 mstm_cap;
-> +
-> +	if (dpcd[DP_DPCD_REV] < DP_DPCD_REV_12)
-> +		return false;
-> +
-> +	if (drm_dp_dpcd_readb(aux, DP_MSTM_CAP, &mstm_cap) != 1)
-> +		return false;
-> +
-> +	return mstm_cap & DP_MST_CAP;
-> +}
-> +EXPORT_SYMBOL(drm_dp_read_mst_cap);
-> +
->  /**
->   * drm_dp_mst_topology_mgr_set_mst() - Set the MST state for a topology manager
->   * @mgr: manager to set state for
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 79c27f91f42c0..4c7314b7a84e4 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4699,20 +4699,6 @@ intel_dp_get_dpcd(struct intel_dp *intel_dp)
->  	return true;
->  }
->  
-> -static bool
-> -intel_dp_sink_can_mst(struct intel_dp *intel_dp)
-> -{
-> -	u8 mstm_cap;
-> -
-> -	if (intel_dp->dpcd[DP_DPCD_REV] < 0x12)
-> -		return false;
-> -
-> -	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_MSTM_CAP, &mstm_cap) != 1)
-> -		return false;
-> -
-> -	return mstm_cap & DP_MST_CAP;
-> -}
-> -
->  static bool
->  intel_dp_can_mst(struct intel_dp *intel_dp)
->  {
-> @@ -4720,7 +4706,7 @@ intel_dp_can_mst(struct intel_dp *intel_dp)
->  
->  	return i915->params.enable_dp_mst &&
->  		intel_dp->can_mst &&
-> -		intel_dp_sink_can_mst(intel_dp);
-> +		drm_dp_read_mst_cap(&intel_dp->aux, intel_dp->dpcd);
->  }
->  
->  static void
-> @@ -4729,7 +4715,7 @@ intel_dp_configure_mst(struct intel_dp *intel_dp)
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	struct intel_encoder *encoder =
->  		&dp_to_dig_port(intel_dp)->base;
-> -	bool sink_can_mst = intel_dp_sink_can_mst(intel_dp);
-> +	bool sink_can_mst = drm_dp_read_mst_cap(&intel_dp->aux, intel_dp->dpcd);
->  
->  	drm_dbg_kms(&i915->drm,
->  		    "[ENCODER:%d:%s] MST support: port: %s, sink: %s, modparam: %s\n",
-> diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
-> index 8b9eb4db3381c..6ae5860d8644e 100644
-> --- a/include/drm/drm_dp_mst_helper.h
-> +++ b/include/drm/drm_dp_mst_helper.h
-> @@ -728,10 +728,9 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
->  
->  void drm_dp_mst_topology_mgr_destroy(struct drm_dp_mst_topology_mgr *mgr);
->  
-> -
-> +bool drm_dp_read_mst_cap(struct drm_dp_aux *aux, const u8 dpcd[DP_RECEIVER_CAP_SIZE]);
->  int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool mst_state);
->  
-> -
->  int drm_dp_mst_hpd_irq(struct drm_dp_mst_topology_mgr *mgr, u8 *esi, bool *handled);
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> Am 25.08.20 um 19:33 schrieb Kai-Heng Feng:
+> > Commit 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
+> > fixed screen flicker for HP Compaq nx9420 but breaks other laptops like
+> > Asus X50SL.
+> >
+> > Turns out we also need to favor lower feedback dividers.
+>
+> Mhm, let's hope that this works out for all others as well :)
+>
+> >
+> > Users confirmed this change fixes the regression and doesn't regress th=
+e
+> > original fix.
+> >
+> > Fixes: 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
+> > BugLink: https://bugs.launchpad.net/bugs/1791312
+> > BugLink: https://bugs.launchpad.net/bugs/1861554
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_display.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/=
+radeon/radeon_display.c
+> > index e0ae911ef427..7b69d6dfe44a 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_display.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> > @@ -933,7 +933,7 @@ static void avivo_get_fb_ref_div(unsigned nom, unsi=
+gned den, unsigned post_div,
+> >
+> >       /* get matching reference and feedback divider */
+> >       *ref_div =3D min(max(den/post_div, 1u), ref_div_max);
+> > -     *fb_div =3D DIV_ROUND_CLOSEST(nom * *ref_div * post_div, den);
+> > +     *fb_div =3D max(nom * *ref_div * post_div / den, 1u);
+> >
+> >       /* limit fb divider to its maximum */
+> >       if (*fb_div > fb_div_max) {
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
