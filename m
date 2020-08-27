@@ -2,98 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E5F25484F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317A1254859
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgH0PFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:05:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42050 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728218AbgH0PEw (ORCPT
+        id S1726307AbgH0PFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727940AbgH0PEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:04:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598540691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d+vKV7jHyBgx5F+qwazuFqbjaX7j5NcYL/0S6PVquXg=;
-        b=LXle0es/DGb9WXGGySIqX+2zFefeBcz8d8qHGFVfJDEVCKayxaCSHE3ogZwcjqj9SejyO7
-        DvLCPfcHg3S7JZV+kMZ6+fe74ulSqrJb2zm5gO0BWjjd6XCoKZLQnFwUMUoykFJ5WVVv4c
-        ozC+mY6FlU8cy3Q2bQ8kCAkndje0y3o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-NZNetU60Nqi4EOKJWVY-PQ-1; Thu, 27 Aug 2020 11:04:48 -0400
-X-MC-Unique: NZNetU60Nqi4EOKJWVY-PQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA482192AF37;
-        Thu, 27 Aug 2020 15:04:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E6A07B9F4;
-        Thu, 27 Aug 2020 15:04:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net 7/7] afs: Fix error handling in VL server rotation
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 27 Aug 2020 16:04:22 +0100
-Message-ID: <159854066219.1382667.2526502599415329370.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-References: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 27 Aug 2020 11:04:39 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6F4C061233
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:38 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id d27so4743035qtg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=eclypsium.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qMGmC0JqGhgnSsAE+tyJqcCe+jJ8ExSl/fNNYQ+aD2Q=;
+        b=XW0csSKc4tYY0U7nBo00AjWWMhpxLvOFsKwp7w7NmLNFCj8ThnP4y/HV0TycZhAgcM
+         OV7+coGiDAc5h84bOWo/BffRbcn3NNOvTlFi+0uWVXKPQflc9ToKnFj8OeU8+EfhSaih
+         6crZWbOEmPVzMtEKAc0ZepeeRNObZfGcBDIXUrnupRMuvPz+Q2qZ5pyICTeK4cVIn44m
+         P32Hhhn7bHFFrClTDK++vjIWUlP40W/QGg3LxqvU+PltOX6DHmDyzT4EtXs1p3lthnI9
+         G47hNHB9pivg2UPNuWmH/vrz5d/Il6u9jef42fXuOYeb9SIbQGWD6Spjgni/ZElZQC+C
+         Pc0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qMGmC0JqGhgnSsAE+tyJqcCe+jJ8ExSl/fNNYQ+aD2Q=;
+        b=OGqSVrmOBdkQ9EXfVZJG847prh7CbRPbYJqdjpRTgXDG+FSYWKWuRb7ngPPEAgQI+8
+         VcklwxjoH3AJ8JdD4fPCwEn+V5pjDttX9GvSzGEwIN4ilYswEMxCyaj94HFIRfQ2Nst7
+         Suak7iUlBqyDi/+utgLjssd/s6c4HhliogKjSBebRwM2gSB1181q9E0+IyQXgmBXj5mJ
+         3iU66x/qM91eXypbipzoF2YelIzHeTbfpROnaz4OIEgOpzBLZn8EKLhyYCTFvJr3bF/4
+         KzVyV0FR/vzxAJ1HCeAMluPkQdER3qp2PB0MSdmvMrcbpf7mxnzCHfMLqWmCGAKxNBvq
+         XhFA==
+X-Gm-Message-State: AOAM530JFdJjHeWbr1ORRi5oGEbEAXjjsNOBzPJSswzECl3+So/sIoV1
+        VeoKdBghqMp0C2UKoCVB8w2LigPjckyiiEGC2nKTpg==
+X-Google-Smtp-Source: ABdhPJwgrd22oYrACZCPTpcTsOrg7YAw9Qs+eq51rqZ/cL9ztiHy+hFROQrlYbSMSX+wMrzNEx5It8NQLQTTjy40a64=
+X-Received: by 2002:ac8:1bb3:: with SMTP id z48mr6033161qtj.203.1598540677708;
+ Thu, 27 Aug 2020 08:04:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200820145117.8348-1-daniel.gutson@eclypsium.com> <CAK8P3a3Z_mw4k+FZbGiz8Qg-YOHo7f=bWgpZ2gGZYqZuKo-8Hw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3Z_mw4k+FZbGiz8Qg-YOHo7f=bWgpZ2gGZYqZuKo-8Hw@mail.gmail.com>
+From:   Daniel Gutson <daniel@eclypsium.com>
+Date:   Thu, 27 Aug 2020 12:04:26 -0300
+Message-ID: <CAFmMkTHWBpJNMHAP_hKFdRZDOYs-ESU453Ldy78s0u-E1SJPag@mail.gmail.com>
+Subject: Re: [PATCH] Platform lockdown information in sysfs (v2)
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling in the VL server rotation in the case of there being no
-contactable servers is not correct.  In such a case, the records of all the
-servers in the list are scanned and the errors and abort codes are mapped
-and prioritised and one error is chosen.  This is then forgotten and the
-default error is used (EDESTADDRREQ).
-
-Fix this by using the calculated error.
-
-Also we need to note whether a server responded on one of its endpoints so
-that we can priorise an error from an abort message over local and network
-errors.
-
-Fixes: 4584ae96ae30 ("afs: Fix missing net error handling")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/vl_rotate.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/afs/vl_rotate.c b/fs/afs/vl_rotate.c
-index ab2beb4ba20e..c0458c903b31 100644
---- a/fs/afs/vl_rotate.c
-+++ b/fs/afs/vl_rotate.c
-@@ -263,10 +263,14 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
- 	for (i = 0; i < vc->server_list->nr_servers; i++) {
- 		struct afs_vlserver *s = vc->server_list->servers[i].server;
- 
-+		if (test_bit(AFS_VLSERVER_FL_RESPONDING, &s->flags))
-+			e.responded = true;
- 		afs_prioritise_error(&e, READ_ONCE(s->probe.error),
- 				     s->probe.abort_code);
- 	}
- 
-+	error = e.error;
-+
- failed_set_error:
- 	vc->error = error;
- failed:
+On Thu, Aug 27, 2020 at 7:15 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Aug 20, 2020 at 4:51 PM Daniel Gutson
+> <daniel.gutson@eclypsium.com> wrote:
+> >
+> > This patch exports information about the platform lockdown
+> > firmware configuration in the sysfs filesystem.
+> > In this initial patch, I include some configuration attributes
+> > for the system SPI chip.
+> >
+> > This initial version exports the BIOS Write Enable (bioswe),
+> > BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
+> > fields of the BIOS Control register. The idea is to keep adding more
+> > flags, not only from the BC but also from other registers in following
+> > versions.
+> >
+> > The goal is that the attributes are avilable to fwupd when SecureBoot
+> > is turned on.
+> >
+> > The patch provides a new misc driver, as proposed in the previous patch,
+> > that provides a registration function for HW Driver devices to register
+> > class_attributes.
+> > In this case, the intel SPI flash chip (intel-spi) registers three
+> > class_attributes corresponding to the fields mentioned above.
+> >
+> > This version of the patch replaces class attributes by device
+> > attributes.
+> >
+> > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+>
+> This looks much better than before, thanks for addressing the feedback.
+Thanks for providing it.
 
 
+> > diff --git a/Documentation/ABI/stable/sysfs-class-platform-lockdown b/Documentation/ABI/stable/sysfs-class-platform-lockdown
+> > new file mode 100644
+> > index 000000000000..3fe75d775a42
+> > --- /dev/null
+> > +++ b/Documentation/ABI/stable/sysfs-class-platform-lockdown
+> > @@ -0,0 +1,23 @@
+> > +What:          /sys/class/platform-lockdown/bioswe
+>
+> platform-lockdown is a much better name than the previous suggestions.
+> I'm still hoping for an even better suggestion. Like everything the term
+> "lockdown" is also overloaded a bit, with the other common meaning
+> referring to the effort to give root users less privilege than the
+> kernel itself,
+> see https://lwn.net/Articles/750730/
+
+I'd want to set the name for good before I proceed with the rest.
+A list of suggestions:
+platform-firmware
+platform-defence
+firmware-surety
+firmware-control
+platform-inspection
+platform-lookout
+platform-diligence
+platform-integrity
+
+I like the last want, what do you think? Any other suggestion?
+
+Thanks again!
+
+    Daniel.
+>
+> Shouldn't there be a device name between the class name
+> ("platform-lockdown") and the attribute name?
+>
+> > +PLATFORM LOCKDOWN ATTRIBUTES MODULE
+> > +M:     Daniel Gutson <daniel.gutson@eclypsium.com>
+> > +S:     Supported
+> > +F:     Documentation/ABI/sysfs-class-platform-lockdown
+> > +F:     drivers/misc/platform-lockdown-attrs.c
+> > +F:     include/linux/platform_data/platform-lockdown-attrs.h
+>
+> include/linux/platform_data/ is not the right place for the header,
+> this is defined to be the place for defining properties of devices
+> that are created from old-style board files.
+>
+> Just put the header into include/linux/ directly.
+> the host.
+> >
+> > +config PLATFORM_LOCKDOWN_ATTRS
+> > +       tristate "Platform lockdown information in the sysfs"
+> > +       depends on SYSFS
+> > +       help
+> > +         This kernel module is a helper driver to provide information about
+> > +         platform lockdown settings and configuration.
+> > +         This module is used by other device drivers -such as the intel-spi-
+> > +         to publish the information in /sys/class/platform-lockdown.
+>
+> Maybe mention fwupd in the description in some form.
+>
+> > +
+> > +static struct class platform_lockdown_class = {
+> > +       .name = "platform-lockdown",
+> > +       .owner = THIS_MODULE,
+> > +};
+> > +
+> > +struct device *register_platform_lockdown_data_device(struct device *parent,
+> > +                                                     const char *name)
+> > +{
+> > +       return device_create(&platform_lockdown_class, parent, MKDEV(0, 0),
+> > +                            NULL, name);
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_platform_lockdown_data_device);
+> > +
+> > +void unregister_platform_lockdown_data_device(struct device *dev)
+> > +{
+> > +       device_unregister(dev);
+> > +}
+> > +EXPORT_SYMBOL_GPL(unregister_platform_lockdown_data_device);
+> > +
+> > +int register_platform_lockdown_attribute(struct device *dev,
+> > +                                        struct device_attribute *dev_attr)
+> > +{
+> > +       return device_create_file(dev, dev_attr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_platform_lockdown_attribute);
+> > +
+> > +void register_platform_lockdown_attributes(struct device *dev,
+> > +                                          struct device_attribute dev_attrs[])
+> > +{
+> > +       u32 idx = 0;
+> > +
+> > +       while (dev_attrs[idx].attr.name != NULL) {
+> > +               register_platform_lockdown_attribute(dev, &dev_attrs[idx]);
+> > +               idx++;
+> > +       }
+>
+> There is a bit of a race with creating the device first and then
+> the attributes. Generally it seems better to me to use
+> device_create_with_groups() instead so the device shows up
+> with all attributes in place already.
+>
+> > +void register_platform_lockdown_custom_attributes(struct device *dev,
+> > +                                                 void *custom_attrs,
+> > +                                                 size_t dev_attr_offset,
+> > +                                                 size_t custom_attr_size)
+>
+> This interface seems to be overly complex, I would hope it can be avoided.
+>
+> > +static ssize_t cnl_spi_attr_show(struct device *dev,
+> > +       struct device_attribute *attr, char *buf)
+> > +{
+> > +       u32 bcr;
+> > +       struct cnl_spi_attr *cnl_spi_attr = container_of(attr,
+> > +               struct cnl_spi_attr, dev_attr);
+> > +
+> > +       if (class_child_device != dev)
+> > +               return -EIO;
+> > +
+> > +       if (dev->parent == NULL)
+> > +               return -EIO;
+> > +
+> > +       if (pci_read_config_dword(container_of(dev->parent, struct pci_dev, dev),
+> > +                               BCR, &bcr) != PCIBIOS_SUCCESSFUL)
+> > +               return -EIO;
+> > +
+> > +       return sprintf(buf, "%d\n", (int)!!(bcr & cnl_spi_attr->mask));
+> > +}
+>
+> If I understand it right, that complexity comes from attempting to
+> have a single show callback for three different flags. To me that
+> actually feels more complicated than having an attribute group
+> with three similar but simpler show callbacks.
+>
+> >  static void intel_spi_pci_remove(struct pci_dev *pdev)
+> >  {
+> > +       if (class_child_device != NULL) {
+>
+> Please avoid the global variable here and just add a member in the
+> per-device data.
+>
+> > +               unregister_platform_lockdown_custom_attributes(
+> > +                       class_child_device,
+> > +                       cnl_spi_attrs,
+> > +                       offsetof(struct cnl_spi_attr, dev_attr),
+> > +                       sizeof(struct cnl_spi_attr));
+> > +
+> > +               unregister_platform_lockdown_data_device(class_child_device);
+>
+> It should be possible to just destroy the attributes as part of
+> unregister_platform_lockdown_data_device.
+>
+>        Arnd
+
+
+
+-- 
+Daniel Gutson
+Argentina Site Director
+Enginieering Director
+Eclypsium
+
+Below The Surface: Get the latest threat research and insights on
+firmware and supply chain threats from the research team at Eclypsium.
+https://eclypsium.com/research/#threatreport
