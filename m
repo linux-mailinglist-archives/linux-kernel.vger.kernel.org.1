@@ -2,140 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56A3254580
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9DC254551
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgH0M5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:57:31 -0400
-Received: from crapouillou.net ([89.234.176.41]:42734 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729085AbgH0Mnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:43:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1598532197; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g0ZtwP1c/sJ4SdbZpKm+NV8oKuu6my90hUTCqZcK5Zw=;
-        b=SA7PZ/M9ll9qPxYzdGB92o6d3yUokaC42ro+k1uQk9KQfLQHFOuF4r8vlpy6goDKJrA2bk
-        +sdpEyCcF0I/7NZ38Jlk4GugnXVU0AzwlOcxsdLlYrd24CjMrMKNMWwHgkbjBrDkx4Ga7n
-        Qi2nj5M1KoAlyFD9e7F+jOaDpJSfyYE=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Felipe Balbi <balbi@kernel.org>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
-        =?UTF-8?q?=E5=91=A8=E6=AD=A3?= <sernia.zhou@foxmail.com>,
-        =?UTF-8?q?=E6=BC=86=E9=B9=8F=E6=8C=AF?= <aric.pzqi@ingenic.com>
-Cc:     od@zcrc.me, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written to HW register
-Date:   Thu, 27 Aug 2020 14:43:08 +0200
-Message-Id: <20200827124308.71963-2-paul@crapouillou.net>
-In-Reply-To: <20200827124308.71963-1-paul@crapouillou.net>
-References: <20200827124308.71963-1-paul@crapouillou.net>
+        id S1729189AbgH0MtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729018AbgH0Mnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:43:37 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449A2C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:43:37 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id m8so3406066pfh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tpzREOcIrukXANPEmvrI6Q05nccQGVBf08+JNfkt4Jw=;
+        b=UHlALGethP+XF8Xx15Bkd4rjqcoCWixU2Kg9zK1Ai8YR26cFQnGAAfZFhCzGD5exxl
+         6DUgXAxpJx0VzhgnLZ8veoDW4D2VtOSwi1WssJvi+C5TYGg6zi8NI4Xx0TfZqWjybswN
+         krFsTBIjs/qGYPkYoEJNzjH8DRa716+rz3GW9MehNX+lOGE5gAHWCjuh/5lW4SAhceUK
+         HEmoCmPRKpZ7AvrLMz7QZRECy09ZoOGSoLkjZnOxrvwevweft/o9soFkVMDNBErYheU/
+         9UpwsJUd4LVDpWNX5ew7wyXbZHrKg23EZg+XwyPbO6hXuJecShqgfjPIGSmdM0iHK3G1
+         SvqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tpzREOcIrukXANPEmvrI6Q05nccQGVBf08+JNfkt4Jw=;
+        b=pOjAqBuRGP1sQ2o269evdQTeybeehR6v6IShDcoa78oLPKRREyGbqcBnLzIdXYcwb4
+         DqehRkI5mNwkfwEIh5Sxmc6eAn5byVJjQ+dBdF5aCLzxBMdt9ljIk7w7vxY8NQRUa2Mp
+         JITXrAfZFzW784EaS4kPun8ktt0F4W5cr8HJ2fb6i2eZWxQq2vR27Uw42Awrf0LyY+9P
+         k52H12CeQ5MVpzKJwVUDDxTXTXxVIWtTKPsZxk6V/XRQehlD9U/ep2q3U9LiCndn0fzJ
+         rwFs2YAWqzbzjiCMqxbTU3GZpXOgTFbpPBanx6TXiwvhWasdAU/HVMrBGCW2ORMnu3A9
+         PNzA==
+X-Gm-Message-State: AOAM532Zqc3Mq3Fk7K3Ef9XjtyPKn1mCXFc4tX0d7rWCmg5WrzGPsyOG
+        JmMTb95xlZv5uAKMWdHiiU5qfseDqMaqkZQeTg+bNA==
+X-Google-Smtp-Source: ABdhPJxuj6rYCJJdWgpgaTNs6Y6dBbQY8aITvclQRebjC3+PxK6h72/GRkpCuz/1FNoHMmojX+ZiKylGPmUJot58C80=
+X-Received: by 2002:a63:4c:: with SMTP id 73mr14624887pga.286.1598532216123;
+ Thu, 27 Aug 2020 05:43:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1597425745.git.andreyknvl@google.com> <518da1e5169a4e343caa3c37feed5ad551b77a34.1597425745.git.andreyknvl@google.com>
+ <20200827104033.GF29264@gaia> <9c53dfaa-119e-b12e-1a91-1f67f4aef503@arm.com>
+ <20200827111344.GK29264@gaia> <d6695105-0484-2013-1012-fa977644e8ad@arm.com>
+In-Reply-To: <d6695105-0484-2013-1012-fa977644e8ad@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 27 Aug 2020 14:43:25 +0200
+Message-ID: <CAAeHK+wGKjYX6eLztiwQA2iObjibHPKt3A4oU0zpXPKk-4qdOw@mail.gmail.com>
+Subject: Re: [PATCH 26/35] kasan, arm64: Enable TBI EL1
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'reg' value was written to a hardware register in
-ingenic_usb_phy_init(), while not being initialized anywhere.
+On Thu, Aug 27, 2020 at 1:15 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+>
+>
+> On 8/27/20 12:13 PM, Catalin Marinas wrote:
+> > On Thu, Aug 27, 2020 at 12:05:55PM +0100, Vincenzo Frascino wrote:
+> >> On 8/27/20 11:40 AM, Catalin Marinas wrote:
+> >>> On Fri, Aug 14, 2020 at 07:27:08PM +0200, Andrey Konovalov wrote:
+> >>>> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> >>>> index 152d74f2cc9c..6880ddaa5144 100644
+> >>>> --- a/arch/arm64/mm/proc.S
+> >>>> +++ b/arch/arm64/mm/proc.S
+> >>>> @@ -38,7 +38,7 @@
+> >>>>  /* PTWs cacheable, inner/outer WBWA */
+> >>>>  #define TCR_CACHE_FLAGS   TCR_IRGN_WBWA | TCR_ORGN_WBWA
+> >>>>
+> >>>> -#ifdef CONFIG_KASAN_SW_TAGS
+> >>>> +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> >>>>  #define TCR_KASAN_FLAGS TCR_TBI1
+> >>>>  #else
+> >>>>  #define TCR_KASAN_FLAGS 0
+> >>>
+> >>> I prefer to turn TBI1 on only if MTE is present. So on top of the v8
+> >>> user series, just do this in __cpu_setup.
+> >>
+> >> Not sure I understand... Enabling TBI1 only if MTE is present would break
+> >> KASAN_SW_TAGS which is based on TBI1 but not on MTE.
+> >
+> > You keep the KASAN_SW_TAGS as above but for HW_TAGS, only set TBI1 later
+> > in __cpu_setup().
+> >
+>
+> Ok, sounds good.
 
-Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new Ingenic SoCs.")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/usb/phy/phy-jz4770.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+Sounds good to me too.
 
-diff --git a/drivers/usb/phy/phy-jz4770.c b/drivers/usb/phy/phy-jz4770.c
-index d4ee3cb721ea..58771a8688f2 100644
---- a/drivers/usb/phy/phy-jz4770.c
-+++ b/drivers/usb/phy/phy-jz4770.c
-@@ -97,7 +97,7 @@ enum ingenic_usb_phy_version {
- struct ingenic_soc_info {
- 	enum ingenic_usb_phy_version version;
- 
--	void (*usb_phy_init)(struct usb_phy *phy);
-+	u32 (*usb_phy_init)(struct usb_phy *phy);
- };
- 
- struct jz4770_phy {
-@@ -172,7 +172,8 @@ static int ingenic_usb_phy_init(struct usb_phy *phy)
- 		return err;
- 	}
- 
--	priv->soc_info->usb_phy_init(phy);
-+	reg = priv->soc_info->usb_phy_init(phy);
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
- 
- 	/* Wait for PHY to reset */
- 	usleep_range(30, 300);
-@@ -195,19 +196,15 @@ static void ingenic_usb_phy_remove(void *phy)
- 	usb_remove_phy(phy);
- }
- 
--static void jz4770_usb_phy_init(struct usb_phy *phy)
-+static u32 jz4770_usb_phy_init(struct usb_phy *phy)
- {
--	struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
--	u32 reg;
--
--	reg = USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
-+	return USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
- 		USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT | USBPCR_SQRXTUNE_DFT |
- 		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT | USBPCR_TXVREFTUNE_DFT |
- 		USBPCR_POR;
--	writel(reg, priv->base + REG_USBPCR_OFFSET);
- }
- 
--static void jz4780_usb_phy_init(struct usb_phy *phy)
-+static u32 jz4780_usb_phy_init(struct usb_phy *phy)
- {
- 	struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
- 	u32 reg;
-@@ -216,11 +213,10 @@ static void jz4780_usb_phy_init(struct usb_phy *phy)
- 		USBPCR1_WORD_IF_16BIT;
- 	writel(reg, priv->base + REG_USBPCR1_OFFSET);
- 
--	reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
--	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+	return USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
- }
- 
--static void x1000_usb_phy_init(struct usb_phy *phy)
-+static u32 x1000_usb_phy_init(struct usb_phy *phy)
- {
- 	struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
- 	u32 reg;
-@@ -228,13 +224,12 @@ static void x1000_usb_phy_init(struct usb_phy *phy)
- 	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT;
- 	writel(reg, priv->base + REG_USBPCR1_OFFSET);
- 
--	reg = USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
-+	return USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
- 		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
- 		USBPCR_COMMONONN | USBPCR_POR;
--	writel(reg, priv->base + REG_USBPCR_OFFSET);
- }
- 
--static void x1830_usb_phy_init(struct usb_phy *phy)
-+static u32 x1830_usb_phy_init(struct usb_phy *phy)
- {
- 	struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
- 	u32 reg;
-@@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy *phy)
- 		USBPCR1_DMPD | USBPCR1_DPPD;
- 	writel(reg, priv->base + REG_USBPCR1_OFFSET);
- 
--	reg = USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |	USBPCR_TXPREEMPHTUNE |
-+	return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT | USBPCR_TXPREEMPHTUNE |
- 		USBPCR_COMMONONN | USBPCR_POR;
--	writel(reg, priv->base + REG_USBPCR_OFFSET);
- }
- 
- static const struct ingenic_soc_info jz4770_soc_info = {
--- 
-2.28.0
+Vincenzo, could you take care of Catalin's comments on your (arm64)
+patches, do the rebase onto user mte v8, and share it with me? I'll
+work on KASAN changes in the meantime, and then integrate everything
+together for v2.
 
+Perhaps the best way to test only the arm64 part is writing a simple
+module that causes an MTE fault. (At least that's what I did when I
+was testing core in-kernel MTE patches separately.) Or reuse this
+series, all KASAN patches should rebase cleanly on top of the latest
+mainline.
