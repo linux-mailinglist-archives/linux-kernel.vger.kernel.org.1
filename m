@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDBE254558
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FD6254576
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729233AbgH0MuS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 08:50:18 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:43647 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgH0MqT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:46:19 -0400
-X-Originating-IP: 77.204.107.57
-Received: from xps13 (57.107.204.77.rev.sfr.net [77.204.107.57])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 37F96E0008;
-        Thu, 27 Aug 2020 12:46:02 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 14:46:00 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     James Bond <jameslouisebond@gmail.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ryan Jackson <rjackson@lnxi.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: ck804xrom: fix missing pci device put in error
- paths
-Message-ID: <20200827144600.2ec7c4ab@xps13>
-In-Reply-To: <20200821070537.30317-1-jameslouisebond@gmail.com>
-References: <20200821070537.30317-1-jameslouisebond@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729014AbgH0Mt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:49:59 -0400
+Received: from mail.monom.org ([188.138.9.77]:50542 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729075AbgH0MqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:46:24 -0400
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 80B1150035A;
+        Thu, 27 Aug 2020 14:46:12 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 3DC6F500103;
+        Thu, 27 Aug 2020 14:46:12 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 14:46:11 +0200
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9-rc2-rt1
+Message-ID: <20200827124611.tsivo4xopvoenfmy@beryllium.lan>
+References: <20200824154605.v66t2rsxobt3r5jg@linutronix.de>
+ <20200826080802.5lnnf5wh3kcwfykz@beryllium.lan>
+ <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
+ <20200826090518.m6vblobggnfdjau5@beryllium.lan>
+ <20200826104326.xfexkwovwbi2q4el@beryllium.lan>
+ <20200827091910.ibuyr53qprb7qmju@beryllium.lan>
+ <20200827092743.kjl6hkaephx3a64a@linutronix.de>
+ <20200827101622.xx4jzecouxrlwbii@beryllium.lan>
+ <20200827102840.msv556nrah4h4vmq@linutronix.de>
+ <20200827112705.uleixtdmx3pacr5u@beryllium.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827112705.uleixtdmx3pacr5u@beryllium.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+> Would be interesting to see the size numbers for v5.6-rt? Hmm, I'll
+> just start the compiler. It's all scripted anyway :)
 
-James Bond <jameslouisebond@gmail.com> wrote on Fri, 21 Aug 2020
-02:05:36 -0500:
+v5.6-rt:
 
-> pci_dev_get increases the refcount of "pdev".
-> In the error paths, pci_dev_put should be called
-> to handle the "pdev" and decrease the corresponding refcount.
-> 
-> Fixes: 90afffc8bd79 ("[MTD] [MAPS] Support for BIOS flash chips on the nvidia ck804 southbridge")
-> Signed-off-by: James Bond <jameslouisebond@gmail.com>
-> ---
->  drivers/mtd/maps/ck804xrom.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/ck804xrom.c b/drivers/mtd/maps/ck804xrom.c
-> index 460494212f6a..16af8b5ee653 100644
-> --- a/drivers/mtd/maps/ck804xrom.c
-> +++ b/drivers/mtd/maps/ck804xrom.c
-> @@ -195,6 +195,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
->  	if (!window->virt) {
->  		printk(KERN_ERR MOD_NAME ": ioremap(%08lx, %08lx) failed\n",
->  			window->phys, window->size);
-> +		pci_dev_put(pdev);
->  		goto out;
->  	}
->  
-> @@ -222,6 +223,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
->  
->  		if (!map) {
->  			printk(KERN_ERR MOD_NAME ": kmalloc failed");
-> +			pci_dev_put(pdev);
->  			goto out;
->  		}
->  		memset(map, 0, sizeof(*map));
-> @@ -295,6 +297,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
->  		if (mtd_device_register(map->mtd, NULL, 0)) {
->  			map_destroy(map->mtd);
->  			map->mtd = NULL;
-> +			pci_dev_put(pdev);
->  			goto out;
->  		}
->  
+-rw-r--r-- 1 wagi users 28688896 Aug 27 13:38 rpi3-image-ll-v5.6.19-rt12
+-rw-r--r-- 1 wagi users 28688896 Aug 27 13:34 rpi3-image-nohz-v5.6.19-rt12
+-rw-r--r-- 1 wagi users 29669888 Aug 27 13:32 rpi3-image-none-v5.6.19-rt12
+-rw-r--r-- 1 wagi users 33438208 Aug 27 13:30 rpi3-image-rt-v5.6.19-rt12
+-rw-r--r-- 1 wagi users 28688896 Aug 27 13:38 rpi3-image-up-v5.6.19-rt12
+-rw-r--r-- 1 wagi users 29669888 Aug 27 13:36 rpi3-image-vp-v5.6.19-rt12
 
-I suppose in these three cases, the window->maps list will be empty and
-you will end up returning -ENODEV and the bottom of the function? If
-yes, it woudl probably be better to move these pci_dev_put() calls to
-this location.
+v5.4-rt:
 
-Otherwise, it might bit interesting to clean up a little bit the error
-path and perhaps have a distinct success vs. failure path.
+-rw-r--r-- 1 wagi users 27525632 Aug 27 14:40 rpi3-image-ll-v5.4.59-rt36
+-rw-r--r-- 1 wagi users 27525632 Aug 27 14:36 rpi3-image-nohz-v5.4.59-rt36
+-rw-r--r-- 1 wagi users 28506624 Aug 27 14:34 rpi3-image-none-v5.4.59-rt36
+-rw-r--r-- 1 wagi users 32360960 Aug 27 14:32 rpi3-image-rt-v5.4.59-rt36
+-rw-r--r-- 1 wagi users 27525632 Aug 27 14:40 rpi3-image-up-v5.4.59-rt36
+-rw-r--r-- 1 wagi users 28506624 Aug 27 14:38 rpi3-image-vp-v5.4.59-rt36
 
-
-Thanks,
-Miquèl
+So in previous releases the size offset was roughly around 4MB.
