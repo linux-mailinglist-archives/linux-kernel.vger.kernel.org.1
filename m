@@ -2,79 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F812548BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0583C2548FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgH0Lnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:43:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:57148 "EHLO foss.arm.com"
+        id S1728254AbgH0PSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:18:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728732AbgH0Ldh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:33:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38EF91045;
-        Thu, 27 Aug 2020 04:33:30 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21F033F68F;
-        Thu, 27 Aug 2020 04:33:28 -0700 (PDT)
-Subject: Re: [PATCH 31/35] kasan, arm64: implement HW_TAGS runtime
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1597425745.git.andreyknvl@google.com>
- <4e86d422f930831666137e06a71dff4a7a16a5cd.1597425745.git.andreyknvl@google.com>
- <20200827104517.GH29264@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <567f90b6-fa25-6ef3-73b8-45462cc7ceb2@arm.com>
-Date:   Thu, 27 Aug 2020 12:35:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728666AbgH0LgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:36:24 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B39B22D00;
+        Thu, 27 Aug 2020 11:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598528182;
+        bh=vBw61VVDerIRpeNkpWTLTYoAEivM+1lj5FA6uWlnPBs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rt5V8IpGuggEom5rYGd7s+0HObOZQ5xX81oPMp+7Y5dVm3bA3OnK0W/LaZOXCSdIT
+         oD4niPTogfxaXqs8DRB6mBqAOV9mDCBKegjVKM75fZtu1r89HJSTOx8ud53IIAewiI
+         yoFcs5FTUorazOiS9rxjU9oBcTKjv1g/VTVUtXKY=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v2 06/15] csky: kprobes: Use generic kretprobe trampoline handler
+Date:   Thu, 27 Aug 2020 20:36:18 +0900
+Message-Id: <159852817837.707944.15240501945589707110.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <159852811819.707944.12798182250041968537.stgit@devnote2>
+References: <159852811819.707944.12798182250041968537.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <20200827104517.GH29264@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 11:45 AM, Catalin Marinas wrote:
-> On Fri, Aug 14, 2020 at 07:27:13PM +0200, Andrey Konovalov wrote:
->> diff --git a/mm/kasan/mte.c b/mm/kasan/mte.c
->> new file mode 100644
->> index 000000000000..43b7d74161e5
->> --- /dev/null
->> +++ b/mm/kasan/mte.c
-> 
-> Since this is an arm64-specific kasan backend, I wonder whether it makes
-> more sense to keep it under arch/arm64 (mte-kasan.c).
->
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ arch/csky/kernel/probes/kprobes.c |   78 +------------------------------------
+ 1 file changed, 3 insertions(+), 75 deletions(-)
 
-Yes I agree, I had a similar comment in patch 25. I think we should implement
-the mte backend entirely in arch code because other architectures might want to
-enable the feature (e.g. Sparc ADI).
+diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
+index f0f733b7ac5a..a891fb422e76 100644
+--- a/arch/csky/kernel/probes/kprobes.c
++++ b/arch/csky/kernel/probes/kprobes.c
+@@ -404,87 +404,15 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	struct kretprobe_instance *ri = NULL;
+-	struct hlist_head *head, empty_rp;
+-	struct hlist_node *tmp;
+-	unsigned long flags, orig_ret_address = 0;
+-	unsigned long trampoline_address =
+-		(unsigned long)&kretprobe_trampoline;
+-	kprobe_opcode_t *correct_ret_addr = NULL;
+-
+-	INIT_HLIST_HEAD(&empty_rp);
+-	kretprobe_hash_lock(current, &head, &flags);
+-
+-	/*
+-	 * It is possible to have multiple instances associated with a given
+-	 * task either because multiple functions in the call path have
+-	 * return probes installed on them, and/or more than one
+-	 * return probe was registered for a target function.
+-	 *
+-	 * We can handle this because:
+-	 *     - instances are always pushed into the head of the list
+-	 *     - when multiple return probes are registered for the same
+-	 *	 function, the (chronologically) first instance's ret_addr
+-	 *	 will be the real return address, and all the rest will
+-	 *	 point to kretprobe_trampoline.
+-	 */
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-
+-	kretprobe_assert(ri, orig_ret_address, trampoline_address);
+-
+-	correct_ret_addr = ri->ret_addr;
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-		if (ri->rp && ri->rp->handler) {
+-			__this_cpu_write(current_kprobe, &ri->rp->kp);
+-			get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
+-			ri->ret_addr = correct_ret_addr;
+-			ri->rp->handler(ri, regs);
+-			__this_cpu_write(current_kprobe, NULL);
+-		}
+-
+-		recycle_rp_inst(ri, &empty_rp);
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-
+-	kretprobe_hash_unlock(current, &flags);
+-
+-	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+-		hlist_del(&ri->hlist);
+-		kfree(ri);
+-	}
+-	return (void *)orig_ret_address;
++	return (void *)kretprobe_trampoline_handler(regs,
++			(unsigned long)&kretprobe_trampoline, NULL);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
+ {
+ 	ri->ret_addr = (kprobe_opcode_t *)regs->lr;
++	ri->fp = NULL;
+ 	regs->lr = (unsigned long) &kretprobe_trampoline;
+ }
+ 
 
->> diff --git a/mm/kasan/report_mte.c b/mm/kasan/report_mte.c
->> new file mode 100644
->> index 000000000000..dbbf3aaa8798
->> --- /dev/null
->> +++ b/mm/kasan/report_mte.c
-> 
-> Same for this one.
-> 
-
--- 
-Regards,
-Vincenzo
