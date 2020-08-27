@@ -2,265 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CE3254639
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13A7254627
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgH0Npl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:45:41 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:52738 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727849AbgH0N3Q (ORCPT
+        id S1727069AbgH0NmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728190AbgH0NaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:29:16 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RDS7t9004807;
-        Thu, 27 Aug 2020 06:29:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=miwka1d2j2ZjmazIKD563V3VQqO6F8hQyfmmLTH4uqM=;
- b=oCQzKRPOUq5b7iHRgOyoU0oLLPHzZ67tmJh5uQV3k6Q24WfgbhtjVzKrRo9JDk2WI2fO
- Dhx4BeQOhPdbDrJsusGJpQ6yJyby2DI0N3J9bAdRKLpWhqbsgK+c/Q1AMcNr6GTxaDCa
- g4hcdGIJynqA3UORoC7lz8lsIzUDCzwi18RpC6P9U3un4BLp+rj9RyTQJpBcB66H/iFd
- Htfh1X9RbZm3nDBdXDVsRjz2jxJwMF0bdYrS3ePx4uR39RBorsCAAXLW6Az3T7p0lpZ3
- zmFjOEd9dID1s14qO+iAMxw2E+CHsEcfvFPa+yeRZJPKWGgCMxISeIonwqwYS7Tmb+eK CQ== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 332yww45e2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 06:29:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J8Yxg9/IyXfhoj2ALv/rFx0ajuGgMPeyDZ0hVNya5sz1xTYNAaEJsZWBfKQByHhU7xy5b6IO8wwQhBnwWTJT865TsfhuQ8OyixY/XT4WtSDuNWtplbyk+Yqp4u8SpkbMvolD/DUqtvW0J5R4K5wXsKt3K3o/UdU9NekycUgFs5IdZ1Jd1PUawj/p8Mjo79EEuUuYH4vMcO+vySzUHL5WNgoTbPXwExzW6GIzaXXBZNAmEXR01zpOb9TtLdFrTih6e7ii35CWgqLR6FRgpXXKnFJKDX/lOu1TvXvM02wpFa7kmgZPZjbZ+lRnJRGpKLQ5TKKjzZvPjb1eiZsx+5MSOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miwka1d2j2ZjmazIKD563V3VQqO6F8hQyfmmLTH4uqM=;
- b=UnNKflFB/wjJgdJdNXfRM/QfLZkZHrLUTgjNw3nPIhpPTkpHP1BNQw3jaSOLG1aS2hvih2/exnTSJKZI4+HwR0OulNPjbvDzg1lHkB2l/4loxxIyQ0JDhE53T3ApEM/sZ9KThwhNJyoiSu2WL+AJRjgeoO4h5AH3FU9YoGSyDWr4WDMHuQbFQsV3E32nhmu8kJQKt6MoUn82R2JECFYAAwma++CO5Qmcp/S70NQTcr634xvOv6ZUx1xrVGB/yExQD5ww8hOfkcj5NZSCbmLLTwe9K8G8KlUkgaJ0SuzFgAOuzq0X2zjTKlE5VnO2NUoBmuItMy/4I5j2YJLY79jjUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miwka1d2j2ZjmazIKD563V3VQqO6F8hQyfmmLTH4uqM=;
- b=VK4hMYwtKRYIj5mbAzlaNznSaHT3WMg7LXIPbOCInd3df1xR1ahnNWY1ZbSIBRdbGOqSOT1cfA4cMVg00mQGE8eBL8kPAMlq5ypPJxTs5rTYDfvWDCshR1s1Yt64crkx8R/XwkM+HWMTfezfij0FHTEbrz4jm/Fu/XjKDd7cSWo=
-Received: from DM5PR18CA0064.namprd18.prod.outlook.com (2603:10b6:3:22::26) by
- BL0PR07MB5043.namprd07.prod.outlook.com (2603:10b6:208:4c::32) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3305.26; Thu, 27 Aug 2020 13:29:07 +0000
-Received: from DM6NAM12FT053.eop-nam12.prod.protection.outlook.com
- (2603:10b6:3:22:cafe::96) by DM5PR18CA0064.outlook.office365.com
- (2603:10b6:3:22::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.20 via Frontend
- Transport; Thu, 27 Aug 2020 13:29:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT053.mail.protection.outlook.com (10.13.179.125) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3326.19 via Frontend Transport; Thu, 27 Aug 2020 13:29:05 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 07RDSrRn001550
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Thu, 27 Aug 2020 09:29:03 -0400
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Thu, 27 Aug 2020 15:28:54 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 27 Aug 2020 15:28:54 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 07RDSsHn018766;
-        Thu, 27 Aug 2020 15:28:54 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 07RDSsND018765;
-        Thu, 27 Aug 2020 15:28:54 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>
-Subject: [PATCH v2 7/7] dt-bindings: phy: cadence-torrent: Update Torrent PHY bindings for generic use
-Date:   Thu, 27 Aug 2020 15:28:52 +0200
-Message-ID: <1598534932-18693-8-git-send-email-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.4.5
-In-Reply-To: <1598534932-18693-1-git-send-email-sjakhade@cadence.com>
-References: <1598534932-18693-1-git-send-email-sjakhade@cadence.com>
+        Thu, 27 Aug 2020 09:30:00 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B519C061264;
+        Thu, 27 Aug 2020 06:29:34 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id q14so4866839ilm.2;
+        Thu, 27 Aug 2020 06:29:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P1eAOelctVCvY77k8DvCiSb45R7pJeCygwUiBKj7ylk=;
+        b=KslTWM9QTJseKIfQwHyWHYzO4E5V9sz2t0NyQsA+FDYjpJCmberK6r1gK12Pgz7ApG
+         aDRwPZnol6vii9x/7psJIZV393QKixDz1vAY5VufdD1L2su0SUGkwUlRjU+kIvkyaGeX
+         Xv8Br1OD+OGHSOURsNHIRwVwsadKMnBFpOnlxRBsCEEgk1lMeHMMHZ0uQhY1oocrLzWi
+         f/rA2Hze5ic1kTmDnRtSGdsXY7KvtyU0pyWGbPW8qRtEEs8k8OGmLcihOh2a3jLqA/qB
+         uaMIxIHMpX9L2puZNu+odYcuv70ElOGc8HwsG1KQOmikZX/84mWmxEypdCTcjsiLCsJ6
+         4ErA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P1eAOelctVCvY77k8DvCiSb45R7pJeCygwUiBKj7ylk=;
+        b=UlGq8Xnd9xsDahH2Mgdq/GzST7GmqsZywZefLFD9KpOqNC+rB4PnU6Ay3EnYbITqGB
+         SY/aUIvshFrJX5XIIVYwUc5IXDdsWJyB3jbbgWOHfUMD4ALfu9sAeerv7IlGFr7LY8lA
+         zaa6wvFZhWaFH2bBhjmzdAw5/WNenH5hjq/M81ALBDgD2tRZKfqCrLfB0fqMPuN/KQ5c
+         cRq4h9u/qZUPblJBdfKGWqomiovBFH162VKBw22T65KwMPnx/QePGBZhnCfDUf+TUcrC
+         Ao7Uw2wf9VumATPZ/yWGyJg6EEkEez1Kdc7UGqXZFc/Wl1bsa90eGA6OgPAWmWZa/v/f
+         TCdw==
+X-Gm-Message-State: AOAM5324iIiz89iwAdftJxVED2a9cujh6o4vIdIAfq5Qhob08Xu89lWV
+        631jh+dF7FFuEb+M2TXa9nF5Ipa0jlDdI49U1Mc=
+X-Google-Smtp-Source: ABdhPJyQLY6lTLiuO3mJecjMx6O2y5je1nGXqCTrwwhTyAqqzE4XE1LtMK86oX32gT+TP8wOjBG4bYwXxAka9F8rhOw=
+X-Received: by 2002:a92:6a09:: with SMTP id f9mr473727ilc.273.1598534972117;
+ Thu, 27 Aug 2020 06:29:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ce2f86e9-4431-4696-5bd9-08d84a8d2b88
-X-MS-TrafficTypeDiagnostic: BL0PR07MB5043:
-X-Microsoft-Antispam-PRVS: <BL0PR07MB5043D3D2541BA006D6D94A31C5550@BL0PR07MB5043.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NeFb/JCM87A0zGMnW4amVR0j8/jfm1UtiFO9t7Oc61GqUUCzmJEGXh1AU80lSugRCI+kmBfr313XIP+P/PWirFXHKvSoNk51PGrE5yJvOtYt43U2bjzN9VvRvz6pUqKdq1moCEe4wprUQoTSlXj42ru1nDXhGlns1OG+XClZxwiCWFKra84rP8+/6MK5o0Z/MYMja6zkrH6x134WtAfSUidNuufG2sFDGrXYHfaqs+fUeDoPTo7WeS/PPrCIWdJIK1bsuzSk6Cz99ncYmObZqCVtAd87SZXz4XejKD97J4K6ZUYnMxam5iukh8AqL0LkCBmP6f5LPv5Lr2UeyFzDiR4KzbUmccvICeHFwZUT4rJi8tU6q1aBf4si5AdmgqnkJmvp6ADM0yrcDgj8pYndqdRZFFu9XqWgL5MgCMmixWpuKh/vw53AnUVtS/Z6VRlaXAxa2wvoaMbAho5tn1t4JAEy0pExPiQd7KPngCXdwzayxJhuSbpSHz0bdqE6liEOqUL+9CSIuTAr6MYfv6z0Ag==
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(36092001)(46966005)(70206006)(4326008)(316002)(356005)(42186006)(70586007)(82310400002)(8676002)(54906003)(110136005)(83380400001)(2906002)(8936002)(26005)(426003)(82740400003)(86362001)(186003)(15650500001)(2616005)(36756003)(336012)(5660300002)(478600001)(81166007)(47076004)(41533002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 13:29:05.3456
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce2f86e9-4431-4696-5bd9-08d84a8d2b88
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT053.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB5043
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
- bulkscore=0 mlxlogscore=989 spamscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1015 adultscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270102
+References: <20200825002540.3351-1-yu-cheng.yu@intel.com> <20200825002540.3351-26-yu-cheng.yu@intel.com>
+ <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
+ <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com> <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com> <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
+ <ef7f9e24-f952-d78c-373e-85435f742688@intel.com> <20200826164604.GW6642@arm.com>
+ <87ft892vvf.fsf@oldenburg2.str.redhat.com> <20200826170841.GX6642@arm.com> <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
+In-Reply-To: <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Thu, 27 Aug 2020 06:28:56 -0700
+Message-ID: <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Torrent PHY can be used in different multi-link multi-protocol
-configurations including protocols other than DisplayPort also,
-such as PCIe, USB, SGMII, QSGMII etc. Update the bindings to have
-support for these configurations.
+On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Dave Martin:
+>
+> > You're right that this has implications: for i386, libc probably pulls
+> > more arguments off the stack than are really there in some situations.
+> > This isn't a new problem though.  There are already generic prctls with
+> > fewer than 4 args that are used on x86.
+>
+> As originally posted, glibc prctl would have to know that it has to pull
+> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  But
+> then the u64 argument is a problem for arch_prctl as well.
+>
 
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
----
- .../bindings/phy/phy-cadence-torrent.yaml     | 76 ++++++++++++++-----
- 1 file changed, 58 insertions(+), 18 deletions(-)
+Argument of ARCH_X86_CET_DISABLE is int and passed in register.
 
-diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-index a7ee19d27c19..1b9e1231f8d8 100644
---- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-+++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-@@ -4,11 +4,13 @@
- $id: "http://devicetree.org/schemas/phy/phy-cadence-torrent.yaml#"
- $schema: "http://devicetree.org/meta-schemas/core.yaml#"
- 
--title: Cadence Torrent SD0801 PHY binding for DisplayPort
-+title: Cadence Torrent SD0801 PHY binding
- 
- description:
-   This binding describes the Cadence SD0801 PHY (also known as Torrent PHY)
--  hardware included with the Cadence MHDP DisplayPort controller.
-+  hardware included with the Cadence MHDP DisplayPort controller. Torrent
-+  PHY also supports multilink multiprotocol combinations including protocols
-+  such as PCIe, USB, SGMII, QSGMII etc.
- 
- maintainers:
-   - Swapnil Jakhade <sjakhade@cadence.com>
-@@ -49,13 +51,14 @@ properties:
-       - const: dptx_phy
- 
-   resets:
--    maxItems: 1
--    description:
--      Torrent PHY reset.
--      See Documentation/devicetree/bindings/reset/reset.txt
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - description: Torrent PHY reset.
-+      - description: Torrent APB reset. This is optional.
- 
- patternProperties:
--  '^phy@[0-7]+$':
-+  '^link@[0-7]+$':
-     type: object
-     description:
-       Each group of PHY lanes with a single master lane should be represented as a sub-node.
-@@ -78,13 +81,13 @@ patternProperties:
-           Specifies the type of PHY for which the group of PHY lanes is used.
-           Refer include/dt-bindings/phy/phy.h. Constants from the header should be used.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 3, 4, 5, 6]
-+        enum: [1, 2, 3, 4, 5, 6, 7, 8, 9]
- 
-       cdns,num-lanes:
-         description:
--          Number of DisplayPort lanes.
-+          Number of lanes.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4]
-+        enum: [1, 2, 3, 4]
-         default: 4
- 
-       cdns,ssc-mode:
-@@ -108,6 +111,7 @@ patternProperties:
-       - resets
-       - "#phy-cells"
-       - cdns,phy-type
-+      - cdns,num-lanes
- 
-     additionalProperties: false
- 
-@@ -141,14 +145,50 @@ examples:
-             clock-names = "refclk";
-             #address-cells = <1>;
-             #size-cells = <0>;
--            phy@0 {
--                      reg = <0>;
--                      resets = <&phyrst 1>, <&phyrst 2>,
--                               <&phyrst 3>, <&phyrst 4>;
--                      #phy-cells = <0>;
--                      cdns,phy-type = <PHY_TYPE_DP>;
--                      cdns,num-lanes = <4>;
--                      cdns,max-bit-rate = <8100>;
-+            link@0 {
-+                reg = <0>;
-+                resets = <&phyrst 1>, <&phyrst 2>,
-+                         <&phyrst 3>, <&phyrst 4>;
-+                #phy-cells = <0>;
-+                cdns,phy-type = <PHY_TYPE_DP>;
-+                cdns,num-lanes = <4>;
-+                cdns,max-bit-rate = <8100>;
-+            };
-+        };
-+    };
-+  - |
-+    #include <dt-bindings/phy/phy.h>
-+    #include <dt-bindings/phy/phy-cadence-torrent.h>
-+
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        torrent-phy@f0fb500000 {
-+            compatible = "cdns,torrent-phy";
-+            reg = <0xf0 0xfb500000 0x0 0x00100000>;
-+            reg-names = "torrent_phy";
-+            resets = <&phyrst 0>, <&phyrst 1>;
-+            clocks = <&ref_clk>;
-+            clock-names = "refclk";
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            link@0 {
-+                reg = <0>;
-+                resets = <&phyrst 2>, <&phyrst 3>;
-+                #phy-cells = <0>;
-+                cdns,phy-type = <PHY_TYPE_PCIE>;
-+                cdns,num-lanes = <2>;
-+                cdns,ssc-mode = <TORRENT_SERDES_NO_SSC>;
-+            };
-+
-+            link@2 {
-+                reg = <2>;
-+                resets = <&phyrst 4>;
-+                #phy-cells = <0>;
-+                cdns,phy-type = <PHY_TYPE_SGMII>;
-+                cdns,num-lanes = <1>;
-+                cdns,ssc-mode = <TORRENT_SERDES_NO_SSC>;
-             };
-         };
-     };
 -- 
-2.26.1
-
+H.J.
