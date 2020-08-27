@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253772546C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DD0254697
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgH0O2O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 10:28:14 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:18340 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727103AbgH0OQm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:16:42 -0400
-X-Greylist: delayed 672 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 10:16:39 EDT
-Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
-To:     Paul Moore <paul@paul-moore.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>
-References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
- <20200824132252.31261-1-peter.enderborg@sony.com>
- <20200824132252.31261-2-peter.enderborg@sony.com>
- <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
- <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com>
- <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
- <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com>
- <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <abaccc15-85a8-24d2-4481-8303e3a42362@sony.com>
-Date:   Thu, 27 Aug 2020 16:04:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727015AbgH0OPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:15:23 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2701 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728021AbgH0OJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:09:02 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id D1E6A212A5BB64F42505;
+        Thu, 27 Aug 2020 15:08:36 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.87.119) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 27 Aug 2020 15:08:36 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <rrichter@marvell.com>
+CC:     <linuxarm@huawei.com>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH v2 1/1] EDAC/ghes: Fix for NULL pointer dereference in ghes_edac_register()
+Date:   Thu, 27 Aug 2020 15:04:50 +0100
+Message-ID: <20200827140450.1620-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=FfdJO626 c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=RpNjiQI2AAAA:8 a=AKTmbaUPI3psir6HZzAA:9 a=jpIH26JlB8aEU1M81S3jpgcb7nU=:19 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.87.119]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 3:30 PM, Paul Moore wrote:
-> On Wed, Aug 26, 2020 at 11:06 AM peter enderborg
-> <peter.enderborg@sony.com> wrote:
->> On 8/26/20 4:45 PM, Paul Moore wrote:
->>> On Wed, Aug 26, 2020 at 10:34 AM peter enderborg
->>> <peter.enderborg@sony.com> wrote:
->>>> On 8/26/20 3:42 PM, Paul Moore wrote:
->>>>> On Mon, Aug 24, 2020 at 9:23 AM Peter Enderborg
->>>>> <peter.enderborg@sony.com> wrote:
->>>>>> This adds tracing of all denies. They are grouped with trace_seq for
->>>>>> each audit.
->>>>>>
->>>>>> A filter can be inserted with a write to it's filter section.
->>>>>>
->>>>>> echo "permission==\"entrypoint\"" > events/avc/selinux_denied/filter
->>>>>>
->>>>>> A output will be like:
->>>>>>           runcon-1046  [002] .N..   156.351738: selinux_denied:
->>>>>>           trace_seq=2 result=-13
->>>>>>           scontext=system_u:system_r:cupsd_t:s0-s0:c0.
->>>>>>           c1023 tcontext=system_u:object_r:bin_t:s0
->>>>>>           tclass=file permission=entrypoint
->>>>>>
->>>>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
->>>>>> ---
->>>>>>  include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
->>>>>>  security/selinux/avc.c     | 27 +++++++++++++++++++++++++--
->>>>>>  2 files changed, 62 insertions(+), 2 deletions(-)
->>>>> My most significant comment is that I don't think we want, or need,
->>>>> two trace points in the avc_audit_post_callback() function.  Yes, I
->>>>> understand they are triggered slightly differently, but from my
->>>>> perspective there isn't enough difference between the two tracepoints
->>>>> to warrant including both.  However, while the tracepoints may be
->>>> We tried that but that was problematic too.
->>> My apologies if I was on that thread, but can you remind me why it was
->>> a problem?  Why can't we use a single tracepoint to capture the AVC
->>> information?
->> The problem is parsing the event.
->>
->> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_2020_8_18_842&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4cc&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLhHkpb71j1YoicydLh-7l4cOsLYcY&s=iS3eZr3TFrN5I7BbnvPFYOKd6DfW1FHTFcwI7joS_fk&e= 
->>
->> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_2020_8_21_526&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4cc&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLhHkpb71j1YoicydLh-7l4cOsLYcY&s=9OsLN0Y5mUWxEAAqUE6K4PS57Pn1XyZz7GXak6uc_Ls&e= 
->>
->> and the "single list" version
->>
->> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_2020_8_17_1346&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4cc&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLhHkpb71j1YoicydLh-7l4cOsLYcY&s=tWSY2ry2IT6RcT5BIUwMuqBL_yPObDE1VljbLqI1zrA&e= 
->>
->> With this patch we follow standard message format so no plugin should be needed.
-> I'm evidently missing something very fundamental (likely), and/or I'm
-> just not communicating very clearly (also likely), because the above
-> links don't appear to make any sense with respect to my question.
->
-> Let me try a reset ... Why can't we basically take the
-> "selinux_denied" TRACE_EVENT implementation in your patch and use it
-> to replace the "selinux_audited" TRACE_EVENT in the selinux/next tree
-> (of course with the necessary changes to the AVC callback code)?
->
-> If the "selinux_denied" implementation is valid from a tracing point
-> of view, why can we not do this?  Of course if the "selinux_denied"
-> implementation is not a valid TRACE_EVENT then I'm not sure why this
-> was suggested for SELinux :)
->
-Im happly fine with replacing the selinux_audited with selinux_denied.  However it is the case where there are more than one denial at the same time. Im not sure how and when it might happen.
-When that happen we got more than one event. I have no problems with that, but im not sure if the debug tools and perf can make sense of that.
+After the 'commit b9cae27728d1 ("EDAC/ghes: Scan the system once on driver init")'
+applied, following error has occurred in the ghes_edac_register() when
+CONFIG_DEBUG_TEST_DRIVER_REMOVE is enabled. The null ghes_hw.dimms pointer
+in the mci_for_each_dimm() of ghes_edac_register() caused the error.
 
-A other feature with the selinux_audited event it might be inserted on other places in the code too.  A denial is sort of final.
+The error occurs when all the previously initialized ghes instances are
+removed and then probe a new ghes instance. In this case, the ghes_refcount
+would be 0, ghes_hw.dimms and mci already freed. The ghes_hw.dimms would
+be null because ghes_scan_system() would not call enumerate_dimms() again.
 
+Suggested-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+---
+ drivers/edac/ghes_edac.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index da60c29468a7..54ebc8afc6b1 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -55,6 +55,8 @@ static DEFINE_SPINLOCK(ghes_lock);
+ static bool __read_mostly force_load;
+ module_param(force_load, bool, 0);
+ 
++static bool system_scanned;
++
+ /* Memory Device - Type 17 of SMBIOS spec */
+ struct memdev_dmi_entry {
+ 	u8 type;
+@@ -225,14 +227,12 @@ static void enumerate_dimms(const struct dmi_header *dh, void *arg)
+ 
+ static void ghes_scan_system(void)
+ {
+-	static bool scanned;
+-
+-	if (scanned)
++	if (system_scanned)
+ 		return;
+ 
+ 	dmi_walk(enumerate_dimms, &ghes_hw);
+ 
+-	scanned = true;
++	system_scanned = true;
+ }
+ 
+ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+@@ -631,6 +631,8 @@ void ghes_edac_unregister(struct ghes *ghes)
+ 
+ 	mutex_lock(&ghes_reg_mutex);
+ 
++	system_scanned = false;
++
+ 	if (!refcount_dec_and_test(&ghes_refcount))
+ 		goto unlock;
+ 
+-- 
+2.17.1
 
 
