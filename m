@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A610F254052
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC90254011
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgH0II2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:08:28 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:54406 "EHLO h3cspam01-ex.h3c.com"
+        id S1728387AbgH0IAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:00:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18800 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgH0II0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:08:26 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 07R6fTEB043927;
-        Thu, 27 Aug 2020 14:41:29 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 07R6f3mf042483
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Aug 2020 14:41:03 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 27 Aug 2020 14:41:05 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] [v3] blk-mq: use BLK_MQ_NO_TAG for no tag
-Date:   Thu, 27 Aug 2020 14:34:17 +0800
-Message-ID: <20200827063417.35851-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726851AbgH0IAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 04:00:48 -0400
+IronPort-SDR: 9RrsowQtcQBMiE1qlKFvKBSMYtx+dbV8dFdJNc7/US+x8MNZ4HVVWYjvYE49TkrS5LXDR4Cy9S
+ SPnlVDGTcdCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153860693"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="153860693"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 01:00:47 -0700
+IronPort-SDR: vBlE8G0sFynYcM8sdc9gJbZvGMTIHnQtFOnPL2GGarlfPnhq6xrMi2y+aJQgtOxbF8vHCFc45P
+ pPbFuQLdbMKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="373647850"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 27 Aug 2020 01:00:47 -0700
+Received: from [10.249.76.175] (vramuthx-MOBL1.gar.corp.intel.com [10.249.76.175])
+        by linux.intel.com (Postfix) with ESMTP id 27FAD5806C6;
+        Thu, 27 Aug 2020 01:00:42 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v3 1/1] extcon: ptn5150: Set the VBUS and POLARITY
+ property capability
+To:     Chanwoo Choi <cw00.choi@samsung.com>, linux-kernel@vger.kernel.org
+Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
+        myungjoo.ham@samsung.com, heikki.krogerus@linux.intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
+References: <20200827065128.55094-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <CGME20200827065143epcas1p3da86f8d70e6d78c64a925f4d9c0f92eb@epcas1p3.samsung.com>
+ <20200827065128.55094-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <e0ac8482-d607-6095-0d9b-2918f0e7a0f2@samsung.com>
+ <47fef2ec-012c-03c7-13ef-0882b4f7146b@linux.intel.com>
+ <b0e5e2e7-0ac6-4b0b-6d56-2766db28359d@samsung.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <6a151d0d-4d78-5310-265d-93eca2143e3e@linux.intel.com>
+Date:   Thu, 27 Aug 2020 16:00:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 07R6f3mf042483
+In-Reply-To: <b0e5e2e7-0ac6-4b0b-6d56-2766db28359d@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace various magic -1 constants for tags with BLK_MQ_NO_TAG.
+Hi,
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-core.c     | 4 ++--
- block/blk-mq-sched.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+On 27/8/2020 4:11 pm, Chanwoo Choi wrote:
+> On 8/27/20 4:53 PM, Ramuthevar, Vadivel MuruganX wrote:
+>> Hi,
+>>
+>> On 27/8/2020 3:56 pm, Chanwoo Choi wrote:
+>>> On 8/27/20 3:51 PM, Ramuthevar,Vadivel MuruganX wrote:
+>>>> From: Ramuthevar Vadivel Murugan<vadivel.muruganx.ramuthevar@linux.intel.com>
+>>>>
+>>>> Set the capability value of property for VBUS and POLARITY.
+>>>>
+>>>> Signed-off-by: Ramuthevar Vadivel Murugan<vadivel.muruganx.ramuthevar@linux.intel.com>
+>>>> ---
+>>>>    drivers/extcon/extcon-ptn5150.c | 7 +++++++
+>>>>    1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
+>>>> index 841c9fe211f1..20d49a54c36e 100644
+>>>> --- a/drivers/extcon/extcon-ptn5150.c
+>>>> +++ b/drivers/extcon/extcon-ptn5150.c
+>>>> @@ -275,6 +275,13 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+>>>>            return ret;
+>>>>        }
+>>>>    +    extcon_set_property_capability(info->edev, EXTCON_USB,
+>>>> +                       EXTCON_PROP_USB_VBUS);
+>>>> +    extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
+>>>> +                       EXTCON_PROP_USB_VBUS);
+>>>> +    extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
+>>>> +                       EXTCON_PROP_USB_TYPEC_POLARITY);
+>>> Above codes used the space for the indentation to keep the vertical line.
+>>> I think that we better to use tab for the indentation.
+>>>
+>>> If there are no objection, I'll fix and then apply it.
+>> Thank you!, no objection , please fix it.
+> Applied it. Thanks.
+Thank you so much for applying.
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index d9d632639..c7eaf7504 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -116,8 +116,8 @@ void blk_rq_init(struct request_queue *q, struct request *rq)
- 	rq->__sector = (sector_t) -1;
- 	INIT_HLIST_NODE(&rq->hash);
- 	RB_CLEAR_NODE(&rq->rb_node);
--	rq->tag = -1;
--	rq->internal_tag = -1;
-+	rq->tag = BLK_MQ_NO_TAG;
-+	rq->internal_tag = BLK_MQ_NO_TAG;
- 	rq->start_time_ns = ktime_get_ns();
- 	rq->part = NULL;
- 	refcount_set(&rq->ref, 1);
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index a19cdf159..439481f59 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -522,7 +522,7 @@ void blk_mq_sched_insert_request(struct request *rq, bool at_head,
- 		goto run;
- 	}
- 
--	WARN_ON(e && (rq->tag != -1));
-+	WARN_ON(e && (rq->tag != BLK_MQ_NO_TAG));
- 
- 	if (blk_mq_sched_bypass_insert(hctx, !!e, rq)) {
- 		/*
--- 
-2.17.1
-
+Regards
+Vadivel
+> 
