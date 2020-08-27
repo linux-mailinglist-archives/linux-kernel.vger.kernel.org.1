@@ -2,180 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D25A254E9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC5F254EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgH0TcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:32:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42053 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726197AbgH0TcP (ORCPT
+        id S1727049AbgH0Tck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgH0Tcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:32:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598556733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/9xAmTgJVfsiCYeKazNzgThAXMURwu5yzaqgwbV0E6Y=;
-        b=Ahin3CTi5mDpj5isbXg+RJhVJR0LPYWeolvwIfIRNGDvvbxdOTm6XMsfQD+c5DLA9A2AZd
-        grd4Z2Aw8eT3A/OKVM6/sQW7fs21XdrG+S+bcvJVUjhHVEq3DYNCQ77/d8+9CwYGGOMziL
-        7AvO7MyxtULec7jwMNp4hsIVGWmERe8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-JYC_s1ssP6ue45qGYdp3KA-1; Thu, 27 Aug 2020 15:32:08 -0400
-X-MC-Unique: JYC_s1ssP6ue45qGYdp3KA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 488FA807337;
-        Thu, 27 Aug 2020 19:32:07 +0000 (UTC)
-Received: from krava (unknown [10.40.192.67])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 26B075D9E8;
-        Thu, 27 Aug 2020 19:32:02 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 21:32:01 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCHv2] perf tools: Call test_attr__open directly
-Message-ID: <20200827193201.GB127372@krava>
-References: <20200827134830.126721-1-jolsa@kernel.org>
- <20200827134830.126721-2-jolsa@kernel.org>
+        Thu, 27 Aug 2020 15:32:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BEAC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o13so4094467pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3KgI+Ffy60Jb52i0GltPaTDawIx8lqqOtn/Zi/rBptI=;
+        b=A9R5z16CN6WvlZm0tunq0JyZp51UZctogq1aC+iggqI6rMvKuDhecLIz34tloLnCWz
+         zKxbBeeqD6qeCP12ipK5Wc+UA9tbg4bc2rEGGT/wMqj1/sidRgIES6XlTTAeJbZOxpMo
+         qlb6ofY/jYuevaT6o9wjJHm/x40RLesghfyJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3KgI+Ffy60Jb52i0GltPaTDawIx8lqqOtn/Zi/rBptI=;
+        b=trR+elIoTyLRTF1CBbEzh2ThBlZeZycprll3mYvL9NqSkCFHI6v6NhDrl134kTZOIK
+         TZE3b5zNh35D1DF2r5XpaFLkBGgRWSZv7xS/0qTnCXOThXd/qXTUlSJSc6ACas6Fnk/k
+         h5zFz/9e6dg3+USSbOt+6DNQVI4IcZbTQ8jPR4xmfWhEYqwItzYfWQzI9sG8cVZ7N18q
+         uIa+w5nXgCGHdHzxiEjam+zxRHIqF41gpClLvhJCUZcWsQihkv4aN/VOG4G4mVVAVHzu
+         zuHs7KXjOKbeuEWyJY+SkEctwSc7//rRP5zOEvrTOfELZdUzIsYu3rX2Cbj4TUR4JmBe
+         tslg==
+X-Gm-Message-State: AOAM531m0yn1/iD8VvvxIZtlhBs1ru60VuVsG3bFkNA9AkjrJU+Aw407
+        POe2IzcMzq+vwnowdA73MoZJjUZ0F0aohQ==
+X-Google-Smtp-Source: ABdhPJz/2QT15RMxrrIFH8qZbDy3wDzuO9xMRypgZp6J/3iA167gjtK5MjnylJFI7ktMsAYhOdA/ZQ==
+X-Received: by 2002:a63:8f41:: with SMTP id r1mr15124500pgn.375.1598556758330;
+        Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d81sm3644696pfd.174.2020.08.27.12.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 12:32:37 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 12:32:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
+ is larger than 1024 bytes
+Message-ID: <202008271229.C1E65D3565@keescook>
+References: <202008271145.xE8qIAjp%lkp@intel.com>
+ <20200827080558.GA3024@gondor.apana.org.au>
+ <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
+ <20200827082447.GA3185@gondor.apana.org.au>
+ <CAHk-=wg2RCgmW_KM8Gf9-3VJW1K2-FTXQsGeGHirBFsG5zPbsg@mail.gmail.com>
+ <CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com>
+ <202008271138.0FA7400@keescook>
+ <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827134830.126721-2-jolsa@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nack.. forgot python header change :-\ v2 attached
+On Thu, Aug 27, 2020 at 12:02:12PM -0700, Linus Torvalds wrote:
+> On Thu, Aug 27, 2020 at 11:42 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Do you mean you checked both gcc and clang and it was only a problem with gcc?
+> 
+> I didn't check with clang, but Arnd claimed it was fine.
+> 
+> > (If so, I can tweak the "depends" below...)
+> 
+> Ugh.
+> 
+> Instead of making the Makefile even uglier, why don't you just make
+> this all be done in the Kconfig.
+> 
+> Also, I'm not seeing the point of your patch. You didn't actually
+> change anything, you just made a new config variable with the same
+> semantics as the old one.
 
-thanks,
-jirka
+Hmm? Yeah it did: it disallowed CONFIG_COMPILE_TEST, which you said was
+the missing piece, I thought? (It's hardly the first time COMPILE_TEST
+has collided unhappily with *SAN-ish things.)
 
+> All of this should be thrown out, and this code should use the proper
+> patterns for configuration entries in the Makefile, ie just
+> 
+>   ubsan-cflags-$(CONFIG_UBSAN_OBJECT_SIZE) += -fsanitize=object-size
 
----
-There's no longer need to have test_attr__open inside
-sys_perf_event_open call, because both record and stat
-call evsel__open_cpu, so we can call it directly from
-there and not polute perf-sys.h header.
+Yeah, that would be a better pattern for sure.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/perf-sys.h    | 22 ++--------------------
- tools/perf/tests/attr.c  |  2 +-
- tools/perf/util/evsel.c  |  5 +++++
- tools/perf/util/python.c |  2 +-
- tools/perf/util/util.h   |  6 ++++++
- 5 files changed, 15 insertions(+), 22 deletions(-)
+> and the Kconfig file is the thing that should check if that CC option
+> exists with
+> 
+>   config UBSAN_OBJECT_SIZE
+>         bool "Check for accesses beyond known object sizes"
+>         default UBSAN
+>         depends on CLANG  # gcc makes a mess of it
+>         depends on $(cc-option,-fsanitize-coverage=trace-pc)
 
-diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
-index 15e458e150bd..7a2264e1e4e1 100644
---- a/tools/perf/perf-sys.h
-+++ b/tools/perf/perf-sys.h
-@@ -9,31 +9,13 @@
- 
- struct perf_event_attr;
- 
--extern bool test_attr__enabled;
--void test_attr__ready(void);
--void test_attr__init(void);
--void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
--		     int fd, int group_fd, unsigned long flags);
--
--#ifndef HAVE_ATTR_TEST
--#define HAVE_ATTR_TEST 1
--#endif
--
- static inline int
- sys_perf_event_open(struct perf_event_attr *attr,
- 		      pid_t pid, int cpu, int group_fd,
- 		      unsigned long flags)
- {
--	int fd;
--
--	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
--		     group_fd, flags);
--
--#if HAVE_ATTR_TEST
--	if (unlikely(test_attr__enabled))
--		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
--#endif
--	return fd;
-+	return syscall(__NR_perf_event_open, attr, pid, cpu,
-+		       group_fd, flags);
- }
- 
- #endif /* _PERF_SYS_H */
-diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
-index a9599ab8c471..ec972e0892ab 100644
---- a/tools/perf/tests/attr.c
-+++ b/tools/perf/tests/attr.c
-@@ -30,9 +30,9 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
--#include "../perf-sys.h"
- #include <subcmd/exec-cmd.h>
- #include "event.h"
-+#include "util.h"
- #include "tests.h"
- 
- #define ENV "PERF_TEST_ATTR"
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index fd865002cbbd..6f0e23105cf8 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1680,6 +1680,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- 			FD(evsel, cpu, thread) = fd;
- 
-+			if (unlikely(test_attr__enabled)) {
-+				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
-+						fd, group_fd, flags);
-+			}
-+
- 			if (fd < 0) {
- 				err = -errno;
- 
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 75a9b1d62bba..74f85948d101 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -17,7 +17,7 @@
- #include "mmap.h"
- #include "util/env.h"
- #include <internal/lib.h>
--#include "../perf-sys.h"
-+#include "util.h"
- 
- #if PY_MAJOR_VERSION < 3
- #define _PyUnicode_FromString(arg) \
-diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-index f486fdd3a538..ad737052e597 100644
---- a/tools/perf/util/util.h
-+++ b/tools/perf/util/util.h
-@@ -62,4 +62,10 @@ char *perf_exe(char *buf, int len);
- #endif
- #endif
- 
-+extern bool test_attr__enabled;
-+void test_attr__ready(void);
-+void test_attr__init(void);
-+struct perf_event_attr;
-+void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
-+		     int fd, int group_fd, unsigned long flags);
- #endif /* GIT_COMPAT_UTIL_H */
+Yup, for sure. I've only recently started poking at the ubsan stuff. I
+can clean it up better.
+
+> Doesn't that all look much cleaner?
+
+Yup!
+
 -- 
-2.26.2
-
+Kees Cook
