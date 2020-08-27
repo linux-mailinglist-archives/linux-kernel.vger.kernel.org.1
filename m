@@ -2,60 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A8625490E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A63E2548DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgH0PT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:19:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10284 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728740AbgH0Led (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:34:33 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 53886F752459F2C1F3AB;
-        Thu, 27 Aug 2020 19:17:10 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 19:17:01 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
-        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: Add 'else' to split mutually exclusive case
-Date:   Thu, 27 Aug 2020 07:15:52 -0400
-Message-ID: <20200827111552.38789-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1728257AbgH0PPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:15:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:57244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728478AbgH0LjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:39:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E8EF113E;
+        Thu, 27 Aug 2020 04:15:08 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F18283F68F;
+        Thu, 27 Aug 2020 04:15:05 -0700 (PDT)
+Subject: Re: [PATCH 26/35] kasan, arm64: Enable TBI EL1
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <518da1e5169a4e343caa3c37feed5ad551b77a34.1597425745.git.andreyknvl@google.com>
+ <20200827104033.GF29264@gaia> <9c53dfaa-119e-b12e-1a91-1f67f4aef503@arm.com>
+ <20200827111344.GK29264@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <d6695105-0484-2013-1012-fa977644e8ad@arm.com>
+Date:   Thu, 27 Aug 2020 12:17:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200827111344.GK29264@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add else to split mutually exclusive case and avoid unnecessary check.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/ipv4/ping.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
-index 19a947bf0faa..265676fd2bbd 100644
---- a/net/ipv4/ping.c
-+++ b/net/ipv4/ping.c
-@@ -422,7 +422,7 @@ int ping_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
- 	if (sk->sk_family == AF_INET && isk->inet_rcv_saddr)
- 		sk->sk_userlocks |= SOCK_BINDADDR_LOCK;
- #if IS_ENABLED(CONFIG_IPV6)
--	if (sk->sk_family == AF_INET6 && !ipv6_addr_any(&sk->sk_v6_rcv_saddr))
-+	else if (sk->sk_family == AF_INET6 && !ipv6_addr_any(&sk->sk_v6_rcv_saddr))
- 		sk->sk_userlocks |= SOCK_BINDADDR_LOCK;
- #endif
- 
+On 8/27/20 12:13 PM, Catalin Marinas wrote:
+> On Thu, Aug 27, 2020 at 12:05:55PM +0100, Vincenzo Frascino wrote:
+>> On 8/27/20 11:40 AM, Catalin Marinas wrote:
+>>> On Fri, Aug 14, 2020 at 07:27:08PM +0200, Andrey Konovalov wrote:
+>>>> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+>>>> index 152d74f2cc9c..6880ddaa5144 100644
+>>>> --- a/arch/arm64/mm/proc.S
+>>>> +++ b/arch/arm64/mm/proc.S
+>>>> @@ -38,7 +38,7 @@
+>>>>  /* PTWs cacheable, inner/outer WBWA */
+>>>>  #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
+>>>>  
+>>>> -#ifdef CONFIG_KASAN_SW_TAGS
+>>>> +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+>>>>  #define TCR_KASAN_FLAGS TCR_TBI1
+>>>>  #else
+>>>>  #define TCR_KASAN_FLAGS 0
+>>>
+>>> I prefer to turn TBI1 on only if MTE is present. So on top of the v8
+>>> user series, just do this in __cpu_setup.
+>>
+>> Not sure I understand... Enabling TBI1 only if MTE is present would break
+>> KASAN_SW_TAGS which is based on TBI1 but not on MTE.
+> 
+> You keep the KASAN_SW_TAGS as above but for HW_TAGS, only set TBI1 later
+> in __cpu_setup().
+> 
+
+Ok, sounds good.
+
 -- 
-2.19.1
-
+Regards,
+Vincenzo
