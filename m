@@ -2,203 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC86254716
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947A025474D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgH0Oie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
+        id S1728084AbgH0OsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgH0OEA (ORCPT
+        with ESMTP id S1727877AbgH0ODp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:04:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D05C0619C6;
-        Thu, 27 Aug 2020 07:03:30 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id u20so3591930pfn.0;
-        Thu, 27 Aug 2020 07:03:30 -0700 (PDT)
+        Thu, 27 Aug 2020 10:03:45 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02B0C06123F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so4586426qtp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ADP2aGUDRbAJ2fzGJ4u2MgmoEkak0G6DX7jqH1kdmdo=;
-        b=pskKla1kOyTKpAXy0EvUaMGChf4lXWttIW4Ki8kiHdDF3GuvOKv5yHvwTVQ/kTwiOG
-         wEHq2OtPfKz1Q5p9IbYEIcJxrS1oH5LpAQ1PPjz+9jHDvXIJbKlPrPEjF+DNtlA6smww
-         hN7j4Vz+ZTK1xG4GhRibUGUXmdFKRrcdh1Idv3YHyzDU3/PBgdo7wCw7dp0gsi0cDVRC
-         ISeiI9BULQfftcuJizPk/96hIBV6YBwSsAAQmDRm37Q7o4kiLnV99/FI2QL1T8FhkVwp
-         K7bufUUGHUiK/18jl3B9UhemG5wQOkzHl95rdCOAjxdfXh7pb/zFL+/6dsVfrM55EqfW
-         jy9A==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dfRzlPwQNyPtrYJ/iS+qwie4ofTE9hR5y2kv8hIuyaA=;
+        b=xS4StaPpTGC1Pj9KQLMY1y4Hh+DxvuykLCRhRCCR2ks3lS4BDPvs2wAKBG5COFaV+Z
+         5a4iKQJRjfMzWvoEDRU+GIkjB6GHtWfHpJ/EnWEgGdhu+csIuY3GLUOjg1fPvtbeBDw/
+         9kG7Tk4zkmcZbKeDMfK5TOyej+CKEs9zTCMzbx1iaTd9NO7CLzwhQUxNiMJes9ogin7K
+         p8BpEdUk6FDEm+vs2kKUij8P4AbrVwzMbgEd5ySyVT+NMACU39HJ5japIJqtRQdyteCb
+         vS/QIbWLJazcKT9ZK+bYjwJJ0I2rU8smS8FdNM9Y4fMY0myIX8+sxThkICielkbfW1wJ
+         gykg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ADP2aGUDRbAJ2fzGJ4u2MgmoEkak0G6DX7jqH1kdmdo=;
-        b=OXq8Ncme4GdzvixYHAkjV5OEZTUm1dPtnGrd3YpMfpon0YbuDqEHyU8yR9Jm3qU084
-         Gl23G0HC07OpkxKOMhTiB+NVS7bF14hb5WL5duRUAqReCOzQQ4/wMzRCJTWUC/OzMpW1
-         Mm2TS80TjWVxsDY3Sh6OJeyeYcPaItRs2Ky953Lhg8lBftzTkHJvGLGi0HnDMove/6c8
-         729zQJklJ08wmMpOTDrgDMbWKCtNNtcqmaKaz36IcN7f8eq4Enw6U0Fx4zcWYyVbqHWw
-         /keyJtdVT26XR/1RCNR0qOGuuOzbsf3/MJ8SqUZu5e/kGrggSNNS1tlNPmFm+CbulEFh
-         f5Rg==
-X-Gm-Message-State: AOAM530aIPfnXtg1HOuSSEPQsC1qlApxOo3Ng4t2iHBPJVgU5yp+se1S
-        53xnS+hD3cz654lTjcl5ihF2LNZiRJg=
-X-Google-Smtp-Source: ABdhPJyd95QYOnXT2VOz7fgHmCWIqzI9VrAx9XEgx8YJFP8cGJeCWM2UsLlEUUZzCv5IK2/QEWy5KQ==
-X-Received: by 2002:a17:902:b497:: with SMTP id y23mr15864709plr.251.1598537009145;
-        Thu, 27 Aug 2020 07:03:29 -0700 (PDT)
-Received: from sol.lan (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id fs12sm2371092pjb.21.2020.08.27.07.03.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dfRzlPwQNyPtrYJ/iS+qwie4ofTE9hR5y2kv8hIuyaA=;
+        b=XYD6zVm+z4+EkH8UfY5JyhFNAThxBTtBZNV8t/6p2DWOwLZDtjOxtGStRw+sG7Bbbm
+         Deof0Uq8+A70MJ02g+yNyraxR9qPU/x6/V9wIE94z83xYiL3om5oNrw1T7444lyAOG1z
+         BmCVAKTzqj4kD5ML4yWcpjTsGVGW0oTYk3/1rCpwCfbqnnsEW3JKWXs+QHGExQLppWst
+         iogdbwHnBnuYW6vIE08UKOItCV64ZJSsEa/AY1O2orA4F4TtNIYByTMSWwcWfHmSmK1C
+         SyfGPA2pTorekJL82p0tnxcHYDuucT12U04q+Ti62C2YndZcB3KxcdSGXybxIPmbdmJp
+         szGg==
+X-Gm-Message-State: AOAM531+myGdeI/cQQ3DdmOjh5buj7EDzqG32NZdBdhTK2ZjMvgDim2Y
+        suU+DiXsa4eVhoTGoto08phvDw==
+X-Google-Smtp-Source: ABdhPJwHe/G+MpJjSZgeTDwatG8hgzZOb57B0FlRcGdq6AtF9uloUz2i4857L2RN01YtIeqdvZ25sg==
+X-Received: by 2002:ac8:4c86:: with SMTP id j6mr19065010qtv.65.1598536906039;
+        Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:412a])
+        by smtp.gmail.com with ESMTPSA id o47sm1860852qtk.19.2020.08.27.07.01.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:03:28 -0700 (PDT)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v5 14/20] tools: gpio: port lsgpio to v2 uAPI
-Date:   Thu, 27 Aug 2020 22:00:14 +0800
-Message-Id: <20200827140020.159627-15-warthog618@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200827140020.159627-1-warthog618@gmail.com>
-References: <20200827140020.159627-1-warthog618@gmail.com>
+        Thu, 27 Aug 2020 07:01:45 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 10:00:28 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: memcg: Fix memcg reclaim soft lockup
+Message-ID: <20200827140028.GA1002856@cmpxchg.org>
+References: <1598495549-67324-1-git-send-email-xlpang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598495549-67324-1-git-send-email-xlpang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port the lsgpio tool to the latest GPIO uAPI.
+On Thu, Aug 27, 2020 at 10:32:29AM +0800, Xunlei Pang wrote:
+> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
+> the target memcg doesn't have any reclaimable memory.
+> 
+> It can be easily reproduced as below:
+>  watchdog: BUG: soft lockup - CPU#0 stuck for 111s![memcg_test:2204]
+>  CPU: 0 PID: 2204 Comm: memcg_test Not tainted 5.9.0-rc2+ #12
+>  Call Trace:
+>   shrink_lruvec+0x49f/0x640
+>   shrink_node+0x2a6/0x6f0
+>   do_try_to_free_pages+0xe9/0x3e0
+>   try_to_free_mem_cgroup_pages+0xef/0x1f0
+>   try_charge+0x2c1/0x750
+>   mem_cgroup_charge+0xd7/0x240
+>   __add_to_page_cache_locked+0x2fd/0x370
+>   add_to_page_cache_lru+0x4a/0xc0
+>   pagecache_get_page+0x10b/0x2f0
+>   filemap_fault+0x661/0xad0
+>   ext4_filemap_fault+0x2c/0x40
+>   __do_fault+0x4d/0xf9
+>   handle_mm_fault+0x1080/0x1790
+> 
+> It only happens on our 1-vcpu instances, because there's no chance
+> for oom reaper to run to reclaim the to-be-killed process.
+> 
+> Add a cond_resched() at the upper shrink_node_memcgs() to solve this
+> issue, this will mean that we will get a scheduling point for each
+> memcg in the reclaimed hierarchy without any dependency on the
+> reclaimable memory in that memcg thus making it more predictable.
+> 
+> Acked-by: Chris Down <chris@chrisdown.name>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- tools/gpio/lsgpio.c | 60 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 38 insertions(+), 22 deletions(-)
-
-diff --git a/tools/gpio/lsgpio.c b/tools/gpio/lsgpio.c
-index b08d7a5e779b..deda38244026 100644
---- a/tools/gpio/lsgpio.c
-+++ b/tools/gpio/lsgpio.c
-@@ -25,57 +25,73 @@
- 
- struct gpio_flag {
- 	char *name;
--	unsigned long mask;
-+	unsigned long long mask;
- };
- 
- struct gpio_flag flagnames[] = {
- 	{
--		.name = "kernel",
--		.mask = GPIOLINE_FLAG_KERNEL,
-+		.name = "used",
-+		.mask = GPIO_V2_LINE_FLAG_USED,
-+	},
-+	{
-+		.name = "input",
-+		.mask = GPIO_V2_LINE_FLAG_INPUT,
- 	},
- 	{
- 		.name = "output",
--		.mask = GPIOLINE_FLAG_IS_OUT,
-+		.mask = GPIO_V2_LINE_FLAG_OUTPUT,
- 	},
- 	{
- 		.name = "active-low",
--		.mask = GPIOLINE_FLAG_ACTIVE_LOW,
-+		.mask = GPIO_V2_LINE_FLAG_ACTIVE_LOW,
- 	},
- 	{
- 		.name = "open-drain",
--		.mask = GPIOLINE_FLAG_OPEN_DRAIN,
-+		.mask = GPIO_V2_LINE_FLAG_OPEN_DRAIN,
- 	},
- 	{
- 		.name = "open-source",
--		.mask = GPIOLINE_FLAG_OPEN_SOURCE,
-+		.mask = GPIO_V2_LINE_FLAG_OPEN_SOURCE,
- 	},
- 	{
- 		.name = "pull-up",
--		.mask = GPIOLINE_FLAG_BIAS_PULL_UP,
-+		.mask = GPIO_V2_LINE_FLAG_BIAS_PULL_UP,
- 	},
- 	{
- 		.name = "pull-down",
--		.mask = GPIOLINE_FLAG_BIAS_PULL_DOWN,
-+		.mask = GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN,
- 	},
- 	{
- 		.name = "bias-disabled",
--		.mask = GPIOLINE_FLAG_BIAS_DISABLE,
-+		.mask = GPIO_V2_LINE_FLAG_BIAS_DISABLED,
- 	},
- };
- 
--void print_flags(unsigned long flags)
-+static void print_attributes(struct gpio_v2_line_info *info)
- {
- 	int i;
--	int printed = 0;
-+	const char *field_format = "%s";
- 
- 	for (i = 0; i < ARRAY_SIZE(flagnames); i++) {
--		if (flags & flagnames[i].mask) {
--			if (printed)
--				fprintf(stdout, " ");
--			fprintf(stdout, "%s", flagnames[i].name);
--			printed++;
-+		if (info->flags & flagnames[i].mask) {
-+			fprintf(stdout, field_format, flagnames[i].name);
-+			field_format = ", %s";
- 		}
- 	}
-+
-+	if ((info->flags & GPIO_V2_LINE_FLAG_EDGE_RISING) &&
-+	    (info->flags & GPIO_V2_LINE_FLAG_EDGE_FALLING))
-+		fprintf(stdout, field_format, "both-edges");
-+	else if (info->flags & GPIO_V2_LINE_FLAG_EDGE_RISING)
-+		fprintf(stdout, field_format, "rising-edge");
-+	else if (info->flags & GPIO_V2_LINE_FLAG_EDGE_FALLING)
-+		fprintf(stdout, field_format, "falling-edge");
-+
-+	for (i = 0; i < info->num_attrs; i++) {
-+		if (info->attrs[i].id == GPIO_V2_LINE_ATTR_ID_DEBOUNCE)
-+			fprintf(stdout, ", debounce_period=%dusec",
-+				info->attrs[0].debounce_period);
-+	}
- }
- 
- int list_device(const char *device_name)
-@@ -109,18 +125,18 @@ int list_device(const char *device_name)
- 
- 	/* Loop over the lines and print info */
- 	for (i = 0; i < cinfo.lines; i++) {
--		struct gpioline_info linfo;
-+		struct gpio_v2_line_info linfo;
- 
- 		memset(&linfo, 0, sizeof(linfo));
--		linfo.line_offset = i;
-+		linfo.offset = i;
- 
--		ret = ioctl(fd, GPIO_GET_LINEINFO_IOCTL, &linfo);
-+		ret = ioctl(fd, GPIO_V2_GET_LINEINFO_IOCTL, &linfo);
- 		if (ret == -1) {
- 			ret = -errno;
- 			perror("Failed to issue LINEINFO IOCTL\n");
- 			goto exit_close_error;
- 		}
--		fprintf(stdout, "\tline %2d:", linfo.line_offset);
-+		fprintf(stdout, "\tline %2d:", linfo.offset);
- 		if (linfo.name[0])
- 			fprintf(stdout, " \"%s\"", linfo.name);
- 		else
-@@ -131,7 +147,7 @@ int list_device(const char *device_name)
- 			fprintf(stdout, " unused");
- 		if (linfo.flags) {
- 			fprintf(stdout, " [");
--			print_flags(linfo.flags);
-+			print_attributes(&linfo);
- 			fprintf(stdout, "]");
- 		}
- 		fprintf(stdout, "\n");
--- 
-2.28.0
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
