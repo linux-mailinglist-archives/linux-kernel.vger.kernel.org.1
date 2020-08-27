@@ -2,132 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8056254F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2D6254F40
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgH0Ttc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:49:32 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:54828 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727945AbgH0TtT (ORCPT
+        id S1728110AbgH0Ttr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgH0Ttm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:49:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DAoZkGvyGri4FBXCJJ5289SPw0iwUdUnfJWjhiDDY2s=; b=GTatHXPthkBUKXWmo7elYdeWBJ
-        6WNOdAcf7gSxIpytWrdZxGKjd9PQwleelsvuI29S4rK/aR8xDJwPyE6SmkCnqyG3ZPG9P7ragNK6T
-        eQ+vZcMhCcY6dUkGIdktqDm2tRV16HwyLQWyAzAi5sUsq8a7lcf2SfTxqU9VsVAlicuxXBX8vSlVp
-        F+tAvQBPcYjSy3q+LtdQdKniZE8DlxPlVfgrxBVcgDYjd3n/FVOgniytxqPaMogzC3xMdk8+gUH6E
-        SRdTX/DD//bFYM2X0aYxRsEqi//JVGCuYeiY52GPpZ+FBqjloZM4NJUDM2RUIRLUBKQwHcUnkqssW
-        9YScfu2A==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1kBNtd-0000Ce-Nz; Thu, 27 Aug 2020 13:49:18 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1kBNta-0001cN-U9; Thu, 27 Aug 2020 13:49:15 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, Omar Sandoval <osandov@osandov.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 27 Aug 2020 13:49:12 -0600
-Message-Id: <20200827194912.6135-12-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200827194912.6135-1-logang@deltatee.com>
-References: <20200827194912.6135-1-logang@deltatee.com>
+        Thu, 27 Aug 2020 15:49:42 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9916DC061264;
+        Thu, 27 Aug 2020 12:49:42 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d22so4315900pfn.5;
+        Thu, 27 Aug 2020 12:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J3gzyzO1gbxLdidSqR6d1wlDjGQFBUJvUcq8FiJnVtg=;
+        b=Ix3Va+o+3XbmB70WBqBC725rnsHUyDm6ZoPZy2b6hcZ+38QrgQbROqTVcHhuzh8SXK
+         rMQANp0HWGAK0S3jGGDuzX8pV7jIMANFnK9ew4PiVoz4gml/9QsbVZBlaad6zaN1zTHh
+         L56Wy4g5LQD9tNdVMaYcFb7N6DSCrhozT7oT7ICoIwsrJXoKJ35rzoD+7dpGgpwdSemG
+         QSZ1F8DLFO0OU5j/xtnuxVyj9N16sMJ07M9DSs8l6Ckbjdjz+9xWDA08Xegmz7/mZkJG
+         XlgePyfePvWDzYQBw5KQxNn3PpFfJTT0e70LTT9XoS7BmcRJcAJrKFseBYXuCfY+VAcz
+         tHeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J3gzyzO1gbxLdidSqR6d1wlDjGQFBUJvUcq8FiJnVtg=;
+        b=KQMt2UWmN/7qvR49jOj55L8Aeudj0TQlLTpQhAlb2XBVx/MgeZUKlWD9vn5rpWHl+6
+         bBWVxwmZpJV3RmQ2wNIEOrXwpWSgEzdPfFo/IQgCSWzf2MhA+vzVpN4IWU/8lIN30tX+
+         lTEGw3qUtqL33YhBOVGHbm7Bl3/gwI3YbyZaE9BgUNCUSMHaa/2byQFOzjWWC05ekrA/
+         3ypZKA2GRVNXpBsAFM9Ymmjr+l6BuxvujDHcOtuJlRgDj040aYYIVSefy2c/FhY6ZpvG
+         jwxm3oVW+5vTkGy5kNbhuUa/EkZ9K+44EvxTKSU2XKjjb145Q1UyWc+ErncL/Jx5QTtl
+         48sg==
+X-Gm-Message-State: AOAM530AnCyKokKO6Y3I762fcf/SWao20PKoqsIiAcF6G0S9lupMS0hn
+        SOvRnFnD9p4b7QMoXcpvdjs2DVPIffKg/QkgJiU=
+X-Google-Smtp-Source: ABdhPJywOKJ7nbos0Vl5TfFihLljc3WSP3/cAdSxhBmVa6rR4UoZP9/yzEnECmoNYbP22WFTY+hpwLKOC2YaPImjw0A=
+X-Received: by 2002:a17:902:8208:: with SMTP id x8mr6288066pln.65.1598557780819;
+ Thu, 27 Aug 2020 12:49:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, osandov@osandov.com, sagi@grimberg.me, Chaitanya.Kulkarni@wdc.com, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH blktests 11/11] nvme/038: Test removal of un-enabled subsystem and ports
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20200827192642.1725-1-krzk@kernel.org> <20200827192642.1725-7-krzk@kernel.org>
+In-Reply-To: <20200827192642.1725-7-krzk@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 27 Aug 2020 22:49:24 +0300
+Message-ID: <CAHp75VezjCWG+_qLWevc9nX5zQUoB+2UpLJo9HXqnV5svmwX-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 07/18] iio: adc: rcar-gyroadc: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Kukjin Kim <kgene@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Beniamin Bia <beniamin.bia@analog.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test that we can remove a subsystem that has not been enabled by
-passthru or any ns. Do the same for ports while we are at it.
+On Thu, Aug 27, 2020 at 10:28 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and also it prints the error value.
 
-This was an issue in the original passthru patches and is
-not commonly tested. So this test will ensure we don't regress this.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- tests/nvme/038     | 38 ++++++++++++++++++++++++++++++++++++++
- tests/nvme/038.out |  2 ++
- 2 files changed, 40 insertions(+)
- create mode 100755 tests/nvme/038
- create mode 100644 tests/nvme/038.out
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> ---
+>
+> Changes since v1:
+> 1. Wrap dev_err_probe() lines at 100 character
+> ---
+>  drivers/iio/adc/rcar-gyroadc.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/iio/adc/rcar-gyroadc.c b/drivers/iio/adc/rcar-gyroadc.c
+> index d2c1419e72a0..e1a7c93fc2db 100644
+> --- a/drivers/iio/adc/rcar-gyroadc.c
+> +++ b/drivers/iio/adc/rcar-gyroadc.c
+> @@ -495,12 +495,8 @@ static int rcar_gyroadc_probe(struct platform_device *pdev)
+>                 return PTR_ERR(priv->regs);
+>
+>         priv->clk = devm_clk_get(dev, "fck");
+> -       if (IS_ERR(priv->clk)) {
+> -               ret = PTR_ERR(priv->clk);
+> -               if (ret != -EPROBE_DEFER)
+> -                       dev_err(dev, "Failed to get IF clock (ret=%i)\n", ret);
+> -               return ret;
+> -       }
+> +       if (IS_ERR(priv->clk))
+> +               return dev_err_probe(dev, PTR_ERR(priv->clk), "Failed to get IF clock\n");
+>
+>         ret = rcar_gyroadc_parse_subdevs(indio_dev);
+>         if (ret)
+> --
+> 2.17.1
+>
 
-diff --git a/tests/nvme/038 b/tests/nvme/038
-new file mode 100755
-index 000000000000..29827f324155
---- /dev/null
-+++ b/tests/nvme/038
-@@ -0,0 +1,38 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-3.0+
-+# Copyright (C) 2019 Logan Gunthorpe
-+# Copyright (C) 2019 Eideticom Communications Inc.
-+#
-+# Test that we can remove a subsystem that has not been enabled by
-+# passthru or any ns. Do the same for ports while we are at it.
-+#
-+# This was an issue in the original passthru patches and is
-+# not commonly tested. So this test will ensure we don't regress this.
-+#
-+. tests/nvme/rc
-+
-+DESCRIPTION="test deletion of NVMeOF subsystem without enabling"
-+QUICK=1
-+
-+requires() {
-+	_have_program nvme &&
-+	_have_modules nvme-loop nvmet &&
-+	_have_configfs
-+}
-+
-+test() {
-+	local subsys_path="${NVMET_CFS}/subsystems/blktests-subsystem-1"
-+	local port
-+
-+	echo "Running ${TEST_NAME}"
-+
-+	_setup_nvmet
-+
-+	mkdir -p "${subsys_path}"
-+	rmdir "${subsys_path}"
-+
-+	port=$(_create_nvmet_port loop)
-+	_remove_nvmet_port "${port}"
-+
-+	echo "Test complete"
-+}
-diff --git a/tests/nvme/038.out b/tests/nvme/038.out
-new file mode 100644
-index 000000000000..06bc98022c33
---- /dev/null
-+++ b/tests/nvme/038.out
-@@ -0,0 +1,2 @@
-+Running nvme/038
-+Test complete
+
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
