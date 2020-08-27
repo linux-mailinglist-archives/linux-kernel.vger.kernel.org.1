@@ -2,142 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C376254DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1739C254DEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgH0TAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:00:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53313 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728083AbgH0S7Z (ORCPT
+        id S1727834AbgH0TCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727772AbgH0TCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:59:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598554764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUUDDjZXv5yzEYYBVFU9KPvv/h+kei9cu5LbNnNzrmo=;
-        b=XG3Ukr/6QLZOYvUxcjxgTYvFFvAFCHKd3LQVBo5RiW5qWaP2tqznxPbKIittU+fNDgJOeU
-        8XU+QsAb5ZRosjgFwE8zDmqjUiBux8Qf8ZdpeHRa88clb8cHmlc9ppeOPExI8psyfrrvG2
-        50z/J+RqWRKsYZiNhwxdao41f07PJK0=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-80VMWF9SOmiW2sRPYcdcsw-1; Thu, 27 Aug 2020 14:59:22 -0400
-X-MC-Unique: 80VMWF9SOmiW2sRPYcdcsw-1
-Received: by mail-qt1-f199.google.com with SMTP id w15so5540673qtv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:59:22 -0700 (PDT)
+        Thu, 27 Aug 2020 15:02:33 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC269C06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:02:32 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id h19so7635980ljg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FFvIvXHhd/hYE56Z6ikG+RnfuV2qLxS/yEF1m7O4OeY=;
+        b=VM66vHj/DMWeTlikVsUdxuFen7TVRMLCbMBAyqrBbdkGQCY6oTDrhI7/sxRlX1W99K
+         2h1mm/ldBVsuF5WYprtKEfAB3BsDPD/sfrTxFXtuYDwugI7YTZSlhEmjwcIt5OAthLhQ
+         NirIVxzswSC1dhN4apwYaWU+9vV6pgT/cFoD4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=fUUDDjZXv5yzEYYBVFU9KPvv/h+kei9cu5LbNnNzrmo=;
-        b=n6Aagx5x9bDwskhSFbwtP7Orkd815OEYNi1bXdcCsfGdvWVvidO5dCDT/IL+Ub32sP
-         9Mm7ckVedYrbVu70JFLcumizEmWdB1fybrqYxeQEe8hP1CpQyFsf8OaYWyYCeeGS+TZc
-         78UCcY1fa2JjKarR4cPD/3e3xjYPwglk0+CwptWfh/Wkfg1cYcTf1Qgjiw7i9/fVbQ+S
-         qIlHNhZIL+3I1FTETWAGbkZda/U77713C3U6LcnJsR+gLX9hYeHy1383Voqo10q+NEAl
-         dV8U3H1aQQOAZrOsiZWSIe+yC474gXf04dy7cKz4M/jdDEwyRCktzrooqOzTg0aONfuw
-         XsSg==
-X-Gm-Message-State: AOAM531rA3yUsqhlv77CTmLUTF2QI/eGBzty68hQdM1LLnE47NIrJac3
-        vHUFKZhuh+lCP7en5JcRwW/kI9JLOh4VTrmxkiP3yoL6+QUL/03aThRRiva/miZnOeX3ZIdabZL
-        /1UnELI26Ku0012XVS5TT+iL4
-X-Received: by 2002:a37:8d7:: with SMTP id 206mr13780613qki.422.1598554761838;
-        Thu, 27 Aug 2020 11:59:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKXxjq2R9v1jyMl8bJ9Nhk7EYuCQRWNT9uUT49GRhHMbUd5Gtgzx56+NMa5Lv8TV+3FEQxLw==
-X-Received: by 2002:a37:8d7:: with SMTP id 206mr13780596qki.422.1598554761599;
-        Thu, 27 Aug 2020 11:59:21 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 71sm719020qki.85.2020.08.27.11.59.20
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FFvIvXHhd/hYE56Z6ikG+RnfuV2qLxS/yEF1m7O4OeY=;
+        b=a8ucFmSmPQTooIKGACkAzPmCxquXvqwPAQ41GVoe0AVTfKGiIqheMEE9800WJMuUvQ
+         k0tWqfQHWtUsOn6yUmCHc0XFadUXmjXvqvB6L/Q7AyiuJx79foj/AZk9de1B8JHE6kwV
+         4snQiNfBkEyTB26dVKX4ZcyTdDQwzKYE3tU7jYiI+0Aeh42LJ1GLzHUXKXUyUZOYV1KC
+         U5wYd/bwmGs/M/SnOxvqWWszjeydlRzUnV3L2orX638ZZqO7Druj3qAYXCBu3iKC9Qj1
+         Z62XUTm61X7E3JPO1pd86E8EXg6p1//7MmaVtJ4v2UBpHXlxjWLyzsdOo13vvbsMVmCr
+         N6Tg==
+X-Gm-Message-State: AOAM533oRFFmF3XqvVBXCOoG/cc7xWSHiiOA4XUZrjyS2eWwEek5Ddrd
+        WJjtDFf6fTV0FliguxqLn/gKcdubah5l7Q==
+X-Google-Smtp-Source: ABdhPJyP1CR8jWOFazDw75yJW1gVvQITy0UDhMDkxmxJt2ifMylpBLc+xaOehmoUnaHtKYmOWh/gdg==
+X-Received: by 2002:a2e:b0e5:: with SMTP id h5mr3006086ljl.369.1598554950132;
+        Thu, 27 Aug 2020 12:02:30 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id e15sm648693ljn.49.2020.08.27.12.02.28
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 11:59:21 -0700 (PDT)
-Subject: Re: [PATCH v2 3/5] fpga manager: xilinx-spi: rework write_complete
- loop implementation
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-fpga@vger.kernel.org
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anatolij Gustschin <agust@denx.de>
-References: <20200827143249.10973-1-luca@lucaceresoli.net>
- <20200827143249.10973-3-luca@lucaceresoli.net>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <2b8d9ed7-0468-9001-2f8e-386312aae6cb@redhat.com>
-Date:   Thu, 27 Aug 2020 11:59:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 27 Aug 2020 12:02:29 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id i10so7678881ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:02:28 -0700 (PDT)
+X-Received: by 2002:a05:651c:503:: with SMTP id o3mr11182711ljp.312.1598554948218;
+ Thu, 27 Aug 2020 12:02:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200827143249.10973-3-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <202008271145.xE8qIAjp%lkp@intel.com> <20200827080558.GA3024@gondor.apana.org.au>
+ <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
+ <20200827082447.GA3185@gondor.apana.org.au> <CAHk-=wg2RCgmW_KM8Gf9-3VJW1K2-FTXQsGeGHirBFsG5zPbsg@mail.gmail.com>
+ <CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com> <202008271138.0FA7400@keescook>
+In-Reply-To: <202008271138.0FA7400@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 27 Aug 2020 12:02:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
+Message-ID: <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
+Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
+ is larger than 1024 bytes
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/27/20 7:32 AM, Luca Ceresoli wrote:
-> In preparation to add error checking for gpiod_get_value(), rework
-> the loop to avoid the duplication of these lines:
+On Thu, Aug 27, 2020 at 11:42 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> 	if (gpiod_get_value(conf->done))
-> 		return xilinx_spi_apply_cclk_cycles(conf);
->
-> There is little advantage in this rework with current code. However
-> error checking will expand these two lines to five, making code
-> duplication more annoying.
->
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->
-> ---
->
-> This patch is new in v2
-> ---
->  drivers/fpga/xilinx-spi.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-> index 01f494172379..cfc933d70f52 100644
-> --- a/drivers/fpga/xilinx-spi.c
-> +++ b/drivers/fpga/xilinx-spi.c
-> @@ -151,22 +151,19 @@ static int xilinx_spi_write_complete(struct fpga_manager *mgr,
->  				     struct fpga_image_info *info)
->  {
->  	struct xilinx_spi_conf *conf = mgr->priv;
-> -	unsigned long timeout;
-> +	unsigned long timeout = jiffies + usecs_to_jiffies(info->config_complete_timeout_us);
->  	int ret;
->  
-> -	if (gpiod_get_value(conf->done))
-> -		return xilinx_spi_apply_cclk_cycles(conf);
-> -
-> -	timeout = jiffies + usecs_to_jiffies(info->config_complete_timeout_us);
-> +	while (true) {
-> +		if (gpiod_get_value(conf->done))
-> +			return xilinx_spi_apply_cclk_cycles(conf);
->  
-> -	while (time_before(jiffies, timeout)) {
-> +		if (time_after(jiffies, timeout))
-> +			break;
->  
->  		ret = xilinx_spi_apply_cclk_cycles(conf);
->  		if (ret)
->  			return ret;
-> -
-> -		if (gpiod_get_value(conf->done))
-> -			return xilinx_spi_apply_cclk_cycles(conf);
->  	} 
+> Do you mean you checked both gcc and clang and it was only a problem with gcc?
 
-Do you need another
+I didn't check with clang, but Arnd claimed it was fine.
 
-	if (gpiod_get_value(conf->done))
-		return xilinx_spi_apply_cclk_cycles(conf);
+> (If so, I can tweak the "depends" below...)
 
-here to cover the chance of sleeping in the loop ?
+Ugh.
 
-Tom
+Instead of making the Makefile even uglier, why don't you just make
+this all be done in the Kconfig.
 
->  
->  	dev_err(&mgr->dev, "Timeout after config data transfer\n");
+Also, I'm not seeing the point of your patch. You didn't actually
+change anything, you just made a new config variable with the same
+semantics as the old one.
 
+Add a
+
+        depends on CLANG
+
+or something, with a comment saying that it doesn't work on gcc due to
+excessive stack use.
+
+> +ifdef CONFIG_UBSAN_OBJECT_SIZE
+> +      CFLAGS_UBSAN += $(call cc-option, -fsanitize=object-size)
+> +endif
+
+All of this should be thrown out, and this code should use the proper
+patterns for configuration entries in the Makefile, ie just
+
+  ubsan-cflags-$(CONFIG_UBSAN_OBJECT_SIZE) += -fsanitize=object-size
+
+and the Kconfig file is the thing that should check if that CC option
+exists with
+
+  config UBSAN_OBJECT_SIZE
+        bool "Check for accesses beyond known object sizes"
+        default UBSAN
+        depends on CLANG  # gcc makes a mess of it
+        depends on $(cc-option,-fsanitize-coverage=trace-pc)
+
+and the same goes for all the other cases too:
+
+>  ifdef CONFIG_UBSAN_MISC
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=shift)
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=integer-divide-by-zero)
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=unreachable)
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=signed-integer-overflow)
+> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=object-size)
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=bool)
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=enum)
+>  endif
+
+and if you don't want to ask for them (which is a good idea), you keep that
+
+    config UBSAN_MISC
+        bool "Misc UBSAN.."
+
+thing, and just make all of the above have the pattern of
+
+    config UBSAN_OBJECT_SIZE
+        def_bool UBSAN_MISC
+        depends on CLANG  # gcc makes a mess of it
+        depends on $(cc-option,-fsanitize-coverage=trace-pc)
+
+which makes the Makefile much cleaner, and makes all our choices very
+visible in the config file when they then get passed around.
+
+We should basically strive for our Makefiles to have as little "ifdef"
+etc magic as possible. We did the config work already, the Makefiles
+should primarily just have those
+
+   XYZ-$(CONFIG_OPTION) += abc
+
+kind of lines (and then  you often end up having
+
+  CFLAGS_UBSAN := $(ubsan-cflags-y)
+
+at the end).
+
+Doesn't that all look much cleaner?
+
+                   Linus
