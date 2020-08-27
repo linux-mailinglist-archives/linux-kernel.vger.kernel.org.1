@@ -2,214 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5365254587
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875D425454A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgH0M7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729051AbgH0MmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:42:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839D6C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:31:39 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q1so2515369pjd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yQ34VdsT1gZZpD4I8FVa5CTJn00Te78jNd2pA6lLPkY=;
-        b=I1epf77jfolvXZ3lxPPerNV6b8ZR+vAs1jMXJRljeHO4smH2mv2d/HofqXH/7th22j
-         RAuCv5zawN4S0NQp1oMcbV7rprwSgI9inHZv6mH5ztgY0JijkSvpAwvgvIgUuNEz/J7m
-         +h5oynsBLzazcuzTgTdIrP0CLSswcNzISkJ2Dhg+naUoEP7PfnG3dEnEqXF3lwxRjH/k
-         1HkGx3MrXz0pMyMcOldMH88mE1GlygmVmHBRAC5UtpsHzusbufe4vrn2WbIPqpjnehrD
-         GN4t7ktbeaWZUrIDi3yQuWHZXqVtYYvF6aUj+le8gk/4mQwukcfGQBu0f87Vf1dKd1rh
-         Iiog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yQ34VdsT1gZZpD4I8FVa5CTJn00Te78jNd2pA6lLPkY=;
-        b=EU5zHpjJWTwFLISnYOdohbE2aKFb0dLGMOoQG3KVW7K+Vwt8XUBxuu1Y7Wsb8GSndL
-         DQJ3MDd8WXhMso//WCbmzjwj4Hvm3iBLFV4XHdJnAoUQdnVzA8CPjGgM2iT09P8/A5VG
-         jVxhe5x3jXBcSuvZtVExpJJ17GF99y0VtZsSzZAqctX/ImGGdbaSNn2mjGB7R1KFWFr0
-         7CL9zyJL2ANQVS9aqEG2Gpy5HJI/de3kT/Ut+JSBCimKifqAlkVzbXYR2AYijsFbW0QE
-         8pE7jMhqzr11aBE/B4SOMKdP6Rt9aHSTpYy8If5AzNpHv2Tgo+2QBnBI2/JcUrFW0God
-         Zthg==
-X-Gm-Message-State: AOAM530eSOclNFyRXtQ+A+G3tl22YEah4CnI0X1EZi3pgg3V2XjKHmlC
-        lQnBkMf+APkYgquy7qUfBpC0z7QB34q4AagEhnUTQw==
-X-Google-Smtp-Source: ABdhPJwxzIdT6r9g81onp4MRqvYw7f8GGSwFXswQ6f0+r9QV6hN6QDWWv4HYAZfzDIlvMnb+t7jPZJne+TEwcPQdEZ8=
-X-Received: by 2002:a17:90a:a791:: with SMTP id f17mr10252307pjq.136.1598531494572;
- Thu, 27 Aug 2020 05:31:34 -0700 (PDT)
+        id S1728778AbgH0Msf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:48:35 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37021 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729064AbgH0MeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:34:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1598531519;
+        bh=92IISck0Hh+QcjDct9i6ju3E7DbMlpwjZF7zW6G46Sc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=KGLhb4lQ48yAcFw8dyYZZ4x3abl5+wHNWFde6rh76yn9TPOcDV2dbkia1bYvTngcK
+         7dd3CUH7vIzWvLAdPDqQQvSbIGjz+6C3cK0LESwWWnNOYWDreQs6J7TFzngFQN5veX
+         SkpUre3ZxsKqNnQ1AiFgZ92OsNfUIQ3UCQ6X9UmI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.146.7] ([217.61.146.7]) by web-mail.gmx.net
+ (3c-app-gmx-bap26.server.lan [172.19.172.96]) (via HTTP); Thu, 27 Aug 2020
+ 14:31:59 +0200
 MIME-Version: 1.0
-References: <cover.1597425745.git.andreyknvl@google.com> <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
- <20200827095429.GC29264@gaia>
-In-Reply-To: <20200827095429.GC29264@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 27 Aug 2020 14:31:23 +0200
-Message-ID: <CAAeHK+xHQDMsTehppknjNTEMFh18ufWB1XLUGdVFoc-QZ-mVrw@mail.gmail.com>
-Subject: Re: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <trinity-d6be65d8-9086-42bc-b993-238b731cdf60-1598531519064@3c-app-gmx-bap26>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     hch@lst.de, joro@8bytes.org, linux@armlinux.org.uk,
+        geert+renesas@glider.be, dri-devel@lists.freedesktop.org,
+        bjorn.andersson@linaro.org, thierry.reding@gmail.com,
+        laurent.pinchart@ideasonboard.com, digetx@gmail.com, s-anna@ti.com,
+        will@kernel.org, m.szyprowski@samsung.com,
+        linux-samsung-soc@vger.kernel.org, magnus.damm@gmail.com,
+        kyungmin.park@samsung.com, jonathanh@nvidia.com, agross@kernel.org,
+        yong.wu@mediatek.com, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, inki.dae@samsung.com,
+        vdumpa@nvidia.com, linux-mediatek@lists.infradead.org,
+        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sw0312.kim@samsung.com, linux-kernel@vger.kernel.org,
+        t-kristo@ti.com, iommu@lists.linux-foundation.org
+Subject: Aw: [PATCH 00/18] Convert arch/arm to use iommu-dma
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 27 Aug 2020 14:31:59 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <cover.1597931875.git.robin.murphy@arm.com>
+References: <cover.1597931875.git.robin.murphy@arm.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:s+a4a7dJl6sfE8qr3afXfh3rFMEB0yoGDcQKLuHS4QzYWvUvvC45GFgO8lF9qXw9R52Wk
+ DtakmHS+HD6cGoa1Zil3uW/U+yFS9kxTAT+z6AMI2xcYorqC2HXtzYuOCqJCgtLpQ+XE0cJjSFZx
+ jxGxAyxNxltq5fYSEegUZWLgP9jut/anC9MQ4QvGWdC7Fx2DqQGzPbELk6qKjHDVZ/m5suQOG5WX
+ iSa5xQ1TVnlfnQDl3zDcjq+ZYocRCeCF/YEHBWcp/6xTs4r2KnkcTO/1Z2Mnufc+NBr+EgqeLN3I
+ Vw=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FxwUSbP1mjI=:ttSQgY8yWxDnU00gqYZD9w
+ Z/qDxX2NghmiDYfDQ5KlK2CvVPv511mt50baxcV9OWViPRqrVksHRa4Q70leW/35miqZsjM4V
+ IO6h92zZspcakoDMbQBjPkuMoyi+5LQ/QFBqRCLiWwjAvFd059HIdZ3wIqx4Ym54NMmsqjccz
+ GSjwDTLDSlPZZ31m1rM3TpUiUEHmvR2WgipwWqz1AAq7WXhaIEH9QsZ2JnZLEEbOhxXoPsI/Z
+ TRcWMQZ1A9GV15KtQDIO2i/Dq3pFNOn6hQhy7q9DtWpXhyRvveQF9KRDJYqc0qTjBpvzvMKr7
+ cwEg2rxqBaJWgiTbO8eTHZQs26rh5cUZDyt0F7+vYHaCPFuefMRRBB057XIJ51LSUel/IEcBx
+ jKL0kBgE2bzG14g6AuFmvgYvmWEVN4O/y2NQMUrsTNo+oCPAkE4kNJZRWZcUmma+gyoOQcDkF
+ PF2HL5TN/+tF8l4QCRCJegf1NBi1AFsXmHuAdCOMo4mEr8RGOKC4Z9Q1zFeTTDPSLLcCl+zEE
+ Ii91uM5UaMUTvml0hGGBCxEsqbJsfJ8v3jTJ9teKmcwELpC6kt7ciWfOUlIPV4vD2eQdFtfwk
+ 1oipkVsSHlw6p58a4q/xNJukuLHryikdXoZi+l8M+576WxE3K6Ngz4VHUmx0HOrdPsQ3RuO6H
+ UQHfIQ/HTJp3cXIfVqtRO2Xhoda3GGGLYRUb8PYIOqNcBnvhX6Jze8vfjXKlOuNpMwLk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 11:54 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Fri, Aug 14, 2020 at 07:27:03PM +0200, Andrey Konovalov wrote:
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 5e832b3387f1..c62c8ba85c0e 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -33,6 +33,7 @@
-> >  #include <asm/debug-monitors.h>
-> >  #include <asm/esr.h>
-> >  #include <asm/kprobes.h>
-> > +#include <asm/mte.h>
-> >  #include <asm/processor.h>
-> >  #include <asm/sysreg.h>
-> >  #include <asm/system_misc.h>
-> > @@ -222,6 +223,20 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
-> >       return 1;
-> >  }
-> >
-> > +static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
-> > +{
-> > +     unsigned int ec = ESR_ELx_EC(esr);
-> > +     unsigned int fsc = esr & ESR_ELx_FSC;
-> > +
-> > +     if (ec != ESR_ELx_EC_DABT_CUR)
-> > +             return false;
-> > +
-> > +     if (fsc == ESR_ELx_FSC_MTE)
-> > +             return true;
-> > +
-> > +     return false;
-> > +}
-> > +
-> >  static bool is_el1_instruction_abort(unsigned int esr)
-> >  {
-> >       return ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_CUR;
-> > @@ -294,6 +309,18 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
-> >       do_exit(SIGKILL);
-> >  }
-> >
-> > +static void report_tag_fault(unsigned long addr, unsigned int esr,
-> > +                          struct pt_regs *regs)
-> > +{
-> > +     bool is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> > +
-> > +     pr_alert("Memory Tagging Extension Fault in %pS\n", (void *)regs->pc);
-> > +     pr_alert("  %s at address %lx\n", is_write ? "Write" : "Read", addr);
-> > +     pr_alert("  Pointer tag: [%02x], memory tag: [%02x]\n",
-> > +                     mte_get_ptr_tag(addr),
-> > +                     mte_get_mem_tag((void *)addr));
-> > +}
-> > +
-> >  static void __do_kernel_fault(unsigned long addr, unsigned int esr,
-> >                             struct pt_regs *regs)
-> >  {
-> > @@ -317,12 +344,16 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
-> >                       msg = "execute from non-executable memory";
-> >               else
-> >                       msg = "read from unreadable memory";
-> > +     } else if (is_el1_mte_sync_tag_check_fault(esr)) {
-> > +             report_tag_fault(addr, esr, regs);
-> > +             msg = "memory tagging extension fault";
->
-> IIUC, that's dead code. See my comment below on do_tag_check_fault().
->
-> >       } else if (addr < PAGE_SIZE) {
-> >               msg = "NULL pointer dereference";
-> >       } else {
-> >               msg = "paging request";
-> >       }
-> >
-> > +
->
-> Unnecessary empty line.
->
-> >       die_kernel_fault(msg, addr, esr, regs);
-> >  }
-> >
-> > @@ -658,10 +689,27 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
-> >       return 0;
-> >  }
-> >
-> > +static int do_tag_recovery(unsigned long addr, unsigned int esr,
-> > +                        struct pt_regs *regs)
-> > +{
-> > +     report_tag_fault(addr, esr, regs);
-> > +
-> > +     /* Skip over the faulting instruction and continue: */
-> > +     arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
->
-> Ooooh, do we expect the kernel to still behave correctly after this? I
-> thought the recovery means disabling tag checking altogether and
-> restarting the instruction rather than skipping over it.
+Tested full series on bananapi r2 (mt7623/mt2701, 5.9-rc1 + hdmi-patches), works so far fbcon+x without issues
 
-The intention is to be able to catch multiple MTE faults without
-panicking or disabling MTE when executing KASAN tests (those do
-multiple bad accesses one after another). We do
-arm64_skip_faulting_instruction() for software tag-based KASAN too,
-it's not ideal, but works for testing purposes.
+Tested-by: Frank Wunderlich <frank-w@public-files.de>
 
-Can we disable MTE, reexecute the instruction, and then reenable MTE,
-or something like that?
-
-When running in-kernel MTE in production, we'll either panic or
-disable MTE after the first fault. This was controlled by the
-panic_on_mte_fault option Vincenzo initially had.
-
-> We only skip if we emulated it.
-
-I'm not sure I understand this part, what do you mean by emulating?
-
->
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +
-> >  static int do_tag_check_fault(unsigned long addr, unsigned int esr,
-> >                             struct pt_regs *regs)
-> >  {
-> > -     do_bad_area(addr, esr, regs);
-> > +     /* The tag check fault (TCF) is per TTBR */
-> > +     if (is_ttbr0_addr(addr))
-> > +             do_bad_area(addr, esr, regs);
-> > +     else
-> > +             do_tag_recovery(addr, esr, regs);
->
-> So we never invoke __do_kernel_fault() for a synchronous tag check in
-> the kernel. What's with all the is_el1_mte_sync_tag_check_fault() check
-> above?
->
-> --
-> Catalin
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200827095429.GC29264%40gaia.
+regards Frank
