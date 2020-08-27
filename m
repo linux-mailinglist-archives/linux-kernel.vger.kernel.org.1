@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A71254DD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063CC254DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgH0S7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
+        id S1728058AbgH0S7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727894AbgH0S64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:58:56 -0400
+        id S1728035AbgH0S7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 14:59:16 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98CE922BEA;
-        Thu, 27 Aug 2020 18:58:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3FF022BEB;
+        Thu, 27 Aug 2020 18:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598554735;
-        bh=WbuIUV4K6WbEXrmF/VhS+y87lS2sy9UGDIEz3E4QwWk=;
+        s=default; t=1598554755;
+        bh=oefuxCdTWcUVkgR+QTDMbysB6a2BMg5jP1BMM4MlPAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ut2/W2sV8VFb8FIGfuqy1l/mEmrCPxevdzXFOyakkwsfDl6ikmgKg8Q8t7jooXUHC
-         e+m6q+1iN/GYFpR5EclsvwG4uKKbLCPBatLMofskhmygv8T9FUiVt3iCzlufcqxFjk
-         k5FwSaFD/p8cRlmeEpsqtPkqo1tmslNYp+nLkxuQ=
+        b=Z/sQfpSo7FWbJ1e7nO0cc5ELrY71M4qw9gq+zL5IWGl2LIHkck1DuJp0tfK64WHgk
+         sdS27aigrd1TaES47boxYWQCPRYu5dvQnuiiqsvj1Nv1fDMldOnndm3lPCkVEZzO/D
+         qYjESQffZNPQ24XZuSs5xQr65MTB0NBSO9E+7nuU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -36,9 +36,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         clang-built-linux@googlegroups.com
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 04/27] Input: pwm-vibra - Simplify with dev_err_probe()
-Date:   Thu, 27 Aug 2020 20:58:06 +0200
-Message-Id: <20200827185829.30096-5-krzk@kernel.org>
+Subject: [PATCH v3 10/27] Input: cy8ctma140 - Simplify with dev_err_probe()
+Date:   Thu, 27 Aug 2020 20:58:12 +0200
+Message-Id: <20200827185829.30096-11-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200827185829.30096-1-krzk@kernel.org>
 References: <20200827185829.30096-1-krzk@kernel.org>
@@ -52,48 +52,30 @@ dev_err_probe().  Less code and also it prints the error value.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
+ drivers/input/touchscreen/cy8ctma140.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Changes since v1:
-1. Remove unneeded PTR_ERR_OR_ZERO, as pointed by Andy.
----
- drivers/input/misc/pwm-vibra.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/input/misc/pwm-vibra.c b/drivers/input/misc/pwm-vibra.c
-index 81e777a04b88..45c4f6a02177 100644
---- a/drivers/input/misc/pwm-vibra.c
-+++ b/drivers/input/misc/pwm-vibra.c
-@@ -134,22 +134,14 @@ static int pwm_vibrator_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	vibrator->vcc = devm_regulator_get(&pdev->dev, "vcc");
--	err = PTR_ERR_OR_ZERO(vibrator->vcc);
--	if (err) {
--		if (err != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "Failed to request regulator: %d",
--				err);
--		return err;
+diff --git a/drivers/input/touchscreen/cy8ctma140.c b/drivers/input/touchscreen/cy8ctma140.c
+index a9be29139cbf..23da5bb00ead 100644
+--- a/drivers/input/touchscreen/cy8ctma140.c
++++ b/drivers/input/touchscreen/cy8ctma140.c
+@@ -259,12 +259,8 @@ static int cy8ctma140_probe(struct i2c_client *client,
+ 	ts->regulators[1].supply = "vdd";
+ 	error = devm_regulator_bulk_get(dev, ARRAY_SIZE(ts->regulators),
+ 				      ts->regulators);
+-	if (error) {
+-		if (error != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to get regulators %d\n",
+-				error);
+-		return error;
 -	}
-+	if (IS_ERR(vibrator->vcc))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(vibrator->vcc),
-+				     "Failed to request regulator\n");
++	if (error)
++		return dev_err_probe(dev, error, "Failed to get regulators\n");
  
- 	vibrator->pwm = devm_pwm_get(&pdev->dev, "enable");
--	err = PTR_ERR_OR_ZERO(vibrator->pwm);
--	if (err) {
--		if (err != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "Failed to request main pwm: %d",
--				err);
--		return err;
--	}
-+	if (IS_ERR(vibrator->pwm))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(vibrator->pwm),
-+				     "Failed to request main pwm\n");
- 
- 	INIT_WORK(&vibrator->play_work, pwm_vibrator_play_work);
- 
+ 	error = cy8ctma140_power_up(ts);
+ 	if (error)
 -- 
 2.17.1
 
