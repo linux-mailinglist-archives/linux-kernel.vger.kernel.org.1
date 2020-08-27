@@ -2,203 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3770254A08
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0102549D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgH0P5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:57:54 -0400
-Received: from enpas.org ([46.38.239.100]:38182 "EHLO mail.enpas.org"
+        id S1727105AbgH0Pt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:49:29 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:34419 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgH0P5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:57:52 -0400
-X-Greylist: delayed 486 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 11:57:50 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id CA564FF9F3;
-        Thu, 27 Aug 2020 15:49:41 +0000 (UTC)
-From:   Max Staudt <max@enpas.org>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        linux-kernel@vger.kernel.org, Max Staudt <max@enpas.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] fs/affs: Fix basic permission bits to actually work
-Date:   Thu, 27 Aug 2020 17:49:00 +0200
-Message-Id: <20200827154900.28233-1-max@enpas.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726322AbgH0Pt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:49:28 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BcnGX4JyBz9v2L8;
+        Thu, 27 Aug 2020 17:49:24 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id XUXG79OLzFOR; Thu, 27 Aug 2020 17:49:24 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BcnGX33Kkz9v2Kg;
+        Thu, 27 Aug 2020 17:49:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 805898B884;
+        Thu, 27 Aug 2020 17:49:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 5gXfghUxCvqE; Thu, 27 Aug 2020 17:49:25 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CAB6E8B880;
+        Thu, 27 Aug 2020 17:49:24 +0200 (CEST)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 76ACF65D45; Thu, 27 Aug 2020 15:49:24 +0000 (UTC)
+Message-Id: <e8d735102627299303acd8fbec8c7a706b1e7882.1598543237.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 1/6] powerpc/vdso: Remove DBG()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 27 Aug 2020 15:49:24 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The basic permission bits (protection bits in AmigaOS) have been broken
-in Linux' affs - it would only set bits, but never delete them.
-Also, contrary to the documentation, the Archived bit was not handled.
+DBG() is defined as void when DEBUG is not defined,
+and DEBUG is explicitly undefined.
 
-Let's fix this for good, and set the bits such that Linux and classic
-AmigaOS can coexist in the most peaceful manner.
+It means there is no other way than modifying source code
+to get the messages printed.
 
-Also, update the documentation to represent the current state of things.
+It was most likely useful in the first days of VDSO, but
+today the only 3 DBG() calls don't deserve a special
+handling.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Staudt <max@enpas.org>
+Just remove them. If one day someone need such messages back,
+use a standard pr_debug() or equivalent.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- Documentation/filesystems/affs.rst | 16 ++++++++++------
- fs/affs/amigaffs.c                 | 27 +++++++++++++++++++++++++++
- fs/affs/file.c                     | 27 ++++++++++++++++++++++++++-
- 3 files changed, 63 insertions(+), 7 deletions(-)
+ arch/powerpc/kernel/vdso.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/Documentation/filesystems/affs.rst b/Documentation/filesystems/affs.rst
-index 7f1a40dce6d3..5776cbd5fa53 100644
---- a/Documentation/filesystems/affs.rst
-+++ b/Documentation/filesystems/affs.rst
-@@ -110,13 +110,15 @@ The Amiga protection flags RWEDRWEDHSPARWED are handled as follows:
+diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
+index e8aaeeae9e9f..a44e8e6a4692 100644
+--- a/arch/powerpc/kernel/vdso.c
++++ b/arch/powerpc/kernel/vdso.c
+@@ -31,14 +31,6 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/setup.h>
  
-   - R maps to r for user, group and others. On directories, R implies x.
+-#undef DEBUG
+-
+-#ifdef DEBUG
+-#define DBG(fmt...) printk(fmt)
+-#else
+-#define DBG(fmt...)
+-#endif
+-
+ /* Max supported size for symbol names */
+ #define MAX_SYMNAME	64
  
--  - If both W and D are allowed, w will be set.
-+  - W maps to w.
+@@ -567,9 +559,6 @@ static __init int vdso_fixup_alt_funcs(struct lib32_elfinfo *v32,
+ 		if (!match)
+ 			continue;
  
-   - E maps to x.
+-		DBG("replacing %s with %s...\n", patch->gen_name,
+-		    patch->fix_name ? "NONE" : patch->fix_name);
+-
+ 		/*
+ 		 * Patch the 32 bits and 64 bits symbols. Note that we do not
+ 		 * patch the "." symbol on 64 bits.
+@@ -704,7 +693,6 @@ static int __init vdso_init(void)
+ 	 * Calculate the size of the 64 bits vDSO
+ 	 */
+ 	vdso64_pages = (&vdso64_end - &vdso64_start) >> PAGE_SHIFT;
+-	DBG("vdso64_kbase: %p, 0x%x pages\n", vdso64_kbase, vdso64_pages);
  
--  - H and P are always retained and ignored under Linux.
-+  - D is ignored.
+ 	vdso32_kbase = &vdso32_start;
  
--  - A is always reset when a file is written to.
-+  - H, S and P are always retained and ignored under Linux.
-+
-+  - A is cleared when a file is written to.
+@@ -713,7 +701,6 @@ static int __init vdso_init(void)
+ 	 * Calculate the size of the 32 bits vDSO
+ 	 */
+ 	vdso32_pages = (&vdso32_end - &vdso32_start) >> PAGE_SHIFT;
+-	DBG("vdso32_kbase: %p, 0x%x pages\n", vdso32_kbase, vdso32_pages);
+ #endif
  
- User id and group id will be used unless set[gu]id are given as mount
- options. Since most of the Amiga file systems are single user systems
-@@ -128,11 +130,13 @@ Linux -> Amiga:
- 
- The Linux rwxrwxrwx file mode is handled as follows:
- 
--  - r permission will set R for user, group and others.
-+  - r permission will allow R for user, group and others.
-+
-+  - w permission will allow W for user, group and others.
- 
--  - w permission will set W and D for user, group and others.
-+  - x permission of the user will allow E for plain files.
- 
--  - x permission of the user will set E for plain files.
-+  - D will be allowed for user, group and others.
- 
-   - All other flags (suid, sgid, ...) are ignored and will
-     not be retained.
-diff --git a/fs/affs/amigaffs.c b/fs/affs/amigaffs.c
-index f708c45d5f66..7952f885e6c6 100644
---- a/fs/affs/amigaffs.c
-+++ b/fs/affs/amigaffs.c
-@@ -420,24 +420,51 @@ affs_mode_to_prot(struct inode *inode)
- 	u32 prot = AFFS_I(inode)->i_protect;
- 	umode_t mode = inode->i_mode;
- 
-+	/*
-+	 * First, clear all RWED bits for owner, group, other.
-+	 * Then, recalculate them afresh.
-+	 *
-+	 * We'll always clear the delete-inhibit bit for the owner,
-+	 * as that is the classic single-user mode AmigaOS protection
-+	 * bit and we need to stay compatible with all scenarios.
-+	 *
-+	 * Since multi-user AmigaOS is an extension, we'll only set
-+	 * the delete-allow bit if any of the other bits in the same
-+	 * user class (group/other) are used.
-+	 */
-+	prot &= ~(FIBF_NOEXECUTE | FIBF_NOREAD
-+		  | FIBF_NOWRITE | FIBF_NODELETE
-+		  | FIBF_GRP_EXECUTE | FIBF_GRP_READ
-+		  | FIBF_GRP_WRITE   | FIBF_GRP_DELETE
-+		  | FIBF_OTR_EXECUTE | FIBF_OTR_READ
-+		  | FIBF_OTR_WRITE   | FIBF_OTR_DELETE);
-+
-+	/* Classic single-user AmigaOS flags. These are inverted. */
- 	if (!(mode & 0100))
- 		prot |= FIBF_NOEXECUTE;
- 	if (!(mode & 0400))
- 		prot |= FIBF_NOREAD;
- 	if (!(mode & 0200))
- 		prot |= FIBF_NOWRITE;
-+
-+	/* Multi-user extended flags. Not inverted. */
- 	if (mode & 0010)
- 		prot |= FIBF_GRP_EXECUTE;
- 	if (mode & 0040)
- 		prot |= FIBF_GRP_READ;
- 	if (mode & 0020)
- 		prot |= FIBF_GRP_WRITE;
-+	if (mode & 0070)
-+		prot |= FIBF_GRP_DELETE;
-+
- 	if (mode & 0001)
- 		prot |= FIBF_OTR_EXECUTE;
- 	if (mode & 0004)
- 		prot |= FIBF_OTR_READ;
- 	if (mode & 0002)
- 		prot |= FIBF_OTR_WRITE;
-+	if (mode & 0007)
-+		prot |= FIBF_OTR_DELETE;
- 
- 	AFFS_I(inode)->i_protect = prot;
- }
-diff --git a/fs/affs/file.c b/fs/affs/file.c
-index a26a0f96c119..9a137e2f1782 100644
---- a/fs/affs/file.c
-+++ b/fs/affs/file.c
-@@ -429,6 +429,25 @@ static int affs_write_begin(struct file *file, struct address_space *mapping,
- 	return ret;
- }
- 
-+static int affs_write_end(struct file *file, struct address_space *mapping,
-+			  loff_t pos, unsigned int len, unsigned int copied,
-+			  struct page *page, void *fsdata)
-+{
-+	struct inode *inode = mapping->host;
-+	int ret;
-+
-+	ret = generic_write_end(file, mapping, pos, len, copied,
-+				page, fsdata);
-+
-+	/* Clear Archived bit on file writes, as AmigaOS would do */
-+	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
-+		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
-+		mark_inode_dirty(inode);
-+	}
-+
-+	return ret;
-+}
-+
- static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
- {
- 	return generic_block_bmap(mapping,block,affs_get_block);
-@@ -438,7 +457,7 @@ const struct address_space_operations affs_aops = {
- 	.readpage = affs_readpage,
- 	.writepage = affs_writepage,
- 	.write_begin = affs_write_begin,
--	.write_end = generic_write_end,
-+	.write_end = affs_write_end,
- 	.direct_IO = affs_direct_IO,
- 	.bmap = _affs_bmap
- };
-@@ -795,6 +814,12 @@ static int affs_write_end_ofs(struct file *file, struct address_space *mapping,
- 	if (tmp > inode->i_size)
- 		inode->i_size = AFFS_I(inode)->mmu_private = tmp;
- 
-+	/* Clear Archived bit on file writes, as AmigaOS would do */
-+	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
-+		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
-+		mark_inode_dirty(inode);
-+	}
-+
- err_first_bh:
- 	unlock_page(page);
- 	put_page(page);
+ 	/*
 -- 
-2.20.1
+2.25.0
 
