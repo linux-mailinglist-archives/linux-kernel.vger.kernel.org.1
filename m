@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3173C25451A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC45254543
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgH0Mjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:39:43 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:16044 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729035AbgH0MPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:15:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598530497;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=s0ziZsW1eWa4IKIjQ+u0Ec5vtYjwpjgOTZnjWgtRR/0=;
-        b=hWVPBlho+RqUPiCjIcp/n+U6qUknoD4aNeLbaWMan9QlOVa4FcpfMc0OqsP9mHptgK
-        WEN9Eoyx1PxncYz3xh8KCuRWlfwf7+zFJ7QUgmw93Q+LMw4M0OMXVW5OGHZjd3qKz/xO
-        hWekvibgsSItzb+5NiEJnrdDCwzvk8xEqkJi9Vy6hKpE5YGlfRPS+yhr/xbDmFZLHcci
-        u2sdDPugEE30CuFWaHtxgSesLhmGkLegCkU6fa/A33hoSv4X4Ej0X8+RNXSO9Cxql7VQ
-        MnjfGk7ZwwmewtGNrSStbPGlOPgwhfRchljZKFtIIfkxfstdktPiITPmdIwxV8srzv/c
-        ubTw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7RCEutYs
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 27 Aug 2020 14:14:56 +0200 (CEST)
-Date:   Thu, 27 Aug 2020 14:14:49 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: Drop unnecessary check frmo
- dev_pm_opp_attach_genpd()
-Message-ID: <20200827121449.GA21147@gerhold.net>
-References: <88c8522b556d15bd44b8388d47cf25ac6f06b057.1598522635.git.viresh.kumar@linaro.org>
+        id S1729156AbgH0Mr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:47:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52164 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728830AbgH0MeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:34:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11DF2AD63;
+        Thu, 27 Aug 2020 12:16:31 +0000 (UTC)
+Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz>
+ <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <77c6dfeb-06e9-0347-6f3d-188bb67b263c@suse.cz>
+Date:   Thu, 27 Aug 2020 14:15:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88c8522b556d15bd44b8388d47cf25ac6f06b057.1598522635.git.viresh.kumar@linaro.org>
+In-Reply-To: <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 03:35:15PM +0530, Viresh Kumar wrote:
-> Since commit c0ab9e0812da ("opp: Allocate genpd_virt_devs from
-> dev_pm_opp_attach_genpd()"), the allocation of the virtual devices is
-> moved to dev_pm_opp_attach_genpd() and this check isn't required anymore
-> as it will always fail. Drop it.
+On 8/26/20 7:12 AM, Joonsoo Kim wrote:
+> 2020년 8월 25일 (화) 오후 6:43, Vlastimil Babka <vbabka@suse.cz>님이 작성:
+>>
+>>
+>> On 8/25/20 6:59 AM, js1304@gmail.com wrote:
+>> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>> >
+>> > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+>> > on CMA area, but, there is a missing case and the page on CMA area could
+>> > be allocated even if APIs are used. This patch handles this case to fix
+>> > the potential issue.
+>> >
+>> > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+>> > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
+>> > specified.
+>> >
+>> > This patch implements this behaviour by checking allocated page from
+>> > the pcplist rather than skipping an allocation from the pcplist entirely.
+>> > Skipping the pcplist entirely would result in a mismatch between watermark
+>> > check and actual page allocation.
+>>
+>> Are you sure? I think a mismatch exists already. Pages can be on the pcplist but
+>> they are not considered as free in the watermark check. So passing watermark
+>> check means there should be also pages on free lists. So skipping pcplists would
+>> be safe, no?
+> 
+> You are right.
+> 
+>> > And, it requires to break current code
+>> > layering that order-0 page is always handled by the pcplist. I'd prefer
+>> > to avoid it so this patch uses different way to skip CMA page allocation
+>> > from the pcplist.
+>>
+>> Well it would be much simpler and won't affect most of allocations. Better than
+>> flushing pcplists IMHO.
+> 
+> Hmm...Still, I'd prefer my approach. There are two reasons. First,
+> layering problem
+> mentioned above. In rmqueue(), there is a code for MIGRATE_HIGHATOMIC.
+> As the name shows, it's for high order atomic allocation. But, after
+> skipping pcplist
+> allocation as you suggested, we could get there with order 0 request.
+> We can also
+> change this code, but, I'd hope to maintain current layering. Second,
+> a performance
+> reason. After the flag for nocma is up, a burst of nocma allocation
+> could come. After
+> flushing the pcplist one times, we can use the free page on the
+> pcplist as usual until
+> the context is changed.
+
+Both solutions are ugly and we should have CMA in ZONE_MOVABLE or get rid of it
+completely. Let's CC Mel what he thinks.
+
+> How about my reasoning?
+> 
+> Thanks.
 > 
 
-Only partially related to this patch, but actually I noticed that
-dev_pm_opp_attach_genpd() does not work correctly if it is called
-multiple times.
-
-For example, qcom-cpufreq-nvmem calls this for every CPU because it is
-not aware that the OPP table is shared between the CPUs.
-dev_pm_opp_attach_genpd() does not check if opp_table->genpd_virt_devs
-is already set, so when it is called again for other CPUs we will:
-
-  - Cause a memory leak (opp_table->genpd_virt_devs is just replaced
-    with new memory)
-  - Attach the power domains multiple times
-  - Never detach the power domains from earlier calls
-  - Crash when dev_pm_opp_detach_genpd() is called the second time
-
-Oh well. :)
-
-I think the function should just return and do nothing if the power
-domains were already attached, just like dev_pm_opp_set_supported_hw()
-etc. But this is a bit complicated to implement with the "virt_devs"
-parameter, since callers will probably assume that to be valid if we
-return success.
-
-Another advantage of my proposal to remove the virt_devs parameter [1] :)
-
-Stephan
