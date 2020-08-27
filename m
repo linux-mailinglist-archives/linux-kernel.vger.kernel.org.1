@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995C325456C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9AA254574
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbgH0MyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:54:25 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36498 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729089AbgH0MyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:54:03 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 48D11DC603F684ED7B2A;
-        Thu, 27 Aug 2020 20:53:45 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 20:53:38 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <rogerq@ti.com>, <tony@atomide.com>, <krzk@kernel.org>,
-        <ladis@linux-mips.org>, <bbrezillon@kernel.org>,
-        <peter.ujfalusi@ti.com>
-CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v3] memory: omap-gpmc: Fix build error without CONFIG_OF
-Date:   Thu, 27 Aug 2020 20:53:16 +0800
-Message-ID: <20200827125316.20780-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20200826125919.22172-1-yuehaibing@huawei.com>
-References: <20200826125919.22172-1-yuehaibing@huawei.com>
+        id S1729186AbgH0My7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728973AbgH0Mym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:54:42 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09A0C061264;
+        Thu, 27 Aug 2020 05:54:41 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id a65so5064001wme.5;
+        Thu, 27 Aug 2020 05:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=a5lpHFvSWQoGrjybaXmlV69Axq+442tGTTEhKXzXB/M=;
+        b=FGT1CbGRN8nWIZimQQJFHaFlgGbXUWXcohmF6aYnzTMEIdoXLV8ASHcjH/rftf8dPu
+         05h7ynqky+tK0sVnESIUNMOkwDJXKaIKOOjfk8ZzK2aS6ItFzfPK1RiS8Sgq9gCPkksa
+         s87z1TYPj+YUb/w6uaLEL+ETfgmlzhXCU10ucGJlzNXsBINUdbYoCrfyflOTHYw+cbz4
+         RAdiDof8rxMnyZ5hwply2FrDERb1PY3A2wl1RdJOsOW1zwqi8pXPitwO0zzOFjipVey5
+         oUPQnIgnx+nqlo3zwpUr7dRtVO/mC+2RV5+VHT1jDZZ+PWuU7gSvtmMNjL2CWO/kpKhp
+         IGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a5lpHFvSWQoGrjybaXmlV69Axq+442tGTTEhKXzXB/M=;
+        b=MJE0yRwoQzsnxhBdyQfT/5MJsLRMJJNbLzi6l5vW6qxHl5bqRp/XIPtRcshfhf1MXi
+         ylS/yD4UhWjMvhOPZHiOUs34DMwd3ylguODBJMUWyPTfH/BopgBdvZoWr6ulu4PuP+qe
+         PSJg+eQXemuAwlNiNq9hCnsrI3g41k+OsE+klK1Dq0pCO7n6T2gONMN+jQtgwl/Awrag
+         s0leS9JW4OhpgpJev6w9NZUvE1UHPaNEfgwgrXhRRJKJo219VmJNPxwKHorUR+4ardYd
+         5TGqVnuDjEDAObVVoAoW+NexE/QJex7LwaKZbSR5fiz0RZIIYEuHf8Wt4YHYadvfqj/3
+         rNTg==
+X-Gm-Message-State: AOAM530XMfU3U+EJgb0wemg2LzY3pj35cT57QRmYtFb/CbltHCsXBKw3
+        rzSZ80YqV2s8TTs0/YOtSp/HI5Ab9ROw9zwo
+X-Google-Smtp-Source: ABdhPJwqZV7pk1FvOSkguIjKJvFkFK+Tun3miq523wTMnXd9BGquVzYW29lvsrXbzl2PtJrmqLojuA==
+X-Received: by 2002:a1c:7d55:: with SMTP id y82mr3074513wmc.100.1598532878977;
+        Thu, 27 Aug 2020 05:54:38 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.187])
+        by smtp.gmail.com with ESMTPSA id m11sm5436719wrn.11.2020.08.27.05.54.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 05:54:38 -0700 (PDT)
+Subject: Re: Aw: [PATCH 00/18] Convert arch/arm to use iommu-dma
+To:     Frank Wunderlich <frank-w@public-files.de>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     hch@lst.de, joro@8bytes.org, linux@armlinux.org.uk,
+        geert+renesas@glider.be, dri-devel@lists.freedesktop.org,
+        bjorn.andersson@linaro.org, thierry.reding@gmail.com,
+        laurent.pinchart@ideasonboard.com, digetx@gmail.com, s-anna@ti.com,
+        will@kernel.org, m.szyprowski@samsung.com,
+        linux-samsung-soc@vger.kernel.org, magnus.damm@gmail.com,
+        kyungmin.park@samsung.com, jonathanh@nvidia.com, agross@kernel.org,
+        yong.wu@mediatek.com, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, inki.dae@samsung.com,
+        vdumpa@nvidia.com, linux-mediatek@lists.infradead.org,
+        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sw0312.kim@samsung.com, linux-kernel@vger.kernel.org,
+        t-kristo@ti.com, iommu@lists.linux-foundation.org
+References: <cover.1597931875.git.robin.murphy@arm.com>
+ <trinity-d6be65d8-9086-42bc-b993-238b731cdf60-1598531519064@3c-app-gmx-bap26>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <d54f5d47-63aa-d07e-3875-6acce69073f3@gmail.com>
+Date:   Thu, 27 Aug 2020 14:54:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+In-Reply-To: <trinity-d6be65d8-9086-42bc-b993-238b731cdf60-1598531519064@3c-app-gmx-bap26>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_OF is n, gcc fails:
-
-drivers/memory/omap-gpmc.o: In function `gpmc_omap_onenand_set_timings':
-omap-gpmc.c:(.text+0x2a88): undefined reference to `gpmc_read_settings_dt'
-
-Add gpmc_read_settings_dt() helper function, which zero the gpmc_settings
-so the caller doesn't proceed with random/invalid settings.
-
-Fixes: a758f50f10cf ("mtd: onenand: omap2: Configure driver from DT")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v3: zero gpmc_settings
-v2: add gpmc_read_settings_dt() stub
----
- drivers/memory/omap-gpmc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index cd9e80748591..e026b4cd3612 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -2310,6 +2310,10 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
- 	}
- }
- #else
-+void gpmc_read_settings_dt(struct device_node *np, struct gpmc_settings *p)
-+{
-+	memset(p, 0, sizeof(struct gpmc_settings));
-+}
- static int gpmc_probe_dt(struct platform_device *pdev)
- {
- 	return 0;
--- 
-2.17.1
 
 
+On 27/08/2020 14:31, Frank Wunderlich wrote:
+> Tested full series on bananapi r2 (mt7623/mt2701, 5.9-rc1 + hdmi-patches), works so far fbcon+x without issues
+> 
+> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+> 
+
+Thanks for testing.
+
+Robin this is especially relevant for:
+[PATCH 09/18] iommu/mediatek-v1: Add IOMMU_DOMAIN_DMA support
+
+Regards,
+Matthias
