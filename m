@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2832547A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D6F2547B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgH0Owj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgH0OwZ (ORCPT
+        id S1727949AbgH0Oxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:53:31 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:3877 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727980AbgH0OxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:52:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F23CC061264;
-        Thu, 27 Aug 2020 07:52:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u18so5443809wmc.3;
-        Thu, 27 Aug 2020 07:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
-        b=kZd6UaPODsywloqPEXYGJE2wX1gHdTZH7hOlYW8yEjV/sq97IdGkfXMtF9vicvcwRm
-         KcJyQ6o2yMsjJOL2+s192UFD0bsxxS+9VHF43c6vcTFiRYA7JDLbz4itwwtuolELeCXK
-         D2VNogesiQaePTJ5fupCEAeBthgq8jr34crL+aE33HCzo/zMEoZ1+AaoQUkbz2wS0JfZ
-         psKxwafIEd9ZDy5KlS+qQaVT6xOT2P6Fsr1JYIERjesbxs5g4hlcQcQEkAlYttZ8apv+
-         0YL7sL5UUrNOOjQt0A/R761JJjb8zaiY6NOzhBoJaexFSe1nbXCV1eFPEsUyo5YxeGwL
-         5qAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
-        b=OAHK8a5r4FIpOjsjJQ0GL3roSDlBZBTiQdvUMln9I3/GpeguALqFYDxVpoXdbydBCP
-         lvncT+KFqJCgCFfjEaHO8caPRlXkJfMKbQFlBmLZRD56ztHuvRjDd9IsWCb7w8xNRyW1
-         wNcdUU8cFuplZz0uaC+UbyOQTtq3es1jc4wWU2qqHAtesbvSope2Gh4BJZP3iuCZmXtA
-         tRr9SO9U1lcKqsii0KMVanlso3PoZ/8aYmkYmUK6TF5l//ogxN6yRGSA3Red7DLgv1ik
-         eHkAnD9ZEidoJEYnILONS0IK5jNJ1duGnBjoKTBzEoZYtNWlYp8DeCWj+icje5bPhflp
-         4wiw==
-X-Gm-Message-State: AOAM530d+x7G6wf8eutvHsa2fM0sb5SqzbIuzRVYHMSE82eKXNfG/DCm
-        3umaIQrU3QgZk/S9IqKaLLQ=
-X-Google-Smtp-Source: ABdhPJxObSFHl9EJZG44VyoYurqG2wa1VHgnKMJmUIawdImzxJvkV/78RYAh0OwF0PyYou3oscpcWA==
-X-Received: by 2002:a1c:2dcc:: with SMTP id t195mr11553794wmt.166.1598539943771;
-        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q12sm6328221wrm.39.2020.08.27.07.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 16:52:21 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Denis Efremov <efremov@linux.com>, antoine.tenart@bootlin.com
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] crypto: inside-secure - use kfree_sensitive()
-Message-ID: <20200827145221.GB14173@Red>
-References: <20200827064402.7130-1-efremov@linux.com>
- <20200827064402.7130-2-efremov@linux.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827064402.7130-2-efremov@linux.com>
+        Thu, 27 Aug 2020 10:53:21 -0400
+X-IronPort-AV: E=Sophos;i="5.76,359,1592838000"; 
+   d="scan'208";a="55482013"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 27 Aug 2020 23:53:18 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 840DB40065C9;
+        Thu, 27 Aug 2020 23:53:16 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH 0/2] r8a774e1 add fdp1 and cpuidle support
+Date:   Thu, 27 Aug 2020 15:53:13 +0100
+Message-Id: <20200827145315.26261-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:43:59AM +0300, Denis Efremov wrote:
-> Use kfree_sensitive() instead of open-coding it.
-> 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  drivers/crypto/inside-secure/safexcel_hash.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-> index 16a467969d8e..5ffdc1cd5847 100644
-> --- a/drivers/crypto/inside-secure/safexcel_hash.c
-> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
-> @@ -1082,8 +1082,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
->  		}
->  
->  		/* Avoid leaking */
-> -		memzero_explicit(keydup, keylen);
-> -		kfree(keydup);
-> +		kfree_sensitive(keydup);
->  
->  		if (ret)
->  			return ret;
-> -- 
-> 2.26.2
-> 
+Hi All,
 
-The maintainer of this driver was not TO/CC.
+This series adds support for FDP1 and cpuidle support to R8A774E1
+(RZ/G2H) SoC.
 
-I Add him.
+Cheers,
+Prabhakar
 
-Regards
+Lad Prabhakar (1):
+  arm64: dts: renesas: r8a774e1: Add cpuidle support for CA5x cores
+
+Marian-Cristian Rotariu (1):
+  arm64: dts: renesas: r8a774e1: Add FDP1 device nodes
+
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi | 50 +++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+-- 
+2.17.1
+
