@@ -2,164 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2691254F5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1386254F62
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgH0Tvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S1727115AbgH0Tws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgH0Tvw (ORCPT
+        with ESMTP id S1726147AbgH0Twr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:51:52 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46C3C061264;
-        Thu, 27 Aug 2020 12:51:52 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mw10so3152098pjb.2;
-        Thu, 27 Aug 2020 12:51:52 -0700 (PDT)
+        Thu, 27 Aug 2020 15:52:47 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22794C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:52:47 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id s1so7107412iot.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HeJN9f1Z10RS6kmYpW2mlXYutbYxxEGXhrktNJI/FiI=;
-        b=YCjzclLyWmOQtWConHJtmVuvFL2mO0/fGIrPjG8XYkkxS9gUnZAMRTb5xnjradovfO
-         vD1U9H0iy0axqZxzLylhSMYXDIVA6lZ7GbYKcT5h+Lh4sve6wE4yI7DvyXhoMAuFIvKk
-         ezD9veuDwDwXifdDRXopz8m7DCHv19EFGfeHkVUhlgTDoWax1ZLSHe8Jx4EXS0JkxDee
-         5ay+dHUd13OBuDb0W0IyRLVa+RvsQigA3Igt24eKuK6IUYlBaJ/guVl+LclIjxGQY5sw
-         Zbw9aiWpi2kVd4+nj+hJC/I6A90ojwU+fjHcIo3sYvsOLxuAMXG5/IHtbVkTmV2eDSvA
-         zWjQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q0WhZouPxdjBeMn9cOMGc/oviRw39ohzYxmzF+C0NwU=;
+        b=h6KWwkxPlwBK4h7b7HqbG3b5fEkTxuKNqI0GpTCxCozsrKoF4/t0e/K3To4U9HVUBU
+         2IN3B07JvfH5poIPywwuXVexJeJma9l0Oby5c1Yhwg6m/Z7FzseKd+rkiQk3VmWIJ0GR
+         uvz5HGhAYP1RdqrW1/22HIyzxtVTyn6zsF+sw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HeJN9f1Z10RS6kmYpW2mlXYutbYxxEGXhrktNJI/FiI=;
-        b=D7cpthav4pLaMC0rI5wGJJ1ZuHvvvMitVpbgsI8+cenENFMfpDiiyGCJKrJ5/FDw4n
-         Q7uwAHW0wa4Liy//Fi8OUijfWxFWpuBypzJw4FpPggfAP9M729pUxqxB/b2lFRMm1OFg
-         xSts55DjhZmNZudB8cG7YP5Gd6UlpnICB6l2yjzGV/mI533Vu+EEFcv04DsHQ7EeBlYP
-         Xl+8i5MUa45SY3+rtB6XFFiOODeXtWsNny43cx4e8UD2YcyYmBYqM+p/NsW9rOmgh3Nd
-         vxbcNYqLmxrofKej0vZ1BCvmyhWFhYPjm45zwmwqt1SncgIuycqklpBx2OYGqS3tgfy7
-         OyCA==
-X-Gm-Message-State: AOAM5330w65iF8Tmf/iLE5g0pW8kcQvYQE9Uuf83Tku/u0zZBsRFwGJL
-        /zL1tClLGX8e418Q+3HLRD8=
-X-Google-Smtp-Source: ABdhPJyclDqGuxinp7ETmsLEuRXVIZoMOGRaL4uJ6MEPRwaptHLx1zF23RJqHQeBoieLl6ZDLBXWAw==
-X-Received: by 2002:a17:90a:1862:: with SMTP id r89mr389135pja.59.1598557912308;
-        Thu, 27 Aug 2020 12:51:52 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p20sm2977705pjz.49.2020.08.27.12.51.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Aug 2020 12:51:51 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 12:51:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Robert Jones <rjones@gateworks.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: gsc-hwmon: add fan sensor
-Message-ID: <20200827195150.GA233489@roeck-us.net>
-References: <1598548892-17103-1-git-send-email-tharvey@gateworks.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q0WhZouPxdjBeMn9cOMGc/oviRw39ohzYxmzF+C0NwU=;
+        b=RaYceYrtAHw/sLox9ZBLMbNNYV7+c8uwBBzkEoXAhGJ2xcNETdHaaN9pfMiEMsvbjE
+         I/PRLNt6qM3xQ465ffAJtIh4bnF5ebSO6b9/DeA5T+3yEyP8ITbQzFNdRZ8ANQUuQHQV
+         nnNRrtydgeB10oHoKIXlw50baKFPWpJwQyiSmEfAmmWuWRGhY8jywCAELrJh64pWDGEi
+         9PrzCSaWPPLSsBHs27CsBB/4uBJJM/cV40oiQJ8TQ2nxrv1mEIPKdXYBSynZ01cymB1g
+         doT4T29ALrDktgCAUMM4QlrEuUoYZPoI6Ay6QV2HJgPMdmTauw2/Xk+atVQ44LmSQUFs
+         4Y9A==
+X-Gm-Message-State: AOAM533Jxh7np1+7JP09W/kkddtAqWGTsC93XUiw4jz46t5hsPrCA3Uy
+        zppWCkIC8hyy7grhxUIANrI8NA==
+X-Google-Smtp-Source: ABdhPJwHitgH1o5QcDfe5KVSSK78tz1srdPlHOWaobSgLbMA3g5GVCvAS1wn2r0+wGMAZm8oxUEHkw==
+X-Received: by 2002:a02:840f:: with SMTP id k15mr21153082jah.100.1598557966378;
+        Thu, 27 Aug 2020 12:52:46 -0700 (PDT)
+Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
+        by smtp.gmail.com with ESMTPSA id t90sm1664808ill.50.2020.08.27.12.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 12:52:45 -0700 (PDT)
+From:   Raul E Rangel <rrangel@chromium.org>
+To:     linux-input@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, Shirish.S@amd.com,
+        Raul E Rangel <rrangel@chromium.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        Rajat Jain <rajatja@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH 1/2] Input: i8042 - Prevent intermixing i8042 commands
+Date:   Thu, 27 Aug 2020 13:52:22 -0600
+Message-Id: <20200827135205.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598548892-17103-1-git-send-email-tharvey@gateworks.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:21:32AM -0700, Tim Harvey wrote:
-> Add a fan sensor to report RPM's from a fan tach input.
-> 
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  drivers/hwmon/gsc-hwmon.c               | 34 ++++++++++++++++++++++++++++++---
->  include/linux/platform_data/gsc_hwmon.h |  1 +
->  2 files changed, 32 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwmon/gsc-hwmon.c b/drivers/hwmon/gsc-hwmon.c
-> index c6d4567..a86a0e5 100644
-> --- a/drivers/hwmon/gsc-hwmon.c
-> +++ b/drivers/hwmon/gsc-hwmon.c
-> @@ -17,6 +17,7 @@
->  
->  #define GSC_HWMON_MAX_TEMP_CH	16
->  #define GSC_HWMON_MAX_IN_CH	16
-> +#define GSC_HWMON_MAX_FAN_CH	16
->  
->  #define GSC_HWMON_RESOLUTION	12
->  #define GSC_HWMON_VREF		2500
-> @@ -27,11 +28,14 @@ struct gsc_hwmon_data {
->  	struct regmap *regmap;
->  	const struct gsc_hwmon_channel *temp_ch[GSC_HWMON_MAX_TEMP_CH];
->  	const struct gsc_hwmon_channel *in_ch[GSC_HWMON_MAX_IN_CH];
-> +	const struct gsc_hwmon_channel *fan_ch[GSC_HWMON_MAX_FAN_CH];
->  	u32 temp_config[GSC_HWMON_MAX_TEMP_CH + 1];
->  	u32 in_config[GSC_HWMON_MAX_IN_CH + 1];
-> +	u32 fan_config[GSC_HWMON_MAX_FAN_CH + 1];
->  	struct hwmon_channel_info temp_info;
->  	struct hwmon_channel_info in_info;
-> -	const struct hwmon_channel_info *info[3];
-> +	struct hwmon_channel_info fan_info;
-> +	const struct hwmon_channel_info *info[4];
->  	struct hwmon_chip_info chip;
->  };
->  
-> @@ -155,6 +159,9 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
->  	case hwmon_temp:
->  		ch = hwmon->temp_ch[channel];
->  		break;
-> +	case hwmon_fan:
-> +		ch = hwmon->fan_ch[channel];
-> +		break;
->  	default:
->  		return -EOPNOTSUPP;
->  	}
-> @@ -187,6 +194,9 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
->  		/* adjust by uV offset */
->  		tmp += ch->mvoffset;
->  		break;
-> +	case mode_fan:
-> +		tmp *= 30; /* convert to revolutions per minute */
-> +		break;
->  	case mode_voltage_24bit:
->  	case mode_voltage_16bit:
->  		/* no adjustment needed */
-> @@ -211,6 +221,9 @@ gsc_hwmon_read_string(struct device *dev, enum hwmon_sensor_types type,
->  	case hwmon_temp:
->  		*buf = hwmon->temp_ch[channel]->name;
->  		break;
-> +	case hwmon_fan:
-> +		*buf = hwmon->fan_ch[channel]->name;
-> +		break;
->  	default:
->  		return -ENOTSUPP;
->  	}
-> @@ -304,7 +317,7 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
->  	struct gsc_hwmon_platform_data *pdata = dev_get_platdata(dev);
->  	struct gsc_hwmon_data *hwmon;
->  	const struct attribute_group **groups;
-> -	int i, i_in, i_temp;
-> +	int i, i_in, i_temp, i_fan;
->  
->  	if (!pdata) {
->  		pdata = gsc_hwmon_get_devtree_pdata(dev);
-> @@ -324,7 +337,9 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
->  	if (IS_ERR(hwmon->regmap))
->  		return PTR_ERR(hwmon->regmap);
->  
-> -	for (i = 0, i_in = 0, i_temp = 0; i < hwmon->pdata->nchannels; i++) {
-> +	for (i = 0, i_in = 0, i_temp = 0, i_fan = 0;
-> +	     i < hwmon->pdata->nchannels; i++)
-> +	{
+The i8042_mutex must be held by writers of the AUX and KBD ports, as
+well as users of i8042_command. There were a lot of users of
+i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
+This resulted in i8042_commands being issues in between PS/2
+transactions.
 
-ERROR: that open brace { should be on the previous line
-#125: FILE: drivers/hwmon/gsc-hwmon.c:340:
-+	for (i = 0, i_in = 0, i_temp = 0, i_fan = 0;
-+	     i < hwmon->pdata->nchannels; i++)
-+	{
+This change moves the mutex lock into i8042_command and removes the
+burden of locking the mutex from the callers.
 
-Besides, the line length limit is now 100 columns, so the line split
-is unnecessary.
+It is expected that the i8042_mutex is locked before calling
+i8042_aux_write or i8042_kbd_write. This is currently done by the PS/2
+layer via ps2_begin_command and ps2_end_command. Other modules
+(serio_raw) do not currently lock the mutex, so there is still a
+possibility for intermixed commands.
 
-Thanks,
-Guenter
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+---
+
+ drivers/input/serio/i8042.c         | 29 ++++++++++++++---------------
+ drivers/leds/leds-clevo-mail.c      |  9 ---------
+ drivers/platform/x86/acer-wmi.c     |  2 --
+ drivers/platform/x86/amilo-rfkill.c |  2 --
+ include/linux/i8042.h               | 10 ----------
+ 5 files changed, 14 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
+index 0dddf273afd94..8590e51bcc087 100644
+--- a/drivers/input/serio/i8042.c
++++ b/drivers/input/serio/i8042.c
+@@ -137,8 +137,7 @@ static DEFINE_SPINLOCK(i8042_lock);
+ 
+ /*
+  * Writers to AUX and KBD ports as well as users issuing i8042_command
+- * directly should acquire i8042_mutex (by means of calling
+- * i8042_lock_chip() and i8042_unlock_ship() helpers) to ensure that
++ * directly should acquire i8042_mutex to ensure that
+  * they do not disturb each other (unfortunately in many i8042
+  * implementations write to one of the ports will immediately abort
+  * command that is being processed by another port).
+@@ -173,18 +172,6 @@ static irqreturn_t i8042_interrupt(int irq, void *dev_id);
+ static bool (*i8042_platform_filter)(unsigned char data, unsigned char str,
+ 				     struct serio *serio);
+ 
+-void i8042_lock_chip(void)
+-{
+-	mutex_lock(&i8042_mutex);
+-}
+-EXPORT_SYMBOL(i8042_lock_chip);
+-
+-void i8042_unlock_chip(void)
+-{
+-	mutex_unlock(&i8042_mutex);
+-}
+-EXPORT_SYMBOL(i8042_unlock_chip);
+-
+ int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
+ 					struct serio *serio))
+ {
+@@ -343,10 +330,14 @@ int i8042_command(unsigned char *param, int command)
+ 	unsigned long flags;
+ 	int retval;
+ 
++	mutex_lock(&i8042_mutex);
++
+ 	spin_lock_irqsave(&i8042_lock, flags);
+ 	retval = __i8042_command(param, command);
+ 	spin_unlock_irqrestore(&i8042_lock, flags);
+ 
++	 mutex_unlock(&i8042_mutex);
++
+ 	return retval;
+ }
+ EXPORT_SYMBOL(i8042_command);
+@@ -379,10 +370,18 @@ static int i8042_kbd_write(struct serio *port, unsigned char c)
+ static int i8042_aux_write(struct serio *serio, unsigned char c)
+ {
+ 	struct i8042_port *port = serio->port_data;
++	unsigned long flags;
++	int retval = 0;
++
++	spin_lock_irqsave(&i8042_lock, flags);
+ 
+-	return i8042_command(&c, port->mux == -1 ?
++	retval = __i8042_command(&c, port->mux == -1 ?
+ 					I8042_CMD_AUX_SEND :
+ 					I8042_CMD_MUX_SEND + port->mux);
++
++	spin_unlock_irqrestore(&i8042_lock, flags);
++
++	return retval;
+ }
+ 
+ 
+diff --git a/drivers/leds/leds-clevo-mail.c b/drivers/leds/leds-clevo-mail.c
+index f512e99b976b1..6c3d7e54f95cf 100644
+--- a/drivers/leds/leds-clevo-mail.c
++++ b/drivers/leds/leds-clevo-mail.c
+@@ -95,17 +95,12 @@ MODULE_DEVICE_TABLE(dmi, clevo_mail_led_dmi_table);
+ static void clevo_mail_led_set(struct led_classdev *led_cdev,
+ 				enum led_brightness value)
+ {
+-	i8042_lock_chip();
+-
+ 	if (value == LED_OFF)
+ 		i8042_command(NULL, CLEVO_MAIL_LED_OFF);
+ 	else if (value <= LED_HALF)
+ 		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_0_5HZ);
+ 	else
+ 		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_1HZ);
+-
+-	i8042_unlock_chip();
+-
+ }
+ 
+ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+@@ -114,8 +109,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+ {
+ 	int status = -EINVAL;
+ 
+-	i8042_lock_chip();
+-
+ 	if (*delay_on == 0 /* ms */ && *delay_off == 0 /* ms */) {
+ 		/* Special case: the leds subsystem requested us to
+ 		 * chose one user friendly blinking of the LED, and
+@@ -142,8 +135,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+ 		       *delay_on, *delay_off);
+ 	}
+ 
+-	i8042_unlock_chip();
+-
+ 	return status;
+ }
+ 
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 60c18f21588dd..6cb6f800503b2 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -1044,9 +1044,7 @@ static acpi_status WMID_set_u32(u32 value, u32 cap)
+ 			return AE_BAD_PARAMETER;
+ 		if (quirks->mailled == 1) {
+ 			param = value ? 0x92 : 0x93;
+-			i8042_lock_chip();
+ 			i8042_command(&param, 0x1059);
+-			i8042_unlock_chip();
+ 			return 0;
+ 		}
+ 		break;
+diff --git a/drivers/platform/x86/amilo-rfkill.c b/drivers/platform/x86/amilo-rfkill.c
+index 493e169c8f615..ce68d0c9ac29f 100644
+--- a/drivers/platform/x86/amilo-rfkill.c
++++ b/drivers/platform/x86/amilo-rfkill.c
+@@ -30,9 +30,7 @@ static int amilo_a1655_rfkill_set_block(void *data, bool blocked)
+ 	u8 param = blocked ? A1655_WIFI_OFF : A1655_WIFI_ON;
+ 	int rc;
+ 
+-	i8042_lock_chip();
+ 	rc = i8042_command(&param, A1655_WIFI_COMMAND);
+-	i8042_unlock_chip();
+ 	return rc;
+ }
+ 
+diff --git a/include/linux/i8042.h b/include/linux/i8042.h
+index 0261e2fb36364..1c081081c161d 100644
+--- a/include/linux/i8042.h
++++ b/include/linux/i8042.h
+@@ -55,8 +55,6 @@ struct serio;
+ 
+ #if defined(CONFIG_SERIO_I8042) || defined(CONFIG_SERIO_I8042_MODULE)
+ 
+-void i8042_lock_chip(void);
+-void i8042_unlock_chip(void);
+ int i8042_command(unsigned char *param, int command);
+ int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
+ 					struct serio *serio));
+@@ -65,14 +63,6 @@ int i8042_remove_filter(bool (*filter)(unsigned char data, unsigned char str,
+ 
+ #else
+ 
+-static inline void i8042_lock_chip(void)
+-{
+-}
+-
+-static inline void i8042_unlock_chip(void)
+-{
+-}
+-
+ static inline int i8042_command(unsigned char *param, int command)
+ {
+ 	return -ENODEV;
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
