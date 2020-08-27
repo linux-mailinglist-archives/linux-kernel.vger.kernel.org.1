@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F132D254AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD0D254ADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgH0QeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:34:17 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36203 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgH0QeR (ORCPT
+        id S1727902AbgH0QjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0QjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:34:17 -0400
-Received: by mail-il1-f199.google.com with SMTP id f20so4083246ilg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 09:34:16 -0700 (PDT)
+        Thu, 27 Aug 2020 12:39:12 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5CAC061264;
+        Thu, 27 Aug 2020 09:39:11 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id d10so5081205wrw.2;
+        Thu, 27 Aug 2020 09:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X8tAmJgMDdPWe1jtHOmktcd5X+D5VAolQ0RvwPi2Oio=;
+        b=JKHKyGbqLhC8llQwzjTZcHPS3n5LliWOo8QUU8lxH4wR4BGkhgmS3LGOKj18gTURKe
+         xVcjzF562daBaRz07SZmAhkD3bS92Y2Qroadwk8FmiRluw7uMMqJI6fnZdX7GUgOdEmB
+         65U9iFAioqN1hpSZazaOwmo7FywtnfGMAiS90nYHo18ijdIHCLHt8fPn7NhkjcxnxwPB
+         AIV9KNgkeuQIARMN0q41x1+YzdGmLkcwTQWbO4/oqX4Jh6h8tGqQiPonxE3zJzjw78CK
+         6GftCFXPaXv8r+Q+3LYEJMk6aSg4y0wFWo5VAQOJQ2h+Uy5VrrtDnH0lm3aWj5UvhsEL
+         OesQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CeejWM1wsnx+eYnik6gMIrJziDJ/HbH2NxxTTf+OlEo=;
-        b=h4MIUo12EPfVawXSnT8+2mwDLBpBoSuT4WcLI/bEk4FE4qAee2pnTeQEh2HCC90vM2
-         oTxsnXgubBQBIAsBzzXHV6dloSkW0Nnz04vwXey2Ux7ooBMhog9rVf2XY7DDn6IoJs9K
-         2zpMmDVwW++mXplhJbEs8TqEZsy+4ODPajcH1HAO+HDm4Ezy/5UlopmxZbzOQiVGmvok
-         gi5v0n4hN1O5dVToYRocCm72VtKMHhn0ctq5m3Af26a1iohq7QMr15tHdYQkF1EqG781
-         9OI4hurJ8CXMdgje3Hay2/loGya543s7QuyG57+xFxS2bJVM4ahDKZIRpPiBBkIU/2jI
-         +ZPA==
-X-Gm-Message-State: AOAM530l1Rvxm67LgQLsYi0JRg5KikNWRGl8T2KObEns+2Wpm7LpFqw5
-        H6MzvfrnlxVLBfJjUDgwsvqS43SRFV+bdTVQGp330riv55iT
-X-Google-Smtp-Source: ABdhPJwHkrto7t0X1WgI6fFrkVMbX4Uvg4rR0wAtL+dlrFnlUcoF9NqNwCZped76HCsV5Uryb/Pn3h1YMIx/Dt1YLvEIpkdKkk/J
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X8tAmJgMDdPWe1jtHOmktcd5X+D5VAolQ0RvwPi2Oio=;
+        b=eoUgsZCEYmE+QjtU7Dk8NZVofa9lNIjFNoNxcXuGTMYHkPfdyaEWiMwGiEU/FazSBr
+         mJ8FOShXWNeNhe4YpuRbaZZOP3BWBCR4WyeMj5/B/zmCrpJsYJLhW4iVdT1vBLis1+Pd
+         WcId2jX/amc/oWEiVFraQxX21k9rWcgYCYcpS0ZVVBF48muobwLC5zeIY8cNr11/FbSx
+         b0h1YMicuuARZFC51bV3NqqATN3kfsvuHmXO1yP1LujTNfnpSYq/zR1QKAfn/LgbFLUl
+         e4mxK4YNFftFFOhh00IYlQog7EOLDX5VTQ7VNw8w59H64G/sOjI1dy2V4AzrcaUfdGoF
+         1hWQ==
+X-Gm-Message-State: AOAM530V+fjpOyN+3oeD8fhifnjUO06rhmvLVpZuWNDg2W8ZubNcJ8rj
+        /pUYsUNs8tzQa3/fArpJY8k=
+X-Google-Smtp-Source: ABdhPJxhNW1oeT8TgLHU84jXFHu+0GvYbZS44y22iMS6YOeBEZEaapcLixbe4qJH4FbAX3T7hpXgdA==
+X-Received: by 2002:adf:f808:: with SMTP id s8mr14411769wrp.218.1598546350163;
+        Thu, 27 Aug 2020 09:39:10 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id d21sm6509238wmd.41.2020.08.27.09.39.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 09:39:09 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] netlabel: remove unused param from audit_log_format()
+Date:   Thu, 27 Aug 2020 17:37:12 +0100
+Message-Id: <20200827163712.106303-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:da07:: with SMTP id z7mr11323378ilm.196.1598546055601;
- Thu, 27 Aug 2020 09:34:15 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 09:34:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cd24b305adde81ff@google.com>
-Subject: KASAN: use-after-free Read in snd_pcm_oss_release
-From:   syzbot <syzbot+12a3fcd1493ec6585007@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, alsa-devel@alsa-project.org,
-        arnd@arndb.de, gustavoars@kernel.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
-        vbabka@suse.cz, walken@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Commit d3b990b7f327 ("netlabel: fix problems with mapping removal")
+added a check to return an error if ret_val != 0, before ret_val is
+later used in a log message. Now it will unconditionally print "...
+res=0". So don't print res anymore.
 
-syzbot found the following issue on:
-
-HEAD commit:    f37be724 Add linux-next specific files for 20200826
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=137c7cb9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5a1cf036089d95
-dashboard link: https://syzkaller.appspot.com/bug?extid=12a3fcd1493ec6585007
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12a3fcd1493ec6585007@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2367 [inline]
-BUG: KASAN: use-after-free in snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
-BUG: KASAN: use-after-free in snd_pcm_oss_release+0x28d/0x300 sound/core/oss/pcm_oss.c:2548
-Read of size 8 at addr ffff888026b66480 by task syz-executor.1/27751
-
-CPU: 1 PID: 27751 Comm: syz-executor.1 Not tainted 5.9.0-rc2-next-20200826-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2367 [inline]
- snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
- snd_pcm_oss_release+0x28d/0x300 sound/core/oss/pcm_oss.c:2548
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
- exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x416f01
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffdd39a5e70 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000416f01
-RDX: 0000000000000001 RSI: 0000000001190428 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffdd39a5f60 R11: 0000000000000293 R12: 0000000001190428
-R13: 0000000000268c54 R14: ffffffffffffffff R15: 000000000118cfec
-
-Allocated by task 27754:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x16e/0x2c0 mm/slab.c:3550
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- snd_pcm_oss_open_file sound/core/oss/pcm_oss.c:2389 [inline]
- snd_pcm_oss_open.part.0+0x55e/0x1290 sound/core/oss/pcm_oss.c:2491
- snd_pcm_oss_open+0x3c/0x50 sound/core/oss/pcm_oss.c:2455
- soundcore_open+0x445/0x600 sound/sound_core.c:593
- chrdev_open+0x266/0x770 fs/char_dev.c:414
- do_dentry_open+0x4b9/0x11b0 fs/open.c:817
- do_open fs/namei.c:3251 [inline]
- path_openat+0x1b9a/0x2730 fs/namei.c:3368
- do_filp_open+0x17e/0x3c0 fs/namei.c:3395
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_openat fs/open.c:1200 [inline]
- __se_sys_openat fs/open.c:1195 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 27754:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3756
- snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2371 [inline]
- snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2361 [inline]
- snd_pcm_oss_release+0x17e/0x300 sound/core/oss/pcm_oss.c:2548
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
- exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888026b66480
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 0 bytes inside of
- 32-byte region [ffff888026b66480, ffff888026b664a0)
-The buggy address belongs to the page:
-page:0000000076bbbb49 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888026b66fc1 pfn:0x26b66
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002385208 ffffea0000782448 ffff8880aa040100
-raw: ffff888026b66fc1 ffff888026b66000 000000010000002e 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888026b66380: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
- ffff888026b66400: 00 fc fc fc fc fc fc fc 00 00 00 00 fc fc fc fc
->ffff888026b66480: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-                   ^
- ffff888026b66500: 00 fc fc fc fc fc fc fc 00 fc fc fc fc fc fc fc
- ffff888026b66580: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-==================================================================
-
-
+Addresses-Coverity: ("Dead code")
+Fixes: d3b990b7f327 ("netlabel: fix problems with mapping removal")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I wasn't sure whether it was intended that something other than ret_val
+be printed in the log, so that's why I'm sending this as an RFC.
+
+
+ net/netlabel/netlabel_domainhash.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/net/netlabel/netlabel_domainhash.c b/net/netlabel/netlabel_domainhash.c
+index f73a8382c275..526762b2f3a9 100644
+--- a/net/netlabel/netlabel_domainhash.c
++++ b/net/netlabel/netlabel_domainhash.c
+@@ -612,9 +612,8 @@ int netlbl_domhsh_remove_entry(struct netlbl_dom_map *entry,
+ 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
+ 	if (audit_buf != NULL) {
+ 		audit_log_format(audit_buf,
+-				 " nlbl_domain=%s res=%u",
+-				 entry->domain ? entry->domain : "(default)",
+-				 ret_val == 0 ? 1 : 0);
++				 " nlbl_domain=%s",
++				 entry->domain ? entry->domain : "(default)");
+ 		audit_log_end(audit_buf);
+ 	}
+ 
+-- 
+2.28.0
+
