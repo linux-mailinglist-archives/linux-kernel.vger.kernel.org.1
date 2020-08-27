@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9698253ECA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6180A253ED0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgH0HRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgH0HRA (ORCPT
+        id S1728012AbgH0HST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:18:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41453 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726882AbgH0HSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:17:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C90DC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NzD+ydxkPqiBTHP1y2Jm5Uv3WxjO9rjvYkW8EsnnfDg=; b=an/fHdEgKJDXYXK/p/2RZrIXOv
-        aRIAX7CN3W0Pp9Yctm/Zh+YuCR0LKfOIqoMQYuMOpDWuTz1uWr5VPwn+oGoxOcqq+tYeEWiBGa4SL
-        f0O1rN7bQE5kngr4IShoqKFnulLa+SyK5NiLSgoH5INRigKlQcPFSH6DKfPv53HOxckViozOYxnqd
-        geVTTLDzLuBpt5dzzkBxUbhQamiLMWzxHHmgxYdFhMOemrHEvkP7Idkb9mPi+B+TU4BIxaIvu9/Fc
-        aFtfK8PDSXyqtHBwDb73NroWCm/9d5IVv8wTOL0Dbv1f4010YULifRJABXVKDo1owCgPIHp7/Wm/Q
-        Xq2Yo+Eg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBC9W-0006nM-NV; Thu, 27 Aug 2020 07:16:54 +0000
-Date:   Thu, 27 Aug 2020 08:16:54 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Tomer Samara <tomersamara98@gmail.com>,
-        devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Riley Andrews <riandrews@android.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Arve Hj?nnev?g <arve@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v4 0/2] staging: android: Remove BUG/BUG_ON from ion
-Message-ID: <20200827071654.GB25305@infradead.org>
-References: <cover.1598023523.git.tomersamara98@gmail.com>
- <20200825064729.GA30014@infradead.org>
- <20200825065229.GA1319770@kroah.com>
+        Thu, 27 Aug 2020 03:18:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598512691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u9fFbu1GhOR5EEBDVCiFc4v2JfgRv9dRTWq43a81ToQ=;
+        b=RGBDWIK3G1NQQkSAwosQoT3Q5eSWHJy201C0S2AGNDU0gCkW+f9WfkL69xlIj1++3JQoCx
+        pKTlR9dwzOjmcAcImxT0vWTNEWM/p5456/vkfwhwwoA3sfYF6h+YqZ+VVzGjHm4wfKiLOY
+        2kMHQSTJuQ9xPuZn0+I8NVoR3TuMTBk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-OxBJ50QkOv-MIDhBb-qJgA-1; Thu, 27 Aug 2020 03:18:08 -0400
+X-MC-Unique: OxBJ50QkOv-MIDhBb-qJgA-1
+Received: by mail-wm1-f71.google.com with SMTP id z1so1800599wmk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:18:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u9fFbu1GhOR5EEBDVCiFc4v2JfgRv9dRTWq43a81ToQ=;
+        b=fQpPAywC0i/5f9wxE7479D5BcF1cqIrmqvwM0hujtcgn2uYPQHd8D0by+PqDzdpAAQ
+         sFeLANC/AaCwDTKjQLOzZKz/SfXXCvXH5BmX6xnI0uMmTNdwc/C8Fo/tSxhHccqsjAJw
+         cXanOpZg/c0S8o8vuuwyyVa/WheWW4gI8ZI5X85HwbSB+chm3OVoGAjlOSEuKR5/l450
+         /OaHk527XUqRwz735r/VxZjgPb195mSdBh4PNqxIAfXo48zgII7MNnpNTlDw3K41SaZH
+         wz89CLNiN8ZsKU0AtQgHVRmMHtYpx9VsxftpJf6n35HQgnEOPAez2lIz05r9/niuepY6
+         lhtg==
+X-Gm-Message-State: AOAM533FX3bNR+kfuznHwUAm9CI64eqaLuewnG2rWmOx+cPvOC/7PkNs
+        JPcRWdUywjam8qE8B3SIrcssH4i5VMwsGxcyMl+EI0EEPZrodrCVlSq4TPpghGo3jSpdcPumtvb
+        a0pD5xjimvhvZPE63mIf7mORZ
+X-Received: by 2002:adf:b349:: with SMTP id k9mr13694175wrd.135.1598512687410;
+        Thu, 27 Aug 2020 00:18:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwtPSLbAoCV+fY+tWZVhYam7dcbiUmX7cOj0w7rM1ddAdGJMa85Kp5T8Bt7PKtypBfPZj1aw==
+X-Received: by 2002:adf:b349:: with SMTP id k9mr13694156wrd.135.1598512687137;
+        Thu, 27 Aug 2020 00:18:07 -0700 (PDT)
+Received: from steredhat.lan ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id s12sm3022065wmj.26.2020.08.27.00.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 00:18:06 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 09:18:02 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <asarai@suse.de>,
+        io-uring@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] io_uring: allow disabling rings during the
+ creation
+Message-ID: <20200827071802.6tzntmixnxc67y33@steredhat.lan>
+References: <20200813153254.93731-1-sgarzare@redhat.com>
+ <20200813153254.93731-4-sgarzare@redhat.com>
+ <202008261248.BB37204250@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825065229.GA1319770@kroah.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <202008261248.BB37204250@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 08:52:29AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 25, 2020 at 07:47:29AM +0100, Christoph Hellwig wrote:
-> > On Fri, Aug 21, 2020 at 06:27:04PM +0300, Tomer Samara wrote:
-> > > Remove BUG/BUG_ON from androind/ion
+On Wed, Aug 26, 2020 at 12:50:31PM -0700, Kees Cook wrote:
+> On Thu, Aug 13, 2020 at 05:32:54PM +0200, Stefano Garzarella wrote:
+> > This patch adds a new IORING_SETUP_R_DISABLED flag to start the
+> > rings disabled, allowing the user to register restrictions,
+> > buffers, files, before to start processing SQEs.
 > > 
-> > Please just remove ion.  It has been rejected and we have developed
-> > proper kernel subsystens to replace it.  Don't waste your time on it.
+> > When IORING_SETUP_R_DISABLED is set, SQE are not processed and
+> > SQPOLL kthread is not started.
+> > 
+> > The restrictions registration are allowed only when the rings
+> > are disable to prevent concurrency issue while processing SQEs.
+> > 
+> > The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
+> > opcode with io_uring_register(2).
+> > 
+> > Suggested-by: Jens Axboe <axboe@kernel.dk>
+> > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 > 
-> It is going to be removed at the end of this year.  Why we keep it
-> around until then, I really don't know, but John and Laura have this as
-> the plan.
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> Where can I find the io_uring selftests? I'd expect an additional set of
+> patches to implement the selftests for this new feature.
 
-It keeps getting in the way of various projects and has no path
-going upstream properly.  Seems weird to keep this dead and not all
-that great code around.
+Since the io_uring selftests are stored in the liburing repository, I created
+a new test case (test/register-restrictions.c) in my fork and I'll send it
+when this series is accepted. It's available in this repository:
+
+https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
+
+Thanks for the review,
+Stefano
+
