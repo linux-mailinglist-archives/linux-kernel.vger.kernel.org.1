@@ -2,117 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DE42545FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090F12545FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgH0NdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:33:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:25597 "EHLO mga09.intel.com"
+        id S1728110AbgH0Ncz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728035AbgH0N22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:28:28 -0400
-IronPort-SDR: zA+9aKbt4jHDA2Gj7+B6a7P9oPa3Y3I5+2nlIuGa/BIjYnX4khduS2wUBX8Q4KWpsOKR0V9McP
- xadUjzfQNhMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="157503047"
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="157503047"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 06:28:28 -0700
-IronPort-SDR: ROXbn60uGAEfxQlLWOlgDCyR5qTaP+nvWHDUAHFNKYScuFTf6y15VebIoX9/cDXydcihspvv+D
- 5o1jDewAc/sg==
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="295723842"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 06:28:24 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 3DD3B20722; Thu, 27 Aug 2020 16:28:22 +0300 (EEST)
-Date:   Thu, 27 Aug 2020 16:28:22 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-i2c@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
-        linux-media@vger.kernel.org,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
-Subject: Re: [PATCH v6 6/6] Documentation: ACPI: Document
- allow-low-power-probe _DSD property
-Message-ID: <20200827132822.GI24582@paasikivi.fi.intel.com>
-References: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
- <20200826115432.6103-7-sakari.ailus@linux.intel.com>
- <ac5a7cb9-7fd1-fb73-b872-d5a58846d99f@infradead.org>
+        id S1728039AbgH0N2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:28:34 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB0FA207CD;
+        Thu, 27 Aug 2020 13:28:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598534914;
+        bh=pF2o0POSsU7imyLcH0vtSo+ed4TXKt5GQq2260FQqSg=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=BdYMyBJ0iiC1xM4Ul+Oj5kFajdhnLacX38jXP2sGP9OlaN2l4Ww3zno8E3wIuc/gy
+         Hl4R3Aj7SJcuXpOv2KKXV8gXzhuZTi5z2WriQfP8VXEelUyNcqzyLKwPZeDbhPrBwa
+         vBy+44SVMGPiuJHnc8IK05kgM0bjcYCeWsK5OYTg=
+Date:   Thu, 27 Aug 2020 15:28:30 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+cc:     Miroslav Benes <mbenes@suse.cz>, jpoimboe@redhat.com,
+        pmladek@suse.com, shuah@kernel.org, live-patching@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/livepatch: Do not check order when using "comm"
+ for dmesg checking
+In-Reply-To: <20200827132058.GA24622@redhat.com>
+Message-ID: <nycvar.YFH.7.76.2008271528000.27422@cbobk.fhfr.pm>
+References: <20200827110709.26824-1-mbenes@suse.cz> <20200827132058.GA24622@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac5a7cb9-7fd1-fb73-b872-d5a58846d99f@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 11:06:22AM -0700, Randy Dunlap wrote:
-> On 8/26/20 4:54 AM, Sakari Ailus wrote:
-> > Document the probe-low-power _DSD property and how it is used with I²C
-> > drivers.
+On Thu, 27 Aug 2020, Joe Lawrence wrote:
+
+> > , "comm" fails with "comm: file 2 is not in sorted order". Suppress the
+> > order checking with --nocheck-order option.
 > > 
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> >  .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++++++++
-> >  Documentation/firmware-guide/acpi/index.rst   |  1 +
-> >  2 files changed, 29 insertions(+)
-> >  create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > 
-> > diff --git a/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > new file mode 100644
-> > index 0000000000000..6fcc89162b898
-> > --- /dev/null
-> > +++ b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > @@ -0,0 +1,28 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +======================================
-> > +Probing I²C devices in low power state
-> > +======================================
-> > +
-> > +Introduction
-> > +============
-> > +
-> > +In some cases it may be preferred to leave certain devices powered off for the
-> > +entire system bootup if powering on these devices has adverse side effects,
-> > +beyond just powering on the said device. Linux recognizes the _DSD property
-> > +"allow-low-power-probe" that can be used for this purpose.
-> > +
-> > +How it works
-> > +============
-> > +
-> > +The property "allow-low-power-probe" boolean property may be used to tell Linux
+> > Signed-off-by: Miroslav Benes <mbenes@suse.cz>
 > 
-> Drop the first "property".
+> Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
 > 
-
-Thanks, will fix for v7.
-
-> > +that the I²C framework should instruct the kernel ACPI framework to leave the
-> > +device in the low power state. If the driver indicates its support for this by
-> > +setting the I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag in struct i2c_driver.flags
-
-This is leftover from v5 actually, I'll change the documentation to mention
-the allow_low_power_probe as well.
-
-> > +field and the "allow-low-power-probe" property is present, the device will not
-> > +be powered on for probe.
+> And not so important for selftests, but helpful for backporting efforts:
 > 
+> Fixes: 2f3f651f3756 ("selftests/livepatch: Use "comm" instead of "diff" for dmesg")
+
+I've added the Fixes: tag and applied to for-5.9/upstream-fixes. Thanks,
 
 -- 
-Kind regards,
+Jiri Kosina
+SUSE Labs
 
-Sakari Ailus
