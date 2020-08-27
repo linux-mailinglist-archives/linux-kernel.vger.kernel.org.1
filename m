@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637CE25487D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4DB254876
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgH0PHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:07:41 -0400
+        id S1728285AbgH0PHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:07:42 -0400
 Received: from mga17.intel.com ([192.55.52.151]:30258 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727935AbgH0PHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:07:13 -0400
-IronPort-SDR: GokZgpZ+0fIOqfA8iciIOBSJJ6FDEFl4ZgLc1iMlNqUIin+yce/fQvo5LSzQdA7WdFWrpaOLPB
- QXGT1JzyoSAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="136563652"
+        id S1728333AbgH0PHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:07:14 -0400
+IronPort-SDR: hEEet2v6UNe2UEYvdtSPqln2TuYNuaivlczHhJKG6pMDTtU1702FYHlzIzDhy8zIdaN9w918c+
+ fA3sZfxl/T3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="136563653"
 X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="136563652"
+   d="scan'208";a="136563653"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 08:06:59 -0700
-IronPort-SDR: sXW/5cAB0KoQkxUAL+dX5ekCBLtkuyaYEF1nhOEaG+tPQoyPYwDNppjhREDOpO3wf207kGgpco
- fL3X+y5ypNWg==
+IronPort-SDR: Xg7voNoK5fZYuKFbJjlFDUYuGwghawCJyVA/W+yRYt3yxL+IngxtuYFfxWcY3uZCFHzrI4y+4y
+ at7uvxqs31ZA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="332212864"
+   d="scan'208";a="332212867"
 Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
   by fmsmga002.fm.intel.com with ESMTP; 27 Aug 2020 08:06:59 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
@@ -47,9 +47,9 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v7 6/9] x86/msr-index: Define IA32_PASID MSR
-Date:   Thu, 27 Aug 2020 08:06:31 -0700
-Message-Id: <1598540794-132666-7-git-send-email-fenghua.yu@intel.com>
+Subject: [PATCH v7 7/9] mm: Define pasid in mm
+Date:   Thu, 27 Aug 2020 08:06:32 -0700
+Message-Id: <1598540794-132666-8-git-send-email-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.5.0
 In-Reply-To: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
 References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
@@ -58,35 +58,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IA32_PASID MSR (0xd93) contains the Process Address Space Identifier
-(PASID), a 20-bit value. Bit 31 must be set to indicate the value
-programmed in the MSR is valid. Hardware uses PASID to identify process
-address space and direct responses to the right address space.
+PASID is shared by all threads in a process. So the logical place to keep
+track of it is in the "mm". Both ARM and X86 need to use the PASID in the
+"mm".
 
+Suggested-by: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
+v4:
+- Change PASID type to u32 (Christoph)
+
+v3:
+- Change CONFIG_PCI_PASID to CONFIG_IOMMU_SUPPORT because non-PCI device
+  can have PASID in ARM (Jean)
+
 v2:
-- Change "identify process" to "identify process address space" in the
-  commit message (Thomas)
+- This new patch moves "pasid" from x86 specific mm_context_t to generic
+  struct mm_struct per Christopher's comment: https://lore.kernel.org/linux-iommu/20200414170252.714402-1-jean-philippe@linaro.org/T/#mb57110ffe1aaa24750eeea4f93b611f0d1913911
+- Jean-Philippe Brucker released a virtually same patch. I still put this
+  patch in the series for better review. The upstream kernel only needs one
+  of the two patches eventually.
+https://lore.kernel.org/linux-iommu/20200519175502.2504091-2-jean-philippe@linaro.org/
+- Change CONFIG_IOASID to CONFIG_PCI_PASID (Ashok)
 
- arch/x86/include/asm/msr-index.h | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/mm_types.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 2859ee4f39a8..aaddc6a9e237 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -257,6 +257,9 @@
- #define MSR_IA32_LASTINTFROMIP		0x000001dd
- #define MSR_IA32_LASTINTTOIP		0x000001de
- 
-+#define MSR_IA32_PASID			0x00000d93
-+#define MSR_IA32_PASID_VALID		BIT_ULL(31)
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 496c3ff97cce..1ff0615ef19f 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -542,6 +542,10 @@ struct mm_struct {
+ 		atomic_long_t hugetlb_usage;
+ #endif
+ 		struct work_struct async_put_work;
 +
- /* DEBUGCTLMSR bits (others vary by model): */
- #define DEBUGCTLMSR_LBR			(1UL <<  0) /* last branch recording */
- #define DEBUGCTLMSR_BTF_SHIFT		1
++#ifdef CONFIG_IOMMU_SUPPORT
++		u32 pasid;
++#endif
+ 	} __randomize_layout;
+ 
+ 	/*
 -- 
 2.19.1
 
