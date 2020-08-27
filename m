@@ -2,134 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0162549CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6017D2549D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgH0PpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726924AbgH0PpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:45:07 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F55EC061264;
-        Thu, 27 Aug 2020 08:45:06 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id f24so5320237edw.10;
-        Thu, 27 Aug 2020 08:45:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=74Ao/c7oeFoBT1F8v8BlKUziYBzWC4YEYws/h439jKs=;
-        b=AMPa8N1AoD9YB7fIeGgmF/cNowE7jTvmdnSlHkNXqWgTuHGj1LDyz6RY9dorKnL/fN
-         Z30pyVOeUrs4fDWQn3hrs1dZvRxrbplQZbImRrNJNHdCgPH/5mhyGT43pJeH7xkrp6Sb
-         MZBcScUrs/MJyLn42oxJRGaNJrvbJexbN1cPg2Cxkb3XtnP+LC3+ovtJFuj8hqptSUOv
-         CcXCkksNHNjATY9ob/FlyIIO46cj2X4u3uwybNf4+PMBFfX+68NaraOwOxzF+DfICVCM
-         VN25BNvOEthy10Y2DCDS0ilfaqRXmZ3ernBzLlAAUqcBNegk+XnORCZVVMope4D1TZQ+
-         iXvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=74Ao/c7oeFoBT1F8v8BlKUziYBzWC4YEYws/h439jKs=;
-        b=f6srJWownTppSnU2+3MptZvEHdePKHnvbEXq54deOOW5/FFNInOh2MhO+dlDMKLC4V
-         TpRtYq8GsF1rgDEC4DkwD7n0aDcdbXVc15lBXl1GBDykVcaE/e1y01mVsOpP9mvv6P+u
-         W1oxEvOT6F0u88HAeUZCmnJb1c2/FFxOWWgmin3ck/4zz85xvas1gRWE0mRzVcyjYzKS
-         iGhjfFdHSUGyXEtosG+HoQXrpK8nwjTtQmDlFkSSAtpQ7lG6Oxn+ioaEe/A85N1P6WP/
-         xrheaxSSYgWM2iylX+hC7Lr0f6OTUZ/sQmVwgqd/za+anrKEVy2zmMdtLJhg4YoOaRnP
-         kA2A==
-X-Gm-Message-State: AOAM531gg3WXCpmSqM85jFSKewr0BVAeTYfxwSmLzJdvcUldxs+gBKq8
-        xqZVe2tQfvthzkTgT68kYJQ=
-X-Google-Smtp-Source: ABdhPJxRtAe6Y1ma+0338eCNyd9I0m6G1oP+UGM2tA/8xgx0U3OYLFtKYBAAwxNFg0VrZz+x/RmEmw==
-X-Received: by 2002:a05:6402:3088:: with SMTP id de8mr20472098edb.88.1598543104973;
-        Thu, 27 Aug 2020 08:45:04 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id u4sm1804409edt.11.2020.08.27.08.45.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 08:45:03 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 17:45:02 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     hch@lst.de, joro@8bytes.org, linux@armlinux.org.uk,
-        will@kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com,
-        kyungmin.park@samsung.com, m.szyprowski@samsung.com,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, digetx@gmail.com,
-        matthias.bgg@gmail.com, yong.wu@mediatek.com,
-        geert+renesas@glider.be, magnus.damm@gmail.com, t-kristo@ti.com,
-        s-anna@ti.com, laurent.pinchart@ideasonboard.com,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/18] iommu/tegra: Add IOMMU_DOMAIN_DMA support
-Message-ID: <20200827154502.GA1660457@ulmo>
-References: <cover.1597931875.git.robin.murphy@arm.com>
- <cd11bc7851dbe46db6d14821a942678047331913.1597931876.git.robin.murphy@arm.com>
+        id S1728020AbgH0Ppi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726232AbgH0Pph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:45:37 -0400
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3547C22BEA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598543136;
+        bh=eqyMLLIE6kyA51bhC2FJ8DP5oiJHdLVYqUGcsum4sX4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ifRzaft039UAuM3khcciusxkwpXhFv/X7on+pB+TJdRBBN9pKAtYcHEkx3VgdQ9Rg
+         xVNPgdJoXr59hjr48cT5j9EbfDy1yfro0MTlQT4JLck0VzSUA36Ob1x6VD4d6PggpC
+         PVy7yzeKTy54rJgUqaRqLxlAW7CVBenVQU/VyPRo=
+Received: by mail-ot1-f48.google.com with SMTP id 5so4732300otp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:45:36 -0700 (PDT)
+X-Gm-Message-State: AOAM531GDXoch0KBRga69mHZsoaCfOwijYutYWz7uPhTtqmXEJE8ogzB
+        iJFgCkFH8Rm3oGsJEb5kE0ipsKAGF/F9u8wcBQ==
+X-Google-Smtp-Source: ABdhPJzOTck9h18ABU9uk0fPmf0IzzeCR4jpdNhi3NW/eHBO7XvDF4IoUHzw515kIxAFcFaDUgPruF4uD/HowsUlA4I=
+X-Received: by 2002:a05:6830:1d94:: with SMTP id y20mr6834595oti.129.1598543135457;
+ Thu, 27 Aug 2020 08:45:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
-Content-Disposition: inline
-In-Reply-To: <cd11bc7851dbe46db6d14821a942678047331913.1597931876.git.robin.murphy@arm.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+References: <20200818124815.11029-1-vaishnav@beagleboard.org> <20200818124815.11029-4-vaishnav@beagleboard.org>
+In-Reply-To: <20200818124815.11029-4-vaishnav@beagleboard.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 27 Aug 2020 09:45:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJWgtO_5ToPGUs0RYg476HftULN7J1wNO6ztUxxk=n6_g@mail.gmail.com>
+Message-ID: <CAL_JsqJWgtO_5ToPGUs0RYg476HftULN7J1wNO6ztUxxk=n6_g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] Add Device Tree Bindings for mikroBUS port
+To:     Vaishnav M A <vaishnav@beagleboard.org>
+Cc:     greybus-dev@lists.linaro.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Johan Hovold <johan@kernel.org>,
+        elder@kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
+        chrisfriedt@gmail.com, zoran.stojsavljevic@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 20, 2020 at 04:08:32PM +0100, Robin Murphy wrote:
-> Now that arch/arm is wired up for default domains and iommu-dma,
-> implement the corresponding driver-side support for DMA domains.
->=20
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+On Tue, Aug 18, 2020 at 6:48 AM Vaishnav M A <vaishnav@beagleboard.org> wrote:
+>
+> This patch adds device tree bindings for the mikroBUS port,
+> device tree overlays for the mikrobus Port on the BeagleBoard.org
+> PocketBeagle is available here :
+> github.com/beagleboard/bb.org-overlays/blob/master/src/arm/PB-MIKROBUS-0.dts
+>
+> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
 > ---
->  drivers/iommu/tegra-smmu.c | 37 +++++++++++++++++++++----------------
->  1 file changed, 21 insertions(+), 16 deletions(-)
+>  .../bindings/misc/linux,mikrobus.txt          | 81 +++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/linux,mikrobus.txt
+>
+> diff --git a/Documentation/devicetree/bindings/misc/linux,mikrobus.txt b/Documentation/devicetree/bindings/misc/linux,mikrobus.txt
+> new file mode 100644
+> index 000000000000..99f75caf5f35
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/linux,mikrobus.txt
+> @@ -0,0 +1,81 @@
+> +mikroBUS add-on board socket
+> +
+> +Required properties:
+> +- compatible: Must be "linux,mikrobus"
 
-We can't do that yet because it will currently still break for use-cases
-such as display where we don't properly set up identity mappings during
-boot. The result is that the dma-iommu code will enable translations
-before the driver gets a chance to set up any mappings and if the
-display controller was left on by the bootloader, scanning out a splash
-screen, this causes faults between the point where dma-iommu is being
-set up for the display controller and where the display controller
-starts mapping its own buffers (rather than the ones mapped by the
-bootloader).
+mikrobus is only a Linux thing? Just 'mikrobus-connector' is fine.
 
-That said, I do have a series that I've been carrying around for longer
-than I've wanted that does exactly this for Tegra SMMU and I'd prefer if
-you could drop this particular change from your series so that I can
-keep working on resolving the identity mapping issues first.
+Are there versions of mikrobus spec/connectors? If so, then should
+probably include that into
 
-Thierry
+> +- i2c-adapter:  phandle to the i2c adapter attached to the mikrobus socket.
+> +- spi-master: spi bus number of the spi-master attached to the mikrobus socket.
+> +- spi-cs: spi chip-select numbers corresponding to the chip-selects
+> +         on the mikrobus socket(0 -> chip select corresponding to CS pin
+> +         1 -> chip select corresponding to RST pin).
 
---YiEDa0DAkWCtVeE4
-Content-Type: application/pgp-signature; name="signature.asc"
+SPI and I2C need a common way to remap from host bus/cs to connector
+bus/cs including how to define the child devices and multiple
+instances.
 
------BEGIN PGP SIGNATURE-----
+> +- serdev-controller:  phandle to the uart port attached to the mikrobus socket.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9H1PwACgkQ3SOs138+
-s6GMrhAAqb0k0/ZQ/J5VIibNnM1oZSG1CTD/3tuwm94u1T1J++b71xlQpN0U7Fru
-gJNX22olSrdpzdecS9LQ3Twqu4qgPzLazvenfBLxxrDuwS466j3hbbW8cG1Tlb/m
-6lEbacziO0f91GP7ao5dAG0HIPZvIYfU1PIA/eOPnBcOlFVvWVfCnN6gOjPOSocz
-20X/S1W6d5Jo7x2T0PtA0TFpD9BZVzjZA2q9XVzPSxkqLfEVMU00Yp/TnHySfWJ3
-+sfRxeaUl5Ysjrtkd5YeFoIGlVctyKIKtGCIR60HU4bPlB4cdaVaaJBVkJAM7kQh
-p+UGnGgl09/DyAe57qVaEWsbcXwHaxeveFmdjMHn9y0veGidzQPg0KtDUL2k7D3V
-NXHKnets8HdkODT8PjTSbS3ELLEHf1GxsYAcR9aHvV1FLMl3c/8ZmMA1RZ5CIAbD
-rmFaxQENmVHUev0lQnwlYP7Wwt2YyXc62L9UfyhrIkQjHmm/D+uIlPmjkr/YDreI
-xndQ7H0OgVFKuc9nfSpnBOgIEeLDNr2AA59wzUxHikB+5MfDyxOk5TqnsjdcqSqr
-b8257AC5ZWe79OOD0/hwDAlmSlx/hB3lO2kmm3BhLX+5tOTQv7vTSgr9BTppkZrD
-dQHiT2TjMsiQyBhXhceazD0hhSAC3MSh1+TpgLDrBy2Sh96zUQ8=
-=Dzgn
------END PGP SIGNATURE-----
+'serdev' is a Linuxism. This also needs to be defined how child
+devices and multiple instances.
 
---YiEDa0DAkWCtVeE4--
+There's also a problem with the current serdev implementation that
+assigning a serial port to serdev or tty is a one time decision as
+probe time. So I don't think hotplug of a serial device will work
+today. But that's a Linux problem independent of the binding.
+
+> +- pwms: phandle to the pwm-controller corresponding to the mikroBUS PWM pin.
+
+The PWM binding has a provider specific number of cells, so some
+translation is needed. Probably can define a 'pwm-map' property like
+gpio-map on this. More below.
+
+> +- mikrobus-gpios: gpios array corresponding to GPIOs on the mikroBUS port,
+> +                 for targets not supporting the AN pin on the mikroBUS port as
+> +                 GPIO, the length of the gpios array can be 11, otherwise it
+> +                 should be 12.
+
+We have 'gpio-map' binding already (it's in the DT spec) created for
+this purpose of remapping connector GPIO numbers to host GPIO numbers.
+
+
+> +- pinctrl-names: pinctrl state names to support additional pin usage/deviations
+> +                from mikroBUS socket standard usage, must be "default",
+> +                "pwm_default", "pwm_gpio", "uart_default", "uart_gpio",
+> +                "i2c_default", "i2c_gpio", "spi_default", "spi_gpio", these
+> +                pinctrl names should have corresponding pinctrl-N entries which
+> +                corresponds to the pinmux state for the pingroup, for example,
+> +                i2c_default corresponds to the state where the I2C pin group
+> +                (SCL,SDA) are configured in I2C mode and i2c_gpio mode corresponds
+> +                to the pinmux state where these pins are configured as GPIO.
+> +- pinctrl-N : pinctrl-(0-8) corresponds to the pinctrl states for the states described
+> +             above.
+> +
+> +Example:
+> +       mikrobus-0 {
+> +               compatible = "linux,mikrobus";
+> +               status = "okay";
+> +               pinctrl-names = "default", "pwm_default", "pwm_gpio",
+> +                               "uart_default", "uart_gpio", "i2c_default",
+> +                               "i2c_gpio", "spi_default", "spi_gpio";
+> +               pinctrl-0 = <
+> +                       &P2_03_gpio_input_pin
+> +                       &P1_04_gpio_pin
+> +                       &P1_02_gpio_pin
+> +               >;
+> +               pinctrl-1 = <&P2_01_pwm_pin>;
+> +               pinctrl-2 = <&P2_01_gpio_pin>;
+> +               pinctrl-3 = <
+> +                       &P2_05_uart_pin
+> +                       &P2_07_uart_pin
+> +               >;
+> +               pinctrl-4 = <
+> +                       &P2_05_gpio_pin
+> +                       &P2_07_gpio_pin
+> +               >;
+> +               pinctrl-5 = <
+> +                       &P2_09_i2c_pin
+> +                       &P2_11_i2c_pin
+> +               >;
+> +               pinctrl-6 = <
+> +                       &P2_09_gpio_pin
+> +                       &P2_11_gpio_pin
+> +               >;
+> +               pinctrl-7 = <
+> +                       &P1_12_spi_pin
+> +                       &P1_10_spi_pin
+> +                       &P1_08_spi_sclk_pin
+> +                       &P1_06_spi_cs_pin
+> +               >;
+> +               pinctrl-8 = <
+> +                       &P1_12_gpio_pin
+> +                       &P1_10_gpio_pin
+> +                       &P1_08_gpio_pin
+> +                       &P1_06_gpio_pin
+> +               >;
+> +               i2c-adapter = <&i2c1>;
+> +               spi-master = <0>;
+> +               spi-cs = <0 1>;
+> +               serdev-controller = <&uart4>;
+> +               pwms = <&ehrpwm1 0 500000 0>;
+> +               mikrobus-gpios = <&gpio1 18 0> , <&gpio0 23 0>,
+> +                                       <&gpio0 30 0> , <&gpio0 31 0>,
+> +                                       <&gpio0 15 0> , <&gpio0 14 0>,
+> +                                       <&gpio0 4 0> , <&gpio0 3 0>,
+> +                                       <&gpio0 2 0> , <&gpio0 5 0>,
+> +                                       <&gpio2 25 0>  , <&gpio2 3 0>;
+> +       };
+> \ No newline at end of file
+> --
+> 2.25.1
+>
