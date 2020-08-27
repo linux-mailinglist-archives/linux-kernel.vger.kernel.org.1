@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD3725476F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48439254793
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgH0OuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S1728362AbgH0Ovt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727926AbgH0OuI (ORCPT
+        with ESMTP id S1727906AbgH0Ovq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:50:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186EDC061264;
-        Thu, 27 Aug 2020 07:50:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a65so5431487wme.5;
-        Thu, 27 Aug 2020 07:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j7RgArUIdyb6K9ojVFFA7woS4UMvYBf7NMDG3Mq1690=;
-        b=I4kiOtbl8+KzJiLw2dUrng+hSfv7rVlkWOHvjTZ+Oqn4w3X/XJ/jCuqLqVuO/BvT01
-         foN5AsRNsbABbPU11ejczLMcrZ+IqOx1Hyd2QZSHyo5y+pmQu/8YsSGFf8LqC0lJN1jz
-         VQInWjxhcKPd/BVCxkx424nha0WygTxzq5xAwxxfshmbxeBtxcHFH/KamQe3wuLzs75M
-         iOsME+rjVOPzu/S75HJZY07xY/eZX+fZWvPL1G6k7LIsRpWTedO2NK6lvVahUTIY52QZ
-         mVzVhMkvgIyI2Tu6S4pkNu4YZu9cRZnRF3fkMrMlCp6MoK5FUQOLi03z083Osw00j8y4
-         4g4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j7RgArUIdyb6K9ojVFFA7woS4UMvYBf7NMDG3Mq1690=;
-        b=PYQlJjjV2kY+NgAYmtNC7bv5um9N6IhE590e4hYPa0gH5awpcu0QWUaBCj1ZeYvTC7
-         HArM60clyHAzcH3pYnF4yqRXsiOJPSNIgVWdublQeBrRBHyiOoiaaROIsEppDItJWZka
-         qFF786UrQLCOq3/P9B7KHmUA4lX5E5X1RkW1wpjLj1avSzkZoO+mU4MvHbNI17w2JeS+
-         gTaJ/GNUewBwHSNE6kseYCsfV2KarVvE+5a38wJ6LkpjohlHDBpmH5MKDJmjli+xbkuR
-         BXZU0TcINzon7O5aqjeCYDhFX2mIYwi5Tv51l79CoXSoSaaTq4bdmgqfRQfNJwGWBIfC
-         JKJg==
-X-Gm-Message-State: AOAM531XQQtqx4ybXOS9FE58V1NNJCbzZ/GEZEpX7f8031UYI1CF22ll
-        kklyqwJHJ7EYDmGiZ4gbhrsYBeYBJXM=
-X-Google-Smtp-Source: ABdhPJwAU1+738BsCoTc559Y03dIntXC8fpqeC6ZU4c3XtTfTRt7SMjbEB9Pt9cLJkCrR9rf2FPcAw==
-X-Received: by 2002:a1c:1b43:: with SMTP id b64mr12806944wmb.6.1598539805859;
-        Thu, 27 Aug 2020 07:50:05 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q6sm5858770wma.22.2020.08.27.07.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:50:05 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 16:50:03 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] crypto: amlogic - use kfree_sensitive()
-Message-ID: <20200827145003.GA14173@Red>
-References: <20200827064402.7130-1-efremov@linux.com>
- <20200827064402.7130-3-efremov@linux.com>
+        Thu, 27 Aug 2020 10:51:46 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02ACC061264;
+        Thu, 27 Aug 2020 07:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=CXo1VsNJMnumrlPogWjBzw/zPcnBvymTjxJVEjV9DV8=; b=zJeJtPAjIfwokijM3k3lS2EFrm
+        p9b5Je7DxKqNlk4czOD+QNZUCgF5kKnpUWj0iQiV8X9efsyedLsuRlOLEEIxaRVC3qtB1UZU8eTIo
+        f5FTAHewB3b+83F7e2HolU51i5Hxr25cV7RlGmTPHLJQwLbjOxid5eDC51q5OOmzIrUFiChw+gBl3
+        riyvif8xmDNzt3vRE2YCjf8JJJ51SPyNvpVmOx0TZIVr7JemYwDbUiDS8fCgJfWKa97RtmQtzhius
+        3YQ2HkBL3/4rWTd6I55RDITc7Y2/JJdWKJ4B+7sYH7q56rXJGcqQb7ZHnP1P9Df9IO54dLGAYRJOR
+        v3JnR6og==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBJFf-0007Dp-1X; Thu, 27 Aug 2020 14:51:43 +0000
+Subject: Re: [PATCH v2] null_blk: add support for max open/active zone limit
+ for zoned devices
+To:     Niklas Cassel <niklas.cassel@wdc.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     damien.lemoal@wdc.com, johannes.thumshirn@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200827135018.63644-1-niklas.cassel@wdc.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6d9fb163-f9d9-1f2d-d88c-db9d3a6185b4@infradead.org>
+Date:   Thu, 27 Aug 2020 07:51:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827064402.7130-3-efremov@linux.com>
+In-Reply-To: <20200827135018.63644-1-niklas.cassel@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:44:00AM +0300, Denis Efremov wrote:
-> Use kfree_sensitive() instead of open-coding it.
+On 8/27/20 6:50 AM, Niklas Cassel wrote:
+> Add support for user space to set a max open zone and a max active zone
+> limit via configfs. By default, the default values are 0 == no limit.
+
+Hi,
+
+How does a user find out about how to use/set these limits?
+
+
+> Call the block layer API functions used for exposing the configured
+> limits to sysfs.
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+> Add accounting in null_blk_zoned so that these new limits are respected.
+> Performing an operating that would exceed these limits results in a
+> standard I/O error.
+> 
+> A max open zone limit exists in the ZBC standard.
+> While null_blk_zoned is used to test the Zoned Block Device model in
+> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned
+> mostly follows ZBC.
+> 
+> Therefore, implement the manage open zone resources function from ZBC,
+> but additionally add support for max active zones.
+> This enables user space not only to test against a device with an open
+> zone limit, but also to test against a device with an active zone limit.
+> 
+> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
 > ---
->  drivers/crypto/amlogic/amlogic-gxl-cipher.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
+> Changes since v1:
+> -Fixed review comments by Damien Le Moal.
 > 
+>  drivers/block/null_blk.h       |   5 +
+>  drivers/block/null_blk_main.c  |  16 +-
+>  drivers/block/null_blk_zoned.c | 319 +++++++++++++++++++++++++++------
+>  3 files changed, 282 insertions(+), 58 deletions(-)
 
-For the whole serie you didnt use getmaintainers, so nor sunxi and amlogic maintainers where CC.
-And my baylibre address which is the address for this driver.
+thanks.
+-- 
+~Randy
 
-Anyway, for this case the patch is trivial enough.
-
-Tested-by: Corentin Labbe <clabbe@baylibre.com>
-Acked-by: Corentin Labbe <clabbe@baylibre.com>
-
-Regards
