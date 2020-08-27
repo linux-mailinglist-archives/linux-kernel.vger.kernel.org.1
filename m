@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3317B2544CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7655F2544D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgH0MK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:10:58 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:34448 "EHLO fornost.hmeau.com"
+        id S1728534AbgH0MOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:14:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:50721 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728880AbgH0Lvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:51:38 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kBGQr-0001ru-0d; Thu, 27 Aug 2020 21:51:06 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 27 Aug 2020 21:51:05 +1000
-Date:   Thu, 27 Aug 2020 21:51:05 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
- is larger than 1024 bytes
-Message-ID: <20200827115104.GA5409@gondor.apana.org.au>
-References: <202008271145.xE8qIAjp%lkp@intel.com>
- <20200827080558.GA3024@gondor.apana.org.au>
- <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
- <CAK8P3a3tjv78arTj75eKk5zYUhrGkPYRDLiqv3WJJC=U+Jia0Q@mail.gmail.com>
- <CAMj1kXHhmAdHjK5avXOySw43khzft1g8p48jX7aTeTC0FvS7tQ@mail.gmail.com>
- <CAK8P3a1nOL+BbvGAM3-aiH-mfzmFYgfFL2dWJKd8=Rw-WosP=w@mail.gmail.com>
- <CAMj1kXGpX+g_t4aAz5yGs-c+PG+NLnu1j9_QLJ6teWTjJ1FkMQ@mail.gmail.com>
+        id S1728955AbgH0LxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:53:02 -0400
+IronPort-SDR: I0k0YF4ek32zFIlpUDfYcS1PI5oanqAcsMRtNwlcyoaebXeCK3lj3y6M1LBqodXZljAAkSFWmu
+ 2p0mpK8qTmYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="155722115"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="155722115"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 04:52:55 -0700
+IronPort-SDR: ug1usJ7p4y6iccl57ts+nkKCZh7yjIkFPh9ovPzETDP2GF8TG0jU+MUQGWl0ERFmRg57TT4ahi
+ 1pMOhqCPQtsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="329571977"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 27 Aug 2020 04:52:53 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kBGSZ-00BoKb-EV; Thu, 27 Aug 2020 14:52:51 +0300
+Date:   Thu, 27 Aug 2020 14:52:51 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v1 0/5] irqdomain: clean up, add
+ irq_domain_create_legacy()
+Message-ID: <20200827115251.GE1891694@smile.fi.intel.com>
+References: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
+ <20200726091202.GJ3703480@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXGpX+g_t4aAz5yGs-c+PG+NLnu1j9_QLJ6teWTjJ1FkMQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200726091202.GJ3703480@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:41:53PM +0200, Ard Biesheuvel wrote:
->
-> That does not help, unfortunately.
+On Sun, Jul 26, 2020 at 12:12:02PM +0300, Andy Shevchenko wrote:
+> On Wed, Jul 08, 2020 at 07:21:30PM +0300, Andy Shevchenko wrote:
+> > In order to make users OF independent provide irq_domain_create_legacy() API.
+> > Last patch is an example of such user. First three patches are little cleanups.
+> > 
+> > Since regmap patch is dependent to what is now in regmap tree, I suggest to
+> > create an immutable branch in IRQ domain tree and Mark can pull it and apply
+> > the last one.
 > 
-> What does seem to work is
-> 
-> struct chacha_state { u32 x[16]; };
-> 
-> struct chacha_state chacha_permute(struct chacha_state st, int nrounds)
+> Marc, are you okay with the IRQ domain patches?
 
-Passing 64 bytes by value is not good.
+Marc, should I resend this? All dependencies are now resolved.
 
-Passing struct chacha_state as a pointer doesn't work either.
+> > Andy Shevchenko (5):
+> >   irqdomain: Remove unused of_device_id forward declaration
+> >   irqdomain: Add forward declaration of fwnode_handle
+> >   irqdomain: Replace open coded of_node_to_fwnode()
+> >   irqdomain: Introduce irq_domain_create_legacy() API
+> >   regmap: irq: Convert to use fwnode directly
+> > 
+> >  Documentation/core-api/irq/irq-domain.rst |  6 ++++++
+> >  drivers/base/regmap/regmap-irq.c          | 11 +++++------
+> >  include/linux/irqdomain.h                 |  8 +++++++-
+> >  kernel/irq/irqdomain.c                    | 19 +++++++++++++++----
+> >  4 files changed, 33 insertions(+), 11 deletions(-)
 
-Cheers,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+With Best Regards,
+Andy Shevchenko
+
+
