@@ -2,193 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF80254601
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BD0254609
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgH0NeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        id S1726873AbgH0Ngy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbgH0NcK (ORCPT
+        with ESMTP id S1728358AbgH0NcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:32:10 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C789C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:32:10 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id b79so4530459wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:32:10 -0700 (PDT)
+        Thu, 27 Aug 2020 09:32:17 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F390C061233
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:32:17 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id l7so1578314wrx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=RzjTTXuW8DoQzMoQkpQltYkMS2hvfG2Wfy3KypxE85c=;
-        b=llWyNpxJ3XYx4msjmJiZYlY6gVQe7XWBxESPQWE5O4+p1/7ffuz3Hh+8PKvIOKijtA
-         xPjWCpULHdChCIFlNhwXM0bYx4QhMtmMkWALfpAteoa++wRIjBx4elYwR365z7mcimmn
-         QzEJsSO9u2Zwd6DQ/83vF0GIYszdYx0fCcmDa/v87iBYf/cggfoNA+iD8VHiv7Qg9CG5
-         d4gi9feMHBUGAhGUMqRb78xOKL/6fZtMkY3OBwTH/+LwxSByvYejWSaXvx/8Omr9lLH9
-         6C1ipG5Z68JQKmc7vA0fDA8Y07pG9V1XyucEBTsVIWzEqikWY8pKDYIHa4vzfy+4fysd
-         mZCw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:autocrypt:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CnBhoFWrprIDN00i9AYEpJ0QWAj8a6NyJSnQAwk3nKA=;
+        b=bVAl9fYOg0wza5dd/3tsnmIXV42c6nLllLNKNTFK8PjWan+hZljgOF+GzgjWbmw7GO
+         5wHgbTeo+R1TJnD4EdKyvTWm/6pWTDf6wuuIyllBCRwn85yFk6XJzpuZDvriihbyFd8b
+         6TO336OedwDKN+td71Uk0A/l7KGkJmNqK/eCB/DpYDMVcTk/INOPrZjCyb6psMpSaFXF
+         ycU3t8B+r2ryjj3NMZklGbquNyFKNn/byEEOcfiDNQDgM3+eLN0vdg5onuY0bGjDdS9V
+         fOqq2o29rJUykd+ke34BnoiKhMxK5x8O0G4cQ01iE8HUgmr0MVzyAP9Ds/jRtnQsX+7l
+         mQZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=RzjTTXuW8DoQzMoQkpQltYkMS2hvfG2Wfy3KypxE85c=;
-        b=GUPvcJ0mJI47QUhseai74QF9pxRuYC/2mQGSXZPnD5olVax5L9m+Z6seUEK66qetzV
-         ETPizLRNJ0hxLBtaJvmHpFO43NHj4sgrNF5eVAhpzfR10fmz7fYOnf5O4g1dHP4ykBiy
-         G+DdrEI4c/01RB6W1F5mo+2O6DJZlNx3K8DQCe74izK4D7gFuh487CDnq3ZxVkIt7XGi
-         Kbt36gJ6ayRTbotAUBq9d/51fstc8ucWVGQai+IEpYSy6S3YVGCDUwb9mE2D8FMdlsAl
-         +9m5JZHMmrHOjBYGurCvK6MiYnEmo79OrmhN/8HkGjzktseUWtry7Eh3nm7VQp1BxPj1
-         3UJQ==
-X-Gm-Message-State: AOAM5304XfzH6Nw44Mpyn3NIOWcZtgimRic4RnkbPUVTBkxmo0gAdLxe
-        uaiYxUqv3jTOfp3zERByRpHaiQ==
-X-Google-Smtp-Source: ABdhPJw34SA8WJgrEgzMp2TR1ApIy6v1Wx2UvzK6DpDa87F1baFk/BT77mLLH0QK1paRl37b2MDcRQ==
-X-Received: by 2002:a1c:b4c1:: with SMTP id d184mr12466841wmf.26.1598535129044;
-        Thu, 27 Aug 2020 06:32:09 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id 31sm6239269wrp.87.2020.08.27.06.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 06:32:08 -0700 (PDT)
-References: <20200731120603.2243261-1-jbrunet@baylibre.com> <CGME20200827124306eucas1p2c355345ca848e396f1fb06a7ef7a111e@eucas1p2.samsung.com> <e950898e-0a07-4f75-2640-ec8039d81464@samsung.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>,
-        linux-kernel@vger.kernel.org, zhangn1985@outlook.com,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH] ASoC: meson: cards: deal dpcm flag change
-In-reply-to: <e950898e-0a07-4f75-2640-ec8039d81464@samsung.com>
-Date:   Thu, 27 Aug 2020 15:32:07 +0200
-Message-ID: <1jmu2g6wq0.fsf@starbuckisacylon.baylibre.com>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CnBhoFWrprIDN00i9AYEpJ0QWAj8a6NyJSnQAwk3nKA=;
+        b=VIuROTpsTuj++u1wKNJMExXCEyNN7S6mWAcBKjFJep8qOygrxs1lc9Et4gZxpxIlXp
+         H9OQfd4Z49TgmQ/YrjuHneGfE/Rs95D6zp5cSDUmTtJg6qd8bZDlSZgyG4zEwgPJU5lD
+         GcoVtUlbnv9oJVcIcVhwgt+Jj+rsuXjy453Tj1uQ9RX7GiW0sWnJL0CpuCcCKzMXkJF3
+         gzFCGAENO+wkC0u+HVw7/HtbFY/SU/jE5BUIJR0oVNQrkIesULhmo6NwjBpQsiQQhrJt
+         RCzeNCaqhflJtceJzWOfVD2fhEcFcrOcGjgD1/HRrchVlgupSXJSe7YCkIOtrNARv/Yg
+         GAcg==
+X-Gm-Message-State: AOAM532X/ocg/+RAedHCLxVb+YCTlK6FQx2Q3uwC7BIbgq+WV9BG9fB6
+        PdH5J5dfBq+TDr++KCvG0KF+6Q==
+X-Google-Smtp-Source: ABdhPJzghwmF7BWi41naSgeIRR+oSU925DS1i8kyQhq5YclNstFArZhHJGZY3RCecBjbuL+khXKqXw==
+X-Received: by 2002:a5d:4701:: with SMTP id y1mr21181346wrq.416.1598535135779;
+        Thu, 27 Aug 2020 06:32:15 -0700 (PDT)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id g14sm4873096wmk.37.2020.08.27.06.32.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 06:32:14 -0700 (PDT)
+Subject: Re: [PATCH] interconnect: Show bandwidth for disabled paths as zero
+ in debugfs
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Evan Green <evgreen@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+References: <20200729104933.1.If8e80e4c0c7ddf99056f6e726e59505ed4e127f3@changeid>
+ <20200825000846.GC486007@google.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
+ 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
+ KEmKjLDvB0pePJkdTw==
+Message-ID: <ef2fa54c-7a20-8d3a-67d2-b26f70ac80c1@linaro.org>
+Date:   Thu, 27 Aug 2020 16:32:14 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200825000846.GC486007@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Matthias,
 
-On Thu 27 Aug 2020 at 14:43, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+Thanks for the patch!
 
-> Hi Jerome,
->
-> On 31.07.2020 14:06, Jerome Brunet wrote:
->> Commit b73287f0b074 ("ASoC: soc-pcm: dpcm: fix playback/capture checks")
->> changed the meaning of dpcm_playback/dpcm_capture and now requires the
->> CPU DAI BE to aligned with those flags.
+On 8/25/20 03:08, Matthias Kaehlcke wrote:
+> On Wed, Jul 29, 2020 at 10:50:12AM -0700, Matthias Kaehlcke wrote:
+>> For disabled paths the 'interconnect_summary' in debugfs currently shows
+>> the orginally requested bandwidths. This is confusing, since the bandwidth
+>> requests aren't active. Instead show the bandwidths for disabled
+>> paths/requests as zero.
 >>
->> This broke all Amlogic cards with uni-directional backends (All gx and
->> most axg cards).
->>
->> While I'm still confused as to how this change is an improvement, those
->> cards can't remain broken forever. Hopefully, next time an API change is
->> done like that, all the users will be updated as part of the change, and
->> not left to fend for themselves.
->>
->> Fixes: b73287f0b074 ("ASoC: soc-pcm: dpcm: fix playback/capture checks")
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->
-> This patch landed finally in v5.9-rc1. I've noticed it causes a 
-> following warning on Hardkernel's Odroid N2 board 
-> (arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtb):
+>> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> 
+> ping, any comments on this?
+> 
 
-Looks like the after match of the flag change again ...
+Looks good to me! Just in case, I'll also add:
+Fixes: 7d374b209083 ("interconnect: Add helpers for enabling/disabling a path")
 
->
-> meson-drm ff900000.vpu: [drm] fb0: mesondrmfb frame buffer device
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 66 at sound/soc/soc-core.c:817
-
-Marek, is it possible that you have CONFIG_LOCKDEP enabled in your
-configuration ?
-
-snd_soc_find_dai() is called by snd_soc_dai_link_set_capabilities().
-Indeed, the client_mutex will not be help by any of the user of 
-snd_soc_dai_link_set_capabilities() when called.
-
-So I believe simple card and qcom will be impacted as well.
-
-> snd_soc_find_dai+0xe4/0xf0
-> Modules linked in: dw_hdmi_i2s_audio dw_hdmi_cec meson_gxl realtek 
-> dwmac_generic crct10dif_ce snd_soc_meson_axg_sound_card 
-> snd_soc_meson_card_utils rc_odroid pwm_meson meson_ir 
-> snd_soc_meson_g12a_toacodec snd_soc_meson_axg_tdmout rtc_meson_vrtc 
-> snd_soc_meson_g12a_tohdmitx snd_soc_meson_codec_glue mdio_mux_meson_g12a 
-> snd_soc_meson_axg_tdmin dwmac_meson8b stmmac_platform 
-> reset_meson_audio_arb snd_soc_meson_axg_frddr axg_audio 
-> snd_soc_meson_axg_toddr sclk_div clk_phase meson_rng stmmac rng_core 
-> meson_dw_hdmi snd_soc_meson_axg_fifo meson_drm meson_canvas mdio_xpcs 
-> dw_hdmi snd_soc_meson_t9015 display_connector nvmem_meson_efuse 
-> snd_soc_meson_axg_tdm_interface snd_soc_meson_axg_tdm_formatter 
-> snd_soc_simple_amplifier
-> CPU: 3 PID: 66 Comm: kworker/3:1 Not tainted 5.9.0-rc1 #1527
-> Hardware name: Hardkernel ODROID-N2 (DT)
-> Workqueue: events deferred_probe_work_func
-> pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
-> pc : snd_soc_find_dai+0xe4/0xf0
-> lr : snd_soc_find_dai+0xe0/0xf0
-> ...
-> Call trace:
->   snd_soc_find_dai+0xe4/0xf0
->   snd_soc_dai_link_set_capabilities+0x68/0x160
->   axg_card_add_link+0x188/0x5c4 [snd_soc_meson_axg_sound_card]
->   meson_card_probe+0x1e0/0x960 [snd_soc_meson_card_utils]
->   platform_drv_probe+0x50/0xa8
->   really_probe+0x110/0x400
->   driver_probe_device+0x54/0xb8
->   __device_attach_driver+0x90/0xc0
->   bus_for_each_drv+0x70/0xc8
->   __device_attach+0xec/0x150
->   device_initial_probe+0x10/0x18
->   bus_probe_device+0x94/0xa0
->   deferred_probe_work_func+0x70/0xa8
->   process_one_work+0x2a8/0x718
->   worker_thread+0x48/0x460
->   kthread+0x134/0x160
->   ret_from_fork+0x10/0x1c
-> irq event stamp: 269690
-> hardirqs last  enabled at (269689): [<ffff800010f6048c>] 
-> _raw_spin_unlock_irqrestore+0x7c/0x98
-> hardirqs last disabled at (269690): [<ffff800010025a68>] 
-> do_debug_exception+0x140/0x26c
-> softirqs last  enabled at (269318): [<ffff800010001654>] 
-> efi_header_end+0x654/0x6d4
-> softirqs last disabled at (269313): [<ffff80001008929c>] 
-> irq_exit+0x16c/0x178
-> ---[ end trace 56a3ea4fa00c37c8 ]---
-> ...
-> axg-sound-card sound: ASoC: no DMI vendor name!
->
-> The warning is repeated 10 times.
-
-That's the probe defferal mechanism causing the repeat
-
->
-> The bisect between v5.8-rc1 and v5.9-rc1 points to the commit 
-> c8f7dbdbaa15 ("Merge remote-tracking branch 'asoc/for-5.8' into 
-> asoc-linus"), which introduced a branch with this patch.
->
-> The commit with this patch is applied on the earlier kernel release 
-> (da3f23fde9d7 "ASoC: meson: cards: deal dpcm flag change" on top of 
-> v5.7-rc1) worked fine, so it looks that there is an interference with 
-> something merged later.
->
-> If I revert this patch on top of v5.9-rc1 or current linux-next, the 
-> warning is gone.
-
-... but any aml platform with uni-directional backend (not the N2, lucky
-you) would be broken.
-
-> Let me know how I can help debugging this issue.
-
-If you have CONFIG_LOCKDEP enabled, try disabling see how it goes and
-report. It is not a fix but at least you'll be unblocked.
-
->
-> Best regards
-
+Thanks,
+Georgi
