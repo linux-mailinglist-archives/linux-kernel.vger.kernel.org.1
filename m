@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B257253C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866E6253C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgH0D0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 23:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        id S1727042AbgH0D1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 23:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgH0D0R (ORCPT
+        with ESMTP id S1726825AbgH0D1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 23:26:17 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E73C0612A3;
-        Wed, 26 Aug 2020 20:26:17 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so2334023pgm.7;
-        Wed, 26 Aug 2020 20:26:17 -0700 (PDT)
+        Wed, 26 Aug 2020 23:27:47 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD1CC0612A3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 20:27:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id v15so2336999pgh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 20:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=rN37qI20ECUBatR6H4A3g3beWRHeq6Mi+Lp9BztZsHQ=;
-        b=juyCGc0DIHQSjOjHsrh+qOzPev0piOd8Bz8V5NomMrKpRtgz1hEkev8rk95Rfosf++
-         lnk73HOq4CZaRbiG0/oPUOppYKjNDDv+GrKz5yob2Q+JLlv/uQhRgO5ugFKMGUCEMAJO
-         HQoMI3sVkJ+892Dgoc35biNla/wrHNjbvXHmSuHdtOgUlE6ARLsD4FsGP0TfpePwMpoS
-         iinEOqJzEcZh3fQje53unSjcBpdNpYqMREd+jzPdufjB4ixU9P6StstghAsr9tlHzPMi
-         ZDvtBdi9SR1ibwo1pQDX8rWLe4aSnHgcfYebs+L6FpQM1Vj5hvbYYY1mQ9Zx6ayBfHA4
-         yl+w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lan4WhUYFA9HfJB7qKCdogU/OkakBkQiIWekbxEYY98=;
+        b=hOEvmvLCZyrKyDnuP6ZTH5QkgSIvXNxxJ9nzK1v+YayMxhu6AlfZAOwwFKB8juill8
+         6d1YaoVMVSx4yWTDm5GQNLXmMDilPB75JBjxaxyxtteW/PRz7yExWz6qzjVAQamqzHOU
+         DNoeMgiBJyLZTHhVs2vBMSTjo01EHtC7+jCV0VU03YN4wzxDYKzCxFrN+DfeFXPVpIhr
+         enPniRrknxG7zc/rBaobn056SxiMSpkWr+YxUR9ZVJ+i9DN8dAC59Eqf3x9mwalEEIg0
+         RIVM7poJwPN7PSnZaVjHochhWrDxT8GKH4n0/YMpEwJQUgFnOcr5puMwfoH0AjSsnHqS
+         CaZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=rN37qI20ECUBatR6H4A3g3beWRHeq6Mi+Lp9BztZsHQ=;
-        b=fjeqhFaeayR3UtWKt+IGyZTT1pyjQ/L9qFyDCyN3mGFeZ0T2Mzylh0rLIqC7tbIsjv
-         /OWETPKn40DVUOsZhqaV0JjxvCvAu8vb0Ja3nOy26cBOTaNFwk+ZhrnL1X/zkwGQ9Ecv
-         YipbCzOBBrvNzNiH1Vi6twPKVZQmsNU1kvOkPgs9Gg44TZzN4Hm+oDXa/up7ObmazDpk
-         CpH8qQBU0O/muF/Yejfk0ulsLvh/mhdiNzrKPiOf9UNs/dddd1d6vnXwqfwaAJFOtrkM
-         VCcN2icSWiJu8zOmDx9D9W2rDsxyVHHXD4S1MpAW+nQtCAo4tFI+DDpxvvmndFS1ZlCm
-         bCFQ==
-X-Gm-Message-State: AOAM5329bsLojoWti9X+/N9zMupw6QRfSrrmGE+S0sS9QZr8qNMB2GzC
-        uuPJ67bx3XxFvoipBdhlJPE=
-X-Google-Smtp-Source: ABdhPJxs3SdM7Lc3+cmlB678u24GpPwR5yvBajty/DF5b6W58gTKmaqbA8z69x1z9NNVbSOoHjIFhQ==
-X-Received: by 2002:a17:902:b589:: with SMTP id a9mr14117797pls.98.1598498776792;
-        Wed, 26 Aug 2020 20:26:16 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:57b:156e:1129:dc1b:b8d8:6430])
-        by smtp.gmail.com with ESMTPSA id 70sm676982pfu.107.2020.08.26.20.26.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Aug 2020 20:26:16 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com
-Cc:     cy_huang@richtek.com, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] usb typec: mt6360: Prevent the race condition during module remove
-Date:   Thu, 27 Aug 2020 11:25:32 +0800
-Message-Id: <1598498732-25194-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598498732-25194-1-git-send-email-u0084500@gmail.com>
-References: <1598498732-25194-1-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lan4WhUYFA9HfJB7qKCdogU/OkakBkQiIWekbxEYY98=;
+        b=RPVKSTKAHz/YQPE+rBTv1hokNN10yetcGRNubg1f0kYTtevaEFzxmFI+vDZxhgrjQ7
+         AXAYzjyVQBdKw3E98XhNDZPVo/+EvxEUPqlD0wyd3sbnCKnqZ9DnkHD28TZVZmWI+qkQ
+         qnneK9Drp56P8AWOpEVqXp2xgMnenA/bvyKDpFz52fbufdtXP9egoRapGH7YEkUqVD0i
+         7azzPxl7vSZrf39Zm7EGrt3fskGcydX9cK1qWRgoeol7miDA+6wf/Wf2HbGmSmtSMXJx
+         UO94ECeJwAKR6o1ofky2b1dIVKmgqjJny6umckxyUELbP40zmsjhdd31pi64uXwDHP+m
+         7CNQ==
+X-Gm-Message-State: AOAM530vjooHOpNX0j8N9N8nlZQTucmLhqrdvOOKywmjy9pgJX76xXCO
+        RC08z90mJx+FybDGAKsZnDT4gguo+4IUAGzYvt3f0A==
+X-Google-Smtp-Source: ABdhPJxviVfW2bD8P/pmqX6R2i/L3BeFzL5WChR8QAeMF3tlemrFqITDV2CNyY2G8t9QoxiWIv1lc1pXLt8W8OMcFA0=
+X-Received: by 2002:a62:1514:: with SMTP id 20mr1974731pfv.62.1598498865714;
+ Wed, 26 Aug 2020 20:27:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <5e10c1645dd8f735215cf54a74db0f8dd3f6cbd5.camel@perches.com>
+In-Reply-To: <5e10c1645dd8f735215cf54a74db0f8dd3f6cbd5.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 26 Aug 2020 20:27:34 -0700
+Message-ID: <CAKwvOdnfVeL=KyGdTu9eXRwc31s33WC+0t8SWusk0VLE-nPxgw@mail.gmail.com>
+Subject: Re: [PATCH] deprecated.rst: Remove now removed uninitialized_var
+To:     Joe Perches <joe@perches.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Wed, Aug 26, 2020 at 8:12 PM Joe Perches <joe@perches.com> wrote:
+>
+> It's now gone from the kernel so remove it from the deprecated API text.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-Prevent the race condition from interrupt and tcpci port unregister
-during module remove.
+Thanks Joe.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- drivers/usb/typec/tcpm/tcpci_mt6360.c | 1 +
- 1 file changed, 1 insertion(+)
+> ---
+>  Documentation/process/deprecated.rst | 18 ------------------
+>  1 file changed, 18 deletions(-)
+>
+> diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+> index 918e32d76fc4..70720f00b9aa 100644
+> --- a/Documentation/process/deprecated.rst
+> +++ b/Documentation/process/deprecated.rst
+> @@ -51,24 +51,6 @@ to make sure their systems do not continue running in the face of
+>  "unreachable" conditions. (For example, see commits like `this one
+>  <https://git.kernel.org/linus/d4689846881d160a4d12a514e991a740bcb5d65a>`_.)
+>
+> -uninitialized_var()
+> --------------------
+> -For any compiler warnings about uninitialized variables, just add
+> -an initializer. Using the uninitialized_var() macro (or similar
+> -warning-silencing tricks) is dangerous as it papers over `real bugs
+> -<https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/>`_
+> -(or can in the future), and suppresses unrelated compiler warnings
+> -(e.g. "unused variable"). If the compiler thinks it is uninitialized,
+> -either simply initialize the variable or make compiler changes. Keep in
+> -mind that in most cases, if an initialization is obviously redundant,
+> -the compiler's dead-store elimination pass will make sure there are no
+> -needless variable writes.
+> -
+> -As Linus has said, this macro
+> -`must <https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/>`_
+> -`be <https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/>`_
+> -`removed <https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/>`_.
+> -
+>  open-coded arithmetic in allocator arguments
+>  --------------------------------------------
+>  Dynamic size calculations (especially multiplication) should not be
+>
+>
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-index 6a28193..a381b5d 100644
---- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
-+++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-@@ -164,6 +164,7 @@ static int mt6360_tcpc_remove(struct platform_device *pdev)
- {
- 	struct mt6360_tcpc_info *mti = platform_get_drvdata(pdev);
- 
-+	disable_irq(mti->irq);
- 	tcpci_unregister_port(mti->tcpci);
- 	return 0;
- }
+
 -- 
-2.7.4
-
+Thanks,
+~Nick Desaulniers
