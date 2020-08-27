@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933BB254C65
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A136D254C69
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgH0Rue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 13:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgH0Rud (ORCPT
+        id S1727020AbgH0RwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 13:52:22 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12580 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726197AbgH0RwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 13:50:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72D3C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:50:32 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o68so242526pfg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b/SqgsWTsXb0lAU8siKr5ztfJwzAssbL+oJi/YbwiHA=;
-        b=EqsgqqAct0LzsIgirTyObWdj5tHI8+KgB9NSPeSYMO10Ye/pXUa8Eiui0nReAip/gw
-         8gTsgoiPhgewoZFInWgvSHQrixdPD3vIaeQptrt6UzPV61WxLq9AjRK5rhN3uJKoocWK
-         8Zflarg0F905B8wAM0GXvkpo47/VJdSMsYxJw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b/SqgsWTsXb0lAU8siKr5ztfJwzAssbL+oJi/YbwiHA=;
-        b=QKgnk6h38cV8Z7Q79Yu/9ZL/JmMsCHUhp3yd8NeBjPbnjS12Fm3VmRpw6yKuoXAl+/
-         NFLlPRhK9K8109UwNmK7lK3vz4UIPK4vFe9hWaP01jvlgFCzq9jD4nh5jatCERIXqlcr
-         AFW0dmFMi2e9m9LCynBu2pmHMniLc0WRC9veX90T9wHmgPP5mBgRQ9DW2pwu7KBuGI+b
-         7Fe/SVka9kwYd+ewEcIDjE3wzP0TxUO7I46y/iwmAReJCsouIsYU9hp6gO81WvlISxgN
-         7VTPg2aMjoH+ucPjQx9MZsMLEmc6TE6J3Q0vU26mwB/jiytOwc0fD79ZkznBXMaPms3g
-         U8Ew==
-X-Gm-Message-State: AOAM533VYGfkA5M+Aj/4JNfATtEU7Mah13tnHbQgXomywVQ4T+gwChHw
-        NYrUP1SqwWPCwjOr6mLiN0qx0w==
-X-Google-Smtp-Source: ABdhPJwfJOfwKwO/2EvFZ4qXgPksM9GHGJeDgFs1QiCo+e8nten38UbbDx7ppa3qyPKqi4hM2YfLKQ==
-X-Received: by 2002:aa7:850b:: with SMTP id v11mr17467146pfn.240.1598550632247;
-        Thu, 27 Aug 2020 10:50:32 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g17sm2676168pjl.30.2020.08.27.10.50.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 10:50:31 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 10:50:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Allen Pais <allen.lkml@gmail.com>, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] linux/kernel.h: add container_from()
-Message-ID: <202008271050.009BE3795@keescook>
-References: <20200827013636.149307-1-allen.lkml@gmail.com>
- <202008261929.A50D0DB3E8@keescook>
- <20200827121941.GC420527@kroah.com>
+        Thu, 27 Aug 2020 13:52:21 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07RHnfVp010079
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:52:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=3/tzIIGNMqjCFTV6v9V1vjpzFF8zvMk/JrTc+/xE3aE=;
+ b=nYqz1M9iOQYO7XCbaLne6uvxy/9bVYX6Hjn128VPZGcIB4L1L+MVErcJShTSMggLt+4v
+ O68DC5RY03HViyNfC2tf5lgs9p/phYzxl4BtVAfZqDnCqGAXZpKAUmG/LChTeCACvcX/
+ AuzemBmj4Mr3yhWBoY2jLvwBIKVfnusOhKM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 335up6xmcc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:52:20 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 27 Aug 2020 10:52:18 -0700
+Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
+        id 2ABFE3922481; Thu, 27 Aug 2020 10:52:16 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
+To:     <linux-mm@kvack.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        =Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn0c01
+Subject: [PATCH RFC 0/4] mm: kmem: kernel memory accounting in an interrupt context
+Date:   Thu, 27 Aug 2020 10:52:11 -0700
+Message-ID: <20200827175215.319780-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827121941.GC420527@kroah.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_10:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=546 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ phishscore=0 suspectscore=1 clxscore=1015 spamscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270134
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 02:19:41PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Aug 26, 2020 at 07:31:40PM -0700, Kees Cook wrote:
-> > On Thu, Aug 27, 2020 at 07:06:36AM +0530, Allen Pais wrote:
-> > > Introduce container_from() as a generic helper instead of
-> > > sub-systems defining a private from_* API
-> > > (Eg: from_tasklets recently introduced in
-> > > 12cc923f1ccc: Tasklet: Introduce new initialization API)
-> > > 
-> > > The helper is similar to container_of() in argument order
-> > > with the difference of naming the containing structure instead
-> > > of having to specify its type.
-> > > 
-> > > Suggested-by: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Suggested-by: Jens Axboe <axboe@kernel.dk>
-> > > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> > 
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> > 
-> > Who can carry this so it can get used by multiple trees? Should I keep a
-> > git branch folks should merge when taking Allen's conversion patches?
-> 
-> I can put it in my driver core tree, and give everyone a stable, signed,
-> tag to pull it from so that it can get propagated everywhere, if that
-> makes it easy for others to use it now.
+This patchset implements memcg-based memory accounting of
+allocations made from an interrupt context.
 
-Thank you; that would be lovely. :)
+Historically, such allocations were passed unaccounted mostly
+because charging the memory cgroup of the current process wasn't
+an option. Also performance reasons were likely a reason too.
 
--- 
-Kees Cook
+The remote charging API allows to temporarily overwrite the
+currently active memory cgroup, so that all memory allocations
+are accounted towards some specified memory cgroup instead
+of the memory cgroup of the current process.
+
+This patchset extends the remote charging API so that it can be
+used from an interrupt context. Then it removes the fence that
+prevented the accounting of allocations made from an interrupt
+context. It also contains a couple of optimizations/code
+refactorings.
+
+This patchset doesn't directly enable accounting for any specific
+allocations, but prepares the code base for it. The bpf memory
+accounting will likely be the first user of it: a typical
+example is a bpf program parsing an incoming network packet,
+which allocates an entry in hashmap map to store some information.
+
+
+Roman Gushchin (4):
+  mm: kmem: move memcg_kmem_bypass() calls to
+    get_mem/obj_cgroup_from_current()
+  mm: kmem: remove redundant checks from get_obj_cgroup_from_current()
+  mm: kmem: prepare remote memcg charging infra for interrupt contexts
+  mm: kmem: enable kernel memcg accounting from interrupt contexts
+
+ include/linux/memcontrol.h | 12 -------
+ include/linux/sched/mm.h   | 13 +++++--
+ mm/memcontrol.c            | 69 ++++++++++++++++++++++++++++----------
+ mm/percpu.c                |  3 +-
+ mm/slab.h                  |  3 --
+ 5 files changed, 63 insertions(+), 37 deletions(-)
+
+--=20
+2.26.2
+
