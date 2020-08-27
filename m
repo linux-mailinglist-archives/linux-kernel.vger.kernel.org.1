@@ -2,140 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53565254901
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953FE2548D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgH0PSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:18:53 -0400
-Received: from mail.monom.org ([188.138.9.77]:50344 "EHLO mail.monom.org"
+        id S1726291AbgH0POo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:14:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:57246 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728373AbgH0Lfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:35:51 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id CA69650035A;
-        Thu, 27 Aug 2020 13:27:05 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 851D6500103;
-        Thu, 27 Aug 2020 13:27:05 +0200 (CEST)
-Date:   Thu, 27 Aug 2020 13:27:05 +0200
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.9-rc2-rt1
-Message-ID: <20200827112705.uleixtdmx3pacr5u@beryllium.lan>
-References: <20200824154605.v66t2rsxobt3r5jg@linutronix.de>
- <20200826080802.5lnnf5wh3kcwfykz@beryllium.lan>
- <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
- <20200826090518.m6vblobggnfdjau5@beryllium.lan>
- <20200826104326.xfexkwovwbi2q4el@beryllium.lan>
- <20200827091910.ibuyr53qprb7qmju@beryllium.lan>
- <20200827092743.kjl6hkaephx3a64a@linutronix.de>
- <20200827101622.xx4jzecouxrlwbii@beryllium.lan>
- <20200827102840.msv556nrah4h4vmq@linutronix.de>
+        id S1728386AbgH0LjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:39:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6082212FC;
+        Thu, 27 Aug 2020 04:27:42 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 015683F68F;
+        Thu, 27 Aug 2020 04:27:41 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 12:27:40 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Puhov <peter.puhov@linaro.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Subject: Re: [RFC 0/3] cpufreq: cppc: Add support for frequency invariance
+Message-ID: <20200827112740.GA9923@arm.com>
+References: <cover.1594289009.git.viresh.kumar@linaro.org>
+ <20200709124349.GA15342@arm.com>
+ <20200710030032.3yq3lqqybhy5m744@vireshk-i7>
+ <CAKfTPtBpOdRSV0gb2CoC8J9GnuPiqZ+MbQLLc6NdSmjJhb0cgA@mail.gmail.com>
+ <20200825095629.GA15469@arm.com>
+ <20200827075149.ixunmyi3m6ygtehu@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200827102840.msv556nrah4h4vmq@linutronix.de>
+In-Reply-To: <20200827075149.ixunmyi3m6ygtehu@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:28:40PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-08-27 12:16:22 [+0200], Daniel Wagner wrote:
-> > The -rt kernel is roughly 6MB larger. Just need to check the memory
-> > ranges u-boot is using.
+Hi Viresh,
+
+On Thursday 27 Aug 2020 at 13:21:49 (+0530), Viresh Kumar wrote:
+> On 25-08-20, 10:56, Ionela Voinescu wrote:
+> > I've been putting some more thought/code into this one and I believe
+> > something as follows might look nicer as well as cover a few corner cases
+> > (ignore implementation details for now, they can be changed):
 > 
-> so that 6MiB sounded bad but then it is ~36MiB in total so….
-> Is this full debug and so on?
+> I saw the other patchset you sent where AMU can be used as the backend
+> for CPPC driver, which means that if AMU IP is present on the platform
+> it will be used by the CPPC to get the perf counts, right ?
+> 
+> > - Have a per cpu value that marks the use of either AMUs, CPPC, or
+> >   cpufreq for freq invariance (can be done with per-cpu variable or with
+> >   cpumasks)
+> > 
+> > - arch_topology.c: initialization code as follows:
+> > 
+> > 	for_each_present_cpu(cpu) {
+> > 		if (freq_inv_amus_valid(cpu) &&
+> > 		    !freq_inv_set_max_ratio(cpufreq_get_hw_max_freq(cpu) * 1000,
+> > 					    arch_timer_get_rate(), cpu)) {
+> > 			per_cpu(inv_source, cpu) = INV_AMU_COUNTERS;
+> > 			continue;
+> > 		}
+> > 		if (freq_inv_cppc_counters_valid(cpu) &&
+> > 		    !freq_inv_set_max_ratio(cppc_max_perf, cppc_ref_perf, cpu)) {
+> > 			per_cpu(inv_source, cpu) = INV_CPPC_COUNTERS;
+> > 			continue;
+> > 		}
+> > 		if (!cpufreq_supports_freq_invariance() ||
+> > 		    freq_inv_set_max_ratio(cpufreq_get_hw_max_freq(cpu),
+> > 					   1, cpu)) {
+> > 			pr_info("FIE disabled: no valid source for CPU%d.", cpu);
+> > 			return 0;
+> > 		}
+> > 	}
+> 
+> Based on that (your other patchset), I think this can get further
+> simplified to whomsoever can register first for freq invariance.
+> 
 
-I didn't really try to minimize the kernel. I haven't checked yet
-if 5.6-rt is also showing this size increase. At least, our SUSE spin
-off from v5.4-rt doesn't have this size increase with the same config.
+I don't see it as anyone registering for freq invariance, rather the
+freq invariance framework chooses its source of information (AMU, CPPC,
+cpufreq).
 
-Would be interesting to see the size numbers for v5.6-rt? Hmm, I'll
-just start the compiler. It's all scripted anyway :)
+> i.e. if CPPC registers for it first then there is no need to check
+> AMUs further (as CPPC will be using AMUs anyway), else we will
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Not necessarily. Even if AMUs are present, they are only used for CPPC's
+delivered and reference performance counters if the ACPI _CPC entry
+specifies FFH as method:
 
-Anyway, the config is:
+  ResourceTemplate(){Register(FFixedHW, 0x40, 0, 1, 0x4)},
+  ResourceTemplate(){Register(FFixedHW, 0x40, 0, 0, 0x4)},
 
-  make defconfig
+> fallback to AMU, else cpufreq.
+> 
+> Is that understanding correct ?
 
-and
+While I understand your point (accessing AMUs through CPPC's read
+functions to implement invariance) I don't think it's worth tying the
+two together.
 
-#
-# Networking
-#
-CONFIG_PACKET=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_PNP=y
-CONFIG_IP_PNP_DHCP=y
+I see the two functionalities as independent:
+ - frequency invariance with whichever source of information is valid
+   (AMUs, cpufreq, etc) is separate from
+ - CPPC's delivered and reference performance counters, which currently
+   are used in cpufreq's .get() function.
 
-# NFS
-CONFIG_NETWORK_FILESYSTEMS=y
-CONFIG_NFS_FS=y
-CONFIG_NFS_V3=y
-CONFIG_NFS_V4=y
-CONFIG_NFS_V4_1=y
-CONFIG_NFS_V4_2=y
-CONFIG_ROOT_NFS=y
+Therefore, taking each of the scenarios one by one:
+ - All CPUs support AMUs: the freq invariance initialisation code will
+   find AMUs valid and it will use them to set the scale factor;
+   completely independently, if the FFH method is specified for CPPC's
+   delivered and reference performance counters, it will also use
+   AMUs, even if, let's say, invariance is disabled.
 
-#
-# Debugging
-#
-CONFIG_DEBUG_INFO=y
-CONFIG_PRINTK_TIME=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_EARLY_PRINTK=y
-CONFIG_MESSAGE_LOGLEVEL_DEFAULT=7
+ - None of the CPUs support AMUs, but the _CPC entry specifies some
+   platform specific counters for delivered and reference performance.
+   With the current mainline code neither cpufreq or counter based
+   invariance is supported, but the CPPC counters can be used in the
+   cppc_cpufreq driver for the .get() function.
 
-# Embedded config to kernel. /proc/config.gz
-CONFIG_IKCONFIG=y
-CONFIG_IKCONFIG_PROC=y
+   But with the above new functionality we can detect that AMUs are not
+   supported and expose the CPPC counters to replace them in
+   implementing invariance.
 
-CONFIG_KEXEC=y
+ - Mixed scenarios are also supported if we play our cards right and
+   implement the above per-cpu.
 
-# Default settings
-#
-# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set
-# CONFIG_DEBUG_LOCK_ALLOC is not set
-# CONFIG_PROVE_LOCKING is not set
-# CONFIG_LOCKDEP is not set
 
-CONFIG_DEBUG_ATOMIC_SLEEP=y
+I'm thinking that having some well defined invariance sources might work
+well: it will simplify the init function (go through all registered
+sources and choose (per-cpu) the one that's valid) and allow for
+otherwise generic invariance support. Something like:
 
-# CONFIG_CPU_FREQ is not set
-# CONFIG_CPU_IDLE is not set
+enum freq_inv_source {INV_CPUFREQ, INV_AMU_COUNTERS, INV_CPPC_COUNTERS};
 
-# CONFIG_NO_HZ is not set
-CONFIG_HZ_PERIODIC=y
+struct freq_inv_source {
+	enum freq_inv_source source;
+	bool (*valid)(int cpu);
+	u64 (*read_corecnt)(int cpu);
+	u64 (*read_constcnt)(int cpu);
+	u64 (*max_rate)(int cpu);
+	u64 (*ref_rate)(int cpu);
+}
 
-CONFIG_HZ_250=y
-CONFIG_HZ=250
+I am in the middle of unifying AMU counter and cpufreq invariance through
+something like this, so if you like the idea and you don't think I'm
+stepping too much on your toes with this, I can consider the usecase in
+my (what should be) generic support. So in the end this might end up
+being just a matter of adding a new invariance source (CPPC counters).
 
-# CONFIG_SUSPEND is not set
-# CONFIG_HIBERNATION is not set
-# CONFIG_PM is not set
+My only worry is that while I know how a cpufreq source behaves and how
+AMU counters behave, I'm not entirely sure what to expect from CPPC
+counters: if they are always appropriate for updates on the tick (not
+blocking), if they both stop during idle, if there is save/restore
+functionality before/after idle, etc.
 
-# cyclicdeadline dependency
-CONFIG_SCHED_DEBUG=y
+What do you think?
 
-CONFIG_RCU_EXPERT=y
-CONFIG_RCU_NOCB_CPU=y
+Regards,
+Ionela.
 
-# tracing
-CONFIG_EMBEDDED=y
-CONFIG_EXPERT=y
-CONFIG_FTRACE=y
-CONFIG_FUNCTION_TRACER=y
-CONFIG_SCHED_TRACER=y
-
-CONFIG_PREEMPT_RT=y
+> -- 
+> viresh
