@@ -2,199 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C9325485B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACCD254886
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgH0PFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:05:49 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:49018 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbgH0PEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:04:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1598540683; x=1630076683;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=JfbLCmKfbakII1PZKWDWSuhr1yUlZPqThPq0yOGCGBM=;
-  b=Bxv/2Gkp3HXPyD6VYUGD3+d+eGypC4OnULIsdWRH6E3ydOVSZgqrGniT
-   1ULN17uc5Y/UuCIhZ7j9H+gPHpYmAzBgJOPrlqE75I0DVH2z4mCn0/MT3
-   k3UPmUITFffE8UzgdP6ogZblSIi+1EEcqNq43N1Qs4NyU11mWgqzB7ua2
-   74T1R73a4FynxP8KTX8SThibf5ctMAMnIcvcm734axmxt/7n1+oOPphPg
-   s4obuTP47F/byyl+O5q7rKs9/f1UILLRgp+BdryA0cnfJryyJXyderVDl
-   Jc5KuE2LhF4pnX23ZqEemow95Tr4o074xcx2xxrm1zu2sL3kfsqlsxebh
-   g==;
-IronPort-SDR: PaL9SfgZIY1oTf3/4mFEuiVlqUCxT3TQlDTfjsRglVAXmXpMAv8+1L7hr/UoF8deYbTC2b+kRj
- i2TwFNoFv8h1Q+HzCzwnOsrgEwkinPRpoSVtuMGjya11fIp82bNzAS5/1k6GFyKjkaepVc35vG
- O59Co+D0x0uZrOa7Rtyci0pammrWuUUM9l7GUIyFkQ2uhBMVmXFR3EYUI3H9TYXKCrpRhEhJGI
- r7KwEZolpbDt2XuCnnp2g1YRWFvKIdu21i9QuFspdpAhXiOGGCIKAoj6tLkKvpSMwpa9w9Q2yz
- eoY=
-X-IronPort-AV: E=Sophos;i="5.76,359,1592841600"; 
-   d="scan'208";a="255483761"
-Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Aug 2020 23:04:39 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VZSDj6YNmxVKorWtB+l3z3QzuZgHUD883o2HmPn3p37wu7Hb/v+rTo5iJ+646jX3aQdXqLdPLLgASwZ+BKD1YYzbOPyeYWNKaDvr7BSqvJFOgX63tFhDEIntAL28XFws1zV9+ULS17n50bvzDezYDNksMBzAKd15PMrt+9yfBKfNkdSwiFH5TVe4tbfxgCTwKfaZZfM3Sav6nSsZx1W1fjLCTwbQGVnEbNnDH8Rx4T5y9vdG6hwqX6CajF7jy38r4Ayf9ms2fTx7IUQEy0YI0mttXd+OIJslSmXzrFMRVdMlEGq+F3gS+SFU8QqTjO+XXqrU9HhYYOK2O6qVTw3nUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r3fD/zaYAbH7/Tr1fv1HdwsEO3eyiS/UZM/TonQWp7Y=;
- b=bIANmW16eOq5Aw1QqWQbdAUIn5Rp1yrPdz2E9atkAFX4iMcsyYhKTta1QrFcEzsZcS1Ry+PGIdL3BMME2TtmIViHQ+IzHOY7LE1Lvd8LhgmAJ9rYUVCNzzgTKushvbxPv/IvYb3hXjaxXUPRZ6WSUh1rwtzltkrgzQpvB64Qz7WIA6sGC3nVXI9vz+qbVWASrIfxkZoDAfb41MYk1QHvSFsqNhz+nl7t3FBs2OhkwQ8fYBDnvWdyHa6M02p4xz5ILxH4Mspi6jBuSXJgfefe4dqXELXcjE2JXw2QCqnGgRRjEwaBK/1j9K6AOSyOoHoTOf32I1/LRbo38Dr+6GeFiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r3fD/zaYAbH7/Tr1fv1HdwsEO3eyiS/UZM/TonQWp7Y=;
- b=kvFB0AZbOmRv5qTURACJ3kcJ7ezKdL8o45bascADMNrrIVJK4o1peHBllx+eAVQt+TUgoqvlHw19KoFjBl6wTSd+r8gFq6wgCeFvSVAtVLWsQvB9ZbYGEyaPITYuwi4CM0ngWy0s4MIJpiFUwI2w9G0MxkC45sqJHhqWXKXEZU8=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
- by CY4PR04MB1030.namprd04.prod.outlook.com (2603:10b6:910:56::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Thu, 27 Aug
- 2020 15:04:36 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2%12]) with mapi id 15.20.3305.032; Thu, 27 Aug
- 2020 15:04:36 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-CC:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] null_blk: add support for max open/active zone limit
- for zoned devices
-Thread-Topic: [PATCH v2] null_blk: add support for max open/active zone limit
- for zoned devices
-Thread-Index: AQHWfHkH+20N/yg19E+BQ9ptEBewKg==
-Date:   Thu, 27 Aug 2020 15:04:36 +0000
-Message-ID: <CY4PR04MB37513D874343FBD2D682DA0DE7550@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200827135018.63644-1-niklas.cassel@wdc.com>
- <6d9fb163-f9d9-1f2d-d88c-db9d3a6185b4@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:1cf:fa0c:32f2:7362]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5116448d-d559-42b0-e4c4-08d84a9a8393
-x-ms-traffictypediagnostic: CY4PR04MB1030:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR04MB1030ADCBA8097EA54D495110E7550@CY4PR04MB1030.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: s+ZvkrDquX4vt6IOvrgherPJkVnWW1DJqiDjeoH9dkl7DvJZh24WzBbpsHe08ei31LFPaeCzO8iYFLHsI0/ukw1FFvCg1w4g0qMMFGsFwwZDV72T1FvkPkNekUQ304YzuTR8iMQaP9/oWIV8bwzT4w4rlAUAvk/6YotsHfZ86EFvTApyvtVPB+e+2Ejjo93pyidX5oW46SKMT0E31nVBAV+KLR6dZm9LomK7qSjw6Z6BSaRpc1RgwtyLQfEkUBJFkRy1/Q8BUdbUpVe9ZT/begoClBxFOf4hL/Ol3UXUW7MKsz8AkB6HuZCX53kKZNJTnILG5KsrdIPQoVIjmVWSEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(7696005)(71200400001)(5660300002)(478600001)(9686003)(316002)(2906002)(110136005)(54906003)(55016002)(4326008)(53546011)(8676002)(86362001)(33656002)(83380400001)(6506007)(66446008)(186003)(66556008)(52536014)(66946007)(8936002)(64756008)(91956017)(76116006)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: CxLibUvwmxvzGbUq7jupbcpku/Ar5swoPKxCFK0g3lmpCql1R7jDxVbift/qg/cl9h7xMbXD2bMY+oRYtw/KlYOLfPesQSglwVP5TxVPPXEQWT/sGxhsA5WkLLKOts45qGt3OgjvmW9E7Y2LeND1fI1YFi2pYGiI7Kn7x6DjtSSQnEih51jcwjzJZ0QyNcsXpSmIBPD9VFU7vh0hk56IXGIAX5+kXrVCJ955XEb/5frGUq5Y4YztfNUlDJqrwvCJY5tePzWpZpbcZU4tEMPB9J9fIEWrfg+0SwlsqmJ3V0iUM86KGVxrEPDj4mD+x6v65knk5SJEyJVJKZmE9FeUMAxFdEzwHelrduPeNvDCB6v+ZWIt7kx7XcwwbCmaSP9Wic70+xmWvjTAsiMl6hw/0T4ZWVMjISMDwijC65Ex5vQqr6fBV9u5Jjq9COSnhagQa50GVeYM2q4RxIiC0+UrApss4PAZBGQp9YXwE7UzUKPBzMEBaFJbiBkJlBq50cVysSAJUy44mIG5+wsgswihNRXvmGF0Hys29EzwJWVLdKCuQVLMHLqVN+0FrZI04cSM+/rgodCVRZMu9tE9mBpfoYaJm/gHJoGLA+i1wIAEvDSf6tN91FrucRSCX03nQ05IHFanrW+muV7EnVG8zKSEdgFvizixBQGLjRXmS+4NnpiD4b/MuXjBcp9yFQ3dIabzfdBKKw4x7agNhDEu5vWXBw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5116448d-d559-42b0-e4c4-08d84a9a8393
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2020 15:04:36.5382
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s+nUkCFo6ogTOTVrY3GlIjbpAFUo5I5Sn2G/tRwXhsamv5aGJ9twXahiTA0SN94bCKWgwLNvjSXMarhhTeNttg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB1030
+        id S1726234AbgH0PIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:08:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:30258 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728270AbgH0PHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:07:02 -0400
+IronPort-SDR: 5qCrvOkF4cujwkU2a5IMgP4XTiY6nlz08tvHHUX+wl4KfThv6ADRB1ngwcc8CpXsFz6KyXEx0g
+ 4NpfotI9aX9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="136563644"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="136563644"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 08:06:58 -0700
+IronPort-SDR: 6bpsNRwbBa8hDXesEvRdw4u9jyb9Xo630cD/eYkcft8/Wov3gCis+TgTdFX1ui+NSNjvX+rvgn
+ BSX6oOu++SvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="332212840"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Aug 2020 08:06:58 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "H Peter Anvin" <hpa@zytor.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Ashok Raj" <ashok.raj@intel.com>,
+        "Jacob Jun Pan" <jacob.jun.pan@intel.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH v7 0/9] x86: tag application address space for devices
+Date:   Thu, 27 Aug 2020 08:06:25 -0700
+Message-Id: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.5.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/27 23:51, Randy Dunlap wrote:=0A=
-> On 8/27/20 6:50 AM, Niklas Cassel wrote:=0A=
->> Add support for user space to set a max open zone and a max active zone=
-=0A=
->> limit via configfs. By default, the default values are 0 =3D=3D no limit=
-.=0A=
-> =0A=
-> Hi,=0A=
-> =0A=
-> How does a user find out about how to use/set these limits?=0A=
-=0A=
-For the setting part, this is for testing. So any value, even extreme ones =
-(e.g.=0A=
-1) would be OK to check that a software correctly handles write accesses to=
-=0A=
-zones for a device that has open/active zone limitations. A more practical =
-way=0A=
-is to reuse values of real devices. For instance, some SMR disks I use have=
- a=0A=
-max open limit of 128 and max active 0 (there is no limit for active zones =
-on=0A=
-SMR disks as ZBC/ZAC specifications do not define this concept).=0A=
-=0A=
-Another example is our soon to come work on btrfs zone support which shows =
-that=0A=
-at the very least 6 active zones are needed. So tests can be performed with=
- that=0A=
-minimum to check the file system and that its block allocator does not go=
-=0A=
-opening/activating too many zones.=0A=
-=0A=
-For the using part, the above btrfs example is good: if the FS tries to all=
-ocate=0A=
-blocks in too many inactive zones at the same time without first filling ou=
-t=0A=
-zones already active, it may exceed the limit and writes will fail. The FS =
-must=0A=
-thus be aware of the limits and its block al;locator tuned to limit block=
-=0A=
-allocations within a set of zones smaller than the maximum active limit.=0A=
-=0A=
-Does this answer your question ?=0A=
-=0A=
-> =0A=
-> =0A=
->> Call the block layer API functions used for exposing the configured=0A=
->> limits to sysfs.=0A=
->>=0A=
->> Add accounting in null_blk_zoned so that these new limits are respected.=
-=0A=
->> Performing an operating that would exceed these limits results in a=0A=
->> standard I/O error.=0A=
->>=0A=
->> A max open zone limit exists in the ZBC standard.=0A=
->> While null_blk_zoned is used to test the Zoned Block Device model in=0A=
->> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned=
-=0A=
->> mostly follows ZBC.=0A=
->>=0A=
->> Therefore, implement the manage open zone resources function from ZBC,=
-=0A=
->> but additionally add support for max active zones.=0A=
->> This enables user space not only to test against a device with an open=
-=0A=
->> zone limit, but also to test against a device with an active zone limit.=
-=0A=
->>=0A=
->> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>=0A=
->> ---=0A=
->> Changes since v1:=0A=
->> -Fixed review comments by Damien Le Moal.=0A=
->>=0A=
->>  drivers/block/null_blk.h       |   5 +=0A=
->>  drivers/block/null_blk_main.c  |  16 +-=0A=
->>  drivers/block/null_blk_zoned.c | 319 +++++++++++++++++++++++++++------=
-=0A=
->>  3 files changed, 282 insertions(+), 58 deletions(-)=0A=
-> =0A=
-> thanks.=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Typical hardware devices require a driver stack to translate application
+buffers to hardware addresses, and a kernel-user transition to notify the
+hardware of new work. What if both the translation and transition overhead
+could be eliminated? This is what Shared Virtual Address (SVA) and ENQCMD
+enabled hardware like Data Streaming Accelerator (DSA) aims to achieve.
+Applications map portals in their local-address-space and directly submit
+work to them using a new instruction.
+
+This series enables ENQCMD and associated management of the new MSR
+(MSR_IA32_PASID). This new MSR allows an application address space to be
+associated with what the PCIe spec calls a Process Address Space ID (PASID).
+This PASID tag is carried along with all requests between applications and
+devices and allows devices to interact with the process address space.
+
+SVA and ENQCMD enabled device drivers need this series. The phase 2 DSA
+patches with SVA and ENQCMD support was released on the top of this series:
+https://lore.kernel.org/patchwork/cover/1244060/
+
+This series only provides simple and basic support for ENQCMD and the MSR:
+1. Clean up type definitions (patch 1-2). These patches can be in a
+   separate series.
+   - Define "pasid" as "u32" consistently
+   - Define "flags" as "unsigned int"
+2. Explain different various technical terms used in the series (patch 3).
+3. Enumerate support for ENQCMD in the processor (patch 4).
+4. Handle FPU PASID state and the MSR during context switch (patches 5-6).
+5. Define "pasid" in mm_struct (patch 7).
+5. Clear PASID state for new mm and forked and cloned thread (patch 8-9).
+6. Allocate and free PASID for a process (patch 10).
+7. Fix up the PASID MSR in #GP handler when one thread in a process
+   executes ENQCMD for the first time (patches 11-12).
+
+This patch series and the DSA phase 2 series are in
+https://github.com/intel/idxd-driver/tree/idxd-stage2
+
+References:
+1. Detailed information on the ENQCMD/ENQCMDS instructions and the
+IA32_PASID MSR can be found in Intel Architecture Instruction Set
+Extensions and Future Features Programming Reference:
+https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+
+2. Detailed information on DSA can be found in DSA specification:
+https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification
+
+Chang log:
+v7:
+- Don't fix up PASID in #GP. Instead, update the PASID MSR by IPI and
+  context switch after PASID allocation and free. Inherit PASID from
+  parent. (Andy)
+
+v6:
+- Change return type to u32 for kfd_pasid_alloc() in patch 1 (Felix)
+
+v5:
+- Mark ENQCMD disabled when configured out and use cpu_feature_enabled()
+  to simplify the feature checking code in patch 10 and 12 (PeterZ and
+  Dave Hansen)
+- Add Reviewed-by: Lu Baolu to patch 1, 2, 10, and 12.
+
+v4:
+- Define PASID as "u32" instead of "unsigned int" in patch 1, 7, 10, 12.
+  (Christoph)
+- Drop v3 patch 2 which changes PASID type in ocxl because it's not related
+  to x86 and was rejected by ocxl maintainer Frederic Barrat
+- A split patch which changes PASID type to u32 in crypto/hisilicon/qm.c
+  was released separately to linux-crypto mailing list because it's not
+  related to x86 and is a standalone patch:
+
+v3:
+- Change names of bind_mm() and unbind_mm() to match to new APIs in
+  patch 4 (Baolu)
+- Change CONFIG_PCI_PASID to CONFIG_IOMMU_SUPPORT because non-PCI device
+  can have PASID in ARM in patch 8 (Jean)
+- Add a few sanity checks in __free_pasid() and alloc_pasid() in
+  patch 11 (Baolu)
+- Add patch 12 to define a new flag "has_valid_pasid" for a task and
+  use the flag to identify if the task has a valid PASID MSR (PeterZ)
+- Add fpu__pasid_write() to update the MSR in fixup() in patch 13
+- Check if mm->pasid can be found in fixup() in patch 13
+
+v2:
+- Add patches 1-3 to define "pasid" and "flags" as "unsigned int"
+  consistently (Thomas)
+  (these 3 patches could be in a separate patch set)
+- Add patch 8 to move "pasid" to generic mm_struct (Christoph).
+  Jean-Philippe Brucker released a virtually same patch. Upstream only
+  needs one of the two.
+- Add patch 9 to initialize PASID in a new mm.
+- Plus other changes described in each patch (Thomas)
+
+Ashok Raj (1):
+  docs: x86: Add documentation for SVA (Shared Virtual Addressing)
+
+Fenghua Yu (7):
+  iommu: Change type of pasid to u32
+  iommu/vt-d: Change flags type to unsigned int in binding mm
+  x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
+  x86/msr-index: Define IA32_PASID MSR
+  mm: Define pasid in mm
+  x86/cpufeatures: Mark ENQCMD as disabled when configured out
+  x86/mmu: Allocate/free PASID
+
+Yu-cheng Yu (1):
+  x86/fpu/xstate: Add supervisor PASID state for ENQCMD feature
+
+ Documentation/x86/index.rst                   |   1 +
+ Documentation/x86/sva.rst                     | 254 ++++++++++++++++++
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/disabled-features.h      |   9 +-
+ arch/x86/include/asm/fpu/api.h                |  12 +
+ arch/x86/include/asm/fpu/internal.h           |   2 +
+ arch/x86/include/asm/fpu/types.h              |  11 +-
+ arch/x86/include/asm/fpu/xstate.h             |   2 +-
+ arch/x86/include/asm/msr-index.h              |   3 +
+ arch/x86/kernel/cpu/cpuid-deps.c              |   1 +
+ arch/x86/kernel/fpu/xstate.c                  |  62 ++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h    |   4 +-
+ .../drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c    |   2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c |   2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c |   2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c |   2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.h |   2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c       |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.h       |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c        |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h        |   8 +-
+ .../gpu/drm/amd/amdkfd/cik_event_interrupt.c  |   2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c       |   2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgmgr.h       |   2 +-
+ .../drm/amd/amdkfd/kfd_device_queue_manager.c |   7 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_events.c       |   8 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_events.h       |   4 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_iommu.c        |   6 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_pasid.c        |   4 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h         |  20 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c      |   2 +-
+ .../gpu/drm/amd/include/kgd_kfd_interface.h   |   2 +-
+ drivers/iommu/amd/amd_iommu.h                 |  10 +-
+ drivers/iommu/amd/iommu.c                     |  31 +--
+ drivers/iommu/amd/iommu_v2.c                  |  20 +-
+ drivers/iommu/intel/dmar.c                    |   7 +-
+ drivers/iommu/intel/iommu.c                   |   4 +-
+ drivers/iommu/intel/pasid.c                   |  31 ++-
+ drivers/iommu/intel/pasid.h                   |  24 +-
+ drivers/iommu/intel/svm.c                     |  47 +++-
+ drivers/iommu/iommu.c                         |   2 +-
+ drivers/misc/uacce/uacce.c                    |   2 +-
+ include/linux/amd-iommu.h                     |   8 +-
+ include/linux/intel-iommu.h                   |  14 +-
+ include/linux/intel-svm.h                     |   2 +-
+ include/linux/iommu.h                         |  10 +-
+ include/linux/mm_types.h                      |   4 +
+ include/linux/uacce.h                         |   2 +-
+ 50 files changed, 531 insertions(+), 150 deletions(-)
+ create mode 100644 Documentation/x86/sva.rst
+
+-- 
+2.19.1
+
