@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047B72550F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E882550FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgH0WOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgH0WOk (ORCPT
+        id S1727944AbgH0WRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 18:17:13 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:46522 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0WRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:14:40 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F394DC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:14:39 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id m8so4585509pfh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xSHVxplRRPCUgSjEzraSIa857XoWFefBlda6XAXIvdQ=;
-        b=NQyZty75W6TDW0DbDmCZoFLE4rwRGo93ocgxSw3l2ktgUfDM3EmeMcChBppYodL1XQ
-         bn418nCR3PC0BEtfy5zMYiYPEwaL18pkZHuZ1pGhsn6xyCecKlzEWJCMywDFr46RFzU0
-         /PJJbr4+4sQvp5Klx+CQweeDbyomn7hyGSjxQ=
+        Thu, 27 Aug 2020 18:17:12 -0400
+Received: by mail-lj1-f193.google.com with SMTP id h19so8196597ljg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:17:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xSHVxplRRPCUgSjEzraSIa857XoWFefBlda6XAXIvdQ=;
-        b=kOWX7Au1sWF10+fSRFjvdosk31RSuzX9jU5RoJ7XANJwtmPPmvSBtzqWY61XWnvKYW
-         vrmk5eMNXRRT1UZtGFLGy+60pisDLmHZOeGIklhhIKxmH+8zZK3HC6XTZwUS07aLRdgG
-         HSjM5XXD/rK6IaDlux6oM1eNvCBU/4jCM5e1SbxUh10BjFi05t3wY8Op6+4Ip40WPm5l
-         9SSwV1snasjU/jUtaStSm0OrexAo44h/kXTLADgoUI7kQ5xUeBe6375XMEe7vRbmvBRn
-         B5FKJjS7WldGoIy+1xFtdB34xJeJGw/OT6gvDMug7x4eM0CQdIG8sh22zlWgyDjnAEfM
-         wpaw==
-X-Gm-Message-State: AOAM531oi2YHd+Kd9ai+ZVl6wLGlzEaZ2xQH9FyC97y0pxmbTySmG7LR
-        gfDBK4CgMUzxaVuhWRiT2qR5Bg==
-X-Google-Smtp-Source: ABdhPJxKt5vNosf+RimpVpwU+Uqe80AOzvPBE9DBZFoA7oGDJDFDPaCiE6RD1ACKh9RCIHKOyg0jhg==
-X-Received: by 2002:a63:5ec6:: with SMTP id s189mr2494555pgb.40.1598566479099;
-        Thu, 27 Aug 2020 15:14:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w5sm3467529pgk.20.2020.08.27.15.14.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O0B+Xa7wBPjWNJbvCt+g8d/rKr338hhSqU8XtS/hi/8=;
+        b=jZJK+wpyjB3E9qLiRlMS6AiaH7lzcsi5MKgYpKCyUNoCeV/WNrNvc3cHkjAKjUi2XP
+         pBjCwL5k8jlpFqM+iabVQC0zxSkV6F5Z19S7QJdNJ/aPyTFaV/NdgWYX21T73qQnvRfX
+         9SNx5APE5TGJdFklCOPkG7gfFoC6qarxkln+K9bKMoqX9QWQx4MydQ1U2LC++jfv7lDk
+         DxKBaVD79lWpjkJ+4AKIFBJ5oYkS7GXuXWmCq8aZ8qnz+0zshx0p4ITg6P16C0q4k5Fu
+         c6EpxJli4h2QCrXgJzzxtkKRFDjEK49oUVY50XSSHejB6tK7OrYKAyEdQEss9ejzXZQv
+         BBpQ==
+X-Gm-Message-State: AOAM533X9XBhfPnH7UQ01ZFQwW+Nf9AQyRWsU74Faq+tY1X1gyqbKGD6
+        nfHSblH46tecxRsgY5WgL3MLN2xWgcs=
+X-Google-Smtp-Source: ABdhPJwsW0t+o41Pb+xImqyG9klcFMm+V/ZSpmPzFMMdJCVLccQ73y41Shy9PvOVlfF9vgAZg73rUQ==
+X-Received: by 2002:a2e:85d3:: with SMTP id h19mr11410061ljj.363.1598566630142;
+        Thu, 27 Aug 2020 15:17:10 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.147.111])
+        by smtp.googlemail.com with ESMTPSA id r18sm738387ljm.34.2020.08.27.15.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 15:14:38 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:14:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] linux/kernel.h: add container_from()
-Message-ID: <202008271503.181A6A609@keescook>
-References: <20200827013636.149307-1-allen.lkml@gmail.com>
- <CAHk-=whiEUUrtnbgUH2xsD0+jNyoXudYJ4hGCA55MCjryaHGjw@mail.gmail.com>
- <1598553133.4237.8.camel@HansenPartnership.com>
- <CAHk-=wi8o+FvfQkUiH_2MUs3J19FzfMzumOViAJ2aboGg9qY7Q@mail.gmail.com>
- <CAHk-=wingJWToQfoc+m2am7Q=7r8XD+6p0FXasCRAzOdcRyngw@mail.gmail.com>
- <202008271150.7231B901@keescook>
- <CAHk-=whDhHWQo_QjZp36=x=GLMGOJ2xnfsUk9xkUuWRz=i9gOg@mail.gmail.com>
- <20200827213636.GF1236603@ZenIV.linux.org.uk>
+        Thu, 27 Aug 2020 15:17:09 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Jan Kara <jack@suse.com>
+Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v3] udf: Use kvzalloc() in udf_sb_alloc_bitmap()
+Date:   Fri, 28 Aug 2020 01:16:52 +0300
+Message-Id: <20200827221652.64660-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200827151923.40067-1-efremov@linux.com>
+References: <20200827151923.40067-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827213636.GF1236603@ZenIV.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:36:36PM +0100, Al Viro wrote:
-> On Thu, Aug 27, 2020 at 01:46:33PM -0700, Linus Torvalds wrote:
-> > You really have to pick some pretty excessive type names (or variable
-> > names) to get close to 80 characters. Again, to pick an example:
-> > 
-> >         struct timer_group_priv *priv = container_of(handle,
-> >                         struct timer_group_priv, timer[handle->num]);
-> > 
-> > ends up being long even if you were to split it, but that funky
-> > container_from() wouldn't have helped the real problem - the fact that
-> > the above is complex and nasty.
+Use kvzalloc() in udf_sb_alloc_bitmap() instead of open-coding it.
+Size computation wrapped in struct_size() macro to prevent potential
+integer overflows.
 
-The point about doing the assignment with the declaration certainly makes
-the "ugliness" worse, I agree. I'm still not generally convinced about
-the redundancy level pros/cons, but I concede that having a common idiom
-(rather than a succinct but subsystem-dependent idiom) is better for
-people reading the code for the first time.
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+Changes in v2:
+ - size computation wrapped in struct_size()
+Changes in v3:
+ - int size dropped
 
-> > And I had to _search_ for that example. All the normal cases of
-> > split-line container-of's were due to doing it with the declaration,
-> > or beause the first argument ended up being an expression in itself
-> > and the nested expressions made it more complex.
-> 
-> Speaking of searching, this kind of typeof use is, IMO, actively
-> harmful - it makes finding the places where we might get from
-> e.g. linked list to containing objects much harder.  container_of
-> (unless combined with obfuscating use of typeof()) at least gives
-> you a chance to grep - struct foo *not* followed by '*' is a pattern
-> that doesn't give too many false positives.  This one, OTOH, is
-> essentially impossible to grep for.
+ fs/udf/super.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-And this observation about workflow does strike a chord with me. I do end
-up with those kind of searches too. In trying to examine my preferences
-here, I think my instincts are to avoid open-coded types (leading me to
-want to use typeof()) but I think those instincts were actually developed
-from dealing with _sizeof_ and all the way it goes terribly wrong. So,
-okay, I'm convinced. container_of() it is.
-
-Doing these conversions becomes a little less mechanical if assignment
-needs to be split from declaration, but hey, we've got a 100 character
-line "limit" now, so maybe it'll be less needed. :)
-
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index 1c42f544096d..d9eabbe368ff 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -1006,18 +1006,10 @@ int udf_compute_nr_groups(struct super_block *sb, u32 partition)
+ static struct udf_bitmap *udf_sb_alloc_bitmap(struct super_block *sb, u32 index)
+ {
+ 	struct udf_bitmap *bitmap;
+-	int nr_groups;
+-	int size;
+-
+-	nr_groups = udf_compute_nr_groups(sb, index);
+-	size = sizeof(struct udf_bitmap) +
+-		(sizeof(struct buffer_head *) * nr_groups);
+-
+-	if (size <= PAGE_SIZE)
+-		bitmap = kzalloc(size, GFP_KERNEL);
+-	else
+-		bitmap = vzalloc(size); /* TODO: get rid of vzalloc */
++	int nr_groups = udf_compute_nr_groups(sb, index);
+ 
++	bitmap = kvzalloc(struct_size(bitmap, s_block_bitmap, nr_groups),
++			  GFP_KERNEL);
+ 	if (!bitmap)
+ 		return NULL;
+ 
 -- 
-Kees Cook
+2.26.2
+
