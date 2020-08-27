@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC330254511
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87191254524
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729058AbgH0Mh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:37:26 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:37732 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgH0MMu (ORCPT
+        id S1729101AbgH0Miw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728955AbgH0MOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:12:50 -0400
-Received: by mail-lf1-f66.google.com with SMTP id s9so2793609lfs.4;
-        Thu, 27 Aug 2020 05:12:48 -0700 (PDT)
+        Thu, 27 Aug 2020 08:14:05 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002FFC06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:14:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so620943wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ekjfb6Sf6mANsgF0KqhEnPQMEOzKt6dtLU96j3CPtgg=;
+        b=GDQ1TKl2/iDAzJxhE1Z5lMfgwiQlwWjbf09jpTl2+AuUDzQ/wJheaaCy3mYuelKJca
+         qhRxSWX09KbStDspCwPlp1EJRTJ56oycoh97ud+3Ctd4QTV/cFH7r0zoDOglv8RV1N22
+         eJIaiDXU9hFKuFYwjuxcXgVO6ZEyXectjOH1txFrysGx+gQjqLlxGZhVE9V2ficAsh89
+         52cnO2neBd5hSLef6IfzxWlmU6qJQZZkI1FzE5FSAMCMzRlkeoxH1USuvwQIJCh+5thJ
+         qFxCkow5jLYNFOI+36aJ3LiaZzNDQX5Z2P5/802qs43HA7OhBwpA48MZ3SxfUHJWXm0y
+         caCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=JX1TCoZiB5A9H8B4NX/tyvrooAnzeHM2Ttc3YBXguQo=;
-        b=GwQeMNDvshhqVmCqDl7ve3jfGSqED17BCKeYs2fF5UaRWghf56L2hduNyzti6Vifi4
-         zVwcl6mQhSwzGBroCZ0HBSyKuL8hTWYgdfGwnjyUBClyCRff2sM0K/MOXwyzdjlMWXZD
-         Fo/ObMl3z89zYrxq24hv5ldeqkLSp2pvBXUeW1LPyNeeqFT5swEIbi64UctnQNRFy86z
-         2ZaRHfEppEI1nkDJeceyfjfaT59PK4F145iycjp4AiYXs/0NNtira+xiJ2CPt9Kg764M
-         VjXUbVLheSu1AzDYDCVZAfbmkfL1Y9VAF60VKP0tULrh7lkdXWMWmVgqBWWhTkNzRnzt
-         pAuw==
-X-Gm-Message-State: AOAM530y43PYtpaugIztC7TyKDCuJFD+FiLTsbkY4BcdQry2ddebiekT
-        2anjBGVDdX8bqaMioFKLU3Z6/JanhPk=
-X-Google-Smtp-Source: ABdhPJxoeR+bTBzoVL3lfc4VMtoRJMsEmF7tdiOcwtpsb4xMgZcfpRuZM8AQi4hfkQfc81ShmXtBSQ==
-X-Received: by 2002:ac2:5dc8:: with SMTP id x8mr3014216lfq.50.1598530367212;
-        Thu, 27 Aug 2020 05:12:47 -0700 (PDT)
-Received: from [192.168.1.8] ([213.87.147.111])
-        by smtp.gmail.com with ESMTPSA id t12sm471815lfe.43.2020.08.27.05.12.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 05:12:46 -0700 (PDT)
-Subject: Re: [PATCH] crypto: sun8i-ss - remove redundant memzero_explicit()
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200827074023.15565-1-efremov@linux.com>
- <20200827080310.GA29222@Red>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Message-ID: <d36f2f28-f736-b7de-7513-652c1715ecc4@linux.com>
-Date:   Thu, 27 Aug 2020 15:12:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ekjfb6Sf6mANsgF0KqhEnPQMEOzKt6dtLU96j3CPtgg=;
+        b=XXQWvA34SLP7ibYNOYigLXFJ/Uc0LWuZqib02zCz82hPjCGtQkBBf6icVABc9vYsy8
+         /bWmVzEpYVudJiZSHFzjokNbRt+q7WNu/PCkVsreVbw15LIGO08Mvx0qaAZ+MNVFqTPo
+         gJlbcBI8Sv6cOwKQGpL6YimJgqKqNof+frvbLUAqz/v9Rfata3NLAxEWFucWks2mh7pS
+         O1TVR45kCJSbKJ6LO4v9NGb1Ea7a2Cg94yI7oYYTfWRFiKRWv/z2sCUQ8Hqi8iQ3G2Dg
+         jJfLXtcyAwccE1nX1UXJiv4dYIDMk9ST5Mp8Mr7HDIxYF+Tg9ax8fdUv/gfkbwNxr9x0
+         xACw==
+X-Gm-Message-State: AOAM531dQ/UGgFiudUFuKNcIctukkoMqRBS6ATFHx+ahlKg6VAXoQMze
+        Os5KoRgpKRgK9ct/98NbgdXHgw==
+X-Google-Smtp-Source: ABdhPJzomTvDIDWXCuEcyS33gAAp/nwPzZVLkwg48iNvf3HKA7HDg+tln7igV6uhPtB69oGfCXuhAQ==
+X-Received: by 2002:adf:e78b:: with SMTP id n11mr2056985wrm.256.1598530443604;
+        Thu, 27 Aug 2020 05:14:03 -0700 (PDT)
+Received: from dell ([91.110.221.141])
+        by smtp.gmail.com with ESMTPSA id 3sm4533378wms.36.2020.08.27.05.14.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 05:14:02 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 13:14:01 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 00/30] Set 3: Rid W=1 warnings in Wireless
+Message-ID: <20200827121401.GD1627017@dell>
+References: <20200826093401.1458456-1-lee.jones@linaro.org>
+ <87y2m09tye.fsf@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200827080310.GA29222@Red>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y2m09tye.fsf@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 Aug 2020, Kalle Valo wrote:
 
+> Lee Jones <lee.jones@linaro.org> writes:
+> 
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> >
+> > There are quite a few W=1 warnings in the Wireless.  My plan
+> > is to work through all of them over the next few weeks.
+> > Hopefully it won't be too long before drivers/net/wireless
+> > builds clean with W=1 enabled.
+> 
+> How much patches are there going to be? I was first positive about the
+> idea but now I am really starting to wonder if this is worth the effort,
+> these patches are spamming my patchwork significantly and taking too
+> much time. At least please hold of on any new patches for at least a
+> week so I can catch up with all patches I have.
 
-On 8/27/20 11:03 AM, Corentin Labbe wrote:
-> Could you add:
-> Fixes: 453431a54934 ("mm, treewide: rename kzfree() to kfree_sensitive()")
+1 more set to go.  drivers/wireless was pretty dirty in this regard
+starting with over 6000 warnings.
 
-I doubt this change deserves fixes tag, since this is just a cleanup.
-Anyway, I will send v2 with it.
+> And like I said already before, follow the title style we use so that I
+> don't need to edit every patch myself:
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#commit_title_is_wrong
 
-Thanks,
-Denis
+Sure.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
