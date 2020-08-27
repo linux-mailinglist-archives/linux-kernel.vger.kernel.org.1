@@ -2,163 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D769D254C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFAA254C24
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgH0RVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 13:21:43 -0400
-Received: from lists.gateworks.com ([108.161.130.12]:59092 "EHLO
-        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgH0RVj (ORCPT
+        id S1728050AbgH0RWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 13:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgH0RWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 13:21:39 -0400
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by lists.gateworks.com with esmtp (Exim 4.82)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1kBLfK-0002tg-Of; Thu, 27 Aug 2020 17:26:22 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Robert Jones <rjones@gateworks.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] hwmon: gsc-hwmon: add fan sensor
-Date:   Thu, 27 Aug 2020 10:21:32 -0700
-Message-Id: <1598548892-17103-1-git-send-email-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 27 Aug 2020 13:22:30 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D8DC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:22:29 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id d139so6597395qke.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LzdfP6LA5gT4sxc5D/mTAUgxcIMZMneFMWeK08iY3Ys=;
+        b=PPb8oqOjktS1lCmnAdruSvzS2kQ/SMeP0HBKVD4EJiI2lPbNPByF9GJrRBoVYQRNVN
+         VkWayom1EmERgLQxShnDryiScCBV/sUvFLkf8TQLMLPVqDYpRBE7ciW/0MYzY0q3Hz5D
+         piNQtISPZP6CAMxt1TRJ45z+4x9+nyh2A5ykoKuIlqKEuipdg7e/0H050k8HhF97/8oT
+         6V4t/SShTVdusMAd/XuA5sdpWDbOgu+o6b6TdslYyoHZxsvCKFrdWEk/z/aRIVqN6R9i
+         YUNJ89qwkGlR7IUfxDLHYqUP0pd+F8qX5f5hSvUMJj6gEJDlFeAk+aCTUOCyxT+xBCM9
+         XQxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LzdfP6LA5gT4sxc5D/mTAUgxcIMZMneFMWeK08iY3Ys=;
+        b=D+9lgLzUt8RYFdmeMnw2+QDYpOKfnmoDYnbap/twuolVk5JpvezD1dslcgF3k23WjI
+         uu/qjWO2Sq5BCFYZXMtfH0H9KlKnLS5LNe0O4100gDHD//0tz1Ri+aLChBT3syazb2Ps
+         976RD7G8gf+4+HTIB9w7x5J2T6nk+KbOZDPBe7jhSTDgJatsBdK7ZfT5ylL0ufYyQwl5
+         Kl94pCmdcBfxUMhk/ufDq1OwWBZobhVKBRZ8A8T7nNNcHFUqRc50AGfBAcdXdeX0d5Cf
+         23qVUwuYNpc8PYWL0/dFrKila71+LxqBpFPGPGxx+MwXIJYFRBv/mc6YbSskslOQ112n
+         EflQ==
+X-Gm-Message-State: AOAM530iruqqEglUw1JCkjv3OpTeABPbKL/73R1DDFtVNjqAiC18O0YH
+        882Yhkt5D7ptptQDoEmTy1vR8zc+WxBnE/+LUSOeAA==
+X-Google-Smtp-Source: ABdhPJwEuYsl6kdz4x5MV1MDd279JzsSlE4TSOAu1/qArH5gHUfvqgzJDC+kYF093anMkIXlN+uDJsUKKYahYaBVsjA=
+X-Received: by 2002:a37:74d:: with SMTP id 74mr19814431qkh.147.1598548947537;
+ Thu, 27 Aug 2020 10:22:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200827123627.538189-1-gregkh@linuxfoundation.org>
+ <3d8de519-65b3-123b-8ace-e820982884e0@labbott.name> <20200827160506.GC684514@kroah.com>
+ <CAMi1Hd1Ch1RWvOTnON3tsrucaKThTuGQnwNFo94GqUjufVmnOg@mail.gmail.com> <20200827171745.GA701089@kroah.com>
+In-Reply-To: <20200827171745.GA701089@kroah.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Thu, 27 Aug 2020 10:21:51 -0700
+Message-ID: <CA+wgaPO-WqMcvsEHZ926eKfvcCwfgDwT+Cg4A-JvEpA5xTwDNA@mail.gmail.com>
+Subject: Re: [PATCH] staging: ion: remove from the tree
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Laura Abbott <laura@labbott.name>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Brauner <christian@brauner.io>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a fan sensor to report RPM's from a fan tach input.
+On Thu, Aug 27, 2020 at 10:17 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Aug 27, 2020 at 10:31:41PM +0530, Amit Pundir wrote:
+> > On Thu, 27 Aug 2020 at 21:34, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Thu, Aug 27, 2020 at 09:31:27AM -0400, Laura Abbott wrote:
+> > > > On 8/27/20 8:36 AM, Greg Kroah-Hartman wrote:
+> > > > > The ION android code has long been marked to be removed, now that=
+ we
+> > > > > dma-buf support merged into the real part of the kernel.
+> > > > >
+> > > > > It was thought that we could wait to remove the ion kernel at a l=
+ater
+> > > > > time, but as the out-of-tree Android fork of the ion code has div=
+erged
+> > > > > quite a bit, and any Android device using the ion interface uses =
+that
+> > > > > forked version and not this in-tree version, the in-tree copy of =
+the
+> > > > > code is abandonded and not used by anyone.
+> > > > >
+> > > > > Combine this abandoned codebase with the need to make changes to =
+it in
+> > > > > order to keep the kernel building properly, which then causes mer=
+ge
+> > > > > issues when merging those changes into the out-of-tree Android co=
+de, and
+> > > > > you end up with two different groups of people (the in-kernel-tre=
+e
+> > > > > developers, and the Android kernel developers) who are both annoy=
+ed at
+> > > > > the current situation.  Because of this problem, just drop the in=
+-kernel
+> > > > > copy of the ion code now, as it's not used, and is only causing p=
+roblems
+> > > > > for everyone involved.
+> > > > >
+> > > > > Cc: "Arve Hj=C3=B8nnev=C3=A5g" <arve@android.com>
+> > > > > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > > > > Cc: Christian Brauner <christian@brauner.io>
+> > > > > Cc: Christoph Hellwig <hch@infradead.org>
+> > > > > Cc: Hridya Valsaraju <hridya@google.com>
+> > > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > > Cc: John Stultz <john.stultz@linaro.org>
+> > > > > Cc: Laura Abbott <laura@labbott.name>
+> > > > > Cc: Martijn Coenen <maco@android.com>
+> > > > > Cc: Shuah Khan <shuah@kernel.org>
+> > > > > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > > > > Cc: Suren Baghdasaryan <surenb@google.com>
+> > > > > Cc: Todd Kjos <tkjos@android.com>
+> > > > > Cc: devel@driverdev.osuosl.org
+> > > > > Cc: dri-devel@lists.freedesktop.org
+> > > > > Cc: linaro-mm-sig@lists.linaro.org
+> > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >
+> > > > We discussed this at the Android MC on Monday and the plan was to
+> > > > remove it after the next LTS release.
+> > >
+> > > I know it was discussed, my point is that it is actually causing
+> > > problems now (with developers who want to change the internal kernel =
+api
+> > > hitting issues, and newbies trying to clean up code in ways that isn'=
+t
+> > > exactly optimal wasting maintainer cycles), and that anyone who uses
+> > > this code, is not actually using this version of the code.  Everyone =
+who
+> > > relies on ion right now, is using the version that is in the Android
+> > > common kernel tree, which has diverged from this in-kernel way quite =
+a
+> > > bit now for the reason that we didn't want to take any of those new
+> > > features in the in-kernel version.
+> > >
+> > > So this is a problem that we have caused by just wanting to wait, no =
+one
+> > > is using this code, combined with it causing problems for the upstrea=
+m
+> > > developers.
+> > >
+> > > There is nothing "magic" about the last kernel of the year that requi=
+res
+> > > this code to sit here until then.  At that point in time, all users
+> > > will, again, be using the forked Android kernel version, and if we
+> > > delete this now here, that fork can remain just fine, with the added
+> > > benifit of it reducing developer workloads here in-kernel.
+> > >
+> > > So why wait?
+> >
+> > Hi,
+> >
+> > I don't know what is the right thing to do here. I just want to
+> > highlight that AOSP's audio (codec2) HAL depends on the ION system
+> > heap and it will break AOSP for people who boot mainline on their
+> > devices, even for just testing purpose like we do in Linaro. Right now
+> > we need only 1 (Android specific out-of-tree) patch to boot AOSP with
+> > mainline and Sumit is already trying to upstream that vma naming
+> > patch. Removal of in-kernel ION, will just add more to that delta.
+>
+> As AOSP will continue to rely on ION after December of this year, all
+> you are doing is postponing the inevitable a few more months.
+>
+> Push back on the Android team to fix up the code to not use ION, they
+> know this needs to happen.
+>
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- drivers/hwmon/gsc-hwmon.c               | 34 ++++++++++++++++++++++++++++++---
- include/linux/platform_data/gsc_hwmon.h |  1 +
- 2 files changed, 32 insertions(+), 3 deletions(-)
+Hi all,
 
-diff --git a/drivers/hwmon/gsc-hwmon.c b/drivers/hwmon/gsc-hwmon.c
-index c6d4567..a86a0e5 100644
---- a/drivers/hwmon/gsc-hwmon.c
-+++ b/drivers/hwmon/gsc-hwmon.c
-@@ -17,6 +17,7 @@
- 
- #define GSC_HWMON_MAX_TEMP_CH	16
- #define GSC_HWMON_MAX_IN_CH	16
-+#define GSC_HWMON_MAX_FAN_CH	16
- 
- #define GSC_HWMON_RESOLUTION	12
- #define GSC_HWMON_VREF		2500
-@@ -27,11 +28,14 @@ struct gsc_hwmon_data {
- 	struct regmap *regmap;
- 	const struct gsc_hwmon_channel *temp_ch[GSC_HWMON_MAX_TEMP_CH];
- 	const struct gsc_hwmon_channel *in_ch[GSC_HWMON_MAX_IN_CH];
-+	const struct gsc_hwmon_channel *fan_ch[GSC_HWMON_MAX_FAN_CH];
- 	u32 temp_config[GSC_HWMON_MAX_TEMP_CH + 1];
- 	u32 in_config[GSC_HWMON_MAX_IN_CH + 1];
-+	u32 fan_config[GSC_HWMON_MAX_FAN_CH + 1];
- 	struct hwmon_channel_info temp_info;
- 	struct hwmon_channel_info in_info;
--	const struct hwmon_channel_info *info[3];
-+	struct hwmon_channel_info fan_info;
-+	const struct hwmon_channel_info *info[4];
- 	struct hwmon_chip_info chip;
- };
- 
-@@ -155,6 +159,9 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
- 	case hwmon_temp:
- 		ch = hwmon->temp_ch[channel];
- 		break;
-+	case hwmon_fan:
-+		ch = hwmon->fan_ch[channel];
-+		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -187,6 +194,9 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
- 		/* adjust by uV offset */
- 		tmp += ch->mvoffset;
- 		break;
-+	case mode_fan:
-+		tmp *= 30; /* convert to revolutions per minute */
-+		break;
- 	case mode_voltage_24bit:
- 	case mode_voltage_16bit:
- 		/* no adjustment needed */
-@@ -211,6 +221,9 @@ gsc_hwmon_read_string(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_temp:
- 		*buf = hwmon->temp_ch[channel]->name;
- 		break;
-+	case hwmon_fan:
-+		*buf = hwmon->fan_ch[channel]->name;
-+		break;
- 	default:
- 		return -ENOTSUPP;
- 	}
-@@ -304,7 +317,7 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
- 	struct gsc_hwmon_platform_data *pdata = dev_get_platdata(dev);
- 	struct gsc_hwmon_data *hwmon;
- 	const struct attribute_group **groups;
--	int i, i_in, i_temp;
-+	int i, i_in, i_temp, i_fan;
- 
- 	if (!pdata) {
- 		pdata = gsc_hwmon_get_devtree_pdata(dev);
-@@ -324,7 +337,9 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
- 	if (IS_ERR(hwmon->regmap))
- 		return PTR_ERR(hwmon->regmap);
- 
--	for (i = 0, i_in = 0, i_temp = 0; i < hwmon->pdata->nchannels; i++) {
-+	for (i = 0, i_in = 0, i_temp = 0, i_fan = 0;
-+	     i < hwmon->pdata->nchannels; i++)
-+	{
- 		const struct gsc_hwmon_channel *ch = &pdata->channels[i];
- 
- 		switch (ch->mode) {
-@@ -338,6 +353,16 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
- 						     HWMON_T_LABEL;
- 			i_temp++;
- 			break;
-+		case mode_fan:
-+			if (i_fan == GSC_HWMON_MAX_FAN_CH) {
-+				dev_err(gsc->dev, "too many fan channels\n");
-+				return -EINVAL;
-+			}
-+			hwmon->fan_ch[i_fan] = ch;
-+			hwmon->fan_config[i_fan] = HWMON_F_INPUT |
-+						   HWMON_F_LABEL;
-+			i_fan++;
-+			break;
- 		case mode_voltage_24bit:
- 		case mode_voltage_16bit:
- 		case mode_voltage_raw:
-@@ -361,10 +386,13 @@ static int gsc_hwmon_probe(struct platform_device *pdev)
- 	hwmon->chip.info = hwmon->info;
- 	hwmon->info[0] = &hwmon->temp_info;
- 	hwmon->info[1] = &hwmon->in_info;
-+	hwmon->info[2] = &hwmon->fan_info;
- 	hwmon->temp_info.type = hwmon_temp;
- 	hwmon->temp_info.config = hwmon->temp_config;
- 	hwmon->in_info.type = hwmon_in;
- 	hwmon->in_info.config = hwmon->in_config;
-+	hwmon->fan_info.type = hwmon_fan;
-+	hwmon->fan_info.config = hwmon->fan_config;
- 
- 	groups = pdata->fan_base ? gsc_hwmon_groups : NULL;
- 	hwmon_dev = devm_hwmon_device_register_with_info(dev,
-diff --git a/include/linux/platform_data/gsc_hwmon.h b/include/linux/platform_data/gsc_hwmon.h
-index 37a8f554d..281f499 100644
---- a/include/linux/platform_data/gsc_hwmon.h
-+++ b/include/linux/platform_data/gsc_hwmon.h
-@@ -7,6 +7,7 @@ enum gsc_hwmon_mode {
- 	mode_voltage_24bit,
- 	mode_voltage_raw,
- 	mode_voltage_16bit,
-+	mode_fan,
- 	mode_max,
- };
- 
--- 
-2.7.4
+We are currently working with the codec2 team to transition codec2 to
+use libdmabufheap instead of libion. It will definitely happen during
+the Android S timeframe.
 
+Thanks,
+Hridya
+
+> thanks,
+>
+> greg k-h
