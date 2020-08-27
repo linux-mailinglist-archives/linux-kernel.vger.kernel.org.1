@@ -2,50 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC53253FDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B8C253FDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgH0H5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:57:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36564 "EHLO
+        id S1728674AbgH0H4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:56:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36682 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728401AbgH0Hy0 (ORCPT
+        with ESMTP id S1728407AbgH0Hy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:26 -0400
-Date:   Thu, 27 Aug 2020 07:54:23 -0000
+        Thu, 27 Aug 2020 03:54:27 -0400
+Date:   Thu, 27 Aug 2020 07:54:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598514864;
+        s=2020; t=1598514865;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9YqiSaCnS2KOqPvA9P2XCB7kGgE8cJkDykwBkGMJQQE=;
-        b=d6Lha3XzlJ0W2WF6UyVkFMxhU1J5B2dGZysIfXYRd5dXN5+smxaWZasC4kvdTSEg017f5V
-        +6kRpbWxmtAhtu0FI4bGVFdIILj6EiCZb9rLi7yKrM972dopfxyLdI4oUEY7JWkcw6Cl6V
-        H7qzB74fZ/Ce8VGdKYasVmnADdBWeqSNkMzkE31Iy2GEpgxFk223pkG+8KPcepMkJyW+2I
-        4SiLBPqMFrYCkCFmwz8zC03mwrQDC123Ius6ZFKDK+0LYFROwXCkv2wEhlALzqx8XRBMFw
-        gCR3xA+mtHiiCymh7G7Y/uujzBHS0xwFCLwTqLMIMiF96Y6Ac0yQnOTmX7ZG8Q==
+        bh=lkPkU7996GQyNSSrtEwPxCT4OpFx9sb1th4lOZSIMng=;
+        b=S+P+7grnc60Szd+3AitUR+068GB7KW5/uKhRmj006+CrJnmNgb5jFEaTKnxe4IBPTubsaS
+        ZYyG6Xo9Yl1V6EVj50dLASwmWBh7PaEcgtaWacd9EpSMw5D/eLXFjp4cZjN/YJ8ccnchxW
+        RXOpH30qwbBmSwkaeqFk2ITMEa+9ILAsNI3ODLU2NstpmBZe54NF62iaRAJwVP37/OxOQV
+        T86QleErkDo1fJRYavYFJsPUrcvTv3URlCPN+hi3QAnSTNLjKe9SN/7Pz6gQIJee6JHjxU
+        LW2agxnU+0eUOzutvTsIUfZYSY3bCNwIZyMB00Gfb0NQPd1J4tV7OwRgwTQO3g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598514864;
+        s=2020e; t=1598514865;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9YqiSaCnS2KOqPvA9P2XCB7kGgE8cJkDykwBkGMJQQE=;
-        b=OtFhfHHEBNYBhXTkBfThAKEYlIOgDGoGbODPV+naEdiYYPlpEI5DIA9sigXC38yPoq9Cm2
-        oVUKuVjBtzAkpiDw==
+        bh=lkPkU7996GQyNSSrtEwPxCT4OpFx9sb1th4lOZSIMng=;
+        b=lP/qyek/zJw/it01+RyQAzSGcOEctqwy9X43hDG4tCQDmNaMAJ0M2Zlu4RKSBLHZ+HaX04
+        JGQuf5GewVH/+cCQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] seqlock,tags: Add support for SEQCOUNT_LOCKTYPE()
+Subject: [tip: locking/core] lockdep,trace: Expose tracepoints
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200729161938.GB2678@hirez.programming.kicks-ass.net>
-References: <20200729161938.GB2678@hirez.programming.kicks-ass.net>
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Marco Elver <elver@google.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200821085348.782688941@infradead.org>
+References: <20200821085348.782688941@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159851486396.20229.12728013017338610822.tip-bot2@tip-bot2>
+Message-ID: <159851486434.20229.10477957764758069749.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,34 +61,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     6eb6d05958f3208b3dd2b5311f1a6e68abdbe5d5
-Gitweb:        https://git.kernel.org/tip/6eb6d05958f3208b3dd2b5311f1a6e68abdbe5d5
+Commit-ID:     eb1f00237aca2e368b93db79303f8433d1976d10
+Gitweb:        https://git.kernel.org/tip/eb1f00237aca2e368b93db79303f8433d1976d10
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 29 Jul 2020 20:12:32 +02:00
+AuthorDate:    Fri, 07 Aug 2020 20:53:16 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 26 Aug 2020 12:42:01 +02:00
+CommitterDate: Wed, 26 Aug 2020 12:41:56 +02:00
 
-seqlock,tags: Add support for SEQCOUNT_LOCKTYPE()
+lockdep,trace: Expose tracepoints
 
-Such that we might easily find seqcount_LOCKTYPE_t and
-seqcount_LOCKTYPE_init().
+The lockdep tracepoints are under the lockdep recursion counter, this
+has a bunch of nasty side effects:
+
+ - TRACE_IRQFLAGS doesn't work across the entire tracepoint
+
+ - RCU-lockdep doesn't see the tracepoints either, hiding numerous
+   "suspicious RCU usage" warnings.
+
+Pull the trace_lock_*() tracepoints completely out from under the
+lockdep recursion handling and completely rely on the trace level
+recusion handling -- also, tracing *SHOULD* not be taking locks in any
+case.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200729161938.GB2678@hirez.programming.kicks-ass.net
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Tested-by: Marco Elver <elver@google.com>
+Link: https://lkml.kernel.org/r/20200821085348.782688941@infradead.org
 ---
- scripts/tags.sh | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/locking/lockdep.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/scripts/tags.sh b/scripts/tags.sh
-index 32d3f53..fc5b532 100755
---- a/scripts/tags.sh
-+++ b/scripts/tags.sh
-@@ -201,6 +201,8 @@ regex_c=(
- 	'/\<DEVICE_ATTR_\(RW\|RO\|WO\)(\([[:alnum:]_]\+\)/dev_attr_\2/'
- 	'/\<DRIVER_ATTR_\(RW\|RO\|WO\)(\([[:alnum:]_]\+\)/driver_attr_\2/'
- 	'/\<\(DEFINE\|DECLARE\)_STATIC_KEY_\(TRUE\|FALSE\)\(\|_RO\)(\([[:alnum:]_]\+\)/\4/'
-+	'/^SEQCOUNT_LOCKTYPE(\([^,]*\),[[:space:]]*\([^,]*\),[^)]*)/seqcount_\2_t/'
-+	'/^SEQCOUNT_LOCKTYPE(\([^,]*\),[[:space:]]*\([^,]*\),[^)]*)/seqcount_\2_init/'
- )
- regex_kconfig=(
- 	'/^[[:blank:]]*\(menu\|\)config[[:blank:]]\+\([[:alnum:]_]\+\)/\2/'
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c872e95..54b74fa 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4977,6 +4977,8 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
++
+ 	if (unlikely(current->lockdep_recursion)) {
+ 		/* XXX allow trylock from NMI ?!? */
+ 		if (lockdep_nmi() && !trylock) {
+@@ -5001,7 +5003,6 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	check_flags(flags);
+ 
+ 	current->lockdep_recursion++;
+-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
+ 	__lock_acquire(lock, subclass, trylock, read, check,
+ 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+ 	lockdep_recursion_finish();
+@@ -5013,13 +5014,15 @@ void lock_release(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_release(lock, ip);
++
+ 	if (unlikely(current->lockdep_recursion))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
++
+ 	current->lockdep_recursion++;
+-	trace_lock_release(lock, ip);
+ 	if (__lock_release(lock, ip))
+ 		check_chain_key(current);
+ 	lockdep_recursion_finish();
+@@ -5205,8 +5208,6 @@ __lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ 		hlock->holdtime_stamp = now;
+ 	}
+ 
+-	trace_lock_acquired(lock, ip);
+-
+ 	stats = get_lock_stats(hlock_class(hlock));
+ 	if (waittime) {
+ 		if (hlock->read)
+@@ -5225,6 +5226,8 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_acquired(lock, ip);
++
+ 	if (unlikely(!lock_stat || !debug_locks))
+ 		return;
+ 
+@@ -5234,7 +5237,6 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 	current->lockdep_recursion++;
+-	trace_lock_contended(lock, ip);
+ 	__lock_contended(lock, ip);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5245,6 +5247,8 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_contended(lock, ip);
++
+ 	if (unlikely(!lock_stat || !debug_locks))
+ 		return;
+ 
