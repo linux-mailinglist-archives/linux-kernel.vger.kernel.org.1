@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BDE2547DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AD82547D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgH0Ozb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:55:31 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:45372 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgH0NKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:10:15 -0400
-Received: by mail-ed1-f66.google.com with SMTP id i17so3322421edx.12;
-        Thu, 27 Aug 2020 06:10:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MO4XT5vfILQQQs7m8NAXIZICzPk5ma+oMaf+AWE/M2Q=;
-        b=SyeXlwn2OZEYHP1CAZ+WTjWFGFQULm6vkjC04zsP5MQPrFWohfCfQRAw03DPbhPLio
-         fPUUhAhdMoi4bt8QnG1tzZcPLOx515x8aQJJyTVmgpitpQ5kIgHKR2ynP+/0rxkx20lg
-         Pz+PDx+GdcnbdhOwyRhodvOtKaFXHBuiXufszhjRlJLWULBfveYmdRDeOcignZ0sZrJm
-         M5/uzmXZzKX+ojEeaJWe9nGx/E9wFyv55BhXLya6N1baTBZMIe4UzYUqWVGxGvOr8lpj
-         GglIQ1D0ibmZErnID9JWOrRXYlCHT6X+0hb+Jjue5N6s4r+NuCle7iI+kvF+5orjT0wV
-         PM2g==
-X-Gm-Message-State: AOAM531sNxQYjRHOu8s5KF7zNnqYk4uSNZON1vJXoPFjp/1aQu1pnV8j
-        xjnjg2G9fqPEZNuE+LqBfd0=
-X-Google-Smtp-Source: ABdhPJy3DhoRQwhFz7pG2UXliaNjzznIPsFx/Ttim2NepQAK9i66MyfFwvIK0wowQlP1k42Y0lL1pw==
-X-Received: by 2002:a50:ef15:: with SMTP id m21mr20164933eds.300.1598533807483;
-        Thu, 27 Aug 2020 06:10:07 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id a26sm1867497eju.83.2020.08.27.06.10.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Aug 2020 06:10:06 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:10:04 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1728022AbgH0OzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727075AbgH0NLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:11:19 -0400
+Received: from gaia (unknown [46.69.195.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10065206F0;
+        Thu, 27 Aug 2020 13:10:47 +0000 (UTC)
+Date:   Thu, 27 Aug 2020 14:10:45 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Brooke Basile <brookebasile@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 2/2] docs: admin-guide: Not every security bug should be
- kept hidden
-Message-ID: <20200827131004.GA2736@kozik-lap>
-References: <20200827105319.9734-1-krzk@kernel.org>
- <20200827105319.9734-2-krzk@kernel.org>
- <20200827121123.GC417381@kroah.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
+Message-ID: <20200827131045.GM29264@gaia>
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
+ <20200827095429.GC29264@gaia>
+ <CAAeHK+xHQDMsTehppknjNTEMFh18ufWB1XLUGdVFoc-QZ-mVrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827121123.GC417381@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAAeHK+xHQDMsTehppknjNTEMFh18ufWB1XLUGdVFoc-QZ-mVrw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 02:11:23PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Aug 27, 2020 at 12:53:19PM +0200, Krzysztof Kozlowski wrote:
-> > Document describes the process of handling security bugs but does not
-> > mention any criteria what is a "security bug".  Unlike
-> > submitting-patches.rst which explicitly says - publicly exploitable bug.
-> > 
-> > Many NULL pointer exceptions, off-by-one errors or overflows tend
-> > to look like security bug, so there might be a temptation to discuss
-> > them behind security list which is not an open list.
-> > 
-> > Such discussion limits the amount of testing and independent reviewing.
-> > Sacrificing open discussion is understandable in the case of real
-> > security issues but not for regular bugs.  These should be discussed
-> > publicly.
-> > 
-> > At the end, "security problems are just bugs".
-> > 
-> > Cc: Greg KH <gregkh@linuxfoundation.org>
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > ---
-> > 
-> > Follow up to:
-> > https://lore.kernel.org/linux-usb/1425ab4f-ef7e-97d9-238f-0328ab51eb35@samsung.com/
-> > ---
-> >  Documentation/admin-guide/security-bugs.rst | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/Documentation/admin-guide/security-bugs.rst b/Documentation/admin-guide/security-bugs.rst
-> > index c32eb786201c..7ebddbd4bbcd 100644
-> > --- a/Documentation/admin-guide/security-bugs.rst
-> > +++ b/Documentation/admin-guide/security-bugs.rst
-> > @@ -78,6 +78,12 @@ include linux-distros from the start. In this case, remember to prefix
-> >  the email Subject line with "[vs]" as described in the linux-distros wiki:
-> >  <http://oss-security.openwall.org/wiki/mailing-lists/distros#how-to-use-the-lists>
-> >  
-> > +Fixes for non-exploitable bugs which do not pose a real security risk, should
-> > +be disclosed in a regular way of submitting patches to Linux kernel (see
-> > +:ref:`Documentation/process/submitting-patches.rst <submitting-patches>`).
-> > +Just because patch fixes some off-by-one or NULL pointer exception, does not
-> > +classify it as a security bug which should be discussed in closed channels.
+On Thu, Aug 27, 2020 at 02:31:23PM +0200, Andrey Konovalov wrote:
+> On Thu, Aug 27, 2020 at 11:54 AM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > On Fri, Aug 14, 2020 at 07:27:03PM +0200, Andrey Konovalov wrote:
+> > > +static int do_tag_recovery(unsigned long addr, unsigned int esr,
+> > > +                        struct pt_regs *regs)
+> > > +{
+> > > +     report_tag_fault(addr, esr, regs);
+> > > +
+> > > +     /* Skip over the faulting instruction and continue: */
+> > > +     arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+> >
+> > Ooooh, do we expect the kernel to still behave correctly after this? I
+> > thought the recovery means disabling tag checking altogether and
+> > restarting the instruction rather than skipping over it.
 > 
-> I said this on another thread, but almost always, when we get reports
-> like this on security@k.o, we do push them back to public lists.
+> The intention is to be able to catch multiple MTE faults without
+> panicking or disabling MTE when executing KASAN tests (those do
+> multiple bad accesses one after another).
 
-Then let's hope that next time someone will read this documentation
-before submitting such report to @security.
+The problem is that for MTE synchronous tag check faults, the access has
+not happened, so you basically introduce memory corruption by skipping
+the access.
 
+> We do arm64_skip_faulting_instruction() for software tag-based KASAN
+> too, it's not ideal, but works for testing purposes.
+
+IIUC, KASAN only skips over the brk instruction which doesn't have any
+other side-effects. Has the actual memory access taken place when it
+hits the brk?
+
+> Can we disable MTE, reexecute the instruction, and then reenable MTE,
+> or something like that?
+
+If you want to preserve the MTE enabled, you could single-step the
+instruction or execute it out of line, though it's a bit more convoluted
+(we have a similar mechanism for kprobes/uprobes).
+
+Another option would be to attempt to set the matching tag in memory,
+under the assumption that it is writable (if it's not, maybe it's fine
+to panic). Not sure how this interacts with the slub allocator since,
+presumably, the logical tag in the pointer is wrong rather than the
+allocation one.
+
+Yet another option would be to change the tag in the register and
+re-execute but this may confuse the compiler.
+
+> When running in-kernel MTE in production, we'll either panic or
+> disable MTE after the first fault. This was controlled by the
+> panic_on_mte_fault option Vincenzo initially had.
+
+I prefer to disable MTE, print something and continue, but no panic.
+
+> > We only skip if we emulated it.
 > 
-> For the most part, this paragraph is not going to help much (mostly for
-> the reason that no one seems to read it, but that's a different
-> topic...)
+> I'm not sure I understand this part, what do you mean by emulating?
 
-All of our documentation is our wish that someone will read it and
-follow it. Just because people might not follow it, is not necessarily a
-reason to skip documentation.
+Executing it out of line or other form of instruction emulation (see
+arch/arm64/kernel/probes/simulate-insn.c) so that the access actually
+takes place. But you can single-step or experiment with some of the
+other tricks above.
 
-> We get crazy reports all the time, and that's fine, because
-> sometimes, there is a real issue in some of them.  And for that, we do
-> want to be careful.  We also have many docuemented "off-by-one" bugs
-> that were real security issues (there's a blog post somewhere about how
-> a developer turned such a bug into a root hole, can't find it right
-> now...)
-
-I understand. That's why I also mentioned the criteria of exploitable
-and posing a security risk. First case (even stricter - publicly
-exploitable) is already mentioned in submitting-patches so I am not
-changing the current status.
-
-I merely want to document it based on recent discussion.
-
-> So while I understand the temptation here, based on the current
-> security@k.o traffic, I doubt this will really change much :(
-> 
-> Also, you should have cc:ed that group when you are changing things that
-> will affect them.
-
-Indeed, I will update the maintainers as well.
-
-Best regards,
-Krzysztof
-
+-- 
+Catalin
