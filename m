@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5038225492F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DF5254921
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbgH0PWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:22:12 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10330 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728620AbgH0Lat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:30:49 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EFA9321DABEC54E4AC31;
-        Thu, 27 Aug 2020 19:30:40 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 19:30:32 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pshelar@ovn.org>,
-        <fw@strlen.de>, <martin.varghese@nokia.com>, <edumazet@google.com>,
-        <dcaratti@redhat.com>, <steffen.klassert@secunet.com>,
-        <pabeni@redhat.com>, <shmulik@metanetworks.com>,
-        <kyk.segfault@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: Set trailer iff skb1 is the last one
-Date:   Thu, 27 Aug 2020 07:29:22 -0400
-Message-ID: <20200827112922.48889-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1728355AbgH0PVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:21:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728681AbgH0LdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:33:00 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AACF322B40;
+        Thu, 27 Aug 2020 11:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598527973;
+        bh=5EXplaVXNI+IHFzq1tVAP2yAGUXR9mfdt5BaX3Eq9FI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VnqH2UurJYyKagUdSIUZIvaKa853kKWzU5p1R3C1/o7PeWY8DoJNwn6QOtYWMSaQM
+         erpjZu5+pVs3JEgFBnQPJP8j1BXy33UA7ep3ic6p9Mg1ZzE04CcFHZzZjX1jNMM5Jh
+         gQPeRG8AxN0/5DHRwXhMZOWi9nwmQalyZlPq2Ano=
+Date:   Thu, 27 Aug 2020 12:32:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        tanveer <tanveer.alam@puresoftware.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH] spi: spi-fsl-dspi: Add ACPI support
+Message-ID: <20200827113216.GA4674@sirena.org.uk>
+References: <20200821131029.11440-1-kuldip.dwivedi@puresoftware.com>
+ <20200822183342.6sdhp6yq6i7yvdia@skbuf>
+ <CAHp75VeNXy1jWNWMuZc0bfXruKc3=0H4ezwpE8jbj6GLYk5QBA@mail.gmail.com>
+ <20200826204108.reuy7ieqabutwuwo@skbuf>
+ <20200826204547.GU4965@sirena.org.uk>
+ <20200826210657.z526xjhhkq6vkxgr@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+In-Reply-To: <20200826210657.z526xjhhkq6vkxgr@skbuf>
+X-Cookie: Causes moderate eye irritation.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set trailer iff skb1 is the skbuff where the tailbits space begins.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/core/skbuff.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 0b24aed04060..18ed56316e56 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4488,8 +4488,9 @@ int skb_cow_data(struct sk_buff *skb, int tailbits, struct sk_buff **trailer)
- 			skb1 = skb2;
- 		}
- 		elt++;
--		*trailer = skb1;
- 		skb_p = &skb1->next;
-+		if (!*skb_p)
-+			*trailer = skb1;
- 	}
- 
- 	return elt;
--- 
-2.19.1
+On Thu, Aug 27, 2020 at 12:06:57AM +0300, Vladimir Oltean wrote:
+> On Wed, Aug 26, 2020 at 09:45:47PM +0100, Mark Brown wrote:
+> > On Wed, Aug 26, 2020 at 11:41:08PM +0300, Vladimir Oltean wrote:
 
+> > > Something doesn't look right about PRP0001, what's the catch?
+
+> > Microsoft decided not to implement support for it in Windows, it's
+> > essentially there for embedded style x86 platforms running Linux so they
+> > don't need to reimplement so many wheels and can just reuse existing DT
+> > bindings but it causes problems if you want to run Windows (and possibly
+> > some of the enterprise Linux distros, I can't remember if any of them
+> > had concerns about it) on the platform.
+
+> So if a silicon vendor doesn't care about Windows, what incentive does
+> it have to even register an official ACPI/PNP ID for its devices?
+
+Not that there's any registration process or anything, there's some
+namespacing but that's it, but the main thing would just be keeping the
+ACPI bindings and DT bindings separate.  ACPI has some strong opinions
+on how systems are built and described so while you can use the PRP0001
+stuff to parse DT bindings on an ACPI system it doesn't alway fit well,
+and there are some things where you just plain shouldn't use PRP0001
+since the ACPI and DT models for that sort of device diverge so strongly.
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Hmb8ACgkQJNaLcl1U
+h9B/KAf/TZJSBmxaYq4h8SUowHGREwHtVaLdaCnflawd6gDO2QF8RPV57eClAnLS
+G7UDFlscVt90VKQ+6DDiYMyEROOQEyOPSXF9do7/uAlnYpwiiW34cbCHCJ7aZZh9
+LTBOxhKioz1sxuFrwUIPSWS2HFdFayu8xSl6op0MWjABI+R6pwILHPsx+ks5jkSN
+jCDn5IZTxFqgP9pB/xtUl2/njhQ8wwVTYg3Outr5+gl2gMgPC+mAhwsrYv53mzUu
+XtPDZ9AvJc/hXRoN1+2LsE+w8dhmWkofhLavT55sS5ncKlqf2DzOXmRV0UUqR+Io
+Bxgrb3GnGd503w/KsxUmXzusS3x+tg==
+=b08t
+-----END PGP SIGNATURE-----
+
+--gBBFr7Ir9EOA20Yy--
