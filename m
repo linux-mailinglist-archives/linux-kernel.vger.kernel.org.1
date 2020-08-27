@@ -2,141 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B752549B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC762549B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgH0PmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:42:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727827AbgH0PmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:42:07 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9BA72177B;
-        Thu, 27 Aug 2020 15:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598542926;
-        bh=ew4/DaNSkR925nymDp6t163TDRkhr555dD9aTkRQVvM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ChMLKsGGwFQ0kQmJzCHaL/vTuSo1D5U2QrqnDjR/mzfgM9oBgo+wRxRuQXXUY5WKf
-         gFZqYrQ9Qd9jxi3xlpIlpnbfKYzJdZnLnIa0UzfM/lXSpzVgp7Zn4SH0FHUdXJzOEG
-         qlcCu/xHttiVzC+HvsUh5mNVvXCDh9XfXRt23ia8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kBK2P-007BBI-2c; Thu, 27 Aug 2020 16:42:05 +0100
+        id S1727783AbgH0PnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgH0PnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:43:25 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA3BC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:43:24 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id i10so6988373ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XIpBinZVLwccOBlQBwmOknbrZNBrR3bkWjqwBSx1Ckk=;
+        b=do/I7ZmOR+XxfTQSZQQaQ86eu/9s9+55pppFDCRfQVmCBPn46dcJvtoSCNbWpXtLfu
+         gNHYltkazjgDNSkazXFvBneCeymvSKxWuuhdtYjX7h7AqkZthPn4B2Sgt3F3StbC4TLK
+         ezCNJMCiVaiNm0ZFilZFiLjiLJ8o6F8xl8Hmqm4H5khKSO+ysQWZBoB2qaEavG1D/3LH
+         nSFPh/vz+UDNUbRqGbdl6RMUnx/ojj/PZPvoVqJKJvYVgnzbb0OojXmC+DLMW6o5cX1z
+         5LdwEHy90I9RnPiejmoo5mH9lV8CKh6CUgGfDp6oCbbo6rbf0GzSokbnQyuoNx2cHgc1
+         Cosg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XIpBinZVLwccOBlQBwmOknbrZNBrR3bkWjqwBSx1Ckk=;
+        b=qtSXptf0VakKQAWG2TAxFWfmiRKoFHFyvV+eIX4JthckMbPsSNqhSezw1ndZj96tX/
+         Pvzh5VJTvuca+BXue2ZOBU4RHyrvNIg0tHpnl8vhbBhnc2C9LNq3HP7X7DOXcDModSZN
+         ApN5rvHG9MiqGf/lrweDQAgo/gbm7RPa9w7Go7n5u+HMDLldKd1wLGeWdfjBYSy1PPW+
+         oRL5n9aT40blgx9hiflEFHjridNBXAtFu88/AMjFjr2W8656kpMqtY4/MqHcbhwaBpLv
+         AQ3FEXlENHUgUYG7hYXbF43htA99Q2KCbJJju2h4+e9l1uY9C78GdhP2YUrHvia2HEEc
+         8NUQ==
+X-Gm-Message-State: AOAM531T3z4euyFRqPcuhDIViDv1a6UNpspy1mBU81tY8GCcjrKs1scd
+        m4qHKMeXaB3q5T4ZUdLGS59W6pq9HLUaaWmzz1ibBg==
+X-Google-Smtp-Source: ABdhPJyVXHaWDvLF6jvFEiQw9jw4Oje6jc/9baf3oe2YEBqqjLzQH3oGnTTaDIRk2YN+H3bR/D4WHwMzPUPYw481bnU=
+X-Received: by 2002:a2e:9b99:: with SMTP id z25mr10463710lji.226.1598543003021;
+ Thu, 27 Aug 2020 08:43:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 27 Aug 2020 16:42:04 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH v5 1/3] dt-bindings: interrupt-controller: Add Actions
- SIRQ controller binding
-In-Reply-To: <20200827152428.GA2467154@BV030612LT>
-References: <cover.1597852360.git.cristian.ciocaltea@gmail.com>
- <6bd99d4a7e50904b57bb3ad050725fbb418874b7.1597852360.git.cristian.ciocaltea@gmail.com>
- <20200825220913.GA1423455@bogus> <20200826214220.GA2444747@BV030612LT>
- <CAL_JsqLvXDFL6vFooPYLJ1QnZ7L756fNesXo-LW_scs9rV-zPA@mail.gmail.com>
- <20200827100629.GA2451538@BV030612LT>
- <64580e3b9acada6ff4ae9fdef02ac304@kernel.org>
- <20200827152428.GA2467154@BV030612LT>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <7de137f820d5a3b7921bda0751509f85@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: cristian.ciocaltea@gmail.com, robh@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, afaerber@suse.de, manivannan.sadhasivam@linaro.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200825121818.30260-1-vincent.guittot@linaro.org> <20200827153534.GF3033@suse.de>
+In-Reply-To: <20200827153534.GF3033@suse.de>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 27 Aug 2020 17:43:11 +0200
+Message-ID: <CAKfTPtCRmts+qH+hexKbhZ7595zGs1U3Q5V4-XzHgpU0dJd+1Q@mail.gmail.com>
+Subject: Re: [PATCH] sched/numa: use runnable_avg to classify node
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cristian,
+On Thu, 27 Aug 2020 at 17:35, Mel Gorman <mgorman@suse.de> wrote:
+>
+> On Tue, Aug 25, 2020 at 02:18:18PM +0200, Vincent Guittot wrote:
+> > Use runnable_avg to classify numa node state similarly to what is done for
+> > normal load balancer. This helps to ensure that numa and normal balancers
+> > use the same view of the state of the system.
+> >
+> > - large arm64system: 2 nodes / 224 CPUs
+> > hackbench -l (256000/#grp) -g #grp
+> >
+> > grp    tip/sched/core         +patchset              improvement
+> > 1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
+> > 4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
+> > 16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
+> > 32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
+> > 64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
+> > 128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
+> > 256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+>
+> The testing was a mixed bag of wins and losses but wins more than it
+> loses. Biggest loss was a 9.04% regression on nas-SP using openmp for
+> parallelisation on Zen1. Biggest win was around 8% gain running
+> specjbb2005 on Zen2 (with some major gains of up to 55% for some thread
+> counts). Most workloads were stable across multiple Intel and AMD
+> machines.
+>
+> There were some oddities in changes in NUMA scanning rate but that is
+> likely a side-effect because the locality over time for the same loads
+> did not look obviously worse. There was no negative result I could point
+> at that was not offset by a positive result elsewhere. Given it's not
+> a univeral win or loss, matching numa and lb balancing as closely as
+> possible is best so
+>
+> Reviewed-by: Mel Gorman <mgorman@suse.de>
 
-On 2020-08-27 16:24, Cristian Ciocaltea wrote:
-> Hi Marc,
-> 
-> On Thu, Aug 27, 2020 at 11:35:06AM +0100, Marc Zyngier wrote:
->> On 2020-08-27 11:06, Cristian Ciocaltea wrote:
->> > On Wed, Aug 26, 2020 at 04:48:38PM -0600, Rob Herring wrote:
->> > > On Wed, Aug 26, 2020 at 3:42 PM Cristian Ciocaltea
->> > > <cristian.ciocaltea@gmail.com> wrote:
->> 
->> [...]
->> 
->> > > Ultimately the GIC trigger type has to be
->> > > something. Is it fixed or passed thru? If the latter, just use 0
->> > > (IRQ_TYPE_NONE) if the GIC trigger mode is not fixed. Having some sort
->> > > of translation of the trigger is pretty common.
->> >
->> > Yes, as explained above, the SIRQ controller performs indeed the
->> > translation of the incoming signal. So if I understand correctly, your
->> > suggestion would be to use the following inside the sirq node:
->> >
->> > interrupts = <GIC_SPI 13 IRQ_TYPE_NONE>, /* SIRQ0 */
->> >              [...]
->> 
->> Please don't. If you are describing a GIC interrupt, use a
->> trigger that actually exists. Given that you have a 1:1
->> mapping between input and output, just encode the output
->> trigger that matches the input.
-> 
-> Understood, the only remark here is that internally, the driver will
-> not use this information and instead will continue to rely on the input
-> to properly set the trigger type for the output.
+Thanks.
 
-It's fine. The binding has to be consistent on its own, but
-doesn't dictate the way the driver does thing.
+I will try to reproduce the nas-SP test on my setup to see what is going one
 
-> The question is if the driver should also emit a warning (or error?)
-> when the trigger type supplied via DT doesn't match the expected value.
+Vincent
 
-Rob will tell you that the kernel isn't a validation tool for broken
-DTs. Shout if you want, but you are allowed to simply ignore the
-output trigger for example
-
-> If yes, we should also clarify what the user is supposed to provide in
-> the controller node: the trigger type before the conversion (the input)
-> or the one after the conversion (the output).
-
-The output of a SIRQ should be compatible with the GIC input it is
-attached to. You can have:
-
-         device (LEVEL_LOW) -> SIRQ (LEVEL_HIGH) -> GIC
-
-but you can't have:
-
-         device (LEVEL_LOW) -> SIRQ (EDGE_RISING) -> GIC
-
-because that's not an acceptable transformation for the SIRQ,
-nor can you have:
-
-         device (EDGE_FALLING) -> SIRQ (EDGE_FALLING) -> GIC
-
-because EDGE_FALLING isn't a valid input for the GIC.
-
-In both of the invalid cases, you would be free to apply
-which ever transformation actually makes sense, and shout
-at the user if you want to help them debugging their turf.
-The later part is definitely optional.
-
-Hope this helps,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+>
+> Thanks.
+>
+> --
+> Mel Gorman
+> SUSE Labs
