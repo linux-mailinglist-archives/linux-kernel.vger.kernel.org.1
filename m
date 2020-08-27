@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F99125433C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B8A254346
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgH0KMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
+        id S1728576AbgH0KOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgH0KMe (ORCPT
+        with ESMTP id S1728511AbgH0KOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:12:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FA0C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:12:34 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 17so3121630pfw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:12:34 -0700 (PDT)
+        Thu, 27 Aug 2020 06:14:31 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A47C061264;
+        Thu, 27 Aug 2020 03:14:31 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g6so2352948pjl.0;
+        Thu, 27 Aug 2020 03:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NJv+kX0fx+tQS4yK9UoZ8qyQVF+m9p2XpweB7RFLEmo=;
-        b=kLi7Icack7lOIO0wq/nfvgRAgBD76TneJHfLt62pddUwAvuIwFGXPrt1RPO8ERlHSo
-         jKOKr6Lrr2qByhU+y6ZmL9L813/DyrKinJcgIS7+KnjcL77/HCvBxrD4ZhmPbVAsHVIn
-         O5YKdLMrouJ3H29P/pzRpIb4owUvrYRpqQgJlBH3dcSERgXGWf/UyxE4RDoCA2o7w0ad
-         Tlu+f6TfGreAJScwgA+LinJxOc2eB9u1t427zGHYB1yHLCdJhS/hDO6U1c7GY4KEl3Xj
-         q6I7v/VS9qIH9hk9ODo0rX5fGAxRmbql8etWjJt15uj+qUnmMQ0DDhSxx2ciI6xaVGcp
-         lSgw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=kJ2fpgSadIOzfLVJTzEgFA08Q4H4dHhYlJOzUg0KTfE=;
+        b=DwlM3h0/1TRgy1NN/FHAY3WH3gmxihuRVNnpA39YuyRdwdDBKQhAAElJw+DBI8gzsc
+         j0TCwX+em1hMhffXO735vff6d/iqlwOU5f5CAkRnNByQTBqZLAKtkhyNWyqUR1ZWL7hN
+         tpKMnn8hUCmvVB8FeayQWQsVOnNoWOvK30c1aOMJU2j9ZesqKY53us4I6f5YS8Ml2nPr
+         7+bxRdPIelKiYxqDfJ55U6xlOWaI/30SDhAaK1sGpefrg/IzEuEVW8yX7FfhUCaYsDv2
+         NWuavpw55nH6MKPk5K4rtBRxIWA3HYNwNwL7381X6f7w/+n7gOA1dssckeKNfJYXxzRU
+         Ayzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NJv+kX0fx+tQS4yK9UoZ8qyQVF+m9p2XpweB7RFLEmo=;
-        b=EmQ7TOt50Y2ccZqO4ckA9gT+BMWqTdFnJHUVg9bSnYMoy7HYf55WY8dyMJxa+9WFJC
-         WKqbSDMP7S2kLMU/lHFr2LbeiPLY4pcQgt3Ccn0qFOPrp+DoY+Vn+ghXI5ZpKToHDy6r
-         THsUYTJ+8uastD+vKNpigxwI7k+bAS+hhtEo5e5pBmS/2y7W/2NQ78mHrAaVR1TuBUwE
-         AZ4LIbbj56UMu5J28ZhdyS/BrZj/JDnvcH+P0XsiIp2JA5cTNraozW61cj5tOsqaelEd
-         /UyG8YzXGBMHjubDD8+pLlVIysquzkuHA6EQOJg26sCJ6MDjK5g5xKiQqmu2tjOwp9Bd
-         WhQw==
-X-Gm-Message-State: AOAM533va76+t7tXIdksUmXsyGZmFuUYfEawYZkGWwDhYDggaZ7xXVgX
-        rYDvYl14g9Lr+52HckQyVfIQFg==
-X-Google-Smtp-Source: ABdhPJxcA/y5X1Cy7gMI+Ti+jy6KE1Bhf1haAh9otEUPNYOnJ/WNKO1u9FcJcYInXzwj9ZyU8C4HHg==
-X-Received: by 2002:a05:6a00:2285:: with SMTP id f5mr15977535pfe.173.1598523153812;
-        Thu, 27 Aug 2020 03:12:33 -0700 (PDT)
-Received: from localhost ([122.167.135.199])
-        by smtp.gmail.com with ESMTPSA id fv21sm1717054pjb.16.2020.08.27.03.12.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kJ2fpgSadIOzfLVJTzEgFA08Q4H4dHhYlJOzUg0KTfE=;
+        b=TC7OBrrYzcNMbCf+dEnEjeggIqR4xpsH/IGRTFk3L4IzfiWLJ0jjWSjchzh55WlVjj
+         7NlJHNQUHKIESeUTvcnFiALKuaKaqU1fLU/U8qcW66NURdxIwVvdoFXSd06xhlaJSHNh
+         WvUC0S8DobpYiBowoLqaDFajrYry5+4v7Tjw8bARTZcOgPIRr9C0xylcDx4YXBxF2Umr
+         VO2b3xEZGxjXM8ia6RhOEtebBkcs/h5Y6hxDkzIdlH4OLPkgFe7PvJYhPaZaZkZP707E
+         oso8TtFPkTtgxbqqPPRbe9lbWMoouJijm+ip2jKONPVQoJtPdIKgvyJdBfJPzbxJV9oe
+         Elcw==
+X-Gm-Message-State: AOAM5334eA5Aup27lDAffgh8ANvTucOaAVMq1Bx0u5D+snXi72yAGmDf
+        I8CNDPlEM94EC0uqMDJmrlOF15lY3KYDXA==
+X-Google-Smtp-Source: ABdhPJzBM9ZQNGhRRwHzq8Ti79sdq6UG69ya/El/b9FpPKWEybqQBzprLwYg82hyCgNwWtzfRwmdLg==
+X-Received: by 2002:a17:90a:fa47:: with SMTP id dt7mr10544171pjb.22.1598523271240;
+        Thu, 27 Aug 2020 03:14:31 -0700 (PDT)
+Received: from VM-0-6-centos.localdomain ([119.28.90.140])
+        by smtp.gmail.com with ESMTPSA id t10sm2333434pfq.52.2020.08.27.03.14.29
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 03:12:32 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:42:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, John Stultz <john.stultz@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com
-Subject: Re: Kernel panic : Unable to handle kernel paging request at virtual
- address - dead address between user and kernel address ranges
-Message-ID: <20200827101231.smqrhqu5da6jlz6i@vireshk-i7>
-References: <CA+G9fYvUwH2FA9GOeA_7GYpLA31uOmEpg32VKnJ8-d5QSK4PdQ@mail.gmail.com>
- <20200827090813.fjugeqbb47fachy7@vireshk-i7>
- <CAK8P3a2zxybiMDzHXkTsT=VpHJOLkwd1=YTtCNU04vuMjZLkxA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2zxybiMDzHXkTsT=VpHJOLkwd1=YTtCNU04vuMjZLkxA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Thu, 27 Aug 2020 03:14:30 -0700 (PDT)
+From:   Chunguang Xu <brookxu.cn@gmail.com>
+X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
+To:     arnd@arndb.de
+Cc:     rppt@kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/23] clean up the code related to ASSERT()
+Date:   Thu, 27 Aug 2020 18:14:05 +0800
+Message-Id: <cover.1598518912.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-08-20, 11:48, Arnd Bergmann wrote:
-> > > [    3.680477]  dev_pm_opp_put_clkname+0x30/0x58
-> > > [    3.683431]  sdhci_msm_probe+0x284/0x9a0
-> 
-> dev_pm_opp_put_clkname() is part of the error handling in the
-> probe function, so I would deduct there are two problems:
-> 
-> - something failed during the probe and the driver is trying
->   to unwind
-> - the error handling it self is buggy and tries to undo something
->   again that has already been undone.
+The kernel has not yet defined ASSERT(). Indeed, BUG() and WARN() are very
+clear and can cover most application scenarios. However, some applications
+require more debugging information and similar behavior to assert(), which
+cannot be directly provided by BUG() and WARN().
 
-Right.
+Therefore, many modules independently implement ASSERT(), and most of them
+are similar, but slightly different, such as:
 
-> This points to Viresh's
-> d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
+ #define ASSERT(expr) \
+         if(!(expr)) { \
+                 printk( "\n" __FILE__ ":%d: Assertion " #expr " failed!\n",__LINE__); \
+                 panic(#expr); \
+         }
 
-I completely forgot that Ulf already pushed this patch and I was
-wondering on which of the OPP core changes I wrote have done this :(
+ #define ASSERT(x)                                                       \
+ do {                                                                    \
+         if (!(x)) {                                                     \
+                 printk(KERN_EMERG "assertion failed %s: %d: %s\n",      \
+                        __FILE__, __LINE__, #x);                         \
+                 BUG();                                                  \
+         }                                                               \
+ } while (0)
 
-> Most likely this is not the entire problem but it uncovered a preexisting
-> bug.
+Some implementations are not optimal for instruction prediction, such as
+missing unlikely():
 
-I think this is.
+ #define assert(expr) \
+         if(!(expr)) { \
+         printk( "Assertion failed! %s,%s,%s,line=%d\n",\
+         #expr,__FILE__,__func__,__LINE__); \
+         BUG(); \
+         }
 
-Naresh: Can you please test with this diff ?
+Some implementations have too little log content information, such as:
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index b7e47107a31a..401839a97b57 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -2286,7 +2286,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
-        ret = dev_pm_opp_of_add_table(&pdev->dev);
-        if (ret != -ENODEV) {
-                dev_err(&pdev->dev, "Invalid OPP table in Device tree\n");
--               goto opp_cleanup;
-+               goto opp_put_clkname;
-        }
- 
-        /* Vote for maximum clock rate for maximum performance */
-@@ -2451,6 +2451,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
-                                   msm_host->bulk_clks);
- opp_cleanup:
-        dev_pm_opp_of_remove_table(&pdev->dev);
-+opp_put_clkname:
-        dev_pm_opp_put_clkname(msm_host->opp_table);
- bus_clk_disable:
-        if (!IS_ERR(msm_host->bus_clk))
+ #define ASSERT(X)                                               \
+ do {                                                            \
+        if (unlikely(!(X))) {                                   \
+                printk(KERN_ERR "\n");                          \
+                printk(KERN_ERR "XXX: Assertion failed\n");     \
+                BUG();                                          \
+        }                                                       \
+ } while(0)
+
+As we have seen, This makes the code redundant and inconvenient to
+troubleshoot the system. Therefore, perhaps we need to define two
+wrappers for BUG() and WARN_ON(), such as ASSERT_FAIL() and
+ASSERT_WARN(), provide the implementation of ASSERT(), simplify the
+code and facilitate problem analysis.
+
+Maybe I missed some information, but I think there is a need to clean
+up the code, maybe in other ways, and more discussion is needed here.
+If this approach is reasonable, I will clean up these codes later and
+issue related patches.
+
+Chunguang Xu (23):
+  include/asm-generic/bug.h: add ASSERT_FAIL() and ASSERT_WARN() wrapper
+  ia64: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  KVM: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  fore200e: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  scsi: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  rxrpc: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  lib/mpi: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  jfs: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  cachefiles: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  btrfs: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  afs: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  rivafb: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  nvidia: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  fbdev/cirrusfb:: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  media/staging: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  sym53c8xx: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  8139too: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  net:hns: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  block/sx8: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  skb: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  ext4: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  rbd: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+  ALSA: asihpi: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
+
+ arch/ia64/hp/common/sba_iommu.c                    |  6 +---
+ arch/x86/kvm/ioapic.h                              |  9 +-----
+ drivers/atm/fore200e.c                             |  6 +---
+ drivers/block/rbd.c                                |  9 +-----
+ drivers/block/skd_main.c                           |  8 +-----
+ drivers/block/sx8.c                                |  6 +---
+ drivers/net/ethernet/hisilicon/hns/hnae.h          |  8 +-----
+ drivers/net/ethernet/realtek/8139too.c             |  6 +---
+ drivers/scsi/megaraid/mega_common.h                | 10 ++-----
+ drivers/scsi/sym53c8xx_2/sym_hipd.h                |  9 +-----
+ .../pci/hive_isp_css_include/assert_support.h      |  6 +---
+ drivers/video/fbdev/cirrusfb.c                     |  6 +---
+ drivers/video/fbdev/nvidia/nvidia.c                |  7 +----
+ drivers/video/fbdev/riva/fbdev.c                   |  7 +----
+ fs/afs/internal.h                                  |  9 +-----
+ fs/btrfs/ctree.h                                   | 12 +-------
+ fs/cachefiles/internal.h                           |  9 +-----
+ fs/ext4/mballoc.c                                  | 10 +------
+ fs/jfs/jfs_debug.h                                 | 13 +--------
+ include/asm-generic/bug.h                          | 33 ++++++++++++++++++++++
+ lib/mpi/mpi-internal.h                             |  7 +----
+ net/rxrpc/ar-internal.h                            |  8 +-----
+ sound/pci/asihpi/hpidebug.h                        |  8 +-----
+ 23 files changed, 56 insertions(+), 156 deletions(-)
 
 -- 
-viresh
+1.8.3.1
+
