@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E07253EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F61253ECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgH0HPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:15:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgH0HPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:15:24 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE34A22BEA;
-        Thu, 27 Aug 2020 07:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598512524;
-        bh=G3vscis/STSa2/sHE+rHOyY//y2R6JMcHXEvNAmvFjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yJE5N6v47+E0KRX01YAv96COO3XDT7VXEeKDw6FdFPRmrZlImwCdB6Gp3yYvqETQI
-         ie8u9QidWO4l+3HhxaaMXrrfyeH//LZJ9N4FPnOZM2IYFA+4NPs1rrDaOfSopeTP6F
-         DUlEY+96Bw+++8WPbVSYNsJFLjdbl+iP5zG+g60w=
-Date:   Thu, 27 Aug 2020 09:15:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        accessrunner-general@lists.sourceforge.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: atm: don't use snprintf() for sysfs attrs
-Message-ID: <20200827071537.GA168593@kroah.com>
-References: <20200824222322.22962-1-alex.dewar90@gmail.com>
- <48f2dc90-7852-eaf1-55d7-2c85cf954688@rasmusvillemoes.dk>
+        id S1727995AbgH0HRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbgH0HRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:17:06 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2453BC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:17:06 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id v16so494933otp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=zNOXVAGO16g0kovdlJNyDoGYPK7lUFG4qEghaPRGfks=;
+        b=b1pIiM/0UNQDPwyoWjeSB0ShopOTgT838OTj33MZv709GGFDArARx2Bf0kuGtaRf8V
+         OrWbf5XDNRdY2t9lr0f8Y4gOTMfap638g3bsokHo5Dgw3repIwoYdjHp5zLOyLBw+gQ6
+         vIc5vnYKJ+h1O5tVZE8P1fvJFc5tRwseWwPOTRPp3fluECFzphZrUCNRCtTy2Cw++ioq
+         QpJauVqZdRO4MopGL4nmxOJVbe1cEWzGGmeaarPifVkD4iXLOy88KYWWvW/XjSYR/ekN
+         paF3m7n2ZFOs+B4/m8qqLZlZMnlrtUJDw3/5UiWQMCYRwT1fJV3R3ELbkSTvvszXl1Dl
+         lwZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=zNOXVAGO16g0kovdlJNyDoGYPK7lUFG4qEghaPRGfks=;
+        b=hIxgU6vuEUuzwDPmNb14vCDIkSR0TN/yzuAPQ9leDYRYM8zr7vDKmoE3a4otyzr95E
+         MH18R7hKeOeQ8+jTQIM5jk8tjixVnvEvoE3clZqlaObV8Tmk0KsVyeNkAMgDy9IFelIu
+         RU7Kzpdzp/Jr9MNabxFSVwoPhvGog86taheOb8idGJdYYhc29YpXtOyPkKphVCPRKNuP
+         lyoTKwQ6/YwPZD5sHx4c2eulS/kRnUUUMjY1ANyRxDpCqj4susT28BoT6mekfHrFg6db
+         OC9/wOoawkNBiECuhVIxY3zwyfCqIi3uDz44+z1A3yAR4pleleFCXo0o+4a+IvvfPBez
+         Teug==
+X-Gm-Message-State: AOAM5316sYcmfkSsyHvl2MzT2E2D+HLDPxJTN+yLkuZO9Q0aysEIFiqt
+        WXa3JuW6bvDkMr6EVZllIewSebXqIR2z0j9umeY=
+X-Google-Smtp-Source: ABdhPJyi5eesw4d22B3bgXxKOLXqpAFz7pDYQsonSgnz8JJU9Y5I1eiy84DXkauge+o38MBC8axLozYuWT7csM7s9Mg=
+X-Received: by 2002:a05:6830:1147:: with SMTP id x7mr13199188otq.28.1598512625531;
+ Thu, 27 Aug 2020 00:17:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48f2dc90-7852-eaf1-55d7-2c85cf954688@rasmusvillemoes.dk>
+References: <20200826201420.3414123-1-ndesaulniers@google.com> <202008261356.B31349A@keescook>
+In-Reply-To: <202008261356.B31349A@keescook>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 27 Aug 2020 09:16:54 +0200
+Message-ID: <CA+icZUVhw6Pry-N3dZNHKYz1UqEg0-ePOYepoe7rn15+S5zGgA@mail.gmail.com>
+Subject: Re: [PATCH] compiler-clang: add build check for clang 10.0.1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:42:06AM +0200, Rasmus Villemoes wrote:
-> On 25/08/2020 00.23, Alex Dewar wrote:
-> > kernel/cpu.c: don't use snprintf() for sysfs attrs
-> > 
-> > As per the documentation (Documentation/filesystems/sysfs.rst),
-> > snprintf() should not be used for formatting values returned by sysfs.
+On Wed, Aug 26, 2020 at 11:01 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Aug 26, 2020 at 01:14:19PM -0700, Nick Desaulniers wrote:
+> > During Plumbers 2020, we voted to just support the latest release of
+> > Clang for now.  Add a compile time check for this.
 > >
-> 
-> Sure. But then the security guys come along and send a patch saying
-> "sprintf is evil, always pass a buffer bound". Perhaps with a side of
-> "this code could get copy-pasted, better not promote the use of sprintf
-> more than strictly necessary".
-> 
-> Can we have a sysfs_sprintf() (could just be a macro that does sprintf)
-> to make it clear to the next reader that we know we're in a sysfs show
-> method? It would make auditing uses of sprintf() much easier.
+> > Older clang's may work, but we will likely drop workarounds for older
+> > versions.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/9
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/941
+> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  include/linux/compiler-clang.h | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> > index cee0c728d39a..7338d3ffd240 100644
+> > --- a/include/linux/compiler-clang.h
+> > +++ b/include/linux/compiler-clang.h
+> > @@ -3,6 +3,14 @@
+> >  #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
+> >  #endif
+> >
+> > +#define CLANG_VERSION (__clang_major__ * 10000       \
+> > +                  + __clang_minor__ * 100    \
+> > +                  + __clang_patchlevel__)
+> > +
+> > +#if CLANG_VERSION < 100001
+> > +# error Sorry, your compiler is too old - please upgrade it.
+>
+> Perhaps a bike-shed suggestion, but I think we should make this message
+> as specific (and helpful) as possible:
+>
+> # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+>
 
-Code churn to keep code checkers quiet for pointless reasons?  What
-could go wrong with that...
+Agreed... Information about the required minimum version is user-friendly.
 
-It should be pretty obvious to any reader that you are in a sysfs show
-method, as almost all of them are trivially tiny and obvious.  Yes, it
-doesn't help with those that make blanket statements like "sprintf is
-evil", but I think that kind of just shows them that they shouldn't be
-making foolish blanket statements like that :)
+- Sedat -
 
-Anyway, we've had this for 20 years, if sysfs calls are the only left
-remaining user of sprintf(), then I'll be glad to consider using a
-"wrapper" function or macro.
-
-thanks,
-
-greg k-h
+> Then anyone seeing this has several pieces of information:
+>
+> - the kernel build was attempting to use Clang
+>         (maybe they accidentally poked the wrong configs in a CI)
+> - they need 10.0.1 or better
+>         ("upgrade to what version?" doesn't need to be dug out of documentation,
+>          headers, etc)
+>
+> With that, yes, let's do it. :)
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> (And likely we should improve the GCC message at the same time...)
+>
+> --
+> Kees Cook
