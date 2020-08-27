@@ -2,89 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D07A254A48
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EED254A4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgH0QNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:13:51 -0400
-Received: from mga07.intel.com ([134.134.136.100]:38038 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgH0QNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:13:49 -0400
-IronPort-SDR: PYckOmLkhBLHb71H1llARIlQufAsujM8iKT5pjGHZn6uvzofdY8831EwykE8p81inpnztK6buF
- 6AAuTFMX+e9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="220767089"
-X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
-   d="scan'208";a="220767089"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP; 27 Aug 2020 09:13:49 -0700
-IronPort-SDR: I/0T9QeSSiAzLcNzOUgzCWwJzVCUhDBw/R/f1qKDz74fs7YprQ4bBzPmRsV5pGC/e/87qkNItE
- fQ9K1fgzkv6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
-   d="scan'208";a="373772496"
-Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
-  by orsmga001.jf.intel.com with ESMTP; 27 Aug 2020 09:13:47 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+        id S1727111AbgH0QO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:14:26 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:41030 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726123AbgH0QOY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 12:14:24 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id AF977425;
+        Thu, 27 Aug 2020 19:14:22 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1598544862;
+        bh=D0iFd0HwiCnS07gs0PSchR2wvXFcHlxmi/ESrc/MLYU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=IWJn97ni71VN/PWXAki7hnk+ntwYGe1wO4LKL1xBE4a0V4A92cfa2Y7uarzyI1WtH
+         +RKuHIHPg+Afj9604KaVhLb9dYzAAVgu671kjGVtz9XYBAS+diut93eN2XoBIIOsuw
+         e+SSKufEk8pT3hcrC3tjiwYqfE86rRTtF6Qn7QbM=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 27 Aug 2020 17:13:45 +0100
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Thu, 27 Aug 2020 09:13:44 -0700
-From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
-To:     "hch@infradead.org" <hch@infradead.org>
-CC:     "wangxiongfeng2@huawei.com" <wangxiongfeng2@huawei.com>,
-        "kw@linux.com" <kw@linux.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+ 15.1.1847.3; Thu, 27 Aug 2020 19:14:21 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 27 Aug 2020 19:14:21 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Joe Perches <joe@perches.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "Mario.Limonciello@dell.com" <Mario.Limonciello@dell.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Huffman, Amber" <amber.huffman@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-Thread-Topic: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-Thread-Index: AQHWd7clLgwBVuAUCESee06o/u7QiKlI1l4AgAKTLgCAAJR+AIAAodyA
-Date:   Thu, 27 Aug 2020 16:13:44 +0000
-Message-ID: <660c8671a51eec447dc7fab22bacbc9c600508d9.camel@intel.com>
-References: <20200821123222.32093-1-kai.heng.feng@canonical.com>
-         <20200825062320.GA27116@infradead.org>
-         <cd5aa2fef13f14b30c139d03d5256cf93c7195dc.camel@intel.com>
-         <20200827063406.GA13738@infradead.org>
-In-Reply-To: <20200827063406.GA13738@infradead.org>
-Accept-Language: en-US
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
+Subject: RE: [PATCH v2 02/10] fs/ntfs3: Add initialization of super block
+Thread-Topic: [PATCH v2 02/10] fs/ntfs3: Add initialization of super block
+Thread-Index: AdZ30tAfM9dNSlAKR92rLVrbgJq3AAABsW8AASzZqLA=
+Date:   Thu, 27 Aug 2020 16:14:21 +0000
+Message-ID: <83acd2652133437c8d9f62fcc37ad5e4@paragon-software.com>
+References: <caddbe41eaef4622aab8bac24934eed1@paragon-software.com>
+ <1ad67130d11ae089fbc46fd373e1e019e1de06f8.camel@perches.com>
+In-Reply-To: <1ad67130d11ae089fbc46fd373e1e019e1de06f8.camel@perches.com>
+Accept-Language: ru-RU, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.212.223.90]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <48C448FCBE462040A7F3805A669F8E2F@intel.com>
-Content-Transfer-Encoding: base64
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA4LTI3IGF0IDA2OjM0ICswMDAwLCBoY2hAaW5mcmFkZWFkLm9yZyB3cm90
-ZToNCj4gT24gV2VkLCBBdWcgMjYsIDIwMjAgYXQgMDk6NDM6MjdQTSArMDAwMCwgRGVycmljaywg
-Sm9uYXRoYW4gd3JvdGU6DQo+ID4gRmVlbCBmcmVlIHRvIHJldmlldyBteSBzZXQgdG8gZGlzYWJs
-ZSB0aGUgTVNJIHJlbWFwcGluZyB3aGljaCB3aWxsDQo+ID4gbWFrZQ0KPiA+IGl0IHBlcmZvcm0g
-YXMgd2VsbCBhcyBkaXJlY3QtYXR0YWNoZWQ6DQo+ID4gDQo+ID4gaHR0cHM6Ly9wYXRjaHdvcmsu
-a2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXBjaS9saXN0Lz9zZXJpZXM9MzI1NjgxDQo+IA0KPiBT
-byB0aGF0IHRoZW4gd2UgaGF2ZSB0byBkZWFsIHdpdGggeW91ciBzY2hlbWVzIHRvIG1ha2UgaW5k
-aXZpZHVhbA0KPiBkZXZpY2UgZGlyZWN0IGFzc2lnbm1lbnQgd29yayBpbiBhIGNvbnZvbHV0ZWQg
-d2F5Pw0KDQpUaGF0J3Mgbm90IHRoZSBpbnRlbnQgb2YgdGhhdCBwYXRjaHNldCAtYXQgYWxsLS4g
-SXQgd2FzIHRvIGFkZHJlc3MgdGhlDQpwZXJmb3JtYW5jZSBib3R0bGVuZWNrcyB3aXRoIFZNRCB0
-aGF0IHlvdSBjb25zdGFudGx5IGNvbXBsYWluIGFib3V0LiANCg0KDQo+IFBsZWFzZSBqdXN0IGdp
-dmUgdXMNCj4gYSBkaXNhYmxlIG5vYiBmb3IgVk1ELCB3aGljaCBzb2x2ZXMgX2FsbF8gdGhlc2Ug
-cHJvYmxlbXMgd2l0aG91dA0KPiBhZGRpbmcNCj4gYW55Lg0KDQpJIGRvbid0IHNlZSB0aGUgcHVy
-cG9zZSBvZiB0aGlzIGxpbmUgb2YgZGlzY3Vzc2lvbi4gVk1EIGhhcyBiZWVuIGluIHRoZQ0Ka2Vy
-bmVsIGZvciA1IHllYXJzLiBXZSBhcmUgY29uc3RhbnRseSB3b3JraW5nIG9uIGJldHRlciBzdXBw
-b3J0Lg0K
+From: Joe Perches <joe@perches.com>
+Sent: Friday, August 21, 2020 10:39 PM
+>=20
+> On Fri, 2020-08-21 at 16:25 +0000, Konstantin Komarov wrote:
+> > Initialization of super block for fs/ntfs3
+> []
+> > diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> []
+> > +
+> > +/**
+> > + * ntfs_trace() - print preformated ntfs specific messages.
+> > + */
+> > +void __ntfs_trace(const struct super_block *sb, const char *level,
+> > +		  const char *fmt, ...)
+>=20
+> This is a printk mechanism.
+>=20
+> I suggest renaming this __ntfs_trace function to ntfs_printk
+> as there is a naming expectation conflict with the tracing
+> subsystem.
+>=20
+> > +{
+[]
+> > +	else
+> > +		printk("%sntfs3: %s: %pV", level, sb->s_id, &vaf);
+> > +	va_end(args);
+> > +}
+>=20
+> Also it would be rather smaller overall object code to
+> change the macros and uses to embed the KERN_<LEVEL> into
+> the format and remove the const char *level argument.
+>=20
+> Use printk_get_level to retrieve the level from the format.
+>=20
+> see fs/f2fs/super.c for an example.
+>=20
+> This could be something like the below with a '\n' addition
+> to the format string to ensure that messages are properly
+> terminated and cannot be interleaved by other subsystems
+> content that might be in another simultaneously running
+> thread starting with KERN_CONT.
+>=20
+> void ntfs_printk(const struct super_block *sb, const char *fmt, ...)
+> {
+> 	struct va_format vaf;
+> 	va_list args;
+> 	int level;
+>=20
+> 	va_start(args, fmt);
+>=20
+> 	level =3D printk_get_level(fmt);
+> 	vaf.fmt =3D printk_skip_level(fmt);
+> 	vaf.va =3D &args;
+> 	if (!sb)
+> 		printk("%c%cntfs3: %pV\n",
+> 		       KERN_SOH_ASCII, level, &vaf);
+> 	else
+> 		printk("%c%cntfs3: %s: %pV\n",
+> 		       KERN_SOH_ASCII, level, sbi->sb->s_id, &vaf);
+>=20
+> 	va_end(args);
+> }
+>=20
+> > +
+> > +/* prints info about inode using dentry case if */
+> > +void __ntfs_inode_trace(struct inode *inode, const char *level, const =
+char *fmt,
+>=20
+> ntfs_inode_printk
+>=20
+> > +			...)
+> > +{
+> > +	struct super_block *sb =3D inode->i_sb;
+> > +	ntfs_sb_info *sbi =3D sb->s_fs_info;
+> > +	struct dentry *dentry;
+> > +	const char *name =3D "?";
+> > +	char buf[48];
+> > +	va_list args;
+> > +	struct va_format vaf;
+> > +
+> > +	if (!__ratelimit(&sbi->ratelimit))
+> > +		return;
+> > +
+> > +	dentry =3D d_find_alias(inode);
+> > +	if (dentry) {
+> > +		spin_lock(&dentry->d_lock);
+> > +		name =3D (const char *)dentry->d_name.name;
+> > +	} else {
+> > +		snprintf(buf, sizeof(buf), "r=3D%lx", inode->i_ino);
+> > +		name =3D buf;
+> > +	}
+> > +
+> > +	va_start(args, fmt);
+> > +	vaf.fmt =3D fmt;
+> > +	vaf.va =3D &args;
+> > +	printk("%s%s on %s: %pV", level, name, sb->s_id, &vaf);
+> > +	va_end(args);
+> > +
+> > +	if (dentry) {
+> > +		spin_unlock(&dentry->d_lock);
+> > +		dput(dentry);
+> > +	}
+> > +}
+>=20
+> Remove level and use printk_get_level as above.
+> Format string should use '\n' termination here too.
+>=20
+
+Thanks for pointing this out and for your effort with the patch, Joe. We wi=
+ll rework logging in V3 so that it's more compliant with Kernel's approach.
+
