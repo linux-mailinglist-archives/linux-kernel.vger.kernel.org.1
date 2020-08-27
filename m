@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BB625447B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C23254485
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgH0LqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728508AbgH0LfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:35:24 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FE0722B40;
-        Thu, 27 Aug 2020 11:35:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598528124;
-        bh=dFaCtuuppbrD9PUodVjJhQzg/FVgaLSvUY9+chkC3vQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0q/xqTUwqCBVTSHCGZC8EQaC9mJL1umNzRZIgiXqZYnwmOgkvSf8URXxItL3vG1PT
-         oDgXHagGN6pPrkOP6fj/6UAdmWzpiAx+5gSnp0ZSj2gX4NdZgYEId+/rZYp4fAcS7A
-         vRJItWmRmOaRpWDUI+2S6uqAM0L0aYuVNDTDaajg=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2 00/15] kprobes: Unify kretprobe trampoline handlers
-Date:   Thu, 27 Aug 2020 20:35:18 +0900
-Message-Id: <159852811819.707944.12798182250041968537.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S1728913AbgH0Lsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728742AbgH0Lfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:35:50 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA09C06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:35:45 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q14so4579296ilm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nk3XMsscwoEZw1pfmEYAb8eP1m4cERKtDNn3BOQ6wZo=;
+        b=U/C0BJIItk4cpBQIKKHprsucVwFzLLWgqyxYVTuviqiRvJjFV00mPKgYgU/U7w4t9Q
+         Y40T9K2BvdJWBQDj0tw6ewwLwDyW1ggK0A40/SxM6ZC0MKMxWAcf8PU1zP7NJ0DL7mwD
+         mabdMS5DBW7DARO/TJRFwzlgPVu8S0VESQgV96hED2alyqd76GfOWzrgDjc3gWEb5N5f
+         ZXoX2eU3bk3e00NNtglqOZOkh7D0oiLs7icsqPvxkUgCc0SrWpmEME3fJ2zGpsL7xeGb
+         Os6qqgp8yE/vPgMSIJW3N5qhxl98XatED8SwbtCvliPqsXhjaCEIi87d3MLFeclXamQ9
+         +NzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nk3XMsscwoEZw1pfmEYAb8eP1m4cERKtDNn3BOQ6wZo=;
+        b=aDsLs3zq3KGllS+Urj3pEAQzcdfcDe6J5yVt6F3Fdz+DNa6jXJrNF4X3XpWQzs/9zv
+         aF0g8E247NKcuOC6ahBloYhpNAisL3OkOeJDVDo/fZEIgwYq9BXJ7W4d5xHLWlUGxjvF
+         dnqmTyIOmycj/fHXz8T918dJo3pttfwR3o3I1kjq5y2TFeb/hcJczM4Dw8aTb/dPnTo3
+         ZhyEmNNmXSwnsj0YvrNkZzxcnP9sE93tgRx533KVm2LDfrVeiXrWSDLQu6LO1n7Yrooq
+         8xdt5ZC71bFRV01XZS6KlOf8NoZ0/i06mPWOlqG3CqRV8QQ2jB6pTqFVUUSzXVU9GAtn
+         zOSA==
+X-Gm-Message-State: AOAM530+KC6p6LFKd5X6CH/JMsuQe6Ujig8drnbtUuNSvepAxgS9jMxt
+        h+vK7p1BOmt30gMi3Ok0jYVmCuMPghosFs2ShQwNHw==
+X-Google-Smtp-Source: ABdhPJwxSXQ2/aSL9AbPqwXrgVZPAyH+csHxjYXsclhJT00Mv6s7Ff00Pw0g3zQXn7UCx/ACkT8asEAMiK59f/Wo/HY=
+X-Received: by 2002:a92:bb0e:: with SMTP id w14mr15038915ili.68.1598528144077;
+ Thu, 27 Aug 2020 04:35:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200827112922.48889-1-linmiaohe@huawei.com>
+In-Reply-To: <20200827112922.48889-1-linmiaohe@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 27 Aug 2020 04:35:32 -0700
+Message-ID: <CANn89iK3CKrXPj5fNYys26zd8P67jz8GZEF2WjLD6Xw05SimcA@mail.gmail.com>
+Subject: Re: [PATCH] net: Set trailer iff skb1 is the last one
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Florian Westphal <fw@strlen.de>, martin.varghese@nokia.com,
+        Davide Caratti <dcaratti@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>, shmulik@metanetworks.com,
+        kyk.segfault@gmail.com, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Aug 27, 2020 at 4:31 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> Set trailer iff skb1 is the skbuff where the tailbits space begins.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  net/core/skbuff.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 0b24aed04060..18ed56316e56 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -4488,8 +4488,9 @@ int skb_cow_data(struct sk_buff *skb, int tailbits, struct sk_buff **trailer)
+>                         skb1 = skb2;
+>                 }
+>                 elt++;
+> -               *trailer = skb1;
+>                 skb_p = &skb1->next;
+> +               if (!*skb_p)
+> +                       *trailer = skb1;
+>
 
-Here is the 2nd version of the series to unify the kretprobe trampoline handler
-implementation across all architectures which are currently kprobes supported.
-Previous version is here;
+Why is adding a conditional test going to help ?
 
- https://lkml.kernel.org/r/159844957216.510284.17683703701627367133.stgit@devnote2
-
-This series removes the in_nmi() check from pre_kretprobe_handler() since we
-can avoid double-lock deadlock from NMI by kprobe_busy_begin/end().
-In this version, I also add a patch to use kfree_rcu() for freeing kretprobe
-instance objects so that we don't call kfree() in NMI context directly.
-
-The unified generic kretprobe trampoline handler is based on x86 code, which
-already support frame-pointer checker. The checker is enabled on arm and arm64
-too because I can test it. For other architecutres, currently the checker
-is not enabled. If someone wants to enable it, please set the correct
-frame pointer to ri->fp and pass it to kretprobe_trampoline_handler() as the
-3rd parameter, instead of NULL.
-
-Thank you,
-
----
-
-Masami Hiramatsu (15):
-      kprobes: Add generic kretprobe trampoline handler
-      x86/kprobes: Use generic kretprobe trampoline handler
-      arm: kprobes: Use generic kretprobe trampoline handler
-      arm64: kprobes: Use generic kretprobe trampoline handler
-      arc: kprobes: Use generic kretprobe trampoline handler
-      csky: kprobes: Use generic kretprobe trampoline handler
-      ia64: kprobes: Use generic kretprobe trampoline handler
-      mips: kprobes: Use generic kretprobe trampoline handler
-      parisc: kprobes: Use generic kretprobe trampoline handler
-      powerpc: kprobes: Use generic kretprobe trampoline handler
-      s390: kprobes: Use generic kretprobe trampoline handler
-      sh: kprobes: Use generic kretprobe trampoline handler
-      sparc: kprobes: Use generic kretprobe trampoline handler
-      kprobes: Remove NMI context check
-      kprobes: Free kretprobe_instance with rcu callback
-
-
- arch/arc/kernel/kprobes.c          |   55 +---------------
- arch/arm/probes/kprobes/core.c     |   79 +----------------------
- arch/arm64/kernel/probes/kprobes.c |   79 +----------------------
- arch/csky/kernel/probes/kprobes.c  |   78 +---------------------
- arch/ia64/kernel/kprobes.c         |   79 +----------------------
- arch/mips/kernel/kprobes.c         |   55 +---------------
- arch/parisc/kernel/kprobes.c       |   78 ++--------------------
- arch/powerpc/kernel/kprobes.c      |   55 +---------------
- arch/s390/kernel/kprobes.c         |   81 +----------------------
- arch/sh/kernel/kprobes.c           |   59 +----------------
- arch/sparc/kernel/kprobes.c        |   52 +--------------
- arch/x86/kernel/kprobes/core.c     |  109 +------------------------------
- include/linux/kprobes.h            |   35 +++++++++-
- kernel/kprobes.c                   |  126 +++++++++++++++++++++++++++++-------
- 14 files changed, 182 insertions(+), 838 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+cpu will have hard time predicting this one, I doubt this kind of
+change is a win.
