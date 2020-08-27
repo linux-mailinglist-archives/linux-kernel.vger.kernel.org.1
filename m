@@ -2,98 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFB825435C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47539254365
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgH0KPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728731AbgH0KPE (ORCPT
+        id S1727883AbgH0KQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:16:00 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:42609 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727897AbgH0KPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:15:04 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5022EC061264;
-        Thu, 27 Aug 2020 03:15:04 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mt12so2368948pjb.4;
-        Thu, 27 Aug 2020 03:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=ligckTORXYSrSmKLcHqQzSKW2gKfGktzSGPREcOvEO8=;
-        b=sADfUrTeNU+ykSRFQKQ5ZZpU1xPWKf5O6zpFRUNhjYRo3gjWZGwdM9WD2q+DeaqWS3
-         /LKNgVm3QYNyrthSB5u5+97fTI90AXnAEziGodo0z5nZr7uUCuCkLmE4CSjR4fWqBET6
-         ylWVynwZyOtlOpR8SRVCXXeyza1lAxHTb86G1C+jj8aVQ1TKTZawFYtnH0EDICSqQ806
-         LO4CBY1o1ZxfqmBW0IrHJgpRsqDsvgkwMPDq2mePGiqGvHvYcp//Z12XwbPVZUrtyODJ
-         RzfVrx5CyC/r87+cr9BiRWjxcOtT7CJBj0z1NPQWNvG1dmvPGKotgVygyMf8+AoxVUze
-         oGzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=ligckTORXYSrSmKLcHqQzSKW2gKfGktzSGPREcOvEO8=;
-        b=oDm+4sKAYiG7JYozZNBBNX2ax+4N0LQMN0sUBiUn0a2DFAYOjvi1TWHM1VPel4ohSl
-         Mze5ixYitSfEpdqwVqxf9oQfaUTy7ClF5hbObJNIJHbdMQWBLdhV5+wPRm5v+p3JSLBs
-         4PQYEhaGWFTliOjBYIKsv/w/01CdDhGW6qEHCbJTYUtku/n7Cl62H0SgZIMl+bjayWyS
-         jbXMmPr2c03nro7YvH2UOJoVsXPPwGchgzWHdt6k5RYiCg6Wg0JMtse0oFg/Kr6dU1A+
-         StxgHkAWTwH7UEBKAhsXSHMP7y+yhk27qNHFZf+ylf9bBRLRxIQ/zaQ4lIbWtyjv6zLZ
-         HfZQ==
-X-Gm-Message-State: AOAM531O+O7ia2ocV3uX1RPBEheOeWSuEOc0GiUDkGPfa1mV2I+1aYIR
-        F6490FORMX0if102u0Om3uadTZMamU9QaQ==
-X-Google-Smtp-Source: ABdhPJyrIfvr0HBhvHG+N7ppCWW85jxfQ9DTbR4JO3iyfjjNJVtHaK4E4Bj10N7CPdQR6A5DBQAnCw==
-X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr6632235pjv.31.1598523303963;
-        Thu, 27 Aug 2020 03:15:03 -0700 (PDT)
-Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id t10sm2333434pfq.52.2020.08.27.03.15.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 03:15:03 -0700 (PDT)
-From:   Chunguang Xu <brookxu.cn@gmail.com>
-X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
-To:     arnd@arndb.de
-Cc:     rppt@kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 23/23] ALSA: asihpi: use ASSERT_FAIL()/ASSERT_WARN() to cleanup some code
-Date:   Thu, 27 Aug 2020 18:14:28 +0800
-Message-Id: <1f104cd576b71f53f01e0cd4ae5c57143231dd58.1598518912.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1598518912.git.brookxu@tencent.com>
-References: <cover.1598518912.git.brookxu@tencent.com>
-In-Reply-To: <cover.1598518912.git.brookxu@tencent.com>
-References: <cover.1598518912.git.brookxu@tencent.com>
+        Thu, 27 Aug 2020 06:15:41 -0400
+Received: from mail-qk1-f178.google.com ([209.85.222.178]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MXY6b-1k7EjF27d1-00YwRu for <linux-kernel@vger.kernel.org>; Thu, 27 Aug
+ 2020 12:15:38 +0200
+Received: by mail-qk1-f178.google.com with SMTP id u3so5321133qkd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:15:38 -0700 (PDT)
+X-Gm-Message-State: AOAM5313IQgaB9CrcH4STsbn76UssYC5BUhgnbfqugXfRxcVUBnmLSup
+        zm0Y4uiJPvoM4vZdF56tCd47hO43KXwK1kbY99c=
+X-Google-Smtp-Source: ABdhPJzdaSYhoLaNpQK/mfzoY+l0Nc76rW6do3te9j00/vi91iqdAFRcbliHdY9cMdBv3s+wlm8XaSkhKHmrxyeOuls=
+X-Received: by 2002:a37:b942:: with SMTP id j63mr18167411qkf.138.1598523337360;
+ Thu, 27 Aug 2020 03:15:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200820145117.8348-1-daniel.gutson@eclypsium.com>
+In-Reply-To: <20200820145117.8348-1-daniel.gutson@eclypsium.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 27 Aug 2020 12:15:21 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Z_mw4k+FZbGiz8Qg-YOHo7f=bWgpZ2gGZYqZuKo-8Hw@mail.gmail.com>
+Message-ID: <CAK8P3a3Z_mw4k+FZbGiz8Qg-YOHo7f=bWgpZ2gGZYqZuKo-8Hw@mail.gmail.com>
+Subject: Re: [PATCH] Platform lockdown information in sysfs (v2)
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ODR9pjc7whQH0JW1v7iW0KyUXm7FDdIpDPSvsgCyDbIjsOaKhwQ
+ kkvVNmfM7gp18lJKyKg10YQrIZvgB+/c3RZfzXlPuI8J2RWTqRGJanKYajgl+IApSXyQjiw
+ kvviFBK94KTT3RFrfJfSuK7gqgMy3Dlt3d5POC66pUFaFPpmKBzgxKSo/Xr9SyxOyTA8N0T
+ gTHqrjCIPCZoz5xZiZHOg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C0mUOtjFBpk=:c0M059xJJNfBjPL+pnFdEP
+ twXe31XRQhZRVCnkkj8RaFHjZU+fNrOdVXbNX57m6/7nV9c9JH09eyLMVAEQeOghx47XOua/H
+ sWJ5EKrQg0/x0bMkBoe3CcK1C6LL1ndc6uU9AtAgHEcbbGXqj4zUYiiaHlkcFVMI7I9LwQphl
+ 7pXZzhVL/xtb8qWTaPmAJwcyYyOLiDBKyswJQg4VIpQ1tXhP7f5n5WBoYdztV+mq4emXbTqlR
+ 7t2ojHnp06VXuIARloS6us812ZJcGmFAdvC0zgsQAi7n5ihhEL1/c0+N2Iqn1iwBH1ds10SDI
+ azYVtYz8beIlm5PzHBHGqy+Wob0iwj3xjnDkyO/snFSTTc5RtpKgqhktX9vfpkz3AhNeUtoYw
+ 4ID5BEDBbK3rs+IQ/uIOyVo9T41QtdXTa1gtd7dRpMCfmyVUpaX0cSd0JJgWlQfeUU+EBtEvP
+ MjbephVJjmXb4MfsZV9Hj1rE/uqSqqaBweAvQHwLW+50gDe4wb1oI/WEaDMpfOVenuo72Q6Ip
+ 7EIgdDXiw1K9D7EzCrxdU+73mIYTI7rjpJbiV+5xmwpuo7LlFFC1ZItNxo1eIkW+25L7GJ7Kc
+ ilYEuls4pFP7hUTSney3G2Fzap0pWvLQIqT9ljNGor2dHNSI1IG0rnqQ8N+tsfjgezL2plWMM
+ Fcskacol84dB+tG62TZ66Qk/X4TDBHREiL7jHt9w+hH2B+l3vbkD/AcQckwkABt/4MZBYu5s2
+ DjAC0s1Osjrh1OLJDwEbqDgQ9AQNaK1+5ji0yLAw5nmBwnfZmq94Szo/VJK1ZBe8DFxgajN8e
+ 8qtnrTQxjL1nNmlioIAKTNXIhU3kDNBcuBfzh+aa0dnSqIp5WxgclYZ6TCK1NNPfdgP7O41
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since ASSERT_FAIL() and ASSERT_WARN() have been provided, ASSERT()
-may be realized through them, thus reducing code redundancy and
-facilitating problem analysis.
+On Thu, Aug 20, 2020 at 4:51 PM Daniel Gutson
+<daniel.gutson@eclypsium.com> wrote:
+>
+> This patch exports information about the platform lockdown
+> firmware configuration in the sysfs filesystem.
+> In this initial patch, I include some configuration attributes
+> for the system SPI chip.
+>
+> This initial version exports the BIOS Write Enable (bioswe),
+> BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
+> fields of the BIOS Control register. The idea is to keep adding more
+> flags, not only from the BC but also from other registers in following
+> versions.
+>
+> The goal is that the attributes are avilable to fwupd when SecureBoot
+> is turned on.
+>
+> The patch provides a new misc driver, as proposed in the previous patch,
+> that provides a registration function for HW Driver devices to register
+> class_attributes.
+> In this case, the intel SPI flash chip (intel-spi) registers three
+> class_attributes corresponding to the fields mentioned above.
+>
+> This version of the patch replaces class attributes by device
+> attributes.
+>
+> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- sound/pci/asihpi/hpidebug.h | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+This looks much better than before, thanks for addressing the feedback.
+> diff --git a/Documentation/ABI/stable/sysfs-class-platform-lockdown b/Documentation/ABI/stable/sysfs-class-platform-lockdown
+> new file mode 100644
+> index 000000000000..3fe75d775a42
+> --- /dev/null
+> +++ b/Documentation/ABI/stable/sysfs-class-platform-lockdown
+> @@ -0,0 +1,23 @@
+> +What:          /sys/class/platform-lockdown/bioswe
 
-diff --git a/sound/pci/asihpi/hpidebug.h b/sound/pci/asihpi/hpidebug.h
-index c24ed69..b65c8dc 100644
---- a/sound/pci/asihpi/hpidebug.h
-+++ b/sound/pci/asihpi/hpidebug.h
-@@ -34,13 +34,7 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
- #define FILE_LINE  __FILE__ ":" __stringify(__LINE__) " "
- #endif
- 
--#define HPI_DEBUG_ASSERT(expression) \
--	do { \
--		if (!(expression)) { \
--			printk(KERN_ERR  FILE_LINE \
--				"ASSERT " __stringify(expression)); \
--		} \
--	} while (0)
-+#define HPI_DEBUG_ASSERT(expression) ASSERT_WARN(expression)
- 
- #define HPI_DEBUG_LOG(level, ...) \
- 	do { \
--- 
-1.8.3.1
+platform-lockdown is a much better name than the previous suggestions.
+I'm still hoping for an even better suggestion. Like everything the term
+"lockdown" is also overloaded a bit, with the other common meaning
+referring to the effort to give root users less privilege than the
+kernel itself,
+see https://lwn.net/Articles/750730/
 
+Shouldn't there be a device name between the class name
+("platform-lockdown") and the attribute name?
+
+> +PLATFORM LOCKDOWN ATTRIBUTES MODULE
+> +M:     Daniel Gutson <daniel.gutson@eclypsium.com>
+> +S:     Supported
+> +F:     Documentation/ABI/sysfs-class-platform-lockdown
+> +F:     drivers/misc/platform-lockdown-attrs.c
+> +F:     include/linux/platform_data/platform-lockdown-attrs.h
+
+include/linux/platform_data/ is not the right place for the header,
+this is defined to be the place for defining properties of devices
+that are created from old-style board files.
+
+Just put the header into include/linux/ directly.
+the host.
+>
+> +config PLATFORM_LOCKDOWN_ATTRS
+> +       tristate "Platform lockdown information in the sysfs"
+> +       depends on SYSFS
+> +       help
+> +         This kernel module is a helper driver to provide information about
+> +         platform lockdown settings and configuration.
+> +         This module is used by other device drivers -such as the intel-spi-
+> +         to publish the information in /sys/class/platform-lockdown.
+
+Maybe mention fwupd in the description in some form.
+
+> +
+> +static struct class platform_lockdown_class = {
+> +       .name = "platform-lockdown",
+> +       .owner = THIS_MODULE,
+> +};
+> +
+> +struct device *register_platform_lockdown_data_device(struct device *parent,
+> +                                                     const char *name)
+> +{
+> +       return device_create(&platform_lockdown_class, parent, MKDEV(0, 0),
+> +                            NULL, name);
+> +}
+> +EXPORT_SYMBOL_GPL(register_platform_lockdown_data_device);
+> +
+> +void unregister_platform_lockdown_data_device(struct device *dev)
+> +{
+> +       device_unregister(dev);
+> +}
+> +EXPORT_SYMBOL_GPL(unregister_platform_lockdown_data_device);
+> +
+> +int register_platform_lockdown_attribute(struct device *dev,
+> +                                        struct device_attribute *dev_attr)
+> +{
+> +       return device_create_file(dev, dev_attr);
+> +}
+> +EXPORT_SYMBOL_GPL(register_platform_lockdown_attribute);
+> +
+> +void register_platform_lockdown_attributes(struct device *dev,
+> +                                          struct device_attribute dev_attrs[])
+> +{
+> +       u32 idx = 0;
+> +
+> +       while (dev_attrs[idx].attr.name != NULL) {
+> +               register_platform_lockdown_attribute(dev, &dev_attrs[idx]);
+> +               idx++;
+> +       }
+
+There is a bit of a race with creating the device first and then
+the attributes. Generally it seems better to me to use
+device_create_with_groups() instead so the device shows up
+with all attributes in place already.
+
+> +void register_platform_lockdown_custom_attributes(struct device *dev,
+> +                                                 void *custom_attrs,
+> +                                                 size_t dev_attr_offset,
+> +                                                 size_t custom_attr_size)
+
+This interface seems to be overly complex, I would hope it can be avoided.
+
+> +static ssize_t cnl_spi_attr_show(struct device *dev,
+> +       struct device_attribute *attr, char *buf)
+> +{
+> +       u32 bcr;
+> +       struct cnl_spi_attr *cnl_spi_attr = container_of(attr,
+> +               struct cnl_spi_attr, dev_attr);
+> +
+> +       if (class_child_device != dev)
+> +               return -EIO;
+> +
+> +       if (dev->parent == NULL)
+> +               return -EIO;
+> +
+> +       if (pci_read_config_dword(container_of(dev->parent, struct pci_dev, dev),
+> +                               BCR, &bcr) != PCIBIOS_SUCCESSFUL)
+> +               return -EIO;
+> +
+> +       return sprintf(buf, "%d\n", (int)!!(bcr & cnl_spi_attr->mask));
+> +}
+
+If I understand it right, that complexity comes from attempting to
+have a single show callback for three different flags. To me that
+actually feels more complicated than having an attribute group
+with three similar but simpler show callbacks.
+
+>  static void intel_spi_pci_remove(struct pci_dev *pdev)
+>  {
+> +       if (class_child_device != NULL) {
+
+Please avoid the global variable here and just add a member in the
+per-device data.
+
+> +               unregister_platform_lockdown_custom_attributes(
+> +                       class_child_device,
+> +                       cnl_spi_attrs,
+> +                       offsetof(struct cnl_spi_attr, dev_attr),
+> +                       sizeof(struct cnl_spi_attr));
+> +
+> +               unregister_platform_lockdown_data_device(class_child_device);
+
+It should be possible to just destroy the attributes as part of
+unregister_platform_lockdown_data_device.
+
+       Arnd
