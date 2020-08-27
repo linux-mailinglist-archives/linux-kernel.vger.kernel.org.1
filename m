@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F79254FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 22:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7D7255000
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 22:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgH0UZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 16:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
+        id S1726826AbgH0U1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 16:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgH0UZW (ORCPT
+        with ESMTP id S1726147AbgH0U1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 16:25:22 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDC7C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 13:25:21 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id f12so6004230ils.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 13:25:21 -0700 (PDT)
+        Thu, 27 Aug 2020 16:27:38 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D16EC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 13:27:38 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id e41so591457uad.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 13:27:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EcPugKinUDkl45gw2/TofizT3GOM5FJb2tHu0+XZtfc=;
-        b=jjWnq371SBtqP44eYzksxx+Ez1Vqdmotak6/NGGCW240lnyg+AY6wdXUaHmqTCHcls
-         7Ufv5ivFPyKcBG/qcjXE8J2XyPUv8+pUeFqujz3ZqhipT/ZFKK6N0FoWo5OELlZgnCMq
-         ltWz5TcKuEyAZnQ+DalgXB5fJkK/tScz1iOpDNYkQlDwE6WELNDH1sJylvOeepxLI8d2
-         czEGUJ9xpdplUyX+w4fJM0Qcw9EfPBwZ02Yi5cuTXjYrKonuUWTN+QPRDqlzkAv6sWcv
-         ZiI9u/RibB7o6CqSHA4CmRCSZkWSJLra8LmWsHpJbrQkYEdUSvOIWQ9ObG0bVRRlR8mA
-         Oz6w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pZ//jLyEGc9rQ/5ywgZs9AFGiQ4M3Jn6N3wi0W6fLTk=;
+        b=cW9R1YXaVzPIgb19g8eHR8EByOO083Db4fVQIjH2ZM5PSNpYKloAXezTr/CP2u/mQA
+         fvI9or4iuYtkKnYTQoORu5kv3YBwvSNmt9ZZYuPrUupI2TegHbXdJTPo5YypvYmxp8hx
+         rJiqqxwpyyyZkCI0eAxr5m+KSQX1SjZBLpCz35ERVmRV7XMyrHFdzaY/PyiEvIVAq5X9
+         hHQWjx4uhvCQ09u5QjwypG+jFOEFmJfRes61/kzhSe4xTo/Jk9QDPScuRoskWUDeWlXC
+         2rn4iNmGYiWNVazbSXBBgM/hv6Lc0RAc09bPUmSAdDsk4LD33n2Castf2l92TfPyELj5
+         77Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EcPugKinUDkl45gw2/TofizT3GOM5FJb2tHu0+XZtfc=;
-        b=AX4T7dBzx1vOX/8k2x+jvs/YjRdXbVB4FzkU/04v3AiKTzI2fsYF7zfKIlMG7EKAAU
-         9IEcYqAVGUjHVMUHLjzR/y3V9l8QC5z9WovfPYGFhukZnM7YTcO+bzc5PnS9zgzqhxw0
-         jMEjGz5zgz5SUgerw4MRxOpIXspDz6kUKUgl95F+1QehkEdWbzrlvIvTMYJBDMEjMz7v
-         UA0kgofV0yZuqcJtvXNuuZCp4Q4MEotdlmn/50qlFAJNDYVzXyBBQze9h56uxa7RGK2T
-         lo8F2TWYV+sOKvgRcYjNmL396U/krjT9n8dNY3e42eZuQ9oWBL4GfgGG78HxLvYjsvcx
-         y2lw==
-X-Gm-Message-State: AOAM530hrlcFkAmIQje4vKXQq2QDwU72kPeQqv3ZtHGndWKR//qsDG88
-        ZVItf11prKEb+75W8XHrIlESLuFWCY+d2FKA
-X-Google-Smtp-Source: ABdhPJypVWkjZUjt8Sj+LCVvbBEGUX7d4meeBdN/kwOzHSsOqrAhQv8bjR5/peeV6piVllYGZxandQ==
-X-Received: by 2002:a92:dc03:: with SMTP id t3mr17495932iln.59.1598559920719;
-        Thu, 27 Aug 2020 13:25:20 -0700 (PDT)
-Received: from google.com ([2601:285:8380:9270::f2a2])
-        by smtp.gmail.com with ESMTPSA id c24sm1662935iom.46.2020.08.27.13.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 13:25:19 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 14:25:17 -0600
-From:   Ross Zwisler <zwisler@google.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Ross Zwisler <zwisler@chromium.org>, linux-kernel@vger.kernel.org,
-        Mattias Nissler <mnissler@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Gordon <bmgordon@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Dmitry Torokhov <dtor@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Micah Morton <mortonm@google.com>,
-        Raul Rangel <rrangel@google.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v9 1/2] Add a "nosymfollow" mount option.
-Message-ID: <20200827202517.GA484488@google.com>
-References: <20200827170947.429611-1-zwisler@google.com>
- <20200827200801.GB1236603@ZenIV.linux.org.uk>
- <20200827201015.GC1236603@ZenIV.linux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pZ//jLyEGc9rQ/5ywgZs9AFGiQ4M3Jn6N3wi0W6fLTk=;
+        b=WHleCEA7sAe/D5c43Oi3wBeLZByyaAHT2+u7NgFLSYMQ4YbRU8zZVQ184x+6T1RkPH
+         FQhK5OfXX+hHB/YXF0Za7NMe9s7AlM9fWIZlb4HKghLIWynMLHpuM8UqaahAr6jWdwdM
+         P8BCnS/HyQLtXb9Ies+Tm5v+GjUqUXl3ZhPqYUb2pcN2Jw3qJpwlXbmcGIdUEUjf2DCC
+         7xlJIYBJzq2eocJ6whZrUAC/XiLFS+LpN3aeBiDf6RXvIrpK/+kNKn68avsgYT6NoRqH
+         YaUGMpm4aMnyDJ3dNKtfWKXK4VXG+//TVjP/E6QtypPpQIFprZTlsCeJk6XwTOCIOr2x
+         IIuA==
+X-Gm-Message-State: AOAM531kCT1Pb72or7L6+YhfSyMGiFf9hWg+U1ADtlY9RgnE8DRm35Hu
+        lxkpO2+Q3LJ6tJFShzQsRCIE2/BY9+y7q2xniy07vw==
+X-Google-Smtp-Source: ABdhPJxzBjdIjLP+fic8QVRqI7i2HXnTm0gMDDu/fk4wtDvJw2bF8nvr92kZ7hQ/2QAwAvkj2Lc4HmeA0C6LORz2ceA=
+X-Received: by 2002:ab0:142e:: with SMTP id b43mr14014891uae.7.1598560057400;
+ Thu, 27 Aug 2020 13:27:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827201015.GC1236603@ZenIV.linux.org.uk>
+References: <20200827083330.1.I669bb4dc3d92bd04e9a695f97904797dc8241b79@changeid>
+In-Reply-To: <20200827083330.1.I669bb4dc3d92bd04e9a695f97904797dc8241b79@changeid>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 28 Aug 2020 01:57:25 +0530
+Message-ID: <CA+G9fYtWpBQb8Ew_G=bjcR7wBHMgKm=EXV7vuk6FE9m0-4Ef3A@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-msm: When dev_pm_opp_of_add_table() returns 0
+ it's not an error
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, vbadigan@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:10:15PM +0100, Al Viro wrote:
-> On Thu, Aug 27, 2020 at 09:08:01PM +0100, Al Viro wrote:
+On Thu, 27 Aug 2020 at 21:03, Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The commit d05a7238fe1c ("mmc: sdhci-msm: Unconditionally call
+> dev_pm_opp_of_remove_table()") works fine in the case where there is
+> no OPP table.  However, if there is an OPP table then
+> dev_pm_opp_of_add_table() will return 0.  Since 0 != -ENODEV then the
+> "if (ret != -ENODEV)" will evaluate to true and we'll fall into the
+> error case.  Oops.
+>
+> Let's fix this.
+>
+> Fixes: d05a7238fe1c ("mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-> > AFAICS, it applies clean to -rc1; what was the rebase about?
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Oh, sorry if that was confusing, I just wanted to make sure that it still
-applied cleanly to the latest -rc so that you didn't hit a merge conflict.
+I will test this patch and report again on this email thread.
 
-Yes, these patches apply cleanly to both -rc1 and -rc2.
+> ---
+>
+>  drivers/mmc/host/sdhci-msm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index b7e47107a31a..55101dba42bd 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -2284,7 +2284,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>
+>         /* OPP table is optional */
+>         ret = dev_pm_opp_of_add_table(&pdev->dev);
+> -       if (ret != -ENODEV) {
+> +       if (ret && ret != -ENODEV) {
+>                 dev_err(&pdev->dev, "Invalid OPP table in Device tree\n");
+>                 goto opp_cleanup;
+>         }
+> --
+> 2.28.0.297.g1956fa8f8d-goog
+>
 
-> Applied (to -rc1) and pushed
-
-Many thanks!
+- Naresh
