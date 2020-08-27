@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9442A253BEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 04:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3BB253BF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 04:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgH0CmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 22:42:23 -0400
-Received: from smtprelay0147.hostedemail.com ([216.40.44.147]:51240 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726790AbgH0CmW (ORCPT
+        id S1727001AbgH0CsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 22:48:17 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:33672 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgH0CsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 22:42:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id CFED71801DBD7;
-        Thu, 27 Aug 2020 02:42:20 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1543:1593:1594:1605:1711:1730:1747:1777:1792:2194:2199:2393:2525:2553:2568:2629:2682:2685:2693:2828:2859:2898:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:6742:7903:8603:9010:9025:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12683:12740:12760:12895:13149:13230:13439:14181:14659:14721:21080:21451:21627:21990:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: actor37_421792427069
-X-Filterd-Recvd-Size: 5155
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 27 Aug 2020 02:42:18 +0000 (UTC)
-Message-ID: <e84ea9d311fe082af8a1afe2aba48303ffbb1bf1.camel@perches.com>
-Subject: Re: [PATCH v3] lib/string.c: implement stpcpy
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>, Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 26 Aug 2020 19:42:17 -0700
-In-Reply-To: <202008261932.FF4E5C0@keescook>
-References: <20200825135838.2938771-1-ndesaulniers@google.com>
-         <CAK7LNAQXo5-5W6hvNMEVPBPf3tRWaf-pQdSR-0OHyi4RCGhjsQ@mail.gmail.com>
-         <d56bf7b93f7a28c4a90e4e16fd412e6934704346.camel@perches.com>
-         <CAKwvOd=YrVtPsB7HYPO0N=K7QJm9KstayqqeYQERSaGtGy2Bjg@mail.gmail.com>
-         <CAK7LNAQKwOo=Oas+7Du9+neSm=Ev6pxdPV7ges7eEEpW+jh8Ug@mail.gmail.com>
-         <202008261627.7B2B02A@keescook>
-         <77428f28620d4e5ecad1556396f2b0f8f0daef41.camel@perches.com>
-         <202008261932.FF4E5C0@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 26 Aug 2020 22:48:17 -0400
+Received: by mail-io1-f69.google.com with SMTP id k4so2722614iop.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 19:48:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2UFQjLFbMkws7Mzxk49K5HdYI7gIOD5cuAkyrXQPUF0=;
+        b=F7JYE3/xE4jb4yUSRCipBA80sU0wu2tT3bfBAZ68wfMcFLyCQnUzfLO/H3Znaytp+8
+         d+IJSzU/VdhJJvjmt+5xK0gRyNJ6MipJF1tL5yWn/Lq1cWAnzAes771bIMTXCe7HOmnj
+         VMrGk/NztAsvPfs7HKxzBA+1QxP0+Tw3vlczhgRpHZpWdWEA37DDYRI4jOkrYs698HNf
+         J/CrK1lvFAbWzADQYXYr9Dk42q9Ca3hzYVnxSXUnUadWl3sTnVD0IvpDSFwLP+YJql31
+         Mnx8GYGRITfWc0z937QOh2ZILkODLMoV3F8ilgZAx4de3R4bdS55gNPBpgybww7wa4JJ
+         sPAw==
+X-Gm-Message-State: AOAM531grz5X1hLk5xTFJ4K1Pu/caOXHI8k995qZ9ed0H3gIYzBc9Ah8
+        9zQDbMSbT5jOziVwyOMSq4OvfLDzC5BmXjcUfrYZgaTAQ9P3
+X-Google-Smtp-Source: ABdhPJw9zYRpb1Fe2uEASqEaOoYoZWdCeQkFeJ79llzNTG1g9VQDsQbKXLHbKqhO1aQgUxJsG9yW50qogBXETPGaHvMKEke91pLn
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:9149:: with SMTP id b9mr17429709jag.50.1598496496131;
+ Wed, 26 Aug 2020 19:48:16 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 19:48:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d3a33205add2f7b2@google.com>
+Subject: kernel BUG at fs/ext4/inode.c:LINE!
+From:   syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-26 at 19:33 -0700, Kees Cook wrote:
-> On Wed, Aug 26, 2020 at 04:57:41PM -0700, Joe Perches wrote:
-> > On Wed, 2020-08-26 at 16:38 -0700, Kees Cook wrote:
-> > > On Thu, Aug 27, 2020 at 07:59:45AM +0900, Masahiro Yamada wrote:
-> > []
-> > > > OK, then stpcpy(), strcpy() and sprintf()
-> > > > have the same level of unsafety.
-> > > 
-> > > Yes. And even snprintf() is dangerous because its return value is how
-> > > much it WOULD have written, which when (commonly) used as an offset for
-> > > further pointer writes, causes OOB writes too. :(
-> > > https://github.com/KSPP/linux/issues/105
-> > > 
-> > > > strcpy() is used everywhere.
-> > > 
-> > > Yes. It's very frustrating, but it's not an excuse to continue
-> > > using it nor introducing more bad APIs.
-> > > 
-> > > $ git grep '\bstrcpy\b' | wc -l
-> > > 2212
-> > > $ git grep '\bstrncpy\b' | wc -l
-> > > 751
-> > > $ git grep '\bstrlcpy\b' | wc -l
-> > > 1712
-> > > 
-> > > $ git grep '\bstrscpy\b' | wc -l
-> > > 1066
-> > > 
-> > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
-> > > https://github.com/KSPP/linux/issues/88
-> > > 
-> > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> > > https://github.com/KSPP/linux/issues/89
-> > > 
-> > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> > > https://github.com/KSPP/linux/issues/90
-> > > 
-> > > We have no way right now to block the addition of deprecated API usage,
-> > > which makes ever catching up on this replacement very challenging.
-> > 
-> > These could be added to checkpatch's deprecated_api test.
-> > ---
-> >  scripts/checkpatch.pl | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index 149518d2a6a7..f9ccb2a63a95 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -605,6 +605,9 @@ foreach my $entry (@mode_permission_funcs) {
-> >  $mode_perms_search = "(?:${mode_perms_search})";
-> >  
-> >  our %deprecated_apis = (
-> > +	"strcpy"				=> "strscpy",
-> > +	"strncpy"				=> "strscpy",
-> > +	"strlcpy"				=> "strscpy",
-> >  	"synchronize_rcu_bh"			=> "synchronize_rcu",
-> >  	"synchronize_rcu_bh_expedited"		=> "synchronize_rcu_expedited",
-> >  	"call_rcu_bh"				=> "call_rcu",
-> > 
-> > 
-> 
-> Good idea, yeah. We, unfortunately, need to leave strncpy() off this
-> list for now because it's not *strictly* deprecated (see the notes in
-> bug report[1]), but the others can be.
+Hello,
 
-OK, but it is in Documentation/process/deprecated.rst
+syzbot found the following issue on:
 
-strncpy() on NUL-terminated strings
------------------------------------
-Use of strncpy() does not guarantee that the destination buffer
-will be NUL terminated. This can lead to various linear read overflows
-and other misbehavior due to the missing termination. It also NUL-pads the
-destination buffer if the source contents are shorter than the destination
-buffer size, which may be a needless performance penalty for callers using
-only NUL-terminated strings. The safe replacement is strscpy().
-(Users of strscpy() still needing NUL-padding should instead
-use strscpy_pad().)
+HEAD commit:    c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f83cb6900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
+dashboard link: https://syzkaller.appspot.com/bug?extid=3622cea378100f45d59f
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1287ac96900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c7ac46900000
 
-If a caller is using non-NUL-terminated strings, strncpy() can
-still be used, but destinations should be marked with the `__nonstring
-<https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html>`_
-attribute to avoid future compiler warnings.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2598!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 27612 Comm: syz-executor879 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mpage_prepare_extent_to_map+0xd34/0xd40 fs/ext4/inode.c:2598
+Code: 89 e8 a0 74 9f ff 0f 0b e8 59 81 70 ff 4c 89 e7 48 c7 c6 da a3 07 89 e8 8a 74 9f ff 0f 0b e8 43 81 70 ff 0f 0b e8 3c 81 70 ff <0f> 0b e8 c5 b3 25 06 0f 1f 44 00 00 55 41 57 41 56 41 55 41 54 53
+RSP: 0018:ffffc9000a0974d8 EFLAGS: 00010293
+RAX: ffffffff820476e4 RBX: 00fffe000000a01f RCX: ffff88808ea5c340
+RDX: 0000000000000000 RSI: 000000000000a01f RDI: 000000000000ffff
+RBP: ffffea00020d4f80 R08: ffffffff820471e4 R09: fffff9400041a9f1
+R10: fffff9400041a9f1 R11: 0000000000000000 R12: ffffea00020d4f80
+R13: ffffc9000a0977b0 R14: 1ffffd400041a9f1 R15: dffffc0000000000
+FS:  00007f5055f25700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae4b0 CR3: 00000000a2d7f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ext4_writepages+0xa98/0x3750 fs/ext4/inode.c:2735
+ do_writepages+0xda/0x1f0 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x2a5/0x350 mm/filemap.c:422
+ filemap_write_and_wait_range+0xca/0x160 mm/filemap.c:655
+ iomap_dio_rw+0x5a7/0xeb0 fs/iomap/direct-io.c:478
+ ext4_dio_read_iter fs/ext4/file.c:77 [inline]
+ ext4_file_read_iter+0x544/0x6d0 fs/ext4/file.c:129
+ call_read_iter include/linux/fs.h:1876 [inline]
+ generic_file_splice_read+0x3c5/0x640 fs/splice.c:312
+ do_splice_to fs/splice.c:870 [inline]
+ splice_direct_to_actor+0x3bd/0xb60 fs/splice.c:950
+ do_splice_direct+0x201/0x340 fs/splice.c:1059
+ do_sendfile+0x86d/0x1210 fs/read_write.c:1540
+ __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+ __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1587
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x448bc9
+Code: e8 1c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f5055f24ce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00000000006e4a28 RCX: 0000000000448bc9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000004
+RBP: 00000000006e4a20 R08: 0000000000000000 R09: 0000000000000000
+R10: 00008400fffffffb R11: 0000000000000246 R12: 00000000006e4a2c
+R13: 00007ffdc73a76df R14: 00007f5055f259c0 R15: 20c49ba5e353f7cf
+Modules linked in:
+---[ end trace aba5fca59eda2183 ]---
+RIP: 0010:mpage_prepare_extent_to_map+0xd34/0xd40 fs/ext4/inode.c:2598
+Code: 89 e8 a0 74 9f ff 0f 0b e8 59 81 70 ff 4c 89 e7 48 c7 c6 da a3 07 89 e8 8a 74 9f ff 0f 0b e8 43 81 70 ff 0f 0b e8 3c 81 70 ff <0f> 0b e8 c5 b3 25 06 0f 1f 44 00 00 55 41 57 41 56 41 55 41 54 53
+RSP: 0018:ffffc9000a0974d8 EFLAGS: 00010293
+RAX: ffffffff820476e4 RBX: 00fffe000000a01f RCX: ffff88808ea5c340
+RDX: 0000000000000000 RSI: 000000000000a01f RDI: 000000000000ffff
+RBP: ffffea00020d4f80 R08: ffffffff820471e4 R09: fffff9400041a9f1
+R10: fffff9400041a9f1 R11: 0000000000000000 R12: ffffea00020d4f80
+R13: ffffc9000a0977b0 R14: 1ffffd400041a9f1 R15: dffffc0000000000
+FS:  00007f5055f25700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae4b0 CR3: 00000000a2d7f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
