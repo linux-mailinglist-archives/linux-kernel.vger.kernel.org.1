@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880FA254912
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3985D25490A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgH0PUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:20:18 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47498 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728193AbgH0PUA (ORCPT
+        id S1728488AbgH0PTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:19:41 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:33093 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726087AbgH0PTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:20:00 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07RF9YqT151617;
-        Thu, 27 Aug 2020 15:19:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=1HQfcc7LdYM/rXmtkBtdrjrROi55axGAB+68+HHwzqk=;
- b=lC491zsqbQ4g1A9HcYkK1I0b24MSJp0mPUrv3FalU0YwycpE/cKPKs6uB6JJX841T5tS
- /0XCAEfuyo3OzdQ9xiH0aXLcYs3xtz7jkGeGgTInd3MS2BbVdAxXxvrdktCLfm+1C/OM
- jgo+U5rSFKOM8z01eH8lLjvCG5+jTxwdkh78qK4mqs6CYduASmUOUbJpelDDeVjIEb1V
- qzyq1Rlg6tnmYZYv0R6szUsPbDx0TqMZhIylNCUMLnkajYmHsWyMO30jrxOP2Om9+mc7
- JENOOZtPlT1o2ZScfGmwBVSXWqzcPrPFdmL5Ce/vC4+hL4DA/J102k7Fo5tYs4BpZe+7 4g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 333w6u5jhj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Aug 2020 15:19:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07RFB00H084067;
-        Thu, 27 Aug 2020 15:17:49 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 333ru1kbfr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 15:17:49 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07RFHmUv025324;
-        Thu, 27 Aug 2020 15:17:48 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 27 Aug 2020 08:17:47 -0700
-To:     Denis Efremov <efremov@linux.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2] scsi: libcxgbi: use kvzalloc instead of opencoded
- kzalloc/vzalloc
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1h7som83l.fsf@ca-mkp.ca.oracle.com>
-References: <20200731215524.14295-1-efremov@linux.com>
-        <20200801133123.61834-1-efremov@linux.com>
-        <d77c0967-d879-14cc-bf75-c38ad8879b76@linux.com>
-Date:   Thu, 27 Aug 2020 11:17:45 -0400
-In-Reply-To: <d77c0967-d879-14cc-bf75-c38ad8879b76@linux.com> (Denis Efremov's
-        message of "Thu, 27 Aug 2020 18:13:13 +0300")
+        Thu, 27 Aug 2020 11:19:22 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id ED74F13F4;
+        Thu, 27 Aug 2020 11:19:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 27 Aug 2020 11:19:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=RSXeFCAVyCX3aYLKYMbZeZXSxmS
+        Xwn7LT8+Wx3RjWNM=; b=F8l8Ojj/TBni6VehwfbAMamic7/vSaOKl9W9TvxXbrW
+        e4ejSCQ9KLMcnK/I0mLTuObu0fREP+CxjmF1mYNl7yS06CMy1KpPjZ2TlnR/JuRX
+        2t8W50rpAzn7rUN97jVHjoIG2UQii2X0aRSs6iS/2XzQXTHbqbH6U+uS7Jbx1k77
+        yWZEvEPYyCwfTTa8dOIsal4jv5qwyRN01D6QXLmqGUfcoa41IRxVI9g0ZnAcld8Z
+        WkC1QaGEQJSq6euvS+HTfHZMKzCgMoas15qg1G4UNPy0DF48zQx4yYybxG6VqIrR
+        qGgIbD102niACW1O9JMkbxvYRhHMEwGbOfldHKBxhDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RSXeFC
+        AVyCX3aYLKYMbZeZXSxmSXwn7LT8+Wx3RjWNM=; b=TMmC2MtisUEs2n3TsVlool
+        qSh5Hb7qu6Cqn+vZ0sRyS7lRMj9IDL2eyeK3BgWuiBLb5p+L94ji9sCItqMFte49
+        UHqB/G0g9Qo2HLhJhTF4FxrO/AccnQF4Sq6y9dj/Br3+aKzeBaxn4RlHeMkHaLb/
+        QNwujHuojLpdLXHzmdFdJvLYdOkwfaqAwXyo2N0Niy1cCHZIn+8rb67PCMF64agt
+        rmVckLie86XWn6bbYB8Mfb32yNvQFGyVxzSjkXb+/sqfuWNod+42+Em/tKlZ+HlB
+        1xoUQTS9SfhwrGpKN2CXkQxxzBTggOm3o3F7AnWVa9PMEppaAHyQd0j164DJE+7Q
+        ==
+X-ME-Sender: <xms:9M5HX7WZa9MJa905TVKH1aLcR44o_72vl5e7CE7zBTQpSAGN4jcCUQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvgedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:9M5HXzksu6H9NLU-JHpE44gvTZN1HLK8hg0nSDsMv-p_LtYsnOSlaQ>
+    <xmx:9M5HX3ZiWTAtHlbHOd0W_wztoEK37pGB9Ftz1nRWolT11nn7eEwKkw>
+    <xmx:9M5HX2VcMEImMZCM96eQHANOo-yedsRERAeDh6FQys9rrYlffrjZJg>
+    <xmx:9c5HX37UnQ4oOxPRjuIjQ-AQSVCndrkQ6_M4hxZwjhjNE5tstWiCgyxys8s>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DD7673280068;
+        Thu, 27 Aug 2020 11:19:15 -0400 (EDT)
+Date:   Thu, 27 Aug 2020 17:19:14 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, paul.kocialkowski@bootlin.com, mchehab@kernel.org,
+        robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 0/5] ARM: dts: sun8i: r40: Enable video decoder
+Message-ID: <20200827151914.copcle3xjn3ek6p4@gilmour.lan>
+References: <20200825173523.1289379-1-jernej.skrabec@siol.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=963 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270115
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- mlxlogscore=981 suspectscore=1 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008270115
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iuvgwm6rpxeewgp5"
+Content-Disposition: inline
+In-Reply-To: <20200825173523.1289379-1-jernej.skrabec@siol.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Denis,
+--iuvgwm6rpxeewgp5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Ping?
+On Tue, Aug 25, 2020 at 07:35:18PM +0200, Jernej Skrabec wrote:
+> Allwinner R40 SoC contains video engine very similar to that in A33.
+>=20
+> First two patches add system controller nodes and the rest of them
+> add support for Cedrus VPU.
+>=20
+> Please take a look.
 
-It's in my staging branch.
+Applied all 5 patches, thanks
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Maxime
+
+--iuvgwm6rpxeewgp5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0fO8gAKCRDj7w1vZxhR
+xV5NAQDF9g6AIv8B7pmqugf0GI/8cUs9e7lyAcm+Rz+TGwFkWgD/VEcDH7+c5LKz
+fF+auOAaw4kec1ruj6+uGhxwKyBSYAU=
+=FNIg
+-----END PGP SIGNATURE-----
+
+--iuvgwm6rpxeewgp5--
