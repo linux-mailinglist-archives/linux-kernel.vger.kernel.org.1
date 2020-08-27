@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37C22547F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3C4254807
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgH0Mkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:40:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
+        id S1728392AbgH0O5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728850AbgH0MPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:15:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728984AbgH0MZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:25:28 -0400
+Received: from gaia (unknown [46.69.195.127])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D921C207CD;
-        Thu, 27 Aug 2020 12:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598530517;
-        bh=8/Uo/bTKsupSIoAgh+tXShD0dKwcGgGzU0K627XFrFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PzKvfy1hGR/NN+N9EjNznIChtG5H44kvPSm86JsQGtfu+fceycAShj9VaBWI4C3D9
-         jPsIp0d49ZuALDccnFbexxD5okRzl4CmBC4YPIdQzG3pswyiIvV4QcchFZsNHz/XWL
-         87K3RFXizjXgfVf4XITuYOeAAOriC2BS/ltXc1gw=
-Date:   Thu, 27 Aug 2020 14:15:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Stultz <john.stultz@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Tomer Samara <tomersamara98@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Riley Andrews <riandrews@android.com>,
-        Arve Hj?nnev?g <arve@android.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v4 0/2] staging: android: Remove BUG/BUG_ON from ion
-Message-ID: <20200827121531.GD417381@kroah.com>
-References: <cover.1598023523.git.tomersamara98@gmail.com>
- <20200825064729.GA30014@infradead.org>
- <20200825065229.GA1319770@kroah.com>
- <20200827071654.GB25305@infradead.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D0BA207CD;
+        Thu, 27 Aug 2020 12:16:06 +0000 (UTC)
+Date:   Thu, 27 Aug 2020 13:16:04 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
+Message-ID: <20200827121604.GL29264@gaia>
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
+ <20200827103819.GE29264@gaia>
+ <8affcfbe-b8b4-0914-1651-368f669ddf85@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827071654.GB25305@infradead.org>
+In-Reply-To: <8affcfbe-b8b4-0914-1651-368f669ddf85@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:16:54AM +0100, Christoph Hellwig wrote:
-> On Tue, Aug 25, 2020 at 08:52:29AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 25, 2020 at 07:47:29AM +0100, Christoph Hellwig wrote:
-> > > On Fri, Aug 21, 2020 at 06:27:04PM +0300, Tomer Samara wrote:
-> > > > Remove BUG/BUG_ON from androind/ion
-> > > 
-> > > Please just remove ion.  It has been rejected and we have developed
-> > > proper kernel subsystens to replace it.  Don't waste your time on it.
+On Thu, Aug 27, 2020 at 11:56:49AM +0100, Vincenzo Frascino wrote:
+> On 8/27/20 11:38 AM, Catalin Marinas wrote:
+> > On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
+> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> >> index 7717ea9bc2a7..cfac7d02f032 100644
+> >> --- a/arch/arm64/kernel/mte.c
+> >> +++ b/arch/arm64/kernel/mte.c
+> >> @@ -18,10 +18,14 @@
+> >>  
+> >>  #include <asm/barrier.h>
+> >>  #include <asm/cpufeature.h>
+> >> +#include <asm/kasan.h>
+> >> +#include <asm/kprobes.h>
+> >>  #include <asm/mte.h>
+> >>  #include <asm/ptrace.h>
+> >>  #include <asm/sysreg.h>
+> >>  
+> >> +u64 gcr_kernel_excl __read_mostly;
 > > 
-> > It is going to be removed at the end of this year.  Why we keep it
-> > around until then, I really don't know, but John and Laura have this as
-> > the plan.
+> > Could we make this __ro_after_init?
 > 
-> It keeps getting in the way of various projects and has no path
-> going upstream properly.  Seems weird to keep this dead and not all
-> that great code around.
+> Yes, it makes sense, it should be updated only once through mte_init_tags().
+> 
+> Something to consider though here is that this might not be the right approach
+> if in future we want to add stack tagging. In such a case we need to know the
+> kernel exclude mask before any C code is executed. Initializing the mask via
+> mte_init_tags() it is too late.
 
-In looking at the mess of ion changes that are currently in the AOSP
-kernel tree (where android devices are pulled from), it looks almost
-nothing like what we currently have here in the mainline kernel tree.
+It depends on how stack tagging ends up in the kernel, whether it uses
+ADDG/SUBG or not. If it's only IRG, I think it can cope with changing
+the GCR_EL1.Excl in the middle of a function.
 
-So if what we have here, today, is not of use to anyone who actually
-wants to use this interface, why are we keeping it around?
+> I was thinking to add a compilation define instead of having gcr_kernel_excl in
+> place. This might not work if the kernel excl mask is meant to change during the
+> execution.
 
-John, why can't we just drop all of this code from the kernel today, and
-then Android will keep their own copy for their next LTS release anyway.
-It doesn't look like what we have here, and the merge issues it causes
-is a pain (as I know from having to do them...)  So keeping this around
-in-tree any longer feels pointless to me, and actively causes me, and
-others, more work for no gain.
+A macro with the default value works for me. That's what it basically is
+currently, only that it ends up in a variable.
 
-I'll go make a patch set to just drop this code now...
-
-thanks,
-
-greg k-h
+-- 
+Catalin
