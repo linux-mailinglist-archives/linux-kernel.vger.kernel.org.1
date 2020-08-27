@@ -2,179 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F462547AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BDE2547DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgH0NTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:19:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726839AbgH0NMb (ORCPT
+        id S1727919AbgH0Ozb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:55:31 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:45372 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgH0NKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:12:31 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RD2rGi023185;
-        Thu, 27 Aug 2020 09:12:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=kB5yi03LeL9Hvqd24hOEuzwD4p0PDCpiYqZ6RVgK6VQ=;
- b=qk4puC9aesl7/8i64Geew5RiCk64EJ/DsU6GRPDhgwj5HEL18PdApaMse26885Efl4oe
- nJyjtGXtheX7N744wv4KZTTacYxaxo+/jemXL+jq7oW7+4izh07coUbN7wTKgbRXw27J
- qh/RD9qziy/JNserPhtUiztkB//lLpiUSEwRyXGPNRpKiGz6DUiTjYZk89aV9mWXu1MV
- 1AYV+eAo6b7Mi8MQ0GWWtg43wi1kQsCYIqti2x7/6EkbdbsjOLeMVZqLqvtRPMmBsXSf
- /zVYl+VoCvLjQ888FSAy98L5FJhFYouQjxcrMxO2BYlpnfG0pwCYkKiehvY4zAWpck7i lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 336bakm90k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:12:20 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RD3DAX024904;
-        Thu, 27 Aug 2020 09:12:19 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 336bakm8yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:12:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RD8SN2006995;
-        Thu, 27 Aug 2020 13:12:17 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 336buh03g2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 13:12:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RDCEpe32309600
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 13:12:14 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7891A405F;
-        Thu, 27 Aug 2020 13:12:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 10C20A4060;
-        Thu, 27 Aug 2020 13:12:07 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.79.210.202])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Aug 2020 13:12:06 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        john.garry@huawei.com, kjain@linux.ibm.com
-Subject: [PATCH v6 5/5] perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
-Date:   Thu, 27 Aug 2020 18:39:58 +0530
-Message-Id: <20200827130958.189146-6-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200827130958.189146-1-kjain@linux.ibm.com>
-References: <20200827130958.189146-1-kjain@linux.ibm.com>
+        Thu, 27 Aug 2020 09:10:15 -0400
+Received: by mail-ed1-f66.google.com with SMTP id i17so3322421edx.12;
+        Thu, 27 Aug 2020 06:10:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MO4XT5vfILQQQs7m8NAXIZICzPk5ma+oMaf+AWE/M2Q=;
+        b=SyeXlwn2OZEYHP1CAZ+WTjWFGFQULm6vkjC04zsP5MQPrFWohfCfQRAw03DPbhPLio
+         fPUUhAhdMoi4bt8QnG1tzZcPLOx515x8aQJJyTVmgpitpQ5kIgHKR2ynP+/0rxkx20lg
+         Pz+PDx+GdcnbdhOwyRhodvOtKaFXHBuiXufszhjRlJLWULBfveYmdRDeOcignZ0sZrJm
+         M5/uzmXZzKX+ojEeaJWe9nGx/E9wFyv55BhXLya6N1baTBZMIe4UzYUqWVGxGvOr8lpj
+         GglIQ1D0ibmZErnID9JWOrRXYlCHT6X+0hb+Jjue5N6s4r+NuCle7iI+kvF+5orjT0wV
+         PM2g==
+X-Gm-Message-State: AOAM531sNxQYjRHOu8s5KF7zNnqYk4uSNZON1vJXoPFjp/1aQu1pnV8j
+        xjnjg2G9fqPEZNuE+LqBfd0=
+X-Google-Smtp-Source: ABdhPJy3DhoRQwhFz7pG2UXliaNjzznIPsFx/Ttim2NepQAK9i66MyfFwvIK0wowQlP1k42Y0lL1pw==
+X-Received: by 2002:a50:ef15:: with SMTP id m21mr20164933eds.300.1598533807483;
+        Thu, 27 Aug 2020 06:10:07 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id a26sm1867497eju.83.2020.08.27.06.10.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 Aug 2020 06:10:06 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 15:10:04 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brooke Basile <brookebasile@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 2/2] docs: admin-guide: Not every security bug should be
+ kept hidden
+Message-ID: <20200827131004.GA2736@kozik-lap>
+References: <20200827105319.9734-1-krzk@kernel.org>
+ <20200827105319.9734-2-krzk@kernel.org>
+ <20200827121123.GC417381@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 malwarescore=0
- spamscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008270094
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200827121123.GC417381@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds hv_24x7 core level events in nest_metric.json file
-and also add PerChip/PerCore field in metric events.
+On Thu, Aug 27, 2020 at 02:11:23PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Aug 27, 2020 at 12:53:19PM +0200, Krzysztof Kozlowski wrote:
+> > Document describes the process of handling security bugs but does not
+> > mention any criteria what is a "security bug".  Unlike
+> > submitting-patches.rst which explicitly says - publicly exploitable bug.
+> > 
+> > Many NULL pointer exceptions, off-by-one errors or overflows tend
+> > to look like security bug, so there might be a temptation to discuss
+> > them behind security list which is not an open list.
+> > 
+> > Such discussion limits the amount of testing and independent reviewing.
+> > Sacrificing open discussion is understandable in the case of real
+> > security issues but not for regular bugs.  These should be discussed
+> > publicly.
+> > 
+> > At the end, "security problems are just bugs".
+> > 
+> > Cc: Greg KH <gregkh@linuxfoundation.org>
+> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Follow up to:
+> > https://lore.kernel.org/linux-usb/1425ab4f-ef7e-97d9-238f-0328ab51eb35@samsung.com/
+> > ---
+> >  Documentation/admin-guide/security-bugs.rst | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/Documentation/admin-guide/security-bugs.rst b/Documentation/admin-guide/security-bugs.rst
+> > index c32eb786201c..7ebddbd4bbcd 100644
+> > --- a/Documentation/admin-guide/security-bugs.rst
+> > +++ b/Documentation/admin-guide/security-bugs.rst
+> > @@ -78,6 +78,12 @@ include linux-distros from the start. In this case, remember to prefix
+> >  the email Subject line with "[vs]" as described in the linux-distros wiki:
+> >  <http://oss-security.openwall.org/wiki/mailing-lists/distros#how-to-use-the-lists>
+> >  
+> > +Fixes for non-exploitable bugs which do not pose a real security risk, should
+> > +be disclosed in a regular way of submitting patches to Linux kernel (see
+> > +:ref:`Documentation/process/submitting-patches.rst <submitting-patches>`).
+> > +Just because patch fixes some off-by-one or NULL pointer exception, does not
+> > +classify it as a security bug which should be discussed in closed channels.
+> 
+> I said this on another thread, but almost always, when we get reports
+> like this on security@k.o, we do push them back to public lists.
 
-Result:
+Then let's hope that next time someone will read this documentation
+before submitting such report to @security.
 
-power9 platform:
+> 
+> For the most part, this paragraph is not going to help much (mostly for
+> the reason that no one seems to read it, but that's a different
+> topic...)
 
-command:# ./perf stat --metric-only -M PowerBUS_Frequency -C 0 -I 1000
-     1.000070601                        1.9                        2.0
-     2.000253881                        2.0                        1.9
-     3.000364810                        2.0                        2.0
+All of our documentation is our wish that someone will read it and
+follow it. Just because people might not follow it, is not necessarily a
+reason to skip documentation.
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- .../arch/powerpc/power9/nest_metrics.json     | 35 ++++++++++++-------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+> We get crazy reports all the time, and that's fine, because
+> sometimes, there is a real issue in some of them.  And for that, we do
+> want to be careful.  We also have many docuemented "off-by-one" bugs
+> that were real security issues (there's a blog post somewhere about how
+> a developer turned such a bug into a root hole, can't find it right
+> now...)
 
-diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-index 8383a37647ad..7a5d1bf543f8 100644
---- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-+++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-@@ -1,37 +1,46 @@
- [
-     {
--        "MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
--        "MetricName": "Memory_RD_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
-+	"MetricName": "Memory_RD_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_MCS01_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_WR_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT23\\,chip\\=?@ )",
--        "MetricName": "Memory_WR_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricName": "Memory_WR_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
--        "MetricName": "PowerBUS_Frequency",
--        "ScaleUnit": "2.5e-7GHz"
-+	"MetricName": "PowerBUS_Frequency",
-+	"ScaleUnit": "2.5e-7GHz",
-+	"AggregationMode": "PerChip"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@CPM_CS_32MHZ_CYC\\,domain\\=3\\,core\\=?@ )",
-+	"MetricName": "CPM_CS_32MHZ_CYC",
-+	"ScaleUnit": "1MHz",
-+	"AggregationMode": "PerCore"
-     },
-     {
- 	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@",
- 	"MetricName" : "mcs01-read",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
- 	"MetricExpr" : "nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@",
- 	"MetricName" : "mcs23-read",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
- 	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@",
- 	"MetricName" : "mcs01-write",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
-@@ -48,7 +57,7 @@
-     {
- 	"MetricExpr" : "(nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT23@)",
- 	"MetricName" : "Memory-bandwidth-MCS",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     }
- ]
--- 
-2.26.2
+I understand. That's why I also mentioned the criteria of exploitable
+and posing a security risk. First case (even stricter - publicly
+exploitable) is already mentioned in submitting-patches so I am not
+changing the current status.
+
+I merely want to document it based on recent discussion.
+
+> So while I understand the temptation here, based on the current
+> security@k.o traffic, I doubt this will really change much :(
+> 
+> Also, you should have cc:ed that group when you are changing things that
+> will affect them.
+
+Indeed, I will update the maintainers as well.
+
+Best regards,
+Krzysztof
 
