@@ -2,125 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC5F254EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D5C254EAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgH0Tck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgH0Tcj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:32:39 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BEAC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so4094467pgf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3KgI+Ffy60Jb52i0GltPaTDawIx8lqqOtn/Zi/rBptI=;
-        b=A9R5z16CN6WvlZm0tunq0JyZp51UZctogq1aC+iggqI6rMvKuDhecLIz34tloLnCWz
-         zKxbBeeqD6qeCP12ipK5Wc+UA9tbg4bc2rEGGT/wMqj1/sidRgIES6XlTTAeJbZOxpMo
-         qlb6ofY/jYuevaT6o9wjJHm/x40RLesghfyJA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3KgI+Ffy60Jb52i0GltPaTDawIx8lqqOtn/Zi/rBptI=;
-        b=trR+elIoTyLRTF1CBbEzh2ThBlZeZycprll3mYvL9NqSkCFHI6v6NhDrl134kTZOIK
-         TZE3b5zNh35D1DF2r5XpaFLkBGgRWSZv7xS/0qTnCXOThXd/qXTUlSJSc6ACas6Fnk/k
-         h5zFz/9e6dg3+USSbOt+6DNQVI4IcZbTQ8jPR4xmfWhEYqwItzYfWQzI9sG8cVZ7N18q
-         uIa+w5nXgCGHdHzxiEjam+zxRHIqF41gpClLvhJCUZcWsQihkv4aN/VOG4G4mVVAVHzu
-         zuHs7KXjOKbeuEWyJY+SkEctwSc7//rRP5zOEvrTOfELZdUzIsYu3rX2Cbj4TUR4JmBe
-         tslg==
-X-Gm-Message-State: AOAM531m0yn1/iD8VvvxIZtlhBs1ru60VuVsG3bFkNA9AkjrJU+Aw407
-        POe2IzcMzq+vwnowdA73MoZJjUZ0F0aohQ==
-X-Google-Smtp-Source: ABdhPJz/2QT15RMxrrIFH8qZbDy3wDzuO9xMRypgZp6J/3iA167gjtK5MjnylJFI7ktMsAYhOdA/ZQ==
-X-Received: by 2002:a63:8f41:: with SMTP id r1mr15124500pgn.375.1598556758330;
-        Thu, 27 Aug 2020 12:32:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d81sm3644696pfd.174.2020.08.27.12.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 12:32:37 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 12:32:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
- is larger than 1024 bytes
-Message-ID: <202008271229.C1E65D3565@keescook>
-References: <202008271145.xE8qIAjp%lkp@intel.com>
- <20200827080558.GA3024@gondor.apana.org.au>
- <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
- <20200827082447.GA3185@gondor.apana.org.au>
- <CAHk-=wg2RCgmW_KM8Gf9-3VJW1K2-FTXQsGeGHirBFsG5zPbsg@mail.gmail.com>
- <CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com>
- <202008271138.0FA7400@keescook>
- <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
+        id S1727099AbgH0TeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:34:10 -0400
+Received: from mga07.intel.com ([134.134.136.100]:53824 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgH0TeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:34:09 -0400
+IronPort-SDR: zr9MTr3me4n6zvHndZ5ATHjzbvw0GSl1tGG92+Ylv7AeUu5MS2njA5WzsyASokukK2qJHxs+su
+ 5fip4yP2QySg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="220804766"
+X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
+   d="scan'208";a="220804766"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 12:34:08 -0700
+IronPort-SDR: S1ZAxSndS4BY4kg0KGIYFpnTrQb6Fw+3l0EbcO45eLOhaoQHWiVKGxZ+BLIeUzDmnzHY6ocp6I
+ rsnVuLbVEx4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
+   d="scan'208";a="475355635"
+Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 27 Aug 2020 12:34:07 -0700
+Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kBNew-0002F4-HV; Thu, 27 Aug 2020 19:34:06 +0000
+Date:   Fri, 28 Aug 2020 03:33:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ e027fffff799cdd70400c5485b1a54f482255985
+Message-ID: <5f480a7f./1kTtw+7dkFga1zc%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:02:12PM -0700, Linus Torvalds wrote:
-> On Thu, Aug 27, 2020 at 11:42 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Do you mean you checked both gcc and clang and it was only a problem with gcc?
-> 
-> I didn't check with clang, but Arnd claimed it was fine.
-> 
-> > (If so, I can tweak the "depends" below...)
-> 
-> Ugh.
-> 
-> Instead of making the Makefile even uglier, why don't you just make
-> this all be done in the Kconfig.
-> 
-> Also, I'm not seeing the point of your patch. You didn't actually
-> change anything, you just made a new config variable with the same
-> semantics as the old one.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: e027fffff799cdd70400c5485b1a54f482255985  x86/irq: Unbreak interrupt affinity setting
 
-Hmm? Yeah it did: it disallowed CONFIG_COMPILE_TEST, which you said was
-the missing piece, I thought? (It's hardly the first time COMPILE_TEST
-has collided unhappily with *SAN-ish things.)
+elapsed time: 721m
 
-> All of this should be thrown out, and this code should use the proper
-> patterns for configuration entries in the Makefile, ie just
-> 
->   ubsan-cflags-$(CONFIG_UBSAN_OBJECT_SIZE) += -fsanitize=object-size
+configs tested: 114
+configs skipped: 69
 
-Yeah, that would be a better pattern for sure.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> and the Kconfig file is the thing that should check if that CC option
-> exists with
-> 
->   config UBSAN_OBJECT_SIZE
->         bool "Check for accesses beyond known object sizes"
->         default UBSAN
->         depends on CLANG  # gcc makes a mess of it
->         depends on $(cc-option,-fsanitize-coverage=trace-pc)
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                ecovec24-romimage_defconfig
+arm                      pxa255-idp_defconfig
+mips                           ip32_defconfig
+sh                           se7721_defconfig
+powerpc                         ps3_defconfig
+arm                             rpc_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                     pq2fads_defconfig
+mips                           xway_defconfig
+m68k                          sun3x_defconfig
+sh                            shmin_defconfig
+mips                          malta_defconfig
+arm                           spitz_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     mpc5200_defconfig
+mips                           ip22_defconfig
+arm                         hackkit_defconfig
+arm                          moxart_defconfig
+parisc                           alldefconfig
+arm                        mvebu_v7_defconfig
+arm                    vt8500_v6_v7_defconfig
+sh                             sh03_defconfig
+arm                         mv78xx0_defconfig
+sh                               alldefconfig
+m68k                          amiga_defconfig
+sh                        edosk7705_defconfig
+arm                         axm55xx_defconfig
+sh                          urquell_defconfig
+arm                         assabet_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                               defconfig
+sh                          sdk7780_defconfig
+c6x                         dsk6455_defconfig
+arc                              alldefconfig
+arm                  colibri_pxa270_defconfig
+mips                       lemote2f_defconfig
+m68k                         apollo_defconfig
+sh                        edosk7760_defconfig
+sh                           sh2007_defconfig
+sparc                            allyesconfig
+sh                         microdev_defconfig
+sh                           se7712_defconfig
+arm                        magician_defconfig
+nios2                            alldefconfig
+arc                                 defconfig
+c6x                        evmc6678_defconfig
+sh                             shx3_defconfig
+powerpc                    amigaone_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20200827
+x86_64               randconfig-a002-20200827
+x86_64               randconfig-a001-20200827
+x86_64               randconfig-a005-20200827
+x86_64               randconfig-a006-20200827
+x86_64               randconfig-a004-20200827
+i386                 randconfig-a002-20200827
+i386                 randconfig-a004-20200827
+i386                 randconfig-a003-20200827
+i386                 randconfig-a005-20200827
+i386                 randconfig-a006-20200827
+i386                 randconfig-a001-20200827
+i386                 randconfig-a013-20200827
+i386                 randconfig-a012-20200827
+i386                 randconfig-a011-20200827
+i386                 randconfig-a016-20200827
+i386                 randconfig-a015-20200827
+i386                 randconfig-a014-20200827
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Yup, for sure. I've only recently started poking at the ubsan stuff. I
-can clean it up better.
-
-> Doesn't that all look much cleaner?
-
-Yup!
-
--- 
-Kees Cook
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
