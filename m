@@ -2,76 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96646254661
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A8925466B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgH0OBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:01:47 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50229 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgH0NmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:42:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1598535710;
-        bh=4quNDffXBr7xu+P8AYTF5B4Q4KC4iGb6IlNPmZ7OG44=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=e3sJovM3KqoNxeIq1/5pBzS+ip7jqoLwC9l9PlkeAZzaIDk5KZbPCIKsQ6rV2luSn
-         uqWuwqbAyWcccWgkiwhmNF/tHGIGM11V+0ZhWnufh46+NPelcGb/ogBS63ui35TTXf
-         0wzIiMwmUnHQetmDUnt70YSjg8+3NI0g6ji4yKcg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.146.7] ([217.61.146.7]) by web-mail.gmx.net
- (3c-app-gmx-bap26.server.lan [172.19.172.96]) (via HTTP); Thu, 27 Aug 2020
- 15:41:50 +0200
+        id S1727957AbgH0OFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:05:44 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59054 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727772AbgH0Npm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:45:42 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07RDjBhL022110;
+        Thu, 27 Aug 2020 08:45:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598535911;
+        bh=5TD3DZKUhVTIBg9ToF8SbOEDPDgYWNIhElOSZbLFSco=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=YKLX3guMfPWKGjwen7PQbw6CO1XOeDdXEb0uzupeJCSSMkTmm9spe0FtWoc7WnE9R
+         mma5G9cozT7mG+7+gftd09oJIKOunQT3J9ON56K5XsyFjYc5DOUZ8avMBiWdz5F47t
+         tnZFu8G51JbPAsD3pZIiKHlaK16Shuj+B+oiV8yY=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07RDjB9C073637
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Aug 2020 08:45:11 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 27
+ Aug 2020 08:45:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 27 Aug 2020 08:45:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RDjADx024420;
+        Thu, 27 Aug 2020 08:45:10 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v3 1/2] dt-bindings: net: dp83822: Add TI dp83822 phy
+Date:   Thu, 27 Aug 2020 08:45:08 -0500
+Message-ID: <20200827134509.23854-2-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200827134509.23854-1-dmurphy@ti.com>
+References: <20200827134509.23854-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Message-ID: <trinity-ddd51146-41eb-49ae-9456-4588450d31aa-1598535710011@3c-app-gmx-bap26>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Frank Wunderlich <linux@fw-web.de>,
-        chunkuang Hu <chunkuang.hu@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Aw: Re:  [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 27 Aug 2020 15:41:50 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <81276d4c-8883-8bfd-d7d0-9b9ac025ed97@gmail.com>
-References: <20200819081752.4805-1-linux@fw-web.de>
- <20200819081752.4805-4-linux@fw-web.de>
- <trinity-14a1b182-38ab-4f84-bb72-94d448b05fd5-1597994235320@3c-app-gmx-bs37>
- <81276d4c-8883-8bfd-d7d0-9b9ac025ed97@gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:Qlp+wHkbak6pBZ5/7qykL04OknqT6U+WwH+B4u5tOtj3VmxF1XWSKrFYv2a1JnOA+i2Lc
- Hg2GwIs2jHrdNRuqRMAtCHBi/k4/RlQ99TTbKd3kElatLj3MdORZA1tUpyXWgo3l49SbXwC4yj/M
- LsWL+SJ4s2B+GEGWo+MoSBMhBUk04FIzI+8sYIdftad7aGEgMaAF9ze5jPqQLlRJbnQ6v66K2SKI
- ifet6FKzp2K62Ov2c3YltC4L6NbYXmQEMDhBvjZC7ybq//eKEAcT1eE6cw+WoWDwtZpst8hVn6oW
- UI=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h5tkjHGfYDU=:lPmXLFE1B8AX3Zy3CbIsRD
- s3VayhK0/M/yARQry0GUjQ5SQ/cVYMkllZIE0P5rQMgq99bx4K4Frj56LvcjoWVW9Dq0lnl9V
- 8tEP/JgYwaTRELytQ6wzIsL1iT9R8N0SrgvWKHxoeshp4XfROVxrFBMBywPqL6GN/dTQKSahO
- olxlvZ0BKTn4rEqfQyJbwlEcSbapgGw+c2dPYFy+H2jLCzYdK9yJHVUcANPLJpkUFH4sIjeIz
- WEESP+gE41YkuahFPE6LKdC1SOMvqgUYZvzUZVQnN4oSLbearFiLbMolaegP5D1mde4xlLIaz
- PRE8U3SxgvkzmPaoocV2OZh9LHWXUIihI/d54ZD+n80KekMosV2o1V4T/oSGwm50xfFUQXDaI
- 64++WExLDIV8BPHmWAmwc0KwXdQa+GwMJ8Lb4lIPk3uh6ybmq/RyAXXTIXh1HI825htbnZ9BE
- 0QvCEmZN993Rkwu4IxmDbrNW2ux6TN6zBTSohvveBWurA5jol5hISl6oj9RZnSZUNbzqYS29M
- PPcTZ7jZA7F4cy/rX+b+5jr6woxNeuyXPyz0vMj3JBSS+KZUho+pWx9DNs7mZvtPgspguIL+e
- GBhrExP6PHJPYN0w936PQ3XA7YTUEE2y4TOF9QCfu80Zc1aWHiAKUo6cn0nhwFKuiIcsA+sFn
- aWDahsL08vUtEYS6ALCRT6XHEN3lT1UtI2rMrV3+NTEvCQs2xcTKXAN7AoYkz4e3K4BI=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+Add a dt binding for the TI dp83822 ethernet phy device.
 
-any opinions about the dts-changes?
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/net/ti,dp83822.yaml   | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,dp83822.yaml
 
-maybe series except the tmds-Patch get merged...so i add it only to my own repo till we find a better way?
-currently mainline does not support hdmi at all for the board. the tmds-patch is only a fix for specific resolutions which have a "flickering" without this Patch.
+diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+new file mode 100644
+index 000000000000..55913534cbc2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++# Copyright (C) 2020 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/net/ti,dp83822.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: TI DP83822 ethernet PHY
++
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
++
++description: |
++  The DP83822 is a low-power, single-port, 10/100 Mbps Ethernet PHY. It
++  provides all of the physical layer functions needed to transmit and receive
++  data over standard, twisted-pair cables or to connect to an external,
++  fiber-optic transceiver. Additionally, the DP83822 provides flexibility to
++  connect to a MAC through a standard MII, RMII, or RGMII interface
++
++  Specifications about the Ethernet PHY can be found at:
++    http://www.ti.com/lit/ds/symlink/dp83822i.pdf
++
++allOf:
++  - $ref: "ethernet-phy.yaml#"
++
++properties:
++  reg:
++    maxItems: 1
++
++  ti,link-loss-low:
++    type: boolean
++    description: |
++       DP83822 PHY in Fiber mode only.
++       Sets the DP83822 to detect a link drop condition when the signal goes
++       high.  If not set then link drop will occur when the signal goes low.
++       This property is only applicable if the fiber mode support is strapped
++       to on.
++
++  ti,fiber-mode:
++    type: boolean
++    description: |
++       DP83822 PHY only.
++       If present the DP83822 PHY is configured to operate in fiber mode
++       Fiber mode support can also be strapped. If the strap pin is not set
++       correctly or not set at all then this boolean can be used to enable it.
++       If the fiber mode is not strapped then signal detection for the PHY
++       is disabled.
++       In fiber mode, auto-negotiation is disabled and the PHY can only work in
++       100base-fx (full and half duplex) modes.
++
++  rx-internal-delay-ps:
++    description: |
++       DP83822 PHY only.
++       Setting this property to a non-zero number sets the RX internal delay
++       for the PHY.  The internal delay for the PHY is fixed to 3.5ns relative
++       to receive data.
++
++  tx-internal-delay-ps:
++    description: |
++       DP83822 PHY only.
++       Setting this property to a non-zero number sets the TX internal delay
++       for the PHY.  The internal delay for the PHY is fixed to 3.5ns relative
++       to transmit data.
++
++required:
++  - reg
++
++examples:
++  - |
++    mdio0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      ethphy0: ethernet-phy@0 {
++        reg = <0>;
++        rx-internal-delay-ps = <1>;
++        tx-internal-delay-ps = <1>;
++      };
++    };
++
++...
+-- 
+2.28.0
 
-regards Frank
