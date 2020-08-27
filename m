@@ -2,229 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA681254902
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F812548BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgH0PTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49552 "EHLO mail.kernel.org"
+        id S1728715AbgH0Lnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:43:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:57148 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgH0Lfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:35:34 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F78320738;
-        Thu, 27 Aug 2020 11:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598528133;
-        bh=BQJgGx0WZxmBAOL4TvjzTRBHVFKglf3uZbHr3G4N01w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mWlBajFQU/x1YISr4rnZGrBesn7WDcSpzDexI2Ckd3qe2iGPPVjnE9X/5HDlaxM0m
-         InhPOl4T/IjoNHqOp2Ls8CKNE7LeI+O/vaxSQcSvkrfoRMiGGE8drNREa3AqigQ7XZ
-         6/AmhwBtCoDCLU7JEBb9VZh6MbhrBaZbKQWGxw1g=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2 01/15] kprobes: Add generic kretprobe trampoline handler
-Date:   Thu, 27 Aug 2020 20:35:29 +0900
-Message-Id: <159852812960.707944.11813912369089948512.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159852811819.707944.12798182250041968537.stgit@devnote2>
-References: <159852811819.707944.12798182250041968537.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1728732AbgH0Ldh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:33:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38EF91045;
+        Thu, 27 Aug 2020 04:33:30 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21F033F68F;
+        Thu, 27 Aug 2020 04:33:28 -0700 (PDT)
+Subject: Re: [PATCH 31/35] kasan, arm64: implement HW_TAGS runtime
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <4e86d422f930831666137e06a71dff4a7a16a5cd.1597425745.git.andreyknvl@google.com>
+ <20200827104517.GH29264@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <567f90b6-fa25-6ef3-73b8-45462cc7ceb2@arm.com>
+Date:   Thu, 27 Aug 2020 12:35:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200827104517.GH29264@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a generic kretprobe trampoline handler for unifying
-the all cloned /arch/* kretprobe trampoline handlers.
+On 8/27/20 11:45 AM, Catalin Marinas wrote:
+> On Fri, Aug 14, 2020 at 07:27:13PM +0200, Andrey Konovalov wrote:
+>> diff --git a/mm/kasan/mte.c b/mm/kasan/mte.c
+>> new file mode 100644
+>> index 000000000000..43b7d74161e5
+>> --- /dev/null
+>> +++ b/mm/kasan/mte.c
+> 
+> Since this is an arm64-specific kasan backend, I wonder whether it makes
+> more sense to keep it under arch/arm64 (mte-kasan.c).
+>
 
-The generic kretprobe trampoline handler is based on the
-x86 implementation, because it is the latest implementation.
-It has frame pointer checking, kprobe_busy_begin/end and
-return address fixup for user handlers.
+Yes I agree, I had a similar comment in patch 25. I think we should implement
+the mte backend entirely in arch code because other architectures might want to
+enable the feature (e.g. Sparc ADI).
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- include/linux/kprobes.h |   32 +++++++++++++--
- kernel/kprobes.c        |  101 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 129 insertions(+), 4 deletions(-)
+>> diff --git a/mm/kasan/report_mte.c b/mm/kasan/report_mte.c
+>> new file mode 100644
+>> index 000000000000..dbbf3aaa8798
+>> --- /dev/null
+>> +++ b/mm/kasan/report_mte.c
+> 
+> Same for this one.
+> 
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 9be1bff4f586..46a7afcf5ec0 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -187,10 +187,38 @@ static inline int kprobes_built_in(void)
- 	return 1;
- }
- 
-+extern struct kprobe kprobe_busy;
-+void kprobe_busy_begin(void);
-+void kprobe_busy_end(void);
-+
- #ifdef CONFIG_KRETPROBES
- extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
-+
-+/* If the trampoline handler called from a kprobe, use this version */
-+unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-+				unsigned long trampoline_address,
-+				void *frame_pointer);
-+
-+static nokprobe_inline
-+unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
-+				unsigned long trampoline_address,
-+				void *frame_pointer)
-+{
-+	unsigned long ret;
-+	/*
-+	 * Set a dummy kprobe for avoiding kretprobe recursion.
-+	 * Since kretprobe never runs in kprobe handler, any kprobe must not
-+	 * be running at this point.
-+	 */
-+	kprobe_busy_begin();
-+	ret = __kretprobe_trampoline_handler(regs, trampoline_address, frame_pointer);
-+	kprobe_busy_end();
-+
-+	return ret;
-+}
-+
- #else /* CONFIG_KRETPROBES */
- static inline void arch_prepare_kretprobe(struct kretprobe *rp,
- 					struct pt_regs *regs)
-@@ -354,10 +382,6 @@ static inline struct kprobe_ctlblk *get_kprobe_ctlblk(void)
- 	return this_cpu_ptr(&kprobe_ctlblk);
- }
- 
--extern struct kprobe kprobe_busy;
--void kprobe_busy_begin(void);
--void kprobe_busy_end(void);
--
- kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset);
- int register_kprobe(struct kprobe *p);
- void unregister_kprobe(struct kprobe *p);
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 287b263c9cb9..cbd2ad1af7b7 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1927,6 +1927,107 @@ unsigned long __weak arch_deref_entry_point(void *entry)
- }
- 
- #ifdef CONFIG_KRETPROBES
-+
-+unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-+					unsigned long trampoline_address,
-+					void *frame_pointer)
-+{
-+	struct kretprobe_instance *ri = NULL;
-+	struct hlist_head *head, empty_rp;
-+	struct hlist_node *tmp;
-+	unsigned long flags, orig_ret_address = 0;
-+	kprobe_opcode_t *correct_ret_addr = NULL;
-+	bool skipped = false;
-+
-+	INIT_HLIST_HEAD(&empty_rp);
-+	kretprobe_hash_lock(current, &head, &flags);
-+
-+	/*
-+	 * It is possible to have multiple instances associated with a given
-+	 * task either because multiple functions in the call path have
-+	 * return probes installed on them, and/or more than one
-+	 * return probe was registered for a target function.
-+	 *
-+	 * We can handle this because:
-+	 *     - instances are always pushed into the head of the list
-+	 *     - when multiple return probes are registered for the same
-+	 *	 function, the (chronologically) first instance's ret_addr
-+	 *	 will be the real return address, and all the rest will
-+	 *	 point to kretprobe_trampoline.
-+	 */
-+	hlist_for_each_entry(ri, head, hlist) {
-+		if (ri->task != current)
-+			/* another task is sharing our hash bucket */
-+			continue;
-+		/*
-+		 * Return probes must be pushed on this hash list correct
-+		 * order (same as return order) so that it can be popped
-+		 * correctly. However, if we find it is pushed it incorrect
-+		 * order, this means we find a function which should not be
-+		 * probed, because the wrong order entry is pushed on the
-+		 * path of processing other kretprobe itself.
-+		 */
-+		if (ri->fp != frame_pointer) {
-+			if (!skipped)
-+				pr_warn("kretprobe is stacked incorrectly. Trying to fixup.\n");
-+			skipped = true;
-+			continue;
-+		}
-+
-+		orig_ret_address = (unsigned long)ri->ret_addr;
-+		if (skipped)
-+			pr_warn("%ps must be blacklisted because of incorrect kretprobe order\n",
-+				ri->rp->kp.addr);
-+
-+		if (orig_ret_address != trampoline_address)
-+			/*
-+			 * This is the real return address. Any other
-+			 * instances associated with this task are for
-+			 * other calls deeper on the call stack
-+			 */
-+			break;
-+	}
-+
-+	kretprobe_assert(ri, orig_ret_address, trampoline_address);
-+
-+	correct_ret_addr = ri->ret_addr;
-+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
-+		if (ri->task != current)
-+			/* another task is sharing our hash bucket */
-+			continue;
-+		if (ri->fp != frame_pointer)
-+			continue;
-+
-+		orig_ret_address = (unsigned long)ri->ret_addr;
-+		if (ri->rp && ri->rp->handler) {
-+			__this_cpu_write(current_kprobe, &ri->rp->kp);
-+			ri->ret_addr = correct_ret_addr;
-+			ri->rp->handler(ri, regs);
-+			__this_cpu_write(current_kprobe, &kprobe_busy);
-+		}
-+
-+		recycle_rp_inst(ri, &empty_rp);
-+
-+		if (orig_ret_address != trampoline_address)
-+			/*
-+			 * This is the real return address. Any other
-+			 * instances associated with this task are for
-+			 * other calls deeper on the call stack
-+			 */
-+			break;
-+	}
-+
-+	kretprobe_hash_unlock(current, &flags);
-+
-+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
-+		hlist_del(&ri->hlist);
-+		kfree(ri);
-+	}
-+
-+	return orig_ret_address;
-+}
-+NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
-+
- /*
-  * This kprobe pre_handler is registered with every kretprobe. When probe
-  * hits it will set up the return probe.
-
+-- 
+Regards,
+Vincenzo
