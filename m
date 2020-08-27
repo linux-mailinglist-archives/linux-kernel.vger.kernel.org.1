@@ -2,146 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAE8254861
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39F25487F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgH0PG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:06:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48948 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728054AbgH0PEe (ORCPT
+        id S1728273AbgH0PG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:06:59 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18922 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbgH0PEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:04:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598540672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kdm9WK0HbRbhxXWmnqqpGSJlMjLuGv5UGh3nDalBgjY=;
-        b=Ze/678Ql+4ubiX98++HR5PokP7RHI8wYtS6H8LycocgVSrU/B0thxfrcisGNw+oHr8D2zV
-        vfwHC+8nVlno613zkfqMWQdYJQ/A+1hRNHXgW+5ru7lEdxYjvpg0yg0qYjvPLIpJdqatuT
-        bS+tnKh0jLlAcPhWWFstKq+GCg2d39s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-Dx804broM5Gr4T0lqYMUzA-1; Thu, 27 Aug 2020 11:04:26 -0400
-X-MC-Unique: Dx804broM5Gr4T0lqYMUzA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F27B894C14;
-        Thu, 27 Aug 2020 15:03:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 57F075D9E8;
-        Thu, 27 Aug 2020 15:03:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net 3/7] rxrpc: Make rxrpc_kernel_get_srtt() indicate validity
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 27 Aug 2020 16:03:54 +0100
-Message-ID: <159854063448.1382667.12985881361440373925.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-References: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 27 Aug 2020 11:04:30 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f47cb450001>; Thu, 27 Aug 2020 08:03:34 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 27 Aug 2020 08:04:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 08:04:17 -0700
+Received: from [10.2.174.186] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
+ 2020 15:04:16 +0000
+Subject: Re: [PATCH v6 7/7] sdhci: tegra: Add missing TMCLK for data timeout
+To:     Jon Hunter <jonathanh@nvidia.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>, <thierry.reding@gmail.com>,
+        <robh+dt@kernel.org>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
+ <1598500201-5987-8-git-send-email-skomatineni@nvidia.com>
+ <93d0188b-c833-33b4-211e-b9293c4f3a1c@nvidia.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <3deac67c-bb1e-ef23-7dcc-8d4024203ab1@nvidia.com>
+Date:   Thu, 27 Aug 2020 08:03:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <93d0188b-c833-33b4-211e-b9293c4f3a1c@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598540614; bh=DoTOabdYopsUxy9pThG/x9MurfIlwI7HTUiu8cCQwwY=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=XlQaLVnA320/cdF58QoaOOm3uyXjuQO8XG4qcBlae1/h4o66sfrpaoFVAataUX953
+         l91yA0tOtieTaZ6/6JFb6XYXuuNpgoyBAXXdVehSz4SF9BUVzyPkI2VZuqPwKNpErv
+         Zds4wZ03jx103ddD78yf/Y2w7V593avKzNqZY2j7aJE6jalT49CE07sESPbSoSum34
+         gQ5DxapOF4nrLKXwR1wPtVu1h0AzaKHGk1cc9F40VZObRqrmxM9sFLtSpHhO1g98OS
+         Cpp+xYMD9DKBph8EEvT+VTLcjDiZ3p+NvRaw74YlyrMO+fE6WF4zbUnovGv4fiE8+H
+         N4kDqpLheY/Gw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix rxrpc_kernel_get_srtt() to indicate the validity of the returned
-smoothed RTT.  If we haven't had any valid samples yet, the SRTT isn't
-useful.
 
-Fixes: c410bf01933e ("rxrpc: Fix the excessive initial retransmission timeout")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+On 8/27/20 1:40 AM, Jon Hunter wrote:
+> On 27/08/2020 04:50, Sowjanya Komatineni wrote:
+>> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>>
+>> Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegra
+>> SDMMC hawdware for data timeout to achive better timeout than using
+>> SDCLK and using TMCLK is recommended.
+>>
+>> USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
+>> SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
+>> SDCLK for data timeout.
+>>
+>> Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
+>> for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
+>> is not recommended.
+>>
+>> So, this patch adds quirk NVQUIRK_HAS_TMCLK for SoC having separate
+>> timeout clock and keeps TMCLK enabled all the time.
+>>
+>> Fixes: b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>> Cc: stable <stable@vger.kernel.org> # 5.4
+>> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+>>   drivers/mmc/host/sdhci-tegra.c | 90 ++++++++++++++++++++++++++++++++++++++----
+>>   1 file changed, 82 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+>> index 31ed321..f69ca8d 100644
+>> --- a/drivers/mmc/host/sdhci-tegra.c
+>> +++ b/drivers/mmc/host/sdhci-tegra.c
+>> @@ -13,6 +13,7 @@
+>>   #include <linux/clk.h>
+>>   #include <linux/io.h>
+>>   #include <linux/of.h>
+>> +#include <linux/of_clk.h>
+>>   #include <linux/of_device.h>
+>>   #include <linux/pinctrl/consumer.h>
+>>   #include <linux/regulator/consumer.h>
+>> @@ -110,6 +111,12 @@
+>>   #define NVQUIRK_DIS_CARD_CLK_CONFIG_TAP			BIT(8)
+>>   #define NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING		BIT(9)
+>>   
+>> +/*
+>> + * NVQUIRK_HAS_TMCLK is for SoC's having separate timeout clock for Tegra
+>> + * SDMMC hardware data timeout.
+>> + */
+>> +#define NVQUIRK_HAS_TMCLK				BIT(10)
+>> +
+>>   /* SDMMC CQE Base Address for Tegra Host Ver 4.1 and Higher */
+>>   #define SDHCI_TEGRA_CQE_BASE_ADDR			0xF000
+>>   
+>> @@ -140,6 +147,7 @@ struct sdhci_tegra_autocal_offsets {
+>>   struct sdhci_tegra {
+>>   	const struct sdhci_tegra_soc_data *soc_data;
+>>   	struct gpio_desc *power_gpio;
+>> +	struct clk *tmclk;
+>>   	bool ddr_signaling;
+>>   	bool pad_calib_required;
+>>   	bool pad_control_available;
+>> @@ -1433,7 +1441,8 @@ static const struct sdhci_tegra_soc_data soc_data_tegra210 = {
+>>   		    NVQUIRK_HAS_PADCALIB |
+>>   		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>   		    NVQUIRK_ENABLE_SDR50 |
+>> -		    NVQUIRK_ENABLE_SDR104,
+>> +		    NVQUIRK_ENABLE_SDR104 |
+>> +		    NVQUIRK_HAS_TMCLK,
+>>   	.min_tap_delay = 106,
+>>   	.max_tap_delay = 185,
+>>   };
+>> @@ -1471,6 +1480,7 @@ static const struct sdhci_tegra_soc_data soc_data_tegra186 = {
+>>   		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>   		    NVQUIRK_ENABLE_SDR50 |
+>>   		    NVQUIRK_ENABLE_SDR104 |
+>> +		    NVQUIRK_HAS_TMCLK |
+>>   		    NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING,
+>>   	.min_tap_delay = 84,
+>>   	.max_tap_delay = 136,
+>> @@ -1483,7 +1493,8 @@ static const struct sdhci_tegra_soc_data soc_data_tegra194 = {
+>>   		    NVQUIRK_HAS_PADCALIB |
+>>   		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>   		    NVQUIRK_ENABLE_SDR50 |
+>> -		    NVQUIRK_ENABLE_SDR104,
+>> +		    NVQUIRK_ENABLE_SDR104 |
+>> +		    NVQUIRK_HAS_TMCLK,
+>>   	.min_tap_delay = 96,
+>>   	.max_tap_delay = 139,
+>>   };
+>> @@ -1611,15 +1622,76 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+>>   		goto err_power_req;
+>>   	}
+>>   
+>> -	clk = devm_clk_get(mmc_dev(host->mmc), NULL);
+>> -	if (IS_ERR(clk)) {
+>> -		rc = PTR_ERR(clk);
+>> +	/*
+>> +	 * Tegra210 and later has separate SDMMC_LEGACY_TM clock used for
+>> +	 * hardware data timeout clock and SW can choose TMCLK or SDCLK for
+>> +	 * hardware data timeout through the bit USE_TMCLK_FOR_DATA_TIMEOUT
+>> +	 * of the register SDHCI_TEGRA_VENDOR_SYS_SW_CTRL.
+>> +	 *
+>> +	 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is set to 1 and SDMMC uses
+>> +	 * 12Mhz TMCLK which is advertised in host capability register.
+>> +	 * With TMCLK of 12Mhz provides maximum data timeout period that can
+>> +	 * be achieved is 11s better than using SDCLK for data timeout.
+>> +	 *
+>> +	 * So, TMCLK is set to 12Mhz and kept enabled all the time on SoC's
+>> +	 * supporting separate TMCLK.
+>> +	 *
+>> +	 * Old device tree has single sdhci clock. So with addition of TMCLK,
+>> +	 * retrieving sdhci clock by "sdhci" clock name based on number of
+>> +	 * clocks in sdhci device node.
+>> +	 */
+>> +
+>> +	if (of_clk_get_parent_count(pdev->dev.of_node) == 1) {
+>> +		if (soc_data->nvquirks & NVQUIRK_HAS_TMCLK)
+>> +			dev_warn(&pdev->dev,
+>> +				 "missing tmclk in the device tree\n");
+>> +
+>> +		clk = devm_clk_get(&pdev->dev, NULL);
+>> +		if (IS_ERR(clk)) {
+>> +			rc = PTR_ERR(clk);
+>>   
+>> -		if (rc != -EPROBE_DEFER)
+>> -			dev_err(&pdev->dev, "failed to get clock: %d\n", rc);
+>> +			if (rc != -EPROBE_DEFER)
+>> +				dev_err(&pdev->dev,
+>> +					"failed to get sdhci clock: %d\n", rc);
+>>   
+>> -		goto err_clk_get;
+>> +			goto err_power_req;
+>> +		}
+>> +	} else {
+>> +		if (soc_data->nvquirks & NVQUIRK_HAS_TMCLK) {
+>
+> I think that I would do the inverse of this ...
+>
+>     } else {
+>          if (!(soc_data->nvquirks & NVQUIRK_HAS_TMCLK)) {
+>                  dev_err(&pdev->dev, "Device has unexpected clocks!\n");
+>                  rc = -EINVAL;
+>                  goto_power_req;
+>          }
+>
+>          clk = devm_clk_get(&pdev->dev, "tmclk");
+>          ...
+>
+> If the device does not have a single clock, then we expect it to support
+> the tmclk. If this is not the case, then this is a bug.
+>
+> Cheers
+> Jon
 
- fs/afs/fs_probe.c       |    4 ++--
- fs/afs/vl_probe.c       |    4 ++--
- include/net/af_rxrpc.h  |    2 +-
- net/rxrpc/peer_object.c |   16 +++++++++++++---
- 4 files changed, 18 insertions(+), 8 deletions(-)
+I don't see other drivers validating for unexpected device tree entries.
 
-diff --git a/fs/afs/fs_probe.c b/fs/afs/fs_probe.c
-index 5d9ef517cf81..e7e98ad63a91 100644
---- a/fs/afs/fs_probe.c
-+++ b/fs/afs/fs_probe.c
-@@ -161,8 +161,8 @@ void afs_fileserver_probe_result(struct afs_call *call)
- 		}
- 	}
- 
--	rtt_us = rxrpc_kernel_get_srtt(call->net->socket, call->rxcall);
--	if (rtt_us < server->probe.rtt) {
-+	if (rxrpc_kernel_get_srtt(call->net->socket, call->rxcall, &rtt_us) &&
-+	    rtt_us < server->probe.rtt) {
- 		server->probe.rtt = rtt_us;
- 		server->rtt = rtt_us;
- 		alist->preferred = index;
-diff --git a/fs/afs/vl_probe.c b/fs/afs/vl_probe.c
-index e3aa013c2177..081b7e5b13f5 100644
---- a/fs/afs/vl_probe.c
-+++ b/fs/afs/vl_probe.c
-@@ -92,8 +92,8 @@ void afs_vlserver_probe_result(struct afs_call *call)
- 		}
- 	}
- 
--	rtt_us = rxrpc_kernel_get_srtt(call->net->socket, call->rxcall);
--	if (rtt_us < server->probe.rtt) {
-+	if (rxrpc_kernel_get_srtt(call->net->socket, call->rxcall, &rtt_us) &&
-+	    rtt_us < server->probe.rtt) {
- 		server->probe.rtt = rtt_us;
- 		alist->preferred = index;
- 		have_result = true;
-diff --git a/include/net/af_rxrpc.h b/include/net/af_rxrpc.h
-index 91eacbdcf33d..f6abcc0bbd6e 100644
---- a/include/net/af_rxrpc.h
-+++ b/include/net/af_rxrpc.h
-@@ -59,7 +59,7 @@ bool rxrpc_kernel_abort_call(struct socket *, struct rxrpc_call *,
- void rxrpc_kernel_end_call(struct socket *, struct rxrpc_call *);
- void rxrpc_kernel_get_peer(struct socket *, struct rxrpc_call *,
- 			   struct sockaddr_rxrpc *);
--u32 rxrpc_kernel_get_srtt(struct socket *, struct rxrpc_call *);
-+bool rxrpc_kernel_get_srtt(struct socket *, struct rxrpc_call *, u32 *);
- int rxrpc_kernel_charge_accept(struct socket *, rxrpc_notify_rx_t,
- 			       rxrpc_user_attach_call_t, unsigned long, gfp_t,
- 			       unsigned int);
-diff --git a/net/rxrpc/peer_object.c b/net/rxrpc/peer_object.c
-index ca29976bb193..68396d052052 100644
---- a/net/rxrpc/peer_object.c
-+++ b/net/rxrpc/peer_object.c
-@@ -502,11 +502,21 @@ EXPORT_SYMBOL(rxrpc_kernel_get_peer);
-  * rxrpc_kernel_get_srtt - Get a call's peer smoothed RTT
-  * @sock: The socket on which the call is in progress.
-  * @call: The call to query
-+ * @_srtt: Where to store the SRTT value.
-  *
-- * Get the call's peer smoothed RTT.
-+ * Get the call's peer smoothed RTT in uS.
-  */
--u32 rxrpc_kernel_get_srtt(struct socket *sock, struct rxrpc_call *call)
-+bool rxrpc_kernel_get_srtt(struct socket *sock, struct rxrpc_call *call,
-+			   u32 *_srtt)
- {
--	return call->peer->srtt_us >> 3;
-+	struct rxrpc_peer *peer = call->peer;
-+
-+	if (peer->rtt_count == 0) {
-+		*_srtt = 1000000; /* 1S */
-+		return false;
-+	}
-+
-+	*_srtt = call->peer->srtt_us >> 3;
-+	return true;
- }
- EXPORT_SYMBOL(rxrpc_kernel_get_srtt);
+Also only for SoC with quirk HAS_TMCLK, we are retrieving TMCLK with 
+clock name and enabling it.
+
+So for other SoC even if device tree has additional clock entry other 
+than sdhci driver don't use it and also dt-binding do not have any tmclk 
+entry for other SoC. So why would this be a bug?
+
+Can you please correct if I misunderstood you comment?
+
+Thanks
+
+Sowjanya
+
 
 
