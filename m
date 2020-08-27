@@ -2,134 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F365254552
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD9F25455B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729198AbgH0MtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:49:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52201 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729081AbgH0MpT (ORCPT
+        id S1729220AbgH0MuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:50:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40874 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729066AbgH0MqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:45:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598532298;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vr70ALb4ZjXi9RcX6VvF0ywgFtWFCx5BiJCk7jKQduQ=;
-        b=SyCN2jiY0B1vdI+qj67hIl5j3rii7pyAww9u2dXqQmmwmbMtd+skZYQj94iRfvIIqzOB7M
-        NYgc5QYU7afzUbR1Hsq5Ye7R4SLRAXCOMXlklJ53jLwdn6xQWvwctOVJv8PLWSX9MFoB3C
-        TgHd6bYJj13H7/7rhZenGiWYuBK7D0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-rgIfL0zhNvOAoxeX1uhPyQ-1; Thu, 27 Aug 2020 08:44:54 -0400
-X-MC-Unique: rgIfL0zhNvOAoxeX1uhPyQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02A7C420E7;
-        Thu, 27 Aug 2020 12:44:53 +0000 (UTC)
-Received: from krava (unknown [10.40.195.119])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 94EEB19936;
-        Thu, 27 Aug 2020 12:44:48 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 14:44:47 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] tools build feature: cleanup feature files on make clean
-Message-ID: <20200827124447.GA77089@krava>
-References: <159851841661.1072907.13770213104521805592.stgit@firesoul>
+        Thu, 27 Aug 2020 08:46:20 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RCXh4m084422;
+        Thu, 27 Aug 2020 08:45:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=1vcT4Ou7ENwKE+IUgL+fPCKondXok8kZTO10eeXJWEo=;
+ b=TKISV5TVbD4o5QZUPQ7Q0u6HnLHuNUIX2DqrXztAC63M659xmnS467Obm2tlrmgG9knU
+ sm1UZ4f8AYoqu5MPUb6d4JAz/LIhbmlH1yG3Z5IzishvTWXbDdvat2tM5NUryH5Swe0+
+ OZPcVBF16tUR+FohrqrUCRRo5NgBaJxw0wfybDpgQxXMJCfsZqkpmkl+Ygr7updURA3N
+ 7hKn6L/ldamVrG4Z3+YPnVOpr8zbLBH9AznYKREQjzhZyGNHRFyg7v4rsWkFuZ+YPZo8
+ PwddqNFDP4v+xxcjh94AyiEXkFC8MNs81faF7Hxr4C7+6AJNYwJFVn9YUxnKe3tRhbS4 tg== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 336cddhf6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 08:45:56 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RCcRJd017636;
+        Thu, 27 Aug 2020 12:45:54 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 335a2t953u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 12:45:54 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RCjq6j27263354
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Aug 2020 12:45:52 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7159A4068;
+        Thu, 27 Aug 2020 12:45:51 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D3E7A4054;
+        Thu, 27 Aug 2020 12:45:51 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.92.75])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 27 Aug 2020 12:45:51 +0000 (GMT)
+Date:   Thu, 27 Aug 2020 15:45:49 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernelci.org bot" <bot@kernelci.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20200827124549.GD167163@linux.ibm.com>
+References: <20200827182058.1c7d75ed@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <159851841661.1072907.13770213104521805592.stgit@firesoul>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200827182058.1c7d75ed@canb.auug.org.au>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=2
+ malwarescore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=894 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:53:36AM +0200, Jesper Dangaard Brouer wrote:
-> The system for "Auto-detecting system features" located under
-> tools/build/ are (currently) used by perf, libbpf and bpftool. It can
-> contain stalled feature detection files, which are not cleaned up by
-> libbpf and bpftool on make clean (side-note: perf tool is correct).
+On Thu, Aug 27, 2020 at 06:20:58PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Fix this by making the users invoke the make clean target.
+> After merging the akpm-current tree, today's linux-next build (mips
+> cavium_octeon_defconfig) failed like this:
 > 
-> Some details about the changes. The libbpf Makefile already had a
-> clean-config target (which seems to be copy-pasted from perf), but this
-> target was not "connected" (a make dependency) to clean target. Choose
-> not to rename target as someone might be using it. Did change the output
-> from "CLEAN config" to "CLEAN feature-detect", to make it more clear
-> what happens.
+> arch/mips/cavium-octeon/dma-octeon.c:205:7: error: ‘mem’ undeclared (first use in this function); did you mean ‘sem’?
 > 
-> This is related to the complaint and troubleshooting in link:
-> Link: https://lore.kernel.org/lkml/20200818122007.2d1cfe2d@carbon/
+> Caused by commit
+> 
+>   52e1a745395d ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
+> 
+> Reported by "kernelci.org bot" <bot@kernelci.org>.
 
-sry, I forgot about this one.. the change looks good to me
+Here's the fix:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+From 9e46da6793528e35883ff81835d65a864bf98007 Mon Sep 17 00:00:00 2001
+From: Mike Rapoport <rppt@linux.ibm.com>
+Date: Thu, 27 Aug 2020 15:42:49 +0300
+Subject: [PATCH] mips: fix cavium-octeon build caused by memblock refactoring
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-thanks,
-jirka
+MIPS cavium_octeon_defconfig build failed like this:
 
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  tools/build/Makefile |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 8462690a039b..02c99bc95c69 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -176,7 +176,11 @@ $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
->  $(OUTPUT)%.o: %.c
->  	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
->  
-> -clean: $(LIBBPF)-clean
-> +feature-detect-clean:
-> +	$(call QUIET_CLEAN, feature-detect)
-> +	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
-> +
-> +clean: $(LIBBPF)-clean feature-detect-clean
->  	$(call QUIET_CLEAN, bpftool)
->  	$(Q)$(RM) -- $(OUTPUT)bpftool $(OUTPUT)*.o $(OUTPUT)*.d
->  	$(Q)$(RM) -- $(BPFTOOL_BOOTSTRAP) $(OUTPUT)*.skel.h $(OUTPUT)vmlinux.h
-> diff --git a/tools/build/Makefile b/tools/build/Makefile
-> index 727050c40f09..722f1700d96a 100644
-> --- a/tools/build/Makefile
-> +++ b/tools/build/Makefile
-> @@ -38,6 +38,8 @@ clean:
->  	$(call QUIET_CLEAN, fixdep)
->  	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
->  	$(Q)rm -f $(OUTPUT)fixdep
-> +	$(call QUIET_CLEAN, feature-detect)
-> +	$(Q)$(MAKE) -C feature/ clean >/dev/null
->  
->  $(OUTPUT)fixdep-in.o: FORCE
->  	$(Q)$(MAKE) $(build)=fixdep
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index bf8ed134cb8a..bbb89551468a 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -269,10 +269,10 @@ install: install_lib install_pkgconfig install_headers
->  ### Cleaning rules
->  
->  config-clean:
-> -	$(call QUIET_CLEAN, config)
-> +	$(call QUIET_CLEAN, feature-detect)
->  	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
->  
-> -clean:
-> +clean: config-clean
->  	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
->  		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
->  		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
-> 
-> 
+arch/mips/cavium-octeon/dma-octeon.c:205:7: error: ‘mem’ undeclared
+(first use in this function); did you mean ‘sem’?
+
+Caused by patch ("arch, drivers: replace for_each_membock() with
+for_each_mem_range()")
+
+Replacing stale 'mem->base' reference with 'start' fixes the issue.
+
+Reported by "kernelci.org bot" <bot@kernelci.org>.
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/mips/cavium-octeon/dma-octeon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/cavium-octeon/dma-octeon.c b/arch/mips/cavium-octeon/dma-octeon.c
+index d938c1f7c1e1..ad1aecc4b401 100644
+--- a/arch/mips/cavium-octeon/dma-octeon.c
++++ b/arch/mips/cavium-octeon/dma-octeon.c
+@@ -202,7 +202,7 @@ void __init plat_swiotlb_setup(void)
+ 
+ 	for_each_mem_range(i, &start, &end) {
+ 		/* These addresses map low for PCI. */
+-		if (mem->base > 0x410000000ull && !OCTEON_IS_OCTEON2())
++		if (start > 0x410000000ull && !OCTEON_IS_OCTEON2())
+ 			continue;
+ 
+ 		addr_size += (end - start);
+-- 
+2.26.2
 
