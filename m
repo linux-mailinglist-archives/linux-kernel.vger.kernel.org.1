@@ -2,126 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D917253CB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 06:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1C0253CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 06:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgH0E07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 00:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgH0E05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 00:26:57 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB27C0612AC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 21:26:56 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q93so2024273pjq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 21:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bn7ZvG4ybcooDrNm25U4C10jlmrGjFdQ/FaC/rxAetw=;
-        b=JWGdadunye66WMfXu1P4p7JU12j51p8o/dw5xBp05k4WBlQSeSFjHzokSYn55bVV3o
-         J4tcFBW+K0k9bbB0ds4GyUbQ9KAjULJVcytETxzcrQeP3yifDm/M/suCNnYmsgY5Qzlv
-         bYLOwZvhvgDdXRldn4DmRvNGzykpHvQF1muP3pcCByHjEYtEHbeJDDqUjNpus61Fowov
-         JyoN9QhOtYitibsWLrqe+FQ9q4BVoMTkmiVKZ/RQ8BzwYqbwxbkzyx1YBIYj6oYH/uoi
-         E6OZ9hPBdCD4DEyRV0Y3/EiRxpSeNBUdMXvmYIiHxOPHTWp3rcwr9/3wHDVTWkLGz5kb
-         6DjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bn7ZvG4ybcooDrNm25U4C10jlmrGjFdQ/FaC/rxAetw=;
-        b=tW1D7lvj3DEOpbYk7KQQrdNrBUfqV/qKHEJ7F4jvHu8S5Cr8iLR3L/ViTAwm4pL9gR
-         58t+WqhZQrPPL/agu64Sx2WTXIqpXPpbwD2MCk3i21tqLsi7ix6qF6vJjxxo9u/9XAtx
-         sjssMCpb5mA33Mx6A0XyLrkuEYq6K8TWhW9hAxYZzqxrH1mHaQwdsKNA65s9u9vfaYV0
-         uzyNnJDTJfBP1G3IEGZXY7Jl8CW0Se0h5T6C34DpZQGkI+xe0D9SLqb2Cp5RsUHzg6HO
-         ii0fX6M8Lqik6+rN6S48Hppk2Lk54ZiOCM1GmEYgN58hIlv75ISv9zZ1q93Uf1pPxYLt
-         dCqg==
-X-Gm-Message-State: AOAM5319eajroRPleghQZiCszy0GGNBh0pGok5yc1THHCaEoes8XGLh8
-        pnwkC0VYbwOhzgKSCP/BRwQwhw==
-X-Google-Smtp-Source: ABdhPJynFu/KaCKX/yeZQJO1i0iZEbs8inUUMkKE06wJFLYUgtfBDrVZ4/4+/uHiY6WLXxuxzu5BQQ==
-X-Received: by 2002:a17:90a:f593:: with SMTP id ct19mr9163811pjb.36.1598502416374;
-        Wed, 26 Aug 2020 21:26:56 -0700 (PDT)
-Received: from localhost ([122.167.135.199])
-        by smtp.gmail.com with ESMTPSA id nu14sm631975pjb.19.2020.08.26.21.26.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Aug 2020 21:26:55 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 09:56:53 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v2 1/2] cpufreq: mediatek-hw: Add support for Mediatek
- cpufreq HW driver
-Message-ID: <20200827042653.5ttsxnjjhpslmrcv@vireshk-i7>
-References: <1597302475-15484-1-git-send-email-hector.yuan@mediatek.com>
- <1597302475-15484-2-git-send-email-hector.yuan@mediatek.com>
- <20200824100619.o6uwnlsaxdgc3l7r@vireshk-i7>
- <1598446624.24220.10.camel@mtkswgap22>
+        id S1726236AbgH0E25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 00:28:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8024 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725909AbgH0E25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 00:28:57 -0400
+IronPort-SDR: T/TI0bz9ODJzzKRrsrQWovTJBfhJNsLXGakXm1/E+FBiFkUaHgsKHCKRF6F2RngIL/o7IeF/zK
+ G5DT/wrYMcxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="155678222"
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="155678222"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 21:28:56 -0700
+IronPort-SDR: OrKirxth2ChtaVQ7WJutqDI4vbCsA8B7kKjazRo0oUcoJXG6t9eUig0f7dCJ8bRCW9VqRkgKGp
+ uwCVMrdOu39A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="500493636"
+Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Aug 2020 21:28:55 -0700
+Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kB9Ww-0001sE-OK; Thu, 27 Aug 2020 04:28:54 +0000
+Date:   Thu, 27 Aug 2020 12:27:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ d4f07268d035721dd055ceb0de98ace6ac5f858b
+Message-ID: <5f47364d.M5xzxvoEKXhfK2Fa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598446624.24220.10.camel@mtkswgap22>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-08-20, 20:57, Hector Yuan wrote:
-> On Mon, 2020-08-24 at 15:36 +0530, Viresh Kumar wrote:
-> > On 13-08-20, 15:07, Hector Yuan wrote:
-> > >  CONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM=m
-> > >  CONFIG_ARM_ARMADA_37XX_CPUFREQ=y
-> > > +CONFIG_ARM_MEDIATEK_CPUFREQ_HW=m
-> > 
-> > What about a 'default m' in Kconfig itself ?
-> > OK, will update in V3.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: d4f07268d035721dd055ceb0de98ace6ac5f858b  MAINTAINERS: Add entry for HPE Superdome Flex (UV) maintainers
 
-Hector, you need to remove (or not add) the right bracket (>) before the
-beginning of your lines. This makes it incredibly difficult to read.
+elapsed time: 721m
 
-> > > +	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> > > +		data = readl_relaxed(base + (i * LUT_ROW_SIZE));
-> > > +		freq = FIELD_GET(LUT_FREQ, data) * 1000;
-> > > +		volt = FIELD_GET(LUT_VOLT, data);
-> > > +		if (freq != prev_freq) {
-> > > +			table[i].frequency = freq;
-> > > +			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
-> > 
-> > Why are you adding OPPs here and rather why using OPP specific stuff
-> > at all in the driver ?
-> > yes, the opp information is read from CPU HW engine.Then add it to the CPU dev OPP one by one.  
+configs tested: 141
+configs skipped: 9
 
-I asked a different question, why are you adding OPPs ? You don't need the OPPs
-at all in my opinion. You can just create the frequency table and that's it.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		cpu_np = of_cpu_device_node_get(cpu);
-> > > +		if (!cpu_np)
-> > > +			continue;
-> > > +
-> > > +		ret = of_parse_phandle_with_args(cpu_np, "mtk,freq-domain",
-> > 
-> > Where are bindings of this node and how does this look ?
-> > Can refer to the same patch series, I split it to another patch.Each cpu will be group into one frequency domain for the CPU DVFS. 
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+mips                        workpad_defconfig
+mips                        maltaup_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                        oxnas_v6_defconfig
+sh                        edosk7705_defconfig
+powerpc                     pseries_defconfig
+arm                        mvebu_v7_defconfig
+c6x                        evmc6472_defconfig
+arm                       multi_v4t_defconfig
+arm                          simpad_defconfig
+sh                          lboxre2_defconfig
+m68k                            q40_defconfig
+arm                              zx_defconfig
+mips                        jmr3927_defconfig
+sh                        sh7757lcr_defconfig
+arc                      axs103_smp_defconfig
+sh                        edosk7760_defconfig
+m68k                          atari_defconfig
+sh                        sh7763rdp_defconfig
+c6x                        evmc6474_defconfig
+mips                      malta_kvm_defconfig
+mips                           jazz_defconfig
+arm                        multi_v5_defconfig
+riscv                            allmodconfig
+m68k                         apollo_defconfig
+sh                ecovec24-romimage_defconfig
+sh                        apsh4ad0a_defconfig
+arm                       spear13xx_defconfig
+arm                        trizeps4_defconfig
+arc                                 defconfig
+m68k                       m5249evb_defconfig
+arm                         palmz72_defconfig
+m68k                          multi_defconfig
+ia64                          tiger_defconfig
+mips                         cobalt_defconfig
+sh                           se7722_defconfig
+sh                   sh7770_generic_defconfig
+mips                         tb0226_defconfig
+powerpc                     skiroot_defconfig
+x86_64                              defconfig
+arm                         lpc18xx_defconfig
+sh                          urquell_defconfig
+mips                         bigsur_defconfig
+ia64                            zx1_defconfig
+arm                      integrator_defconfig
+arm                            zeus_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                          ixp4xx_defconfig
+openrisc                    or1ksim_defconfig
+arc                          axs103_defconfig
+powerpc                         wii_defconfig
+m68k                        stmark2_defconfig
+sh                                  defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                             nps_defconfig
+arm                  colibri_pxa270_defconfig
+mips                         rt305x_defconfig
+xtensa                generic_kc705_defconfig
+ia64                        generic_defconfig
+x86_64                           alldefconfig
+arc                 nsimosci_hs_smp_defconfig
+xtensa                          iss_defconfig
+arm                         lubbock_defconfig
+powerpc                  storcenter_defconfig
+ia64                      gensparse_defconfig
+arm                           viper_defconfig
+mips                  cavium_octeon_defconfig
+nios2                         10m50_defconfig
+arm                            mmp2_defconfig
+m68k                       m5275evb_defconfig
+m68k                           sun3_defconfig
+sh                          sdk7786_defconfig
+mips                       rbtx49xx_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                         orion5x_defconfig
+sh                           se7206_defconfig
+sh                          r7785rp_defconfig
+arm                           h5000_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200826
+i386                 randconfig-a004-20200826
+i386                 randconfig-a003-20200826
+i386                 randconfig-a005-20200826
+i386                 randconfig-a006-20200826
+i386                 randconfig-a001-20200826
+x86_64               randconfig-a015-20200826
+x86_64               randconfig-a016-20200826
+x86_64               randconfig-a012-20200826
+x86_64               randconfig-a014-20200826
+x86_64               randconfig-a011-20200826
+x86_64               randconfig-a013-20200826
+i386                 randconfig-a013-20200826
+i386                 randconfig-a012-20200826
+i386                 randconfig-a011-20200826
+i386                 randconfig-a016-20200826
+i386                 randconfig-a015-20200826
+i386                 randconfig-a014-20200826
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-That binding only defines "mediatek,cpufreq-hw" and not "mtk,freq-domain".
-
--- 
-viresh
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
