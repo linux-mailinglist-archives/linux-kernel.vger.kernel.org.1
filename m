@@ -2,70 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C26253F6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B6E253F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgH0Hn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:43:59 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:18616 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726851AbgH0Hn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:43:57 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app2 (Coremail) with SMTP id by_KCgAH8J4tZEdfKIg7Ag--.5581S4;
-        Thu, 27 Aug 2020 15:43:45 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: ref-verify: Fix memleak in add_extent_data_ref
-Date:   Thu, 27 Aug 2020 15:43:39 +0800
-Message-Id: <20200827074339.22950-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAH8J4tZEdfKIg7Ag--.5581S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF4UXr1kJry3Ar4rCF17KFg_yoWxCrX_Ka
-        yfCr18Wr1UWw1UCw18Kan7JrZ5Awn5Kr1UXws2kF12kw42qFyFgFZ7Xrs8G3Z8GrW7GF9x
-        GrZFvF13u347ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x0JUBpB-UUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAXsS
+        id S1728138AbgH0HqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:46:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:37182 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727048AbgH0HqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:46:18 -0400
+IronPort-SDR: M4IyRHmKTmBlmS/4LW+WApvKZJO9T5bRyMTRhLHKx8SIoeOM+ONMPBLEd+ijPVl3aNteeQMN5W
+ pWjmHH2PbwoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="154001038"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="154001038"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 00:46:17 -0700
+IronPort-SDR: OQLBNVmUkSXZzy9VLB4Bxu0TSxtkCOXBl9a6M44zyqO25YYcQoDy/X47IhhknYQ0t+fTtQ7Ams
+ DfHJ86WCdTpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="373644374"
+Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 27 Aug 2020 00:46:16 -0700
+Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kBCbv-0001xM-PT; Thu, 27 Aug 2020 07:46:15 +0000
+Date:   Thu, 27 Aug 2020 15:45:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-linus/kspp] BUILD SUCCESS
+ 14fb4700629bc65efba8369644546a7edf64c81a
+Message-ID: <5f4764a4.G0d/e4SiWekxwmq9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When lookup_root_entry() fails, ref should be freed
-just like when insert_ref_entry() fails.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  for-linus/kspp
+branch HEAD: 14fb4700629bc65efba8369644546a7edf64c81a  afs: Remove erroneous fallthough annotation
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+elapsed time: 722m
+
+configs tested: 119
+configs skipped: 6
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+powerpc                     pseries_defconfig
+arm                        mvebu_v7_defconfig
+c6x                        evmc6472_defconfig
+arm                       multi_v4t_defconfig
+arm                          simpad_defconfig
+sh                          lboxre2_defconfig
+mips                      malta_kvm_defconfig
+mips                           jazz_defconfig
+arm                        multi_v5_defconfig
+riscv                            allmodconfig
+arc                                 defconfig
+m68k                       m5249evb_defconfig
+arm                         palmz72_defconfig
+m68k                          multi_defconfig
+ia64                          tiger_defconfig
+mips                         cobalt_defconfig
+mips                malta_kvm_guest_defconfig
+sh                          sdk7780_defconfig
+sh                         apsh4a3a_defconfig
+mips                           mtx1_defconfig
+powerpc                          alldefconfig
+sh                   sh7770_generic_defconfig
+sh                           se7724_defconfig
+arm                        neponset_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         lpc18xx_defconfig
+sh                          urquell_defconfig
+mips                         bigsur_defconfig
+ia64                            zx1_defconfig
+arm                      integrator_defconfig
+arm                            zeus_defconfig
+powerpc                 mpc8272_ads_defconfig
+m68k                             allmodconfig
+arm                          ixp4xx_defconfig
+openrisc                    or1ksim_defconfig
+arc                          axs103_defconfig
+nds32                            alldefconfig
+h8300                     edosk2674_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+mips                             allyesconfig
+powerpc                         wii_defconfig
+alpha                               defconfig
+m68k                        stmark2_defconfig
+arc                 nsimosci_hs_smp_defconfig
+xtensa                          iss_defconfig
+arm                         lubbock_defconfig
+powerpc                  storcenter_defconfig
+ia64                      gensparse_defconfig
+arm                           viper_defconfig
+mips                        bcm47xx_defconfig
+sh                            shmin_defconfig
+sh                     sh7710voipgw_defconfig
+mips                  cavium_octeon_defconfig
+nios2                         10m50_defconfig
+arm                            mmp2_defconfig
+m68k                       m5275evb_defconfig
+m68k                           sun3_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+s390                                defconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200826
+i386                 randconfig-a004-20200826
+i386                 randconfig-a003-20200826
+i386                 randconfig-a005-20200826
+i386                 randconfig-a006-20200826
+i386                 randconfig-a001-20200826
+x86_64               randconfig-a015-20200826
+x86_64               randconfig-a016-20200826
+x86_64               randconfig-a012-20200826
+x86_64               randconfig-a014-20200826
+x86_64               randconfig-a011-20200826
+x86_64               randconfig-a013-20200826
+i386                 randconfig-a013-20200826
+i386                 randconfig-a012-20200826
+i386                 randconfig-a011-20200826
+i386                 randconfig-a016-20200826
+i386                 randconfig-a015-20200826
+i386                 randconfig-a014-20200826
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+
 ---
- fs/btrfs/ref-verify.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-index 7f03dbe5b609..712f5cfde404 100644
---- a/fs/btrfs/ref-verify.c
-+++ b/fs/btrfs/ref-verify.c
-@@ -419,6 +419,7 @@ static int add_extent_data_ref(struct btrfs_fs_info *fs_info,
- 	if (!re) {
- 		spin_unlock(&fs_info->ref_verify_lock);
- 		btrfs_err(fs_info, "missing root in new block entry?");
-+		kfree(ref);
- 		return -EINVAL;
- 	}
- 	re->num_refs += num_refs;
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
