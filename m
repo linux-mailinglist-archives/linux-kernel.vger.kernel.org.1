@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947A025474D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4DA254725
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgH0OsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgH0ODp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:03:45 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02B0C06123F
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so4586426qtp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dfRzlPwQNyPtrYJ/iS+qwie4ofTE9hR5y2kv8hIuyaA=;
-        b=xS4StaPpTGC1Pj9KQLMY1y4Hh+DxvuykLCRhRCCR2ks3lS4BDPvs2wAKBG5COFaV+Z
-         5a4iKQJRjfMzWvoEDRU+GIkjB6GHtWfHpJ/EnWEgGdhu+csIuY3GLUOjg1fPvtbeBDw/
-         9kG7Tk4zkmcZbKeDMfK5TOyej+CKEs9zTCMzbx1iaTd9NO7CLzwhQUxNiMJes9ogin7K
-         p8BpEdUk6FDEm+vs2kKUij8P4AbrVwzMbgEd5ySyVT+NMACU39HJ5japIJqtRQdyteCb
-         vS/QIbWLJazcKT9ZK+bYjwJJ0I2rU8smS8FdNM9Y4fMY0myIX8+sxThkICielkbfW1wJ
-         gykg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dfRzlPwQNyPtrYJ/iS+qwie4ofTE9hR5y2kv8hIuyaA=;
-        b=XYD6zVm+z4+EkH8UfY5JyhFNAThxBTtBZNV8t/6p2DWOwLZDtjOxtGStRw+sG7Bbbm
-         Deof0Uq8+A70MJ02g+yNyraxR9qPU/x6/V9wIE94z83xYiL3om5oNrw1T7444lyAOG1z
-         BmCVAKTzqj4kD5ML4yWcpjTsGVGW0oTYk3/1rCpwCfbqnnsEW3JKWXs+QHGExQLppWst
-         iogdbwHnBnuYW6vIE08UKOItCV64ZJSsEa/AY1O2orA4F4TtNIYByTMSWwcWfHmSmK1C
-         SyfGPA2pTorekJL82p0tnxcHYDuucT12U04q+Ti62C2YndZcB3KxcdSGXybxIPmbdmJp
-         szGg==
-X-Gm-Message-State: AOAM531+myGdeI/cQQ3DdmOjh5buj7EDzqG32NZdBdhTK2ZjMvgDim2Y
-        suU+DiXsa4eVhoTGoto08phvDw==
-X-Google-Smtp-Source: ABdhPJwHe/G+MpJjSZgeTDwatG8hgzZOb57B0FlRcGdq6AtF9uloUz2i4857L2RN01YtIeqdvZ25sg==
-X-Received: by 2002:ac8:4c86:: with SMTP id j6mr19065010qtv.65.1598536906039;
-        Thu, 27 Aug 2020 07:01:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:412a])
-        by smtp.gmail.com with ESMTPSA id o47sm1860852qtk.19.2020.08.27.07.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:01:45 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 10:00:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: memcg: Fix memcg reclaim soft lockup
-Message-ID: <20200827140028.GA1002856@cmpxchg.org>
-References: <1598495549-67324-1-git-send-email-xlpang@linux.alibaba.com>
+        id S1727981AbgH0Oll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:41:41 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2698 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728024AbgH0ODq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:03:46 -0400
+Received: from lhreml717-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 1A92147605A1880C8E57;
+        Thu, 27 Aug 2020 15:02:28 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 27 Aug 2020 15:02:27 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Thu, 27 Aug 2020 15:02:27 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rrichter@marvell.com" <rrichter@marvell.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH 1/1] EDAC/ghes: Fix for NULL pointer dereference in
+ ghes_edac_register()
+Thread-Topic: [PATCH 1/1] EDAC/ghes: Fix for NULL pointer dereference in
+ ghes_edac_register()
+Thread-Index: AQHWeuBKuvdPb5JTBkWflf4agAVi66lKBfCAgAH3gwA=
+Date:   Thu, 27 Aug 2020 14:02:27 +0000
+Message-ID: <cd947c4ec6044521a92e2cc39eae5406@huawei.com>
+References: <20200825130108.2132-1-shiju.jose@huawei.com>
+ <20200826085229.GB22390@zn.tnic>
+In-Reply-To: <20200826085229.GB22390@zn.tnic>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.87.119]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598495549-67324-1-git-send-email-xlpang@linux.alibaba.com>
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:32:29AM +0800, Xunlei Pang wrote:
-> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when
-> the target memcg doesn't have any reclaimable memory.
-> 
-> It can be easily reproduced as below:
->  watchdog: BUG: soft lockup - CPU#0 stuck for 111s![memcg_test:2204]
->  CPU: 0 PID: 2204 Comm: memcg_test Not tainted 5.9.0-rc2+ #12
->  Call Trace:
->   shrink_lruvec+0x49f/0x640
->   shrink_node+0x2a6/0x6f0
->   do_try_to_free_pages+0xe9/0x3e0
->   try_to_free_mem_cgroup_pages+0xef/0x1f0
->   try_charge+0x2c1/0x750
->   mem_cgroup_charge+0xd7/0x240
->   __add_to_page_cache_locked+0x2fd/0x370
->   add_to_page_cache_lru+0x4a/0xc0
->   pagecache_get_page+0x10b/0x2f0
->   filemap_fault+0x661/0xad0
->   ext4_filemap_fault+0x2c/0x40
->   __do_fault+0x4d/0xf9
->   handle_mm_fault+0x1080/0x1790
-> 
-> It only happens on our 1-vcpu instances, because there's no chance
-> for oom reaper to run to reclaim the to-be-killed process.
-> 
-> Add a cond_resched() at the upper shrink_node_memcgs() to solve this
-> issue, this will mean that we will get a scheduling point for each
-> memcg in the reclaimed hierarchy without any dependency on the
-> reclaimable memory in that memcg thus making it more predictable.
-> 
-> Acked-by: Chris Down <chris@chrisdown.name>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+SGVsbG8gQm9yaXMsDQoNClRoYW5rcyBmb3IgcmV2aWV3aW5nLg0KDQo+LS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj5Gcm9tOiBsaW51eC1lZGFjLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFp
+bHRvOmxpbnV4LWVkYWMtDQo+b3duZXJAdmdlci5rZXJuZWwub3JnXSBPbiBCZWhhbGYgT2YgQm9y
+aXNsYXYgUGV0a292DQo+U2VudDogMjYgQXVndXN0IDIwMjAgMDk6NTINCj5UbzogU2hpanUgSm9z
+ZSA8c2hpanUuam9zZUBodWF3ZWkuY29tPg0KPkNjOiBsaW51eC1lZGFjQHZnZXIua2VybmVsLm9y
+ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj5tY2hlaGFiQGtlcm5lbC5vcmc7IHRv
+bnkubHVja0BpbnRlbC5jb207IGphbWVzLm1vcnNlQGFybS5jb207DQo+cnJpY2h0ZXJAbWFydmVs
+bC5jb207IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPg0KPlN1YmplY3Q6IFJlOiBbUEFU
+Q0ggMS8xXSBFREFDL2doZXM6IEZpeCBmb3IgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGluDQo+
+Z2hlc19lZGFjX3JlZ2lzdGVyKCkNCj4NCj5PbiBUdWUsIEF1ZyAyNSwgMjAyMCBhdCAwMjowMTow
+OFBNICswMTAwLCBTaGlqdSBKb3NlIHdyb3RlOg0KPj4gQWZ0ZXIgdGhlICdjb21taXQgYjljYWUy
+NzcyOGQxICgiRURBQy9naGVzOiBTY2FuIHRoZSBzeXN0ZW0gb25jZSBvbg0KPmRyaXZlciBpbml0
+IiknDQo+PiBhcHBsaWVkLCBmb2xsb3dpbmcgZXJyb3IgaGFzIG9jY3VycmVkIGluIGdoZXNfZWRh
+Y19yZWdpc3RlcigpIHdoZW4NCj4+IENPTkZJR19ERUJVR19URVNUX0RSSVZFUl9SRU1PVkUgaXMg
+ZW5hYmxlZC4gVGhlIG51bGwNCj5naGVzX2h3LmRpbW1zDQo+PiBwb2ludGVyIGluIHRoZSBtY2lf
+Zm9yX2VhY2hfZGltbSgpIG9mIGdoZXNfZWRhY19yZWdpc3RlcigpIGNhdXNlZCB0aGUNCj5lcnJv
+ci4NCj4+DQo+PiBUaGUgZXJyb3Igb2NjdXJzIHdoZW4gYWxsIHRoZSBwcmV2aW91c2x5IGluaXRp
+YWxpemVkIGdoZXMgaW5zdGFuY2VzDQo+PiBhcmUgcmVtb3ZlZCBhbmQgdGhlbiBwcm9iZSBhIG5l
+dyBnaGVzIGluc3RhbmNlLiBJbiB0aGlzIGNhc2UsIHRoZQ0KPj4gZ2hlc19yZWZjb3VudCB3b3Vs
+ZCBiZSAwLCBnaGVzX2h3LmRpbW1zIGFuZCBtY2kgYWxyZWFkeSBmcmVlZC4gVGhlDQo+PiBnaGVz
+X2h3LmRpbW1zIHdvdWxkIGJlIG51bGwgYmVjYXVzZSBnaGVzX3NjYW5fc3lzdGVtKCkgd291bGQg
+bm90IGNhbGwNCj5lbnVtZXJhdGVfZGltbXMoKSBhZ2Fpbi4NCj4NCj5UcnkgdGhlIGJlbG93IGlu
+c3RlYWQgYW5kIHNlZSBpZiBpdCBmaXhlcyB0aGUgaXNzdWUgZm9yIHlvdSB0b28uDQo+DQo+SWYg
+aXQgZG9lcywgcGxzIHNlbmQgaXQgYXMgdjIgYnV0IGRvIG5vdCBhZGQgdGhlIHNwbGF0IHRvIHRo
+ZSBjb21taXQgbWVzc2FnZSAtDQo+dGhhdCdzIGEgbG90IG9mIG5vaXNlIGZvciBzb21ldGhpbmcg
+d2hpY2ggaXMgY2xlYXIgd2h5IGl0IGhhcHBlbnMgYW5kIHlvdQ0KPmV4cGxhaW4gaXQgcHJvcGVy
+bHkgaW4gdGV4dCBhbnl3YXkuDQoNCkkgdGVzdGVkIHdpdGggeW91ciBjaGFuZ2VzIGFuZCBpdCBm
+aXhlcyB0aGUgaXNzdWUuICBJIHdpbGwgc2VuZCB2Mi4NCiANCj4NCj5UaHguDQo+DQo+LS0tDQo+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZWRhYy9naGVzX2VkYWMuYyBiL2RyaXZlcnMvZWRhYy9naGVz
+X2VkYWMuYyBpbmRleA0KPmRhNjBjMjk0NjhhNy4uNTRlYmM4YWZjNmIxIDEwMDY0NA0KPi0tLSBh
+L2RyaXZlcnMvZWRhYy9naGVzX2VkYWMuYw0KPisrKyBiL2RyaXZlcnMvZWRhYy9naGVzX2VkYWMu
+Yw0KPkBAIC01NSw2ICs1NSw4IEBAIHN0YXRpYyBERUZJTkVfU1BJTkxPQ0soZ2hlc19sb2NrKTsg
+IHN0YXRpYyBib29sDQo+X19yZWFkX21vc3RseSBmb3JjZV9sb2FkOyAgbW9kdWxlX3BhcmFtKGZv
+cmNlX2xvYWQsIGJvb2wsIDApOw0KPg0KPitzdGF0aWMgYm9vbCBzeXN0ZW1fc2Nhbm5lZDsNCj4r
+DQo+IC8qIE1lbW9yeSBEZXZpY2UgLSBUeXBlIDE3IG9mIFNNQklPUyBzcGVjICovICBzdHJ1Y3Qg
+bWVtZGV2X2RtaV9lbnRyeSB7DQo+IAl1OCB0eXBlOw0KPkBAIC0yMjUsMTQgKzIyNywxMiBAQCBz
+dGF0aWMgdm9pZCBlbnVtZXJhdGVfZGltbXMoY29uc3Qgc3RydWN0DQo+ZG1pX2hlYWRlciAqZGgs
+IHZvaWQgKmFyZykNCj4NCj4gc3RhdGljIHZvaWQgZ2hlc19zY2FuX3N5c3RlbSh2b2lkKQ0KPiB7
+DQo+LQlzdGF0aWMgYm9vbCBzY2FubmVkOw0KPi0NCj4tCWlmIChzY2FubmVkKQ0KPisJaWYgKHN5
+c3RlbV9zY2FubmVkKQ0KPiAJCXJldHVybjsNCj4NCj4gCWRtaV93YWxrKGVudW1lcmF0ZV9kaW1t
+cywgJmdoZXNfaHcpOw0KPg0KPi0Jc2Nhbm5lZCA9IHRydWU7DQo+KwlzeXN0ZW1fc2Nhbm5lZCA9
+IHRydWU7DQo+IH0NCj4NCj4gdm9pZCBnaGVzX2VkYWNfcmVwb3J0X21lbV9lcnJvcihpbnQgc2V2
+LCBzdHJ1Y3QgY3Blcl9zZWNfbWVtX2Vycg0KPiptZW1fZXJyKSBAQCAtNjMxLDYgKzYzMSw4IEBA
+IHZvaWQgZ2hlc19lZGFjX3VucmVnaXN0ZXIoc3RydWN0IGdoZXMNCj4qZ2hlcykNCj4NCj4gCW11
+dGV4X2xvY2soJmdoZXNfcmVnX211dGV4KTsNCj4NCj4rCXN5c3RlbV9zY2FubmVkID0gZmFsc2U7
+DQo+Kw0KPiAJaWYgKCFyZWZjb3VudF9kZWNfYW5kX3Rlc3QoJmdoZXNfcmVmY291bnQpKQ0KPiAJ
+CWdvdG8gdW5sb2NrOw0KPg0KPg0KPi0tDQo+UmVnYXJkcy9HcnVzcywNCj4gICAgQm9yaXMuDQo+
+DQo+aHR0cHM6Ly9wZW9wbGUua2VybmVsLm9yZy90Z2x4L25vdGVzLWFib3V0LW5ldGlxdWV0dGUN
+Cg0KVGhhbmtzLA0KU2hpanUNCg==
