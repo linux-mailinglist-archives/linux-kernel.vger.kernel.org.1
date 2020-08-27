@@ -2,208 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE80A254583
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FD125458C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbgH0M6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:58:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19862 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726834AbgH0M5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:57:33 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RCWHkq124207;
-        Thu, 27 Aug 2020 08:57:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=C3993iEI8cespXe9G6ubljnSqXfbCcQAx5wYMlYe4GE=;
- b=BtIqOyZmMcPA/mqrpRzomGZMOubzCktAITWa7NunGx6IZeKQG/MsK99aeZX4FrDWtQ6j
- Y/FGV+xk4FnOo3FtUy+l5dRcwdaIN4SWQUWlBI2391Azgiit2k7p7oeRskFvsY8E/XtR
- ORpTy1NjgVL3zD39mDmPbbaHtJxv1rv9/almqih4eTW35zMkmHWtTTGCmM2W2oRCJCNx
- vp6d/O/TrKg0MhINak9SyFbJ6RrBSyfzA2nDkRfBk60EfIuM3AweLhV1EfFxMNt1luMy
- 2Y4KdgOxmjWiFHcoRTAQil04DmqwZjeuKKlM6OpEYlLqmFtAfdjLZ/yjC767b6rwnkMf Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336ayhvbjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 08:57:25 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RCWSxw125225;
-        Thu, 27 Aug 2020 08:57:24 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336ayhvbhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 08:57:24 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RCqs7T005092;
-        Thu, 27 Aug 2020 12:57:23 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 332uw7swxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 12:57:23 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RCvMmK55247148
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 12:57:22 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6729AE05F;
-        Thu, 27 Aug 2020 12:57:22 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2AC5DAE05C;
-        Thu, 27 Aug 2020 12:57:19 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.210.202])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Aug 2020 12:57:18 +0000 (GMT)
-Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
-To:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com
-References: <20200825074041.378520-1-kjain@linux.ibm.com>
- <bc078472-e859-b7dc-c451-d737dd573edf@huawei.com>
- <20200826110046.GF703542@krava>
- <5d91b929-cffd-265a-dd0c-f63bc3d1565d@linux.ibm.com>
- <ac9acc5f-7ce1-c9c9-91f5-598ca13a4a89@huawei.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <db9dd8b3-e2ca-6773-a8bb-0f635eb84953@linux.ibm.com>
-Date:   Thu, 27 Aug 2020 18:27:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726087AbgH0M7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:59:44 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:41234 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726009AbgH0M7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:59:14 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 29AD3CB95655F8104BF9;
+        Thu, 27 Aug 2020 20:58:47 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
+ 20:58:37 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <hare@suse.de>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] scsi: dpt_i2o: remove set but not used 'pHba'
+Date:   Thu, 27 Aug 2020 20:58:12 +0800
+Message-ID: <20200827125812.427753-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <ac9acc5f-7ce1-c9c9-91f5-598ca13a4a89@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_06:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 priorityscore=1501
- adultscore=0 suspectscore=2 lowpriorityscore=0 spamscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270092
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This addresses the following gcc warning with "make W=1":
 
+drivers/scsi/dpt_i2o.c: In function ‘adpt_slave_configure’:
+drivers/scsi/dpt_i2o.c:411:12: warning: variable ‘pHba’ set but not used
+[-Wunused-but-set-variable]
+  411 |  adpt_hba* pHba;
+      |            ^~~~
 
-On 8/26/20 5:03 PM, John Garry wrote:
-> On 26/08/2020 12:24, kajoljain wrote:
->>
->>
->> On 8/26/20 4:30 PM, Jiri Olsa wrote:
->>> On Tue, Aug 25, 2020 at 09:14:11AM +0100, John Garry wrote:
->>>
->>> SNIP
->>>
->>>>>                    goto free_strings;
->>>>>            }
->>>>> -        err = func(data, name, real_event(name, event), desc, long_desc,
->>>>> -               pmu, unit, perpkg, metric_expr, metric_name,
->>>>> -               metric_group, deprecated, metric_constraint);
->>>>> +        je->event = real_event(je->name, je->event);
->>>>> +        err = func(data, je);
->>>>>    free_strings:
->>>>> -        free(event);
->>>>> -        free(desc);
->>>>> -        free(name);
->>>>> -        free(long_desc);
->>>>>            free(extra_desc);
->>>>> -        free(pmu);
->>>>>            free(filter);
->>>>> -        free(perpkg);
->>>>> -        free(deprecated);
->>>>> -        free(unit);
->>>>> -        free(metric_expr);
->>>>> -        free(metric_name);
->>>>> -        free(metric_group);
->>>>> -        free(metric_constraint);
-> 
-> Hi Kajol Jain,
-> 
-> Do we need to free je->metric_name and the rest still? From a glance, that memory is still separately alloc'ed in addfield.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/scsi/dpt_i2o.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Hi John,
-    yes right we should free them as well. Thanks for pointing it, I will update.
+diff --git a/drivers/scsi/dpt_i2o.c b/drivers/scsi/dpt_i2o.c
+index f654ad8a3d69..4251212acbbe 100644
+--- a/drivers/scsi/dpt_i2o.c
++++ b/drivers/scsi/dpt_i2o.c
+@@ -408,9 +408,6 @@ static void adpt_inquiry(adpt_hba* pHba)
+ static int adpt_slave_configure(struct scsi_device * device)
+ {
+ 	struct Scsi_Host *host = device->host;
+-	adpt_hba* pHba;
+-
+-	pHba = (adpt_hba *) host->hostdata[0];
+ 
+ 	if (host->can_queue && device->tagged_supported) {
+ 		scsi_change_queue_depth(device,
+-- 
+2.25.4
 
-Thanks,
-Kajol Jain
-> 
->>>>>            free(arch_std);
->>>>> +        free(je);
->>>>>            if (err)
->>>>>                break;
->>>>> diff --git a/tools/perf/pmu-events/jevents.h b/tools/perf/pmu-events/jevents.h
->>>>> index 2afc8304529e..e696edf70e9a 100644
->>>>> --- a/tools/perf/pmu-events/jevents.h
->>>>> +++ b/tools/perf/pmu-events/jevents.h
->>>>
->>>> Somewhat unrelated - this file only seems to be included in jevents.c, so I
->>>> don't see why it exists...
->>>
->>> ah right.. I won't mind getting rid of it
->>
->> Hi John and  Jiri
->>       Thanks for reviewing the patch. I can remove this file and add these structure inside jevents.c
-> 
-> thanks
-> 
->>
->> Thanks,
->> Kajol Jain
->>>  
->>>>> @@ -2,14 +2,28 @@
->>>>>    #ifndef JEVENTS_H
->>>>>    #define JEVENTS_H 1
->>>>> +#include "pmu-events.h"
->>>>> +
->>>>> +struct json_event {
->>>>> +    char *name;
->>>>> +    char *event;
->>>>> +    char *desc;
->>>>> +    char *topic;
->>>>> +    char *long_desc;
->>>>> +    char *pmu;
->>>>> +    char *unit;
->>>>> +    char *perpkg;
->>>>> +    char *metric_expr;
->>>>> +    char *metric_name;
->>>>> +    char *metric_group;
->>>>> +    char *deprecated;
->>>>> +    char *metric_constraint;
->>>>
->>>> This looks very much like struct event_struct, so could look to consolidate:
->>>>
->>>> struct event_struct {
->>>>     struct list_head list;
->>>>     char *name;
->>>>     char *event;
->>>>     char *desc;
->>>>     char *long_desc;
->>>>     char *pmu;
->>>>     char *unit;
->>>>     char *perpkg;
->>>>     char *metric_expr;
->>>>     char *metric_name;
->>>>     char *metric_group;
->>>>     char *deprecated;
->>>>     char *metric_constraint;
->>>> };
->>>
->>> as Andi said they come from different layers, I think it's
->>> better to keep them separated even if they share some fields
-> 
-> I was just suggesting to make:
->  struct event_struct {
->     struct list_head list;
->     struct json_event je;
->  }
-> 
-> No biggie if against this.
-> 
-> Cheers,
-> John
