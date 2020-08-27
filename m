@@ -2,186 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6242C25414E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6963425413F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgH0I4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:56:31 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2695 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726395AbgH0I4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:56:31 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 4F95897B38DD409779FE;
-        Thu, 27 Aug 2020 09:56:27 +0100 (IST)
-Received: from [127.0.0.1] (10.210.169.222) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 27 Aug
- 2020 09:56:25 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
- SCSI HBAs
-To:     <axboe@kernel.dk>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <don.brace@microsemi.com>, <kashyap.desai@broadcom.com>,
-        <ming.lei@redhat.com>, <bvanassche@acm.org>,
-        <dgilbert@interlog.com>, <paolo.valente@linaro.org>,
-        <hare@suse.de>, <hch@lst.de>, <sumit.saxena@broadcom.com>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <esc.storagedev@microsemi.com>,
-        <megaraidlinux.pdl@broadcom.com>, <chenxiang66@hisilicon.com>,
-        <luojiaxing@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-Message-ID: <8369f4e3-6b59-609e-f5ef-3a51fa4d7b5f@huawei.com>
+        id S1728236AbgH0IyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:54:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3553 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgH0IyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 04:54:07 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4774350000>; Thu, 27 Aug 2020 01:52:05 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 27 Aug 2020 01:54:07 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 01:54:07 -0700
+Received: from [10.26.74.41] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
+ 2020 08:54:01 +0000
+Subject: Re: [PATCH v6 3/7] dt-bindings: mmc: tegra: Add tmclk for Tegra210
+ and later
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <robh+dt@kernel.org>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
+ <1598500201-5987-4-git-send-email-skomatineni@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <46af4970-6a5a-d51e-a93f-31690dfe6ec8@nvidia.com>
 Date:   Thu, 27 Aug 2020 09:53:58 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1598500201-5987-4-git-send-email-skomatineni@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.222]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598518325; bh=C6Crf15LnfbR0rYCsspSBLWvgIDpcD7/H+1fQJjziBk=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=f7MNXB70JXKKV7eh+wWqv5g6k0XPXmJk+IZpcs/j/jUPI/9rRzfsMCO/fkoR72bNL
+         CoCAtkSQiJACST7dmGpn3SfK/k2ng5vxqxJEVfSamkxwNt5QXWRYQbWD04XGoLHkLn
+         w6vJziiP0rq88p121df6/iNrPRH3SPKS2s2s5l5VmRq7ogPnTqyTCNg3brFMIu1DLW
+         6CplkBy7/Z9VuNq55aRoPxJ0uPiL9dL3NzYFp288plQgyB3uOgp36i+D4axRISXA+m
+         yJyalyfWVXylgRGUfs3GO4Ktw1HwqpcnYVIyBSnoH5h9UzuHaz5IP2ELmKEmvDk5e4
+         Hjd3EnyaiJHMQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
 
-I was wondering if you could kindly consider the block changes in this 
-series, since I have now dropped the RFC flag?
-
-I guess patch 5/18 (using pointers to bitmaps) would be of first 
-concern. We did discuss this previously, and I think what we're doing 
-now could be considered satisfactory.
-
-Thanks,
-john
-
+On 27/08/2020 04:49, Sowjanya Komatineni wrote:
+> Tegra210 and later uses separate SDMMC_LEGACY_TM clock for data
+> timeout.
 > 
-> Here is v8 of the patchset.
+> So, this patch adds "tmclk" to Tegra sdhci clock property in the
+> device tree binding.
 > 
-> In this version of the series, we keep the shared sbitmap for driver tags,
-> and introduce changes to fix up the tag budgeting across request queues.
-> We also have a change to count requests per-hctx for when an elevator is
-> enabled, as an optimisation. I also dropped the debugfs changes - more on
-> that below.
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../bindings/mmc/nvidia,tegra20-sdhci.txt          | 32 ++++++++++++++++++++--
+>  1 file changed, 29 insertions(+), 3 deletions(-)
 > 
-> Some performance figures:
-> 
-> Using 12x SAS SSDs on hisi_sas v3 hw. mq-deadline results are included,
-> but it is not always an appropriate scheduler to use.
-> 
-> Tag depth 		4000 (default)			260**
-> 
-> Baseline (v5.9-rc1):
-> none sched:		2094K IOPS			513K
-> mq-deadline sched:	2145K IOPS			1336K
-> 
-> Final, host_tagset=0 in LLDD *, ***:
-> none sched:		2120K IOPS			550K
-> mq-deadline sched:	2121K IOPS			1309K
-> 
-> Final ***:
-> none sched:		2132K IOPS			1185			
-> mq-deadline sched:	2145K IOPS			2097	
-> 
-> * this is relevant as this is the performance in supporting but not
->    enabling the feature
-> ** depth=260 is relevant as some point where we are regularly waiting for
->     tags to be available. Figures were are a bit unstable here.
-> *** Included "[PATCH V4] scsi: core: only re-run queue in
->      scsi_end_request() if device queue is busy"
-> 
-> A copy of the patches can be found here:
-> https://github.com/hisilicon/kernel-dev/tree/private-topic-blk-mq-shared-tags-v8
-> 
-> The hpsa patch depends on:
-> https://lore.kernel.org/linux-scsi/20200430131904.5847-1-hare@suse.de/
-> 
-> And the smartpqi patch is not to be accepted.
-> 
-> Comments (and testing) welcome, thanks!
-> 
-> Differences to v7:
-> - Add null_blk and scsi_debug support
-> - Drop debugfs tags patch - it's too difficult to be the same between
-> hostwide and non-hostwide, as discussed:
-> https://lore.kernel.org/linux-scsi/1591810159-240929-1-git-send-email-john.garry@huawei.com/T/#mb3eb462d8be40273718505989abd12f8228c15fd
-> And from commit 6bf0eb550452 ("sbitmap: Consider cleared bits in
-> sbitmap_bitmap_show()"), I guess not many used this anyway...
-> - Add elevator per-hctx request count for optimisation
-> - Break up "blk-mq: rename blk_mq_update_tag_set_depth()" into 2x patches
-> - Pass flags for avoid per-hq queue tags init/free for hostwide tags
-> - Add Don's reviewed-tag and tested-by tags to appropiate patches
-> 	- (@Don, please let me know if issue with how I did this)
-> - Add "scsi: core: Show nr_hw_queues in sysfs"
-> - Rework megaraid SAS patch to have module param (Kashyap)
-> - rebase
-> 
-> V7 is here for more info:
-> https://lore.kernel.org/linux-scsi/1591810159-240929-1-git-send-email-john.garry@huawei.com/T/#t
-> 
-> Hannes Reinecke (5):
->    blk-mq: Rename blk_mq_update_tag_set_depth()
->    blk-mq: Free tags in blk_mq_init_tags() upon error
->    scsi: Add host and host template flag 'host_tagset'
->    hpsa: enable host_tagset and switch to MQ
->    smartpqi: enable host tagset
-> 
-> John Garry (10):
->    blk-mq: Pass flags for tag init/free
->    blk-mq: Use pointers for blk_mq_tags bitmap tags
->    blk-mq: Facilitate a shared sbitmap per tagset
->    blk-mq: Relocate hctx_may_queue()
->    blk-mq: Record nr_active_requests per queue for when using shared
->      sbitmap
->    blk-mq: Record active_queues_shared_sbitmap per tag_set for when using
->      shared sbitmap
->    null_blk: Support shared tag bitmap
->    scsi: core: Show nr_hw_queues in sysfs
->    scsi: hisi_sas: Switch v3 hw to MQ
->    scsi: scsi_debug: Support host tagset
-> 
-> Kashyap Desai (2):
->    blk-mq, elevator: Count requests per hctx to improve performance
->    scsi: megaraid_sas: Added support for shared host tagset for
->      cpuhotplug
-> 
-> Ming Lei (1):
->    blk-mq: Rename BLK_MQ_F_TAG_SHARED as BLK_MQ_F_TAG_QUEUE_SHARED
-> 
->   block/bfq-iosched.c                         |   9 +-
->   block/blk-core.c                            |   2 +
->   block/blk-mq-debugfs.c                      |  10 +-
->   block/blk-mq-sched.c                        |  13 +-
->   block/blk-mq-tag.c                          | 149 ++++++++++++++------
->   block/blk-mq-tag.h                          |  56 +++-----
->   block/blk-mq.c                              |  81 +++++++----
->   block/blk-mq.h                              |  76 +++++++++-
->   block/kyber-iosched.c                       |   4 +-
->   block/mq-deadline.c                         |   6 +
->   drivers/block/null_blk_main.c               |   6 +
->   drivers/block/rnbd/rnbd-clt.c               |   2 +-
->   drivers/scsi/hisi_sas/hisi_sas.h            |   3 +-
->   drivers/scsi/hisi_sas/hisi_sas_main.c       |  36 ++---
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c      |  87 +++++-------
->   drivers/scsi/hosts.c                        |   1 +
->   drivers/scsi/hpsa.c                         |  44 +-----
->   drivers/scsi/hpsa.h                         |   1 -
->   drivers/scsi/megaraid/megaraid_sas_base.c   |  39 +++++
->   drivers/scsi/megaraid/megaraid_sas_fusion.c |  29 ++--
->   drivers/scsi/scsi_debug.c                   |  28 ++--
->   drivers/scsi/scsi_lib.c                     |   2 +
->   drivers/scsi/scsi_sysfs.c                   |  11 ++
->   drivers/scsi/smartpqi/smartpqi_init.c       |  45 ++++--
->   include/linux/blk-mq.h                      |  13 +-
->   include/linux/blkdev.h                      |   3 +
->   include/scsi/scsi_host.h                    |   9 +-
->   27 files changed, 484 insertions(+), 281 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/mmc/nvidia,tegra20-sdhci.txt b/Documentation/devicetree/bindings/mmc/nvidia,tegra20-sdhci.txt
+> index 2cf3aff..96c0b14 100644
+> --- a/Documentation/devicetree/bindings/mmc/nvidia,tegra20-sdhci.txt
+> +++ b/Documentation/devicetree/bindings/mmc/nvidia,tegra20-sdhci.txt
+> @@ -15,8 +15,15 @@ Required properties:
+>    - "nvidia,tegra210-sdhci": for Tegra210
+>    - "nvidia,tegra186-sdhci": for Tegra186
+>    - "nvidia,tegra194-sdhci": for Tegra194
+> -- clocks : Must contain one entry, for the module clock.
+> -  See ../clocks/clock-bindings.txt for details.
+> +- clocks: For Tegra210, Tegra186 and Tegra194 must contain two entries.
+> +	  One for the module clock and one for the timeout clock.
+> +	  For all other Tegra devices, must contain a single entry for
+> +	  the module clock. See ../clocks/clock-bindings.txt for details.
+> +- clock-names: For Tegra210, Tegra186 and Tegra194 must contain the
+> +	       strings 'sdhci' and 'tmclk' to represent the module and
+> +	       the timeout clocks, respectively.
+> +	       For all other Tegra devices must contain the string 'sdhci'
+> +	       to represent the module clock.
+>  - resets : Must contain an entry for each entry in reset-names.
+>    See ../reset/reset.txt for details.
+>  - reset-names : Must include the following entries:
+> @@ -99,7 +106,7 @@ Optional properties for Tegra210, Tegra186 and Tegra194:
+>  
+>  Example:
+>  sdhci@700b0000 {
+> -	compatible = "nvidia,tegra210-sdhci", "nvidia,tegra124-sdhci";
+> +	compatible = "nvidia,tegra124-sdhci";
+>  	reg = <0x0 0x700b0000 0x0 0x200>;
+>  	interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+>  	clocks = <&tegra_car TEGRA210_CLK_SDMMC1>;
+> @@ -115,3 +122,22 @@ sdhci@700b0000 {
+>  	nvidia,pad-autocal-pull-down-offset-1v8 = <0x7b>;
+>  	status = "disabled";
+>  };
+> +
+> +sdhci@700b0000 {
+> +	compatible = "nvidia,tegra210-sdhci";
+> +	reg = <0x0 0x700b0000 0x0 0x200>;
+> +	interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +	clocks = <&tegra_car TEGRA210_CLK_SDMMC1>,
+> +		 <&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
+> +	clock-names = "sdhci", "tmclk";
+> +	resets = <&tegra_car 14>;
+> +	reset-names = "sdhci";
+> +	pinctrl-names = "sdmmc-3v3", "sdmmc-1v8";
+> +	pinctrl-0 = <&sdmmc1_3v3>;
+> +	pinctrl-1 = <&sdmmc1_1v8>;
+> +	nvidia,pad-autocal-pull-up-offset-3v3 = <0x00>;
+> +	nvidia,pad-autocal-pull-down-offset-3v3 = <0x7d>;
+> +	nvidia,pad-autocal-pull-up-offset-1v8 = <0x7b>;
+> +	nvidia,pad-autocal-pull-down-offset-1v8 = <0x7b>;
+> +	status = "disabled";
+> +};
 > 
 
+
+Thanks!
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
+-- 
+nvpublic
