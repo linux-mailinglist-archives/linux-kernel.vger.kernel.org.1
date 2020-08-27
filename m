@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7232548E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4742548E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgH0PQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728129AbgH0LhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:37:13 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FF0322CB3;
-        Thu, 27 Aug 2020 11:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598528232;
-        bh=PP0bI7sUDln6gk+DlxUV7f5eKbxC3kbdiD3361ooqy0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHlD1hc9p+6M5UQV6MKA3W8Lkaa62bL+qOtZ/qzKr+8p8FBL4YxCRClk8CLx8ryZJ
-         nBnMWFni06h0Zfle4CGAOaqgoJtfHDaann41JC17cMb+lmkcgErfcFrvx299OVHJDo
-         Q32a37c+SAu5Bn5e6M80Um+TRAMh/9ki4ORxyXmw=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2 11/15] s390: kprobes: Use generic kretprobe trampoline handler
-Date:   Thu, 27 Aug 2020 20:37:08 +0900
-Message-Id: <159852822822.707944.2885054218880962378.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159852811819.707944.12798182250041968537.stgit@devnote2>
-References: <159852811819.707944.12798182250041968537.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1728327AbgH0PPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728400AbgH0Lia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:38:30 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1FCC0611E0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:37:20 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d18so5394694iop.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rcg4TIxpS2XrDTWj8mS51Tf2vGitjPKgU895pVtnQkw=;
+        b=SgvKEzvYUaEchSKyXnlDf9/rSQtJ8+7m+0GJkn97LKTQl5LEu9FPK9m43svxpmEfgt
+         iH/oN1s764d2JTNj/xWEXaVNL2GB4vqgkruQ1yKEpPqo0ll0EXg+VvWLG5Tl53EbjGJw
+         +OGgWYITwpB0yMLuSqdCB89dDAVwtP1BY+5CjKOb93e42M+8JUnLQcusWy6fNs59V4aj
+         fd7LomJjV6nuXESt9E5JoDX4+oTnHpvJgRWMGzbDO0efG3Xp49x3kgCDbQ4mLt/wG/gf
+         OWHDOiNvcZ2LxXvkoqrEFfIUTur/0rz60hcbbp+NYII6e87FUy2OcA34+YMh5WAjVxKN
+         N/Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rcg4TIxpS2XrDTWj8mS51Tf2vGitjPKgU895pVtnQkw=;
+        b=QJIL+CSooimhX9RpitNHUe+NF2obozOOMRcBaBdDG1D2uO0mHTUlKdxIwZup/CNbun
+         HErywq/BB4nXQcWADVRhi4E3pHglNO4kReNW3kDtGwqj4JSPPrctugxnFBLtMt/3YJ5S
+         mzIF+LqNwjHQYsFmCCRWcqCU6ol4HtFvXtVyWKdya34N+PmThUUVxT0sMhcrNsOhp0+7
+         Yq/k/SUgifZMBIIlQ4gcR+9PtLQcpFTp16ovlHJeef9hAgAj8HoLMw2/ImLA3sqZ1+/e
+         BRZLXspeBJXkwqVEkYHTlxPeslGOyGj+3insRR9V8wEOuQxMieXfZYZBYHvtRHvlLzYN
+         lpdA==
+X-Gm-Message-State: AOAM531E2y+Epa8pdP4bsEmOXaxnfsXPoZPgKPqWPgnPS4w/WDdAjAzf
+        PjS1rbgyAj9WCTXG0xxle9visuvJwMVx6TAsSMCGtw==
+X-Google-Smtp-Source: ABdhPJw1N6sVjHVtii/hCb0grxGUljPwAXeuCDgAlkjVrpPoJ2ImTSGfKfLHTqtDw39I1tiyLzx6dfrl5d7CtzSMMnU=
+X-Received: by 2002:a6b:7846:: with SMTP id h6mr16736497iop.145.1598528239275;
+ Thu, 27 Aug 2020 04:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200827112342.44526-1-linmiaohe@huawei.com>
+In-Reply-To: <20200827112342.44526-1-linmiaohe@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 27 Aug 2020 04:37:08 -0700
+Message-ID: <CANn89iJ7orDEWxdBJVYqhk+1WF2ZuRpzN_XOaPoGRrn2hWjGNQ@mail.gmail.com>
+Subject: Re: [PATCH] net: exit immediately when off = 0 in skb_headers_offset_update()
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Florian Westphal <fw@strlen.de>, martin.varghese@nokia.com,
+        Davide Caratti <dcaratti@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>, shmulik@metanetworks.com,
+        kyk.segfault@gmail.com, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/s390/kernel/kprobes.c |   81 ++------------------------------------------
- 1 file changed, 4 insertions(+), 77 deletions(-)
+On Thu, Aug 27, 2020 at 4:25 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> In the case of off = 0, skb_headers_offset_update() do nothing indeed.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  net/core/skbuff.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 18ed56316e56..f67f0da20a5b 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -1459,6 +1459,8 @@ EXPORT_SYMBOL(skb_clone);
+>
+>  void skb_headers_offset_update(struct sk_buff *skb, int off)
+>  {
+> +       if (unlikely(off == 0))
+> +               return;
 
-diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
-index d2a71d872638..6009f08836f4 100644
---- a/arch/s390/kernel/kprobes.c
-+++ b/arch/s390/kernel/kprobes.c
-@@ -228,6 +228,7 @@ NOKPROBE_SYMBOL(pop_kprobe);
- void arch_prepare_kretprobe(struct kretprobe_instance *ri, struct pt_regs *regs)
- {
- 	ri->ret_addr = (kprobe_opcode_t *) regs->gprs[14];
-+	ri->fp = NULL;
- 
- 	/* Replace the return addr with trampoline addr */
- 	regs->gprs[14] = (unsigned long) &kretprobe_trampoline;
-@@ -331,83 +332,9 @@ static void __used kretprobe_trampoline_holder(void)
-  */
- static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
--	struct kretprobe_instance *ri;
--	struct hlist_head *head, empty_rp;
--	struct hlist_node *tmp;
--	unsigned long flags, orig_ret_address;
--	unsigned long trampoline_address;
--	kprobe_opcode_t *correct_ret_addr;
--
--	INIT_HLIST_HEAD(&empty_rp);
--	kretprobe_hash_lock(current, &head, &flags);
--
--	/*
--	 * It is possible to have multiple instances associated with a given
--	 * task either because an multiple functions in the call path
--	 * have a return probe installed on them, and/or more than one return
--	 * return probe was registered for a target function.
--	 *
--	 * We can handle this because:
--	 *     - instances are always inserted at the head of the list
--	 *     - when multiple return probes are registered for the same
--	 *	 function, the first instance's ret_addr will point to the
--	 *	 real return address, and all the rest will point to
--	 *	 kretprobe_trampoline
--	 */
--	ri = NULL;
--	orig_ret_address = 0;
--	correct_ret_addr = NULL;
--	trampoline_address = (unsigned long) &kretprobe_trampoline;
--	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
--		if (ri->task != current)
--			/* another task is sharing our hash bucket */
--			continue;
--
--		orig_ret_address = (unsigned long) ri->ret_addr;
--
--		if (orig_ret_address != trampoline_address)
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			break;
--	}
--
--	kretprobe_assert(ri, orig_ret_address, trampoline_address);
--
--	correct_ret_addr = ri->ret_addr;
--	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
--		if (ri->task != current)
--			/* another task is sharing our hash bucket */
--			continue;
--
--		orig_ret_address = (unsigned long) ri->ret_addr;
--
--		if (ri->rp && ri->rp->handler) {
--			ri->ret_addr = correct_ret_addr;
--			ri->rp->handler(ri, regs);
--		}
--
--		recycle_rp_inst(ri, &empty_rp);
--
--		if (orig_ret_address != trampoline_address)
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			break;
--	}
--
--	regs->psw.addr = orig_ret_address;
--
--	kretprobe_hash_unlock(current, &flags);
--
--	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
--		hlist_del(&ri->hlist);
--		kfree(ri);
--	}
-+	regs->psw.addr = __kretprobe_trampoline_handler(regs,
-+			(unsigned long) &kretprobe_trampoline,
-+			NULL);
- 	/*
- 	 * By returning a non-zero value, we are telling
- 	 * kprobe_handler() that we don't want the post_handler
+If this is unlikely, I doubt adding a test is going to save anything.
 
+This will instead add a conditional test for the 'likely' cases.
