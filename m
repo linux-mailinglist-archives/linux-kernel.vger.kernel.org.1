@@ -2,302 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58142254B8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8CB254B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgH0RFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 13:05:30 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24446 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727894AbgH0RFW (ORCPT
+        id S1727919AbgH0RGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 13:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgH0RGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 13:05:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598547920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KUHpH0p58RXd9F5tC26xxqbPOkXpUxjXrNqrdx4sRqQ=;
-        b=EHr9tvz7UQEwSic/3L1CEcC7w/hnrHknMyOb8sIX/AP/1dDScfjv5FueEwftZ61XgOiGDp
-        +pLlyTpMS4C+i6Qfw3G4znN8MfvtSoiLwOki/KtNJXVdWLml0RBfyY3K0lU2R/ogtuFH32
-        pv7oe35UEl8oWHLBts8hvNDIW1ChACo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-9lcyJg9UM9G7DhIQsTg6xg-1; Thu, 27 Aug 2020 13:05:18 -0400
-X-MC-Unique: 9lcyJg9UM9G7DhIQsTg6xg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0474107B765;
-        Thu, 27 Aug 2020 17:05:16 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 388F919D7D;
-        Thu, 27 Aug 2020 17:05:13 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 8/8] KVM: nSVM: implement ondemand allocation of the nested state
-Date:   Thu, 27 Aug 2020 20:04:34 +0300
-Message-Id: <20200827170434.284680-9-mlevitsk@redhat.com>
-In-Reply-To: <20200827170434.284680-1-mlevitsk@redhat.com>
-References: <20200827170434.284680-1-mlevitsk@redhat.com>
+        Thu, 27 Aug 2020 13:06:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F77C061264;
+        Thu, 27 Aug 2020 10:06:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id b79so5154334wmb.4;
+        Thu, 27 Aug 2020 10:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/fFA1WLpHbnNTNwIh9B2EeU8KTOzhsZgTvYscZeUWFg=;
+        b=HGhCur1mL4dshQkU9byv+6eK1rO2nm7oO/8OP4K75mn6WMyTdMUeeIKbbnVdQFJvB4
+         cQZQ7Veom8LgedeStKQFIh9smUbJasu/TX/jSNoprLsC+ipaidHMGmEqZD7Ko11/X0+x
+         7lVh78IbsEIYOE6zpRcTCaWB1tHQLit4ddogoszLPZXZZyWBsbpsVCOuc0DxES51FJUd
+         OxwHwXlarzXo76tuWI91YYfURGnCAn2LjLqwjj/JWNgTIwea+Vy/5QDQmGlawwUHSrrA
+         3nJUd9jcf93VCqw/EYGU5oQUUgFMtIbEEKWYvxfg7mP7blU6FI94S0gqsjUTjldDkaFs
+         kCaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/fFA1WLpHbnNTNwIh9B2EeU8KTOzhsZgTvYscZeUWFg=;
+        b=G97vgbrWHUgCUFBlGESN4Lw9NTvjXd5gdatld6CdxgBM+8kL3HbWxGVsNmf0yBRU0F
+         IRwApPXmOtBd7D0DeEoHTf3sUgmpW/s9/1PLj5+ww57pSwdiZg3/IvR4fRbJpLSH0qTP
+         6CLxPPZNYvNqJJ0PM4/xa1zR8wGoPACnB/LQqs2mhdqfpQ1/xBulddd4aqWniR7v2tcc
+         UxbdPfEyDsgAkxp++Ib2mIVSBT9AbLzQEijc/CkRB6m3y+Mx0lvqTnYvU+sPv9/l3mBH
+         GfKoKZmQpzCKiwPlC4mccXrRn4z1AB0xYtyZgr2RtHJqedtPuDrR/Acr9B8BquQvUdqD
+         8nAA==
+X-Gm-Message-State: AOAM533/JT+NC0T9c3ayYTMQY62iwyPs8I+BIz5rnl8CWCS/fwEeLNrz
+        /lN6h7eBh0pGAd04yM7FQ9y18I3rBhPmFEt0
+X-Google-Smtp-Source: ABdhPJxMurd9bLa/1v0D1EHiQ6jIp4qAvIxdw+FCd+eRWkUKmFnA6sFqkDDsUT+hEcqkUxDDpW1ZUA==
+X-Received: by 2002:a7b:c0c8:: with SMTP id s8mr12206518wmh.72.1598547996825;
+        Thu, 27 Aug 2020 10:06:36 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id 22sm5792136wmk.10.2020.08.27.10.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 10:06:36 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Thu, 27 Aug 2020 18:06:34 +0100
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] netlabel: remove unused param from audit_log_format()
+Message-ID: <20200827170634.wogybzcxux7sgefb@medion>
+References: <20200827163712.106303-1-alex.dewar90@gmail.com>
+ <CAHC9VhRgi54TXae1Wi+SSzkuy9BL7HH=pZCHL1p215M9ZXKEOA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRgi54TXae1Wi+SSzkuy9BL7HH=pZCHL1p215M9ZXKEOA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This way we don't waste memory on VMs which don't use
-nesting virtualization even if it is available to them.
+On Thu, Aug 27, 2020 at 01:00:58PM -0400, Paul Moore wrote:
+> On Thu, Aug 27, 2020 at 12:39 PM Alex Dewar <alex.dewar90@gmail.com> wrote:
+> >
+> > Commit d3b990b7f327 ("netlabel: fix problems with mapping removal")
+> > added a check to return an error if ret_val != 0, before ret_val is
+> > later used in a log message. Now it will unconditionally print "...
+> > res=0". So don't print res anymore.
+> >
+> > Addresses-Coverity: ("Dead code")
+> > Fixes: d3b990b7f327 ("netlabel: fix problems with mapping removal")
+> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> > ---
+> >
+> > I wasn't sure whether it was intended that something other than ret_val
+> > be printed in the log, so that's why I'm sending this as an RFC.
+> 
+> It's intentional for a couple of reasons:
+> 
+> * The people who care about audit logs like to see success/fail (e.g.
+> "res=X") for audit events/records, so printing this out gives them the
+> warm fuzzies.
+> 
+> * For a lot of awful reasons that I won't bore you with, we really
+> don't want to add/remove fields in the middle of an audit record so we
+> pretty much need to keep the "res=0" there even if it seems a bit
+> redundant.
+> 
+> So NACK from me, but thanks for paying attention just the same :)
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 42 +++++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.c    | 52 +++++++++++++++++++++------------------
- arch/x86/kvm/svm/svm.h    |  6 +++++
- 3 files changed, 76 insertions(+), 24 deletions(-)
+Would you rather just have an explicit "res=0" in there, without looking
+at ret_val? The thing is that ret_val will *always* be zero at this point in
+the code, because, if not, the function will already have returned.
+That's why Coverity flagged it up as a redundant check.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 7b1c98826c365..e2f8e94e6b83c 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -471,6 +471,9 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
- 
- 	vmcb12 = map.hva;
- 
-+	if (WARN_ON(!svm->nested.initialized))
-+		return 1;
-+
- 	if (!nested_vmcb_checks(svm, vmcb12)) {
- 		vmcb12->control.exit_code    = SVM_EXIT_ERR;
- 		vmcb12->control.exit_code_hi = 0;
-@@ -686,6 +689,45 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
- 	return 0;
- }
- 
-+int svm_allocate_nested(struct vcpu_svm *svm)
-+{
-+	struct page *hsave_page;
-+
-+	if (svm->nested.initialized)
-+		return 0;
-+
-+	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-+	if (!hsave_page)
-+		goto error;
-+
-+	svm->nested.hsave = page_address(hsave_page);
-+
-+	svm->nested.msrpm = svm_vcpu_init_msrpm();
-+	if (!svm->nested.msrpm)
-+		goto err_free_hsave;
-+
-+	svm->nested.initialized = true;
-+	return 0;
-+err_free_hsave:
-+	__free_page(hsave_page);
-+error:
-+	return 1;
-+}
-+
-+void svm_free_nested(struct vcpu_svm *svm)
-+{
-+	if (!svm->nested.initialized)
-+		return;
-+
-+	svm_vcpu_free_msrpm(svm->nested.msrpm);
-+	svm->nested.msrpm = NULL;
-+
-+	__free_page(virt_to_page(svm->nested.hsave));
-+	svm->nested.hsave = NULL;
-+
-+	svm->nested.initialized = false;
-+}
-+
- /*
-  * Forcibly leave nested mode in order to be able to reset the VCPU later on.
-  */
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4c92432e33e27..7ab142ed9c5c0 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -266,6 +266,7 @@ static int get_max_npt_level(void)
- int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	u64 old_efer = vcpu->arch.efer;
- 	vcpu->arch.efer = efer;
- 
- 	if (!npt_enabled) {
-@@ -276,14 +277,31 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
- 			efer &= ~EFER_LME;
- 	}
- 
--	if (!(efer & EFER_SVME)) {
--		svm_leave_nested(svm);
--		svm_set_gif(svm, true);
-+	if ((old_efer & EFER_SVME) != (efer & EFER_SVME)) {
-+		if (!(efer & EFER_SVME)) {
-+			svm_leave_nested(svm);
-+			svm_set_gif(svm, true);
-+
-+			/*
-+			 * Free the nested state unless we are in SMM, in which
-+			 * case the exit from SVM mode is only for duration of the SMI
-+			 * handler
-+			 */
-+			if (!is_smm(&svm->vcpu))
-+				svm_free_nested(svm);
-+
-+		} else {
-+			if (svm_allocate_nested(svm))
-+				goto error;
-+		}
- 	}
- 
- 	svm->vmcb->save.efer = efer | EFER_SVME;
- 	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
- 	return 0;
-+error:
-+	vcpu->arch.efer = old_efer;
-+	return 1;
- }
- 
- static int is_external_interrupt(u32 info)
-@@ -610,7 +628,7 @@ static void set_msr_interception(u32 *msrpm, unsigned msr,
- 	msrpm[offset] = tmp;
- }
- 
--static u32 *svm_vcpu_init_msrpm(void)
-+u32 *svm_vcpu_init_msrpm(void)
- {
- 	int i;
- 	u32 *msrpm;
-@@ -630,7 +648,7 @@ static u32 *svm_vcpu_init_msrpm(void)
- 	return msrpm;
- }
- 
--static void svm_vcpu_free_msrpm(u32 *msrpm)
-+void svm_vcpu_free_msrpm(u32 *msrpm)
- {
- 	__free_pages(virt_to_page(msrpm), MSRPM_ALLOC_ORDER);
- }
-@@ -1184,7 +1202,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm;
- 	struct page *vmcb_page;
--	struct page *hsave_page;
- 	int err;
- 
- 	BUILD_BUG_ON(offsetof(struct vcpu_svm, vcpu) != 0);
-@@ -1195,13 +1212,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 	if (!vmcb_page)
- 		goto out;
- 
--	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
--	if (!hsave_page)
--		goto error_free_vmcb_page;
--
- 	err = avic_init_vcpu(svm);
- 	if (err)
--		goto error_free_hsave_page;
-+		goto out;
- 
- 	/* We initialize this flag to true to make sure that the is_running
- 	 * bit would be set the first time the vcpu is loaded.
-@@ -1209,15 +1222,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 	if (irqchip_in_kernel(vcpu->kvm) && kvm_apicv_activated(vcpu->kvm))
- 		svm->avic_is_running = true;
- 
--	svm->nested.hsave = page_address(hsave_page);
--
- 	svm->msrpm = svm_vcpu_init_msrpm();
- 	if (!svm->msrpm)
--		goto error_free_hsave_page;
--
--	svm->nested.msrpm = svm_vcpu_init_msrpm();
--	if (!svm->nested.msrpm)
--		goto error_free_msrpm;
-+		goto error_free_vmcb_page;
- 
- 	svm->vmcb = page_address(vmcb_page);
- 	svm->vmcb_pa = __sme_set(page_to_pfn(vmcb_page) << PAGE_SHIFT);
-@@ -1229,10 +1236,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 
- 	return 0;
- 
--error_free_msrpm:
--	svm_vcpu_free_msrpm(svm->msrpm);
--error_free_hsave_page:
--	__free_page(hsave_page);
- error_free_vmcb_page:
- 	__free_page(vmcb_page);
- out:
-@@ -1258,10 +1261,10 @@ static void svm_free_vcpu(struct kvm_vcpu *vcpu)
- 	 */
- 	svm_clear_current_vmcb(svm->vmcb);
- 
-+	svm_free_nested(svm);
-+
- 	__free_page(pfn_to_page(__sme_clr(svm->vmcb_pa) >> PAGE_SHIFT));
- 	__free_pages(virt_to_page(svm->msrpm), MSRPM_ALLOC_ORDER);
--	__free_page(virt_to_page(svm->nested.hsave));
--	__free_pages(virt_to_page(svm->nested.msrpm), MSRPM_ALLOC_ORDER);
- }
- 
- static void svm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-@@ -3919,6 +3922,7 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- 					 gpa_to_gfn(vmcb12_gpa), &map) == -EINVAL)
- 				return 1;
- 
-+			svm_allocate_nested(svm);
- 			ret = enter_svm_guest_mode(svm, vmcb12_gpa, map.hva);
- 			kvm_vcpu_unmap(&svm->vcpu, &map, true);
- 		}
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 468c58a915347..cb9c4a8f26f50 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -97,6 +97,8 @@ struct svm_nested_state {
- 
- 	/* cache for control fields of the guest */
- 	struct vmcb_control_area ctl;
-+
-+	bool initialized;
- };
- 
- struct vcpu_svm {
-@@ -349,6 +351,8 @@ static inline bool gif_set(struct vcpu_svm *svm)
- #define MSR_INVALID				0xffffffffU
- 
- u32 svm_msrpm_offset(u32 msr);
-+u32 *svm_vcpu_init_msrpm(void);
-+void svm_vcpu_free_msrpm(u32 *msrpm);
- int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer);
- void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0);
- int svm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
-@@ -390,6 +394,8 @@ static inline bool nested_exit_on_nmi(struct vcpu_svm *svm)
- int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
- 			 struct vmcb *nested_vmcb);
- void svm_leave_nested(struct vcpu_svm *svm);
-+void svm_free_nested(struct vcpu_svm *svm);
-+int svm_allocate_nested(struct vcpu_svm *svm);
- int nested_svm_vmrun(struct vcpu_svm *svm);
- void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb);
- int nested_svm_vmexit(struct vcpu_svm *svm);
--- 
-2.26.2
-
+> 
+> >  net/netlabel/netlabel_domainhash.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/net/netlabel/netlabel_domainhash.c b/net/netlabel/netlabel_domainhash.c
+> > index f73a8382c275..526762b2f3a9 100644
+> > --- a/net/netlabel/netlabel_domainhash.c
+> > +++ b/net/netlabel/netlabel_domainhash.c
+> > @@ -612,9 +612,8 @@ int netlbl_domhsh_remove_entry(struct netlbl_dom_map *entry,
+> >         audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
+> >         if (audit_buf != NULL) {
+> >                 audit_log_format(audit_buf,
+> > -                                " nlbl_domain=%s res=%u",
+> > -                                entry->domain ? entry->domain : "(default)",
+> > -                                ret_val == 0 ? 1 : 0);
+> > +                                " nlbl_domain=%s",
+> > +                                entry->domain ? entry->domain : "(default)");
+> >                 audit_log_end(audit_buf);
+> >         }
+> >
+> 
+> -- 
+> paul moore
+> www.paul-moore.com
