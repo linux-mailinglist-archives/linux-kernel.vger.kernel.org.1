@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E262540CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B132540C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgH0I2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S1728116AbgH0I13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgH0I17 (ORCPT
+        with ESMTP id S1726826AbgH0I13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:27:59 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E66DC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 01:27:58 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d22so2933133pfn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 01:27:58 -0700 (PDT)
+        Thu, 27 Aug 2020 04:27:29 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1B7C061264;
+        Thu, 27 Aug 2020 01:27:29 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id z18so2250016pjr.2;
+        Thu, 27 Aug 2020 01:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Fa/FRN51AnrOkZk0OKVdqIlVG6v9Zi3yinifrNAr+80=;
-        b=lAgktEuIy34dp/IL4VO/nhPacZQjx7ZS/GCyeGhWta/d87/ZuyFrJyuXa5+XCeh8aY
-         giY1uJQmPaVIllgUBTD6aq/USKvSqcZGHnGxGcxvokWkSD4TuR8D1y49FwOxq+wWyi2q
-         T1wjNwRavC055dQg7/3fgRc+4sA7pltoprZBfNLqLcGHCSTg90myRn3shmZ3x39tVkMA
-         LJybGFW6Yh6VSUMXP/ZRUZ7zxNA789r3+Yz4/lrOl+caDEmQRa6XhkI8vzPjfVTqvePr
-         +m1ZYaHcAviJ8AvaOPaPbGNVYSgdggBMw0EbqPSk8FDdkMDQysmARMCWFiGfQWuHkoiL
-         DUYQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HZu39BmrS22KD4B9ZU5A9XCIkFWAsFL80Y7SUDG2qtE=;
+        b=oqBSHp+HrXhPE9QUUx68UGa9/YcMBY4IZZmU8tQEHoL0eR6q+q9L3KJxyU+5smq+mh
+         Qpb47EuOJNxtnzUze/6j+DruJ9FAig6k1cmSSVZe4HSNqO71XXMp0HWKvL//Jn/SrsVg
+         XDbTdaVO9ZDB9BadUVb0EXv/8MSvaT+iNh4DUhmXqSPdRZA+FvIWaEBj0KvH7/jwmzlc
+         kbK+AW0LRTkel5HNUFj1MK2DXbFfjbShHU7ash7Sspa9HWszpy9Gmt3BpJ8DPsAlNMxF
+         /XJN/Pw5pnUN3rRoxjBCOhTrLosJSp8mDe6aGlHjEfTDwyJ7xlixtSkiGR3gw2hRCCMF
+         7Bag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Fa/FRN51AnrOkZk0OKVdqIlVG6v9Zi3yinifrNAr+80=;
-        b=onX8FcLYglDGbraa8HQbcIiNGBALRbX/3WUyeZspUSr1haXy7uoGjRKfy2OjIABwHG
-         xiIxdkAl6sjAYiRehEQzHGJ6ldFdkHryjBnlbvCWZ4uVj9HQ1uKr8I9dcj3WKuacp/xy
-         YSiCZiURMWsOJmbdFny/2n/CK7I/WT6oQBtUG/f//KZ5DyA8GtitCM24zCkYOobwputu
-         Jk6LE3cJk8GIQt4HM+Rtnk57A++/vDr5XCWDvwPOAzJM7/lYBA5QIOuyuE1+AHf/z8fE
-         BFcEM1+dB23fgoT2N09uVcd9PO4Uhd75xvNj9Z+r1Ai9b6CFMieWkqQVUxSTdY2Z37FD
-         xqWA==
-X-Gm-Message-State: AOAM531f8HfpDn8JZNrWEQU0QgUWaJnpGsGg7FBKDEhiPel+0mCZMPUB
-        5KE9BuQ3phyn+s1OkN0scjA=
-X-Google-Smtp-Source: ABdhPJw0wpighmqc7EmYHrVUF+WfEIiNTI/2BA3wK7bI2s3bMt5o33dbBjrJNfbucH+HlrS3SadA7A==
-X-Received: by 2002:a63:4e56:: with SMTP id o22mr13163940pgl.381.1598516878036;
-        Thu, 27 Aug 2020 01:27:58 -0700 (PDT)
-Received: from localhost.localdomain ([117.192.156.236])
-        by smtp.gmail.com with ESMTPSA id ft11sm1443967pjb.13.2020.08.27.01.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 01:27:57 -0700 (PDT)
-From:   Vinay Simha BN <simhavcs@gmail.com>
-Cc:     Vinay Simha BN <simhavcs@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/bridge/tc358775: Fix semicolon
-Date:   Thu, 27 Aug 2020 13:56:57 +0530
-Message-Id: <1598516817-8240-1-git-send-email-simhavcs@gmail.com>
-X-Mailer: git-send-email 2.1.2
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HZu39BmrS22KD4B9ZU5A9XCIkFWAsFL80Y7SUDG2qtE=;
+        b=PPAJ4nAx9Z25LG6kCDAHrAc33AsyVyBLPw/emyofQ1ZH10OpFwJDOqlB8XkPS7PVnG
+         5egFm+7vxXPxmDGG6H1y7hfhLeogk5bUisnpTOwuceTi0izFbUBslDNSAbuSFaBwbJrn
+         QKEqD7sKPjUhAn/V4LnmRS6lS/MfBMGMs9yiQuZw0ojH9KqW/zFYYyYBj6ZNFa2eizF3
+         rTd5OVobeRijL7MA9ciyhGhUJe59HeFzFOgzyikliHPcmZRhK6ryu9sqNFxbNgQtwrog
+         lEEGz/bs77cj6X2AggPNI/JqxMLSvbVQZcbkqWXiJ9NvK4IPAb2S1WlfC8WG7c/7FaJs
+         hzhA==
+X-Gm-Message-State: AOAM530ylKPK2EXqCiJf7svK8FtR6RmD6up/tjjm5LZxNvYHjb/cFkJx
+        fUxUKvSwAcwFUNyzdXAVUZXnLrehQCGIoG6D4gU=
+X-Google-Smtp-Source: ABdhPJy7FFxyHMt/VY+0213GOuICfPnBcgRzlKo9w1yk5kPoOdyCc69OPZ9PWgEDp1GqqASWBQKX2axNN3k90TDpCTE=
+X-Received: by 2002:a17:90a:2c06:: with SMTP id m6mr9988021pjd.129.1598516848820;
+ Thu, 27 Aug 2020 01:27:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200826161818.20969-1-krzk@kernel.org>
+In-Reply-To: <20200826161818.20969-1-krzk@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 27 Aug 2020 11:27:12 +0300
+Message-ID: <CAHp75Vf3s0+RrHnBoO4y4+t4Egth4uyYwtO5iPt9DbLJcunL6g@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: adc: stm32: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneded semicolon
+On Wed, Aug 26, 2020 at 7:19 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and also it prints the error value.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
----
- drivers/gpu/drm/bridge/tc358775.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
-index d951cdc..2272adc 100644
---- a/drivers/gpu/drm/bridge/tc358775.c
-+++ b/drivers/gpu/drm/bridge/tc358775.c
-@@ -485,7 +485,7 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
- 		val |= TC358775_LVCFG_PCLKDIV(DIVIDE_BY_6);
- 	} else {
- 		val |= TC358775_LVCFG_PCLKDIV(DIVIDE_BY_3);
--	};
-+	}
- 	d2l_write(tc->i2c, LVCFG, val);
- }
- 
+
+
+
+
+>         priv->aclk = devm_clk_get(&pdev->dev, "adc");
+>         if (IS_ERR(priv->aclk)) {
+>                 ret = PTR_ERR(priv->aclk);
+> -               if (ret != -ENOENT) {
+> -                       if (ret != -EPROBE_DEFER)
+> -                               dev_err(&pdev->dev, "Can't get 'adc' clock\n");
+> -                       return ret;
+> -               }
+> +               if (ret != -ENOENT)
+> +                       return dev_err_probe(&pdev->dev, ret, "Can't get 'adc' clock\n");
+> +
+>                 priv->aclk = NULL;
+>         }
+>
+>         priv->bclk = devm_clk_get(&pdev->dev, "bus");
+>         if (IS_ERR(priv->bclk)) {
+>                 ret = PTR_ERR(priv->bclk);
+> -               if (ret != -ENOENT) {
+> -                       if (ret != -EPROBE_DEFER)
+> -                               dev_err(&pdev->dev, "Can't get 'bus' clock\n");
+> -                       return ret;
+> -               }
+> +               if (ret != -ENOENT)
+> +                       return dev_err_probe(&pdev->dev, ret, "Can't get 'bus' clock\n");
+> +
+>                 priv->bclk = NULL;
+>         }
+
+Again, devm_clk_get_optional() and even, if it exists,
+devm_clk_bulk_get_optional().
+
+Please, revisit all patches on this topic.
+
 -- 
-2.1.2
-
+With Best Regards,
+Andy Shevchenko
