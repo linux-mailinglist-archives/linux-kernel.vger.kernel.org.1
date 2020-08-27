@@ -2,69 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D912543B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AF12543C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgH0K2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:28:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37824 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726938AbgH0K2n (ORCPT
+        id S1728361AbgH0K3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0K3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:28:43 -0400
-Date:   Thu, 27 Aug 2020 12:28:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598524121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WTklcD731Fi5e0+Pn8+aeun1glrmN2Z4cLid14mp7hg=;
-        b=jvRB5DRS73xHplCub+07++kcQR/4YFSUqp48DlhPDSo5Naa8XEygsQQA7RRAh39vwlJArD
-        VNGkkAn8N24D0Qk+MKBTywdtSXjgC9wpeqBYJdLorlVq7XYA8o/2LXEOko+3vonvb1mutZ
-        3KV/6S8mTPn/yliJLpyxe6iIB2aOoF3Gfcn9WL1wA5u4R2+an2ZSn8dMXHmL3605LiYzgh
-        jZWnJZz807XqvlNGEIC2QAGlGqwgte0C0N0rpNvGz9Jhlpzvm4aEFc4lz2UOrFYJ8qHj0s
-        PASVOwBgsLygORknoefvtdUt7dSHQGExa+JEC19VNPuKFnwGbw8WHvknjAFi6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598524121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WTklcD731Fi5e0+Pn8+aeun1glrmN2Z4cLid14mp7hg=;
-        b=jsDsEYmc+jw1ktijJrmJ3LNXx66BP0w8X63N1xyFq21A/D+B+J7LWkw0uUbNSqY7g9K/QZ
-        TgpOXxFPCZx6xZAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Daniel Wagner <wagi@monom.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.9-rc2-rt1
-Message-ID: <20200827102840.msv556nrah4h4vmq@linutronix.de>
-References: <20200824154605.v66t2rsxobt3r5jg@linutronix.de>
- <20200826080802.5lnnf5wh3kcwfykz@beryllium.lan>
- <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
- <20200826090518.m6vblobggnfdjau5@beryllium.lan>
- <20200826104326.xfexkwovwbi2q4el@beryllium.lan>
- <20200827091910.ibuyr53qprb7qmju@beryllium.lan>
- <20200827092743.kjl6hkaephx3a64a@linutronix.de>
- <20200827101622.xx4jzecouxrlwbii@beryllium.lan>
+        Thu, 27 Aug 2020 06:29:51 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05270C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:29:51 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 5so3943935otp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VqVqosFrIbjcMckf+U3+gM0HZKqC0WuU3mUX+w73JZU=;
+        b=fKkwMSCT3+pj22gsTIywq7R4LB1He2LTSACwbCTdIGXidzMgQfHh+U6FSnM8xecppd
+         QbXBqCxhAsd24Zw+4HglaCDRXu6RFTP2NAQgwkA/Ipe/S4qcfzbCDRpQJMhf3j420AC1
+         7T9kCyCWVet5iClQ592TiqqC6sAFi5/3YYlm8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VqVqosFrIbjcMckf+U3+gM0HZKqC0WuU3mUX+w73JZU=;
+        b=SobTro9Ao/o4tSg6UOl7eCQNd2foORs/ICIsswWfgvEpmkBZUqgZB//BiUQWoyrPnq
+         wRpp3Dl+qUSkBo3CR86HczdfLEx2PlONYuaBvofmq7VGHLsuIofvqOEtTWwihq01Z+Zm
+         h7BfAqjn48KSg2tGRFjIyy00AKakUTRi2ybbvHMhU6XhXedScgl48XOfM0WH0s9bo45k
+         wMiLX+EJGACmU1gjfcJyhfu0q6eB5+lAZfTLdtXC5nNHvzqfsRQWZbvzzMYJ5x8Fvor0
+         1ZjErsKzqkR5r+wf+3Wjo0YIz9cXpI3U+LUOJZ9HPZoKAh1h4UsGYSh3ysuT05I7GV+M
+         4FSw==
+X-Gm-Message-State: AOAM532LdG8VfK0KOE8BfPCZF/5D1L1NS5G8Zc6MSMblCLSrR8Id7b0k
+        vNsi4cr+JCklJkHPxwxQSqur40yU8ZcnNA==
+X-Google-Smtp-Source: ABdhPJwkcO9QWwwz/du8z8WkID4wlrd4jorJU6G8Al08TCuowAGvQYPn0eUYkCDfqPjuRQEbZCH5AQ==
+X-Received: by 2002:a05:6830:1259:: with SMTP id s25mr13755210otp.203.1598524189659;
+        Thu, 27 Aug 2020 03:29:49 -0700 (PDT)
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com. [209.85.210.53])
+        by smtp.gmail.com with ESMTPSA id w13sm388409oiw.50.2020.08.27.03.29.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 03:29:48 -0700 (PDT)
+Received: by mail-ot1-f53.google.com with SMTP id a65so3962719otc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:29:48 -0700 (PDT)
+X-Received: by 2002:a9d:5f0c:: with SMTP id f12mr12086496oti.141.1598524187719;
+ Thu, 27 Aug 2020 03:29:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200827101622.xx4jzecouxrlwbii@beryllium.lan>
+References: <20200821103608.2310097-1-acourbot@chromium.org>
+ <20200821103608.2310097-10-acourbot@chromium.org> <02eaeace-22dd-02ea-7162-90200fe1cffe@gmail.com>
+ <CAPBb6MWZRKpg-rs7X_j3tqqsYHy=NkEMN1NdZwPS9zo-0whTJw@mail.gmail.com> <184d895c-239e-3f23-970e-6a9563235cd9@gmail.com>
+In-Reply-To: <184d895c-239e-3f23-970e-6a9563235cd9@gmail.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Thu, 27 Aug 2020 19:29:35 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXrUNqWr=3KBPbJkXGmz=gL0aq_QuUQ5u_crR3yyDBvpw@mail.gmail.com>
+Message-ID: <CAPBb6MXrUNqWr=3KBPbJkXGmz=gL0aq_QuUQ5u_crR3yyDBvpw@mail.gmail.com>
+Subject: Re: [PATCH v4 09/17] arm64: dts: mt8183: add encoder node
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-27 12:16:22 [+0200], Daniel Wagner wrote:
-> The -rt kernel is roughly 6MB larger. Just need to check the memory
-> ranges u-boot is using.
+Hi Matthias,
 
-so that 6MiB sounded bad but then it is ~36MiB in total so=E2=80=A6.
-Is this full debug and so on?
+On Thu, Aug 27, 2020 at 7:23 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>
+> Hi Alexandre,
+>
+> On 27/08/2020 12:10, Alexandre Courbot wrote:
+> > On Thu, Aug 27, 2020 at 7:03 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+> >>
+> >>
+> >>
+> >> On 21/08/2020 12:36, Alexandre Courbot wrote:
+> >>> Now that the MT8183 encoder driver is ready, add its DT node. Also pull
+> >>> the iommu and scp ones, which the encoder depends upon.
+> >>
+> >> Please don't do that. Instead of pulling in other DT nodes, it would be handy to
+> >> get a reference of the series this is based on.
+> >>
+> >> Let me try to hunt them down now :)
+> >
+> > Sorry, I'm not sure to understand - do you mean each node should come
+> > with its own patch? Or that all the code should be merged before
+> > sending these nodes? The rest of this series should land into the
+> > media tree soon, if you prefer I can resend this patch separately once
+> > that happens.
+> >
+>
+> What I'm talking about is the case when you send a series that's based on
+> another one and the latter is not yet accepted in Torvalds tree. In that case it
+> helps to point to the series you expect to be included as well.
+>
+> In this case the SCP series was merged long time ago, but I missed the DTS
+> change. It would have been good if you would have added that information in your
+> series, instead of directly pulling in the SCP node.
 
-Sebastian
+Sorry about that, actually I was not even aware of this patch (or
+maybe I just forgot about it due to its date).
+
+>
+> For the iommu node: I understand that there was never a patch adding the node
+> (at least I wasn't able to find one). So I'd prefer to have it send as a
+> separate patch of this series.
+>
+> Regarding this series now. If you want just resend the two DTS patches (iommu
+> and vcodec_enc) once the rest of this series got accpeted. If for any other
+> reason you have to send a v5, then feel free to include both in v5.
+
+Absolutely. I will wait until the patches land into the media tree and
+send you two DT-only patches.
+
+Thanks for the explanation!
+
+>
+> Hope I explained myself now :)
+>
+> Regards,
+> Matthias
+>
+> >>
+> >> Regards,
+> >> Matthias
+> >>
+> >>>
+> >>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> >>> ---
+> >>>    arch/arm64/boot/dts/mediatek/mt8183-evb.dts   | 10 ++++++
+> >>>    .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 12 +++++++
+> >>>    arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 36 +++++++++++++++++++
+> >>>    3 files changed, 58 insertions(+)
+> >>>
+> >>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> >>> index ae405bd8f06b..9e77b420eee8 100644
+> >>> --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> >>> +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> >>> @@ -25,6 +25,16 @@ memory@40000000 {
+> >>>        chosen {
+> >>>                stdout-path = "serial0:921600n8";
+> >>>        };
+> >>> +     reserved-memory {
+> >>> +             #address-cells = <2>;
+> >>> +             #size-cells = <2>;
+> >>> +             ranges;
+> >>> +             scp_mem_reserved: scp_mem_region {
+> >>> +                     compatible = "shared-dma-pool";
+> >>> +                     reg = <0 0x50000000 0 0x2900000>;
+> >>> +                     no-map;
+> >>> +             };
+> >>> +     };
+> >>>    };
+> >>>
+> >>>    &auxadc {
+> >>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> >>> index f0a070535b34..3c763be658da 100644
+> >>> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> >>> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> >>> @@ -90,6 +90,18 @@ pp3300_alw: regulator6 {
+> >>>                regulator-max-microvolt = <3300000>;
+> >>>        };
+> >>>
+> >>> +     reserved_memory: reserved-memory {
+> >>> +             #address-cells = <2>;
+> >>> +             #size-cells = <2>;
+> >>> +             ranges;
+> >>> +
+> >>> +             scp_mem_reserved: scp_mem_region {
+> >>> +                     compatible = "shared-dma-pool";
+> >>> +                     reg = <0 0x50000000 0 0x2900000>;
+> >>> +                     no-map;
+> >>> +             };
+> >>> +     };
+> >>> +
+> >>>        max98357a: codec0 {
+> >>>                compatible = "maxim,max98357a";
+> >>>                sdmode-gpios = <&pio 175 0>;
+> >>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> >>> index 102105871db2..8f77eea6df27 100644
+> >>> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> >>> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> >>> @@ -8,6 +8,7 @@
+> >>>    #include <dt-bindings/clock/mt8183-clk.h>
+> >>>    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> >>>    #include <dt-bindings/interrupt-controller/irq.h>
+> >>> +#include <dt-bindings/memory/mt8183-larb-port.h>
+> >>>    #include <dt-bindings/reset-controller/mt8183-resets.h>
+> >>>    #include <dt-bindings/phy/phy.h>
+> >>>    #include "mt8183-pinfunc.h"
+> >>> @@ -339,6 +340,25 @@ pwrap: pwrap@1000d000 {
+> >>>                        clock-names = "spi", "wrap";
+> >>>                };
+> >>>
+> >>> +             iommu: iommu@10205000 {
+> >>> +                     compatible = "mediatek,mt8183-m4u";
+> >>> +                     reg = <0 0x10205000 0 0x1000>;
+> >>> +                     interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_LOW>;
+> >>> +                     #iommu-cells = <1>;
+> >>> +             };
+> >>> +
+> >>> +             scp: scp@10500000 {
+> >>> +                     compatible = "mediatek,mt8183-scp";
+> >>> +                     reg = <0 0x10500000 0 0x80000>,
+> >>> +                           <0 0x105c0000 0 0x19080>;
+> >>> +                     reg-names = "sram", "cfg";
+> >>> +                     interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> >>> +                     clocks = <&infracfg CLK_INFRA_SCPSYS>;
+> >>> +                     clock-names = "main";
+> >>> +                     memory-region = <&scp_mem_reserved>;
+> >>> +                     status = "disabled";
+> >>> +             };
+> >>> +
+> >>>                systimer: timer@10017000 {
+> >>>                        compatible = "mediatek,mt8183-timer",
+> >>>                                     "mediatek,mt6765-timer";
+> >>> @@ -772,6 +792,22 @@ vencsys: syscon@17000000 {
+> >>>                        #clock-cells = <1>;
+> >>>                };
+> >>>
+> >>> +             vcodec_enc: vcodec@17020000 {
+> >>> +                     compatible = "mediatek,mt8183-vcodec-enc";
+> >>> +                     reg = <0 0x17020000 0 0x1000>;
+> >>> +                     interrupts = <GIC_SPI 247 IRQ_TYPE_LEVEL_LOW>;
+> >>> +                     iommus = <&iommu M4U_PORT_VENC_REC>,
+> >>> +                              <&iommu M4U_PORT_VENC_BSDMA>,
+> >>> +                              <&iommu M4U_PORT_VENC_RD_COMV>,
+> >>> +                              <&iommu M4U_PORT_VENC_CUR_LUMA>,
+> >>> +                              <&iommu M4U_PORT_VENC_CUR_CHROMA>,
+> >>> +                              <&iommu M4U_PORT_VENC_REF_LUMA>,
+> >>> +                              <&iommu M4U_PORT_VENC_REF_CHROMA>;
+> >>> +                     mediatek,scp = <&scp>;
+> >>> +                     clocks = <&vencsys CLK_VENC_VENC>;
+> >>> +                     clock-names = "MT_CG_VENC";
+> >>> +             };
+> >>> +
+> >>>                ipu_conn: syscon@19000000 {
+> >>>                        compatible = "mediatek,mt8183-ipu_conn", "syscon";
+> >>>                        reg = <0 0x19000000 0 0x1000>;
+> >>>
