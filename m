@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723C1253FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01199254008
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgH0H57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728391AbgH0HyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:24 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71E6722CF7;
-        Thu, 27 Aug 2020 07:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598514863;
-        bh=awYibhA4t5ZtQZw3w3TIiaHR9uOvXpyWJPnRkXljvkY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VyTg38LFRqJvBykurOAVgcyjZFl8Dej4Y9E51FKYn4lg3yqaEHQzXimTjSmTO6reK
-         qTnisWe2HgXA675FPlFMAdSvGkBBJ9gmrHgeufWWRp7CkLH62cFVkr5xqSQDuMxwpH
-         AykRuAp6MOyJ3UU/afkB6jI6cKW2r0r4RGJwGBYw=
-Received: by mail-ot1-f52.google.com with SMTP id k2so3701044ots.4;
-        Thu, 27 Aug 2020 00:54:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530nMZDyB90wVjCeMevWdZi+55D776R1NP1NXnzRNqJRvKT6VQ6r
-        wfjGyEOIXCo16oc5dVkyd68RlwEAlqVGhkgfw6c=
-X-Google-Smtp-Source: ABdhPJzka/lf5uRZNedGeD8+aWitXVwNl94o7ceaCS2qOGuAlEmCCdA7zvmUAgTQPMrO41TFr0qmffUFl2snH+2ek34=
-X-Received: by 2002:a9d:5189:: with SMTP id y9mr7216308otg.77.1598514862803;
- Thu, 27 Aug 2020 00:54:22 -0700 (PDT)
+        id S1728355AbgH0HyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727048AbgH0HyR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:54:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D57EC061264;
+        Thu, 27 Aug 2020 00:54:17 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 07:54:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598514855;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmdgD8aRx+NkXrffxySXTl0IhoJmFxLLR11F0fHAfoA=;
+        b=WCV1mi5cLPrURoLGTJZWjt3waIVtqs512M1B3jNDZrIownPEQSWlH6bLcpZkoCHsx1qPiM
+        T9aCs498D6YKp68mP/3eW5sFCk3ns8CRRvRLMYrfkDz/KFbMbCOeAy6BOmZWM3q0OefHLO
+        H092AzHn0SzbhGcqF5G5pEvuB4FHujGF7Q9cdXbXPKjKl7guXwPbKhxjAQvPPDEA8Ciueh
+        UjyGA0unV4T00KdnjRsQFfu71okHylwiKUshiRsCnNE6wETTdsakHNgTqWnNQrp+kMqqPh
+        Dj+ypOqfyPOyJYNCyRzP/oyDknnmHLS4M/38sMaXXcAQ01ue2TD5iHKA56UX2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598514855;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmdgD8aRx+NkXrffxySXTl0IhoJmFxLLR11F0fHAfoA=;
+        b=cXOXNSJyG94rIBCrdoqG5I0PxzOXkkuCLJNS4TnYHsYqzbVbAO2+8rJHQVgghkdJSPTLO0
+        IRKJ4/hmWo1Jx2Dg==
+From:   "tip-bot2 for Boqun Feng" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] lockdep/selftest: Introduce recursion3
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200807074238.1632519-20-boqun.feng@gmail.com>
+References: <20200807074238.1632519-20-boqun.feng@gmail.com>
 MIME-Version: 1.0
-References: <CAMj1kXEUQdmQDCDXPBNb3hRrbui=HVyDjCDoiFwDr+mDSjP43A@mail.gmail.com>
- <20200826114952.GA2375@gondor.apana.org.au> <CAMj1kXGjytfJEbLMbz50it3okQfiLScHB5YK2FMqR5CsmFEBbg@mail.gmail.com>
- <20200826120832.GA2996@gondor.apana.org.au> <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
- <20200826130010.GA3232@gondor.apana.org.au> <c27e5303-48d9-04a4-4e73-cfea5470f357@gmail.com>
- <20200826141907.GA5111@gondor.apana.org.au> <4bb6d926-a249-8183-b3d9-05b8e1b7808a@gmail.com>
- <CAMj1kXEn507bEt+eT6q7MpCwNH=oAZsTkFRz0t=kPEV0QxFsOQ@mail.gmail.com>
- <20200826221913.GA16175@gondor.apana.org.au> <BL0PR11MB329980406FA0A14A8EF61A07B9550@BL0PR11MB3299.namprd11.prod.outlook.com>
-In-Reply-To: <BL0PR11MB329980406FA0A14A8EF61A07B9550@BL0PR11MB3299.namprd11.prod.outlook.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 27 Aug 2020 09:54:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFX_viiR4S8DiDrcS09o2NFQsZGmizdLc9xjrWOrhgjaA@mail.gmail.com>
-Message-ID: <CAMj1kXFX_viiR4S8DiDrcS09o2NFQsZGmizdLc9xjrWOrhgjaA@mail.gmail.com>
-Subject: Re: Issue with iwd + Linux 5.8.3 + WPA Enterprise
-To:     Caleb Jorden <caljorden@hotmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Denis Kenzior <denkenz@gmail.com>,
-        Andrew Zaborowski <andrew.zaborowski@intel.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Sasha Levin <sashal@kernel.org>,
-        "iwd@lists.01.org" <iwd@lists.01.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159851485457.20229.17439142206591711184.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 06:56, Caleb Jorden <caljorden@hotmail.com> wrote:
->
-> I can tell you all assumed this, but just by way as a quick update on the original issue:
->
-> I have confirmed that Herbert's patch (crypto: af_alg - Work around empty control messages without MSG_MORE) does indeed fix the original iwd 1.8 + WPA Enterprise issue.
->
-> Thank you!
->
-> Caleb Jorden
->
+The following commit has been merged into the locking/core branch of tip:
 
-Thanks for confirming.
+Commit-ID:     96a16f45aed89cf024606a11679b0609d09552c7
+Gitweb:        https://git.kernel.org/tip/96a16f45aed89cf024606a11679b0609d09552c7
+Author:        Boqun Feng <boqun.feng@gmail.com>
+AuthorDate:    Fri, 07 Aug 2020 15:42:38 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 26 Aug 2020 12:42:08 +02:00
 
-> ________________________________________
-> From: Herbert Xu <herbert@gondor.apana.org.au>
-> Sent: Thursday, August 27, 2020 3:49 AM
-> To: Ard Biesheuvel
-> Cc: Denis Kenzior; Andrew Zaborowski; Paul Menzel; Caleb Jorden; Sasha Levin; iwd@lists.01.org; # 3.4.x; Greg KH; LKML; David S. Miller; Linux Crypto Mailing List
-> Subject: Re: Issue with iwd + Linux 5.8.3 + WPA Enterprise
->
-> On Wed, Aug 26, 2020 at 05:42:27PM +0200, Ard Biesheuvel wrote:
-> >
-> > I still get a failure in aes_siv_encrypt(), which does not occur with
-> > the kernel side fix applied.
->
-> Where is this test from? I can't find it in the ell git tree.
->
-> Thanks,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+lockdep/selftest: Introduce recursion3
+
+Add a test case shows that USED_IN_*_READ and ENABLE_*_READ can cause
+deadlock too.
+
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200807074238.1632519-20-boqun.feng@gmail.com
+---
+ lib/locking-selftest.c | 55 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+)
+
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 17f8f6f..a899b3f 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -1249,6 +1249,60 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
+ #include "locking-selftest-wlock.h"
+ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_wlock)
+ 
++#undef E1
++#undef E2
++#undef E3
++/*
++ * read-lock / write-lock recursion that is unsafe.
++ *
++ * A is a ENABLED_*_READ lock
++ * B is a USED_IN_*_READ lock
++ *
++ * read_lock(A);
++ *			write_lock(B);
++ * <interrupt>
++ * read_lock(B);
++ * 			write_lock(A); // if this one is read_lock(), no deadlock
++ */
++
++#define E1()				\
++					\
++	IRQ_DISABLE();			\
++	WL(B);				\
++	LOCK(A);			\
++	UNLOCK(A);			\
++	WU(B);				\
++	IRQ_ENABLE();
++
++#define E2()				\
++					\
++	RL(A);				\
++	RU(A);				\
++
++#define E3()				\
++					\
++	IRQ_ENTER();			\
++	RL(B);				\
++	RU(B);				\
++	IRQ_EXIT();
++
++/*
++ * Generate 24 testcases:
++ */
++#include "locking-selftest-hardirq.h"
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_wlock)
++
++#include "locking-selftest-softirq.h"
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_wlock)
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define I_SPINLOCK(x)	lockdep_reset_lock(&lock_##x.dep_map)
+ # define I_RWLOCK(x)	lockdep_reset_lock(&rwlock_##x.dep_map)
+@@ -2413,6 +2467,7 @@ void locking_selftest(void)
+ 
+ 	DO_TESTCASE_6x2x2RW("irq read-recursion", irq_read_recursion);
+ 	DO_TESTCASE_6x2x2RW("irq read-recursion #2", irq_read_recursion2);
++	DO_TESTCASE_6x2x2RW("irq read-recursion #3", irq_read_recursion3);
+ 
+ 	ww_tests();
+ 
