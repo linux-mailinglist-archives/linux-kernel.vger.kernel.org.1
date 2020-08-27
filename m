@@ -2,100 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9F4255107
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F9A255109
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgH0W0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgH0W0O (ORCPT
+        id S1727915AbgH0W2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 18:28:17 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45773 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgH0W2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:26:14 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1567CC06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:26:14 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i13so3388013pjv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oiRYPTV9Xp4hDmIJl3FIgZQBNMfOgdOX8kJLpd9LdbA=;
-        b=K/syNsggEMRL31WNQmgeGoNMQ/ehQnSpbyNXTjVkpgc+66YGK2IfWbpNNhuuLcOjgU
-         S+FSsY+M1DHqAVEzjeOJ18Gp+tWus2d9m98Y/uDDwORzyIO48JoP1+9BOG2S2x3cl0Bb
-         ilXVhL9PIdDhs3FFbbAu3iwYjyIdlqBMEhhSA=
+        Thu, 27 Aug 2020 18:28:16 -0400
+Received: by mail-io1-f71.google.com with SMTP id q5so4892900ion.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:28:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oiRYPTV9Xp4hDmIJl3FIgZQBNMfOgdOX8kJLpd9LdbA=;
-        b=ixrLruMePZVzpHeck1JZRhx8OUeXFxRDAnPigS/9QG/RnyoGfetwrZthfUIbLeGv69
-         GKaHVc8+JppaMfVU1oAOfp4E1dWHXQqtfAlMz0/Jun+G0ny5bdakd5Zg6SsbgLZIAVnl
-         cSEgs5W08k1AXaPtIPJR3CjTD3+4ojxULKZP4qjt/OG/d0FQD0ewMEnTCWF7BjK/GxPP
-         dP2Mtom3xswExEK9sifneLm8qOd1GQ95CQngaeGQhVu0Qy6ZJ1BxTGH5kLm+0zxuQeMD
-         BWK0f3ZHKQfTUKKbiAnniPLhhO6jJwfKUivu2pafAgEqQ/jgCO8aZG9jniKEyGBX8NeX
-         Mu4g==
-X-Gm-Message-State: AOAM533ixq6hWw/+0csNgNTz7yRdHNjb1Nr/etqby6KA3J5zlkeUHGhL
-        OD+GGeO38cciToaTACzbsG8ZKw==
-X-Google-Smtp-Source: ABdhPJxONp4RrvitcYcVF82oYuZdrsKx6Ay/xu8opcvalfLsdDHC05RMM7SmB4tIPVDlVRRlXcMRHg==
-X-Received: by 2002:a17:90a:6b07:: with SMTP id v7mr910704pjj.138.1598567173631;
-        Thu, 27 Aug 2020 15:26:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y1sm3960582pfp.95.2020.08.27.15.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 15:26:12 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:26:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>, Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] lib/string.c: implement stpcpy
-Message-ID: <202008271523.88796F201F@keescook>
-References: <20200825135838.2938771-1-ndesaulniers@google.com>
- <CAK7LNAQXo5-5W6hvNMEVPBPf3tRWaf-pQdSR-0OHyi4RCGhjsQ@mail.gmail.com>
- <d56bf7b93f7a28c4a90e4e16fd412e6934704346.camel@perches.com>
- <CAKwvOd=YrVtPsB7HYPO0N=K7QJm9KstayqqeYQERSaGtGy2Bjg@mail.gmail.com>
- <CAK7LNAQKwOo=Oas+7Du9+neSm=Ev6pxdPV7ges7eEEpW+jh8Ug@mail.gmail.com>
- <202008261627.7B2B02A@keescook>
- <CAHp75VfniSw3AFTyyDk2OoAChGx7S6wF7sZKpJXNHmk97BoRXA@mail.gmail.com>
- <202008271126.2C397BF6D@keescook>
- <CAHp75VeA6asim81CwxPD7LKc--DEvOWH9fwgQ9Bbb1Xf55OYKw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sfsNcaggWfK0yNjpNiqr1Uope//+z/yI7A8OJwlBPcM=;
+        b=nKbnUuj34OJYB4NFKZO20dJ60+hfGjPbIDJTGSAied2QQdumm3mP0hOnnqqn1OdYhq
+         Az7K8H7X/6ZxOm+CjbDF0ah927Bv4UStDpdNvDYD8E5mUDb/8PVZYZedgnTiNa0sUxlC
+         OtEK0pCLhRbSZWzx56h10fBUYVH5geqNAaRb83MOvAWmmx5rOiL8IJlcCB7RTV/mHsIN
+         kvWIPARnmyEbYndazWBh/UnTCCnyg3Qp7LkQoJJrjP82z3kDyk7WwS11mZPR+G6Lxmh5
+         rAuIqn2BgctIbWpQjdrK5+e5cq2gjgmgi+7aQ/pgo27WuAjap9a3j7A6qAgbN6P8H1KO
+         rJsw==
+X-Gm-Message-State: AOAM531VslwW0Fc748+RZO6JXyM0t8BlnSHGM/6Po/jUYnRMShzgr9IM
+        xaUiZGZkSGEl85qbWccRR2AZadrCzpPv1GK545Ue9+U0kcTt
+X-Google-Smtp-Source: ABdhPJyvj5uFHnai6YbZnL07mjqROiuohiY3ojkh8SeHRI23UEbn8OaqhnvZIukCuJQX5kmTPt8NjYhP5K/g0RRA42Lt/bkP7o9V
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeA6asim81CwxPD7LKc--DEvOWH9fwgQ9Bbb1Xf55OYKw@mail.gmail.com>
+X-Received: by 2002:a5d:954f:: with SMTP id a15mr19066704ios.53.1598567295373;
+ Thu, 27 Aug 2020 15:28:15 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 15:28:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca5cfb05ade37394@google.com>
+Subject: memory leak in prepare_creds
+From:   syzbot <syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bernd.edlinger@hotmail.de,
+        dhowells@redhat.com, ebiederm@xmission.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, mhocko@suse.com, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 11:05:42PM +0300, Andy Shevchenko wrote:
-> In general it's better to have a robust API, but what may go wrong
-> with the interface where we have no length of  the buffer passed, but
-> we all know that it's PAGE_SIZE?
-> So, what's wrong with doing something like
-> strcpy(buf, "Yes, we know we won't overflow here\n");
+Hello,
 
-(There's a whole thread[1] about this right now, actually.)
+syzbot found the following issue on:
 
-The problem isn't the uses where it's safe (obviously), it's about the
-uses where it is NOT safe. (Or _looks_ safe but isn't.) In order to
-eliminate bug classes, we need remove the APIs that are foot-guns. Even
-if one developer never gets it wrong, others might.
+HEAD commit:    c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14bf4f5e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=948134d9ff96e950
+dashboard link: https://syzkaller.appspot.com/bug?extid=71c4697e27c99fddcf17
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115a5519900000
 
-[1] https://lore.kernel.org/lkml/c256eba42a564c01a8e470320475d46f@AcuMS.aculab.com/T/#mac95487d7ae427de03251b49b75dd4de40c2462d
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com
 
--- 
-Kees Cook
+BUG: memory leak
+unreferenced object 0xffff88812a413f00 (size 168):
+  comm "syz-executor.0", pid 6554, jiffies 4294953946 (age 13.120s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000008b882031>] prepare_creds+0x25/0x2f0 kernel/cred.c:258
+    [<000000001d1756e8>] copy_creds+0x2e/0x1d1 kernel/cred.c:358
+    [<00000000a3a640ca>] copy_process+0x50c/0x1f20 kernel/fork.c:1949
+    [<00000000a1ad8dee>] _do_fork+0xad/0x530 kernel/fork.c:2428
+    [<0000000070af4cd7>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2545
+    [<000000001470b5cf>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b4c4b313>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811b54e440 (size 32):
+  comm "syz-executor.0", pid 6554, jiffies 4294953946 (age 13.120s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000138403e6>] kmalloc include/linux/slab.h:559 [inline]
+    [<00000000138403e6>] kzalloc include/linux/slab.h:666 [inline]
+    [<00000000138403e6>] lsm_cred_alloc security/security.c:532 [inline]
+    [<00000000138403e6>] security_prepare_creds+0x97/0xc0 security/security.c:1631
+    [<0000000051662e48>] prepare_creds+0x1e1/0x2f0 kernel/cred.c:285
+    [<000000001d1756e8>] copy_creds+0x2e/0x1d1 kernel/cred.c:358
+    [<00000000a3a640ca>] copy_process+0x50c/0x1f20 kernel/fork.c:1949
+    [<00000000a1ad8dee>] _do_fork+0xad/0x530 kernel/fork.c:2428
+    [<0000000070af4cd7>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2545
+    [<000000001470b5cf>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b4c4b313>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88812a657a00 (size 256):
+  comm "syz-executor.0", pid 6790, jiffies 4294953946 (age 13.120s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    a0 e1 14 2b 81 88 ff ff 80 74 8f 16 81 88 ff ff  ...+.....t......
+  backtrace:
+    [<0000000053e1d866>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
+    [<0000000053e1d866>] __alloc_file+0x23/0x120 fs/file_table.c:101
+    [<000000000d5d3703>] alloc_empty_file+0x4f/0xe0 fs/file_table.c:151
+    [<0000000091abea17>] alloc_file+0x31/0x160 fs/file_table.c:193
+    [<000000004bfab74c>] alloc_file_pseudo+0xae/0x120 fs/file_table.c:233
+    [<00000000fc9b3b90>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<00000000fc9b3b90>] anon_inode_getfile+0x8e/0x100 fs/anon_inodes.c:74
+    [<00000000cbd9d057>] anon_inode_getfd+0x42/0x90 fs/anon_inodes.c:136
+    [<00000000589d6af2>] bpf_map_new_fd kernel/bpf/syscall.c:686 [inline]
+    [<00000000589d6af2>] bpf_map_new_fd kernel/bpf/syscall.c:678 [inline]
+    [<00000000589d6af2>] map_create kernel/bpf/syscall.c:872 [inline]
+    [<00000000589d6af2>] __do_sys_bpf+0x67c/0x2450 kernel/bpf/syscall.c:4160
+    [<000000001470b5cf>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b4c4b313>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88812a73db50 (size 16):
+  comm "syz-executor.0", pid 6790, jiffies 4294953946 (age 13.120s)
+  hex dump (first 16 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000008ddd472b>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
+    [<000000008ddd472b>] lsm_file_alloc security/security.c:567 [inline]
+    [<000000008ddd472b>] security_file_alloc+0x2e/0xc0 security/security.c:1455
+    [<0000000079d891d7>] __alloc_file+0x61/0x120 fs/file_table.c:106
+    [<000000000d5d3703>] alloc_empty_file+0x4f/0xe0 fs/file_table.c:151
+    [<0000000091abea17>] alloc_file+0x31/0x160 fs/file_table.c:193
+    [<000000004bfab74c>] alloc_file_pseudo+0xae/0x120 fs/file_table.c:233
+    [<00000000fc9b3b90>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<00000000fc9b3b90>] anon_inode_getfile+0x8e/0x100 fs/anon_inodes.c:74
+    [<00000000cbd9d057>] anon_inode_getfd+0x42/0x90 fs/anon_inodes.c:136
+    [<00000000589d6af2>] bpf_map_new_fd kernel/bpf/syscall.c:686 [inline]
+    [<00000000589d6af2>] bpf_map_new_fd kernel/bpf/syscall.c:678 [inline]
+    [<00000000589d6af2>] map_create kernel/bpf/syscall.c:872 [inline]
+    [<00000000589d6af2>] __do_sys_bpf+0x67c/0x2450 kernel/bpf/syscall.c:4160
+    [<000000001470b5cf>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b4c4b313>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88812a419240 (size 168):
+  comm "syz-executor.0", pid 6554, jiffies 4294954493 (age 7.650s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000008b882031>] prepare_creds+0x25/0x2f0 kernel/cred.c:258
+    [<000000001d1756e8>] copy_creds+0x2e/0x1d1 kernel/cred.c:358
+    [<00000000a3a640ca>] copy_process+0x50c/0x1f20 kernel/fork.c:1949
+    [<00000000a1ad8dee>] _do_fork+0xad/0x530 kernel/fork.c:2428
+    [<0000000070af4cd7>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2545
+    [<000000001470b5cf>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b4c4b313>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
