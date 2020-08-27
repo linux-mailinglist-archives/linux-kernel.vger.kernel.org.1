@@ -2,214 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1B9254E4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03AE254E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgH0T1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:27:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:33652 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726912AbgH0T1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:27:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBE3231B;
-        Thu, 27 Aug 2020 12:27:50 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A331E3F68F;
-        Thu, 27 Aug 2020 12:27:48 -0700 (PDT)
-Subject: Re: [RESEND PATCH v4] iommu/mediatek: check 4GB mode by reading
- infracfg
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Cc:     Rob Herring <robh@kernel.org>, wsd_upstream@mediatek.com,
-        David Hildenbrand <david@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200826085618.2889-1-miles.chen@mediatek.com>
- <1598506280.19851.5.camel@mhfsdcap03>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e34db4dc-49a6-d414-e438-b528703ffb80@arm.com>
-Date:   Thu, 27 Aug 2020 20:27:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727831AbgH0T23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgH0T20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:28:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE71CC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:28:25 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id t9so4265523pfq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tq7WHMShXg9WbLOqRG2/S7BNpF/nlvN0HdClfYEOFg0=;
+        b=B68EEV62Jfl1cxvZpogWR1YngoJm76etcVXcU7qN8MI9ptiZbKstQRH3aV/NtL8lSB
+         TmQEFvJMFn/1kPQaawkaGs/hitBPhE9vK4hKbOE2roXkx3cr16x1fkWLsPCOXWCCUX38
+         9THlnh7Nj5SHdlW+HTa+VuNpzvruYqBuZQauw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tq7WHMShXg9WbLOqRG2/S7BNpF/nlvN0HdClfYEOFg0=;
+        b=dacToL63YvbZmHookzFweYN5+rwE1ENid5V/ymLAnnfheOMonUQgMTPux0nsqAGTsa
+         xhR04KDbFIK6/AhYdlad+me7CDt8drCVljU1ktlpiy9HkvofhqwkIGtwYcow5mA5Bscg
+         8grztK3ma0XLlTIY9BMK71orC31Hu3XTX58cII05g3uMOXw/OTRc3otqhzfUmj/12A2V
+         l2QgQvfV2nFfgdvGE0BJAgar7NXxv+Rm/zsgD437hmxXBROAAr5GZXMfY0LlmfRFboPt
+         gNiUUaGHO4hMjJVjX2RWHuHZqidvBqaRahJ4dCjF3XNHpGU0AmIqGIrNDBI8GzEzERzZ
+         kiNg==
+X-Gm-Message-State: AOAM5318CbvBCA/0AVb01ZNnCgQbPvHPX0M8g/AOmAvU6H6DXNXEHmma
+        3uFpyOC3eDRW9a6sQsdDGZjUHbVF+hkS3Q==
+X-Google-Smtp-Source: ABdhPJyqcr6SjgxNUH59wXrODC0Y8Z6DIj/pE6pkutHgNcddyiSKgwxvQ1IRqObtexRF1elnaS9KiA==
+X-Received: by 2002:aa7:91d9:: with SMTP id z25mr6552891pfa.116.1598556502787;
+        Thu, 27 Aug 2020 12:28:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q82sm4028418pfc.139.2020.08.27.12.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 12:28:21 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 12:28:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] linux/kernel.h: add container_from()
+Message-ID: <202008271150.7231B901@keescook>
+References: <20200827013636.149307-1-allen.lkml@gmail.com>
+ <CAHk-=whiEUUrtnbgUH2xsD0+jNyoXudYJ4hGCA55MCjryaHGjw@mail.gmail.com>
+ <1598553133.4237.8.camel@HansenPartnership.com>
+ <CAHk-=wi8o+FvfQkUiH_2MUs3J19FzfMzumOViAJ2aboGg9qY7Q@mail.gmail.com>
+ <CAHk-=wingJWToQfoc+m2am7Q=7r8XD+6p0FXasCRAzOdcRyngw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1598506280.19851.5.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wingJWToQfoc+m2am7Q=7r8XD+6p0FXasCRAzOdcRyngw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-27 06:31, Yong Wu wrote:
-> On Wed, 2020-08-26 at 16:56 +0800, Miles Chen wrote:
->> In previous discussion [1] and [2], we found that it is risky to
->> use max_pfn or totalram_pages to tell if 4GB mode is enabled.
->>
->> Check 4GB mode by reading infracfg register, remove the usage
->> of the un-exported symbol max_pfn.
->>
->> This is a step towards building mtk_iommu as a kernel module.
->>
->> [1] https://lore.kernel.org/lkml/20200603161132.2441-1-miles.chen@mediatek.com/
->> [2] https://lore.kernel.org/lkml/20200604080120.2628-1-miles.chen@mediatek.com/
->> [3] https://lore.kernel.org/lkml/20200715205120.GA778876@bogus/
->>
->> Cc: Mike Rapoport <rppt@linux.ibm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Yong Wu <yong.wu@mediatek.com>
->> Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Rob Herring <robh@kernel.org>
->> Cc: Matthias Brugger <matthias.bgg@gmail.com>
->> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
->>
->> ---
->>
->> Change since v3
->> - use lore.kernel.org links
->> - move "change since..." after "---"
->>
->> Change since v2:
->> - determine compatible string by m4u_plat
->> - rebase to next-20200720
->> - add "---"
->>
->> Change since v1:
->> - remove the phandle usage, search for infracfg instead [3]
->> - use infracfg instead of infracfg_regmap
->> - move infracfg definitaions to linux/soc/mediatek/infracfg.h
->> - update enable_4GB only when has_4gb_mode
->> ---
->>   drivers/iommu/mtk_iommu.c             | 34 +++++++++++++++++++++++----
->>   include/linux/soc/mediatek/infracfg.h |  3 +++
->>   2 files changed, 32 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
->> index 785b228d39a6..adc350150492 100644
->> --- a/drivers/iommu/mtk_iommu.c
->> +++ b/drivers/iommu/mtk_iommu.c
->> @@ -3,7 +3,6 @@
->>    * Copyright (c) 2015-2016 MediaTek Inc.
->>    * Author: Yong Wu <yong.wu@mediatek.com>
->>    */
->> -#include <linux/memblock.h>
->>   #include <linux/bug.h>
->>   #include <linux/clk.h>
->>   #include <linux/component.h>
->> @@ -15,13 +14,16 @@
->>   #include <linux/iommu.h>
->>   #include <linux/iopoll.h>
->>   #include <linux/list.h>
->> +#include <linux/mfd/syscon.h>
->>   #include <linux/of_address.h>
->>   #include <linux/of_iommu.h>
->>   #include <linux/of_irq.h>
->>   #include <linux/of_platform.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/regmap.h>
->>   #include <linux/slab.h>
->>   #include <linux/spinlock.h>
->> +#include <linux/soc/mediatek/infracfg.h>
->>   #include <asm/barrier.h>
->>   #include <soc/mediatek/smi.h>
->>   
->> @@ -640,8 +642,11 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->>   	struct resource         *res;
->>   	resource_size_t		ioaddr;
->>   	struct component_match  *match = NULL;
->> +	struct regmap		*infracfg;
->>   	void                    *protect;
->>   	int                     i, larb_nr, ret;
->> +	u32			val;
->> +	char                    *p;
->>   
->>   	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->>   	if (!data)
->> @@ -655,10 +660,29 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->>   		return -ENOMEM;
->>   	data->protect_base = ALIGN(virt_to_phys(protect), MTK_PROTECT_PA_ALIGN);
->>   
->> -	/* Whether the current dram is over 4GB */
->> -	data->enable_4GB = !!(max_pfn > (BIT_ULL(32) >> PAGE_SHIFT));
->> -	if (!MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE))
->> -		data->enable_4GB = false;
->> +	data->enable_4GB = false;
+On Thu, Aug 27, 2020 at 11:48:19AM -0700, Linus Torvalds wrote:
+> On Thu, Aug 27, 2020 at 11:40 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, Aug 27, 2020 at 11:32 AM James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> > >
+> > >
+> > > The tasklet rework people don't want to use container_of, which was our
+> > > first suggestion, because it produces lines which are "too long".
+> >
+> > WTF?
+> 
+> Side note: I'm entirely serious. If somebody has problems with "too
+> long lines", they are doing things wrong. Just ignore them.
+> 
+> Changing standard kernel interfaces is the wrong solution. What's
+> next? Using 2-character indentation like some broken projects do just
+> to make lines shorter and encourage people to do deep nesting?
+> 
+> No. The solution is to not write crap code with overly complex expressions.
+> 
+> "container_of()" has been a _very_ successful model, and the only
+> reason to ever wrap it is if you already *know* the type, and you wrap
+> it with an inline function that actually checks it.
 
-Nit: this isn't really necessary, since the structure is kzalloc()ed.
+This works for the case where it's a known 1-to-1 conversion, as you
+showed. It doesn't work well for the 1-to-many (like timer_struct before,
+and tasklet now), where each user of the infrastructure contains the
+callback handle struct in their specific containing struct, which is
+common for these kinds of callbacks.
 
->> +	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE)) {
->> +		switch (data->plat_data->m4u_plat) {
->> +		case M4U_MT2712:
->> +			p = "mediatek,mt2712-infracfg";
->> +			break;
->> +		case M4U_MT8173:
->> +			p = "mediatek,mt8173-infracfg";
->> +			break;
->> +		default:
->> +			p = NULL;
->> +		}
->> +
-> 
-> This can be simplified:
-> 
->          if (data->plat_data->m4u_plat == M4U_MT2712)
-> 		p = "mediatek,mt2712-infracfg";
-> 	else if(data->plat_data->m4u_plat == M4U_MT8173)
-> 		p = "mediatek,mt8173-infracfg";
-> 	else
-> 		return -EINVAL;
+> which now results in a type-checked *true* simplification of container-of.
 
-Right, at this point the HAS_4GB_MODE flag is entirely redundant and 
-should be removed. FWIW I still think your suggestion of putting the 
-infracfg names into plat_data would be even better and cleaner - there's 
-plenty of precedent for that sort of thing (see "git grep '\.clk_name'" 
-for example).
+More important than the aesthetics is the type checking, for sure.
 
-Robin.
+The common raw pattern for callbacks is:
 
-> 
-> Then,
-> Reviewed-by: Yong Wu <yong.wu@mediatek.com>
-> 	
-> 
->> +		infracfg = syscon_regmap_lookup_by_compatible(p);
->> +
->> +		if (IS_ERR(infracfg))
->> +			return PTR_ERR(infracfg);
->> +
->> +		ret = regmap_read(infracfg, REG_INFRA_MISC, &val);
->> +		if (ret)
->> +			return ret;
->> +		data->enable_4GB = !!(val & F_DDR_4GB_SUPPORT_EN);
->> +	}
->>   
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>   	data->base = devm_ioremap_resource(dev, res);
->> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
->> index fd25f0148566..233463d789c6 100644
->> --- a/include/linux/soc/mediatek/infracfg.h
->> +++ b/include/linux/soc/mediatek/infracfg.h
->> @@ -32,6 +32,9 @@
->>   #define MT7622_TOP_AXI_PROT_EN_WB		(BIT(2) | BIT(6) | \
->>   						 BIT(7) | BIT(8))
->>   
->> +#define REG_INFRA_MISC				0xf00
->> +#define F_DDR_4GB_SUPPORT_EN			BIT(13)
->> +
->>   int mtk_infracfg_set_bus_protection(struct regmap *infracfg, u32 mask,
->>   		bool reg_update);
->>   int mtk_infracfg_clear_bus_protection(struct regmap *infracfg, u32 mask,
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+void callback(struct callback_handle *inner)
+{
+	struct outer *instance;
+	...
+	instance = container_of(inner, struct outer, member_name_of_inner);
+
+There's so much redundancy here. And while mismatches between "instance"
+and the "struct outer" type argument will be caught by the compiler,
+it's weird to repeat it. Some places will make this less weird by doing:
+
+	instance = container_of(inner, typeof(*instance), member_name_of_inner);
+
+and when doing the timer_struct replacement, people didn't like the line
+wraps making their drivers "ugly", and the compromise was to implement
+from_timer()[1]:
+
+  Since the regular pattern of using container_of() during local variable
+  declaration repeats the need for the variable type declaration
+  to be included, this adds a helper modeled after other from_*()
+  helpers that wrap container_of(), named from_timer(). This helper uses
+  typeof(*variable), removing the type redundancy and minimizing the need
+  for line wraps in forthcoming conversions from "unsigned data long" to
+  "struct timer_list *" in the timer callbacks:
+
+  -void callback(unsigned long data)
+  +void callback(struct timer_list *t)
+  {
+  -   struct some_data_structure *local = (struct some_data_structure *)data;
+  +   struct some_data_structure *local = from_timer(local, t, timer);
+
+I still didn't like this because "local" got repeated. I still think
+some kind of DECLARE*() would be best. Like:
+
+#define DECLARE_CONTAINER(outer_type, outer, member_name_of_inner, inner) \
+	outer_type outer_name = container_of(inner, typeof(*outer),       \
+                                             member_name_of_inner)
+
+Then the above old timer_struct example becomes:
+
+  -void callback(unsigned long data)
+  +void callback(struct timer_list *t)
+  {
+  -   struct some_data_structure *local = (struct some_data_structure *)data;
+  +   DECLARE_CONTAINER(struct some_data_structure *, local, timer, t);
+
+> Seriously. It sounds to me like the tasklet rework people are people
+> we want to avoid. They're doing completely the wrong thing.
+
+So, when it's only directed at me, I just delete the personal attacks
+from the quoted sections in my replies and ignore it. When it splashes
+on other people, though, I think I have a duty to object to the
+behavior:
+
+This is a particularly unfriendly way to mentor new contributors and to
+treat existing contributors (and reinforces a false "we"/"them" split,
+when everyone just wants to see the kernel be better). And to paint
+what is a 300 patch effort that cleans up a poor API that no one else
+has been willing to do as "doing completely the wrong thing" when the
+complaint is mainly bikeshedding over a mostly mechanical step seems
+like quite an overreaction.
+
+But, yes, let's get the right API here. I think container_of() is a mess
+for these 1-to-many cases. What do you suggest here? I'll change all of
+from_timer() to use it too.
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20170928133817.GA113410@beast/
+
+-- 
+Kees Cook
