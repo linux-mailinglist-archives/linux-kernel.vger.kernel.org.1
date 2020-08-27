@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED752548AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8932548A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgH0PKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        id S1728573AbgH0PKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728911AbgH0Lsw (ORCPT
+        with ESMTP id S1728873AbgH0Lt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:48:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43CAC061264;
-        Thu, 27 Aug 2020 04:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0rvdlxgGKGxpXdTBCFym7wSDlaY+0hGRyK+gC8FCBBM=; b=F+2m0kJPClquWJZ1PZvmOPfqhf
-        4udkwPM4I37XmN0BolP2AY8z8vMB5a37F7b9fetUpQwl8C/3n6XgcwVzi/QuUWJfZROZ/2OWlgCSt
-        eWoaIZDZ9BBIhbh0duJJmVgEqqPdoWkhEyCsuWFRqa53oByvoZXmZvYeW/OcMMor9+LWMFkpORw41
-        ThBZO/ITtcAZc5LUIFbUkT0JD8gWG58qWX3DWlW/hWPUtr6XyVUwck2AL4MWymZMtiXefisIf/BMT
-        fIEeONTsfMwej6ql6yi8uQJetHmfhuHw9zMT+XjW2MXEZ9+8L+DBNebfSrq4HRyFzyhasYkblBttN
-        B7giso9A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBGO0-0008HR-Sc; Thu, 27 Aug 2020 11:48:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 640C5301A66;
-        Thu, 27 Aug 2020 13:48:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1DBFE2C1263AB; Thu, 27 Aug 2020 13:48:07 +0200 (CEST)
-Date:   Thu, 27 Aug 2020 13:48:07 +0200
-From:   peterz@infradead.org
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Eddy Wu <Eddy_Wu@trendmicro.com>,
-        x86@kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v2 15/15] kprobes: Free kretprobe_instance with rcu
- callback
-Message-ID: <20200827114807.GA2674@hirez.programming.kicks-ass.net>
-References: <159852811819.707944.12798182250041968537.stgit@devnote2>
- <159852826969.707944.15092569392287597887.stgit@devnote2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159852826969.707944.15092569392287597887.stgit@devnote2>
+        Thu, 27 Aug 2020 07:49:57 -0400
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BBDC06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:49:41 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id dd25so1825382edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:49:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=jJaArDC7TxiyWMPiHAEJ9CuiEBqX/dHACXSbOxkT4GQ=;
+        b=Sx9t3jLt3fRnRVHI8AjMe0N0Y8tpQBiIeW/iTMoct+JVtMg/eqZ4rgqbZpnF95YgOg
+         n65kn+hVVtVFi0kVyu/4dEOXAJ4G/INzK27uZrvVagFNapCeIv8N6I7LhET21HoFLJtC
+         0F35yxOshCdncPGF4t7P90hW5b/EgubrWk3ZSrwar711eXJI4oTYk/PaUJ++U1k/DesV
+         OMwQt31wHX1ywhRSddXdhAk60LoP09PP4p87vqy0sOaIVWdor/PH/JuzkiBpZi1W1JHO
+         2Rk+VyCdbNfqpzTR4agPBOj6cYHuWwKwp3ru+gmgvHY4VOIrRBtYD3Lvc82o3sMPBGiM
+         ghfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=jJaArDC7TxiyWMPiHAEJ9CuiEBqX/dHACXSbOxkT4GQ=;
+        b=qbRfouKwqxZcM1xObQ/EyrehM2VNPf88xS5TDie6W6vBVE6O50tE1xB5R6UWdqvZeT
+         gJVRQOY4KzcehNZhWfYVdfTwkZ6bILtUsEfPfHns9bf7IQAdhFcrBkPvZcWCvd+0dWt8
+         cSAxusvNfbW+yAllkTSy6GBOSYXfAp4ECbIUk/mekfKuAC/A5t4dKp3dZzfXTG49cDEf
+         pmuNqWqOHosX0If+7R5a3pWkWSkQ/mSNl0ficU8Knyi1pSSMGD/3S4k4BLau9PinZ82d
+         dCx/dyKnWJk3sOwj4nf8zOtqyk1VNIfXdirIA+rDzBZ64xsUQGzRvxqmFSCbaH/4mLHI
+         Vk8g==
+X-Gm-Message-State: AOAM532jdRnGzhndeUXezYpKObidsGECSaYchKhR8BDrCZUuNB0iNGXy
+        UkOpu8ZMKfGX9elkYgagm2gjTCLHbg==
+X-Google-Smtp-Source: ABdhPJyuC/6TjvHfRUNcOWTk00OeB8q/y6iWl4E7GC1dtm02wUVz+GY64yKhV19RjS+w4cHVnb96XCZ0tA==
+X-Received: from jannh2.zrh.corp.google.com ([2a00:79e0:1b:201:1a60:24ff:fea6:bf44])
+ (user=jannh job=sendgmr) by 2002:aa7:d6d9:: with SMTP id x25mr12155398edr.265.1598528980099;
+ Thu, 27 Aug 2020 04:49:40 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 13:49:25 +0200
+Message-Id: <20200827114932.3572699-1-jannh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+Subject: [PATCH v5 0/7] Fix ELF / FDPIC ELF core dumping, and use mmap_lock
+ properly in there
+From:   Jann Horn <jannh@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:37:49PM +0900, Masami Hiramatsu wrote:
-> Free kretprobe_instance with rcu callback instead of directly
-> freeing the object in the kretprobe handler context.
-> 
-> This will make kretprobe run safer in NMI context.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  include/linux/kprobes.h |    3 ++-
->  kernel/kprobes.c        |   25 ++++++-------------------
->  2 files changed, 8 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index 46a7afcf5ec0..97557f820d9b 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -160,6 +160,7 @@ struct kretprobe_instance {
->  	struct kretprobe *rp;
->  	kprobe_opcode_t *ret_addr;
->  	struct task_struct *task;
-> +	struct rcu_head rcu;
->  	void *fp;
->  	char data[];
->  };
+new in v5:
+ - patches 1-3 and 6 are unchanged
+ - added patch 4: rework vma_dump_size() into a common helper (Linus)
+ - added patch 7: actually do the mmget_still_valid() removal (Linus)
+ - for now, let dump_vma_snapshot() take the mmap_lock in write mode
+   instead of read mode to avoid the data race with stack expansion
 
-You can stick the rcu_head in a union with hlist.
+new in v4:
+ - simplify patch 4/5 by replacing the heuristic for dumping the first
+   pages of ELF mappings with what Linus suggested
+
+
+At the moment, we have that rather ugly mmget_still_valid() helper to
+work around <https://crbug.com/project-zero/1790>: ELF core dumping
+doesn't take the mmap_sem while traversing the task's VMAs, and if
+anything (like userfaultfd) then remotely messes with the VMA tree,
+fireworks ensue. So at the moment we use mmget_still_valid() to bail
+out in any writers that might be operating on a remote mm's VMAs.
+
+With this series, I'm trying to get rid of the need for that as
+cleanly as possible. ("cleanly" meaning "avoid holding the mmap_lock
+across unbounded sleeps".)
+
+
+Patches 1, 2, 3 and 4 are relatively unrelated cleanups in the core
+dumping code.
+
+Patches 5 and 6 implement the main change: Instead of repeatedly
+accessing the VMA list with sleeps in between, we snapshot it at the
+start with proper locking, and then later we just use our copy of
+the VMA list. This ensures that the kernel won't crash, that VMA
+metadata in the coredump is consistent even in the presence of
+concurrent modifications, and that any virtual addresses that aren't
+being concurrently modified have their contents show up in the core
+dump properly.
+
+The disadvantage of this approach is that we need a bit more memory
+during core dumping for storing metadata about all VMAs.
+
+At the end of the series, patch 7 removes the old workaround for
+this issue (mmget_still_valid()).
+
+
+I have tested:
+
+ - Creating a simple core dump on X86-64 still works.
+ - The created coredump on X86-64 opens in GDB and looks plausible.
+ - X86-64 core dumps contain the first page for executable mappings at
+   offset 0, and don't contain the first page for non-executable file
+   mappings or executable mappings at offset !=0.
+ - NOMMU 32-bit ARM can still generate plausible-looking core dumps
+   through the FDPIC implementation. (I can't test this with GDB because
+   GDB is missing some structure definition for nommu ARM, but I've
+   poked around in the hexdump and it looked decent.)
+
+Jann Horn (7):
+  binfmt_elf_fdpic: Stop using dump_emit() on user pointers on !MMU
+  coredump: Let dump_emit() bail out on short writes
+  coredump: Refactor page range dumping into common helper
+  coredump: Rework elf/elf_fdpic vma_dump_size() into common helper
+  binfmt_elf, binfmt_elf_fdpic: Use a VMA list snapshot
+  mm/gup: Take mmap_lock in get_dump_page()
+  mm: Remove the now-unnecessary mmget_still_valid() hack
+
+ drivers/infiniband/core/uverbs_main.c |   3 -
+ drivers/vfio/pci/vfio_pci.c           |  38 ++--
+ fs/binfmt_elf.c                       | 238 +++-----------------------
+ fs/binfmt_elf_fdpic.c                 | 162 +++---------------
+ fs/coredump.c                         | 236 +++++++++++++++++++++++--
+ fs/proc/task_mmu.c                    |  18 --
+ fs/userfaultfd.c                      |  28 +--
+ include/linux/coredump.h              |  11 ++
+ include/linux/sched/mm.h              |  25 ---
+ mm/gup.c                              |  61 +++----
+ mm/khugepaged.c                       |   2 +-
+ mm/madvise.c                          |  17 --
+ mm/mmap.c                             |   5 +-
+ 13 files changed, 346 insertions(+), 498 deletions(-)
+
+
+base-commit: 06a4ec1d9dc652e17ee3ac2ceb6c7cf6c2b75cdd
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
