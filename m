@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6628254797
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2832547A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgH0OwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S1728226AbgH0Owj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgH0Ov5 (ORCPT
+        with ESMTP id S1727069AbgH0OwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:51:57 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35EDC061264;
-        Thu, 27 Aug 2020 07:51:56 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f26so6728543ljc.8;
-        Thu, 27 Aug 2020 07:51:56 -0700 (PDT)
+        Thu, 27 Aug 2020 10:52:25 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F23CC061264;
+        Thu, 27 Aug 2020 07:52:25 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u18so5443809wmc.3;
+        Thu, 27 Aug 2020 07:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=txhfrSF9RX3MqxwN9hoW/kar0+P8SVn2XnHOzqJQ9IY=;
-        b=gjBwiPji3SaNbCP9jML1HZoNahK/I6qqs0rl0EygcZbZRptYdcMLHdy1mv7UHcaDp0
-         +SUHGKslVz5TRz1z7pi7ETrhxoG2F4LiDXmAi5z22/+KyryUnUvOlH3Du1iqooWTAmiI
-         gyt4ZHvwYsreEvMfFGES4WdC5hyJ9xDyNT6KxBEdkshROOsM3DbwVyaKf5XqbIzaLCW3
-         2lgsa4SeK2WfjzhOr36LgK+d+MnFbnwSH3ryYf8jPNSSscvVS66RS1qRwWmJCTBwaMcE
-         NwJdJy/VloyZP1dH0avdKUyPtuRnd6MBdpz+2Rhxdc+62XDR8G5XrE3S0sk3qNda5+Jq
-         Uswg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
+        b=kZd6UaPODsywloqPEXYGJE2wX1gHdTZH7hOlYW8yEjV/sq97IdGkfXMtF9vicvcwRm
+         KcJyQ6o2yMsjJOL2+s192UFD0bsxxS+9VHF43c6vcTFiRYA7JDLbz4itwwtuolELeCXK
+         D2VNogesiQaePTJ5fupCEAeBthgq8jr34crL+aE33HCzo/zMEoZ1+AaoQUkbz2wS0JfZ
+         psKxwafIEd9ZDy5KlS+qQaVT6xOT2P6Fsr1JYIERjesbxs5g4hlcQcQEkAlYttZ8apv+
+         0YL7sL5UUrNOOjQt0A/R761JJjb8zaiY6NOzhBoJaexFSe1nbXCV1eFPEsUyo5YxeGwL
+         5qAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=txhfrSF9RX3MqxwN9hoW/kar0+P8SVn2XnHOzqJQ9IY=;
-        b=sKa358u3eSein4TlZIZqelc63X+gVmMrTUNj3kNmcoAKvaAwrNAFPHDLDrtFXgl3Rw
-         ZpN60xPejRg22LG/0cui5K9qny1lEZlCdzzeXN0ZZigK+ZQkGy86e9RlFFeaqWQKscrF
-         Gckf/QJDMZ/Cg41NDJV8EuD0GKNTMLlhhEtaKerUDQbQT+pJ2U8QLsRw5yfzFR4iz6Xr
-         Ojq01HOWoNOq1dVx2jqklQvLsXJ8YjKp8bMXtiycEaY60NgVHmbNwQ1+/hU6XAZp281t
-         Vy0414SUOaUqofwpslwSqa9JNBbGfPQ+TD5rA6BALe73a2/eQQRBP170RSTuTfrX33+a
-         qsRA==
-X-Gm-Message-State: AOAM533+q8iTBF16hzQs7h9/hOYFyw5HZNC+YlPyHhDpHj5V0i6gXilQ
-        K+ouEdqY0voV3VzSy8QHrzGz/+UMRt1NftG7awk=
-X-Google-Smtp-Source: ABdhPJxkVhI0j2VsdBWVwc0FSlt/bcCfk71WFFX36z10VABx6cu21rQwkSKWef3JMaP2Bwmgr7KClVB6jt0m6gXA8C8=
-X-Received: by 2002:a2e:160d:: with SMTP id w13mr10443684ljd.470.1598539914375;
- Thu, 27 Aug 2020 07:51:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jaeNLpsr8Lq2JSXGOnPmF1qMG1fiYbDN5QhNqdIriF8=;
+        b=OAHK8a5r4FIpOjsjJQ0GL3roSDlBZBTiQdvUMln9I3/GpeguALqFYDxVpoXdbydBCP
+         lvncT+KFqJCgCFfjEaHO8caPRlXkJfMKbQFlBmLZRD56ztHuvRjDd9IsWCb7w8xNRyW1
+         wNcdUU8cFuplZz0uaC+UbyOQTtq3es1jc4wWU2qqHAtesbvSope2Gh4BJZP3iuCZmXtA
+         tRr9SO9U1lcKqsii0KMVanlso3PoZ/8aYmkYmUK6TF5l//ogxN6yRGSA3Red7DLgv1ik
+         eHkAnD9ZEidoJEYnILONS0IK5jNJ1duGnBjoKTBzEoZYtNWlYp8DeCWj+icje5bPhflp
+         4wiw==
+X-Gm-Message-State: AOAM530d+x7G6wf8eutvHsa2fM0sb5SqzbIuzRVYHMSE82eKXNfG/DCm
+        3umaIQrU3QgZk/S9IqKaLLQ=
+X-Google-Smtp-Source: ABdhPJxObSFHl9EJZG44VyoYurqG2wa1VHgnKMJmUIawdImzxJvkV/78RYAh0OwF0PyYou3oscpcWA==
+X-Received: by 2002:a1c:2dcc:: with SMTP id t195mr11553794wmt.166.1598539943771;
+        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id q12sm6328221wrm.39.2020.08.27.07.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 07:52:23 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 16:52:21 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Denis Efremov <efremov@linux.com>, antoine.tenart@bootlin.com
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] crypto: inside-secure - use kfree_sensitive()
+Message-ID: <20200827145221.GB14173@Red>
+References: <20200827064402.7130-1-efremov@linux.com>
+ <20200827064402.7130-2-efremov@linux.com>
 MIME-Version: 1.0
-References: <1598527137-6915-1-git-send-email-u0084500@gmail.com> <20200827140001.GE813478@kuha.fi.intel.com>
-In-Reply-To: <20200827140001.GE813478@kuha.fi.intel.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Thu, 27 Aug 2020 22:51:43 +0800
-Message-ID: <CADiBU393V_iQw_8Hx2braL=8QpvQuTY0059C-XkqmjO9W=aBgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] usb typec: mt6360: Add support for mt6360 Type-C driver
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, Guenter Roeck <linux@roeck-us.net>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827064402.7130-2-efremov@linux.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heikki Krogerus <heikki.krogerus@linux.intel.com> =E6=96=BC 2020=E5=B9=B48=
-=E6=9C=8827=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8810:00=E5=AF=AB=E9=
-=81=93=EF=BC=9A
->
-> On Thu, Aug 27, 2020 at 07:18:55PM +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > Mediatek MT6360 is a multi-functional IC that includes USB Type-C.
-> > It works with Type-C Port Controller Manager to provide USB PD
-> > and USB Type-C functionalities.
-> >
-> > v1 to v2
-> > 1. Add fix to Prevent the race condition from interrupt and tcpci port
-> > unregister during module remove.
-> >
-> > v2 to v3
-> > 1. Change comment style for the head of source code.
-> > 2. No need to print error for platform_get_irq_byname.
-> > 3. Fix tcpci_register_port check from IS_ERR_OR_NULL to IS_ERR.
-> > 4. Rename driver/Kconfig/Makefile form mt6360 to mt636x.
-> > 5. Rename DT binding documents from mt6360 to mt636x.
->
-> You don't place additional changelog here...
->
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
->
-> You put it here, after that '---' marker:
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#th=
-e-canonical-patch-format
->
-HI Hekki:
-     after reading the document, I have a little bit confused how to
-use diffstat for the changelog.
-      Is there any example that make me know to write a clear
-description for the changelog?
->
-> >  drivers/usb/typec/tcpm/Kconfig        |   8 ++
-> >  drivers/usb/typec/tcpm/Makefile       |   1 +
-> >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 212 ++++++++++++++++++++++++++=
-++++++++
-> >  3 files changed, 221 insertions(+)
-> >  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
->
-> thanks,
->
-> --
-> heikki
+On Thu, Aug 27, 2020 at 09:43:59AM +0300, Denis Efremov wrote:
+> Use kfree_sensitive() instead of open-coding it.
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>  drivers/crypto/inside-secure/safexcel_hash.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+> index 16a467969d8e..5ffdc1cd5847 100644
+> --- a/drivers/crypto/inside-secure/safexcel_hash.c
+> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
+> @@ -1082,8 +1082,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
+>  		}
+>  
+>  		/* Avoid leaking */
+> -		memzero_explicit(keydup, keylen);
+> -		kfree(keydup);
+> +		kfree_sensitive(keydup);
+>  
+>  		if (ret)
+>  			return ret;
+> -- 
+> 2.26.2
+> 
+
+The maintainer of this driver was not TO/CC.
+
+I Add him.
+
+Regards
