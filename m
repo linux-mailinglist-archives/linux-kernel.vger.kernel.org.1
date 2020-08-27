@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3F7253E17
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829CF253E1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgH0GqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:46:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3564 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726882AbgH0Gp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:45:59 -0400
-IronPort-SDR: UxdRk3eXKp44EuIdGe6/N7CSC0Okx5OasHBuyi5J3iZyw8C/bFJzakxE7MXATLwYg9/rmqx8Zq
- ReY3H39f7qPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="144109102"
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="144109102"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 23:45:58 -0700
-IronPort-SDR: bhh5IeRvAmjU2S8givn05HqpKnUHorYxlVY0p7rP2Tn8QhhVJFBnGpvTYH7lMm/wUXMEH+gUcm
- Mmwrulc9/cmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="337069793"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Aug 2020 23:45:51 -0700
-Subject: Re: Broadcom WiFi SDIO performance regression after commit "mmc:
- sdhci: Remove finish_tasklet"
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list@cypress.com,
-        brcm80211-dev-list.pdl@broadcom.com,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <5cf1af89-6026-09ad-7f20-82e19ad49fa1@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9332715c-6ee5-fce3-8b93-305823d5a551@intel.com>
-Date:   Thu, 27 Aug 2020 09:45:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727784AbgH0GsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:48:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726123AbgH0GsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:48:10 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R6WXpH099752;
+        Thu, 27 Aug 2020 02:47:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=/9/XNb+k4drSuw0ye3N+q7AQ87Ov3T4VUndBh3B43TI=;
+ b=dRn11BBbatUw4K0KoypRMDSdCzLtqWtjTK/ICOQjJy3YMzFS/9bj4Ddlg/hdxK08oueV
+ TcqpRd5uzlh8w3VLcYsbaVWGTmEbykoQptVcUUA1DSF8Kn3TVGw2S5LKYlTbDxkf2XWJ
+ 70ymoDdLf4FZ31VEfIgYVVHN36plv7rgfzIU4iBNSGYcsEs/ZGcv7kv00Gs5FFQVIzh/
+ Mi0Nb846J9wTlJszujZOamJG6lEsXp276TU0x+6zyQ9k2benpTVuiNNkvrueyebMUoEE
+ yXDxUa7s8BUasJYIPFWa45tcTnDjO6KXPDjxHfio7Dz1XvIS3tzEW4gkHyBzl+rlD+nj yA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3366qj9wh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 02:47:51 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07R6Wwgr101443;
+        Thu, 27 Aug 2020 02:47:50 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3366qj9wg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 02:47:50 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07R6gnP4008163;
+        Thu, 27 Aug 2020 06:47:48 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 332uk6dc79-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 06:47:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07R6ljns31523174
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Aug 2020 06:47:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EEED652050;
+        Thu, 27 Aug 2020 06:47:44 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.77.207.180])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 0712F52051;
+        Thu, 27 Aug 2020 06:47:39 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org, peterz@infradead.org
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com,
+        kjain@linux.ibm.com
+Subject: [PATCH] perf/core: Fix hung issue on perf stat command during cpu hotplug
+Date:   Thu, 27 Aug 2020 12:17:32 +0530
+Message-Id: <20200827064732.20860-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <5cf1af89-6026-09ad-7f20-82e19ad49fa1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_01:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270048
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/20 9:07 am, Dmitry Osipenko wrote:
-> Hello!
-> 
-> I was debugging WiFi performance problems on Acer A500 tablet device
-> that has BCM4329 WiFi chip which is connected to NVIDIA Terga20 SoC via
-> SDIO and found that the following commit causes a solid 5-10 Mbit/s of
-> WiFi throughput regression after 5.2 kernel:
+Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+added assignment of ret value as -EAGAIN in case function
+call to 'smp_call_function_single' fails.
+For non-zero ret value, it did
+'ret = !ret ? data.ret : -EAGAIN;', which always
+assign -EAGAIN to ret and make second if condition useless.
 
-What is that in percentage terms?
+In scenarios like when executing a perf stat with --per-thread option, and
+if any of the monitoring cpu goes offline, the 'smp_call_function_single'
+function could return -ENXIO, and with the above check,
+task_function_call hung and increases CPU
+usage (because of repeated 'smp_call_function_single()')
 
-> 
-> commit c07a48c2651965e84d35cf193dfc0e5f7892d612
-> Author: Adrian Hunter <adrian.hunter@intel.com>
-> Date:   Fri Apr 5 15:40:20 2019 +0300
-> 
->     mmc: sdhci: Remove finish_tasklet
-> 
->     Remove finish_tasklet. Requests that require DMA-unmapping or
-> sdhci_reset
->     are completed either in the IRQ thread or a workqueue if the
-> completion is
->     not initiated by the IRQ.
-> 
-> Reverting the offending commit on top of recent linux-next resolves the
-> problem.
-> 
-> Ulf / Adrian, do you have any ideas what could be done in regards to
-> restoring the SDIO performance? Should we just revert the offending commit?
-> 
+Recration scenario:
+	# perf stat -a --per-thread && (offline a CPU )
 
-Unfortunately I think we are past the point of returning to the tasklet.
+Patch here removes the tertiary condition added as part of that
+commit and added a check for NULL and -EAGAIN.
 
-sdhci can complete requests in the irq handler but only if ->pre_req() and
-->post_req() are used, which is not supported by SDIO at present.  pre_req
-and post_req were introduced to reduce latency for the block driver, so it
-seems reasonable perhaps to look at using them in SDIO as well.
+Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Barret Rhoden <brho@google.com>
+Tested-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ kernel/events/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+Changelog:
+- Remove RFC tag
+- Resolve some nits issues like space after if and
+  added -ENXIO in comment msg of function 'task_function_call'
+  as suggested by Barret Rhoden.
+
+Link to the RFC: https://lkml.org/lkml/2020/8/26/896
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 5bfe8e3c6e44..cef646084198 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -99,7 +99,7 @@ static void remote_function(void *data)
+  * retry due to any failures in smp_call_function_single(), such as if the
+  * task_cpu() goes offline concurrently.
+  *
+- * returns @func return value or -ESRCH when the process isn't running
++ * returns @func return value or -ESRCH or -ENXIO when the process isn't running
+  */
+ static int
+ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+@@ -115,7 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	for (;;) {
+ 		ret = smp_call_function_single(task_cpu(p), remote_function,
+ 					       &data, 1);
+-		ret = !ret ? data.ret : -EAGAIN;
++		if (!ret)
++			ret = data.ret;
+ 
+ 		if (ret != -EAGAIN)
+ 			break;
+-- 
+2.26.2
+
