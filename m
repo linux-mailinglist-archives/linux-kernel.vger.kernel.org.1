@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEA6254DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40DE254DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgH0TEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:04:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49403 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726894AbgH0TE3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:04:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598555068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dpPTnyY1jEEF6hodFsVeyGCg6LIEq1osNtlESX3XqhY=;
-        b=g/Qft8neV0uKsCdaMRaqfrQirXbLqXr53QmqyfR0TXWXcd8pwHYrVENSTg8fAuFM24VaM1
-        kyxwqneKcvaX7M6SiwSsG1AtX+6sqO/gZ/J7hHdh8MXWm8J9LS234jmYFnyrMMYj3qfXZP
-        XMLtL4xmn2vYiZEEWOzMcf+/ofyT5gw=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-oZ592Wq2PDC-_supR5WPqg-1; Thu, 27 Aug 2020 15:04:26 -0400
-X-MC-Unique: oZ592Wq2PDC-_supR5WPqg-1
-Received: by mail-qv1-f71.google.com with SMTP id e12so3435295qvy.13
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 12:04:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dpPTnyY1jEEF6hodFsVeyGCg6LIEq1osNtlESX3XqhY=;
-        b=o3b+qqgl7PZ+OFm5zOYBvbSOYi3UWNt3iCZRP1ccPKZ6cfK9SAIANuPjfP2j/Ki5+E
-         FYqcqRclwdk+QW0mahMQovl8B/ujJjOM7Objc+S0iwhw785+929fgLLoV6l4h8CuJ/bw
-         BgGus8MkfiF0dO7+0eTZEMHB8ZiUglcHf4+EaU65oq+w6UG5yvoOUf2XFnS1M61Uo5HR
-         mcWNWA41lW3kndS3gzcjKKk5dUFNXtZBWt6siWuSXymGR0LojsVLa6Xnmhl6cTjEauJy
-         NEUCurAfnUry6Zqe/4DTbDwpZ5tkvDL1qFRjCASg9RlIoFw83R0fsbeQ+84QX+byA2y2
-         5Mlg==
-X-Gm-Message-State: AOAM530+OWtqQgKsF4nWe4z0C4p+qPWbtSQ/77+q1VnlQuOc92lgznLW
-        +Wm1Ud0JWD8evQHkZ0YbDf28/cGOeIO6+CWea7/UqwZkT63ipDjqp/I+e+JWmJW9KlDLneXBYV5
-        Zi5juB1WWt9M7PiOibEa9qaOS
-X-Received: by 2002:ae9:e40c:: with SMTP id q12mr17555684qkc.68.1598555065940;
-        Thu, 27 Aug 2020 12:04:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwu1wIJxuc9erShjjxOxlzaZkchq1wagQLHXczQWn9FAGBbene5P6362g6/5YgQY916BkKSw==
-X-Received: by 2002:ae9:e40c:: with SMTP id q12mr17555673qkc.68.1598555065747;
-        Thu, 27 Aug 2020 12:04:25 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w20sm2464189qki.108.2020.08.27.12.04.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 12:04:25 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] fpga manager: xilinx-spi: add error checking after
- gpiod_get_value()
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-fpga@vger.kernel.org
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anatolij Gustschin <agust@denx.de>
-References: <20200827143249.10973-1-luca@lucaceresoli.net>
- <20200827143249.10973-4-luca@lucaceresoli.net>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <e0ce7edb-53dd-2961-278d-e9bc8a1726ac@redhat.com>
-Date:   Thu, 27 Aug 2020 12:04:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727913AbgH0TFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgH0TFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:05:19 -0400
+Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6524E20786;
+        Thu, 27 Aug 2020 19:05:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598555118;
+        bh=6wi7BZ7sjbl1BjeinCwOI2PqM7WQLe/7Md+KmWzCljw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=l1e8/Pmn8ngF+p3T9et0To6f49k4Ql3c2Z74uxj3xtH00LxLMAu5rqZK5lwfRW+63
+         a2oxGdG2gcwUcCa7OKsDv0Sr9kCeSbyeEIuhTR+zmHFvr3YFh8HlUlxsJB+STprPT0
+         uMjl4QF+58ofygnmmXDpFUoANW4vhWh+RNq8ZbG8=
+Date:   Thu, 27 Aug 2020 14:05:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        stable <stable@vger.kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Adam Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH v2] x86/pci: fix intel_mid_pci.c build error when ACPI is
+ not enabled
+Message-ID: <20200827190517.GA2097725@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200827143249.10973-4-luca@lucaceresoli.net>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ea903917-e51b-4cc9-2680-bc1e36efa026@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 21, 2020 at 05:10:27PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Fix build error when CONFIG_ACPI is not set/enabled by adding
+> the header file <asm/acpi.h> which contains a stub for the function
+> in the build error.
+> 
+> ../arch/x86/pci/intel_mid_pci.c: In function ‘intel_mid_pci_init’:
+> ../arch/x86/pci/intel_mid_pci.c:303:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
+>   acpi_noirq_set();
+> 
+> Fixes: a912a7584ec3 ("x86/platform/intel-mid: Move PCI initialization to arch_init()")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: stable@vger.kernel.org	# v4.16+
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Len Brown <lenb@kernel.org>
+> To: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Jesse Barnes <jsbarnes@google.com>
+> Cc: Arjan van de Ven <arjan@linux.intel.com>
+> Cc: linux-pci@vger.kernel.org
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Jesse Barnes <jsbarnes@google.com>
+> Acked-by: Thomas Gleixner <tglx@linutronix.de>
 
-On 8/27/20 7:32 AM, Luca Ceresoli wrote:
-> Current code calls gpiod_get_value() without error checking. Should the
-> GPIO controller fail, execution would continue without any error message.
->
-> Fix by checking for negative error values.
->
-> Reported-by: Tom Rix <trix@redhat.com>
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->
+Applied to pci/misc for v5.10, thanks!
+
+We could put it in v5.9, but a912a7584ec3 was merged for v4.16, so
+apparently this has been broken for a long time.
+
 > ---
-
-Thanks, this looks fine.
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-
+> Found in linux-next, but applies to/exists in mainline also.
+> 
+> v2:
+> - add Reviewed-by: and Acked-by: tags
+> - drop alternatives
+> 
+>  arch/x86/pci/intel_mid_pci.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-next-20200813.orig/arch/x86/pci/intel_mid_pci.c
+> +++ linux-next-20200813/arch/x86/pci/intel_mid_pci.c
+> @@ -33,6 +33,7 @@
+>  #include <asm/hw_irq.h>
+>  #include <asm/io_apic.h>
+>  #include <asm/intel-mid.h>
+> +#include <asm/acpi.h>
+>  
+>  #define PCIE_CAP_OFFSET	0x100
+>  
+> 
