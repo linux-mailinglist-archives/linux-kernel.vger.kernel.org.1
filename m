@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC6225498B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD4925498E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgH0Pfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:35:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60882 "EHLO mx2.suse.de"
+        id S1727077AbgH0PhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:37:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:59776 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726953AbgH0Pfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:35:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9666AB1F3;
-        Thu, 27 Aug 2020 15:36:08 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 16:35:34 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/numa: use runnable_avg to classify node
-Message-ID: <20200827153534.GF3033@suse.de>
-References: <20200825121818.30260-1-vincent.guittot@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20200825121818.30260-1-vincent.guittot@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726009AbgH0PhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:37:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1511A101E;
+        Thu, 27 Aug 2020 08:36:59 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EE5DB3F66B;
+        Thu, 27 Aug 2020 08:36:57 -0700 (PDT)
+From:   vincent.donnefort@arm.com
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/debug: Add new tracepoint to track cpu_capacity
+Date:   Thu, 27 Aug 2020 16:35:38 +0100
+Message-Id: <1598542538-46278-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 02:18:18PM +0200, Vincent Guittot wrote:
-> Use runnable_avg to classify numa node state similarly to what is done for
-> normal load balancer. This helps to ensure that numa and normal balancers
-> use the same view of the state of the system.
-> 
-> - large arm64system: 2 nodes / 224 CPUs
-> hackbench -l (256000/#grp) -g #grp
-> 
-> grp    tip/sched/core         +patchset              improvement
-> 1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
-> 4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
-> 16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
-> 32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
-> 64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
-> 128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
-> 256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-The testing was a mixed bag of wins and losses but wins more than it
-loses. Biggest loss was a 9.04% regression on nas-SP using openmp for
-parallelisation on Zen1. Biggest win was around 8% gain running
-specjbb2005 on Zen2 (with some major gains of up to 55% for some thread
-counts). Most workloads were stable across multiple Intel and AMD
-machines.
+rq->cpu_capacity is a key element in several scheduler parts, such as EAS
+task placement and load balancing. Tracking this value enables testing
+and/or debugging by a toolkit.
 
-There were some oddities in changes in NUMA scanning rate but that is
-likely a side-effect because the locality over time for the same loads
-did not look obviously worse. There was no negative result I could point
-at that was not offset by a positive result elsewhere. Given it's not
-a univeral win or loss, matching numa and lb balancing as closely as
-possible is best so
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Reviewed-by: Mel Gorman <mgorman@suse.de>
-
-Thanks.
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 021ad7b..7e19d59 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2055,6 +2055,7 @@ const struct sched_avg *sched_trace_rq_avg_dl(struct rq *rq);
+ const struct sched_avg *sched_trace_rq_avg_irq(struct rq *rq);
+ 
+ int sched_trace_rq_cpu(struct rq *rq);
++int sched_trace_rq_cpu_capacity(struct rq *rq);
+ int sched_trace_rq_nr_running(struct rq *rq);
+ 
+ const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 8ab48b3..f94ddd1 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -630,6 +630,10 @@ DECLARE_TRACE(pelt_se_tp,
+ 	TP_PROTO(struct sched_entity *se),
+ 	TP_ARGS(se));
+ 
++DECLARE_TRACE(sched_cpu_capacity_tp,
++	TP_PROTO(struct rq *rq),
++	TP_ARGS(rq));
++
+ DECLARE_TRACE(sched_overutilized_tp,
+ 	TP_PROTO(struct root_domain *rd, bool overutilized),
+ 	TP_ARGS(rd, overutilized));
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 06b0a40..e468271 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
++EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 44f7a0b..e11f724 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8116,6 +8116,8 @@ static void update_cpu_capacity(struct sched_domain *sd, int cpu)
+ 		capacity = 1;
+ 
+ 	cpu_rq(cpu)->cpu_capacity = capacity;
++	trace_sched_cpu_capacity_tp(cpu_rq(cpu));
++
+ 	sdg->sgc->capacity = capacity;
+ 	sdg->sgc->min_capacity = capacity;
+ 	sdg->sgc->max_capacity = capacity;
+@@ -11318,6 +11320,12 @@ int sched_trace_rq_cpu(struct rq *rq)
+ }
+ EXPORT_SYMBOL_GPL(sched_trace_rq_cpu);
+ 
++int sched_trace_rq_cpu_capacity(struct rq *rq)
++{
++	return rq ? rq->cpu_capacity : -1;
++}
++EXPORT_SYMBOL_GPL(sched_trace_rq_cpu_capacity);
++
+ const struct cpumask *sched_trace_rd_span(struct root_domain *rd)
+ {
+ #ifdef CONFIG_SMP
 -- 
-Mel Gorman
-SUSE Labs
+2.7.4
+
