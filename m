@@ -2,58 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0392254553
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDBE254558
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgH0Mtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:49:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60942 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728847AbgH0Mpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:45:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27660B65C;
-        Thu, 27 Aug 2020 12:46:22 +0000 (UTC)
-Message-ID: <1f16a16669dd78127236db1916e41387ebdd32d1.camel@suse.com>
-Subject: Re: [PATCH 4/4] qla2xxx: Handle incorrect entry_type entries
-From:   Martin Wilck <mwilck@suse.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nilesh Javali <njavali@marvell.com>
-Date:   Thu, 27 Aug 2020 14:45:49 +0200
-In-Reply-To: <20200827114626.daispydkcsdp3rj2@beryllium.lan>
-References: <20200827095829.63871-1-dwagner@suse.de>
-         <20200827095829.63871-5-dwagner@suse.de>
-         <21cd86f782616fcac25f1a6270a9bd834ec777b7.camel@suse.com>
-         <20200827114626.daispydkcsdp3rj2@beryllium.lan>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.36.5 
+        id S1729233AbgH0MuS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 08:50:18 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:43647 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbgH0MqT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:46:19 -0400
+X-Originating-IP: 77.204.107.57
+Received: from xps13 (57.107.204.77.rev.sfr.net [77.204.107.57])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 37F96E0008;
+        Thu, 27 Aug 2020 12:46:02 +0000 (UTC)
+Date:   Thu, 27 Aug 2020 14:46:00 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     James Bond <jameslouisebond@gmail.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryan Jackson <rjackson@lnxi.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: ck804xrom: fix missing pci device put in error
+ paths
+Message-ID: <20200827144600.2ec7c4ab@xps13>
+In-Reply-To: <20200821070537.30317-1-jameslouisebond@gmail.com>
+References: <20200821070537.30317-1-jameslouisebond@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-27 at 13:46 +0200, Daniel Wagner wrote:
-> On Thu, Aug 27, 2020 at 12:17:13PM +0200, Martin Wilck wrote:
-> > Should we perhaps log an error message when we detect a mismatch
-> > between sp->type and entry_type?
+Hi James,
+
+James Bond <jameslouisebond@gmail.com> wrote on Fri, 21 Aug 2020
+02:05:36 -0500:
+
+> pci_dev_get increases the refcount of "pdev".
+> In the error paths, pci_dev_put should be called
+> to handle the "pdev" and decrease the corresponding refcount.
 > 
-> Sure can do, but does it really help? Not much we can do in the
-> driver. I hope the firmware gets fixed eventually. I am not against
-> it,
-> just not sure if the log entry really is helping except saying 'you
-> are
-> using a firmware with a known issue'.
+> Fixes: 90afffc8bd79 ("[MTD] [MAPS] Support for BIOS flash chips on the nvidia ck804 southbridge")
+> Signed-off-by: James Bond <jameslouisebond@gmail.com>
+> ---
+>  drivers/mtd/maps/ck804xrom.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
+> diff --git a/drivers/mtd/maps/ck804xrom.c b/drivers/mtd/maps/ck804xrom.c
+> index 460494212f6a..16af8b5ee653 100644
+> --- a/drivers/mtd/maps/ck804xrom.c
+> +++ b/drivers/mtd/maps/ck804xrom.c
+> @@ -195,6 +195,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
+>  	if (!window->virt) {
+>  		printk(KERN_ERR MOD_NAME ": ioremap(%08lx, %08lx) failed\n",
+>  			window->phys, window->size);
+> +		pci_dev_put(pdev);
+>  		goto out;
+>  	}
+>  
+> @@ -222,6 +223,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
+>  
+>  		if (!map) {
+>  			printk(KERN_ERR MOD_NAME ": kmalloc failed");
+> +			pci_dev_put(pdev);
+>  			goto out;
+>  		}
+>  		memset(map, 0, sizeof(*map));
+> @@ -295,6 +297,7 @@ static int __init ck804xrom_init_one(struct pci_dev *pdev,
+>  		if (mtd_device_register(map->mtd, NULL, 0)) {
+>  			map_destroy(map->mtd);
+>  			map->mtd = NULL;
+> +			pci_dev_put(pdev);
+>  			goto out;
+>  		}
+>  
 
-... which might provide insightful, to users as well as perhaps
-developers (by observing under which conditions this problem occurs).
-I'd hope so, at least. But you know this issue much better than me.
+I suppose in these three cases, the window->maps list will be empty and
+you will end up returning -ENODEV and the bottom of the function? If
+yes, it woudl probably be better to move these pci_dev_put() calls to
+this location.
 
-Regards,
-Martin
+Otherwise, it might bit interesting to clean up a little bit the error
+path and perhaps have a distinct success vs. failure path.
 
 
+Thanks,
+Miquèl
