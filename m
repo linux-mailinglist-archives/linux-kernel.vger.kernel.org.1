@@ -2,156 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0F2253F6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFB7253F72
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgH0HmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:42:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51638 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgH0HmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:42:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598514140; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=9qnthhnWenta0Q9mzx17Q48ImmKaAAh3E0dlFmqXnTA=; b=CIuYdkT+deeBtLz0m/iv7vUGGo9GpYiF9iEOV9HUYNRG6NCS0i70+PV6FP4h22lLNwhFb+DC
- GMFA3SHgqY/dEbkt9K17SmlsEbfaCadyHDR4ooqrbwHUlP8M0VrSlTTW5VezGM5wygqMaSSu
- X8X1rIZtgvDJGvyET7G/xYuKPi4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f4763db4413b7d5dbe882f8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 07:42:19
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 41603C433CB; Thu, 27 Aug 2020 07:42:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4ECCC433CA;
-        Thu, 27 Aug 2020 07:42:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E4ECCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        Martin Langer <martin-langer@gmx.de>,
-        Stefano Brivio <stefano.brivio@polimi.it>,
-        Michael Buesch <m@bues.ch>, van Dyk <kugelfang@gentoo.org>,
-        Andreas Jaggi <andreas.jaggi@waterwave.ch>,
-        Albert Herranz <albert_herranz@yahoo.es>,
-        linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 07/30] net: wireless: broadcom: b43: main: Add braces around empty statements
-References: <20200814113933.1903438-1-lee.jones@linaro.org>
-        <20200814113933.1903438-8-lee.jones@linaro.org>
-        <87v9hll0ro.fsf@codeaurora.org> <20200814164322.GP4354@dell>
-        <87eeo9kulw.fsf@codeaurora.org> <20200817085018.GT4354@dell>
-Date:   Thu, 27 Aug 2020 10:42:12 +0300
-In-Reply-To: <20200817085018.GT4354@dell> (Lee Jones's message of "Mon, 17 Aug
-        2020 09:50:18 +0100")
-Message-ID: <87zh6gleln.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1728250AbgH0HoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:44:25 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:20891 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726851AbgH0HoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:44:23 -0400
+X-UUID: c5a2eea70eea42d9a4053461044fc617-20200827
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=hDrJTYFnlbUJyTHLWlz6XMMZ6XJkPNRSPabQes2kgkQ=;
+        b=cXefOo9Ig91+143NyEdseavBBjzPBCl1Oq3bDn3KgYXxu/JMDOSCU1biQiGwDHRCglVg4FtDY+dkh3IVuZ8OLh2Raczvm6mGFY5ebj4f0rb2sRzRhyzT39WffIo/ZuXGcYqU7CSbhT9hLBPEm5uQwYnz1TTm5TEhbXCLfzpCLwU=;
+X-UUID: c5a2eea70eea42d9a4053461044fc617-20200827
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 680989642; Thu, 27 Aug 2020 15:44:11 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 Aug
+ 2020 15:44:07 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 27 Aug 2020 15:44:08 +0800
+Message-ID: <1598514163.21253.12.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/2] usb: dwc3: Add driver for Xilinx platforms
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Manish Narani <manish.narani@xilinx.com>
+CC:     <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
+        <michal.simek@xilinx.com>, <balbi@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>
+Date:   Thu, 27 Aug 2020 15:42:43 +0800
+In-Reply-To: <1598467441-124203-3-git-send-email-manish.narani@xilinx.com>
+References: <1598467441-124203-1-git-send-email-manish.narani@xilinx.com>
+         <1598467441-124203-3-git-send-email-manish.narani@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-TM-SNTS-SMTP: 080ACAF050D071BB9DA66103625574D2739A57C44FDD51F559F2DE08B7C0A04D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+T24gVGh1LCAyMDIwLTA4LTI3IGF0IDAwOjE0ICswNTMwLCBNYW5pc2ggTmFyYW5pIHdyb3RlOg0K
+PiBBZGQgYSBuZXcgZHJpdmVyIGZvciBzdXBwb3J0aW5nIFhpbGlueCBwbGF0Zm9ybXMuIFRoaXMg
+ZHJpdmVyIGhhbmRsZXMNCj4gdGhlIFVTQiAzLjAgUEhZIGluaXRpYWxpemF0aW9uIGFuZCBQSVBF
+IGNvbnRyb2wgJiByZXNldCBvcGVyYXRpb25zIGZvcg0KPiBaeW5xTVAgcGxhdGZvcm1zLiBUaGlz
+IGFsc28gaGFuZGxlcyB0aGUgVVNCIDIuMCBQSFkgaW5pdGlhbGl6YXRpb24gYW5kDQo+IHJlc2V0
+IG9wZXJhdGlvbnMgZm9yIFZlcnNhbCBwbGF0Zm9ybXMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBN
+YW5pc2ggTmFyYW5pIDxtYW5pc2gubmFyYW5pQHhpbGlueC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVy
+cy91c2IvZHdjMy9LY29uZmlnICAgICAgICAgIHwgICA4ICsNCj4gIGRyaXZlcnMvdXNiL2R3YzMv
+TWFrZWZpbGUgICAgICAgICB8ICAgMSArDQo+ICBkcml2ZXJzL3VzYi9kd2MzL2R3YzMtb2Ytc2lt
+cGxlLmMgfCAgIDEgLQ0KPiAgZHJpdmVycy91c2IvZHdjMy9kd2MzLXhpbGlueC5jICAgIHwgNDE2
+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA0MjUg
+aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZl
+cnMvdXNiL2R3YzMvZHdjMy14aWxpbnguYw0KPiANClsuLi5dDQo+ICtzdGF0aWMgaW50IGR3YzNf
+eGxueF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiArew0KPiArCXN0cnVj
+dCBkd2MzX3hsbngJKnByaXZfZGF0YTsNCj4gKwlzdHJ1Y3QgZGV2aWNlCQkqZGV2ID0gJnBkZXYt
+PmRldjsNCj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUJKm5wID0gZGV2LT5vZl9ub2RlOw0KPiArCXN0
+cnVjdCByZXNvdXJjZQkJKnJlczsNCj4gKwl2b2lkIF9faW9tZW0JCSpyZWdzOw0KPiArCWludAkJ
+CXJldDsNCj4gKw0KPiArCXByaXZfZGF0YSA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqcHJp
+dl9kYXRhKSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFwcml2X2RhdGEpDQo+ICsJCXJldHVybiAt
+RU5PTUVNOw0KPiArDQo+ICsJcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVT
+T1VSQ0VfTUVNLCAwKTsNCj4gKwlpZiAoIXJlcykgew0KPiArCQlkZXZfZXJyKGRldiwgIm1pc3Np
+bmcgbWVtb3J5IHJlc291cmNlXG4iKTsNCj4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ICsJfQ0KPiAr
+DQo+ICsJcmVncyA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRldi0+ZGV2LCByZXMpOw0KPiAr
+CWlmIChJU19FUlIocmVncykpDQo+ICsJCXJldHVybiBQVFJfRVJSKHJlZ3MpOw0KVXNlIGRldm1f
+cGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZSgpPw0KDQo+ICsNCj4gKwkvKiBTdG9yZSB0aGUgdXNi
+IGNvbnRyb2wgcmVncyBpbnRvIHByaXZfZGF0YSBmb3IgZnVydGhlciB1c2FnZSAqLw0KPiArCXBy
+aXZfZGF0YS0+cmVncyA9IHJlZ3M7DQo+ICsNCj4gKwlwcml2X2RhdGEtPmRldiA9IGRldjsNCj4g
+Kw0KPiArCXBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIHByaXZfZGF0YSk7DQo+ICsNCj4gKwly
+ZXQgPSBjbGtfYnVsa19nZXRfYWxsKHByaXZfZGF0YS0+ZGV2LCAmcHJpdl9kYXRhLT5jbGtzKTsN
+Cj4gKwlpZiAocmV0IDwgMCkNCj4gKwkJcmV0dXJuIHJldDsNCj4gKw0KPiArCXByaXZfZGF0YS0+
+bnVtX2Nsb2NrcyA9IHJldDsNCj4gKw0KPiArCXJldCA9IGNsa19idWxrX3ByZXBhcmVfZW5hYmxl
+KHByaXZfZGF0YS0+bnVtX2Nsb2NrcywgcHJpdl9kYXRhLT5jbGtzKTsNCj4gKwlpZiAocmV0KQ0K
+PiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJaWYgKG9mX2RldmljZV9pc19jb21wYXRpYmxlKHBk
+ZXYtPmRldi5vZl9ub2RlLCAieGxueCx6eW5xbXAtZHdjMyIpKSB7DQo+ICsJCXJldCA9IGR3YzNf
+eGxueF9pbml0X3p5bnFtcChwcml2X2RhdGEpOw0KPiArCQlpZiAocmV0KQ0KPiArCQkJZ290byBl
+cnJfY2xrX3B1dDsNCj4gKwl9DQo+ICsNCj4gKwlpZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUo
+cGRldi0+ZGV2Lm9mX25vZGUsICJ4bG54LHZlcnNhbC1kd2MzIikpIHsNCj4gKwkJcmV0ID0gZHdj
+M194bG54X2luaXRfdmVyc2FsKHByaXZfZGF0YSk7DQo+ICsJCWlmIChyZXQpDQo+ICsJCQlnb3Rv
+IGVycl9jbGtfcHV0Ow0KPiArCX0NCj4gKw0KPiArCXJldCA9IG9mX3BsYXRmb3JtX3BvcHVsYXRl
+KG5wLCBOVUxMLCBOVUxMLCBkZXYpOw0KPiArCWlmIChyZXQpDQo+ICsJCWdvdG8gZXJyX2Nsa19w
+dXQ7DQo+ICsNCj4gKwlwbV9ydW50aW1lX3NldF9hY3RpdmUoZGV2KTsNCj4gKwlwbV9ydW50aW1l
+X2VuYWJsZShkZXYpOw0KPiArCXBtX3N1c3BlbmRfaWdub3JlX2NoaWxkcmVuKGRldiwgZmFsc2Up
+Ow0KPiArCXBtX3J1bnRpbWVfZ2V0X3N5bmMoZGV2KTsNCj4gKw0KPiArCXBtX3J1bnRpbWVfZm9y
+YmlkKGRldik7DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gKw0KPiArZXJyX2Nsa19wdXQ6DQo+ICsJ
+Y2xrX2J1bGtfZGlzYWJsZV91bnByZXBhcmUocHJpdl9kYXRhLT5udW1fY2xvY2tzLCBwcml2X2Rh
+dGEtPmNsa3MpOw0KPiArCWNsa19idWxrX3B1dF9hbGwocHJpdl9kYXRhLT5udW1fY2xvY2tzLCBw
+cml2X2RhdGEtPmNsa3MpOw0KPiArDQo+ICsJcmV0dXJuIHJldDsNCj4gK30NCj4gKw0KPiArc3Rh
+dGljIGludCBkd2MzX3hsbnhfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+
+ICt7DQo+ICsJc3RydWN0IGR3YzNfeGxueAkqcHJpdl9kYXRhID0gcGxhdGZvcm1fZ2V0X2RydmRh
+dGEocGRldik7DQo+ICsJc3RydWN0IGRldmljZQkJKmRldiA9ICZwZGV2LT5kZXY7DQo+ICsNCj4g
+KwlvZl9wbGF0Zm9ybV9kZXBvcHVsYXRlKGRldik7DQo+ICsNCj4gKwljbGtfYnVsa19kaXNhYmxl
+X3VucHJlcGFyZShwcml2X2RhdGEtPm51bV9jbG9ja3MsIHByaXZfZGF0YS0+Y2xrcyk7DQo+ICsJ
+Y2xrX2J1bGtfcHV0X2FsbChwcml2X2RhdGEtPm51bV9jbG9ja3MsIHByaXZfZGF0YS0+Y2xrcyk7
+DQo+ICsJcHJpdl9kYXRhLT5udW1fY2xvY2tzID0gMDsNCj4gKw0KPiArCXBtX3J1bnRpbWVfZGlz
+YWJsZShkZXYpOw0KPiArCXBtX3J1bnRpbWVfcHV0X25vaWRsZShkZXYpOw0KPiArCXBtX3J1bnRp
+bWVfc2V0X3N1c3BlbmRlZChkZXYpOw0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4g
+KyNpZmRlZiBDT05GSUdfUE0NCj4gK3N0YXRpYyBpbnQgZHdjM194bG54X3J1bnRpbWVfc3VzcGVu
+ZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICt7DQo+ICsJc3RydWN0IGR3YzNfeGxueAkqcHJpdl9k
+YXRhID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4gKwljbGtfYnVsa19kaXNhYmxlKHBy
+aXZfZGF0YS0+bnVtX2Nsb2NrcywgcHJpdl9kYXRhLT5jbGtzKTsNCj4gKw0KPiArCXJldHVybiAw
+Ow0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IGR3YzNfeGxueF9ydW50aW1lX2lkbGUoc3RydWN0
+IGRldmljZSAqZGV2KQ0KPiArew0KPiArCXBtX3J1bnRpbWVfbWFya19sYXN0X2J1c3koZGV2KTsN
+Cj4gKwlwbV9ydW50aW1lX2F1dG9zdXNwZW5kKGRldik7DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4g
+K30NCj4gKw0KPiArc3RhdGljIGludCBkd2MzX3hsbnhfcnVudGltZV9yZXN1bWUoc3RydWN0IGRl
+dmljZSAqZGV2KQ0KPiArew0KPiArCXN0cnVjdCBkd2MzX3hsbngJKnByaXZfZGF0YSA9IGRldl9n
+ZXRfZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJcmV0dXJuIGNsa19idWxrX2VuYWJsZShwcml2X2Rh
+dGEtPm51bV9jbG9ja3MsIHByaXZfZGF0YS0+Y2xrcyk7DQo+ICt9DQo+ICsjZW5kaWYgLyogQ09O
+RklHX1BNICovDQo+ICsNCj4gKyNpZmRlZiBDT05GSUdfUE1fU0xFRVANCj4gK3N0YXRpYyBpbnQg
+ZHdjM194bG54X3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KPiArew0KPiArCXN0cnVjdCBk
+d2MzX3hsbnggKnByaXZfZGF0YSA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJLyog
+RGlzYWJsZSB0aGUgY2xvY2tzICovDQo+ICsJY2xrX2J1bGtfZGlzYWJsZShwcml2X2RhdGEtPm51
+bV9jbG9ja3MsIHByaXZfZGF0YS0+Y2xrcyk7DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4g
+Kw0KPiArc3RhdGljIGludCBkd2MzX3hsbnhfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCj4g
+K3sNCj4gKwlzdHJ1Y3QgZHdjM194bG54ICpwcml2X2RhdGEgPSBkZXZfZ2V0X2RydmRhdGEoZGV2
+KTsNCj4gKw0KPiArCXJldHVybiBjbGtfYnVsa19lbmFibGUocHJpdl9kYXRhLT5udW1fY2xvY2tz
+LCBwcml2X2RhdGEtPmNsa3MpOw0KPiArfQ0KPiArI2VuZGlmIC8qIENPTkZJR19QTV9TTEVFUCAq
+Lw0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGRldl9wbV9vcHMgZHdjM194bG54X2Rldl9w
+bV9vcHMgPSB7DQo+ICsJU0VUX1NZU1RFTV9TTEVFUF9QTV9PUFMoZHdjM194bG54X3N1c3BlbmQs
+IGR3YzNfeGxueF9yZXN1bWUpDQo+ICsJU0VUX1JVTlRJTUVfUE1fT1BTKGR3YzNfeGxueF9ydW50
+aW1lX3N1c3BlbmQsIGR3YzNfeGxueF9ydW50aW1lX3Jlc3VtZSwNCj4gKwkJCSAgIGR3YzNfeGxu
+eF9ydW50aW1lX2lkbGUpDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rl
+dmljZV9pZCBvZl9kd2MzX3hsbnhfbWF0Y2hbXSA9IHsNCj4gKwl7IC5jb21wYXRpYmxlID0gInhs
+bngsenlucW1wLWR3YzMiIH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJ4bG54LHZlcnNhbC1kd2Mz
+IiB9LA0KPiArCXsgLyogU2VudGluZWwgKi8gfQ0KPiArfTsNCj4gK01PRFVMRV9ERVZJQ0VfVEFC
+TEUob2YsIG9mX2R3YzNfeGxueF9tYXRjaCk7DQo+ICsNCj4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZv
+cm1fZHJpdmVyIGR3YzNfeGxueF9kcml2ZXIgPSB7DQo+ICsJLnByb2JlCQk9IGR3YzNfeGxueF9w
+cm9iZSwNCj4gKwkucmVtb3ZlCQk9IGR3YzNfeGxueF9yZW1vdmUsDQo+ICsJLmRyaXZlcgkJPSB7
+DQo+ICsJCS5uYW1lCT0gImR3YzMteGlsaW54IiwNCj4gKwkJLm9mX21hdGNoX3RhYmxlID0gb2Zf
+ZHdjM194bG54X21hdGNoLA0KPiArCQkucG0JPSAmZHdjM194bG54X2Rldl9wbV9vcHMsDQo+ICsJ
+fSwNCj4gK307DQo+ICsNCj4gK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoZHdjM194bG54X2RyaXZl
+cik7DQo+ICsNCj4gK01PRFVMRV9MSUNFTlNFKCJHUEwgdjIiKTsNCj4gK01PRFVMRV9ERVNDUklQ
+VElPTigiWGlsaW54IERXQzMgY29udHJvbGxlciBzcGVjaWZpYyBnbHVlIGRyaXZlciIpOw0KPiAr
+TU9EVUxFX0FVVEhPUigiQW51cmFnIEt1bWFyIFZ1bGlzaGEgPGFudXJhZy5rdW1hci52dWxpc2hh
+QHhpbGlueC5jb20+Iik7DQo+ICtNT0RVTEVfQVVUSE9SKCJNYW5pc2ggTmFyYW5pIDxtYW5pc2gu
+bmFyYW5pQHhpbGlueC5jb20+Iik7DQoNCg==
 
-> On Fri, 14 Aug 2020, Kalle Valo wrote:
->
->> Lee Jones <lee.jones@linaro.org> writes:
->>=20
->> > On Fri, 14 Aug 2020, Kalle Valo wrote:
->> >
->> >> Lee Jones <lee.jones@linaro.org> writes:
->> >>=20
->> >> > Fixes the following W=3D1 kernel build warning(s):
->> >> >
->> >> >  drivers/net/wireless/broadcom/b43/main.c: In function =E2=80=98b43=
-_dummy_transmission=E2=80=99:
->> >> >  drivers/net/wireless/broadcom/b43/main.c:785:3: warning: suggest
->> >> > braces around empty body in an =E2=80=98if=E2=80=99 statement [-Wem=
-pty-body]
->> >> >  drivers/net/wireless/broadcom/b43/main.c: In function =E2=80=98b43=
-_do_interrupt_thread=E2=80=99:
->> >> >  drivers/net/wireless/broadcom/b43/main.c:2017:3: warning: suggest
->> >> > braces around empty body in an =E2=80=98if=E2=80=99 statement [-Wem=
-pty-body]
->> >> >
->> >> > Cc: Kalle Valo <kvalo@codeaurora.org>
->> >> > Cc: "David S. Miller" <davem@davemloft.net>
->> >> > Cc: Jakub Kicinski <kuba@kernel.org>
->> >> > Cc: Martin Langer <martin-langer@gmx.de>
->> >> > Cc: Stefano Brivio <stefano.brivio@polimi.it>
->> >> > Cc: Michael Buesch <m@bues.ch>
->> >> > Cc: van Dyk <kugelfang@gentoo.org>
->> >> > Cc: Andreas Jaggi <andreas.jaggi@waterwave.ch>
->> >> > Cc: Albert Herranz <albert_herranz@yahoo.es>
->> >> > Cc: linux-wireless@vger.kernel.org
->> >> > Cc: b43-dev@lists.infradead.org
->> >> > Cc: netdev@vger.kernel.org
->> >> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->> >> > ---
->> >> >  drivers/net/wireless/broadcom/b43/main.c | 6 ++++--
->> >> >  1 file changed, 4 insertions(+), 2 deletions(-)
->> >>=20
->> >> Please don't copy the full directory structure to the title. I'll cha=
-nge
->> >> the title to more simple version:
->> >>=20
->> >> b43: add braces around empty statements
->> >
->> > This seems to go the other way.
->> >
->> > "net: wireless: b43" seems sensible.
->>=20
->> Sorry, not understanding what you mean here.
->
-> So I agree that:
->
->   "net: wireless: broadcom: b43: main"
->
-> ... seems unnecessarily long and verbose.  However, IMHO:
->
->   "b43:"
->
-> ... is too short and not forthcoming enough.  Obviously this fine when
-> something like `git log -- net/wireless`, as you already know what the
-> patch pertains to, however when someone who is not in the know (like I
-> would be) does `git log` and sees a "b43:" patch, they would have no
-> idea which subsystem this patch is adapting.  Even:
->
->   "wireless: b43:"
->
-> ... would be worlds better.
->
-> A Git log which omitted all subsystem tags would be of limited use.
-
-There are good reasons why the style is like it is. If I would start
-adding "wireless:" tags to the title it would clutter 'git log
---oneline' and gitk output, which I use all the time. And I'm not
-interested making my work harder, there would need to be really strong
-reasons why I would even recondiser changing it.
-
-BTW, this is also documented in our wiki:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes#commit_title_is_wrong
-
---=20
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
