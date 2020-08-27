@@ -2,137 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146DE2542D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB99C2542E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgH0J6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 05:58:17 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:51235 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726093AbgH0J6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 05:58:14 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592841600"; 
-   d="scan'208";a="98621923"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2020 17:58:10 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id E5A1F48990D7;
-        Thu, 27 Aug 2020 17:58:08 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 27 Aug 2020 17:58:09 +0800
-Subject: Re: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if
- DCACHE_REFERENCED is set
-To:     Dave Chinner <david@fromorbit.com>
-CC:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <y-goto@fujitsu.com>
-References: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
- <20200827063748.GA12096@dread.disaster.area>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <6b3b3439-2199-8f00-ceca-d65769e94fe0@cn.fujitsu.com>
-Date:   Thu, 27 Aug 2020 17:58:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.1
-MIME-Version: 1.0
-In-Reply-To: <20200827063748.GA12096@dread.disaster.area>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: E5A1F48990D7.AD97A
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+        id S1728487AbgH0J6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 05:58:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37222 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726826AbgH0J6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 05:58:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F27BAD72;
+        Thu, 27 Aug 2020 09:59:03 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH 0/4] qla2xxx: A couple crash fixes
+Date:   Thu, 27 Aug 2020 11:58:25 +0200
+Message-Id: <20200827095829.63871-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/27 14:37, Dave Chinner wrote:
-> On Fri, Aug 21, 2020 at 09:59:53AM +0800, Hao Li wrote:
->> Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
->> set from being killed, so the corresponding inode can't be evicted. If
->> the DAX policy of an inode is changed, we can't make policy changing
->> take effects unless dropping caches manually.
->>
->> This patch fixes this problem and flushes the inode to disk to prepare
->> for evicting it.
->>
->> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
->> ---
->>  fs/dcache.c | 3 ++-
->>  fs/inode.c  | 2 +-
->>  2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/dcache.c b/fs/dcache.c
->> index ea0485861d93..486c7409dc82 100644
->> --- a/fs/dcache.c
->> +++ b/fs/dcache.c
->> @@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
->>  	 */
->>  	smp_rmb();
->>  	d_flags = READ_ONCE(dentry->d_flags);
->> -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
->> +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
->> +			| DCACHE_DONTCACHE;
-> Seems reasonable, but you need to update the comment above as to
-> how this flag fits into this code....
+Hi,
 
-Yes. I will change it. Thanks.
+The first crash we observed is due memory corruption in the srb memory
+pool. Unforuntatly, I couldn't find the source of the problem but the
+workaround by resetting the cleanup callbacks 'fixes' this problem
+(patch #1). I think as intermeditate step this should be merged until
+the real cause can be identified.
 
->
->>  	/* Nothing to do? Dropping the reference was all we needed? */
->>  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
->> diff --git a/fs/inode.c b/fs/inode.c
->> index 72c4c347afb7..5218a8aebd7f 100644
->> --- a/fs/inode.c
->> +++ b/fs/inode.c
->> @@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
->>  	}
->>  
->>  	state = inode->i_state;
->> -	if (!drop) {
->> +	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
->>  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
->>  		spin_unlock(&inode->i_lock);
-> What's this supposed to do? We'll only get here with drop set if the
-> filesystem is mounting or unmounting.
+The second crash is due a race condition(?) in the firmware. The sts
+entries are not updated in time which leads to this crash pattern
+which several customers have reported:
 
-The variable drop will also be set to True if I_DONTCACHE is set on
-inode->i_state.
-Although mounting/unmounting will set the drop variable, it won't set
-I_DONTCACHE if I understand correctly. As a result,
-drop && (inode->i_state & I_DONTCACHE) will filter out mounting/unmounting.
+ #0 [c00000ffffd1bb80] scsi_dma_unmap at d00000001e4904d4 [scsi_mod]
+ #1 [c00000ffffd1bbe0] qla2x00_sp_compl at d0000000204803cc [qla2xxx]
+ #2 [c00000ffffd1bc20] qla24xx_process_response_queue at d0000000204c5810 [qla2xxx]
+ #3 [c00000ffffd1bd50] qla24xx_msix_rsp_q at d0000000204c8fd8 [qla2xxx]
+ #4 [c00000ffffd1bde0] __handle_irq_event_percpu at c000000000189510
+ #5 [c00000ffffd1bea0] handle_irq_event_percpu at c00000000018978c
+ #6 [c00000ffffd1bee0] handle_irq_event at c00000000018984c
+ #7 [c00000ffffd1bf10] handle_fasteoi_irq at c00000000018efc0
+ #8 [c00000ffffd1bf40] generic_handle_irq at c000000000187f10
+ #9 [c00000ffffd1bf60] __do_irq at c000000000018784
+ #10 [c00000ffffd1bf90] call_do_irq at c00000000002caa4
+ #11 [c00000ecca417a00] do_IRQ at c000000000018970
+ #12 [c00000ecca417a50] restore_check_irq_replay at c00000000000de98
 
-> In either case, why does
-> having I_DONTCACHE set require the inode to be written back here
-> before it is evicted from the cache?
-
-Mounting/unmounting won't execute the code snippet which is in that if
-statement, as I have explained above. However, If I_DONTCACHE is set, we
-have to execute this snippet to write back inode.
-
-I_DONTCACHE is set in d_mark_dontcache() which will be called in two
-situations:
-1. DAX policy is changed.
-2. The inode is read through bulkstat in XFS. See commit 5132ba8f2b77
-("xfs: don't cache inodes read through bulkstat") for more details.
-
-For the first case, we have to write back the inode together with its
-dirty pages before evicting.
-For the second case, I think it's also necessary to write back inode before
-evicting.
+From analyzing the crash dump it was clear that
+qla24xx_mbx_iocb_entry() calls sp->done (qla2x00_sp_compl) which
+crashes because the response is not a mailbox entry, it is a status
+entry. Patch #4 changes the process logic for mailbox commands so that
+the sp is parsed before calling the correct proccess function.
 
 Thanks,
-Hao Li
+Daniel
 
->
-> Cheers,
->
-> Dave.
+Daniel Wagner (4):
+  qla2xxx: Reset done and free callback pointer on release
+  qla2xxx: Simplify return value logic in qla2x00_get_sp_from_handle()
+  qla2xxx: Drop unused function argument from
+    qla2x00_get_sp_from_handle()
+  qla2xxx: Handle incorrect entry_type entries
 
+ drivers/scsi/qla2xxx/qla_gbl.h    |  3 +-
+ drivers/scsi/qla2xxx/qla_inline.h |  2 ++
+ drivers/scsi/qla2xxx/qla_isr.c    | 72 ++++++++++++++++++++++-----------------
+ drivers/scsi/qla2xxx/qla_mr.c     |  9 ++---
+ 4 files changed, 47 insertions(+), 39 deletions(-)
 
+-- 
+2.16.4
 
