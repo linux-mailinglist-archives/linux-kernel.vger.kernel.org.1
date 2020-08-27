@@ -2,115 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5673425462F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7679425464F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgH0Nnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:43:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60868 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727999AbgH0Ngu (ORCPT
+        id S1726087AbgH0N4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbgH0NkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:36:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598535410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oOvhPuNTJiPMVazrJGWO9y/T8cFLqtvdk4KglF4pjDM=;
-        b=gulb3h7THnCZMPo1zYnwXg7sOaNmVUVeJZYA8bWYO8kQlql7xB85j1ro7iH/q1y6NcCZUQ
-        p16xgB6ah8WWRpIhpmZr4yuneYNKuLdx+dnVAN/+YdMkzgIvzJu1/CIzOCyUH65CNeOZMe
-        uAYuJRO41Ub7VSrpbjlP5ddk0YrlgQ0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-54a-fpiGNQuki1Zwqscbjg-1; Thu, 27 Aug 2020 09:36:46 -0400
-X-MC-Unique: 54a-fpiGNQuki1Zwqscbjg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F10E185FD8E;
-        Thu, 27 Aug 2020 13:36:42 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-112-37.ams2.redhat.com [10.36.112.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 953DD10013D0;
-        Thu, 27 Aug 2020 13:36:30 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        "Yu\, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Thu, 27 Aug 2020 09:40:17 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DC9C061264;
+        Thu, 27 Aug 2020 06:40:17 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 17so3525369pfw.9;
+        Thu, 27 Aug 2020 06:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tLpdbfj/D8amTpZadRj9/ibQPTgmMGzwD3ljLxKfs8U=;
+        b=O1jV6yS7C1b++jbk1MGLo+upM5bsHCL4kmH3wuM2j/GLI5+r0Cw1wzfHbbMoFd1kX5
+         H/HoMwQOcFdwhbWnfIZFhkpPuj6OXLIM27eU56ttCxcoU78mGC6qiCL5WDkqIx1+JY9U
+         oLUhPlT2phKxqfsoKfrE4K4aRbehSukeZsW4pn5U5iqsBTJhqjrTTlCqwLy7dOyfLsOM
+         sxkIxbXwYZ+5jmmAmjSm/bQYlJHNSW7h1qBavuksRLSmGGXXIN9GtD7zhBRvGGgZvq2c
+         yCFWtiXAK3XUWGYjhC9jeb/qoAbByAGTqNO8euSTuYkhvlBBpxwj+xxvC+7/vrTFOwdg
+         bVxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tLpdbfj/D8amTpZadRj9/ibQPTgmMGzwD3ljLxKfs8U=;
+        b=lmzbnxL/uFoMU5ctCe800FOASoPVmEcLKi0HGHmMo7Sr9B7nHXtw+shTBx4G/OnQ5Z
+         KBq06d/A8Mz1xDYfUBHfz0UQYhS99gUI8TNVCeM3KNeh0PBGQvrldn8dLXavWhdaJjaW
+         PmDqfXj3x1l54GADCU4H8PHjD6b9Crrxemvp/QyUjWFyQsRm0VhTL4w0PscDKmPV1+xs
+         rejJFGADkSTGCX+ABwz9UKugP/jee9msg2sHhDXwr9HtolcCaP22QsTEwEKwyDuB8/CY
+         doYDJKKiN7IunAy1lp9Pa0oZvrhmHe9MHbdHKcYFI0nKOOy8GvklYcfFQviVHM2jEwGr
+         F0EQ==
+X-Gm-Message-State: AOAM532U6SLEswGkNHvkbdlVL1s+EIDx9L+GrKHY/EG2o5R0aHvmCd/U
+        4OBfmZ35yFZmdY6NA1ZlawWKs55PXJg=
+X-Google-Smtp-Source: ABdhPJzRsJ8waflL1U47V3fIdZjAlb0Xh05jt/eTEjTD0QidjSCjVYc9Jlv84XYT7aB68HeqmbQy8A==
+X-Received: by 2002:aa7:981a:: with SMTP id e26mr16520275pfl.25.1598535616520;
+        Thu, 27 Aug 2020 06:40:16 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a5sm2732051pfi.79.2020.08.27.06.40.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 06:40:16 -0700 (PDT)
+Subject: Re: [PATCH 1/1] watchdog: remove unneeded inclusion of
+ <uapi/linux/sched/types.h>
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for shadow stack
-References: <20200825002540.3351-1-yu-cheng.yu@intel.com>
-        <20200825002540.3351-26-yu-cheng.yu@intel.com>
-        <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
-        <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com>
-        <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
-        <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
-        <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
-        <ef7f9e24-f952-d78c-373e-85435f742688@intel.com>
-        <20200826164604.GW6642@arm.com>
-        <87ft892vvf.fsf@oldenburg2.str.redhat.com>
-        <20200826170841.GX6642@arm.com>
-        <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
-        <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
-Date:   Thu, 27 Aug 2020 15:36:28 +0200
-In-Reply-To: <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
-        (H. J. Lu's message of "Thu, 27 Aug 2020 06:28:56 -0700")
-Message-ID: <873648w6qr.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Ingo Molnar <mingo@kernel.org>,
+        linux-watchdog <linux-watchdog@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200827062154.1847-1-thunder.leizhen@huawei.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <55ad40ff-dcc1-5051-65d2-24201c471a8f@roeck-us.net>
+Date:   Thu, 27 Aug 2020 06:40:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200827062154.1847-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* H. J. Lu:
+On 8/26/20 11:21 PM, Zhen Lei wrote:
+> There has been no reference to "struct sched_param" since
+> commit 94beddacb53c ("sched,watchdog: Convert to sched_set_fifo()"), so
+> there's no need to include <uapi/linux/sched/types.h> any more, delete
+> it.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-> On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com> wrote:
->>
->> * Dave Martin:
->>
->> > You're right that this has implications: for i386, libc probably pulls
->> > more arguments off the stack than are really there in some situations.
->> > This isn't a new problem though.  There are already generic prctls with
->> > fewer than 4 args that are used on x86.
->>
->> As originally posted, glibc prctl would have to know that it has to pull
->> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  But
->> then the u64 argument is a problem for arch_prctl as well.
->>
->
-> Argument of ARCH_X86_CET_DISABLE is int and passed in register.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-The commit message and the C source say otherwise, I think (not sure
-about the C source, not a kernel hacker).
-
-Thanks,
-Florian
+> ---
+>  drivers/watchdog/watchdog_dev.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+> index 6798addabd5a067..0f18fa2433310b0 100644
+> --- a/drivers/watchdog/watchdog_dev.c
+> +++ b/drivers/watchdog/watchdog_dev.c
+> @@ -43,8 +43,6 @@
+>  #include <linux/watchdog.h>	/* For watchdog specific items */
+>  #include <linux/uaccess.h>	/* For copy_to_user/put_user/... */
+>  
+> -#include <uapi/linux/sched/types.h>	/* For struct sched_param */
+> -
+>  #include "watchdog_core.h"
+>  #include "watchdog_pretimeout.h"
+>  
+> 
 
