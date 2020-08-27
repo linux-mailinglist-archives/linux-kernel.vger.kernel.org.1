@@ -2,248 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2962543BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606F22543C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgH0K3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:29:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:56368 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgH0K3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:29:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 198D7101E;
-        Thu, 27 Aug 2020 03:29:47 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C33C03F66B;
-        Thu, 27 Aug 2020 03:29:43 -0700 (PDT)
-Subject: Re: [PATCH 20/35] arm64: mte: Add in-kernel MTE helpers
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1597425745.git.andreyknvl@google.com>
- <2cf260bdc20793419e32240d2a3e692b0adf1f80.1597425745.git.andreyknvl@google.com>
- <20200827093808.GB29264@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <588f3812-c9d0-8dbe-fce2-1ea89f558bd2@arm.com>
-Date:   Thu, 27 Aug 2020 11:31:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728310AbgH0KdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:33:06 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34138 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726938AbgH0KdF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:33:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598524383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVl6R1XwWuiNXr6HJxlhlEi6Bd9mQNsLml7GXEW9cbY=;
+        b=KBNvfVk4wLbCc/T/Ta6KRmLbtmKwx4c5cQKU+lHP2ah3eRmMe/+ly7owokNLHn6AsWnH6H
+        4UFjgt43kV2cz7sECxWNrZazCM+6NF0bQ59K7aW3JSHFVBA/S00qT4dkN2tNIVTdTWdv1Y
+        TJ/LQEVgniya4j01jEk3L1q/dP4UUiA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-bdNbO0IPPrq-tf0swTDF9Q-1; Thu, 27 Aug 2020 06:33:00 -0400
+X-MC-Unique: bdNbO0IPPrq-tf0swTDF9Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84F94803F58;
+        Thu, 27 Aug 2020 10:32:46 +0000 (UTC)
+Received: from gondolin (ovpn-113-237.ams2.redhat.com [10.36.113.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5D97196F3;
+        Thu, 27 Aug 2020 10:32:42 +0000 (UTC)
+Date:   Thu, 27 Aug 2020 12:32:40 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 01/16] s390/vfio-ap: add version vfio_ap module
+Message-ID: <20200827123240.42e0c787.cohuck@redhat.com>
+In-Reply-To: <ca016eca-1ee7-2d0f-c2ec-3ef147b6216a@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-2-akrowiak@linux.ibm.com>
+        <20200825120432.13a1b444.cohuck@redhat.com>
+        <ca016eca-1ee7-2d0f-c2ec-3ef147b6216a@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200827093808.GB29264@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Wed, 26 Aug 2020 10:49:47 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On 8/27/20 10:38 AM, Catalin Marinas wrote:
-> On Fri, Aug 14, 2020 at 07:27:02PM +0200, Andrey Konovalov wrote:
->> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
->> index 1c99fcadb58c..733be1cb5c95 100644
->> --- a/arch/arm64/include/asm/mte.h
->> +++ b/arch/arm64/include/asm/mte.h
->> @@ -5,14 +5,19 @@
->>  #ifndef __ASM_MTE_H
->>  #define __ASM_MTE_H
->>  
->> -#define MTE_GRANULE_SIZE	UL(16)
->> +#include <asm/mte_asm.h>
+> On 8/25/20 6:04 AM, Cornelia Huck wrote:
+> > On Fri, 21 Aug 2020 15:56:01 -0400
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> Let's set a version for the vfio_ap module so that automated regression
+> >> tests can determine whether dynamic configuration tests can be run or
+> >> not.
+> >>
+> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> >> ---
+> >>   drivers/s390/crypto/vfio_ap_drv.c | 2 ++
+> >>   1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+> >> index be2520cc010b..f4ceb380dd61 100644
+> >> --- a/drivers/s390/crypto/vfio_ap_drv.c
+> >> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+> >> @@ -17,10 +17,12 @@
+> >>   
+> >>   #define VFIO_AP_ROOT_NAME "vfio_ap"
+> >>   #define VFIO_AP_DEV_NAME "matrix"
+> >> +#define VFIO_AP_MODULE_VERSION "1.2.0"
+> >>   
+> >>   MODULE_AUTHOR("IBM Corporation");
+> >>   MODULE_DESCRIPTION("VFIO AP device driver, Copyright IBM Corp. 2018");
+> >>   MODULE_LICENSE("GPL v2");
+> >> +MODULE_VERSION(VFIO_AP_MODULE_VERSION);
+> >>   
+> >>   static struct ap_driver vfio_ap_drv;
+> >>     
+> > Setting a version manually has some drawbacks:
+> > - tools wanting to check for capabilities need to keep track which
+> >    versions support which features
+> > - you need to remember to actually bump the version when adding a new,
+> >    visible feature
+> > (- selective downstream backports may get into a pickle, but that's
+> > arguably not your problem)
+> >
+> > Is there no way for a tool to figure out whether this is supported?
+> > E.g., via existence of a sysfs file, or via a known error that will
+> > occur. If not, it's maybe better to expose known capabilities via a
+> > generic interface.  
 > 
-> So the reason for this move is to include it in asm/cache.h. Fine by
-> me but...
-> 
->>  #define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
->>  #define MTE_TAG_SHIFT		56
->>  #define MTE_TAG_SIZE		4
->> +#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
->> +#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
-> 
-> ... I'd rather move all these definitions in a file with a more
-> meaningful name like mte-def.h. The _asm implies being meant for .S
-> files inclusion which isn't the case.
-> 
+> This patch series introduces a new mediated device sysfs attribute,
+> guest_matrix, so the automated tests could check for the existence
+> of that interface. The problem I have with that is it will work for
+> this version of the vfio_ap device driver - which may be all that is
+> ever needed - but does not account for future enhancements
+> which may need to be detected by tooling or automated tests.
+> It seems to me that regardless of how a tool detects whether
+> a feature is supported or not, it will have to keep track of that
+> somehow.
 
-mte-asm.h was originally called mte_helper.h hence it made sense to have these
-defines here. But I agree with your proposal it makes things more readable and
-it is in line with the rest of the arm64 code (e.g. page-def.h).
+Which enhancements? If you change the interface in an incompatible way,
+you have a different problem anyway. If someone trying to use the
+enhanced version of the interface gets an error on a kernel providing
+an older version of the interface, that's a reasonable way to discover
+support.
 
-We should as well update the commit message accordingly.
+I think "discover device driver capabilities by probing" is less
+burdensome and error prone than trying to match up capabilities with a
+version number. If you expose a version number, a tool would still have
+to probe that version number, and then consult with a list of features
+per version, which can easily go out of sync.
 
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index eb39504e390a..e2d708b4583d 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -72,6 +74,47 @@ int memcmp_pages(struct page *page1, struct page *page2)
->>  	return ret;
->>  }
->>  
->> +u8 mte_get_mem_tag(void *addr)
->> +{
->> +	if (system_supports_mte())
->> +		addr = mte_assign_valid_ptr_tag(addr);
-> 
-> The mte_assign_valid_ptr_tag() is slightly misleading. All it does is
-> read the allocation tag from memory.
-> 
-> I also think this should be inline asm, possibly using alternatives.
-> It's just an LDG instruction (and it saves us from having to invent a
-> better function name).
-> 
+> Can you provide more details about this generic interface of
+> which you speak?
 
-Yes, I agree, I implemented this code in the early days and never got around to
-refactor it.
+If that is really needed, I'd probably do a driver sysfs attribute that
+exposes a list of documented capabilities (as integer values, or as a
+bit.) But since tools can simply check for guest_matrix to find out
+about support for this feature here, it seems like overkill to me --
+unless you have a multitude of features waiting in queue that need to
+be made discoverable.
 
->> +
->> +	return 0xF0 | mte_get_ptr_tag(addr);
->> +}
->> +
->> +u8 mte_get_random_tag(void)
->> +{
->> +	u8 tag = 0xF;
->> +
->> +	if (system_supports_mte())
->> +		tag = mte_get_ptr_tag(mte_assign_random_ptr_tag(NULL));
-> 
-> Another alternative inline asm with an IRG instruction.
-> 
-
-As per above.
-
->> +
->> +	return 0xF0 | tag;
->> +}
->> +
->> +void * __must_check mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->> +{
->> +	void *ptr = addr;
->> +
->> +	if ((!system_supports_mte()) || (size == 0))
->> +		return addr;
->> +
->> +	tag = 0xF0 | (tag & 0xF);
->> +	ptr = (void *)__tag_set(ptr, tag);
->> +	size = ALIGN(size, MTE_GRANULE_SIZE);
-> 
-> I think aligning the size is dangerous. Can we instead turn it into a
-> WARN_ON if not already aligned? At a quick look, the callers of
-> kasan_{un,}poison_memory() already align the size.
-> 
-
-The size here is used only for tagging purposes and if we want to tag a
-subgranule amount of memory we end up tagging the granule anyway. Why do you
-think it can be dangerous?
-
-Anyway I agree on the fact that is seems redundant, a WARN_ON here should be
-sufficient.
-
->> +
->> +	mte_assign_mem_tag_range(ptr, size);
->> +
->> +	/*
->> +	 * mte_assign_mem_tag_range() can be invoked in a multi-threaded
->> +	 * context, ensure that tags are written in memory before the
->> +	 * reference is used.
->> +	 */
->> +	smp_wmb();
->> +
->> +	return ptr;
-> 
-> I'm not sure I understand the barrier here. It ensures the relative
-> ordering of memory (or tag) accesses on a CPU as observed by other CPUs.
-> While the first access here is setting the tag, I can't see what other
-> access on _this_ CPU it is ordered with.
-> 
-
-You are right it can be removed. I was just overthinking here.
-
->> +}
->> +
->>  static void update_sctlr_el1_tcf0(u64 tcf0)
->>  {
->>  	/* ISB required for the kernel uaccess routines */
->> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
->> index 03ca6d8b8670..8c743540e32c 100644
->> --- a/arch/arm64/lib/mte.S
->> +++ b/arch/arm64/lib/mte.S
->> @@ -149,3 +149,44 @@ SYM_FUNC_START(mte_restore_page_tags)
->>  
->>  	ret
->>  SYM_FUNC_END(mte_restore_page_tags)
->> +
->> +/*
->> + * Assign pointer tag based on the allocation tag
->> + *   x0 - source pointer
->> + * Returns:
->> + *   x0 - pointer with the correct tag to access memory
->> + */
->> +SYM_FUNC_START(mte_assign_valid_ptr_tag)
->> +	ldg	x0, [x0]
->> +	ret
->> +SYM_FUNC_END(mte_assign_valid_ptr_tag)
->> +
->> +/*
->> + * Assign random pointer tag
->> + *   x0 - source pointer
->> + * Returns:
->> + *   x0 - pointer with a random tag
->> + */
->> +SYM_FUNC_START(mte_assign_random_ptr_tag)
->> +	irg	x0, x0
->> +	ret
->> +SYM_FUNC_END(mte_assign_random_ptr_tag)
-> 
-> As I said above, these two can be inline asm.
-> 
-
-Agreed.
-
->> +
->> +/*
->> + * Assign allocation tags for a region of memory based on the pointer tag
->> + *   x0 - source pointer
->> + *   x1 - size
->> + *
->> + * Note: size is expected to be MTE_GRANULE_SIZE aligned
->> + */
->> +SYM_FUNC_START(mte_assign_mem_tag_range)
->> +	/* if (src == NULL) return; */
->> +	cbz	x0, 2f
->> +	/* if (size == 0) return; */
-> 
-> You could skip the cbz here and just document that the size should be
-> non-zero and aligned. The caller already takes care of this check.
->
-
-I would prefer to keep the check here, unless there is a valid reason, since
-allocate(0) is a viable option hence tag(x, 0) should be as well. The caller
-takes care of it in one place, today, but I do not know where the API will be
-used in future.
-
->> +	cbz	x1, 2f
->> +1:	stg	x0, [x0]
->> +	add	x0, x0, #MTE_GRANULE_SIZE
->> +	sub	x1, x1, #MTE_GRANULE_SIZE
->> +	cbnz	x1, 1b
->> +2:	ret
->> +SYM_FUNC_END(mte_assign_mem_tag_range)
-> 
-
--- 
-Regards,
-Vincenzo
