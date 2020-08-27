@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C43253DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF227253DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgH0GgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727957AbgH0GgE (ORCPT
+        id S1727813AbgH0Ghy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:37:54 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:56106 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726395AbgH0Ghy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:36:04 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9748BC061263
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:36:03 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b18so4186927wrs.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=akR5LsWB+L7ENwYAw9D4wcSK8jvQH6F09dbiIXvyFCk=;
-        b=H8vbnYW/S+H7tZZYYO5Fs3PPBaCtYQdePiDEDqJOjsMv5DF6G2r7fYacs24CCUEaAt
-         M3e1iWPRZPukneXLcYdSJGgvQQ826VwRp17Sv20+QJTNJvXWHfkZABR3zVA0DWOcTzdg
-         WEgIW3cZElL+bglDngYnh1LuIaHi/EV/2I1iKVO3m3j4xIQwohTnASGkYv8BwxHFT6Tg
-         htWl0SMTHiOOLoP79DFGPB7xALFkOssU25a1B7AThZesH2WFhTlnyAwyQG09UCxIlfQt
-         dDsHe95PD32mdOGZohe5PKfcsO5FWScCiMzdkncTi71joxY8dybGZxXjcXIt1WNujlh7
-         /dkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=akR5LsWB+L7ENwYAw9D4wcSK8jvQH6F09dbiIXvyFCk=;
-        b=EjTfjZpHv9+pY6azRrDJjyIzA6J+X1zhsKFV5gZ+O+XQ5p+JzTN4H9JIuTxPZGq0P9
-         1+MAANLdAlHK0c6S5lA4GE4WncwePkQzdvXrLs76eDZhZyCKb1/KHS4bCI8IMX1vBXn8
-         41Pt6iUzSQTWHil8OrM+5DpJtLG8zNdBFDUIs9F3M8+i7Mn3xrd1T9VpPQ/NsS/5gVe0
-         cvDVBLO43Frwr7aS5Y7gwcKFxnRNlyWIvAqRrmI0VKFrvPpT77OasbA60hYefMajPJPb
-         uxk9Z8Ff3h8h1Dh7b8Rsx4RQbJ1Au94uNHfMQEqwQevNRoHWH1NPRWMnCFpr0yuvbR+p
-         YeBA==
-X-Gm-Message-State: AOAM533lEwInYuUeoQd8TrYXA4fKGV+QevseLqu9HPukeRgWVexA+77s
-        hMIkxTULMn1GB8E0d1mbihnqsw==
-X-Google-Smtp-Source: ABdhPJyUoPKR71NVAZJhTV3U26Io2C1TwglVVoLwoSOZIX2rFDKJaRv5rbS/qFs4nDKGnwNHN81ydA==
-X-Received: by 2002:a05:6000:1c7:: with SMTP id t7mr879463wrx.145.1598510162237;
-        Wed, 26 Aug 2020 23:36:02 -0700 (PDT)
-Received: from dell ([91.110.221.141])
-        by smtp.gmail.com with ESMTPSA id q11sm3530317wrw.61.2020.08.26.23.36.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 23:36:01 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 07:35:59 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Maya Erez <merez@codeaurora.org>, wil6210@qti.qualcomm.com
-Subject: Re: [PATCH 12/30] wireless: ath: wil6210: wmi: Correct misnamed
- function parameter 'ptr_'
-Message-ID: <20200827063559.GP3248864@dell>
-References: <20200826093401.1458456-13-lee.jones@linaro.org>
- <20200826155625.A5A88C433A1@smtp.codeaurora.org>
+        Thu, 27 Aug 2020 02:37:54 -0400
+Received: from dread.disaster.area (pa49-181-146-199.pa.nsw.optusnet.com.au [49.181.146.199])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id A365D823E11;
+        Thu, 27 Aug 2020 16:37:49 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kBBXg-00054k-Du; Thu, 27 Aug 2020 16:37:48 +1000
+Date:   Thu, 27 Aug 2020 16:37:48 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, y-goto@fujitsu.com
+Subject: Re: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if
+ DCACHE_REFERENCED is set
+Message-ID: <20200827063748.GA12096@dread.disaster.area>
+References: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200826155625.A5A88C433A1@smtp.codeaurora.org>
+In-Reply-To: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=KcmsTjQD c=1 sm=1 tr=0 cx=a_idp_d
+        a=GorAHYkI+xOargNMzM6qxQ==:117 a=GorAHYkI+xOargNMzM6qxQ==:17
+        a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=omOdbC7AAAAA:8 a=7-415B0cAAAA:8
+        a=by_5GhPrgXZcAFhFJM8A:9 a=CjuIK1q_8ugA:10 a=baC4JDFNLZpnPwus_NF9:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020, Kalle Valo wrote:
-
-> Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Aug 21, 2020 at 09:59:53AM +0800, Hao Li wrote:
+> Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
+> set from being killed, so the corresponding inode can't be evicted. If
+> the DAX policy of an inode is changed, we can't make policy changing
+> take effects unless dropping caches manually.
 > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/net/wireless/ath/wil6210/wmi.c:279: warning: Function parameter or member 'ptr_' not described in 'wmi_buffer_block'
-> >  drivers/net/wireless/ath/wil6210/wmi.c:279: warning: Excess function parameter 'ptr' description in 'wmi_buffer_block'
-> > 
-> > Cc: Maya Erez <merez@codeaurora.org>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: wil6210@qti.qualcomm.com
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> This patch fixes this problem and flushes the inode to disk to prepare
+> for evicting it.
 > 
-> Failed to apply:
+> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+> ---
+>  fs/dcache.c | 3 ++-
+>  fs/inode.c  | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 > 
-> error: patch failed: drivers/net/wireless/ath/wil6210/wmi.c:266
-> error: drivers/net/wireless/ath/wil6210/wmi.c: patch does not apply
-> stg import: Diff does not apply cleanly
-> 
-> Patch set to Changes Requested.
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index ea0485861d93..486c7409dc82 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
+>  	 */
+>  	smp_rmb();
+>  	d_flags = READ_ONCE(dentry->d_flags);
+> -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
+> +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
+> +			| DCACHE_DONTCACHE;
 
-Are you applying them in order?
+Seems reasonable, but you need to update the comment above as to
+how this flag fits into this code....
 
-It may be affected by:
+>  	/* Nothing to do? Dropping the reference was all we needed? */
+>  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 72c4c347afb7..5218a8aebd7f 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
+>  	}
+>  
+>  	state = inode->i_state;
+> -	if (!drop) {
+> +	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
+>  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
+>  		spin_unlock(&inode->i_lock);
 
- wireless: ath: wil6210: wmi: Fix formatting and demote non-conforming function headers
+What's this supposed to do? We'll only get here with drop set if the
+filesystem is mounting or unmounting. In either case, why does
+having I_DONTCACHE set require the inode to be written back here
+before it is evicted from the cache?
 
-I'll also rebase onto the latest -next and resubmit.
+Cheers,
 
+Dave.
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Dave Chinner
+david@fromorbit.com
