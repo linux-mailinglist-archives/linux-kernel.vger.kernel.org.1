@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A672550E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706FE2550E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgH0WC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgH0WC6 (ORCPT
+        id S1727995AbgH0WDa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 18:03:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:52418 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727944AbgH0WD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:02:58 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37173C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:02:57 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id g6so8144767ljn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oIteJ0nAuEK7c0jrgV/TY1J0yNIYT1Aa4FeQ/EkIGNk=;
-        b=CdW/Xrj6rL6bkuN/g50aFJGI6xoJ+5T49vg1wH+aQYG5ODhBGVczIbk++rbvyrDGYR
-         zXgdKvxaprEO4CLFluIBYv2y5NaeHOL1Eacm//imWbUs6873VwtRMAnIfHL26juyLg17
-         qPiN62Oq+Eo0JAmULNBvMD9zvjsnhjUd+sLnJS0ypKOdb3vdvON1ClkSg/es/aj9txbM
-         SuU5Xb6OOrjF7hd4m8389kqNE50hw/xI9JurBZFe066RBsnP3Oy6b4qIZPkpMjmSoUW8
-         AB60oL9F+J3vyBy51nrVCkj5az5PocK+MV6gAZ4HR1xzF+yAtr2PihQl1lgr8fOLfUjW
-         q7ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oIteJ0nAuEK7c0jrgV/TY1J0yNIYT1Aa4FeQ/EkIGNk=;
-        b=J9+5OjQ2/FeLcBUs7USmltSOcGmDaU+OtUhRnqEu82VoNSh0t9JM1BAn1n9VLs3eAJ
-         AMTQ9i0c2zgi4+st3oT7mAA1VgWGFUn60Foogl0ItyezoJwDWeRd+wK2sWGaooJ+DcfF
-         GTgW+8jFcO6GsDgBUAmK5WiXZ7OgldXuCTF4CODA3WtoX8PdUHrb+DG+8erUcBP4m+Hw
-         csNYaoJCc4rsyFA1rA20d+jrTCp7ZCB3/52+Oo+GFPVdQ1A+cAiwfj5fTBVJ/xT5oiFY
-         l4MEB27nmA6vswrcI0zBzrGYW1d8i1yL7+haBCrw55rKW8yI1AomWMvJR7AN+F2olgIC
-         nxSg==
-X-Gm-Message-State: AOAM533nxB70XAiiGXWQC7NPwyY+VItd9TlSOLP/zlp12lTo+4TA53K+
-        FRNpLlWYlCdUjAvBYyDmE1GCkad4KAEACDqick2qUg==
-X-Google-Smtp-Source: ABdhPJz/5eAda68Aw3Kbkm+VrYPMRlunF17/JtlXd79RvIfiphEtJwwmiqJCRK30ZKlQW2dhhF1hEdaT2WgqHZVd/ic=
-X-Received: by 2002:a05:651c:233:: with SMTP id z19mr11044590ljn.347.1598565775121;
- Thu, 27 Aug 2020 15:02:55 -0700 (PDT)
+        Thu, 27 Aug 2020 18:03:27 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-59-OGrq4_s1M6OWOpSfz2k_Ug-1; Thu, 27 Aug 2020 23:03:21 +0100
+X-MC-Unique: OGrq4_s1M6OWOpSfz2k_Ug-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 27 Aug 2020 23:03:20 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 27 Aug 2020 23:03:20 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+CC:     Alex Dewar <alex.dewar90@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        cocci <cocci@systeme.lip6.fr>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "accessrunner-general@lists.sourceforge.net" 
+        <accessrunner-general@lists.sourceforge.net>
+Subject: RE: [Cocci] [PATCH] usb: atm: don't use snprintf() for sysfs attrs
+Thread-Topic: [Cocci] [PATCH] usb: atm: don't use snprintf() for sysfs attrs
+Thread-Index: AQHWfLDNatYqQRMSW0+Lm7S5UM8VU6lMgaZA
+Date:   Thu, 27 Aug 2020 22:03:20 +0000
+Message-ID: <c3926f18f98e446daad957cd66a94890@AcuMS.aculab.com>
+References: <20200824222322.22962-1-alex.dewar90@gmail.com>
+         <48f2dc90-7852-eaf1-55d7-2c85cf954688@rasmusvillemoes.dk>
+         <20200827071537.GA168593@kroah.com>
+         <20200827131819.7rcl2f5js3hkoqj2@lenovo-laptop>
+         <def24e9e-018c-9712-0d07-d4cbc84f07d9@rasmusvillemoes.dk>
+         <20200827144846.yauuttjaqtxaldxg@lenovo-laptop>
+         <5d1dfb9b031130d4d20763ec621233a19d6a88a2.camel@perches.com>
+         <alpine.DEB.2.22.394.2008272141220.2482@hadrien>
+ <cf9b1ea3716305447be43bffc8f90b7ef7292f5b.camel@perches.com>
+In-Reply-To: <cf9b1ea3716305447be43bffc8f90b7ef7292f5b.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20200827175215.319780-1-guro@fb.com> <20200827175215.319780-5-guro@fb.com>
-In-Reply-To: <20200827175215.319780-5-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 27 Aug 2020 15:02:43 -0700
-Message-ID: <CALvZod4RrNBnr3+sWZybUoovYJcGe0TS8i_G+ymgAoV9KojU_A@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/4] mm: kmem: enable kernel memcg accounting from
- interrupt contexts
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:52 AM Roman Gushchin <guro@fb.com> wrote:
->
-> If a memcg to charge can be determined (using remote charging API),
-> there are no reasons to exclude allocations made from an interrupt
-> context from the accounting.
->
-> Such allocations will pass even if the resulting memcg size will
-> exceed the hard limit, but it will affect the application of the
-> memory pressure and an inability to put the workload under the limit
-> will eventually trigger the OOM.
->
-> To use active_memcg() helper, memcg_kmem_bypass() is moved back
-> to memcontrol.c.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+From: Joe Perches
+> Sent: 27 August 2020 21:30
+...
+> Perhaps what's necessary is to find any
+> appropriate .show function and change
+> any use of strcpy/sprintf within those
+> function to some other name.
+> 
+> For instance:
+> 
+> drivers/isdn/mISDN/core.c-static ssize_t name_show(struct device *dev,
+> drivers/isdn/mISDN/core.c-                       struct device_attribute *attr, char *buf)
+> drivers/isdn/mISDN/core.c-{
+> drivers/isdn/mISDN/core.c:      strcpy(buf, dev_name(dev));
+> drivers/isdn/mISDN/core.c-      return strlen(buf);
+> drivers/isdn/mISDN/core.c-}
+> drivers/isdn/mISDN/core.c-static DEVICE_ATTR_RO(name);
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+That form ends up calculating the string length twice.
+Better would be:
+	len = strlen(msg);
+	memcpy(buf, msg, len);
+	return len;
+
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
