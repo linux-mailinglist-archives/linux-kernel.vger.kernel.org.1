@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01199254008
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3A8253FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgH0HyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727048AbgH0HyR (ORCPT
+        id S1728450AbgH0Hyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:54:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36502 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgH0HyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D57EC061264;
-        Thu, 27 Aug 2020 00:54:17 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 07:54:14 -0000
+        Thu, 27 Aug 2020 03:54:18 -0400
+Date:   Thu, 27 Aug 2020 07:54:15 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1598514855;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BmdgD8aRx+NkXrffxySXTl0IhoJmFxLLR11F0fHAfoA=;
-        b=WCV1mi5cLPrURoLGTJZWjt3waIVtqs512M1B3jNDZrIownPEQSWlH6bLcpZkoCHsx1qPiM
-        T9aCs498D6YKp68mP/3eW5sFCk3ns8CRRvRLMYrfkDz/KFbMbCOeAy6BOmZWM3q0OefHLO
-        H092AzHn0SzbhGcqF5G5pEvuB4FHujGF7Q9cdXbXPKjKl7guXwPbKhxjAQvPPDEA8Ciueh
-        UjyGA0unV4T00KdnjRsQFfu71okHylwiKUshiRsCnNE6wETTdsakHNgTqWnNQrp+kMqqPh
-        Dj+ypOqfyPOyJYNCyRzP/oyDknnmHLS4M/38sMaXXcAQ01ue2TD5iHKA56UX2A==
+        bh=2wbn1+5gr2L/3s1Z4vMTGKHm4sfvoBAtLywzf7x6kL4=;
+        b=Fhk+wVb8jjYx3+gXDuU/cPbpxCoJ/Jvz3qTjff81l9lHf75dFz3INASMcir+E6E9UwM3IX
+        epL+86yAc/xl5BUrBMY9Gq3x8MExfATveoH+PtfY5oSj4a+KG8a37VWWh6SGQzLRX/3GsJ
+        zW9jZpxGw+CU3lTXAYwYJegBIqpCPwfh1hlky8jPPDTcmMvhQJ6Mb8O908+WD/Mb/vouZ5
+        DNk4JEwaKLG0cUC6K1V3kAskKr9qsMLuhQ/Ik6BGMZBLCTQhj0m9y19N6dfb+PE5EdFxLL
+        iEwI1kOj6H03uznFvnkqZ0CYFyj1tr2NOmVcSb4hgsTV2fgDAKuNlnvOjqZzEQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1598514855;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,20 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BmdgD8aRx+NkXrffxySXTl0IhoJmFxLLR11F0fHAfoA=;
-        b=cXOXNSJyG94rIBCrdoqG5I0PxzOXkkuCLJNS4TnYHsYqzbVbAO2+8rJHQVgghkdJSPTLO0
-        IRKJ4/hmWo1Jx2Dg==
+        bh=2wbn1+5gr2L/3s1Z4vMTGKHm4sfvoBAtLywzf7x6kL4=;
+        b=qJzIge7sMJjx9ecpkws/CY4D+YLlEMc59FvaPMZt3pFTrs608Kxe3rdjgx9jXg9l3TW35i
+        7JXpdIiuc4P9bMCw==
 From:   "tip-bot2 for Boqun Feng" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] lockdep/selftest: Introduce recursion3
+Subject: [tip: locking/core] locking/selftest: Add test cases for queued_read_lock()
 Cc:     Boqun Feng <boqun.feng@gmail.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200807074238.1632519-20-boqun.feng@gmail.com>
-References: <20200807074238.1632519-20-boqun.feng@gmail.com>
+In-Reply-To: <20200807074238.1632519-19-boqun.feng@gmail.com>
+References: <20200807074238.1632519-19-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Message-ID: <159851485457.20229.17439142206591711184.tip-bot2@tip-bot2>
+Message-ID: <159851485506.20229.16118500942576736080.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,95 +58,163 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     96a16f45aed89cf024606a11679b0609d09552c7
-Gitweb:        https://git.kernel.org/tip/96a16f45aed89cf024606a11679b0609d09552c7
+Commit-ID:     ad56450db86413ff911eb527b5a49e04a4345e61
+Gitweb:        https://git.kernel.org/tip/ad56450db86413ff911eb527b5a49e04a4345e61
 Author:        Boqun Feng <boqun.feng@gmail.com>
-AuthorDate:    Fri, 07 Aug 2020 15:42:38 +08:00
+AuthorDate:    Fri, 07 Aug 2020 15:42:37 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 26 Aug 2020 12:42:08 +02:00
+CommitterDate: Wed, 26 Aug 2020 12:42:07 +02:00
 
-lockdep/selftest: Introduce recursion3
+locking/selftest: Add test cases for queued_read_lock()
 
-Add a test case shows that USED_IN_*_READ and ENABLE_*_READ can cause
-deadlock too.
+Add two self test cases for the following case:
+
+	P0:			P1:			P2:
+
+				<in irq handler>
+	spin_lock_irq(&slock)	read_lock(&rwlock)
+							write_lock_irq(&rwlock)
+	read_lock(&rwlock)	spin_lock(&slock)
+
+, which is a deadlock, as the read_lock() on P0 cannot get the lock
+because of the fairness.
+
+	P0:			P1:			P2:
+
+	<in irq handler>
+	spin_lock(&slock)	read_lock(&rwlock)
+							write_lock(&rwlock)
+	read_lock(&rwlock)	spin_lock_irq(&slock)
+
+, which is not a deadlock, as the read_lock() on P0 can get the lock
+because it could use the unfair fastpass.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200807074238.1632519-20-boqun.feng@gmail.com
+Link: https://lkml.kernel.org/r/20200807074238.1632519-19-boqun.feng@gmail.com
 ---
- lib/locking-selftest.c | 55 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 55 insertions(+)
+ lib/locking-selftest.c | 104 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 104 insertions(+)
 
 diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 17f8f6f..a899b3f 100644
+index 4264cf4..17f8f6f 100644
 --- a/lib/locking-selftest.c
 +++ b/lib/locking-selftest.c
-@@ -1249,6 +1249,60 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
- #include "locking-selftest-wlock.h"
- GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_wlock)
+@@ -2201,6 +2201,108 @@ static void ww_tests(void)
+ 	pr_cont("\n");
+ }
  
-+#undef E1
-+#undef E2
-+#undef E3
-+/*
-+ * read-lock / write-lock recursion that is unsafe.
-+ *
-+ * A is a ENABLED_*_READ lock
-+ * B is a USED_IN_*_READ lock
-+ *
-+ * read_lock(A);
-+ *			write_lock(B);
-+ * <interrupt>
-+ * read_lock(B);
-+ * 			write_lock(A); // if this one is read_lock(), no deadlock
-+ */
-+
-+#define E1()				\
-+					\
-+	IRQ_DISABLE();			\
-+	WL(B);				\
-+	LOCK(A);			\
-+	UNLOCK(A);			\
-+	WU(B);				\
-+	IRQ_ENABLE();
-+
-+#define E2()				\
-+					\
-+	RL(A);				\
-+	RU(A);				\
-+
-+#define E3()				\
-+					\
-+	IRQ_ENTER();			\
-+	RL(B);				\
-+	RU(B);				\
-+	IRQ_EXIT();
 +
 +/*
-+ * Generate 24 testcases:
++ * <in hardirq handler>
++ * read_lock(&A);
++ *			<hardirq disable>
++ *			spin_lock(&B);
++ * spin_lock(&B);
++ *			read_lock(&A);
++ *
++ * is a deadlock.
 + */
-+#include "locking-selftest-hardirq.h"
-+#include "locking-selftest-rlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_rlock)
++static void queued_read_lock_hardirq_RE_Er(void)
++{
++	HARDIRQ_ENTER();
++	read_lock(&rwlock_A);
++	LOCK(B);
++	UNLOCK(B);
++	read_unlock(&rwlock_A);
++	HARDIRQ_EXIT();
 +
-+#include "locking-selftest-wlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_wlock)
++	HARDIRQ_DISABLE();
++	LOCK(B);
++	read_lock(&rwlock_A);
++	read_unlock(&rwlock_A);
++	UNLOCK(B);
++	HARDIRQ_ENABLE();
++}
 +
-+#include "locking-selftest-softirq.h"
-+#include "locking-selftest-rlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_rlock)
++/*
++ * <in hardirq handler>
++ * spin_lock(&B);
++ *			<hardirq disable>
++ *			read_lock(&A);
++ * read_lock(&A);
++ *			spin_lock(&B);
++ *
++ * is not a deadlock.
++ */
++static void queued_read_lock_hardirq_ER_rE(void)
++{
++	HARDIRQ_ENTER();
++	LOCK(B);
++	read_lock(&rwlock_A);
++	read_unlock(&rwlock_A);
++	UNLOCK(B);
++	HARDIRQ_EXIT();
 +
-+#include "locking-selftest-wlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_wlock)
++	HARDIRQ_DISABLE();
++	read_lock(&rwlock_A);
++	LOCK(B);
++	UNLOCK(B);
++	read_unlock(&rwlock_A);
++	HARDIRQ_ENABLE();
++}
 +
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define I_SPINLOCK(x)	lockdep_reset_lock(&lock_##x.dep_map)
- # define I_RWLOCK(x)	lockdep_reset_lock(&rwlock_##x.dep_map)
-@@ -2413,6 +2467,7 @@ void locking_selftest(void)
++/*
++ * <hardirq disable>
++ * spin_lock(&B);
++ *			read_lock(&A);
++ *			<in hardirq handler>
++ *			spin_lock(&B);
++ * read_lock(&A);
++ *
++ * is a deadlock. Because the two read_lock()s are both non-recursive readers.
++ */
++static void queued_read_lock_hardirq_inversion(void)
++{
++
++	HARDIRQ_ENTER();
++	LOCK(B);
++	UNLOCK(B);
++	HARDIRQ_EXIT();
++
++	HARDIRQ_DISABLE();
++	LOCK(B);
++	read_lock(&rwlock_A);
++	read_unlock(&rwlock_A);
++	UNLOCK(B);
++	HARDIRQ_ENABLE();
++
++	read_lock(&rwlock_A);
++	read_unlock(&rwlock_A);
++}
++
++static void queued_read_lock_tests(void)
++{
++	printk("  --------------------------------------------------------------------------\n");
++	printk("  | queued read lock tests |\n");
++	printk("  ---------------------------\n");
++	print_testname("hardirq read-lock/lock-read");
++	dotest(queued_read_lock_hardirq_RE_Er, FAILURE, LOCKTYPE_RWLOCK);
++	pr_cont("\n");
++
++	print_testname("hardirq lock-read/read-lock");
++	dotest(queued_read_lock_hardirq_ER_rE, SUCCESS, LOCKTYPE_RWLOCK);
++	pr_cont("\n");
++
++	print_testname("hardirq inversion");
++	dotest(queued_read_lock_hardirq_inversion, FAILURE, LOCKTYPE_RWLOCK);
++	pr_cont("\n");
++}
++
+ void locking_selftest(void)
+ {
+ 	/*
+@@ -2318,6 +2420,8 @@ void locking_selftest(void)
+ 	/*
+ 	 * queued_read_lock() specific test cases can be put here
+ 	 */
++	if (IS_ENABLED(CONFIG_QUEUED_RWLOCKS))
++		queued_read_lock_tests();
  
- 	DO_TESTCASE_6x2x2RW("irq read-recursion", irq_read_recursion);
- 	DO_TESTCASE_6x2x2RW("irq read-recursion #2", irq_read_recursion2);
-+	DO_TESTCASE_6x2x2RW("irq read-recursion #3", irq_read_recursion3);
- 
- 	ww_tests();
- 
+ 	if (unexpected_testcase_failures) {
+ 		printk("-----------------------------------------------------------------\n");
