@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9AA254574
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE80A254583
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgH0My7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728973AbgH0Mym (ORCPT
+        id S1729023AbgH0M6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:58:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19862 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726834AbgH0M5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:54:42 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09A0C061264;
-        Thu, 27 Aug 2020 05:54:41 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id a65so5064001wme.5;
-        Thu, 27 Aug 2020 05:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a5lpHFvSWQoGrjybaXmlV69Axq+442tGTTEhKXzXB/M=;
-        b=FGT1CbGRN8nWIZimQQJFHaFlgGbXUWXcohmF6aYnzTMEIdoXLV8ASHcjH/rftf8dPu
-         05h7ynqky+tK0sVnESIUNMOkwDJXKaIKOOjfk8ZzK2aS6ItFzfPK1RiS8Sgq9gCPkksa
-         s87z1TYPj+YUb/w6uaLEL+ETfgmlzhXCU10ucGJlzNXsBINUdbYoCrfyflOTHYw+cbz4
-         RAdiDof8rxMnyZ5hwply2FrDERb1PY3A2wl1RdJOsOW1zwqi8pXPitwO0zzOFjipVey5
-         oUPQnIgnx+nqlo3zwpUr7dRtVO/mC+2RV5+VHT1jDZZ+PWuU7gSvtmMNjL2CWO/kpKhp
-         IGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a5lpHFvSWQoGrjybaXmlV69Axq+442tGTTEhKXzXB/M=;
-        b=MJE0yRwoQzsnxhBdyQfT/5MJsLRMJJNbLzi6l5vW6qxHl5bqRp/XIPtRcshfhf1MXi
-         ylS/yD4UhWjMvhOPZHiOUs34DMwd3ylguODBJMUWyPTfH/BopgBdvZoWr6ulu4PuP+qe
-         PSJg+eQXemuAwlNiNq9hCnsrI3g41k+OsE+klK1Dq0pCO7n6T2gONMN+jQtgwl/Awrag
-         s0leS9JW4OhpgpJev6w9NZUvE1UHPaNEfgwgrXhRRJKJo219VmJNPxwKHorUR+4ardYd
-         5TGqVnuDjEDAObVVoAoW+NexE/QJex7LwaKZbSR5fiz0RZIIYEuHf8Wt4YHYadvfqj/3
-         rNTg==
-X-Gm-Message-State: AOAM530XMfU3U+EJgb0wemg2LzY3pj35cT57QRmYtFb/CbltHCsXBKw3
-        rzSZ80YqV2s8TTs0/YOtSp/HI5Ab9ROw9zwo
-X-Google-Smtp-Source: ABdhPJwqZV7pk1FvOSkguIjKJvFkFK+Tun3miq523wTMnXd9BGquVzYW29lvsrXbzl2PtJrmqLojuA==
-X-Received: by 2002:a1c:7d55:: with SMTP id y82mr3074513wmc.100.1598532878977;
-        Thu, 27 Aug 2020 05:54:38 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.187])
-        by smtp.gmail.com with ESMTPSA id m11sm5436719wrn.11.2020.08.27.05.54.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 05:54:38 -0700 (PDT)
-Subject: Re: Aw: [PATCH 00/18] Convert arch/arm to use iommu-dma
-To:     Frank Wunderlich <frank-w@public-files.de>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     hch@lst.de, joro@8bytes.org, linux@armlinux.org.uk,
-        geert+renesas@glider.be, dri-devel@lists.freedesktop.org,
-        bjorn.andersson@linaro.org, thierry.reding@gmail.com,
-        laurent.pinchart@ideasonboard.com, digetx@gmail.com, s-anna@ti.com,
-        will@kernel.org, m.szyprowski@samsung.com,
-        linux-samsung-soc@vger.kernel.org, magnus.damm@gmail.com,
-        kyungmin.park@samsung.com, jonathanh@nvidia.com, agross@kernel.org,
-        yong.wu@mediatek.com, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, inki.dae@samsung.com,
-        vdumpa@nvidia.com, linux-mediatek@lists.infradead.org,
-        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sw0312.kim@samsung.com, linux-kernel@vger.kernel.org,
-        t-kristo@ti.com, iommu@lists.linux-foundation.org
-References: <cover.1597931875.git.robin.murphy@arm.com>
- <trinity-d6be65d8-9086-42bc-b993-238b731cdf60-1598531519064@3c-app-gmx-bap26>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d54f5d47-63aa-d07e-3875-6acce69073f3@gmail.com>
-Date:   Thu, 27 Aug 2020 14:54:36 +0200
+        Thu, 27 Aug 2020 08:57:33 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RCWHkq124207;
+        Thu, 27 Aug 2020 08:57:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=C3993iEI8cespXe9G6ubljnSqXfbCcQAx5wYMlYe4GE=;
+ b=BtIqOyZmMcPA/mqrpRzomGZMOubzCktAITWa7NunGx6IZeKQG/MsK99aeZX4FrDWtQ6j
+ Y/FGV+xk4FnOo3FtUy+l5dRcwdaIN4SWQUWlBI2391Azgiit2k7p7oeRskFvsY8E/XtR
+ ORpTy1NjgVL3zD39mDmPbbaHtJxv1rv9/almqih4eTW35zMkmHWtTTGCmM2W2oRCJCNx
+ vp6d/O/TrKg0MhINak9SyFbJ6RrBSyfzA2nDkRfBk60EfIuM3AweLhV1EfFxMNt1luMy
+ 2Y4KdgOxmjWiFHcoRTAQil04DmqwZjeuKKlM6OpEYlLqmFtAfdjLZ/yjC767b6rwnkMf Ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 336ayhvbjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 08:57:25 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RCWSxw125225;
+        Thu, 27 Aug 2020 08:57:24 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 336ayhvbhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 08:57:24 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RCqs7T005092;
+        Thu, 27 Aug 2020 12:57:23 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 332uw7swxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 12:57:23 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RCvMmK55247148
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Aug 2020 12:57:22 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6729AE05F;
+        Thu, 27 Aug 2020 12:57:22 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2AC5DAE05C;
+        Thu, 27 Aug 2020 12:57:19 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.210.202])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Aug 2020 12:57:18 +0000 (GMT)
+Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
+To:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com, maddy@linux.ibm.com,
+        ravi.bangoria@linux.ibm.com
+References: <20200825074041.378520-1-kjain@linux.ibm.com>
+ <bc078472-e859-b7dc-c451-d737dd573edf@huawei.com>
+ <20200826110046.GF703542@krava>
+ <5d91b929-cffd-265a-dd0c-f63bc3d1565d@linux.ibm.com>
+ <ac9acc5f-7ce1-c9c9-91f5-598ca13a4a89@huawei.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <db9dd8b3-e2ca-6773-a8bb-0f635eb84953@linux.ibm.com>
+Date:   Thu, 27 Aug 2020 18:27:17 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <trinity-d6be65d8-9086-42bc-b993-238b731cdf60-1598531519064@3c-app-gmx-bap26>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <ac9acc5f-7ce1-c9c9-91f5-598ca13a4a89@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_06:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 priorityscore=1501
+ adultscore=0 suspectscore=2 lowpriorityscore=0 spamscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270092
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -84,16 +91,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 27/08/2020 14:31, Frank Wunderlich wrote:
-> Tested full series on bananapi r2 (mt7623/mt2701, 5.9-rc1 + hdmi-patches), works so far fbcon+x without issues
+On 8/26/20 5:03 PM, John Garry wrote:
+> On 26/08/2020 12:24, kajoljain wrote:
+>>
+>>
+>> On 8/26/20 4:30 PM, Jiri Olsa wrote:
+>>> On Tue, Aug 25, 2020 at 09:14:11AM +0100, John Garry wrote:
+>>>
+>>> SNIP
+>>>
+>>>>>                    goto free_strings;
+>>>>>            }
+>>>>> -        err = func(data, name, real_event(name, event), desc, long_desc,
+>>>>> -               pmu, unit, perpkg, metric_expr, metric_name,
+>>>>> -               metric_group, deprecated, metric_constraint);
+>>>>> +        je->event = real_event(je->name, je->event);
+>>>>> +        err = func(data, je);
+>>>>>    free_strings:
+>>>>> -        free(event);
+>>>>> -        free(desc);
+>>>>> -        free(name);
+>>>>> -        free(long_desc);
+>>>>>            free(extra_desc);
+>>>>> -        free(pmu);
+>>>>>            free(filter);
+>>>>> -        free(perpkg);
+>>>>> -        free(deprecated);
+>>>>> -        free(unit);
+>>>>> -        free(metric_expr);
+>>>>> -        free(metric_name);
+>>>>> -        free(metric_group);
+>>>>> -        free(metric_constraint);
 > 
-> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+> Hi Kajol Jain,
 > 
+> Do we need to free je->metric_name and the rest still? From a glance, that memory is still separately alloc'ed in addfield.
 
-Thanks for testing.
+Hi John,
+    yes right we should free them as well. Thanks for pointing it, I will update.
 
-Robin this is especially relevant for:
-[PATCH 09/18] iommu/mediatek-v1: Add IOMMU_DOMAIN_DMA support
-
-Regards,
-Matthias
+Thanks,
+Kajol Jain
+> 
+>>>>>            free(arch_std);
+>>>>> +        free(je);
+>>>>>            if (err)
+>>>>>                break;
+>>>>> diff --git a/tools/perf/pmu-events/jevents.h b/tools/perf/pmu-events/jevents.h
+>>>>> index 2afc8304529e..e696edf70e9a 100644
+>>>>> --- a/tools/perf/pmu-events/jevents.h
+>>>>> +++ b/tools/perf/pmu-events/jevents.h
+>>>>
+>>>> Somewhat unrelated - this file only seems to be included in jevents.c, so I
+>>>> don't see why it exists...
+>>>
+>>> ah right.. I won't mind getting rid of it
+>>
+>> Hi John and  Jiri
+>>       Thanks for reviewing the patch. I can remove this file and add these structure inside jevents.c
+> 
+> thanks
+> 
+>>
+>> Thanks,
+>> Kajol Jain
+>>>  
+>>>>> @@ -2,14 +2,28 @@
+>>>>>    #ifndef JEVENTS_H
+>>>>>    #define JEVENTS_H 1
+>>>>> +#include "pmu-events.h"
+>>>>> +
+>>>>> +struct json_event {
+>>>>> +    char *name;
+>>>>> +    char *event;
+>>>>> +    char *desc;
+>>>>> +    char *topic;
+>>>>> +    char *long_desc;
+>>>>> +    char *pmu;
+>>>>> +    char *unit;
+>>>>> +    char *perpkg;
+>>>>> +    char *metric_expr;
+>>>>> +    char *metric_name;
+>>>>> +    char *metric_group;
+>>>>> +    char *deprecated;
+>>>>> +    char *metric_constraint;
+>>>>
+>>>> This looks very much like struct event_struct, so could look to consolidate:
+>>>>
+>>>> struct event_struct {
+>>>>     struct list_head list;
+>>>>     char *name;
+>>>>     char *event;
+>>>>     char *desc;
+>>>>     char *long_desc;
+>>>>     char *pmu;
+>>>>     char *unit;
+>>>>     char *perpkg;
+>>>>     char *metric_expr;
+>>>>     char *metric_name;
+>>>>     char *metric_group;
+>>>>     char *deprecated;
+>>>>     char *metric_constraint;
+>>>> };
+>>>
+>>> as Andi said they come from different layers, I think it's
+>>> better to keep them separated even if they share some fields
+> 
+> I was just suggesting to make:
+>  struct event_struct {
+>     struct list_head list;
+>     struct json_event je;
+>  }
+> 
+> No biggie if against this.
+> 
+> Cheers,
+> John
