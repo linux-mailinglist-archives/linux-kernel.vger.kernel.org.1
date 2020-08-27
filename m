@@ -2,61 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2C425469F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB7E2546B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgH0OQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:16:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10339 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727781AbgH0OKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:10:14 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A14B365A25F8A4801769;
-        Thu, 27 Aug 2020 22:09:55 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 22:09:48 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <mcroce@redhat.com>
-CC:     <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] netfilter: xt_HMARK: Use ip_is_fragment() helper
-Date:   Thu, 27 Aug 2020 22:08:13 +0800
-Message-ID: <20200827140813.28624-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1727892AbgH0OWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:22:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22272 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727949AbgH0OKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:10:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598537411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p3UaJor8m6UPSLfz0Cwgwz9tei6T+Ko+yHdee7F5pCI=;
+        b=U3hgkicwANJkdU0V4e1fkj6xC1xjHJzZDJI0K86zdcAgU52LwoDNH7yDlqXKJIAbxAkv9v
+        9OQiRlUN9WbLIiQabAluz0YjHk0xssVBM5H/HQcDF40mJJ0fKi/wI+LPBmuybrU6NaGZ1h
+        RXyMzQnKYUa380uCGPIosDcicNq8I3A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-rQpLvx5TNP27CBSvjTszyg-1; Thu, 27 Aug 2020 10:10:08 -0400
+X-MC-Unique: rQpLvx5TNP27CBSvjTszyg-1
+Received: by mail-wm1-f72.google.com with SMTP id f125so2187423wma.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:10:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p3UaJor8m6UPSLfz0Cwgwz9tei6T+Ko+yHdee7F5pCI=;
+        b=Bfd/2o2MkB6d0QDkp537D0fDccSwTh4lIcKzgA+yCkcZ3eVe2OqoTnTPg1NvFx4EBB
+         ce8Fiv5eMdx0ijJt+GIqXuSx+OtSo5s3xRqqANkZaoQMCsJUS1p/e4Fm+GTWyN52zIbp
+         wIMA+tu6kM9s2UuQwMbkabK3izY9VEK9rd5259olG7bnoWh+ZbfeJxBXDbu2IhBi4Ox3
+         6Os2fRicmZHmCXjQYXlGXQqDja0oSyiqajoZeNstwer+qJ2f0pOAcSO9bhfKEUfIecne
+         hu/aNLuJTYmSEHACx7QqoPcGVA2pMFrwbuEe4jBw82aWUxZvHycdq4C2VndraQFILRD3
+         dSCA==
+X-Gm-Message-State: AOAM532p1i9u1FtG4KzPDVubVupCqfwh+JWSrvqXLjLWyUI1JMJsmZSO
+        Lgb38nwLYselwppwAXVJ3TDRLpq2LU3dowoiM8FHJ+RB8rJ/iuYVsceaPoOMTG3X/gCryQgoZKb
+        3e0El20RGfTPhMl8XGKEg5vdl
+X-Received: by 2002:adf:ea0b:: with SMTP id q11mr18400753wrm.285.1598537407344;
+        Thu, 27 Aug 2020 07:10:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIyoHL6pydlVZ4mUCwXiexrkWU5beyLiimAC7oyStXfYcu8GXZZ2ytD3aLAfsrScWOA6WOpQ==
+X-Received: by 2002:adf:ea0b:: with SMTP id q11mr18400722wrm.285.1598537407089;
+        Thu, 27 Aug 2020 07:10:07 -0700 (PDT)
+Received: from steredhat.lan ([5.171.209.212])
+        by smtp.gmail.com with ESMTPSA id p8sm6052216wrq.9.2020.08.27.07.10.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 07:10:06 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 16:10:02 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Aleksa Sarai <asarai@suse.de>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v5 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Message-ID: <20200827141002.an34n2nx6m4dfhce@steredhat.lan>
+References: <20200827134044.82821-1-sgarzare@redhat.com>
+ <2ded8df7-6dcb-ee8a-c1fd-e0c420b7b95d@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ded8df7-6dcb-ee8a-c1fd-e0c420b7b95d@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ip_is_fragment() to simpify code.
+On Thu, Aug 27, 2020 at 07:50:44AM -0600, Jens Axboe wrote:
+> On 8/27/20 7:40 AM, Stefano Garzarella wrote:
+> > v5:
+> >  - explicitly assigned enum values [Kees]
+> >  - replaced kmalloc/copy_from_user with memdup_user [kernel test robot]
+> >  - added Kees' R-b tags
+> > 
+> > v4: https://lore.kernel.org/io-uring/20200813153254.93731-1-sgarzare@redhat.com/
+> > v3: https://lore.kernel.org/io-uring/20200728160101.48554-1-sgarzare@redhat.com/
+> > RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redhat.com
+> > RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@redhat.com
+> > 
+> > Following the proposal that I send about restrictions [1], I wrote this series
+> > to add restrictions in io_uring.
+> > 
+> > I also wrote helpers in liburing and a test case (test/register-restrictions.c)
+> > available in this repository:
+> > https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
+> > 
+> > Just to recap the proposal, the idea is to add some restrictions to the
+> > operations (sqe opcode and flags, register opcode) to safely allow untrusted
+> > applications or guests to use io_uring queues.
+> > 
+> > The first patch changes io_uring_register(2) opcodes into an enumeration to
+> > keep track of the last opcode available.
+> > 
+> > The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+> > handle restrictions.
+> > 
+> > The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+> > allowing the user to register restrictions, buffers, files, before to start
+> > processing SQEs.
+> > 
+> > Comments and suggestions are very welcome.
+> 
+> Looks good to me, just a few very minor comments in patch 2. If you
+> could fix those up, let's get this queued for 5.10.
+> 
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/netfilter/xt_HMARK.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure, I'll fix the issues. This is great :-)
 
-diff --git a/net/netfilter/xt_HMARK.c b/net/netfilter/xt_HMARK.c
-index 713fb38541df..8928ec56c388 100644
---- a/net/netfilter/xt_HMARK.c
-+++ b/net/netfilter/xt_HMARK.c
-@@ -276,7 +276,7 @@ hmark_pkt_set_htuple_ipv4(const struct sk_buff *skb, struct hmark_tuple *t,
- 		return 0;
- 
- 	/* follow-up fragments don't contain ports, skip all fragments */
--	if (ip->frag_off & htons(IP_MF | IP_OFFSET))
-+	if (ip_is_fragment(ip))
- 		return 0;
- 
- 	hmark_set_tuple_ports(skb, (ip->ihl * 4) + nhoff, t, info);
--- 
-2.17.1
-
+Thanks,
+Stefano
 
