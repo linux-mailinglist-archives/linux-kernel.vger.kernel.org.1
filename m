@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F262545F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7C22545F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgH0NbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:31:00 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56018 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727992AbgH0NVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:21:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598534464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zxj3/pnEKNdJXQYKt9vOuqr1Pjo+7bDlTiGFlo7k2bk=;
-        b=AdhY35Ul5Ut+0CwcMY+3YmEM3gx2B2w/Qgna0lmpKg9KDgpG+2nf4e17ozmYUhSPQFWUxe
-        syfZzW0jyrxWKjTi9x787U3hQBDvzCZMwEcvoi7qHEQRmim3q6wCOJN3kc6EXx6oT/62y/
-        6yFWJ883rf5m2myJ6qoT/LtYBKHnAq0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-Kv9Ig1K7NFS8Ya33PNgGOQ-1; Thu, 27 Aug 2020 09:21:02 -0400
-X-MC-Unique: Kv9Ig1K7NFS8Ya33PNgGOQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEE83189E60D;
-        Thu, 27 Aug 2020 13:21:00 +0000 (UTC)
-Received: from redhat.com (ovpn-114-28.rdu2.redhat.com [10.10.114.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E8FB61972A;
-        Thu, 27 Aug 2020 13:20:59 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 09:20:58 -0400
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
-        shuah@kernel.org, live-patching@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/livepatch: Do not check order when using
- "comm" for dmesg checking
-Message-ID: <20200827132058.GA24622@redhat.com>
-References: <20200827110709.26824-1-mbenes@suse.cz>
+        id S1728127AbgH0Nbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:31:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42293 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728018AbgH0N0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:26:25 -0400
+IronPort-SDR: P0z2pDtIWxxFq38bvNzr4kQqYjLagW4ExrFnRyLR3+iWMiwvmMA8zlmlDSfCmnvYVShHmDzYWu
+ WxBzv+it4M/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153895895"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="153895895"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 06:24:50 -0700
+IronPort-SDR: Ke2l8t9YhErArjp+te+yH/vIPFO56rsQI3/DhOc+Xg4yTzOeKSk3G0u9JyOR4VVUSOGnOS1shn
+ azdhMXNXazYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="323592489"
+Received: from tbeaumon-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.55.254])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Aug 2020 06:24:43 -0700
+Date:   Thu, 27 Aug 2020 16:24:36 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v36 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20200827132436.GA4674@linux.intel.com>
+References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
+ <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+ <20200826145239.GC22390@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827110709.26824-1-mbenes@suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20200826145239.GC22390@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 01:07:09PM +0200, Miroslav Benes wrote:
-> check_result() uses "comm" to check expected results of selftests output
-> in dmesg. Everything works fine if timestamps in dmesg are unique. If
-> not, like in this example
+On Wed, Aug 26, 2020 at 04:52:39PM +0200, Borislav Petkov wrote:
+> On Thu, Jul 16, 2020 at 04:52:51PM +0300, Jarkko Sakkinen wrote:
+> > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > index 59472cd6a11d..35f713e3a267 100644
+> > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > @@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
+> >                                                                       <mailto:tlewis@mindspring.com>
+> >  0xA3  90-9F  linux/dtlk.h
+> >  0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
+> > +0xA4  00-1F  uapi/asm/sgx.h                                          Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
 > 
-> [   86.844422] test_klp_callbacks_demo: pre_unpatch_callback: test_klp_callbacks_mod -> [MODULE_STATE_LIVE] Normal state
-> [   86.844422] livepatch: 'test_klp_callbacks_demo': starting unpatching transition
+> Again, maybe add <mailto:linux-sgx@vger.kernel.org> ?
 > 
-
-Heh, our assumption that the timestamps would provide sorting wasn't
-true after all.
-
-> , "comm" fails with "comm: file 2 is not in sorted order". Suppress the
-> order checking with --nocheck-order option.
+> This is from a previous review - please be more careful when addressing
+> review comments - either do them or object to them but silently ignoring
+> them is not cool.
 > 
-> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-
-Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
-
-And not so important for selftests, but helpful for backporting efforts:
-
-Fixes: 2f3f651f3756 ("selftests/livepatch: Use "comm" instead of "diff" for dmesg")
-
-> ---
+> >  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+> >  0xAB  00-1F  linux/nbd.h
+> >  0xAC  00-1F  linux/raw.h
+> > diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+> > new file mode 100644
+> > index 000000000000..3787d278e84b
+> > --- /dev/null
+> > +++ b/arch/x86/include/uapi/asm/sgx.h
+> > @@ -0,0 +1,25 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
 > 
-> The strange thing is, I can reproduce the issue easily and reliably on
-> older codestreams (4.12) but not on current upstream in my testing
-> environment. I think the change makes sense regardless though.
+> checkpatch is not happy about something:
 > 
+> WARNING: 'SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */' is not supported in LICENSES/...
+> #79: FILE: arch/x86/include/uapi/asm/sgx.h:1:
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
 
-We haven't backported v5.8 changes just yet, so thanks for finding this
-one and posting a fix.
+I don't know what has gone in my head when I wrote that but it looks
+plain wrong even without running checkpatch.pl
 
--- Joe
+The line should express the dijunction of "GPL-2.0+ WITH
+Linux-syscall-note" and "BSD-3-Clause".
 
->  tools/testing/selftests/livepatch/functions.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Grepping the kernel tree, I can find 34 instances of these in uapi
+files:
+
+  /* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR BSD-3-Clause) */
+
+I have not checked if this passes checkpatch.pl yet, but I would
+be surprised if that did not pass (obviously I'll check that).
+
 > 
-> diff --git a/tools/testing/selftests/livepatch/functions.sh b/tools/testing/selftests/livepatch/functions.sh
-> index 1aba83c87ad3..846c7ed71556 100644
-> --- a/tools/testing/selftests/livepatch/functions.sh
-> +++ b/tools/testing/selftests/livepatch/functions.sh
-> @@ -278,7 +278,7 @@ function check_result {
->  	# help differentiate repeated testing runs.  Remove them with a
->  	# post-comparison sed filter.
->  
-> -	result=$(dmesg | comm -13 "$SAVED_DMESG" - | \
-> +	result=$(dmesg | comm --nocheck-order -13 "$SAVED_DMESG" - | \
->  		 grep -e 'livepatch:' -e 'test_klp' | \
->  		 grep -v '\(tainting\|taints\) kernel' | \
->  		 sed 's/^\[[ 0-9.]*\] //')
+> ...
+> 
+> > +/**
+> > + * sgx_ioc_enclave_create - handler for %SGX_IOC_ENCLAVE_CREATE
+> > + * @filep:	open file to /dev/sgx
+> 
+> Also from a previous review:
+> 
+> "That's
+> 
+> @encl: enclave pointer
+> 
+> or so."
+
+Yes, for sure. Thanks.
+
+> > + * @arg:	userspace pointer to a struct sgx_enclave_create instance
+> > + *
+> > + * Allocate kernel data structures for a new enclave and execute ECREATE after
+> > + * verifying the correctness of the provided SECS.
+> > + *
+> > + * Note, enforcement of restricted and disallowed attributes is deferred until
+> > + * sgx_ioc_enclave_init(), only the architectural correctness of the SECS is
+> > + * checked by sgx_ioc_enclave_create().
+> 
+> From that same review:
+> 
+> "Well, I don't see that checking. Where is it?"
+> 
+> Ok, I'm going to stop here. Please go over v33's review and either
+> address *all* feedback or incorporate it into your patches if you agree
+> with it but do not silently ignore it. One of the things I very strongly
+> detest is ignored review comments.
+
+I'm sorry about that. This was not intentional. I'll revisit them by
+going through all your responses from here:
+
+  https://patchwork.kernel.org/patch/11581715/
+
+v34 had the splitting of the big driver patch into multiple patches.
+
+During that process I've obviously failed to address these.
+
 > -- 
-> 2.28.0
+> Regards/Gruss,
+>     Boris.
 > 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
+/Jarkko
