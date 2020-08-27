@@ -2,272 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634BD254857
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BACC254880
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgH0PFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:05:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23064 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727990AbgH0PEt (ORCPT
+        id S1728501AbgH0PHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726853AbgH0PE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:04:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598540686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZIzacdceQxyAsGSFM69AcScMy959DgBMC/5cYnsNrX8=;
-        b=CLuHbYD+y38mpi2jJ6JM0AdpbkYdLsz90YKudaWNOLvSNN1NDR8MCngel+otAO8KmMdaOY
-        56Ec4pFv7Rk6tvTog4w1tNuTtVEJhReWTwbBPlBUxH0dIIYZ0VceM+TKOvZ+0izbO1rT1M
-        fzjEAjle8CGYCHvpFnq8E2/9RoLjaMs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-K1KKrW_XPD2PXuRr1mASdA-1; Thu, 27 Aug 2020 11:04:44 -0400
-X-MC-Unique: K1KKrW_XPD2PXuRr1mASdA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE5C41934C42;
-        Thu, 27 Aug 2020 15:04:16 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 07EF461100;
-        Thu, 27 Aug 2020 15:04:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net 6/7] afs: Don't use VL probe running state to make
- decisions outside probe code
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 27 Aug 2020 16:04:15 +0100
-Message-ID: <159854065521.1382667.40876289707173767.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-References: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 27 Aug 2020 11:04:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F38EC06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:18 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so3582185pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KtUav8kJRw7NW9MJAIseBMSxLDruLjM6HXWwKu/0M74=;
+        b=GQ0jmdkWMjQEAalY++3/Ht0h8crzz739ENSMCZK40b0dOvb1c0kZUmimmf9K8t4Zgx
+         Fao+oOBxd4WqUDkaMoDp6QkT7HgLYirHRqq+Fk9tpRQi8On7xp9MwFMWUauS7YXIVztA
+         W9VmcStAzDZlNyQOegil/seXWpDF/Iz/wobtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KtUav8kJRw7NW9MJAIseBMSxLDruLjM6HXWwKu/0M74=;
+        b=cpSsSQ2qfb/oUEqxSWtPMFz098++pnQB2uwd1dmQSn1ffEskA0BowubwPqsxrpq+sX
+         kJfVk35Hsg23CfYTiCoKKseue91O1q91YFMs0lem5yB3Hj2XE1r7jbuZ3IaFBaOOLFEo
+         j/Fa7IDALya8OekpcezXxPM2Yn30J1u8obs+KQZ2IG/wiQhtBsZbZs3mjFBkGfKEtZIQ
+         mjFmnTedWSrqp5LMiqMijU7pjg1jXcE2PbLOn18stfhnd9UATxa6NFhHkY5d/IKXuhNK
+         fg0ub24I5BhgnvhmNRMj/pLlpLuQxUIOJzC5/2F+Yz74gf4ZXFwKnvgwK4NdOAk4FbtJ
+         68UA==
+X-Gm-Message-State: AOAM530U8mlLKmn4oujafr02N73j+52FQgaFvnh0BILf+LpoRPXWhBLo
+        cLQVBvND9w0L6QhwYlkw5e18Qg==
+X-Google-Smtp-Source: ABdhPJwXBmp6C1isCRM1EzGs2j/sEIzbekMjfQYDts14g/FnXYPAwZwvsuLxGAshJVtz3JQiRyN6iw==
+X-Received: by 2002:a63:1822:: with SMTP id y34mr15725223pgl.364.1598540657751;
+        Thu, 27 Aug 2020 08:04:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o15sm298606pgr.62.2020.08.27.08.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 08:04:16 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 08:04:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <asarai@suse.de>,
+        io-uring@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] io_uring: allow disabling rings during the
+ creation
+Message-ID: <202008270803.6FD7F63@keescook>
+References: <20200813153254.93731-1-sgarzare@redhat.com>
+ <20200813153254.93731-4-sgarzare@redhat.com>
+ <202008261248.BB37204250@keescook>
+ <20200827071802.6tzntmixnxc67y33@steredhat.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827071802.6tzntmixnxc67y33@steredhat.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't use the running state for VL server probes to make decisions about
-which server to use as the state is cleared at the start of a probe and
-intermediate values might also be misleading.
+On Thu, Aug 27, 2020 at 09:18:02AM +0200, Stefano Garzarella wrote:
+> On Wed, Aug 26, 2020 at 12:50:31PM -0700, Kees Cook wrote:
+> > On Thu, Aug 13, 2020 at 05:32:54PM +0200, Stefano Garzarella wrote:
+> > > This patch adds a new IORING_SETUP_R_DISABLED flag to start the
+> > > rings disabled, allowing the user to register restrictions,
+> > > buffers, files, before to start processing SQEs.
+> > > 
+> > > When IORING_SETUP_R_DISABLED is set, SQE are not processed and
+> > > SQPOLL kthread is not started.
+> > > 
+> > > The restrictions registration are allowed only when the rings
+> > > are disable to prevent concurrency issue while processing SQEs.
+> > > 
+> > > The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
+> > > opcode with io_uring_register(2).
+> > > 
+> > > Suggested-by: Jens Axboe <axboe@kernel.dk>
+> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > 
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > 
+> > Where can I find the io_uring selftests? I'd expect an additional set of
+> > patches to implement the selftests for this new feature.
+> 
+> Since the io_uring selftests are stored in the liburing repository, I created
+> a new test case (test/register-restrictions.c) in my fork and I'll send it
+> when this series is accepted. It's available in this repository:
+> 
+> https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
 
-Instead, add a separate 'latest known' rtt in the afs_vlserver struct and a
-flag to indicate if the server is known to be responding and update these
-as and when we know what to change them to.
+Ah-ha; thank you! Looks good. :)
 
-Fixes: 3bf0fb6f33dd ("afs: Probe multiple fileservers simultaneously")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/internal.h  |    4 +++-
- fs/afs/proc.c      |    2 +-
- fs/afs/vl_list.c   |    1 +
- fs/afs/vl_probe.c  |   57 ++++++++++++++++++++++++++++++++++++----------------
- fs/afs/vl_rotate.c |    2 +-
- 5 files changed, 46 insertions(+), 20 deletions(-)
-
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index b29dfcfe5fc2..18042b7dab6a 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -401,15 +401,17 @@ struct afs_vlserver {
- #define AFS_VLSERVER_FL_PROBED	0		/* The VL server has been probed */
- #define AFS_VLSERVER_FL_PROBING	1		/* VL server is being probed */
- #define AFS_VLSERVER_FL_IS_YFS	2		/* Server is YFS not AFS */
-+#define AFS_VLSERVER_FL_RESPONDING 3		/* VL server is responding */
- 	rwlock_t		lock;		/* Lock on addresses */
- 	atomic_t		usage;
-+	unsigned int		rtt;		/* Server's current RTT in uS */
- 
- 	/* Probe state */
- 	wait_queue_head_t	probe_wq;
- 	atomic_t		probe_outstanding;
- 	spinlock_t		probe_lock;
- 	struct {
--		unsigned int	rtt;		/* RTT as ktime/64 */
-+		unsigned int	rtt;		/* RTT in uS */
- 		u32		abort_code;
- 		short		error;
- 		unsigned short	flags;
-diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-index 5e837155f1a0..e8babb62ed44 100644
---- a/fs/afs/proc.c
-+++ b/fs/afs/proc.c
-@@ -310,7 +310,7 @@ static int afs_proc_cell_vlservers_show(struct seq_file *m, void *v)
- 				   alist->preferred == i ? '>' : '-',
- 				   &alist->addrs[i].transport);
- 	}
--	seq_printf(m, " info: fl=%lx rtt=%d\n", vlserver->flags, vlserver->probe.rtt);
-+	seq_printf(m, " info: fl=%lx rtt=%d\n", vlserver->flags, vlserver->rtt);
- 	seq_printf(m, " probe: fl=%x e=%d ac=%d out=%d\n",
- 		   vlserver->probe.flags, vlserver->probe.error,
- 		   vlserver->probe.abort_code,
-diff --git a/fs/afs/vl_list.c b/fs/afs/vl_list.c
-index 8fea54eba0c2..38b2ba1d9ec0 100644
---- a/fs/afs/vl_list.c
-+++ b/fs/afs/vl_list.c
-@@ -21,6 +21,7 @@ struct afs_vlserver *afs_alloc_vlserver(const char *name, size_t name_len,
- 		rwlock_init(&vlserver->lock);
- 		init_waitqueue_head(&vlserver->probe_wq);
- 		spin_lock_init(&vlserver->probe_lock);
-+		vlserver->rtt = UINT_MAX;
- 		vlserver->name_len = name_len;
- 		vlserver->port = port;
- 		memcpy(vlserver->name, name, name_len);
-diff --git a/fs/afs/vl_probe.c b/fs/afs/vl_probe.c
-index a6d04b4fbf56..d1c7068b4346 100644
---- a/fs/afs/vl_probe.c
-+++ b/fs/afs/vl_probe.c
-@@ -11,15 +11,33 @@
- #include "internal.h"
- #include "protocol_yfs.h"
- 
--static bool afs_vl_probe_done(struct afs_vlserver *server)
-+
-+/*
-+ * Handle the completion of a set of probes.
-+ */
-+static void afs_finished_vl_probe(struct afs_vlserver *server)
- {
--	if (!atomic_dec_and_test(&server->probe_outstanding))
--		return false;
-+	if (!(server->probe.flags & AFS_VLSERVER_PROBE_RESPONDED)) {
-+		server->rtt = UINT_MAX;
-+		clear_bit(AFS_VLSERVER_FL_RESPONDING, &server->flags);
-+	}
- 
--	wake_up_var(&server->probe_outstanding);
- 	clear_bit_unlock(AFS_VLSERVER_FL_PROBING, &server->flags);
- 	wake_up_bit(&server->flags, AFS_VLSERVER_FL_PROBING);
--	return true;
-+}
-+
-+/*
-+ * Handle the completion of a probe RPC call.
-+ */
-+static void afs_done_one_vl_probe(struct afs_vlserver *server, bool wake_up)
-+{
-+	if (atomic_dec_and_test(&server->probe_outstanding)) {
-+		afs_finished_vl_probe(server);
-+		wake_up = true;
-+	}
-+
-+	if (wake_up)
-+		wake_up_all(&server->probe_wq);
- }
- 
- /*
-@@ -52,8 +70,13 @@ void afs_vlserver_probe_result(struct afs_call *call)
- 		goto responded;
- 	case -ENOMEM:
- 	case -ENONET:
-+	case -EKEYEXPIRED:
-+	case -EKEYREVOKED:
-+	case -EKEYREJECTED:
- 		server->probe.flags |= AFS_VLSERVER_PROBE_LOCAL_FAILURE;
--		afs_io_error(call, afs_io_error_vl_probe_fail);
-+		if (server->probe.error == 0)
-+			server->probe.error = ret;
-+		trace_afs_io_error(call->debug_id, ret, afs_io_error_vl_probe_fail);
- 		goto out;
- 	case -ECONNRESET: /* Responded, but call expired. */
- 	case -ERFKILL:
-@@ -72,7 +95,7 @@ void afs_vlserver_probe_result(struct afs_call *call)
- 		     server->probe.error == -ETIMEDOUT ||
- 		     server->probe.error == -ETIME))
- 			server->probe.error = ret;
--		afs_io_error(call, afs_io_error_vl_probe_fail);
-+		trace_afs_io_error(call->debug_id, ret, afs_io_error_vl_probe_fail);
- 		goto out;
- 	}
- 
-@@ -95,22 +118,22 @@ void afs_vlserver_probe_result(struct afs_call *call)
- 	if (rxrpc_kernel_get_srtt(call->net->socket, call->rxcall, &rtt_us) &&
- 	    rtt_us < server->probe.rtt) {
- 		server->probe.rtt = rtt_us;
-+		server->rtt = rtt_us;
- 		alist->preferred = index;
--		have_result = true;
- 	}
- 
- 	smp_wmb(); /* Set rtt before responded. */
- 	server->probe.flags |= AFS_VLSERVER_PROBE_RESPONDED;
- 	set_bit(AFS_VLSERVER_FL_PROBED, &server->flags);
-+	set_bit(AFS_VLSERVER_FL_RESPONDING, &server->flags);
-+	have_result = true;
- out:
- 	spin_unlock(&server->probe_lock);
- 
- 	_debug("probe [%u][%u] %pISpc rtt=%u ret=%d",
- 	       server_index, index, &alist->addrs[index].transport, rtt_us, ret);
- 
--	have_result |= afs_vl_probe_done(server);
--	if (have_result)
--		wake_up_all(&server->probe_wq);
-+	afs_done_one_vl_probe(server, have_result);
- }
- 
- /*
-@@ -148,11 +171,10 @@ static bool afs_do_probe_vlserver(struct afs_net *net,
- 			in_progress = true;
- 		} else {
- 			afs_prioritise_error(_e, PTR_ERR(call), ac.abort_code);
-+			afs_done_one_vl_probe(server, false);
- 		}
- 	}
- 
--	if (!in_progress)
--		afs_vl_probe_done(server);
- 	return in_progress;
- }
- 
-@@ -190,7 +212,7 @@ int afs_wait_for_vl_probes(struct afs_vlserver_list *vllist,
- {
- 	struct wait_queue_entry *waits;
- 	struct afs_vlserver *server;
--	unsigned int rtt = UINT_MAX;
-+	unsigned int rtt = UINT_MAX, rtt_s;
- 	bool have_responders = false;
- 	int pref = -1, i;
- 
-@@ -246,10 +268,11 @@ int afs_wait_for_vl_probes(struct afs_vlserver_list *vllist,
- 	for (i = 0; i < vllist->nr_servers; i++) {
- 		if (test_bit(i, &untried)) {
- 			server = vllist->servers[i].server;
--			if ((server->probe.flags & AFS_VLSERVER_PROBE_RESPONDED) &&
--			    server->probe.rtt < rtt) {
-+			rtt_s = READ_ONCE(server->rtt);
-+			if (test_bit(AFS_VLSERVER_FL_RESPONDING, &server->flags) &&
-+			    rtt_s < rtt) {
- 				pref = i;
--				rtt = server->probe.rtt;
-+				rtt = rtt_s;
- 			}
- 
- 			remove_wait_queue(&server->probe_wq, &waits[i]);
-diff --git a/fs/afs/vl_rotate.c b/fs/afs/vl_rotate.c
-index ed2609e82695..ab2beb4ba20e 100644
---- a/fs/afs/vl_rotate.c
-+++ b/fs/afs/vl_rotate.c
-@@ -193,7 +193,7 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
- 		struct afs_vlserver *s = vc->server_list->servers[i].server;
- 
- 		if (!test_bit(i, &vc->untried) ||
--		    !(s->probe.flags & AFS_VLSERVER_PROBE_RESPONDED))
-+		    !test_bit(AFS_VLSERVER_FL_RESPONDING, &s->flags))
- 			continue;
- 		if (s->probe.rtt < rtt) {
- 			vc->index = i;
-
-
+-- 
+Kees Cook
