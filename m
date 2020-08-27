@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867E22550CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 23:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90AB2550D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgH0V7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 17:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgH0V7D (ORCPT
+        id S1727915AbgH0WAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 18:00:20 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40098 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgH0WAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 17:59:03 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6465AC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 14:59:03 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 185so8143167ljj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 14:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rVBJKgtv1iibetL73LRoXtok8/V4hB+ZfdXFnvRXGf4=;
-        b=IH12sAJg8v6bzG3oDO+EpY2xw6hug1HwrUC0SsDTCfrC590GxvUo5KAml9BPQ+MRlH
-         AQC+MxY12YD1Q9Jlc7koXumjtj80Thyoi/1D7ry0RtVkS/ztATEE8Fc9/e4JbVQS3G2W
-         QCjSur0oCdHdftsGdiJD9FqxuAzToRJRtHE7da6qN8lzUg07yb+hpLSfiWWBkjvpNK9o
-         FuAuXhyy9KE/s5rOgDMHUICzE85Z4Sp8JO7Ng6FOCbgFvUxafHEVz9DJbb7Hf4QRPstZ
-         fXxjUiLeXkaApdCevoO+YQp4j7ubJmzou2UAJhA4mKkO6so7smARy85wBfXiKl3D3Mmp
-         MeRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rVBJKgtv1iibetL73LRoXtok8/V4hB+ZfdXFnvRXGf4=;
-        b=kFHq401SWZQVABflmy3jf3DDzDVDi/bG62vxFv1MFbrHexYHFCcp3DLYGxCWyPuPnv
-         8yC0hOBTmvWKR81SHyB0u3Ht7BsHlQjKa+jQUd6SWXYHuE7yhOXrhIWWs5C08AIkEqH4
-         pbY2NBdnubTY/ymzjAINvICzb/K8NeyXzTWsq7CaRilXbjljObpF5X+rw91xDKPNDBfN
-         KVQNAFyINSJxvV+2il4prJLfA7Nga0+dVlR+u3OZIGJGu0mWYgYvX6796FO3g4r2sbgN
-         dWa7E/f6r/SuLk1BiIFvA6DCKQVenj/1/YGoJqKegEKbNR9XIQDjkYTDmCZoTYtk7QKc
-         7Cfg==
-X-Gm-Message-State: AOAM5311BWcHtA0C318SZ9x06V907FcKlZjGNanNUu62FQl/nQV7GT+J
-        asNv97/4hBykDVi8s0uspOIqAXeLcvrDRR7qFJfbmw==
-X-Google-Smtp-Source: ABdhPJzOo9PgEobHK8X5GAiYkmGBf8E1YvBdOfP74zzNTqV3ejOIMe30xqY6sCRKr0JbCmCXQ9JDUfF9jzJtV3dD67E=
-X-Received: by 2002:a2e:2a04:: with SMTP id q4mr9882666ljq.192.1598565541451;
- Thu, 27 Aug 2020 14:59:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200827175215.319780-1-guro@fb.com> <20200827175215.319780-4-guro@fb.com>
-In-Reply-To: <20200827175215.319780-4-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 27 Aug 2020 14:58:50 -0700
-Message-ID: <CALvZod7p3Ju-OSoYPonfjWwVm9fgxbDUzPzvrenkEqPNPLD88w@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/4] mm: kmem: prepare remote memcg charging infra for
- interrupt contexts
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 27 Aug 2020 18:00:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07RLwhn3090406;
+        Thu, 27 Aug 2020 21:59:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=uB9oAF8MGvMJ+QhspQ5Wyh1mOckHt5TxrKbL6zVXoD0=;
+ b=WdgFQy7pQ1P/dehQjnH8pVop8IqhOc0c9PFYmFXsS/yyCIJtA48ypsV3/Ng1kqH/VkUs
+ VCI91KA4C+tysVLYxl48tAaUOjMT09PkD26AgvfjFP5A8m+Nbe5cEh0bGxA56mo7bKI6
+ kJsPFljZRZwETWmx8/FoowsIEvVLkhyLbKlZYFECLvDV9YeK4vgero6JoYZ0E0oam03n
+ vKlvOPG6vnyFwoI45FgY2wuiryY6W1qrdXNVWh9kfCTWhemG6Ou5yiCwQYMtWOJwoiLu
+ 04EK5GSAeStUvppwX0+A0uTSCKuLs7uizZhz7DYfyJqZYrVMB7JQipwWphgxjhQDm8YN sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 336ht3h0yy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Aug 2020 21:59:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07RLsjXA168999;
+        Thu, 27 Aug 2020 21:59:53 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 333ru20wqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Aug 2020 21:59:53 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07RLxq7H007493;
+        Thu, 27 Aug 2020 21:59:52 GMT
+Received: from dhcp-10-154-191-150.vpn.oracle.com (/10.154.191.150)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 27 Aug 2020 14:59:52 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] use cpu_to_le{16,32} instead of __constant_cpu_to_
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+In-Reply-To: <20200827.230128.2175364115734830909.rene@exactcode.com>
+Date:   Thu, 27 Aug 2020 16:59:51 -0500
+Cc:     linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <2C05B6D9-91B3-445A-AB5C-730E1A123C3A@oracle.com>
+References: <b7719680-e451-5687-1fb7-c8c059a880d4@acm.org>
+ <2C755628-1426-4BA4-B2A3-AD059BB0F605@exactcode.com>
+ <c7daea00-410d-2073-bf52-2abda9acdf8e@acm.org>
+ <20200827.230128.2175364115734830909.rene@exactcode.com>
+To:     Rene Rebe <rene@exactcode.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 suspectscore=3 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008270164
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:52 AM Roman Gushchin <guro@fb.com> wrote:
->
-> Remote memcg charging API uses current->active_memcg to store the
-> currently active memory cgroup, which overwrites the memory cgroup
-> of the current process. It works well for normal contexts, but doesn't
-> work for interrupt contexts: indeed, if an interrupt occurs during
-> the execution of a section with an active memcg set, all allocations
-> inside the interrupt will be charged to the active memcg set (given
-> that we'll enable accounting for allocations from an interrupt
-> context). But because the interrupt might have no relation to the
-> active memcg set outside, it's obviously wrong from the accounting
-> prospective.
->
-> To resolve this problem, let's add a global percpu int_active_memcg
-> variable, which will be used to store an active memory cgroup which
-> will be sued from interrupt contexts. set_active_memcg() will
+Bart,
 
-*used
 
-> transparently use current->active_memcg or int_active_memcg depending
-> on the context.
->
-> To make the read part simple and transparent for the caller, let's
-> introduce two new functions:
->   - struct mem_cgroup *active_memcg(void),
->   - struct mem_cgroup *get_active_memcg(void).
->
-> They are returning the active memcg if it's set, hiding all
-> implementation details: where to get it depending on the current context.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> On Aug 27, 2020, at 4:01 PM, Rene Rebe <rene@exactcode.com> wrote:
+> 
+> So following your recommendation here is a RFC removing all the other
+> few remaining __constant_cpu_to_le{16,32} instances.
 
-I like this patch. Internally we have a similar patch which instead of
-per-cpu int_active_memcg have current->active_memcg_irq. Our use-case
-was radix tree node allocations where we use the root node's memcg to
-charge all the nodes of the tree and the reason behind was that we
-observed a lot of zombies which were stuck due to radix tree nodes
-charges while the actual pages pointed by the those nodes/entries were
-in used by active jobs (shared file system and the kernel is older
-than the kmem reparenting).
+RFC looks fine.  Please add RB to official patch when you send it out. 
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com> 
+
+--
+Himanshu Madhani	 Oracle Linux Engineering
+
