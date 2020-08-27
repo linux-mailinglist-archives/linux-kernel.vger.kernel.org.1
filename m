@@ -2,161 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9048E25461E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7E625465C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgH0Nkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgH0Ney (ORCPT
+        id S1727084AbgH0N7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:59:11 -0400
+Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:53063 "EHLO
+        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726803AbgH0Nnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:34:54 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70421C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:34:54 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k18so3510682pfp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fOtOQwtAMnsiuZkel6P+QKLSzAWGFcwbvl4MhWbUo1c=;
-        b=VFTQz853WO4K2b97Gw8Vq+2NCsRZgwv1PoyWPiyF79O4L1GRoHXehFI0hrHO5E+3L7
-         nrLw54vjbmJAxJfu7iwZojsuLgK1EkXhuuF5hJg/zw7PF1ifJG/xBnl50S06cC19W/gq
-         i8v8c7i9DpklX0WWeUhuKJ027ioHReA6qzTwjXZQmmsBYH86hl6lvvvHIdQI5xUCw35n
-         djVrMOcEzNUHZDX9Q0JRJ+54DxyZ3qczuN01T1vEaxVf6TNlY1JzVpxVurEPofRICLTQ
-         sehOfUQssBoXDLpPl5PGDtsh+7wUv7SMNBwZa5CtaOi0/dpNOGbR+wxV8VZ0akl3pAEH
-         TFSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fOtOQwtAMnsiuZkel6P+QKLSzAWGFcwbvl4MhWbUo1c=;
-        b=TQABgIuVJKddzEwmFzPJ11lKKWQK88KwZQkU+l6WcLdT1Cug6IG5oelAB1PQDfddj2
-         lAAF8/3qFYCMbZoIaKzBU0a/k3dwaDZ4l5tySjprX2sAPz/OzUiE/HS/6Mscxi1MI/BJ
-         IXXJiIokLsriyYra2C90Fb/09RmhZfz/lH8UyxNbbo0bM6Q5gI4WGyZNITe1eJ+zmfI6
-         F5rHOz0zCN3yWw4zmmiA4tSr+5RgoHbx6d/y4IQSGLg0/Ozq1dl4MEEjX3UOgull6qFS
-         e4bWN8JrT3xb/TDAWbsGWIHLtFND5LR18ae3xlRVqYWksYCsHqWlQaerYxqQfV9nZdTv
-         +ECw==
-X-Gm-Message-State: AOAM531ocjTnqSuRVgxTB4+pA+4J6ZkFPA0FeriojUcX26uV4Gx95IA8
-        oN8JhADommVb48Whp/GQBGRfOOVHAOeGGThAMSvZyQ==
-X-Google-Smtp-Source: ABdhPJwZDZ1YWgPOElrp9s/sDw0FY/M9AwCUa4WE07eW6R7ae8uB2U5pgCBMXEphtljLWo5s8MA4P1VEg3eAT76xSLQ=
-X-Received: by 2002:a17:902:b589:: with SMTP id a9mr15940749pls.98.1598535293587;
- Thu, 27 Aug 2020 06:34:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1597425745.git.andreyknvl@google.com> <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
- <20200827095429.GC29264@gaia> <CAAeHK+xHQDMsTehppknjNTEMFh18ufWB1XLUGdVFoc-QZ-mVrw@mail.gmail.com>
- <20200827131045.GM29264@gaia>
-In-Reply-To: <20200827131045.GM29264@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 27 Aug 2020 15:34:42 +0200
-Message-ID: <CAAeHK+xraz7E41b4LW6VW9xOH51UoZ+odNEDrDGtaJ71n=bQ3A@mail.gmail.com>
-Subject: Re: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
+        Thu, 27 Aug 2020 09:43:55 -0400
+X-Greylist: delayed 505 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 09:43:54 EDT
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id 0F2FFFAF62
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 14:35:25 +0100 (IST)
+Received: (qmail 15080 invoked from network); 27 Aug 2020 13:35:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.16.65])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Aug 2020 13:35:24 -0000
+Date:   Thu, 27 Aug 2020 14:35:23 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+Message-ID: <20200827133523.GC3090@techsingularity.net>
+References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz>
+ <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 3:10 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Thu, Aug 27, 2020 at 02:31:23PM +0200, Andrey Konovalov wrote:
-> > On Thu, Aug 27, 2020 at 11:54 AM Catalin Marinas
-> > <catalin.marinas@arm.com> wrote:
-> > > On Fri, Aug 14, 2020 at 07:27:03PM +0200, Andrey Konovalov wrote:
-> > > > +static int do_tag_recovery(unsigned long addr, unsigned int esr,
-> > > > +                        struct pt_regs *regs)
-> > > > +{
-> > > > +     report_tag_fault(addr, esr, regs);
-> > > > +
-> > > > +     /* Skip over the faulting instruction and continue: */
-> > > > +     arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
-> > >
-> > > Ooooh, do we expect the kernel to still behave correctly after this? I
-> > > thought the recovery means disabling tag checking altogether and
-> > > restarting the instruction rather than skipping over it.
+On Wed, Aug 26, 2020 at 02:12:44PM +0900, Joonsoo Kim wrote:
+> > > And, it requires to break current code
+> > > layering that order-0 page is always handled by the pcplist. I'd prefer
+> > > to avoid it so this patch uses different way to skip CMA page allocation
+> > > from the pcplist.
 > >
-> > The intention is to be able to catch multiple MTE faults without
-> > panicking or disabling MTE when executing KASAN tests (those do
-> > multiple bad accesses one after another).
->
-> The problem is that for MTE synchronous tag check faults, the access has
-> not happened, so you basically introduce memory corruption by skipping
-> the access.
+> > Well it would be much simpler and won't affect most of allocations. Better than
+> > flushing pcplists IMHO.
+> 
+> Hmm...Still, I'd prefer my approach.
 
-Yes, you're right.
+I prefer the pcp bypass approach. It's simpler and it does not incur a
+pcp drain/refill penalty. 
 
-> > We do arm64_skip_faulting_instruction() for software tag-based KASAN
-> > too, it's not ideal, but works for testing purposes.
->
-> IIUC, KASAN only skips over the brk instruction which doesn't have any
-> other side-effects.
+> There are two reasons. First,
+> layering problem
+> mentioned above. In rmqueue(), there is a code for MIGRATE_HIGHATOMIC.
+> As the name shows, it's for high order atomic allocation. But, after
+> skipping pcplist
+> allocation as you suggested, we could get there with order 0 request.
 
-Oh, yes, indeed. For some reason I confused myself thinking that we
-also skip the access for software KASAN.
+I guess your concern is that under some circumstances that a request that
+passes a watermark check could fail due to a highatomic reserve and to
+an extent this is true. However, in that case the system is already low
+on memory depending on the allocation context, the pcp lists may get
+flushed anyway.
 
-> Has the actual memory access taken place when it
-> hits the brk?
+> We can also
+> change this code, but, I'd hope to maintain current layering. Second,
+> a performance
+> reason. After the flag for nocma is up, a burst of nocma allocation
+> could come. After
+> flushing the pcplist one times, we can use the free page on the
+> pcplist as usual until
+> the context is changed.
 
-IIRC, no, but it will be executed right after we skip the brk.
+It's not guaranteed because CMA pages could be freed between the nocma save
+and restore triggering further drains due to a reschedule.  Similarly,
+a CMA allocation in parallel could refill with CMA pages on the per-cpu
+list. While both cases are unlikely, it's more unpredictable than a
+straight-forward pcp bypass.
 
-> > Can we disable MTE, reexecute the instruction, and then reenable MTE,
-> > or something like that?
->
-> If you want to preserve the MTE enabled, you could single-step the
-> instruction or execute it out of line, though it's a bit more convoluted
-> (we have a similar mechanism for kprobes/uprobes).
->
-> Another option would be to attempt to set the matching tag in memory,
-> under the assumption that it is writable (if it's not, maybe it's fine
-> to panic). Not sure how this interacts with the slub allocator since,
-> presumably, the logical tag in the pointer is wrong rather than the
-> allocation one.
->
-> Yet another option would be to change the tag in the register and
-> re-execute but this may confuse the compiler.
+I don't really see it as a layering violation of the API because all
+order-0 pages go through the PCP lists. The fact that order-0 is serviced
+from the pcp list is an internal implementation detail, the API doesn't
+care.
 
-Which one of these would be simpler to implement?
-
-Perhaps we could somehow only skip faulting instructions that happen
-in the KASAN test module?.. Decoding stack trace would be an option,
-but that's a bit weird.
-
-Overall, this feature is not essential, but will make testing simpler.
-
-> > When running in-kernel MTE in production, we'll either panic or
-> > disable MTE after the first fault. This was controlled by the
-> > panic_on_mte_fault option Vincenzo initially had.
->
-> I prefer to disable MTE, print something and continue, but no panic.
-
-OK, we can do this.
-
-> > > We only skip if we emulated it.
-> >
-> > I'm not sure I understand this part, what do you mean by emulating?
->
-> Executing it out of line or other form of instruction emulation (see
-> arch/arm64/kernel/probes/simulate-insn.c) so that the access actually
-> takes place. But you can single-step or experiment with some of the
-> other tricks above.
->
-> --
-> Catalin
+-- 
+Mel Gorman
+SUSE Labs
