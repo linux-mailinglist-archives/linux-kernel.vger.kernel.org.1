@@ -2,247 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA41254828
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AF7254831
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgH0O7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:59:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21291 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728419AbgH0O7N (ORCPT
+        id S1727875AbgH0O76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgH0O7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:59:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598540350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z4Vz/JxMJ98n2+tJ+MNwT1uOCyLxzwuXuw0qARqAyiM=;
-        b=KFwosy8JrSCDFWHHsYoH1TMrXOgpaiNP2vDm4NRuRE8RBenb3OYtVR9bGUZT04QyxPYcPA
-        YfGDGKX2aty2N9zTDxL2ceftVQWt2xh5EToE+vqTM+UaJkR7A4lxgDwJvMMBVYN740s999
-        sUnXCFoTEjpO2s4+kSjuU/xOt4c5CVI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-bDDXn54yP324K-pMmJdIQw-1; Thu, 27 Aug 2020 10:59:06 -0400
-X-MC-Unique: bDDXn54yP324K-pMmJdIQw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F3C5AE40E;
-        Thu, 27 Aug 2020 14:59:03 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-113-96.ams2.redhat.com [10.36.113.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D631B5C1C2;
-        Thu, 27 Aug 2020 14:58:52 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH v6 3/3] io_uring: allow disabling rings during the creation
-Date:   Thu, 27 Aug 2020 16:58:31 +0200
-Message-Id: <20200827145831.95189-4-sgarzare@redhat.com>
-In-Reply-To: <20200827145831.95189-1-sgarzare@redhat.com>
-References: <20200827145831.95189-1-sgarzare@redhat.com>
+        Thu, 27 Aug 2020 10:59:42 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2306DC061232
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:59:42 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id y206so3702729pfb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WuL1dIUKsXBKS74w29uHtR6KbU+GU+6B3P99Ro425TA=;
+        b=ghTzCFJCnPmQ+DImiDILpCS6WX5yhT8MFpZj9RUpmJjv3EXxiJN5WUqT8L4MXcuwxD
+         pDNzURkebg9gNy52q5ZsI/Dui3sJhS0Z/2W9PKez79BQdhhRwnf5Mb6p8J4gRu4Gxh8v
+         SveFSFYljkwpakvd+DNDZCZJZwc8Vmf6chJRE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WuL1dIUKsXBKS74w29uHtR6KbU+GU+6B3P99Ro425TA=;
+        b=GJFowid9+fTCMqZtWfdeCrcAej47JBoNLAiL3pZCDJ860MdrLQ3yo2VUxMM2uT1j1d
+         b9H7BXK0r7iux3sgeDoBS6dUVp9fImOjuKE+g/GkOAnn5sKv9OQH0exzDB432kU5jQVf
+         8tM6sHTg/dV6U3yKy5D+p50UH7WOvpgQmN6F6yTt/SeAEf2i0SWcWshakYQmtr2vD1f2
+         D77Hx0GAbGfr+ifbP7x7qXpDl7nd4Bn6TmBl6Y/lBbojYaK3ool8RgkrzXtFmW/Fyz4s
+         oqPJhogB4XrzZpIgMBsnqiDGvJMKhGhHtJ6fushbDyhqep8Hx0A9yzIFhwx8k5WwSaPM
+         8C4A==
+X-Gm-Message-State: AOAM532zFXC41FnkZDlowVPuYKnmuyNw39Ll9r+m/XVn2k3kIDQkLALh
+        eNeu9OcI7kw4Ed5XDdH7s7eqvw==
+X-Google-Smtp-Source: ABdhPJzzU+IA2AKHCax5T4tD+YBJLoQ/6ieQfs/9z2zBy3H5T5H0eGgx+8rRdt3zBu85loFG04lVjg==
+X-Received: by 2002:aa7:9427:: with SMTP id y7mr17053693pfo.12.1598540381631;
+        Thu, 27 Aug 2020 07:59:41 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id u123sm3113198pfb.209.2020.08.27.07.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 07:59:41 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     vbadigan@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chris Ball <chris@printf.net>,
+        Georgi Djakov <gdjakov@mm-sol.com>,
+        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH] mmc: sdhci-msm: Add retries when all tuning phases are found valid
+Date:   Thu, 27 Aug 2020 07:58:41 -0700
+Message-Id: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new IORING_SETUP_R_DISABLED flag to start the
-rings disabled, allowing the user to register restrictions,
-buffers, files, before to start processing SQEs.
+As the comments in this patch say, if we tune and find all phases are
+valid it's _almost_ as bad as no phases being found valid.  Probably
+all phases are not really reliable but we didn't detect where the
+unreliable place is.  That means we'll essentially be guessing and
+hoping we get a good phase.
 
-When IORING_SETUP_R_DISABLED is set, SQE are not processed and
-SQPOLL kthread is not started.
+This is not just a problem in theory.  It was causing real problems on
+a real board.  On that board, most often phase 10 is found as the only
+invalid phase, though sometimes 10 and 11 are invalid and sometimes
+just 11.  Some percentage of the time, however, all phases are found
+to be valid.  When this happens, the current logic will decide to use
+phase 11.  Since phase 11 is sometimes found to be invalid, this is a
+bad choice.  Sure enough, when phase 11 is picked we often get mmc
+errors later in boot.
 
-The restrictions registration are allowed only when the rings
-are disable to prevent concurrency issue while processing SQEs.
+I have seen cases where all phases were found to be valid 3 times in a
+row, so increase the retry count to 10 just to be extra sure.
 
-The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
-opcode with io_uring_register(2).
-
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning implementation")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-v4:
- - fixed io_uring_enter() exit path when ring is disabled
 
-v3:
- - enabled restrictions only when the rings start
+ drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-RFC v2:
- - removed return value of io_sq_offload_start()
----
- fs/io_uring.c                 | 52 ++++++++++++++++++++++++++++++-----
- include/uapi/linux/io_uring.h |  2 ++
- 2 files changed, 47 insertions(+), 7 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 5f62997c147b..b036f3373fbe 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -226,6 +226,7 @@ struct io_restriction {
- 	DECLARE_BITMAP(sqe_op, IORING_OP_LAST);
- 	u8 sqe_flags_allowed;
- 	u8 sqe_flags_required;
-+	bool registered;
- };
- 
- struct io_ring_ctx {
-@@ -7497,8 +7498,8 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
--static int io_sq_offload_start(struct io_ring_ctx *ctx,
--			       struct io_uring_params *p)
-+static int io_sq_offload_create(struct io_ring_ctx *ctx,
-+				struct io_uring_params *p)
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index b7e47107a31a..1b78106681e0 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -1165,7 +1165,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host *host, bool enable)
+ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
  {
- 	int ret;
+ 	struct sdhci_host *host = mmc_priv(mmc);
+-	int tuning_seq_cnt = 3;
++	int tuning_seq_cnt = 10;
+ 	u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
+ 	int rc;
+ 	struct mmc_ios ios = host->mmc->ios;
+@@ -1221,6 +1221,22 @@ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 	} while (++phase < ARRAY_SIZE(tuned_phases));
  
-@@ -7532,7 +7533,6 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 			ctx->sqo_thread = NULL;
- 			goto err;
- 		}
--		wake_up_process(ctx->sqo_thread);
- 	} else if (p->flags & IORING_SETUP_SQ_AFF) {
- 		/* Can't have SQ_AFF without SQPOLL */
- 		ret = -EINVAL;
-@@ -7549,6 +7549,12 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
-+static void io_sq_offload_start(struct io_ring_ctx *ctx)
-+{
-+	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sqo_thread)
-+		wake_up_process(ctx->sqo_thread);
-+}
+ 	if (tuned_phase_cnt) {
++		if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
++			/*
++			 * All phases valid is _almost_ as bad as no phases
++			 * valid.  Probably all phases are not really reliable
++			 * but we didn't detect where the unreliable place is.
++			 * That means we'll essentially be guessing and hoping
++			 * we get a good phase.  Better to try a few times.
++			 */
++			dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
++				mmc_hostname(mmc));
++			if (--tuning_seq_cnt) {
++				tuned_phase_cnt = 0;
++				goto retry;
++			}
++		}
 +
- static inline void __io_unaccount_mem(struct user_struct *user,
- 				      unsigned long nr_pages)
- {
-@@ -8295,6 +8301,9 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
- 	if (!percpu_ref_tryget(&ctx->refs))
- 		goto out_fput;
- 
-+	if (ctx->flags & IORING_SETUP_R_DISABLED)
-+		goto out_fput;
-+
- 	/*
- 	 * For SQ polling, the thread will do all submissions and completions.
- 	 * Just return the requested submit count, and wake the thread if
-@@ -8612,10 +8621,13 @@ static int io_uring_create(unsigned entries, struct io_uring_params *p,
- 	if (ret)
- 		goto err;
- 
--	ret = io_sq_offload_start(ctx, p);
-+	ret = io_sq_offload_create(ctx, p);
- 	if (ret)
- 		goto err;
- 
-+	if (!(p->flags & IORING_SETUP_R_DISABLED))
-+		io_sq_offload_start(ctx);
-+
- 	memset(&p->sq_off, 0, sizeof(p->sq_off));
- 	p->sq_off.head = offsetof(struct io_rings, sq.head);
- 	p->sq_off.tail = offsetof(struct io_rings, sq.tail);
-@@ -8678,7 +8690,8 @@ static long io_uring_setup(u32 entries, struct io_uring_params __user *params)
- 
- 	if (p.flags & ~(IORING_SETUP_IOPOLL | IORING_SETUP_SQPOLL |
- 			IORING_SETUP_SQ_AFF | IORING_SETUP_CQSIZE |
--			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ))
-+			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ |
-+			IORING_SETUP_R_DISABLED))
- 		return -EINVAL;
- 
- 	return  io_uring_create(entries, &p, params);
-@@ -8761,8 +8774,12 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	size_t size;
- 	int i, ret;
- 
-+	/* Restrictions allowed only if rings started disabled */
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
- 	/* We allow only a single restrictions registration */
--	if (ctx->restricted)
-+	if (ctx->restrictions.registered)
- 		return -EBUSY;
- 
- 	if (!arg || nr_args > IORING_MAX_RESTRICTIONS)
-@@ -8814,12 +8831,27 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	if (ret != 0)
- 		memset(&ctx->restrictions, 0, sizeof(ctx->restrictions));
- 	else
--		ctx->restricted = 1;
-+		ctx->restrictions.registered = true;
- 
- 	kfree(res);
- 	return ret;
- }
- 
-+static int io_register_enable_rings(struct io_ring_ctx *ctx)
-+{
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
-+	if (ctx->restrictions.registered)
-+		ctx->restricted = 1;
-+
-+	ctx->flags &= ~IORING_SETUP_R_DISABLED;
-+
-+	io_sq_offload_start(ctx);
-+
-+	return 0;
-+}
-+
- static bool io_register_op_must_quiesce(int op)
- {
- 	switch (op) {
-@@ -8941,6 +8973,12 @@ static int __io_uring_register(struct io_ring_ctx *ctx, unsigned opcode,
- 			break;
- 		ret = io_unregister_personality(ctx, nr_args);
- 		break;
-+	case IORING_REGISTER_ENABLE_RINGS:
-+		ret = -EINVAL;
-+		if (arg || nr_args)
-+			break;
-+		ret = io_register_enable_rings(ctx);
-+		break;
- 	case IORING_REGISTER_RESTRICTIONS:
- 		ret = io_register_restrictions(ctx, arg, nr_args);
- 		break;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 6e7f2e5e917b..a0c85e0e9016 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -95,6 +95,7 @@ enum {
- #define IORING_SETUP_CQSIZE	(1U << 3)	/* app defines CQ size */
- #define IORING_SETUP_CLAMP	(1U << 4)	/* clamp SQ/CQ ring sizes */
- #define IORING_SETUP_ATTACH_WQ	(1U << 5)	/* attach to existing wq */
-+#define IORING_SETUP_R_DISABLED	(1U << 6)	/* start with ring disabled */
- 
- enum {
- 	IORING_OP_NOP,
-@@ -268,6 +269,7 @@ enum {
- 	IORING_REGISTER_PERSONALITY		= 9,
- 	IORING_UNREGISTER_PERSONALITY		= 10,
- 	IORING_REGISTER_RESTRICTIONS		= 11,
-+	IORING_REGISTER_ENABLE_RINGS		= 12,
- 
- 	/* this goes last */
- 	IORING_REGISTER_LAST
+ 		rc = msm_find_most_appropriate_phase(host, tuned_phases,
+ 						     tuned_phase_cnt);
+ 		if (rc < 0)
 -- 
-2.26.2
+2.28.0.297.g1956fa8f8d-goog
 
