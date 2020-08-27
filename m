@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1585E254CAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0019F254CB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgH0SOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S1727075AbgH0SPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgH0SOb (ORCPT
+        with ESMTP id S1726093AbgH0SPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:14:31 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ABAC06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:14:31 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x143so4136028pfc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:14:31 -0700 (PDT)
+        Thu, 27 Aug 2020 14:15:33 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF49C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:15:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g6so7469813ljn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=egw9om8RsmaPZ5tPzAY0iuGJgt+M0MCv6BBpqYPOWiA=;
-        b=WX1hyySDuKLYfX6LFE7cjlGRzvBh5H+D8/6DEOHbE489xogPA18r7xRo+mNtq95+SD
-         jdo8ktSdqVe+C7IGoj4w2k3XgUmfq9gLxxXgdThL++o0uYN5Ktltt8w/cv0iv1I5CH++
-         EHrnuIKZN5nGzyROQNpq2pVY+p/Eu/MlTpyiM=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Ln4YDv+McQTrVSBLkYMyzgo5ffLr7W4nh7mUMFYOZo=;
+        b=GjsK/u6ib7N+ctD2EUfS3Yg2gOjkfLasSaGCU/YbFFT4pm7wC/mAUjkvSP+UBZidUg
+         P75Y7Q+9vqNQMjHTBy6Jwr30jghzFLvVdhlC7Nn9Ui5WCs2KOmFbugeMsgtI/Xw61N8K
+         QeupHGovYgcCrHWAn29zkzD17dqNMKZTBIjAg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=egw9om8RsmaPZ5tPzAY0iuGJgt+M0MCv6BBpqYPOWiA=;
-        b=ew47PKAj3Pr98IbuHDR8FqaaBSO0pS6R/rd2qr/OwWrEla6pLDHTtXPq5ceexjm07P
-         byiOYEoaqd4+UMA5hnVkakerJDoid4l+lQJLTfBrawI/WvnGI04K+tpdlWo4zSgvyPGH
-         QRD/8ACwbqQ8U+I3zE2/2ChtqD1Fi6JMLokQpYcoudTG/V7036kYFgIfhPei+0Bevswl
-         6f3LxPmMhvVQhqm/gBF7WjzqB5BBs3lLJJLiffdRGWMNuCU+w9b27szqxk96UOjP1xbe
-         FkWqNjP8u7wnW/jRLhkWRl/G65IniKAhe7DihXP7PQaHWiXvzqKEeHfLWqG2MlRYJ+Nq
-         +iJg==
-X-Gm-Message-State: AOAM532q5w3qrlW8bILhztfA+tGaM0EyQTv2Lke8zumRUuX+d8tOTBgf
-        nsvz+lxMmWP8toV/k66CtKZLnQ==
-X-Google-Smtp-Source: ABdhPJzGV2QPSzG3uVRG/o6Jhtf+oerJPcX2VXfJOagxOj7GobYJzv+lAXoO9dgsj/XS21gERtZ6ug==
-X-Received: by 2002:aa7:9f5d:: with SMTP id h29mr2404455pfr.133.1598552070574;
-        Thu, 27 Aug 2020 11:14:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u8sm3476103pfm.133.2020.08.27.11.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 11:14:29 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 11:14:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mrinal Pandey <mrinalmni@gmail.com>
-Cc:     skhan@linuxfoundation.org,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, re.emese@gmail.com, maennich@google.com,
-        tglx@linutronix.de, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-spdx@vger.kernel.org, Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH] scripts: Add intended executable mode and SPDX license
-Message-ID: <202008271102.FEB906C88@keescook>
-References: <20200827092405.b6hymjxufn2nvgml@mrinalpandey>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Ln4YDv+McQTrVSBLkYMyzgo5ffLr7W4nh7mUMFYOZo=;
+        b=KajpsfE1YryTlfGYiBdReD1VbkCycHLUKXhcTmj9SWJ9mJnq4La5MuN4Lq5kHk1oZH
+         LA9MHyJ6DpY4nCdEcraj5MIhE09RS5QMLJOZeQCUjCwY7+pgTz0v3uqM5hOETRICBFnV
+         Bgws4u097tik7qyxLg05bAPNnSLYQJqgpkMg91cBFD4P5WZINsKTuwIbBZ1PCkK0arZ3
+         At+m+UlfEOBNsLuPLJcEDuu7gv56Vgzd4j3Ng7Fh3l+bHC3bliQXUOOZeO3Mma9x/E/T
+         uuKf7dP+SJs/N854hAUAk01dqnO/lhVbbh5IATWe1b6vx8uMX6A8jySqhORbxqFpy2xU
+         YplQ==
+X-Gm-Message-State: AOAM531ppRPQeTEQNHs5HjUN00hYiq7UkjtHCllnB8YPB+FS8j3m4Vxe
+        KFll1UkZw5NrpFFRc27itiUzn5JFsO9GLQ==
+X-Google-Smtp-Source: ABdhPJx8VYoAVsPdK6P9nSZp+V3lpQhsxr/shI4CIal+cqOj8hGKmCMStM7XNTT0VjUwx6xxiDilYw==
+X-Received: by 2002:a2e:920c:: with SMTP id k12mr10723334ljg.29.1598552131428;
+        Thu, 27 Aug 2020 11:15:31 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id d2sm632048ljo.126.2020.08.27.11.15.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 11:15:31 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id h19so7481835ljg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:15:29 -0700 (PDT)
+X-Received: by 2002:a2e:92d0:: with SMTP id k16mr9604351ljh.70.1598552128279;
+ Thu, 27 Aug 2020 11:15:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827092405.b6hymjxufn2nvgml@mrinalpandey>
+References: <20200827150030.282762-1-hch@lst.de> <20200827150030.282762-9-hch@lst.de>
+In-Reply-To: <20200827150030.282762-9-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 27 Aug 2020 11:15:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjxeN+KrCB2TyC5s2RWhz-dWWO8vbBwWcCiKb0+8ipayw@mail.gmail.com>
+Message-ID: <CAHk-=wjxeN+KrCB2TyC5s2RWhz-dWWO8vbBwWcCiKb0+8ipayw@mail.gmail.com>
+Subject: Re: [PATCH 08/10] x86: remove address space overrides using set_fs()
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 02:54:05PM +0530, Mrinal Pandey wrote:
-> commit eb8305aecb95 ("scripts: Coccinelle script for namespace
-> dependencies.") added the file nsdeps, commit 313dd1b62921 ("gcc-plugins:
-> Add the randstruct plugin") added the file gcc-plugins/gen-random-seed.sh
-> and commit 9b4ade226f74 ("xen: build infrastructure for generating
-> hypercall depending symbols") added the file xen-hypercalls.sh without the
-> executable bit.
-> [...]
->  scripts/gcc-plugins/gen-random-seed.sh | 0
->  scripts/nsdeps                         | 0
->  scripts/spdxcheck-test.sh              | 1 +
->  scripts/xen-hypercalls.sh              | 0
->  4 files changed, 1 insertion(+)
->  mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
->  mode change 100644 => 100755 scripts/nsdeps
->  mode change 100644 => 100755 scripts/spdxcheck-test.sh
->  mode change 100644 => 100755 scripts/xen-hypercalls.sh
+On Thu, Aug 27, 2020 at 8:00 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+>  SYM_FUNC_START(__get_user_2)
+>         add $1,%_ASM_AX
+>         jc bad_get_user
 
-I can't find "official" guidance on this right now, but I'm pretty sure
-this (having execute bits set correctly) wasn't something we could depend
-on (i.e. regular "diff" output doesn't support it (just git's diff),
-and copies of the tree (or tarballs, etc) may have missed the bits). All
-the portions of the kernel that uses these kinds of files explicitly
-specify the interpreter (or universally set the execute bit)[1]. As such,
-is this change useful?
+This no longer makes sense, and
 
-It might be better to _remove_ execute bits to catch the places where
-the build is accidentally depending on them. ;)
+> -       mov PER_CPU_VAR(current_task), %_ASM_DX
+> -       cmp TASK_addr_limit(%_ASM_DX),%_ASM_AX
+> +       LOAD_TASK_SIZE_MAX
+> +       cmp %_ASM_DX,%_ASM_AX
 
--Kees
+This should be
 
+        LOAD_TASK_SIZE_MAX_MINUS_N(1)
+        cmp %_ASM_DX,%_ASM_AX
 
-[1] These all use CONFIG_SHELL:
+instead (and then because we no longer modify _ASM_AX, we'd also
+remove the offset on the access).
 
-scripts/gcc-plugins/Makefile:
-  $(CONFIG_SHELL) $(srctree)/$(src)/gen-random-seed.sh $@ $(objtree)/include/generated/randomize_layout_hash.h
+>  SYM_FUNC_START(__put_user_2)
+> -       ENTER
+> -       mov TASK_addr_limit(%_ASM_BX),%_ASM_BX
+> +       LOAD_TASK_SIZE_MAX
+>         sub $1,%_ASM_BX
 
-Makefile:
-       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/nsdeps
+It's even more obvious here. We load a constant and then immediately
+do a "sub $1" on that value.
 
-arch/x86/entry/syscalls/Makefile:
-quiet_cmd_hypercalls = HYPERCALLS $@
-      cmd_hypercalls = $(CONFIG_SHELL) '$<' $@ $(filter-out $<,$^)
-...
-$(out)/xen-hypercalls.h: $(srctree)/scripts/xen-hypercalls.sh
-        $(call if_changed,hypercalls)
+It's not a huge deal, you don't have to respin the series for this, I
+just wanted to point it out so that people are aware of it and if I
+forget somebody else will hopefully remember that "we should fix that
+too".
 
-And I can't even find anything in the kernel that calls
-scripts/spdxcheck-test.sh :) I think that should likely be moved into
-the selftests directory and wired up.
-
-
--- 
-Kees Cook
+                   Linus
