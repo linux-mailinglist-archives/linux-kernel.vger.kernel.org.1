@@ -2,106 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD472253D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F79253DA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgH0GRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:17:54 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:41993 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgH0GRt (ORCPT
+        id S1727807AbgH0GWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgH0GWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:17:49 -0400
-Received: by mail-ej1-f65.google.com with SMTP id j25so6064004ejk.9;
-        Wed, 26 Aug 2020 23:17:47 -0700 (PDT)
+        Thu, 27 Aug 2020 02:22:05 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B962C06125E;
+        Wed, 26 Aug 2020 23:21:56 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id cs12so2172137qvb.2;
+        Wed, 26 Aug 2020 23:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Epu5LMMnzcXJyXxIxmqqE2Un3GzqSZHgAZfFnavRrqA=;
+        b=rAbKI83yqP0ZA7NP/tDKWnJU+DHWyMqTRzR6f+Pzu+GmVHTi9rEo9fDX4sKdObZAdp
+         hxukX8Toy7Z3h4L5ON4yJB8RSmDR/sHb68+mNNVzYNL202z3PoRp3j9eSDD4ZxEh1q+E
+         /wTPTA0dK4qyBeVi5IKFZKsDT+gHu1BWjZtFwpeCvYOQyqYHJsTZL1Zy9kxPGpBVLOqU
+         JymJS4GrI0TFzbsOP2TpyG6FARte8dxHqhdyM9HxFsIRb+rIsbHkEhcNFRqU2dXFAQff
+         JDkIfIAwDJ5zHCS89NPYKn6dsJ82KT+CSuIj7ITE1X3Dz3kOjg7ZJfq1feJu9eRWwohd
+         TFRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JZG8HBT8DE1dNj4xlJRchHMwVc5I9x4bxVIe8VtVQDc=;
-        b=UXUv+jnTxbHy2LAlYAONTH9CHB1AfEiRsupiLK3RLc8PG/0S3HtrMcEcZ/E34Bu1hO
-         jAeOagMCWDI/+cnWvwSOccNtbPFAfRsrbiofgdQ5j98OicG5i4AHv9QIGR5bBSYHteei
-         sHrRg3A4U5GPgWBBbb7fLXfmfvAF9hbAkw6cobhHkiDhsP2ED3SL9nUNdPJpUyDMWvHs
-         ywbA9mNftSK6CyK1ItrHwy3OCm33w5zgM/rMBV48qjCosNf1pzA2VgmQmqG5/P9qfXAA
-         y80Wz6gHIv6BkD/QDFawBk9YuDZcSMTGiKmBXVwUFxvUD2pCusUYOoPKHLw3h2kFmm2c
-         9gBQ==
-X-Gm-Message-State: AOAM531vwMk2XvBBGm4wdFn3PhYX+abgwA5scyGv0yxTNfr5xDqRnNI1
-        /FVaC6NoIyOoZZ7JLfKvj0k=
-X-Google-Smtp-Source: ABdhPJwtnm3Q3rP55hJh0omZ1VciZFvqj06f/eN1729A2GVqJHVD8CL1kk2xojDHBSTSUILxlI74Pg==
-X-Received: by 2002:a17:906:fcc8:: with SMTP id qx8mr1203962ejb.13.1598509066941;
-        Wed, 26 Aug 2020 23:17:46 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id r15sm764343edv.94.2020.08.26.23.17.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Aug 2020 23:17:46 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 08:17:44 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] Input: gpio_keys - Simplify with dev_err_probe()
-Message-ID: <20200827061744.GB3355@kozik-lap>
-References: <20200826200827.30931-1-krzk@kernel.org>
- <20200826200827.30931-2-krzk@kernel.org>
- <CAHp75VcgE+HJOKkV6-crzH1w+qOtSKR8=i1Y3ufnhTiAcYV=7A@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Epu5LMMnzcXJyXxIxmqqE2Un3GzqSZHgAZfFnavRrqA=;
+        b=Q7UzsyPXcXDz6pmPSXb1MdXOsQoW1KXUfjJsbUEsm55YWN6iidUi095MUkWJOUgxf2
+         YJbu57+QkLAk2GGF4GDW0T0xbxelF7cUrlOkqFAEx/nbWkyFjUQ0GLMnHD5DXHuMN5Yd
+         PuCmCb+7ZzZCYW8/u8fhpLUl+2CcB/5fvMzTWSE3Hg5LYkCTrW3UNOjx27XsbJ1mRO9z
+         9s/E7snya4oMK6mCX8BzRyTYzVHadjVer2PFJG5horsJ/NgLLp3HNiEZZU/+D2V7s1WD
+         fs+rWK7L3Is9Gd6hqxTDbc8VBKp7WWMkL2H0lUkN031cAYj1N6RZaDNPUqE+AQYLFj5z
+         YC8g==
+X-Gm-Message-State: AOAM531FdzaZHzezzoYGj6sHUkQRGrQRidLS5Dhs/WOSW1EAe1lPvsJN
+        57cbkvLnt/reSs/N+PCOXHFJFpTMJqY=
+X-Google-Smtp-Source: ABdhPJy/5QPXrFEUP8b1kDdDCDWnDRvuEWTQqNEn3iYxVg8XOa5ZUpX00yykfPR+piIyTFRs5QJF4g==
+X-Received: by 2002:ad4:50a6:: with SMTP id d6mr16945786qvq.173.1598509315365;
+        Wed, 26 Aug 2020 23:21:55 -0700 (PDT)
+Received: from localhost.localdomain ([50.236.19.102])
+        by smtp.gmail.com with ESMTPSA id f7sm1186117qkj.32.2020.08.26.23.21.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Aug 2020 23:21:54 -0700 (PDT)
+From:   xiangxia.m.yue@gmail.com
+To:     greg@kroah.com, sashal@kernel.org, davem@davemloft.net
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, jknoos@google.com,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Subject: [PATCH net backport to 5.5 - 5.8.3 v2] net: openvswitch: introduce common code for flushing flows
+Date:   Thu, 27 Aug 2020 14:19:52 +0800
+Message-Id: <20200827061952.5789-1-xiangxia.m.yue@gmail.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcgE+HJOKkV6-crzH1w+qOtSKR8=i1Y3ufnhTiAcYV=7A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:05:51AM +0300, Andy Shevchenko wrote:
-> On Wednesday, August 26, 2020, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> 
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe() and devm_fwnode_gpiod_get_optional().   Less code and
-> > the error value gets printed.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> >
-> > ---
-> >
-> > Changes since v1:
-> > 1. Use devm_fwnode_gpiod_get_optional
-> > ---
-> >  drivers/input/keyboard/gpio_keys.c | 21 ++++-----------------
-> >  1 file changed, 4 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/input/keyboard/gpio_keys.c
-> > b/drivers/input/keyboard/gpio_keys.c
-> > index f2d4e4daa818..a07ac6fa25ed 100644
-> > --- a/drivers/input/keyboard/gpio_keys.c
-> > +++ b/drivers/input/keyboard/gpio_keys.c
-> > @@ -494,23 +494,10 @@ static int gpio_keys_setup_key(struct
-> > platform_device *pdev,
-> >         spin_lock_init(&bdata->lock);
-> >
-> >         if (child) {
-> > -               bdata->gpiod = devm_fwnode_gpiod_get(dev, child,
-> > -                                                    NULL, GPIOD_IN, desc);
-> > -               if (IS_ERR(bdata->gpiod)) {
-> > -                       error = PTR_ERR(bdata->gpiod);
-> > -                       if (error == -ENOENT) {
-> > -                               /*
-> > -                                * GPIO is optional, we may be dealing with
-> > -                                * purely interrupt-driven setup.
-> > -                                */
-> 
-> 
-> Can we preserve this comment?
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-Sure.
+[ Upstream commit 1f3a090b9033f69de380c03db3ea1a1015c850cf ]
 
-Best regards,
-Krzysztof
+Backport this commit to 5.5 - 5.8.3.
+
+To avoid some issues, for example RCU usage warning and double free,
+we should flush the flows under ovs_lock. This patch refactors
+table_instance_destroy and introduces table_instance_flow_flush
+which can be invoked by __dp_destroy or ovs_flow_tbl_flush.
+
+Fixes: 50b0e61b32ee ("net: openvswitch: fix possible memleak on destroy flow-table")
+Reported-by: Johan Knöös <jknoos@google.com>
+Reported-at: https://mail.openvswitch.org/pipermail/ovs-discuss/2020-August/050489.html
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Reviewed-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/openvswitch/datapath.c   | 10 +++++++++-
+ net/openvswitch/flow_table.c | 35 +++++++++++++++--------------------
+ net/openvswitch/flow_table.h |  3 +++
+ 3 files changed, 27 insertions(+), 21 deletions(-)
+
+diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
+index e3a37d22539c..15615cae4c89 100644
+--- a/net/openvswitch/datapath.c
++++ b/net/openvswitch/datapath.c
+@@ -1737,6 +1737,7 @@ static int ovs_dp_cmd_new(struct sk_buff *skb, struct genl_info *info)
+ /* Called with ovs_mutex. */
+ static void __dp_destroy(struct datapath *dp)
+ {
++	struct flow_table *table = &dp->table;
+ 	int i;
+ 
+ 	for (i = 0; i < DP_VPORT_HASH_BUCKETS; i++) {
+@@ -1755,7 +1756,14 @@ static void __dp_destroy(struct datapath *dp)
+ 	 */
+ 	ovs_dp_detach_port(ovs_vport_ovsl(dp, OVSP_LOCAL));
+ 
+-	/* RCU destroy the flow table */
++	/* Flush sw_flow in the tables. RCU cb only releases resource
++	 * such as dp, ports and tables. That may avoid some issues
++	 * such as RCU usage warning.
++	 */
++	table_instance_flow_flush(table, ovsl_dereference(table->ti),
++				  ovsl_dereference(table->ufid_ti));
++
++	/* RCU destroy the ports, meters and flow tables. */
+ 	call_rcu(&dp->rcu, destroy_dp_rcu);
+ }
+ 
+diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
+index 5904e93e5765..1c4fbac53fbd 100644
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -345,19 +345,15 @@ static void table_instance_flow_free(struct flow_table *table,
+ 	flow_mask_remove(table, flow->mask);
+ }
+ 
+-static void table_instance_destroy(struct flow_table *table,
+-				   struct table_instance *ti,
+-				   struct table_instance *ufid_ti,
+-				   bool deferred)
++/* Must be called with OVS mutex held. */
++void table_instance_flow_flush(struct flow_table *table,
++			       struct table_instance *ti,
++			       struct table_instance *ufid_ti)
+ {
+ 	int i;
+ 
+-	if (!ti)
+-		return;
+-
+-	BUG_ON(!ufid_ti);
+ 	if (ti->keep_flows)
+-		goto skip_flows;
++		return;
+ 
+ 	for (i = 0; i < ti->n_buckets; i++) {
+ 		struct sw_flow *flow;
+@@ -369,18 +365,16 @@ static void table_instance_destroy(struct flow_table *table,
+ 
+ 			table_instance_flow_free(table, ti, ufid_ti,
+ 						 flow, false);
+-			ovs_flow_free(flow, deferred);
++			ovs_flow_free(flow, true);
+ 		}
+ 	}
++}
+ 
+-skip_flows:
+-	if (deferred) {
+-		call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
+-		call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
+-	} else {
+-		__table_instance_destroy(ti);
+-		__table_instance_destroy(ufid_ti);
+-	}
++static void table_instance_destroy(struct table_instance *ti,
++				   struct table_instance *ufid_ti)
++{
++	call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
++	call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
+ }
+ 
+ /* No need for locking this function is called from RCU callback or
+@@ -393,7 +387,7 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
+ 
+ 	free_percpu(table->mask_cache);
+ 	kfree_rcu(rcu_dereference_raw(table->mask_array), rcu);
+-	table_instance_destroy(table, ti, ufid_ti, false);
++	table_instance_destroy(ti, ufid_ti);
+ }
+ 
+ struct sw_flow *ovs_flow_tbl_dump_next(struct table_instance *ti,
+@@ -509,7 +503,8 @@ int ovs_flow_tbl_flush(struct flow_table *flow_table)
+ 	flow_table->count = 0;
+ 	flow_table->ufid_count = 0;
+ 
+-	table_instance_destroy(flow_table, old_ti, old_ufid_ti, true);
++	table_instance_flow_flush(flow_table, old_ti, old_ufid_ti);
++	table_instance_destroy(old_ti, old_ufid_ti);
+ 	return 0;
+ 
+ err_free_ti:
+diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
+index 8a5cea6ae111..8ea8fc957377 100644
+--- a/net/openvswitch/flow_table.h
++++ b/net/openvswitch/flow_table.h
+@@ -86,4 +86,7 @@ bool ovs_flow_cmp(const struct sw_flow *, const struct sw_flow_match *);
+ 
+ void ovs_flow_mask_key(struct sw_flow_key *dst, const struct sw_flow_key *src,
+ 		       bool full, const struct sw_flow_mask *mask);
++void table_instance_flow_flush(struct flow_table *table,
++			       struct table_instance *ti,
++			       struct table_instance *ufid_ti);
+ #endif /* flow_table.h */
+-- 
+2.23.0
+
