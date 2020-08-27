@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE84D2548EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E082548F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgH0PRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728737AbgH0Lg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:36:57 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9852C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:36:52 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id k1so1160509vkb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ooHzlcK9ygV09BpTK5pdlKAaPmSuGBA3cYk3HsnGhI=;
-        b=gyvCYGNTxFHy28eyjnJaOniu3Ngpdp7FgF/p36fg9mx0sA+iQINbuS4hvhSRgQZG4K
-         M+praVM2M8rDtJE7oKQfrwNOlajEgitaFZ8KpSeGAgp/KojD+cIX5zlMCVGzOsQKlQyt
-         pn9rgMBtz7Vo0inQZZ6f8dOZyO/B/86EIiCgW01LQI+LSfo0KB6Eup4DDxOEChXFXVYb
-         VPQ49zrePMz2XHowV2ZJ7YId4fRiik+AUkqioR5XowJ5khWUi/UZRIl/z//ErbCUw8i6
-         lqZNx4cuUfQYKlWVDbtoB7wzyjoQOA+zcQmP1fZC/iCVWRMKlOmZL3sMkZNfXFHyHKUi
-         qx4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6ooHzlcK9ygV09BpTK5pdlKAaPmSuGBA3cYk3HsnGhI=;
-        b=HBzRE5XermT46/dAGIKZQV1w4TTrIzAI4QRCpKrsdFoReaqcOKiqiTdzRkfaG1ZidV
-         Ro2Dao3hFUih62rBD+uEzMFx6VfNxx1UeBFEm+UXmi4fC1Y1mABZUz5w+G6756ITY+vc
-         oppMiUCxMeCnPrWC5W4WD0ew4i89lAxaG2pUHTwUNYd5/uomBBmEoS1s+J/VuynKyn4K
-         hd52s0I5HgJd+gEAkxzhpu8oFAYUYeNup5vjgVAfCCkgbJjovtlm5XORVMFdKaawmq1c
-         YE+cyhd/FEwxJCCjE3s+mkQURnnEGtQOSn5XU0E6Y6gRSpH5J5KugCAtNlfQu067DX4+
-         YDFg==
-X-Gm-Message-State: AOAM5337wYjYrwQqx0evPEcvn0CqKwS94ZRS5XsWlUdahSHtnN+hWtAG
-        2vHBdxYvPlBShH0kEyXBAQS1hRcmpDNH8EiYl88PDQ==
-X-Google-Smtp-Source: ABdhPJz2Kvyqr5m8SmXHIOwki3A50F7P9NH0AKIKPv9pKYpv2hoW0Imfg7W4iRAq/QvR+EZlcoBfEV1GThBF0OW1ank=
-X-Received: by 2002:a05:6122:5ad:: with SMTP id w13mr1188574vko.11.1598528210107;
- Thu, 27 Aug 2020 04:36:50 -0700 (PDT)
+        id S1728424AbgH0PRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:17:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728759AbgH0Lgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:36:44 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0E2522B40;
+        Thu, 27 Aug 2020 11:36:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598528203;
+        bh=5eT2tYqtPolxsoXx3AsjQTsAwlPhDcgqhfxvjuptRAg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JYU9VCHr4e0ib2bcr1ZxWp33oJEob5G9Nr5w+XxE5h9ZHA0o5wywPnIqQ27nvs2Kd
+         cCIamRxVa+9c4waDchbvTMjZCsKhHas9qPZoQhJpBskqn/eYpCSXNROtSWtJpQ9FgW
+         lYjddmUlqyU9l1hvYe0N2Dldqq4fWHy2i08n5E3E=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v2 08/15] mips: kprobes: Use generic kretprobe trampoline handler
+Date:   Thu, 27 Aug 2020 20:36:39 +0900
+Message-Id: <159852819884.707944.11614246435562634035.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <159852811819.707944.12798182250041968537.stgit@devnote2>
+References: <159852811819.707944.12798182250041968537.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <CA+G9fYvUwH2FA9GOeA_7GYpLA31uOmEpg32VKnJ8-d5QSK4PdQ@mail.gmail.com>
- <20200827090813.fjugeqbb47fachy7@vireshk-i7> <CAK8P3a2zxybiMDzHXkTsT=VpHJOLkwd1=YTtCNU04vuMjZLkxA@mail.gmail.com>
- <20200827101231.smqrhqu5da6jlz6i@vireshk-i7>
-In-Reply-To: <20200827101231.smqrhqu5da6jlz6i@vireshk-i7>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 27 Aug 2020 17:06:38 +0530
-Message-ID: <CA+G9fYv=XLtsuD=tVR1HHotwpKLkbwZVyPr4UhY-jD+6-duTmw@mail.gmail.com>
-Subject: Re: Kernel panic : Unable to handle kernel paging request at virtual
- address - dead address between user and kernel address ranges
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, John Stultz <john.stultz@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 15:42, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 27-08-20, 11:48, Arnd Bergmann wrote:
-> > > > [    3.680477]  dev_pm_opp_put_clkname+0x30/0x58
-> > > > [    3.683431]  sdhci_msm_probe+0x284/0x9a0
-> >
-> > dev_pm_opp_put_clkname() is part of the error handling in the
-> > probe function, so I would deduct there are two problems:
-> >
-> > - something failed during the probe and the driver is trying
-> >   to unwind
-> > - the error handling it self is buggy and tries to undo something
-> >   again that has already been undone.
->
-> Right.
->
-> > This points to Viresh's
-> > d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
->
-> I completely forgot that Ulf already pushed this patch and I was
-> wondering on which of the OPP core changes I wrote have done this :(
->
-> > Most likely this is not the entire problem but it uncovered a preexisting
-> > bug.
->
-> I think this is.
->
-> Naresh: Can you please test with this diff ?
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ arch/mips/kernel/kprobes.c |   55 +++-----------------------------------------
+ 1 file changed, 4 insertions(+), 51 deletions(-)
 
-I have applied your patch and tested but still see the reported problem.
-Link to test job,
-https://lkft.validation.linaro.org/scheduler/job/1715677#L1886
+diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
+index d043c2f897fc..b58f49b7555e 100644
+--- a/arch/mips/kernel/kprobes.c
++++ b/arch/mips/kernel/kprobes.c
+@@ -477,6 +477,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
+ {
+ 	ri->ret_addr = (kprobe_opcode_t *) regs->regs[31];
++	ri->fp = NULL;
+ 
+ 	/* Replace the return addr with trampoline addr */
+ 	regs->regs[31] = (unsigned long)kretprobe_trampoline;
+@@ -488,57 +489,9 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ 						struct pt_regs *regs)
+ {
+-	struct kretprobe_instance *ri = NULL;
+-	struct hlist_head *head, empty_rp;
+-	struct hlist_node *tmp;
+-	unsigned long flags, orig_ret_address = 0;
+-	unsigned long trampoline_address = (unsigned long)kretprobe_trampoline;
+-
+-	INIT_HLIST_HEAD(&empty_rp);
+-	kretprobe_hash_lock(current, &head, &flags);
+-
+-	/*
+-	 * It is possible to have multiple instances associated with a given
+-	 * task either because an multiple functions in the call path
+-	 * have a return probe installed on them, and/or more than one return
+-	 * return probe was registered for a target function.
+-	 *
+-	 * We can handle this because:
+-	 *     - instances are always inserted at the head of the list
+-	 *     - when multiple return probes are registered for the same
+-	 *	 function, the first instance's ret_addr will point to the
+-	 *	 real return address, and all the rest will point to
+-	 *	 kretprobe_trampoline
+-	 */
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		if (ri->rp && ri->rp->handler)
+-			ri->rp->handler(ri, regs);
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-		recycle_rp_inst(ri, &empty_rp);
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-
+-	kretprobe_assert(ri, orig_ret_address, trampoline_address);
+-	instruction_pointer(regs) = orig_ret_address;
+-
+-	kretprobe_hash_unlock(current, &flags);
+-
+-	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+-		hlist_del(&ri->hlist);
+-		kfree(ri);
+-	}
++	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs,
++				(unsigned long)kretprobe_trampoline,
++				NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
 
-- Naresh
