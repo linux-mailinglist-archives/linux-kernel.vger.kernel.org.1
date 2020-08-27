@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFB5254F29
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E6B254F41
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgH0Tsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgH0Tsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:48:51 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CF1C061264;
-        Thu, 27 Aug 2020 12:48:51 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mt12so3186295pjb.4;
-        Thu, 27 Aug 2020 12:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jkP498pf3yWtYUd662NOXv9qut7wRmoZhgkMJ7DLOl4=;
-        b=JUNl/o4RrtrxtgVgYdRTC+XnGySjMeqIuCm5m7aI/CdUZOdssgNQ6oWEYykMMBjJX6
-         qnz7yl+1QYzzQEwdFW6i/+QVBqAfN07Gzjr5t1zuBgpnWgjScTOJ0RsGmVygZBe0qkTF
-         uwpKa8LYZaqe2N/n1HpfMZ3/fA87iGpbBAXVnmVV8LiQchVSR8TC4JCt3gQH+VklPEGR
-         ZQw713Te0pbcBBua6vY1tKX2R2wxPoSqdeS9Pf7LDjv1Io87DUiJmpko5UDXIsoBASzn
-         v+/JjDhPLV2GwhiAvUkOWe7LTcblLnMW8qJBvQiuKZCnkWVIB9DjbkFTllrPXzXcs0wz
-         DEAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jkP498pf3yWtYUd662NOXv9qut7wRmoZhgkMJ7DLOl4=;
-        b=TBVz9vdIIHWwvmx+pR9l+weod4CzjUnycK2r+zA+dDblsdBtdfzXADWNOsOJBxQbmH
-         KrvYIBCiYxrOQt74ZPQKSa0n8l1QwUmacN2gCoavPZL/j6YPHdFdk2QCBB1bDtf5cbju
-         0tkAKKvNEKUa0baE8nSBrbumBLZ/B6BqPLn9Mx6aoBuI3wYEGeQuOTtKNdpQmDXoHlak
-         qQlUg586XxH4iOf1qDHh5eh1B1QAvIQYPocyJWIZXC6CuzhcSuiCp1Hrpav7MXj+5QMJ
-         5siu/n+1VZoP+hx6G1+cmKdSedeWpdRm9hgVbemU8mlD0/MauvSk8AAYB6GVgdB7uTdK
-         fx1Q==
-X-Gm-Message-State: AOAM532E+dSqv+qMhv+WGo/u3aXzm9Ldg1e/cyJC2oBE70FqTTBoI0S/
-        bbHy/zQ0I/28wTwHxxo8fSDUsUXDaWU=
-X-Google-Smtp-Source: ABdhPJxAGQIJCkWMMlz40OFPBBXBVve9rxgRztqYETs9wws+nY9rGO6NgAeD7rA9Jqn2L3wRz+fehw==
-X-Received: by 2002:a17:90a:2c06:: with SMTP id m6mr399808pjd.129.1598557731085;
-        Thu, 27 Aug 2020 12:48:51 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s17sm3250366pgm.63.2020.08.27.12.48.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Aug 2020 12:48:50 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 12:48:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Robert Jones <rjones@gateworks.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] hwmon: gsc-hwmon: scale temperature to millidegrees
-Message-ID: <20200827194848.GA232549@roeck-us.net>
-References: <1598548824-16898-1-git-send-email-tharvey@gateworks.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598548824-16898-1-git-send-email-tharvey@gateworks.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728117AbgH0Tts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:49:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15150 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727885AbgH0Ttl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:49:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598557780; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=NaYKWRYtlz24wBCiVhLhyrMbm0vV1UjfOtA7OUUm/ko=; b=Vpqo6HPVOFodN4cOMubXTybuZxj4kCvqjgHJaSwgzgqoDRW2M5EeY8PPbdRhv8jldbDtDMnu
+ eaWTz01yooE1OFqGlDRgu42nHYlomASp2JPplyhYboxsJ8x4j+aGnskq/ssSXOE7tRs1Nvcz
+ UArTeNRCkE/ZsdXz7bch52zG1qg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f480e43d6f74c6f9cb2da68 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 19:49:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E1ACEC43395; Thu, 27 Aug 2020 19:49:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31103C433CA;
+        Thu, 27 Aug 2020 19:49:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31103C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v2 1/3] remoteproc: Expose remoteproc configuration through sysfs
+Date:   Thu, 27 Aug 2020 12:48:49 -0700
+Message-Id: <1598557731-1566-2-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
+References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:20:24AM -0700, Tim Harvey wrote:
-> The GSC registers report temperature in decidegrees celcius so we
-> need to scale it to represent the hwmon sysfs API of millidegrees.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Add a feature flag to expose some of the remoteproc configuration
+through sysfs. This feature is helpful in systems where debugfs is
+not available/mounted. Currently the recovery and coredump
+configuration is exposed through sysfs rather than debugfs when
+this feature is selected.
 
-Applied.
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+---
+ drivers/remoteproc/Kconfig | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Thanks,
-Guenter
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index c6659dfe..8aecf70 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -275,6 +275,18 @@ config TI_K3_DSP_REMOTEPROC
+ 	  It's safe to say N here if you're not interested in utilizing
+ 	  the DSP slave processors.
+ 
++config RPROC_SYSFS_CONFIGURATION_SUPPORT
++	bool "Expose remoteproc configuration sysfs entries"
++	default n
++	help
++	  Say y here to expose recovery and coredump configuration sysfs
++	  entries. This will remove the corresponding entries from debugfs
++	  and expose it through sysfs. This is helpful in operating systems
++	  where debugfs is not available.
++
++	  It's safe to say N here if you are not interested in accessing
++	  recovery and coredump configuration through sysfs.
++
+ endif # REMOTEPROC
+ 
+ endmenu
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> ---
->  drivers/hwmon/gsc-hwmon.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/hwmon/gsc-hwmon.c b/drivers/hwmon/gsc-hwmon.c
-> index 3dfe2ca..c6d4567 100644
-> --- a/drivers/hwmon/gsc-hwmon.c
-> +++ b/drivers/hwmon/gsc-hwmon.c
-> @@ -172,6 +172,7 @@ gsc_hwmon_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
->  	case mode_temperature:
->  		if (tmp > 0x8000)
->  			tmp -= 0xffff;
-> +		tmp *= 100; /* convert to millidegrees celsius */
->  		break;
->  	case mode_voltage_raw:
->  		tmp = clamp_val(tmp, 0, BIT(GSC_HWMON_RESOLUTION));
