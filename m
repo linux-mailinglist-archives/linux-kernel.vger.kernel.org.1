@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A8A254A03
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741D2254A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgH0P4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:56:53 -0400
-Received: from smtprelay0197.hostedemail.com ([216.40.44.197]:42292 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726266AbgH0P4w (ORCPT
+        id S1728005AbgH0P56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:57:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53795 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0P5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:56:52 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D437B837F24C;
-        Thu, 27 Aug 2020 15:56:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:6119:7903:9040:10004:10400:10848:11232:11658:11914:12219:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21740:21939:30054:30074:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: pets52_1a0b0bf2706e
-X-Filterd-Recvd-Size: 1677
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 27 Aug 2020 15:56:50 +0000 (UTC)
-Message-ID: <e8409fc18e39aeee3486c334d903b8a3e6ccaafa.camel@perches.com>
-Subject: Re: [PATCH] deprecated.rst: Remove now removed uninitialized_var
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>
-Date:   Thu, 27 Aug 2020 08:56:48 -0700
-In-Reply-To: <202008270755.5B91A3D@keescook>
-References: <5e10c1645dd8f735215cf54a74db0f8dd3f6cbd5.camel@perches.com>
-         <202008270755.5B91A3D@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 27 Aug 2020 11:57:54 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kBKHe-0001vw-U6; Thu, 27 Aug 2020 15:57:51 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu/swsmu: fix potential uint32_t multiplication overflow
+Date:   Thu, 27 Aug 2020 16:57:50 +0100
+Message-Id: <20200827155750.60938-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-27 at 07:58 -0700, Kees Cook wrote:
-> On Wed, Aug 26, 2020 at 08:12:01PM -0700, Joe Perches wrote:
-> > It's now gone from the kernel so remove it from the deprecated API text.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> 
-> Oh! Right, thank you. I forgot to rewrite this. I'd like to keep the
-> details about why "tricking the compiler to be quiet" should not be
-> done.
+From: Colin Ian King <colin.king@canonical.com>
 
-Probably better in coding style.
+The calculation of tmp64 is performed using a 32 bit multiply and then
+is stored in the uint64_t variable tmp64. This indicates that a 64 bit
+result may be expected, so cast crystal_clock_freq to a uint64_t
+to ensure a 64 bit multiplication is being performed to avoid any
+potential 32 bit overflow.
 
->  One of my fears about removing uninitialized_var() is that folks
-> may start adding open-coded versions to silence warnings. I'd like to
-> keep a section in deprecated.rst that describes the problem and why
-> those kinds of work-arounds should not be used.
-> 
+Addresses-Coverity: ("Unintentional integer overflow)"
+Fixes: 13819ef6453c ("drm/amdgpu/swsmu: add smu11 helpers to get manual fan speeds")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
+index d2a15e6f48be..0a5161d09722 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
+@@ -1218,7 +1218,7 @@ int smu_v11_0_get_fan_speed_rpm(struct smu_context *smu,
+ 
+ 	crystal_clock_freq = amdgpu_asic_get_xclk(adev);
+ 
+-	tmp64 = 60 * crystal_clock_freq * 10000;
++	tmp64 = (uint64_t)crystal_clock_freq * 60 * 10000;
+ 	do_div(tmp64, (tach_period * 8));
+ 	*speed = (uint32_t)tmp64;
+ 
+-- 
+2.27.0
 
