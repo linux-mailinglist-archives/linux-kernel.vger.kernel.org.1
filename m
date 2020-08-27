@@ -2,88 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A00254424
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5995825444A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgH0LHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:07:06 -0400
-Received: from smtprelay0069.hostedemail.com ([216.40.44.69]:58514 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727066AbgH0Kwx (ORCPT
+        id S1727827AbgH0L3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgH0LQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:52:53 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BDA19181D3028;
-        Thu, 27 Aug 2020 10:52:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4425:5007:6119:7903:8531:10004:10400:10450:10455:10848:11232:11658:11914:12050:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:19904:19999:21080:21627:21740:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: grip29_510e74c2706c
-X-Filterd-Recvd-Size: 2584
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 27 Aug 2020 10:52:44 +0000 (UTC)
-Message-ID: <1a23235e40b8089629ca784d8e33851b715a6599.camel@perches.com>
-Subject: Re: [PATCH 2/6] rtlwifi: Remove unnecessary parenthese in rtl_dbg
- uses
-From:   Joe Perches <joe@perches.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Pkshih <pkshih@realtek.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Date:   Thu, 27 Aug 2020 03:52:42 -0700
-In-Reply-To: <87v9h4bfqz.fsf@codeaurora.org>
-References: <cover.1595706419.git.joe@perches.com>
-         <9b2eaedb7ea123ea766a379459b20a9486d1cd41.1595706420.git.joe@perches.com>
-         <1595830034.12227.7.camel@realtek.com>
-         <ae9d562ec9ef765dddd1491d4cfb5f6d18f7025f.camel@perches.com>
-         <1595840670.17671.4.camel@realtek.com>
-         <6e0c07bc3d2f48d4a62a9e270366c536cfe56783.camel@perches.com>
-         <374359f9-8199-f4b9-0596-adc41c8c664f@lwfinger.net>
-         <87v9h4bfqz.fsf@codeaurora.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 27 Aug 2020 07:16:38 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80798C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:54:30 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id e14so2710266ybf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kL50AETAxFQ/Z0PEcxjtY/mje72xQ1KRsR0dYMPRn0c=;
+        b=K6Cc/U/vzKW4aV2SdSpKnLr1XjzAN1/VEe0yjjqGP3KsKhratD7w7onOLADM18p/Qs
+         AcGr9a1+s5Q7xa5Opw8DuDF/ohYNjtntk4ddMwwhWH0EWIckOG8814MLnXDsf6VVw3oJ
+         uQ08O9VvQWDytcc2Msrf4hcSDGA1xGcEohd9UfQ8oHMeCFl7SMwRpi/Gbv5/TXcjCyL7
+         Q3Sd/ItaMD3/1kENtjVpfSpfaBIwFE80iGsGwJkZRidMiEeqGY4KFrN3VJNdS3hwvHcT
+         rwqmRSMs2cp0fcQBUyAprlc0Ry+xBeTo/mS1kmWmDqkB/nZpb9HFDXyWjd3lBUAriq7+
+         QD+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kL50AETAxFQ/Z0PEcxjtY/mje72xQ1KRsR0dYMPRn0c=;
+        b=NC7QSjGaOw/j2nYGG8rloAFvrJ7CnkYXbpo1cWLpZJzmlxkv8F/oGTUl1a7uCGsX3D
+         H0wSh2HJxI8WYrJhznL9u5Qnegu625dDYpkJ80tEcR6M8wiD1N6hYHcvlAFmunXljPs+
+         PUOW8pKdV/ca7W1YK8svnjKiLJ+anCYu7dIJ9qksSjNkEsnZqeV9K0vGuP9dODKkKZYH
+         +N7lkmwB82cz+QUTijwudCpm0NJd7X43zQSAUeRgIKVSjCvPjsPn9rDghNFioqrNEDa6
+         /VGV5Q6/6xOJ8TRolGj2iGtBb8f3+0UExTW1krI1MQlGPIHlzphVTxTKCgu8q9Sfj22G
+         Wt+w==
+X-Gm-Message-State: AOAM53185YdoUd/ySA0m41/Gn4TkuNdb8HfyerUVWnExUpdBjYKKHIHE
+        FJ0QRiOwRppQVNZklr+8zBvX4nrrl5jpWkVLC7QU2w==
+X-Google-Smtp-Source: ABdhPJxVB9AdgiqMEazYyTVnGYST+nW3/Chayz5MJ7mUKthRW3swWaa3QBpMH158AtV1ihmZErHV2SAtA9bYT3wjE3E=
+X-Received: by 2002:a25:f42:: with SMTP id 63mr28803335ybp.348.1598525669597;
+ Thu, 27 Aug 2020 03:54:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200729192357.477350-1-vitor@massaru.org> <20200827102333.GA3564678@elver.google.com>
+In-Reply-To: <20200827102333.GA3564678@elver.google.com>
+From:   Vitor Massaru Iha <vitor@massaru.org>
+Date:   Thu, 27 Aug 2020 07:53:53 -0300
+Message-ID: <CADQ6JjVzx=kPsF4Lcek1HtGU7bGW3H62UoN0XDUHDrTxKt3FVg@mail.gmail.com>
+Subject: Re: [PATCH] lib: kunit: add list_sort test conversion to KUnit
+To:     Marco Elver <elver@google.com>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        tglx@linutronix.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        geert@linux-m68k.org, paul.gortmaker@windriver.com,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        arnd@arndb.de, elfring@users.sourceforge.net, mhocko@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-27 at 12:27 +0300, Kalle Valo wrote:
-> Larry Finger <Larry.Finger@lwfinger.net> writes:
-> > On 7/27/20 9:52 AM, Joe Perches wrote:
-> > > On Mon, 2020-07-27 at 09:04 +0000, Pkshih wrote:
-> > > > So, I think you would like to have parenthesis intentionally.
-> > > > If so,
-> > > > test1 ? : (test2 ? :)
-> > > > would be better.
-> > > > 
-> > > > 
-> > > > If not,
-> > > > test1 ? : test2 ? :
-> > > > may be what you want (without any parenthesis).
-> > > 
-> > > Use whatever style you like, it's unimportant to me
-> > > and it's not worth spending any real time on it.
-> > 
-> > If you are so busy, why did you jump in with patches that you knew I
-> > was already working on? You knew because you critiqued my first
-> > submission.
-> 
-> Yeah, I don't understand this either. First stepping on Larry's work and
-> when after getting review comments claiming being busy and not caring is
-> contradicting.
+On Thu, Aug 27, 2020 at 7:23 AM Marco Elver <elver@google.com> wrote:
+>
+> On Wed, Jul 29, 2020 at 04:23PM -0300, Vitor Massaru Iha wrote:
+> > This adds the conversion of the runtime tests of test_list_sort,
+> > from `lib/test_list_sort.c` to KUnit tests.
+> >
+> > Please apply this commit first (linux-kselftest/kunit-fixes):
+> > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
+> >
+> > Code Style Documentation: [0]
+> >
+> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> > Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+> > ---
+> >  lib/Kconfig.debug                           | 29 +++++---
+> >  lib/Makefile                                |  2 +-
+> >  lib/{test_list_sort.c => list_sort_kunit.c} | 73 +++++++++++----------
+> >  3 files changed, 58 insertions(+), 46 deletions(-)
+> >  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
+> >
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 9ad9210d70a1..de4fd020a4af 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -1854,16 +1854,6 @@ config LKDTM
+> >       Documentation on how to use the module can be found in
+> >       Documentation/fault-injection/provoke-crashes.rst
+> >
+> > -config TEST_LIST_SORT
+> > -     tristate "Linked list sorting test"
+> > -     depends on DEBUG_KERNEL || m
+> > -     help
+> > -       Enable this to turn on 'list_sort()' function test. This test is
+> > -       executed only once during system boot (so affects only boot time),
+> > -       or at module load time.
+> > -
+> > -       If unsure, say N.
+> > -
+> >  config TEST_MIN_HEAP
+> >       tristate "Min heap test"
+> >       depends on DEBUG_KERNEL || m
+> > @@ -2173,6 +2163,25 @@ config LIST_KUNIT_TEST
+> >
+> >         If unsure, say N.
+> >
+> > +config LIST_SORT_KUNIT
+> > +     tristate "KUnit Linked list sorting test"
+> > +     depends on KUNIT
+> > +     depends on DEBUG_KERNEL || m
+>
+> I think the style [0] you linked suggests '*_KUNIT_TEST' for config
+> variables.
+>
+> Only noticed this because I was doing a
+>
+>         git grep 'config.*TEST'
+>
+> to find tests in the kernel + new tests floating on the LKML.
 
-I didn't say I was busy, I said I didn't care.
+Thanks, I'll fix it.
 
-And it's not stepping on anyone's work, it's
-a trivial contribution.  Take it or not.
-It's been months btw, the pace of the work isn't
-particularly fast here.
+>
+> Apologies for picking this patch to comment on, but if it's still
+> changeable it might be worth adjusting.
+
+No problem.
 
 
+> > +     help
+> > +       Enable this to turn on 'list_sort()' function test. This test is
+> > +       executed only once during system boot (so affects only boot time),
+> > +       or at module load time.
+> > +
+> > +          KUnit tests run during boot and output the results to the debug log
+> > +       in TAP format (http://testanything.org/). Only useful for kernel devs
+> > +       running the KUnit test harness, and not intended for inclusion into a
+> > +       production build.
+>
+> Not a big deal, but I'm not sure if summarizing KUnit here is useful.
+> You already link to the documentation below.
+
+Sure, I'll remove this.
+
+> > +       For more information on KUnit and unit tests in general please refer
+> > +       to the KUnit documentation in Documentation/dev-tools/kunit/.
+> ...
+>
+> Thanks,
+> -- Marco
+
+Thanks for the review.
