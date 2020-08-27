@@ -2,466 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DBD2548A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5AD254899
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgH0PKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S1728570AbgH0PJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728935AbgH0Lu6 (ORCPT
+        with ESMTP id S1728900AbgH0Lyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:50:58 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA48C0611E1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:49:55 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id k142so4534750qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:49:55 -0700 (PDT)
+        Thu, 27 Aug 2020 07:54:50 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B27C061232
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:54:40 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id b16so5485047ioj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=E0DOGeEY62qLZ7uSRf9UfIpHkq96+GdwwPXcN18hEJ0=;
-        b=pIw2KrxmoMV7baKQC5k3kTG9I/MArgQOkxCEyQg7puGJNupue/a7c2lTegkZWYpXVj
-         MRoJDyBaISNiyxzjuMP2fAquo3bkxD+e3+sH+Yd1wAM03gSei7kjZIP/QrKrNYOCYXQK
-         IBbYHcuB8qgRiist7/ix7HynPAXoB1j25Lww9igyKbfY12dDMb4gNWRmIxvFqnkL3c0b
-         NBPxrFxAYADJVPolcWPSkobKgiUocNZEkcAIYX0Sk5a1Z1OPIe2DlKk/Rrw1qC/l3tML
-         lkmyTkfxZ/Vd/6xkglPtQkPmQw3NhD0MMoGzP2oJC97CBNez/q+Q6jyD9yjvqJj41FFx
-         nN9Q==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8+USI8ikGwM1YVVvEQswp7iF6TsNadsn4yeIDHk0x60=;
+        b=iKPgt8S+hc3ldLTEfMwzYbyOW2bPHtZf2FLBepIe0Lb/Nl7GROM4sA5jMFIQ8TThaj
+         7hD0DlbjWo2OBeGZcA/E48756aEptPNWWJA9he9tP15YfRp9mnnqdyqECxAd00QowRMT
+         0Eu/H+z9WCp8lMWox8PIUwWGqikauK50Txrg7hfNybk74o0hLd5SZCKCWY48CvgdsHBr
+         UMDXtqQqGYefaCTkIv136+mfOKOK+fVqTiSkRCumjBoAS6qVWURyXWF8TPijEe9apjX4
+         JySNHI+pI2ZfhNPJNqmnQWPPj/ByOWTxtPWyc5+nKs+3dF2H6uhf69PxKNSIsQZWiLH7
+         3bZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=E0DOGeEY62qLZ7uSRf9UfIpHkq96+GdwwPXcN18hEJ0=;
-        b=S0VRrfk6wjc/HtUzxl8PI0pVBVj0WijmFFMVo86VXJMda+M3RKPrnXSfWFkg+0Bs64
-         iZ0JIj67k76E3U7YRXWvlxz5iB1uoThISQI4Ok/+X5CjhIAAobjjnIgrbFA6KBkhQBm0
-         nB1KzJ/LTxCsv9l5Z+tYrRYvtNN/u2mzPLyW6pVSyDs/BXGMD3eVpRU4NtgORoK36a3X
-         pj/CvoNdpset2mMxPzr4SAvdEbvbx+E2nr/oyVXA5WN3Su1KwFZxlBoQ4MAaTGIC53kV
-         /oVBdrybJynTUWABNV9SoE19B6dnNQysi1EhQFoQCshcvOvNXoaQljIcxDRHFf2WFV1y
-         MnvA==
-X-Gm-Message-State: AOAM531U8Fflq0B1+CtUpuXVEkKAOLLFQd7k2gKkmWDPZd9K2NA894co
-        bxqObwZDQZgJY1kM+zyTfOithVC5mw==
-X-Google-Smtp-Source: ABdhPJx4bULUmnyYEEBJ3ZbFaInsMrqKtXp7IHbERfvfk/Yok8RrNFYczmlckohS0u+OxxH3yv4/+3jxKA==
-X-Received: from jannh2.zrh.corp.google.com ([2a00:79e0:1b:201:1a60:24ff:fea6:bf44])
- (user=jannh job=sendgmr) by 2002:a0c:f4cb:: with SMTP id o11mr18241148qvm.3.1598528994972;
- Thu, 27 Aug 2020 04:49:54 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 13:49:29 +0200
-In-Reply-To: <20200827114932.3572699-1-jannh@google.com>
-Message-Id: <20200827114932.3572699-5-jannh@google.com>
-Mime-Version: 1.0
-References: <20200827114932.3572699-1-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v5 4/7] coredump: Rework elf/elf_fdpic vma_dump_size() into
- common helper
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8+USI8ikGwM1YVVvEQswp7iF6TsNadsn4yeIDHk0x60=;
+        b=mTFxywZfvS4TM9jROhk4Od16GpLX1M68AHJGHum6Nhs31fafa8Xhv110Iu3z4sIK3a
+         IDClmv6UNOn8nD7Z8ygH/aNK8Q4O4R5IKJPm9Xknel3WnpJCqMxESLC5CRQ5mRXFMola
+         n2B6a4CXbHvvz3olc3v01U/yRH5YZ7rN/eoAmDDf78MXTY4K2Dvd4zdhwA3++Wo6p9h6
+         1LUOUSAFjVZpEJX6ZubD5kFGxnFvgpv2QkG3iJQncC+QZrGunN3uJ+KGj5DID0oLIXLW
+         xO9B0Kg+CdW7whNHdFUymgchbAmj/siqkyFTfHfIdodTzF5YAmKJjXExMC+Vb9Ss3JRx
+         BIcg==
+X-Gm-Message-State: AOAM533+PCRp4ELFV6Ou9/VAisJ4Xk/Pysn3emmKRy+RVcjvHZ/3oisG
+        PRH1wuxy7MSMtSPlLdpCnu7LDS+IEHEFBa1T2KPLdg==
+X-Google-Smtp-Source: ABdhPJxDt7pGRRQH12hccRAz5CdRFlNU9PBDsLVNqRw8lt88exBLdDxJiJ1WAlEYnsrXg/8+kO677G4mnlkkiBusRXI=
+X-Received: by 2002:a05:6638:69d:: with SMTP id i29mr5435935jab.138.1598529279389;
+ Thu, 27 Aug 2020 04:54:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
+ <20200824220100.y33yza2sbd7sgemh@ast-mbp.dhcp.thefacebook.com>
+ <CACXrtpQCE-Yp9=7fbH9sB7-4k-OO12JD18JU=9GL_sYHcmnDtA@mail.gmail.com> <CAADnVQL1O3Ncr5iwmZx_5FgVrwbXmEWZfGm_ASrTcu0j6YGbiA@mail.gmail.com>
+In-Reply-To: <CAADnVQL1O3Ncr5iwmZx_5FgVrwbXmEWZfGm_ASrTcu0j6YGbiA@mail.gmail.com>
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
+Date:   Thu, 27 Aug 2020 13:54:28 +0200
+Message-ID: <CACXrtpSe0-E5sLH4k6Jmw_FDK=+yKdsPdiR9BDniOXC6NTQ=rQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] bpf: add MPTCP subflow support
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        mptcp@lists.01.org, Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment, the binfmt_elf and binfmt_elf_fdpic code have slightly
-different code to figure out which VMAs should be dumped, and if so,
-whether the dump should contain the entire VMA or just its first page.
+Hi Alexei,
 
-Eliminate duplicate code by reworking the binfmt_elf version into a generic
-core dumping helper in coredump.c.
+On Wed, Aug 26, 2020 at 9:13 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Aug 25, 2020 at 11:55 AM Nicolas Rybowski
+> <nicolas.rybowski@tessares.net> wrote:
+> >
+> > Hi Alexei,
+> >
+> > Thanks for the feedback!
+> >
+> > On Tue, Aug 25, 2020 at 12:01 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Aug 21, 2020 at 05:15:38PM +0200, Nicolas Rybowski wrote:
+> > > > Previously it was not possible to make a distinction between plain TCP
+> > > > sockets and MPTCP subflow sockets on the BPF_PROG_TYPE_SOCK_OPS hook.
+> > > >
+> > > > This patch series now enables a fine control of subflow sockets. In its
+> > > > current state, it allows to put different sockopt on each subflow from a
+> > > > same MPTCP connection (socket mark, TCP congestion algorithm, ...) using
+> > > > BPF programs.
+> > > >
+> > > > It should also be the basis of exposing MPTCP-specific fields through BPF.
+> > >
+> > > Looks fine, but I'd like to see the full picture a bit better.
+> > > What's the point of just 'token' ? What can be done with it?
+> >
+> > The idea behind exposing only the token at the moment is that it is
+> > the strict minimum required to identify all subflows linked to a
+> > single MPTCP connection. Without that, each subflow is seen as a
+> > "normal" TCP connection and it is not possible to find a link between
+> > each other.
+> > In other words, it allows the collection of all the subflows of a
+> > MPTCP connection in a BPF map and then the application of per subflow
+> > specific policies. More concrete examples of its usage are available
+> > at [1].
+> >
+> > We try to avoid exposing new fields without related use-cases, this is
+> > why it is the only one currently. And this one is very important to
+> > identify MPTCP connections and subflows.
+> >
+> > > What are you thinking to add later?
+> >
+> > The next steps would be the exposure of additional subflow context
+> > data like the backup bit or some path manager fields to allow more
+> > flexible / accurate BPF decisions.
+> > We are also looking at implementing Packet Schedulers [2] and Path
+> > Managers through BPF.
+> > The ability of collecting all the paths available for a given MPTCP
+> > connection - identified by its token - at the BPF level should help
+> > for such decisions but more data will need to be exposed later to take
+> > smart decisions or to analyse some situations.
+> >
+> > I hope it makes the overall idea clearer.
+> >
+> > > Also selftest for new feature is mandatory.
+> >
+> > I will work on the selftests to add them in a v2. I was not sure a new
+> > selftest was required when exposing a new field but now it is clear,
+> > thanks!
+> >
+> >
+> > [1] https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
+> > [2] https://datatracker.ietf.org/doc/draft-bonaventure-iccrg-schedulers/
+>
+> Thanks! The links are certainly helpful.
+> Since long term you're considering implementing path manager in bpf
+> I suggest to take a look at bpf_struct_ops and bpf based tcp congestion control.
+> It would fit that use case better.
 
-As part of that, change the heuristic for detecting executable/library
-header pages to check whether the inode is executable instead of looking at
-the file mode.
-This is less problematic in terms of locking because it lets us avoid
-get_user() under the mmap_sem. (And arguably it looks nicer and makes more
-sense in generic code.)
+We will definitively take a look at that, thanks ! It is indeed the
+direction we should take.
 
-Adjust a little bit based on the binfmt_elf_fdpic version:
-->anon_vma is only meaningful under CONFIG_MMU, otherwise we have to assume
-that the VMA has been written to.
+> For now the approach proposed in this patch is probably good enough
+> for simple subflow marking. From the example it's not clear what the networking
+> stack is supposed to do with a different sk_mark.
+> Also considering using sk local storage instead of sk_mark. It's arbitrary size.
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Jann Horn <jannh@google.com>
----
- fs/binfmt_elf.c          | 120 ---------------------------------------
- fs/binfmt_elf_fdpic.c    |  83 ++-------------------------
- fs/coredump.c            | 101 ++++++++++++++++++++++++++++++++
- include/linux/coredump.h |   1 +
- 4 files changed, 106 insertions(+), 199 deletions(-)
+Originally, this use-case was asked by Android for some app specific behaviours.
+But the example is provided here to mainly illustrate the possibility
+to put different sockopt per subflow knowing their relations with
+other subflows.
+Indeed in this example, per se, the marking of the subflows has no
+interest, it is for illustration purpose only. It was an easy solution
+to have quick tests in the userspace through nftables.
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 5fd11a25d320..03478005a128 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1389,126 +1389,6 @@ static int load_elf_library(struct file *file)
-  * Jeremy Fitzhardinge <jeremy@sw.oz.au>
-  */
- 
--/*
-- * The purpose of always_dump_vma() is to make sure that special kernel mappings
-- * that are useful for post-mortem analysis are included in every core dump.
-- * In that way we ensure that the core dump is fully interpretable later
-- * without matching up the same kernel and hardware config to see what PC values
-- * meant. These special mappings include - vDSO, vsyscall, and other
-- * architecture specific mappings
-- */
--static bool always_dump_vma(struct vm_area_struct *vma)
--{
--	/* Any vsyscall mappings? */
--	if (vma == get_gate_vma(vma->vm_mm))
--		return true;
--
--	/*
--	 * Assume that all vmas with a .name op should always be dumped.
--	 * If this changes, a new vm_ops field can easily be added.
--	 */
--	if (vma->vm_ops && vma->vm_ops->name && vma->vm_ops->name(vma))
--		return true;
--
--	/*
--	 * arch_vma_name() returns non-NULL for special architecture mappings,
--	 * such as vDSO sections.
--	 */
--	if (arch_vma_name(vma))
--		return true;
--
--	return false;
--}
--
--/*
-- * Decide what to dump of a segment, part, all or none.
-- */
--static unsigned long vma_dump_size(struct vm_area_struct *vma,
--				   unsigned long mm_flags)
--{
--#define FILTER(type)	(mm_flags & (1UL << MMF_DUMP_##type))
--
--	/* always dump the vdso and vsyscall sections */
--	if (always_dump_vma(vma))
--		goto whole;
--
--	if (vma->vm_flags & VM_DONTDUMP)
--		return 0;
--
--	/* support for DAX */
--	if (vma_is_dax(vma)) {
--		if ((vma->vm_flags & VM_SHARED) && FILTER(DAX_SHARED))
--			goto whole;
--		if (!(vma->vm_flags & VM_SHARED) && FILTER(DAX_PRIVATE))
--			goto whole;
--		return 0;
--	}
--
--	/* Hugetlb memory check */
--	if (is_vm_hugetlb_page(vma)) {
--		if ((vma->vm_flags & VM_SHARED) && FILTER(HUGETLB_SHARED))
--			goto whole;
--		if (!(vma->vm_flags & VM_SHARED) && FILTER(HUGETLB_PRIVATE))
--			goto whole;
--		return 0;
--	}
--
--	/* Do not dump I/O mapped devices or special mappings */
--	if (vma->vm_flags & VM_IO)
--		return 0;
--
--	/* By default, dump shared memory if mapped from an anonymous file. */
--	if (vma->vm_flags & VM_SHARED) {
--		if (file_inode(vma->vm_file)->i_nlink == 0 ?
--		    FILTER(ANON_SHARED) : FILTER(MAPPED_SHARED))
--			goto whole;
--		return 0;
--	}
--
--	/* Dump segments that have been written to.  */
--	if (vma->anon_vma && FILTER(ANON_PRIVATE))
--		goto whole;
--	if (vma->vm_file == NULL)
--		return 0;
--
--	if (FILTER(MAPPED_PRIVATE))
--		goto whole;
--
--	/*
--	 * If this looks like the beginning of a DSO or executable mapping,
--	 * check for an ELF header.  If we find one, dump the first page to
--	 * aid in determining what was mapped here.
--	 */
--	if (FILTER(ELF_HEADERS) &&
--	    vma->vm_pgoff == 0 && (vma->vm_flags & VM_READ)) {
--		u32 __user *header = (u32 __user *) vma->vm_start;
--		u32 word;
--		/*
--		 * Doing it this way gets the constant folded by GCC.
--		 */
--		union {
--			u32 cmp;
--			char elfmag[SELFMAG];
--		} magic;
--		BUILD_BUG_ON(SELFMAG != sizeof word);
--		magic.elfmag[EI_MAG0] = ELFMAG0;
--		magic.elfmag[EI_MAG1] = ELFMAG1;
--		magic.elfmag[EI_MAG2] = ELFMAG2;
--		magic.elfmag[EI_MAG3] = ELFMAG3;
--		if (unlikely(get_user(word, header)))
--			word = 0;
--		if (word == magic.cmp)
--			return PAGE_SIZE;
--	}
--
--#undef	FILTER
--
--	return 0;
--
--whole:
--	return vma->vm_end - vma->vm_start;
--}
--
- /* An ELF note in memory */
- struct memelfnote
- {
-diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-index 76e8c0defdc8..f531c6198864 100644
---- a/fs/binfmt_elf_fdpic.c
-+++ b/fs/binfmt_elf_fdpic.c
-@@ -1215,76 +1215,6 @@ struct elf_prstatus_fdpic
- 	int pr_fpvalid;		/* True if math co-processor being used.  */
- };
- 
--/*
-- * Decide whether a segment is worth dumping; default is yes to be
-- * sure (missing info is worse than too much; etc).
-- * Personally I'd include everything, and use the coredump limit...
-- *
-- * I think we should skip something. But I am not sure how. H.J.
-- */
--static int maydump(struct vm_area_struct *vma, unsigned long mm_flags)
--{
--	int dump_ok;
--
--	/* Do not dump I/O mapped devices or special mappings */
--	if (vma->vm_flags & VM_IO) {
--		kdcore("%08lx: %08lx: no (IO)", vma->vm_start, vma->vm_flags);
--		return 0;
--	}
--
--	/* If we may not read the contents, don't allow us to dump
--	 * them either. "dump_write()" can't handle it anyway.
--	 */
--	if (!(vma->vm_flags & VM_READ)) {
--		kdcore("%08lx: %08lx: no (!read)", vma->vm_start, vma->vm_flags);
--		return 0;
--	}
--
--	/* support for DAX */
--	if (vma_is_dax(vma)) {
--		if (vma->vm_flags & VM_SHARED) {
--			dump_ok = test_bit(MMF_DUMP_DAX_SHARED, &mm_flags);
--			kdcore("%08lx: %08lx: %s (DAX shared)", vma->vm_start,
--			       vma->vm_flags, dump_ok ? "yes" : "no");
--		} else {
--			dump_ok = test_bit(MMF_DUMP_DAX_PRIVATE, &mm_flags);
--			kdcore("%08lx: %08lx: %s (DAX private)", vma->vm_start,
--			       vma->vm_flags, dump_ok ? "yes" : "no");
--		}
--		return dump_ok;
--	}
--
--	/* By default, dump shared memory if mapped from an anonymous file. */
--	if (vma->vm_flags & VM_SHARED) {
--		if (file_inode(vma->vm_file)->i_nlink == 0) {
--			dump_ok = test_bit(MMF_DUMP_ANON_SHARED, &mm_flags);
--			kdcore("%08lx: %08lx: %s (share)", vma->vm_start,
--			       vma->vm_flags, dump_ok ? "yes" : "no");
--			return dump_ok;
--		}
--
--		dump_ok = test_bit(MMF_DUMP_MAPPED_SHARED, &mm_flags);
--		kdcore("%08lx: %08lx: %s (share)", vma->vm_start,
--		       vma->vm_flags, dump_ok ? "yes" : "no");
--		return dump_ok;
--	}
--
--#ifdef CONFIG_MMU
--	/* By default, if it hasn't been written to, don't write it out */
--	if (!vma->anon_vma) {
--		dump_ok = test_bit(MMF_DUMP_MAPPED_PRIVATE, &mm_flags);
--		kdcore("%08lx: %08lx: %s (!anon)", vma->vm_start,
--		       vma->vm_flags, dump_ok ? "yes" : "no");
--		return dump_ok;
--	}
--#endif
--
--	dump_ok = test_bit(MMF_DUMP_ANON_PRIVATE, &mm_flags);
--	kdcore("%08lx: %08lx: %s", vma->vm_start, vma->vm_flags,
--	       dump_ok ? "yes" : "no");
--	return dump_ok;
--}
--
- /* An ELF note in memory */
- struct memelfnote
- {
-@@ -1529,13 +1459,9 @@ static bool elf_fdpic_dump_segments(struct coredump_params *cprm)
- 	struct vm_area_struct *vma;
- 
- 	for (vma = current->mm->mmap; vma; vma = vma->vm_next) {
--		unsigned long addr;
--
--		if (!maydump(vma, cprm->mm_flags))
--			continue;
-+		unsigned long size = vma_dump_size(vma, cprm->mm_flags);
- 
--		if (!dump_user_range(cprm, vma->vm_start,
--				     vma->vma_end - vma->vm_start))
-+		if (!dump_user_range(cprm, vma->vm_start, size))
- 			return false;
- 	}
- 	return true;
-@@ -1547,8 +1473,7 @@ static size_t elf_core_vma_data_size(unsigned long mm_flags)
- 	size_t size = 0;
- 
- 	for (vma = current->mm->mmap; vma; vma = vma->vm_next)
--		if (maydump(vma, mm_flags))
--			size += vma->vm_end - vma->vm_start;
-+		size += vma_dump_size(vma, mm_flags);
- 	return size;
- }
- 
-@@ -1694,7 +1619,7 @@ static int elf_fdpic_core_dump(struct coredump_params *cprm)
- 		phdr.p_offset = offset;
- 		phdr.p_vaddr = vma->vm_start;
- 		phdr.p_paddr = 0;
--		phdr.p_filesz = maydump(vma, cprm->mm_flags) ? sz : 0;
-+		phdr.p_filesz = vma_dump_size(vma, cprm->mm_flags);
- 		phdr.p_memsz = sz;
- 		offset += phdr.p_filesz;
- 		phdr.p_flags = vma->vm_flags & VM_READ ? PF_R : 0;
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 6042d15acd51..4ef4c49a65b7 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -936,3 +936,104 @@ void dump_truncate(struct coredump_params *cprm)
- 	}
- }
- EXPORT_SYMBOL(dump_truncate);
-+
-+/*
-+ * The purpose of always_dump_vma() is to make sure that special kernel mappings
-+ * that are useful for post-mortem analysis are included in every core dump.
-+ * In that way we ensure that the core dump is fully interpretable later
-+ * without matching up the same kernel and hardware config to see what PC values
-+ * meant. These special mappings include - vDSO, vsyscall, and other
-+ * architecture specific mappings
-+ */
-+static bool always_dump_vma(struct vm_area_struct *vma)
-+{
-+	/* Any vsyscall mappings? */
-+	if (vma == get_gate_vma(vma->vm_mm))
-+		return true;
-+
-+	/*
-+	 * Assume that all vmas with a .name op should always be dumped.
-+	 * If this changes, a new vm_ops field can easily be added.
-+	 */
-+	if (vma->vm_ops && vma->vm_ops->name && vma->vm_ops->name(vma))
-+		return true;
-+
-+	/*
-+	 * arch_vma_name() returns non-NULL for special architecture mappings,
-+	 * such as vDSO sections.
-+	 */
-+	if (arch_vma_name(vma))
-+		return true;
-+
-+	return false;
-+}
-+
-+/*
-+ * Decide how much of @vma's contents should be included in a core dump.
-+ */
-+unsigned long vma_dump_size(struct vm_area_struct *vma, unsigned long mm_flags)
-+{
-+#define FILTER(type)	(mm_flags & (1UL << MMF_DUMP_##type))
-+
-+	/* always dump the vdso and vsyscall sections */
-+	if (always_dump_vma(vma))
-+		goto whole;
-+
-+	if (vma->vm_flags & VM_DONTDUMP)
-+		return 0;
-+
-+	/* support for DAX */
-+	if (vma_is_dax(vma)) {
-+		if ((vma->vm_flags & VM_SHARED) && FILTER(DAX_SHARED))
-+			goto whole;
-+		if (!(vma->vm_flags & VM_SHARED) && FILTER(DAX_PRIVATE))
-+			goto whole;
-+		return 0;
-+	}
-+
-+	/* Hugetlb memory check */
-+	if (is_vm_hugetlb_page(vma)) {
-+		if ((vma->vm_flags & VM_SHARED) && FILTER(HUGETLB_SHARED))
-+			goto whole;
-+		if (!(vma->vm_flags & VM_SHARED) && FILTER(HUGETLB_PRIVATE))
-+			goto whole;
-+		return 0;
-+	}
-+
-+	/* Do not dump I/O mapped devices or special mappings */
-+	if (vma->vm_flags & VM_IO)
-+		return 0;
-+
-+	/* By default, dump shared memory if mapped from an anonymous file. */
-+	if (vma->vm_flags & VM_SHARED) {
-+		if (file_inode(vma->vm_file)->i_nlink == 0 ?
-+		    FILTER(ANON_SHARED) : FILTER(MAPPED_SHARED))
-+			goto whole;
-+		return 0;
-+	}
-+
-+	/* Dump segments that have been written to.  */
-+	if ((!IS_ENABLED(CONFIG_MMU) || vma->anon_vma) && FILTER(ANON_PRIVATE))
-+		goto whole;
-+	if (vma->vm_file == NULL)
-+		return 0;
-+
-+	if (FILTER(MAPPED_PRIVATE))
-+		goto whole;
-+
-+	/*
-+	 * If this is the beginning of an executable file mapping,
-+	 * dump the first page to aid in determining what was mapped here.
-+	 */
-+	if (FILTER(ELF_HEADERS) &&
-+	    vma->vm_pgoff == 0 && (vma->vm_flags & VM_READ) &&
-+	    (READ_ONCE(file_inode(vma->vm_file)->i_mode) & 0111) != 0)
-+		return PAGE_SIZE;
-+
-+#undef	FILTER
-+
-+	return 0;
-+
-+whole:
-+	return vma->vm_end - vma->vm_start;
-+}
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index f0b71a74d0bc..bfecb8d79a7f 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -16,6 +16,7 @@ extern int dump_skip(struct coredump_params *cprm, size_t nr);
- extern int dump_emit(struct coredump_params *cprm, const void *addr, int nr);
- extern int dump_align(struct coredump_params *cprm, int align);
- extern void dump_truncate(struct coredump_params *cprm);
-+unsigned long vma_dump_size(struct vm_area_struct *vma, unsigned long mm_flags);
- int dump_user_range(struct coredump_params *cprm, unsigned long start,
- 		    unsigned long len);
- #ifdef CONFIG_COREDUMP
--- 
-2.28.0.297.g1956fa8f8d-goog
+Also, the implementation of all the signals allowing dynamic subflows
+creation / removal by the path manager to comply with the RFC [1] is
+still under heavy development on the MPTCP side, so we cannot provide
+more realistic examples at the moment.
 
+[1] https://tools.ietf.org/html/rfc8684#section-3.4
