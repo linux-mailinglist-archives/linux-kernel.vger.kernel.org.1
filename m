@@ -2,628 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7193254A73
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9B4254A6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgH0QSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:18:03 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:1884 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727000AbgH0QRW (ORCPT
+        id S1727015AbgH0QRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgH0QRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:17:22 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RGC68D005481;
-        Thu, 27 Aug 2020 09:17:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=+q9gkbaKleIkZ82AlQI4j6By6jxUoNaSEQVfEC5RVOA=;
- b=FhFieMHG1WTYJWWoY2qmbgdNOGUnBT4XD4BPmZbEK5ngsNikBD5+bf5kdHzdR1AaJerh
- 3C6VOFK75BIAPDqZ+hRuR4ja/vihDjKwfnFWVwA/WfcN0n+NLW8MtTtYIbFzWMgAwz8J
- uA5JCoF2wPcn8uDFdMrnevOUoYHGnGn9PB7jqZwqOk2OftegsV0jpcR04e9rZW5SR7gz
- XVS+DR4fwJFfxi3HpcCXbGbmzkePa4tyw36/IqbV5txacYOPZURtkIpx3jlC7vfmiqVT
- vjw9CqIx5V+oKTGd4Sv3yD91T39iyMlRmp+YMaTNySRoITMuojEIFsODTfHg/9zt1ice pg== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2044.outbound.protection.outlook.com [104.47.73.44])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 332yww4trw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:17:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ATqIuYtdqjM8xWKKZx5nexmWZSiYJVV3TDb5L6mkwZEYyeJEiOVNVt/xzX4GwxH2+QyZWAn8o/mhPRp/i4FhwmQSCNwWuYDi0nUZo1vp4DSA5Q64ZHpmbj5Qq71LMojza8/8omFSsTnOH2IYX+qtFFMbbju03mDQqV0SL6W8BATo1YS/nxORvlsgTTcO3mnZj/RnFw04cr0+P7U9kMQxhvaQMhQa8zel8kPudvUJBPOU6GGbTCyxN8PxH5Xr1gQoEgRRL5oZLUWJ7D1vY0dZLHSOvzKRN75faqLHUH+obDErn1/aCc+7id65ik/PWsDoqM67O3pACrQCzlTE9sT6xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+q9gkbaKleIkZ82AlQI4j6By6jxUoNaSEQVfEC5RVOA=;
- b=GywafXp6pKTNoBWVbp8u4KapDPk88Ty/scZR+bYpmI5bhOF4y4HHbxVo5Iq4kYw3jPDhVOKGzAXEyEqrV0CyM7e5+Ga2zc0dhx7ZwgyqTNXRPAFQOCiCoAtAIdUFmZXI2Tp+h3lbBbt5hiKOxqfSJmNbSkahB+RCZel791EX6wucTC2EXW2RclgXwkL3Huf+57kLG3Z6HR4W0ylQvYECaKKu9u8Q1e1RLm0reLd23kgZ2z+TN9yKkk6FAg+mRH4mxX/XTG4hVAr/lISHGGK5Gl6JjmdDLQ9lNDkdDb6Z09ra/kEAHUoexpXFi84VJ812bdRWX+y2E29NSUrUhNcD/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+q9gkbaKleIkZ82AlQI4j6By6jxUoNaSEQVfEC5RVOA=;
- b=lUYFVlAgEW5p2BPPb0ne46RNN0KyuxWIQch7EyuD/HbAzbEZF2tLe8lacQXLcJVv6HfsFMmEsivgjrLuw4l3DM5+TK9QzUHwfHb7fwBe0cISofdOfvQUErezwUag+uiqnL9y2P4Kyd56ZMjcRorVSoXUWklHWaGT1Zg7+xL3WZ8=
-Received: from DM3PR03CA0016.namprd03.prod.outlook.com (2603:10b6:0:50::26) by
- CY4PR07MB3864.namprd07.prod.outlook.com (2603:10b6:903:d2::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3305.24; Thu, 27 Aug 2020 16:17:10 +0000
-Received: from DM6NAM12FT058.eop-nam12.prod.protection.outlook.com
- (2603:10b6:0:50:cafe::52) by DM3PR03CA0016.outlook.office365.com
- (2603:10b6:0:50::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
- Transport; Thu, 27 Aug 2020 16:17:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT058.mail.protection.outlook.com (10.13.179.205) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3326.19 via Frontend Transport; Thu, 27 Aug 2020 16:17:09 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 07RGGquS016160
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Thu, 27 Aug 2020 12:17:08 -0400
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Thu, 27 Aug 2020 18:16:53 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 27 Aug 2020 18:16:53 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 07RGGrKP031879;
-        Thu, 27 Aug 2020 18:16:53 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 07RGGr2X031878;
-        Thu, 27 Aug 2020 18:16:53 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>
-Subject: [PATCH v2 13/13] phy: cadence-torrent: Add USB + SGMII/QSGMII multilink configuration
-Date:   Thu, 27 Aug 2020 18:16:51 +0200
-Message-ID: <1598545011-31772-14-git-send-email-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.4.5
-In-Reply-To: <1598545011-31772-1-git-send-email-sjakhade@cadence.com>
-References: <1598545011-31772-1-git-send-email-sjakhade@cadence.com>
+        Thu, 27 Aug 2020 12:17:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCF7C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 09:17:21 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a5so5935598wrm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 09:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a1R0Eitpm/wfF2mpTHMtEGL35ys7GJDbdS2QGVwDMQI=;
+        b=S9yZaO9q3OFbVJleiK2Lh0XJ3wXSbGHd69Y/+rl97Fa0Z20UtiJhzev7aCitAAbWlh
+         qh1SqYNN1tMyiXZZpkw2Va+DOgeq0gwkIk9h3M8w8QP0Cmd6TeogGYUzAgNZ9DlPHvsd
+         WMSxAIZw/Jaz3vnLCwUzuO2OviaJdPNAUl1sJ7bAsorY5S6p4j7wkf7oj5qcVeudCAJU
+         2jGIpAQ7dJ7h3XMGOcYdaDp5gXrWltzsnVid+8kzrLqDQ6deoG9CHVEZJpkN5hGwYJqJ
+         dwAzH2WK23C4V4Ctd2lTTfTIq4nnt69tsE1+Dy5ZzJljKbE/8PwSx6hJfiZSZDjO82fG
+         ir0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a1R0Eitpm/wfF2mpTHMtEGL35ys7GJDbdS2QGVwDMQI=;
+        b=QL9HCrDvJ8CyJrBQ5+mbuMb2EwEDVK3QpkRbEkryzWc9IcqyPgjrTQtM3DAlb0H69c
+         zgWLo5+OQrvk4XU95SC6BWU2t+9gS0+z3yvI0vgGpcnLw5ZP0jTz4kt1mAwv9E6FOxa1
+         nQhIS6rALv7nvfJaKC0hDumC/z+HkqsNHyiqU388yOBeiqCVn0BUQAcKUcFgEYC58EF3
+         lGgN+VGI3v1Z0MVc00ueusrYMffXKDPrtpXtO4dTHfl9AkcHrhIQTlkCpXsP33d+Nep3
+         LCXde2EMNVD2dhebbJv+wRToGTvh1eGhvQ6cOwwJEUG5rhWg8oDBbQ37JqxAcnsMVIhQ
+         M0TA==
+X-Gm-Message-State: AOAM5308D8nq/dzujl1pQJPNUG0v6gz8guEmuQJ+tVMxxAAQ3m4Doa1b
+        gt89D1zJaBFpws94TUK/Zv8Ak3YFMKS1sv7Opc2i2w==
+X-Google-Smtp-Source: ABdhPJz+qS2IlmoSQerSgtkhmdhPyC7fKeZC2vUG4R/ZcSpRjX9T1O4Frk+oWtBfj/bPoeFDP68P9DgICyjYHlGo/Yo=
+X-Received: by 2002:adf:ba05:: with SMTP id o5mr20964356wrg.7.1598545040079;
+ Thu, 27 Aug 2020 09:17:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bac20ac0-cfc2-4df6-6e96-08d84aa4a625
-X-MS-TrafficTypeDiagnostic: CY4PR07MB3864:
-X-Microsoft-Antispam-PRVS: <CY4PR07MB3864A2533F599F82ECD5865FC5550@CY4PR07MB3864.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gutYsfANrgHo3UVQvayKJG6/qKi9QXVllL6IsJEIeSV+k7IN/04g55LOEM/B4VQMNCEPot7hZN7G/qALxaMcFBQCMMf8xw32KYnPQdIgIMH9CgyNev7qD9FK7azIwFmxaVDQLADD1SAAEf+Ahj/npRvE+OCJu2CKI0BfVIiC0rSYYtv2FaPWbU++jgrB8yiahShbDgrcGXJZ/gVmmalDOWRSZviMqo+r3h2/dT7G86EByqbKdZUdxGHGJZ35nTdlHreCZPE05YtCZZvwjMtWxs+JSHwDfv7FU2SYO9XvYDHHCZ09bQRNg62Qjcu1pCZJ+/+9rlQ+3UvP8R79DY8pnTfTW/8aIn9xkU13+b+/tuu4N81hRiXLuVWZXkKWg0BKnJZNcTtgNP9QPBWQUwIPCl13jT3WAn6oTjeLg7oVnFs=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(36092001)(46966005)(42186006)(8936002)(47076004)(70206006)(110136005)(86362001)(36906005)(316002)(70586007)(186003)(82740400003)(478600001)(336012)(8676002)(54906003)(4326008)(2906002)(30864003)(82310400002)(26005)(36756003)(356005)(426003)(2616005)(81166007)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 16:17:09.4528
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bac20ac0-cfc2-4df6-6e96-08d84aa4a625
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT058.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB3864
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_08:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
- bulkscore=0 mlxlogscore=735 spamscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1015 adultscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270120
+References: <20200702071416.1780522-1-davidgow@google.com> <20200827131438.GA3597431@elver.google.com>
+In-Reply-To: <20200827131438.GA3597431@elver.google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 28 Aug 2020 00:17:05 +0800
+Message-ID: <CABVgOSmoiFh5i8Ue14MtCLwq-LbGgQ1hf4MyRYLFWFQrkushjQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: Add naming guidelines
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Randy Dunlap <rd.dunlab@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Tim Bird <Tim.Bird@sony.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add USB + SGMII/QSGMII multilink configuration sequences.
+On Thu, Aug 27, 2020 at 9:14 PM Marco Elver <elver@google.com> wrote:
+>
+> On Thu, Jul 02, 2020 at 12:14AM -0700, David Gow wrote:
+> > As discussed in [1], KUnit tests have hitherto not had a particularly
+> > consistent naming scheme. This adds documentation outlining how tests
+> > and test suites should be named, including how those names should be
+> > used in Kconfig entries and filenames.
+> >
+> > [1]:
+> > https://lore.kernel.org/linux-kselftest/202006141005.BA19A9D3@keescook/t/#u
+> >
+> > Signed-off-by: David Gow <davidgow@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> ...
+> > +An example Kconfig entry:
+> > +
+> > +.. code-block:: none
+> > +
+> > +        config FOO_KUNIT_TEST
+> > +                tristate "KUnit test for foo" if !KUNIT_ALL_TESTS
+> > +                depends on KUNIT
+> > +                default KUNIT_ALL_TESTS
+> > +                help
+> > +                    This builds unit tests for foo.
+> > +
+> > +                    For more information on KUnit and unit tests in general, please refer
+> > +                    to the KUnit documentation in Documentation/dev-tools/kunit
+> > +
+> > +                    If unsure, say N
+> > +
+> > +
+> > +Test Filenames
+> > +==============
+> > +
+> > +Where possible, test suites should be placed in a separate source file in the
+> > +same directory as the code being tested.
+> > +
+> > +This file should be named ``<suite>_kunit.c``. It may make sense to strip
+> > +excessive namespacing from the source filename (e.g., ``firmware_kunit.c`` instead of
+> > +``<drivername>_firmware.c``), but please ensure the module name does contain the
+> > +full suite name.
+>
+> First of all, thanks for the talk yesterday! I only looked at this
+> because somebody pasted the LKML link. :-)
 
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
----
- drivers/phy/cadence/phy-cadence-torrent.c | 254 ++++++++++++++++++++++
- 1 file changed, 254 insertions(+)
+No worries! Clearly this document needed linking -- even I was
+starting to suspect the reason no-one was complaining about this was
+that no-one had read it. :-)
 
-diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index d2b9d1396be6..c22594a26c40 100644
---- a/drivers/phy/cadence/phy-cadence-torrent.c
-+++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -2346,6 +2346,40 @@ static int cdns_torrent_phy_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+/* USB and SGMII/QSGMII link configuration */
-+static struct cdns_reg_pairs usb_sgmii_link_cmn_regs[] = {
-+	{0x0002, PHY_PLL_CFG},
-+	{0x8600, CMN_PDIAG_PLL0_CLK_SEL_M0},
-+	{0x0601, CMN_PDIAG_PLL1_CLK_SEL_M0}
-+};
-+
-+static struct cdns_reg_pairs usb_sgmii_xcvr_diag_ln_regs[] = {
-+	{0x0000, XCVR_DIAG_HSCLK_SEL},
-+	{0x0001, XCVR_DIAG_HSCLK_DIV},
-+	{0x0041, XCVR_DIAG_PLLDRC_CTRL}
-+};
-+
-+static struct cdns_reg_pairs sgmii_usb_xcvr_diag_ln_regs[] = {
-+	{0x0011, XCVR_DIAG_HSCLK_SEL},
-+	{0x0003, XCVR_DIAG_HSCLK_DIV},
-+	{0x009B, XCVR_DIAG_PLLDRC_CTRL}
-+};
-+
-+static struct cdns_torrent_vals usb_sgmii_link_cmn_vals = {
-+	.reg_pairs = usb_sgmii_link_cmn_regs,
-+	.num_regs = ARRAY_SIZE(usb_sgmii_link_cmn_regs),
-+};
-+
-+static struct cdns_torrent_vals usb_sgmii_xcvr_diag_ln_vals = {
-+	.reg_pairs = usb_sgmii_xcvr_diag_ln_regs,
-+	.num_regs = ARRAY_SIZE(usb_sgmii_xcvr_diag_ln_regs),
-+};
-+
-+static struct cdns_torrent_vals sgmii_usb_xcvr_diag_ln_vals = {
-+	.reg_pairs = sgmii_usb_xcvr_diag_ln_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_usb_xcvr_diag_ln_regs),
-+};
-+
- /* PCIe and USB Unique SSC link configuration */
- static struct cdns_reg_pairs pcie_usb_link_cmn_regs[] = {
- 	{0x0003, PHY_PLL_CFG},
-@@ -3019,6 +3053,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3029,6 +3068,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3041,6 +3085,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_usb_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_usb_link_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 	},
- 	.xcvr_diag_vals = {
-@@ -3075,6 +3129,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3085,6 +3144,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3097,6 +3161,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &usb_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+			},
- 		},
- 	},
- 	.pcs_cmn_vals = {
-@@ -3111,6 +3185,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
- 				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_phy_pcs_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_phy_pcs_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+			},
- 		},
- 	},
- 	.cmn_vals = {
-@@ -3145,6 +3229,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &sgmii_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3155,6 +3244,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3167,6 +3261,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &usb_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_usb_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_usb_100_int_ssc_cmn_vals,
-+			},
- 		},
- 	},
- 	.tx_ln_vals = {
-@@ -3201,6 +3305,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3211,6 +3320,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3223,6 +3337,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 	},
- 	.rx_ln_vals = {
-@@ -3257,6 +3381,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3267,6 +3396,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3279,6 +3413,16 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 	},
- };
-@@ -3318,6 +3462,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3328,6 +3477,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3340,6 +3494,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &pcie_usb_link_cmn_vals,
- 				[INTERNAL_SSC] = &pcie_usb_link_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_link_cmn_vals,
-+			},
- 		},
- 	},
- 	.xcvr_diag_vals = {
-@@ -3374,6 +3538,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3384,6 +3553,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_usb_xcvr_diag_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3396,6 +3570,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_pcie_xcvr_diag_ln_vals,
- 				[INTERNAL_SSC] = &usb_pcie_xcvr_diag_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &usb_sgmii_xcvr_diag_ln_vals,
-+			},
- 		},
- 	},
- 	.pcs_cmn_vals = {
-@@ -3410,6 +3594,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
- 				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_phy_pcs_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_phy_pcs_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+				[INTERNAL_SSC] = &usb_phy_pcs_cmn_vals,
-+			},
- 		},
- 	},
- 	.cmn_vals = {
-@@ -3444,6 +3638,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &sgmii_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3454,6 +3653,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3466,6 +3670,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
- 				[INTERNAL_SSC] = &usb_100_int_ssc_cmn_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_usb_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_usb_100_int_ssc_cmn_vals,
-+			},
- 		},
- 	},
- 	.tx_ln_vals = {
-@@ -3500,6 +3714,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3510,6 +3729,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3522,6 +3746,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
- 				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 	},
- 	.rx_ln_vals = {
-@@ -3556,6 +3790,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 		[TYPE_QSGMII] = {
- 			[TYPE_NONE] = {
-@@ -3566,6 +3805,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_USB] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 		[TYPE_USB] = {
- 			[TYPE_NONE] = {
-@@ -3578,6 +3822,16 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
- 				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
- 			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &usb_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 	},
- };
--- 
-2.26.1
+> The example about excessive namespacing seems confusing. Was it supposed
+> to be
+>
+>         [...] firmware_kunit.c`` instead of ``<drivername>_firmware_kunit.c [...]
+>
+> ?
 
+Whoops, yes. I'll fix that.
+
+>
+> While I guess this ship has sailed, and *_kunit.c is the naming
+> convention now, I hope this is still just a recommendation and names of
+> the form *-test.c are not banned!
+
+The ship hasn't technically sailed until this patch is actually
+accepted. Thus far, we hadn't had any real complaints about the
+_kunit.c idea, though that may have been due to this email not
+reaching enough people. If you haven't read the discussion in
+https://lore.kernel.org/linux-kselftest/202006141005.BA19A9D3@keescook/t/#u
+it's worthwhile: the _kunit.c name is discussed, and Kees lays out
+some more detailed rationale for it as well.
+
+> $> git grep 'KUNIT.*-test.o'
+>         drivers/base/power/Makefile:obj-$(CONFIG_PM_QOS_KUNIT_TEST) += qos-test.o
+>         drivers/base/test/Makefile:obj-$(CONFIG_KUNIT_DRIVER_PE_TEST) += property-entry-test.o
+>         fs/ext4/Makefile:obj-$(CONFIG_EXT4_KUNIT_TESTS)         += ext4-inode-test.o
+>         kernel/Makefile:obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
+>         lib/Makefile:obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>         lib/kunit/Makefile:obj-$(CONFIG_KUNIT_TEST) +=          kunit-test.o
+>         lib/kunit/Makefile:obj-$(CONFIG_KUNIT_TEST) +=          string-stream-test.o
+>         lib/kunit/Makefile:obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=  kunit-example-test.o
+>
+> $> git grep 'KUNIT.*_kunit.o'
+> # Returns nothing
+>
+
+This was definitely something we noted. Part of the goal of having
+_kunit.c as a filename suffix (and, perhaps more importantly, the
+_kunit module name suffix) was to have a way of both distinguishing
+KUnit tests from non-KUnit ones (of which there are quite a few
+already with -test names), and to have a way of quickly determining
+what modules contain KUnit tests. That really only works if everyone
+is using it, so the plan was to push this as much as possible. This'd
+probably include renaming most of the existing test files to match,
+which is a bit of a pain (particularly when converting non-KUnit tests
+to KUnit and similar), but is a one-time thing.
+
+>
+> Just an idea: Maybe the names are also an opportunity to distinguish
+> real _unit_ style tests and then the rarer integration-style tests. I
+> personally prefer using the more generic *-test.c, at least for the
+> integration-style tests I've been working on (KUnit is still incredibly
+> valuable for integration-style tests, because otherwise I'd have to roll
+> my own poor-man's version of KUnit, so thank you!). Using *_kunit.c for
+> such tests is unintuitive, because the word "unit" hints at "unit tests"
+> -- and having descriptive (and not misleading) filenames is still
+> important. So I hope you won't mind if *-test.c are still used where
+> appropriate.
+
+As Brendan alluded to in the talk, the popularity of KUnit for these
+integration-style tests came as something of a surprise (more due to
+our lack of imagination than anything else, I suspect). It's great
+that it's working, though: I don't think anyone wants the world filled
+with more single-use test "frameworks" than is necessary!
+
+I guess the interesting thing to note is that we've to date not really
+made a distinction between KUnit the framework and the suite of all
+KUnit tests. Maybe having a separate file/module naming scheme could
+be a way of making that distinction, though it'd really only appear
+when loading tests as modules -- there'd be no indication in e.g.,
+suite names or test results. The more obvious solution to me (at
+least, based on the current proposal) would be to have "integration"
+or similar be part of the suite name (and hence the filename, so
+_integration_kunit.c or similar), though even I admit that that's much
+uglier. Maybe the idea of having the subsystem/suite distinction be
+represented in the code could pave the way to having different suites
+support different suffixes like that.
+
+Do you know of any cases where something has/would have both
+unit-style tests and integration-style tests built with KUnit where
+the distinction needs to be clear?
+
+Brendan, Kees: do you have any thoughts?
+
+
+> Thanks,
+> -- Marco
+
+
+Cheers,
+-- David
