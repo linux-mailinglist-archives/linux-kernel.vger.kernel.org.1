@@ -2,135 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92DC25516F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34A4255187
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 01:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgH0W72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:59:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28040 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727993AbgH0W70 (ORCPT
+        id S1726266AbgH0XVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 19:21:14 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52844 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727909AbgH0XVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:59:26 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RMxIh4029747
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:59:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=D92isYSHnn5Fvj2do74T7gxs6BC06Fi43aAZxrpOZYU=;
- b=pioa0taMspueRUvF/svzXWKyR1MlKcm1HIdj9/xS+JMyTja/fFNXrZXNpUc5HpJk1oj5
- nr4Lx0tDxSJ6b2AkkGoIWHRCyAQOYsHeN07IXsxcaUfHzdA87edMhu3J60Kd7E+G9ksP
- hhHWEBhSzyiA32xlJMNkz9F/sKN4eVnMgys= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 335up67yce-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:59:24 -0700
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 27 Aug 2020 15:58:53 -0700
-Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
-        id 719D8393DEE5; Thu, 27 Aug 2020 15:58:44 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     =Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: prn0c01
-Subject: [PATCH v1 4/4] mm: kmem: enable kernel memcg accounting from interrupt contexts
-Date:   Thu, 27 Aug 2020 15:58:43 -0700
-Message-ID: <20200827225843.1270629-5-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200827225843.1270629-1-guro@fb.com>
-References: <20200827225843.1270629-1-guro@fb.com>
+        Thu, 27 Aug 2020 19:21:14 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 18C9129D96;
+        Thu, 27 Aug 2020 19:21:10 -0400 (EDT)
+Date:   Fri, 28 Aug 2020 09:21:22 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Joe Perches <joe@perches.com>
+cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 17/19] z2ram: reindent
+In-Reply-To: <b88538f92386f41b938c502ae2daec5800a85dcf.camel@perches.com>
+Message-ID: <alpine.LNX.2.23.453.2008280859300.10@nippy.intranet>
+References: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>         <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de> <b88538f92386f41b938c502ae2daec5800a85dcf.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_14:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- impostorscore=0 spamscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=954
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008270174
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a memcg to charge can be determined (using remote charging API),
-there are no reasons to exclude allocations made from an interrupt
-context from the accounting.
 
-Such allocations will pass even if the resulting memcg size will
-exceed the hard limit, but it will affect the application of the
-memory pressure and an inability to put the workload under the limit
-will eventually trigger the OOM.
+> @@ -109,34 +111,28 @@ static void get_z2ram(void)
+...
+>  	}
+> -
+> -	return;
+>  }
+>  
 
-To use active_memcg() helper, memcg_kmem_bypass() is moved back
-to memcontrol.c.
+It would be good to have a semantic patch for that change.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
- include/linux/memcontrol.h | 12 ------------
- mm/memcontrol.c            | 13 +++++++++++++
- 2 files changed, 13 insertions(+), 12 deletions(-)
+>  
+> -		if (z2ram_map[z2ram_size] == 0) {
+> +		if (z2ram_map[z2ram_size] == 0)
+>  			break;
+> -		}
+>  
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d0b036123c6a..924177502479 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1528,18 +1528,6 @@ static inline bool memcg_kmem_enabled(void)
- 	return static_branch_likely(&memcg_kmem_enabled_key);
- }
-=20
--static inline bool memcg_kmem_bypass(void)
--{
--	if (in_interrupt())
--		return true;
--
--	/* Allow remote memcg charging in kthread contexts. */
--	if ((!current->mm || (current->flags & PF_KTHREAD)) &&
--	     !current->active_memcg)
--		return true;
--	return false;
--}
--
- static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
- 					 int order)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a51a6066079e..75cd1a1e66c8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1098,6 +1098,19 @@ static __always_inline struct mem_cgroup *get_acti=
-ve_memcg(void)
- 	return memcg;
- }
-=20
-+static __always_inline bool memcg_kmem_bypass(void)
-+{
-+	/* Allow remote memcg charging from any context. */
-+	if (unlikely(active_memcg()))
-+		return false;
-+
-+	/* Memcg to charge can't be determined. */
-+	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
-+		return true;
-+
-+	return false;
-+}
-+
- /**
-  * If active memcg is set, do not fallback to current->mm->memcg.
-  */
---=20
-2.26.2
+And that one.
 
+Reason being, a semantic patch only has to be debugged once, whereas 
+manual churn has to be done correctly over and over again.
+
+TBH, this kind of transformation can happen when code is displayed.
+It doesn't have to involve git at all. Otherwise, why have 5 billion 
+transistors? You'd be better off with an Amiga.
