@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC04254BBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BFF254BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 19:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgH0RMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 13:12:25 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26671 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgH0RMY (ORCPT
+        id S1727834AbgH0ROL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 13:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgH0ROJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 13:12:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598548343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KuENNcu03ZYZzJy2Hk5IZPtHrf6j8qPH04KuM2zt3fQ=;
-        b=XXlAnn61c/cxaGr/AwIQldvATuqKBJf7R3j9I2P3eVKepQGZpzTh/aI7rI1m1+g09cVapL
-        6hKYeRLSEwWeUKeJOTyzdmFTfF67fY8R/wuRWVzdnTptgJAO8gBEEeTsjyCesXavH/v/gn
-        Ng28okifbzJOQjeFx48mZXOBWVnuvXw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-6nOjKZdDOG2TUs42Yrymxg-1; Thu, 27 Aug 2020 13:12:21 -0400
-X-MC-Unique: 6nOjKZdDOG2TUs42Yrymxg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 057B01029D23;
-        Thu, 27 Aug 2020 17:12:20 +0000 (UTC)
-Received: from starship (unknown [10.35.206.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 713F35C1DA;
-        Thu, 27 Aug 2020 17:12:15 +0000 (UTC)
-Message-ID: <a9708f1038dbf921451e9ff00dafecc324c8b736.camel@redhat.com>
-Subject: Re: [PATCH 0/8] KVM: nSVM: ondemand nested state allocation + smm
- fixes
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Date:   Thu, 27 Aug 2020 20:12:14 +0300
-In-Reply-To: <20200827170434.284680-1-mlevitsk@redhat.com>
-References: <20200827170434.284680-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Thu, 27 Aug 2020 13:14:09 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595ECC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:14:09 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id g6so7262741ljn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M4prkjP1Ku3b1Mujmm7MQBoZsalaGZICkCWqtSa9I0Q=;
+        b=PSw0ZaM0WvUn6MpwD6It0gaG27/wObSq1kVFCBecFjxl05M3hm/lJJJSvazPfJVOQT
+         cjVnniEJR+1KQCr4oYfPbro+6zzdFrXrfxKFeKe1p1C/CgSLgLHArfWn+EP8lW7qYQ49
+         w0N1GHWVrfxOkaIDPpbVBPi4jLmvTyf7sMt34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M4prkjP1Ku3b1Mujmm7MQBoZsalaGZICkCWqtSa9I0Q=;
+        b=fp8XE6ZIAWl6oMpsgpm2PyLuHaG8bhgFZJTItdQc4IGVKqnTAEp+6R+tBN/3DXF+W2
+         bQ9Fs29M4Yz2Ip910tsMng4oaeQvlCbgJAClGfVpp7U6O9WXOQUbm9VKO7mezWW62hJK
+         i1zx6OWiZCSK4Em9f76hU1iVa5GTTeRfVjYiQzPZvPg9PUB52rBEluTw14hGO1kZ50LS
+         Ur6FtDyZy47qQVcWjDfXADD6aM9ZX8A7RuW07UQ51qd/RKjNfua/RbXblVNrlqCQqLa7
+         /eaU6dsFe8MqEyO9YbSBjMN3JV7zm8gJI2yN9yLprjOLnnATl56ULoyVz5FBKmmn1CX6
+         EmBg==
+X-Gm-Message-State: AOAM531yaBsLtAo3Fi7MV2sDjVAaElCLgm7LP0BwldA4Vg3Bl8TSIFlO
+        Hi60CvH3s6hTCwpxEkwl+jJnpgmiAImZog==
+X-Google-Smtp-Source: ABdhPJyoAoJLbtRhhFBHIRtoMEuH1r2E/aCCwQzLeEMRnp8rrenfMsMzNId3VvXkpdvTOP3r5iVNFg==
+X-Received: by 2002:a2e:9e4e:: with SMTP id g14mr2704601ljk.450.1598548447514;
+        Thu, 27 Aug 2020 10:14:07 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id 29sm596944ljv.72.2020.08.27.10.14.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 10:14:07 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id i10so7318348ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 10:14:06 -0700 (PDT)
+X-Received: by 2002:a05:651c:503:: with SMTP id o3mr10986895ljp.312.1598548445374;
+ Thu, 27 Aug 2020 10:14:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200827114932.3572699-1-jannh@google.com> <20200827114932.3572699-7-jannh@google.com>
+In-Reply-To: <20200827114932.3572699-7-jannh@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 27 Aug 2020 10:13:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj=QXUkKXLzyWxJ49L80Heu2Z_RoHSahRt+zPq8W4du=g@mail.gmail.com>
+Message-ID: <CAHk-=wj=QXUkKXLzyWxJ49L80Heu2Z_RoHSahRt+zPq8W4du=g@mail.gmail.com>
+Subject: Re: [PATCH v5 6/7] mm/gup: Take mmap_lock in get_dump_page()
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-27 at 20:04 +0300, Maxim Levitsky wrote:
-> This patch series does some refactoring and implements on demand nested state area
-> This way at least guests that don't use nesting won't waste memory
-> on nested state.
-> 
-> This patch series is based on patch series '[PATCH 0/3] Few nSVM bugfixes'
-> (patch #7 here should have beeing moved there as well to be honest)
-> 
-> The series was tested with various nested guests, and it seems to work
-> as long as I disable the TSC deadline timer (this is unrelated to this
-> patch series)
-> 
-> I addressed the review feedback from V2, and added few refactoring
-> patches to this series as suggested.
-> 
-> Best regards,
->         Maxim Levitsky
-> 
-> Maxim Levitsky (8):
->   KVM: SVM: rename a variable in the svm_create_vcpu
->   KVM: nSVM: rename nested vmcb to vmcb12
->   KVM: SVM: refactor msr permission bitmap allocation
->   KVM: SVM: use __GFP_ZERO instead of clear_page
->   KVM: SVM: refactor exit labels in svm_create_vcpu
->   KVM: x86: allow kvm_x86_ops.set_efer to return a value
->   KVM: emulator: more strict rsm checks.
->   KVM: nSVM: implement ondemand allocation of the nested state
-> 
->  arch/x86/include/asm/kvm_host.h |   2 +-
->  arch/x86/kvm/emulate.c          |  22 ++-
->  arch/x86/kvm/svm/nested.c       | 267 ++++++++++++++++++--------------
->  arch/x86/kvm/svm/svm.c          | 106 +++++++------
->  arch/x86/kvm/svm/svm.h          |  10 +-
->  arch/x86/kvm/vmx/vmx.c          |   9 +-
->  arch/x86/kvm/x86.c              |   3 +-
->  7 files changed, 243 insertions(+), 176 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
-Ignore this one, I send this with wrong version.
+On Thu, Aug 27, 2020 at 4:50 AM Jann Horn <jannh@google.com> wrote:
+>
+> Properly take the mmap_lock before calling into the GUP code from
+> get_dump_page(); and play nice, allowing the GUP code to drop the mmap_lock
+> if it has to sleep.
 
+Hmm. Of all the patches in the series, this simple one is now the only
+one I feel makes for ugly code. Certainly not uglier than it used to
+be,  but also not as pretty as it could be..
+
+I think you're pretty much just re-implementing
+get_user_pages_unlocked(), aren't you?
+
+There are differences - you use mmap_read_lock_killable(), for
+example. But I think get_user_pages_unlocked() should too.
+
+The other difference is that you don't set FOLL_TOUCH. So it's not
+*exactly* the same thing, but it's close enough that I get the feeling
+that this should be cleaned up to use a common helper between the two.
+
+That said, I suspect that falls under the heading of "future cleanup".
+I don't think there's any need to re-spin this series for this, it's
+just the only slightly negative reaction I had for the whole series
+now.
+
+                 Linus
