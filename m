@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EEF254ED7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ADA254EE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgH0TkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgH0TkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:40:11 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9319C061264;
-        Thu, 27 Aug 2020 12:40:11 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id v15so4090982pgh.6;
-        Thu, 27 Aug 2020 12:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z5MuJjj2BRfbffbktmUArXq0jWI8OrbgvmEfcOOymls=;
-        b=jD6rxi6RNgMg4A02GWwlrSmHVsI6daGM+MmqCIfnw+vIJT9IGKVs7tbi3VQAQAbCE3
-         CjrQHAJbjT2+9zVMdW0qpamSo7TWDvJg3/cFjdKU6DsI0Ycld94iMACgBtWDSvzEivXr
-         w955vfZwxMUuvtc0StzNJ1jVrXsZVXWzpzyJT7Mm0PqUhEOJ6CDb/2NEUN30WwhgVY8e
-         zOxUvFYX3zCNDEdw2wF5xJJSdYQkqUXtyQ4TI9P9+A+MqI54GrJChGoqHsA8lPIKeE2r
-         kdb7eqLbYLSDUKZquR0uwI6D58REZf9bwpjXV6RzQ481l8xmLPeBM/DGSHj8NYk2n1jb
-         5CyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z5MuJjj2BRfbffbktmUArXq0jWI8OrbgvmEfcOOymls=;
-        b=ti/ZCIfqZ48VlHFxm54I4xu3ccheYqJDXUrx2KjhJCJmZzGGNUAhA35AQioffS3Azg
-         nsidnCsSta/mlJP/gHabr3s04y/flRvy5Nk8hmbUdOm4ZSLF6PAv+Kvd/pwFWlDUxxTr
-         Er61kTiTir2wgDkOEJrf1lqVOUjjJeFlSJGtWRfX6mIqhAFaNEwJMAiPDzYnqVHM1f42
-         RsjkYMPWQ6yuMEsebHP5tfb1wmWiPfZ1rUTmMRQZU7JdN42i58T3kbnHZg7kFMw0Ckrv
-         Kweck6BUuiJ59duj6sVf5O1xUuF2dW7fjjjx9T9/m9O5DMmm+tbkowf/mB1QgHOOAQn2
-         THxg==
-X-Gm-Message-State: AOAM532HIZNyLf8IhJwSz8Rf4Mxov/xDNklIhTUSwQdirsg4M5r41Brb
-        hLL8z22Veg9MlzEi0YnCclPtqt3Me5zoj5Wveo4=
-X-Google-Smtp-Source: ABdhPJyPfAs6F4scl/LPTaagO1N/0A6aEX5LL2g/s14gO2zqJshHDT5Mu870D8LHna1d3azm8Pri1UOohGi10Tv++TE=
-X-Received: by 2002:a63:ec18:: with SMTP id j24mr15213316pgh.74.1598557211293;
- Thu, 27 Aug 2020 12:40:11 -0700 (PDT)
+        id S1727077AbgH0Tlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:41:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:34000 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726120AbgH0Tlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:41:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82D0931B;
+        Thu, 27 Aug 2020 12:41:38 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD8DC3F68F;
+        Thu, 27 Aug 2020 12:41:37 -0700 (PDT)
+Subject: Re: [PATCH] iommu/iova: Replace cmpxchg with xchg in queue_iova
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     Yuqi Jin <jinyuqi@huawei.com>
+References: <1598517834-30275-1-git-send-email-zhangshaokun@hisilicon.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3afcc7b2-0bfb-b79c-513f-1beb66c5f164@arm.com>
+Date:   Thu, 27 Aug 2020 20:41:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200827185829.30096-1-krzk@kernel.org> <20200827185829.30096-8-krzk@kernel.org>
-In-Reply-To: <20200827185829.30096-8-krzk@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 27 Aug 2020 22:39:54 +0300
-Message-ID: <CAHp75VcHpPTAJxd9bTbEkEW=4F1FCzTzHS=DCDWnvsjjXvMV=A@mail.gmail.com>
-Subject: Re: [PATCH v3 07/27] Input: bu21013_ts - Simplify with dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1598517834-30275-1-git-send-email-zhangshaokun@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 9:59 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and also it prints the error value.
+On 2020-08-27 09:43, Shaokun Zhang wrote:
+> From: Yuqi Jin <jinyuqi@huawei.com>
+> 
+> The performance of the atomic_xchg is better than atomic_cmpxchg because
+> no comparison is required. While the value of @fq_timer_on can only be 0
+> or 1. Let's use atomic_xchg instead of atomic_cmpxchg here because we
+> only need to check that the value changes from 0 to 1 or from 1 to 1.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Looks reasonable to me - the "compare" part is already covered by the 
+separate atomic_read(), and as you say there's no harm if the "exchange" 
+part races as long as it's still atomic.
 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
 > ---
->
-> Changes since v1:
-> 1. Remove unneeded PTR_ERR_OR_ZERO, as pointed by Andy.
-> ---
->  drivers/input/touchscreen/bu21013_ts.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/input/touchscreen/bu21013_ts.c b/drivers/input/touchscreen/bu21013_ts.c
-> index 2f1f0d7607f8..86bd38243d6c 100644
-> --- a/drivers/input/touchscreen/bu21013_ts.c
-> +++ b/drivers/input/touchscreen/bu21013_ts.c
-> @@ -496,12 +496,10 @@ static int bu21013_probe(struct i2c_client *client,
->
->         /* Named "CS" on the chip, DT binding is "reset" */
->         ts->cs_gpiod = devm_gpiod_get(&client->dev, "reset", GPIOD_OUT_HIGH);
-> -       error = PTR_ERR_OR_ZERO(ts->cs_gpiod);
-> -       if (error) {
-> -               if (error != -EPROBE_DEFER)
-> -                       dev_err(&client->dev, "failed to get CS GPIO\n");
-> -               return error;
-> -       }
-> +       if (IS_ERR(ts->cs_gpiod))
-> +               return dev_err_probe(&client->dev, PTR_ERR(ts->cs_gpiod),
-> +                                    "failed to get CS GPIO\n");
-> +
->         gpiod_set_consumer_name(ts->cs_gpiod, "BU21013 CS");
->
->         error = devm_add_action_or_reset(&client->dev,
-> @@ -516,11 +514,8 @@ static int bu21013_probe(struct i2c_client *client,
->         ts->int_gpiod = devm_gpiod_get_optional(&client->dev,
->                                                 "touch", GPIOD_IN);
->         error = PTR_ERR_OR_ZERO(ts->int_gpiod);
-> -       if (error) {
-> -               if (error != -EPROBE_DEFER)
-> -                       dev_err(&client->dev, "failed to get INT GPIO\n");
-> -               return error;
-> -       }
-> +       if (error)
-> +               return dev_err_probe(&client->dev, error, "failed to get INT GPIO\n");
->
->         if (ts->int_gpiod)
->                 gpiod_set_consumer_name(ts->int_gpiod, "BU21013 INT");
-> --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+>   drivers/iommu/iova.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 45a251da5453..30d969a4c5fd 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -579,7 +579,7 @@ void queue_iova(struct iova_domain *iovad,
+>   
+>   	/* Avoid false sharing as much as possible. */
+>   	if (!atomic_read(&iovad->fq_timer_on) &&
+> -	    !atomic_cmpxchg(&iovad->fq_timer_on, 0, 1))
+> +	    !atomic_xchg(&iovad->fq_timer_on, 1))
+>   		mod_timer(&iovad->fq_timer,
+>   			  jiffies + msecs_to_jiffies(IOVA_FQ_TIMEOUT));
+>   }
+> 
