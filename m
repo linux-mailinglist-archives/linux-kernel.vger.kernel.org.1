@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C444D254767
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7446F2546E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgH0Otw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 10:49:52 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38111 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727866AbgH0N5S (ORCPT
+        id S1728041AbgH0Ob1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 10:31:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40302 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727864AbgH0OXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:57:18 -0400
+        Thu, 27 Aug 2020 10:23:55 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-sP3gFXKOMm6mZiOyc_iYeA-1; Thu, 27 Aug 2020 09:48:35 -0400
-X-MC-Unique: sP3gFXKOMm6mZiOyc_iYeA-1
+ us-mta-46-8yj2RV4cM1isgEhjcUsosg-1; Thu, 27 Aug 2020 09:48:37 -0400
+X-MC-Unique: 8yj2RV4cM1isgEhjcUsosg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD9F08018A1;
-        Thu, 27 Aug 2020 13:48:33 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B4AF10506E1;
+        Thu, 27 Aug 2020 13:48:36 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.195.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 32FC37C55A;
-        Thu, 27 Aug 2020 13:48:31 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DF32702E7;
+        Thu, 27 Aug 2020 13:48:34 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -33,14 +33,16 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 1/2] perf tools: Disable ordered_events for report raw dump
-Date:   Thu, 27 Aug 2020 15:48:29 +0200
-Message-Id: <20200827134830.126721-1-jolsa@kernel.org>
+Subject: [PATCH 2/2] perf tools: Call test_attr__open directly
+Date:   Thu, 27 Aug 2020 15:48:30 +0200
+Message-Id: <20200827134830.126721-2-jolsa@kernel.org>
+In-Reply-To: <20200827134830.126721-1-jolsa@kernel.org>
+References: <20200827134830.126721-1-jolsa@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Authentication-Results: relay.mimecast.com;
         auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.0
+X-Mimecast-Spam-Score: 0.001
 X-Mimecast-Originator: kernel.org
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: 8BIT
@@ -49,29 +51,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable ordered_events for report raw dump, because
-for raw dump we want to see events as they are stored
-in the perf.data file, not sorted by time.
+There's no longer need to have test_attr__open inside
+sys_perf_event_open call, because both record and stat
+call evsel__open_cpu, so we can call it directly from
+there and not polute perf-sys.h header.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/builtin-report.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/perf-sys.h   | 22 ++--------------------
+ tools/perf/tests/attr.c |  2 +-
+ tools/perf/util/evsel.c |  5 +++++
+ tools/perf/util/util.h  |  6 ++++++
+ 4 files changed, 14 insertions(+), 21 deletions(-)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index ece1cddfcd7c..3c74c9c0f3c3 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1332,6 +1332,9 @@ int cmd_report(int argc, const char **argv)
- 	if (report.mmaps_mode)
- 		report.tasks_mode = true;
+diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
+index 15e458e150bd..7a2264e1e4e1 100644
+--- a/tools/perf/perf-sys.h
++++ b/tools/perf/perf-sys.h
+@@ -9,31 +9,13 @@
  
-+	if (dump_trace)
-+		report.tool.ordered_events = false;
+ struct perf_event_attr;
+ 
+-extern bool test_attr__enabled;
+-void test_attr__ready(void);
+-void test_attr__init(void);
+-void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+-		     int fd, int group_fd, unsigned long flags);
+-
+-#ifndef HAVE_ATTR_TEST
+-#define HAVE_ATTR_TEST 1
+-#endif
+-
+ static inline int
+ sys_perf_event_open(struct perf_event_attr *attr,
+ 		      pid_t pid, int cpu, int group_fd,
+ 		      unsigned long flags)
+ {
+-	int fd;
+-
+-	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
+-		     group_fd, flags);
+-
+-#if HAVE_ATTR_TEST
+-	if (unlikely(test_attr__enabled))
+-		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
+-#endif
+-	return fd;
++	return syscall(__NR_perf_event_open, attr, pid, cpu,
++		       group_fd, flags);
+ }
+ 
+ #endif /* _PERF_SYS_H */
+diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
+index a9599ab8c471..ec972e0892ab 100644
+--- a/tools/perf/tests/attr.c
++++ b/tools/perf/tests/attr.c
+@@ -30,9 +30,9 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include "../perf-sys.h"
+ #include <subcmd/exec-cmd.h>
+ #include "event.h"
++#include "util.h"
+ #include "tests.h"
+ 
+ #define ENV "PERF_TEST_ATTR"
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index fd865002cbbd..6f0e23105cf8 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1680,6 +1680,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 
+ 			FD(evsel, cpu, thread) = fd;
+ 
++			if (unlikely(test_attr__enabled)) {
++				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
++						fd, group_fd, flags);
++			}
 +
- 	if (quiet)
- 		perf_quiet_option();
+ 			if (fd < 0) {
+ 				err = -errno;
  
+diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+index f486fdd3a538..ad737052e597 100644
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -62,4 +62,10 @@ char *perf_exe(char *buf, int len);
+ #endif
+ #endif
+ 
++extern bool test_attr__enabled;
++void test_attr__ready(void);
++void test_attr__init(void);
++struct perf_event_attr;
++void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
++		     int fd, int group_fd, unsigned long flags);
+ #endif /* GIT_COMPAT_UTIL_H */
 -- 
 2.26.2
 
