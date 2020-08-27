@@ -2,176 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D9B254988
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3CC25498C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgH0Pep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:34:45 -0400
-Received: from mail-bn8nam12on2071.outbound.protection.outlook.com ([40.107.237.71]:25568
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727001AbgH0Pek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:34:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RSTqQh//tggO7uP0aogiHIzQVNObOpcXyNPpfIt13VZp7unHhzYtPXDRWJJCA4HeS4pTWKclJrUqGOGicsBxQRUZKFypVLqAvahBoYFwKMmoydngLjhoMW8I4wY8dn7NslUFt3zlNgMBRbQfh0uxTVugNfX/LCz0rDLR6kTmnGGXaEc/fmk7oaimhao9NarQdbal+iL8+RW/TMfqckQXG2Yn6wrJy01VrJUzL6IRxqhtgWCEz7yDs+unMJz1iBvNFgAHnMSR7NF+qSaDjxF8Jjr/cteUyOqi9WZ5n2FIhl0aQSIzlBmNlRNV9OQc2vyj7aXhmcRwL3q+dtYbqFaifg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLKHTR8GFieYm6kpeie2gE+lDHmzMMV7IrijqbNvjJc=;
- b=F4tpocf9ojsLZii0zo00ECSYBHrzT1Ngudq7mFho4kglsGBlp9HfMVwOoPHoQ2Qu+ORRkrbQbcgaj6I+4FuU/9X/DPorE7ESZvCdKyEaBf24ZZDONweJIhIgXguvaIVwz+9wU53IOQrG4JHDPbwxQwtpfHh8Rx2vVxI2PguJFZp8N/eyWzT5inhw7aCFL1Sdxy7yPpQsShsaExKedThsUWtg8I1eCNnI5fobxIRbHwZna/90NommlnJtUqtCA0mEokDNdCp4J1wwgdt+anG20BtIqi/8iZx2Pv+t4CJmKGQ0CBUtIbDQ4F6+bXvY4DHWv23bdq7mbnAEUqCSsbDAOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLKHTR8GFieYm6kpeie2gE+lDHmzMMV7IrijqbNvjJc=;
- b=neA69P9OtWxq5VH/43XGQ1K6t8mHo9NDNDAlBJ+lrGgVEDYejHlH/IbB2xsQ9s24uR1FGbuAKOsfP7m2AI5P/gaUHydKotmHRA+D2ckKjH4/iUVB/w11ri/3n/DL8cb5q4++Ix8fg0LD7PSPUxhA5EqZ5Jz74gvO9rJryFpu5dg=
-Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
- by BYAPR02MB5029.namprd02.prod.outlook.com (2603:10b6:a03:61::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Thu, 27 Aug
- 2020 15:34:34 +0000
-Received: from BYAPR02MB4407.namprd02.prod.outlook.com
- ([fe80::b0f6:b3a:6543:26f5]) by BYAPR02MB4407.namprd02.prod.outlook.com
- ([fe80::b0f6:b3a:6543:26f5%5]) with mapi id 15.20.3305.032; Thu, 27 Aug 2020
- 15:34:34 +0000
-From:   Ben Levinsky <BLEVINSK@xilinx.com>
-To:     Michael Auchter <michael.auchter@ni.com>
-CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH v9 0/5] Provide basic driver to control Arm R5
- co-processor found on Xilinx ZynqMP
-Thread-Topic: [PATCH v9 0/5] Provide basic driver to control Arm R5
- co-processor found on Xilinx ZynqMP
-Thread-Index: AQHWfBWgHhYT12VXOUuBHovnehXuc6lL+RkAgAAbSjA=
-Date:   Thu, 27 Aug 2020 15:34:33 +0000
-Message-ID: <BYAPR02MB440788CF3D35297D41DA385BB5550@BYAPR02MB4407.namprd02.prod.outlook.com>
-References: <20200827015810.11157-1-ben.levinsky@xilinx.com>
- <20200827134742.GB404249@xaphan>
-In-Reply-To: <20200827134742.GB404249@xaphan>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: ni.com; dkim=none (message not signed)
- header.d=none;ni.com; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [24.5.142.107]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8f66ff7e-1cf6-4169-3360-08d84a9eb2f6
-x-ms-traffictypediagnostic: BYAPR02MB5029:
-x-microsoft-antispam-prvs: <BYAPR02MB5029A35A35804D0A74A2E037B5550@BYAPR02MB5029.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sWBIlXyMr+5o8MQLbntU08Li7KMXyUjVBAkozVST0SJTkUt9fZsIfYTwzXYfp8n70k/xtkOSsTJ82xYtev3effZEl12u1vn/zJwf3MkEL9Um2AmqOip9Z/eKdYegjzHB7Rib1ml+cDLtWKLR1Fmwb447STlEY8qvnFWjKEvZU59moTlILfNSgeJ4tXaS/ZquLK3fxo7hM5HtwAbqzouPNzDkda7TOEpW6f12HEweP7re+RwWJwpSyvyPXWZZDXILcB+zQhMqbdhRwAzv1YNPYKCC7mndOpwMfAvDooqYl+3T4HJuhP8fJDda/sCWHwBsBDOpqB7ODj7nBEhJkdl6hw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(346002)(396003)(366004)(83380400001)(8676002)(8936002)(478600001)(5660300002)(2906002)(71200400001)(66446008)(66476007)(64756008)(66946007)(76116006)(7696005)(33656002)(66556008)(53546011)(316002)(55016002)(86362001)(6916009)(4326008)(54906003)(52536014)(9686003)(186003)(26005)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: v5Bls18pfYGrAzn7O6hkat4fXlQUJx9Nnbgflvto4TYi0kWAcBp476EGl6VkHLl+fW92/HWlhCN3RVWG3VSTtXvzOTtsUoe3Id6Qly67YDbT+DU/NV3hQAiHdkMevWkQWc8fo58zvMqtMPv9XVD4aAYQb4rTWBTIUrlF3VABbYja4X7C5rz+rHiDpimZ7uNyV7ufq9XLkVNKbHSW7PmUU40ikEYUY4hJhxCSQ0+meyZK3nZlXWjK9VFKOTwReJKmdc4VxlckyaZci2IlQp7pmP8hSrGVWRhA7bYuxhaTB9tm1HtqAF/Zm4Vp3xvJ3X2t1ckoGX1tu3cQtbwgM6fUwa+Pi3ohnvCLqqUuLXu/gJR7sSOTrXcL4AtKUYGTt6A+CeEBRCzHBbTAeZLQpoNCWjy1WSRYnot/9H81uNkx4J/9STtgk6XQO2Z9lB/gBtmGa1+un452XvB/G/yRoo3Yxrh789Ay6cfhEQcpKMXTqPtCIKyGsWnSUp9X0FNlQjkeWWjw51H4aZlEfDxpEPUCdumdiafMgyZhy0/WCgvIg0KzS6KVUCX0SHeGb/Q4lH8AbpQ2u6e5NIfw2D6NYHi/rc9yLM/c0IG8QsUd3vXgpENG8ka/qKFW/nMMhgLshkLa+idoEu8NB+aBRszgvK5IJQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728039AbgH0Pfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:35:52 -0400
+Received: from out28-125.mail.aliyun.com ([115.124.28.125]:45466 "EHLO
+        out28-125.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0Pfv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:35:51 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436283|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0142134-0.00410037-0.981686;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03268;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.IOqof6y_1598542530;
+Received: from 192.168.178.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IOqof6y_1598542530)
+          by smtp.aliyun-inc.com(10.147.41.143);
+          Thu, 27 Aug 2020 23:35:31 +0800
+Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written to
+ HW register
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     =?UTF-8?B?5ZGo5q2j?= <sernia.zhou@foxmail.com>,
+        =?UTF-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>, od@zcrc.me,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200827124308.71963-1-paul@crapouillou.net>
+ <20200827124308.71963-2-paul@crapouillou.net> <87v9h4i6t5.fsf@kernel.org>
+ <PN4QFQ.KWNBY2ZWQ7XC2@crapouillou.net> <87bliwi5kx.fsf@kernel.org>
+ <HG6QFQ.KLMIR92DB2D02@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <ccfb841c-b518-3107-eb9b-a62169970bb1@wanyeetech.com>
+Date:   Thu, 27 Aug 2020 23:35:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f66ff7e-1cf6-4169-3360-08d84a9eb2f6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2020 15:34:33.9763
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WECNRmMjI13LyCUKiSHc+vd5lZ3y6WOlxQssIukeaa6Xdyo222jUmhRPUh/NfaZGHj60z38+7UTK3jksPuvjlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5029
+In-Reply-To: <HG6QFQ.KLMIR92DB2D02@crapouillou.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi
 
-Thanks for comment. Maybe I missed some of the comments then? I had thought=
- that your comments were the following and that I had answered them in the =
-code:
-V8 3/5:
-- zynqmp_pm_set_rpu_mode: pass arg1 instead of 0 to zynqmp_pm_invoke_fn
-This should be reflected in v9 3/5
-- update kernel docs for zynqmp_pm_set_rpu_mode
-may have misunderstood the comment here. I updated the function and its com=
-ments above the function so that there is no obsolete iocl_id or arg2 menti=
-oned
-V8 5/5:
--  " In the event that zynqmp_r5_probe() fails before zynqmp_r5_setup_mbox(=
-)
-has run, this will be called on an uninitialized skb_queue. (Also
-obviously an issue once mailboxes are made optional again)."
-To remedy this I added logic in v9 in the zynqmp_r5_release() function so t=
-hat the driver checks if a pointer field in the struct is NULL or no before=
- discarding skb's
+在 2020/8/27 下午9:50, Paul Cercueil 写道:
+>
+>
+> Le jeu. 27 août 2020 à 16:25, Felipe Balbi <balbi@kernel.org> a écrit :
+>>
+>> Hi,
+>>
+>> Paul Cercueil <paul@crapouillou.net> writes:
+>>>>>   @@ -172,7 +172,8 @@ static int ingenic_usb_phy_init(struct usb_phy
+>>>>>  *phy)
+>>>>>            return err;
+>>>>>        }
+>>>>>
+>>>>>   -    priv->soc_info->usb_phy_init(phy);
+>>>>>   +    reg = priv->soc_info->usb_phy_init(phy);
+>>>>>   +    writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>
+>>>>  not fixing any bug.
+>>>>
+>>>>  Looking at the code, the bug follows after this line. It would 
+>>>> suffice
+>>>>  to read REG_USBPCR_OFFSET in order to initialize reg. This bug fix
+>>>>  could
+>>>>  have been a one liner.
+>>>
+>>>  There's no need to re-read a register when you have the value readily
+>>>  available. It just needs to be returned from the usb_phy_init
+>>>  callbacks. But yes, it's not a one-liner.
+>>
+>> there's a difference between making a bug fix and reworking the behavior
+>> of the driver ;-)
+>
+> The one-liner is actually what changes the behavior of the driver, 
+> since previously the code did not read back the register.
+>
+> In this case I guess it's fine, because the register does not have 
+> volatile bits.
+>
+>>>>>   @@ -195,19 +196,15 @@ static void ingenic_usb_phy_remove(void *phy)
+>>>>>        usb_remove_phy(phy);
+>>>>>    }
+>>>>>
+>>>>>   -static void jz4770_usb_phy_init(struct usb_phy *phy)
+>>>>>   +static u32 jz4770_usb_phy_init(struct usb_phy *phy)
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    {
+>>>>>   -    struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
+>>>>>   -    u32 reg;
+>>>>>   -
+>>>>>   -    reg = USBPCR_AVLD_REG | USBPCR_COMMONONN | 
+>>>>> USBPCR_IDPULLUP_ALWAYS
+>>>>>  |
+>>>>>   +    return USBPCR_AVLD_REG | USBPCR_COMMONONN |
+>>>>>  USBPCR_IDPULLUP_ALWAYS |
+>>>>>            USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT |
+>>>>>  USBPCR_SQRXTUNE_DFT |
+>>>>>            USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT |
+>>>>>  USBPCR_TXVREFTUNE_DFT |
+>>>>>            USBPCR_POR;
+>>>>>   -    writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    }
+>>>>>
+>>>>>   -static void jz4780_usb_phy_init(struct usb_phy *phy)
+>>>>>   +static u32 jz4780_usb_phy_init(struct usb_phy *phy)
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>   @@ -216,11 +213,10 @@ static void jz4780_usb_phy_init(struct
+>>>>>  usb_phy *phy)
+>>>>>            USBPCR1_WORD_IF_16BIT;
+>>>>>        writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>>>>
+>>>>>   -    reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+>>>>>   -    writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>>   +    return USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    }
+>>>>>
+>>>>>   -static void x1000_usb_phy_init(struct usb_phy *phy)
+>>>>>   +static u32 x1000_usb_phy_init(struct usb_phy *phy)
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    {
+>>>>>        struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
+>>>>>        u32 reg;
+>>>>>   @@ -228,13 +224,12 @@ static void x1000_usb_phy_init(struct usb_phy
+>>>>>  *phy)
+>>>>>        reg = readl(priv->base + REG_USBPCR1_OFFSET) |
+>>>>>  USBPCR1_WORD_IF_16BIT;
+>>>>>        writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>>>>
+>>>>>   -    reg = USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+>>>>>   +    return USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+>>>>>            USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
+>>>>>            USBPCR_COMMONONN | USBPCR_POR;
+>>>>>   -    writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    }
+>>>>>
+>>>>>   -static void x1830_usb_phy_init(struct usb_phy *phy)
+>>>>>   +static u32 x1830_usb_phy_init(struct usb_phy *phy)
+>>>>
+>>>>  not a bug fix
+>>>>
+>>>>>    {
+>>>>>        struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
+>>>>>        u32 reg;
+>>>>>   @@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy
+>>>>>  *phy)
+>>>>>            USBPCR1_DMPD | USBPCR1_DPPD;
+>>>>>        writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>>>>
+>>>>>   -    reg = USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT
+>>>>>  |    USBPCR_TXPREEMPHTUNE |
+>>>>>   +    return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |
+>>>>>  USBPCR_TXPREEMPHTUNE |
+>>>>>            USBPCR_COMMONONN | USBPCR_POR;
+>>>>>   -    writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>
+>>>>  not a bug fix
+>>>
+>>>  Well, if you don't like my bug fix, next time wait for my Reviewed-by.
+>>
+>> why so angry? Take a break every once in a while. Besides, someone else
+>> already sent the oneliner before you ;-)
+>
+> I'm just pissed that this patch has not been tested. I don't like 
+> sloppy work.
+>
+This is my fault. This error occurred in the v5 version, but was 
+corrected in the v6 version, but I don't know why v5 was merged into the 
+mainline and v6 was not merged, which caused this problem.
 
-Were there other comments?
 
-With that being said, I will make sure the R51 case is more completely cove=
-red.
+>> In any case, why should I wait for your Reviewed-by? Get maintainer
+>> doesn't list you as the maintainer for it. Do you want to update
+>> MAINTAINERS by any chance?
+>
+> Yes, I thought I was (I'm maintainer of all Ingenic drivers), that 
+> also explains why I wasn't Cc'd for the oneliner patch you mentioned...
+>
+I checked again, get_maintainer did not give the correct information, 
+which caused my script to not add Paul to the cc list.
+> IIRC Zhou has a patch to move the driver to drivers/phy/, I'll add 
+> myself as maintainer once it's moved there.
+>
+I'll resend it soon.
 
-Thanks
-Ben
 
+Thanks and best regards!
 
-> -----Original Message-----
-> From: Michael Auchter <michael.auchter@ni.com>
-> Sent: Thursday, August 27, 2020 6:48 AM
-> To: Ben Levinsky <BLEVINSK@xilinx.com>
-> Cc: Stefano Stabellini <stefanos@xilinx.com>; Michal Simek
-> <michals@xilinx.com>; devicetree@vger.kernel.org;
-> mathieu.poirier@linaro.org; Ed T. Mooring <emooring@xilinx.com>; linux-
-> remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org; Jiaying Liang
-> <jliang@xilinx.com>; robh+dt@kernel.org; linux-arm-
-> kernel@lists.infradead.org
-> Subject: Re: [PATCH v9 0/5] Provide basic driver to control Arm R5 co-
-> processor found on Xilinx ZynqMP
->=20
-> Hey Ben,
->=20
-> On Wed, Aug 26, 2020 at 06:58:05PM -0700, Ben Levinsky wrote:
-> > v10:
-> > - add include types.h to xlnx-zynqmp.h for compilation
->=20
-> I appreciate the quick turnaround on v10, but it looks like much of my
-> feedback on v9 went unacknowledged.
->=20
-> Most concerning is the fact that loading firmware on to R5 1 is _still_
-> broken in v10 due to the incorrect TCM banks being used.
->=20
-> Thanks,
->  Michael
->=20
-> >
-> > Ben Levinsky (5):
-> >   firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
-> >     configuration.
-> >   firmware: xilinx: Add shutdown/wakeup APIs
-> >   firmware: xilinx: Add RPU configuration APIs
-> >   dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
-> >     bindings
-> >   remoteproc: Add initial zynqmp R5 remoteproc driver
-> >
-> >  .../xilinx,zynqmp-r5-remoteproc.yaml          | 113 +++
-> >  drivers/firmware/xilinx/zynqmp.c              |  86 ++
-> >  drivers/remoteproc/Kconfig                    |  10 +
-> >  drivers/remoteproc/Makefile                   |   1 +
-> >  drivers/remoteproc/zynqmp_r5_remoteproc.c     | 898
-> ++++++++++++++++++
-> >  include/linux/firmware/xlnx-zynqmp.h          |  63 ++
-> >  6 files changed, 1171 insertions(+)
-> >  create mode 100644
-> Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-
-> remoteproc.yaml
-> >  create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
-> >
-> > --
-> > 2.17.1
-> >
+> -Paul
+>
