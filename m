@@ -2,165 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F69254924
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D28D25491B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgH0PVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728701AbgH0LcR (ORCPT
+        id S1728135AbgH0PUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:20:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44549 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728649AbgH0LdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:32:17 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992FCC0611E2;
-        Thu, 27 Aug 2020 04:19:25 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g1so3111645pgm.9;
-        Thu, 27 Aug 2020 04:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=A0zpPcYJ1vUHmpV3rQXkBSiNDDj5ItcpLqLQV/ENULo=;
-        b=AGJQu3TbjrCnuhhqkqS7j1YaiFtASNUFy2jKDkkrMPsbG74tH+k2AvHvE3Wq3SFUFK
-         il9cHaz+IFKfK0oQnZqC7GVn9uztwPz7XrF09MilOdo1c4uyLjnkPy7qHUZ328ce7Qim
-         4+rSz1G2nwDriX1NppIqikjH7CHPGsbDohBmB1EO+6vyFcyKtRI5zxP26bovtvOdIqPX
-         vIbFygjdpZzEU/AUet9U27Ekk3eAOZKLaGdUCGl5qGiHktb/Tv1pflAza1wFPATgaMxC
-         +HSEfAU4sPHHQqf4uqxRE8zCDQYE7VMtWATO6g7O3Mi2I6D18seH689L3mOrHGyERk9l
-         t47w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=A0zpPcYJ1vUHmpV3rQXkBSiNDDj5ItcpLqLQV/ENULo=;
-        b=bodw/jAX5fOFl1qBgICUUckdB0Kp4OBNaXNMipWNvfOSYvK8jAmVLdKQ+0sz8UlSku
-         noX4R+giCJXIVVRwoCjnmnXumA03WWB1TR+MkcmfoKqsCp12OCrOOgN0T2ko/oBdcfbA
-         0OPv4AKSmt1W+msmEnM1LpQQkdgnnxvryoUGKTpFi4vzfbYullzfu3maPXSfWreZTs/z
-         QFOXFN9a36NJxllRIXzkBvy5O5gmsVtgFloEp34R71XccGr0aBojRW7dJST2G+6SDm4k
-         BPBDIPDH56+M1fa/rX7HsKAv4u6DI1sZ0nLqCuoguR6o1bhcGTRiVOJbxt37nixLwI9Q
-         QuMA==
-X-Gm-Message-State: AOAM531OXBxcte8ph1zr1Vewy/fKTVmnKdGiK1tQX2DKBjy/FtFiU/r/
-        EffgSOqfJTyl8BI7yKtbAPa2rOG3gjmcHFid
-X-Google-Smtp-Source: ABdhPJx9BG4IH8NlwPLL49IRWs8UoqHlTHOcA3OYqMJkPAu5ZaZsoK54zswbbH4CKT3oBYuVYRl8QQ==
-X-Received: by 2002:a63:2d83:: with SMTP id t125mr13734429pgt.441.1598527165079;
-        Thu, 27 Aug 2020 04:19:25 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:46b:c678:1129:dc1b:b8d8:6430])
-        by smtp.gmail.com with ESMTPSA id h64sm2411609pfe.201.2020.08.27.04.19.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 04:19:24 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com
-Cc:     cy_huang@richtek.com, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] usb typec: mt6360: Add MT6360 Type-C DT binding documentation
-Date:   Thu, 27 Aug 2020 19:18:57 +0800
-Message-Id: <1598527137-6915-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598527137-6915-1-git-send-email-u0084500@gmail.com>
-References: <1598527137-6915-1-git-send-email-u0084500@gmail.com>
+        Thu, 27 Aug 2020 07:33:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598527981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tK2E5OHaYdIMnHynVyzOX85+jSQpnlWbWxI1ka3rMpQ=;
+        b=iJGHl6OPlX/bSFOwWs6Tl5Z5Fd+juMSODETyFwMqsD6H0OtAMMBztX6PTiI/tM+0FSGL6H
+        cWodOzu+cBJhPRhANWsb0Nu/pBdtpgR/+P7oby2wJvrWPv5ylQFyGW3dv66DvRLQ+V7mM+
+        4ossNlXy9iHK2P5ycyQ5Ixu0T4eTOvE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-88-GHCIpvapPlWFtEXqEva68w-1; Thu, 27 Aug 2020 07:24:30 -0400
+X-MC-Unique: GHCIpvapPlWFtEXqEva68w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 455E080EFBE;
+        Thu, 27 Aug 2020 11:24:29 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CC68F5D9E8;
+        Thu, 27 Aug 2020 11:24:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 27 Aug 2020 13:24:28 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 13:24:26 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     syzbot <syzbot+e3cf8f93cf86936710db@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING: ODEBUG bug in get_signal
+Message-ID: <20200827112426.GE28468@redhat.com>
+References: <00000000000068340d05add74c29@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000068340d05add74c29@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On 08/27, syzbot wrote:
+>
+>  __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
+>  debug_check_no_obj_freed+0x301/0x41c lib/debugobjects.c:998
+>  kmem_cache_free.part.0+0x16d/0x1f0 mm/slab.c:3692
+>  task_work_run+0xdd/0x190 kernel/task_work.c:141
 
-Add a devicetree binding documentation for the MT6360 Type-C driver.
+I don't understand this trace, work->func(work) can call kmem_cache_free()
+but task_work_run() doesn't do this.
 
-usb typec: mt6360: Rename DT binding doument from mt6360 to mt636x
+In theory the patch below makes sense anyway, but I have no idea if it can
+explain the problem.
 
-Change binding document file name from mt6360 to mt636xfor the
-future compatible.
-Also change internal description from mt6360 to mt636x.
+Oleg.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- .../bindings/usb/mediatek,mt636x-tcpc.yaml         | 73 ++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mt636x-tcpc.yaml
-
-diff --git a/Documentation/devicetree/bindings/usb/mediatek,mt636x-tcpc.yaml b/Documentation/devicetree/bindings/usb/mediatek,mt636x-tcpc.yaml
-new file mode 100644
-index 00000000..e6d2b3d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/mediatek,mt636x-tcpc.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/usb/mediatek,mt636x-tcpc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Mediatek MT636x Type-C Port Switch and Power Delivery controller DT bindings
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  Mediatek MT636x is a multi-functional device. It integrates charger, ADC, flash, RGB indicators,
-+  regulators (BUCKs/LDOs), and TypeC Port Switch with Power Delivery controller.
-+  This document only describes MT636x Type-C Port Switch and Power Delivery controller.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt6360-tcpc
-+
-+  interrupts-extended:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: PD_IRQB
-+
-+patternProperties:
-+  "connector":
-+    type: object
-+    $ref: ../connector/usb-connector.yaml#
-+    description:
-+      Properties for usb c connector.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - interrupts-extended
-+  - interrupt-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/usb/pd.h>
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        mt6360@34 {
-+            compatible = "mediatek,mt6360";
-+            reg = <0x34>;
-+
-+            tcpc {
-+                compatible = "mediatek,mt6360-tcpc";
-+                interrupts-extended = <&gpio26 3 IRQ_TYPE_LEVEL_LOW>;
-+                interrupt-names = "PD_IRQB";
-+
-+                connector {
-+                        compatible = "usb-c-connector";
-+                        label = "USB-C";
-+                        data-role = "dual";
-+                        power-role = "dual";
-+                        try-power-role = "sink";
-+                        source-pdos = <PDO_FIXED(5000, 1000, PDO_FIXED_DUAL_ROLE | PDO_FIXED_DATA_SWAP)>;
-+                        sink-pdos = <PDO_FIXED(5000, 2000, PDO_FIXED_DUAL_ROLE | PDO_FIXED_DATA_SWAP)>;
-+                        op-sink-microwatt = <10000000>;
-+                };
-+            };
-+        };
-+    };
-+...
--- 
-2.7.4
+--- x/kernel/task_work.c
++++ x/kernel/task_work.c
+@@ -137,7 +137,7 @@ void task_work_run(void)
+ 		raw_spin_unlock_irq(&task->pi_lock);
+ 
+ 		do {
+-			next = work->next;
++			next = READ_ONCE(work->next);
+ 			work->func(work);
+ 			work = next;
+ 			cond_resched();
 
