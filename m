@@ -2,110 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88207254CFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116A8254D04
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgH0SZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S1727103AbgH0S0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgH0SZi (ORCPT
+        with ESMTP id S1726952AbgH0S0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:25:38 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3473AC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:25:37 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 2so5435457ois.8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:25:37 -0700 (PDT)
+        Thu, 27 Aug 2020 14:26:06 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79997C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:26:06 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 2so3061306pjx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gs0r/qLqNENIPIXNSy2JKQmS4bv6DjmNng0VSEeWxcY=;
-        b=Yjq8DqIPvwRF1E9Tr12e/y+mTnyhCpVETyEZh1fq/yZGhcgQPT6Tyy05F2WWlmnUC6
-         dfRnq6kYRM1bJlsf7G8zIQjSa1l+/9dq1QUzy+rRrArCwjrFRzFGXdXNT1s4RqnZrvBG
-         fCp8l1Zt4JFqK7OSoQc0KL29gj3eafs0XRL+2MYhejL2Qzf0tHo6kyFGelGZste+olQA
-         aeMQ+XYFNXBGgdnJTMWjA7l02SiGVMUXUUWdiUIhH+078YbZD42rlFX34bwocJASQLVn
-         Tns2Mc1c1xJ1+cux3uB1404kK/KDAdlN7SdWoJWh3bTIDlSqFLxs7CrzletDnTvusf+5
-         l53Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6BMddBDrBrgDUNUGomrW0m42cqLSjUvpHNc8p74VZyA=;
+        b=FXdPBAw9pl5olpn9n/EuSa1Q6dDDnRWXMgUGfWwLqiAYTjNRr5LcjcwGH1PD32Ch7f
+         pMVoRLLABmJLdweawfmYq3DhOwNyN7VkRzr9UrHC//O8xNk1JqPEA84vLqQOEJASA8xx
+         3sOafGdHa03NSgi6z9D8xEgwX6FDGJauD148M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gs0r/qLqNENIPIXNSy2JKQmS4bv6DjmNng0VSEeWxcY=;
-        b=OhesYdwwcsyIEuqqnWGCVj/MChi9XGsdhLhicPntxavzSKxF2DGTbpYFnLVUh6ABpx
-         jAXdOgr2jr/HYBR7xY677mYyIAgQN2gv5vA28QOpt9vmYdyO0wXhDH+SxvyKVFhMbyYg
-         ubkZ10drIzrNPnJLcrix3fwBK3fh5KF+25vtjxLoPFAz1l3c60MdiQ0R6tNk80YcyaYQ
-         398p9OYyiX9bzxiOLAPP6GxO13oxUz7PGj22pOHeQHtKvtetyiuX1NzbszeSAM8IQI+c
-         r7aWDjbGf1MRInty2VsrMNqY0bLSsIMhat4TTCect7JI/MrSq+BZCXtLBejv4beWKlP7
-         W2TQ==
-X-Gm-Message-State: AOAM532wciYdhJjSI5Z0fPizNWzQrAXwoyqpkMdUCXuc/WFfuooZj8Ny
-        wfXiFJ/QsDcj5388ju8oY8ILz+vFSrI7C7nEh/54cA==
-X-Google-Smtp-Source: ABdhPJyki3MAfYcG3wS6NQGrmmLx/zt7ChQXHSU1crErA4qk+WA5f7w/hTN++agIsMk2QIir4G0Mgl+njaE7EkxXApY=
-X-Received: by 2002:aca:670b:: with SMTP id z11mr130883oix.6.1598552736210;
- Thu, 27 Aug 2020 11:25:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6BMddBDrBrgDUNUGomrW0m42cqLSjUvpHNc8p74VZyA=;
+        b=gjpp+w3a+lScdzwuKU9cvw8PQFJM51tnU7W7VQGuVzG9J9ynIt1yEYRmZ5SRkmIla4
+         vdSGB6+vZWHonyb7O+t++pm4j6TzgCKcVu5d1QQVChml3wZLSOC0FKLlLe6tBhtjrawm
+         CFaWavB3UmvtumMptQxFLDwLHrj/jWWUptovPhShYqCmQmWINBXQkjK0X4xuS2kC6I1H
+         jR7fC0XFm/QGwi2kcWCr0AATQ1JAuQKKp13b0Kvj9NF2cZ1D6Z4AWU7U+rWBaIbPxcTo
+         m2WCUVSPrXXd6P24yAL/fL5bV9aIk0+rJicGXcsPsRblrIeEiYMGw2XaKqTtruOgAUCr
+         0Irw==
+X-Gm-Message-State: AOAM530/vcvFD1Ass8fMr4Z5l6job8G1uw0h9gTU3rY5c32mBR+Bdza+
+        YjyNaWwamRbi8rG4x06SCAYuXg==
+X-Google-Smtp-Source: ABdhPJzu9HB96VpOGD+toJHHY5zOKqYeaeMpM3VyoTlj+93xXg4m4tB8ChYdxW0vmq2yKtIttIKfaQ==
+X-Received: by 2002:a17:90a:fb4e:: with SMTP id iq14mr103434pjb.133.1598552766044;
+        Thu, 27 Aug 2020 11:26:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a25sm3370253pfk.151.2020.08.27.11.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 11:26:05 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 11:26:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        stable <stable@vger.kernel.org>, Andy Lavr <andy.lavr@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] lib/string.c: implement stpcpy
+Message-ID: <202008271124.37242A14@keescook>
+References: <20200825135838.2938771-1-ndesaulniers@google.com>
+ <CAK7LNAQXo5-5W6hvNMEVPBPf3tRWaf-pQdSR-0OHyi4RCGhjsQ@mail.gmail.com>
+ <d56bf7b93f7a28c4a90e4e16fd412e6934704346.camel@perches.com>
+ <CAKwvOd=YrVtPsB7HYPO0N=K7QJm9KstayqqeYQERSaGtGy2Bjg@mail.gmail.com>
+ <CAK7LNAQKwOo=Oas+7Du9+neSm=Ev6pxdPV7ges7eEEpW+jh8Ug@mail.gmail.com>
+ <202008261627.7B2B02A@keescook>
+ <77428f28620d4e5ecad1556396f2b0f8f0daef41.camel@perches.com>
+ <202008261932.FF4E5C0@keescook>
+ <e84ea9d311fe082af8a1afe2aba48303ffbb1bf1.camel@perches.com>
 MIME-Version: 1.0
-References: <20200713162206.1930767-1-vkuznets@redhat.com> <CALMp9eR+DYVH0UZvbNKUNArzPdf1mvAoxakzj++szaVCD0Fcpw@mail.gmail.com>
-In-Reply-To: <CALMp9eR+DYVH0UZvbNKUNArzPdf1mvAoxakzj++szaVCD0Fcpw@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 27 Aug 2020 11:25:25 -0700
-Message-ID: <CALMp9eRGStwpYbeHbxo79zF9EyQ=35wwhNt03rjMHMDD9a5G0A@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: nVMX: fix the layout of struct kvm_vmx_nested_state_hdr
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Peter Shier <pshier@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e84ea9d311fe082af8a1afe2aba48303ffbb1bf1.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:23 AM Jim Mattson <jmattson@google.com> wrote:
->
-> On Mon, Jul 13, 2020 at 9:22 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
-> >
-> > Before commit 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer
-> > migration") struct kvm_vmx_nested_state_hdr looked like:
-> >
-> > struct kvm_vmx_nested_state_hdr {
-> >         __u64 vmxon_pa;
-> >         __u64 vmcs12_pa;
-> >         struct {
-> >                 __u16 flags;
-> >         } smm;
-> > }
-> >
-> > The ABI got broken by the above mentioned commit and an attempt
-> > to fix that was made in commit 83d31e5271ac ("KVM: nVMX: fixes for
-> > preemption timer migration") which made the structure look like:
-> >
-> > struct kvm_vmx_nested_state_hdr {
-> >         __u64 vmxon_pa;
-> >         __u64 vmcs12_pa;
-> >         struct {
-> >                 __u16 flags;
-> >         } smm;
-> >         __u32 flags;
-> >         __u64 preemption_timer_deadline;
-> > };
-> >
-> > The problem with this layout is that before both changes compilers were
-> > allocating 24 bytes for this and although smm.flags is padded to 8 bytes,
-> > it is initialized as a 2 byte value. Chances are that legacy userspaces
-> > using old layout will be passing uninitialized bytes which will slip into
-> > what is now known as 'flags'.
-> >
-> > Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Fixes: 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer migration")
-> > Fixes: 83d31e5271ac ("KVM: nVMX: fixes for preemption timer migration")
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->
-> Oops!
->
-> Reviewed-by: Jim Mattson <jmattson@google.com>
+On Wed, Aug 26, 2020 at 07:42:17PM -0700, Joe Perches wrote:
+> On Wed, 2020-08-26 at 19:33 -0700, Kees Cook wrote:
+> > On Wed, Aug 26, 2020 at 04:57:41PM -0700, Joe Perches wrote:
+> > > On Wed, 2020-08-26 at 16:38 -0700, Kees Cook wrote:
+> > > > On Thu, Aug 27, 2020 at 07:59:45AM +0900, Masahiro Yamada wrote:
+> > > []
+> > > > > OK, then stpcpy(), strcpy() and sprintf()
+> > > > > have the same level of unsafety.
+> > > > 
+> > > > Yes. And even snprintf() is dangerous because its return value is how
+> > > > much it WOULD have written, which when (commonly) used as an offset for
+> > > > further pointer writes, causes OOB writes too. :(
+> > > > https://github.com/KSPP/linux/issues/105
+> > > > 
+> > > > > strcpy() is used everywhere.
+> > > > 
+> > > > Yes. It's very frustrating, but it's not an excuse to continue
+> > > > using it nor introducing more bad APIs.
+> > > > 
+> > > > $ git grep '\bstrcpy\b' | wc -l
+> > > > 2212
+> > > > $ git grep '\bstrncpy\b' | wc -l
+> > > > 751
+> > > > $ git grep '\bstrlcpy\b' | wc -l
+> > > > 1712
+> > > > 
+> > > > $ git grep '\bstrscpy\b' | wc -l
+> > > > 1066
+> > > > 
+> > > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
+> > > > https://github.com/KSPP/linux/issues/88
+> > > > 
+> > > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> > > > https://github.com/KSPP/linux/issues/89
+> > > > 
+> > > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> > > > https://github.com/KSPP/linux/issues/90
+> > > > 
+> > > > We have no way right now to block the addition of deprecated API usage,
+> > > > which makes ever catching up on this replacement very challenging.
+> > > 
+> > > These could be added to checkpatch's deprecated_api test.
+> > > ---
+> > >  scripts/checkpatch.pl | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > index 149518d2a6a7..f9ccb2a63a95 100755
+> > > --- a/scripts/checkpatch.pl
+> > > +++ b/scripts/checkpatch.pl
+> > > @@ -605,6 +605,9 @@ foreach my $entry (@mode_permission_funcs) {
+> > >  $mode_perms_search = "(?:${mode_perms_search})";
+> > >  
+> > >  our %deprecated_apis = (
+> > > +	"strcpy"				=> "strscpy",
+> > > +	"strncpy"				=> "strscpy",
+> > > +	"strlcpy"				=> "strscpy",
+> > >  	"synchronize_rcu_bh"			=> "synchronize_rcu",
+> > >  	"synchronize_rcu_bh_expedited"		=> "synchronize_rcu_expedited",
+> > >  	"call_rcu_bh"				=> "call_rcu",
+> > > 
+> > > 
+> > 
+> > Good idea, yeah. We, unfortunately, need to leave strncpy() off this
+> > list for now because it's not *strictly* deprecated (see the notes in
+> > bug report[1]), but the others can be.
+> 
+> OK, but it is in Documentation/process/deprecated.rst
+> 
+> strncpy() on NUL-terminated strings
 
-Whatever happened to this?
+"... on NUL-terminated strings". It's "valid" to use it on known-size
+(either external or by definition) NUL-padded buffers (e.g. NLA_STRING).
+
+-- 
+Kees Cook
