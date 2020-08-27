@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A594E2544FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2D02544DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgH0M3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgH0L4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:56:38 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D29C061233
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:01:36 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id o184so2580692vsc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YjN36ux3ZCiiBlL2gD5vkxNtFHi1HK0Zk2s0f0PusEQ=;
-        b=nth4/rZi82Zdz4tORtG6KRkbO6PJcfhbUipiV7FzRSL7ARbIxYr/bK46JmHMNDbTWX
-         /cgbjFquc0bNf/O9zhcb50kBbuQT/lS/x/91HjSw/POXb2FfQGCzWKcC2DfjqUIh+aSN
-         waVMbLrc837pa9LSXJQBOpjxHx326Qd09J/H8tAMadBVGSKCnbfs+1DFxHWfcgtTAVvP
-         YXhk6Cl869ZBNCyaNJIAqpZe+3AqRVL5pSgcQXSB/W0Lpn6vS8GkQ/5PWNZzspG8BGba
-         apse2isGgrRFGohOdCM3+lUOZrnJw2U7KJg43iRhNC16HW9uDu1fhIAo8faNhAH+ngPp
-         8xeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YjN36ux3ZCiiBlL2gD5vkxNtFHi1HK0Zk2s0f0PusEQ=;
-        b=H0iYprdweLEqhBMfz4EejVet8vAv65P6VWb2n3x64ncCUzfA60C719XZMBqtAeDIUk
-         zjppLgLBg8xnqQ+U1N5MT06D+liMxTGgvAG8wft2YA+qzoX9lhMCj7seL/lWbDhNkFk3
-         C4t1lCwgTOf0BYBsoYdjyOonrQEG9MbFBFYvWqag5yqNIlFoh91UHtvol2Y+MXEqxtAK
-         fjoV35NNA8H6hOPUtvHuq0Vw1uqbbaxKrXpkaqN6mDY1cfxhtjsUEt70dbCdttV7m9Lw
-         xKf2oxw9p19egOjfNJnVWPHByRrvemw41iYwl8Rt8RinJe54Xjb2pAJ2yIDAoSaVLjWP
-         MtPQ==
-X-Gm-Message-State: AOAM532Y7K9/6ypz4ngLQWblO+6bUH3R8AGKKhltc18etToTu6y7RGLs
-        xzDb6bTfaEZOG+7QbMfQPQswDoE0ttAqJvqiLxo+wQ==
-X-Google-Smtp-Source: ABdhPJyJUYc+NBvK+NXE8XWvv2+AizG6r7WTq/pC7wizO0q+ooK8tNj0sdNML6eLDXSPdAK5R9iEpw1HwRiMxWxMe8g=
-X-Received: by 2002:a67:e3cc:: with SMTP id k12mr4760839vsm.173.1598526095417;
- Thu, 27 Aug 2020 04:01:35 -0700 (PDT)
+        id S1729039AbgH0MPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:15:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59598 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728820AbgH0Lxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:53:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F147AC50;
+        Thu, 27 Aug 2020 11:07:43 +0000 (UTC)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        joe.lawrence@redhat.com, shuah@kernel.org
+Cc:     live-patching@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: [PATCH] selftests/livepatch: Do not check order when using "comm" for dmesg checking
+Date:   Thu, 27 Aug 2020 13:07:09 +0200
+Message-Id: <20200827110709.26824-1-mbenes@suse.cz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <CA+G9fYvK5UkERLuBSRH5t2=j5==dbtw45GTMta9MafyJDqFsFA@mail.gmail.com>
- <20200827094651.3grvs6ungv3dh7y3@vireshk-i7>
-In-Reply-To: <20200827094651.3grvs6ungv3dh7y3@vireshk-i7>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 27 Aug 2020 16:31:24 +0530
-Message-ID: <CA+G9fYsdpmd92vRWz8z5Lp+=F+vV4dNVZrc5o3MH5WVWD8pWvA@mail.gmail.com>
-Subject: Re: WARNING: at drivers/opp/core.c:678 dev_pm_opp_set_rate+0x4cc/0x5d4
- - on arm x15
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>, sbhanu@codeaurora.org,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>, nm@ti.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 15:16, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 27-08-20, 15:04, Naresh Kamboju wrote:
-> > While boot testing arm x15 devices the Kernel warning noticed with linux next
-> > tag 20200825.
-> >
-> > BAD:  next-20200825
-> > GOOD:  next-20200824
-> >
-> > metadata:
-> >   git branch: master
-> >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >   git commit: 3a00d3dfd4b68b208ecd5405e676d06c8ad6bb63
-> >   git describe: next-20200825
-> >   make_kernelversion: 5.9.0-rc2
-> >   kernel-config:
-> > https://builds.tuxbuild.com/LDTu4GFMmvkJspza5LJIjQ/kernel.config
-> >
-> > We are working on git bisect and boot testing on x15 and get back to you.
->
-> Was this working earlier ? But considering that multiple things
-> related to OPP broke recently, it may be a OPP core bug as well. Not
-> sure though.
->
-> Can you give me delta between both the next branches for drivers/opp/
-> path ? I didn't get these tags after fetching linux-next.
+check_result() uses "comm" to check expected results of selftests output
+in dmesg. Everything works fine if timestamps in dmesg are unique. If
+not, like in this example
 
-git log --oneline next-20200824..next-20200825 -- drivers/opp/
-b0531b897c9a opp: Set required OPPs in reverse order when scaling down
-b11044e5204e opp: Reduce code duplication in _set_required_opps()
-c67ba698f5fe opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER
-8aaf6264fc7f opp: Remove _dev_pm_opp_find_and_remove_table() wrapper
-f3364e17d571 opp: Split out _opp_set_rate_zero()
-10b217365b94 opp: Reuse the enabled flag in !target_freq path
-72f80ce4ef9b opp: Rename regulator_enabled and use it as status of all resources
+[   86.844422] test_klp_callbacks_demo: pre_unpatch_callback: test_klp_callbacks_mod -> [MODULE_STATE_LIVE] Normal state
+[   86.844422] livepatch: 'test_klp_callbacks_demo': starting unpatching transition
 
-- Naresh
+, "comm" fails with "comm: file 2 is not in sorted order". Suppress the
+order checking with --nocheck-order option.
+
+Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+---
+
+The strange thing is, I can reproduce the issue easily and reliably on
+older codestreams (4.12) but not on current upstream in my testing
+environment. I think the change makes sense regardless though.
+
+ tools/testing/selftests/livepatch/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/livepatch/functions.sh b/tools/testing/selftests/livepatch/functions.sh
+index 1aba83c87ad3..846c7ed71556 100644
+--- a/tools/testing/selftests/livepatch/functions.sh
++++ b/tools/testing/selftests/livepatch/functions.sh
+@@ -278,7 +278,7 @@ function check_result {
+ 	# help differentiate repeated testing runs.  Remove them with a
+ 	# post-comparison sed filter.
+ 
+-	result=$(dmesg | comm -13 "$SAVED_DMESG" - | \
++	result=$(dmesg | comm --nocheck-order -13 "$SAVED_DMESG" - | \
+ 		 grep -e 'livepatch:' -e 'test_klp' | \
+ 		 grep -v '\(tainting\|taints\) kernel' | \
+ 		 sed 's/^\[[ 0-9.]*\] //')
+-- 
+2.28.0
+
