@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FDD253F53
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6B3253F50
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgH0Hgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:36:45 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:39148 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728289AbgH0Hgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:36:42 -0400
-Received: by mail-ot1-f67.google.com with SMTP id r8so3659478ota.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:36:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bczqUQFB57ZFAWLvm+qps8KvfzclY1FoGAFfhuT5eN4=;
-        b=JvGEWqEMWXcS+6OrXvVIRLsmCMsoouWipUzoeWmURTUGCCbquS0kVW53Ra/y7gAlXV
-         4MiI8wQOz/kQsaXLnAHoDuFV4CwLnOzAqJ4fpULIGxUb8RumEYayFWEBmaBy4x2ZXxar
-         8F8X0JG0XP99OerbNHGaUbd5T+l3mrtCY/Zzbvqj0Fn0DjpIVqnO555M0TnukOLXo3HK
-         /F4AWh9urkseXZUTIiYI/PsAE5eavY2gDFJE9D1hH+F5QXZZ0nG3fXrW0P1bIBewxrgG
-         KhLkp5BLSaL9biQv2YI3ghE+m5DCkET06x9X/HDmeapc5/ycSVcSfLgImX9sgnPSfgND
-         DjoA==
-X-Gm-Message-State: AOAM531uTLWNvvZzKnHM/ZP1vr842y+77MoLxatSsMnfVmPhA0SHlF9p
-        X6yUR0wCo36t6ci8f654HYYGKsRKRm2Lg40ydVa8XTTE
-X-Google-Smtp-Source: ABdhPJwVFgyYRXXpussfl49Xl7C9cX6P0/AbNZ5WQ8m6YD0Ftm/eTjlM5A7//j0mGak+BTd42smNfc0itlWtwjXSAG4=
-X-Received: by 2002:a9d:1b62:: with SMTP id l89mr12121818otl.145.1598513801598;
- Thu, 27 Aug 2020 00:36:41 -0700 (PDT)
+        id S1728184AbgH0HgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727105AbgH0HgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:36:24 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134D9207DF;
+        Thu, 27 Aug 2020 07:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598513784;
+        bh=50PWRBRXLcjIwvP2C1Woq0/TcnUPo5Chd796qxCpnVk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ADEiGVrTJWFjNSIgQVIGqw5ZS8Kwpb8WOqE+N1XlF0b5P1kOya+ztwEjcNnktCSsF
+         JQT9pHReyvcSfV6IVRAr9NIrHv79PuwFuPYa2jgtnk1k2YpY3Q7gAAN2JYiWAiq+Qi
+         kls5j5bygriD4QPy2vh6JJ//36NfMA8PFfyrXe7I=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.7.19
+Date:   Thu, 27 Aug 2020 09:36:34 +0200
+Message-Id: <15985137402037@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <CAMuHMdV=gy1F2dX0+eURB=hubnbPUGbokrT_9kZXtk_ruAofSg@mail.gmail.com>
- <20200826185212.3139-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200826185212.3139-1-grandmaster@al2klimov.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 Aug 2020 09:36:30 +0200
-Message-ID: <CAMuHMdVvx0z6xkH9YaPiWh4_WmmBP_W7VEyP4PjaLfNs9OWL0g@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: Replace HTTP links with HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 8:52 PM Alexander A. Klimov
-<grandmaster@al2klimov.de> wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
->
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
->
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  v2: Thrown out de facto broken links.
->  archive.org-ing is on my TODO list, but beyond this project's scope.
+----------
+Note, this is the LAST 5.7.y kernel to be released.  This release series
+is now end-of-life, please move to 5.8.y at this point in time.
+------------
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch.
+I'm announcing the release of the 5.7.19 kernel.
 
-Gr{oetje,eeting}s,
+All users of the 5.7 kernel series must upgrade.
 
-                        Geert
+The updated 5.7.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.7.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
+
+------------
+
+ Makefile                                     |    2 +-
+ arch/powerpc/kernel/cpu_setup_power.S        |    2 +-
+ drivers/net/ethernet/amazon/ena/ena_netdev.c |    5 ++++-
+ fs/binfmt_flat.c                             |   20 ++++++++++++--------
+ net/core/skbuff.c                            |    4 ++--
+ net/ethtool/features.c                       |   19 ++++++++++---------
+ net/ipv4/nexthop.c                           |    5 ++++-
+ net/ipv6/ip6_tunnel.c                        |   10 +++++++++-
+ net/qrtr/qrtr.c                              |   20 +++++++++++---------
+ net/sched/act_ct.c                           |    2 +-
+ net/sctp/stream.c                            |    6 ++++--
+ net/smc/smc_diag.c                           |   16 +++++++++-------
+ net/tipc/crypto.c                            |    2 ++
+ net/tipc/netlink_compat.c                    |   12 +++++++++++-
+ 14 files changed, 81 insertions(+), 44 deletions(-)
+
+Alaa Hleihel (1):
+      net/sched: act_ct: Fix skb double-free in tcf_ct_handle_fragments() error flow
+
+Cong Wang (1):
+      tipc: fix uninit skb->data in tipc_nl_compat_dumpit()
+
+David Laight (1):
+      net: sctp: Fix negotiation of the number of data streams.
+
+Greg Kroah-Hartman (1):
+      Linux 5.7.19
+
+Mark Tomlinson (1):
+      gre6: Fix reception with IP6_TNL_F_RCV_DSCP_COPY
+
+Max Filippov (1):
+      binfmt_flat: revert "binfmt_flat: don't offset the data start"
+
+Maxim Mikityanskiy (3):
+      ethtool: Fix preserving of wanted feature bits in netlink interface
+      ethtool: Account for hw_features in netlink interface
+      ethtool: Don't omit the netlink reply if no features were changed
+
+Miaohe Lin (1):
+      net: Fix potential wrong skb->protocol in skb_vlan_untag()
+
+Michael Ellerman (1):
+      powerpc/64s: Don't init FSCR_DSCR in __init_FSCR()
+
+Necip Fazil Yildiran (1):
+      net: qrtr: fix usage of idr in port assignment to socket
+
+Nikolay Aleksandrov (1):
+      net: nexthop: don't allow empty NHA_GROUP
+
+Peilin Ye (1):
+      net/smc: Prevent kernel-infoleak in __smc_diag_dump()
+
+Shay Agroskin (1):
+      net: ena: Make missed_tx stat incremental
+
+Xin Long (1):
+      tipc: call rcu_read_lock() in tipc_aead_encrypt_done()
+
