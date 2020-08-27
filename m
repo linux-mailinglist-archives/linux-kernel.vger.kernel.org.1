@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B8F253DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A7D253DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgH0GeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgH0GeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:34:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21199C061262;
-        Wed, 26 Aug 2020 23:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZEAL8yhDmv2NOt8eGkltoZbbAq9aMUTNBk5Kd3S4jBM=; b=P4pIzY3CpH/94U0enuaerI0h69
-        /UQ6n1pRAhhMhmdU08FxcNMwhZsl7SaQTptgvn3rIleLvzXeN78/6B7w62uIi699Fvij7n19iozCa
-        VPK2XhcZgNffEcuNji2JoHLRVvy6qQ3AVK31lf9w4ScqgWUNmCxIboj0ty4y6usPFvgQm4k6UeeAR
-        xvCPPqr0OpAwiFt/xAUGEBqeHiFRYDfpDNCwXNzRy8YwuO1rivio9iFqbjMkDPcG6lTsIO3TEeRn9
-        TxUyPLL2jAw8dzv4Rg82GtWlsjUMDbW3cvHGep8uw3iSRcrEaOpYzP8HuyLT8/XmKAvrY8hr+GZHg
-        XUNC14NA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBBU6-0003d2-QG; Thu, 27 Aug 2020 06:34:06 +0000
-Date:   Thu, 27 Aug 2020 07:34:06 +0100
-From:   "hch@infradead.org" <hch@infradead.org>
-To:     "Derrick, Jonathan" <jonathan.derrick@intel.com>
-Cc:     "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "wangxiongfeng2@huawei.com" <wangxiongfeng2@huawei.com>,
-        "kw@linux.com" <kw@linux.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "Mario.Limonciello@dell.com" <Mario.Limonciello@dell.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Huffman, Amber" <amber.huffman@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-Message-ID: <20200827063406.GA13738@infradead.org>
-References: <20200821123222.32093-1-kai.heng.feng@canonical.com>
- <20200825062320.GA27116@infradead.org>
- <cd5aa2fef13f14b30c139d03d5256cf93c7195dc.camel@intel.com>
+        id S1727977AbgH0GgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:36:19 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:53102 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726395AbgH0GfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:35:22 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 73AE2A05E37D5DB2E6B2;
+        Thu, 27 Aug 2020 14:35:19 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
+ 14:35:15 +0800
+Subject: Re: [PATCH v3 0/7] bugfix and optimize for drivers/nvdimm
+To:     Oliver O'Halloran <oohall@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200820021641.3188-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <90d93e2e-1124-22ee-81fb-83ffebc3129c@huawei.com>
+Date:   Thu, 27 Aug 2020 14:35:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd5aa2fef13f14b30c139d03d5256cf93c7195dc.camel@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200820021641.3188-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 09:43:27PM +0000, Derrick, Jonathan wrote:
-> Feel free to review my set to disable the MSI remapping which will make
-> it perform as well as direct-attached:
-> 
-> https://patchwork.kernel.org/project/linux-pci/list/?series=325681
+Hi all:
+  Any comment? I want to merge patches 1 and 2 into one, then send
+other patches separately.
 
-So that then we have to deal with your schemes to make individual
-device direct assignment work in a convoluted way?  Please just give us
-a disable nob for VMD, which solves _all_ these problems without adding
-any.
+On 2020/8/20 10:16, Zhen Lei wrote:
+> v2 --> v3:
+> 1. Fix spelling error of patch 1 subject: memmory --> memory
+> 2. Add "Reviewed-by: Oliver O'Halloran <oohall@gmail.com>" into patch 1
+> 3. Rewrite patch descriptions of Patch 1, 3, 4
+> 4. Add 3 new trivial patches 5-7, I just found that yesterday.
+> 5. Unify all "subsystem" names to "libnvdimm:"
+> 
+> v1 --> v2:
+> 1. Add Fixes for Patch 1-2
+> 2. Slightly change the subject and description of Patch 1
+> 3. Add a new trivial Patch 4, I just found that yesterday.
+> 
+> v1:
+> I found a memleak when I learned the drivers/nvdimm code today. And I also
+> added a sanity check for priv->bus_desc.provider_name, because strdup()
+> maybe failed. Patch 3 is a trivial source code optimization.
+> 
+> 
+> Zhen Lei (7):
+>   libnvdimm: fix memory leaks in of_pmem.c
+>   libnvdimm: add sanity check for provider_name in
+>     of_pmem_region_probe()
+>   libnvdimm: simplify walk_to_nvdimm_bus()
+>   libnvdimm: reduce an unnecessary if branch in nd_region_create()
+>   libnvdimm: reduce an unnecessary if branch in nd_region_activate()
+>   libnvdimm: make sure EXPORT_SYMBOL_GPL(nvdimm_flush) close to its
+>     function
+>   libnvdimm: slightly simplify available_slots_show()
+> 
+>  drivers/nvdimm/bus.c         |  7 +++----
+>  drivers/nvdimm/dimm_devs.c   |  5 ++---
+>  drivers/nvdimm/of_pmem.c     |  7 +++++++
+>  drivers/nvdimm/region_devs.c | 13 ++++---------
+>  4 files changed, 16 insertions(+), 16 deletions(-)
+> 
+
