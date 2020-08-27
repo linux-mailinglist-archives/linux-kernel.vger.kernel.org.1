@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13A7254627
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3508E254615
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgH0NmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S1726903AbgH0Nic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728190AbgH0NaA (ORCPT
+        with ESMTP id S1727937AbgH0Naj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:30:00 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B519C061264;
-        Thu, 27 Aug 2020 06:29:34 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id q14so4866839ilm.2;
-        Thu, 27 Aug 2020 06:29:34 -0700 (PDT)
+        Thu, 27 Aug 2020 09:30:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70831C061237
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:13 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a5so5395464wrm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P1eAOelctVCvY77k8DvCiSb45R7pJeCygwUiBKj7ylk=;
-        b=KslTWM9QTJseKIfQwHyWHYzO4E5V9sz2t0NyQsA+FDYjpJCmberK6r1gK12Pgz7ApG
-         aDRwPZnol6vii9x/7psJIZV393QKixDz1vAY5VufdD1L2su0SUGkwUlRjU+kIvkyaGeX
-         Xv8Br1OD+OGHSOURsNHIRwVwsadKMnBFpOnlxRBsCEEgk1lMeHMMHZ0uQhY1oocrLzWi
-         f/rA2Hze5ic1kTmDnRtSGdsXY7KvtyU0pyWGbPW8qRtEEs8k8OGmLcihOh2a3jLqA/qB
-         uaMIxIHMpX9L2puZNu+odYcuv70ElOGc8HwsG1KQOmikZX/84mWmxEypdCTcjsiLCsJ6
-         4ErA==
+        bh=p33Zl85F48xSFFwh9Fvb6fYwVy/Jt4DGVFmz86MHbko=;
+        b=CUujgUZRienGvENy9ZeNSE4OLq/gTozkw9vqhnndn3e+Pp27upZYxzcOy348qWT4x6
+         fZ9HzhrGd6ok0/lpV6XJMXIHbIrfSS3H2kc5d+JTd1lletPZjVOkUQ8WZMoDnSSylgRw
+         zOHH0JLxrQJsHR8v5+SGQOGgwwu7dIE6xp9Po=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P1eAOelctVCvY77k8DvCiSb45R7pJeCygwUiBKj7ylk=;
-        b=UlGq8Xnd9xsDahH2Mgdq/GzST7GmqsZywZefLFD9KpOqNC+rB4PnU6Ay3EnYbITqGB
-         SY/aUIvshFrJX5XIIVYwUc5IXDdsWJyB3jbbgWOHfUMD4ALfu9sAeerv7IlGFr7LY8lA
-         zaa6wvFZhWaFH2bBhjmzdAw5/WNenH5hjq/M81ALBDgD2tRZKfqCrLfB0fqMPuN/KQ5c
-         cRq4h9u/qZUPblJBdfKGWqomiovBFH162VKBw22T65KwMPnx/QePGBZhnCfDUf+TUcrC
-         Ao7Uw2wf9VumATPZ/yWGyJg6EEkEez1Kdc7UGqXZFc/Wl1bsa90eGA6OgPAWmWZa/v/f
-         TCdw==
-X-Gm-Message-State: AOAM5324iIiz89iwAdftJxVED2a9cujh6o4vIdIAfq5Qhob08Xu89lWV
-        631jh+dF7FFuEb+M2TXa9nF5Ipa0jlDdI49U1Mc=
-X-Google-Smtp-Source: ABdhPJyQLY6lTLiuO3mJecjMx6O2y5je1nGXqCTrwwhTyAqqzE4XE1LtMK86oX32gT+TP8wOjBG4bYwXxAka9F8rhOw=
-X-Received: by 2002:a92:6a09:: with SMTP id f9mr473727ilc.273.1598534972117;
- Thu, 27 Aug 2020 06:29:32 -0700 (PDT)
+        bh=p33Zl85F48xSFFwh9Fvb6fYwVy/Jt4DGVFmz86MHbko=;
+        b=ulZsgmRD+9d1uG8rpq8MhI2yrTPv55NTWqvjxN6HU1mKOpyereX1GZvLDffo50/wGe
+         kyt1FUwNT9hqRB+8JTWkhhDQQKF392m+7aKnthAJDA5VTj7+9NO56hh9uaXl7opi9dQV
+         5PgRdEUXm1R8B41682ypBnEhLZSIt/fnIOFMxOQYkUWC/z0gwuPtTxRmqTLkhXZqYruj
+         Z1A5fd/pJhHyqHV3EufmeVgCjGr9sTUwCw2jTq4tnwsz4MPqFSTkKdTfM5M/tcF3ej4r
+         9ciPfggyhcUv4NVMcavmbJIPSofioHa0h0mp/UWrrKHI0I1iTzOJuix2mkVldokeygfC
+         6gNg==
+X-Gm-Message-State: AOAM530JR57cK5n6lcDNNjpi1cNq+CNFue7t9p1DmpmL+wa4zseT67rE
+        KJvfbToOXuKp+eyG4xZnxuHMy8ZP5CmonSiujSr9wQ==
+X-Google-Smtp-Source: ABdhPJyMtaFishcwtzNCj7DHN/faPMoK+tSF7O0vKJaBGS+gpAIRdF6geUez9pCQeleah1w6P5SJ7nzMgTS0KKpMqRI=
+X-Received: by 2002:adf:bb54:: with SMTP id x20mr19609148wrg.413.1598535011238;
+ Thu, 27 Aug 2020 06:30:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825002540.3351-1-yu-cheng.yu@intel.com> <20200825002540.3351-26-yu-cheng.yu@intel.com>
- <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
- <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com> <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com> <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
- <ef7f9e24-f952-d78c-373e-85435f742688@intel.com> <20200826164604.GW6642@arm.com>
- <87ft892vvf.fsf@oldenburg2.str.redhat.com> <20200826170841.GX6642@arm.com> <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Thu, 27 Aug 2020 06:28:56 -0700
-Message-ID: <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com> <20200827063517.GA4637@lst.de>
+In-Reply-To: <20200827063517.GA4637@lst.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 27 Aug 2020 09:29:59 -0400
+Message-ID: <CA+-6iNy3U9pO0Bykzgvb9n9fcsBi6FiatLdpA1s0HgQNWZ49mg@mail.gmail.com>
+Subject: Re: [PATCH v11 00/11] PCI: brcmstb: enable PCIe for STB chips
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVERS FOR ALLWINNER A10" 
+        <dri-devel@lists.freedesktop.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Julien Grall <julien.grall@arm.com>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ALLWINNER A10 CSI DRIVER" <linux-media@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com> wrote:
+On Thu, Aug 27, 2020 at 2:35 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> * Dave Martin:
+> On Tue, Aug 25, 2020 at 10:40:27AM -0700, Florian Fainelli wrote:
+> > Hi,
+> >
+> > On 8/24/2020 12:30 PM, Jim Quinlan wrote:
+> >>
+> >> Patchset Summary:
+> >>    Enhance a PCIe host controller driver.  Because of its unusual design
+> >>    we are foced to change dev->dma_pfn_offset into a more general role
+> >>    allowing multiple offsets.  See the 'v1' notes below for more info.
+> >
+> > We are version 11 and counting, and it is not clear to me whether there is
+> > any chance of getting these patches reviewed and hopefully merged for the
+> > 5.10 merge window.
+> >
+> > There are a lot of different files being touched, so what would be the
+> > ideal way of routing those changes towards inclusion?
 >
-> > You're right that this has implications: for i386, libc probably pulls
-> > more arguments off the stack than are really there in some situations.
-> > This isn't a new problem though.  There are already generic prctls with
-> > fewer than 4 args that are used on x86.
->
-> As originally posted, glibc prctl would have to know that it has to pull
-> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  But
-> then the u64 argument is a problem for arch_prctl as well.
->
-
-Argument of ARCH_X86_CET_DISABLE is int and passed in register.
-
--- 
-H.J.
+> FYI, I offered to take the dma-mapping bits through the dma-mapping tree.
+> I have a bit of a backlog, but plan to review and if Jim is ok with that
+> apply the current version.
+Sounds good to me.
+Thanks, Jim
