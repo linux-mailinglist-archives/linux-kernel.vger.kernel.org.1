@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7DB2547A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38492547A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgH0Owr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:52:47 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:41532 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgH0NWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:22:24 -0400
-Received: by mail-ej1-f67.google.com with SMTP id b17so7613944ejq.8;
-        Thu, 27 Aug 2020 06:21:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9cQD7wAgJiQgJMdSQQKLTlBAdfqypodW7qJTxcpDRmw=;
-        b=gVQhTuMDb4/MGUgwUuEdPgqUUvHx3fDXYxX4h4xZ1S1pLjTiLx+11I+eJKvcmRX2CX
-         U/QwBOx/84oAu478QHGuTf2Eb0pCIQw5e4Wh5PWH4yTQoYHgwcYsNWB8EnKEXT0wFioq
-         dszpiT+4U+ZosjTqSqf7t9bl9lQnR0GmtVa8ucoiRxW4KPhkmvIOzbA+c9XFsm094H0y
-         purubijExH77Vt8Yt3m/i8zvY+1+SRchDlltD+hbg3GvahCmcgyg8rDC6eQ6qFHoTFb3
-         9Ew+zBnOIi7/m1Mx4N1MMTj2xMFx7faEZxBXv5QZzAfYdmyO+0+KYvYn2t79fN2S0I/Y
-         lAog==
-X-Gm-Message-State: AOAM532nvk5l6bbB1qgQlQ3MlJu2Z8v6EDGJiySSiK5OPyWYw8woEvFb
-        5NeGtbnCB0Q3rTZrPPOCVKY=
-X-Google-Smtp-Source: ABdhPJwazJ2g/jt884NVPC8RDwVYh0aN8Mt2Z0KMMHwsD/fNTetgub13Tlz0b0/r9jsl8CYZHPsumQ==
-X-Received: by 2002:a17:906:69d5:: with SMTP id g21mr20033703ejs.461.1598534517518;
-        Thu, 27 Aug 2020 06:21:57 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id qk7sm1927426ejb.17.2020.08.27.06.21.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Aug 2020 06:21:56 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 15:21:54 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     rogerq@ti.com, tony@atomide.com, ladis@linux-mips.org,
-        bbrezillon@kernel.org, peter.ujfalusi@ti.com,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] memory: omap-gpmc: Fix build error without CONFIG_OF
-Message-ID: <20200827132154.GB4384@kozik-lap>
-References: <20200826125919.22172-1-yuehaibing@huawei.com>
- <20200827125316.20780-1-yuehaibing@huawei.com>
+        id S1728139AbgH0Owb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:52:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12422 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726299AbgH0NXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:23:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598534601; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=OEnpR1YGQbng0mx9A15xqaUuwikZzc9dBMrRdkV04tU=;
+ b=K3wfB20cIFXENQl46Bley2M7Gpypj73IAHlhREWC/TJNgJyyntBYu4RWOJA3kVcmVpLHGhzY
+ r9z9UZUqj+jQ33g1rnuKlY8n/GeHsa8QnG7C2Wb+MKL/N5C4v2wCzl0qzmrM+w1avjD1phMz
+ nVzscOLFfMV+r/E/GX7quSyIf9E=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f47b3c891574590bf6cd430 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 13:23:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B70A9C433AD; Thu, 27 Aug 2020 13:23:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A790C433CA;
+        Thu, 27 Aug 2020 13:23:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A790C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200827125316.20780-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [05/16] atmel: convert tasklets to use new tasklet_setup() API
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200817090637.26887-6-allen.cryptic@gmail.com>
+References: <20200817090637.26887-6-allen.cryptic@gmail.com>
+To:     Allen Pais <allen.cryptic@gmail.com>
+Cc:     kuba@kernel.org, jirislaby@kernel.org, mickflemm@gmail.com,
+        mcgrof@kernel.org, chunkeey@googlemail.com,
+        Larry.Finger@lwfinger.net, stas.yakovlev@gmail.com,
+        helmut.schaa@googlemail.com, pkshih@realtek.com,
+        yhchuang@realtek.com, dsd@gentoo.org, kune@deine-taler.de,
+        keescook@chromium.org, ath11k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200827132320.B70A9C433AD@smtp.codeaurora.org>
+Date:   Thu, 27 Aug 2020 13:23:20 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:53:16PM +0800, YueHaibing wrote:
-> If CONFIG_OF is n, gcc fails:
-> 
-> drivers/memory/omap-gpmc.o: In function `gpmc_omap_onenand_set_timings':
-> omap-gpmc.c:(.text+0x2a88): undefined reference to `gpmc_read_settings_dt'
-> 
-> Add gpmc_read_settings_dt() helper function, which zero the gpmc_settings
-> so the caller doesn't proceed with random/invalid settings.
-> 
-> Fixes: a758f50f10cf ("mtd: onenand: omap2: Configure driver from DT")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
-> v3: zero gpmc_settings
-> v2: add gpmc_read_settings_dt() stub
-> ---
->  drivers/memory/omap-gpmc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-> index cd9e80748591..e026b4cd3612 100644
-> --- a/drivers/memory/omap-gpmc.c
-> +++ b/drivers/memory/omap-gpmc.c
-> @@ -2310,6 +2310,10 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
->  	}
->  }
->  #else
-> +void gpmc_read_settings_dt(struct device_node *np, struct gpmc_settings *p)
-> +{
-> +	memset(p, 0, sizeof(struct gpmc_settings));
+Allen Pais <allen.cryptic@gmail.com> wrote:
 
-sizeof(*p) but if patch is otherwise ok (got review/ack) then I can fix
-it while applying.
+> From: Allen Pais <allen.lkml@gmail.com>
+> 
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly
+> and remove .data field.
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-If there is resend, please fix it as well.
+11 patches applied to wireless-drivers-next.git, thanks.
 
-Best regards,
-Krzysztof
+a36f50e5b937 atmel: convert tasklets to use new tasklet_setup() API
+fc6722301428 b43legacy: convert tasklets to use new tasklet_setup() API
+427a06beb072 brcmsmac: convert tasklets to use new tasklet_setup() API
+ae6cf59f80f7 ipw2x00: convert tasklets to use new tasklet_setup() API
+b81b9d372ac8 iwlegacy: convert tasklets to use new tasklet_setup() API
+7433c9690318 intersil: convert tasklets to use new tasklet_setup() API
+51c41aa93ef5 mwl8k: convert tasklets to use new tasklet_setup() API
+aff8e8d02ec2 qtnfmac: convert tasklets to use new tasklet_setup() API
+a0d6ea9b6e1c rt2x00: convert tasklets to use new tasklet_setup() API
+d3ccc14dfe95 rtlwifi/rtw88: convert tasklets to use new tasklet_setup() API
+26721b02466e zd1211rw: convert tasklets to use new tasklet_setup() API
+
+-- 
+https://patchwork.kernel.org/patch/11717451/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
