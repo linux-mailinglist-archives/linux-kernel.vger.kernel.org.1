@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3016D2547EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FE82547ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgH0NHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgH0NGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:06:15 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        id S1728245AbgH0O4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:56:32 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:57927 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726968AbgH0NHm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:07:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598533653; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=MjJiB3fF4rInikwppM0UfCFG2Vu+78ihg9iJ2pL1kn8=;
+ b=oOe+P401I5sfkii/O0sPOkpjdhDArUXLsZgAGZVA5hbmVjsfEAIvAxo0OcdwfpvA3XTnXocv
+ Wdssx5zL82g/24kpL+EAUUavNSxExxkwF/hLD5IFAoFtz27Wwu/7MOyLt6+dNA9BZDEogXKH
+ 5GGtyIB47Jwr5EC3M3+ka62HGss=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f47afc5797ad9909b19604a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 13:06:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3908C433CB; Thu, 27 Aug 2020 13:06:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F8272177B;
-        Thu, 27 Aug 2020 13:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598533574;
-        bh=CsyBLCeNf0dkNDeBsjaGXYEf31dJgW32YFFFbCsA2wc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=wcR+WVOwPjKQ+JXSlX6qCnAnfdgQg94Q/pdSgb/kq8qkB3owraYDTO3MMspsU1TSf
-         aUxr2eeIPammKlI/zd/u0B4BGQL1PyBJRLhfE7uH6fEsxc8aMlgKHecUE1SN84Ac0k
-         NRntBhmq1wUNDUysLXdIV/1V6+uNOCeEc1eFmWZo=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhenwenjin@gmail.com, sernia.zhou@foxmail.com,
-        yanfei.li@ingenic.com, rick.tyliu@ingenic.com,
-        aric.pzqi@ingenic.com, dongsheng.qiu@ingenic.com
-Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix static checker warning.
-In-Reply-To: <20200825081654.18186-2-zhouyanjie@wanyeetech.com>
-References: <20200825081654.18186-1-zhouyanjie@wanyeetech.com>
- <20200825081654.18186-2-zhouyanjie@wanyeetech.com>
-Date:   Thu, 27 Aug 2020 16:06:07 +0300
-Message-ID: <87mu2gi6gw.fsf@kernel.org>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A757C433C6;
+        Thu, 27 Aug 2020 13:06:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5A757C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] rt2x00: Use fallthrough pseudo-keyword
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200821062052.GA8618@embeddedor>
+References: <20200821062052.GA8618@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200827130612.A3908C433CB@smtp.codeaurora.org>
+Date:   Thu, 27 Aug 2020 13:06:12 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-=E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeetech.com> write=
-s:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
+> 
+> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> The commit 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-> Ingenic SoCs.") introduced the initialization function for different
-> chips, but left the relevant code involved in the resetting process
-> in the original function, resulting in uninitialized variable calls.
->
-> Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-> Ingenic SoCs.").
+Patch applied to wireless-drivers-next.git, thanks.
 
-These two lines here, they should be one line :-)
+74aad39490a7 rt2x00: Use fallthrough pseudo-keyword
 
-For the Fixes: line, you shouldn't worry about the 72-char limit. Also,
-when resending, don't add a blank line between Fixes and Signed-off-by
-and since this is a bug fix, it seems like Cc: stable is in order.
+-- 
+https://patchwork.kernel.org/patch/11728199/
 
-=2D-=20
-balbi
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9Hr78RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQb2NQ//aIT0yosGqzDLShjKlr3XLVh0fMR0srEn
-KH0AUMPmQ/c7wiibmr/k/md5ZYflP6bi7P/qU6kOp/sqGeQ1VKt6LYAswohPfeoc
-TbyVITONa3wSco3qu2w0wQWdmqayUV4O3S6Oi9Qn/Q/vID2LWOchgxytL/O4f500
-ifoWVqJci03JUXh+HP72CTZ990WdiwZLpWHzNtQSiaHnlciWuVhzu1Mu0MTbFsAZ
-HXZIzHeEhcJpktb+BCeyMA3aHyz07XLP2go6f45y0XgJIoiGSxLgYKx49hg2pm+r
-NEWdlNRCr6r3eCAPC2jwIQaPv5enffyVexdywg2MLF09mjGnGa9LgErKzUOno56i
-RMcNacUlVkyFX0CDYUIhV6oNXaWZVhSdiJFEBfXyvkXjRB1HiM6fOwRgGg1USkah
-xGdp+4zGfpZ5d9XuQQGJMLnG7yCfJi92zGvByWfpc8QYLnPeJv7sNi/cWP4AETk4
-/2HJKW+O4ZV2+tkpqSKgruv6Us/O7FTG8gI4GHLuLqZyu4d4fUgOTa1UobhNU6WX
-tNe/oYywGQAQ/9bCXebZFTNciaiR3j/XtjrrW949ELQguHSEfN1v2lJlyehyh6GS
-BLZa1n6+FdnzkLmAUd+RHJwbMm5WDTf6eGD4JIZzGU4NHOHN1jdvSDnIZENlifOM
-C8Mf0iEPUjs=
-=sN0E
------END PGP SIGNATURE-----
---=-=-=--
