@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D5B2547EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4995C2547D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgH0O40 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 10:56:26 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:38606 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726084AbgH0NHp (ORCPT
+        id S1726400AbgH0NKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:10:10 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:57927 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727056AbgH0NH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:07:45 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-193-ebJTYPNPMbe2YTXzj0WrTA-1; Thu, 27 Aug 2020 14:07:34 +0100
-X-MC-Unique: ebJTYPNPMbe2YTXzj0WrTA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 27 Aug 2020 14:07:33 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 27 Aug 2020 14:07:33 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yuqi Jin <jinyuqi@huawei.com>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: RE: [PATCH] fs: Optimized fget to improve performance
-Thread-Topic: [PATCH] fs: Optimized fget to improve performance
-Thread-Index: AQHWfHA0Q0HraGCxZUqID6ug/Nw0ZqlL69xQ
-Date:   Thu, 27 Aug 2020 13:07:33 +0000
-Message-ID: <6feef2f0b6ed4df99e66c8325c8e66ae@AcuMS.aculab.com>
-References: <1598523584-25601-1-git-send-email-zhangshaokun@hisilicon.com>
- <20200827123040.GE14765@casper.infradead.org>
-In-Reply-To: <20200827123040.GE14765@casper.infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 27 Aug 2020 09:07:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598533679; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=TAoaWSZUFF1KNYXDVNXCndtaTBFmtxnhRgkY/2qV+MM=;
+ b=sggoiReVcsgjnpipO3U14csC/fcAXwQOPiJcy12k8rfvLDmzy4MPBPsPCWxC5Go//fDKJkCh
+ lcqPgfgE0fCZKnf8zgasnm8vNBE707HUjThBoLnkmnVfjK4Kehvi2rVKAH6e2Z04bx+hNTXi
+ 2pm8euDqAIRndUEmSBbTvcRD2ns=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f47b01e797ad9909b1ad181 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 13:07:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BDA54C433CA; Thu, 27 Aug 2020 13:07:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98F87C433C6;
+        Thu, 27 Aug 2020 13:07:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 98F87C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] brcmfmac: Use fallthrough pseudo-keyword
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200821063758.GA17783@embeddedor>
+References: <20200821063758.GA17783@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200827130741.BDA54C433CA@smtp.codeaurora.org>
+Date:   Thu, 27 Aug 2020 13:07:41 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 27 August 2020 13:31
-> On Thu, Aug 27, 2020 at 06:19:44PM +0800, Shaokun Zhang wrote:
-> > From: Yuqi Jin <jinyuqi@huawei.com>
-> >
-> > It is well known that the performance of atomic_add is better than that of
-> > atomic_cmpxchg.
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
 > 
-> I don't think that's well-known at all.
+> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Especially since on (probably) every architecture except x86
-atomic_add() is implemented using atomic_cmpxchg().
+Patch applied to wireless-drivers-next.git, thanks.
 
-	David
+0bde10dc553d brcmfmac: Use fallthrough pseudo-keyword
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+https://patchwork.kernel.org/patch/11728219/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
