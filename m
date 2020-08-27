@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B33253D60
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FEB253D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgH0GFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        id S1727001AbgH0GHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgH0GFB (ORCPT
+        with ESMTP id S1726157AbgH0GHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:05:01 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADAC061246;
-        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id q3so2317242ybp.7;
-        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
+        Thu, 27 Aug 2020 02:07:42 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F28C061249;
+        Wed, 26 Aug 2020 23:07:42 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i14so2276528lfl.12;
+        Wed, 26 Aug 2020 23:07:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
-        b=IFTjQNtz4TH2ktM9bD6omTwK6z8gQvROWHXKbfocfX5JvTWo06Ms8/XrAlrIy3dtMZ
-         8VJHbRmBi7VXDd4x7lDLd1u1yT/JX76vR3OHZBRrR0/Q0DtFLSb7KljcSSDEycOvMH+K
-         qGEVrz42WL57VIifN8yGNgYfqDxdt5V9azJr3EW9JdUcF2s6UmFvanEl/WCh6/rQjjCF
-         BuwbsvXjrxiJTyYgCSaDWHhCUFvhhnpRz5Aj7uPavBCLvAVQCwn3uOygMymfgKVydA9i
-         mQO2Ru/0Iu2YMJ+6tgWb7kZZh2miNc8HUOKf4XogqPd6GpUyUMDCacl0OcjWALtiwarb
-         JrPw==
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=hmc6+AVmLvdvLf4AWknXtDxmdplb2vMzVZzZc7Kg5z4=;
+        b=H2jA0oE+Ihn1WFLUhVm7op19MAw8Wy8UcsbgxCHfj8FbzYmDfURkbsShZwBuaeOu0p
+         KNl+J1XgJDeBSK4+JEPXMKRRkZf3U93brXbm01l1pNqh0/WbAJugp4jXJwozU5jFeHEd
+         UpBiRdTOjCH2v2IqC64BZVRiJbiyt0KKXUQSZFlzU81n9sJTnHpOFeVi5xVwIFY7lwlG
+         /fhOpMicIRxEmO6c9yW30olvvApi7ymwQk7nq0x9DU+zCIzzFkQWY6uJauyO0HlEivB4
+         p2i5XLxBkjg7w7eM++ccT0E4TkFQeq8Kv55XvqgHhTcFXMzbtXP3t4ExhCDc3R4zvIFa
+         S3MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
-        b=OpHFfK/GukplruU2rXg1Lw/dUSFVo7iKM1VnG0K6giv99VW/ehKme3CYsO9TF14FmK
-         1H6AcoCxRplWJxZkkXUBUHacggfXU2kWCpUi1bFiPWi9WWP7X7XCazYK1+qCRk24m+HC
-         Epk4nNj6RN++auzaebrQGoP6veghLMIKSX5KdUdG3LPuP3jl8+XVWf2UXcUbkQzBMeR0
-         Lnw1hhfyzXVXZNQpGR0EjLlfmUAgIPTbAamFrMwfreR6yXEaIU1eDkR+lVJWuuoHIRuO
-         kB4neczy/Y+f77dQOF3gV+AFEnb+GbW25ofTT+WB4YU8sB1kxQ9O5BVRmVEi+bo8JMAF
-         qzrw==
-X-Gm-Message-State: AOAM532vwMHsFe4QSGezFDiKXJphTS3wYmIgHUeqlyXZgCwwGYEbBf2O
-        rbf3Ty5bbl9DfUQQ990k/xiT2w7cF/dY/cNLziE=
-X-Google-Smtp-Source: ABdhPJxkd5AOFlyKfKZ9Ayi2ea1O8ksOJql6kpnE/JAyYTpEmJYhrmUoiUve3mvyb77ThYiXm979rJGxuQivakeUTxA=
-X-Received: by 2002:a25:bc50:: with SMTP id d16mr24534529ybk.230.1598508300269;
- Wed, 26 Aug 2020 23:05:00 -0700 (PDT)
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=hmc6+AVmLvdvLf4AWknXtDxmdplb2vMzVZzZc7Kg5z4=;
+        b=lv8FRr6ZRiymq06nTwRhmjDBQLvZ3sXgzdUIHB3YWWgJs+yg5P1+N/BZNrYYDj+RlJ
+         bJF5pbuYp/+cpBytJtuZ1hJmCwyRxL0qUp83ehjW5Eyt+itA+NR1Lgknir9gGRpLEfZk
+         vV1igYZZILBlaL+rTUNMO6IwDk+D5gG98YYs5OfsoBBVpRaORgUFe6AAyYECLy9rCMQK
+         41hLxnzWoM46c57w5c42pNVdPmVUM03+DkLdsBogmQ9ynFCEe2Z4gImETub0cIxBlouJ
+         j2qEyqCXOIz08QQXs5oGdULiw1h2B+EdrLfXiN66dIieIHHvpR/8c+QLJqsUq6v4qKHp
+         tmbQ==
+X-Gm-Message-State: AOAM530N7ZwOKwg07LsTCjijaATH17kCLFSCyX5K6x0WyfLWRwsTQif7
+        XOYUaaVJYbOyARiMnX95buJ2goBKQ58=
+X-Google-Smtp-Source: ABdhPJxfP3/WeM+nNrONYy5RkpF1jXFUKZ0YL60JfgugUzDtPXTFWQ+3Ddys9O4LVjZ4wtKt5X7Rsw==
+X-Received: by 2002:a19:e07:: with SMTP id 7mr8964725lfo.6.1598508459278;
+        Wed, 26 Aug 2020 23:07:39 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id b29sm255876lfq.69.2020.08.26.23.07.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 23:07:38 -0700 (PDT)
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list@cypress.com,
+        brcm80211-dev-list.pdl@broadcom.com,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Subject: Broadcom WiFi SDIO performance regression after commit "mmc: sdhci:
+ Remove finish_tasklet"
+Message-ID: <5cf1af89-6026-09ad-7f20-82e19ad49fa1@gmail.com>
+Date:   Thu, 27 Aug 2020 09:07:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200825232003.2877030-1-udippant@fb.com> <20200825232003.2877030-3-udippant@fb.com>
-In-Reply-To: <20200825232003.2877030-3-udippant@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Aug 2020 23:04:49 -0700
-Message-ID: <CAEf4BzYsxBJf2a59L4EPKwX0eH2U7z41PSUgupwOWUXVH4sgYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] selftests/bpf: add test for freplace
- program with write access
-To:     Udip Pant <udippant@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 4:21 PM Udip Pant <udippant@fb.com> wrote:
->
-> This adds a selftest that tests the behavior when a freplace target program
-> attempts to make a write access on a packet. The expectation is that the read or write
-> access is granted based on the program type of the linked program and
-> not itself (which is of type, for e.g., BPF_PROG_TYPE_EXT).
->
-> This test fails without the associated patch on the verifier.
->
-> Signed-off-by: Udip Pant <udippant@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  1 +
->  .../selftests/bpf/progs/fexit_bpf2bpf.c       | 27 +++++++++++++++++++
->  .../selftests/bpf/progs/test_pkt_access.c     | 20 ++++++++++++++
->  3 files changed, 48 insertions(+)
->
+Hello!
 
-[...]
+I was debugging WiFi performance problems on Acer A500 tablet device
+that has BCM4329 WiFi chip which is connected to NVIDIA Terga20 SoC via
+SDIO and found that the following commit causes a solid 5-10 Mbit/s of
+WiFi throughput regression after 5.2 kernel:
 
-> +__attribute__ ((noinline))
-> +int test_pkt_write_access_subprog(struct __sk_buff *skb, __u32 off)
-> +{
-> +       void *data = (void *)(long)skb->data;
-> +       void *data_end = (void *)(long)skb->data_end;
-> +       struct tcphdr *tcp = NULL;
-> +
-> +       if (off > sizeof(struct ethhdr) + sizeof(struct ipv6hdr))
-> +               return -1;
-> +
-> +       tcp = data + off;
-> +       if (tcp + 1 > data_end)
-> +               return -1;
-> +       /* make modification to the packet data */
-> +       tcp->check++;
+commit c07a48c2651965e84d35cf193dfc0e5f7892d612
+Author: Adrian Hunter <adrian.hunter@intel.com>
+Date:   Fri Apr 5 15:40:20 2019 +0300
 
-Just FYI for all BPF contributors. This change makes test_pkt_access
-BPF program to fail on kernel 5.5, which (the kernel) we use as part
-libbpf CI testing. test_pkt_access.o in turn makes few different
-selftests (see [0] for details) to fail on 5.5 (because
-test_pkt_access is used as one of BPF objects loaded as part of those
-selftests). This is ok, I'm blacklisting (at least temporarily) those
-tests, but I wanted to bring up this issue, as it did happen before
-and will keep happening in the future and will constantly decrease
-test coverage for older kernels that libbpf CI performs.
+    mmc: sdhci: Remove finish_tasklet
 
-I propose that when we introduce new features (like new fields in a
-BPF program's context or something along those lines) and want to test
-them, we should lean towards creating new tests, not modify existing
-ones. This will allow all already working selftests to keep working
-for older kernels. Does this sound reasonable as an approach?
+    Remove finish_tasklet. Requests that require DMA-unmapping or
+sdhci_reset
+    are completed either in the IRQ thread or a workqueue if the
+completion is
+    not initiated by the IRQ.
 
-As for this particular breakage, I'd appreciate someone taking a look
-at the problem and checking if it's some new feature that's not
-present in 5.5 or just Clang/verifier interactions (32-bit pointer
-arithmetic, is this a new issue?). If it's something fixable, it would
-be nice to fix and restore 5.5 tests. Thanks!
+Reverting the offending commit on top of recent linux-next resolves the
+problem.
 
-  [0] https://travis-ci.com/github/libbpf/libbpf/jobs/378226438
-
-Verifier complains about:
-
-; if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
-
-57: (79) r1 = *(u64 *)(r10 -8)
-
-58: (bc) w2 = w1
-
-59: (1c) w2 -= w9
-
-R2 32-bit pointer arithmetic prohibited
-
-processed 198 insns (limit 1000000) max_states_per_insn 1 total_states
-8 peak_states 8 mark_read 7
-
-
-> +       return 0;
-> +}
-> +
->  SEC("classifier/test_pkt_access")
->  int test_pkt_access(struct __sk_buff *skb)
->  {
-> @@ -117,6 +135,8 @@ int test_pkt_access(struct __sk_buff *skb)
->         if (test_pkt_access_subprog3(3, skb) != skb->len * 3 * skb->ifindex)
->                 return TC_ACT_SHOT;
->         if (tcp) {
-> +               if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
-> +                       return TC_ACT_SHOT;
->                 if (((void *)(tcp) + 20) > data_end || proto != 6)
->                         return TC_ACT_SHOT;
->                 barrier(); /* to force ordering of checks */
-> --
-> 2.24.1
->
+Ulf / Adrian, do you have any ideas what could be done in regards to
+restoring the SDIO performance? Should we just revert the offending commit?
