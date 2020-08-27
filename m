@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080BF254099
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0488A2540A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgH0IVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S1728078AbgH0IWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgH0IVI (ORCPT
+        with ESMTP id S1726266AbgH0IWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:21:08 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44D3C061264;
-        Thu, 27 Aug 2020 01:21:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BcbKD39XSz9sT6;
-        Thu, 27 Aug 2020 18:21:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1598516465;
-        bh=q9xgTqiKc5Z0bp79JsrGfN272i1bs7hHiZWI63MsqiQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DskRtKrTzAiV6DizFyUar2LYqrr36J7mAJjWvRtQ++jRqin/DMHZYbj3mkxYdRHEX
-         DFkUlW8PLvfO6ziRbmauYqpZhMvHTBw4xhFiQKMIGaSSslAkISxACVU7IkwO0dAXSw
-         7KvwvaH+PUKp5Qd1phxIrrfbHOSPYmo8hD5fPYN7hdSR+x0T5+kc2jH+GMwv23RNOC
-         aHI+Y3aLdP/t4BiczLKzbk7fr3WIVBe7ZxgW4IxSNjSdOuGHuG70m/yqNaDCKVXwE+
-         7ikqOe/wbOFzfBafcodi1raeVXS5wuekqLXyB7j0VR4ZVFgyz3qAoKfa+SBL/zumpM
-         OGcGHlsPXh4HA==
-Date:   Thu, 27 Aug 2020 18:20:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20200827182058.1c7d75ed@canb.auug.org.au>
+        Thu, 27 Aug 2020 04:22:33 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7DFC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 01:22:33 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 17so2919660pfw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 01:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ftNSmWyY4DXtAPMFhhFUNPxTBnM04m1o45AJFNQ6MLU=;
+        b=f1/fcUj8AvfqkfH010tjpwC1yboh98LK+9rN+VdhHx+mC465aqaRLgs2Xp/b0XfS5Z
+         i58biRjeJurZN7B+F416ZZEITKOAhGBNOmF4ZcmQylcjF/2LjMpkiKppo1cpvxDCZN/X
+         bZYIa6IeHL6sAsykwiWlHnN4rjxBjDVv3123g8Dg5Qu82mxGILpLxiJmVny7LHmWAC1S
+         SVumcEUWVlL5i0gDzfRgNWm63EUNe88FH5jHN5bRxorYTyIR1aiW+C7oqiv9QZP+XPcU
+         +7g7LKNdqr7WyQoITO1mJ9t2VEZEcz5ahiV+zqUbfYc0nU/d0HMFc1fJ7KxkpDYZ3D1z
+         xxeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ftNSmWyY4DXtAPMFhhFUNPxTBnM04m1o45AJFNQ6MLU=;
+        b=V303xoffOVZaX6GgV9d+gOoCJbca3JFSGKv1XPDx2IQf3EEWDffgl3460c0E8tdCfe
+         +S7mQ+0gaPJlxKGMfnrz0YtyjrXHQimHw3/Oy8Znsa/nhYNwinKzNIpWq/kz8ek8LM8I
+         h8mvTYMEgDHCyyzszllFRjkE94SBseGqOxVWfWjKtaT2e238xGRQphoo8fb51KKvJKIc
+         7x0fwQ9s/CZOGBXUSNLJYn4ETmCbiNbNLENF63wX/HfFbIvnMXHOxav0QSzKGEYT5bJ3
+         ZeNTru6LJ4qOXWha3hpqVJBYeyOuJdrq3k7vs1B7qXrFqeSkAswVEfSKzeUbDIkEWdLC
+         iPGg==
+X-Gm-Message-State: AOAM533102YzMWbCWTDAg5ngN+QYfNUTjJgTD9zPoh3NQMTbSCdifguW
+        jaU0a1CbZNsllgsgVKAgD6looA==
+X-Google-Smtp-Source: ABdhPJxJUcigDvDepGZN4aYbKgKPsbbPdwFaGloGOvO+/FBaOs+rqTuBr6qf1OkUW9FDlWEEoBbCSA==
+X-Received: by 2002:aa7:80d6:: with SMTP id a22mr15738360pfn.275.1598516553111;
+        Thu, 27 Aug 2020 01:22:33 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id 124sm1828351pfb.19.2020.08.27.01.22.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 01:22:32 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        david.abdurachmanov@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH v2 0/3] Get cache information from userland
+Date:   Thu, 27 Aug 2020 16:22:25 +0800
+Message-Id: <cover.1598515355.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P+U_TtvfBWlbAkU5prXwwlC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P+U_TtvfBWlbAkU5prXwwlC
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+There are no standard CSR registers to provide cache information, the
+way for RISC-V is to get this information from DT. Currently, AT_L1I_X,
+AT_L1D_X and AT_L2_X are present in glibc header, and sysconf syscall
+could use them to get information of cache through AUX vector. We
+exploit 'struct cacheinfo' to obtain the information of cache, then we
+don't need additional variable or data structure to record it.
 
-Hi all,
+We also need some works in glibc, but we have to support the function in
+kernel first by rule of glibc, then post the patch to glibc site.
 
-After merging the akpm-current tree, today's linux-next build (mips
-cavium_octeon_defconfig) failed like this:
+The result of 'getconf -a' as follows:
 
-arch/mips/cavium-octeon/dma-octeon.c:205:7: error: =E2=80=98mem=E2=80=99 un=
-declared (first use in this function); did you mean =E2=80=98sem=E2=80=99?
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_ICACHE_ASSOC                8
+LEVEL1_ICACHE_LINESIZE             64
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL1_DCACHE_ASSOC                8
+LEVEL1_DCACHE_LINESIZE             64
+LEVEL2_CACHE_SIZE                  2097152
+LEVEL2_CACHE_ASSOC                 32
+LEVEL2_CACHE_LINESIZE              64
 
-Caused by commit
+Changed in v2:
+  - Add error checking for parsing cache properties.
 
-  52e1a745395d ("arch, drivers: replace for_each_membock() with for_each_me=
-m_range()")
+Zong Li (3):
+  riscv: Set more data to cacheinfo
+  riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+  riscv: Add cache information in AUX vector
 
-Reported by "kernelci.org bot" <bot@kernelci.org>.
+ arch/riscv/include/asm/cacheinfo.h   |  5 ++
+ arch/riscv/include/asm/elf.h         | 13 ++++
+ arch/riscv/include/uapi/asm/auxvec.h | 24 ++++++++
+ arch/riscv/kernel/cacheinfo.c        | 91 +++++++++++++++++++++++-----
+ 4 files changed, 117 insertions(+), 16 deletions(-)
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.28.0
 
---Sig_/P+U_TtvfBWlbAkU5prXwwlC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9HbOoACgkQAVBC80lX
-0GyiKQgAoVZsAzb7AxU9YwR6KyRPfd2nrw1e8idT6PGfQZiCOtPkHssEQydDKM3E
-qpxSqKsMX1/Fc5hVq+RJlrg8Z1sNZP5d3O2PtyMkGZmzIjozp+HYbfBBey27k/RA
-vcAv8smmJUN1AXNWkOHyErDrLtWpgJMQV7kbellzob1wRhY8hbGdofztZAkHOKb9
-49s+5t/IvD3Tg7nUgBiXWL/KtqpuGTB7v7HO7A9b7aH4N3VK7Bo9blbc3joysTfd
-ZH1KFQowRede4c2fvv3UavOFuY5TrcU0V2SojA8vTOU0nOvY4ms3rUBvwWX0MQC9
-RrSPJst0g11cJ8Z1gVOzEEIDWw0kiA==
-=ta2p
------END PGP SIGNATURE-----
-
---Sig_/P+U_TtvfBWlbAkU5prXwwlC--
