@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3472F253D2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 07:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708C6253D2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 07:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgH0FTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 01:19:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2149 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgH0FTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 01:19:37 -0400
-IronPort-SDR: WYxyrhxR1ecO5UJuDjq0Uq32PltlHralx6dpiiQehvjyg/XsErSVrpQq2x128p2scEi+DXD/+s
- 5VFWa25yH1Rg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="217972617"
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="217972617"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 22:19:36 -0700
-IronPort-SDR: mlcmNCs8w3SOR7MeYKvnSIoWGJjhFxTkDd8nCGTVPOIrcEmow1IaW3L/Fv9y3Y4ifWIIO3x2GH
- jDGJmxKSyBVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="323459201"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Aug 2020 22:19:36 -0700
-Received: from [10.249.76.175] (vramuthx-MOBL1.gar.corp.intel.com [10.249.76.175])
-        by linux.intel.com (Postfix) with ESMTP id E7C3658069F;
-        Wed, 26 Aug 2020 22:19:33 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v2 1/2] extcon: ptn5150: Switch to GENMASK() and BIT()
- macros
-To:     Chanwoo Choi <cw00.choi@samsung.com>, linux-kernel@vger.kernel.org
-Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
-        myungjoo.ham@samsung.com, heikki.krogerus@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
-References: <20200827035633.37348-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <CGME20200827035649epcas1p3eb6c7abbcd8e0ac28df5be19c9ef3a32@epcas1p3.samsung.com>
- <20200827035633.37348-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <8f26c8cb-3f6b-5933-a0f8-eb765ad5016a@samsung.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <957c1c42-d5d9-1bdb-bc71-15c4e916886a@linux.intel.com>
-Date:   Thu, 27 Aug 2020 13:19:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726400AbgH0FYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 01:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726058AbgH0FYW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 01:24:22 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA6BC061244
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 22:24:22 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d19so2510773pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 22:24:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fWnOmZQiE1diGG7f4xMEwIVX10lb7UFm+giUYyHedJQ=;
+        b=kRaZNdmGKAg4HLrE/uGXgzjrobjeg9t/Pk1pY/YiXJZG9LKcE3HWgvpc4pXBQdT/Dp
+         BaxA6FsrvZamlFnpGRQfXE9kC616WOSDQ+UkXmHO/nVFHtVRF3KfvAlKf0HVXh4O9ED3
+         RpTwruLbf3b8F+mcY1Z9kMuuz7h6G9SICrgihKOAfx8BPtrYjBw9dDEDjZ3f2Y2aCD7b
+         /uQWeevM+9Lk0bvjrRJMSn9D+v/jHpvXY+fyM2NVl5fuXGJMU35CMX3EOqBr5vRBq9gw
+         cUI0oG4KZ6HRY4MaES8SY9+2m1Wx2QSkcsw8LU7zafJbDKf4IVnSwo9VMnNgBjCljAp4
+         OBqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fWnOmZQiE1diGG7f4xMEwIVX10lb7UFm+giUYyHedJQ=;
+        b=t8FGwLOwdgsGObhOPPhUxwHQo3M4NfnijTdr+GS952XDwjWTSvLTAjpUG4hffC0Ybb
+         jIa8+xSzYTOH1i9pAs+Agt1va9+6rNeyGqOkr3CHetcWADttBJ7JKCL2nzCjXiHBMren
+         R8YQYUOoUy2OovbrXArhVIvEIhPZb2NbDPwRax/1ww+KcpeNyXaxeaOlZspVnPfodfEO
+         jUNnGkA1mLOfsFzZbD322jGNbMq5k2t0F6UgX/CB7fcr0Ncdd0sRPr6QQEGFF76x2fIe
+         b/dUGRiSksR8KLxTUivF/VgCTNy7WcbYIVAbeZTSYw2PskT9PyyAcQz2HqTKn2vA/wxx
+         Mdrw==
+X-Gm-Message-State: AOAM531Cbc2CC322PPfHd5k2fY4cse6cyDKK8p9LJd3q+WeEBtH4Cc6O
+        HMAbUzTOZviXtNIKALV8UDnJWw==
+X-Google-Smtp-Source: ABdhPJzLh8QWqb6t7LN/bIJ2Bx9v84RwevI1yawLpJgTb5mA0YA9lIcxzQ+ainiIvHZ6F4jr/Q+fXA==
+X-Received: by 2002:aa7:91ce:: with SMTP id z14mr7473320pfa.241.1598505861790;
+        Wed, 26 Aug 2020 22:24:21 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id mp1sm858405pjb.27.2020.08.26.22.24.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Aug 2020 22:24:21 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] cpufreq: No need to verify cpufreq_driver in show_scaling_cur_freq()
+Date:   Thu, 27 Aug 2020 10:54:15 +0530
+Message-Id: <906198d77aa73613a1b588425aa45e5025ee60cb.1598505843.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-In-Reply-To: <8f26c8cb-3f6b-5933-a0f8-eb765ad5016a@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+"cpufreq_driver" is guaranteed to be valid here, no need to check it
+here.
 
-On 27/8/2020 1:26 pm, Chanwoo Choi wrote:
->> -
->> +	vendor_id = FIELD_GET(PTN5150_REG_DEVICE_ID_VENDOR, reg_data);
->> +	version_id = FIELD_GET(PTN5150_REG_DEVICE_ID_VERSION, reg_data);
->>   	dev_dbg(info->dev, "Device type: version: 0x%x, vendor: 0x%x\n",
->>   		version_id, vendor_id);
->>   
->>
-> Applied it. Thanks.
-Thank you!
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/cpufreq.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Regards
-Vadivel
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 02ab56b2a0d8..47aa90f9a7c2 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -703,8 +703,7 @@ static ssize_t show_scaling_cur_freq(struct cpufreq_policy *policy, char *buf)
+ 	freq = arch_freq_get_on_cpu(policy->cpu);
+ 	if (freq)
+ 		ret = sprintf(buf, "%u\n", freq);
+-	else if (cpufreq_driver && cpufreq_driver->setpolicy &&
+-			cpufreq_driver->get)
++	else if (cpufreq_driver->setpolicy && cpufreq_driver->get)
+ 		ret = sprintf(buf, "%u\n", cpufreq_driver->get(policy->cpu));
+ 	else
+ 		ret = sprintf(buf, "%u\n", policy->cur);
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
