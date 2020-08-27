@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63F1254C98
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A805254CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgH0SIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
+        id S1727885AbgH0SJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727048AbgH0SH7 (ORCPT
+        with ESMTP id S1726802AbgH0SJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:07:59 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4455C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:07:58 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j25so8894648ejk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:07:58 -0700 (PDT)
+        Thu, 27 Aug 2020 14:09:27 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4FAC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:09:26 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id f24so5723438edw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 11:09:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X3yZk4R92/MWzVrt+vnYcwH9WkmjTyPPJoHeGH+6ZfI=;
-        b=gVsG4nblq60V5WQE20uNem0i8ZWEjFlXUgY1QEYqw0+8GrhUOSNTloxcWQky/H00yz
-         SokChI0VSHdZVRL2uFUtsdQZb37+c4vwHyC4tKMzLrY2rtF0fdH9Ythr85tApJaSrTTu
-         W1ADxHAjQTR/9o13N06/BJcK7O29NTPzgth0w=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KREGXn4/t3s7e5CIyfiu4egsTwbGYCgvl0gGhBZG56k=;
+        b=pdWPzuv9UrrlIrR12iKDrFKTe42OuIvz52MOw7kgtQPkiZbqI3BGx3to2tNYzRE06U
+         Yuz6fPRIrlSkVofdwLHn99mxW59bCEkZMLH1YB0U9YPhbY29ZQDaZ5xFvIa1g42QPACa
+         W1CmcjSUsUOjsoEoYdSE0LQBkj56GNh/FTj/CWMUcXz1e/AtJ/0ivdmxSZsONtZdNH6T
+         Z1Te5DnZEmQo+9DEV4+eWn4C1hyRcaXFQfl6opbKwwfmAJQxnixz/ufCDC/IAxHQeXTM
+         ysI/pUnVBJV3esGTnZFXJU2q+0qsN6qrCsAl12udkzMbmfwnDk/kqcLyc2VhfhjmD0H4
+         /TVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=X3yZk4R92/MWzVrt+vnYcwH9WkmjTyPPJoHeGH+6ZfI=;
-        b=JUffPIto3la2Dab9Frg7KXfr2fo6iSgqOB9x5PYRTM+5VYN4u5PfuKIcAYycr3eOon
-         8cT7cc19CJ4xdcYQRo6545ntLsDkviwf4Qe8Im4pWooQkCCBr2szIrpdUSZQcea9P4AN
-         XfehDBHyM5JpGpC6dlNqR08nh8095hhbaloZZzmGKguGzG+ShDQrarsnUlp9xqhBgZ8j
-         Azbt9s3cPf8SMUpom0nRJ8UJuDzZDR56LOpr1rmYL+KKcGXDTXed8BEVOyYoYRp/zT2t
-         jeSobEAe7X1ndnOZyNy283UjU9fh9pii7eNmfQCXJV1UD7yVHTb9GmWNDK2zlClMFYZv
-         DjPg==
-X-Gm-Message-State: AOAM530ToxIBV/IOqDLrnzszL5ddXXA39Ke7BVYAgAp9b1ev4DHoc8c1
-        y5lhF8vlTMyyfnaSq0LbdeJBLA==
-X-Google-Smtp-Source: ABdhPJw8kfIPfi1jXBfW6zXPsvYI8am98QM4D+P7OxSLeYQRDW7CFkG7BemTRFu9usIJlHgrOTMQ8w==
-X-Received: by 2002:a17:906:2e98:: with SMTP id o24mr21267780eji.229.1598551677360;
-        Thu, 27 Aug 2020 11:07:57 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.112.31.cgn.fibianet.dk. [5.186.112.31])
-        by smtp.gmail.com with ESMTPSA id u6sm2452164ejf.98.2020.08.27.11.07.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 11:07:56 -0700 (PDT)
-Subject: Re: [PATCH] linux/kernel.h: add container_from()
-To:     Allen Pais <allen.lkml@gmail.com>, torvalds@linux-foundation.org
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>
-References: <20200827013636.149307-1-allen.lkml@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <2176d7e4-2949-e922-1988-fa5eedfc2220@rasmusvillemoes.dk>
-Date:   Thu, 27 Aug 2020 20:07:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=KREGXn4/t3s7e5CIyfiu4egsTwbGYCgvl0gGhBZG56k=;
+        b=uPyy3Jl+3C+WS4B+WWGLHe281CZ4LNXePklDWzxH0Cr5IGdLTBmiPHhltYI1wT+uA5
+         0bS1JvVZf/IeD0bzY4c7VP35XdDpu9SW6itO4IHQqzIDT/AtqcobWumqIIn/ktZ1zIri
+         yRidWJpRaay3noWVriQ3fxxg+ofKw//7ZV1pPQNxVqNGb81+2yvQSO/kALGrv9aim+IE
+         W+n9FZ8/vF2n5CzuwmkiXji+hbL+LwaHQOssXTMmoZo7rhyzU3y8Kq/JnytBecNk39yQ
+         9Ciut/vsusNaU7ixz51JVoZ+lKm4MAmADNqSCSVQIdJZkciPHvWo86phjnR3ryTGlK1N
+         R25w==
+X-Gm-Message-State: AOAM531crqMupFH3RWCr9huIAFuU71lN0mDGFI6hpxjUGQn4FNUqCt8Y
+        FmEQLADbMM9YKVRuL8MZCVw=
+X-Google-Smtp-Source: ABdhPJxgXfCljZ338/0s5w5roAsKUHCABrlbcFu09jeXbXunC41ZU3nmyJKDq2fA3OJL5ZRFzkneJg==
+X-Received: by 2002:a05:6402:15:: with SMTP id d21mr8934841edu.324.1598551765443;
+        Thu, 27 Aug 2020 11:09:25 -0700 (PDT)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id p9sm2432351ejg.120.2020.08.27.11.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 11:09:24 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2] x86: Use xorl %0,%0 in __get_user_asm
+Date:   Thu, 27 Aug 2020 20:09:04 +0200
+Message-Id: <20200827180904.96399-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200827013636.149307-1-allen.lkml@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/2020 03.36, Allen Pais wrote:
-> Introduce container_from() as a generic helper instead of
-> sub-systems defining a private from_* API
-> (Eg: from_tasklets recently introduced in
-> 12cc923f1ccc: Tasklet: Introduce new initialization API)
-> 
-> The helper is similar to container_of() in argument order
-> with the difference of naming the containing structure instead
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xorl %0,%0 is equivalent to xorq %0,%0 as both will zero the
+entire register.  Use xorl %0,%0 for all operand sizes to avoid
+REX prefix byte when legacy registers are used and to avoid size
+prefix byte when 16bit registers are used.
 
-> of having to specify its type.
-> 
+Zeroing the full register is OK in this use case.  xorl %0,%0 also
+breaks register dependency chains, avoiding potential partial
+register stalls with 8 and 16bit operands.
 
-> +/**
-> + * container_from - cast a member of a structure out to the containing structure
-> + * @ptr:	the pointer to the member.
-> + * @container:	the type of the container struct.
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This seems to have been copy-pasted from container_of? Shouldn't
-@container be the (local) value we're storing into? As in foo =
-container_from(..., foo, ...)? Or am I misunderstanding the purpose of this?
+The patch lowers the size of .fixup section by 20 bytes.
 
-[And I think it would read nicer if the bikeshed was called
-to_container(), but don't care deeply.]
+Changes since v1:
+- Rewrite commit message.
 
-Rasmus
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+---
+ arch/x86/include/asm/uaccess.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index ecefaffd15d4..2bffba2a1b23 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -343,7 +343,7 @@ do {									\
+ 		     "2:\n"						\
+ 		     ".section .fixup,\"ax\"\n"				\
+ 		     "3:	mov %[efault],%[errout]\n"		\
+-		     "	xor"itype" %[output],%[output]\n"		\
++		     "	xorl %k[output],%k[output]\n"			\
+ 		     "	jmp 2b\n"					\
+ 		     ".previous\n"					\
+ 		     _ASM_EXTABLE_UA(1b, 3b)				\
+-- 
+2.26.2
+
