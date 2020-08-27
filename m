@@ -2,113 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F37A2549D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3770254A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgH0PtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgH0PtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:49:08 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF42C061264;
-        Thu, 27 Aug 2020 08:49:07 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id j10so2789080qvo.13;
-        Thu, 27 Aug 2020 08:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bhg41soIay7+587Qkw7LUVijSMFtZApm/WI52siUHqo=;
-        b=r+0Z51AzGh3RpvLN7SrOrKt0OzXk1uO3gIBm2Pu/DOuix3nSPCCqDG/qHztIaXh8QN
-         HiKQC4O9rhKhDi26XChu3hE3TUHUtKZn9lndImODCUaorVuYIPQjYAx2P4/s4oXPhJLr
-         obECsPYChpudqJw0yFiMpzBRHGmzAflQMOaxX+Mr6cGcPSgwMDhh9Maz08NIpbQP5dUs
-         rugrILqOCy9Jbs6n3dzYfgVB1IyGk5ikOE4sP+wQO6OFfEhipESsiIELqzOr0tqZst49
-         TIaBzpWtk+ssgZKjAMSx4i3jtObVPBTkvz0Kb8kc8IzsXI5Bco2IwBenmb/jelgP4jQg
-         eupw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bhg41soIay7+587Qkw7LUVijSMFtZApm/WI52siUHqo=;
-        b=mXfyMg2mk5WApq8ampzsMUD6VTECn90wFOD6m3QzWoGmNYT30en8DjZ1ygsKTjIhe3
-         xsizKba6d9Eh/GYeJBu2RL7ETJAE0mL54+4gd9+VSi8HhuroxPcnmFQF823uZBhAa10j
-         Lcddcpa5z45LOslVBkq/Psrk3ZXOuWvXvQVy+pV2Rdy0K2pGDriXULYHwV1k5+atf8MY
-         qTpJadPOKVMdxA/zfrpjI1hFaWzReJaaKMsQo4WuPYIZkSzrtT3DOzkOhRjObhzdI/1j
-         2kMGtXiX6q+Ft9GweXaX2v+LsmyGLDCZqZA35tnrgBxhBPEmi/Tjv9kYkR5eaElD+SUo
-         juiQ==
-X-Gm-Message-State: AOAM531bL0KmGxKJz8LtH0bkQc/6/pik/l7J/BMefdaSJRhl6J7ANVwR
-        P0I8bpFvnotcCzdgVbOVA27Qqgr4NR+JZS7aP8jEokGQvhY=
-X-Google-Smtp-Source: ABdhPJw1Rl4RnR6X/MbtbB5gxI0GdiLcMsChgSFbr5UNmVwq/YZtYaADIxZ92er5Ilp/EDcy0juMltTIu0VNIpc1uZA=
-X-Received: by 2002:ad4:4992:: with SMTP id t18mr18408206qvx.193.1598543346813;
- Thu, 27 Aug 2020 08:49:06 -0700 (PDT)
+        id S1727884AbgH0P5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:57:54 -0400
+Received: from enpas.org ([46.38.239.100]:38182 "EHLO mail.enpas.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726321AbgH0P5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 11:57:52 -0400
+X-Greylist: delayed 486 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 11:57:50 EDT
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.enpas.org (Postfix) with ESMTPSA id CA564FF9F3;
+        Thu, 27 Aug 2020 15:49:41 +0000 (UTC)
+From:   Max Staudt <max@enpas.org>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        linux-kernel@vger.kernel.org, Max Staudt <max@enpas.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] fs/affs: Fix basic permission bits to actually work
+Date:   Thu, 27 Aug 2020 17:49:00 +0200
+Message-Id: <20200827154900.28233-1-max@enpas.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <f0a2cb7ea606f1a284d4c23cbf983da2954ce9b6.1598420968.git.mchehab+huawei@kernel.org>
-In-Reply-To: <f0a2cb7ea606f1a284d4c23cbf983da2954ce9b6.1598420968.git.mchehab+huawei@kernel.org>
-From:   Steve deRosier <derosier@gmail.com>
-Date:   Thu, 27 Aug 2020 08:48:30 -0700
-Message-ID: <CALLGbRL+duiHFd3w7hcD=u47k+JM5rLpOkMrRpW0aQm=oTfUnA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "wlcore: Adding suppoprt for IGTK key in wlcore driver"
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Maital Hahn <maitalm@ti.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Raz Bouganim <r-bouganim@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Fuqian Huang <huangfq.daxian@gmail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:49 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> This patch causes a regression betwen Kernel 5.7 and 5.8 at wlcore:
-> with it applied, WiFi stops working, and the Kernel starts printing
-> this message every second:
->
->    wlcore: PHY firmware version: Rev 8.2.0.0.242
->    wlcore: firmware booted (Rev 8.9.0.0.79)
->    wlcore: ERROR command execute failure 14
+The basic permission bits (protection bits in AmigaOS) have been broken
+in Linux' affs - it would only set bits, but never delete them.
+Also, contrary to the documentation, the Archived bit was not handled.
 
-Only if NO firmware for the device in question supports the `KEY_IGTK`
-value, then this revert is appropriate. Otherwise, it likely isn't.
- My suspicion is that the feature that `KEY_IGTK` is enabling is
-specific to a newer firmware that Mauro hasn't upgraded to. What the
-OP should do is find the updated firmware and give it a try.
+Let's fix this for good, and set the bits such that Linux and classic
+AmigaOS can coexist in the most peaceful manner.
 
-AND - since there's some firmware the feature doesn't work with, the
-driver should be fixed to detect the running firmware version and not
-do things that the firmware doesn't support.  AND the firmware writer
-should also make it so the firmware doesn't barf on bad input and
-instead rejects it politely.
+Also, update the documentation to represent the current state of things.
 
-But I will say I'm making an educated guess; while I have played with
-the TI devices in the past, it was years ago and I won't claim to be
-an expert. I also am unable to fix it myself at this time.
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Max Staudt <max@enpas.org>
+---
+ Documentation/filesystems/affs.rst | 16 ++++++++++------
+ fs/affs/amigaffs.c                 | 27 +++++++++++++++++++++++++++
+ fs/affs/file.c                     | 27 ++++++++++++++++++++++++++-
+ 3 files changed, 63 insertions(+), 7 deletions(-)
 
-I'd just rather see it fixed properly instead of a knee-jerk reaction
-of reverting it simply because the OP doesn't have current firmware.
+diff --git a/Documentation/filesystems/affs.rst b/Documentation/filesystems/affs.rst
+index 7f1a40dce6d3..5776cbd5fa53 100644
+--- a/Documentation/filesystems/affs.rst
++++ b/Documentation/filesystems/affs.rst
+@@ -110,13 +110,15 @@ The Amiga protection flags RWEDRWEDHSPARWED are handled as follows:
+ 
+   - R maps to r for user, group and others. On directories, R implies x.
+ 
+-  - If both W and D are allowed, w will be set.
++  - W maps to w.
+ 
+   - E maps to x.
+ 
+-  - H and P are always retained and ignored under Linux.
++  - D is ignored.
+ 
+-  - A is always reset when a file is written to.
++  - H, S and P are always retained and ignored under Linux.
++
++  - A is cleared when a file is written to.
+ 
+ User id and group id will be used unless set[gu]id are given as mount
+ options. Since most of the Amiga file systems are single user systems
+@@ -128,11 +130,13 @@ Linux -> Amiga:
+ 
+ The Linux rwxrwxrwx file mode is handled as follows:
+ 
+-  - r permission will set R for user, group and others.
++  - r permission will allow R for user, group and others.
++
++  - w permission will allow W for user, group and others.
+ 
+-  - w permission will set W and D for user, group and others.
++  - x permission of the user will allow E for plain files.
+ 
+-  - x permission of the user will set E for plain files.
++  - D will be allowed for user, group and others.
+ 
+   - All other flags (suid, sgid, ...) are ignored and will
+     not be retained.
+diff --git a/fs/affs/amigaffs.c b/fs/affs/amigaffs.c
+index f708c45d5f66..7952f885e6c6 100644
+--- a/fs/affs/amigaffs.c
++++ b/fs/affs/amigaffs.c
+@@ -420,24 +420,51 @@ affs_mode_to_prot(struct inode *inode)
+ 	u32 prot = AFFS_I(inode)->i_protect;
+ 	umode_t mode = inode->i_mode;
+ 
++	/*
++	 * First, clear all RWED bits for owner, group, other.
++	 * Then, recalculate them afresh.
++	 *
++	 * We'll always clear the delete-inhibit bit for the owner,
++	 * as that is the classic single-user mode AmigaOS protection
++	 * bit and we need to stay compatible with all scenarios.
++	 *
++	 * Since multi-user AmigaOS is an extension, we'll only set
++	 * the delete-allow bit if any of the other bits in the same
++	 * user class (group/other) are used.
++	 */
++	prot &= ~(FIBF_NOEXECUTE | FIBF_NOREAD
++		  | FIBF_NOWRITE | FIBF_NODELETE
++		  | FIBF_GRP_EXECUTE | FIBF_GRP_READ
++		  | FIBF_GRP_WRITE   | FIBF_GRP_DELETE
++		  | FIBF_OTR_EXECUTE | FIBF_OTR_READ
++		  | FIBF_OTR_WRITE   | FIBF_OTR_DELETE);
++
++	/* Classic single-user AmigaOS flags. These are inverted. */
+ 	if (!(mode & 0100))
+ 		prot |= FIBF_NOEXECUTE;
+ 	if (!(mode & 0400))
+ 		prot |= FIBF_NOREAD;
+ 	if (!(mode & 0200))
+ 		prot |= FIBF_NOWRITE;
++
++	/* Multi-user extended flags. Not inverted. */
+ 	if (mode & 0010)
+ 		prot |= FIBF_GRP_EXECUTE;
+ 	if (mode & 0040)
+ 		prot |= FIBF_GRP_READ;
+ 	if (mode & 0020)
+ 		prot |= FIBF_GRP_WRITE;
++	if (mode & 0070)
++		prot |= FIBF_GRP_DELETE;
++
+ 	if (mode & 0001)
+ 		prot |= FIBF_OTR_EXECUTE;
+ 	if (mode & 0004)
+ 		prot |= FIBF_OTR_READ;
+ 	if (mode & 0002)
+ 		prot |= FIBF_OTR_WRITE;
++	if (mode & 0007)
++		prot |= FIBF_OTR_DELETE;
+ 
+ 	AFFS_I(inode)->i_protect = prot;
+ }
+diff --git a/fs/affs/file.c b/fs/affs/file.c
+index a26a0f96c119..9a137e2f1782 100644
+--- a/fs/affs/file.c
++++ b/fs/affs/file.c
+@@ -429,6 +429,25 @@ static int affs_write_begin(struct file *file, struct address_space *mapping,
+ 	return ret;
+ }
+ 
++static int affs_write_end(struct file *file, struct address_space *mapping,
++			  loff_t pos, unsigned int len, unsigned int copied,
++			  struct page *page, void *fsdata)
++{
++	struct inode *inode = mapping->host;
++	int ret;
++
++	ret = generic_write_end(file, mapping, pos, len, copied,
++				page, fsdata);
++
++	/* Clear Archived bit on file writes, as AmigaOS would do */
++	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
++		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
++		mark_inode_dirty(inode);
++	}
++
++	return ret;
++}
++
+ static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	return generic_block_bmap(mapping,block,affs_get_block);
+@@ -438,7 +457,7 @@ const struct address_space_operations affs_aops = {
+ 	.readpage = affs_readpage,
+ 	.writepage = affs_writepage,
+ 	.write_begin = affs_write_begin,
+-	.write_end = generic_write_end,
++	.write_end = affs_write_end,
+ 	.direct_IO = affs_direct_IO,
+ 	.bmap = _affs_bmap
+ };
+@@ -795,6 +814,12 @@ static int affs_write_end_ofs(struct file *file, struct address_space *mapping,
+ 	if (tmp > inode->i_size)
+ 		inode->i_size = AFFS_I(inode)->mmu_private = tmp;
+ 
++	/* Clear Archived bit on file writes, as AmigaOS would do */
++	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
++		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
++		mark_inode_dirty(inode);
++	}
++
+ err_first_bh:
+ 	unlock_page(page);
+ 	put_page(page);
+-- 
+2.20.1
 
-And let's revisit the discussion of having a kernel splat because an
-unrelated piece of code fails yet the driver does exactly what it is
-supposed to do. We shouldn't be dumping registers and stack-trace when
-the code that crashed has nothing to do with the registers and
-stack-trace outputted. It is a false positive.  A simple printk WARN
-or ERROR should output notifying us that the chip firmware has crashed
-and why.  IMHO.
-
-- Steve
