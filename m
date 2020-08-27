@@ -2,364 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38372544C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7612544D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgH0MKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgH0LvW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:51:22 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9429C0619C3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:50:06 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id w17so6952583ybl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=cVuWDkLHwa5/2KrhblG6pdzJasoQug9C22emcf5s8N8=;
-        b=g0HxF1iqNkTG/iZ1NuqSDpSdtIFu/5LVjPFCvlEvPLfFc8Nt0Y9LUm/EDoP7OChPOn
-         C5ScdaXQLX26RsmBnPBcgDGY1m9qNmtIkNvlA5DrglwYMX82L3zyjd8Fdzh29+iUvB27
-         BtGIl7ot7ZYiNlDygiqTmUalK/KQEBFOQLJ9cSG87Qeqm2Ixo/7XNv8xW300Din64vmz
-         ZTtYOU5XGTP45neB/5x11Ia7kADtKZzy5kFigDbuwSL/n+cFWzuwtPPCh7/zHSMUoUg+
-         cEHxVAl3z9dhn5D6PTGY465up4NSdYwPDPX7B75uGRxdpC8rE6ySBOlHfjDmokL6hDcs
-         azWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cVuWDkLHwa5/2KrhblG6pdzJasoQug9C22emcf5s8N8=;
-        b=EslFhumkSugsmBpd6KOr/LsrAUJEzlgkAfytfXwesHjKjeXthRs7P+of8V1rsZbCzb
-         8RIptF+RodVWaLabm3Z+sFe3A3Tss+D5soEdFqj2DjPnrXMcXvPOqUjrcQQI/pBgbnQ0
-         Xn8hYBlwzBlhKhlVaFEJ+tAyfCjuFWxp0DRxlB4KwDTdilRpgF8QjA+8x+iTHiPeoAv2
-         hrQ8ErEbevB21gKtXSwX5huQiJ0Y1GqBWxRvEp1dtGnpm+Kligo1Z2qe1TQcCA/g0RpC
-         +ZQHlmWkbeSNKpA65wtSI9ut2lB7PngVBV2vIOUmEhOoNkePpWZET/MvNzonqR1WczwT
-         Ss4A==
-X-Gm-Message-State: AOAM532j5tf0rtyLhAg8qCRPwleRmDuQj3xNczl2BXRb9NLZUZjUKzan
-        yTuJ+77NJH2NK9zBAr7rRfw8Mq18RQ==
-X-Google-Smtp-Source: ABdhPJyMvXDO/j8HxgHB0/l9iea2k6+d1+5jncQNCmzp/jZuuFGmOCLYN1CMoCdszB/WupNt0Y317Ks0yQ==
-X-Received: from jannh2.zrh.corp.google.com ([2a00:79e0:1b:201:1a60:24ff:fea6:bf44])
- (user=jannh job=sendgmr) by 2002:a25:5807:: with SMTP id m7mr8209201ybb.456.1598529006101;
- Thu, 27 Aug 2020 04:50:06 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 13:49:32 +0200
-In-Reply-To: <20200827114932.3572699-1-jannh@google.com>
-Message-Id: <20200827114932.3572699-8-jannh@google.com>
+        id S1728802AbgH0MO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728746AbgH0Lu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:50:58 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 483462177B;
+        Thu, 27 Aug 2020 11:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598529032;
+        bh=FJ6VppXfhXdONz0GZcmIu4gnd/OYSpzCj9s6sDvRBk8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t9vHXty5w3CKX05loqhbwow0e6e7zcsqhVW3Z5ib1F3qjHrP3er+YBf9Ahw0hln3i
+         xBNS1q6YfTMpN3ox8Nk1QPPIYG5+uzEIXx9AvzFhHXkbExJrWm5fowdaPnZBFy893t
+         ex/4B4P90OzkDQ0SDC3xbjIaHIeYJOLuvU5jcmzU=
+Date:   Thu, 27 Aug 2020 20:50:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, Eddy Wu <Eddy_Wu@trendmicro.com>,
+        x86@kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v2 15/15] kprobes: Free kretprobe_instance with rcu
+ callback
+Message-Id: <20200827205028.964ca2ac4cd79d4e6cee7f9f@kernel.org>
+In-Reply-To: <20200827114807.GA2674@hirez.programming.kicks-ass.net>
+References: <159852811819.707944.12798182250041968537.stgit@devnote2>
+        <159852826969.707944.15092569392287597887.stgit@devnote2>
+        <20200827114807.GA2674@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-References: <20200827114932.3572699-1-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v5 7/7] mm: Remove the now-unnecessary mmget_still_valid() hack
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The preceding patches have ensured that core dumping properly takes the
-mmap_lock. Thanks to that, we can now remove mmget_still_valid() and all
-its users.
+On Thu, 27 Aug 2020 13:48:07 +0200
+peterz@infradead.org wrote:
 
-Signed-off-by: Jann Horn <jannh@google.com>
----
- drivers/infiniband/core/uverbs_main.c |  3 ---
- drivers/vfio/pci/vfio_pci.c           | 38 +++++++++++++--------------
- fs/proc/task_mmu.c                    | 18 -------------
- fs/userfaultfd.c                      | 28 +++++++-------------
- include/linux/sched/mm.h              | 25 ------------------
- mm/khugepaged.c                       |  2 +-
- mm/madvise.c                          | 17 ------------
- mm/mmap.c                             |  5 +---
- 8 files changed, 29 insertions(+), 107 deletions(-)
+> On Thu, Aug 27, 2020 at 08:37:49PM +0900, Masami Hiramatsu wrote:
+> > Free kretprobe_instance with rcu callback instead of directly
+> > freeing the object in the kretprobe handler context.
+> > 
+> > This will make kretprobe run safer in NMI context.
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  include/linux/kprobes.h |    3 ++-
+> >  kernel/kprobes.c        |   25 ++++++-------------------
+> >  2 files changed, 8 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> > index 46a7afcf5ec0..97557f820d9b 100644
+> > --- a/include/linux/kprobes.h
+> > +++ b/include/linux/kprobes.h
+> > @@ -160,6 +160,7 @@ struct kretprobe_instance {
+> >  	struct kretprobe *rp;
+> >  	kprobe_opcode_t *ret_addr;
+> >  	struct task_struct *task;
+> > +	struct rcu_head rcu;
+> >  	void *fp;
+> >  	char data[];
+> >  };
+> 
+> You can stick the rcu_head in a union with hlist.
 
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 37794d88b1f3..a4ba0b87d6de 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -845,8 +845,6 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
- 		 * will only be one mm, so no big deal.
- 		 */
- 		mmap_read_lock(mm);
--		if (!mmget_still_valid(mm))
--			goto skip_mm;
- 		mutex_lock(&ufile->umap_lock);
- 		list_for_each_entry_safe (priv, next_priv, &ufile->umaps,
- 					  list) {
-@@ -865,7 +863,6 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
- 			}
- 		}
- 		mutex_unlock(&ufile->umap_lock);
--	skip_mm:
- 		mmap_read_unlock(mm);
- 		mmput(mm);
- 	}
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 620465c2a1da..27f11cc7ba6c 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1480,31 +1480,29 @@ static int vfio_pci_zap_and_vma_lock(struct vfio_pci_device *vdev, bool try)
- 		} else {
- 			mmap_read_lock(mm);
- 		}
--		if (mmget_still_valid(mm)) {
--			if (try) {
--				if (!mutex_trylock(&vdev->vma_lock)) {
--					mmap_read_unlock(mm);
--					mmput(mm);
--					return 0;
--				}
--			} else {
--				mutex_lock(&vdev->vma_lock);
-+		if (try) {
-+			if (!mutex_trylock(&vdev->vma_lock)) {
-+				mmap_read_unlock(mm);
-+				mmput(mm);
-+				return 0;
- 			}
--			list_for_each_entry_safe(mmap_vma, tmp,
--						 &vdev->vma_list, vma_next) {
--				struct vm_area_struct *vma = mmap_vma->vma;
-+		} else {
-+			mutex_lock(&vdev->vma_lock);
-+		}
-+		list_for_each_entry_safe(mmap_vma, tmp,
-+					 &vdev->vma_list, vma_next) {
-+			struct vm_area_struct *vma = mmap_vma->vma;
- 
--				if (vma->vm_mm != mm)
--					continue;
-+			if (vma->vm_mm != mm)
-+				continue;
- 
--				list_del(&mmap_vma->vma_next);
--				kfree(mmap_vma);
-+			list_del(&mmap_vma->vma_next);
-+			kfree(mmap_vma);
- 
--				zap_vma_ptes(vma, vma->vm_start,
--					     vma->vm_end - vma->vm_start);
--			}
--			mutex_unlock(&vdev->vma_lock);
-+			zap_vma_ptes(vma, vma->vm_start,
-+				     vma->vm_end - vma->vm_start);
- 		}
-+		mutex_unlock(&vdev->vma_lock);
- 		mmap_read_unlock(mm);
- 		mmput(mm);
- 	}
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 5066b0251ed8..c43490aec95d 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1168,24 +1168,6 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
- 					count = -EINTR;
- 					goto out_mm;
- 				}
--				/*
--				 * Avoid to modify vma->vm_flags
--				 * without locked ops while the
--				 * coredump reads the vm_flags.
--				 */
--				if (!mmget_still_valid(mm)) {
--					/*
--					 * Silently return "count"
--					 * like if get_task_mm()
--					 * failed. FIXME: should this
--					 * function have returned
--					 * -ESRCH if get_task_mm()
--					 * failed like if
--					 * get_proc_task() fails?
--					 */
--					mmap_write_unlock(mm);
--					goto out_mm;
--				}
- 				for (vma = mm->mmap; vma; vma = vma->vm_next) {
- 					vma->vm_flags &= ~VM_SOFTDIRTY;
- 					vma_set_page_prot(vma);
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 0e4a3837da52..000b457ad087 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -601,8 +601,6 @@ static void userfaultfd_event_wait_completion(struct userfaultfd_ctx *ctx,
- 
- 		/* the various vma->vm_userfaultfd_ctx still points to it */
- 		mmap_write_lock(mm);
--		/* no task can run (and in turn coredump) yet */
--		VM_WARN_ON(!mmget_still_valid(mm));
- 		for (vma = mm->mmap; vma; vma = vma->vm_next)
- 			if (vma->vm_userfaultfd_ctx.ctx == release_new_ctx) {
- 				vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
-@@ -842,7 +840,6 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
- 	/* len == 0 means wake all */
- 	struct userfaultfd_wake_range range = { .len = 0, };
- 	unsigned long new_flags;
--	bool still_valid;
- 
- 	WRITE_ONCE(ctx->released, true);
- 
-@@ -858,7 +855,6 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
- 	 * taking the mmap_lock for writing.
- 	 */
- 	mmap_write_lock(mm);
--	still_valid = mmget_still_valid(mm);
- 	prev = NULL;
- 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
- 		cond_resched();
-@@ -869,17 +865,15 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
- 			continue;
- 		}
- 		new_flags = vma->vm_flags & ~(VM_UFFD_MISSING | VM_UFFD_WP);
--		if (still_valid) {
--			prev = vma_merge(mm, prev, vma->vm_start, vma->vm_end,
--					 new_flags, vma->anon_vma,
--					 vma->vm_file, vma->vm_pgoff,
--					 vma_policy(vma),
--					 NULL_VM_UFFD_CTX);
--			if (prev)
--				vma = prev;
--			else
--				prev = vma;
--		}
-+		prev = vma_merge(mm, prev, vma->vm_start, vma->vm_end,
-+				 new_flags, vma->anon_vma,
-+				 vma->vm_file, vma->vm_pgoff,
-+				 vma_policy(vma),
-+				 NULL_VM_UFFD_CTX);
-+		if (prev)
-+			vma = prev;
-+		else
-+			prev = vma;
- 		vma->vm_flags = new_flags;
- 		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
- 	}
-@@ -1309,8 +1303,6 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 		goto out;
- 
- 	mmap_write_lock(mm);
--	if (!mmget_still_valid(mm))
--		goto out_unlock;
- 	vma = find_vma_prev(mm, start, &prev);
- 	if (!vma)
- 		goto out_unlock;
-@@ -1511,8 +1503,6 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
- 		goto out;
- 
- 	mmap_write_lock(mm);
--	if (!mmget_still_valid(mm))
--		goto out_unlock;
- 	vma = find_vma_prev(mm, start, &prev);
- 	if (!vma)
- 		goto out_unlock;
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index f889e332912f..e9cd1e637d76 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -49,31 +49,6 @@ static inline void mmdrop(struct mm_struct *mm)
- 		__mmdrop(mm);
- }
- 
--/*
-- * This has to be called after a get_task_mm()/mmget_not_zero()
-- * followed by taking the mmap_lock for writing before modifying the
-- * vmas or anything the coredump pretends not to change from under it.
-- *
-- * It also has to be called when mmgrab() is used in the context of
-- * the process, but then the mm_count refcount is transferred outside
-- * the context of the process to run down_write() on that pinned mm.
-- *
-- * NOTE: find_extend_vma() called from GUP context is the only place
-- * that can modify the "mm" (notably the vm_start/end) under mmap_lock
-- * for reading and outside the context of the process, so it is also
-- * the only case that holds the mmap_lock for reading that must call
-- * this function. Generally if the mmap_lock is hold for reading
-- * there's no need of this check after get_task_mm()/mmget_not_zero().
-- *
-- * This function can be obsoleted and the check can be removed, after
-- * the coredump code will hold the mmap_lock for writing before
-- * invoking the ->core_dump methods.
-- */
--static inline bool mmget_still_valid(struct mm_struct *mm)
--{
--	return likely(!mm->core_state);
--}
--
- /**
-  * mmget() - Pin the address space associated with a &struct mm_struct.
-  * @mm: The address space to pin.
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 15a9af791014..101b636c72b5 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -431,7 +431,7 @@ static void insert_to_mm_slots_hash(struct mm_struct *mm,
- 
- static inline int khugepaged_test_exit(struct mm_struct *mm)
- {
--	return atomic_read(&mm->mm_users) == 0 || !mmget_still_valid(mm);
-+	return atomic_read(&mm->mm_users) == 0;
- }
- 
- static bool hugepage_vma_check(struct vm_area_struct *vma,
-diff --git a/mm/madvise.c b/mm/madvise.c
-index dd1d43cf026d..d5b33d9011f0 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1091,23 +1091,6 @@ int do_madvise(unsigned long start, size_t len_in, int behavior)
- 	if (write) {
- 		if (mmap_write_lock_killable(current->mm))
- 			return -EINTR;
--
--		/*
--		 * We may have stolen the mm from another process
--		 * that is undergoing core dumping.
--		 *
--		 * Right now that's io_ring, in the future it may
--		 * be remote process management and not "current"
--		 * at all.
--		 *
--		 * We need to fix core dumping to not do this,
--		 * but for now we have the mmget_still_valid()
--		 * model.
--		 */
--		if (!mmget_still_valid(current->mm)) {
--			mmap_write_unlock(current->mm);
--			return -EINTR;
--		}
- 	} else {
- 		mmap_read_lock(current->mm);
- 	}
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 40248d84ad5f..c47abe460439 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2552,7 +2552,7 @@ find_extend_vma(struct mm_struct *mm, unsigned long addr)
- 	if (vma && (vma->vm_start <= addr))
- 		return vma;
- 	/* don't alter vm_end if the coredump is running */
--	if (!prev || !mmget_still_valid(mm) || expand_stack(prev, addr))
-+	if (!prev || expand_stack(prev, addr))
- 		return NULL;
- 	if (prev->vm_flags & VM_LOCKED)
- 		populate_vma_page_range(prev, addr, prev->vm_end, NULL);
-@@ -2578,9 +2578,6 @@ find_extend_vma(struct mm_struct *mm, unsigned long addr)
- 		return vma;
- 	if (!(vma->vm_flags & VM_GROWSDOWN))
- 		return NULL;
--	/* don't alter vm_start if the coredump is running */
--	if (!mmget_still_valid(mm))
--		return NULL;
- 	start = vma->vm_start;
- 	if (expand_stack(vma, addr))
- 		return NULL;
+Indeed. OK, I'll update it.
+
+Thank you!
+
+
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
