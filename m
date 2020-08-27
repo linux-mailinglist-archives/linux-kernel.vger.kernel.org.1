@@ -2,167 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CA3254913
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4DC25495B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgH0PU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:20:28 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:58451 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728480AbgH0PUP (ORCPT
+        id S1727968AbgH0P1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:27:53 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56806 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbgH0P1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:20:15 -0400
-Received: from fsav404.sakura.ne.jp (fsav404.sakura.ne.jp [133.242.250.103])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 07RFK9UG015546;
-        Fri, 28 Aug 2020 00:20:10 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav404.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp);
- Fri, 28 Aug 2020 00:20:09 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 07RFK9M2015540
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 28 Aug 2020 00:20:09 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: [PATCH v2] lockdep: Allow tuning tracing capacity constants.
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>,
-        syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>,
-        syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
-Date:   Fri, 28 Aug 2020 00:20:07 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 27 Aug 2020 11:27:49 -0400
+Received: from 89-64-89-85.dynamic.chello.pl (89.64.89.85) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
+ id d18a1a6fd4eca9ad; Thu, 27 Aug 2020 17:27:45 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH v3 4/5] cpufreq: intel_pstate: Add ->offline and ->online callbacks
+Date:   Thu, 27 Aug 2020 17:20:11 +0200
+Message-ID: <1825858.9IUoltcDtD@kreacher>
+In-Reply-To: <2240881.fzTuzKk6Gz@kreacher>
+References: <2240881.fzTuzKk6Gz@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since syzkaller continues various test cases until the kernel crashes,
-syzkaller tends to examine more locking dependencies than normal systems.
-As a result, syzbot is reporting that the fuzz testing was terminated
-due to hitting upper limits lockdep can track [1] [2] [3].
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-Let's allow individually tuning upper limits via kernel config options
-(based on an assumption that there is no inter-dependency among these
-constants).
+Add ->offline and ->online driver callbacks to prepare for taking a
+CPU offline and to restore its working configuration when it goes
+back online, respectively, to avoid invoking the ->init callback on
+every CPU online which is quite a bit of unnecessary overhead.
 
-[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
-[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+Define ->offline and ->online so that they can be used in the
+passive mode as well as in the active mode and because ->offline
+will do the majority of ->stop_cpu work, the passive mode does
+not need that callback any more, so drop it from there.
 
-Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Also modify the active mode ->suspend and ->resume callbacks to
+prevent them from interfering with the new ->offline and ->online
+ones in case the latter are invoked withing the system-wide suspend
+and resume code flow and make the passive mode use them too.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- kernel/locking/lockdep.c           |  2 +-
- kernel/locking/lockdep_internals.h |  8 +++---
- lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 2fad21d345b0..5a058fcec435 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1349,7 +1349,7 @@ static int add_lock_to_list(struct lock_class *this,
- /*
-  * For good efficiency of modular, we use power of 2
+-> v2: Rearrange intel_pstate_init_cpu() to restore some of the previous
+       behavior of it to retain the current active-mode EPP management.
+
+v2 -> v3:
+   * Fold the previous [5/5] in, rework intel_pstate_resume(), add
+     intel_pstate_suspend().
+   * Drop intel_pstate_hwp_save_state() and drop epp_saved from struct cpudata.
+   * Update the changelog.
+
+---
+ drivers/cpufreq/intel_pstate.c | 139 +++++++++++++++++++++------------
+ 1 file changed, 91 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index b308c39b6204..a265ccbcbbd7 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -219,14 +219,13 @@ struct global_params {
+  * @epp_policy:		Last saved policy used to set EPP/EPB
+  * @epp_default:	Power on default HWP energy performance
+  *			preference/bias
+- * @epp_saved:		Saved EPP/EPB during system suspend or CPU offline
+- *			operation
+  * @epp_cached		Cached HWP energy-performance preference value
+  * @hwp_req_cached:	Cached value of the last HWP Request MSR
+  * @hwp_cap_cached:	Cached value of the last HWP Capabilities MSR
+  * @last_io_update:	Last time when IO wake flag was set
+  * @sched_flags:	Store scheduler flags for possible cross CPU update
+  * @hwp_boost_min:	Last HWP boosted min performance
++ * @suspended:		Whether or not the driver has been suspended.
+  *
+  * This structure stores per CPU instance data for all CPUs.
   */
--#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
-+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
- #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+@@ -258,13 +257,13 @@ struct cpudata {
+ 	s16 epp_powersave;
+ 	s16 epp_policy;
+ 	s16 epp_default;
+-	s16 epp_saved;
+ 	s16 epp_cached;
+ 	u64 hwp_req_cached;
+ 	u64 hwp_cap_cached;
+ 	u64 last_io_update;
+ 	unsigned int sched_flags;
+ 	u32 hwp_boost_min;
++	bool suspended;
+ };
  
- /*
-diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
-index baca699b94e9..8435a11bf456 100644
---- a/kernel/locking/lockdep_internals.h
-+++ b/kernel/locking/lockdep_internals.h
-@@ -94,16 +94,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
- #define MAX_STACK_TRACE_ENTRIES	262144UL
- #define STACK_TRACE_HASH_SIZE	8192
- #else
--#define MAX_LOCKDEP_ENTRIES	32768UL
-+#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
+ static struct cpudata **all_cpu_data;
+@@ -871,12 +870,6 @@ static void intel_pstate_hwp_set(unsigned int cpu)
  
--#define MAX_LOCKDEP_CHAINS_BITS	16
-+#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
+ 	cpu_data->epp_policy = cpu_data->policy;
  
- /*
-  * Stack-trace: tightly packed array of stack backtrace
-  * addresses. Protected by the hash_lock.
-  */
--#define MAX_STACK_TRACE_ENTRIES	524288UL
--#define STACK_TRACE_HASH_SIZE	16384
-+#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-+#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
- #endif
+-	if (cpu_data->epp_saved >= 0) {
+-		epp = cpu_data->epp_saved;
+-		cpu_data->epp_saved = -EINVAL;
+-		goto update_epp;
+-	}
+-
+ 	if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE) {
+ 		epp = intel_pstate_get_epp(cpu_data, value);
+ 		cpu_data->epp_powersave = epp;
+@@ -903,7 +896,6 @@ static void intel_pstate_hwp_set(unsigned int cpu)
  
- /*
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index e068c3c7189a..d7612e132986 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1311,6 +1311,46 @@ config LOCKDEP
- config LOCKDEP_SMALL
- 	bool
+ 		epp = cpu_data->epp_powersave;
+ 	}
+-update_epp:
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+ 		value &= ~GENMASK_ULL(31, 24);
+ 		value |= (u64)epp << 24;
+@@ -915,14 +907,24 @@ static void intel_pstate_hwp_set(unsigned int cpu)
+ 	wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+ }
  
-+config LOCKDEP_BITS
-+	int "Bitsize for MAX_LOCKDEP_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 15
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
+-static void intel_pstate_hwp_force_min_perf(int cpu)
++static void intel_pstate_hwp_offline(struct cpudata *cpu)
+ {
+-	u64 value;
++	u64 value = READ_ONCE(cpu->hwp_req_cached);
+ 	int min_perf;
+ 
+-	value = all_cpu_data[cpu]->hwp_req_cached;
++	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
++		/*
++		 * In case the EPP has been set to "performance" by the
++		 * active mode "performance" scaling algorithm, replace that
++		 * temporary value with the cached EPP one.
++		 */
++		value &= ~GENMASK_ULL(31, 24);
++		value |= HWP_ENERGY_PERF_PREFERENCE(cpu->epp_cached);
++		WRITE_ONCE(cpu->hwp_req_cached, value);
++	}
 +
-+config LOCKDEP_CHAINS_BITS
-+	int "Bitsize for MAX_LOCKDEP_CHAINS"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 16
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
+ 	value &= ~GENMASK_ULL(31, 0);
+-	min_perf = HWP_LOWEST_PERF(all_cpu_data[cpu]->hwp_cap_cached);
++	min_perf = HWP_LOWEST_PERF(cpu->hwp_cap_cached);
+ 
+ 	/* Set hwp_max = hwp_min */
+ 	value |= HWP_MAX_PERF(min_perf);
+@@ -932,19 +934,7 @@ static void intel_pstate_hwp_force_min_perf(int cpu)
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP))
+ 		value |= HWP_ENERGY_PERF_PREFERENCE(HWP_EPP_POWERSAVE);
+ 
+-	wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+-}
+-
+-static int intel_pstate_hwp_save_state(struct cpufreq_policy *policy)
+-{
+-	struct cpudata *cpu_data = all_cpu_data[policy->cpu];
+-
+-	if (!hwp_active)
+-		return 0;
+-
+-	cpu_data->epp_saved = intel_pstate_get_epp(cpu_data, 0);
+-
+-	return 0;
++	wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
+ }
+ 
+ #define POWER_CTL_EE_ENABLE	1
+@@ -971,8 +961,22 @@ static void set_power_ctl_ee_state(bool input)
+ 
+ static void intel_pstate_hwp_enable(struct cpudata *cpudata);
+ 
++static int intel_pstate_suspend(struct cpufreq_policy *policy)
++{
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
 +
-+config LOCKDEP_STACK_TRACE_BITS
-+	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 19
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
++	pr_debug("CPU %d suspending\n", cpu->cpu);
 +
-+config LOCKDEP_STACK_TRACE_HASH_BITS
-+	int "Bitsize for STACK_TRACE_HASH_SIZE"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 14
-+	help
-+	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
++	cpu->suspended = true;
 +
-+config LOCKDEP_CIRCULAR_QUEUE_BITS
-+	int "Bitsize for elements in circular_queue struct"
-+	depends on LOCKDEP
-+	range 10 30
-+	default 12
-+	help
-+	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
++	return 0;
++}
 +
- config DEBUG_LOCKDEP
- 	bool "Lock dependency engine debugging"
- 	depends on DEBUG_KERNEL && LOCKDEP
+ static int intel_pstate_resume(struct cpufreq_policy *policy)
+ {
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
++
++	pr_debug("CPU %d resuming\n", cpu->cpu);
+ 
+ 	/* Only restore if the system default is changed */
+ 	if (power_ctl_ee_state == POWER_CTL_EE_ENABLE)
+@@ -980,18 +984,22 @@ static int intel_pstate_resume(struct cpufreq_policy *policy)
+ 	else if (power_ctl_ee_state == POWER_CTL_EE_DISABLE)
+ 		set_power_ctl_ee_state(false);
+ 
+-	if (!hwp_active)
+-		return 0;
++	if (hwp_active) {
++		mutex_lock(&intel_pstate_limits_lock);
+ 
+-	mutex_lock(&intel_pstate_limits_lock);
++		/*
++		 * Enable for all CPUs, because the boot CPU may not be the
++		 * first one to resume.
++		 */
++		intel_pstate_hwp_enable(cpu);
+ 
+-	if (policy->cpu == 0)
+-		intel_pstate_hwp_enable(all_cpu_data[policy->cpu]);
++		wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST,
++			      READ_ONCE(cpu->hwp_req_cached));
+ 
+-	all_cpu_data[policy->cpu]->epp_policy = 0;
+-	intel_pstate_hwp_set(policy->cpu);
++		mutex_unlock(&intel_pstate_limits_lock);
++	}
+ 
+-	mutex_unlock(&intel_pstate_limits_lock);
++	cpu->suspended = false;
+ 
+ 	return 0;
+ }
+@@ -1440,7 +1448,6 @@ static void intel_pstate_hwp_enable(struct cpudata *cpudata)
+ 		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
+ 
+ 	wrmsrl_on_cpu(cpudata->cpu, MSR_PM_ENABLE, 0x1);
+-	cpudata->epp_policy = 0;
+ 	if (cpudata->epp_default == -EINVAL)
+ 		cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
+ }
+@@ -2111,7 +2118,6 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
+ 
+ 		cpu->epp_default = -EINVAL;
+ 		cpu->epp_powersave = -EINVAL;
+-		cpu->epp_saved = -EINVAL;
+ 	}
+ 
+ 	cpu = all_cpu_data[cpunum];
+@@ -2122,6 +2128,7 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
+ 		const struct x86_cpu_id *id;
+ 
+ 		intel_pstate_hwp_enable(cpu);
++		cpu->epp_policy = 0;
+ 
+ 		id = x86_match_cpu(intel_pstate_hwp_boost_ids);
+ 		if (id && intel_pstate_acpi_pm_profile_server())
+@@ -2308,28 +2315,59 @@ static int intel_pstate_verify_policy(struct cpufreq_policy_data *policy)
+ 	return 0;
+ }
+ 
+-static void intel_cpufreq_stop_cpu(struct cpufreq_policy *policy)
++static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+ {
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
++
++	pr_debug("CPU %d going offline\n", cpu->cpu);
++
++	if (cpu->suspended)
++		return 0;
++
++	intel_pstate_exit_perf_limits(policy);
++
++	/*
++	 * If the CPU is an SMT thread and it goes offline with the performance
++	 * settings different from the minimum, it will prevent its sibling
++	 * from getting to lower performance levels, so force the minimum
++	 * performance on CPU offline to prevent that from happening.
++	 */
+ 	if (hwp_active)
+-		intel_pstate_hwp_force_min_perf(policy->cpu);
++		intel_pstate_hwp_offline(cpu);
+ 	else
+-		intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
++		intel_pstate_set_min_pstate(cpu);
++
++	return 0;
+ }
+ 
+-static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
++static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+ {
+-	pr_debug("CPU %d exiting\n", policy->cpu);
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
++
++	pr_debug("CPU %d going online\n", cpu->cpu);
++
++	if (cpu->suspended)
++		return 0;
++
++	intel_pstate_init_acpi_perf_limits(policy);
+ 
+-	intel_pstate_clear_update_util_hook(policy->cpu);
+ 	if (hwp_active)
+-		intel_pstate_hwp_save_state(policy);
++		wrmsrl_on_cpu(policy->cpu, MSR_HWP_REQUEST,
++			      READ_ONCE(cpu->hwp_req_cached));
++
++	return 0;
++}
++
++static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
++{
++	pr_debug("CPU %d stopping\n", policy->cpu);
+ 
+-	intel_cpufreq_stop_cpu(policy);
++	intel_pstate_clear_update_util_hook(policy->cpu);
+ }
+ 
+ static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+ {
+-	intel_pstate_exit_perf_limits(policy);
++	pr_debug("CPU %d exiting\n", policy->cpu);
+ 
+ 	policy->fast_switch_possible = false;
+ 
+@@ -2403,11 +2441,13 @@ static struct cpufreq_driver intel_pstate = {
+ 	.flags		= CPUFREQ_CONST_LOOPS,
+ 	.verify		= intel_pstate_verify_policy,
+ 	.setpolicy	= intel_pstate_set_policy,
+-	.suspend	= intel_pstate_hwp_save_state,
++	.suspend	= intel_pstate_suspend,
+ 	.resume		= intel_pstate_resume,
+ 	.init		= intel_pstate_cpu_init,
+ 	.exit		= intel_pstate_cpu_exit,
+ 	.stop_cpu	= intel_pstate_stop_cpu,
++	.offline	= intel_pstate_cpu_offline,
++	.online		= intel_pstate_cpu_online,
+ 	.update_limits	= intel_pstate_update_limits,
+ 	.name		= "intel_pstate",
+ };
+@@ -2662,7 +2702,10 @@ static struct cpufreq_driver intel_cpufreq = {
+ 	.fast_switch	= intel_cpufreq_fast_switch,
+ 	.init		= intel_cpufreq_cpu_init,
+ 	.exit		= intel_cpufreq_cpu_exit,
+-	.stop_cpu	= intel_cpufreq_stop_cpu,
++	.offline	= intel_pstate_cpu_offline,
++	.online		= intel_pstate_cpu_online,
++	.suspend	= intel_pstate_suspend,
++	.resume		= intel_pstate_resume,
+ 	.update_limits	= intel_pstate_update_limits,
+ 	.name		= "intel_cpufreq",
+ };
 -- 
-2.18.4
+2.26.2
+
+
 
 
