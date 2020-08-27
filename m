@@ -2,133 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AF7254831
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D422548AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgH0O76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgH0O7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:59:42 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2306DC061232
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:59:42 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y206so3702729pfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WuL1dIUKsXBKS74w29uHtR6KbU+GU+6B3P99Ro425TA=;
-        b=ghTzCFJCnPmQ+DImiDILpCS6WX5yhT8MFpZj9RUpmJjv3EXxiJN5WUqT8L4MXcuwxD
-         pDNzURkebg9gNy52q5ZsI/Dui3sJhS0Z/2W9PKez79BQdhhRwnf5Mb6p8J4gRu4Gxh8v
-         SveFSFYljkwpakvd+DNDZCZJZwc8Vmf6chJRE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WuL1dIUKsXBKS74w29uHtR6KbU+GU+6B3P99Ro425TA=;
-        b=GJFowid9+fTCMqZtWfdeCrcAej47JBoNLAiL3pZCDJ860MdrLQ3yo2VUxMM2uT1j1d
-         b9H7BXK0r7iux3sgeDoBS6dUVp9fImOjuKE+g/GkOAnn5sKv9OQH0exzDB432kU5jQVf
-         8tM6sHTg/dV6U3yKy5D+p50UH7WOvpgQmN6F6yTt/SeAEf2i0SWcWshakYQmtr2vD1f2
-         D77Hx0GAbGfr+ifbP7x7qXpDl7nd4Bn6TmBl6Y/lBbojYaK3ool8RgkrzXtFmW/Fyz4s
-         oqPJhogB4XrzZpIgMBsnqiDGvJMKhGhHtJ6fushbDyhqep8Hx0A9yzIFhwx8k5WwSaPM
-         8C4A==
-X-Gm-Message-State: AOAM532zFXC41FnkZDlowVPuYKnmuyNw39Ll9r+m/XVn2k3kIDQkLALh
-        eNeu9OcI7kw4Ed5XDdH7s7eqvw==
-X-Google-Smtp-Source: ABdhPJzzU+IA2AKHCax5T4tD+YBJLoQ/6ieQfs/9z2zBy3H5T5H0eGgx+8rRdt3zBu85loFG04lVjg==
-X-Received: by 2002:aa7:9427:: with SMTP id y7mr17053693pfo.12.1598540381631;
-        Thu, 27 Aug 2020 07:59:41 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id u123sm3113198pfb.209.2020.08.27.07.59.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:59:41 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     vbadigan@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chris Ball <chris@printf.net>,
-        Georgi Djakov <gdjakov@mm-sol.com>,
-        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH] mmc: sdhci-msm: Add retries when all tuning phases are found valid
-Date:   Thu, 27 Aug 2020 07:58:41 -0700
-Message-Id: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
+        id S1728591AbgH0PKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:10:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:57320 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728925AbgH0LtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:49:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6114C31B;
+        Thu, 27 Aug 2020 03:54:39 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 220DF3F68F;
+        Thu, 27 Aug 2020 03:54:36 -0700 (PDT)
+Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
+ <20200827103819.GE29264@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <8affcfbe-b8b4-0914-1651-368f669ddf85@arm.com>
+Date:   Thu, 27 Aug 2020 11:56:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200827103819.GE29264@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the comments in this patch say, if we tune and find all phases are
-valid it's _almost_ as bad as no phases being found valid.  Probably
-all phases are not really reliable but we didn't detect where the
-unreliable place is.  That means we'll essentially be guessing and
-hoping we get a good phase.
+On 8/27/20 11:38 AM, Catalin Marinas wrote:
+> On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
+>> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+>> index cde127508e38..a17fefb0571b 100644
+>> --- a/arch/arm64/kernel/entry.S
+>> +++ b/arch/arm64/kernel/entry.S
+>> @@ -172,6 +172,29 @@ alternative_else_nop_endif
+>>  #endif
+>>  	.endm
+>>  
+>> +	/* Note: tmp should always be a callee-saved register */
+> 
+> Why callee-saved? Do you preserve it anywhere here?
+>
 
-This is not just a problem in theory.  It was causing real problems on
-a real board.  On that board, most often phase 10 is found as the only
-invalid phase, though sometimes 10 and 11 are invalid and sometimes
-just 11.  Some percentage of the time, however, all phases are found
-to be valid.  When this happens, the current logic will decide to use
-phase 11.  Since phase 11 is sometimes found to be invalid, this is a
-bad choice.  Sure enough, when phase 11 is picked we often get mmc
-errors later in boot.
+Aargh, this is an old comment, I forgot to remove it after the last refactor.
+Thank you for pointing this out.
 
-I have seen cases where all phases were found to be valid 3 times in a
-row, so increase the retry count to 10 just to be extra sure.
+>> +	.macro mte_restore_gcr, el, tsk, tmp, tmp2
+>> +#ifdef CONFIG_ARM64_MTE
+>> +alternative_if_not ARM64_MTE
+>> +	b	1f
+>> +alternative_else_nop_endif
+>> +	.if	\el == 0
+>> +	ldr	\tmp, [\tsk, #THREAD_GCR_EL1_USER]
+>> +	.else
+>> +	ldr_l	\tmp, gcr_kernel_excl
+>> +	.endif
+>> +	/*
+>> +	 * Calculate and set the exclude mask preserving
+>> +	 * the RRND (bit[16]) setting.
+>> +	 */
+>> +	mrs_s	\tmp2, SYS_GCR_EL1
+>> +	bfi	\tmp2, \tmp, #0, #16
+>> +	msr_s	SYS_GCR_EL1, \tmp2
+>> +	isb
+>> +1:
+>> +#endif
+>> +	.endm
+>> +
+>>  	.macro	kernel_entry, el, regsize = 64
+>>  	.if	\regsize == 32
+>>  	mov	w0, w0				// zero upper 32 bits of x0
+>> @@ -209,6 +232,8 @@ alternative_else_nop_endif
+>>  
+>>  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+>>  
+>> +	mte_restore_gcr 1, tsk, x22, x23
+>> +
+>>  	scs_load tsk, x20
+>>  	.else
+>>  	add	x21, sp, #S_FRAME_SIZE
+>> @@ -386,6 +411,8 @@ alternative_else_nop_endif
+>>  	/* No kernel C function calls after this as user keys are set. */
+>>  	ptrauth_keys_install_user tsk, x0, x1, x2
+>>  
+>> +	mte_restore_gcr 0, tsk, x0, x1
+>> +
+>>  	apply_ssbd 0, x0, x1
+>>  	.endif
+>>  
+>> @@ -957,6 +984,7 @@ SYM_FUNC_START(cpu_switch_to)
+>>  	mov	sp, x9
+>>  	msr	sp_el0, x1
+>>  	ptrauth_keys_install_kernel x1, x8, x9, x10
+>> +	mte_restore_gcr 1, x1, x8, x9
+>>  	scs_save x0, x8
+>>  	scs_load x1, x8
+>>  	ret
+> 
+> Since we set GCR_EL1 on exception entry and return, why is this needed?
+> We don't have a per-kernel thread GCR_EL1, it's global to all threads,
+> so I think cpu_switch_to() should not be touched.
+> 
 
-Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning implementation")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+I agree, we can remove it. We only require the kernel entry and the kernel exit
+ones.
 
- drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 7717ea9bc2a7..cfac7d02f032 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -18,10 +18,14 @@
+>>  
+>>  #include <asm/barrier.h>
+>>  #include <asm/cpufeature.h>
+>> +#include <asm/kasan.h>
+>> +#include <asm/kprobes.h>
+>>  #include <asm/mte.h>
+>>  #include <asm/ptrace.h>
+>>  #include <asm/sysreg.h>
+>>  
+>> +u64 gcr_kernel_excl __read_mostly;
+> 
+> Could we make this __ro_after_init?
+>
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index b7e47107a31a..1b78106681e0 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1165,7 +1165,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host *host, bool enable)
- static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
--	int tuning_seq_cnt = 3;
-+	int tuning_seq_cnt = 10;
- 	u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
- 	int rc;
- 	struct mmc_ios ios = host->mmc->ios;
-@@ -1221,6 +1221,22 @@ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 	} while (++phase < ARRAY_SIZE(tuned_phases));
- 
- 	if (tuned_phase_cnt) {
-+		if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
-+			/*
-+			 * All phases valid is _almost_ as bad as no phases
-+			 * valid.  Probably all phases are not really reliable
-+			 * but we didn't detect where the unreliable place is.
-+			 * That means we'll essentially be guessing and hoping
-+			 * we get a good phase.  Better to try a few times.
-+			 */
-+			dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
-+				mmc_hostname(mmc));
-+			if (--tuning_seq_cnt) {
-+				tuned_phase_cnt = 0;
-+				goto retry;
-+			}
-+		}
-+
- 		rc = msm_find_most_appropriate_phase(host, tuned_phases,
- 						     tuned_phase_cnt);
- 		if (rc < 0)
+Yes, it makes sense, it should be updated only once through mte_init_tags().
+
+Something to consider though here is that this might not be the right approach
+if in future we want to add stack tagging. In such a case we need to know the
+kernel exclude mask before any C code is executed. Initializing the mask via
+mte_init_tags() it is too late.
+
+I was thinking to add a compilation define instead of having gcr_kernel_excl in
+place. This might not work if the kernel excl mask is meant to change during the
+execution.
+
+Thoughts?
+
+>> +
+>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>>  {
+>>  	pte_t old_pte = READ_ONCE(*ptep);
+>> @@ -115,6 +119,13 @@ void * __must_check mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>  	return ptr;
+>>  }
+>>  
+>> +void mte_init_tags(u64 max_tag)
+>> +{
+>> +	u64 incl = ((1ULL << ((max_tag & MTE_TAG_MAX) + 1)) - 1);
+> 
+> I'd rather use GENMASK here, it is more readable.
+> 
+
+Agree, we can change it.
+
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+Regards,
+Vincenzo
