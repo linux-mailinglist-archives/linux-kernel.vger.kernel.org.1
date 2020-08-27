@@ -2,123 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34469254961
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF932548CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgH0P2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:28:14 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:53246 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726968AbgH0P1u (ORCPT
+        id S1726929AbgH0PNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:13:53 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34292 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728113AbgH0PNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:27:50 -0400
-Received: from 89-64-89-85.dynamic.chello.pl (89.64.89.85) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
- id d8641ec3ba7b54ca; Thu, 27 Aug 2020 17:27:48 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH v3 2/5] cpufreq: intel_pstate: Update cached EPP in the active mode
-Date:   Thu, 27 Aug 2020 17:13:04 +0200
-Message-ID: <2228512.FFnbCeqPFy@kreacher>
-In-Reply-To: <2240881.fzTuzKk6Gz@kreacher>
-References: <2240881.fzTuzKk6Gz@kreacher>
+        Thu, 27 Aug 2020 11:13:19 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y2so6860178ljc.1;
+        Thu, 27 Aug 2020 08:13:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=MEWPiw5piojwJx0HXGqMChFUJz2WVZKjHfpQDVb1WDo=;
+        b=pV9IToRuYwYVD0Z5AMTEUTuwrqVy2BQbX+AYMU9RiBLt204l5WuHq68pek+0ml/+9b
+         MoP+039T6hfhxXLiPsNAmsFtlm6GlwamoTqkILUL5+CNDmUaYVxRDqU/86Rm8jcEDSD+
+         z/Vg9EFrDiyrajELwPlUJYUgkuG6kfk825c/PlzoJ0dn7uRJAxRLrVAHe35Sp3vynemf
+         oCWxT1evvg7S+LcUbQcKDgSfgg7ZtMOoZxyHsUahU0S9msgsl8B2ZO4Ii3OLg9K6QTgF
+         JTg8U4PDugAexzu4Idfy75PlOElxznWW5H4NCTzrB4iuuxXWdEidNq+0mWm2mVdDiQpd
+         botQ==
+X-Gm-Message-State: AOAM530Ss32d7/7z557qqQSiMR/DHRKM3PLkVP/UBdoDFC1Ih967foYi
+        H3oQbeKlZGBCs1y/9L9bOadxQNVAJL4=
+X-Google-Smtp-Source: ABdhPJzRi/K+ZxgMMPN4ye+ZbaySMIF6KnUTgIdlJy+0Sg7cd6oK7qzrmd+SlpIgscCLmvGAMP8lPQ==
+X-Received: by 2002:a2e:9d8e:: with SMTP id c14mr10426635ljj.332.1598541196060;
+        Thu, 27 Aug 2020 08:13:16 -0700 (PDT)
+Received: from [192.168.1.8] ([213.87.147.111])
+        by smtp.gmail.com with ESMTPSA id d10sm530058ljg.87.2020.08.27.08.13.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 08:13:15 -0700 (PDT)
+Subject: Re: [PATCH v2] scsi: libcxgbi: use kvzalloc instead of opencoded
+ kzalloc/vzalloc
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>
+References: <20200731215524.14295-1-efremov@linux.com>
+ <20200801133123.61834-1-efremov@linux.com>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Message-ID: <d77c0967-d879-14cc-bf75-c38ad8879b76@linux.com>
+Date:   Thu, 27 Aug 2020 18:13:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200801133123.61834-1-efremov@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Ping?
 
-Make intel_pstate update the cached EPP value when setting the EPP
-via sysfs in the active mode just like it is the case in the passive
-mode, for consistency, but also for the benefit of subsequent
-changes.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
--> v2: No changes
-
-v2 -> v3:
-   * Do not change the read part of the EPP sysfs interface.
-   * Change the subject and update the changelog.
-
----
- drivers/cpufreq/intel_pstate.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index bcda1e700a73..e540448e0bd0 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -644,6 +644,8 @@ static int intel_pstate_get_energy_pref_index(struct cpudata *cpu_data, int *raw
- 
- static int intel_pstate_set_epp(struct cpudata *cpu, u32 epp)
- {
-+	int ret;
-+
- 	/*
- 	 * Use the cached HWP Request MSR value, because in the active mode the
- 	 * register itself may be updated by intel_pstate_hwp_boost_up() or
-@@ -659,7 +661,11 @@ static int intel_pstate_set_epp(struct cpudata *cpu, u32 epp)
- 	 * function, so it cannot run in parallel with the update below.
- 	 */
- 	WRITE_ONCE(cpu->hwp_req_cached, value);
--	return wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
-+	ret = wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
-+	if (!ret)
-+		cpu->epp_cached = epp;
-+
-+	return ret;
- }
- 
- static int intel_pstate_set_energy_pref_index(struct cpudata *cpu_data,
-@@ -762,10 +768,8 @@ static ssize_t store_energy_performance_preference(
- 			cpufreq_stop_governor(policy);
- 			ret = intel_pstate_set_epp(cpu, epp);
- 			err = cpufreq_start_governor(policy);
--			if (!ret) {
--				cpu->epp_cached = epp;
-+			if (!ret)
- 				ret = err;
--			}
- 		}
- 	}
- 
-@@ -2378,6 +2382,12 @@ static int intel_pstate_cpu_init(struct cpufreq_policy *policy)
- 	 */
- 	policy->policy = CPUFREQ_POLICY_POWERSAVE;
- 
-+	if (hwp_active) {
-+		struct cpudata *cpu = all_cpu_data[policy->cpu];
-+
-+		cpu->epp_cached = intel_pstate_get_epp(cpu, 0);
-+	}
-+
- 	return 0;
- }
- 
-@@ -2585,7 +2595,7 @@ static int intel_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 		policy->transition_delay_us = INTEL_CPUFREQ_TRANSITION_DELAY_HWP;
- 		rdmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, &value);
- 		WRITE_ONCE(cpu->hwp_req_cached, value);
--		cpu->epp_cached = (value & GENMASK_ULL(31, 24)) >> 24;
-+		cpu->epp_cached = intel_pstate_get_epp(cpu, value);
- 	} else {
- 		turbo_max = cpu->pstate.turbo_pstate;
- 		policy->transition_delay_us = INTEL_CPUFREQ_TRANSITION_DELAY;
--- 
-2.26.2
-
-
-
-
+On 8/1/20 4:31 PM, Denis Efremov wrote:
+> Remove cxgbi_alloc_big_mem(), cxgbi_free_big_mem() functions
+> and use kvzalloc/kvfree instead. __GFP_NOWARN added to kvzalloc()
+> call because we already print a warning in case of allocation fail.
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>  drivers/scsi/cxgbi/libcxgbi.c |  8 ++++----
+>  drivers/scsi/cxgbi/libcxgbi.h | 16 ----------------
+>  2 files changed, 4 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
+> index 4bc794d2f51c..51f4d34da73f 100644
+> --- a/drivers/scsi/cxgbi/libcxgbi.c
+> +++ b/drivers/scsi/cxgbi/libcxgbi.c
+> @@ -77,9 +77,9 @@ int cxgbi_device_portmap_create(struct cxgbi_device *cdev, unsigned int base,
+>  {
+>  	struct cxgbi_ports_map *pmap = &cdev->pmap;
+>  
+> -	pmap->port_csk = cxgbi_alloc_big_mem(max_conn *
+> -					     sizeof(struct cxgbi_sock *),
+> -					     GFP_KERNEL);
+> +	pmap->port_csk = kvzalloc(array_size(max_conn,
+> +					     sizeof(struct cxgbi_sock *)),
+> +				  GFP_KERNEL | __GFP_NOWARN);
+>  	if (!pmap->port_csk) {
+>  		pr_warn("cdev 0x%p, portmap OOM %u.\n", cdev, max_conn);
+>  		return -ENOMEM;
+> @@ -124,7 +124,7 @@ static inline void cxgbi_device_destroy(struct cxgbi_device *cdev)
+>  	if (cdev->cdev2ppm)
+>  		cxgbi_ppm_release(cdev->cdev2ppm(cdev));
+>  	if (cdev->pmap.max_connect)
+> -		cxgbi_free_big_mem(cdev->pmap.port_csk);
+> +		kvfree(cdev->pmap.port_csk);
+>  	kfree(cdev);
+>  }
+>  
+> diff --git a/drivers/scsi/cxgbi/libcxgbi.h b/drivers/scsi/cxgbi/libcxgbi.h
+> index 84b96af52655..321426242be4 100644
+> --- a/drivers/scsi/cxgbi/libcxgbi.h
+> +++ b/drivers/scsi/cxgbi/libcxgbi.h
+> @@ -537,22 +537,6 @@ struct cxgbi_task_data {
+>  #define iscsi_task_cxgbi_data(task) \
+>  	((task)->dd_data + sizeof(struct iscsi_tcp_task))
+>  
+> -static inline void *cxgbi_alloc_big_mem(unsigned int size,
+> -					gfp_t gfp)
+> -{
+> -	void *p = kzalloc(size, gfp | __GFP_NOWARN);
+> -
+> -	if (!p)
+> -		p = vzalloc(size);
+> -
+> -	return p;
+> -}
+> -
+> -static inline void cxgbi_free_big_mem(void *addr)
+> -{
+> -	kvfree(addr);
+> -}
+> -
+>  static inline void cxgbi_set_iscsi_ipv4(struct cxgbi_hba *chba, __be32 ipaddr)
+>  {
+>  	if (chba->cdev->flags & CXGBI_FLAG_IPV4_SET)
+> 
