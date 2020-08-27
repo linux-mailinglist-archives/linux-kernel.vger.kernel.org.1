@@ -2,211 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42973254316
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A4C254309
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgH0KDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:03:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45785 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbgH0KDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:03:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598522582; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=I63dscgYJSrLMpras0ftM8tf/GYO8Uv6u9iExs3NyTU=;
- b=irmlpT+qYpWZWJKyFWxa7VBpal3O+7XIOXsBX7MoSqC/C6+79BM/diShMcDaQOXcOqlX+2Uh
- PX8J+Jyj+gMTUrKt1mQPzH0DkO6UHG5wo9CXX06exLGOcSNTViPjJty+ClDryDVY3qA9jC1a
- NqXKORQb9/HLtfSUkTe5QmRMySc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f4784a70c264e6b004770f5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 10:02:15
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17B8AC433CB; Thu, 27 Aug 2020 10:02:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9715C433CA;
-        Thu, 27 Aug 2020 10:02:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C9715C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1728568AbgH0KCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:02:30 -0400
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:51998 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726988AbgH0KC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:02:29 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
+ 2020 18:02:26 +0800
+Received: from localhost.localdomain (61.148.245.65) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
+ 2020 18:02:24 +0800
+From:   FelixCuioc <FelixCui-oc@zhaoxin.com>
+To:     Joerg Roedel <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
+CC:     <CobeChen-oc@zhaoxin.com>, <RaymondPang-oc@zhaoxin.com>,
+        <TonyWWang-oc@zhaoxin.com>
+Subject: [PATCH v3 0/2] Add support for ACPI device in RMRR 
+Date:   Thu, 27 Aug 2020 06:02:15 -0400
+Message-ID: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] rtw88: switch from 'pci_' to 'dma_' API
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200820150643.148219-1-christophe.jaillet@wanadoo.fr>
-References: <20200820150643.148219-1-christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     yhchuang@realtek.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200827100215.17B8AC433CB@smtp.codeaurora.org>
-Date:   Thu, 27 Aug 2020 10:02:15 +0000 (UTC)
+Content-Type: text/plain
+X-Originating-IP: [61.148.245.65]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+BIOS allocate reserved memory ranges that may be DMA targets.
+BIOS may report each such reserved memory region through the
+RMRR structures,along with the devices that requires access to
+the specified reserved memory region.
 
-> The wrappers in include/linux/pci-dma-compat.h should go away.
-> 
-> The patch has been generated with the coccinelle script below and has been
-> hand modified to replace GFP_ with a correct flag.
-> It has been compile tested.
-> 
-> When memory is allocated in 'rtw_pci_init_tx_ring()' and
-> 'rtw_pci_init_rx_ring()' GFP_KERNEL can be used because both functions are
-> called from a probe function and no spinlock is taken.
-> 
-> The call chain is:
->   rtw_pci_probe
->     --> rtw_pci_setup_resource
->       --> rtw_pci_init
->         --> rtw_pci_init_trx_ring
->           --> rtw_pci_init_tx_ring
->           --> rtw_pci_init_rx_ring
-> 
-> 
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
-> 
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
-> 
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
-> 
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
-> 
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-> 
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The purpose of this series is to achieve ACPI device in RMRR
+access reserved memory.Therefore,it is necessary to increase
+the analysis of acpi device in RMRR and establish a mapping
+for this device.
 
-Patch applied to wireless-drivers-next.git, thanks.
+The first patch adds interfaces for detecting ACPI device
+in RMRR and in order to distinguish it from pci device,
+some interface functions are modified.
 
-24712ea996d8 rtw88: switch from 'pci_' to 'dma_' API
+The second patch adds support for probing ACPI device in RMRR.
+In probe_acpi_namespace_devices(),add support for direct mapping
+of ACPI device and add support for physical node of acpi device
+to be NULL.
+
+v2->v3:
+   - Add the blank line between functions.
+   - Make dmar_acpi_insert_dev_scope() bool,change the 1/0 to true/false
+     and add a comment explaining.
+   - Delete unused initialization.
+   - if dmar_acpi_insert_dev_scope() always returns zero,will not
+     call dmar_rmrr_add_acpi_dev().
+   - Use a proper error code.
+   - Use if(!pdev).
+   - Use goto unlock instead of mutex_unlock().
+
+
+FelixCuioc (2):
+  iommu/vt-d:Add support for detecting ACPI device in RMRR
+  iommu/vt-d:Add support for probing ACPI device in RMRR
+
+ drivers/iommu/intel/dmar.c  | 76 +++++++++++++++++++++----------------
+ drivers/iommu/intel/iommu.c | 52 ++++++++++++++++++++++++-
+ drivers/iommu/iommu.c       |  6 +++
+ include/linux/dmar.h        | 12 +++++-
+ include/linux/iommu.h       |  3 ++
+ 5 files changed, 114 insertions(+), 35 deletions(-)
 
 -- 
-https://patchwork.kernel.org/patch/11726423/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
 
