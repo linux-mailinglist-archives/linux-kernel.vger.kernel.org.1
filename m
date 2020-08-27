@@ -2,91 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E382544C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7DA2544DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgH0MJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:09:17 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:41528 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728886AbgH0LrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:47:07 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app2 (Coremail) with SMTP id by_KCgBnN7wgnUdfn0o9Ag--.10943S4;
-        Thu, 27 Aug 2020 19:46:43 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/binfmt_elf: Fix memleak in load_elf_binary
-Date:   Thu, 27 Aug 2020 19:46:39 +0800
-Message-Id: <20200827114639.31298-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgBnN7wgnUdfn0o9Ag--.10943S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1ftF1rZr18Zr47GFWktFb_yoWktrX_Ca
-        4xXrnYvFyDJF1jgr1qkw43Ary8WFs5Xw4fAr1IkFy7C342qan0k3ykXas7Z34rJa12qr15
-        Wrs3trySgryakjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUbeT5PUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAesb
+        id S1728671AbgH0MR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728934AbgH0Lu6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:50:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56942C06123C;
+        Thu, 27 Aug 2020 04:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=awfRf66HgGbxCRr70kQw5NQ84A89ap4b1ms7NbzviQY=; b=MM43WGiCJfh+YM6OHLDNcC42DR
+        pCMfp7AylWwoKAKC2yUp9DqtyVcDCvZ294vX53tJH+ONZFQUEoUj+CsnNi9VL5zbnJCrGCLb3bgSv
+        /kY7uRJjUM0QaQHJH7VemyieIhcgfz4Bk/km3qYJg6n9d7k8rSpd1dRAjGEYgHLAL+4YJP1s4r5+0
+        VQlVZVpXrpqQEonTGOUxbutnU2mLfQcGbcWW8xsuUilR48V9yyEvvW2yEcEdmr4LwFnSOEO2Lr82Z
+        ElAvoFZbdnFEFKid73m8Jm54EhcyJH92Wudd/QC9ImfJPxq+eQYpDfw9fcL5Bbyvt2QnoJshuHXQj
+        G++v5ebA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBGPC-0000TM-Ld; Thu, 27 Aug 2020 11:49:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 127FF301A66;
+        Thu, 27 Aug 2020 13:49:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C22922C1263AB; Thu, 27 Aug 2020 13:49:19 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 13:49:19 +0200
+From:   peterz@infradead.org
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Eddy Wu <Eddy_Wu@trendmicro.com>,
+        x86@kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v2 15/15] kprobes: Free kretprobe_instance with rcu
+ callback
+Message-ID: <20200827114919.GB2674@hirez.programming.kicks-ass.net>
+References: <159852811819.707944.12798182250041968537.stgit@devnote2>
+ <159852826969.707944.15092569392287597887.stgit@devnote2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159852826969.707944.15092569392287597887.stgit@devnote2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When arch_setup_additional_pages() fails, interp_elf_ex may
-not have been freed, which leads to memleak.  It's the same
-when create_elf_tables() fails.
+On Thu, Aug 27, 2020 at 08:37:49PM +0900, Masami Hiramatsu wrote:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- fs/binfmt_elf.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> +void recycle_rp_inst(struct kretprobe_instance *ri)
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 13d053982dd7..984c30684e49 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1204,6 +1204,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 		fput(interpreter);
- 
- 		kfree(interp_elf_ex);
-+		interp_elf_ex = NULL;
- 		kfree(interp_elf_phdata);
- 	} else {
- 		elf_entry = e_entry;
-@@ -1219,14 +1220,18 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 
- #ifdef ARCH_HAS_SETUP_ADDITIONAL_PAGES
- 	retval = arch_setup_additional_pages(bprm, !!interpreter);
--	if (retval < 0)
-+	if (retval < 0) {
-+		kfree(interp_elf_ex);
- 		goto out;
-+	}
- #endif /* ARCH_HAS_SETUP_ADDITIONAL_PAGES */
- 
- 	retval = create_elf_tables(bprm, elf_ex,
- 			  load_addr, interp_load_addr, e_entry);
--	if (retval < 0)
-+	if (retval < 0) {
-+		kfree(interp_elf_ex);
- 		goto out;
-+	}
- 
- 	mm = current->mm;
- 	mm->end_code = end_code;
--- 
-2.17.1
-
+Also note, that at this point there is no external caller of this
+function anymore.
