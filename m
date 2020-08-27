@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443862544E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FED2544F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgH0MXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:23:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728852AbgH0MF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:05:28 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44B2A22BF5;
-        Thu, 27 Aug 2020 10:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598525652;
-        bh=kFFAbpEiWOd1RsbDNrk8SxReMm/OdYxsgBow06GgISE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFnmCoUMqKiiiKwDQnae+sGn28hPOtGpO4uaZUTFxBeLsjZ98g3OxyErLCOmbP+t5
-         h3DL3GQIrD6QZK6/e3P4670jOK9lGvOwTlW++TSAE6ATV0+C3wkFYU6/inSAujcSRx
-         nNbTByWSaGgMhOYyU4T/KrHxSBjPwWKdVEJ0SyAI=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brooke Basile <brookebasile@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] docs: admin-guide: Not every security bug should be kept hidden
-Date:   Thu, 27 Aug 2020 12:53:19 +0200
-Message-Id: <20200827105319.9734-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200827105319.9734-1-krzk@kernel.org>
-References: <20200827105319.9734-1-krzk@kernel.org>
+        id S1728837AbgH0M2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:28:08 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:43612 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgH0MCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:02:20 -0400
+Received: by mail-oi1-f194.google.com with SMTP id j21so4348967oii.10;
+        Thu, 27 Aug 2020 05:02:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w87Wjrt0hH5OBUFHY4Ofs51H+e/iPgf40ZaoFuUim6c=;
+        b=qan5h1BODPXOIyL15mJe0fpHyNcBVRiaQftXM9Vd3xTvAeGwo+bu1IUJUqyFut2QZ9
+         YC0y6HpCILRka2bEKbK7Zm41fafDizTzo1C6fXHzYJdHBQEmOlTY4pJRLedStJ+6evHb
+         4UDCrvtWADVX6VFqH3GxTYyP2yj7E3h/l4MtghwsQLaMQsRQpaNLNax82//FsYSmkvPw
+         4ETGTC3MdRuG8Czt1xDlYcLviGx3SD34+5LMdEVTL/bLoOuEcwwEeYaqOqs6T2wIl3Tg
+         1yaa0lnST+R8sUADjZ4ONIBnkgQZ1uWuBzKUwYI+DxTP5za/TQJNxORwfy5UoxDcHePj
+         my7A==
+X-Gm-Message-State: AOAM5336dmSkADWLHoHoBAXuegZ83v7GSOzsTJSWo1Le4C5TENDc+m1K
+        Ak5GmQxWtO8DLo47EHWCuqmvGVLkGqp/0wqUqPbT4+f1
+X-Google-Smtp-Source: ABdhPJzV+sSj3VgjAs1ALzDiBgJpH5s/BbK9M6Z51fs6trVCmIFa01P8Nl7JAaX5UBSFeJsJfheOg1+NTiCNPTDLBJY=
+X-Received: by 2002:aca:110a:: with SMTP id 10mr6149426oir.68.1598525705214;
+ Thu, 27 Aug 2020 03:55:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <906198d77aa73613a1b588425aa45e5025ee60cb.1598505843.git.viresh.kumar@linaro.org>
+In-Reply-To: <906198d77aa73613a1b588425aa45e5025ee60cb.1598505843.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 27 Aug 2020 12:54:53 +0200
+Message-ID: <CAJZ5v0iTmowt48RHZGrx6aFm4OsJ0FXHk1WWstAJ=hvc7oJ_dw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] cpufreq: No need to verify cpufreq_driver in show_scaling_cur_freq()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document describes the process of handling security bugs but does not
-mention any criteria what is a "security bug".  Unlike
-submitting-patches.rst which explicitly says - publicly exploitable bug.
+On Thu, Aug 27, 2020 at 7:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> "cpufreq_driver" is guaranteed to be valid here, no need to check it
+> here.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 02ab56b2a0d8..47aa90f9a7c2 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -703,8 +703,7 @@ static ssize_t show_scaling_cur_freq(struct cpufreq_policy *policy, char *buf)
+>         freq = arch_freq_get_on_cpu(policy->cpu);
+>         if (freq)
+>                 ret = sprintf(buf, "%u\n", freq);
+> -       else if (cpufreq_driver && cpufreq_driver->setpolicy &&
+> -                       cpufreq_driver->get)
+> +       else if (cpufreq_driver->setpolicy && cpufreq_driver->get)
+>                 ret = sprintf(buf, "%u\n", cpufreq_driver->get(policy->cpu));
+>         else
+>                 ret = sprintf(buf, "%u\n", policy->cur);
+> --
 
-Many NULL pointer exceptions, off-by-one errors or overflows tend
-to look like security bug, so there might be a temptation to discuss
-them behind security list which is not an open list.
+This and the [2/2] applied, the latter with some minor edits in the
+subject/changelog.
 
-Such discussion limits the amount of testing and independent reviewing.
-Sacrificing open discussion is understandable in the case of real
-security issues but not for regular bugs.  These should be discussed
-publicly.
-
-At the end, "security problems are just bugs".
-
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
----
-
-Follow up to:
-https://lore.kernel.org/linux-usb/1425ab4f-ef7e-97d9-238f-0328ab51eb35@samsung.com/
----
- Documentation/admin-guide/security-bugs.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/admin-guide/security-bugs.rst b/Documentation/admin-guide/security-bugs.rst
-index c32eb786201c..7ebddbd4bbcd 100644
---- a/Documentation/admin-guide/security-bugs.rst
-+++ b/Documentation/admin-guide/security-bugs.rst
-@@ -78,6 +78,12 @@ include linux-distros from the start. In this case, remember to prefix
- the email Subject line with "[vs]" as described in the linux-distros wiki:
- <http://oss-security.openwall.org/wiki/mailing-lists/distros#how-to-use-the-lists>
- 
-+Fixes for non-exploitable bugs which do not pose a real security risk, should
-+be disclosed in a regular way of submitting patches to Linux kernel (see
-+:ref:`Documentation/process/submitting-patches.rst <submitting-patches>`).
-+Just because patch fixes some off-by-one or NULL pointer exception, does not
-+classify it as a security bug which should be discussed in closed channels.
-+
- CVE assignment
- --------------
- 
--- 
-2.17.1
-
+Thanks!
