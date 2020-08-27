@@ -2,169 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F582545CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F13C2545C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgH0NUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:20:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36026 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727780AbgH0NNd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:13:33 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RD31Kt023588;
-        Thu, 27 Aug 2020 09:12:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=hPwyMlvvmBwMzPPXtaOo1sxMfBSLRdWeG1Pej1RHa9Q=;
- b=ActzAYL9rh54iwkIL76ZuzXXbcPozuIwKIBKFNFycLlisU/mTgoa+yZVh9HfG0kuTeaD
- hzkWI+yJWMglrwGg0Ouf7N13NUk37g/brx/y/09JJsfyqzpDcsiIPkQy287fKHJulN4C
- CMI86TTBpZuuNMPr5NG8v5S1G5RlXgQrj5LOoWGIDtqsu/8gMEmpL4Zh16z48rq/U1Tb
- F3vQD4l8Tp4jKk2cGLk5DV1xEshTVdLEA8oejDJIa+BUefFLjXRcr8B5SF8JGZix8i9g
- PXyLfT+JpI/IAGs2cTtXQ7f40hyWeGWlADY7tRFG+Z1A201Dm+VTHBYI0vB0ooI8VopY VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 336bakm8tx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:12:11 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RD3C24024848;
-        Thu, 27 Aug 2020 09:12:11 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 336bakm8t2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:12:11 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RD8Wea006999;
-        Thu, 27 Aug 2020 13:12:09 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 336buh03fv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 13:12:09 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RDAa5C59965848
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 13:10:36 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DBFEA4062;
-        Thu, 27 Aug 2020 13:12:06 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72754A4054;
-        Thu, 27 Aug 2020 13:11:00 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.79.210.202])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Aug 2020 13:11:00 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        john.garry@huawei.com, kjain@linux.ibm.com
-Subject: [PATCH v6 4/5] perf/tools: Pass pmu_event structure as a parameter for arch_get_runtimeparam
-Date:   Thu, 27 Aug 2020 18:39:57 +0530
-Message-Id: <20200827130958.189146-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200827130958.189146-1-kjain@linux.ibm.com>
-References: <20200827130958.189146-1-kjain@linux.ibm.com>
+        id S1727937AbgH0NSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:18:13 -0400
+Received: from crapouillou.net ([89.234.176.41]:37006 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727781AbgH0NMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:12:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1598533920; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mq/0F8UbeXY3Pqih2k8p1w6/ERNeaq1vUKEH8bis0Sc=;
+        b=FSWu/ChrO6m3aqF4WvOluzzLTotjPD5+xJiLy1DDHnA09hWuOS5dVkh66xV9kJMZeSDI+U
+        idrPUynBOLcgq0XA+R5pgDVxeUQGLG60K9ITh9B64onMPNYytRUchw+RW8XPSSiQcOTnvo
+        gMXosxaVspVpJtfHDWebqzuQ5ql4c/8=
+Date:   Thu, 27 Aug 2020 15:11:49 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written to
+ HW register
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        =?UTF-8?b?5ZGo5q2j?= <sernia.zhou@foxmail.com>,
+        =?UTF-8?b?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>, od@zcrc.me,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <PN4QFQ.KWNBY2ZWQ7XC2@crapouillou.net>
+In-Reply-To: <87v9h4i6t5.fsf@kernel.org>
+References: <20200827124308.71963-1-paul@crapouillou.net>
+        <20200827124308.71963-2-paul@crapouillou.net> <87v9h4i6t5.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 malwarescore=0
- spamscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008270094
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds passing of  pmu_event as a parameter in function
-'arch_get_runtimeparam' which can be used to get details like
-if the event is percore/perchip.
+Hi Felipe,
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- tools/perf/arch/powerpc/util/header.c | 7 +++++--
- tools/perf/util/metricgroup.c         | 5 ++---
- tools/perf/util/metricgroup.h         | 3 ++-
- 3 files changed, 9 insertions(+), 6 deletions(-)
+Le jeu. 27 ao=FBt 2020 =E0 15:58, Felipe Balbi <balbi@kernel.org> a=20
+=E9crit :
+>=20
+> Hi,
+>=20
+> Paul Cercueil <paul@crapouillou.net> writes:
+>>  The 'reg' value was written to a hardware register in
+>>  ingenic_usb_phy_init(), while not being initialized anywhere.
+>=20
+> your patch does a lot more than fix the bug :-)
+>=20
+>>  Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new Ingenic=20
+>> SoCs.")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/usb/phy/phy-jz4770.c | 28 +++++++++++-----------------
+>>   1 file changed, 11 insertions(+), 17 deletions(-)
+>>=20
+>>  diff --git a/drivers/usb/phy/phy-jz4770.c=20
+>> b/drivers/usb/phy/phy-jz4770.c
+>>  index d4ee3cb721ea..58771a8688f2 100644
+>>  --- a/drivers/usb/phy/phy-jz4770.c
+>>  +++ b/drivers/usb/phy/phy-jz4770.c
+>>  @@ -97,7 +97,7 @@ enum ingenic_usb_phy_version {
+>>   struct ingenic_soc_info {
+>>   	enum ingenic_usb_phy_version version;
+>>=20
+>>  -	void (*usb_phy_init)(struct usb_phy *phy);
+>>  +	u32 (*usb_phy_init)(struct usb_phy *phy);
+>=20
+> this is not fixing any bug
+>=20
+>>  @@ -172,7 +172,8 @@ static int ingenic_usb_phy_init(struct usb_phy=20
+>> *phy)
+>>   		return err;
+>>   	}
+>>=20
+>>  -	priv->soc_info->usb_phy_init(phy);
+>>  +	reg =3D priv->soc_info->usb_phy_init(phy);
+>>  +	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>=20
+> not fixing any bug.
+>=20
+> Looking at the code, the bug follows after this line. It would suffice
+> to read REG_USBPCR_OFFSET in order to initialize reg. This bug fix=20
+> could
+> have been a one liner.
 
-diff --git a/tools/perf/arch/powerpc/util/header.c b/tools/perf/arch/powerpc/util/header.c
-index 1a950171a66f..58b2d610aadb 100644
---- a/tools/perf/arch/powerpc/util/header.c
-+++ b/tools/perf/arch/powerpc/util/header.c
-@@ -40,8 +40,11 @@ get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
- 	return bufp;
- }
- 
--int arch_get_runtimeparam(void)
-+int arch_get_runtimeparam(struct pmu_event *pe)
- {
- 	int count;
--	return sysfs__read_int("/devices/hv_24x7/interface/sockets", &count) < 0 ? 1 : count;
-+	char path[PATH_MAX] = "/devices/hv_24x7/interface/";
-+
-+	atoi(pe->aggr_mode) == PerChip ? strcat(path, "sockets") : strcat(path, "coresperchip");
-+	return sysfs__read_int(path, &count) < 0 ? 1 : count;
- }
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8831b964288f..c387aa1615ba 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -15,7 +15,6 @@
- #include "rblist.h"
- #include <string.h>
- #include <errno.h>
--#include "pmu-events/pmu-events.h"
- #include "strlist.h"
- #include <assert.h>
- #include <linux/ctype.h>
-@@ -634,7 +633,7 @@ static bool metricgroup__has_constraint(struct pmu_event *pe)
- 	return false;
- }
- 
--int __weak arch_get_runtimeparam(void)
-+int __weak arch_get_runtimeparam(struct pmu_event *pe __maybe_unused)
- {
- 	return 1;
- }
-@@ -902,7 +901,7 @@ static int add_metric(struct list_head *metric_list,
- 	} else {
- 		int j, count;
- 
--		count = arch_get_runtimeparam();
-+		count = arch_get_runtimeparam(pe);
- 
- 		/* This loop is added to create multiple
- 		 * events depend on count value and add
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 62623a39cbec..491a5d78252d 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -5,6 +5,7 @@
- #include <linux/list.h>
- #include <linux/rbtree.h>
- #include <stdbool.h>
-+#include "pmu-events/pmu-events.h"
- 
- struct evsel;
- struct evlist;
-@@ -52,6 +53,6 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
- void metricgroup__print(bool metrics, bool groups, char *filter,
- 			bool raw, bool details);
- bool metricgroup__has_metric(const char *metric);
--int arch_get_runtimeparam(void);
-+int arch_get_runtimeparam(struct pmu_event *pe __maybe_unused);
- void metricgroup__rblist_exit(struct rblist *metric_events);
- #endif
--- 
-2.26.2
+There's no need to re-read a register when you have the value readily=20
+available. It just needs to be returned from the usb_phy_init=20
+callbacks. But yes, it's not a one-liner.
+
+>=20
+>>  @@ -195,19 +196,15 @@ static void ingenic_usb_phy_remove(void *phy)
+>>   	usb_remove_phy(phy);
+>>   }
+>>=20
+>>  -static void jz4770_usb_phy_init(struct usb_phy *phy)
+>>  +static u32 jz4770_usb_phy_init(struct usb_phy *phy)
+>=20
+> not a bug fix
+>=20
+>>   {
+>>  -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+>>  -	u32 reg;
+>>  -
+>>  -	reg =3D USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS=20
+>> |
+>>  +	return USBPCR_AVLD_REG | USBPCR_COMMONONN |=20
+>> USBPCR_IDPULLUP_ALWAYS |
+>>   		USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT |=20
+>> USBPCR_SQRXTUNE_DFT |
+>>   		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT |=20
+>> USBPCR_TXVREFTUNE_DFT |
+>>   		USBPCR_POR;
+>>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>=20
+> not a bug fix
+>=20
+>>   }
+>>=20
+>>  -static void jz4780_usb_phy_init(struct usb_phy *phy)
+>>  +static u32 jz4780_usb_phy_init(struct usb_phy *phy)
+>=20
+> not a bug fix
+>=20
+>>  @@ -216,11 +213,10 @@ static void jz4780_usb_phy_init(struct=20
+>> usb_phy *phy)
+>>   		USBPCR1_WORD_IF_16BIT;
+>>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>=20
+>>  -	reg =3D USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+>>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>  +	return USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+>=20
+> not a bug fix
+>=20
+>>   }
+>>=20
+>>  -static void x1000_usb_phy_init(struct usb_phy *phy)
+>>  +static u32 x1000_usb_phy_init(struct usb_phy *phy)
+>=20
+> not a bug fix
+>=20
+>>   {
+>>   	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+>>   	u32 reg;
+>>  @@ -228,13 +224,12 @@ static void x1000_usb_phy_init(struct usb_phy=20
+>> *phy)
+>>   	reg =3D readl(priv->base + REG_USBPCR1_OFFSET) |=20
+>> USBPCR1_WORD_IF_16BIT;
+>>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>=20
+>>  -	reg =3D USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+>>  +	return USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+>>   		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
+>>   		USBPCR_COMMONONN | USBPCR_POR;
+>>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>=20
+> not a bug fix
+>=20
+>>   }
+>>=20
+>>  -static void x1830_usb_phy_init(struct usb_phy *phy)
+>>  +static u32 x1830_usb_phy_init(struct usb_phy *phy)
+>=20
+> not a bug fix
+>=20
+>>   {
+>>   	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+>>   	u32 reg;
+>>  @@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy=20
+>> *phy)
+>>   		USBPCR1_DMPD | USBPCR1_DPPD;
+>>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>=20
+>>  -	reg =3D USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT=20
+>> |	USBPCR_TXPREEMPHTUNE |
+>>  +	return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |=20
+>> USBPCR_TXPREEMPHTUNE |
+>>   		USBPCR_COMMONONN | USBPCR_POR;
+>>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>=20
+> not a bug fix
+
+Well, if you don't like my bug fix, next time wait for my Reviewed-by.
+
+Cheers,
+-Paul
+
 
