@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3508E254615
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F09A254607
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgH0Nic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
+        id S1727921AbgH0NgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbgH0Naj (ORCPT
+        with ESMTP id S1727877AbgH0Nal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:30:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70831C061237
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id a5so5395464wrm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:13 -0700 (PDT)
+        Thu, 27 Aug 2020 09:30:41 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC349C06123C
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:18 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s19so2331650eju.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p33Zl85F48xSFFwh9Fvb6fYwVy/Jt4DGVFmz86MHbko=;
-        b=CUujgUZRienGvENy9ZeNSE4OLq/gTozkw9vqhnndn3e+Pp27upZYxzcOy348qWT4x6
-         fZ9HzhrGd6ok0/lpV6XJMXIHbIrfSS3H2kc5d+JTd1lletPZjVOkUQ8WZMoDnSSylgRw
-         zOHH0JLxrQJsHR8v5+SGQOGgwwu7dIE6xp9Po=
+        bh=m3bZHQbkUK7ru+mSIlVCeklpmkkabE1NV08rauGz/SA=;
+        b=BnewPwO81kBvVFqomm9QXypRQ1vKnYBm3Xuds0ivqXpKN6sew0LIMekfam22SF/fZF
+         ucvahfcOXZOCnVhnEJXEHozHM8Yg3MAzKX/Dlc2etkqT9cT67PAgKlx5jSY3w4Vc7UP/
+         lA3xGIcK8+LhYi2uldqLp0dH4t2gv5tLikb6a2HDm/dyQxVTBpngvVTgdZd9gKq6Gn/t
+         jHoyRFQRNFNA+TseGZYKIsSYd4K/zk+Mn+LvlMRPwmXNo/Xe+A+tge1nVKqRGYohjCRE
+         LKfWAuXpyZnKZSiojtR/FVgGa3Qkiof15CDWFMvtTLK1jIgm5Y6A/Pt4nRnHsJ2IHL6u
+         /Kjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p33Zl85F48xSFFwh9Fvb6fYwVy/Jt4DGVFmz86MHbko=;
-        b=ulZsgmRD+9d1uG8rpq8MhI2yrTPv55NTWqvjxN6HU1mKOpyereX1GZvLDffo50/wGe
-         kyt1FUwNT9hqRB+8JTWkhhDQQKF392m+7aKnthAJDA5VTj7+9NO56hh9uaXl7opi9dQV
-         5PgRdEUXm1R8B41682ypBnEhLZSIt/fnIOFMxOQYkUWC/z0gwuPtTxRmqTLkhXZqYruj
-         Z1A5fd/pJhHyqHV3EufmeVgCjGr9sTUwCw2jTq4tnwsz4MPqFSTkKdTfM5M/tcF3ej4r
-         9ciPfggyhcUv4NVMcavmbJIPSofioHa0h0mp/UWrrKHI0I1iTzOJuix2mkVldokeygfC
-         6gNg==
-X-Gm-Message-State: AOAM530JR57cK5n6lcDNNjpi1cNq+CNFue7t9p1DmpmL+wa4zseT67rE
-        KJvfbToOXuKp+eyG4xZnxuHMy8ZP5CmonSiujSr9wQ==
-X-Google-Smtp-Source: ABdhPJyMtaFishcwtzNCj7DHN/faPMoK+tSF7O0vKJaBGS+gpAIRdF6geUez9pCQeleah1w6P5SJ7nzMgTS0KKpMqRI=
-X-Received: by 2002:adf:bb54:: with SMTP id x20mr19609148wrg.413.1598535011238;
- Thu, 27 Aug 2020 06:30:11 -0700 (PDT)
+        bh=m3bZHQbkUK7ru+mSIlVCeklpmkkabE1NV08rauGz/SA=;
+        b=ZtmVHMf4oBiT1DTcd0cUOciWsnCysbQUMhjvqdV+8jF9KJrqYD/8HCxoKNYxAa7E/M
+         QKfS1swlrzipLm+gSH78drh13syKR/8XW/fCiAKitXdLNDwx9C8dEDnV1LYzeCjA1sA7
+         pN9Bl/5y0Pi3U0tMbMlwsUHHeMoTD4/zfVxptOqtHXZTFc+8sNSNzdP+OaztR6s6oucJ
+         9fR/TXtj/AVxjbP2HKdxYG90MoKudizmuF6KQqiKfwaelsG1tDeslbLTXt5CpwrdC9hK
+         SJBjhlpQju0l52to7no/8qbO8lMInAwcTj5E/ms73G1zngfD3dOJFEpcdqEpnOnnBVdN
+         +CjA==
+X-Gm-Message-State: AOAM532KLY1hnTXmJZD/PFAo8gFuxgzjKIprkfi3FSPI6vUq47Dly6A6
+        CbzlgLxhwXgzhkJDw0yE990F/dYwopyAKK7N5HBA
+X-Google-Smtp-Source: ABdhPJxjQNf2tUYMG8mTbfyZlnlvWwxh2T296na0R444Fnqj3QwzjsW5Kea1i/+9tcu0OeYYDuxkPOxpkx+bIs7B5pc=
+X-Received: by 2002:a17:906:7c46:: with SMTP id g6mr20387671ejp.178.1598535017320;
+ Thu, 27 Aug 2020 06:30:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com> <20200827063517.GA4637@lst.de>
-In-Reply-To: <20200827063517.GA4637@lst.de>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Thu, 27 Aug 2020 09:29:59 -0400
-Message-ID: <CA+-6iNy3U9pO0Bykzgvb9n9fcsBi6FiatLdpA1s0HgQNWZ49mg@mail.gmail.com>
-Subject: Re: [PATCH v11 00/11] PCI: brcmstb: enable PCIe for STB chips
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM DRIVERS FOR ALLWINNER A10" 
-        <dri-devel@lists.freedesktop.org>, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Julien Grall <julien.grall@arm.com>,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ALLWINNER A10 CSI DRIVER" <linux-media@vger.kernel.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
+References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
+ <20200824132252.31261-1-peter.enderborg@sony.com> <20200824132252.31261-2-peter.enderborg@sony.com>
+ <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
+ <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com> <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
+ <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com>
+In-Reply-To: <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 27 Aug 2020 09:30:05 -0400
+Message-ID: <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
+Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     linux-kernel@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 2:35 AM Christoph Hellwig <hch@lst.de> wrote:
+On Wed, Aug 26, 2020 at 11:06 AM peter enderborg
+<peter.enderborg@sony.com> wrote:
+> On 8/26/20 4:45 PM, Paul Moore wrote:
+> > On Wed, Aug 26, 2020 at 10:34 AM peter enderborg
+> > <peter.enderborg@sony.com> wrote:
+> >> On 8/26/20 3:42 PM, Paul Moore wrote:
+> >>> On Mon, Aug 24, 2020 at 9:23 AM Peter Enderborg
+> >>> <peter.enderborg@sony.com> wrote:
+> >>>> This adds tracing of all denies. They are grouped with trace_seq for
+> >>>> each audit.
+> >>>>
+> >>>> A filter can be inserted with a write to it's filter section.
+> >>>>
+> >>>> echo "permission==\"entrypoint\"" > events/avc/selinux_denied/filter
+> >>>>
+> >>>> A output will be like:
+> >>>>           runcon-1046  [002] .N..   156.351738: selinux_denied:
+> >>>>           trace_seq=2 result=-13
+> >>>>           scontext=system_u:system_r:cupsd_t:s0-s0:c0.
+> >>>>           c1023 tcontext=system_u:object_r:bin_t:s0
+> >>>>           tclass=file permission=entrypoint
+> >>>>
+> >>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> >>>> ---
+> >>>>  include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
+> >>>>  security/selinux/avc.c     | 27 +++++++++++++++++++++++++--
+> >>>>  2 files changed, 62 insertions(+), 2 deletions(-)
+> >>> My most significant comment is that I don't think we want, or need,
+> >>> two trace points in the avc_audit_post_callback() function.  Yes, I
+> >>> understand they are triggered slightly differently, but from my
+> >>> perspective there isn't enough difference between the two tracepoints
+> >>> to warrant including both.  However, while the tracepoints may be
+> >> We tried that but that was problematic too.
+> > My apologies if I was on that thread, but can you remind me why it was
+> > a problem?  Why can't we use a single tracepoint to capture the AVC
+> > information?
 >
-> On Tue, Aug 25, 2020 at 10:40:27AM -0700, Florian Fainelli wrote:
-> > Hi,
-> >
-> > On 8/24/2020 12:30 PM, Jim Quinlan wrote:
-> >>
-> >> Patchset Summary:
-> >>    Enhance a PCIe host controller driver.  Because of its unusual design
-> >>    we are foced to change dev->dma_pfn_offset into a more general role
-> >>    allowing multiple offsets.  See the 'v1' notes below for more info.
-> >
-> > We are version 11 and counting, and it is not clear to me whether there is
-> > any chance of getting these patches reviewed and hopefully merged for the
-> > 5.10 merge window.
-> >
-> > There are a lot of different files being touched, so what would be the
-> > ideal way of routing those changes towards inclusion?
+> The problem is parsing the event.
 >
-> FYI, I offered to take the dma-mapping bits through the dma-mapping tree.
-> I have a bit of a backlog, but plan to review and if Jim is ok with that
-> apply the current version.
-Sounds good to me.
-Thanks, Jim
+> https://lkml.org/lkml/2020/8/18/842
+>
+> https://lkml.org/lkml/2020/8/21/526
+>
+> and the "single list" version
+>
+> https://lkml.org/lkml/2020/8/17/1346
+>
+> With this patch we follow standard message format so no plugin should be needed.
+
+I'm evidently missing something very fundamental (likely), and/or I'm
+just not communicating very clearly (also likely), because the above
+links don't appear to make any sense with respect to my question.
+
+Let me try a reset ... Why can't we basically take the
+"selinux_denied" TRACE_EVENT implementation in your patch and use it
+to replace the "selinux_audited" TRACE_EVENT in the selinux/next tree
+(of course with the necessary changes to the AVC callback code)?
+
+If the "selinux_denied" implementation is valid from a tracing point
+of view, why can we not do this?  Of course if the "selinux_denied"
+implementation is not a valid TRACE_EVENT then I'm not sure why this
+was suggested for SELinux :)
+
+-- 
+paul moore
+www.paul-moore.com
