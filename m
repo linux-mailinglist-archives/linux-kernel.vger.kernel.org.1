@@ -2,154 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458A225420C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4BB254213
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgH0JYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 05:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S1728479AbgH0JZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 05:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728447AbgH0JYR (ORCPT
+        with ESMTP id S1728432AbgH0JYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 05:24:17 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3676C061264;
-        Thu, 27 Aug 2020 02:24:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u128so3034459pfb.6;
-        Thu, 27 Aug 2020 02:24:16 -0700 (PDT)
+        Thu, 27 Aug 2020 05:24:54 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5AFC06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 02:24:54 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b18so4651729wrs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 02:24:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=LKDlLMP9o2eEBH2C9x6MfpYAdPfjU1Lhdny/aQSn3mQ=;
-        b=nps0Q3QE2BQWBse5vZkI+sdXMY2D/c8G5TGbzNAIOQra2MtG1iokjOZi7I6baSrlIV
-         EgveQc89VgkQKqnNpSwL/Vq1HuuSoW4KD6yNV/RHFvYMeKf9fLBI9na6c/SLjM8P2NVT
-         /ccSZKOHAc4TlTWqLSfnGLDWv0uRpigAm8a4Ri39nI4m9sPBQvR+lTxYixIIuxA7I77N
-         BfNtKWHDiFGfE2IVyQHWKV2qt1wcuaIn9NwD+am9/UY7tqaTt4U6qDmXLPeJybvgcyfy
-         xVJF91TZRLhfuP6JUuFF9UnD/8fVQYBlaicTFUIUWHoifJQ3tKodh7orhvTcVGaUetCx
-         FZKA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=y6eC9FLONwMHdn6Vk0cNJPGbuy8ijaSCojAKxgZZyGI=;
+        b=hnbPjqc5lM+2ivWPWllQVpQjADKutPYchKe3HF5YZEtqdQv5wcsgAsTa4QRucC7KXm
+         Fu0kESFc2qZknb+X0Rv98VLtHjG6hEw9sVXLN0Uhu/Jwf8srK+lEFy1gl0o/PNKM7TSi
+         S/pYjYrB1fZerg/uae81FFQKOdK1/DEKvXyvoNlslFdEHJT7u8RmjKyhzWbP83BqUGpU
+         nixwNth8eI+fGKSYvBKP6+9x55Sgd9bLhcNrJ7Axst+6u2Xl5MPzx1l0Y0Wrvnr8vTSc
+         WHUmuWpHE2OG+j5ZwAH3oOJsFFmzZQJ3VGzYpgUZpDACYU0vdfwOw0JHhQNVY95KCzrq
+         Uxtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=LKDlLMP9o2eEBH2C9x6MfpYAdPfjU1Lhdny/aQSn3mQ=;
-        b=kUJLv1LHU6RHaKSDbk7ttrSaM86uKHwg2C6sBl0lNooYTfvnay29c99kKXfrdxnfnS
-         uabZe1DSj2w45ms4fKZxyiaVaX9e6OaPxD9mF0vHMPerAcREvpUhcWj2qVCZjUXaaRow
-         tI7Cjo04++7ET210CyXiwXsNVsGXzNsA5FKDPAS6nOrS9mi/iWMMrkJw778X4U535DwD
-         PiKegcEDyGtk3Q8KR6MDdDjba2ELcGsWNkcF13hPvYNWCYPRrY76L7eoNV/IXKb8hPIW
-         sJAjRQPpr+C30TC1Hqodeb/BG7ka7O4mUtWEmEQDAV77z8Aei0qzWt/rtqpXMeDBL4YE
-         hufQ==
-X-Gm-Message-State: AOAM533b5mJk6gXN7wOQXpN5X1PYHIau8wQ7hnltB5hschNmmJqy063y
-        YOvEcRuyYvPMZfzlTJT4Eyg=
-X-Google-Smtp-Source: ABdhPJyJnn+Y0xkU7A6fORQ70ufnhZfpwvrdE3TVhKTWjAN8yS0FY5rJRek4AruTHw2j7KaURP9ejw==
-X-Received: by 2002:a62:7d4c:: with SMTP id y73mr12907266pfc.137.1598520256334;
-        Thu, 27 Aug 2020 02:24:16 -0700 (PDT)
-Received: from localhost ([1.23.143.13])
-        by smtp.gmail.com with ESMTPSA id t12sm1542334pjv.55.2020.08.27.02.24.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=y6eC9FLONwMHdn6Vk0cNJPGbuy8ijaSCojAKxgZZyGI=;
+        b=fqHa0mEoj4vJD0eseDWt5WxHsqHEiD+3QV1Uji2fT/+0KZoWXzJ1fd0ctnPlnD55KD
+         k/2J3XaESz/pcnq/OO00d7mF3Lwhs8g7pJMinZISIpWN0ecKppBSdRm0kIbqDkII4RWg
+         uiti5vfe/uwA/RBpHpgZGfOcTouc8yvSypcKwnKmHjuKcH7X3O/wtJC8QWMEQdbBwtFo
+         /x82P/FK93f8fCWdE2pul3XKVarDiQCXIV6XpTfk5K/HIZRKLIbjSvndLqeAFhcPH2KY
+         /nTdcgJMZYXCQInSOAdMS7Hfvcvo8qLmneZMBp6LfhedPt0h6CW5oI5ZJ+ly+mLoW9Os
+         cmVg==
+X-Gm-Message-State: AOAM53020R2M7qPR6M6ooqpf4CO0H27xKDTDBPXmH0YyPdIZAkIvImiI
+        npWsh7Bh1FefTIdZZJIzpD57KxQJQhFf52xM
+X-Google-Smtp-Source: ABdhPJzhjGcMcaab0JBm7YKdkEeQjDzX8SevME+a/8lFxMocA/bRceA4s3D9XxUWxvQN3fyah0kthw==
+X-Received: by 2002:a5d:6944:: with SMTP id r4mr20635784wrw.132.1598520292764;
+        Thu, 27 Aug 2020 02:24:52 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id z203sm4357330wmc.31.2020.08.27.02.24.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 02:24:15 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 14:54:05 +0530
-From:   Mrinal Pandey <mrinalmni@gmail.com>
-To:     skhan@linuxfoundation.org,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, keescook@chromium.org, re.emese@gmail.com,
-        maennich@google.com, tglx@linutronix.de,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        linux-spdx@vger.kernel.org, mrinalmni@gmail.com
-Subject: [PATCH] scripts: Add intended executable mode and SPDX license
-Message-ID: <20200827092405.b6hymjxufn2nvgml@mrinalpandey>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7psxwnjzxvwj4cgh"
-Content-Disposition: inline
+        Thu, 27 Aug 2020 02:24:52 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH 01/13] venus: Delete not used core caps
+Date:   Thu, 27 Aug 2020 12:24:05 +0300
+Message-Id: <20200827092417.16040-2-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200827092417.16040-1-stanimir.varbanov@linaro.org>
+References: <20200827092417.16040-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The core caps are filled but not used, delete them. In case we
+need them we can re-introduce.
 
---7psxwnjzxvwj4cgh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-commit b72231eb7084 ("scripts: add spdxcheck.py self test") added the file
-spdxcheck-test.sh to the repository without the executable flag and license
-information.
-
-commit eb8305aecb95 ("scripts: Coccinelle script for namespace
-dependencies.") added the file nsdeps, commit 313dd1b62921 ("gcc-plugins:
-Add the randstruct plugin") added the file gcc-plugins/gen-random-seed.sh
-and commit 9b4ade226f74 ("xen: build infrastructure for generating
-hypercall depending symbols") added the file xen-hypercalls.sh without the
-executable bit.
-
-Set to usual modes for these files and provide the SPDX license for
-spdxcheck-test.sh. No functional changes.
-
-Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
-applies cleanly on next-20200827
+ drivers/media/platform/qcom/venus/core.h      | 6 ------
+ drivers/media/platform/qcom/venus/hfi_venus.c | 3 ---
+ 2 files changed, 9 deletions(-)
 
-Kees, Matthias, Thomas, please ack this patch.
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index a9a52e29312d..18cf5b329a2b 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -143,7 +143,6 @@ struct venus_caps {
+  * @enc_codecs:	encoders supported by this core
+  * @dec_codecs:	decoders supported by this core
+  * @max_sessions_supported:	holds the maximum number of sessions
+- * @core_caps:	core capabilities
+  * @priv:	a private filed for HFI operations
+  * @ops:		the core HFI operations
+  * @work:	a delayed work for handling system fatal error
+@@ -189,11 +188,6 @@ struct venus_core {
+ 	unsigned long enc_codecs;
+ 	unsigned long dec_codecs;
+ 	unsigned int max_sessions_supported;
+-#define ENC_ROTATION_CAPABILITY		0x1
+-#define ENC_SCALING_CAPABILITY		0x2
+-#define ENC_DEINTERLACE_CAPABILITY	0x4
+-#define DEC_MULTI_STREAM_CAPABILITY	0x8
+-	unsigned int core_caps;
+ 	void *priv;
+ 	const struct hfi_ops *ops;
+ 	struct delayed_work work;
+diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
+index 4be4a75ddcb6..cb0e657b7649 100644
+--- a/drivers/media/platform/qcom/venus/hfi_venus.c
++++ b/drivers/media/platform/qcom/venus/hfi_venus.c
+@@ -1591,9 +1591,6 @@ int venus_hfi_create(struct venus_core *core)
+ 	hdev->suspended = true;
+ 	core->priv = hdev;
+ 	core->ops = &venus_hfi_ops;
+-	core->core_caps = ENC_ROTATION_CAPABILITY | ENC_SCALING_CAPABILITY |
+-			  ENC_DEINTERLACE_CAPABILITY |
+-			  DEC_MULTI_STREAM_CAPABILITY;
+ 
+ 	ret = venus_interface_queues_init(hdev);
+ 	if (ret)
+-- 
+2.17.1
 
-Andrew, please pick this minor non-urgent cleanup patch once the
-mainainers ack.
-
- scripts/gcc-plugins/gen-random-seed.sh | 0
- scripts/nsdeps                         | 0
- scripts/spdxcheck-test.sh              | 1 +
- scripts/xen-hypercalls.sh              | 0
- 4 files changed, 1 insertion(+)
- mode change 100644 =3D> 100755 scripts/gcc-plugins/gen-random-seed.sh
- mode change 100644 =3D> 100755 scripts/nsdeps
- mode change 100644 =3D> 100755 scripts/spdxcheck-test.sh
- mode change 100644 =3D> 100755 scripts/xen-hypercalls.sh
-
-diff --git a/scripts/gcc-plugins/gen-random-seed.sh b/scripts/gcc-plugins/g=
-en-random-seed.sh
-old mode 100644
-new mode 100755
-diff --git a/scripts/nsdeps b/scripts/nsdeps
-old mode 100644
-new mode 100755
-diff --git a/scripts/spdxcheck-test.sh b/scripts/spdxcheck-test.sh
-old mode 100644
-new mode 100755
-index cfea6a0d1cc0..e2902520a081
---- a/scripts/spdxcheck-test.sh
-+++ b/scripts/spdxcheck-test.sh
-@@ -1,4 +1,5 @@
- #!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-=20
- for PYTHON in python2 python3; do
- 	# run check on a text and a binary file
-diff --git a/scripts/xen-hypercalls.sh b/scripts/xen-hypercalls.sh
-old mode 100644
-new mode 100755
---=20
-2.25.1
-
-
---7psxwnjzxvwj4cgh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl9He60ACgkQxIwpEWwx
-hGQO/BAAirslyT/RyRsBnm80OnJYSZ0oaAjsSp0sC0LHZawGPPnCbrZRjS/6FQBe
-kKJjI/Y7z7Hi38d2morG9nKhvcjGonI3vxSysJK4/LSD2FvS9FcKJkfHYsf5HPOj
-BNqRNvN+CGvUtV6EEBvMoRafI5xAqXinpglR7yd094qv/SzNTL60QtMXVCNiKaph
-5kemWnjMmlJQDJVxsK0qVSN5yfGhwt92DUHYBdabPgBMLPADdk0BKo/FHCV4vO5J
-8Cz4fGZmO3p3trX5bPTXMMVbhRC2IPHHK+bscQZ3rPAHRSfccTdmN4tP32dQjXiZ
-0Dq+QNuTSxtsTdAVXFUCy55CtFGVEl4GXkPZHaWX/jRqpqcvmY4Ih5TgX25MS8gB
-+hlVbQ+YQraZRezEdYzt53Orkwlq+8j/I2UvKBs5sBRYMiCnz3DVj1BgKheCL8vI
-id5nUpqSCRQau8UWRZgdTFzZiIrs9JZq1qzT1v8U3XVQGRb6XtQWoewYlnP431YA
-1sIbVErQKgp+Hrtjdmj/I4shV2Poq1ppu1bpBorMBuZdcId8t6FSqipAi+UaNpm3
-lMZ7w0z/TmzAEMCkXlrzh9THaCzbrhclf2cte0IvVvb8NYc+NajOPhVVgUObpFnL
-yRODk3RXJK+fDf5fKPnSrHmbBlItBXnncrv32bV2lW+/jc3POSs=
-=5uhu
------END PGP SIGNATURE-----
-
---7psxwnjzxvwj4cgh--
