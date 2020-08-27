@@ -2,64 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ABE2544FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EB7254501
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729055AbgH0Mae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728905AbgH0MHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:07:45 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D938207F7;
-        Thu, 27 Aug 2020 12:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598530063;
-        bh=Vvrp+tmN89M6bjpy2BUk7ljI+sJ9DIn4CATSiek9ki8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i9INf6l5YnclFk7aRMzOoBMO21t3LSimLuoZjyzYAIRBlFe86T7sxlIo90SJKqSYl
-         5z/GjEaqjK5pjV7jcdXD3PEtpTYJdMQNpzCoV0IUCG6lJYEk5Ee5KnhBefCXoAK73a
-         B7Fe9slMYjtVmlknqNAJ/LyviVmUczkBlnaDhrCs=
-Date:   Thu, 27 Aug 2020 14:07:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brooke Basile <brookebasile@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 1/2] docs: process: Add cross-link to security-bugs
-Message-ID: <20200827120757.GB417381@kroah.com>
-References: <20200827105319.9734-1-krzk@kernel.org>
+        id S1729028AbgH0MeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:34:00 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14976 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728995AbgH0MIv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:08:51 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f47a2130000>; Thu, 27 Aug 2020 05:07:47 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 27 Aug 2020 05:08:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 05:08:30 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
+ 2020 12:08:15 +0000
+Date:   Thu, 27 Aug 2020 15:08:11 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+CC:     <mst@redhat.com>, <jasowang@redhat.com>, <eli@mellanox.com>,
+        <dan.carpenter@oracle.com>, <parav@mellanox.com>,
+        <natechancellor@gmail.com>, <colin.king@canonical.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vdpa/mlx5: Remove duplicate include
+Message-ID: <20200827120811.GA101680@mtl-vdi-166.wap.labs.mlnx>
+References: <20200827120547.83997-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200827105319.9734-1-krzk@kernel.org>
+In-Reply-To: <20200827120547.83997-1-jingxiangfeng@huawei.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598530067; bh=inb6WrN6PDof0nfJ5667HKoyHeUwp4PxtBynk5WzLuc=;
+        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
+         MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
+         User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=lA9GohKbA93UxQrNvrs29Zh99t6x1Eq3kxrjNcvbRPAEPG4lIBoyywiBwKZGdl9eC
+         HVEyTfn4LdQC8tDEH0+uLwnGTv/0ZmOK5w8/mc5RG+xpATbDvzi5r298LjEuXlCQCe
+         Ip+1aRIgxXVxpO0jK6v5g+UhE9WUxe/lAdp8Bw5mNwexvpKWgXJVvbqePxwGpn8ucU
+         Yqlb465QVCdCX4AlkFJ2k5iZZghSec1QmSdeG3XMVV91LV3tLTg0xGZAy5oiGtaD2Q
+         at5esiCNRV3DLC0ypAvUx2TfNIFGDoAt9KRps/zd0mtxGcr3wagwraONeGwCIT35VK
+         Q4nUerEnHqN2g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:53:18PM +0200, Krzysztof Kozlowski wrote:
-> The submitting patches mentions criteria for a fix to be called
-> "security fix".  Add a link to document explaining the entire process
-> of handling security bugs.
+On Thu, Aug 27, 2020 at 08:05:47PM +0800, Jing Xiangfeng wrote:
+> Remove linux/mlx5/device.h which is included more than once
 > 
-> Cc: Greg KH <gregkh@linuxfoundation.org>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/process/submitting-patches.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Eli Cohen <elic@nvidia.com>
+
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 70676a6d1691..b4bdbe062b7c 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -8,7 +8,6 @@
+>  #include <linux/mlx5/device.h>
+>  #include <linux/mlx5/vport.h>
+>  #include <linux/mlx5/fs.h>
+> -#include <linux/mlx5/device.h>
+>  #include "mlx5_vnet.h"
+>  #include "mlx5_vdpa_ifc.h"
+>  #include "mlx5_vdpa.h"
+> -- 
+> 2.26.0.106.g9fadedd
+> 
