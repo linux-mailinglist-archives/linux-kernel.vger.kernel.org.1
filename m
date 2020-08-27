@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D008A254539
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71622254527
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728992AbgH0Mpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S1729049AbgH0Mmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgH0M05 (ORCPT
+        with ESMTP id S1728869AbgH0MXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:26:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5928C061234
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WR0JbwYpcKbUOXFKigJtskF/5Rf4W2AfrlUuN1W+bsM=; b=H+uXV9mPRYjsGIq94MPTzLDOHg
-        AhABlz1ms+kupgpq6eu6blxwpVJHiBxNdDdF7DDdfGVnbfURALdJc0roZONNxy7U0tFsG6mtyFbDv
-        tJZQoIFzewHaBFfia7THTczhceUNnACC2J88y+Hct9uiQ/Jhp549tEpYeW1hHjLcteIdX6E3jp2k6
-        Ze/qeVOM+252nE2Tl6kvMsuEAOHf9mjTjPShX8wnLqHLDbtVG5p1RG1P27Sg8IWYJfUBtisxYr3WQ
-        YLMqfxxlm9x43PkLVQYD6UpYWveA+A3c7ZVI20iEk4D/XJ9xekJIQMtfCOznX9Gzf9hr0s9I+QTvR
-        VGdXosvQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBGt9-0001qR-2P; Thu, 27 Aug 2020 12:20:19 +0000
-Date:   Thu, 27 Aug 2020 13:20:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kirill@shutemov.name,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Race between freeing and waking page
-Message-ID: <20200827122019.GC14765@casper.infradead.org>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+        Thu, 27 Aug 2020 08:23:14 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDE1C061235
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:23:08 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id h12so3231691pgm.7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wRmOM+lY0GqSNROHa6fviQnhx1T7htrFs5kxwy8CYOE=;
+        b=XunWIOHVfK46PUPdGCFBrt6DQrmEql78iGdRDQ0dSgBP6EPJpisz0AG6MSEfUeoyQj
+         /lI1wGZYoKgNcrxl3LKW3RLbNXEcrC78QEzcnUPfdHnazq2tWJ72wCR469Kh6xWUcauR
+         u9N+UjKuxt4IRdttNS3wQRF3v8JWH8b+Y9mALm0rmTs8glD8Jw/c7OTRm6uSa+7tVg2o
+         iHt3MzI9VXbVQ2/T17enKfOtCOwkE+0VIPNyAbU22DRTzsXIVN67aTRaQdAZumBCJzST
+         VFEYlB2yVkK/oGveiTrKmeJkiCGShajE4Fm2aH2CIoyfOugohZ09a3FRn2Zb7NqUZfLC
+         Qmnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wRmOM+lY0GqSNROHa6fviQnhx1T7htrFs5kxwy8CYOE=;
+        b=A/3dajj/wdYVerrb1ereCbAZvvYw9KRtsZIvzaiV3VSsUqJmACvMmlPcpoHF2X+vV8
+         4rltG7ESa31Gm905uplkH7SRXTI8H1D/896vrX9hCG4PzNuq0LhtoCM1ZmixI0poZzt7
+         Sk0CUWFokQDm/yFFzMvMUyquK/nziQbVo5cATeZTxubzJ94dSG5eBnwGRrdK32YoxXHz
+         QcpDmjbTQpOTXtQmQKe1hg26wcu8VJzFgGRVVXBtsNRHIpmcXSE66YSZu0g50LV9uP/W
+         PPtlW8qV/4nQIXDvrl3hiOu6RC6UEOY1cmBry45ZRqoQP7CXfMMnKYO6DZdCSW8YIMLQ
+         szfA==
+X-Gm-Message-State: AOAM531ssX5xtuNpCEOTGIev5D/ELuXpBFEkFwKlphueA/aJpHOM0t87
+        CgLgsWMza8ZX1KxdLgGJLgMwjlgflIa5U3U5RqDaxw==
+X-Google-Smtp-Source: ABdhPJyPMy1rnX8KIgwVSqzPqTkYUTZKABfqU1VKffDJp9ShtMn+0fBihbauCAdMKqIPYGStK6xy+LlF4EdY3vc9i3E=
+X-Received: by 2002:a63:4c:: with SMTP id 73mr14564236pga.286.1598530986286;
+ Thu, 27 Aug 2020 05:23:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+References: <cover.1597425745.git.andreyknvl@google.com> <8a499341bbe4767a4ee1d3b8acb8bd83420ce3a5.1597425745.git.andreyknvl@google.com>
+ <b7884e93-008f-6b9f-32d8-6c03c7e14243@arm.com>
+In-Reply-To: <b7884e93-008f-6b9f-32d8-6c03c7e14243@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 27 Aug 2020 14:22:55 +0200
+Message-ID: <CAAeHK+x+DMs9jdeB58XaoJTO-kv+iiWT1_BuhYiJzJH-DoY9EQ@mail.gmail.com>
+Subject: Re: [PATCH 25/35] kasan: introduce CONFIG_KASAN_HW_TAGS
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:01:00AM -0700, Hugh Dickins wrote:
-> It was a crash from checking PageWaiters on a Tail in wake_up_page(),
-> called from end_page_writeback(), from ext4_finish_bio(): yet the
-> page a tail of a shmem huge page.  Linus's wake_up_page_bit() changes?
-> No, I don't think so.  It seems to me that once end_page_writeback()
-> has done its test_clear_page_writeback(), it has no further hold on
-> the struct page, which could be reused as part of a compound page
-> by the time of wake_up_page()'s PageWaiters check.  But I probably
-> need to muse on that for longer.
+On Thu, Aug 27, 2020 at 1:31 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+> Hi Andrey,
+>
+> On 8/14/20 6:27 PM, Andrey Konovalov wrote:
+> > +config=C2=B7KASAN_HW_TAGS
+> > +=C2=BB bool=C2=B7"Hardware=C2=B7tag-based=C2=B7mode"
+> > +=C2=BB depends=C2=B7on=C2=B7HAVE_ARCH_KASAN_HW_TAGS
+> > +=C2=BB depends=C2=B7on=C2=B7SLUB
+> > +=C2=BB help
+> > +=C2=BB =C2=B7=C2=B7Enables=C2=B7hardware=C2=B7tag-based=C2=B7KASAN=C2=
+=B7mode.
+> > +
+> > +=C2=BB =C2=B7=C2=B7This=C2=B7mode=C2=B7requires=C2=B7both=C2=B7Memory=
+=C2=B7Tagging=C2=B7Extension=C2=B7and=C2=B7Top=C2=B7Byte=C2=B7Ignore
+> > +=C2=BB =C2=B7=C2=B7support=C2=B7by=C2=B7the=C2=B7CPU=C2=B7and=C2=B7the=
+refore=C2=B7is=C2=B7only=C2=B7supported=C2=B7for=C2=B7modern=C2=B7arm64
+> > +=C2=BB =C2=B7=C2=B7CPUs=C2=B7(MTE=C2=B7added=C2=B7in=C2=B7ARMv8.5=C2=
+=B7ISA).
+> > +
+>
+> I do not thing we should make KASAN_HW_TAGS MTE specific especially becau=
+se it
+> is in the common code (e.g. SPARC ADI might want to implement it in futur=
+e).
+>
+> Probably would be better to provide some indirection in the generic code =
+an
+> implement the MTE backend entirely in arch code.
+>
+> Thoughts?
 
-I think you're right.  Example:
-
-truncate_inode_pages_range()
-pagevec_lookup_entries()
-lock_page()
-
---- ctx switch ---
-
-ext4_finish_bio()
-end_page_writeback()
-test_clear_page_writeback()
-
---- ctx switch ---
-
-wait_on_page_writeback() <- noop
-truncate_inode_page()
-unlock_page()
-pagevec_release()
-
-... page can now be allocated
-
---- ctx switch ---
-
-wake_up_page()
-PageWaiters then has that check for PageTail.
-
-This isn't unique to ext4; the iomap completion path behaves the exact
-same way.  The thing is, this is a harmless race.  It seems unnecessary
-for anybody here to incur the overhead of adding a page ref to be sure
-the page isn't reallocated.  We don't want to wake up the waiters before
-clearing the bit in question.
-
-I'm tempted to suggest this:
-
- static void wake_up_page(struct page *page, int bit)
- {
--       if (!PageWaiters(page))
-+       if (PageTail(page) || !PageWaiters(page))
-                return;
-        wake_up_page_bit(page, bit);
-
-which only adds an extra read to the struct page that we were going to
-access anyway.  Even that seems unnecessary though; PageWaiters is
-going to be clear.  Maybe we can just change the PF policy from
-PF_ONLY_HEAD to PF_ANY.  I don't think it's critical that we have this
-check.
-
-Nick?
+I think we can reword the help text to say that it enables tag-based
+KASAN mode that is backed by the hardware in general, and mention that
+this is currently only implemented for arm64 through MTE. I don't
+think it makes sense to provide a common arch interface at this point
+to keep the code simpler. We can do that when (and if) another
+hardware backend is added.
