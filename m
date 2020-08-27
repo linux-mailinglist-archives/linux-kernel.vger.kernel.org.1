@@ -2,177 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90AB253D98
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EF4253DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgH0GSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:18:00 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.209]:30958 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727022AbgH0GR4 (ORCPT
+        id S1726867AbgH0G0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgH0G0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:17:56 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id D924215CD
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 01:17:52 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id BBEOkdSm6LFNkBBEOk6nwQ; Thu, 27 Aug 2020 01:17:52 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qHxOnyBIlnPK0Cq/zWOJblisYvm45RWVknmbdrQpGHk=; b=xpzEgaM11EX/CfqgzsxXGERJgx
-        dRv/NW4pbAJZ6+ZRnGx/+hbiChmfGtgS8uiNtM8AI1HHeR/+caudItE14kZegj7qoEs1X+QN9Zt6B
-        zjcsbquQtKrJ6/UnhAmXoD35QOIPIv5TgJ0dfk4cs7nH1xWACHneMSZ7ciyECo+P5hV+OkMr6sxeb
-        11BbwNM4qDor8EcdZtXn6k2/JIS7uPHD2X+vYhw9bm+XqFZrkYrRboZDGMEH/OSTsaNUnGAhPr6hP
-        Q89kUgZjLeW1h82iskK/q+QVG0NRS82KhqgL/fYPyBgA6B6XeGh/e0j5fO4DU4TWWIFAxSUj5Tpc8
-        PG5KfxSQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44752 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kBBEO-000D9J-C6; Thu, 27 Aug 2020 01:17:52 -0500
-Subject: Re: [PATCH v2 2/4] brcmfmac: drop unnecessary "fallthrough" comments
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200827060441.15487-1-digetx@gmail.com>
- <20200827060441.15487-3-digetx@gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
- 2Pm4wnOyEgYUyJd5tRWcIbsURAgei918mck3tugT7AQiTUN3/5aAzqe/4ApDUC+uWNkpNnSV
- tjOx1hBpla0ifywy4bvFobwSh5/I3qohxDx+c1obd8Bp/B/iaOtnq0inli/8rlvKO9hp6Z4e
- DXL3PlD0QsLSc27AkwzLEc/D3ZaqBq7ItvT9Pyg0z3Q+2dtLF00f9+663HVC2EUgP25J3xDd
- 496SIeYDTkEgbJ7WYR0HYm9uirSET3lDqOVh1xPqoy+U9zTtuA9NQHVGk+hPcoazSqEtLGBk
- YE2mm2wzX5q2uoyptseSNceJ+HE9L+z1KlWW63HhddgtRGhbP8pj42bKaUSrrfDUsicfeJf6
- m1iJRu0SXYVlMruGUB1PvZQ3O7TsVfAGCv85pFipdgk8KQnlRFkYhUjLft0u7CL1rDGZWDDr
- NaNj54q2CX9zuSxBn9XDXvGKyzKEZ4NY1Jfw+TAMPCp4buawuOsjONi2X0DfivFY+ZsjAIcx
- qQMglPtKk/wBs7q2lvJ+pHpgvLhLZyGqzAvKM1sVtRJ5j+ARKA0w4pYs5a5ufqcfT7dN6TBk
- LXZeD9xlVic93Ju08JSUx2ozlcfxq+BVNyA+dtv7elXUZ2DrYwARAQABzStHdXN0YXZvIEEu
- IFIuIFNpbHZhIDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+wsGrBBMBCAA+FiEEkmRahXBSurMI
- g1YvRwW0y0cG2zEFAl6zFvQCGyMFCQlmAYAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AAIQkQ
- RwW0y0cG2zEWIQSSZFqFcFK6swiDVi9HBbTLRwbbMZsEEACWjJyXLjtTAF21Vuf1VDoGzitP
- oE69rq9UhXIGR+e0KACyIFoB9ibG/1j/ESMa0RPSwLpJDLgfvi/I18H/9cKtdo2uz0XNbDT8
- i3llIu0b43nzGIDzRudINBXC8Coeob+hrp/MMZueyzt0CUoAnY4XqpHQbQsTfTrpFeHT02Qz
- ITw6kTSmK7dNbJj2naH2vSrU11qGdU7aFzI7jnVvGgv4NVQLPxm/t4jTG1o+P1Xk4N6vKafP
- zqzkxj99JrUAPt+LyPS2VpNvmbSNq85PkQ9gpeTHpkio/D9SKsMW62njITPgy6M8TFAmx8JF
- ZAI6k8l1eU29F274WnlQ6ZokkJoNctwHa+88euWKHWUDolCmQpegJJ8932www83GLn1mdUZn
- NsymjFSdMWE+y8apWaV9QsDOKWf7pY2uBuE6GMPRhX7e7h5oQwa1lYeO2L9LTDeXkEOJe+hE
- qQdEEvkC/nok0eoRlBlZh433DQlv4+IvSsfN/uWld2TuQFyjDCLIm1CPRfe7z0TwiCM27F+O
- lHnUspCFSgpnrxqNH6CM4aj1EF4fEX+ZyknTSrKL9BGZ/qRz7Xe9ikU2/7M1ov6rOXCI4NR9
- THsNax6etxCBMzZs2bdMHMcajP5XdRsOIARuN08ytRjDolR2r8SkTN2YMwxodxNWWDC3V8X2
- RHZ4UwQw487BTQRbLBwMARAAsHCE31Ffrm6uig1BQplxMV8WnRBiZqbbsVJBH1AAh8tq2ULl
- 7udfQo1bsPLGGQboJSVN9rckQQNahvHAIK8ZGfU4Qj8+CER+fYPp/MDZj+t0DbnWSOrG7z9H
- IZo6PR9z4JZza3Hn/35jFggaqBtuydHwwBANZ7A6DVY+W0COEU4of7CAahQo5NwYiwS0lGis
- LTqks5R0Vh+QpvDVfuaF6I8LUgQR/cSgLkR//V1uCEQYzhsoiJ3zc1HSRyOPotJTApqGBq80
- X0aCVj1LOiOF4rrdvQnj6iIlXQssdb+WhSYHeuJj1wD0ZlC7ds5zovXh+FfFl5qH5RFY/qVn
- 3mNIVxeO987WSF0jh+T5ZlvUNdhedGndRmwFTxq2Li6GNMaolgnpO/CPcFpDjKxY/HBUSmaE
- 9rNdAa1fCd4RsKLlhXda+IWpJZMHlmIKY8dlUybP+2qDzP2lY7kdFgPZRU+ezS/pzC/YTzAv
- CWM3tDgwoSl17vnZCr8wn2/1rKkcLvTDgiJLPCevqpTb6KFtZosQ02EGMuHQI6Zk91jbx96n
- rdsSdBLGH3hbvLvjZm3C+fNlVb9uvWbdznObqcJxSH3SGOZ7kCHuVmXUcqozol6ioMHMb+In
- rHPP16aVDTBTPEGwgxXI38f7SUEn+NpbizWdLNz2hc907DvoPm6HEGCanpcAEQEAAcLBZQQY
- AQgADwUCWywcDAIbDAUJCWYBgAAKCRBHBbTLRwbbMdsZEACUjmsJx2CAY+QSUMebQRFjKavw
- XB/xE7fTt2ahuhHT8qQ/lWuRQedg4baInw9nhoPE+VenOzhGeGlsJ0Ys52sdXvUjUocKgUQq
- 6ekOHbcw919nO5L9J2ejMf/VC/quN3r3xijgRtmuuwZjmmi8ct24TpGeoBK4WrZGh/1hAYw4
- ieARvKvgjXRstcEqM5thUNkOOIheud/VpY+48QcccPKbngy//zNJWKbRbeVnimua0OpqRXhC
- rEVm/xomeOvl1WK1BVO7z8DjSdEBGzbV76sPDJb/fw+y+VWrkEiddD/9CSfgfBNOb1p1jVnT
- 2mFgGneIWbU0zdDGhleI9UoQTr0e0b/7TU+Jo6TqwosP9nbk5hXw6uR5k5PF8ieyHVq3qatJ
- 9K1jPkBr8YWtI5uNwJJjTKIA1jHlj8McROroxMdI6qZ/wZ1ImuylpJuJwCDCORYf5kW61fcr
- HEDlIvGc371OOvw6ejF8ksX5+L2zwh43l/pKkSVGFpxtMV6d6J3eqwTafL86YJWH93PN+ZUh
- 6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9ehGZEO3+gCDFmK
- rjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrSVtSixD1uOgyt
- AP7RWS474w==
-Message-ID: <9ba55d08-879b-cf66-b5d9-cc8fd292a4aa@embeddedor.com>
-Date:   Thu, 27 Aug 2020 01:23:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 Aug 2020 02:26:50 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A346C06125E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:26:50 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p37so2625039pgl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YNHyAuR7GB3EfiCouUkXKnHb9Hzrnqg6mjMpHBgNiO8=;
+        b=c7RsnWL2XAhTx7DSd2Pafooc6DvgnJ2jSwpvJHQhuxQ+30JZQ3lZ7R78LrzdmkmoZ+
+         mgtyt4+05RvlXNm5faEyrtJe7n7P9B1VYa4sch/ht6IAYDMogrykF50nGFbl3gh7u609
+         5Z9tasKQ2aj1JEgOWF1l/5PMrvg1rgN7Ni4sVw/YWReBzYqLGCiXiALOZV9BmD4WWLKC
+         /KQHUX8o+J+DhwCWNku/hJ/FB09sGWIaTIzrTLEba18Dqpt+Lvc74/DaJIeL3Cx8Mom5
+         pdHIm5ykyAdQjQ6LEKBd24/g3QdjVRa/E5itZi6+Nnmz4EMpTXiZv3aJmzE049xltd8z
+         YUCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YNHyAuR7GB3EfiCouUkXKnHb9Hzrnqg6mjMpHBgNiO8=;
+        b=VraveXXQf6LDar0l76wAlQwKNxeCm98zfHEDwf8cYvuz6aQU0f2UOGMiE+cl+SiP4I
+         ispO54WTrtEAMhQugm76/a0XJR2ThDE9x52GXunJ7MW4/z8lVMwF1eImaFmgxSTnOIER
+         2ct2epH6Gzy++dxtvGAuIvo9bmFubGwS4MKmbQWs6ert7PQZoaF7f4MqpWGV5oaDGja3
+         7Gw8hT9mVP0h9oxi55bFDOxFCMS7T9sMMqoxbefsSLTZ3TJOMlgYIs/j9YQxps9Rt/rv
+         ztTiF1X4TQh38ph9ASGpeDoZLhU0qbAJ4Lae3x704ge1oxRUhn+QHP94GzdzWIpMjcc/
+         WF8g==
+X-Gm-Message-State: AOAM533eD6NnTYY4zPaxlHFA4hQuYAhURwUAcms7jo2uDvf6JB+UeCJG
+        KNg8CwxRoWUeOxiopJxAk0Lh+g==
+X-Google-Smtp-Source: ABdhPJy6oNZf/4jPilo5d2a1xo9dBeE04Aa29ksfbQDk9Sq8XqX5IklGaZ3ChV7cRwosSpvmM3Ue1w==
+X-Received: by 2002:a62:a10f:: with SMTP id b15mr15494230pff.253.1598509609722;
+        Wed, 26 Aug 2020 23:26:49 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id z1sm1322747pff.178.2020.08.26.23.26.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Aug 2020 23:26:48 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 11:56:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     rafael.j.wysocki@intel.com,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] thermal: sysfs: fall back to vzalloc for cooling
+ device's statistics
+Message-ID: <20200827062646.adruzyyqq5uzlteq@vireshk-i7>
+References: <20200818063005.13828-1-zbestahu@gmail.com>
+ <40b69f97-46e5-d62e-0d2f-604dfd4dafa1@linaro.org>
+ <20200826101319.00003048.zbestahu@gmail.com>
+ <c3fd7949-b33a-aca3-8dd5-1c2df35fb63d@linaro.org>
+ <20200827120327.00003740.zbestahu@gmail.com>
+ <20200827051401.yryitpgq2gi3nkbh@vireshk-i7>
+ <20200827142003.000071c1.zbestahu@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200827060441.15487-3-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kBBEO-000D9J-C6
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44752
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 13
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827142003.000071c1.zbestahu@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-There is a patch that address this, already:
-
-https://lore.kernel.org/lkml/20200821063758.GA17783@embeddedor/
-
-Thanks
---
-Gustavo
-
-On 8/27/20 01:04, Dmitry Osipenko wrote:
-> There is no need to insert the "fallthrough" comment if there is nothing
-> in-between of case switches. Hence let's remove the unnecessary comments
-> in order to make code cleaner a tad.
+On 27-08-20, 14:20, Yue Hu wrote:
+> Currenly, drivers/video/backlight does not call thermal_of_cooling_device_register()
+> to register thermal cooling device. The issue happened in msm-4.19 kernel for
+> QCOM/Android platform. Backlight in msm-4.19 kernel will register thermal cooling
+> device as below:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 2 --
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c   | 2 --
->  2 files changed, 4 deletions(-)
+> +static int bd_cdev_get_max_brightness(struct thermal_cooling_device *cdev,
+> +                                 unsigned long *state)
+> +{
+> + struct backlight_device *bd = (struct backlight_device *)cdev->devdata;
+> +
+> + *state = bd->props.max_brightness;
+> +
+> + return 0;
+> +}
 > 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> index 1a7ab49295aa..0dc4de2fa9f6 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> @@ -916,9 +916,7 @@ int brcmf_sdiod_probe(struct brcmf_sdio_dev *sdiodev)
->  		f2_blksz = SDIO_4373_FUNC2_BLOCKSIZE;
->  		break;
->  	case SDIO_DEVICE_ID_BROADCOM_4359:
-> -		/* fallthrough */
->  	case SDIO_DEVICE_ID_BROADCOM_4354:
-> -		/* fallthrough */
->  	case SDIO_DEVICE_ID_BROADCOM_4356:
->  		f2_blksz = SDIO_435X_FUNC2_BLOCKSIZE;
->  		break;
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> index ac3ee93a2378..b16944a898f9 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> @@ -4306,9 +4306,7 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
->  					   CY_43455_MESBUSYCTRL, &err);
->  			break;
->  		case SDIO_DEVICE_ID_BROADCOM_4359:
-> -			/* fallthrough */
->  		case SDIO_DEVICE_ID_BROADCOM_4354:
-> -			/* fallthrough */
->  		case SDIO_DEVICE_ID_BROADCOM_4356:
->  			brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes\n",
->  				  CY_435X_F2_WATERMARK);
 > 
+> +static struct thermal_cooling_device_ops bd_cdev_ops = {
+> + .get_max_state = bd_cdev_get_max_brightness,
+> 
+> +static void backlight_cdev_register(struct device *parent,
+> +                             struct backlight_device *bd)
+> +{
+> + if (of_find_property(parent->of_node, "#cooling-cells", NULL)) {
+> +         bd->cdev = thermal_of_cooling_device_register(parent->of_node,
+> +                         (char *)dev_name(&bd->dev), bd, &bd_cdev_ops);
+> 
+> And the bd->props.max_brightness is getting from video/backlight/qcom-wled.c. Maybe
+> the driver should not assign 1024 to states/max_brightness. I'm not sure about it.
+> So i consider to change memory allocation methord. That's the origin of the patch.
+
+Thanks for the details. So this is not about upstream tree, as a rule
+we aren't going to make changes here for any downstream tree.
+
+Now coming back to the downstream driver, I also don't see a point in
+returning bd->props.max_brightness as the max number of states there.
+Maybe have 10 states, each occupying bd->props.max_brightness/10
+brightness and so you will end up with 10 states only. But yeah,
+whatever downstream decides on that.
+
+-- 
+viresh
