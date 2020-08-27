@@ -2,402 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8FE254674
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216D0254668
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgH0OF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:05:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57926 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgH0Npm (ORCPT
+        id S1727084AbgH0OFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728110AbgH0Nqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:45:42 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07RDjBxn057738;
-        Thu, 27 Aug 2020 08:45:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598535911;
-        bh=Mo8eplEgTCW0YBBXa6rpnHfd7Z1uSgpBWxJe8oN1Ums=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=QCrjoRCIs+muqZMMl8EafQtNT8ChXDvtM541oGu7UnKOYgX33LYIhwpaBicXSw2fe
-         N5Po9FJ0YNdnlMzeQnO20GTMjwlmNHRW1oUkv69IHqNju5VFBHz8tqhZtbnSrQYnM7
-         479LrjU/VK0SZlD/GpY/tvrgGcOlP3EIAEP6KC7s=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07RDjBmq073643
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Aug 2020 08:45:11 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 27
- Aug 2020 08:45:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 27 Aug 2020 08:45:11 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RDjAqs058279;
-        Thu, 27 Aug 2020 08:45:10 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next v3 2/2] net: phy: DP83822: Add ability to advertise Fiber connection
-Date:   Thu, 27 Aug 2020 08:45:09 -0500
-Message-ID: <20200827134509.23854-3-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200827134509.23854-1-dmurphy@ti.com>
-References: <20200827134509.23854-1-dmurphy@ti.com>
+        Thu, 27 Aug 2020 09:46:48 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31614C061264;
+        Thu, 27 Aug 2020 06:46:48 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m71so3550021pfd.1;
+        Thu, 27 Aug 2020 06:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=trl3ejZxIzsH2m05TMvOHIC113SXT6U//VHjhE8HmPo=;
+        b=Nc5nsMjj64/EXzj68L6FYaIJN7o6oh65oemNpKbD/M0QhWT/joMtIEIsqcZ2Do67kn
+         mqalmaTFng3effWg1XKkvg/tg4guRRsZ54wcN8ZtTUKL0YiLn4P2rkzOY2VW85ZqgmN4
+         VEQuNnlmY4Cb3v+PvCk5IPlasLTfx6+8zWl7WSex1ZUM0OQ6eh5M1vXmaicDY3fcZru9
+         ogUz5JO1y7vKmkGVYSPuJFJH8USGY4/UXDF6+g41zkicsAjjA322HeQ+wL0uCjR043Cp
+         zWC/Y5KeTPRkfguUtbFnYFbVaA8O51eBDFArc8owWwhWEGUfhOWCrOiicbWHipZKIc3Z
+         4yjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=trl3ejZxIzsH2m05TMvOHIC113SXT6U//VHjhE8HmPo=;
+        b=TJ16M0s0ZuBmzNdY4Qjy3xcsYcB0zh/xtosk2/2SCALKWaUqSNthvBCkNRWVt8bO3R
+         qJOjtN1WXKQPasqbf+YAPlov0N/xlJjUKz5vlrhfVTHa0tgmVrIw7mXg1RLHIBV/XkwS
+         TL/YIbVag3JJLxu5z8D+5asA9ipkee+QkdB3jHxMj36foLzOLN9OPZ4DsUu60+Ue/VEg
+         n00coKDRGgQlh4WKRx8So1pKMrtGV6MXau8XJCcjVg7a0wTIPnGu5paDfkCCNeJkGU2g
+         VmlFrlZE6ZVfnnOUml5px1A13UBhUBhbSiYO7kCJsx1ErBWZ3Qhi+7D/HC8Vuht9u6n8
+         Sk/Q==
+X-Gm-Message-State: AOAM532pHSv3tvHoEjjjdvjbscef+VcOXZ5JmUZoghcGyMsVIFk6aqVp
+        ce4HYvltehhtJp7AVJZVJuJL3Hm9Mxw=
+X-Google-Smtp-Source: ABdhPJxCpbfi2oMwHOJOE83v9J/BClUJcy3jXIiZgQeyNRJQgh2MrmwExBYvsQ+NCrky0WjpOi96Uw==
+X-Received: by 2002:a17:902:8f82:: with SMTP id z2mr1834609plo.177.1598536006820;
+        Thu, 27 Aug 2020 06:46:46 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z1sm3031165pff.178.2020.08.27.06.46.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 06:46:46 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] usb typec: mt6360: Add support for mt6360 Type-C
+ driver
+To:     =?UTF-8?B?5ZWf5Y6f6buD?= <u0084500@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
+        matthias.bgg@gmail.com,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1598503859-29620-1-git-send-email-u0084500@gmail.com>
+ <1598515415.21253.22.camel@mhfsdcap03>
+ <CADiBU3_CpOVTWM7JO78=DGw5J_dYNVUK=eH8ywQiMk2Gtk5Bsw@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <283c9452-996d-d1ce-90a0-28fbd55c291d@roeck-us.net>
+Date:   Thu, 27 Aug 2020 06:46:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CADiBU3_CpOVTWM7JO78=DGw5J_dYNVUK=eH8ywQiMk2Gtk5Bsw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DP83822 can be configured to use a Fiber connection.  The strap
-register is read to determine if the device has been configured to use
-a fiber connection.  With the fiber connection the PHY can be configured
-to detect whether the fiber connection is active by either a high signal
-or a low signal.
+On 8/27/20 4:32 AM, 啟原黃 wrote:
+> Chunfeng Yun <chunfeng.yun@mediatek.com> 於 2020年8月27日 週四 下午4:05寫道：
+>>
+>> On Thu, 2020-08-27 at 12:50 +0800, cy_huang wrote:
+>>> From: ChiYuan Huang <cy_huang@richtek.com>
+>>>
+>>> Mediatek MT6360 is a multi-functional IC that includes USB Type-C.
+>>> It works with Type-C Port Controller Manager to provide USB PD
+>>> and USB Type-C functionalities.
+>>>
+>>> Add fix to Prevent the race condition from interrupt and tcpci port unregister
+>>> during module remove.
+>>>
+>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+>>> ---
+>>>  drivers/usb/typec/tcpm/Kconfig        |   8 ++
+>>>  drivers/usb/typec/tcpm/Makefile       |   1 +
+>>>  drivers/usb/typec/tcpm/tcpci_mt6360.c | 213 ++++++++++++++++++++++++++++++++++
+>> Can you avoid using special SoC name in file name?
+>> It's not clear if you later support new SoC in the driver, e.g. mt63xx?
+> Okay, I will rename it to mt636x. From our SubPMIC generation,
+> currently, naming will be 6360/62/67, etc..
 
-Fiber mode is only applicable to the DP83822 so rework the PHY match
-table so that non-fiber PHYs can still use the same driver but not call
-or use any of the fiber features.
+What if 6361 or 6365 or 6369 will require a different driver ?
+What if 6371 will, in the future, be supported by the same driver ?
+Or, for that matter, 7360 ? 6537 ?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/phy/dp83822.c | 225 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 218 insertions(+), 7 deletions(-)
+We usually try to avoid "x" in driver names because it can never be
+guaranteed that it will apply to x={0..9}. The current file name is
+just fine; it is customary to name drivers after the first chip they
+support.
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index 37643c468e19..732c8bec7452 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -23,16 +23,31 @@
- 
- #define DP83822_DEVADDR		0x1f
- 
-+#define MII_DP83822_CTRL_2	0x0a
-+#define MII_DP83822_PHYSTS	0x10
- #define MII_DP83822_PHYSCR	0x11
- #define MII_DP83822_MISR1	0x12
- #define MII_DP83822_MISR2	0x13
-+#define MII_DP83822_FCSCR	0x14
- #define MII_DP83822_RCSR	0x17
- #define MII_DP83822_RESET_CTRL	0x1f
- #define MII_DP83822_GENCFG	0x465
-+#define MII_DP83822_SOR1	0x467
-+
-+/* GENCFG */
-+#define DP83822_SIG_DET_LOW	BIT(0)
-+
-+/* Control Register 2 bits */
-+#define DP83822_FX_ENABLE	BIT(14)
- 
- #define DP83822_HW_RESET	BIT(15)
- #define DP83822_SW_RESET	BIT(14)
- 
-+/* PHY STS bits */
-+#define DP83822_PHYSTS_DUPLEX			BIT(2)
-+#define DP83822_PHYSTS_10			BIT(1)
-+#define DP83822_PHYSTS_LINK			BIT(0)
-+
- /* PHYSCR Register Fields */
- #define DP83822_PHYSCR_INT_OE		BIT(0) /* Interrupt Output Enable */
- #define DP83822_PHYSCR_INTEN		BIT(1) /* Interrupt Enable */
-@@ -83,6 +98,28 @@
- #define DP83822_RX_CLK_SHIFT	BIT(12)
- #define DP83822_TX_CLK_SHIFT	BIT(11)
- 
-+/* SOR1 mode */
-+#define DP83822_STRAP_MODE1	0
-+#define DP83822_STRAP_MODE2	BIT(0)
-+#define DP83822_STRAP_MODE3	BIT(1)
-+#define DP83822_STRAP_MODE4	GENMASK(1, 0)
-+
-+#define DP83822_COL_STRAP_MASK	GENMASK(11, 10)
-+#define DP83822_COL_SHIFT	10
-+#define DP83822_RX_ER_STR_MASK	GENMASK(9, 8)
-+#define DP83822_RX_ER_SHIFT	8
-+
-+#define MII_DP83822_FIBER_ADVERTISE    (ADVERTISED_TP | ADVERTISED_MII | \
-+					ADVERTISED_FIBRE | ADVERTISED_BNC |  \
-+					ADVERTISED_Pause | ADVERTISED_Asym_Pause | \
-+					ADVERTISED_100baseT_Full)
-+
-+struct dp83822_private {
-+	bool fx_signal_det_low;
-+	int fx_enabled;
-+	u16 fx_sd_enable;
-+};
-+
- static int dp83822_ack_interrupt(struct phy_device *phydev)
- {
- 	int err;
-@@ -197,6 +234,7 @@ static void dp83822_get_wol(struct phy_device *phydev,
- 
- static int dp83822_config_intr(struct phy_device *phydev)
- {
-+	struct dp83822_private *dp83822 = phydev->priv;
- 	int misr_status;
- 	int physcr_status;
- 	int err;
-@@ -208,13 +246,16 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 
- 		misr_status |= (DP83822_RX_ERR_HF_INT_EN |
- 				DP83822_FALSE_CARRIER_HF_INT_EN |
--				DP83822_ANEG_COMPLETE_INT_EN |
--				DP83822_DUP_MODE_CHANGE_INT_EN |
--				DP83822_SPEED_CHANGED_INT_EN |
- 				DP83822_LINK_STAT_INT_EN |
- 				DP83822_ENERGY_DET_INT_EN |
- 				DP83822_LINK_QUAL_INT_EN);
- 
-+		if (!dp83822->fx_enabled)
-+			misr_status |= DP83822_ANEG_COMPLETE_INT_EN |
-+				       DP83822_DUP_MODE_CHANGE_INT_EN |
-+				       DP83822_SPEED_CHANGED_INT_EN;
-+
-+
- 		err = phy_write(phydev, MII_DP83822_MISR1, misr_status);
- 		if (err < 0)
- 			return err;
-@@ -224,14 +265,16 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 			return misr_status;
- 
- 		misr_status |= (DP83822_JABBER_DET_INT_EN |
--				DP83822_WOL_PKT_INT_EN |
- 				DP83822_SLEEP_MODE_INT_EN |
--				DP83822_MDI_XOVER_INT_EN |
- 				DP83822_LB_FIFO_INT_EN |
- 				DP83822_PAGE_RX_INT_EN |
--				DP83822_ANEG_ERR_INT_EN |
- 				DP83822_EEE_ERROR_CHANGE_INT_EN);
- 
-+		if (!dp83822->fx_enabled)
-+			misr_status |= DP83822_MDI_XOVER_INT_EN |
-+				       DP83822_ANEG_ERR_INT_EN |
-+				       DP83822_WOL_PKT_INT_EN;
-+
- 		err = phy_write(phydev, MII_DP83822_MISR2, misr_status);
- 		if (err < 0)
- 			return err;
-@@ -270,13 +313,60 @@ static int dp8382x_disable_wol(struct phy_device *phydev)
- 				  MII_DP83822_WOL_CFG, value);
- }
- 
-+static int dp83822_read_status(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	int status = phy_read(phydev, MII_DP83822_PHYSTS);
-+	int ctrl2;
-+	int ret;
-+
-+	if (dp83822->fx_enabled) {
-+		if (status & DP83822_PHYSTS_LINK) {
-+			phydev->speed = SPEED_UNKNOWN;
-+			phydev->duplex = DUPLEX_UNKNOWN;
-+		} else {
-+			ctrl2 = phy_read(phydev, MII_DP83822_CTRL_2);
-+			if (ctrl2 < 0)
-+				return ctrl2;
-+
-+			if (!(ctrl2 & DP83822_FX_ENABLE)) {
-+				ret = phy_write(phydev, MII_DP83822_CTRL_2,
-+						DP83822_FX_ENABLE | ctrl2);
-+				if (ret < 0)
-+					return ret;
-+			}
-+		}
-+	}
-+
-+	ret = genphy_read_status(phydev);
-+	if (ret)
-+		return ret;
-+
-+	if (status < 0)
-+		return status;
-+
-+	if (status & DP83822_PHYSTS_DUPLEX)
-+		phydev->duplex = DUPLEX_FULL;
-+	else
-+		phydev->duplex = DUPLEX_HALF;
-+
-+	if (status & DP83822_PHYSTS_10)
-+		phydev->speed = SPEED_10;
-+	else
-+		phydev->speed = SPEED_100;
-+
-+	return 0;
-+}
-+
- static int dp83822_config_init(struct phy_device *phydev)
- {
-+	struct dp83822_private *dp83822 = phydev->priv;
- 	struct device *dev = &phydev->mdio.dev;
- 	int rgmii_delay;
- 	s32 rx_int_delay;
- 	s32 tx_int_delay;
- 	int err = 0;
-+	int bmcr;
- 
- 	if (phy_interface_is_rgmii(phydev)) {
- 		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
-@@ -302,6 +392,53 @@ static int dp83822_config_init(struct phy_device *phydev)
- 		}
- 	}
- 
-+	if (dp83822->fx_enabled) {
-+		err = phy_modify(phydev, MII_DP83822_CTRL_2,
-+				 DP83822_FX_ENABLE, 1);
-+		if (err < 0)
-+			return err;
-+
-+		/* Only allow advertising what this PHY supports */
-+		linkmode_and(phydev->advertising, phydev->advertising,
-+			     phydev->supported);
-+
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
-+				 phydev->supported);
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
-+				 phydev->advertising);
-+
-+		/* Auto neg is not supported in fiber mode */
-+		bmcr = phy_read(phydev, MII_BMCR);
-+		if (bmcr < 0)
-+			return bmcr;
-+
-+		if (bmcr & BMCR_ANENABLE) {
-+			err =  phy_modify(phydev, MII_BMCR, BMCR_ANENABLE, 0);
-+			if (err < 0)
-+				return err;
-+		}
-+		phydev->autoneg = AUTONEG_DISABLE;
-+		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
-+				   phydev->supported);
-+		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
-+				   phydev->advertising);
-+
-+		/* Setup fiber advertisement */
-+		err = phy_modify_changed(phydev, MII_ADVERTISE,
-+					 MII_DP83822_FIBER_ADVERTISE,
-+					 MII_DP83822_FIBER_ADVERTISE);
-+
-+		if (err < 0)
-+			return err;
-+
-+		if (dp83822->fx_signal_det_low) {
-+			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
-+					       MII_DP83822_GENCFG,
-+					       DP83822_SIG_DET_LOW);
-+			if (err)
-+				return err;
-+		}
-+	}
- 	return dp8382x_disable_wol(phydev);
- }
- 
-@@ -314,13 +451,85 @@ static int dp83822_phy_reset(struct phy_device *phydev)
- {
- 	int err;
- 
--	err = phy_write(phydev, MII_DP83822_RESET_CTRL, DP83822_HW_RESET);
-+	err = phy_write(phydev, MII_DP83822_RESET_CTRL, DP83822_SW_RESET);
- 	if (err < 0)
- 		return err;
- 
- 	return phydev->drv->config_init(phydev);
- }
- 
-+#ifdef CONFIG_OF_MDIO
-+static int dp83822_of_init(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	struct device *dev = &phydev->mdio.dev;
-+
-+	/* Signal detection for the PHY is only enabled if the FX_EN and the
-+	 * SD_EN pins are strapped. Signal detection can only enabled if FX_EN
-+	 * is strapped otherwise signal detection is disabled for the PHY.
-+	 */
-+	if (dp83822->fx_enabled && dp83822->fx_sd_enable)
-+		dp83822->fx_signal_det_low = device_property_present(dev,
-+								     "ti,link-loss-low");
-+	if (!dp83822->fx_enabled)
-+		dp83822->fx_enabled = device_property_present(dev,
-+							      "ti,fiber-mode");
-+
-+	return 0;
-+}
-+#else
-+static int dp83822_of_init(struct phy_device *phydev)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_OF_MDIO */
-+
-+static int dp83822_read_straps(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	int fx_enabled, fx_sd_enable;
-+	int val;
-+
-+	val = phy_read_mmd(phydev, DP83822_DEVADDR, MII_DP83822_SOR1);
-+	if (val < 0)
-+		return val;
-+
-+	fx_enabled = (val & DP83822_COL_STRAP_MASK) >> DP83822_COL_SHIFT;
-+	if (fx_enabled == DP83822_STRAP_MODE2 ||
-+	    fx_enabled == DP83822_STRAP_MODE3)
-+		dp83822->fx_enabled = 1;
-+
-+	if (dp83822->fx_enabled) {
-+		fx_sd_enable = (val & DP83822_RX_ER_STR_MASK) >> DP83822_RX_ER_SHIFT;
-+		if (fx_sd_enable == DP83822_STRAP_MODE3 ||
-+		    fx_sd_enable == DP83822_STRAP_MODE4)
-+			dp83822->fx_sd_enable = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int dp83822_probe(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822;
-+	int ret;
-+
-+	dp83822 = devm_kzalloc(&phydev->mdio.dev, sizeof(*dp83822),
-+			       GFP_KERNEL);
-+	if (!dp83822)
-+		return -ENOMEM;
-+
-+	phydev->priv = dp83822;
-+
-+	ret = dp83822_read_straps(phydev);
-+	if (ret)
-+		return ret;
-+
-+	dp83822_of_init(phydev);
-+
-+	return 0;
-+}
-+
- static int dp83822_suspend(struct phy_device *phydev)
- {
- 	int value;
-@@ -352,8 +561,10 @@ static int dp83822_resume(struct phy_device *phydev)
- 		PHY_ID_MATCH_MODEL(_id),			\
- 		.name		= (_name),			\
- 		/* PHY_BASIC_FEATURES */			\
-+		.probe          = dp83822_probe,		\
- 		.soft_reset	= dp83822_phy_reset,		\
- 		.config_init	= dp83822_config_init,		\
-+		.read_status	= dp83822_read_status,		\
- 		.get_wol = dp83822_get_wol,			\
- 		.set_wol = dp83822_set_wol,			\
- 		.ack_interrupt = dp83822_ack_interrupt,		\
--- 
-2.28.0
+Guenter
+
+>>From our SOC roadmap, one generation can be used for one to two more years.
+> I think the name MT636x is enough.
+> For the next one, I can submit the patch to make it compatible with this driver.
+> Thanks for you comment.
+>>
+>>>  3 files changed, 222 insertions(+)
+>>>  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
+>>>
+>>> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
+>>> index fa3f393..58a64e1 100644
+>>> --- a/drivers/usb/typec/tcpm/Kconfig
+>>> +++ b/drivers/usb/typec/tcpm/Kconfig
+>>> @@ -27,6 +27,14 @@ config TYPEC_RT1711H
+>>>         Type-C Port Controller Manager to provide USB PD and USB
+>>>         Type-C functionalities.
+>>>
+>>> +config TYPEC_MT6360
+>>> +     tristate "Mediatek MT6360 Type-C driver"
+>>> +     depends on MFD_MT6360
+>>> +     help
+>>> +       Mediatek MT6360 is a multi-functional IC that includes
+>>> +       USB Type-C. It works with Type-C Port Controller Manager
+>>> +       to provide USB PD and USB Type-C functionalities.
+>>> +
+>>>  endif # TYPEC_TCPCI
+>>>
+>>>  config TYPEC_FUSB302
+>>> diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
+>>> index a5ff6c8..7592ccb 100644
+>>> --- a/drivers/usb/typec/tcpm/Makefile
+>>> +++ b/drivers/usb/typec/tcpm/Makefile
+>>> @@ -5,3 +5,4 @@ obj-$(CONFIG_TYPEC_WCOVE)     += typec_wcove.o
+>>>  typec_wcove-y                        := wcove.o
+>>>  obj-$(CONFIG_TYPEC_TCPCI)    += tcpci.o
+>>>  obj-$(CONFIG_TYPEC_RT1711H)  += tcpci_rt1711h.o
+>>> +obj-$(CONFIG_TYPEC_MT6360)   += tcpci_mt6360.o
+>>> diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+>>> new file mode 100644
+>>> index 00000000..a381b5d
+>>> --- /dev/null
+>>> +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+>>> @@ -0,0 +1,213 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +//
+>>> +// Copyright (C) 2020 MediaTek Inc.
+>>> +//
+>>> +// Author: ChiYuan Huang <cy_huang@richtek.com>
+>> Use /* */ except SPDX?
+> Yes, sure.
+>>
+>>> +
+>>> +#include <linux/interrupt.h>
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/of.h>
+>>> +#include <linux/platform_device.h>
+>>> +#include <linux/regmap.h>
+>>> +#include <linux/usb/tcpm.h>
+>>> +
+>>> +#include "tcpci.h"
+>>> +
+>>> +#define MT6360_REG_VCONNCTRL1        0x8C
+>>> +#define MT6360_REG_MODECTRL2 0x8F
+>>> +#define MT6360_REG_SWRESET   0xA0
+>>> +#define MT6360_REG_DEBCTRL1  0xA1
+>>> +#define MT6360_REG_DRPCTRL1  0xA2
+>>> +#define MT6360_REG_DRPCTRL2  0xA3
+>>> +#define MT6360_REG_I2CTORST  0xBF
+>>> +#define MT6360_REG_RXCTRL2   0xCF
+>>> +#define MT6360_REG_CTDCTRL2  0xEC
+>>> +
+>>> +/* MT6360_REG_VCONNCTRL1 */
+>>> +#define MT6360_VCONNCL_ENABLE        BIT(0)
+>>> +/* MT6360_REG_RXCTRL2 */
+>>> +#define MT6360_OPEN40M_ENABLE        BIT(7)
+>>> +/* MT6360_REG_CTDCTRL2 */
+>>> +#define MT6360_RPONESHOT_ENABLE      BIT(6)
+>>> +
+>>> +struct mt6360_tcpc_info {
+>>> +     struct tcpci_data tdata;
+>>> +     struct tcpci *tcpci;
+>>> +     struct device *dev;
+>>> +     int irq;
+>>> +};
+>>> +
+>>> +static inline int mt6360_tcpc_read16(struct regmap *regmap,
+>>> +                                  unsigned int reg, u16 *val)
+>>> +{
+>>> +     return regmap_raw_read(regmap, reg, val, sizeof(u16));
+>>> +}
+>>> +
+>>> +static inline int mt6360_tcpc_write16(struct regmap *regmap,
+>>> +                                   unsigned int reg, u16 val)
+>>> +{
+>>> +     return regmap_raw_write(regmap, reg, &val, sizeof(u16));
+>>> +}
+>>> +
+>>> +static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *tdata)
+>>> +{
+>>> +     struct regmap *regmap = tdata->regmap;
+>>> +     int ret;
+>>> +
+>>> +     ret = regmap_write(regmap, MT6360_REG_SWRESET, 0x01);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* after reset command, wait 1~2ms to wait IC action */
+>>> +     usleep_range(1000, 2000);
+>>> +
+>>> +     /* write all alert to masked */
+>>> +     ret = mt6360_tcpc_write16(regmap, TCPC_ALERT_MASK, 0);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* config I2C timeout reset enable , and timeout to 200ms */
+>>> +     ret = regmap_write(regmap, MT6360_REG_I2CTORST, 0x8F);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* config CC Detect Debounce : 26.7*val us */
+>>> +     ret = regmap_write(regmap, MT6360_REG_DEBCTRL1, 0x10);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* DRP Toggle Cycle : 51.2 + 6.4*val ms */
+>>> +     ret = regmap_write(regmap, MT6360_REG_DRPCTRL1, 4);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* DRP Duyt Ctrl : dcSRC: /1024 */
+>>> +     ret = mt6360_tcpc_write16(regmap, MT6360_REG_DRPCTRL2, 330);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* Enable VCONN Current Limit function */
+>>> +     ret = regmap_update_bits(regmap, MT6360_REG_VCONNCTRL1, MT6360_VCONNCL_ENABLE,
+>>> +                              MT6360_VCONNCL_ENABLE);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* Enable cc open 40ms when pmic send vsysuv signal */
+>>> +     ret = regmap_update_bits(regmap, MT6360_REG_RXCTRL2, MT6360_OPEN40M_ENABLE,
+>>> +                              MT6360_OPEN40M_ENABLE);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* Enable Rpdet oneshot detection */
+>>> +     ret = regmap_update_bits(regmap, MT6360_REG_CTDCTRL2, MT6360_RPONESHOT_ENABLE,
+>>> +                              MT6360_RPONESHOT_ENABLE);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     /* Set shipping mode off, AUTOIDLE on */
+>>> +     return regmap_write(regmap, MT6360_REG_MODECTRL2, 0x7A);
+>>> +}
+>>> +
+>>> +static irqreturn_t mt6360_irq(int irq, void *dev_id)
+>>> +{
+>>> +     struct mt6360_tcpc_info *mti = dev_id;
+>>> +
+>>> +     return tcpci_irq(mti->tcpci);
+>>> +}
+>>> +
+>>> +static int mt6360_tcpc_probe(struct platform_device *pdev)
+>>> +{
+>>> +     struct mt6360_tcpc_info *mti;
+>>> +     int ret;
+>>> +
+>>> +     mti = devm_kzalloc(&pdev->dev, sizeof(*mti), GFP_KERNEL);
+>>> +     if (!mti)
+>>> +             return -ENOMEM;
+>>> +
+>>> +     mti->dev = &pdev->dev;
+>>> +
+>>> +     mti->tdata.regmap = dev_get_regmap(pdev->dev.parent, NULL);
+>>> +     if (!mti->tdata.regmap) {
+>>> +             dev_err(&pdev->dev, "Failed to get parent regmap\n");
+>>> +             return -ENODEV;
+>>> +     }
+>>> +
+>>> +     mti->irq = platform_get_irq_byname(pdev, "PD_IRQB");
+>>> +     if (mti->irq < 0) {
+>>> +             dev_err(&pdev->dev, "Failed to get PD_IRQB irq\n");
+>> No need add error log, platform_get_irq_byname will print it
+> I'll remove it in the next revision. Thanks
+>>
+>>> +             return mti->irq;
+>>> +     }
+>>> +
+>>> +     mti->tdata.init = mt6360_tcpc_init;
+>>> +     mti->tcpci = tcpci_register_port(&pdev->dev, &mti->tdata);
+>>> +     if (IS_ERR_OR_NULL(mti->tcpci)) {
+>> Use IS_ERR()? it seems not return NULL
+>>> +             dev_err(&pdev->dev, "Failed to register tcpci port\n");
+>>> +             return PTR_ERR(mti->tcpci);
+>> If return NULL, this may return 0?
+> Remove it later. you're right.
+>>
+>>> +     }
+>>> +
+>>> +     ret = devm_request_threaded_irq(mti->dev, mti->irq, NULL, mt6360_irq, IRQF_ONESHOT,
+>>> +                                     dev_name(&pdev->dev), mti);
+>>> +     if (ret) {
+>>> +             dev_err(mti->dev, "Failed to register irq\n");
+>>> +             tcpci_unregister_port(mti->tcpci);
+>>> +             return ret;
+>>> +     }
+>>> +
+>>> +     device_init_wakeup(&pdev->dev, true);
+>>> +     platform_set_drvdata(pdev, mti);
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int mt6360_tcpc_remove(struct platform_device *pdev)
+>>> +{
+>>> +     struct mt6360_tcpc_info *mti = platform_get_drvdata(pdev);
+>>> +
+>>> +     disable_irq(mti->irq);
+>> need sync?
+> Yes, sync must be considered to wait interrupt is really finished.
+> And disable_irq already the sync version.
+>>
+>>> +     tcpci_unregister_port(mti->tcpci);
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int __maybe_unused mt6360_tcpc_suspend(struct device *dev)
+>>> +{
+>>> +     struct mt6360_tcpc_info *mti = dev_get_drvdata(dev);
+>>> +
+>>> +     if (device_may_wakeup(dev))
+>>> +             enable_irq_wake(mti->irq);
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int __maybe_unused mt6360_tcpc_resume(struct device *dev)
+>>> +{
+>>> +     struct mt6360_tcpc_info *mti = dev_get_drvdata(dev);
+>>> +
+>>> +     if (device_may_wakeup(dev))
+>>> +             disable_irq_wake(mti->irq);
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static SIMPLE_DEV_PM_OPS(mt6360_tcpc_pm_ops, mt6360_tcpc_suspend, mt6360_tcpc_resume);
+>>> +
+>>> +static const struct of_device_id __maybe_unused mt6360_tcpc_of_id[] = {
+>>> +     { .compatible = "mediatek,mt6360-tcpc", },
+>>> +     {},
+>>> +};
+>>> +MODULE_DEVICE_TABLE(of, mt6360_tcpc_of_id);
+>>> +
+>>> +static struct platform_driver mt6360_tcpc_driver = {
+>>> +     .driver = {
+>>> +             .name = "mt6360-tcpc",
+>>> +             .pm = &mt6360_tcpc_pm_ops,
+>>> +             .of_match_table = mt6360_tcpc_of_id,
+>>> +     },
+>>> +     .probe = mt6360_tcpc_probe,
+>>> +     .remove = mt6360_tcpc_remove,
+>>> +};
+>>> +module_platform_driver(mt6360_tcpc_driver);
+>>> +
+>>> +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
+>>> +MODULE_DESCRIPTION("MT6360 USB Type-C Port Controller Interface Driver");
+>>> +MODULE_LICENSE("GPL v2");
+>>
 
