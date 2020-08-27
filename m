@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB15254CE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D705A254CE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgH0SUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:20:05 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:38182 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726120AbgH0SUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:20:04 -0400
-X-IronPort-AV: E=Sophos;i="5.76,360,1592838000"; 
-   d="scan'208";a="55707965"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 28 Aug 2020 03:20:01 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 99E274009650;
-        Fri, 28 Aug 2020 03:19:59 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH] arm64: dts: renesas: Add HiHope RZ/G2H board with idk-1110wr display
-Date:   Thu, 27 Aug 2020 19:19:18 +0100
-Message-Id: <20200827181918.30130-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1727921AbgH0SUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726093AbgH0SUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 14:20:36 -0400
+Received: from localhost.localdomain (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 406372087C;
+        Thu, 27 Aug 2020 18:20:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598552435;
+        bh=JhM6FPCbA4g1z4X4hZMMnSc4eTsjqr+y2d9PBalJfoE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GHiQMeaIk65r2UV1/jqLWfcHN5K9tNcqt6fAMkuc9mFSQl+EGf4OFMw3jAVFMN3SG
+         PgVJXu0JZnQWMMJqw8v3gG3uiKGm9V/aSMoGc4FcdEiSe3cupExXE6OtX8ewMYIdPf
+         Nelj9ozSWjzGKjfjtlHpKgOG1epskzT92/jwKXN4=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Security Officers <security@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] MAINTAINERS: Add the security document to SECURITY CONTACT
+Date:   Thu, 27 Aug 2020 20:20:29 +0200
+Message-Id: <20200827182029.3458-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HiHope RZ/G2H is advertised as compatible with panel idk-1110wr from
-Advantech, however the panel isn't sold alongside the board. New dts,
-enabling the lvds node to get the panel to work with HiHope RZ/G2H.
+When changing the document related to kernel security workflow, notify
+the security mailing list as its concerned by this.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <security@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
 ---
- arch/arm64/boot/dts/renesas/Makefile              |  1 +
- .../r8a774e1-hihope-rzg2h-ex-idk-1110wr.dts       | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-idk-1110wr.dts
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index d7902294faf3..46445474cf3e 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -21,6 +21,7 @@ dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-ek874-mipi-2.1.dtb
+Changes since v1:
+1. Changed order - F: go to end of entry,
+2. Remove embargoed-hardware-issues
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8107b3d5d6df..19064a4ae9b0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15621,6 +15621,7 @@ F:	include/uapi/linux/sed*
+ SECURITY CONTACT
+ M:	Security Officers <security@kernel.org>
+ S:	Supported
++F:	Documentation/admin-guide/security-bugs.rst
  
- dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h.dtb
- dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h-ex.dtb
-+dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h-ex-idk-1110wr.dtb
- 
- dtb-$(CONFIG_ARCH_R8A77950) += r8a77950-salvator-x.dtb
- dtb-$(CONFIG_ARCH_R8A77950) += r8a77950-ulcb.dtb
-diff --git a/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-idk-1110wr.dts b/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-idk-1110wr.dts
-new file mode 100644
-index 000000000000..3b7339127bc0
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-idk-1110wr.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2H sub board connected
-+ * to an Advantech IDK-1110WR 10.1" LVDS panel
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#include "r8a774e1-hihope-rzg2h-ex.dts"
-+#include "hihope-rzg2-ex-lvds.dtsi"
-+#include "rzg2-advantech-idk-1110wr-panel.dtsi"
-+
-+&lvds0 {
-+	status = "okay";
-+};
+ SECURITY SUBSYSTEM
+ M:	James Morris <jmorris@namei.org>
 -- 
 2.17.1
 
