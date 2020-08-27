@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0F1253B54
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CB4253B5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgH0BUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 21:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1726940AbgH0BY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 21:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgH0BUQ (ORCPT
+        with ESMTP id S1726838AbgH0BYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 21:20:16 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD72C0617A1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:20:15 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c19so2662260wmd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:20:15 -0700 (PDT)
+        Wed, 26 Aug 2020 21:24:22 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F71BC0617A9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:24:20 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w25so4517005ljo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:24:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5FMcDpz0D9FOa8ovi1m1pj680ZF4vzx0JKLeakxCl8g=;
-        b=sHhPMGJZKhoZl9E6ibc5sGV9yVoA1R5vn5BZkFW0CCwDBYCa48o7bsrdSnEtv1/1D3
-         7DXFn3bID4AHUku/qfIy5qFu4dUJk2Leiv3wa85p68KTVksTRHMilsNa3WklAzglNTix
-         ZDXCwkheHVRlVRMDMTAqu111C78EGMFzMJfvr6PL/mPbk2AmvxBsatqGSOWu9nsoKdAV
-         lFmTUIbgQd8xhRcTQ185enQ4dz45R/ck5Cv1+ZcgeBxNb//Nj8dXGI4jP4DthiutU2Kp
-         GZpmW7J/dSW5yFJQKfwFw4dBFAEFm5fujK1Fa3tq4TsTyL72hNr5KJ+6Tr36ADF8ge8L
-         BrSw==
+        bh=eaAhVe9NZ1R5g2YS2CTJE0/6e8EYtB7aMqdHknvKesA=;
+        b=SJwPhgwUnUn2mBarnoa9bYz42e0tKRZQflSAKfXVW+1WuaJWh+0RePI1uNHutnyd2A
+         YtVQxlK3Ffu4N1UF5nmbSAY8tUkVP/fRLD1G6u72jYG2ksFuQncrACVRRuOt6NpKvUPv
+         fFXWzySHC85dONXfxUUAVinyHVrTxzc1msjDoirhDLNmiEGqoml2RaLfP/5L37cUSmEF
+         2x+SKK69lCzSR0Uv2KNHpby9FLNCjb7H8RSlrh0dQvGgW+FHpK2t/Ozqil8Gfn1CgePU
+         jjPFsyRGDg6X5bOe51QDiLaAWrD4UjhlZUsnCBSu2IvNakzMXZJxI7xDxSFVtk9hclHh
+         Ey+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5FMcDpz0D9FOa8ovi1m1pj680ZF4vzx0JKLeakxCl8g=;
-        b=qnuzRWRTLceq6hlw2E7qbeliKMYtFB1Pt21+N980B7BluSXhHxkNE6Xeby9WaFiT8G
-         YhKhlUpCLSOWFnrxXXh6EVXQ+TaQ5ImAzuHJEUBHwrYompZD8/vRNKJEVe9SJNu+Qc84
-         iqPWjYe2rCNklUIZ5JfJZmMLKQ83EURfkkDhy2/x5WGr08YLWluaCjUw1aqCEwZ/OsBJ
-         FXYjboEAEnKU/aMC6AVyLwWLSzWCn5PQgv+3wKY2Z3JTxzI8mh6v2xlvNwYZPkGRxH4c
-         LgUaT5p/o0u+514hC2QxCC6iDihnNijuW13g98haGqGcr74DAm1WtOvgjIZjtlZ4InGH
-         a2bA==
-X-Gm-Message-State: AOAM533Cis6P3mRevILUqfKyZVzfaEr4x6eKkfnXYg+9bMWnbqsTRsk9
-        HmXPaXnCxX8FF1YTPlSG/OcYeue5GaBp0v3zRk8=
-X-Google-Smtp-Source: ABdhPJw5Y29uUy0y/pMbXcc6kgLPImFsUwAhGpSLVPDzQLhqCOt3z9Pn9Xdj6bUQs0ULVNz9wRdeg1p/FU8vhkAwR/U=
-X-Received: by 2002:a1c:f70e:: with SMTP id v14mr9389274wmh.74.1598491214400;
- Wed, 26 Aug 2020 18:20:14 -0700 (PDT)
+        bh=eaAhVe9NZ1R5g2YS2CTJE0/6e8EYtB7aMqdHknvKesA=;
+        b=d0lJrPEvKY0pw7+Y+QEXEfbBuKBE5GUlag9rqMvFbhSafuCEHaR4OXMJWtNYLfLoGI
+         QVJSP9x1tRlpdR2Ki9WBLGgfBpSrWcqWZ21wkeV86La+NGxnoP5k8GTo7BTPrT3fKk19
+         xuJgvZ/9OYEs+D16nX0nQ3IGQ4A8xY6iUJVgG5KIR9ecvgIyLBh23yEfyiKhS6QG26TI
+         k7NVZqtwl/dwYMqxSSo1i73xqmBOsNlKJz8yG0DVgD6D+x3WEzj84KUYnfLTaJ8H4ZAT
+         0Zn4wDx5Cvf8FwcjbEJd2zEzFtenCFjWGCU2w6NgbC7bo06KVzAoEIHUUGnqsuz+CO3t
+         4zfw==
+X-Gm-Message-State: AOAM532iFCsNGkF9Pza19jYSluzp4q13QLJmysNd3/DpZ/4UKoSX2xeY
+        4GwIU6uH90rbr+pCokj1CQEx/2R+dKn0AXkCX6iKmg==
+X-Google-Smtp-Source: ABdhPJxgDGcNP9DxOQTWxsXv8cwD05YmMvT1hmUzl2euif9r0/9glXhCkah+fd374MAxguSaIYX9w6tni5KTkeihFKQ=
+X-Received: by 2002:a2e:5d8:: with SMTP id 207mr7665336ljf.58.1598491458086;
+ Wed, 26 Aug 2020 18:24:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1593530334.git.vpillai@digitalocean.com> <c4556033-4d78-0419-0114-a17f68456ec8@amazon.com>
-In-Reply-To: <c4556033-4d78-0419-0114-a17f68456ec8@amazon.com>
-From:   Vineeth Pillai <vineethrp@gmail.com>
-Date:   Wed, 26 Aug 2020 21:20:03 -0400
-Message-ID: <CAOBnfPj_mbSJNAy8b50yZ1jN+aroSekfKNTPsG8f5WQFUbENEg@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/16] Core scheduling v6
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
+References: <20200821150134.2581465-1-guro@fb.com> <20200821150134.2581465-6-guro@fb.com>
+In-Reply-To: <20200821150134.2581465-6-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 26 Aug 2020 18:24:07 -0700
+Message-ID: <CALvZod5Fb50fVSC9XaYyQ3awjYU8sc4-VYh66z4U__v5Pfxd8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 05/30] bpf: refine memcg-based memory
+ accounting for cpumap maps
+To:     Roman Gushchin <guro@fb.com>
+Cc:     bpf@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>, Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
+On Fri, Aug 21, 2020 at 8:11 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> As discussed during Linux Plumbers, here is a small repo with test
-> scripts and applications that I've used to look at core scheduling
-> unfairness:
+> Include metadata and percpu data into the memcg-based memory accounting.
 >
->    https://github.com/agraf/schedgaps
->
-Thanks for sharing :).
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
 
-> Please let me know if it's unclear how to use it or if you see issues in
-> your environment.
->
-Will give it a try soon and let you know. Went through the
-README quickly and documentation is very clear.
-
-This is really helpful and would be really useful in future
-testing as well.
-
-Thanks,
-Vineeth
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
