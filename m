@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800B1253F7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD82253F80
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgH0HrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgH0Hq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:46:59 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E07C06121A;
-        Thu, 27 Aug 2020 00:46:58 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BcZYr2ZqWz9sTK; Thu, 27 Aug 2020 17:46:55 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <e06de4d3-a36f-2745-9775-467e125436cc@infradead.org>
-References: <e06de4d3-a36f-2745-9775-467e125436cc@infradead.org>
-Subject: Re: [PATCH] Documentation/powerpc: fix malformed table in syscall64-abi
-Message-Id: <159851436088.52163.10131581013009684108.b4-ty@ellerman.id.au>
-Date:   Thu, 27 Aug 2020 17:46:55 +1000 (AEST)
+        id S1728360AbgH0HrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:47:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgH0HrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:47:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A2A8AC1F;
+        Thu, 27 Aug 2020 07:47:55 +0000 (UTC)
+Subject: Re: [patch V2 28/46] x86/xen: Consolidate XEN-MSI init
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20200826111628.794979401@linutronix.de>
+ <20200826112333.420224092@linutronix.de>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <fc8d8b63-f908-2520-7cf7-42ead4aa4bd8@suse.com>
+Date:   Thu, 27 Aug 2020 09:47:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200826112333.420224092@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Aug 2020 17:31:16 -0700, Randy Dunlap wrote:
-> Fix malformed table warning in powerpc/syscall64-abi.rst by making
-> two tables and moving the headings.
+On 26.08.20 13:16, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Documentation/powerpc/syscall64-abi.rst:53: WARNING: Malformed table.
-> Text in column margin in table line 2.
+> X86 cannot store the irq domain pointer in struct device without breaking
+> XEN because the irq domain pointer takes precedence over arch_*_msi_irqs()
+> fallbacks.
 > 
-> =========== ============= ========================================
-> --- For the sc instruction, differences with the ELF ABI ---
-> r0          Volatile      (System call number.)
-> r3          Volatile      (Parameter 1, and return value.)
-> r4-r8       Volatile      (Parameters 2-6.)
-> cr0         Volatile      (cr0.SO is the return error condition.)
-> cr1, cr5-7  Nonvolatile
-> lr          Nonvolatile
+> To achieve this XEN MSI interrupt management needs to be wrapped into an
+> irq domain.
 > 
-> [...]
+> Move the x86_msi ops setup into a single function to prepare for this.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Applied to powerpc/fixes.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-[1/1] Documentation/powerpc: fix malformed table in syscall64-abi
-      https://git.kernel.org/powerpc/c/aa661d7fab436d8a782618b3138da1a84ca28a31
 
-cheers
+Juergen
