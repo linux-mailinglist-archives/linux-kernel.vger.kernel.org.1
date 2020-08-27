@@ -2,92 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F319253B4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079F4253B4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgH0BL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 21:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S1726802AbgH0BSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 21:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgH0BL6 (ORCPT
+        with ESMTP id S1726779AbgH0BS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 21:11:58 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0ADC06179E;
-        Wed, 26 Aug 2020 18:11:57 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id g6so4500174ljn.11;
-        Wed, 26 Aug 2020 18:11:57 -0700 (PDT)
+        Wed, 26 Aug 2020 21:18:28 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A9CC06179F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:18:28 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id n18so3479695qtw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m/8pB8Sw21i7XQLubODjblLQyuDRrCYhn+Eq3ZDQVx0=;
-        b=TTA3SJS1N/caMZX9Nag1kHB/iT0fK4yOYmxP3aMRd75Z2BueqjS4WGzvX3hU8cgNYw
-         br9qLPus7nDMRlbM630MvGiWgR1tFlr7ZG7v8SNBu0iNMCvRVjwsOqIkMyz8/8fUKaIx
-         C6hGhspEoFOxM6rUY5ERS3UNGItKKusEBXK6LvtdJK9W/07KMy6mXl8uaaEVjKS4knsy
-         bXY4/ngTaCKfitIuKfJkwr4X4xSCDpUlXpf+EOUZN6EZwNhHrX7mHfgfrp4hX3TLmvib
-         E3oxNcnZGr5WYLHtA4bAkRY6e6wnO+UOegOwN9VrxZtijgjOT8pY3w02NPCumMMjc8BF
-         JhBg==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3iBsmvYXjS76V9LCK+z2HaGa73AfxRjgBvqaEc9ru4U=;
+        b=nAPU2Dd5ugwB//giUmF6/JiMEfIFheeg9ufhJZd/MLsppIIPnWIlrDhayxHh5sW9S4
+         jTZy5PxmkMPv5ElaZTiSbeyFn+BzqQjGoyJUf7DL6YA5LDDirvilpVAA2JASY9AW8UTz
+         vVqtSnNTWu/w9PFpvENUg1cIFO/i5olq99fkk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m/8pB8Sw21i7XQLubODjblLQyuDRrCYhn+Eq3ZDQVx0=;
-        b=K5yngT98r+vREXxXPrOdi/O2dEdhF+/hh0jafnKIWoGgvU4xVC9zWi0zAQWZoVCm1W
-         E+2uouZH94MCE4AyVprcgLT2nz9pilUiX7aSaCNzOJ30G3LUBHn2fIe0udurtkbAhQ6u
-         mWeLlANMrfFeKp4Yp2NrrjJ3H8mJzTLmdV9Cmq//w7/g0N0XUi5XdGF1HrVGAx7IC+Lf
-         cT3xinf5nPE8+5CMSixYl1MnpVkPNv61cy7FzwUMV2QnmZKqJJqd5l9BpnMsE5PTvbry
-         QHdlO1lNGLCDfVocgJ9GV/VxdHNPNOH31/Mbv010MYyw5lxFSITSK+0gkeiarEZKZwt/
-         mjsA==
-X-Gm-Message-State: AOAM530Nzfdb4LEKUIU+kntjjnyt+t5WUuzXyu+YhMxv4f+nUTv4hkiy
-        8RmM1DwJvc2v48mfxTV0pXHTQAImlCJNexjJJDAtF3qtLqU=
-X-Google-Smtp-Source: ABdhPJydzD1WwH6+x47tyNqs5lJxZhmJOXy71zWRsrVhFlJb3UW8drng/iudHsH+0nuncrCwHunivBrN3aq1Cyaa5dk=
-X-Received: by 2002:a2e:2c0e:: with SMTP id s14mr8994396ljs.28.1598490716116;
- Wed, 26 Aug 2020 18:11:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3iBsmvYXjS76V9LCK+z2HaGa73AfxRjgBvqaEc9ru4U=;
+        b=o45rFyXeyITWZAWXoFp3lFea7h8BzDsWm0VYqJua0o8oR0UZe3dcowkQ1z96LTTMPK
+         hnKiUWiejVHih/0rKJCwazgR3nvaKdmJjmyCpoPb1N4pQ9pz71T4AgNPZAe0K8VmJ4ae
+         3y9jPSeoWrewq8KTnAi5llmpbBI6Ha6NhrOTLiTmLcj6FJynf2PhoO7ZPP5KbYBJjZ7b
+         FHSILvDGl4XbogmnA1I09IdZCxWp1VL794ZpFf5SY+TNoRklM9BQ7XBcgaUzK1URt1MQ
+         pzaf32sUejP+BX0j7tCHnTmvse2KLtMe5mBGeyP29jWyYWX5I2Ifd9YjkcC11q1Uifux
+         rqCg==
+X-Gm-Message-State: AOAM532Z+Wpubu008Pp2QYrYoYMj4Qs1YkNo/gy9GjtczG3V0IBBpSAf
+        xLrjqHrOE6xNxrkTTrB+iK1MGw==
+X-Google-Smtp-Source: ABdhPJzPwTJEoigMNYPi8U6yuminJHh99Hx2hutE3GFCdE1QP58bRu0NGSdKMjRR+Oq/n6PDsDZB0Q==
+X-Received: by 2002:ac8:e89:: with SMTP id v9mr16971905qti.100.1598491107913;
+        Wed, 26 Aug 2020 18:18:27 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id f14sm632376qkl.52.2020.08.26.18.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 18:18:27 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 21:18:26 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
+        npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        svens@linux.ibm.com, tglx@linutronix.de
+Subject: Re: [PATCH v2 03/11] sched,idle,rcu: Push rcu_idle deeper into the
+ idle path
+Message-ID: <20200827011826.GA1942571@google.com>
+References: <20200821084738.508092956@infradead.org>
+ <20200821085348.310943801@infradead.org>
 MIME-Version: 1.0
-References: <1598440602-8648-1-git-send-email-u0084500@gmail.com>
- <a7d1a5d9-97e9-bcf6-23f4-2c4be356913f@roeck-us.net> <CADiBU3_x5-P8A0erchFpWucX4_R8M01-CdOJv38FjrPGSn+55A@mail.gmail.com>
- <627dd188-9379-1179-432e-b53948052823@roeck-us.net>
-In-Reply-To: <627dd188-9379-1179-432e-b53948052823@roeck-us.net>
-From:   =?UTF-8?B?5ZWf5Y6f6buD?= <u0084500@gmail.com>
-Date:   Thu, 27 Aug 2020 09:11:44 +0800
-Message-ID: <CADiBU3_GX+BvxQCDkMtf70sXHnwFVNmBCJsrydROHjy5Lr9B4g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb typec: mt6360: Add support for mt6360 Type-C driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821085348.310943801@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B48=E6=9C=8827=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=889:02=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On 8/26/20 5:59 PM, =E5=95=9F=E5=8E=9F=E9=BB=83 wrote:
-> [ ... ]
-> >>> +static int mt6360_tcpc_remove(struct platform_device *pdev)
-> >>> +{
-> >>> +     struct mt6360_tcpc_info *mti =3D platform_get_drvdata(pdev);
-> >>> +
-> >>> +     tcpci_unregister_port(mti->tcpci);
-> >>
-> >> That leaves interrupts enabled, which might be racy
-> >> because interrupts are still enabled here.
-> > M..., yes, it will cause the race condition during module remove.
-> > I'll add disable_irq before tcpci unregister to prevent it.
->
-> Or just set TCPC_ALERT_MASK to 0, as in tcpci.c.
-Both are right, Thx. I'll choose one.
+On Fri, Aug 21, 2020 at 10:47:41AM +0200, Peter Zijlstra wrote:
+> Lots of things take locks, due to a wee bug, rcu_lockdep didn't notice
+> that the locking tracepoints were using RCU.
+> 
+> Push rcu_idle_{enter,exit}() as deep as possible into the idle paths,
+> this also resolves a lot of _rcuidle()/RCU_NONIDLE() usage.
+> 
+> Specifically, sched_clock_idle_wakeup_event() will use ktime which
+> will use seqlocks which will tickle lockdep, and
+> stop_critical_timings() uses lock.
 
-BTW, it seems enum typec_cc_status is used by tcpci.h.
-If I don't include tcpm.h, it will raise a warning during the compile time.
->
-> Guenter
+I was wondering if those tracepoints should just use _rcuidle variant of the
+trace call. But that's a terrible idea considering that would add unwanted
+overhead I think.
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
+
+ - Joel
+
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Tested-by: Marco Elver <elver@google.com>
+> ---
+>  drivers/cpuidle/cpuidle.c |   12 ++++++++----
+>  kernel/sched/idle.c       |   22 ++++++++--------------
+>  2 files changed, 16 insertions(+), 18 deletions(-)
+> 
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -145,13 +145,14 @@ static void enter_s2idle_proper(struct c
+>  	 * executing it contains RCU usage regarded as invalid in the idle
+>  	 * context, so tell RCU about that.
+>  	 */
+> -	RCU_NONIDLE(tick_freeze());
+> +	tick_freeze();
+>  	/*
+>  	 * The state used here cannot be a "coupled" one, because the "coupled"
+>  	 * cpuidle mechanism enables interrupts and doing that with timekeeping
+>  	 * suspended is generally unsafe.
+>  	 */
+>  	stop_critical_timings();
+> +	rcu_idle_enter();
+>  	drv->states[index].enter_s2idle(dev, drv, index);
+>  	if (WARN_ON_ONCE(!irqs_disabled()))
+>  		local_irq_disable();
+> @@ -160,7 +161,8 @@ static void enter_s2idle_proper(struct c
+>  	 * first CPU executing it calls functions containing RCU read-side
+>  	 * critical sections, so tell RCU about that.
+>  	 */
+> -	RCU_NONIDLE(tick_unfreeze());
+> +	rcu_idle_exit();
+> +	tick_unfreeze();
+>  	start_critical_timings();
+>  
+>  	time_end = ns_to_ktime(local_clock());
+> @@ -229,16 +231,18 @@ int cpuidle_enter_state(struct cpuidle_d
+>  	/* Take note of the planned idle state. */
+>  	sched_idle_set_state(target_state);
+>  
+> -	trace_cpu_idle_rcuidle(index, dev->cpu);
+> +	trace_cpu_idle(index, dev->cpu);
+>  	time_start = ns_to_ktime(local_clock());
+>  
+>  	stop_critical_timings();
+> +	rcu_idle_enter();
+>  	entered_state = target_state->enter(dev, drv, index);
+> +	rcu_idle_exit();
+>  	start_critical_timings();
+>  
+>  	sched_clock_idle_wakeup_event();
+>  	time_end = ns_to_ktime(local_clock());
+> -	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, dev->cpu);
+> +	trace_cpu_idle(PWR_EVENT_EXIT, dev->cpu);
+>  
+>  	/* The cpu is no longer idle or about to enter idle. */
+>  	sched_idle_set_state(NULL);
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -54,17 +54,18 @@ __setup("hlt", cpu_idle_nopoll_setup);
+>  
+>  static noinline int __cpuidle cpu_idle_poll(void)
+>  {
+> +	trace_cpu_idle(0, smp_processor_id());
+> +	stop_critical_timings();
+>  	rcu_idle_enter();
+> -	trace_cpu_idle_rcuidle(0, smp_processor_id());
+>  	local_irq_enable();
+> -	stop_critical_timings();
+>  
+>  	while (!tif_need_resched() &&
+> -		(cpu_idle_force_poll || tick_check_broadcast_expired()))
+> +	       (cpu_idle_force_poll || tick_check_broadcast_expired()))
+>  		cpu_relax();
+> -	start_critical_timings();
+> -	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+> +
+>  	rcu_idle_exit();
+> +	start_critical_timings();
+> +	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+>  
+>  	return 1;
+>  }
+> @@ -91,7 +92,9 @@ void __cpuidle default_idle_call(void)
+>  		local_irq_enable();
+>  	} else {
+>  		stop_critical_timings();
+> +		rcu_idle_enter();
+>  		arch_cpu_idle();
+> +		rcu_idle_exit();
+>  		start_critical_timings();
+>  	}
+>  }
+> @@ -158,7 +161,6 @@ static void cpuidle_idle_call(void)
+>  
+>  	if (cpuidle_not_available(drv, dev)) {
+>  		tick_nohz_idle_stop_tick();
+> -		rcu_idle_enter();
+>  
+>  		default_idle_call();
+>  		goto exit_idle;
+> @@ -178,21 +180,17 @@ static void cpuidle_idle_call(void)
+>  		u64 max_latency_ns;
+>  
+>  		if (idle_should_enter_s2idle()) {
+> -			rcu_idle_enter();
+>  
+>  			entered_state = call_cpuidle_s2idle(drv, dev);
+>  			if (entered_state > 0)
+>  				goto exit_idle;
+>  
+> -			rcu_idle_exit();
+> -
+>  			max_latency_ns = U64_MAX;
+>  		} else {
+>  			max_latency_ns = dev->forced_idle_latency_limit_ns;
+>  		}
+>  
+>  		tick_nohz_idle_stop_tick();
+> -		rcu_idle_enter();
+>  
+>  		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+>  		call_cpuidle(drv, dev, next_state);
+> @@ -209,8 +207,6 @@ static void cpuidle_idle_call(void)
+>  		else
+>  			tick_nohz_idle_retain_tick();
+>  
+> -		rcu_idle_enter();
+> -
+>  		entered_state = call_cpuidle(drv, dev, next_state);
+>  		/*
+>  		 * Give the governor an opportunity to reflect on the outcome
+> @@ -226,8 +222,6 @@ static void cpuidle_idle_call(void)
+>  	 */
+>  	if (WARN_ON_ONCE(irqs_disabled()))
+>  		local_irq_enable();
+> -
+> -	rcu_idle_exit();
+>  }
+>  
+>  /*
+> 
+> 
