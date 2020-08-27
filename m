@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A7D253DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C4B253DD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgH0GgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:36:19 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53102 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726395AbgH0GfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:35:22 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 73AE2A05E37D5DB2E6B2;
-        Thu, 27 Aug 2020 14:35:19 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 14:35:15 +0800
-Subject: Re: [PATCH v3 0/7] bugfix and optimize for drivers/nvdimm
-To:     Oliver O'Halloran <oohall@gmail.com>,
+        id S1727835AbgH0GfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:35:25 -0400
+Received: from verein.lst.de ([213.95.11.211]:36736 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgH0GfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:35:21 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3FC7B68BFE; Thu, 27 Aug 2020 08:35:17 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 08:35:17 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200820021641.3188-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <90d93e2e-1124-22ee-81fb-83ffebc3129c@huawei.com>
-Date:   Thu, 27 Aug 2020 14:35:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVERS FOR ALLWINNER A10" 
+        <dri-devel@lists.freedesktop.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Julien Grall <julien.grall@arm.com>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ALLWINNER A10 CSI DRIVER" <linux-media@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v11 00/11] PCI: brcmstb: enable PCIe for STB chips
+Message-ID: <20200827063517.GA4637@lst.de>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com> <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200820021641.3188-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all:
-  Any comment? I want to merge patches 1 and 2 into one, then send
-other patches separately.
+On Tue, Aug 25, 2020 at 10:40:27AM -0700, Florian Fainelli wrote:
+> Hi,
+>
+> On 8/24/2020 12:30 PM, Jim Quinlan wrote:
+>>
+>> Patchset Summary:
+>>    Enhance a PCIe host controller driver.  Because of its unusual design
+>>    we are foced to change dev->dma_pfn_offset into a more general role
+>>    allowing multiple offsets.  See the 'v1' notes below for more info.
+>
+> We are version 11 and counting, and it is not clear to me whether there is 
+> any chance of getting these patches reviewed and hopefully merged for the 
+> 5.10 merge window.
+>
+> There are a lot of different files being touched, so what would be the 
+> ideal way of routing those changes towards inclusion?
 
-On 2020/8/20 10:16, Zhen Lei wrote:
-> v2 --> v3:
-> 1. Fix spelling error of patch 1 subject: memmory --> memory
-> 2. Add "Reviewed-by: Oliver O'Halloran <oohall@gmail.com>" into patch 1
-> 3. Rewrite patch descriptions of Patch 1, 3, 4
-> 4. Add 3 new trivial patches 5-7, I just found that yesterday.
-> 5. Unify all "subsystem" names to "libnvdimm:"
-> 
-> v1 --> v2:
-> 1. Add Fixes for Patch 1-2
-> 2. Slightly change the subject and description of Patch 1
-> 3. Add a new trivial Patch 4, I just found that yesterday.
-> 
-> v1:
-> I found a memleak when I learned the drivers/nvdimm code today. And I also
-> added a sanity check for priv->bus_desc.provider_name, because strdup()
-> maybe failed. Patch 3 is a trivial source code optimization.
-> 
-> 
-> Zhen Lei (7):
->   libnvdimm: fix memory leaks in of_pmem.c
->   libnvdimm: add sanity check for provider_name in
->     of_pmem_region_probe()
->   libnvdimm: simplify walk_to_nvdimm_bus()
->   libnvdimm: reduce an unnecessary if branch in nd_region_create()
->   libnvdimm: reduce an unnecessary if branch in nd_region_activate()
->   libnvdimm: make sure EXPORT_SYMBOL_GPL(nvdimm_flush) close to its
->     function
->   libnvdimm: slightly simplify available_slots_show()
-> 
->  drivers/nvdimm/bus.c         |  7 +++----
->  drivers/nvdimm/dimm_devs.c   |  5 ++---
->  drivers/nvdimm/of_pmem.c     |  7 +++++++
->  drivers/nvdimm/region_devs.c | 13 ++++---------
->  4 files changed, 16 insertions(+), 16 deletions(-)
-> 
-
+FYI, I offered to take the dma-mapping bits through the dma-mapping tree.
+I have a bit of a backlog, but plan to review and if Jim is ok with that
+apply the current version.
