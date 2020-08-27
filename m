@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982E2546E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479C32546FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgH0Oaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727926AbgH0OX4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:23:56 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3F7C061236
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id o2so2669229qvk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
-        b=KPqGwrmsmOIuf+JiWEW/k7gGWQ1y3K+MpxQ+GlJBR4JHV9vGFTTbjyFMl+FZ4Y0eR1
-         K2BXbisksDsJdOWmVO1uqUYQ2h1rz6x4zhmDciS7F7QXhAv9oK2efTTjrKFY2lV0MX2h
-         m+NX4PEHBJLAtiNCQ+E62vD9YoMqRVe4nQ2rLdY2M6j+IN9GUIPk+F93i5PMufggiU+5
-         7qfQtxk5IGmbE2ZD7qvuDqJQO8zKxEiYo6gkbc90Yi69wGk+9eBBpz/JoSeL/G/aFyFt
-         vrKHByeeVrxLF5cwGuOVUkygA2VuBjAX42oiZQSqxkRduIvG36gg5Hfhjg+H7Ukg95zP
-         RpMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
-        b=JxehEUdDMIdNq5ku6L5lgfPGFZgywEm0TH3YYC+CfMBimpG3FeUncw5bABKLHtKaAk
-         y5hy4tvYQjxHbZoK3X5CepYnoE8hunx93gWpfSRRtIM3QOiVnK0gkPI5+y8g4q/cuV20
-         3rsxegXwYXx7w2HdiPhy2qWcn215BTq+6kEKRfiLwEnMoTs3cEDRnwVHA4VET/6aWyNs
-         +sNiwnWnyAMln0gFafZ+5wla0mI8Dz2ePIW/D0t7CmhDUjib1dYPX1Abs8Qmrt78lZeS
-         tGZ9qzUGw/OB5DkuO/uzFeaa4sZUB9G75Pd+58nste94s2m69CYMXX3yDUsCSrS197rA
-         DVMw==
-X-Gm-Message-State: AOAM531YWcYIyAdPz2gTKI4evaEmuL8+AhMz5xBZb6yrnAc+Vlk6YVax
-        WEgDCBOiy4njRZ189zDYCfD5ow==
-X-Google-Smtp-Source: ABdhPJxeJ4y+twhjLH2tJgCPbWVuyl+hfRB8UMwjlhngOikJ6bWHbwUXxgZd/BLJ9LZT047bUSDjHg==
-X-Received: by 2002:a0c:ffa1:: with SMTP id d1mr19299175qvv.36.1598538226887;
-        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:412a])
-        by smtp.gmail.com with ESMTPSA id l64sm1953780qkc.21.2020.08.27.07.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 10:22:29 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
-Message-ID: <20200827142229.GB1002856@cmpxchg.org>
-References: <20200819184850.24779-1-willy@infradead.org>
- <20200819184850.24779-3-willy@infradead.org>
- <20200826142002.GA988805@cmpxchg.org>
- <20200827125941.GG14765@casper.infradead.org>
+        id S1726153AbgH0OfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728039AbgH0O0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:26:48 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0192C2177B;
+        Thu, 27 Aug 2020 14:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598538407;
+        bh=jyEOpDGF58EqMyy4CAA6ODNRwClS6tF5zgcHWbsZr48=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=KtE6g3myS01Vitmo+hD9Pu7YyaqLPHM39fwPCFEeR7pbRqbYl9marPKGXx4lRbxUM
+         uHtNDJog4/9AwqmebNRgl1DsLiEyB5K8LHPop+cLk+Lvg2FuYk71ucVyztN2sjC/o8
+         K76Zb9dWOimWG7W/S44b1S5KwzZw5ZzcUXLThxfk=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        =?utf-8?B?5ZGo?= =?utf-8?B?5q2j?= <sernia.zhou@foxmail.com>,
+        =?utf-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>, od@zcrc.me,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written
+ to HW register
+In-Reply-To: <HG6QFQ.KLMIR92DB2D02@crapouillou.net>
+References: <20200827124308.71963-1-paul@crapouillou.net>
+ <20200827124308.71963-2-paul@crapouillou.net> <87v9h4i6t5.fsf@kernel.org>
+ <PN4QFQ.KWNBY2ZWQ7XC2@crapouillou.net> <87bliwi5kx.fsf@kernel.org>
+ <HG6QFQ.KLMIR92DB2D02@crapouillou.net>
+Date:   Thu, 27 Aug 2020 17:26:40 +0300
+Message-ID: <878se0i2qn.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827125941.GG14765@casper.infradead.org>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 01:59:41PM +0100, Matthew Wilcox wrote:
-> On Wed, Aug 26, 2020 at 10:20:02AM -0400, Johannes Weiner wrote:
-> > The refactor makes sense to me, but the name is confusing. We're not
-> > looking for a swap page, we're primarily looking for a file page in
-> > the page cache mapping that's handed in. Only in the special case
-> > where it's a shmem mapping and there is a swap entry do we consult the
-> > auxiliary swap cache.
-> > 
-> > How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
-> > Maybe you have a better idea. It's a fairly specialized operation that
-> > isn't widely used, so a longer name isn't a bad thing IMO.
-> 
-> Got it.  find_get_incore_page().  I was going to go with inmem, but that
-> it matches mincore sold me on it.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+Paul Cercueil <paul@crapouillou.net> writes:
+>>>>>   @@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy
+>>>>>  *phy)
+>>>>>    		USBPCR1_DMPD | USBPCR1_DPPD;
+>>>>>    	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>>>>>=20
+>>>>>   -	reg =3D USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT
+>>>>>  |	USBPCR_TXPREEMPHTUNE |
+>>>>>   +	return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |
+>>>>>  USBPCR_TXPREEMPHTUNE |
+>>>>>    		USBPCR_COMMONONN | USBPCR_POR;
+>>>>>   -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+>>>>=20
+>>>>  not a bug fix
+>>>=20
+>>>  Well, if you don't like my bug fix, next time wait for my=20
+>>> Reviewed-by.
+>>=20
+>> why so angry? Take a break every once in a while. Besides, someone=20
+>> else
+>> already sent the oneliner before you ;-)
 >
-> /**
->  * find_get_incore_page - Find and get a page from the page or swap caches.
->  * @mapping: The address_space to search.
->  * @index: The page cache index.
->  *
->  * This differs from find_get_page() in that it will also look for the
->  * page in the swap cache.
->  *
->  * Return: The found page or %NULL.
->  */
+> I'm just pissed that this patch has not been tested. I don't like=20
+> sloppy work.
 
-Nice work, that's perfect.
+yeah, s**t happens
 
-> I was focusing too much on what the function did, not why it was doing it.
+>> In any case, why should I wait for your Reviewed-by? Get maintainer
+>> doesn't list you as the maintainer for it. Do you want to update
+>> MAINTAINERS by any chance?
+>
+> Yes, I thought I was (I'm maintainer of all Ingenic drivers), that also=20
+> explains why I wasn't Cc'd for the oneliner patch you mentioned...
+>
+> IIRC Zhou has a patch to move the driver to drivers/phy/, I'll add=20
+> myself as maintainer once it's moved there.
 
-Me too.
+makes sense
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9HwqARHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQb56A/+OPhVliSrlBVVZ0goHmIdr+wMbvIICLEw
+CtSbe/vqazexOfe9E/8b5W25JOz28Lv+3whz+gr81W66eL/8YpuBzVBkJxtUjJD8
+iWq+5CXHTyNjBNSNx4aHuNCTnmLNcWHhxLf7oDBO5fpikyhMBNOIgUa5ciDEmjro
+3eH/IekqlN35vmt51B6XoVLJVbAl5pnyKhdDDSZTqQMyJkMPaeinNnvxC48r9bQ/
+fPnZkb2AjE5QLzeidFpRdOVBKP4SqtHjjVz3fObrcsxu65RHFqjmMDKdFNekNkdV
+2UmJwuHWZxZL9z6EDotxXo5Kp9wUWxmm5aymhDmvtsvonb4iiNBuluhimVYXU5Hi
+CxCH9mcGQWC9pi7BE1oIv8ECA1FAdQykmYbAkqqiTxoUN8pLw4Uox4ge5YFkGNPX
+gxAOPNCFeWpG89WjUhIDBheGPgw/w7JEibrrUrm3kTnAZxmWyW0sj+gmW/SjZthR
+jkf/qJg2Hh3P6lWOY4mTrKO3CObZv6WG0J41lVKkF+az+GwbEO4KGUYJJi8HK6hQ
+rwp9pmaf7cZSrG1PBVsMh6Y+OIxqbwLCAz9IYY0jjKWCw0AeK7tMBYnUXdN8l1+e
+bKDwZlp9v9SGdKkELAwNBW9tKlaaqNd5qsiKN7TchhM+XeuEXclWjSSE/FZCgD/Z
+DxnwwE1DolM=
+=VXAU
+-----END PGP SIGNATURE-----
+--=-=-=--
