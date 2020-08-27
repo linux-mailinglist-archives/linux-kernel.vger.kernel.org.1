@@ -2,110 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF76254ACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621D8254AC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgH0Qh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:37:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52634 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgH0Qh4 (ORCPT
+        id S1726834AbgH0Qhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgH0Qhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:37:56 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07RGbLba105509;
-        Thu, 27 Aug 2020 11:37:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598546241;
-        bh=Mx//Pdg+H+WkwhXnTFfk3IX8zqYVvEgOrHOAmDMt3XE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KyfY5s0Gb9luwYKdK1rAQT4Zj+f1oPnNq78Pbr60bnNy52+9eapXOUV6H2Ru5g2yS
-         4pOyM7Gp4NbsADNvGdEwxhvLOvLOF8bKwei924xKyA5kqHL3/XLZycl2T495BNRmOX
-         4V8sVKqszHpzKPHg8qB/u+RHllu9hYG+8aH6FJYs=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07RGbL3Q073020
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Aug 2020 11:37:21 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 27
- Aug 2020 11:37:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 27 Aug 2020 11:37:21 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07RGbJRN116794;
-        Thu, 27 Aug 2020 11:37:19 -0500
-Subject: Re: [PATCH v3] memory: omap-gpmc: Fix build error without CONFIG_OF
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-CC:     <tony@atomide.com>, <ladis@linux-mips.org>,
-        <bbrezillon@kernel.org>, <peter.ujfalusi@ti.com>,
-        <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200826125919.22172-1-yuehaibing@huawei.com>
- <20200827125316.20780-1-yuehaibing@huawei.com>
- <20200827132154.GB4384@kozik-lap>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <45d3fa05-01e8-c879-e314-ae627ca4c266@ti.com>
-Date:   Thu, 27 Aug 2020 19:37:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 Aug 2020 12:37:52 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772AEC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 09:37:52 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id a1so3153699vsp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 09:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=9UNOurr3i8QjS1IXZ+OvFR5jIU7liPk/sB6VZjWpT4Q=;
+        b=iZle7KtHaIs90B3mSEhT2Bqhn/ES93I0iL9QkNC5+AqNs9sCFJpzF9MOazdQKbMC0H
+         zr8KpjrLYjWu5wFCz6EctsoE1g9B6nxiqjcS/SQVVgK/5d3UC4EvAsXV8iQVhyQ+emAy
+         jdUDrwx82k6j7wTuhdzFT4FXfDBCCPSU4BxsXH3ob1m1uXk8JOe3uA1bKHbdO8fTSc4f
+         Qy9WdO0RVS/Kmgk9Cef/UVXxX4u9XuYQzH2qXzM3gkPClEQYhAvqv4F6LYoDMdr4QIsE
+         Yvbpiw6qVmwqAsoKs4YaRXaqoAkcPY2DlkUeKERe7Rv60SNntscIPQv3+OWyZPMemLKA
+         tKSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=9UNOurr3i8QjS1IXZ+OvFR5jIU7liPk/sB6VZjWpT4Q=;
+        b=nqi3QtLxoJ96ENGGLnuRJewqUKexXntmfeku89AV2LZ9P90XHwBgcGoh6uxNlYTlDj
+         ZrMl9wlOMTe7pNYjYPtDP2duaqeKnPqThc2XvGeAlduk0dB3aYDIZeW5TM1WPQHeRCRA
+         Rr0HQIdYGET0zZTGO/kGNCGAmwcCHPPT2mR+PhRauE2MhyL7M4g4ajJsJ/vITtfCnxNH
+         /sZsBKn1zvJWIs3H5WSKvFt015WqLSxZ5sr2pDzbCD5cHk5c1D9FimRuvP+WGaZYXCFt
+         /3UtjgjZSVTFtE0iv+Fu8WDlmkiao4JIBtmFWs+eA3IjJBnwU2lzEvphb1vSkGlzQyzr
+         JL7A==
+X-Gm-Message-State: AOAM533e0KbopSpRwCI5loBl60TZRrCQ6NQllO0ULaS5CT2ZSmlgHbOT
+        oiaUKbaMj0zKL1bvWHxt2OnGuV7vngggvfVvIYM=
+X-Google-Smtp-Source: ABdhPJxMG9x9MnP95BMZcWv3SFrD6g/45l76QAO4vwJmzd83K8F2zy8FhrtOaKRpD8BWpJk/HllpW6yEx70DeoamI6k=
+X-Received: by 2002:a67:e28c:: with SMTP id g12mr12962080vsf.31.1598546271320;
+ Thu, 27 Aug 2020 09:37:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200827132154.GB4384@kozik-lap>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Received: by 2002:a67:6b82:0:0:0:0:0 with HTTP; Thu, 27 Aug 2020 09:37:51
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   Shayma <shaymamarwan07@gmail.com>
+Date:   Thu, 27 Aug 2020 17:37:51 +0100
+Message-ID: <CAAgEbkk_XgY-uvyNvBhxngwX8uw4AN18TGznoKoRfcAXyGc5SQ@mail.gmail.com>
+Subject: From Mich
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 27/08/2020 16:21, Krzysztof Kozlowski wrote:
-> On Thu, Aug 27, 2020 at 08:53:16PM +0800, YueHaibing wrote:
->> If CONFIG_OF is n, gcc fails:
->>
->> drivers/memory/omap-gpmc.o: In function `gpmc_omap_onenand_set_timings':
->> omap-gpmc.c:(.text+0x2a88): undefined reference to `gpmc_read_settings_dt'
->>
->> Add gpmc_read_settings_dt() helper function, which zero the gpmc_settings
->> so the caller doesn't proceed with random/invalid settings.
->>
->> Fixes: a758f50f10cf ("mtd: onenand: omap2: Configure driver from DT")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->> v3: zero gpmc_settings
->> v2: add gpmc_read_settings_dt() stub
->> ---
->>   drivers/memory/omap-gpmc.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
->> index cd9e80748591..e026b4cd3612 100644
->> --- a/drivers/memory/omap-gpmc.c
->> +++ b/drivers/memory/omap-gpmc.c
->> @@ -2310,6 +2310,10 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
->>   	}
->>   }
->>   #else
->> +void gpmc_read_settings_dt(struct device_node *np, struct gpmc_settings *p)
->> +{
->> +	memset(p, 0, sizeof(struct gpmc_settings));
-> 
-> sizeof(*p) but if patch is otherwise ok (got review/ack) then I can fix
-> it while applying.
-> 
-> If there is resend, please fix it as well.
-
-With the sizeof(*p) change.
-
-Acked-by: Roger Quadros <rogerq@ti.com>
-
-cheers,
--roger
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Dobr=C3=BD de=C5=88, d=C3=BAfam, =C5=BEe ste dostali moju spr=C3=A1vu.
+Potrebujem r=C3=BDchlu reakciu
+=C4=8Eakujem
+michelle
