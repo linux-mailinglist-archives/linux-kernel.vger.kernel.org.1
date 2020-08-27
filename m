@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAC3254700
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982E2546E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgH0Ofp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        id S1726323AbgH0Oaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgH0OQj (ORCPT
+        with ESMTP id S1727926AbgH0OX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:16:39 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9142CC06121B;
-        Thu, 27 Aug 2020 07:15:28 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id u1so5068416edi.4;
-        Thu, 27 Aug 2020 07:15:28 -0700 (PDT)
+        Thu, 27 Aug 2020 10:23:56 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3F7C061236
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id o2so2669229qvk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NXkLLdStZAp/ZkgGou+K3F4imj0vfXH+Hp3m3xXWcro=;
-        b=MWBEgGPw8K6mkTY5BsXwDG/tkAjCutG31ed3J4GGXW64ymyLGydPe5Y+l849kuTZL6
-         yv84qalw1kG2lf823+h65AY4/B9+NSJY481zea/luna/GIkP0oPfmhFJn/8keppiM8HL
-         /SU0jHblLyZ6Fdb2IXT2VWwSI1VqCq4c/opm/cTdpwosuw4J1RGDXrwcpv1HHQci5LJJ
-         L1kcIGvLFSYC8PXfNMj+9hz0zT2sAos9PBYkcQU0K/b0JWfRf/H1E6qpHc0kZMYFCkgQ
-         SQC6ndi9zdcpr+n2uqrG+rN5p/AlMePr1/S/lLgE+JHjac1tRZlNrHZdP+7SstWj8Y0h
-         i14w==
+        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
+        b=KPqGwrmsmOIuf+JiWEW/k7gGWQ1y3K+MpxQ+GlJBR4JHV9vGFTTbjyFMl+FZ4Y0eR1
+         K2BXbisksDsJdOWmVO1uqUYQ2h1rz6x4zhmDciS7F7QXhAv9oK2efTTjrKFY2lV0MX2h
+         m+NX4PEHBJLAtiNCQ+E62vD9YoMqRVe4nQ2rLdY2M6j+IN9GUIPk+F93i5PMufggiU+5
+         7qfQtxk5IGmbE2ZD7qvuDqJQO8zKxEiYo6gkbc90Yi69wGk+9eBBpz/JoSeL/G/aFyFt
+         vrKHByeeVrxLF5cwGuOVUkygA2VuBjAX42oiZQSqxkRduIvG36gg5Hfhjg+H7Ukg95zP
+         RpMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NXkLLdStZAp/ZkgGou+K3F4imj0vfXH+Hp3m3xXWcro=;
-        b=VOFIH7BUGkMYOi9stquBflk04DoViY9QegEYo/4amKCMW2uG+8rt3VCwrSvACvtQUO
-         KHmWU0prCHzqKWc/CO5kk904rDMJRM+AyXsjjbsrvTkFO858xywSEHzHsf4YcTInu3dJ
-         uLafhg7zYoA6B3jWDrVyeNxj92TdbqnGkVb/KQBhYmnrv1P8u4TV4eajjCw5VE2aQfJM
-         SS+vZ8JxFBktKgnr5CPUq+xUSzdOLCCifB+3zutvN37EWGSlo19YerY9ThSelJeLWYae
-         ttecVha57YVQCIVvk/p2oXZrqvmdA4JMt+E0mFXLRW0surZ7Xe9dv0bGJzOiPqzLrAD2
-         jvHA==
-X-Gm-Message-State: AOAM5306j13rnhjQ+FAicpcSjLFhHersIo7EguJkfAB/xQ8msoVWk2Ne
-        GoVnTVTX+h/CzQ6lX9IgnM8=
-X-Google-Smtp-Source: ABdhPJwr1Ohh7U+k+NbwwlGg9XlS6X9acHkKu4ucrrjGVFuW8d6WFhqWj8pq3Nfa8c8Ce6BBYEZeNQ==
-X-Received: by 2002:a50:9d8a:: with SMTP id w10mr19602085ede.16.1598537723356;
-        Thu, 27 Aug 2020 07:15:23 -0700 (PDT)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id d17sm1575988edr.78.2020.08.27.07.15.21
+        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
+        b=JxehEUdDMIdNq5ku6L5lgfPGFZgywEm0TH3YYC+CfMBimpG3FeUncw5bABKLHtKaAk
+         y5hy4tvYQjxHbZoK3X5CepYnoE8hunx93gWpfSRRtIM3QOiVnK0gkPI5+y8g4q/cuV20
+         3rsxegXwYXx7w2HdiPhy2qWcn215BTq+6kEKRfiLwEnMoTs3cEDRnwVHA4VET/6aWyNs
+         +sNiwnWnyAMln0gFafZ+5wla0mI8Dz2ePIW/D0t7CmhDUjib1dYPX1Abs8Qmrt78lZeS
+         tGZ9qzUGw/OB5DkuO/uzFeaa4sZUB9G75Pd+58nste94s2m69CYMXX3yDUsCSrS197rA
+         DVMw==
+X-Gm-Message-State: AOAM531YWcYIyAdPz2gTKI4evaEmuL8+AhMz5xBZb6yrnAc+Vlk6YVax
+        WEgDCBOiy4njRZ189zDYCfD5ow==
+X-Google-Smtp-Source: ABdhPJxeJ4y+twhjLH2tJgCPbWVuyl+hfRB8UMwjlhngOikJ6bWHbwUXxgZd/BLJ9LZT047bUSDjHg==
+X-Received: by 2002:a0c:ffa1:: with SMTP id d1mr19299175qvv.36.1598538226887;
+        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:412a])
+        by smtp.gmail.com with ESMTPSA id l64sm1953780qkc.21.2020.08.27.07.23.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:15:22 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 17:15:20 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Peter Korsgaard <peter@korsgaard.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/4] arm: dts: owl-s500: Add RoseapplePi
-Message-ID: <20200827141520.GD2451538@BV030612LT>
-References: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
- <2d12521d196e2c08a30aacd0ab20d93593f94707.1592123160.git.cristian.ciocaltea@gmail.com>
- <87v9h4y4dj.fsf@dell.be.48ers.dk>
+        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 10:22:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
+Message-ID: <20200827142229.GB1002856@cmpxchg.org>
+References: <20200819184850.24779-1-willy@infradead.org>
+ <20200819184850.24779-3-willy@infradead.org>
+ <20200826142002.GA988805@cmpxchg.org>
+ <20200827125941.GG14765@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v9h4y4dj.fsf@dell.be.48ers.dk>
+In-Reply-To: <20200827125941.GG14765@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-Thanks for the review!
-
-On Thu, Aug 27, 2020 at 08:44:40AM +0200, Peter Korsgaard wrote:
-> >>>>> "Cristian" == Cristian Ciocaltea <cristian.ciocaltea@gmail.com> writes:
+On Thu, Aug 27, 2020 at 01:59:41PM +0100, Matthew Wilcox wrote:
+> On Wed, Aug 26, 2020 at 10:20:02AM -0400, Johannes Weiner wrote:
+> > The refactor makes sense to me, but the name is confusing. We're not
+> > looking for a swap page, we're primarily looking for a file page in
+> > the page cache mapping that's handed in. Only in the special case
+> > where it's a shmem mapping and there is a swap entry do we consult the
+> > auxiliary swap cache.
+> > 
+> > How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
+> > Maybe you have a better idea. It's a fairly specialized operation that
+> > isn't widely used, so a longer name isn't a bad thing IMO.
 > 
->  > Add a Device Tree for the RoseapplePi SBC.
->  > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
-> 
-> On a related note: There is now an owl-mmc driver for the s900. From a
-> quick look at the datasheet it looks compatible with the controller on
-> the s500. Did you have a look at hooking that up?
+> Got it.  find_get_incore_page().  I was going to go with inmem, but that
+> it matches mincore sold me on it.
+>
+> /**
+>  * find_get_incore_page - Find and get a page from the page or swap caches.
+>  * @mapping: The address_space to search.
+>  * @index: The page cache index.
+>  *
+>  * This differs from find_get_page() in that it will also look for the
+>  * page in the swap cache.
+>  *
+>  * Return: The found page or %NULL.
+>  */
 
-Yes, please see:
-https://lore.kernel.org/lkml/cover.1593124368.git.cristian.ciocaltea@gmail.com/
+Nice work, that's perfect.
 
-The clock related patches have been already applied to v5.9 and
-hopefully the pinctrl driver will follow in v5.10.
+> I was focusing too much on what the function did, not why it was doing it.
 
-> -- 
-> Bye, Peter Korsgaard
-
-Regards,
-Cristi
+Me too.
