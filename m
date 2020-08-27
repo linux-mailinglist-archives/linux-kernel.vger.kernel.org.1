@@ -2,424 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6524253F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CBD253F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgH0Hgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52776 "EHLO mail.kernel.org"
+        id S1728320AbgH0HhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:37:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727105AbgH0Hgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:36:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728081AbgH0HhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:37:06 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBCD920738;
-        Thu, 27 Aug 2020 07:36:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C002022BF5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598513792;
-        bh=UvPCaYCMJ9VmAf+fDWPUKhc8cjaPrAUWNX9b7FOYt4I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bmZSH21JEK/ntlsn32OToTsdK652D/t19WE21qFitAaReDh4tgaWol7csWg5LrJDW
-         EhZd41QriWOlWqLNRb6SHiarRjcwC9fnXUb4T2OiI35iJqQTHdZ734kal1+GtkM7n9
-         pVaDZW5vx0S5Y3muNiUEsDhmKeBXA/sBdbD22Wn0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.7.19
-Date:   Thu, 27 Aug 2020 09:36:35 +0200
-Message-Id: <159851374021884@kroah.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <15985137402037@kroah.com>
-References: <15985137402037@kroah.com>
+        s=default; t=1598513826;
+        bh=volXVo8FWRJKn6VNEcDI+eVcLxy+NtoiBEwSOpa0uzs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rcoHj8O4M+WGB2HbBtUi4Mq7No2pw3FFa8MlVVLBbreL/PLx0uC8b5kHnT+1vIR0V
+         dmDfrTcCeH0tIBmVbtL/tuTaL1oYQEWf7gXdZYq9/udH5Xx892SIKVUZ3f67VKrhn9
+         OThj3SjWPtg1mjjvz7rgxA8wtbIM0DfxzcrmJZ+Y=
+Received: by mail-ej1-f47.google.com with SMTP id d11so6262627ejt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:37:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531kPfmgYSLrBLPkIJ+026IRrL+0ea3lynrlaiJoEHSh2gph6AE4
+        yL5wAi4fJeL5M0s1TwIX8Jhl+b2nd/nfwuLJq5E=
+X-Google-Smtp-Source: ABdhPJzgxP1osbjwfYUj1JBEmA+ZumWtne7IDni1iBpcoUIOJFP/NI7q5zpMASbPPsfsya4g8DCbWlKB+BXNLAd5T0Y=
+X-Received: by 2002:a17:906:4ec3:: with SMTP id i3mr19144062ejv.215.1598513824336;
+ Thu, 27 Aug 2020 00:37:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1bdd59d511e4acd23aea6af51d06b1cadf09a1b2.1511065331.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <1bdd59d511e4acd23aea6af51d06b1cadf09a1b2.1511065331.git.arvind.yadav.cs@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 27 Aug 2020 09:36:53 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeg0_1gFZWhEvb-LwCiCvEuaZcZ2TQa256ntvuLecF_pw@mail.gmail.com>
+Message-ID: <CAJKOXPeg0_1gFZWhEvb-LwCiCvEuaZcZ2TQa256ntvuLecF_pw@mail.gmail.com>
+Subject: Re: [PATCH 1/3 v3] mfd: ipaq-micro: Fix platform_get_irq's error checking
+To:     Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc:     lee.jones@linaro.org, maxime.ripard@free-electrons.com,
+        wens@csie.org, linux@armlinux.org.uk,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index b56456c45c97..b60ba59cfb19 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 7
--SUBLEVEL = 18
-+SUBLEVEL = 19
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/arch/powerpc/kernel/cpu_setup_power.S b/arch/powerpc/kernel/cpu_setup_power.S
-index a460298c7ddb..f91ecb10d0ae 100644
---- a/arch/powerpc/kernel/cpu_setup_power.S
-+++ b/arch/powerpc/kernel/cpu_setup_power.S
-@@ -184,7 +184,7 @@ __init_LPCR_ISA300:
- 
- __init_FSCR:
- 	mfspr	r3,SPRN_FSCR
--	ori	r3,r3,FSCR_TAR|FSCR_DSCR|FSCR_EBB
-+	ori	r3,r3,FSCR_TAR|FSCR_EBB
- 	mtspr	SPRN_FSCR,r3
- 	blr
- 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index c501a4edc34d..51b9b49a295e 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -3594,7 +3594,7 @@ static int check_missing_comp_in_tx_queue(struct ena_adapter *adapter,
- 	}
- 
- 	u64_stats_update_begin(&tx_ring->syncp);
--	tx_ring->tx_stats.missed_tx = missed_tx;
-+	tx_ring->tx_stats.missed_tx += missed_tx;
- 	u64_stats_update_end(&tx_ring->syncp);
- 
- 	return rc;
-@@ -4519,6 +4519,9 @@ static void ena_keep_alive_wd(void *adapter_data,
- 	rx_drops = ((u64)desc->rx_drops_high << 32) | desc->rx_drops_low;
- 
- 	u64_stats_update_begin(&adapter->syncp);
-+	/* These stats are accumulated by the device, so the counters indicate
-+	 * all drops since last reset.
-+	 */
- 	adapter->dev_stats.rx_drops = rx_drops;
- 	u64_stats_update_end(&adapter->syncp);
- }
-diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
-index 831a2b25ba79..196f9f64d075 100644
---- a/fs/binfmt_flat.c
-+++ b/fs/binfmt_flat.c
-@@ -571,7 +571,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			goto err;
- 		}
- 
--		len = data_len + extra;
-+		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
- 		len = PAGE_ALIGN(len);
- 		realdatastart = vm_mmap(NULL, 0, len,
- 			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
-@@ -585,7 +585,9 @@ static int load_flat_file(struct linux_binprm *bprm,
- 			vm_munmap(textpos, text_len);
- 			goto err;
- 		}
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(unsigned long),
-+				FLAT_DATA_ALIGN);
- 
- 		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
- 			 data_len + bss_len + stack_len, datapos);
-@@ -615,7 +617,7 @@ static int load_flat_file(struct linux_binprm *bprm,
- 		memp_size = len;
- 	} else {
- 
--		len = text_len + data_len + extra;
-+		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
- 		len = PAGE_ALIGN(len);
- 		textpos = vm_mmap(NULL, 0, len,
- 			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
-@@ -630,7 +632,9 @@ static int load_flat_file(struct linux_binprm *bprm,
- 		}
- 
- 		realdatastart = textpos + ntohl(hdr->data_start);
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(u32),
-+				FLAT_DATA_ALIGN);
- 
- 		reloc = (__be32 __user *)
- 			(datapos + (ntohl(hdr->reloc_start) - text_len));
-@@ -647,9 +651,8 @@ static int load_flat_file(struct linux_binprm *bprm,
- 					 (text_len + full_data
- 						  - sizeof(struct flat_hdr)),
- 					 0);
--			if (datapos != realdatastart)
--				memmove((void *)datapos, (void *)realdatastart,
--						full_data);
-+			memmove((void *) datapos, (void *) realdatastart,
-+					full_data);
- #else
- 			/*
- 			 * This is used on MMU systems mainly for testing.
-@@ -705,7 +708,8 @@ static int load_flat_file(struct linux_binprm *bprm,
- 		if (IS_ERR_VALUE(result)) {
- 			ret = result;
- 			pr_err("Unable to read code+data+bss, errno %d\n", ret);
--			vm_munmap(textpos, text_len + data_len + extra);
-+			vm_munmap(textpos, text_len + data_len + extra +
-+				MAX_SHARED_LIBS * sizeof(u32));
- 			goto err;
- 		}
- 	}
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 7e29590482ce..115f3fde314f 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -5421,8 +5421,8 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
- 	skb = skb_share_check(skb, GFP_ATOMIC);
- 	if (unlikely(!skb))
- 		goto err_free;
--
--	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN)))
-+	/* We may access the two bytes after vlan_hdr in vlan_set_encap_proto(). */
-+	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN + sizeof(unsigned short))))
- 		goto err_free;
- 
- 	vhdr = (struct vlan_hdr *)skb->data;
-diff --git a/net/ethtool/features.c b/net/ethtool/features.c
-index 4e632dc987d8..495635f152ba 100644
---- a/net/ethtool/features.c
-+++ b/net/ethtool/features.c
-@@ -224,7 +224,9 @@ int ethnl_set_features(struct sk_buff *skb, struct genl_info *info)
- 	DECLARE_BITMAP(wanted_diff_mask, NETDEV_FEATURE_COUNT);
- 	DECLARE_BITMAP(active_diff_mask, NETDEV_FEATURE_COUNT);
- 	DECLARE_BITMAP(old_active, NETDEV_FEATURE_COUNT);
-+	DECLARE_BITMAP(old_wanted, NETDEV_FEATURE_COUNT);
- 	DECLARE_BITMAP(new_active, NETDEV_FEATURE_COUNT);
-+	DECLARE_BITMAP(new_wanted, NETDEV_FEATURE_COUNT);
- 	DECLARE_BITMAP(req_wanted, NETDEV_FEATURE_COUNT);
- 	DECLARE_BITMAP(req_mask, NETDEV_FEATURE_COUNT);
- 	struct nlattr *tb[ETHTOOL_A_FEATURES_MAX + 1];
-@@ -250,6 +252,7 @@ int ethnl_set_features(struct sk_buff *skb, struct genl_info *info)
- 
- 	rtnl_lock();
- 	ethnl_features_to_bitmap(old_active, dev->features);
-+	ethnl_features_to_bitmap(old_wanted, dev->wanted_features);
- 	ret = ethnl_parse_bitset(req_wanted, req_mask, NETDEV_FEATURE_COUNT,
- 				 tb[ETHTOOL_A_FEATURES_WANTED],
- 				 netdev_features_strings, info->extack);
-@@ -261,17 +264,15 @@ int ethnl_set_features(struct sk_buff *skb, struct genl_info *info)
- 		goto out_rtnl;
- 	}
- 
--	/* set req_wanted bits not in req_mask from old_active */
-+	/* set req_wanted bits not in req_mask from old_wanted */
- 	bitmap_and(req_wanted, req_wanted, req_mask, NETDEV_FEATURE_COUNT);
--	bitmap_andnot(new_active, old_active, req_mask, NETDEV_FEATURE_COUNT);
--	bitmap_or(req_wanted, new_active, req_wanted, NETDEV_FEATURE_COUNT);
--	if (bitmap_equal(req_wanted, old_active, NETDEV_FEATURE_COUNT)) {
--		ret = 0;
--		goto out_rtnl;
-+	bitmap_andnot(new_wanted, old_wanted, req_mask, NETDEV_FEATURE_COUNT);
-+	bitmap_or(req_wanted, new_wanted, req_wanted, NETDEV_FEATURE_COUNT);
-+	if (!bitmap_equal(req_wanted, old_wanted, NETDEV_FEATURE_COUNT)) {
-+		dev->wanted_features &= ~dev->hw_features;
-+		dev->wanted_features |= ethnl_bitmap_to_features(req_wanted) & dev->hw_features;
-+		__netdev_update_features(dev);
- 	}
--
--	dev->wanted_features = ethnl_bitmap_to_features(req_wanted);
--	__netdev_update_features(dev);
- 	ethnl_features_to_bitmap(new_active, dev->features);
- 	mod = !bitmap_equal(old_active, new_active, NETDEV_FEATURE_COUNT);
- 
-diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
-index 563f71bcb2d7..c97069e79981 100644
---- a/net/ipv4/nexthop.c
-+++ b/net/ipv4/nexthop.c
-@@ -402,7 +402,7 @@ static int nh_check_attr_group(struct net *net, struct nlattr *tb[],
- 	struct nexthop_grp *nhg;
- 	unsigned int i, j;
- 
--	if (len & (sizeof(struct nexthop_grp) - 1)) {
-+	if (!len || len & (sizeof(struct nexthop_grp) - 1)) {
- 		NL_SET_ERR_MSG(extack,
- 			       "Invalid length for nexthop group attribute");
- 		return -EINVAL;
-@@ -1104,6 +1104,9 @@ static struct nexthop *nexthop_create_group(struct net *net,
- 	struct nexthop *nh;
- 	int i;
- 
-+	if (WARN_ON(!num_nh))
-+		return ERR_PTR(-EINVAL);
-+
- 	nh = nexthop_alloc();
- 	if (!nh)
- 		return ERR_PTR(-ENOMEM);
-diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
-index 4703b09808d0..84f90b8b8890 100644
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -886,7 +886,15 @@ int ip6_tnl_rcv(struct ip6_tnl *t, struct sk_buff *skb,
- 		struct metadata_dst *tun_dst,
- 		bool log_ecn_err)
- {
--	return __ip6_tnl_rcv(t, skb, tpi, tun_dst, ip6ip6_dscp_ecn_decapsulate,
-+	int (*dscp_ecn_decapsulate)(const struct ip6_tnl *t,
-+				    const struct ipv6hdr *ipv6h,
-+				    struct sk_buff *skb);
-+
-+	dscp_ecn_decapsulate = ip6ip6_dscp_ecn_decapsulate;
-+	if (tpi->proto == htons(ETH_P_IP))
-+		dscp_ecn_decapsulate = ip4ip6_dscp_ecn_decapsulate;
-+
-+	return __ip6_tnl_rcv(t, skb, tpi, tun_dst, dscp_ecn_decapsulate,
- 			     log_ecn_err);
- }
- EXPORT_SYMBOL(ip6_tnl_rcv);
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index 300a104b9a0f..85ab4559f057 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -692,23 +692,25 @@ static void qrtr_port_remove(struct qrtr_sock *ipc)
-  */
- static int qrtr_port_assign(struct qrtr_sock *ipc, int *port)
- {
-+	u32 min_port;
- 	int rc;
- 
- 	mutex_lock(&qrtr_port_lock);
- 	if (!*port) {
--		rc = idr_alloc(&qrtr_ports, ipc,
--			       QRTR_MIN_EPH_SOCKET, QRTR_MAX_EPH_SOCKET + 1,
--			       GFP_ATOMIC);
--		if (rc >= 0)
--			*port = rc;
-+		min_port = QRTR_MIN_EPH_SOCKET;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, QRTR_MAX_EPH_SOCKET, GFP_ATOMIC);
-+		if (!rc)
-+			*port = min_port;
- 	} else if (*port < QRTR_MIN_EPH_SOCKET && !capable(CAP_NET_ADMIN)) {
- 		rc = -EACCES;
- 	} else if (*port == QRTR_PORT_CTRL) {
--		rc = idr_alloc(&qrtr_ports, ipc, 0, 1, GFP_ATOMIC);
-+		min_port = 0;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, 0, GFP_ATOMIC);
- 	} else {
--		rc = idr_alloc(&qrtr_ports, ipc, *port, *port + 1, GFP_ATOMIC);
--		if (rc >= 0)
--			*port = rc;
-+		min_port = *port;
-+		rc = idr_alloc_u32(&qrtr_ports, ipc, &min_port, *port, GFP_ATOMIC);
-+		if (!rc)
-+			*port = min_port;
- 	}
- 	mutex_unlock(&qrtr_port_lock);
- 
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index 417526d7741b..16bc5b0d1eaa 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -702,7 +702,7 @@ static int tcf_ct_handle_fragments(struct net *net, struct sk_buff *skb,
- 		err = ip_defrag(net, skb, user);
- 		local_bh_enable();
- 		if (err && err != -EINPROGRESS)
--			goto out_free;
-+			return err;
- 
- 		if (!err) {
- 			*defrag = true;
-diff --git a/net/sctp/stream.c b/net/sctp/stream.c
-index bda2536dd740..6dc95dcc0ff4 100644
---- a/net/sctp/stream.c
-+++ b/net/sctp/stream.c
-@@ -88,12 +88,13 @@ static int sctp_stream_alloc_out(struct sctp_stream *stream, __u16 outcnt,
- 	int ret;
- 
- 	if (outcnt <= stream->outcnt)
--		return 0;
-+		goto out;
- 
- 	ret = genradix_prealloc(&stream->out, outcnt, gfp);
- 	if (ret)
- 		return ret;
- 
-+out:
- 	stream->outcnt = outcnt;
- 	return 0;
- }
-@@ -104,12 +105,13 @@ static int sctp_stream_alloc_in(struct sctp_stream *stream, __u16 incnt,
- 	int ret;
- 
- 	if (incnt <= stream->incnt)
--		return 0;
-+		goto out;
- 
- 	ret = genradix_prealloc(&stream->in, incnt, gfp);
- 	if (ret)
- 		return ret;
- 
-+out:
- 	stream->incnt = incnt;
- 	return 0;
- }
-diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-index e1f64f4ba236..da9ba6d1679b 100644
---- a/net/smc/smc_diag.c
-+++ b/net/smc/smc_diag.c
-@@ -170,13 +170,15 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
- 	    (req->diag_ext & (1 << (SMC_DIAG_DMBINFO - 1))) &&
- 	    !list_empty(&smc->conn.lgr->list)) {
- 		struct smc_connection *conn = &smc->conn;
--		struct smcd_diag_dmbinfo dinfo = {
--			.linkid = *((u32 *)conn->lgr->id),
--			.peer_gid = conn->lgr->peer_gid,
--			.my_gid = conn->lgr->smcd->local_gid,
--			.token = conn->rmb_desc->token,
--			.peer_token = conn->peer_token
--		};
-+		struct smcd_diag_dmbinfo dinfo;
-+
-+		memset(&dinfo, 0, sizeof(dinfo));
-+
-+		dinfo.linkid = *((u32 *)conn->lgr->id);
-+		dinfo.peer_gid = conn->lgr->peer_gid;
-+		dinfo.my_gid = conn->lgr->smcd->local_gid;
-+		dinfo.token = conn->rmb_desc->token;
-+		dinfo.peer_token = conn->peer_token;
- 
- 		if (nla_put(skb, SMC_DIAG_DMBINFO, sizeof(dinfo), &dinfo) < 0)
- 			goto errout;
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index 8c47ded2edb6..b214b898d11a 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -757,10 +757,12 @@ static void tipc_aead_encrypt_done(struct crypto_async_request *base, int err)
- 	switch (err) {
- 	case 0:
- 		this_cpu_inc(tx->stats->stat[STAT_ASYNC_OK]);
-+		rcu_read_lock();
- 		if (likely(test_bit(0, &b->up)))
- 			b->media->send_msg(net, skb, b, &tx_ctx->dst);
- 		else
- 			kfree_skb(skb);
-+		rcu_read_unlock();
- 		break;
- 	case -EINPROGRESS:
- 		return;
-diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
-index 217516357ef2..90e3c70a91ad 100644
---- a/net/tipc/netlink_compat.c
-+++ b/net/tipc/netlink_compat.c
-@@ -275,8 +275,9 @@ static int __tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
- static int tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
- 				 struct tipc_nl_compat_msg *msg)
- {
--	int err;
-+	struct nlmsghdr *nlh;
- 	struct sk_buff *arg;
-+	int err;
- 
- 	if (msg->req_type && (!msg->req_size ||
- 			      !TLV_CHECK_TYPE(msg->req, msg->req_type)))
-@@ -305,6 +306,15 @@ static int tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
- 		return -ENOMEM;
- 	}
- 
-+	nlh = nlmsg_put(arg, 0, 0, tipc_genl_family.id, 0, NLM_F_MULTI);
-+	if (!nlh) {
-+		kfree_skb(arg);
-+		kfree_skb(msg->rep);
-+		msg->rep = NULL;
-+		return -EMSGSIZE;
-+	}
-+	nlmsg_end(arg, nlh);
-+
- 	err = __tipc_nl_compat_dumpit(cmd, msg, arg);
- 	if (err) {
- 		kfree_skb(msg->rep);
+On Sun, 19 Nov 2017 at 05:28, Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
+>
+> The platform_get_irq() function returns negative if an error occurs.
+> zero or positive number on success. platform_get_irq() error checking
+> for zero is not correct.
+>
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> ---
+> changes in v2 :
+>               Add failure case '<= 0' instead of '< 0'. If IRQ0 is not valid.
+> changes in v3 :
+>               return -EINVAL insted of irq.
+>
+>  drivers/mfd/ipaq-micro.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Hi Arvind,
+
+This was never applied. Can you rebase and resend the entire series?
+Or maybe there was a reason to drop it?
+
+Best Regards,
+Krzysztof
