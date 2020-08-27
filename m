@@ -2,170 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDE9253D9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F24253D9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgH0GUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:20:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54123 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgH0GUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:20:54 -0400
-IronPort-SDR: yXyvbcqo+x01bsp3N9/ikElVNv/4O6WxU7xXqJCn1ygkAZyG12ffMs5bUwkFZR9FnQGOXn+H/G
- UfVCKOqf3nPw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="136495182"
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="136495182"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 23:20:48 -0700
-IronPort-SDR: owvnyDkMBZvFBkVZj3mFNML9xhcTeYnqHm9ns78xa/qgHPeAWXfT3DpRwLCddzjkT4UC6D2o0S
- Dy2t0XNKPF3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="444329033"
-Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 26 Aug 2020 23:20:46 -0700
-Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kBBHB-0001uh-KO; Thu, 27 Aug 2020 06:20:45 +0000
-Date:   Thu, 27 Aug 2020 14:20:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Torsten Duwe <duwe@suse.de>
-Subject: arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable:
- err
-Message-ID: <202008271452.TWk1LUAn%lkp@intel.com>
+        id S1727003AbgH0GUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgH0GUB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:20:01 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CD3C06125E;
+        Wed, 26 Aug 2020 23:20:01 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id g6so2066370pjl.0;
+        Wed, 26 Aug 2020 23:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2DyhFZJ3L50RHCjnfyOFFSA1C8Bx+09mqhOcCqewIw0=;
+        b=gBs5DsGVImY9h2NdkLBA8VAbLClDmYf5k2JzfxV4NQDIUkz5iE220JF3pbKR+IKQFK
+         XEK8sV8YVio9/4ea8Kfz265u4SGZdsJ+SMCKBEMy9lskCqqCV5DHsDaury2NC+f08Nd6
+         KCGYFjOFxHXZ+XzAcQyGjZsyDSfjMgL9yt23ODOP3CnLG54e5PXWusKtBta6yR/1vBGK
+         6Q6fwPpgntt4QCeUPMufE4aTAidoXLekUL8434j9w4xOoz22S5FFaj4cNeFhPPmB3c2E
+         LlUoBJjDV8K/g5JKVrhglMLbhDRwCQzkHBwo6Hx5tEUWyyD0Jitw7a+VGFJSo/I82FK/
+         cf9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2DyhFZJ3L50RHCjnfyOFFSA1C8Bx+09mqhOcCqewIw0=;
+        b=fvxoBQKFXrH1ZFvUcimaPL2nxJlots+PqgahwtwXR6bJ7eYUtY5yzzinFV9uSuUu2C
+         PZbnf3+ix/XyuSniBafS4enrhthwIDSHGqDzTzsBiz85j3Ktko2zy2fUL99+Gi+nWdDm
+         zywU8jeZk6OtyjlrxFxRTj0ts4/qf3uBtEan+6Uwxreo3pxlI/5/9YiLNIyWm2rZOqdi
+         3fV2JYTmMdhnZXlmuSyTx/ZndJWbUQMb4OlH24Zjgo5ARdRBKUWMBP8GHi8w0Q6UcMXG
+         N15z4MqeQLx51tcK4qZ3glZAMu6F1ydKIcNcHE/Vi1rPUdSFzmePGuJBP7dB27SQ/dlC
+         yfiA==
+X-Gm-Message-State: AOAM530AwzRGcefqWiquH5fGYC8fBNdTQf6kc5t/C1h1poM1OV3X3mT8
+        YTRh9Hsd4dmrZ0NQ2t3NwnA=
+X-Google-Smtp-Source: ABdhPJwGY57wBq9Nl0yoEK8w45h6104ykZ45Oyp8862f/UAYES7K8QKJ582f8eTRHoNYGRoft3kYFw==
+X-Received: by 2002:a17:90b:fd8:: with SMTP id gd24mr4569589pjb.234.1598509200731;
+        Wed, 26 Aug 2020 23:20:00 -0700 (PDT)
+Received: from localhost ([124.156.176.71])
+        by smtp.gmail.com with ESMTPSA id h65sm1269103pfb.210.2020.08.26.23.19.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 26 Aug 2020 23:20:00 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 14:20:03 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rafael.j.wysocki@intel.com,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] thermal: sysfs: fall back to vzalloc for cooling
+ device's statistics
+Message-ID: <20200827142003.000071c1.zbestahu@gmail.com>
+In-Reply-To: <20200827051401.yryitpgq2gi3nkbh@vireshk-i7>
+References: <20200818063005.13828-1-zbestahu@gmail.com>
+        <40b69f97-46e5-d62e-0d2f-604dfd4dafa1@linaro.org>
+        <20200826101319.00003048.zbestahu@gmail.com>
+        <c3fd7949-b33a-aca3-8dd5-1c2df35fb63d@linaro.org>
+        <20200827120327.00003740.zbestahu@gmail.com>
+        <20200827051401.yryitpgq2gi3nkbh@vireshk-i7>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   15bc20c6af4ceee97a1f90b43c0e386643c071b4
-commit: a1326b17ac03a9012cb3d01e434aacb4d67a416c module/ftrace: handle patchable-function-entry
-date:   10 months ago
-compiler: hppa-linux-gcc (GCC) 9.3.0
+On Thu, 27 Aug 2020 10:44:01 +0530
+Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> On 27-08-20, 12:03, Yue Hu wrote:
+> > Hi Daniel,
+> > 
+> > Now, i'm just focus on removing the kernel warning based on current code logic.
+> > Commit 8ea229511e06 (thermal: Add cooling device's statistics in sysfs) added
+> > the thermal statistics by viresh and viresh gived the patch an acknowledgement
+> > in anther mail thread. 
+> > 
+> > Hi viresh,
+> > 
+> > Could you review the patch again about the question above?  
+> 
+> Yeah, I Acked it but the questions raised by Daniel are very valid and must be
+> answered.
+
+Yes, sure.
+
+> 
+> I understand that you only cared about fixing the warning, but maybe we need to
+> fix the driver and the warning will go away by itself. If you don't want to do
+> it, then someone who is responsible for the driver should do it.
+
+Yes, maybe the patch is not totally correct. maybe the driver has issue. Let's
+check the driver firstly.
+
+> 
+> Was it the acpi_video.c driver that you got the warning from ? I have added
+> Rafael to the email in case that driver needs getting fixed.
+> 
+
+Currenly, drivers/video/backlight does not call thermal_of_cooling_device_register()
+to register thermal cooling device. The issue happened in msm-4.19 kernel for
+QCOM/Android platform. Backlight in msm-4.19 kernel will register thermal cooling
+device as below:
+
++static int bd_cdev_get_max_brightness(struct thermal_cooling_device *cdev,
++                                 unsigned long *state)
++{
++ struct backlight_device *bd = (struct backlight_device *)cdev->devdata;
++
++ *state = bd->props.max_brightness;
++
++ return 0;
++}
 
 
-cppcheck warnings: (new ones prefixed by >>)
++static struct thermal_cooling_device_ops bd_cdev_ops = {
++ .get_max_state = bd_cdev_get_max_brightness,
 
->> arch/parisc/kernel/module.c:965:8: warning: Uninitialized variable: err [uninitvar]
-      if (err)
-          ^
++static void backlight_cdev_register(struct device *parent,
++                             struct backlight_device *bd)
++{
++ if (of_find_property(parent->of_node, "#cooling-cells", NULL)) {
++         bd->cdev = thermal_of_cooling_device_register(parent->of_node,
++                         (char *)dev_name(&bd->dev), bd, &bd_cdev_ops);
 
-# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a1326b17ac03a9012cb3d01e434aacb4d67a416c
-git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-git fetch --no-tags linus master
-git checkout a1326b17ac03a9012cb3d01e434aacb4d67a416c
-vim +965 arch/parisc/kernel/module.c
+And the bd->props.max_brightness is getting from video/backlight/qcom-wled.c. Maybe
+the driver should not assign 1024 to states/max_brightness. I'm not sure about it.
+So i consider to change memory allocation methord. That's the origin of the patch.
 
-^1da177e4c3f41 Linus Torvalds 2005-04-16  884  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  885  	register_unwind_table(me, sechdrs);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  886  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  887  	/* haven't filled in me->symtab yet, so have to find it
-^1da177e4c3f41 Linus Torvalds 2005-04-16  888  	 * ourselves */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  889  	for (i = 1; i < hdr->e_shnum; i++) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  890  		if(sechdrs[i].sh_type == SHT_SYMTAB
-fe579c69c6d437 Julia Lawall   2009-08-04  891  		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  892  			int strindex = sechdrs[i].sh_link;
-6ca6366220ed28 Sven Schnelle  2019-06-05  893  			symindex = i;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  894  			/* FIXME: AWFUL HACK
-^1da177e4c3f41 Linus Torvalds 2005-04-16  895  			 * The cast is to drop the const from
-^1da177e4c3f41 Linus Torvalds 2005-04-16  896  			 * the sechdrs pointer */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  897  			symhdr = (Elf_Shdr *)&sechdrs[i];
-^1da177e4c3f41 Linus Torvalds 2005-04-16  898  			strtab = (char *)sechdrs[strindex].sh_addr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  899  			break;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  900  		}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  901  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  902  
-6183d68b8b01e3 Sven Schnelle  2019-06-05  903  	pr_debug("module %s: strtab %p, symhdr %p\n",
-^1da177e4c3f41 Linus Torvalds 2005-04-16  904  	       me->name, strtab, symhdr);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  905  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  906  	if(me->arch.got_count > MAX_GOTS) {
-f8fc18a1323c3f Helge Deller   2006-10-18  907  		printk(KERN_ERR "%s: Global Offset Table overflow (used %ld, allowed %d)\n",
-f8fc18a1323c3f Helge Deller   2006-10-18  908  				me->name, me->arch.got_count, MAX_GOTS);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  909  		return -EINVAL;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  910  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  911  
-c298be74492bec Helge Deller   2009-01-01  912  	kfree(me->arch.section);
-c298be74492bec Helge Deller   2009-01-01  913  	me->arch.section = NULL;
-c298be74492bec Helge Deller   2009-01-01  914  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  915  	/* no symbol table */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  916  	if(symhdr == NULL)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  917  		return 0;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  918  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  919  	oldptr = (void *)symhdr->sh_addr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  920  	newptr = oldptr + 1;	/* we start counting at 1 */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  921  	nsyms = symhdr->sh_size / sizeof(Elf_Sym);
-6183d68b8b01e3 Sven Schnelle  2019-06-05  922  	pr_debug("OLD num_symtab %lu\n", nsyms);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  923  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  924  	for (i = 1; i < nsyms; i++) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  925  		oldptr++;	/* note, count starts at 1 so preincrement */
-^1da177e4c3f41 Linus Torvalds 2005-04-16  926  		if(strncmp(strtab + oldptr->st_name,
-^1da177e4c3f41 Linus Torvalds 2005-04-16  927  			      ".L", 2) == 0)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  928  			continue;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  929  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  930  		if(newptr != oldptr)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  931  			*newptr++ = *oldptr;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  932  		else
-^1da177e4c3f41 Linus Torvalds 2005-04-16  933  			newptr++;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  934  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  935  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  936  	nsyms = newptr - (Elf_Sym *)symhdr->sh_addr;
-6183d68b8b01e3 Sven Schnelle  2019-06-05  937  	pr_debug("NEW num_symtab %lu\n", nsyms);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  938  	symhdr->sh_size = nsyms * sizeof(Elf_Sym);
-8cc28269b95741 Helge Deller   2018-11-10  939  
-8cc28269b95741 Helge Deller   2018-11-10  940  	/* find .altinstructions section */
-8cc28269b95741 Helge Deller   2018-11-10  941  	secstrings = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
-8cc28269b95741 Helge Deller   2018-11-10  942  	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
-8cc28269b95741 Helge Deller   2018-11-10  943  		void *aseg = (void *) s->sh_addr;
-8cc28269b95741 Helge Deller   2018-11-10  944  		char *secname = secstrings + s->sh_name;
-8cc28269b95741 Helge Deller   2018-11-10  945  
-8cc28269b95741 Helge Deller   2018-11-10  946  		if (!strcmp(".altinstructions", secname))
-8cc28269b95741 Helge Deller   2018-11-10  947  			/* patch .altinstructions */
-8cc28269b95741 Helge Deller   2018-11-10  948  			apply_alternatives(aseg, aseg + s->sh_size, me->name);
-8cc28269b95741 Helge Deller   2018-11-10  949  
-a1326b17ac03a9 Mark Rutland   2019-10-16  950  #ifdef CONFIG_DYNAMIC_FTRACE
-6ca6366220ed28 Sven Schnelle  2019-06-05  951  		/* For 32 bit kernels we're compiling modules with
-6ca6366220ed28 Sven Schnelle  2019-06-05  952  		 * -ffunction-sections so we must relocate the addresses in the
-a1326b17ac03a9 Mark Rutland   2019-10-16  953  		 *  ftrace callsite section.
-6ca6366220ed28 Sven Schnelle  2019-06-05  954  		 */
-a1326b17ac03a9 Mark Rutland   2019-10-16  955  		if (symindex != -1 && !strcmp(secname, FTRACE_CALLSITE_SECTION)) {
-a1326b17ac03a9 Mark Rutland   2019-10-16  956  			int err;
-6ca6366220ed28 Sven Schnelle  2019-06-05  957  			if (s->sh_type == SHT_REL)
-6ca6366220ed28 Sven Schnelle  2019-06-05  958  				err = apply_relocate((Elf_Shdr *)sechdrs,
-6ca6366220ed28 Sven Schnelle  2019-06-05  959  							strtab, symindex,
-6ca6366220ed28 Sven Schnelle  2019-06-05  960  							s - sechdrs, me);
-6ca6366220ed28 Sven Schnelle  2019-06-05  961  			else if (s->sh_type == SHT_RELA)
-6ca6366220ed28 Sven Schnelle  2019-06-05  962  				err = apply_relocate_add((Elf_Shdr *)sechdrs,
-6ca6366220ed28 Sven Schnelle  2019-06-05  963  							strtab, symindex,
-6ca6366220ed28 Sven Schnelle  2019-06-05  964  							s - sechdrs, me);
-6ca6366220ed28 Sven Schnelle  2019-06-05 @965  			if (err)
-6ca6366220ed28 Sven Schnelle  2019-06-05  966  				return err;
-6ca6366220ed28 Sven Schnelle  2019-06-05  967  		}
-a1326b17ac03a9 Mark Rutland   2019-10-16  968  #endif
-6ca6366220ed28 Sven Schnelle  2019-06-05  969  	}
-5336377d622595 Linus Torvalds 2010-10-05  970  	return 0;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  971  }
-^1da177e4c3f41 Linus Torvalds 2005-04-16  972  
+Thank you.
 
-:::::: The code at line 965 was first introduced by commit
-:::::: 6ca6366220ed285e29ee22f4cf5c68a0397cb005 parisc: add dynamic ftrace
-
-:::::: TO: Sven Schnelle <svens@stackframe.org>
-:::::: CC: Helge Deller <deller@gmx.de>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
