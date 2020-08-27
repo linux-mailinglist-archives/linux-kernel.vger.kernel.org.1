@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F176253E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B7253E39
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgH0Gvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:51:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32222 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgH0Gvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:51:38 -0400
-IronPort-SDR: FJOLZp7GuhgT9V7jFyk5ExVwaQ+0JDw4VoshMNvSVKYVIlGMZhLG0iH34qd1lpQC4aJnsxzlO2
- BPnooTLO1bIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="153995392"
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="153995392"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 23:51:37 -0700
-IronPort-SDR: JIzzDn9OhFzxbBRgEzVTX1f/LeBQlkKV1k+ojtu+h/3hBF3kfXdrsGOSjR45iG37syf+LTTtpc
- TAVZVV2M1gDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="444336876"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga004.jf.intel.com with ESMTP; 26 Aug 2020 23:51:34 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     cw00.choi@samsung.com, linux-kernel@vger.kernel.org
-Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
-        myungjoo.ham@samsung.com, heikki.krogerus@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v3 1/1] extcon: ptn5150: Set the VBUS and POLARITY property capability
-Date:   Thu, 27 Aug 2020 14:51:28 +0800
-Message-Id: <20200827065128.55094-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200827065128.55094-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200827065128.55094-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1727892AbgH0Gwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:52:50 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:36439 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgH0Gwu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:52:50 -0400
+Received: by mail-ej1-f66.google.com with SMTP id l2so6189079eji.3;
+        Wed, 26 Aug 2020 23:52:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yjb4IAblmNaYNb4UyN8UvAWwkcCaPYr1YWuJlC155Xw=;
+        b=jKwiImRjcsHWQqPdS5M4AuYB362jWhMKB72U5NoGjuGsbYWP72O6kcFzV5LD4FDL9A
+         WaXEnHtJx8h0UbDhFldGZj4gfkZ7/Yc09xYGYDpA1t2kjZLuTMqEKVy5z4sDpbxjmPFU
+         7oN4QGKGVGiBRI+bDO6xKHh7jX5EyGLUZVq0SH5VMFeidAPUMR0M0gHZx+DofjD43IqE
+         csp8lNp4hBRv5EuNkIcBzvwjSN+W/PXSEwbR31HUa4gC2ArNnlBHsdsb8oD3ScgBDvW9
+         hLOhKsCnOun9lwWoWqGkENvklmwdT6ewqM7N2iE0I7B2f2nlc6Nf7Lqp8iBnfuKgu5sf
+         zPVg==
+X-Gm-Message-State: AOAM532N0dKiPVKDqUJ+ueHEqY/4V26RcU/tRf+xCeYTfdHFEj0EueFw
+        D/buAU4/RXWXfGiPzaGWmm8=
+X-Google-Smtp-Source: ABdhPJxFi7OZcJ8tVwLQiriRIQeG6696mgkLPi6JyH7EO4QW9OqOFKyOZ9PPbkYg6qtMEYqAYHQLDw==
+X-Received: by 2002:a17:906:1404:: with SMTP id p4mr19224149ejc.256.1598511168930;
+        Wed, 26 Aug 2020 23:52:48 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id l25sm1146359ejg.11.2020.08.26.23.52.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 26 Aug 2020 23:52:48 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 08:52:46 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
+        kgene@kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] usb: host: ohci-exynos: Fix error handling in
+ exynos_ohci_probe()
+Message-ID: <20200827065246.GA17964@kozik-lap>
+References: <20200826144931.1828-1-tangbin@cmss.chinamobile.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200826144931.1828-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Wed, Aug 26, 2020 at 10:49:31PM +0800, Tang Bin wrote:
+> If the function platform_get_irq() failed, the negative value
+> returned will not be detected here. So fix error handling in
+> exynos_ohci_probe(). And when get irq failed, the function
+> platform_get_irq() logs an error message, so remove redundant
+> message here.
+> 
+> Fixes: 62194244cf87 ("USB: Add Samsung Exynos OHCI diver")
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  drivers/usb/host/ohci-exynos.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-Set the capability value of property for VBUS and POLARITY.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- drivers/extcon/extcon-ptn5150.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-index 841c9fe211f1..20d49a54c36e 100644
---- a/drivers/extcon/extcon-ptn5150.c
-+++ b/drivers/extcon/extcon-ptn5150.c
-@@ -275,6 +275,13 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
-+	extcon_set_property_capability(info->edev, EXTCON_USB,
-+				       EXTCON_PROP_USB_VBUS);
-+	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
-+				       EXTCON_PROP_USB_VBUS);
-+	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
-+				       EXTCON_PROP_USB_TYPEC_POLARITY);
-+
- 	/* Initialize PTN5150 device and print vendor id and version id */
- 	ret = ptn5150_init_dev_type(info);
- 	if (ret)
--- 
-2.11.0
-
+Best regards,
+Krzysztof
