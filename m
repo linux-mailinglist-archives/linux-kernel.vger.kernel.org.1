@@ -2,131 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411C2254678
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290C2546BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgH0OJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:09:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:58514 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727056AbgH0OEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:04:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B2C8101E;
-        Thu, 27 Aug 2020 06:53:39 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 889CB3F68F;
-        Thu, 27 Aug 2020 06:53:33 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 14:53:31 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.8 130/232] sched/uclamp: Protect uclamp fast path code
- with static key
-Message-ID: <20200827135330.246pbwc7h5gvdli7@e107158-lin.cambridge.arm.com>
-References: <20200820091612.692383444@linuxfoundation.org>
- <20200820091619.114657136@linuxfoundation.org>
+        id S1727961AbgH0OYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727990AbgH0OLf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:11:35 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88581C061264;
+        Thu, 27 Aug 2020 07:00:53 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d22so3573153pfn.5;
+        Thu, 27 Aug 2020 07:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HHiTQMgzvjH+G+AdBdGM786zF/ovAENPhbS4ZRK9q48=;
+        b=XSpz2J11rrX/krDA4SBhcljEd62TigqrDibHGaW/IAZi/Ra4uwQRNC/F89N7+8pVcp
+         YMmjGCSz/K372oazHsY/LEt8a1bpBdD/w3xCe1fZI5tkN0+QtR3HlmPRlzfe1fMWvBC/
+         nlF3OuoZQmC4taTd2VtpsnFB7neFsIYvTfRoYL6pl5aDN4sRLScMWRwTbp7KBK4TB9of
+         iOarBYGu4W8p7F7uYnEsrW+ebHz3c+sbZnIHdC8XpljUzJ+Dx70kENS0huYtmQ4/1YC8
+         B16hyW5cdKyJORUSjGO3rvO37zX0EX9fn8Jq82KdP0on+S1WLUleVJLMObTsMSYxFoKL
+         XSHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HHiTQMgzvjH+G+AdBdGM786zF/ovAENPhbS4ZRK9q48=;
+        b=FRHKULIkF+bU1SqJwNZz1ANO1yYSeyUq4IQ7zwu181gosy+VUAXeKcr7Wa0kIpW5or
+         +PA1ZVOXMKzqdm/wi6rjEcsi/O5SDxfuVLE+Jl2fp/9GQj0womGXYyLOkX7FPMdejkNd
+         ctpBcVCYnRSloJUHwwgv63cS5Q/pEujVVstXeVf4mq2C3i6a5C1ld8CopHXH+D2VlQnD
+         Scbbxnnr1f4oAZqFujTVnBF5X1DMkEFWurGhOUSm4A1eur8yhfGopoXj92i2plFDS8im
+         R//fhTmV0P1RlgDP943lGiDxOnX1zGC8ihhG7onQJOLW+heiJGcYm+4FA8D+aQzZM67c
+         QZ7Q==
+X-Gm-Message-State: AOAM532aofQ5II0OUpAG/bfscwzP/FUmGb5vxuEsySJkDgAONyyLEA+M
+        0CasLVjxCCnR0oMVbx0ByfaM/A8SBrU=
+X-Google-Smtp-Source: ABdhPJyIS2SpCeWLBZGFayi/BJ5ksDWZV9Pl87atv1ACxENaI4X2kDuFEZpFF/gd1KOEmPrhGCZItA==
+X-Received: by 2002:a17:902:6b46:: with SMTP id g6mr15919215plt.247.1598536852531;
+        Thu, 27 Aug 2020 07:00:52 -0700 (PDT)
+Received: from sol.lan (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
+        by smtp.gmail.com with ESMTPSA id fs12sm2371092pjb.21.2020.08.27.07.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 07:00:51 -0700 (PDT)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH v5 00/20] gpio: cdev: add uAPI v2
+Date:   Thu, 27 Aug 2020 22:00:00 +0800
+Message-Id: <20200827140020.159627-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820091619.114657136@linuxfoundation.org>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/20/20 11:19, Greg Kroah-Hartman wrote:
-> From: Qais Yousef <qais.yousef@arm.com>
-> 
-> [ Upstream commit 46609ce227039fd192e0ecc7d940bed587fd2c78 ]
-> 
-> There is a report that when uclamp is enabled, a netperf UDP test
-> regresses compared to a kernel compiled without uclamp.
-> 
-> https://lore.kernel.org/lkml/20200529100806.GA3070@suse.de/
-> 
-> While investigating the root cause, there were no sign that the uclamp
-> code is doing anything particularly expensive but could suffer from bad
-> cache behavior under certain circumstances that are yet to be
-> understood.
-> 
-> https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
-> 
-> To reduce the pressure on the fast path anyway, add a static key that is
-> by default will skip executing uclamp logic in the
-> enqueue/dequeue_task() fast path until it's needed.
-> 
-> As soon as the user start using util clamp by:
-> 
-> 	1. Changing uclamp value of a task with sched_setattr()
-> 	2. Modifying the default sysctl_sched_util_clamp_{min, max}
-> 	3. Modifying the default cpu.uclamp.{min, max} value in cgroup
-> 
-> We flip the static key now that the user has opted to use util clamp.
-> Effectively re-introducing uclamp logic in the enqueue/dequeue_task()
-> fast path. It stays on from that point forward until the next reboot.
-> 
-> This should help minimize the effect of util clamp on workloads that
-> don't need it but still allow distros to ship their kernels with uclamp
-> compiled in by default.
-> 
-> SCHED_WARN_ON() in uclamp_rq_dec_id() was removed since now we can end
-> up with unbalanced call to uclamp_rq_dec_id() if we flip the key while
-> a task is running in the rq. Since we know it is harmless we just
-> quietly return if we attempt a uclamp_rq_dec_id() when
-> rq->uclamp[].bucket[].tasks is 0.
-> 
-> In schedutil, we introduce a new uclamp_is_enabled() helper which takes
-> the static key into account to ensure RT boosting behavior is retained.
-> 
-> The following results demonstrates how this helps on 2 Sockets Xeon E5
-> 2x10-Cores system.
-> 
->                                    nouclamp                 uclamp      uclamp-static-key
-> Hmean     send-64         162.43 (   0.00%)      157.84 *  -2.82%*      163.39 *   0.59%*
-> Hmean     send-128        324.71 (   0.00%)      314.78 *  -3.06%*      326.18 *   0.45%*
-> Hmean     send-256        641.55 (   0.00%)      628.67 *  -2.01%*      648.12 *   1.02%*
-> Hmean     send-1024      2525.28 (   0.00%)     2448.26 *  -3.05%*     2543.73 *   0.73%*
-> Hmean     send-2048      4836.14 (   0.00%)     4712.08 *  -2.57%*     4867.69 *   0.65%*
-> Hmean     send-3312      7540.83 (   0.00%)     7425.45 *  -1.53%*     7621.06 *   1.06%*
-> Hmean     send-4096      9124.53 (   0.00%)     8948.82 *  -1.93%*     9276.25 *   1.66%*
-> Hmean     send-8192     15589.67 (   0.00%)    15486.35 *  -0.66%*    15819.98 *   1.48%*
-> Hmean     send-16384    26386.47 (   0.00%)    25752.25 *  -2.40%*    26773.74 *   1.47%*
-> 
-> The perf diff between nouclamp and uclamp-static-key when uclamp is
-> disabled in the fast path:
-> 
->      8.73%     -1.55%  [kernel.kallsyms]        [k] try_to_wake_up
->      0.07%     +0.04%  [kernel.kallsyms]        [k] deactivate_task
->      0.13%     -0.02%  [kernel.kallsyms]        [k] activate_task
-> 
-> The diff between nouclamp and uclamp-static-key when uclamp is enabled
-> in the fast path:
-> 
->      8.73%     -0.72%  [kernel.kallsyms]        [k] try_to_wake_up
->      0.13%     +0.39%  [kernel.kallsyms]        [k] activate_task
->      0.07%     +0.38%  [kernel.kallsyms]        [k] deactivate_task
-> 
-> Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
-> Reported-by: Mel Gorman <mgorman@suse.de>
-> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-> Link: https://lkml.kernel.org/r/20200630112123.12076-3-qais.yousef@arm.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
+This patchset defines and implements a new version of the
+GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
+support for debounce, event sequence numbers, and allow for requested
+lines with different configurations.
+It provides some future proofing by adding optional configuration fields
+and padding reserved for future use.
 
-Greg/Peter/Mel
+The series can be partitioned into three blocks; the first two patches
+are minor fixes that impact later patches, the next eleven contain the
+v2 uAPI definition and implementation, and the final seven port the GPIO
+tools to the v2 uAPI and extend them to use new uAPI features.
 
-Should this go to 5.4 too? Not saying it should, but I don't know if distros
-could care about potential performance hit that this patch addresses.
+The more complicated patches include their own commentary where
+appropriate.
 
-Thanks
+Cheers,
+Kent.
 
---
-Qais Yousef
+Changes for v5:
+
+All changes for v5 fix issues with the gpiolib-cdev.c implementation,
+in patches 07-12.
+The uAPI is unchanged from v4, as is the port of the tools.
+
+ - use IS_ALIGNED in BUILD_BUG_ON checks (patch 07)
+ - relocate BUILD_BUG_ON checks to gpiolib_cdev_register (patch 07)
+ - s/requies/requires/ (patch 07)
+ - use unsigned int for variables that are never negative
+ - change lineinfo_get() parameter from cmd to bool watch (patch 08)
+ - flagsv2 in gpio_v2_line_info_to_v1() should be u64, not int (patch 08)
+ - change "_locked" suffixed function names to "_unlocked" (patch 10 and
+   11)
+ - be less eager breaking long lines
+ - move commentary into checkin comment where appropriate - particularly
+   patch 12
+ - restructure the request/line split - rename struct line to
+   struct linereq, and struct edge_detector to struct line, and relocate
+   the desc field from linereq to line.  The linereq name was selected
+   over line_request as function names such as linereq_set_values() are
+   more clearly associated with requests than line_request_set_values(),
+   particularly as there is also a struct line.  And linereq is as
+   informative as linerequest, so I went with the shortened form.
+   
+Changes for v4:
+ - bitmap width clarification in gpiod.h (patch 04)
+ - fix info offset initialisation bug (patch 08 and inserting patch 01)
+ - replace strncpy with strscpy to remove compiler warnings
+   (patch 08 and inserting patch 02)
+ - fix mask handling in line_get_values (patch 07)
+
+Changes for v3:
+ - disabling the character device from the build requires EXPERT
+ - uAPI revisions (see patch 02)
+ - replace padding_not_zeroed with calls to memchr_inv
+ - don't use bitops on 64-bit flags as that doesn't work on BE-32
+ - accept first attribute matching a line in gpio_v2_line_config.attrs
+   rather than the last
+ - rework lsgpio port to uAPI v2 as flags reverted to v1 like layout
+   (since patch v2)
+ - swapped patches 17 and 18 to apply debounce to multiple monitored
+   lines
+
+Changes for v2:
+ - split out cleanup patches into a separate series.
+ - split implementation patch into a patch for each ioctl or major feature.
+ - split tool port patch into a patch per tool.
+ - rework uAPI to allow requested lines with different configurations.
+
+Kent Gibson (20):
+  gpiolib: cdev: desc_to_lineinfo should set info offset
+  gpiolib: cdev: replace strncpy with strscpy
+  gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
+  gpio: uapi: define uAPI v2
+  gpiolib: make cdev a build option
+  gpiolib: add build option for CDEV v1 ABI
+  gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
+    GPIO_V2_LINE_GET_VALUES_IOCTL
+  gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
+    GPIO_V2_GET_LINEINFO_WATCH_IOCTL
+  gpiolib: cdev: support edge detection for uAPI v2
+  gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
+  gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
+  gpiolib: cdev: support setting debounce
+  gpio: uapi: document uAPI v1 as deprecated
+  tools: gpio: port lsgpio to v2 uAPI
+  tools: gpio: port gpio-watch to v2 uAPI
+  tools: gpio: rename nlines to num_lines
+  tools: gpio: port gpio-hammer to v2 uAPI
+  tools: gpio: port gpio-event-mon to v2 uAPI
+  tools: gpio: add multi-line monitoring to gpio-event-mon
+  tools: gpio: add debounce support to gpio-event-mon
+
+ drivers/gpio/Kconfig        |   29 +-
+ drivers/gpio/Makefile       |    2 +-
+ drivers/gpio/gpiolib-cdev.c | 1315 +++++++++++++++++++++++++++++++++--
+ drivers/gpio/gpiolib-cdev.h |   15 +
+ drivers/gpio/gpiolib.c      |    2 +
+ drivers/gpio/gpiolib.h      |    6 +
+ include/uapi/linux/gpio.h   |  316 ++++++++-
+ tools/gpio/gpio-event-mon.c |  146 ++--
+ tools/gpio/gpio-hammer.c    |   56 +-
+ tools/gpio/gpio-utils.c     |  127 ++--
+ tools/gpio/gpio-utils.h     |   50 +-
+ tools/gpio/gpio-watch.c     |   16 +-
+ tools/gpio/lsgpio.c         |   60 +-
+ 13 files changed, 1910 insertions(+), 230 deletions(-)
+
+
+base-commit: 22cc422070d9a9a399f8a70b89f1b852945444cb
+-- 
+2.28.0
+
