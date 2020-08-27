@@ -2,136 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7922551BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 01:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CE72551C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 01:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgH0Xuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 19:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgH0Xuc (ORCPT
+        id S1728116AbgH0XwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 19:52:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18844 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726147AbgH0XwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 19:50:32 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED61C061264;
-        Thu, 27 Aug 2020 16:50:32 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id b17so9984493ejq.8;
-        Thu, 27 Aug 2020 16:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/iHX8oGR/qHNguoGaFGrBXIYpiYEp0r+O9Pxal1CvIs=;
-        b=I5UV8cFx9ujIWThpozl3aeYobfe7itCA8dgDcxCXcFA8+sa5SXT6A+BvxLsOBpCWfG
-         JFTXBd5xixrKQDpEwc91se/fOtQPIPfLrgzNy8KgjmaoiYmgsaPnK43NqHuQhQqLDKDJ
-         mYV6QJUPJTIY1lyIDJBUKJUUR8SgaTtYrcv3vkjRf0PoJX0SElRESKpqU6XXRKTh83um
-         Ue8EfJHo1jYzB9m3sLA+ylMUlq/6cvmVVZW+ShqFD02NBsOeND2YyKWBcMwOZFCMnRGZ
-         3U8rI03xSaa9V5hmw9GmN2DhrcFNpH4ki4wr/uz7HAWEa4MvgvmCF+5zjhbqfXysPkIu
-         wewA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/iHX8oGR/qHNguoGaFGrBXIYpiYEp0r+O9Pxal1CvIs=;
-        b=BtSi8C3uITnYcX4p4VCzlvlXuJ35bLH64U9D512c8my8fviGSV43zKtbf9Bgz4sq3j
-         df8EweZ+VuoPG6J0Vty2+u72NaU9L4dDR1XHgYZ8nzRf0xkHydlI0TFXjXbIHe+fJRGl
-         oRmVP5xKh+MWYz/AJPijNGH8mdFFELy4bq5uV17kvH0Jf4Nf2y3LczOmL9GnbIKhq7Jj
-         R/inSc3ZqTK0Q2yq84wiYYFRBHQIROfDfepxdadiO+uq0LiPlHCJW5yNNsAw+T4HVk1Z
-         tSybZ67XTDgkIieULRTMbecAA7BilRrdPu1B1XsZRMHj5D6qlFyDL9zaKFEFGe2Lwi55
-         Vaag==
-X-Gm-Message-State: AOAM531TvFwkpwWAH8/B117fBxTdgFY0M8zm+W7zku3L44pLEWM0hR/j
-        Co01L2wFEk3nGSe3JPo228u/J7CLgx0=
-X-Google-Smtp-Source: ABdhPJxe41pDqlt8z7rWnm7iA4xL2l2aNVBiKnpjNyw1hFkOggMWiFc+ld1lXwXyqqfiL1qsMYrc/Q==
-X-Received: by 2002:a17:906:7715:: with SMTP id q21mr22968687ejm.251.1598572230480;
-        Thu, 27 Aug 2020 16:50:30 -0700 (PDT)
-Received: from [192.168.0.48] (HSI-KBW-046-005-005-126.hsi8.kabel-badenwuerttemberg.de. [46.5.5.126])
-        by smtp.gmail.com with ESMTPSA id e4sm3127559ejk.76.2020.08.27.16.50.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 16:50:29 -0700 (PDT)
-Subject: Re: [ANNOUNCE] Reiser5: Selective File Migration - User Interface
-To:     Metztli Information Technology <jose.r.r@metztli.com>,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200827215351.620A468F3402@huitzilopochtli.metztli-it.com>
-From:   Edward Shishkin <edward.shishkin@gmail.com>
-Message-ID: <62dc962d-1dfd-641d-08ca-4abf62b50917@gmail.com>
-Date:   Fri, 28 Aug 2020 01:50:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Thu, 27 Aug 2020 19:52:01 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RNWVDo178263;
+        Thu, 27 Aug 2020 19:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=gsfH5cdUIsr8xA74mrGAD9ZYsv+fpUZMZdw3j3Pvhx8=;
+ b=pSGykFPcU+B/ZIxHUo70hu/a+OkOt+mfFVoQzXapACuGVYMmPqCDc+Ufz+9IAOx6OFk0
+ 9GvomlgTXELbH5kyuIQmn40sT8SDxCt57z2VZTKfXpBqe0wlXxoRWOAzahZTEjaIYrQE
+ bylXXHiyJ2pUivCeBRTmQ+6gBx6FnWY0OGK8PjWEsJo85ExBCltYXA9ZrQJvP8I+d52b
+ MG0jg3yBk0MOGS5q2D7p62UmuTmRpZ7Gyb7jhdEnilSkD7Pp5j3NMfPRAEUBR5tT0POf
+ /UHMl70HOUIu5YXUlSDLbwuvF4QNAZ9PpfANezJNLr/5ZSZwOD5GhlnAemvWIn7YJS25 mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 336m7bkq9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 19:51:07 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RNXYTF180444;
+        Thu, 27 Aug 2020 19:51:06 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 336m7bkq91-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 19:51:06 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RNl2R2026415;
+        Thu, 27 Aug 2020 23:51:05 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma04wdc.us.ibm.com with ESMTP id 332ujf5v8r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 23:51:05 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RNp1K020906332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Aug 2020 23:51:01 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 51787BE051;
+        Thu, 27 Aug 2020 23:51:04 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF2AABE04F;
+        Thu, 27 Aug 2020 23:50:56 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.80.51])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu, 27 Aug 2020 23:50:56 +0000 (GMT)
+References: <20200819172134.11243-1-nramas@linux.microsoft.com>
+ <20200819172134.11243-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v4 2/5] powerpc: Use libfdt functions to fetch IMA
+ buffer properties
+In-reply-to: <20200819172134.11243-3-nramas@linux.microsoft.com>
+Date:   Thu, 27 Aug 2020 20:50:54 -0300
+Message-ID: <8736478x7l.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20200827215351.620A468F3402@huitzilopochtli.metztli-it.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_14:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=974
+ impostorscore=0 clxscore=1015 priorityscore=1501 suspectscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008270174
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-On 08/27/2020 11:53 PM, Metztli Information Technology wrote:
-> On Wed, Aug 26, 2020 at 2:13 PM Edward Shishkin <edward.shishkin@gmail.com> wrote:
->>
->> [...]
->>
->>>
->>> FYI Although not officially, the Debian metaframework Buster AMD64 distribution might be the first to support native installation of Reiser4 SFRN 5.1.3, kernel and reiser4progs 2.0.3, file system utilities.
->>>
->>> I have already made a couple of successful Metztli Reiser4 SFRN 5 native installations onto ~100 GB slices, which root file system is formatted in 'Reiser5' and 1 GB /boot in JFS.
->>> https://metztli.it/reiser5 (Screenshot 600x338 size)
->>>
->>> The upgraded netboot installation media metztli-reiser4-sfrn5.iso is available at:
->>> https://sourceforge.net/projects/debian-reiser4/
->>> as well as
->>> https://metztli.it/buster-reiser5/metztli-reiser4-sfrn5.iso
->>> https://metztli.it/buster-reiser5/metztli-reiser4-sfrn5.iso.SHA256SUM
->>>
->>> Likely the brick/volume feature(s) will be useful in Cloud fabric infrastructures, like Google's, where reiser4 excels.
->>>
->>> The current SFRN 5.1.3 -patched Zstd -compressed kernel in the installation media is Debian's 5.7.10.
->>
->>
->> wow, reiser5 from the box? I might want to try..
-> Well, it is more of a 'reference implementation' as there are persons who reached out to me because their builds succeeded, they were able to format in reiser4 SFRN x.y.z, but they were not able to mount their partition(s).
-> Turns out, they were inadvertently mixing SFRN 4.0.2 with 5.1.3, either in the reiser4 kernel patch -- released with the same in both instances -- or in the reiser4progs.
+> @@ -63,7 +29,22 @@ void remove_ima_buffer(void *fdt, int chosen_node)
+>  	if (!prop)
+>  		return;
+>  
+> -	ret = do_get_kexec_buffer(prop, len, &addr, &size);
+> +	ret = fdt_address_cells(fdt, chosen_node);
 
+This change was already present in the previous version of the patch but
+it was just today that I noticed a problem: there's no #address-cells
+property in /chosen. This code will still work though because if there's
+no property this function returns 2 which is the correct value for
+ppc64. But it's conceptually wrong. You need to pass the node offset for
+/ so that it gets the #address-cells property from there.
 
-Yeah, some confusion can take place. Plus unsupported old 4.0.2
-volumes (a special build with CONFIG_REISER4_OLD=y is required to
-mount them), which is a payment for performance.
+> +	if (ret < 0)
+> +		return;
+> +	addr_cells = ret;
+> +
+> +	ret = fdt_size_cells(fdt, chosen_node);
 
+Here we're not so lucky. The default value returned when no #size-cells
+property is present is 1, which is wrong for ppc64 so this change
+introduces a bug. You also need to pass the node offset for / here.
 
-> 
->>
->>>
->>> The installer defaults to create the root system reiser5 -formatted partition as:
->>> mkfs.reiser4 -yo "create=reg42"
->>
->>
->> "reg42" is default profile in reiser4progs-2.0.3 (check by
->> "mkfs.reiser4 -p") - there is no need to specify it via option.
-> Acknowledged. Thanks.
-> 
->>
->> Have you had a chance to play with logical volumes (add/remove
->> bricks, etc)?
-> That is coming up. I still have to create/customize an image of Metztli Reiser4 SFRN5 for a Google Compute Engine (GCE) minimal ~200GB instance for evaluation.
-> Fact is 'not all clouds are created equal' -- even if KVM -based. For instance, reiser4 SFRN 4.0.2 on a trial Linode small ~80GB SSD slice(s) with 2 virtual cpus frequently hung under short sustained disk/network I/O usage.
-> I have not experienced that with reiser4 SFRN 4.0.2 on GCE -- where sometimes I allocate eight to sixteen virtual cpus with 16, 32, or even 64, GBs of RAM, on a region hosting AMD Epyc, for fast kernel building ops.
-> 
-> But testing a relatively small bootable image first will usually provide insight if adding one, two... eight, TB slices will make sense later on.
+> +	if (ret < 0)
+> +		return;
+> +	size_cells = ret;
+> +
+> +	if (len < 4 * (addr_cells + size_cells))
+> +		return;
+> +
+> +	addr = of_read_number(prop, addr_cells);
+> +	size = of_read_number(prop + 4 * addr_cells, size_cells);
+> +
+>  	fdt_delprop(fdt, chosen_node, FDT_PROP_IMA_KEXEC_BUFFER);
+>  	if (ret)
+>  		return;
+> @@ -129,9 +110,15 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
+>  	if (!image->arch.ima_buffer_size)
+>  		return 0;
+>  
+> -	ret = get_addr_size_cells(&addr_cells, &size_cells);
+> -	if (ret)
+> +	ret = fdt_address_cells(fdt, chosen_node);
+> +	if (ret < 0)
+> +		return ret;
+> +	addr_cells = ret;
+> +
+> +	ret = fdt_size_cells(fdt, chosen_node);
+> +	if (ret < 0)
+>  		return ret;
+> +	size_cells = ret;
+>  
+>  	entry_size = 4 * (addr_cells + size_cells);
 
+Ditto here.
 
-I played with your media on a virtual machine. The basic volume
-operations work, however, I guess, adding brick(s) to "/" will cause
-problems at next boot: someone has to register all the bricks before
-mounting "/"...
-
-It seems that we need to maintain a kind of volume configuration (at
-/etc/reiser4, or so) to automate that process. Unfortunately, I am
-currently busy with making things stable. If anyone could take a look
-at this, I would be appreciated.
-
-Thanks,
-Edward.
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
