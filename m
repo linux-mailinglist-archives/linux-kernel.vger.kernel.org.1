@@ -2,156 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD4B2548BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1752548B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgH0PLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728818AbgH0Llb (ORCPT
+        id S1728535AbgH0PLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:11:00 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:10938 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728874AbgH0LpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:41:31 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C683C06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:41:30 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id e17so170813ils.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 04:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2XR1Mc8dJ5lZuCbZST8KrY7/ZxwDrNjZ39kdQPvS71M=;
-        b=DHNNLW7O8TNMDsLvBYn79ffz6n300qKSqKrTPoO68hDSCjkEQh+oHhJKQzkEk3xLYz
-         VP4Yd5najj1hoFMVvcFOJevMTJM+wFEBjB8vwACxOyxf6m0+I6PhLfDl6gp7IWWXjWYV
-         X92HIQOARMLiln2esTB1pkLQXcwQQjYmNahfa+9M5U+9q6uXw6IPtyK6KURD5Hwk++F3
-         QBcmqv6wuNRjuX4yexJ4vxRYbxfJK81Cs1NGOVv3f7AekiFx+Y6YwGMRiNqW8oLesFDh
-         +iqfBwmGqsYND/a2wog+Hp7WMVDnbageMYBTztSeyjy0t8ApG+NHVcgUHuOWG6OOoNbV
-         gnWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2XR1Mc8dJ5lZuCbZST8KrY7/ZxwDrNjZ39kdQPvS71M=;
-        b=Ehq8nbtNAAk0GowS+EWaPGVQ4rQ4FQp0i9fs/9Cc5ksIOLC+2K/poeQqrvdn05XTNd
-         SfJJsp7vWB9/4G6VzXMKV+N4HgoZi9r9nBx6U2pkhGI7P5GxLg6rN2OeEniDoUUncMrg
-         ULfHf4Vo+i/g51PjjWdR0Gdn1v/7aajNm43KUuZrLmFkcZnUbSw3rRzC3d6YxGc08WJh
-         EimbrQI7VmS6TYXCdwzQVFGg5tQ4CnueccWlM6GgO8HQ6YG5DkM7eP6aVmZ0LX/KB3mB
-         Kogw891J3iNO1PF+hN8apQEWO3xy5I/J1LDxVykWioBbrdkc09Z9CQXxJ6HDgglyw/uw
-         lehQ==
-X-Gm-Message-State: AOAM532/XFo/f9ScKnu0KyJYeKgmnlswJu71G1FspQ3gRCuDwlQdvcCF
-        d21c3CvArPoBj1wtoHKPb9W1fLjWbs8jRD/TDxcS7w==
-X-Google-Smtp-Source: ABdhPJxirTveMuJltE1A7KEaVSzcch70Qm4b9j8tuYr7BwIRss/J49Qeg0VNz7EM/z+tZJw3hkJ7KbjnBYT4QVul3T0=
-X-Received: by 2002:a92:d086:: with SMTP id h6mr17190790ilh.205.1598528489329;
- Thu, 27 Aug 2020 04:41:29 -0700 (PDT)
+        Thu, 27 Aug 2020 07:45:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598528669;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=woZpEfnFaBE4cm7/zjsWew74v/fudZ9kURmp1bF8wmQ=;
+        b=eJry3dtLZnw52U2jiLBK5/IvrSSxCyi17Lzp5sXI5X76AAcW+oVzeOaRo0MGqRFT1l
+        7JxIJMfVSoqipbMTd1sIKLNiMejQXQeAbjKKXHFjW+tBRu0GLWLzQbrDiU/iBCeSVtdN
+        rdsAUCaJie7Pz5//Phs8o1dS+fDpnhXLCHDgAvH8PkKG1JyeA/rknodsRvElM/X8VFv3
+        VewlDeQ8LOIWdnWf/B3dAmZdAt4+OoBo5Zcpyb7DW/tQcgGDhceF9WYe4EXsta/zxRv4
+        zBGg2TpNGv3/8b5xuQ+rwbafG/AgQnMWuwefQLeEpD4kN8+6g3ovsOq4G/uV+HxztZbi
+        h6nw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id g0b6c1w7RBiRtNJ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 27 Aug 2020 13:44:27 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 13:44:22 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [PATCH v2] opp: Power on (virtual) power domains managed by the
+ OPP core
+Message-ID: <20200827114422.GA1784@gerhold.net>
+References: <20200826093328.88268-1-stephan@gerhold.net>
+ <20200827100104.yuf2nzb6qras7zcw@vireshk-i7>
 MIME-Version: 1.0
-References: <5f479309.1c69fb81.9106e.e12bSMTPIN_ADDED_BROKEN@mx.google.com>
-In-Reply-To: <5f479309.1c69fb81.9106e.e12bSMTPIN_ADDED_BROKEN@mx.google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 27 Aug 2020 04:41:18 -0700
-Message-ID: <CANn89i+4Z-OCsaXUgZ9F-USGu+JyuHUL0aEctdif5mFJf_6HKA@mail.gmail.com>
-Subject: Re: RFC: inet_timewait_sock->tw_timer list corruption
-To:     Wang Long <w@laoqinren.net>
-Cc:     netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, opurdila@ixiacom.com,
-        vegard.nossum@gmail.com, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827100104.yuf2nzb6qras7zcw@vireshk-i7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 4:03 AM Wang Long <w@laoqinren.net> wrote:
->
-> Hi=EF=BC=8C
->
-> we encountered a kernel panic as following:
->
-> [4394470.273792] general protection fault: 0000 [#1] SMP NOPTI
-> [4394470.274038] CPU: 0 PID: 0 Comm: swapper/0 Kdump: loaded Tainted: G
->       W     --------- -  - 4.18.0-80.el8.x86_64 #1
-> [4394470.274477] Hardware name: Sugon I620-G30/60P24-US, BIOS MJGS1223
-> 04/07/2020
-> [4394470.274727] RIP: 0010:run_timer_softirq+0x34e/0x440
-> [4394470.274957] Code: 84 3f ff ff ff 49 8b 04 24 48 85 c0 74 58 49 8b
-> 1c 24 48 89 5d 08 0f 1f 44 00 00 48 8b 03 48 8b 53 08 48 85 c0 48 89 02
-> 74 04 <48> 89 50 08 f6 43 22 20 48 c7 43 08 00 00 00 00 48 89 ef 4c 89 2b
-> [4394470.275505] RSP: 0018:ffff88f000803ee0 EFLAGS: 00010086
-> [4394470.275783] RAX: dead000000000200 RBX: ffff88e5e33ea078 RCX:
-> 0000000000000100
-> [4394470.276087] RDX: ffff88f000803ee8 RSI: 0000000000000000 RDI:
-> ffff88f00081aa00
-> [4394470.276391] RBP: ffff88f00081aa00 R08: 0000000000000001 R09:
-> 0000000000000000
-> [4394470.276697] R10: ffff88e5e33eb1f0 R11: 0000000000000000 R12:
-> ffff88f000803ee8
-> [4394470.277030] R13: dead000000000200 R14: ffff88f000803ee0 R15:
-> 0000000000000000
-> [4394470.277350] FS:  0000000000000000(0000) GS:ffff88f000800000(0000)
-> knlGS:0000000000000000
-> [4394470.277684] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [4394470.278020] CR2: 00007f200eddd160 CR3: 0000000e0b20a002 CR4:
-> 00000000007606f0
-> [4394470.278412] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [4394470.278799] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [4394470.279194] PKRU: 55555554
-> [4394470.279543] Call Trace:
-> [4394470.279889]  <IRQ>
-> [4394470.280237]  ? __hrtimer_init+0xb0/0xb0
-> [4394470.280618]  ? sched_clock+0x5/0x10
-> [4394470.281000]  __do_softirq+0xe8/0x2ef
-> [4394470.281397]  irq_exit+0xf1/0x100
-> [4394470.281761]  smp_apic_timer_interrupt+0x74/0x130
-> [4394470.282132]  apic_timer_interrupt+0xf/0x20
-> [4394470.282548]  </IRQ>
-> [4394470.282954] RIP: 0010:cpuidle_enter_state+0xa0/0x2b0
-> [4394470.283341] Code: 8b 3d 6c fb 59 4c e8 0f ed a6 ff 48 89 c3 0f 1f
-> 44 00 00 31 ff e8 80 00 a7 ff 45 84 f6 0f 85 c3 01 00 00 fb 66 0f 1f 44
-> 00 00 <4c> 29 fb 48 ba cf f7 53 e3 a5 9b c4 20 48 89 d8 48 c1 fb 3f 48 f7
-> [4394470.284219] RSP: 0018:ffffffffb4603e78 EFLAGS: 00000246 ORIG_RAX:
-> ffffffffffffff13
-> [4394470.284671] RAX: ffff88f000823080 RBX: 000f9cbf579e86c6 RCX:
-> 000000000000001f
-> [4394470.285129] RDX: 000f9cbf579e86c6 RSI: 0000000037a6f674 RDI:
-> 0000000000000000
-> [4394470.285623] RBP: 0000000000000002 R08: 00000000000000c4 R09:
-> 0000000000000027
-> [4394470.286088] R10: ffffffffb4603e58 R11: 000000000000004c R12:
-> ffff88f00082df00
-> [4394470.286566] R13: ffffffffb4724118 R14: 0000000000000000 R15:
-> 000f9cbf579d44e0
-> [4394470.287045]  ? cpuidle_enter_state+0x90/0x2b0
-> [4394470.287527]  do_idle+0x200/0x280
-> [4394470.288010]  cpu_startup_entry+0x6f/0x80
-> [4394470.288501]  start_kernel+0x533/0x553
-> [4394470.288994]  secondary_startup_64+0xb7/0xc0
->
->
-> After analysis, we found that the timer which expires has
-> timer->entry.next =3D=3D POISON2 !(the list corruption )
->
-> the crash scenario is the same as https://lkml.org/lkml/2017/3/21/732,
->
-> I cannot reproduce this issue, but I found that the timer cause crash is
-> the inet_timewait_sock->tw_timer(its callback function is
-> tw_timer_handler), and the value of tcp_tw_reuse is 1.
->
-> # cat /proc/sys/net/ipv4/tcp_tw_reuse
-> 1
->
-> In the production environment, we encountered this problem many times,
-> and every time it was a problem with the inet_timewait_sock->tw_timer.
->
-> Do anyone have any ideas for this issue? Thanks.
->
+On Thu, Aug 27, 2020 at 03:31:04PM +0530, Viresh Kumar wrote:
+> On 26-08-20, 11:33, Stephan Gerhold wrote:
+> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > index 8b3c3986f589..7e53a7b94c59 100644
+> > --- a/drivers/opp/core.c
+> > +++ b/drivers/opp/core.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/device.h>
+> >  #include <linux/export.h>
+> >  #include <linux/pm_domain.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include <linux/regulator/consumer.h>
+> >  
+> >  #include "opp.h"
+> > @@ -1964,10 +1965,13 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+> >  		if (!opp_table->genpd_virt_devs[index])
+> >  			continue;
+> >  
+> > +		if (opp_table->genpd_virt_links && opp_table->genpd_virt_links[index])
+> > +			device_link_del(opp_table->genpd_virt_links[index]);
+> >  		dev_pm_domain_detach(opp_table->genpd_virt_devs[index], false);
+> >  		opp_table->genpd_virt_devs[index] = NULL;
+> >  	}
+> >  
+> > +	kfree(opp_table->genpd_virt_links);
+> >  	kfree(opp_table->genpd_virt_devs);
+> >  	opp_table->genpd_virt_devs = NULL;
+> >  }
+> > @@ -1999,8 +2003,10 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+> >  {
+> >  	struct opp_table *opp_table;
+> >  	struct device *virt_dev;
+> > -	int index = 0, ret = -EINVAL;
+> > +	struct device_link *dev_link;
+> > +	int index = 0, ret = -EINVAL, num_devs;
+> >  	const char **name = names;
+> > +	u32 flags;
+> >  
+> >  	opp_table = dev_pm_opp_get_opp_table(dev);
+> >  	if (IS_ERR(opp_table))
+> > @@ -2049,6 +2055,32 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+> 
+> I was about to apply this patch when I noticed that this routine does
+> return the array of virtual devices back to the caller, like the qcom
+> cpufreq driver in this case. IIRC we did it this way as a generic
+> solution for this in the OPP core wasn't preferable.
+> 
 
-Nothing comes to mind, I am not aware of such crashes in stable linux kerne=
-ls.
+Hmm. Actually I was using this parameter for initial testing, and forced
+on the power domains from the qcom-cpufreq-nvmem driver. For my v1 patch
+I wanted to enable the power domains in dev_pm_opp_set_rate(), so there
+using the virt_devs parameter was not possible.
+
+On the other hand, creating the device links would be possible from the
+platform driver by using the parameter.
+
+> And so I think again if this patch should be picked instead of letting
+> the platform handle this ?
+> 
+
+It seems like originally the motivation for the parameter was that
+cpufreq consumers do *not* need to power on the power domains:
+
+Commit 17a8f868ae3e ("opp: Return genpd virtual devices from dev_pm_opp_attach_genpd()"):
+ "The cpufreq drivers don't need to do runtime PM operations on
+  the virtual devices returned by dev_pm_domain_attach_by_name() and so
+  the virtual devices weren't shared with the callers of
+  dev_pm_opp_attach_genpd() earlier.
+
+  But the IO device drivers would want to do that. This patch updates
+  the prototype of dev_pm_opp_attach_genpd() to accept another argument
+  to return the pointer to the array of genpd virtual devices."
+
+But the reason why I made this patch is that actually something *should*
+enable the power domains even for the cpufreq case.
+If every user of dev_pm_opp_attach_genpd() ends up creating these device
+links we might as well manage those directly from the OPP core.
+
+I cannot think of any use case where you would not want to manage those
+power domains using device links. And if there is such a use case,
+chances are good that this use case is so special that using the OPP API
+to set the performance states would not work either. In either case,
+this seems like something that should be discussed once there is such a
+use case.
+
+At the moment, there are only two users of dev_pm_opp_attach_genpd():
+
+  - cpufreq (qcom-cpufreq-nvmem)
+  - I/O (venus, recently added in linux-next [1])
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=9a538b83612c8b5848bf840c2ddcd86dda1c8c76
+
+In fact, venus adds the device link exactly the same way as in my patch.
+So we could move that to the OPP core, simplify the venus code and
+remove the virt_devs parameter. That would be my suggestion.
+
+I can submit a v3 with that if you agree (or we take this patch as-is
+and remove the parameter separately - I just checked and creating a
+device link twice does not seem to cause any problems...)
+
+Thanks!
+Stephan
