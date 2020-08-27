@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C7E254A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A52B254A54
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgH0QO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgH0QO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:14:57 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED71C061264;
-        Thu, 27 Aug 2020 09:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=e1CYi8h9cIcfFWE3IwWVVfAtEnrhdJEfYw9kxMmTqF4=; b=Ugyty4oMVrd/CQtmGftGd1GHb6
-        aP9yz/7iv/vaDj3FW7ESNBCoYx3laUXuM5AV4erwj+OZQgdgnvrxa4PH8Hd2gXf/dCOSAoyNZ9WPu
-        qRocjg9sCU/zF9nu5tx3vdHkPguoaS7u4wydF6xrUa3c75EDHa2FnOf0Yq6y22FjAWqpCM/j7PPCa
-        bzB/ajdtu2nm89fAAAmawCjU0nvX4B/9d3GSeNBXn1cJMVKmwW9qfeBkoKcy9uSNwkPa2N593nl+x
-        yWBm54w+j6VI/3ly+oNqHEYAYBAClr7AMdK1415pinIZnuatzQhubdkey/nZQBTQkzOR+r3xc4ZKQ
-        8tWI8ghA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBKYA-0003Lq-Ca; Thu, 27 Aug 2020 16:14:54 +0000
-Subject: Re: [PATCH v2] null_blk: add support for max open/active zone limit
- for zoned devices
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200827135018.63644-1-niklas.cassel@wdc.com>
- <6d9fb163-f9d9-1f2d-d88c-db9d3a6185b4@infradead.org>
- <CY4PR04MB37513D874343FBD2D682DA0DE7550@CY4PR04MB3751.namprd04.prod.outlook.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <068d4bad-6061-277d-48d3-82a907f8c4a2@infradead.org>
-Date:   Thu, 27 Aug 2020 09:14:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727815AbgH0QPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:15:33 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42742 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726197AbgH0QPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 12:15:32 -0400
+Received: from zn.tnic (p200300ec2f104500059e4b9a4804679d.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:4500:59e:4b9a:4804:679d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1267A1EC036E;
+        Thu, 27 Aug 2020 18:15:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1598544930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Zos8xr317Mr6fieRUdMgTR11Ta63JVFDYPbNfeN3+Xc=;
+        b=AjG26tSdODJnmsurfGgr2dmB/A6Jy4Uyglm8Oq362pBl6mWgj1TJVTlTzQ4hfS1nA8fEdT
+        J/KHqgS3TnkHuDJDUgvTHJv1FrR2Hgdyj/esjY1KvoGCuGF6ZuXRdeGclk08BKqf7tZ5xy
+        oUs162RR8o1V6h+anzuHdorD3FGkToo=
+Date:   Thu, 27 Aug 2020 18:15:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v36 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20200827161527.GC30897@zn.tnic>
+References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
+ <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+ <20200826145239.GC22390@zn.tnic>
+ <20200827132436.GA4674@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CY4PR04MB37513D874343FBD2D682DA0DE7550@CY4PR04MB3751.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200827132436.GA4674@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 8:04 AM, Damien Le Moal wrote:
-> On 2020/08/27 23:51, Randy Dunlap wrote:
->> On 8/27/20 6:50 AM, Niklas Cassel wrote:
->>> Add support for user space to set a max open zone and a max active zone
->>> limit via configfs. By default, the default values are 0 == no limit.
->>
->> Hi,
->>
->> How does a user find out about how to use/set these limits?
-> 
-> For the setting part, this is for testing. So any value, even extreme ones (e.g.
-> 1) would be OK to check that a software correctly handles write accesses to
-> zones for a device that has open/active zone limitations. A more practical way
-> is to reuse values of real devices. For instance, some SMR disks I use have a
-> max open limit of 128 and max active 0 (there is no limit for active zones on
-> SMR disks as ZBC/ZAC specifications do not define this concept).
-> 
-> Another example is our soon to come work on btrfs zone support which shows that
-> at the very least 6 active zones are needed. So tests can be performed with that
-> minimum to check the file system and that its block allocator does not go
-> opening/activating too many zones.
-> 
-> For the using part, the above btrfs example is good: if the FS tries to allocate
-> blocks in too many inactive zones at the same time without first filling out
-> zones already active, it may exceed the limit and writes will fail. The FS must
-> thus be aware of the limits and its block al;locator tuned to limit block
-> allocations within a set of zones smaller than the maximum active limit.
-> 
-> Does this answer your question ?
+On Thu, Aug 27, 2020 at 04:24:36PM +0300, Jarkko Sakkinen wrote:
+> I have not checked if this passes checkpatch.pl yet, but I would
+> be surprised if that did not pass (obviously I'll check that).
 
-Yes.  Thank you.
+Right, when you're done with the patchset, just do
+
+checkpatch.pl -g ...
+
+on it before sending and you'll be good to go. Just remember to read the
+suggestions checkpatch gives with turned on brain and sanity-check them
+instead of blindly following them.
+
+> I'm sorry about that. This was not intentional. I'll revisit them by
+> going through all your responses from here:
+> 
+>   https://patchwork.kernel.org/patch/11581715/
+
+Actually this one:
+
+https://lkml.kernel.org/r/20200617220844.57423-12-jarkko.sakkinen@linux.intel.com
+
+i.e., the v33 version.
+
+Also, make sure you go through the review comments of v34 and v35 in
+case you haven't done so yet.
+
+> v34 had the splitting of the big driver patch into multiple patches.
+> 
+> During that process I've obviously failed to address these.
+
+Yeah, that can happen - I mean, this is not even close to being an easy
+patchset so thanks for putting in the effort.
+
+Thx.
 
 -- 
-~Randy
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
