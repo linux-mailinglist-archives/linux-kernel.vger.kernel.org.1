@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A245253AE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 02:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BD8253AEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 02:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgH0AOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 20:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58536 "EHLO mail.kernel.org"
+        id S1726804AbgH0AXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 20:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgH0AOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 20:14:45 -0400
-Received: from [192.168.0.106] (193-116-198-1.tpgi.com.au [193.116.198.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726753AbgH0AXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 20:23:14 -0400
+Received: from ogun.localdomain (unknown [47.185.225.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8582B20791;
-        Thu, 27 Aug 2020 00:14:44 +0000 (UTC)
-Subject: Re: [PATCH] m68k: Revive _TIF_* masks
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20200826122923.22821-1-geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <aae200e7-2618-b17a-3e88-ee349a75c74d@linux-m68k.org>
-Date:   Thu, 27 Aug 2020 10:14:42 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 70EF52074A;
+        Thu, 27 Aug 2020 00:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598487794;
+        bh=0ia8O++lCCY7OuZgn4cvxRRO38bVLc9aTzbYf7rmHGY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S7LLW/OCbc7aEijrvZ64yshOtWYqEgSTEizsGiYVP8xvdPYwMNVAPCM0q56ClkItZ
+         cNAgHACjM6BK+O8dRlrztFeqZz8tRBp30rgQzwgvr3B3rZR0AGAUmNltSX9au22s+6
+         QN8vkBiwv6iCYap5DHMpjLl/BcsWLvycJ3rtjEW8=
+Date:   Wed, 26 Aug 2020 19:23:18 -0500
+From:   Nishanth Menon <nmenon@kernel.org>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+Cc:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/4] dt-bindings: arm: ti: Add bindings for J7200 SoC
+Message-ID: <20200827002318.fumzb3w7ekciffua@ogun.localdomain>
+References: <20200723084628.19241-1-lokeshvutla@ti.com>
+ <20200723084628.19241-2-lokeshvutla@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200826122923.22821-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723084628.19241-2-lokeshvutla@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On 26/8/20 10:29 pm, Geert Uytterhoeven wrote:
-> While the core m68k code does not use the _TIF_* masks anymore, there
-> exists generic code that relies on their presence.  Fortunately none of
-> that code is used on m68k, currently.
+On 14:16-20200723, Lokesh Vutla wrote:
+> The J7200 SoC is a part of the K3 Multicore SoC architecture platform.
+> It is targeted for automotive gateway, vehicle compute systems,
+> Vehicle-to-Vehicle (V2V) and Vehicle-to-Everything (V2X) applications.
+> The SoC aims to meet the complex processing needs of modern embedded
+> products.
 > 
-> Re-add the various _TIF_* masks, which were removed in commit
-> cddafa3500fde4a0 ("m68k/m68knommu: merge MMU and non-MMU
-> thread_info.h"), to avoid future nasty surprises.
+> Some highlights of this SoC are:
+> * Dual Cortex-A72s in a single cluster, two clusters of lockstep
+>   capable dual Cortex-R5F MCUs and a Centralized Device Management and
+>   Security Controller (DMSC).
+> * Configurable L3 Cache and IO-coherent architecture with high data
+>   throughput capable distributed DMA architecture under NAVSS.
+> * Integrated Ethernet switch supporting up to a total of 4 external ports
+>   in addition to legacy Ethernet switch of up to 2 ports.
+> * Upto 1 PCIe-GEN3 controller, 1 USB3.0 Dual-role device subsystems,
+>   20 MCANs, 3 McASP, eMMC and SD, OSPI/HyperBus memory controller, I3C and
+>   I2C, eCAP/eQEP, eHRPWM among other peripherals.
+> * One hardware accelerator block containing AES/DES/SHA/MD5 called SA2UL
+>   management.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Regards
-Greg
-
-
->   arch/m68k/include/asm/thread_info.h | 8 ++++++++
->   1 file changed, 8 insertions(+)
+> See J7200 Technical Reference Manual (SPRUIU1, June 2020)
+> for further details: https://www.ti.com/lit/pdf/spruiu1
 > 
-> diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-> index 015f1ca383053a39..3689c6718c883d23 100644
-> --- a/arch/m68k/include/asm/thread_info.h
-> +++ b/arch/m68k/include/asm/thread_info.h
-> @@ -68,4 +68,12 @@ static inline struct thread_info *current_thread_info(void)
->   #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
->   #define TIF_RESTORE_SIGMASK	18	/* restore signal mask in do_signal */
->   
-> +#define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
-> +#define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
-> +#define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-> +#define _TIF_DELAYED_TRACE	(1 << TIF_DELAYED_TRACE)
-> +#define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
-> +#define _TIF_MEMDIE		(1 << TIF_MEMDIE)
-> +#define _TIF_RESTORE_SIGMASK	(1 << TIF_RESTORE_SIGMASK)
+> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
+> ---
+>  Documentation/devicetree/bindings/arm/ti/k3.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/ti/k3.txt b/Documentation/devicetree/bindings/arm/ti/k3.txt
+> index 333e7256126a..33419cce0afa 100644
+> --- a/Documentation/devicetree/bindings/arm/ti/k3.txt
+> +++ b/Documentation/devicetree/bindings/arm/ti/k3.txt
+> @@ -16,6 +16,9 @@ architecture it uses, using one of the following compatible values:
+>  - J721E
+>    compatible = "ti,j721e";
+>  
+> +- J7200
+> +  compatible = "ti,j7200";
 > +
->   #endif	/* _ASM_M68K_THREAD_INFO_H */
-> 
+>  Boards
+>  ------
+
+Lets convert the k3.txt to k3.yaml before we do anything more here.
+Looking at the full series, I see that there are pending comments from
+Grygorii as well which needs to be looked at. I have'nt seen a follow up
+version since this version.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20200723084628.19241-1-lokeshvutla@ti.com/
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
