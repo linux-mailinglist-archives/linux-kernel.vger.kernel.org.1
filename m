@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016DB2551B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 01:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCDE2551BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 01:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbgH0XqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 19:46:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48496 "EHLO mail.kernel.org"
+        id S1728087AbgH0Xvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 19:51:45 -0400
+Received: from mout.gmx.net ([212.227.15.19]:55723 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgH0XqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 19:46:22 -0400
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B0C720C09
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 23:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598571981;
-        bh=WuN9B34LzV+WTdN5AAx7tMjnWGBPJVTM+zsy0W61vqI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tBi+YX5JtPQczBiO05W9F5ZP739Ts1GRyM8mvOvl/GR8Cm7ZQmsuGKUPaSTzAdU05
-         wSGs1hpiFVtz1EpSoDjhL5S6gs1D3esyPeMTuMdkbpn1Dmjg60I3T79rJmgGVRtAJz
-         un3M6jy9tqRSbFPbQJasWRxguUndBWATe52iDdts=
-Received: by mail-ej1-f43.google.com with SMTP id o18so9961656eje.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 16:46:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530YPg5EVf4e9S8QqaaBwk5ErQqnh6htnTEkzHsDjrt1RIcplNer
-        en3eguqAqtYLS01iQeTQM0kDGV06whN+1imbSw==
-X-Google-Smtp-Source: ABdhPJwOl/tRuPJoLPgbirz4Djn6rAAeOTWUMMwHZS2nr/HOlGX4LL/IA2S6rKrQkxqp557HPNIsWsEIZg6W73JHyf8=
-X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr24340249ejd.7.1598571979711;
- Thu, 27 Aug 2020 16:46:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200819081752.4805-1-linux@fw-web.de> <20200819081752.4805-4-linux@fw-web.de>
- <trinity-14a1b182-38ab-4f84-bb72-94d448b05fd5-1597994235320@3c-app-gmx-bs37>
- <81276d4c-8883-8bfd-d7d0-9b9ac025ed97@gmail.com> <trinity-ddd51146-41eb-49ae-9456-4588450d31aa-1598535710011@3c-app-gmx-bap26>
- <e0edfd9f-5916-80ee-3bef-92d7050f97db@gmail.com>
-In-Reply-To: <e0edfd9f-5916-80ee-3bef-92d7050f97db@gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 28 Aug 2020 07:46:07 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9R24-tcAMSfDhxLEXDFPAbMd5fYm8EwGODDMpULq-UZA@mail.gmail.com>
-Message-ID: <CAAOTY_9R24-tcAMSfDhxLEXDFPAbMd5fYm8EwGODDMpULq-UZA@mail.gmail.com>
-Subject: Re: Aw: Re: [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Frank Wunderlich <linux@fw-web.de>,
-        chunkuang Hu <chunkuang.hu@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726147AbgH0Xvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 19:51:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1598572269;
+        bh=1hiWDO5qubwA61FDSyJLXx84okVXi/UAVFmPbOBlmOg=;
+        h=X-UI-Sender-Class:From:To:cc:In-reply-to:Subject:Reply-to:
+         References:Date;
+        b=VMBJqAq3VviAAC0yx1CH/97N8NsothXRmDv7liTEpb1AIbffSKToNhPGIzrYBD+Yq
+         b/LsfQpg3Zw0srQA5/ltxe7AQuexzAOm/ZTmIdA0MXuXi40AZFEgQl+79VQyAKAXW1
+         9vQ9MWDRmhKQRqihF/Pz1Ox3TTjrbrM1L9TxdBtU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.43]) by mail.gmx.com
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MIMfW-1kPn8i3Lb2-00EPgL; Fri, 28 Aug 2020 01:51:09 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+        id BC4D489976B; Thu, 27 Aug 2020 16:49:36 -0700 (PDT)
+From:   Stefan Schaeckeler <schaecsn@gmx.net>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Tero Kristo <t-kristo@ti.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+cc:     Stefan Schaeckeler <sschaeck@cisco.com>
+In-reply-to: <20200827070743.26628-1-krzk@kernel.org>
+Subject: Re: [PATCH 1/2] EDAC/aspeed: Fix handling of platform_get_irq() error
+Content-Type: text/plain
+Reply-to: schaecsn@gmx.net
+References: <20200827070743.26628-1-krzk@kernel.org> <0D9EC2D2-C4A0-42E9-94A5-DCFBE7BFEC43@cisco.com>
+Message-Id: <20200827234936.BC4D489976B@corona.crabdance.com>
+Date:   Thu, 27 Aug 2020 16:49:36 -0700 (PDT)
+X-Provags-ID: V03:K1:azkzLvPntcmTm1iQW+tTZY0j0Bw8xT/ONekQtE1unQJo5A5nksM
+ 0GJNUHDntBKfW9JMgtHXOgakjgRZ9d8RwKK3LuJjW2SrBGuCcwnSAijTG0S5i8xcdnLb5zj
+ 7F5iRtWFoR1v5GeCwmcM5Xh0GLc1mrCjBLQ6OeRXvWaOIQY+5FyMcDI9fcDSpCObJWsjAO7
+ obEjJZR8JDf3it+0pJQ6A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9/OvK2bbtTU=:A09178/DvDkjQ5H05FibnD
+ w89W/+z13Q99JCy4Ml5fyIGmz6t/4vxovxGjIOiqURouD4X904XZFzBuuVF0CV4OWQ4uJSgfr
+ Js+n1fj7mVcuLue4jQSAMLb6N69qQZqxdmSWkx/hV8o0iQxXUio5Z6cegwcjFeWinE2OY+6rI
+ B+qUlw05W8TMComuqhTCxqZEJL8HrSD8vfpUVJHnCabVutzE3jFdU200pqISU4L2ORyccOabu
+ RxZfbAjBCvcDDVTy/g2JslmNk3gtB53yvd3hDMWAk1iSJ3KG9trmBl1jFyii4mbWTf5F+TDty
+ njlUn/VNgvwj7ppm3F4Vw/t4jdJ1/E9eXdONXlU5fNs7nzqEvrn1GFO5Rkuqi0+mHVGoYXtct
+ aI8iyVe8Dn1Qmou+mrFOAkM0XDF6ABgBaeCFjLEXD2N6yMSpa7ePXniaBqeWy5AUccEI7JKcH
+ GZY3opRgRTY3jO9+0sNnYuqa+9tuHOtvIQ53lYlnyMK0jw7zEiofOlb9+pVPXpsYBTiLfrGEy
+ NTNe/lHISwWf4OfgUGjtAuEEsiiSnePK0KmvQUcR8i9+oExuPhV15FkWBwi5zeZa2sBEZNvjt
+ 63bh/4ZG+Z12iwYMVso2kTjZnVjQdPOoHS6d1LXJIaTKsQoWIyuxBXvrpJn2tNOWHblzMAMDZ
+ 08l5eSRnp/R8CNslezuov1V0FZunXPchhwm2uKcXckI06JhR35UBh1WLm5UMk3qnoSnpqFYTo
+ Ji7GiaKfqWi9XwR0P/LaamAKarTwmMfh77FPCWOJNXqF/rJ08Ajv+JXjSh+P4oGEfk40omAhN
+ 27ql56g92KkrNLP931ubVKTBycYcqTt/5HB03FzHmhe0LYAhwt502BC1okkh43P1Kl+O28iov
+ IM9TOr/vghrLit69KdYymJ3AwhDFSmjhnPKgQpOZygZV0bgqX/pOUzqhs+Rf/MpSFxdO2fbFs
+ qLaMGJpuMHFAmdiPP6w+vfsCgWLMpoK+IVP9GoGmMrUjm0xhNFsNcSKkbQY8KUsG/vn6DaZWd
+ VDRf/aemmpa//UZDsz2DsA9CCoC/cPGlmpDRXzWPsp6IfxbHtaTjBr/V3BPn22WTTib//KFSU
+ qY2ob2LBo17tNL/KV92Ik3P+ij8EI1d0SsgLk0nedifs6pzgvkxAWE9eoQrcYvD7mSSQGnqyx
+ v7M2CaPngEQM4YgJ2FDmxC5NsUYyG9G4HO8lai/fgAY0VBbhbrz3eb4xvFg/e12PoLKI+mlxv
+ 4GADs/DrbXDGv+UgFJYASi5eaarLEJNIGhbplkA==
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Frank:
+>  platform_get_irq() returns -ERRNO on error.  In such case comparison
+>  to 0 would pass the check.
+>
+>  Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
+>  Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Matthias Brugger <matthias.bgg@gmail.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=88=
-27=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8810:28=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
->
->
-> On 27/08/2020 15:41, Frank Wunderlich wrote:
-> > Hi Matthias,
-> >
-> > any opinions about the dts-changes?
-> >
->
-> they look good to me.
->
-> > maybe series except the tmds-Patch get merged...so i add it only to my =
-own repo till we find a better way?
-> > currently mainline does not support hdmi at all for the board. the tmds=
--patch is only a fix for specific resolutions which have a "flickering" wit=
-hout this Patch.
-> >
->
-> Well let's see what CK's opinion.
->
+Reviewed-by: Stefan Schaeckeler <schaecsn@gmx.net>
 
-Because no one has comment on this patch, I could apply this patch but
-I need you to add more experiment information so if someone meets
-another bug, he could fix his bug and consider your problem.
-
-Regards,
-Chun-Kuang.
-
-> Regards,
-> Matthias
+>  ---
+>  drivers/edac/aspeed_edac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+>  diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+>  index b194658b8b5c..fbec28dc661d 100644
+>  --- a/drivers/edac/aspeed_edac.c
+>  +++ b/drivers/edac/aspeed_edac.c
+>  @@ -209,8 +209,8 @@ static int config_irq(void *ctx, struct platform_de=
+vice *pdev)
+>   	/* register interrupt handler */
+>   	irq =3D platform_get_irq(pdev, 0);
+>   	dev_dbg(&pdev->dev, "got irq %d\n", irq);
+>  -	if (!irq)
+>  -		return -ENODEV;
+>  +	if (irq < 0)
+>  +		return irq;
+>
+>   	rc =3D devm_request_irq(&pdev->dev, irq, mcr_isr, IRQF_TRIGGER_HIGH,
+>   			      DRV_NAME, ctx);
+>  --
+>  2.17.1
+>
+>
