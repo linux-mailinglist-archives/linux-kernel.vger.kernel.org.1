@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A090D254E0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79139254E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 21:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgH0TML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 15:12:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:51453 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgH0TML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 15:12:11 -0400
-Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MI5YN-1kQY180hEd-00F8cb; Thu, 27 Aug 2020 21:12:09 +0200
-Received: by mail-qt1-f173.google.com with SMTP id s16so5466633qtn.7;
-        Thu, 27 Aug 2020 12:12:08 -0700 (PDT)
-X-Gm-Message-State: AOAM530+E3lTESCOzfSjs0XQ8qMNRt/gseORMyI5ADU1CRZWf1jnqMX2
-        im7gz4j9w5E4FU662l7KXEi7oS3unZYHU2sCkiY=
-X-Google-Smtp-Source: ABdhPJw+EArXZgXPjTSlMpKXPTOCSg68mzTCJLgLPGwcSgT0kaAMa3+ESnArOyRY8vKEKWcSZ3Y3GojZIw9BZzhKPWI=
-X-Received: by 2002:ac8:4652:: with SMTP id f18mr19785013qto.142.1598555527951;
- Thu, 27 Aug 2020 12:12:07 -0700 (PDT)
+        id S1727941AbgH0TW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 15:22:56 -0400
+Received: from mx2.veeam.com ([12.182.39.6]:47846 "EHLO mx2.veeam.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726246AbgH0TWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 15:22:55 -0400
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx2.veeam.com (Postfix) with ESMTPS id 2BB0B4124C;
+        Thu, 27 Aug 2020 15:13:55 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
+        t=1598555635; bh=uuVVtNTXos6TrxWLD31pE4Nljl8CRMkhd1Fps+/HTCY=;
+        h=From:To:CC:Subject:Date:From;
+        b=WoqX3id4kRGUEErEeD5r1bIBreUPa4QMcUMGSkJPpFqaI2pbKJkA1X/djpPZ4fcF8
+         8cSHgeQ2cn6MQAv+dieyCScDk8vdTyLh5Rz98qLWLZi4WcGt7otu/lQMm+3+Rf2qFe
+         KphQBbXv/Z10ldsVluHkJoPwnRZBRmreWo/HDkGc=
+Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
+ prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.595.3;
+ Thu, 27 Aug 2020 21:13:53 +0200
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
+        <axboe@kernel.dk>, <koct9i@gmail.com>, <jack@suse.cz>,
+        <damien.lemoal@wdc.com>, <ming.lei@redhat.com>, <steve@sk2.org>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-block@vger.kernel.org>
+CC:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Subject: [PATCH 0/1] block io layer filters api
+Date:   Thu, 27 Aug 2020 22:13:38 +0300
+Message-ID: <1598555619-14792-1-git-send-email-sergei.shtepa@veeam.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <202008271145.xE8qIAjp%lkp@intel.com> <20200827080558.GA3024@gondor.apana.org.au>
- <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
- <20200827082447.GA3185@gondor.apana.org.au> <CAHk-=wg2RCgmW_KM8Gf9-3VJW1K2-FTXQsGeGHirBFsG5zPbsg@mail.gmail.com>
- <CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com>
-In-Reply-To: <CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 27 Aug 2020 21:11:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a10oUYQHrSu-2rsa_rVemz3K+NBQtsuazn=dBAntsx1cw@mail.gmail.com>
-Message-ID: <CAK8P3a10oUYQHrSu-2rsa_rVemz3K+NBQtsuazn=dBAntsx1cw@mail.gmail.com>
-Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
- is larger than 1024 bytes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:rTGqvJp83cJvMl7PXhpT5npUgzEZjaJBngQQyqMDgjCmE0/Gi70
- JqIMY3G8MLjBXxL86mdAzHXCwQhCF+2ZHcCr5bHBAetJpq8u26xxDYwor/BhGqVq16zfVce
- zQZTFwcroWzaeucxsyunge347rVzcy0kd6FN3MSXoFYpBa3E9zCrVTIyYggWAARGvkkkEYZ
- xg3QQcGtSWM3v3uBbUj3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3VzedD9GP/Q=:FCHiPVRz5+gKVGDFVZ7H5o
- 8IwiKxJvOXhJ+g86BeUfEgLViezfCLzXSFO78+ZWcz/pZLkd5mpV5UY+Vz/O+4pmBbb1m3T6o
- LV3Qj58BER05K/BFX97uq0dmjHq30DsSySi/lEKD/zXl8VTA8IC5R0kSnKlBMnVvw7lCTREh/
- K53/hEjyeDS3pIrDSJdBr7TkFaqoOkPuqJP8dM5kktm2hmExMEbDOtX/TWhBzU/JpgXAPgGr7
- FZz+/tXO/PkJ2t+Th3JVZTJTZ+XWhVohrYaRTn6kR1R5XD49TfLf8H4dg37DW4NfYv/HsBGVW
- 4tQSOqGnqlN3d3Yx7V36qfIrCLisx2I8jbjtLMPtPVlK4IKORLAEC0T6a3RYmlfNhOhYzPtYA
- ijY6LRb/kaxmbgfYJOoCzyANxH58yjvRw6rT2xh3yoD93kDRPA444aIe0D8sr5B3DNwi9q45H
- sxU73vQwUytdfGh++AD1CucUW7XFmE9kSkuofwuEmmSt2ukmkTgAijm4o+aMFD6lBUZqBQPqL
- /MFRwRd5YzZnbk3RxcOpt7HcjLjWxYz4zLyShTSoQS1MkyaKDO3Fqi+mK16693o/28bVadNzo
- BLcpb3BVOQ+vmF43POb8vG8xHNSIuV/tKpY3HrbkEtBxesRPj+EDeMfAFJLO2Vz4gYkLMFhG+
- lyHdTjOg0cKV6GlDFXDkONbBbSH9bViqZpTHuEwU8DcDhF/itLigNxpU1sR1Zfv+vHYt9XtFo
- 897+tgSq1IY+WDVyaiIlP/WUvCtDZes5vF2x0QsTtrEZXliB7quwZwF+KBDjcR/HQE/4e53GI
- mpBO7WNTvOIp1jxXh4jGq+2olvVieAU+Gtnud9aNfWmqO8fVnurByFFoni0KuD/29OJd9LIFS
- kXbH0Tkg8ajN5V4KOraI7c+3a9hkAwxtTF5jIjLV8GhDtzwVvKG4zIKRqvJY7roDM6zISluHN
- kiC2bQn8FHnhnOkA6UL6LTuFieYY6q+qxuM47EthPg/C01MlbuvWH
+Content-Type: text/plain
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D26B607C6A
+X-Veeam-MMEX: True
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx2.veeam.com [172.18.16.6]); Thu, 27 Aug 2020 15:13:55 -0400 (EDT)
+X-Veeam-MailScanner-Information: Please contact email@veeam.com if you have any problems
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 7:55 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Aug 27, 2020 at 10:34 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > How are you guys testing? I have UBSAN and GCOV on, and don't see
-> > crazy frames on either i386 or x86-64.
->
-> Oh, never mind. I also have COMPILE_TEST on, so it ends up disabling
-> GCOV_PROFILE_ALL and UBSAN_SANITIZE_ALL.
+Hello everyone! Requesting for your comments and suggestions.
 
-Ah right, that explains why I never saw the warning in my randconfig
-build tests, I run those with COMPILE_TEST force-enabled.
+We propose new kernel API that should be beneficial for out-of-tree
+kernel modules of multiple backup vendors: block layer filter API.
 
-       Arnd
+Functionality:
+* Provide callback to intercept bio requests, the main purpose is to
+allow block level snapshots for the devices that do not support it,
+for example, non-LVM block devices and implementation of changed block
+tracking for faster incremental backups without system reconfiguration
+or reboot, but there could be other use cases that we have not thought of.
+* Allow multiple filters to work at the same time. The order in which the
+request is intercepted is determined by their altitude.
+* When new block devices appear, send a synchronous request to the
+registered filter to add it for filtering.
+* If a block device is permanently deleted or disappears, send a
+synchronous request to remove the device from filtering.
+
+Why dm-snap and dm-era is not the solution:
+Device mapper must be set up in advance, usually backup vendors have very
+little ability to change or convince users to modify the existing setup
+at the time of software installation.
+One of the most common setups is still a block device without LVM and
+formatted with ext4.
+Convincing users to redeploy or reconfigure machine, just to make block
+level snapshots/backup software work, is a challenging task.
+
+As of now, commit c62b37d96b6e removed make_request_fn from
+struct request_queue and our out-of-tree module [1] can no longer
+hook/replace it to intercept bio requests. And fops in struct gendisk
+is declared as const and cannot be hooked as well.
+
+We would appreciate your feedback!
+
+[1] https://github.com/veeam/veeamsnap
+
+Sergei Shtepa (1):
+  block io layer filters api
+
+ block/Kconfig               |  11 ++
+ block/Makefile              |   1 +
+ block/blk-core.c            |  11 +-
+ block/blk-filter-internal.h |  34 +++++
+ block/blk-filter.c          | 288 ++++++++++++++++++++++++++++++++++++
+ block/genhd.c               |  24 +++
+ include/linux/blk-filter.h  |  41 +++++
+ include/linux/genhd.h       |   2 +
+ 8 files changed, 410 insertions(+), 2 deletions(-)
+ create mode 100644 block/blk-filter-internal.h
+ create mode 100644 block/blk-filter.c
+ create mode 100644 include/linux/blk-filter.h
+
+-- 
+2.20.1
+
