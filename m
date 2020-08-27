@@ -2,155 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A6F253D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA38253D63
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgH0GAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S1727078AbgH0GGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgH0GAv (ORCPT
+        with ESMTP id S1726098AbgH0GF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:00:51 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D62C061247
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:00:50 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 144so4930749qkl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 23:00:50 -0700 (PDT)
+        Thu, 27 Aug 2020 02:05:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA218C061247;
+        Wed, 26 Aug 2020 23:05:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id g6so5041811ljn.11;
+        Wed, 26 Aug 2020 23:05:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=NtN8IRKJbzMJm++6LA+dfi/0c6Tg1EKcXVsplcKZjIA=;
-        b=OHUT2pXBHEvz0iQbWGht6j79B2je+0WG1m4V06yzQSmQ8xZ0CTqRyOf2DFbg599fsQ
-         in1XxmVaKLFPXQhY7e0CbKCZIThDyunI62UcrwGETKCLwUyDACGT2fLoIa3QLMv47ujv
-         hgKSCIE6sM0G45Nwf8tJ3cjUfi8x9N3IqHqNVIiH6kcIddQlA6kvjjZv0Oim2YJnkLfm
-         ouySm8zYZ+EhX/1rThbbUYa/8d8DgEZotJ7lglQKUB6h/0VxGLttAqZkMyZl4QQKBdya
-         iAKe52c5+KP365662n/5VnEJpllmtyDO+8oPDP1f7h9ofPcCZCTQ4x/tw+0zmWL7oX+p
-         I5zg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QrZ0fUUzpXVOWSAGCDeCT9RjODjg2DLDcxcKB9h7i2g=;
+        b=K9ivd9KQnV9NUYRz8mj5X/cPijNctJe6sv2ndwZaKFwf0Tsk3F2GnSMlC6iGviaXSF
+         v7Ri/8hM100UNGhr4TkCyuZ1PA7cSr+R78KEqYV6Khs1uIpPCKVr5c2bpbC8QZ9Xqa+M
+         ZtMwzFnuSQ3M8i/XA2fzItK2MLoztr+m7y4/nbcdq7/OkDXrcBlnUUO3OsfGBSJK3Mii
+         kICHQOxaksptI84o8wd/Cmfh+thlvCwhNmZRe6wEZIs/wqrO9cTTZA95hxQ/XKmSoUu7
+         SAvHBTwbjFhMRzbE/1w5Hf2DS0XCf793zRCgMnxgPWvTZN0tEesSZiLVzN9k6sID3IJK
+         OYTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=NtN8IRKJbzMJm++6LA+dfi/0c6Tg1EKcXVsplcKZjIA=;
-        b=nSXsfNp+9zU/DBtm5Kq42/5M7wBSrqQMM9jfvfnyjnzjmj2eShSZmJ48ehaTfx/I20
-         U9wb8nhrZetU/9RcxnMnpW0Y2FZ1C3q/LtiZRna6zMTSAWOPQ/OslQ8KeTKctOJRZfsT
-         8h2axTVHk5zNiE2HSvZ7jtydiaw+X8E7hyUDC/grXr2MIrx+2bdP9tBCV/WEEzVj2Ln2
-         9qLePCUTrTd3qcgtp08RS2vWbrNbpP/ogMstaqRoiE845/XLNfkkKa02Xz3veRAPIdKD
-         ZomOMgEhfj41akIq2CV99eMHhyzQ/n6rP6I28pG290zH23rCHueIErwCeWPiLYIM+4km
-         abbQ==
-X-Gm-Message-State: AOAM5302TRt0aqj9iACcDsFkkOdUaxmg3FoR5kawJR2l0uJalmLJ6UCm
-        KZ8eMBnQG7k78vii2zYDMV6Xjw==
-X-Google-Smtp-Source: ABdhPJzTi4TOXzZ1Rou+0ylWYjoURnjNtWOQ/tpkqfSGOVu4C9+0/TdnaP1vDHHc5DUgSCwUiy9Ugg==
-X-Received: by 2002:a37:2750:: with SMTP id n77mr17039241qkn.26.1598508048964;
-        Wed, 26 Aug 2020 23:00:48 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id d9sm885200qkl.7.2020.08.26.23.00.46
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 26 Aug 2020 23:00:47 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 23:00:33 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@suse.com>,
-        Qian Cai <cai@lca.pw>, akpm@linux-foundation.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
-        osalvador@suse.de, mike.kravetz@oracle.com
-Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
- page charged
-In-Reply-To: <alpine.LSU.2.11.2008241849020.1171@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2008262222380.4405@eggly.anvils>
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com> <20200820145850.GA4622@lca.pw> <20200821080127.GD32537@dhcp22.suse.cz> <20200821123934.GA4314@lca.pw> <20200821134842.GF32537@dhcp22.suse.cz> <20200824151013.GB3415@dhcp22.suse.cz>
- <12425e06-38ce-7ff4-28ce-b0418353fc67@linux.alibaba.com> <alpine.LSU.2.11.2008241849020.1171@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QrZ0fUUzpXVOWSAGCDeCT9RjODjg2DLDcxcKB9h7i2g=;
+        b=R4q7nMMaohWMIuXT6WL1rYJTAp+npLR52M4YlG+rO8txjf5FzuUQXPbcBiWdnjZdEB
+         WE4/fpjwUbl1haa7R7Iqpv6sCT/lqrLKxUZWlkUrddg77GwJtZ7p3qyFI/dEU7bXpNqR
+         4sTujBH3W0H3MhNt2wcDxNmueLZvbdw8P8RRGIgY5TM9tj6zsBwio66PU4Lhb5M+uG9b
+         s7J4NWrqEQN1OQOus9Kegmav+atxj+ToVKRVcK8kRvDq49oot0cZfsOHhdEdkT1tlG4Y
+         YMJ0t6TFImZA/JmBZWt4GUTJX6HYFrSYOBueTjParJIsHqmbuVB2vvZYl9g4elD5oZ8N
+         B81g==
+X-Gm-Message-State: AOAM530ZAXbSImYSO9r0tZyW3bVIfQw5cj+Kjy3zwyoOonD5ahGH16l+
+        +yF6rPBAF8wRo7/Hd1nYHG4=
+X-Google-Smtp-Source: ABdhPJzJdF5HeE/tNfW3u5lrITEF7kT3nKactdsTfmEV5/+TXuNOvl7upSmRQf/KlcJqowbEX1TUMg==
+X-Received: by 2002:a05:651c:88:: with SMTP id 8mr9355110ljq.277.1598508355389;
+        Wed, 26 Aug 2020 23:05:55 -0700 (PDT)
+Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.gmail.com with ESMTPSA id z7sm255295lfc.59.2020.08.26.23.05.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 23:05:54 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] Fixes and improvements for brcmfmac driver
+Date:   Thu, 27 Aug 2020 09:04:37 +0300
+Message-Id: <20200827060441.15487-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, Hugh Dickins wrote:
-> On Tue, 25 Aug 2020, Alex Shi wrote:
-> > reproduce using our linux-mm random bug collection on NUMA systems.
-> > >>
-> > >> OK, I must have missed that this was on ppc. The order makes more sense
-> > >> now. I will have a look at this next week.
-> > > 
-> > > OK, so I've had a look and I know what's going on there. The
-> > > move_pages12 is migrating hugetlb pages. Those are not charged to any
-> > > memcg. We have completely missed this case. There are two ways going
-> > > around that. Drop the warning and update the comment so that we do not
-> > > forget about that or special case hugetlb pages.
-> > > 
-> > > I think the first option is better.
-> > > 
-> > 
-> > 
-> > Hi Michal,
-> > 
-> > Compare to ignore the warning which is designed to give, seems addressing
-> > the hugetlb out of charge issue is a better solution, otherwise the memcg
-> > memory usage is out of control on hugetlb, is that right?
+Hello!
 
-I agree: it seems that hugetlb is not participating in memcg and lrus,
-so it should not even be calling mem_cgroup_migrate().  That happens
-because hugetlb finds the rest of migrate_page_states() useful,
-but maybe there just needs to be an "if (!PageHuge(page))" or
-"if (!PageHuge(newpage))" before its call to mem_cgroup_migrate() -
-but I have not yet checked whether either of those actually works.
+Recently I was debugging WiFi performance problems on Acer A500 tablet
+device that got upstreamed recently. This is an older Android device from
+2011-2012 that is powered by NVIDIA Tegra20 SoC and it has BCM4329 chip
+that provides WiFi (SDIO) and Bluetooth (UART). I noticed that WiFi
+throughput on a recent Linux kernel wasn't as great as it could be in
+comparison to older 3.18 kernel that is uses downstream BCMDHD driver
+and this series fixes a major part of the problems that I found.
 
-The same could be done inside mem_cgroup_migrate() instead,
-but it just seems wrong for hugetlb to be getting that far,
-if it has no other reason to enter mm/memcontrol.c.
+Found problems:
 
-> 
-> Please don't suppose that this is peculiar to hugetlb: I'm not
-> testing hugetlb at all (sorry), but I see the VM_WARN_ON_ONCE from
-> mem_cgroup_page_lruvec(), and from mem_cgroup_migrate(), and from
-> mem_cgroup_swapout().
-> 
-> In all cases seen on a PageAnon page (well, in one case PageKsm).
-> And not related to THP either: seen also on machine incapable of THP.
-> 
-> Maybe there's an independent change in 5.9-rc that's defeating
-> expectations here, or maybe they were never valid.  Worth
-> investigating, even though the patch is currently removed,
-> to find out why expectations were wrong.
+1. The WiFi SDIO pinmux configuration had a bug in Acer A500 device-tree
+   and MMC refused to work if it was clocked above 25MHz and legacy
+   signaling mode was used. After fixing the bug, WiFi SDIO works perfectly
+   well at 50MHz and this increases TX throughput by 5-10 Mbit/s. I already
+   sent out patches that fix this bug to the Tegra ML.
 
-It was very well worth investigating.  And at the time of writing
-the above, I thought it was coming up very quickly on all machines,
-but in fact it only came up quickly on the one exercising KSM;
-on the other machines it took about an hour to appear, so no
-wonder that you and others had not already seen it.
+2. There are occasional SDHCI CRC errors if SDIO is clocked above 25Mhz.
+   The "increase F2 watermark" patch fixes this problem.
 
-While I'd prefer to spring the answer on you all in the patch that
-fixes it, there's something more there that I don't fully understand
-yet, and want to sort out before posting; so I'd better not keep you
-in suspense... we broke the memcg charging of ksm_might_need_to_copy()
-pages a couple of releases ago, and not noticed until your warning.
+3. WiFi TX throughput is lower by 10 Mbit/s than it should be using 512B
+   for maximum F2 SDIO block size. Reducing block size to 128B fixes this
+   problem. The "set F2 SDIO block size to 128 bytes" patch addresses this
+   issue. The exact reason why 128B is more efficient than 512B is unknown,
+   this optimization is borrowed from the BCMDHD driver.
 
-What's surprising is that the same bug can affect PageAnon pages too,
-even when there's been no KSM involved whatsoever.  I put in the KSM
-fix, set all the machines running, expecting to get more info on the
-PageAnon instances, but all of them turned out to be fixed.
+4. While I was bisecting upstream kernel, I found that WiFi RX/TX throughput
+   dropped by 5-10 Mbit/s after 5.2 kernel and reverting the following commit
+   from linux-next resolves the problem:
 
-> 
-> You'll ask me for more info, stacktraces etc, and I'll say sorry,
-> no time today.  Please try the swapping tests I sent before.
-> 
-> And may I say, the comment
-> /* Readahead page is charged too, to see if other page uncharged */
-> is nonsensical to me, and much better deleted: maybe it would make
-> some sense if the reader could see the comment it replaces - as
-> they can in the patch - but not in the resulting source file.
+   commit c07a48c2651965e84d35cf193dfc0e5f7892d612
+   Author: Adrian Hunter <adrian.hunter@intel.com>
+   Date:   Fri Apr 5 15:40:20 2019 +0300
 
-I stand by that remark; but otherwise, I think this was a helpful
-commit that helped to identify a bug, just as it was intended to do.
-(I say "helped to" because its warnings alerted, but did not point
-to the culprit: I had to add another in lru_cache_add() to find it.)
+       mmc: sdhci: Remove finish_tasklet
 
-Hugh
+   I'll send a separate email for discussing this problem.
+
+After fixing all the above problems, I'm now getting a solid 40 Mbit/s
+up/down on Acer A500 on a recent linux-next in comparison to 15 Mbit/s
+that I was getting before the fixes.
+
+Big thanks to Wright Feng who helped me to find and fix some of the problems!
+
+Changelog:
+
+v2: - Added "drop chip id from debug messages" as was requested by
+      Arend Van Spriel in the review comment to v1 of the "increase F2
+      watermark" patch.
+
+    - Added patches that remove unnecessary "fallthrough" comments and
+      change F2 SDIO block size to 128 bytes for BCM4329.
+
+Dmitry Osipenko (4):
+  brcmfmac: increase F2 watermark for BCM4329
+  brcmfmac: drop unnecessary "fallthrough" comments
+  brcmfmac: drop chip id from debug messages
+  brcmfmac: set F2 SDIO block size to 128 bytes for BCM4329
+
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 6 ++++--
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c   | 7 +++----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+-- 
+2.27.0
+
