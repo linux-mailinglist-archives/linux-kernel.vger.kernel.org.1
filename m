@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BACC254880
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E5F25484F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgH0PHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgH0PE1 (ORCPT
+        id S1728406AbgH0PFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:05:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42050 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728218AbgH0PEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:04:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F38EC06121B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:18 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o13so3582185pgf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KtUav8kJRw7NW9MJAIseBMSxLDruLjM6HXWwKu/0M74=;
-        b=GQ0jmdkWMjQEAalY++3/Ht0h8crzz739ENSMCZK40b0dOvb1c0kZUmimmf9K8t4Zgx
-         Fao+oOBxd4WqUDkaMoDp6QkT7HgLYirHRqq+Fk9tpRQi8On7xp9MwFMWUauS7YXIVztA
-         W9VmcStAzDZlNyQOegil/seXWpDF/Iz/wobtU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KtUav8kJRw7NW9MJAIseBMSxLDruLjM6HXWwKu/0M74=;
-        b=cpSsSQ2qfb/oUEqxSWtPMFz098++pnQB2uwd1dmQSn1ffEskA0BowubwPqsxrpq+sX
-         kJfVk35Hsg23CfYTiCoKKseue91O1q91YFMs0lem5yB3Hj2XE1r7jbuZ3IaFBaOOLFEo
-         j/Fa7IDALya8OekpcezXxPM2Yn30J1u8obs+KQZ2IG/wiQhtBsZbZs3mjFBkGfKEtZIQ
-         mjFmnTedWSrqp5LMiqMijU7pjg1jXcE2PbLOn18stfhnd9UATxa6NFhHkY5d/IKXuhNK
-         fg0ub24I5BhgnvhmNRMj/pLlpLuQxUIOJzC5/2F+Yz74gf4ZXFwKnvgwK4NdOAk4FbtJ
-         68UA==
-X-Gm-Message-State: AOAM530U8mlLKmn4oujafr02N73j+52FQgaFvnh0BILf+LpoRPXWhBLo
-        cLQVBvND9w0L6QhwYlkw5e18Qg==
-X-Google-Smtp-Source: ABdhPJwXBmp6C1isCRM1EzGs2j/sEIzbekMjfQYDts14g/FnXYPAwZwvsuLxGAshJVtz3JQiRyN6iw==
-X-Received: by 2002:a63:1822:: with SMTP id y34mr15725223pgl.364.1598540657751;
-        Thu, 27 Aug 2020 08:04:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o15sm298606pgr.62.2020.08.27.08.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 08:04:16 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 08:04:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <asarai@suse.de>,
-        io-uring@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] io_uring: allow disabling rings during the
- creation
-Message-ID: <202008270803.6FD7F63@keescook>
-References: <20200813153254.93731-1-sgarzare@redhat.com>
- <20200813153254.93731-4-sgarzare@redhat.com>
- <202008261248.BB37204250@keescook>
- <20200827071802.6tzntmixnxc67y33@steredhat.lan>
+        Thu, 27 Aug 2020 11:04:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598540691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d+vKV7jHyBgx5F+qwazuFqbjaX7j5NcYL/0S6PVquXg=;
+        b=LXle0es/DGb9WXGGySIqX+2zFefeBcz8d8qHGFVfJDEVCKayxaCSHE3ogZwcjqj9SejyO7
+        DvLCPfcHg3S7JZV+kMZ6+fe74ulSqrJb2zm5gO0BWjjd6XCoKZLQnFwUMUoykFJ5WVVv4c
+        ozC+mY6FlU8cy3Q2bQ8kCAkndje0y3o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-NZNetU60Nqi4EOKJWVY-PQ-1; Thu, 27 Aug 2020 11:04:48 -0400
+X-MC-Unique: NZNetU60Nqi4EOKJWVY-PQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA482192AF37;
+        Thu, 27 Aug 2020 15:04:23 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E6A07B9F4;
+        Thu, 27 Aug 2020 15:04:22 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH net 7/7] afs: Fix error handling in VL server rotation
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 27 Aug 2020 16:04:22 +0100
+Message-ID: <159854066219.1382667.2526502599415329370.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
+References: <159854061331.1382667.9693163318506702951.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827071802.6tzntmixnxc67y33@steredhat.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:18:02AM +0200, Stefano Garzarella wrote:
-> On Wed, Aug 26, 2020 at 12:50:31PM -0700, Kees Cook wrote:
-> > On Thu, Aug 13, 2020 at 05:32:54PM +0200, Stefano Garzarella wrote:
-> > > This patch adds a new IORING_SETUP_R_DISABLED flag to start the
-> > > rings disabled, allowing the user to register restrictions,
-> > > buffers, files, before to start processing SQEs.
-> > > 
-> > > When IORING_SETUP_R_DISABLED is set, SQE are not processed and
-> > > SQPOLL kthread is not started.
-> > > 
-> > > The restrictions registration are allowed only when the rings
-> > > are disable to prevent concurrency issue while processing SQEs.
-> > > 
-> > > The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
-> > > opcode with io_uring_register(2).
-> > > 
-> > > Suggested-by: Jens Axboe <axboe@kernel.dk>
-> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> > 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > 
-> > Where can I find the io_uring selftests? I'd expect an additional set of
-> > patches to implement the selftests for this new feature.
-> 
-> Since the io_uring selftests are stored in the liburing repository, I created
-> a new test case (test/register-restrictions.c) in my fork and I'll send it
-> when this series is accepted. It's available in this repository:
-> 
-> https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
+The error handling in the VL server rotation in the case of there being no
+contactable servers is not correct.  In such a case, the records of all the
+servers in the list are scanned and the errors and abort codes are mapped
+and prioritised and one error is chosen.  This is then forgotten and the
+default error is used (EDESTADDRREQ).
 
-Ah-ha; thank you! Looks good. :)
+Fix this by using the calculated error.
 
--- 
-Kees Cook
+Also we need to note whether a server responded on one of its endpoints so
+that we can priorise an error from an abort message over local and network
+errors.
+
+Fixes: 4584ae96ae30 ("afs: Fix missing net error handling")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+
+ fs/afs/vl_rotate.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fs/afs/vl_rotate.c b/fs/afs/vl_rotate.c
+index ab2beb4ba20e..c0458c903b31 100644
+--- a/fs/afs/vl_rotate.c
++++ b/fs/afs/vl_rotate.c
+@@ -263,10 +263,14 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
+ 	for (i = 0; i < vc->server_list->nr_servers; i++) {
+ 		struct afs_vlserver *s = vc->server_list->servers[i].server;
+ 
++		if (test_bit(AFS_VLSERVER_FL_RESPONDING, &s->flags))
++			e.responded = true;
+ 		afs_prioritise_error(&e, READ_ONCE(s->probe.error),
+ 				     s->probe.abort_code);
+ 	}
+ 
++	error = e.error;
++
+ failed_set_error:
+ 	vc->error = error;
+ failed:
+
+
