@@ -2,197 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F13C2545C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AB82545CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgH0NSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:18:13 -0400
-Received: from crapouillou.net ([89.234.176.41]:37006 "EHLO crapouillou.net"
+        id S1727979AbgH0NUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727781AbgH0NMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:12:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1598533920; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mq/0F8UbeXY3Pqih2k8p1w6/ERNeaq1vUKEH8bis0Sc=;
-        b=FSWu/ChrO6m3aqF4WvOluzzLTotjPD5+xJiLy1DDHnA09hWuOS5dVkh66xV9kJMZeSDI+U
-        idrPUynBOLcgq0XA+R5pgDVxeUQGLG60K9ITh9B64onMPNYytRUchw+RW8XPSSiQcOTnvo
-        gMXosxaVspVpJtfHDWebqzuQ5ql4c/8=
-Date:   Thu, 27 Aug 2020 15:11:49 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written to
- HW register
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        =?UTF-8?b?5ZGo5q2j?= <sernia.zhou@foxmail.com>,
-        =?UTF-8?b?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>, od@zcrc.me,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <PN4QFQ.KWNBY2ZWQ7XC2@crapouillou.net>
-In-Reply-To: <87v9h4i6t5.fsf@kernel.org>
-References: <20200827124308.71963-1-paul@crapouillou.net>
-        <20200827124308.71963-2-paul@crapouillou.net> <87v9h4i6t5.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1727851AbgH0NOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:14:25 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C546206F0;
+        Thu, 27 Aug 2020 13:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598534028;
+        bh=+SfWQaUMwBUFQX43bYlEQZ0bA0dMogEYzjgpWIMuvfQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LKIbzFIoE310AengrPQqShaINt18hDkoM1Lccb3bi5Mx4pWL7Rs8Wb1eTyjpmUm3B
+         fRbN4Wvg7cRWLjb7uLQFMBYWocTVFcN/C6EVSRWeAntkH/So2eWrl1olen5tugfC1g
+         AnusWtk4A8ibqbZRt+Ds54oIyuchUfPwF6IkQdR0=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Security Officers <security@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] MAINTAINERS: Add security docs to SECURITY CONTACT
+Date:   Thu, 27 Aug 2020 15:13:30 +0200
+Message-Id: <20200827131330.3732-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
+When changing the documents related to kernel security workflow, notify
+the security mailing list as its concerned by this.
 
-Le jeu. 27 ao=FBt 2020 =E0 15:58, Felipe Balbi <balbi@kernel.org> a=20
-=E9crit :
->=20
-> Hi,
->=20
-> Paul Cercueil <paul@crapouillou.net> writes:
->>  The 'reg' value was written to a hardware register in
->>  ingenic_usb_phy_init(), while not being initialized anywhere.
->=20
-> your patch does a lot more than fix the bug :-)
->=20
->>  Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new Ingenic=20
->> SoCs.")
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/usb/phy/phy-jz4770.c | 28 +++++++++++-----------------
->>   1 file changed, 11 insertions(+), 17 deletions(-)
->>=20
->>  diff --git a/drivers/usb/phy/phy-jz4770.c=20
->> b/drivers/usb/phy/phy-jz4770.c
->>  index d4ee3cb721ea..58771a8688f2 100644
->>  --- a/drivers/usb/phy/phy-jz4770.c
->>  +++ b/drivers/usb/phy/phy-jz4770.c
->>  @@ -97,7 +97,7 @@ enum ingenic_usb_phy_version {
->>   struct ingenic_soc_info {
->>   	enum ingenic_usb_phy_version version;
->>=20
->>  -	void (*usb_phy_init)(struct usb_phy *phy);
->>  +	u32 (*usb_phy_init)(struct usb_phy *phy);
->=20
-> this is not fixing any bug
->=20
->>  @@ -172,7 +172,8 @@ static int ingenic_usb_phy_init(struct usb_phy=20
->> *phy)
->>   		return err;
->>   	}
->>=20
->>  -	priv->soc_info->usb_phy_init(phy);
->>  +	reg =3D priv->soc_info->usb_phy_init(phy);
->>  +	writel(reg, priv->base + REG_USBPCR_OFFSET);
->=20
-> not fixing any bug.
->=20
-> Looking at the code, the bug follows after this line. It would suffice
-> to read REG_USBPCR_OFFSET in order to initialize reg. This bug fix=20
-> could
-> have been a one liner.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-There's no need to re-read a register when you have the value readily=20
-available. It just needs to be returned from the usb_phy_init=20
-callbacks. But yes, it's not a one-liner.
-
->=20
->>  @@ -195,19 +196,15 @@ static void ingenic_usb_phy_remove(void *phy)
->>   	usb_remove_phy(phy);
->>   }
->>=20
->>  -static void jz4770_usb_phy_init(struct usb_phy *phy)
->>  +static u32 jz4770_usb_phy_init(struct usb_phy *phy)
->=20
-> not a bug fix
->=20
->>   {
->>  -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
->>  -	u32 reg;
->>  -
->>  -	reg =3D USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS=20
->> |
->>  +	return USBPCR_AVLD_REG | USBPCR_COMMONONN |=20
->> USBPCR_IDPULLUP_ALWAYS |
->>   		USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT |=20
->> USBPCR_SQRXTUNE_DFT |
->>   		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT |=20
->> USBPCR_TXVREFTUNE_DFT |
->>   		USBPCR_POR;
->>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
->=20
-> not a bug fix
->=20
->>   }
->>=20
->>  -static void jz4780_usb_phy_init(struct usb_phy *phy)
->>  +static u32 jz4780_usb_phy_init(struct usb_phy *phy)
->=20
-> not a bug fix
->=20
->>  @@ -216,11 +213,10 @@ static void jz4780_usb_phy_init(struct=20
->> usb_phy *phy)
->>   		USBPCR1_WORD_IF_16BIT;
->>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
->>=20
->>  -	reg =3D USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
->>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
->>  +	return USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
->=20
-> not a bug fix
->=20
->>   }
->>=20
->>  -static void x1000_usb_phy_init(struct usb_phy *phy)
->>  +static u32 x1000_usb_phy_init(struct usb_phy *phy)
->=20
-> not a bug fix
->=20
->>   {
->>   	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
->>   	u32 reg;
->>  @@ -228,13 +224,12 @@ static void x1000_usb_phy_init(struct usb_phy=20
->> *phy)
->>   	reg =3D readl(priv->base + REG_USBPCR1_OFFSET) |=20
->> USBPCR1_WORD_IF_16BIT;
->>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
->>=20
->>  -	reg =3D USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
->>  +	return USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
->>   		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
->>   		USBPCR_COMMONONN | USBPCR_POR;
->>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
->=20
-> not a bug fix
->=20
->>   }
->>=20
->>  -static void x1830_usb_phy_init(struct usb_phy *phy)
->>  +static u32 x1830_usb_phy_init(struct usb_phy *phy)
->=20
-> not a bug fix
->=20
->>   {
->>   	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
->>   	u32 reg;
->>  @@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy=20
->> *phy)
->>   		USBPCR1_DMPD | USBPCR1_DPPD;
->>   	writel(reg, priv->base + REG_USBPCR1_OFFSET);
->>=20
->>  -	reg =3D USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT=20
->> |	USBPCR_TXPREEMPHTUNE |
->>  +	return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |=20
->> USBPCR_TXPREEMPHTUNE |
->>   		USBPCR_COMMONONN | USBPCR_POR;
->>  -	writel(reg, priv->base + REG_USBPCR_OFFSET);
->=20
-> not a bug fix
-
-Well, if you don't like my bug fix, next time wait for my Reviewed-by.
-
-Cheers,
--Paul
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8107b3d5d6df..a1e07d0f3205 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15620,6 +15620,8 @@ F:	include/uapi/linux/sed*
+ 
+ SECURITY CONTACT
+ M:	Security Officers <security@kernel.org>
++F:	Documentation/admin-guide/security-bugs.rst
++F:	Documentation/process/embargoed-hardware-issues.rst
+ S:	Supported
+ 
+ SECURITY SUBSYSTEM
+-- 
+2.17.1
 
