@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8702542FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBA1254303
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgH0KAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S1728578AbgH0KBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgH0KAu (ORCPT
+        with ESMTP id S1728722AbgH0KBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:00:50 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B993EC061264;
-        Thu, 27 Aug 2020 03:00:49 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t7so3939028otp.0;
-        Thu, 27 Aug 2020 03:00:49 -0700 (PDT)
+        Thu, 27 Aug 2020 06:01:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65342C06121B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:01:08 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mw10so2333797pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AAVaUW7VwZegQfkJwMOJ8uza77AqEjXeq+6lLbyPRPM=;
-        b=IYEfpoxWOrgM4B+rtfvP9lwMfghFgE8vdnrARgx0tBgVT3lXSqsCFo9fAz+niPiyxo
-         rdB2smv37lBdCuf0lCYAMeq992BABs8tJZNXHRI0O/FpJ24EtEBMiehnidWe9jVIUjfq
-         CdZFvaZq5IcH3ls+zQIrJXH9K7T2mw+V/R8AcEUCcC3Obv0U1iMOapj1fPdBgDCiSIWW
-         7xcHnVejZBN/zu8v+QfvIUfVBvD6eyl2pTz0fi1+Zn8NmW2nmgQC8/MynnilIUHtF5fb
-         mmF/v8b/Dv9DjWu2QbGe7U34Ka3wQM9NlktTZePIyXzeAX2E6B4jZs6b6/stfr9afTfP
-         mFZQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dVFa87Gzs3By4YvbvT0mRKBEarvG0+o1jlknOHQh1bk=;
+        b=gVD9cVF/zAxIeP1DEiHgj6yUQFF+LV7qSSbBZzzKtjf8+acXK/O8DMW21WfLGW1PvL
+         55bJplcY2uW0RT8/FuAZuvB/frCDSq07yGgRHakqirqysT7ouv0XPTQYLjM2y3/BZN/n
+         tU8MNFIseLrjg06NOCgaMEG0U7szmIdh5LUiRUwSi9pq/QU5ur3x+mjDO4mhbhI92bZs
+         V+eR862RogLZOMZBOJiW8mON1QaLKXtpeJdENV3SjZSv4UKkjIzstlwKYbgl5HDPdg1v
+         4gzLxyxsYkI15HDgu5EtTraNKniO39U8cxmcxOiPgqJ+nhNmyqEkSw1kgwIM5hxD33Su
+         u2BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAVaUW7VwZegQfkJwMOJ8uza77AqEjXeq+6lLbyPRPM=;
-        b=dnm7NXzr0OfasXQ5ikZcqjGFchQtiunZ2TUe8RJQowPX9hwVq9eppUBDGPmiLTHDQC
-         p8nSQ4ee8copSFUOqyU1CpEnPEOUgyGbQarc/Jof9WUkJxX3EmOpieetIJnxdK3iUwJG
-         PYAZMtaGCXoDDcGEtbJeHdrWHA7S0rnjxP6BcKNKwzn7rSy9fZ/vb72xKi4PSxr6Uzrw
-         CrS5PQA1IRM3v3xYk72Lt82E9h5fJOULsD8WyjHPUD+6Sc44truGP/mxJ3o6FlCffEwC
-         tosKBIQVB4P8S7O/XCpE+bnliUrGcLvA4Rec6B694CYOzHodvCnqfRVVLhYP/qMMp8qM
-         NvSA==
-X-Gm-Message-State: AOAM532/PY6eAMB5nzYM0aSOv4zq5iDlxoy3D8T7QTFOcB1/rWCd10NB
-        DLAtVrobFMenvx29wQxhQ2CUaPIw7aXevo7wnUo=
-X-Google-Smtp-Source: ABdhPJzisz0W2lNrmBlCnPW5yf/NHJi2xOH4+cZ5xxIWgb4iDZYft3NFtXLC2sZ9FFQKQuPthOEekZMRwP+l5XBWL5E=
-X-Received: by 2002:a9d:480d:: with SMTP id c13mr13251835otf.224.1598522447729;
- Thu, 27 Aug 2020 03:00:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dVFa87Gzs3By4YvbvT0mRKBEarvG0+o1jlknOHQh1bk=;
+        b=oSR3rKLWpNLMou8sETHHU4d4054DavOG4f/NXo308vk0QE3gVFBROBgvwzp+F1IBcL
+         jBv42jMwC7+mQA+mfxuqs66UgNQImc32kyBEmPeUpc0nkscUknxFPXjCuMo7YslbuzDe
+         gMBur0p1txCRabgzabXKsZsZOECcTfcG0YJ9S666o21dctZ8XhJciAU0xr/2UtHzVeYV
+         R/ndnOs3movnZHFJO4r+EJ/LzV1FTFSLTFsJNRvDReX4gUJ9qISY0DLI2DYscdHmRBK8
+         PLDstpliBYsX3ExMuUp+h8L2iwSYd32yFODD+6oPvyDI9veHGEBphrJRs2/wZnbTFTe6
+         YVxQ==
+X-Gm-Message-State: AOAM532ufNMQlOgrsRy6otIsC98+eR5UoqleDoA11baSxRS0vKHu7EZm
+        n7sbgcEx7XT27bja/wk2R6NqcA==
+X-Google-Smtp-Source: ABdhPJxhWRorvB+gpXZ6w7wfzkzjVUNNRfP/ARhG3lJTv4BmjYQxQZRwWK9rALeVRqpF/QmbZKwOvQ==
+X-Received: by 2002:a17:90a:d3d4:: with SMTP id d20mr9680860pjw.111.1598522467847;
+        Thu, 27 Aug 2020 03:01:07 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id s8sm1809939pgp.36.2020.08.27.03.01.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Aug 2020 03:01:06 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 15:31:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [PATCH v2] opp: Power on (virtual) power domains managed by the
+ OPP core
+Message-ID: <20200827100104.yuf2nzb6qras7zcw@vireshk-i7>
+References: <20200826093328.88268-1-stephan@gerhold.net>
 MIME-Version: 1.0
-References: <20200826063850.47625-1-alexandru.ardelean@analog.com>
- <20200826120042.200364-1-alexandru.ardelean@analog.com> <CA+U=DsrMDSTQKEc2_3+W8u4bLraAowVB3nB4huKY--v8gnds2Q@mail.gmail.com>
- <c3a9411e-186d-a3ac-5ad0-bd70ad78f147@st.com>
-In-Reply-To: <c3a9411e-186d-a3ac-5ad0-bd70ad78f147@st.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Thu, 27 Aug 2020 13:00:36 +0300
-Message-ID: <CA+U=DspjGUhXCY7c8P6zOYZsx17ybcU4Kdr52yujmdYOaa1JSQ@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: stm32-dac: Replace indio_dev->mlock with own
- device lock
-To:     Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Jonathan Cameron <jic23@kernel.org>, alexandre.torgue@st.com,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826093328.88268-1-stephan@gerhold.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:03 PM Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
->
-> On 8/27/20 10:55 AM, Alexandru Ardelean wrote:
-> > On Wed, Aug 26, 2020 at 3:03 PM Alexandru Ardelean
-> > <alexandru.ardelean@analog.com> wrote:
-> >> From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> >>
-> >> As part of the general cleanup of indio_dev->mlock, this change replaces
-> >> it with a local lock. The lock protects against potential races when
-> >> reading the CR reg and then updating, so that the state of pm_runtime
-> >> is consistent between the two operations.
-> >>
-> >> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> >> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> >> ---
-> > Forgot the changelog here.
-> > Apologies.
-> >
-> > Changelog v1 -> v2:
-> > * removed whitespace change for 'common' field
-> > * updated comment about the lock usage
->
-> Hi Alexandru,
->
-> Sorry if I missed it... is there an update on the comment :-) ?
+On 26-08-20, 11:33, Stephan Gerhold wrote:
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 8b3c3986f589..7e53a7b94c59 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/device.h>
+>  #include <linux/export.h>
+>  #include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regulator/consumer.h>
+>  
+>  #include "opp.h"
+> @@ -1964,10 +1965,13 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+>  		if (!opp_table->genpd_virt_devs[index])
+>  			continue;
+>  
+> +		if (opp_table->genpd_virt_links && opp_table->genpd_virt_links[index])
+> +			device_link_del(opp_table->genpd_virt_links[index]);
+>  		dev_pm_domain_detach(opp_table->genpd_virt_devs[index], false);
+>  		opp_table->genpd_virt_devs[index] = NULL;
+>  	}
+>  
+> +	kfree(opp_table->genpd_virt_links);
+>  	kfree(opp_table->genpd_virt_devs);
+>  	opp_table->genpd_virt_devs = NULL;
+>  }
+> @@ -1999,8 +2003,10 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+>  {
+>  	struct opp_table *opp_table;
+>  	struct device *virt_dev;
+> -	int index = 0, ret = -EINVAL;
+> +	struct device_link *dev_link;
+> +	int index = 0, ret = -EINVAL, num_devs;
+>  	const char **name = names;
+> +	u32 flags;
+>  
+>  	opp_table = dev_pm_opp_get_opp_table(dev);
+>  	if (IS_ERR(opp_table))
+> @@ -2049,6 +2055,32 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
 
-For a moment there, I thought I didn't.
-GMail's threading is confusing.
+I was about to apply this patch when I noticed that this routine does
+return the array of virtual devices back to the caller, like the qcom
+cpufreq driver in this case. IIRC we did it this way as a generic
+solution for this in the OPP core wasn't preferable.
 
-----------------------------------------------------------------------------
-As part of the general cleanup of indio_dev->mlock, this change replaces
-it with a local lock. The lock protects against potential races when
-reading the CR reg and then updating, so that the state of pm_runtime
-is consistent between the two operations.
-----------------------------------------------------------------------------
+And so I think again if this patch should be picked instead of letting
+the platform handle this ?
 
->
-> Best Regards,
-> Fabrice
-> >
-> >>  drivers/iio/dac/stm32-dac.c | 12 ++++++++----
-> >>  1 file changed, 8 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
-> >> index 092c796fa3d9..7a8aed476850 100644
-> >> --- a/drivers/iio/dac/stm32-dac.c
-> >> +++ b/drivers/iio/dac/stm32-dac.c
-> >> @@ -26,9 +26,11 @@
-> >>  /**
-> >>   * struct stm32_dac - private data of DAC driver
-> >>   * @common:            reference to DAC common data
-> >> + * @lock:              lock to protect the data buffer during regmap ops
-> >>   */
-> >>  struct stm32_dac {
-> >>         struct stm32_dac_common *common;
-> >> +       struct mutex            lock;
-> >>  };
+-- 
+viresh
