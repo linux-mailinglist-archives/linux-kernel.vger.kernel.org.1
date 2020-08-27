@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FA325453E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D008A254539
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgH0MrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:47:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728778AbgH0Ma1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:30:27 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5365F22CB2;
-        Thu, 27 Aug 2020 12:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598530850;
-        bh=4/JCZZZKd3GAf8uGJdQVfmYilwVSlF/9voYKJmjwsUc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2NbpzukTEt73j72RQ+t6LucIKcDF2zHs3wQClU8BR5wA1osb/Tc581/HNuxt+P4HF
-         LksM0gHFR7jPzu+tu3LGQjshUqN0MdYqCka2EppA7FMsiuJHtDEIf0wbuWURuWM2le
-         p7gCHA523n3rzTx2U7n/uVFgH9E1jAyaffEk29q0=
-Date:   Thu, 27 Aug 2020 13:20:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        hao.wu@intel.com, lgoncalv@redhat.com,
-        matthew.gerlach@linux.intel.com, trix@redhat.com,
-        russell.h.weight@intel.com
-Subject: Re: [PATCH v4 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
-Message-ID: <20200827122013.GB4674@sirena.org.uk>
-References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
- <159846941049.39902.15220563960562003689.b4-ty@kernel.org>
- <20200827065647.GQ3248864@dell>
+        id S1728992AbgH0Mpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgH0M05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:26:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5928C061234
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 05:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WR0JbwYpcKbUOXFKigJtskF/5Rf4W2AfrlUuN1W+bsM=; b=H+uXV9mPRYjsGIq94MPTzLDOHg
+        AhABlz1ms+kupgpq6eu6blxwpVJHiBxNdDdF7DDdfGVnbfURALdJc0roZONNxy7U0tFsG6mtyFbDv
+        tJZQoIFzewHaBFfia7THTczhceUNnACC2J88y+Hct9uiQ/Jhp549tEpYeW1hHjLcteIdX6E3jp2k6
+        Ze/qeVOM+252nE2Tl6kvMsuEAOHf9mjTjPShX8wnLqHLDbtVG5p1RG1P27Sg8IWYJfUBtisxYr3WQ
+        YLMqfxxlm9x43PkLVQYD6UpYWveA+A3c7ZVI20iEk4D/XJ9xekJIQMtfCOznX9Gzf9hr0s9I+QTvR
+        VGdXosvQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBGt9-0001qR-2P; Thu, 27 Aug 2020 12:20:19 +0000
+Date:   Thu, 27 Aug 2020 13:20:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kirill@shutemov.name,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Race between freeing and waking page
+Message-ID: <20200827122019.GC14765@casper.infradead.org>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WhfpMioaduB5tiZL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827065647.GQ3248864@dell>
-X-Cookie: Causes moderate eye irritation.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 27, 2020 at 12:01:00AM -0700, Hugh Dickins wrote:
+> It was a crash from checking PageWaiters on a Tail in wake_up_page(),
+> called from end_page_writeback(), from ext4_finish_bio(): yet the
+> page a tail of a shmem huge page.  Linus's wake_up_page_bit() changes?
+> No, I don't think so.  It seems to me that once end_page_writeback()
+> has done its test_clear_page_writeback(), it has no further hold on
+> the struct page, which could be reused as part of a compound page
+> by the time of wake_up_page()'s PageWaiters check.  But I probably
+> need to muse on that for longer.
 
---WhfpMioaduB5tiZL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think you're right.  Example:
 
-On Thu, Aug 27, 2020 at 07:56:47AM +0100, Lee Jones wrote:
-> On Wed, 26 Aug 2020, Mark Brown wrote:
+truncate_inode_pages_range()
+pagevec_lookup_entries()
+lock_page()
 
-> > [2/2] mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
-> >       commit: 53be8bbc2f4058d4a6bfff3dadf34164bcaafa87
+--- ctx switch ---
 
-> Que?  This is yet to be reviewed.
+ext4_finish_bio()
+end_page_writeback()
+test_clear_page_writeback()
 
-Sorry, meant to only fetch the first patch.  Dropped now.
+--- ctx switch ---
 
---WhfpMioaduB5tiZL
-Content-Type: application/pgp-signature; name="signature.asc"
+wait_on_page_writeback() <- noop
+truncate_inode_page()
+unlock_page()
+pagevec_release()
 
------BEGIN PGP SIGNATURE-----
+... page can now be allocated
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9HpP0ACgkQJNaLcl1U
-h9Ab+wf/cLWjo0P4b+tIGlW0ybqnP9R85uWysei9vdgfeX/ZOcbpEhay0/1rTNwR
-qmkptpzH3IXdT1A1UmBo10WW12oDJMx979W2XfFhpooJh9GlkTq497ioZFLd6rFI
-1Ftl8Y8igT+OsKMS/BQdyvMtjgggCoKZgSPt6akPKB1zlAhDyskEk/80f4Xy9A3M
-ZsDJAnqVUrN8xesIyj6T9FrHgDKaW2RbXXmOOX4hQqn+XYImi43qmpqoeLqfTjNM
-0D5jGHM6RHFiJX3cMma4O5xub5ciAWiVy858hznKwRsDPfGMKB1nSscaPcfjidR5
-s37EB8K+XcvZ22H5YnpRP24WQxgAcg==
-=dGJr
------END PGP SIGNATURE-----
+--- ctx switch ---
 
---WhfpMioaduB5tiZL--
+wake_up_page()
+PageWaiters then has that check for PageTail.
+
+This isn't unique to ext4; the iomap completion path behaves the exact
+same way.  The thing is, this is a harmless race.  It seems unnecessary
+for anybody here to incur the overhead of adding a page ref to be sure
+the page isn't reallocated.  We don't want to wake up the waiters before
+clearing the bit in question.
+
+I'm tempted to suggest this:
+
+ static void wake_up_page(struct page *page, int bit)
+ {
+-       if (!PageWaiters(page))
++       if (PageTail(page) || !PageWaiters(page))
+                return;
+        wake_up_page_bit(page, bit);
+
+which only adds an extra read to the struct page that we were going to
+access anyway.  Even that seems unnecessary though; PageWaiters is
+going to be clear.  Maybe we can just change the PF policy from
+PF_ONLY_HEAD to PF_ANY.  I don't think it's critical that we have this
+check.
+
+Nick?
