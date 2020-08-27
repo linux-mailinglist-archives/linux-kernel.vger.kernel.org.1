@@ -2,191 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F60B254634
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F262545F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgH0NoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:44:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49350 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726878AbgH0NiL (ORCPT
+        id S1728191AbgH0NbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:31:00 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56018 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727992AbgH0NVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:38:11 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RCXfeg084305;
-        Thu, 27 Aug 2020 09:02:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CAFv2blrdNVkba2GOU5DWldysApaKSbTk/ljao+durg=;
- b=JF+al2ZvL3YkBcPuoxv+nADJ2fqTrMsGBQAjK/9dNocfEyyUTISFGggha3CYPYSVVb4d
- 6SsdAu5oIYml1C9hSQICq1PHXeAI6Q000rW+1wT4/512mKV9Cw/B3govQ568XkwTBohQ
- +81kA6fHCniAcbMp0xCd+JS8ispbT2Iqvx7pn2v/K+Z5APf70CqBltOTh9FgKY6UGXtm
- yHDedugRMwbYisBa0pbbu8fIGXVcK0ms0bWpjNZNcyfosHg/mpsRHt97R3XMTALxy+YO
- /YBAXlGOg98wMn/e1tIF7Rxv5IUd7mV4haOnRigWIhKsIEPx7zzVpREEihiUb4EgbfE+ 1g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336cddj1d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:02:54 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RCacri094991;
-        Thu, 27 Aug 2020 09:02:53 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336cddj1ce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:02:53 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RD1kTL007144;
-        Thu, 27 Aug 2020 13:02:52 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma03dal.us.ibm.com with ESMTP id 332utu4jav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 13:02:52 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RD2pdc52494676
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 13:02:52 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D88CCAE05F;
-        Thu, 27 Aug 2020 13:02:51 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6897AAE060;
-        Thu, 27 Aug 2020 13:02:46 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.210.202])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Aug 2020 13:02:46 +0000 (GMT)
-Subject: Re: [perf/core] 16fb162e78:
- WARNING:at_kernel/events/core.c:#list_add_event
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        daniel@iogearbox.net, brho@google.com, srikar@linux.vnet.ibm.com,
-        0day robot <lkp@intel.com>, lkp@lists.01.org
-References: <20200827083757.GQ4299@shao2-debian>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <bd699fba-7227-c18f-3d05-919b7876ae6f@linux.ibm.com>
-Date:   Thu, 27 Aug 2020 18:32:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 27 Aug 2020 09:21:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598534464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zxj3/pnEKNdJXQYKt9vOuqr1Pjo+7bDlTiGFlo7k2bk=;
+        b=AdhY35Ul5Ut+0CwcMY+3YmEM3gx2B2w/Qgna0lmpKg9KDgpG+2nf4e17ozmYUhSPQFWUxe
+        syfZzW0jyrxWKjTi9x787U3hQBDvzCZMwEcvoi7qHEQRmim3q6wCOJN3kc6EXx6oT/62y/
+        6yFWJ883rf5m2myJ6qoT/LtYBKHnAq0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-Kv9Ig1K7NFS8Ya33PNgGOQ-1; Thu, 27 Aug 2020 09:21:02 -0400
+X-MC-Unique: Kv9Ig1K7NFS8Ya33PNgGOQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEE83189E60D;
+        Thu, 27 Aug 2020 13:21:00 +0000 (UTC)
+Received: from redhat.com (ovpn-114-28.rdu2.redhat.com [10.10.114.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E8FB61972A;
+        Thu, 27 Aug 2020 13:20:59 +0000 (UTC)
+Date:   Thu, 27 Aug 2020 09:20:58 -0400
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        shuah@kernel.org, live-patching@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/livepatch: Do not check order when using
+ "comm" for dmesg checking
+Message-ID: <20200827132058.GA24622@redhat.com>
+References: <20200827110709.26824-1-mbenes@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200827083757.GQ4299@shao2-debian>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_07:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270094
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827110709.26824-1-mbenes@suse.cz>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/27/20 2:07 PM, kernel test robot wrote:
-> Greeting,
+On Thu, Aug 27, 2020 at 01:07:09PM +0200, Miroslav Benes wrote:
+> check_result() uses "comm" to check expected results of selftests output
+> in dmesg. Everything works fine if timestamps in dmesg are unique. If
+> not, like in this example
 > 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 16fb162e7868b8f3c1fc09ef0d683c9554cb6404 ("[RFC] perf/core: Fixes hung issue on perf stat command during cpu hotplug")
-> url: https://github.com/0day-ci/linux/commits/Kajol-Jain/perf-core-Fixes-hung-issue-on-perf-stat-command-during-cpu-hotplug/20200826-173643
-> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2cb5383b30d47c446ec7d884cd80f93ffcc31817
+> [   86.844422] test_klp_callbacks_demo: pre_unpatch_callback: test_klp_callbacks_mod -> [MODULE_STATE_LIVE] Normal state
+> [   86.844422] livepatch: 'test_klp_callbacks_demo': starting unpatching transition
 > 
 
-Hi Rong Chen,
-	Thanks for checking. Actually this is old patch, I recently send new updated patch.
-Please let me know if in this patch also you are seeing same issue.
+Heh, our assumption that the timestamps would provide sorting wasn't
+true after all.
 
-Link to the patch: https://lkml.org/lkml/2020/8/27/101
+> , "comm" fails with "comm: file 2 is not in sorted order". Suppress the
+> order checking with --nocheck-order option.
+> 
+> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
 
-Thanks,
-Kajol Jain
+Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
 
-> in testcase: trinity
-> with following parameters:
+And not so important for selftests, but helpful for backporting efforts:
+
+Fixes: 2f3f651f3756 ("selftests/livepatch: Use "comm" instead of "diff" for dmesg")
+
+> ---
 > 
-> 	runtime: 300s
+> The strange thing is, I can reproduce the issue easily and reliably on
+> older codestreams (4.12) but not on current upstream in my testing
+> environment. I think the change makes sense regardless though.
 > 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
+
+We haven't backported v5.8 changes just yet, so thanks for finding this
+one and posting a fix.
+
+-- Joe
+
+>  tools/testing/selftests/livepatch/functions.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/tools/testing/selftests/livepatch/functions.sh b/tools/testing/selftests/livepatch/functions.sh
+> index 1aba83c87ad3..846c7ed71556 100644
+> --- a/tools/testing/selftests/livepatch/functions.sh
+> +++ b/tools/testing/selftests/livepatch/functions.sh
+> @@ -278,7 +278,7 @@ function check_result {
+>  	# help differentiate repeated testing runs.  Remove them with a
+>  	# post-comparison sed filter.
+>  
+> -	result=$(dmesg | comm -13 "$SAVED_DMESG" - | \
+> +	result=$(dmesg | comm --nocheck-order -13 "$SAVED_DMESG" - | \
+>  		 grep -e 'livepatch:' -e 'test_klp' | \
+>  		 grep -v '\(tainting\|taints\) kernel' | \
+>  		 sed 's/^\[[ 0-9.]*\] //')
+> -- 
+> 2.28.0
 > 
-> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +-------------------------------------------------+------------+------------+
-> |                                                 | 2cb5383b30 | 16fb162e78 |
-> +-------------------------------------------------+------------+------------+
-> | boot_successes                                  | 4          | 0          |
-> | boot_failures                                   | 0          | 8          |
-> | WARNING:at_kernel/events/core.c:#list_add_event | 0          | 8          |
-> | EIP:list_add_event                              | 0          | 8          |
-> | kernel_BUG_at_lib/list_debug.c                  | 0          | 8          |
-> | invalid_opcode:#[##]                            | 0          | 8          |
-> | EIP:__list_add_valid                            | 0          | 8          |
-> | Kernel_panic-not_syncing:Fatal_exception        | 0          | 8          |
-> +-------------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> [   97.084211] WARNING: CPU: 0 PID: 593 at kernel/events/core.c:1807 list_add_event+0x29e/0x4b0
-> [   97.086779] Modules linked in:
-> [   97.087756] CPU: 0 PID: 593 Comm: trinity-main Not tainted 5.9.0-rc1-00012-g16fb162e7868b #1
-> [   97.089783] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [   97.091980] EIP: list_add_event+0x29e/0x4b0
-> [   97.093322] Code: ef c2 c4 01 83 15 44 ef c2 c4 00 8b 43 60 a8 01 0f 84 9a fd ff ff 8d b6 00 00 00 00 83 05 48 ef c2 c4 01 83 15 4c ef c2 c4 00 <0f> 0b 83 05 50 ef c2 c4 01 83 15 54 ef c2 c4 00 e9 71 fd ff ff 8d
-> [   97.097789] EAX: 00000007 EBX: eee48000 ECX: 00000001 EDX: ee125280
-> [   97.099297] ESI: eeebe200 EDI: 00000001 EBP: eee67dfc ESP: eee67dec
-> [   97.101008] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00010046
-> [   97.106936] CR0: 80050033 CR2: 08dfc000 CR3: 2e0bb000 CR4: 00040690
-> [   97.108599] Call Trace:
-> [   97.109457]  __perf_install_in_context+0x286/0x3e0
-> [   97.110759]  remote_function+0x79/0x90
-> [   97.111897]  generic_exec_single+0xc3/0x190
-> [   97.113101]  smp_call_function_single+0x1a3/0x2d0
-> [   97.114364]  ? bpf_fd_reuseport_array_update_elem+0x300/0x300
-> [   97.115866]  task_function_call+0x87/0xc0
-> [   97.117025]  ? __perf_event_enable+0x740/0x740
-> [   97.118248]  perf_install_in_context+0x110/0x450
-> [   97.119540]  __do_sys_perf_event_open+0x13cb/0x1ed0
-> [   97.120833]  __ia32_sys_perf_event_open+0x24/0x40
-> [   97.122097]  __do_fast_syscall_32+0x99/0x110
-> [   97.123213]  do_fast_syscall_32+0x37/0x130
-> [   97.124409]  do_SYSENTER_32+0x23/0x40
-> [   97.125470]  entry_SYSENTER_32+0xb0/0x10d
-> [   97.126592] EIP: 0xb7f11549
-> [   97.127449] Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-> [   97.131832] EAX: ffffffda EBX: 08e38318 ECX: 00000000 EDX: ffffffff
-> [   97.137556] ESI: ffffffff EDI: 00000002 EBP: 6d656d83 ESP: bfa804ec
-> [   97.139119] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000286
-> [   97.140732] ---[ end trace 57d55e687e8b0e41 ]---
-> 
-> 
-> To reproduce:
-> 
->         # build kernel
-> 	cd linux
-> 	cp config-5.9.0-rc1-00012-g16fb162e7868b .config
-> 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> 
-> 
-> 
-> Thanks,
-> Rong Chen
-> 
+
