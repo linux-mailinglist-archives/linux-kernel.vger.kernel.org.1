@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591CF254D16
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAD0254D3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgH0Saa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:30:30 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8881 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgH0Sa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:30:29 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BcrrM6D5vz9vCq8;
-        Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id XEi4PT8v3Ckj; Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BcrrM55NKz9vCq6;
-        Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 964C28B8A5;
-        Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id XzMPn3ezEBFk; Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6698D8B886;
-        Thu, 27 Aug 2020 20:30:27 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1D10165D45; Thu, 27 Aug 2020 18:30:27 +0000 (UTC)
-Message-Id: <ec96c15bfa1a7415ab604ee1c98cd45779c08be0.1598553015.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc/32s: Disable VMAP stack which CONFIG_ADB_PMU
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, giuseppe@sguazz.it
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 27 Aug 2020 18:30:27 +0000 (UTC)
+        id S1727115AbgH0SnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgH0SnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 14:43:21 -0400
+X-Greylist: delayed 754 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Aug 2020 11:43:20 PDT
+Received: from caffeine.csclub.uwaterloo.ca (caffeine.csclub.uwaterloo.ca [IPv6:2620:101:f000:4901:c5c:0:caff:e12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F290CC061264;
+        Thu, 27 Aug 2020 11:43:20 -0700 (PDT)
+Received: by caffeine.csclub.uwaterloo.ca (Postfix, from userid 20367)
+        id 2DCC6460411; Thu, 27 Aug 2020 14:30:39 -0400 (EDT)
+Date:   Thu, 27 Aug 2020 14:30:39 -0400
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Len Sorensen <lsorense@csclub.uwaterloo.ca>
+Subject: VRRP not working on i40e X722 S2600WFT
+Message-ID: <20200827183039.hrfnb63cxq3pmv4z@csclub.uwaterloo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170113 (1.7.2)
+From:   lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-low_sleep_handler() can't restore the context from virtual
-stack because the stack can hardly be accessed with MMU OFF.
+I have hit a new problem with the X722 chipset (Intel R1304WFT server).
+VRRP simply does not work.
 
-For now, disable VMAP stack when CONFIG_ADB_PMU is selected.
+When keepalived registers a vmac interface, and starts transmitting
+multicast packets with the vrp message, it never receives those packets
+from the peers, so all nodes think they are the master.  tcpdump shows
+transmits, but no receives.  If I stop keepalived, which deletes the
+vmac interface, then I start to receive the multicast packets from the
+other nodes.  Even in promisc mode, tcpdump can't see those packets.
 
-Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
-Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Argh, went too quick. CONFIG_ADB_PMU ==> ADB_PMU
----
- arch/powerpc/platforms/Kconfig.cputype | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So it seems the hardware is dropping all packets with a source mac that
+matches the source mac of the vmac interface, even when the destination
+is a multicast address that was subcribed to.  This is clearly not
+proper behaviour.
 
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 87737ec86d39..1dc9d3c81872 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -36,7 +36,7 @@ config PPC_BOOK3S_6xx
- 	select PPC_HAVE_PMU_SUPPORT
- 	select PPC_HAVE_KUEP
- 	select PPC_HAVE_KUAP
--	select HAVE_ARCH_VMAP_STACK
-+	select HAVE_ARCH_VMAP_STACK if !ADB_PMU
- 
- config PPC_BOOK3S_601
- 	bool "PowerPC 601"
+I tried a stock 5.8 kernel to check if a driver update helped, and updated
+the nvm firware to the latest 4.10 (which appears to be over a year old),
+and nothing changes the behaviour at all.
+
+Seems other people have hit this problem too:
+http://mails.dpdk.org/archives/users/2018-May/003128.html
+
+Unless someone has a way to fix this, we will have to change away from
+this hardware very quickly.  The IPsec NAT RSS defect we could tolerate
+although didn't like, while this is just unworkable.
+
+Quite frustrated by this.  Intel network hardware was always great,
+how did the X722 make it out in this state.
+
 -- 
-2.25.0
-
+Len Sorensen
