@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DEE253FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAC4253FAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgH0H4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728435AbgH0Hyb (ORCPT
+        id S1728504AbgH0Hyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:54:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36582 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728088AbgH0Hyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94081C061264;
-        Thu, 27 Aug 2020 00:54:30 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 07:54:28 -0000
+        Thu, 27 Aug 2020 03:54:33 -0400
+Date:   Thu, 27 Aug 2020 07:54:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598514869;
+        s=2020; t=1598514871;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yj6hitLGgH97TCU3MzZRcCuH/06F7hXMifwYh8hnFhA=;
-        b=wyBvHWxfU6XjmQSYgdWgGYuc7br1bo9CIAWq3pOFL3Yyo0O1eep8rV9B70EfUG+Nw+5bEi
-        x3V2ycCteIo6InpQR4iwIYhWgWmDxpsDuA7zZwJySKOKPxI9fFdCqFqZJ9x9sjipfKZW30
-        qRYf6D4S4zvh37w0cfmbzYvNK+BQL8SKUriD/8A335FFRu39X7sBds1aLvzYwF09AH1Jsp
-        69zDcw5INY4OTTDh84KJWFwqUV/0wgLSzTUiB9gtM6cg6YO1UPdF0bhq0j3nF/83LUksRr
-        YoZrFx3k12h0stlMzqP/gwAFbyxvYzNSpwlBP0bm+45uHY+oTtwcvU0b/pvBXA==
+        bh=mTmvlE5zdtLocGp68LdVg1HRKyqOz2s6aWOVET36LjE=;
+        b=fp3jGDPeoh8tGcd0+3xWUGnd3M8IZBNgknszw2HbaDWXUs9IPEI0NDnzrAFDpOAlUg7Py8
+        DEU/wlmb56t5vxTlS1f4smt4zRI6zhGRKJAqex+1DkNB4t467sLYLpW+FOdzYpYu4pgGv8
+        QXUbyyw0EEat0qBBBJTu3VtfxzOS8n1a3TlV+VBlJQQX6mXeX+hgbFvDUPyoh0Qj4Lug/7
+        8q7ycqDhKBQY5qwYoPSDv7KAmCtSn88M8SQE4gEXH7REHT8fOqdn6uQKDgUdX5Jy3naW6O
+        Hsx3WKmFnjmucIuoUGJsCnshvIpCFZX9EwBUYPwSp9DcynRAXMdCvwWYpF2Gbw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598514869;
+        s=2020e; t=1598514871;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yj6hitLGgH97TCU3MzZRcCuH/06F7hXMifwYh8hnFhA=;
-        b=1yahYWhVDmg1dlaH33pbEtKjxVsEZKJBD1nu3JfWzdbPznuxj1uiuQ5wp7zm1NBg3uNwN+
-        9bNrygnn1V1Wk3Bw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=mTmvlE5zdtLocGp68LdVg1HRKyqOz2s6aWOVET36LjE=;
+        b=DMsSb1PiJffJm2A599B2fGxH2SgWS2h264W5OjCuJoP+JfGd+1/y7XodfGeO2QIJcOl4Vc
+        cPbzWNhe5tfdpNCg==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] cpuidle: Fixup IRQ state
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Marco Elver <elver@google.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200821085348.251340558@infradead.org>
-References: <20200821085348.251340558@infradead.org>
+Subject: [tip: sched/core] sched/topology: Move sd_flag_debug out of
+ linux/sched/topology.h
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200825133216.9163-1-valentin.schneider@arm.com>
+References: <20200825133216.9163-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <159851486844.20229.10979787038687285429.tip-bot2@tip-bot2>
+Message-ID: <159851487090.20229.14835640470330793284.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,40 +58,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     49d9c5936314e44d314c605c39cce0fd947f9c3a
-Gitweb:        https://git.kernel.org/tip/49d9c5936314e44d314c605c39cce0fd947f9c3a
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 20 Aug 2020 16:47:24 +02:00
+Commit-ID:     8fca9494d4b4d6b57b1398cd473feb308df656db
+Gitweb:        https://git.kernel.org/tip/8fca9494d4b4d6b57b1398cd473feb308df656db
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Tue, 25 Aug 2020 14:32:15 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 26 Aug 2020 12:41:53 +02:00
+CommitterDate: Wed, 26 Aug 2020 12:41:59 +02:00
 
-cpuidle: Fixup IRQ state
+sched/topology: Move sd_flag_debug out of linux/sched/topology.h
 
-Match the pattern elsewhere in this file.
+Defining an array in a header imported all over the place clearly is a daft
+idea, that still didn't stop me from doing it.
 
+Leave a declaration of sd_flag_debug in topology.h and move its definition
+to sched/debug.c.
+
+Fixes: b6e862f38672 ("sched/topology: Define and assign sched_domain flag metadata")
+Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Marco Elver <elver@google.com>
-Link: https://lkml.kernel.org/r/20200821085348.251340558@infradead.org
+Link: https://lkml.kernel.org/r/20200825133216.9163-1-valentin.schneider@arm.com
 ---
- drivers/cpuidle/cpuidle.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/sched/topology.h |  9 ++++-----
+ kernel/sched/debug.c           |  6 ++++++
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-index 8719731..2fe4f3c 100644
---- a/drivers/cpuidle/cpuidle.c
-+++ b/drivers/cpuidle/cpuidle.c
-@@ -153,7 +153,8 @@ static void enter_s2idle_proper(struct cpuidle_driver *drv,
- 	 */
- 	stop_critical_timings();
- 	drv->states[index].enter_s2idle(dev, drv, index);
--	WARN_ON(!irqs_disabled());
-+	if (WARN_ON_ONCE(!irqs_disabled()))
-+		local_irq_disable();
- 	/*
- 	 * timekeeping_resume() that will be called by tick_unfreeze() for the
- 	 * first CPU executing it calls functions containing RCU read-side
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 2d59ca7..b9b0dab 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -33,14 +33,13 @@ static const unsigned int SD_DEGENERATE_GROUPS_MASK =
+ #undef SD_FLAG
+ 
+ #ifdef CONFIG_SCHED_DEBUG
+-#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
+-static const struct {
++
++struct sd_flag_debug {
+ 	unsigned int meta_flags;
+ 	char *name;
+-} sd_flag_debug[] = {
+-#include <linux/sched/sd_flags.h>
+ };
+-#undef SD_FLAG
++extern const struct sd_flag_debug sd_flag_debug[];
++
+ #endif
+ 
+ #ifdef CONFIG_SCHED_SMT
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 0655524..0d7896d 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -245,6 +245,12 @@ set_table_entry(struct ctl_table *entry,
+ 	entry->proc_handler = proc_handler;
+ }
+ 
++#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
++const struct sd_flag_debug sd_flag_debug[] = {
++#include <linux/sched/sd_flags.h>
++};
++#undef SD_FLAG
++
+ static int sd_ctl_doflags(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
