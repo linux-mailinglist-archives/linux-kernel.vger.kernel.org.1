@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55E6253F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723C1253FEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgH0HyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:54:02 -0400
-Received: from mga06.intel.com ([134.134.136.31]:13056 "EHLO mga06.intel.com"
+        id S1728751AbgH0H57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:57:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgH0HyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:02 -0400
-IronPort-SDR: vz4bzoQ2rOVep7gF8OnzVv2aaOcIS+Q9r3sY/Js14XZW9M1UBFwXOFDpCIQGWnAm9Y3E8/9QRd
- VxnZps+SMYiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="217988356"
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="217988356"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 00:54:01 -0700
-IronPort-SDR: /BlwljAFZPlXT5EC9L5SRl7mceno88GYplxunrJ7L2uL1bUWgMSzIEaQL0RSsrVtsYVIhpPo00
- ai3Jx3cDTxYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
-   d="scan'208";a="295638978"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 27 Aug 2020 00:54:01 -0700
-Received: from [10.249.76.175] (vramuthx-MOBL1.gar.corp.intel.com [10.249.76.175])
-        by linux.intel.com (Postfix) with ESMTP id D6A1A5806C6;
-        Thu, 27 Aug 2020 00:53:57 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v3 1/1] extcon: ptn5150: Set the VBUS and POLARITY
- property capability
-To:     Chanwoo Choi <cw00.choi@samsung.com>, linux-kernel@vger.kernel.org
-Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
-        myungjoo.ham@samsung.com, heikki.krogerus@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
-References: <20200827065128.55094-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <CGME20200827065143epcas1p3da86f8d70e6d78c64a925f4d9c0f92eb@epcas1p3.samsung.com>
- <20200827065128.55094-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <e0ac8482-d607-6095-0d9b-2918f0e7a0f2@samsung.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <47fef2ec-012c-03c7-13ef-0882b4f7146b@linux.intel.com>
-Date:   Thu, 27 Aug 2020 15:53:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728391AbgH0HyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:54:24 -0400
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71E6722CF7;
+        Thu, 27 Aug 2020 07:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598514863;
+        bh=awYibhA4t5ZtQZw3w3TIiaHR9uOvXpyWJPnRkXljvkY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VyTg38LFRqJvBykurOAVgcyjZFl8Dej4Y9E51FKYn4lg3yqaEHQzXimTjSmTO6reK
+         qTnisWe2HgXA675FPlFMAdSvGkBBJ9gmrHgeufWWRp7CkLH62cFVkr5xqSQDuMxwpH
+         AykRuAp6MOyJ3UU/afkB6jI6cKW2r0r4RGJwGBYw=
+Received: by mail-ot1-f52.google.com with SMTP id k2so3701044ots.4;
+        Thu, 27 Aug 2020 00:54:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530nMZDyB90wVjCeMevWdZi+55D776R1NP1NXnzRNqJRvKT6VQ6r
+        wfjGyEOIXCo16oc5dVkyd68RlwEAlqVGhkgfw6c=
+X-Google-Smtp-Source: ABdhPJzka/lf5uRZNedGeD8+aWitXVwNl94o7ceaCS2qOGuAlEmCCdA7zvmUAgTQPMrO41TFr0qmffUFl2snH+2ek34=
+X-Received: by 2002:a9d:5189:: with SMTP id y9mr7216308otg.77.1598514862803;
+ Thu, 27 Aug 2020 00:54:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e0ac8482-d607-6095-0d9b-2918f0e7a0f2@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAMj1kXEUQdmQDCDXPBNb3hRrbui=HVyDjCDoiFwDr+mDSjP43A@mail.gmail.com>
+ <20200826114952.GA2375@gondor.apana.org.au> <CAMj1kXGjytfJEbLMbz50it3okQfiLScHB5YK2FMqR5CsmFEBbg@mail.gmail.com>
+ <20200826120832.GA2996@gondor.apana.org.au> <CAOq732JaP=4X9Yh_KjER5_ctQWoauxzXTZqyFP9KsLSxvVH8=w@mail.gmail.com>
+ <20200826130010.GA3232@gondor.apana.org.au> <c27e5303-48d9-04a4-4e73-cfea5470f357@gmail.com>
+ <20200826141907.GA5111@gondor.apana.org.au> <4bb6d926-a249-8183-b3d9-05b8e1b7808a@gmail.com>
+ <CAMj1kXEn507bEt+eT6q7MpCwNH=oAZsTkFRz0t=kPEV0QxFsOQ@mail.gmail.com>
+ <20200826221913.GA16175@gondor.apana.org.au> <BL0PR11MB329980406FA0A14A8EF61A07B9550@BL0PR11MB3299.namprd11.prod.outlook.com>
+In-Reply-To: <BL0PR11MB329980406FA0A14A8EF61A07B9550@BL0PR11MB3299.namprd11.prod.outlook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 27 Aug 2020 09:54:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFX_viiR4S8DiDrcS09o2NFQsZGmizdLc9xjrWOrhgjaA@mail.gmail.com>
+Message-ID: <CAMj1kXFX_viiR4S8DiDrcS09o2NFQsZGmizdLc9xjrWOrhgjaA@mail.gmail.com>
+Subject: Re: Issue with iwd + Linux 5.8.3 + WPA Enterprise
+To:     Caleb Jorden <caljorden@hotmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Denis Kenzior <denkenz@gmail.com>,
+        Andrew Zaborowski <andrew.zaborowski@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Sasha Levin <sashal@kernel.org>,
+        "iwd@lists.01.org" <iwd@lists.01.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 27 Aug 2020 at 06:56, Caleb Jorden <caljorden@hotmail.com> wrote:
+>
+> I can tell you all assumed this, but just by way as a quick update on the original issue:
+>
+> I have confirmed that Herbert's patch (crypto: af_alg - Work around empty control messages without MSG_MORE) does indeed fix the original iwd 1.8 + WPA Enterprise issue.
+>
+> Thank you!
+>
+> Caleb Jorden
+>
 
-On 27/8/2020 3:56 pm, Chanwoo Choi wrote:
-> On 8/27/20 3:51 PM, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Set the capability value of property for VBUS and POLARITY.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   drivers/extcon/extcon-ptn5150.c | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
->> index 841c9fe211f1..20d49a54c36e 100644
->> --- a/drivers/extcon/extcon-ptn5150.c
->> +++ b/drivers/extcon/extcon-ptn5150.c
->> @@ -275,6 +275,13 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
->>   		return ret;
->>   	}
->>   
->> +	extcon_set_property_capability(info->edev, EXTCON_USB,
->> +				       EXTCON_PROP_USB_VBUS);
->> +	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_VBUS);
->> +	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_TYPEC_POLARITY);
-> 
-> Above codes used the space for the indentation to keep the vertical line.
-> I think that we better to use tab for the indentation.
-> 
-> If there are no objection, I'll fix and then apply it.
-Thank you!, no objection , please fix it.
+Thanks for confirming.
 
-Regards
-Vadivel
-> 
->> +
->>   	/* Initialize PTN5150 device and print vendor id and version id */
->>   	ret = ptn5150_init_dev_type(info);
->>   	if (ret)
->>
-> 
-> 
+> ________________________________________
+> From: Herbert Xu <herbert@gondor.apana.org.au>
+> Sent: Thursday, August 27, 2020 3:49 AM
+> To: Ard Biesheuvel
+> Cc: Denis Kenzior; Andrew Zaborowski; Paul Menzel; Caleb Jorden; Sasha Levin; iwd@lists.01.org; # 3.4.x; Greg KH; LKML; David S. Miller; Linux Crypto Mailing List
+> Subject: Re: Issue with iwd + Linux 5.8.3 + WPA Enterprise
+>
+> On Wed, Aug 26, 2020 at 05:42:27PM +0200, Ard Biesheuvel wrote:
+> >
+> > I still get a failure in aes_siv_encrypt(), which does not occur with
+> > the kernel side fix applied.
+>
+> Where is this test from? I can't find it in the ell git tree.
+>
+> Thanks,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
