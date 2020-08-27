@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BFB253EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3042C253EE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgH0HVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:21:48 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28850 "EHLO
+        id S1728089AbgH0HVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:21:50 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:22016 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727991AbgH0HVd (ORCPT
+        by vger.kernel.org with ESMTP id S1726882AbgH0HVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Aug 2020 03:21:33 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R7Ivpf016719;
-        Thu, 27 Aug 2020 09:21:20 +0200
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R7Ho8j013608;
+        Thu, 27 Aug 2020 09:21:23 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=XwGmwMIIYdrDy6Y3ICeaN4bEoGRK+NWOLS2IGOw0OWc=;
- b=PikdmGCXuf7CNVzwK0fV6c7F5+1Q9N2ZnOstbnPwNTR8T8R8TzGvjIC+VM7lrwKzc0ub
- e4SsQKuuQU2xdl1/n5mJqWZbCeFIrKFi/C3Uz1di1/M8CMcaRivbR2yfHiCAmvcp4bn7
- MiiJuFe6QCYflwT91ST5BcvaMANTbeUuHtKZTUfwkeISd5bqnYTnkBqPWxO7g+O8lTXe
- OmxEP9zsIigBHrziMjTl8vpBCX0R6yxGfJG6vhJKTp6N2BlSwpUqJKdftweX2BgGaJzJ
- uaGEcDmcizvDXkQgAgSpW4OK8/zos2XL/9Qrv6QZ0WGfjYS8dF14wAQbgtPptK54yPg6 1g== 
+ bh=9bTCitwnBAltRZQ7gOYLHIo8QHxlqk1VrxB1btIyl3k=;
+ b=SZltyI84G5I3H89Zdo7KZ/TXsfPszKhCDxsNzPo5pVtE6yxVAOo1aNf45b7GHE6b/ZJQ
+ 3ko/Hyx+2Ghn4Iv4Yx7006IPxHHOFxdCLpbJwcWe4MP/vJHmancbJGKftoMk3w4p8T2L
+ nQXlH9ugTxMfZGyIR5T/nEfa9Ps9WvEJFt820mjWeqfSEbH+xsTceHiQCc3T+ngioGhp
+ h8vfNSV0jymM/30WYOgci71fFvx7R7I+oFhhorZ+BNy8z9uo47nzyLygac9F/YqcdeW2
+ TMBj1kp41XelvDEREmqZus7i5zJaVwmWxaG5iGuy1QceWn6ZFDlVQkQ8712+9aU8saf6 aw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 333b6xcfeg-1
+        by mx07-00178001.pphosted.com with ESMTP id 333b2mvfv6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 09:21:20 +0200
+        Thu, 27 Aug 2020 09:21:23 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 681B010002A;
-        Thu, 27 Aug 2020 09:21:20 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 87C5610002A;
+        Thu, 27 Aug 2020 09:21:21 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 57838212648;
-        Thu, 27 Aug 2020 09:21:20 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7A770212648;
+        Thu, 27 Aug 2020 09:21:21 +0200 (CEST)
 Received: from localhost (10.75.127.45) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug 2020 09:21:19
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug 2020 09:21:20
  +0200
 From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
 To:     Rob Herring <robh@kernel.org>,
@@ -49,16 +49,16 @@ CC:     <devicetree@vger.kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 2/3] dt-bindings: remoteproc: stm32_rproc: update for firmware synchronization
-Date:   Thu, 27 Aug 2020 09:21:00 +0200
-Message-ID: <20200827072101.26588-3-arnaud.pouliquen@st.com>
+Subject: [PATCH 3/3] ARM: dts: stm32: update stm32mp151 for remote proc synchronisation support
+Date:   Thu, 27 Aug 2020 09:21:01 +0200
+Message-ID: <20200827072101.26588-4-arnaud.pouliquen@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200827072101.26588-1-arnaud.pouliquen@st.com>
 References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG3NODE1.st.com
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
  (10.75.127.7)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-27_02:2020-08-27,2020-08-27 signatures=0
@@ -67,46 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new properties description used to attach to a pre-loaded
-firmware according to the commit 9276536f455b3
-("remoteproc: stm32: Parse syscon that will manage M4 synchronisation")
-which updates the driver part.
+Two backup registers are used to store the Cortex-M4 state and the resource
+table address.
+Declare the tamp node and add associated properties in m4_rproc node
+to allow Linux to attach to a firmware loaded by the first boot stages.
+
+Associated driver implementation is available in commit 9276536f455b3
+("remoteproc: stm32: Parse syscon that will manage M4 synchronisation").
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- .../bindings/remoteproc/st,stm32-rproc.yaml   | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 4ffa25268fcc..e50957d86b1c 100644
---- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-@@ -96,6 +96,25 @@ properties:
-         3rd cell: register bitmask for the deep sleep bit
-     maxItems: 1
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index bfe29023fbd5..842ecffae73a 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1541,6 +1541,11 @@
+ 			status = "disabled";
+ 		};
  
-+  st,syscfg-m4-state:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+    description: |
-+      Reference to the tamp register which exposes the Cortex-M4 state.
-+        1st cell: phandle to syscon block
-+        2nd cell: register offset containing the Cortex-M4 state
-+        3rd cell: register bitmask for the Cortex-M4 state
-+    maxItems: 1
++		tamp: tamp@5c00a000 {
++			compatible = "st,stm32-tamp", "syscon";
++			reg = <0x5c00a000 0x400>;
++		};
 +
-+  st,syscfg-rsc-tbl:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+    description: |
-+      Reference to the tamp register which references the Cortex-M4
-+      resource table address.
-+        1st cell: phandle to syscon block
-+        2nd cell: register offset containing the resource table address
-+        3rd cell: register bitmask for the resource table address
-+    maxItems: 1
-+
-   st,auto-boot:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
+ 		/*
+ 		 * Break node order to solve dependency probe issue between
+ 		 * pinctrl and exti.
+@@ -1717,6 +1722,8 @@
+ 			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+ 			st,syscfg-tz = <&rcc 0x000 0x1>;
+ 			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
++			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
++			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+ 			status = "disabled";
+ 		};
+ 	};
 -- 
 2.17.1
 
