@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1152D253FFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B7E253F71
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgH0H7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:59:10 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:8942 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728587AbgH0H7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:59:06 -0400
-IronPort-SDR: pcQTABDNzCOEZzVXUHdHR+VQg279JaBcMZMVpmFp4+RY4P0r8TpEUcqSdNCdiuaTz3lvgfF1i4
- VQGOE+SdLDOXfrYRNsEiW6Tj/20R0aSR5ayzhL411S0jeVhK2GMjl109fPURBGKpp2/iz2hi7F
- MHfRoSRZuQV/DzQs9bdPtrUe2SnnCcCU34ppC76d5FifhrDGvKKWHoNMJSB3QJCb5h8m8o9eLd
- /pO7JzSsESETJweFOwkAxRHlf9/nTc9WURJcGlq55bXQYxP6I/0isYsL+T3qKm6HKBFjMBAfYg
- 1HM=
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="13619585"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 27 Aug 2020 09:59:04 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 27 Aug 2020 09:59:04 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 27 Aug 2020 09:59:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1598515144; x=1630051144;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=Oe/LRi3jeDUnyT2lJ6K1yeZAK9stHhVflXPfWhtYVhk=;
-  b=WufcuUywO6Xag/qsdyaGEbHwJ2O1eqkNNC6SmY0gdYk6N//6LTx88QGN
-   SwGDgxRFWn4FsR2mZ1xW2qhXZG4NR0fmEj6lq+kaWt4GkhJVpiS7YvTcf
-   D3O8o9tbyXlx0MFoxRHpkKTE2uZ93GMrCaHn/gE6wd7820MevshqGKz6r
-   IqvLuEg94FwwKaeXqVIIufVVfbP4i6WX6b8/silxEZDCJhWj6qQMYTgMy
-   2D8hCCR3bd71ZxcR1x0CzMzHCnQtx5FPkN/+VuuxMqH2VLAanuVb+OTIn
-   TFDIxc0rR46qBt9wa+p0EcNa4pmEvcRALnobIdPjsf/zrXVMpFf2e9J3G
-   w==;
-IronPort-SDR: 9Fyq4A42C5ZokLxgWBJ4iX6M5+kl8NRn9XLfdUEB/cYGt91pe7DrmnL1p8AsSXFops5VDWXROK
- qsi6nj4l7CNS7dpGwm3jwuBAUBOKPqduAl3H8hsdN4IufG7qqxmQDlSDs2ynggyGaLe9BjboGQ
- 51xVYgttTNCkrqObbU5aLLQU2SGYIkixVp2ynyLzUPEPCwb02pyuSYSq/B9Uj1ETxSRMhxk+lC
- 1tlUQTRfg1kjnhpb4FMM0jCxvKm1JO1ug3ZtGnuSExTdpxsHfYNynBcTQFwxmEWjV7JRPG/+lD
- cSU=
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="13619584"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 27 Aug 2020 09:59:04 +0200
-Received: from herburgerg-w.tq-net.de (herburgerg-w.tq-net.de [10.122.52.145])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id C7C1C280065;
-        Thu, 27 Aug 2020 09:59:04 +0200 (CEST)
-From:   Gregor Herburger <gregor.herburger@ew.tq-group.com>
-To:     york.sun@nxp.com, bp@alien8.de, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com, rrichter@marvell.com
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Subject: [PATCH v2 1/1] edac: fsl_ddr_edac: fix expected data message
-Date:   Thu, 27 Aug 2020 09:56:00 +0200
-Message-Id: <20200827075600.22335-1-gregor.herburger@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817095302.GD549@zn.tnic>
-References: <20200817095302.GD549@zn.tnic>
+        id S1728282AbgH0HoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:44:25 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:18160 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728081AbgH0HoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:44:24 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200827074421epoutp0389336825e7867a72a58d7f53db67b301~vEEBwJeDT2221422214epoutp038
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:44:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200827074421epoutp0389336825e7867a72a58d7f53db67b301~vEEBwJeDT2221422214epoutp038
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598514261;
+        bh=r4jhcseoHypqvXRZ/RixmNT6Bx53CHi5vw/qNzs71Ww=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=bpwA3lBBoncM5sqbAlD8FGqej9g0VLVV1+AkPjQ2bqQVucMYHobgRMU13Egh+gUD6
+         0GFhbKz8FxqJJsi76eMcZ/5kHKhm1UTKNKlA/q2QYnEKMbUlyq+LgcEauxJWko8bjL
+         pTY/wK4S3I7SAMRoldCBOARe6DD8WCkU7ujVaPUo=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200827074420epcas1p13c51a1ef62d08ffa9af1173247dc69a6~vEEBEK3-q0033200332epcas1p18;
+        Thu, 27 Aug 2020 07:44:20 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4BcZVq6MnQzMqYkZ; Thu, 27 Aug
+        2020 07:44:19 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        10.47.18978.254674F5; Thu, 27 Aug 2020 16:44:19 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200827074418epcas1p445eee582dfa4a74becc65df4e6a4ba6a~vED_xdpCK0446304463epcas1p4z;
+        Thu, 27 Aug 2020 07:44:18 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200827074418epsmtrp2343e66b2f90df69b0c0035cbe28cc421~vED_wjJay2482024820epsmtrp2d;
+        Thu, 27 Aug 2020 07:44:18 +0000 (GMT)
+X-AuditID: b6c32a35-5edff70000004a22-66-5f476452369e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1B.06.08303.254674F5; Thu, 27 Aug 2020 16:44:18 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200827074418epsmtip1c4f70f75890a78c85ffa1cb031ae9dca~vED_lqP5k2184021840epsmtip1F;
+        Thu, 27 Aug 2020 07:44:18 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] extcon: ptn5150: Set the VBUS and POLARITY
+ property capability
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     vijaikumar.kanagarajan@gmail.com, krzk@kernel.org,
+        myungjoo.ham@samsung.com, heikki.krogerus@linux.intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <e0ac8482-d607-6095-0d9b-2918f0e7a0f2@samsung.com>
+Date:   Thu, 27 Aug 2020 16:56:45 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
+MIME-Version: 1.0
+In-Reply-To: <20200827065128.55094-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmgW5winu8QcNBRovrbyMsulbvZLE4
+        f34Du8XlXXPYLG43rmCz+NKxns1iw7H7bBYv909ntWhqOs7mwOmxc9Zddo/Fe14yeWxa1cnm
+        Me9koEffllWMHp83yQWwRWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXm
+        ptoqufgE6Lpl5gDdpKRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpsCzQK07MLS7N
+        S9dLzs+1MjQwMDIFKkzIzjj6fw9rQTN3ReevFrYGxv8cXYycHBICJhLLXjxj6mLk4hAS2MEo
+        8fvRQ2YI5xOjxOyXl1ggnM+MEv/OHGDvYuQAa/k5jwcivotRoq3vBVT7e6CiOfeZQIqEBWIk
+        Pi6QAzFFBPIlzjwRBNnGLLCdUeLR6noQm01AS2L/ixtsIDa/gKLE1R+PGUFsXgE7iZ7dc5lA
+        bBYBVYnGljXMILaoQJjEyW0tUDWCEidnPmEBsTkFAiUmNK9mgpgvLnHryXwoW15i+9s5YM9I
+        CKzlkDh98hELxP0uEqdW6kB8Lyzx6vgWdghbSuLzu71sEHa1xMqTR9ggejsYJbbsv8AKkTCW
+        2L90MtiLzAKaEut36UOEFSV2/p7LCLGXT+Ld1x5WiFW8Eh1tQhAlyhKXH9xlgrAlJRa3d7JN
+        YFSaheSbWUg+mIXkg1kIyxYwsqxiFEstKM5NTy02LDBEjupNjODEqmW6g3Hi2w96hxiZOBgP
+        MUpwMCuJ8ApedI4X4k1JrKxKLcqPLyrNSS0+xGgKDN+JzFKiyfnA1J5XEm9oamRsbGxhYmhm
+        amioJM778JZCvJBAemJJanZqakFqEUwfEwenVAPTUkV2obku7y8EBvS+T/AP9Z/COzF6u/GD
+        6Twsl51vnzgqlPSw33jir99OJ1uz5l7xeD8xs/M885LIWZ+aBK5oqstlf7q1jqX8V8WjwGWm
+        iZrh/3gW6RRNabPemCV4ryPb6tWHfhZj98JOlyWMQT8eTyyRPB9wuLm86O3TwGzORcf1NlX9
+        ZlGZsF2huGyP9/KInu8VGh4Lhb0vfTTIt5Dd2Jnv3HWi5oT8gRLp65eCLt+KWlNq+/uh88mG
+        vZqZFYsYj6UfdGLo+n7foTLY+Nsl1RcFMmtqLsfnaNbf6/QsmWgvcpAlQ976bY3gHosbU5r2
+        6bs5v3+0v+j1zcb/ScvFbnzhFPn4e2VNbtB9261KLMUZiYZazEXFiQBhNDcTNQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJTjcoxT3e4PQ+SYvrbyMsulbvZLE4
+        f34Du8XlXXPYLG43rmCz+NKxns1iw7H7bBYv909ntWhqOs7mwOmxc9Zddo/Fe14yeWxa1cnm
+        Me9koEffllWMHp83yQWwRXHZpKTmZJalFunbJXBlHP2/h7Wgmbui81cLWwPjf44uRg4OCQET
+        iZ/zeLoYuTiEBHYwSuz/vIa9i5ETKC4pMe3iUWaIGmGJw4eLIWreMkq8OtLMCBIXFoiR+LhA
+        DqRcRCBf4t3M3awgNcwC2xkljp+/xgKSEBJ4DdSwiAnEZhPQktj/4gYbiM0voChx9cdjRhCb
+        V8BOomf3XLAaFgFVicaWNcwgtqhAmMTOJY+ZIGoEJU7OfAI2k1MgUGJC82qwOLOAusSfeZeY
+        IWxxiVtP5kPF5SW2v53DPIFReBaS9llIWmYhaZmFpGUBI8sqRsnUguLc9NxiwwKjvNRyveLE
+        3OLSvHS95PzcTYzgKNPS2sG4Z9UHvUOMTByMhxglOJiVRHgFLzrHC/GmJFZWpRblxxeV5qQW
+        H2KU5mBREuf9OmthnJBAemJJanZqakFqEUyWiYNTqoHJ7tkXQW2dR2/Cf5s36nxKEg35d1/X
+        pOOsxM9Cy3jrm55RsT7OTFdmtcwVi0i016ufyOpyzez5Q45+pl0L5qr6PPuV0qp9Mu2k+9zU
+        V0tKFfvvLWO+7Gxx9l7j6WBJYd/NrnMWaMQWfJb4d6S76PD2+sh5c95af5U/Erck2ufdWR0V
+        vwdL+kqzkx5Mz56WJCd0bGbbMvbN15W1U5/quf9YaWV11OHUcTuuKxt5rv+/OH9l/LXPV/tv
+        L/TtKFd7cCbbtTmOo2ma4Kkb124YStbM8/nW4xTXWnPtY5X3+t3SBRMYZ2x+Mj8z6k9rWDyv
+        /eZr9iyMf975nn8cfedM7yGnOU0C+69LF+8IbkthPiGoxFKckWioxVxUnAgAKXbcYiEDAAA=
+X-CMS-MailID: 20200827074418epcas1p445eee582dfa4a74becc65df4e6a4ba6a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200827065143epcas1p3da86f8d70e6d78c64a925f4d9c0f92eb
+References: <20200827065128.55094-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <CGME20200827065143epcas1p3da86f8d70e6d78c64a925f4d9c0f92eb@epcas1p3.samsung.com>
+        <20200827065128.55094-2-vadivel.muruganx.ramuthevar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a correctable single bit error occurs, the driver calculates the
-bad_data_bit respectively the bad_ecc_bit. If there is no error in the
-corresponding data, the value becomes -1. With this the expected data
-message is calculated.
+On 8/27/20 3:51 PM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> 
+> Set the capability value of property for VBUS and POLARITY.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/extcon/extcon-ptn5150.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
+> index 841c9fe211f1..20d49a54c36e 100644
+> --- a/drivers/extcon/extcon-ptn5150.c
+> +++ b/drivers/extcon/extcon-ptn5150.c
+> @@ -275,6 +275,13 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
+>  		return ret;
+>  	}
+>  
+> +	extcon_set_property_capability(info->edev, EXTCON_USB,
+> +				       EXTCON_PROP_USB_VBUS);
+> +	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
+> +				       EXTCON_PROP_USB_VBUS);
+> +	extcon_set_property_capability(info->edev, EXTCON_USB_HOST,
+> +				       EXTCON_PROP_USB_TYPEC_POLARITY);
 
-In the case of an error in the lower 32 bits or no error (-1) the right
-side operand of the bit-shift becomes negative which is undefined
-behavior.
+Above codes used the space for the indentation to keep the vertical line.
+I think that we better to use tab for the indentation.
 
-This can result in wrong and misleading messages like this:
-[  311.103794] EDAC FSL_DDR MC0: Faulty Data bit: 36
-[  311.108490] EDAC FSL_DDR MC0: Expected Data / ECC:   0xffffffef_ffffffff / 0x80000059
-[  311.116135] EDAC FSL_DDR MC0: Captured Data / ECC:   0xffffffff_ffffffef / 0x59
+If there are no objection, I'll fix and then apply it. 
 
-Fix this by only calculating the expected data where the error occurred.
+> +
+>  	/* Initialize PTN5150 device and print vendor id and version id */
+>  	ret = ptn5150_init_dev_type(info);
+>  	if (ret)
+> 
 
-With the fix the dmesg output looks like this:
-[  311.103794] EDAC FSL_DDR MC0: Faulty Data bit: 36
-[  311.108490] EDAC FSL_DDR MC0: Expected Data / ECC:   0xffffffef_ffffffef / 0x59
-[  311.116135] EDAC FSL_DDR MC0: Captured Data / ECC:   0xffffffff_ffffffef / 0x59
 
-Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
----
- drivers/edac/fsl_ddr_edac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/edac/fsl_ddr_edac.c b/drivers/edac/fsl_ddr_edac.c
-index 6d8ea226010d..4b6989cf1947 100644
---- a/drivers/edac/fsl_ddr_edac.c
-+++ b/drivers/edac/fsl_ddr_edac.c
-@@ -343,9 +343,9 @@ static void fsl_mc_check(struct mem_ctl_info *mci)
- 
- 		fsl_mc_printk(mci, KERN_ERR,
- 			"Expected Data / ECC:\t%#8.8x_%08x / %#2.2x\n",
--			cap_high ^ (1 << (bad_data_bit - 32)),
--			cap_low ^ (1 << bad_data_bit),
--			syndrome ^ (1 << bad_ecc_bit));
-+			(bad_data_bit > 31) ? cap_high ^ (1 << (bad_data_bit - 32)) : cap_high,
-+			(bad_data_bit <= 31) ? cap_low ^ (1 << (bad_data_bit)) : cap_low,
-+			(bad_ecc_bit != -1) ? syndrome ^ (1 << (bad_ecc_bit)) : syndrome);
- 	}
- 
- 	fsl_mc_printk(mci, KERN_ERR,
 -- 
-2.17.1
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
