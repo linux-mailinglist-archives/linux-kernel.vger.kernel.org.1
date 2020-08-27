@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AD02540AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087672540B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgH0IYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 04:24:02 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45902 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726395AbgH0IXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 04:23:55 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6EE67404E57DEB67FD5B;
-        Thu, 27 Aug 2020 16:23:53 +0800 (CST)
-Received: from huawei.com (10.174.187.31) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
- 16:23:43 +0800
-From:   Yifei Jiang <jiangyifei@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <anup.patel@wdc.com>,
-        <alistair.francis@wdc.com>, <atish.patra@wdc.com>,
-        <deepa.kernel@gmail.com>
-CC:     <kvm-riscv@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <victor.zhangxiaofeng@huawei.com>, <wu.wubin@huawei.com>,
-        <zhang.zhanghailiang@huawei.com>, <dengkai1@huawei.com>,
-        <yinyipeng1@huawei.com>, Yifei Jiang <jiangyifei@huawei.com>
-Subject: [PATCH RFC 2/2] target/kvm: Add interfaces needed for log dirty
-Date:   Thu, 27 Aug 2020 16:22:51 +0800
-Message-ID: <20200827082251.1591-3-jiangyifei@huawei.com>
-X-Mailer: git-send-email 2.26.2.windows.1
-In-Reply-To: <20200827082251.1591-1-jiangyifei@huawei.com>
-References: <20200827082251.1591-1-jiangyifei@huawei.com>
+        id S1728249AbgH0IXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 04:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727986AbgH0IXu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 04:23:50 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F1CC061264;
+        Thu, 27 Aug 2020 01:23:50 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w13so4465591wrk.5;
+        Thu, 27 Aug 2020 01:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L4XCCnRN6fG15vCYo2bW4Pc6TLiOQjp7cLIshmu9c9U=;
+        b=AFPvat03Xy0424JfFgdxZskpWCg155al8jI1hGe+5UheZKEzOKDhqy027O/CM1zTv+
+         zfdalVG0lrpwTR+pRnvJLIcC/AUdTrNykqBBw3SDe2WpDGWeWaM6lx/nXNUYAjLF5tp8
+         auYwaMB7NxJ0aV1Bc+4ClWDa7jm5uXtECHmCIGVTvNYVlLa10+Ulpq9Rfxvtn1ptpENV
+         uLRmZZiivyg0c6afnm7TydjsXNzmqNaD74iChCObjyFkIdR4tMmrCwQyVfonXFXGIGsx
+         LKeSMn0Kh2A0iu2YhCHvTGuoIZ2X1B2GHxR7RPouuBjA3HBkAKvfxxm4osLBBwmCREJG
+         JlTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L4XCCnRN6fG15vCYo2bW4Pc6TLiOQjp7cLIshmu9c9U=;
+        b=bt3qNqWXsbCnLlOGdK/vrrBqGZtosPT7z/swpL20NX3Fcjl00O/D6x3Ykkl/qp9XRD
+         BwaLkyP7i13kdVwbSZ+XCCnHtPtK3hB2xenVFKPxYnMwwO1cuNJ8vqiAO4mKg0HSjvte
+         6Icj7rfi8YyDpVDb/6OUaI9tWpLgd6pHApFQ0DnsgOMEsvS/38r5o4vahCUFYd27JsgQ
+         jvK21YBvmWq0OEmPPOZZ8ggNwT1CDcT4lId5goJGwDHui3mTIx2u8dIONzlpRtNOlYqc
+         L7uf3GhSvclkfQmWDElsz9Je82Na9U57UcKYzKboopPWWzzsd6Ig3pqYnYziymvPA0HI
+         DE0Q==
+X-Gm-Message-State: AOAM5306buJwIZ/CAGgFAqSr3rQxE5sIWUz8fBtU1lLDItjDu0oPE8Oi
+        EZ2M+1UkavMzRtFmAIIt+j03taThWHC3MQ==
+X-Google-Smtp-Source: ABdhPJwzK3eFiKm90v/V4n4a5o+w0AzbR7Sg2+CRdvmTmpqjt1qvB5e6vObKUp7mNhpPEzvUNfxKAQ==
+X-Received: by 2002:a5d:5223:: with SMTP id i3mr16960587wra.58.1598516628776;
+        Thu, 27 Aug 2020 01:23:48 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.187])
+        by smtp.gmail.com with ESMTPSA id c10sm3843104wrn.24.2020.08.27.01.23.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 01:23:47 -0700 (PDT)
+Subject: Re: [v5,2/3] arm64: dts: mt7622: add reset node for mmc device
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "# 4.0+" <stable@vger.kernel.org>
+References: <20200814014346.6496-1-wenbin.mei@mediatek.com>
+ <20200814014346.6496-3-wenbin.mei@mediatek.com>
+ <CAPDyKFpt6-a+pkTXb2RZdx=yTONetugSCKbtSsRD2xQ3PRPhDQ@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <1dfc1938-f5e8-c4c8-57c7-d7b6c33dcb1d@gmail.com>
+Date:   Thu, 27 Aug 2020 10:23:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPDyKFpt6-a+pkTXb2RZdx=yTONetugSCKbtSsRD2xQ3PRPhDQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.31]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two interfaces of log dirty for kvm_main.c, and detele the interface
-kvm_vm_ioctl_get_dirty_log which is redundantly defined.
-
-CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT is added in defconfig.
-
-Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-Signed-off-by: Yipeng Yin <yinyipeng1@huawei.com>
----
- arch/riscv/configs/defconfig |  1 +
- arch/riscv/kvm/Kconfig       |  1 +
- arch/riscv/kvm/mmu.c         | 43 ++++++++++++++++++++++++++++++++++++
- arch/riscv/kvm/vm.c          |  6 -----
- 4 files changed, 45 insertions(+), 6 deletions(-)
-
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index d36e1000bbd3..857d799672c2 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -19,6 +19,7 @@ CONFIG_SOC_VIRT=y
- CONFIG_SMP=y
- CONFIG_VIRTUALIZATION=y
- CONFIG_KVM=y
-+CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-index 2356dc52ebb3..91fcffc70e5d 100644
---- a/arch/riscv/kvm/Kconfig
-+++ b/arch/riscv/kvm/Kconfig
-@@ -26,6 +26,7 @@ config KVM
- 	select KVM_MMIO
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select SRCU
-+	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	help
- 	  Support hosting virtualized guest machines.
- 
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index 88bce80ee983..df2a470c25e4 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -358,6 +358,43 @@ void stage2_wp_memory_region(struct kvm *kvm, int slot)
- 	kvm_flush_remote_tlbs(kvm);
- }
- 
-+/**
-+ * kvm_mmu_write_protect_pt_masked() - write protect dirty pages
-+ * @kvm:    The KVM pointer
-+ * @slot:   The memory slot associated with mask
-+ * @gfn_offset: The gfn offset in memory slot
-+ * @mask:   The mask of dirty pages at offset 'gfn_offset' in this memory
-+ *      slot to be write protected
-+ *
-+ * Walks bits set in mask write protects the associated pte's. Caller must
-+ * acquire kvm_mmu_lock.
-+ */
-+static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
-+        struct kvm_memory_slot *slot,
-+        gfn_t gfn_offset, unsigned long mask)
-+{
-+    phys_addr_t base_gfn = slot->base_gfn + gfn_offset;
-+    phys_addr_t start = (base_gfn +  __ffs(mask)) << PAGE_SHIFT;
-+    phys_addr_t end = (base_gfn + __fls(mask) + 1) << PAGE_SHIFT;
-+
-+    stage2_wp_range(kvm, start, end);
-+}
-+
-+/*
-+ * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
-+ * dirty pages.
-+ *
-+ * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
-+ * enable dirty logging for them.
-+ */
-+void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
-+        struct kvm_memory_slot *slot,
-+        gfn_t gfn_offset, unsigned long mask)
-+{
-+    kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
-+}
-+
-+
- int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
- 		   unsigned long size, bool writable)
- {
-@@ -433,6 +470,12 @@ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
- {
- }
- 
-+void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
-+					struct kvm_memory_slot *memslot)
-+{
-+	kvm_flush_remote_tlbs(kvm);
-+}
-+
- void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free)
- {
- }
-diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
-index 4f2498198cb5..f7405676903b 100644
---- a/arch/riscv/kvm/vm.c
-+++ b/arch/riscv/kvm/vm.c
-@@ -12,12 +12,6 @@
- #include <linux/uaccess.h>
- #include <linux/kvm_host.h>
- 
--int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log)
--{
--	/* TODO: To be added later. */
--	return -ENOTSUPP;
--}
--
- int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- {
- 	int r;
--- 
-2.19.1
 
 
+On 24/08/2020 11:50, Ulf Hansson wrote:
+> On Fri, 14 Aug 2020 at 03:44, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>>
+>> This commit adds reset node for mmc device.
+>>
+>> Cc: <stable@vger.kernel.org> # v5.4+
+>> Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
+>> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+>> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+> 
+> I can pick this for my fixes branch, together with the other changes,
+> however deferring that until Matthias acks it.
+
+Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+My understanding is, that this will land also in v5.9-rc[3,4], correct?
+
+Regards,
+Matthias
+
+> 
+> Kind regards
+> Uffe
+> 
+> 
+> 
+>> ---
+>>   arch/arm64/boot/dts/mediatek/mt7622.dtsi | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+>> index 1a39e0ef776b..5b9ec032ce8d 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+>> +++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+>> @@ -686,6 +686,8 @@
+>>                  clocks = <&pericfg CLK_PERI_MSDC30_0_PD>,
+>>                           <&topckgen CLK_TOP_MSDC50_0_SEL>;
+>>                  clock-names = "source", "hclk";
+>> +               resets = <&pericfg MT7622_PERI_MSDC0_SW_RST>;
+>> +               reset-names = "hrst";
+>>                  status = "disabled";
+>>          };
+>>
+>> --
+>> 2.18.0
