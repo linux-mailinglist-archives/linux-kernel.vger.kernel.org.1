@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B1B25459F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C612545DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgH0NE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgH0NAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 09:00:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ECAC061264;
-        Thu, 27 Aug 2020 06:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4Wky95+cp9t6Uc0O4qIN4Z6xGmvHn/NYIHDQjQIG07k=; b=b0qtqXGspyLjHuQD/EC9RMu68r
-        R4fF8h5wxyM0dri1npgOSvdmAI/vTKaEGhRhGKIrKQsm7aXqeN9M/UQ2CnRm04AYEzZVa3InvywX7
-        5f8OAOsZcoB7dBqYf7rax9NJJ5xzMQmikW+Ac6/+magIzfZJxDzbUjykY06V4w4GJ/Ui4XIEr8TRk
-        GU6JX3PMGMkRr2HkVT+SpoitNA3ZB9usoyi4IMxXcUgYV408ZEfevURTjgH8kr/n9GiB3y9XsSVbS
-        8zT0raF2qOSRpWk3ZVrteE0+kcDtbDRp+QLBtSHGg6QIfJNfA69Pet3xluPeLDchpOtD1B9/0WEcK
-        cZJ/zZiQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBHVF-00043a-G7; Thu, 27 Aug 2020 12:59:41 +0000
-Date:   Thu, 27 Aug 2020 13:59:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
-Message-ID: <20200827125941.GG14765@casper.infradead.org>
-References: <20200819184850.24779-1-willy@infradead.org>
- <20200819184850.24779-3-willy@infradead.org>
- <20200826142002.GA988805@cmpxchg.org>
+        id S1727968AbgH0N1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:27:33 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10338 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727781AbgH0NTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:19:19 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C3F82C315B0D3867DA47;
+        Thu, 27 Aug 2020 21:00:57 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
+ 21:00:46 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <b.zolnierkie@samsung.com>, <yanaijie@huawei.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] video: fbdev: remove set but not used 'ulCoreClock'
+Date:   Thu, 27 Aug 2020 21:00:28 +0800
+Message-ID: <20200827130028.428893-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826142002.GA988805@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:20:02AM -0400, Johannes Weiner wrote:
-> The refactor makes sense to me, but the name is confusing. We're not
-> looking for a swap page, we're primarily looking for a file page in
-> the page cache mapping that's handed in. Only in the special case
-> where it's a shmem mapping and there is a swap entry do we consult the
-> auxiliary swap cache.
-> 
-> How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
-> Maybe you have a better idea. It's a fairly specialized operation that
-> isn't widely used, so a longer name isn't a bad thing IMO.
+This addresses the following gcc warning with "make W=1":
 
-Got it.  find_get_incore_page().  I was going to go with inmem, but that
-it matches mincore sold me on it.
+drivers/video/fbdev/kyro/STG4000InitDevice.c: In function
+‘SetCoreClockPLL’:
+drivers/video/fbdev/kyro/STG4000InitDevice.c:247:6: warning: variable
+‘ulCoreClock’ set but not used [-Wunused-but-set-variable] // yanaijie
+fixed
+  247 |  u32 ulCoreClock;
+      |      ^~~~~~~~~~~
 
-/**
- * find_get_incore_page - Find and get a page from the page or swap caches.
- * @mapping: The address_space to search.
- * @index: The page cache index.
- *
- * This differs from find_get_page() in that it will also look for the
- * page in the swap cache.
- *
- * Return: The found page or %NULL.
- */
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/video/fbdev/kyro/STG4000InitDevice.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I was focusing too much on what the function did, not why it was doing it.
+diff --git a/drivers/video/fbdev/kyro/STG4000InitDevice.c b/drivers/video/fbdev/kyro/STG4000InitDevice.c
+index 1d3f2080aa6f..edaeec2d9590 100644
+--- a/drivers/video/fbdev/kyro/STG4000InitDevice.c
++++ b/drivers/video/fbdev/kyro/STG4000InitDevice.c
+@@ -244,7 +244,6 @@ int SetCoreClockPLL(volatile STG4000REG __iomem *pSTGReg, struct pci_dev *pDev)
+ {
+ 	u32 F, R, P;
+ 	u16 core_pll = 0, sub;
+-	u32 ulCoreClock;
+ 	u32 tmp;
+ 	u32 ulChipSpeed;
+ 
+@@ -282,7 +281,7 @@ int SetCoreClockPLL(volatile STG4000REG __iomem *pSTGReg, struct pci_dev *pDev)
+ 	if (ulChipSpeed == 0)
+ 		return -EINVAL;
+ 
+-	ulCoreClock = ProgramClock(REF_FREQ, CORE_PLL_FREQ, &F, &R, &P);
++	ProgramClock(REF_FREQ, CORE_PLL_FREQ, &F, &R, &P);
+ 
+ 	core_pll |= ((P) | ((F - 2) << 2) | ((R - 2) << 11));
+ 
+-- 
+2.25.4
+
