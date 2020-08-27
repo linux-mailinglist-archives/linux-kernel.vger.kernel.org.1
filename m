@@ -2,62 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D85C25515C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1998F25515E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgH0Wyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:54:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbgH0Wyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:54:49 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2254220848;
-        Thu, 27 Aug 2020 22:54:49 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.195-rt94
-Date:   Thu, 27 Aug 2020 22:54:07 -0000
-Message-ID: <159856884741.877751.1367745501146551410@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S1728022AbgH0WzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 18:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727926AbgH0WzW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 18:55:22 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6897BC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:55:22 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id t6so8278655ljk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qb0Ec8fDQudSKqvQFmwnBIuKxE0k0ElPX6kr8ZppFm8=;
+        b=MeAnpLG4pG2Ikxmbpy6Cs2fX3iTsHcQCQzPEKb4qfBmXfZTbxuDZ6g4JEVaZgTEKKX
+         8FlO10kwzHHTDncetdmSpJi3tOJnfsSngYRqcZfVB9EpeO6DmhzghwCA69NW5MUB7BaS
+         P3VcgSt11sTkF4YuIng6D1f56oMTRF5wN7rYphD/lwg+wF7N/EwZVVt2h6redx6XRvRl
+         zA0raTj6jLEgtK1f+66Rbr1ZudmIpRDXRXweJjjDmmiVEMiSHBmji98Fp1PqW5qoXTur
+         JoqgtkbQMK1+nuke+LwvH7Ah/pH7u6nOh3R1W58mJ20j0n8GsyXP/BEvJ5ZPBsnb/hFW
+         2eQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qb0Ec8fDQudSKqvQFmwnBIuKxE0k0ElPX6kr8ZppFm8=;
+        b=LLiCuQGszV/1jsjgw5LlzX+Ua4AekvcUmI7UxtkFrO3AcX335J7PFLv2hzYa4i2sul
+         NaA1Tba44AUn7aA5wtwUv95JqBgoPNbnzOVOJQmxwIDMJi/ZwCRV4BvW+B7Bs05Ny8Aw
+         aBihtKNZEBnjawP3wjB+LK8lGjP0RS7VAI1iS3zp87Mgzur7enfuLg9wYAXg52kB9TWc
+         oo6a6RcYrhjWdo/kKHIVKYNKS0lBxzfuQH0xAobzT0r6CR9fRwYc3sP7rTdo2tH9K+HJ
+         2xokQ0cvAOliK+1fQqSjkXdpK6neezXfFruTrJ0OM7bJRbT428Ggd6pxi2d6GlDIPtzQ
+         zD6Q==
+X-Gm-Message-State: AOAM5326mFvTly5EoqoRaEPGh7WC1z/O5xVEQR6oHSibe5G5X+iWJJTZ
+        ff3Ztl7ViniqKxMAcluCbwTDWnM66PtyzYlE8KpgxA==
+X-Google-Smtp-Source: ABdhPJyauiwVNK3F8aHtjkSSue45fsdrC/ZAP+yDT7A1hDKs5ujzLl8YJlHq93WLvkvXZHRQtIN75jL/gr1bSV1yhnE=
+X-Received: by 2002:a2e:81d9:: with SMTP id s25mr10355947ljg.104.1598568920739;
+ Thu, 27 Aug 2020 15:55:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200804091603.541-1-a.fatoum@pengutronix.de>
+In-Reply-To: <20200804091603.541-1-a.fatoum@pengutronix.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 Aug 2020 00:55:09 +0200
+Message-ID: <CACRpkdb9NBpS3yvvX+G8NWgVdSqR5vd6DxP2rT7GCuB0ObnvHg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: siox: indicate exclusive support of threaded IRQs
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Thorsten Scherer <t.scherer@eckelmann.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Hi Ahmad,
 
-I'm pleased to announce the 4.14.195-rt94 stable release.
+On Tue, Aug 4, 2020 at 11:18 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-You can get this release via the git tree at:
+> Generic GPIO consumers like gpio-keys use request_any_context_irq()
+> to request a threaded handler if irq_settings_is_nested_thread() ==
+> true or a hardirq handler otherwise.
+>
+> Drivers using handle_nested_irq() must be sure that the nested
+> IRQs were requested with threaded handlers, because the IRQ
+> is handled by calling action->thread_fn().
+>
+> The gpio-siox driver dispatches IRQs via handle_nested_irq,
+> but has irq_settings_is_nested_thread() == false.
+>
+> Set gpio_irq_chip::threaded to remedy this.
+>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+I think we concluded we want to apply this patch, but with
+a fixed commit text, can you send a V2? (Or ask Uwe if he wants
+to pick it up and write the text.)
 
-  branch: v4.14-rt
-  Head SHA1: 621094972be038753162aea35d63b4e904c85f46
-
-Or to build 4.14.195-rt94 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.195.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.195-rt94.patch.xz
-
-
-You can also build from 4.14.194-rt93 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.194-rt93-rt94.patch.xz
-
-Enjoy!
-Clark
+Yours,
+Linus Walleij
