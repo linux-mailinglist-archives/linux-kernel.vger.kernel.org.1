@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C717425475C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDF9254762
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgH0OtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39728 "EHLO mail.kernel.org"
+        id S1728094AbgH0Otk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:49:40 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34275 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgH0N6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728085AbgH0N6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Aug 2020 09:58:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6318C22BF5;
-        Thu, 27 Aug 2020 13:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598536674;
-        bh=aF7rWnhp5gUP5XrpErbK4HkQ8c+qptsAiVedxz/Iudw=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=a6YI6KgyR2y88a3nRqf6Nb/AuEcuXmAiFXmpL9HJVa2v7NprHFfusDs0DsYdJ85cL
-         Lq4yItq4h5YvQ3n7wBJ6qlHAPwRUm9iDrJ8cdo9DBM5Vc5lQcaNWLVUCqCzz8jv5r0
-         M8yT2dEvXm5iqqftsZnbXEs5ittx19IGCggp1xfw=
-Date:   Thu, 27 Aug 2020 14:57:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Piyush Goyal <piyushgoyaliit@gmail.com>,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1598536675;
+        bh=uLRcuAAqrW07F82sdCLeqyG0DIS6eSFEXsO8Otq5bp0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=FMWxyd/5iXXZPguaf7EKjRwG2pjmyud5WcYyk5d3zmTSl1E2kVEtgswydUbWAt04Z
+         8whhoWHz9f7gggJOApBoe6DI8hk0D1uoa+2+VlVqXkZOBwpaI+QdTaDwzmZ7ISMzCt
+         /lWrLkydxD3exYUwBPVQJ1TD9EVe88Yg0XBedEHc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.146.7] ([217.61.146.7]) by web-mail.gmx.net
+ (3c-app-gmx-bap26.server.lan [172.19.172.96]) (via HTTP); Thu, 27 Aug 2020
+ 15:57:55 +0200
+MIME-Version: 1.0
+Message-ID: <trinity-b7618ae5-0917-4595-81bb-51764215b02e-1598536674992@3c-app-gmx-bap26>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        HS Liao <hs.liao@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20200827133419.36151-1-piyushgoyaliit@gmail.com>
-References: <20200827133419.36151-1-piyushgoyaliit@gmail.com>
-Subject: Re: [PATCH][next] regulator: mt6360: fix spelling mistake: "regulaotr" -> "regulator"
-Message-Id: <159853663810.29977.11973693705417715617.b4-ty@kernel.org>
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Aw: [PATCH v2] maiblox: mediatek: Fix handling of
+ platform_get_irq() error
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 27 Aug 2020 15:57:55 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20200827073128.28389-1-krzk@kernel.org>
+References: <20200827073128.28389-1-krzk@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:drKYd56QSglEjBuE+8kuiQEXMZ69EFTHi5u/RppsCaMnl2/1bzI+ad4TQuZM0LpPqMNI+
+ bExz9I1CKtGN34wjU1YyJSm3LBeYZfKsPeRgTyXRClOF+OWGliHzwAXMA+ay1Ks7D+mPHiPtHbzU
+ K7Ew5QronW1DJL7BgSoozF64nGFtmUs1gN1Q5Cbmsj8D0iZBWQ2GkaBGD7vwnwyTTRp23etWN1fV
+ Ala6BRWTs6AQTtgkQcNxFsGd2VeHOX+wQYRIBHc5NbPtEQ8KWzYB2777+aCB41SXzFtjx0nnZ5ZM
+ cU=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2UK820SKAxA=:vbeSVlKXwhbcN7oKajiC5U
+ 3CJwxk7wBAzk3AXJ4fc/GGxrx0mzp2YROODrLeVB01H8r8bEJ23+5MulE1Ya5ThF7nVZ7jLTZ
+ 5EiwmTD2uL6xoIeSjnTo2N8uXwX+EDBa+Vf7DjGjovmwmPJSwYT3l7B7C8VAMa0QmefAgtdJm
+ MNkzCWPjV/iUVAPqn5iXJxWmfHXNpnF/aQB+EsaWo2IsE66zAOajIpC+rjprzr4gHKxAXWK/0
+ OO0l6eTS1Rvo4f12zHnTFBWjbI7qQwJEF4Y8bWRZhVPEJdx43zBAmRtmIGtB7Yhla4+3bShHl
+ 76oyFO5bXPD1zVEF712nAZt8Jgp8RS962sDTjuPScKUif2LNz3n82zW879xdCez4RIZ078KJ2
+ xuhG4IeYbs37Lb0kZe5yTXCvDP1QD24XVIKUErRXVxncixl8dsLNlMSKAy4usz4pryMEl7BGB
+ 2WmbN4ZAXtxo01PUsBXfzJGRf0Ved7eZ4tmOdUGWUv+t4NuxofjC65l6Cl+ICE0O0EQVuyN46
+ ZcMftG9E3nVtZiZFtrnGg4q5lySvnzklOZARVkgkvvfpSw+QSKF6p0GUlzgfSf7mceFbbLj2i
+ p6c8wm1ft4WIYm3WQnSjnyr6vF5Zu3X4daci59TJY9OTbQYV6/Q22eIXWsdUxBfVT4OdQfEMI
+ 1s8InPqms8jiow8NwjVs8pWSKhTtdnBQPXJT5gKWBQYM80ZgjcY+ervVV67nAAhWV1rk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 19:04:19 +0530, Piyush Goyal wrote:
-> There are some spelling mistakes in two dev_err messages. Fix these.
+> Gesendet: Donnerstag, 27. August 2020 um 09:31 Uhr
+> Von: "Krzysztof Kozlowski" <krzk@kernel.org>
+> Betreff: [PATCH v2] maiblox: mediatek: Fix handling of platform_get_irq() error
 
-Applied to
+typo in subject i guess it should be "mailbox"
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] regulator: mt6360: fix spelling mistake: "regulaotr" -> "regulator"
-      commit: 18ccf8b9f8645e82c65c8c9c9095f456a4eb56a3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+regards Frank
