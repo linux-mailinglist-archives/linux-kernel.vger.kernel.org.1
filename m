@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E061A254ADF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3333254AE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 18:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgH0QjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 12:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgH0QjU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:39:20 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E992DC061264;
-        Thu, 27 Aug 2020 09:39:19 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 2so2906516pjx.5;
-        Thu, 27 Aug 2020 09:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jxCXbgMcETXHjztc3e+kVoudG6X3Da4/3xGoUmDe/go=;
-        b=XW/uM5Wcqs1yZHw4538Bg/z+LBQqf02T/ePJeyRyj6ZTeQLUXBuzSHvXfAZB1cQ9a8
-         VaFudvP3ZLv6nyZ/9buDVA4JdvR6nksaKtuBpLFJxdCx3gpXn8K9ZWLKx+NxmgridkZ/
-         cgn3Dbc/AMeiUxpoy51H8Cyu3qbIwV8b5ENB2IbHg9QW+jOjqkO6CaM80ZuGE2IrA/8D
-         xk8OsYLegXgl3Qqb02lyEUv5zMZU5L+l5wBUfQG+zA18yMsrm5KPya3RpWnrYpBmriOp
-         x8GwF8H/8lX/4s+1cber7Jg/S72tqXiJDe3rQIGfR58af6X9ertm4bezF1pkWMEPu1xb
-         gMwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jxCXbgMcETXHjztc3e+kVoudG6X3Da4/3xGoUmDe/go=;
-        b=OKFhYIYEUJrYcdL3LnALQQtbJ0ML7JxHc87UxkLfor5SEk8R3h+xBdOhwrVkbEkxGH
-         PKeUPAsgV2PMjcQRG/rDn8pZzowKB+itlbr4ZfViW+ZK4u5G95Gzl3nTrwCDE5CIRbNv
-         9OLNXWKYL3e4Vq8sDni5FsAvRqsz2Zsga0xdHJNdYk7bbXrP1zqHtCk1WME4m/6SBdVg
-         keWhYOhXaYJAeUI7gXN490yki+OLt4G0dpo6YyIa4AIBk4vJW89S/3uSUWsyfaWl58RR
-         73HoIFVemwtqkTyaOKtSMGFp960quib9oWsrFmnjH9qz0YvY5e5TPVPZf3AAYeuLevim
-         k06Q==
-X-Gm-Message-State: AOAM533fLVCYgmdS5lhjrQcJgjTRPid/HbfIemcRKSrJS70ZGU+YgQEg
-        L+QOB9IIgofQKkipY7WOCPY=
-X-Google-Smtp-Source: ABdhPJwpWQ29kxC+TVlHr+oDZK4vtLSemSmHkpzr9sxgG/h+Squy5aUs9Iec1ATAW/4STRoSgEjkog==
-X-Received: by 2002:a17:90b:298:: with SMTP id az24mr12053655pjb.192.1598546359254;
-        Thu, 27 Aug 2020 09:39:19 -0700 (PDT)
-Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id y196sm3343989pfc.202.2020.08.27.09.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 09:39:18 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 09:39:16 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ptp: ptp_ines: Remove redundant null check
-Message-ID: <20200827163916.GC13292@hoboy>
-References: <20200826031251.4362-1-vulab@iscas.ac.cn>
+        id S1727957AbgH0Qjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 12:39:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:60436 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727913AbgH0QjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 12:39:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B32A931B;
+        Thu, 27 Aug 2020 09:39:21 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B300E3F66B;
+        Thu, 27 Aug 2020 09:39:20 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 17:39:18 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 130/232] sched/uclamp: Protect uclamp fast path code
+ with static key
+Message-ID: <20200827163918.xvpstc7vpn6moyjp@e107158-lin.cambridge.arm.com>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091619.114657136@linuxfoundation.org>
+ <20200827135330.246pbwc7h5gvdli7@e107158-lin.cambridge.arm.com>
+ <20200827155518.GA682821@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200826031251.4362-1-vulab@iscas.ac.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200827155518.GA682821@kroah.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 03:12:51AM +0000, Xu Wang wrote:
-> Because kfree_skb already checked NULL skb parameter,
-> so the additional check is unnecessary, just remove it.
+On 08/27/20 17:55, Greg Kroah-Hartman wrote:
+> On Thu, Aug 27, 2020 at 02:53:31PM +0100, Qais Yousef wrote:
+> > On 08/20/20 11:19, Greg Kroah-Hartman wrote:
+> > > From: Qais Yousef <qais.yousef@arm.com>
+> > > 
+> > > [ Upstream commit 46609ce227039fd192e0ecc7d940bed587fd2c78 ]
+> > > 
+> > > There is a report that when uclamp is enabled, a netperf UDP test
+> > > regresses compared to a kernel compiled without uclamp.
+> > > 
+> > > https://lore.kernel.org/lkml/20200529100806.GA3070@suse.de/
+> > > 
+> > > While investigating the root cause, there were no sign that the uclamp
+> > > code is doing anything particularly expensive but could suffer from bad
+> > > cache behavior under certain circumstances that are yet to be
+> > > understood.
+> > > 
+> > > https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
+> > > 
+> > > To reduce the pressure on the fast path anyway, add a static key that is
+> > > by default will skip executing uclamp logic in the
+> > > enqueue/dequeue_task() fast path until it's needed.
+> > > 
+> > > As soon as the user start using util clamp by:
+> > > 
+> > > 	1. Changing uclamp value of a task with sched_setattr()
+> > > 	2. Modifying the default sysctl_sched_util_clamp_{min, max}
+> > > 	3. Modifying the default cpu.uclamp.{min, max} value in cgroup
+> > > 
+> > > We flip the static key now that the user has opted to use util clamp.
+> > > Effectively re-introducing uclamp logic in the enqueue/dequeue_task()
+> > > fast path. It stays on from that point forward until the next reboot.
+> > > 
+> > > This should help minimize the effect of util clamp on workloads that
+> > > don't need it but still allow distros to ship their kernels with uclamp
+> > > compiled in by default.
+> > > 
+> > > SCHED_WARN_ON() in uclamp_rq_dec_id() was removed since now we can end
+> > > up with unbalanced call to uclamp_rq_dec_id() if we flip the key while
+> > > a task is running in the rq. Since we know it is harmless we just
+> > > quietly return if we attempt a uclamp_rq_dec_id() when
+> > > rq->uclamp[].bucket[].tasks is 0.
+> > > 
+> > > In schedutil, we introduce a new uclamp_is_enabled() helper which takes
+> > > the static key into account to ensure RT boosting behavior is retained.
+> > > 
+> > > The following results demonstrates how this helps on 2 Sockets Xeon E5
+> > > 2x10-Cores system.
+> > > 
+> > >                                    nouclamp                 uclamp      uclamp-static-key
+> > > Hmean     send-64         162.43 (   0.00%)      157.84 *  -2.82%*      163.39 *   0.59%*
+> > > Hmean     send-128        324.71 (   0.00%)      314.78 *  -3.06%*      326.18 *   0.45%*
+> > > Hmean     send-256        641.55 (   0.00%)      628.67 *  -2.01%*      648.12 *   1.02%*
+> > > Hmean     send-1024      2525.28 (   0.00%)     2448.26 *  -3.05%*     2543.73 *   0.73%*
+> > > Hmean     send-2048      4836.14 (   0.00%)     4712.08 *  -2.57%*     4867.69 *   0.65%*
+> > > Hmean     send-3312      7540.83 (   0.00%)     7425.45 *  -1.53%*     7621.06 *   1.06%*
+> > > Hmean     send-4096      9124.53 (   0.00%)     8948.82 *  -1.93%*     9276.25 *   1.66%*
+> > > Hmean     send-8192     15589.67 (   0.00%)    15486.35 *  -0.66%*    15819.98 *   1.48%*
+> > > Hmean     send-16384    26386.47 (   0.00%)    25752.25 *  -2.40%*    26773.74 *   1.47%*
+> > > 
+> > > The perf diff between nouclamp and uclamp-static-key when uclamp is
+> > > disabled in the fast path:
+> > > 
+> > >      8.73%     -1.55%  [kernel.kallsyms]        [k] try_to_wake_up
+> > >      0.07%     +0.04%  [kernel.kallsyms]        [k] deactivate_task
+> > >      0.13%     -0.02%  [kernel.kallsyms]        [k] activate_task
+> > > 
+> > > The diff between nouclamp and uclamp-static-key when uclamp is enabled
+> > > in the fast path:
+> > > 
+> > >      8.73%     -0.72%  [kernel.kallsyms]        [k] try_to_wake_up
+> > >      0.13%     +0.39%  [kernel.kallsyms]        [k] activate_task
+> > >      0.07%     +0.38%  [kernel.kallsyms]        [k] deactivate_task
+> > > 
+> > > Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+> > > Reported-by: Mel Gorman <mgorman@suse.de>
+> > > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+> > > Link: https://lkml.kernel.org/r/20200630112123.12076-3-qais.yousef@arm.com
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > 
+> > Greg/Peter/Mel
+> > 
+> > Should this go to 5.4 too? Not saying it should, but I don't know if distros
+> > could care about potential performance hit that this patch addresses.
 > 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> If you want to provide a backported version of this to 5.4.y, that you
+> have tested that works properly, I will be glad to queue it up.
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+The conflict was simple enough to resolve. I'll test them tomorrow and post
+2 patches.
+
+Thanks!
+
+--
+Qais Yousef
