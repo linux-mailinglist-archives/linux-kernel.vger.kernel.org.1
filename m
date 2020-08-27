@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC45254543
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467E225453D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgH0Mr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:47:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52164 "EHLO mx2.suse.de"
+        id S1726851AbgH0Mqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:46:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46894 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728830AbgH0MeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:34:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11DF2AD63;
+        id S1729046AbgH0M2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:28:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598531279; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=cO//0luWVCYAyHjVHMw1ITNwOBiEMsNJEDqCuv4b1+A=;
+ b=KMqhlbcwRJAxKeKRH+X1KdWcHjHB+LUOVUkwt7ipyHI4u9NxMwB4ftgpbpyDZWs21s9x6ZWX
+ aqIrAUgJrohCfxR6LNmjZr9PBPTlNmnFH6x9MMrunm+CQ+BnY/cf5MjkKmyl+emSnVUhZmAp
+ ovN406/Cvuo+KDsTWgZLcDDeKYU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f47a422c598aced545ad7c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 12:16:34
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 47F55C43387; Thu, 27 Aug 2020 12:16:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05A78C433CA;
         Thu, 27 Aug 2020 12:16:31 +0000 (UTC)
-Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
- <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz>
- <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <77c6dfeb-06e9-0347-6f3d-188bb67b263c@suse.cz>
-Date:   Thu, 27 Aug 2020 14:15:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 05A78C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 05/30] atmel: Demote non-kerneldoc
+ header to standard comment block
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200814113933.1903438-6-lee.jones@linaro.org>
+References: <20200814113933.1903438-6-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200827121634.47F55C43387@smtp.codeaurora.org>
+Date:   Thu, 27 Aug 2020 12:16:34 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/20 7:12 AM, Joonsoo Kim wrote:
-> 2020년 8월 25일 (화) 오후 6:43, Vlastimil Babka <vbabka@suse.cz>님이 작성:
->>
->>
->> On 8/25/20 6:59 AM, js1304@gmail.com wrote:
->> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->> >
->> > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
->> > on CMA area, but, there is a missing case and the page on CMA area could
->> > be allocated even if APIs are used. This patch handles this case to fix
->> > the potential issue.
->> >
->> > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
->> > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
->> > specified.
->> >
->> > This patch implements this behaviour by checking allocated page from
->> > the pcplist rather than skipping an allocation from the pcplist entirely.
->> > Skipping the pcplist entirely would result in a mismatch between watermark
->> > check and actual page allocation.
->>
->> Are you sure? I think a mismatch exists already. Pages can be on the pcplist but
->> they are not considered as free in the watermark check. So passing watermark
->> check means there should be also pages on free lists. So skipping pcplists would
->> be safe, no?
-> 
-> You are right.
-> 
->> > And, it requires to break current code
->> > layering that order-0 page is always handled by the pcplist. I'd prefer
->> > to avoid it so this patch uses different way to skip CMA page allocation
->> > from the pcplist.
->>
->> Well it would be much simpler and won't affect most of allocations. Better than
->> flushing pcplists IMHO.
-> 
-> Hmm...Still, I'd prefer my approach. There are two reasons. First,
-> layering problem
-> mentioned above. In rmqueue(), there is a code for MIGRATE_HIGHATOMIC.
-> As the name shows, it's for high order atomic allocation. But, after
-> skipping pcplist
-> allocation as you suggested, we could get there with order 0 request.
-> We can also
-> change this code, but, I'd hope to maintain current layering. Second,
-> a performance
-> reason. After the flag for nocma is up, a burst of nocma allocation
-> could come. After
-> flushing the pcplist one times, we can use the free page on the
-> pcplist as usual until
-> the context is changed.
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Both solutions are ugly and we should have CMA in ZONE_MOVABLE or get rid of it
-completely. Let's CC Mel what he thinks.
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/atmel/atmel.c:4232: warning: Cannot understand     This file is part of net.russotto.AtmelMACFW, hereto referred to
+> 
+> Cc: Simon Kelley <simon@thekelleys.org.uk>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> How about my reasoning?
-> 
-> Thanks.
-> 
+14 patches applied to wireless-drivers-next.git, thanks.
+
+68fd3030ad67 atmel: Demote non-kerneldoc header to standard comment block
+64847777d05a b43: main: Add braces around empty statements
+0b6a4247dea7 airo: Place brackets around empty statement
+ba4d65132922 airo: Fix a myriad of coding style issues
+0171c6185c8f iwlegacy: common: Remove set but not used variable 'len'
+9bafe8b82306 iwlegacy: common: Demote kerneldoc headers to standard comment blocks
+b2e732081f19 ipw2200: Remove set but unused variables 'rc' and 'w'
+6214ef8a532f b43legacy: main: Provide braces around empty 'if' body
+10c3ba7dbe6e brcmfmac: fweh: Remove set but unused variable 'err'
+4e124e1fee6d brcmfmac: fweh: Fix docrot related function documentation issues
+7eae8c732977 brcmsmac: mac80211_if: Demote a few non-conformant kerneldoc headers
+5f442fe435e1 ipw2200: Demote lots of nonconformant kerneldoc comments
+c171304b42f9 b43: phy_common: Demote non-conformant kerneldoc header
+5ae6c8a696cd b43: phy_n: Add empty braces around empty statements
+
+-- 
+https://patchwork.kernel.org/patch/11714411/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
