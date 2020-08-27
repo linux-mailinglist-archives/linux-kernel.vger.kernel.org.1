@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EB7254501
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4E425450D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 14:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729028AbgH0MeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 08:34:00 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14976 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728995AbgH0MIv (ORCPT
+        id S1727793AbgH0Mg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 08:36:59 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:52403 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728804AbgH0MLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:08:51 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f47a2130000>; Thu, 27 Aug 2020 05:07:47 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 27 Aug 2020 05:08:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 05:08:30 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
- 2020 12:08:15 +0000
-Date:   Thu, 27 Aug 2020 15:08:11 +0300
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-CC:     <mst@redhat.com>, <jasowang@redhat.com>, <eli@mellanox.com>,
-        <dan.carpenter@oracle.com>, <parav@mellanox.com>,
-        <natechancellor@gmail.com>, <colin.king@canonical.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vdpa/mlx5: Remove duplicate include
-Message-ID: <20200827120811.GA101680@mtl-vdi-166.wap.labs.mlnx>
-References: <20200827120547.83997-1-jingxiangfeng@huawei.com>
+        Thu, 27 Aug 2020 08:11:05 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1618609|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0266949-0.00317964-0.970125;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.IOlHiVn_1598530254;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IOlHiVn_1598530254)
+          by smtp.aliyun-inc.com(10.147.42.253);
+          Thu, 27 Aug 2020 20:10:59 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, tiny.windzz@gamil.com,
+        Yangtao Li <frank@allwinnertech.com>
+Subject: [PATCH] sched: idle: Change the cpu_idle_poll() return type to void
+Date:   Thu, 27 Aug 2020 20:10:34 +0800
+Message-Id: <20200827121034.2744-1-frank@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200827120547.83997-1-jingxiangfeng@huawei.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598530067; bh=inb6WrN6PDof0nfJ5667HKoyHeUwp4PxtBynk5WzLuc=;
-        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
-         MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-         User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=lA9GohKbA93UxQrNvrs29Zh99t6x1Eq3kxrjNcvbRPAEPG4lIBoyywiBwKZGdl9eC
-         HVEyTfn4LdQC8tDEH0+uLwnGTv/0ZmOK5w8/mc5RG+xpATbDvzi5r298LjEuXlCQCe
-         Ip+1aRIgxXVxpO0jK6v5g+UhE9WUxe/lAdp8Bw5mNwexvpKWgXJVvbqePxwGpn8ucU
-         Yqlb465QVCdCX4AlkFJ2k5iZZghSec1QmSdeG3XMVV91LV3tLTg0xGZAy5oiGtaD2Q
-         at5esiCNRV3DLC0ypAvUx2TfNIFGDoAt9KRps/zd0mtxGcr3wagwraONeGwCIT35VK
-         Q4nUerEnHqN2g==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:05:47PM +0800, Jing Xiangfeng wrote:
-> Remove linux/mlx5/device.h which is included more than once
-> 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Yangtao Li <frank@allwinnertech.com>
 
-Acked-by: Eli Cohen <elic@nvidia.com>
+No one cares about the return value of this function, which only
+increases the time spent in idle loop. Let's drop it.
 
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 70676a6d1691..b4bdbe062b7c 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -8,7 +8,6 @@
->  #include <linux/mlx5/device.h>
->  #include <linux/mlx5/vport.h>
->  #include <linux/mlx5/fs.h>
-> -#include <linux/mlx5/device.h>
->  #include "mlx5_vnet.h"
->  #include "mlx5_vdpa_ifc.h"
->  #include "mlx5_vdpa.h"
-> -- 
-> 2.26.0.106.g9fadedd
-> 
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+
+---
+ kernel/sched/idle.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 6bf34986f45c..5250a7c466e6 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -52,7 +52,7 @@ static int __init cpu_idle_nopoll_setup(char *__unused)
+ __setup("hlt", cpu_idle_nopoll_setup);
+ #endif
+ 
+-static noinline int __cpuidle cpu_idle_poll(void)
++static noinline void __cpuidle cpu_idle_poll(void)
+ {
+ 	rcu_idle_enter();
+ 	trace_cpu_idle_rcuidle(0, smp_processor_id());
+@@ -65,8 +65,6 @@ static noinline int __cpuidle cpu_idle_poll(void)
+ 	start_critical_timings();
+ 	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+ 	rcu_idle_exit();
+-
+-	return 1;
+ }
+ 
+ /* Weak implementations for optional arch specific functions */
+-- 
+2.28.0
+
