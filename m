@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98655253E05
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F17253E0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgH0GoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 02:44:13 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:50502 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgH0GoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:44:13 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id C67BC2057A;
-        Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UZbeWDV983C0; Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
-Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 5E7BB201D5;
-        Thu, 27 Aug 2020 08:44:10 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 27 Aug 2020 08:44:10 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 27 Aug
- 2020 08:44:09 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 9E66831803E0; Thu, 27 Aug 2020 08:44:09 +0200 (CEST)
-Date:   Thu, 27 Aug 2020 08:44:09 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] padata: add a reviewer
-Message-ID: <20200827064409.GA20687@gauss3.secunet.de>
-References: <20200826145923.719126-1-daniel.m.jordan@oracle.com>
+        id S1727866AbgH0Gos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgH0Gor (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:44:47 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88357C061264;
+        Wed, 26 Aug 2020 23:44:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id si26so6120200ejb.12;
+        Wed, 26 Aug 2020 23:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=5lZlEjBzHRbMaEVBrPh3+beD+zVE1nLzNB1myX762eI=;
+        b=Eig7GaE7XdtAk48TplK6uI32yfBA7+SXesz+kHeB7XZmBb+3DwCE5/M3VmSy8sYXWe
+         v1NEBt1cRDS4guAOYoKqZGD++lWBO1I8RKYLJ4MRV+HLW65pSYYRkIai7n6xWxTWVVVL
+         bnS6fZEu9DbCWXSYGc63CZxyzYKBwttSwLEjIDrMa+NZ8Mp/Qd7CJArFfeL1AJah468N
+         i9sxzoJqo3TJSiMAvvswZZyNoGk3tscjSQaACzfGn59u72K1bv0q5h1s/Uu16i5zUI6q
+         oXx1ihd5px0RTi3KVHJdAz5ATt7pkSIySTONx/Zi5cvVjA14XZl9g/Zz4p51Zms+zn1b
+         aQaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:references:date
+         :in-reply-to:message-id:user-agent:mime-version;
+        bh=5lZlEjBzHRbMaEVBrPh3+beD+zVE1nLzNB1myX762eI=;
+        b=TNX3vKLLeqFJj56Xs2CdIl6V2Q+ZY52FIrHLnsRxlg5KCns1YqbR7cJKjy7r1u/Fm7
+         RHDPKE9Q+m/wWcNIsuQ+bInRNkSQUe2FURGNvZI/x1K4o4UnCUJA7I1YMPmVytPCrMVl
+         cX7cRjyEoxB9twxF55xgkeFM5QnfUjxPako287BVtfJzWXZES3JyFminbXYkhI4ISWUa
+         6XoSWFLGnVFfpeEu9rfFsYP7KVDKgRScd24rsuFnm6mbKjKyjSI0icjy5k4UYKq/LD6u
+         whMx8smqJCg1HSgIJrYNk7BCSfkA6BKYe3VEQ6VqbYYhbPK/Chnb1NZ5oTYKbj1kwgxg
+         iikQ==
+X-Gm-Message-State: AOAM5332dEgVAsbNsIjH4PCQXQrBmNtdDwzGXnDgN40WqMyk/ogO1pPi
+        nH9tf6j80pcjfq4MQnQDj8I=
+X-Google-Smtp-Source: ABdhPJw5t5UbTv14Uj4GGZCXucqEXH1T/j2DVoME59kzRmfLL/U93OuLxcFPSpBov8Bart9NRig9cQ==
+X-Received: by 2002:a17:906:d8ca:: with SMTP id re10mr18729543ejb.382.1598510685222;
+        Wed, 26 Aug 2020 23:44:45 -0700 (PDT)
+Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
+        by smtp.gmail.com with ESMTPSA id t21sm1048506ejr.62.2020.08.26.23.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 23:44:41 -0700 (PDT)
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1kBBeK-0002mM-CC; Thu, 27 Aug 2020 08:44:40 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 4/4] arm: dts: owl-s500: Add RoseapplePi
+References: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
+        <2d12521d196e2c08a30aacd0ab20d93593f94707.1592123160.git.cristian.ciocaltea@gmail.com>
+Date:   Thu, 27 Aug 2020 08:44:40 +0200
+In-Reply-To: <2d12521d196e2c08a30aacd0ab20d93593f94707.1592123160.git.cristian.ciocaltea@gmail.com>
+        (Cristian Ciocaltea's message of "Mon, 15 Jun 2020 03:19:11 +0300")
+Message-ID: <87v9h4y4dj.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200826145923.719126-1-daniel.m.jordan@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 10:59:23AM -0400, Daniel Jordan wrote:
-> I volunteer to review padata changes for the foreseeable future.
-> 
-> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Steffen Klassert <steffen.klassert@secunet.com>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3b186ade3597..1481d47cfd75 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13024,6 +13024,7 @@ F:	lib/packing.c
->  
->  PADATA PARALLEL EXECUTION MECHANISM
->  M:	Steffen Klassert <steffen.klassert@secunet.com>
-> +R:	Daniel Jordan <daniel.m.jordan@oracle.com>
+>>>>> "Cristian" == Cristian Ciocaltea <cristian.ciocaltea@gmail.com> writes:
 
-Please also consider to add yourself as one of the maintainers.
+ > Add a Device Tree for the RoseapplePi SBC.
+ > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-Otherwise:
+Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
 
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+On a related note: There is now an owl-mmc driver for the s900. From a
+quick look at the datasheet it looks compatible with the controller on
+the s500. Did you have a look at hooking that up?
 
-Thanks!
+-- 
+Bye, Peter Korsgaard
