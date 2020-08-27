@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F482543F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620CB2543F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgH0KmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:42:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728222AbgH0KmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:42:06 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B18622CAF;
-        Thu, 27 Aug 2020 10:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598524925;
-        bh=/ljKbVAPrePzEKLZQ+JKLYkGll/DYvgpO1ZR1rzsmIg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Pc0aVeHXA3IgL6z4uE6duJ7msAs1AW62fy0AbKNBLNUyByNWIThBHFFfJTWk4ja+z
-         ThDRU+lUVGiX/5bIfJwNhqH7k/cL0KU3Mh63KE3IObdVgosIhGJXq/iIG2FYd/FVel
-         CoZbw+3ALswo3uQT2r4COySsAT7I8AyWIvqHr1Ys=
-Received: by mail-oo1-f42.google.com with SMTP id g1so1112493oop.11;
-        Thu, 27 Aug 2020 03:42:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531Sgp79Q1beyXTFkDmdqFkLdfG6cqBgndtvEzTex9JwZNgtvn12
-        UxDN4ZleBlI2JD4BfujAHtqwbIA+rwtbuJwXfZs=
-X-Google-Smtp-Source: ABdhPJxGmEMhtRMvZgrZT6FuVBi6VqqwBOFMjYTZD9Z4EjlIaOKCVnzjYNkJJ+9IyUHCjHcdYxdIT34tEh7gdK8xdqo=
-X-Received: by 2002:a4a:d816:: with SMTP id f22mr7865816oov.45.1598524924576;
- Thu, 27 Aug 2020 03:42:04 -0700 (PDT)
+        id S1728431AbgH0KpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgH0Ko7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:44:59 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C50C061264;
+        Thu, 27 Aug 2020 03:44:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x7so4911198wro.3;
+        Thu, 27 Aug 2020 03:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jHZbJ00C/f1K1DaZMLb0eY9W+8FWEJIJdHMmXmrVo2E=;
+        b=CWltxGSqJqTnBvTSqb044t2/wgwetRPVnoGQy++DNRNCyk2xQLZOMzxwDszpWyIMJO
+         2UnJmIQpyDzlX2SsQo6KZUeIr4gB5+gCrxEgFrwNWAAe/75o7PMcNI0u65YjG9YG6ODH
+         njANnMzoXh7jMcj7ZyfAyhMG12cWr+EXjyn70VNNUr3yXFGxxY6qg7GnmKH+B9u3xn/U
+         WKiUgbgzYFBxrLqgKSvDhdRXg0Y0dwRMLrkX20F3xIqpiWw+wAw3CpO2POWq2m/ACM1d
+         pTcLwlz5FB5JaFIHz4nrDrI4aWrOUp3ueVsWSo+3Om8ulic6d893MVSHuV5kUDd3kOxt
+         c7aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jHZbJ00C/f1K1DaZMLb0eY9W+8FWEJIJdHMmXmrVo2E=;
+        b=OSCJQAVR8f+kpb6cdQrdTzTV34zbkfNxUKT8ZF6krSa1Gq07gtuY9srT6Xy5Da/zGS
+         WphTRjBnmXZC3+sEvNbhEx8f0hU76D/sNTd2yrjn+AodQkX8Uiqc7DFSrdN8AZ6lqSHf
+         wq5bA6s2X8f0a64CsRbxAuhBS+ZKPQHuH4Goe4lvhTrFUn8Nqbz+ZYOWatfxmUOdhL8c
+         l802GB1FB+g2vGYDXTt3o457VpjDyJw8MREHc7cVsRIccH22M/ESsj5uhBKfZ8k/86jG
+         YH3LYoYYKbyEs4QQNU8/fRDB9YlXWwdSI8oPhzf+7xpBqi4K6zNQnzMFsE0t8yapRjRH
+         jtOQ==
+X-Gm-Message-State: AOAM530LQddgZitI/PcVQvU3Yimx91Q3iqAYkTDTuZdCHXj06rxutHdX
+        adLNa9yEcSnJb8Y5f+EMevNFeZA5WzKLeqpMz/Y=
+X-Google-Smtp-Source: ABdhPJx/nnMNZzdz51vNTwqRRAqSdXIEeo5csO5i7hm5GF700/WOBx/88e08iEWcI7Y3UO4eC2wffxgx1/oGC+i/voc=
+X-Received: by 2002:adf:f483:: with SMTP id l3mr6596174wro.148.1598525097155;
+ Thu, 27 Aug 2020 03:44:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <202008271145.xE8qIAjp%lkp@intel.com> <20200827080558.GA3024@gondor.apana.org.au>
- <CAMj1kXHJrLtnJWYBKBYRtNHVS6rv51+crMsjLEnSqkud0BBaWw@mail.gmail.com>
- <CAK8P3a3tjv78arTj75eKk5zYUhrGkPYRDLiqv3WJJC=U+Jia0Q@mail.gmail.com>
- <CAMj1kXHhmAdHjK5avXOySw43khzft1g8p48jX7aTeTC0FvS7tQ@mail.gmail.com> <CAK8P3a1nOL+BbvGAM3-aiH-mfzmFYgfFL2dWJKd8=Rw-WosP=w@mail.gmail.com>
-In-Reply-To: <CAK8P3a1nOL+BbvGAM3-aiH-mfzmFYgfFL2dWJKd8=Rw-WosP=w@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 27 Aug 2020 12:41:53 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGpX+g_t4aAz5yGs-c+PG+NLnu1j9_QLJ6teWTjJ1FkMQ@mail.gmail.com>
-Message-ID: <CAMj1kXGpX+g_t4aAz5yGs-c+PG+NLnu1j9_QLJ6teWTjJ1FkMQ@mail.gmail.com>
-Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
- is larger than 1024 bytes
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+References: <20200817090637.26887-2-allen.cryptic@gmail.com> <20200827101540.6589BC433CB@smtp.codeaurora.org>
+In-Reply-To: <20200827101540.6589BC433CB@smtp.codeaurora.org>
+From:   Allen Pais <allen.cryptic@gmail.com>
+Date:   Thu, 27 Aug 2020 16:14:45 +0530
+Message-ID: <CAEogwTB=S6M6Xp4w5dd_W3b6Depmn6Gmu3RmAf96pRankoJQqg@mail.gmail.com>
+Subject: Re: [PATCH 01/16] wireless: ath5k: convert tasklets to use new
+ tasklet_setup() API
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, jirislaby@kernel.org,
+        mickflemm@gmail.com, mcgrof@kernel.org, chunkeey@googlemail.com,
+        Larry.Finger@lwfinger.net, stas.yakovlev@gmail.com,
+        helmut.schaa@googlemail.com, pkshih@realtek.com,
+        yhchuang@realtek.com, dsd@gentoo.org, kune@deine-taler.de,
+        Kees Cook <keescook@chromium.org>, ath11k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 11:20, Arnd Bergmann <arnd@arndb.de> wrote:
+Hi,
 >
-> On Thu, Aug 27, 2020 at 10:42 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> Allen Pais <allen.cryptic@gmail.com> wrote:
+>
+> > In preparation for unconditionally passing the
+> > struct tasklet_struct pointer to all tasklet
+> > callbacks, switch to using the new tasklet_setup()
+> > and from_tasklet() to pass the tasklet pointer explicitly.
 > >
-> > In that case, I suppose we should simply disable instrumentation for
-> > chacha_permute()? It is a straight-forward arithmetic transformation
-> > on a u32[16] array, where ubsan has limited value afaict.
+> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 >
-> I guess that always works as a last resort, but shouldn't we first try
-> to figure out why ubsan even makes a difference and whether the
-> object code without ubsan looks like a reasonable representation
-> of the source form?
+> Patch applied to ath-next branch of ath.git, thanks.
 >
-> Since it really is a fairly simple transformation, I would have
-> expected the compiler to not emit any ubsan checks. If gcc
-> only gets confused about the fixed offsets possibly overflowing
-> the fixed-length array, maybe it helps to give it a little extra
-> information like (untested):
+> c068a9ec3c94 ath5k: convert tasklets to use new tasklet_setup() API
 >
-> --- a/lib/crypto/chacha.c
-> +++ b/lib/crypto/chacha.c
-> @@ -13,7 +13,7 @@
->  #include <asm/unaligned.h>
->  #include <crypto/chacha.h>
+> --
+> https://patchwork.kernel.org/patch/11717393/
 >
-> -static void chacha_permute(u32 *x, int nrounds)
-> +static void chacha_permute(u32 x[16], int nrounds)
->  {
->         int i;
->
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-That does not help, unfortunately.
+Could you please drop these and wait for V2. A change was proposed
+for from_tasklet() api. The new API should be picked shortly. I will send out
+the updated version early next week.
 
-What does seem to work is
-
-struct chacha_state { u32 x[16]; };
-
-struct chacha_state chacha_permute(struct chacha_state st, int nrounds)
-{
-  struct chacha_state ret = st;
-  u32 *x = ret.x;
-
-  ...
-
-  return st;
-}
-
-(and updating the caller accordingly, obviously)
+Thanks,
+- Allen
