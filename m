@@ -2,140 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1FD253BA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1666253BAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgH0By1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 21:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgH0By0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 21:54:26 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D01FC06135E
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:54:26 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q1so1785319pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:54:26 -0700 (PDT)
+        id S1727115AbgH0B6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 21:58:38 -0400
+Received: from mail-co1nam11on2059.outbound.protection.outlook.com ([40.107.220.59]:46657
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726790AbgH0B6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 21:58:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PvSdVUAzuwdgv9fhd9O27jiAMNe3KWaXQDoe7UaS2ah4yQUOnJWCndXXzKRHkaXtINzW6CM0xmzL8oZxXOt9R+pTwyH44x+s82im5Gz2GEfLbiK6AzfpL+4/JZ2GH+MqxYr0QfFTubrI+tqafakF8AU3+fbbxGWu1+PgeS2w+NQ79pH06+hcQY4A3P865mAw1RGN29PWsNPjt5PQjSHI7ajZWoHsw8cDzOGrbPelRJtojZzaxWDDKB3ZIBZSvzSQgK9iid3ttY0JF9rk5zjqe3Fd2m+Vi9q6nWTcLRfPfZ+q0D6180oPIPaRpCyGDfaG2I0bHuKLeSHCb2rikOjpjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZ3+zwK7XaBuOc2uS8qUIvIm4z8BTwd9iOrQ5deSvg4=;
+ b=M1zka2DkVOyCEpT+x0gyDVqwkrDQWp3DabIskXEMvAqLlM4TYJpwZ11G3fLtNUORXgGSAoIAw8fjhTauSz629YfrqK8qda62US1CNrxmiDFmknB/m+6CUt6u9Btz6vE7Pia0BDdV2nxR52VpH2H5NKHPYq7xnjypFsZ7P8/NtOn+khOmkt9Oc+Z5EzO9G2E/K4g8FxEDhQAwO9kpGnLHMuZ3DWTRy9fzPC9Ae6xBHzGzzBHZPhmmOtncRsqcvT7P9wZ5SiQkvRlgfKIf8J8kiS8YY1EG9chYUSPYejDobNb1kk+sbfWsI19I04jCBqlcuk1RjfsqL0xDZGgi82xjkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hyLe4hee3vtVCzirvuHp6PgMD4R34otWBPNM+BASlsw=;
-        b=NA6kck1KA7GwZuUn5utMNHcXhtBd0cJJgzc4S/+XvOEEBQ8k1jlz0vnoJsVEobW4S5
-         06KbDXlGb83uh4zEIVVuADYwJ7JyDXSVgCnnYq03dV28+1A4XMG1hz88UJa990gSDabA
-         GvGArsBtWQam/c0Yjr3yWn8wYjp4n2t6EToJ0aZgrPVRxLW7pK2gs9rdrtpkgfw/OQrb
-         YoJ8M3hFrZkwKXWLUUNWBjagaLW4Zwr8YdqBpst4kfy4kP+eeJefVi4OmzDjTUKUWySp
-         wRZbqzrP7siMbVGECu6BNMg7SAMzAFdoN/p2VKmhQioPz0c8GTIghvebKVCTrOJml5un
-         CG3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hyLe4hee3vtVCzirvuHp6PgMD4R34otWBPNM+BASlsw=;
-        b=LMP6WkZkMymVsp8H9XBHqYWWZg2QesUsUNyJZwfa01gyNTuIJDDLa0oqZlKoZARRdy
-         IhHVOEBSPGgQyyNjBkQvqIKH++zw5Ag1ex25VB09zk80b9xuwtr+mKxUYj7G1xpDNHuK
-         Xt6Kt+tKd+gct5FtrRz0mJNfrIN2/h3TtOMbCgdApeWZ8ltFYXnSjnltANtvl1XC7pI2
-         OHUQQlsvavOkblcOOXwoP1TgUAhLlH7ZSclp37RU5T9lcfIsOY0uGMWjmFxGs41qSrog
-         Xgvz9qS4jgw/8A1CAsqdqOn8uBRtK6IoVSMqf9zeNuLEyKTqwAASi+wrdKuSIv+FkKwJ
-         gZLw==
-X-Gm-Message-State: AOAM533TI9LNGML4eg/egR6yNsesIa8PxGcnQE6coJwIFfxJlgqbIx/f
-        lJ9PzYAkOZjWvzwR68JQy5uV3nRNQ95/rFyq
-X-Google-Smtp-Source: ABdhPJyZHfyUujfteOaUNdFhFycqKuTH8UUTtO70E2mGEP7BE/Xyer0abzMjsLC/xIcxq2jjIv0ZFg==
-X-Received: by 2002:a17:90a:4ec6:: with SMTP id v6mr8178037pjl.12.1598493265664;
-        Wed, 26 Aug 2020 18:54:25 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c085:21cf::15ba? ([2620:10d:c090:400::5:13e3])
-        by smtp.gmail.com with ESMTPSA id ft11sm351758pjb.13.2020.08.26.18.54.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 18:54:25 -0700 (PDT)
-Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
- <20200818181117.GA34125@mit.edu>
- <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
- <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
- <20200822143326.GC199705@mit.edu>
- <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
- <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
- <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
-Message-ID: <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
-Date:   Wed, 26 Aug 2020 19:54:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZ3+zwK7XaBuOc2uS8qUIvIm4z8BTwd9iOrQ5deSvg4=;
+ b=rAmQctHDg6eik0r0yosW9FdOIN/wExIm2YMz2ULlDDjXh9mlP/tD71D8e6pasAPDh4XACYfYXyQlozaueMQGc4k0YaYTQ+/Jma20H2HF7vqcUgJpPfJLQNEe6HedyTpoOjeBqbLBuRQAXWG3NEmvt8aFxlKgLuVReGkMaKuTbBs=
+Received: from DM5PR19CA0071.namprd19.prod.outlook.com (2603:10b6:3:116::33)
+ by BYAPR02MB5208.namprd02.prod.outlook.com (2603:10b6:a03:64::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Thu, 27 Aug
+ 2020 01:58:17 +0000
+Received: from CY1NAM02FT004.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:116:cafe::e4) by DM5PR19CA0071.outlook.office365.com
+ (2603:10b6:3:116::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Thu, 27 Aug 2020 01:58:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT004.mail.protection.outlook.com (10.152.74.112) with Microsoft SMTP
+ Server id 15.20.3326.19 via Frontend Transport; Thu, 27 Aug 2020 01:58:15
+ +0000
+Received: from [149.199.38.66] (port=58693 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kB7Ad-0002AL-Cc; Wed, 26 Aug 2020 18:57:43 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kB7B9-000183-0m; Wed, 26 Aug 2020 18:58:15 -0700
+Received: from xsj-pvapsmtp01 (mailman.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 07R1wApn015254;
+        Wed, 26 Aug 2020 18:58:11 -0700
+Received: from [172.19.2.206] (helo=xsjblevinsk50.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kB7B4-000155-PJ; Wed, 26 Aug 2020 18:58:10 -0700
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     stefano.stabellini@xilinx.com, michals@xilinx.com,
+        michael.auchter@ni.com
+Cc:     devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
+        emooring@xilinx.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jliang@xilinx.com,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v9 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Wed, 26 Aug 2020 18:58:05 -0700
+Message-Id: <20200827015810.11157-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-In-Reply-To: <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: a5b9ef98-cb68-493e-88b4-08d84a2ca951
+X-MS-TrafficTypeDiagnostic: BYAPR02MB5208:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB520858531F1320825445F219B5550@BYAPR02MB5208.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5Az1GCZHeRM0Cj/Q3DV3b+2kUFPFjP5fNTE5LPvosoDRyDyk2gnwhm5WE2xtJ2RYi3B+1N5WC/aIGD9SZ6vWhtVyd6gm3Lre5Sbpq6dO8liieMhIlp7C53AVKjROEB5I0vkqQCKnrtoUA7B+YNkNdBiuTxhQ+E0orxotZdpIsAS0QlJm/iFYYCF52VUfFpvfUemAz/ZbxMKvMqziNkrC0eJItqu/K2fRX16CwmTy9HUOjIzmC5fEvVJUnp7iVuRCDBZeRCoJf4lzwIUd4Oh31YsM46fXthRsyMigMEMhPUW2LS+atwjRisqeDQ1xWMmcpt03UsqACQLhS62gTCx3Bx+OvMRRtsZ8DW/oXyYp0E4kvhSphVxgZOXe3K/06/AwjpM7aGT7/gXQ5ijsRM3rhg==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(39860400002)(346002)(376002)(396003)(136003)(46966005)(2616005)(81166007)(8936002)(8676002)(9786002)(6666004)(47076004)(26005)(82740400003)(426003)(82310400002)(336012)(44832011)(356005)(186003)(4326008)(2906002)(7696005)(1076003)(5660300002)(83380400001)(316002)(36756003)(70206006)(478600001)(70586007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 01:58:15.2544
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5b9ef98-cb68-493e-88b4-08d84a2ca951
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5208
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/20 8:18 AM, Jens Axboe wrote:
-> On 8/24/20 4:56 AM, Jens Axboe wrote:
->> On 8/22/20 9:48 AM, Jens Axboe wrote:
->>> On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
->>>> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
->>>>>>>> Resending this one, as I've been carrying it privately since May. The
->>>>>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
->>>>>>>> please consider this one for 5.9. Thanks!
->>>>>>>
->>>>>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
->>>>>>> missing something?  It's on my queue to send to Linus once I get my
->>>>>>> (late) ext4 primary pull request for 5.9.
->>>>>>
->>>>>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
->>>>>
->>>>> Didn't see it in the queue that just sent in, is it still queued up?
->>>>
->>>> It wasn't in the queue which I queued up because that was based on
->>>> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
->>>> that's totally on me.
->>>>
->>>> He has said that he's going to start ignoring pull requests that
->>>> aren't fixes only if this becomes a pattern, so while I can send him
->>>> another pull request which will just have that one change, there are
->>>> no guarantees he's going to take it at this late date.
->>>>
->>>> Sorry, when you sent me the commit saying that the changes that were
->>>> needed were already upstream on August 3rd, I thought that meant that
->>>> they were aready in Linus's tree.  I should have checked and noticed
->>>> that that in fact "ext4: flag as supporting buffered async reads"
->>>> wasn't compiling against Linus's upstream tree, so I didn't realize
->>>> this needed to be handled as a special case during the merge window.
->>>
->>> Well to be honest, this kind of sucks. I've been posting it since May,
->>> and the ideal approach would have been to just ack it and I could have
->>> carried it in my tree. That's what we did for btrfs and XFS, both of
->>> which have it.
->>>
->>> The required patches *were* upstreamed on August 3rd, which is why I
->>> mentioned that. But yes, not in 5.8 or earlier, of course.
->>>
->>> So I suggest that you either include it for the next pull request for
->>> Linus, or that I put it in with your ack. Either is fine with me. I'd
->>> consider this a "dropping the ball" kind of thing, it's not like the
->>> patch hasn't been in linux-next or hasn't been ready for months. This
->>> isn't some "oh I wrote this feature after the merge window" event. It'd
->>> be a real shame to ship 5.9 and ext4 not have support for the more
->>> efficient async buffered reads, imho, especially since the two other
->>> major local file systems already have it.
->>>
->>> Let me know what you think.
->>
->> Ted, can you make a call on this, please? It's now post -rc2. Let's
->> get this settled and included, one way or another.
-> 
-> Daily ping on this one...
+The driver was tested on Xilinx ZynqMP
 
-And again. Ted, not sure how to make any progress with this, to be
-honest, it's like pounding sand.
+For sake of ease of review, only support ZynqMP. Once accepted, then
+add support for Versal platform and R5 loading onto OCM.
+
+v2:
+- remove domain struct as per review from Mathieu
+v3:
+- add xilinx-related platform mgmt fn's instead of wrapping around
+  function pointer in xilinx eemi ops struct
+- update zynqmp_r5 yaml parsing to not raise warnings for extra
+  information in children of R5 node. The warning "node has a unit
+  name, but no reg or ranges property" will still be raised though 
+  as this particular node is needed to describe the
+  '#address-cells' and '#size-cells' information.
+v4:
+- add default values for enums
+- fix formatting as per checkpatch.pl --strict. Note that 1 warning and
+  1 check are still raised as each is due to fixing the warning
+  results in that particular line going over 80 characters.
+- remove warning '/example-0/rpu@ff9a0000/r5@0: 
+  node has a unit name, but no reg or ranges property'
+  by adding reg to r5 node.
+v5:
+- update device tree sample and yaml parsing to not raise any warnings
+- description for memory-region in yaml parsing
+- compatible string in yaml parsing for TCM
+- parse_fw change from use of rproc_of_resm_mem_entry_init to
+  rproc_mem_entry_init and use of alloc/release
+- var's of type zynqmp_r5_pdata all have same local variable name
+- use dev_dbg instead of dev_info
+v6:
+- adding memory carveouts is handled much more similarly.
+  All mem carveouts are now described in reserved memory as needed.
+  That is, TCM nodes are not coupled to remoteproc anymore.
+  This is reflected in the remoteproc R5 driver and the device tree
+  binding.
+- remove mailbox from device tree binding as it is not necessary for elf
+  loading 
+v7:
+- remove unused headers
+- zynqmp_r5_remoteproc_probe:lockstep_mode from u32* to u32
+- device-tree binding "lockstep-mode"  to "xlnx,cluster-mode"
+- remove zynqmp_r5_mem_probe and loop to Probe R5 memory devices at
+  probe()
+- remove is_r5_mode_set from  zynqmp rpu remote processor private data
+- do not error out if no mailbox is provided since mailboxes are optional
+- remove zynqmp_r5_remoteproc_probe call of platform_set_drvdata as pdata
+  is handled in zynqmp_r5_remoteproc_remove
+v8:
+- remove old acks, reviewed-by's in commit message
+v9:
+- if zynqmp_r5_remoteproc.c pdata->tx_mc_skbs not initialized, then do not
+  call skb_queue_empty
+- update arguments and documentation for zynqmp_pm_set_rpu_mode
+- in fn zynqmp_pm_force_powerdown, change arg 'target' to 'node'
+- zynqmp_pm_request_wakeup update code style
+- edit 3/5 patch commit message
+- document zynqmp_pm_set_tcm_config and zynqmp_pm_get_rpu_mode
+  documentation to include expected return val
+- remove unused fn zynqmp_pm_get_node_status
+- update 5/5 patch commit message to document supported configurations
+  and how they are booted by the driver.
+- remove copyrights other than SPDX from zynqmp_r5_remoteproc.c
+- compilation warnings no longer raised
+- remove unused includes from zynqmp_r5_remoteproc.c
+- remove unused  var autoboot from zynqmp_r5_remoteproc.c
+- reorder zynqmp_r5_pdata fpr small mem savings due to alignment
+- zynqmp_pm_set_tcm_config and zynqmp_pm_set_rpu_mode uses second arg
+- zynqmp_r5_remoteproc.c use of zynqmp_pm_set_tcm_config now does not
+  have output arg
+- in tcm handling, unconditionally use &= 0x000fffff mask since all nodes
+  in this fn are for tcm
+- update comments for translating dma field in tcm handling to device
+  address
+- update calls to rproc_mem_entry_init in parse_mem_regions so that there
+  are only 2 cases for types of carveouts instead of 3
+- in parse_mem_regions, check if device tree node is null before using it
+- add example device tree nodes used in parse_mem_regions and tcm parsing
+- add comment for vring id node length
+- add check for string length so that vring id is at least min length
+- move tcm nodes from reserved mem to instead own device tree nodes
+   and only use them if enabled in device tree
+- add comment for explaining handling of rproc_elf_load_rsc_table
+- remove obsolete check for "if (vqid < 0)" in zynqmp_r5_rproc_kick
+- remove unused field mems in struct zynqmp_r5_pdata
+- remove call to zynqmp_r5_mem_probe and the fn itself as tcm handling
+  is done by zyqmp_r5_pm_request_tcm
+- remove obsolete setting of dma_ops and parent device dma_mask
+- remove obsolete use of of_dma_configure
+- add comment for call to r5_set_mode fn
+- make mbox usage optional and gracefully inform user via dev_dbg if not
+  present
+- change lockstep_mode from u32* to u32
+- update zynqmp_pm_set_rpu_mode and zynqmp_pm_set_rpu_mode documentation
+  and remove unused args
+v10:
+- add include types.h to xlnx-zynqmp.h for compilation
+
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
+
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 113 +++
+ drivers/firmware/xilinx/zynqmp.c              |  86 ++
+ drivers/remoteproc/Kconfig                    |  10 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 898 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  63 ++
+ 6 files changed, 1171 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
 
 -- 
-Jens Axboe
+2.17.1
 
