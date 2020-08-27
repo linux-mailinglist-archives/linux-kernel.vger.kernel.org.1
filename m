@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAAB2542C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB3F2542C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 11:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgH0JwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 05:52:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:55978 "EHLO foss.arm.com"
+        id S1728241AbgH0Jye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 05:54:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:16855 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgH0JwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 05:52:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A53D7101E;
-        Thu, 27 Aug 2020 02:52:00 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C99F3F66B;
-        Thu, 27 Aug 2020 02:51:58 -0700 (PDT)
-Subject: Re: [PATCH 19/35] kasan: don't allow SW_TAGS with ARM64_MTE
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1597425745.git.andreyknvl@google.com>
- <5185661d553238884613a432cf1d71b1480a23ba.1597425745.git.andreyknvl@google.com>
- <20200827080442.GA29264@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <56ba1b14-36af-31ea-116b-23300525398d@arm.com>
-Date:   Thu, 27 Aug 2020 10:54:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726157AbgH0Jyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 05:54:33 -0400
+IronPort-SDR: 6EwFLcfDa5CTaAAAoeSmLGZM+7jAd3C26xcXhdrNTckPT3UkVvFRCjpqc5SdFA3a00UkencRMv
+ O8aQQsooodjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="144131056"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="144131056"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 02:54:32 -0700
+IronPort-SDR: zzFZZKfiIYitmUmayPFZKycyu6m5slei8hD8mOAqFMwUJjwnmBW+VS3KvVoctozMoVYE2ERCii
+ 5ywYwjjnQX8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="295672250"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 27 Aug 2020 02:54:32 -0700
+Received: from [10.255.146.64] (mreddy3x-MOBL.gar.corp.intel.com [10.255.146.64])
+        by linux.intel.com (Postfix) with ESMTP id ABFFA5806C6;
+        Thu, 27 Aug 2020 02:54:29 -0700 (PDT)
+Subject: Re: [PATCH v5 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, chuanhua.lei@linux.intel.com,
+        malliamireddy009@gmail.com
+References: <cover.1597381889.git.mallikarjunax.reddy@linux.intel.com>
+ <68c77fd2ffb477aa4a52a58f8a26bfb191d3c5d1.1597381889.git.mallikarjunax.reddy@linux.intel.com>
+ <20200814203222.GA2674896@bogus>
+ <7cdc0587-8b4f-4360-a303-1541c9ad57b2@linux.intel.com>
+ <20200825112107.GN2639@vkoul-mobl>
+From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
+Message-ID: <ffa5ba4d-f1b2-6a30-f2f1-f4578a77bce2@linux.intel.com>
+Date:   Thu, 27 Aug 2020 17:54:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200827080442.GA29264@gaia>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200825112107.GN2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrey,
+Hi Vinod,
+Thanks for the review comments.
 
-On 8/27/20 9:04 AM, Catalin Marinas wrote:
-> On Fri, Aug 14, 2020 at 07:27:01PM +0200, Andrey Konovalov wrote:
->> Software tag-based KASAN provides its own tag checking machinery that
->> can conflict with MTE. Don't allow enabling software tag-based KASAN
->> when MTE is enabled.
+On 8/25/2020 7:21 PM, Vinod Koul wrote:
+> On 18-08-20, 15:00, Reddy, MallikarjunaX wrote:
+>
+>>>> +
+>>>> +            intel,chans:
+>>>> +              $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +              description:
+>>>> +                 The channels included on this port. Format is channel start
+>>>> +                 number and how many channels on this port.
+>>> Why does this need to be in DT? This all seems like it can be in the dma
+>>> cells for each client.
+>> (*ABC)
+>> Yes. We need this.
+>> for dma0(lgm-cdma) old SOC supports 16 channels and the new SOC supports 22
+>> channels. and the logical channel mapping for the peripherals also differ
+>> b/w old and new SOCs.
 >>
->> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->> ---
->>  lib/Kconfig.kasan | 1 +
->>  1 file changed, 1 insertion(+)
+>> Because of this hardware limitation we are trying to configure the total
+>> channels and port-channel mapping dynamically from device tree.
 >>
->> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
->> index b4cf6c519d71..e500c18cbe79 100644
->> --- a/lib/Kconfig.kasan
->> +++ b/lib/Kconfig.kasan
->> @@ -69,6 +69,7 @@ config KASAN_GENERIC
->>  config KASAN_SW_TAGS
->>  	bool "Software tag-based mode"
->>  	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
->> +	depends on !ARM64_MTE
-> 
-> I think that's better as:
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 10cf81d70657..736c32bd8905 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -131,7 +131,7 @@ config ARM64
->  	select HAVE_ARCH_JUMP_LABEL
->  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
->  	select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
-> -	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
-> +	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN && !ARM64_MTE
->  	select HAVE_ARCH_KGDB
->  	select HAVE_ARCH_MMAP_RND_BITS
->  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
-> 
-
-I agree with Catalin here, "select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN &&
-!ARM64_MTE" should be sufficient.
-
--- 
-Regards,
-Vincenzo
+>> based on port name we are trying to configure the default values for
+>> different peripherals(ports).
+>> Example: burst length is not same for all ports, so using port name to do
+>> default configurations.
+> Sorry that does not make sense to me, why not specify the values to be
+> used here instead of defining your own name scheme!
+OK. Agreed. I will remove port name from DT and only use intel,chans
+>
+> Only older soc it should create 16 channels and new 22 (hint this is hw
+> description so perfectly okay to specify in DT or in using driver_data
+> and compatible for each version
+>
+>>>> +
+>>>> +          required:
+>>>> +            - reg
+>>>> +            - intel,name
+>>>> +            - intel,chans
+>>>> +
+>>>> +
+>>>> + ldma-channels:
+>>>> +    type: object
+>>>> +    description:
+>>>> +       This sub-node must contain a sub-node for each DMA channel.
+>>>> +    properties:
+>>>> +      '#address-cells':
+>>>> +        const: 1
+>>>> +      '#size-cells':
+>>>> +        const: 0
+>>>> +
+>>>> +    patternProperties:
+>>>> +      "^ldma-channels@[0-15]+$":
+>>>> +          type: object
+>>>> +
+>>>> +          properties:
+>>>> +            reg:
+>>>> +              items:
+>>>> +                - enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+>>>> +              description:
+>>>> +                 Which channel this node refers to.
+>>>> +
+>>>> +            intel,desc_num:
+>>>> +              $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +              description:
+>>>> +                 Per channel maximum descriptor number. The max value is 255.
+>>>> +
+>>>> +            intel,hdr-mode:
+>>>> +              $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +              description:
+>>>> +                 The first parameter is header mode size, the second
+>>>> +                 parameter is checksum enable or disable. If enabled,
+>>>> +                 header mode size is ignored. If disabled, header mode
+>>>> +                 size must be provided.
+>>>> +
+>>>> +            intel,hw-desc:
+>>>> +              $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +              description:
+>>>> +                 Per channel dma hardware descriptor configuration.
+>>>> +                 The first parameter is descriptor physical address and the
+>>>> +                 second parameter hardware descriptor number.
+>>> Again, this all seems like per client information for dma cells.
+>>   Ok, if we move all these attributes to 'dmas' then 'dma-channels' child
+>> node is not needed in dtsi.
+>> #dma-cells number i am already using 7. If we move all these attributes to
+>> 'dmas' then integer cells will increase.
+>>
+>> Is there any limitation in using a number of integer cells & as determined
+>> by the #dma-cells property?
+> No I dont think there is but it needs to make sense :-)
+OK.
+>
