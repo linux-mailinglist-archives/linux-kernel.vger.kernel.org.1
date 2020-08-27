@@ -2,135 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C982D254688
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB115254691
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgH0OMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgH0OFi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:05:38 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF48C0619C9;
-        Thu, 27 Aug 2020 07:04:30 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ds1so2684952pjb.1;
-        Thu, 27 Aug 2020 07:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=LguBKEDZg38nhsfY5gDkB5eMqQtPWYgd4SzXcMfIlffnaaoFXePM7C2c5R9jFADrvR
-         00OcpCBfsiI0K4EnkIQSzYpgSceMIZz5Fl7A3Pk1XTalnXRadOtWztDcNxJ3kntWIzBO
-         TKmxeUq8fVwV6iEpnna8RQWpxS242Jy4KWBlf37uFH+CVoY9/YbFK8ffS3qfvV04iaid
-         KNDUyko1S6d3r9x2RVNBuVr16CX6jplQMCN8OFZCxHI+Z589/EQw4M3BGM/HdHgdQik8
-         J8QbwAqSMLemWNL5JqagCzB5dRmyci++9gfnZ9JNbCU7b767CJRVNpLdT5g69F+ID9a3
-         /0Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=nTpYRrJV5F14OYwDYXccrlAiugLgV6dxfRo00agEcXCAJvZJtFmVLAB1Vh6c+QdQL2
-         RvcT25uPFbNhdVFDhhNn9oinHKQjwabBc3RvctG2l7Rpvvx2ZkMXyJ4OAHmEyDt2rOey
-         T0RLQbU5cvXxNIxaM///MFRmoNePX2PNC2GN6hb/5w/wrTp5lYhIBXCsMIrfQkkow1aU
-         fw+wZShj6IqegRugv4SxiSPPfc6k3wW4V9KR5za1AzF9bRk5JcYTD7b1oZ7vjxvttTAY
-         s4/bm2kiFVxv1JxUZoIUHuSemij0JDYBf+kDq2onjpC9lYthhVNnH2VcX14wSnvhAzta
-         YwXA==
-X-Gm-Message-State: AOAM531Kj7F4qQtPI0alspUrwbR76+yVx7SorbH7Qm08VGutEQki0MIC
-        m5zTeODSIDMbdIXE/4EjsOMaza9GMxk=
-X-Google-Smtp-Source: ABdhPJyFtzqBQBD/y88ysYIZXMsxWHe8lc0Zf/s1dX5c7sBXfH4LHmi4gDDsJtL1iJmKfcfaptFIrw==
-X-Received: by 2002:a17:90a:c253:: with SMTP id d19mr4892302pjx.113.1598537068544;
-        Thu, 27 Aug 2020 07:04:28 -0700 (PDT)
-Received: from sol.lan (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id fs12sm2371092pjb.21.2020.08.27.07.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:04:27 -0700 (PDT)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v5 20/20] tools: gpio: add debounce support to gpio-event-mon
-Date:   Thu, 27 Aug 2020 22:00:20 +0800
-Message-Id: <20200827140020.159627-21-warthog618@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200827140020.159627-1-warthog618@gmail.com>
-References: <20200827140020.159627-1-warthog618@gmail.com>
+        id S1728010AbgH0OOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:14:25 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2699 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727793AbgH0OFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:05:39 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 36C2CADED43E460CC271;
+        Thu, 27 Aug 2020 15:05:01 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.87.119) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 27 Aug 2020 15:05:01 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <rrichter@marvell.com>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH V2 topic-edac-5.1 0/2] EDAC: Add support for reporting the non-standard errors to vendor drivers
+Date:   Thu, 27 Aug 2020 15:01:26 +0100
+Message-ID: <20200827140128.1113-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.87.119]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for debouncing monitored lines to gpio-event-mon.
+Presently non-standard HW errors are not reported to the vendor drivers
+for the recovery.
+This patch set adds support for reporting the non-standard errors to the
+registered vendor drivers.
+Also adds HIP08 EDAC driver, for the  recovery of the PCIe OEM errors on
+HiSilicon HIP08.
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- tools/gpio/gpio-event-mon.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+RFC -> V2
+1.Add error recovery for the PCIe local errors
+2.Removed code for the other OEM errors from HIP08 edac driver
+  because there is no current requirement for the recovery.
+    
+Shiju Jose (2):
+  EDAC: Add support for reporting the non-standard errors to the vendor
+    drivers
+  EDAC: Add handling for the PCIe OEM errors on HiSilicon HIP08
 
-diff --git a/tools/gpio/gpio-event-mon.c b/tools/gpio/gpio-event-mon.c
-index e50bb107ea3a..bd5ea3cc6e85 100644
---- a/tools/gpio/gpio-event-mon.c
-+++ b/tools/gpio/gpio-event-mon.c
-@@ -148,11 +148,12 @@ void print_usage(void)
- 		"  -s         Set line as open source\n"
- 		"  -r         Listen for rising edges\n"
- 		"  -f         Listen for falling edges\n"
-+		"  -b <n>     Debounce the line with period n microseconds\n"
- 		" [-c <n>]    Do <n> loops (optional, infinite loop if not stated)\n"
- 		"  -?         This helptext\n"
- 		"\n"
- 		"Example:\n"
--		"gpio-event-mon -n gpiochip0 -o 4 -r -f\n"
-+		"gpio-event-mon -n gpiochip0 -o 4 -r -f -b 10000\n"
- 	);
- }
- 
-@@ -167,11 +168,12 @@ int main(int argc, char **argv)
- 	unsigned int num_lines = 0;
- 	unsigned int loops = 0;
- 	struct gpio_v2_line_config config;
--	int c;
-+	int c, attr, i;
-+	unsigned long debounce_period = 0;
- 
- 	memset(&config, 0, sizeof(config));
- 	config.flags = GPIO_V2_LINE_FLAG_INPUT;
--	while ((c = getopt(argc, argv, "c:n:o:dsrf?")) != -1) {
-+	while ((c = getopt(argc, argv, "c:n:o:b:dsrf?")) != -1) {
- 		switch (c) {
- 		case 'c':
- 			loops = strtoul(optarg, NULL, 10);
-@@ -187,6 +189,9 @@ int main(int argc, char **argv)
- 			lines[num_lines] = strtoul(optarg, NULL, 10);
- 			num_lines++;
- 			break;
-+		case 'b':
-+			debounce_period = strtoul(optarg, NULL, 10);
-+			break;
- 		case 'd':
- 			config.flags |= GPIO_V2_LINE_FLAG_OPEN_DRAIN;
- 			break;
-@@ -205,6 +210,15 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	if (debounce_period) {
-+		attr = config.num_attrs;
-+		config.num_attrs++;
-+		for (i = 0; i < num_lines; i++)
-+			gpiotools_set_bit(&config.attrs[attr].mask, i);
-+		config.attrs[attr].attr.id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-+		config.attrs[attr].attr.debounce_period = debounce_period;
-+	}
-+
- 	if (!device_name || num_lines == 0) {
- 		print_usage();
- 		return -1;
+ drivers/acpi/apei/ghes.c                    |   5 +
+ drivers/edac/Makefile                       |   3 +-
+ drivers/edac/edac_non_standard.c            | 124 ++++++++++++++
+ drivers/edac/hisi_hip08_edac_non_standard.c | 255 ++++++++++++++++++++++++++++
+ include/linux/edac_non_standard.h           |  74 ++++++++
+ 5 files changed, 460 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/edac/edac_non_standard.c
+ create mode 100644 drivers/edac/hisi_hip08_edac_non_standard.c
+ create mode 100644 include/linux/edac_non_standard.h
+
 -- 
-2.28.0
+1.9.1
+
 
