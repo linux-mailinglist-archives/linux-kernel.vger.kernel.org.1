@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F37253FB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE55253FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgH0Hyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:54:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36668 "EHLO
+        id S1728514AbgH0HzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:55:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36928 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728439AbgH0Hyc (ORCPT
+        with ESMTP id S1728455AbgH0Hyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:54:32 -0400
-Date:   Thu, 27 Aug 2020 07:54:30 -0000
+        Thu, 27 Aug 2020 03:54:33 -0400
+Date:   Thu, 27 Aug 2020 07:54:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598514871;
+        s=2020; t=1598514872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BInk0uHR7DRXZQUP0QywiS82w6J6yCk+1OCKGg5qNlc=;
-        b=GOpTIw4WTxQIz+dxx0KMvi+/ZGTTwyH5emfSrYx+Kmx5IjjneKEJYVb9+GWU70dCYgWbHq
-        2mc9BsJbncgDy46SDZoVFLwnZPymAQ0yAzd9iXijJK19//GrMS4+TtJ3R9nYeHC2n6v35C
-        htEhzt0H64IrQ67yXFXnr8z0+S0fhAVIiZ+a5IFKvoBfFHd5ugvu/Nx5GmnNUYTPNlLp/a
-        rzApxCeakxapKCb1Bb3Kdb9sG3fs8x50QSj4a3HQROZybiLRXzmNLvrp9UolQST+4zCiFr
-        LwSspFgfJpK7PZCSXavNXS2pqGX5bn0XeXjIXhgrN2gI37YVs6uXwkmEpBPrNw==
+        bh=eS0B/Fc8ttTFAoYL2xaPmYpFUqXrIKnco5J+1jeN79U=;
+        b=Vt9pXnuMCkejGTYz5kqZ6z/NmYGhEFkyyGhG2+4ACAdAKvUZ/mj9M6wJ5X69YJmMZzfCe6
+        o35tYqZuMjZXOAnTxNSyhsTlRd34gtoK48IMptO7bwZmO1sb5lAoAih7nynGRREdwAEspS
+        oYAig0Kw9g6z6/mHrdILSSr1KmRyJCuHAyLqQ0k2Gozgo8txTrJhhazaE1ud7vlBvGpJXe
+        0n49nvb+kOXo9FUdZOkKNS3Nonif5q0uDoxVvHHsjLlZKve2NYIWWXJwHxDoBOAZCVpa35
+        BZsefmRewOrn+mUVZNlsxiIzhUPvd2m9Zrp+e0JwiYsxTAUvUlQJEzW/PSP7Ig==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598514871;
+        s=2020e; t=1598514872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BInk0uHR7DRXZQUP0QywiS82w6J6yCk+1OCKGg5qNlc=;
-        b=7c4jKZ9y6IgPP/J5CMSULjGQbimzZ3irdty9Rx51OUT04XoBWM4fUyQBH8ypbASq4V9D1w
-        YUvK4TDeOYzbIWCw==
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
+        bh=eS0B/Fc8ttTFAoYL2xaPmYpFUqXrIKnco5J+1jeN79U=;
+        b=FlWsXzofzP5gkKUmCRI7fbIS0y0JVRiq9wUGpLoj5vz5nqO6rs7TusFdRtlFfgaAdyRXt3
+        Hjn36YDBFFsHvtAQ==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/topology: Move SD_DEGENERATE_GROUPS_MASK out
- of linux/sched/topology.h
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+Subject: [tip: sched/core] sched: Cache task_struct::flags in sched_submit_work()
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200825133216.9163-2-valentin.schneider@arm.com>
-References: <20200825133216.9163-2-valentin.schneider@arm.com>
+In-Reply-To: <20200819200025.lqvmyefqnbok5i4f@linutronix.de>
+References: <20200819200025.lqvmyefqnbok5i4f@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159851487046.20229.3637647119977247598.tip-bot2@tip-bot2>
+Message-ID: <159851487131.20229.10063015332671420555.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,65 +58,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     4fc472f1214ef75e5450f207e23ff13af6eecad4
-Gitweb:        https://git.kernel.org/tip/4fc472f1214ef75e5450f207e23ff13af6eecad4
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Tue, 25 Aug 2020 14:32:16 +01:00
+Commit-ID:     c1cecf884ad748f63f9139d5a18ee265ee2f70fb
+Gitweb:        https://git.kernel.org/tip/c1cecf884ad748f63f9139d5a18ee265ee2f70fb
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Wed, 19 Aug 2020 22:00:25 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 26 Aug 2020 12:41:59 +02:00
+CommitterDate: Wed, 26 Aug 2020 12:41:58 +02:00
 
-sched/topology: Move SD_DEGENERATE_GROUPS_MASK out of linux/sched/topology.h
+sched: Cache task_struct::flags in sched_submit_work()
 
-SD_DEGENERATE_GROUPS_MASK is only useful for sched/topology.c, but still
-gets defined for anyone who imports topology.h, leading to a flurry of
-unused variable warnings.
+sched_submit_work() is considered to be a hot path. The preempt_disable()
+instruction is a compiler barrier and forces the compiler to load
+task_struct::flags for the second comparison.
+By using a local variable, the compiler can load the value once and keep it in
+a register for the second comparison.
 
-Move it out of the header and place it next to the SD degeneration
-functions in sched/topology.c.
+Verified on x86-64 with gcc-10.
 
-Fixes: 4ee4ea443a5d ("sched/topology: Introduce SD metaflag for flags needing > 1 groups")
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200825133216.9163-2-valentin.schneider@arm.com
+Link: https://lkml.kernel.org/r/20200819200025.lqvmyefqnbok5i4f@linutronix.de
 ---
- include/linux/sched/topology.h | 7 -------
- kernel/sched/topology.c        | 7 +++++++
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ kernel/sched/core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index b9b0dab..9ef7bf6 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -25,13 +25,6 @@ enum {
- };
- #undef SD_FLAG
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8471a0f..c36dc1a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4551,9 +4551,12 @@ void __noreturn do_task_dead(void)
  
--/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
--#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
--static const unsigned int SD_DEGENERATE_GROUPS_MASK =
--#include <linux/sched/sd_flags.h>
--0;
--#undef SD_FLAG
--
- #ifdef CONFIG_SCHED_DEBUG
- 
- struct sd_flag_debug {
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index c674aaa..aa1676a 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -154,6 +154,13 @@ static inline bool sched_debug(void)
- }
- #endif /* CONFIG_SCHED_DEBUG */
- 
-+/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
-+#define SD_FLAG(name, mflags) (name * !!((mflags) & SDF_NEEDS_GROUPS)) |
-+static const unsigned int SD_DEGENERATE_GROUPS_MASK =
-+#include <linux/sched/sd_flags.h>
-+0;
-+#undef SD_FLAG
-+
- static int sd_degenerate(struct sched_domain *sd)
+ static inline void sched_submit_work(struct task_struct *tsk)
  {
- 	if (cpumask_weight(sched_domain_span(sd)) == 1)
++	unsigned int task_flags;
++
+ 	if (!tsk->state)
+ 		return;
+ 
++	task_flags = tsk->flags;
+ 	/*
+ 	 * If a worker went to sleep, notify and ask workqueue whether
+ 	 * it wants to wake up a task to maintain concurrency.
+@@ -4562,9 +4565,9 @@ static inline void sched_submit_work(struct task_struct *tsk)
+ 	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
+ 	 * requires it.
+ 	 */
+-	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
++	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+ 		preempt_disable();
+-		if (tsk->flags & PF_WQ_WORKER)
++		if (task_flags & PF_WQ_WORKER)
+ 			wq_worker_sleeping(tsk);
+ 		else
+ 			io_wq_worker_sleeping(tsk);
