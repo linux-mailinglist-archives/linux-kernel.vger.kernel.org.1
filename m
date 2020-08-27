@@ -2,333 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B5F2545AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA1F25459C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 15:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgH0NGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 09:06:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16720 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727838AbgH0M63 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:58:29 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07RCiDni061963;
-        Thu, 27 Aug 2020 08:58:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6u143REuCEptKkPtojuvg5U/HgdT48IJG4XvG8rZ6I0=;
- b=IqQKAjEilrvBEWQMj/Jvw0lA7/GVCKNHxXHfXBfh6X/FrWDQJNnOl0u1AlttKy5wl6wx
- 9i7wmMXdXEvsXvGiZeYBQ/rHpAFX4skcNYzSlgSuNufkjZJ2ZKVyxgNRoDHZc7xJVpF2
- 0yLkw0BnrJ4ZF3egqft3dvcA2GydHtRh0KpxlOpQ3a16i+iQZGa/AKBYJv8rdh6EWD7v
- AqJ93IMX+QbwKNgFpS6vHjlEBIiGwKHblGWwgZQgZbIt4m7KE1dmAgaGcOHTCHlMTX/C
- OsZpfFg4RVvsjNLMjyuE9VeTC+79M2SYm7GOD3dHLJpTphV7OZKkhZ0JgXnt9ZUGcU7R Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336d3ggav1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 08:58:17 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07RCjNnQ064633;
-        Thu, 27 Aug 2020 08:58:14 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 336d3ggarw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 08:58:14 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07RCpjcE025382;
-        Thu, 27 Aug 2020 12:58:07 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 332utu4gtk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 12:58:07 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07RCw7bT15270402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 12:58:07 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B083AE064;
-        Thu, 27 Aug 2020 12:58:07 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1B92AE05C;
-        Thu, 27 Aug 2020 12:58:03 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.210.202])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Aug 2020 12:58:03 +0000 (GMT)
-Subject: Re: [RFC] perf/jevents: Add new structure to pass json fields.
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com
-References: <20200825074041.378520-1-kjain@linux.ibm.com>
- <20200826105656.GC703542@krava>
- <6a4e977e-4f77-6a2a-252c-cfdda26db3e2@linux.ibm.com>
- <20200826115954.GA766216@krava>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <135098ed-b5cd-31e3-9e0b-f78b08f91c04@linux.ibm.com>
-Date:   Thu, 27 Aug 2020 18:28:02 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727104AbgH0NDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 09:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgH0M7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 08:59:14 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43E1D2177B;
+        Thu, 27 Aug 2020 12:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598533134;
+        bh=d4Bbz6immrh2cuagoKGQb8dRAnNcJbLXhsZf4tTIDuo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=AQ/wQXnZJKoZcYs1/FwK94+TQjXENo2Hjf2OAsdhJNc5Et0ZXE6XJ1r5mXTmj3D9Z
+         xIXd+o3pg9l25PF2JOobM50WTJK4Au0fCL1nLs+dugKc0tlEiIMdQdJ6aqXSt/CnKO
+         to651qbL2bf1UTwBv8tnKPkMuV6WXpzmID7X2wP4=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        =?utf-8?B?5ZGo5q2j?= <sernia.zhou@foxmail.com>,
+        =?utf-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>
+Cc:     od@zcrc.me, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix uninitialized value written
+ to HW register
+In-Reply-To: <20200827124308.71963-2-paul@crapouillou.net>
+References: <20200827124308.71963-1-paul@crapouillou.net>
+ <20200827124308.71963-2-paul@crapouillou.net>
+Date:   Thu, 27 Aug 2020 15:58:46 +0300
+Message-ID: <87v9h4i6t5.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200826115954.GA766216@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_06:2020-08-27,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 suspectscore=2 adultscore=0 mlxscore=0
- impostorscore=0 clxscore=1015 mlxlogscore=999 phishscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270092
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
-On 8/26/20 5:29 PM, Jiri Olsa wrote:
-> On Wed, Aug 26, 2020 at 05:02:04PM +0530, kajoljain wrote:
->>
->>
->> On 8/26/20 4:26 PM, Jiri Olsa wrote:
->>> On Tue, Aug 25, 2020 at 01:10:41PM +0530, Kajol Jain wrote:
->>>
->>> SNIP
->>>
->>>>  {
->>>>  	/* try to find matching event from arch standard values */
->>>>  	struct event_struct *es;
->>>> @@ -498,8 +486,7 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
->>>>  		if (!strcmp(arch_std, es->name)) {
->>>>  			if (!eventcode && es->event) {
->>>>  				/* allow EventCode to be overridden */
->>>> -				free(*event);
->>>> -				*event = NULL;
->>>> +				je->event = NULL;
->>>>  			}
->>>>  			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
->>>>  			return 0;
->>>> @@ -513,13 +500,8 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
->>>>  
->>>>  /* Call func with each event in the json file */
->>>>  int json_events(const char *fn,
->>>> -	  int (*func)(void *data, char *name, char *event, char *desc,
->>>> -		      char *long_desc,
->>>> -		      char *pmu, char *unit, char *perpkg,
->>>> -		      char *metric_expr,
->>>> -		      char *metric_name, char *metric_group,
->>>> -		      char *deprecated, char *metric_constraint),
->>>> -	  void *data)
->>>> +		int (*func)(void *data, struct json_event *je),
->>>> +			void *data)
->>>>  {
->>>>  	int err;
->>>>  	size_t size;
->>>> @@ -537,24 +519,16 @@ int json_events(const char *fn,
->>>>  	EXPECT(tokens->type == JSMN_ARRAY, tokens, "expected top level array");
->>>>  	tok = tokens + 1;
->>>>  	for (i = 0; i < tokens->size; i++) {
->>>> -		char *event = NULL, *desc = NULL, *name = NULL;
->>>> -		char *long_desc = NULL;
->>>>  		char *extra_desc = NULL;
->>>> -		char *pmu = NULL;
->>>>  		char *filter = NULL;
->>>> -		char *perpkg = NULL;
->>>> -		char *unit = NULL;
->>>> -		char *metric_expr = NULL;
->>>> -		char *metric_name = NULL;
->>>> -		char *metric_group = NULL;
->>>> -		char *deprecated = NULL;
->>>> -		char *metric_constraint = NULL;
->>>> +		struct json_event *je;
->>>>  		char *arch_std = NULL;
->>>>  		unsigned long long eventcode = 0;
->>>>  		struct msrmap *msr = NULL;
->>>>  		jsmntok_t *msrval = NULL;
->>>>  		jsmntok_t *precise = NULL;
->>>>  		jsmntok_t *obj = tok++;
->>>> +		je = (struct json_event *)calloc(1, sizeof(struct json_event));
->>>
->>> hum, you don't check je pointer in here.. but does it need to be allocated?
->>> looks like you could just have je on stack as well..
->>
->> Hi Jiri,
->>    Yes I will add check for je pointer here.The reason for allocating memory to 'je' is,
->> later we are actually referring one by one to its field and in case if won't allocate memory
->> we will get segmentaion fault as otherwise je will be NULL. Please let me know if I am
->> getting correct.
-> 
-> I don't see reason why not to use automatic variable in here,
-> I tried and it seems to work.. below is diff to your changes,
-> feel free to squash it with your changes
+Hi,
 
-Hi Jiri,
-    Thanks for the changes, I will update.
+Paul Cercueil <paul@crapouillou.net> writes:
+> The 'reg' value was written to a hardware register in
+> ingenic_usb_phy_init(), while not being initialized anywhere.
 
-Thanks,
-Kajol Jain
-> 
-> jirka
-> 
+your patch does a lot more than fix the bug :-)
+
+> Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new Ingenic SoCs.=
+")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index 606805af69fe..eaac5c126a52 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -521,14 +521,13 @@ int json_events(const char *fn,
->  	for (i = 0; i < tokens->size; i++) {
->  		char *extra_desc = NULL;
->  		char *filter = NULL;
-> -		struct json_event *je;
-> +		struct json_event je = {};
->  		char *arch_std = NULL;
->  		unsigned long long eventcode = 0;
->  		struct msrmap *msr = NULL;
->  		jsmntok_t *msrval = NULL;
->  		jsmntok_t *precise = NULL;
->  		jsmntok_t *obj = tok++;
-> -		je = (struct json_event *)calloc(1, sizeof(struct json_event));
->  
->  		EXPECT(obj->type == JSMN_OBJECT, obj, "expected object");
->  		for (j = 0; j < obj->size; j += 2) {
-> @@ -544,7 +543,7 @@ int json_events(const char *fn,
->  			       "Expected string value");
->  
->  			nz = !json_streq(map, val, "0");
-> -			if (match_field(map, field, nz, &je->event, val)) {
-> +			if (match_field(map, field, nz, &je.event, val)) {
->  				/* ok */
->  			} else if (json_streq(map, field, "EventCode")) {
->  				char *code = NULL;
-> @@ -557,14 +556,14 @@ int json_events(const char *fn,
->  				eventcode |= strtoul(code, NULL, 0) << 21;
->  				free(code);
->  			} else if (json_streq(map, field, "EventName")) {
-> -				addfield(map, &je->name, "", "", val);
-> +				addfield(map, &je.name, "", "", val);
->  			} else if (json_streq(map, field, "BriefDescription")) {
-> -				addfield(map, &je->desc, "", "", val);
-> -				fixdesc(je->desc);
-> +				addfield(map, &je.desc, "", "", val);
-> +				fixdesc(je.desc);
->  			} else if (json_streq(map, field,
->  					     "PublicDescription")) {
-> -				addfield(map, &je->long_desc, "", "", val);
-> -				fixdesc(je->long_desc);
-> +				addfield(map, &je.long_desc, "", "", val);
-> +				fixdesc(je.long_desc);
->  			} else if (json_streq(map, field, "PEBS") && nz) {
->  				precise = val;
->  			} else if (json_streq(map, field, "MSRIndex") && nz) {
-> @@ -584,34 +583,34 @@ int json_events(const char *fn,
->  
->  				ppmu = field_to_perf(unit_to_pmu, map, val);
->  				if (ppmu) {
-> -					je->pmu = strdup(ppmu);
-> +					je.pmu = strdup(ppmu);
->  				} else {
-> -					if (!je->pmu)
-> -						je->pmu = strdup("uncore_");
-> -					addfield(map, &je->pmu, "", "", val);
-> -					for (s = je->pmu; *s; s++)
-> +					if (!je.pmu)
-> +						je.pmu = strdup("uncore_");
-> +					addfield(map, &je.pmu, "", "", val);
-> +					for (s = je.pmu; *s; s++)
->  						*s = tolower(*s);
->  				}
-> -				addfield(map, &je->desc, ". ", "Unit: ", NULL);
-> -				addfield(map, &je->desc, "", je->pmu, NULL);
-> -				addfield(map, &je->desc, "", " ", NULL);
-> +				addfield(map, &je.desc, ". ", "Unit: ", NULL);
-> +				addfield(map, &je.desc, "", je.pmu, NULL);
-> +				addfield(map, &je.desc, "", " ", NULL);
->  			} else if (json_streq(map, field, "Filter")) {
->  				addfield(map, &filter, "", "", val);
->  			} else if (json_streq(map, field, "ScaleUnit")) {
-> -				addfield(map, &je->unit, "", "", val);
-> +				addfield(map, &je.unit, "", "", val);
->  			} else if (json_streq(map, field, "PerPkg")) {
-> -				addfield(map, &je->perpkg, "", "", val);
-> +				addfield(map, &je.perpkg, "", "", val);
->  			} else if (json_streq(map, field, "Deprecated")) {
-> -				addfield(map, &je->deprecated, "", "", val);
-> +				addfield(map, &je.deprecated, "", "", val);
->  			} else if (json_streq(map, field, "MetricName")) {
-> -				addfield(map, &je->metric_name, "", "", val);
-> +				addfield(map, &je.metric_name, "", "", val);
->  			} else if (json_streq(map, field, "MetricGroup")) {
-> -				addfield(map, &je->metric_group, "", "", val);
-> +				addfield(map, &je.metric_group, "", "", val);
->  			} else if (json_streq(map, field, "MetricConstraint")) {
-> -				addfield(map, &je->metric_constraint, "", "", val);
-> +				addfield(map, &je.metric_constraint, "", "", val);
->  			} else if (json_streq(map, field, "MetricExpr")) {
-> -				addfield(map, &je->metric_expr, "", "", val);
-> -				for (s = je->metric_expr; *s; s++)
-> +				addfield(map, &je.metric_expr, "", "", val);
-> +				for (s = je.metric_expr; *s; s++)
->  					*s = tolower(*s);
->  			} else if (json_streq(map, field, "ArchStdEvent")) {
->  				addfield(map, &arch_std, "", "", val);
-> @@ -620,7 +619,7 @@ int json_events(const char *fn,
->  			}
->  			/* ignore unknown fields */
->  		}
-> -		if (precise && je->desc && !strstr(je->desc, "(Precise Event)")) {
-> +		if (precise && je.desc && !strstr(je.desc, "(Precise Event)")) {
->  			if (json_streq(map, precise, "2"))
->  				addfield(map, &extra_desc, " ",
->  						"(Must be precise)", NULL);
-> @@ -629,34 +628,33 @@ int json_events(const char *fn,
->  						"(Precise event)", NULL);
->  		}
->  		snprintf(buf, sizeof buf, "event=%#llx", eventcode);
-> -		addfield(map, &je->event, ",", buf, NULL);
-> -		if (je->desc && extra_desc)
-> -			addfield(map, &je->desc, " ", extra_desc, NULL);
-> -		if (je->long_desc && extra_desc)
-> -			addfield(map, &je->long_desc, " ", extra_desc, NULL);
-> +		addfield(map, &je.event, ",", buf, NULL);
-> +		if (je.desc && extra_desc)
-> +			addfield(map, &je.desc, " ", extra_desc, NULL);
-> +		if (je.long_desc && extra_desc)
-> +			addfield(map, &je.long_desc, " ", extra_desc, NULL);
->  		if (filter)
-> -			addfield(map, &je->event, ",", filter, NULL);
-> +			addfield(map, &je.event, ",", filter, NULL);
->  		if (msr != NULL)
-> -			addfield(map, &je->event, ",", msr->pname, msrval);
-> -		if (je->name)
-> -			fixname(je->name);
-> +			addfield(map, &je.event, ",", msr->pname, msrval);
-> +		if (je.name)
-> +			fixname(je.name);
->  
->  		if (arch_std) {
->  			/*
->  			 * An arch standard event is referenced, so try to
->  			 * fixup any unassigned values.
->  			 */
-> -			err = try_fixup(fn, arch_std, eventcode, je);
-> +			err = try_fixup(fn, arch_std, eventcode, &je);
->  			if (err)
->  				goto free_strings;
->  		}
-> -		je->event = real_event(je->name, je->event);
-> -		err = func(data, je);
-> +		je.event = real_event(je.name, je.event);
-> +		err = func(data, &je);
->  free_strings:
->  		free(extra_desc);
->  		free(filter);
->  		free(arch_std);
-> -		free(je);
->  
->  		if (err)
->  			break;
-> 
+>  drivers/usb/phy/phy-jz4770.c | 28 +++++++++++-----------------
+>  1 file changed, 11 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/usb/phy/phy-jz4770.c b/drivers/usb/phy/phy-jz4770.c
+> index d4ee3cb721ea..58771a8688f2 100644
+> --- a/drivers/usb/phy/phy-jz4770.c
+> +++ b/drivers/usb/phy/phy-jz4770.c
+> @@ -97,7 +97,7 @@ enum ingenic_usb_phy_version {
+>  struct ingenic_soc_info {
+>  	enum ingenic_usb_phy_version version;
+>=20=20
+> -	void (*usb_phy_init)(struct usb_phy *phy);
+> +	u32 (*usb_phy_init)(struct usb_phy *phy);
+
+this is not fixing any bug
+
+> @@ -172,7 +172,8 @@ static int ingenic_usb_phy_init(struct usb_phy *phy)
+>  		return err;
+>  	}
+>=20=20
+> -	priv->soc_info->usb_phy_init(phy);
+> +	reg =3D priv->soc_info->usb_phy_init(phy);
+> +	writel(reg, priv->base + REG_USBPCR_OFFSET);
+
+not fixing any bug.
+
+Looking at the code, the bug follows after this line. It would suffice
+to read REG_USBPCR_OFFSET in order to initialize reg. This bug fix could
+have been a one liner.
+
+> @@ -195,19 +196,15 @@ static void ingenic_usb_phy_remove(void *phy)
+>  	usb_remove_phy(phy);
+>  }
+>=20=20
+> -static void jz4770_usb_phy_init(struct usb_phy *phy)
+> +static u32 jz4770_usb_phy_init(struct usb_phy *phy)
+
+not a bug fix
+
+>  {
+> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+> -	u32 reg;
+> -
+> -	reg =3D USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
+> +	return USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
+>  		USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT | USBPCR_SQRXTUNE_DFT |
+>  		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT | USBPCR_TXVREFTUNE_DFT |
+>  		USBPCR_POR;
+> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+
+not a bug fix
+
+>  }
+>=20=20
+> -static void jz4780_usb_phy_init(struct usb_phy *phy)
+> +static u32 jz4780_usb_phy_init(struct usb_phy *phy)
+
+not a bug fix
+
+> @@ -216,11 +213,10 @@ static void jz4780_usb_phy_init(struct usb_phy *phy)
+>  		USBPCR1_WORD_IF_16BIT;
+>  	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>=20=20
+> -	reg =3D USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+> +	return USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
+
+not a bug fix
+
+>  }
+>=20=20
+> -static void x1000_usb_phy_init(struct usb_phy *phy)
+> +static u32 x1000_usb_phy_init(struct usb_phy *phy)
+
+not a bug fix
+
+>  {
+>  	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+>  	u32 reg;
+> @@ -228,13 +224,12 @@ static void x1000_usb_phy_init(struct usb_phy *phy)
+>  	reg =3D readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT;
+>  	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>=20=20
+> -	reg =3D USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+> +	return USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
+>  		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
+>  		USBPCR_COMMONONN | USBPCR_POR;
+> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+
+not a bug fix
+
+>  }
+>=20=20
+> -static void x1830_usb_phy_init(struct usb_phy *phy)
+> +static u32 x1830_usb_phy_init(struct usb_phy *phy)
+
+not a bug fix
+
+>  {
+>  	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
+>  	u32 reg;
+> @@ -246,9 +241,8 @@ static void x1830_usb_phy_init(struct usb_phy *phy)
+>  		USBPCR1_DMPD | USBPCR1_DPPD;
+>  	writel(reg, priv->base + REG_USBPCR1_OFFSET);
+>=20=20
+> -	reg =3D USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |	USBPCR_TXPREEMPHTUNE |
+> +	return USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT | USBPCR_TXPREEMPHTUNE |
+>  		USBPCR_COMMONONN | USBPCR_POR;
+> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
+
+not a bug fix
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9HrgYRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaT/w/+JlNAlTBK+BeN8ZHhLCNQ6q9UGiD4uzhE
+dROf/8FE7LYMOOu+gU/eP0srxyxnWaDFNINb2JTpwb+jlyPyzYCLgncIYdGN0thD
+DgtItb3aGkq8o0pDKr/Ql/7+GP8NBcIxFHKz/MFp3hHOzccOqMzCsIeirIj0mvNT
+S6UYLJUjkEMwed37CXKIt72kxnIv02H48opi8FxFd0Jx2je8PFl+/CL/V+Yq4Ovg
+VmcSc2X8lIhIxcE24TNwBSNP8uvpB9beCqh9Olih+fbJRE0Di9SpZXJFQJx9gBm3
+6zm0CpjaD3K1T50GIXaHNmBRBS94SqywhxTQyoDLAghqNKYLCVpMcfezJZQoqGr+
+ExTY4aFgScrgNEubJ+aq1MPZsirhZW/wzW9Ov7//mQr/yahhUzNkQCkOeyiRdN1E
+Qphcr3RFlucqEoDjASRYetQTwI761snTt1nBIfTtJgKqMOKuL4P9vJ3yblmKsqm6
+5XXqDsfyI4oKjLLsEpDF1ckX3/IlXYFNPZ0tq95H8UOrO2x/X6e/jhToHG6DdPcJ
+9578H9gk1ALmhnRqqyHUBmILgSDRynjOLssPN+OGiuLB1u5SEtt8ist7FLKkh9LU
+upM9GjxAzLzdIb4/l5VprnMYPslkVKII0MXWkuM0pQcM/PslwB+HuyXmLa8jKDGf
+JLBfkngI1QE=
+=YW/H
+-----END PGP SIGNATURE-----
+--=-=-=--
