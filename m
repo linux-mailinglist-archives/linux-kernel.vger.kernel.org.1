@@ -2,117 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2881A253FFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0DE254007
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 10:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgH0H7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:59:36 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40258 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728447AbgH0H6Q (ORCPT
+        id S1728570AbgH0H76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728782AbgH0H7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:58:16 -0400
-Received: by mail-il1-f199.google.com with SMTP id z5so3600681ilp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:58:15 -0700 (PDT)
+        Thu, 27 Aug 2020 03:59:43 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1203C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:59:42 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id j188so2356223vsd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jeiL3ZW9Q24zFafIfqpEY6XXxnRcRe9B3BJI/CvcAhQ=;
+        b=ttYlpAvibE09sv4g+jDnv4M/zYxxQixgtwgM7MBSfaIEVQvNUDWrjAgpK3fLoeqsyR
+         S9OpTWW3Dfy8WdGmY3zTDpvMzcqs+6aXmYCncxKYdMAtCKYuBmoiJOOpV4+LvH/NklZe
+         M0GSUW/o+AvCVrVBcen05ze89i7kXxihW+rf5lh3Zj+joS24t1Htjm4UDoJYO6QOm22v
+         tlCITesDeE/pRPEoDBvP+Qd8fzqpHQuPd8O001xhIOTn2RmEHEhYhEq0v2pf33IG2KwA
+         h7F0mrsxHhyeCK8dfC3V/qpPVJYC+6YSopVIOk0+mjmqZl+dZweI9O6INyZqNpZ//VlV
+         9JMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hQQsbVV5DfwwY5C17HqiQeKaMF+p/UJ2oy2T9wCo46c=;
-        b=L7CVCluUcXwHUCkybnX3Wa3Eohr9oj6zseJstsLWMBkcUp1E1oWuwawKDYRvkgeabW
-         NLzVGzA8OMceIc4HdHvY2j3rdJcFiVmYllEb6KvQhk/80EuTUphpAtwiriKu4HDTNqYU
-         KExG12PQ7xP0jFxGesErNvZoAk/1AyFhmT29FiIKESxD0YatDhZKxYFWf5xheSQN1NA6
-         rwHNzM9hSfopDRWzPYHSdwe1AlNG+m9nMSjnF3lH2iVqZ/ccZGlIJCv3gH8OS+ip0qBF
-         UQ/aMXfjNXci+UEMZG8z/zyb3UuPSgDOJncARdw5XzgEqx+kHsiueRKM3XBCbFMg+9ht
-         IyFQ==
-X-Gm-Message-State: AOAM531xoreOxabeyTJd3EBRmerSbnJ0HcX3qEsMUzdrZibZeWsP47CL
-        4SIS6UqQJvaAQZrgirnVUECf0E5/PTd8Xo6DvPUAPF4H3maz
-X-Google-Smtp-Source: ABdhPJzGeDwVWj3dpjeTIT+FiInDIT2gBGRlYXk3lc0O7o26ZMeM4q3Hcna5bvcRYc5FckZXtI2yWdI4t4Jm8W0U/5B141qWw9ye
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jeiL3ZW9Q24zFafIfqpEY6XXxnRcRe9B3BJI/CvcAhQ=;
+        b=o7zNNXDFLFy6LdDtV0c9V6Zyo1iNoBlnqKbm9xMEqNOtyugQhIamozJnUXW9zR31QF
+         +PvFC7kEd81KCta13povgrvK2L1xxArZEDRUA1KkA7YMgYjj0ypqa3MdaJyEMJdzQf1X
+         R+kYO1r5rm6JuSlJ9WsPZqs2oAFPX3B3/jhCDxkcvrRAfQu6dXa9WdD7yxH0V8VTovOR
+         dNfk211K0TMaWE3/dujcveNBN0e2F+frNWa8dwFhLlr6E/7kYY/MdxnsAgUcD8hccmaC
+         WLkFESkMJSltxvIrQR4AYQ9sCjI3BoItjU9+CMv+rWjs/4uUEGvVCaA3o2ecedphZY3/
+         43Bw==
+X-Gm-Message-State: AOAM531JftTSrGl2EZ40y0PDWDsfvGdwboEwJzBNyaw2m9zl5CrjK724
+        ukffSOTAaqJNOI8KguvhwyDRdFD6hOmBFHDyGenPXw==
+X-Google-Smtp-Source: ABdhPJxCm6wSkXTn/6+z1zNmjPuNxr2QFFQnnfsbZqpUeI8Ve+W4GOE+hozAhT2HfIOKhe4jgCSRDWxMTxSYatoQkU0=
+X-Received: by 2002:a67:7905:: with SMTP id u5mr11518557vsc.179.1598515181832;
+ Thu, 27 Aug 2020 00:59:41 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:6a0c:: with SMTP id f12mr15351925ilc.213.1598515095022;
- Thu, 27 Aug 2020 00:58:15 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 00:58:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000068340d05add74c29@google.com>
-Subject: WARNING: ODEBUG bug in get_signal
-From:   syzbot <syzbot+e3cf8f93cf86936710db@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-kernel@vger.kernel.org, oleg@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
+References: <20200826114911.216745274@linuxfoundation.org>
+In-Reply-To: <20200826114911.216745274@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 27 Aug 2020 13:29:29 +0530
+Message-ID: <CA+G9fYtADJqfoq1gijs1DxOAnyQJTeN1T=ybaMCEH8e-059ZwQ@mail.gmail.com>
+Subject: Re: [PATCH 5.8 00/16] 5.8.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 26 Aug 2020 at 17:34, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.8.5 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 28 Aug 2020 11:49:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.8.5-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-syzbot found the following issue on:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1566d8fe900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3cf8f93cf86936710db
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13236eb6900000
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e3cf8f93cf86936710db@syzkaller.appspotmail.com
+Summary
+------------------------------------------------------------------------
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 1) object type: rcu_head hint: 0x0
-WARNING: CPU: 1 PID: 7108 at lib/debugobjects.c:485 debug_print_object+0x160/0x250 lib/debugobjects.c:485
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 7108 Comm: syz-executor.0 Not tainted 5.9.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:231
- __warn.cold+0x20/0x4a kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:debug_print_object+0x160/0x250 lib/debugobjects.c:485
-Code: dd e0 26 94 88 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bf 00 00 00 48 8b 14 dd e0 26 94 88 48 c7 c7 40 1c 94 88 e8 d2 36 a6 fd <0f> 0b 83 05 93 4f 13 07 01 48 83 c4 20 5b 5d 41 5c 41 5d c3 48 89
-RSP: 0018:ffffc900068a7b80 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff888090f64140 RSI: ffffffff815dafc7 RDI: fffff52000d14f62
-RBP: 0000000000000001 R08: 0000000000000001 R09: ffff8880ae720f8b
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff89bd6780
-R13: 0000000000000000 R14: dead000000000100 R15: dffffc0000000000
- __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
- debug_check_no_obj_freed+0x301/0x41c lib/debugobjects.c:998
- kmem_cache_free.part.0+0x16d/0x1f0 mm/slab.c:3692
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- get_signal+0xd89/0x1f00 kernel/signal.c:2561
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
- exit_to_user_mode_prepare+0x15d/0x1c0 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
- __do_fast_syscall_32+0x63/0x80 arch/x86/entry/common.c:127
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:149
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f05549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000f76ff0cc EFLAGS: 00000296 ORIG_RAX: 00000000000000ff
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000001
-RDX: 0000000000000006 RSI: 0000000020000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.8.y
+git commit: a8485efcbc7066059480098954524ceee6afdfe3
+git describe: v5.8.4-17-ga8485efcbc70
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/bui=
+ld/v5.8.4-17-ga8485efcbc70
 
+No regressions (compared to build v5.8.5)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+No fixes (compared to build v5.8.5)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Ran 34357 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* perf
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* v4l2-compliance
+* igt-gpu-tools
+* ssuite
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
