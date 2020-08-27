@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5B825473C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09712546DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgH0OlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:41:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56338 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727095AbgH0ODr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:03:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id A7A8929A33C
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 6D88248010D; Thu, 27 Aug 2020 16:02:52 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1] power: supply: document current direction
-Date:   Thu, 27 Aug 2020 16:02:48 +0200
-Message-Id: <20200827140248.37749-1-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728072AbgH0Oam convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Aug 2020 10:30:42 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2703 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727933AbgH0OYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:24:08 -0400
+Received: from lhreml716-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 218CF1DAA701CF95398F;
+        Thu, 27 Aug 2020 15:06:46 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 27 Aug 2020 15:06:45 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Thu, 27 Aug 2020 15:06:45 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Shiju Jose <shiju.jose@huawei.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rrichter@marvell.com" <rrichter@marvell.com>
+CC:     Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH V2 topic-edac-5.1 0/2] EDAC: Add support for reporting the
+ non-standard errors to vendor drivers
+Thread-Topic: [PATCH V2 topic-edac-5.1 0/2] EDAC: Add support for reporting
+ the non-standard errors to vendor drivers
+Thread-Index: AQHWfHsztKgkgsUqmkSak6t0xgfOW6lL/KMA
+Date:   Thu, 27 Aug 2020 14:06:45 +0000
+Message-ID: <66db47a16b454d899908bb8f5cfa811b@huawei.com>
+References: <20200827140128.1113-1-shiju.jose@huawei.com>
+In-Reply-To: <20200827140128.1113-1-shiju.jose@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.87.119]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the sign for CURRENT_NOW and CURRENT_AVG is a bit
-of a mess. There are basically 3 different ways battery fuel
-gauges report the current:
+Sorry. Please ignore this.
 
-1. uses negative values for discharging and positive values
-   for charging
-2. uses positive values for discharging and negative values
-   for discharging (opposit of 1)
-3. only uses positive values
-
-As a result userspace currently cannot use the sign at all in
-a generic way. Let's solve the issue by documenting a canonical
-way for reporting the data and ensure new drivers follow this
-way. Then existing drivers can be fixed on a case-by-case basis.
-
-The 'negative value = battery discharging' has been choosen,
-since there are only very few drivers doing it the other way
-around.
-
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- Documentation/ABI/testing/sysfs-class-power | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-index 651599fb18f8..dbccb2fcd7ce 100644
---- a/Documentation/ABI/testing/sysfs-class-power
-+++ b/Documentation/ABI/testing/sysfs-class-power
-@@ -108,7 +108,8 @@ Description:
- 		which they average readings to smooth out the reported value.
- 
- 		Access: Read
--		Valid values: Represented in microamps
-+		Valid values: Represented in microamps. Negative values are used
-+		for discharging batteries, positive values for charging batteries.
- 
- What:		/sys/class/power_supply/<supply_name>/current_max
- Date:		October 2010
-@@ -127,7 +128,8 @@ Description:
- 		This value is not averaged/smoothed.
- 
- 		Access: Read
--		Valid values: Represented in microamps
-+		Valid values: Represented in microamps. Negative values are used
-+		for discharging batteries, positive values for charging batteries.
- 
- What:		/sys/class/power_supply/<supply_name>/charge_control_limit
- Date:		Oct 2012
--- 
-2.28.0
+>-----Original Message-----
+>From: linux-edac-owner@vger.kernel.org [mailto:linux-edac-
+>owner@vger.kernel.org] On Behalf Of Shiju Jose
+>Sent: 27 August 2020 15:01
+>To: linux-edac@vger.kernel.org; linux-kernel@vger.kernel.org; bp@alien8.de;
+>mchehab@kernel.org; tony.luck@intel.com; james.morse@arm.com;
+>rrichter@marvell.com
+>Cc: Linuxarm <linuxarm@huawei.com>
+>Subject: [PATCH V2 topic-edac-5.1 0/2] EDAC: Add support for reporting the
+>non-standard errors to vendor drivers
+>
+>Presently non-standard HW errors are not reported to the vendor drivers for
+>the recovery.
+>This patch set adds support for reporting the non-standard errors to the
+>registered vendor drivers.
+>Also adds HIP08 EDAC driver, for the  recovery of the PCIe OEM errors on
+>HiSilicon HIP08.
+>
+>RFC -> V2
+>1.Add error recovery for the PCIe local errors 2.Removed code for the other
+>OEM errors from HIP08 edac driver
+>  because there is no current requirement for the recovery.
+>
+>Shiju Jose (2):
+>  EDAC: Add support for reporting the non-standard errors to the vendor
+>    drivers
+>  EDAC: Add handling for the PCIe OEM errors on HiSilicon HIP08
+>
+> drivers/acpi/apei/ghes.c                    |   5 +
+> drivers/edac/Makefile                       |   3 +-
+> drivers/edac/edac_non_standard.c            | 124 ++++++++++++++
+> drivers/edac/hisi_hip08_edac_non_standard.c | 255
+>++++++++++++++++++++++++++++
+> include/linux/edac_non_standard.h           |  74 ++++++++
+> 5 files changed, 460 insertions(+), 1 deletion(-)  create mode 100644
+>drivers/edac/edac_non_standard.c  create mode 100644
+>drivers/edac/hisi_hip08_edac_non_standard.c
+> create mode 100644 include/linux/edac_non_standard.h
+>
+>--
+>1.9.1
+>
 
