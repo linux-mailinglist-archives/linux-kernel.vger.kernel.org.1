@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B261254D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86496254CFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 20:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgH0SZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 14:25:48 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:44002 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbgH0SZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 14:25:47 -0400
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 07RIPRPs027703;
-        Fri, 28 Aug 2020 03:25:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 07RIPRPs027703
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1598552727;
-        bh=L2QfmaAwnwA4hoiO89ZgINUlMqkWy7n6tRHAxYPu1fM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xTkHOyq3cJ/fnKhHkO8g7qNjDOSj4XPlmL9h6hkeGTAuI+SLcarBbvGKtE4Isr5Vo
-         rA59oYNmG45/0ghyRaMpaWDpx9nbIpnRFY8AWzeE0OqMEKJEqafMvlwnJlMn3ZPtgf
-         7WXDAT23cchRglpI4KH51wo3rMWDGkDOR2iuL2TJTuGT83WyfeCBK/pTvt/89+WgQL
-         gJbx4Z8htIEPzT6jQJ4YUBHUY/rhhOqgca9lEACCik908Ds1JBYz7c0Ty/WYEIB/Rg
-         406rynBnQbqGt+BMm32FTCXZF0WFYFN8PJUEI9gmC6q/oOwmMrrqsFd1Tn6j9lNSfp
-         Tg44+Sg/0Jexg==
-X-Nifty-SrcIP: [209.85.210.169]
-Received: by mail-pf1-f169.google.com with SMTP id 17so4146073pfw.9;
-        Thu, 27 Aug 2020 11:25:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530jSBs3bHQQJTv9zodt62iLJEfNgcF33BgJEmOBHV21eZ+cXCJG
-        GYTew5i/NwbC7/1ggnoChVujz4Azlq3VCxr7tUk=
-X-Google-Smtp-Source: ABdhPJweNgFBGUD7xENRLq6vkx3u8aXYAxv8Zh27iS33Ltucpdk986dIvAZ2MdzkT2akYEO8uOhq0eHYJl8S8d3ojwo=
-X-Received: by 2002:a63:e018:: with SMTP id e24mr15142537pgh.175.1598552726619;
- Thu, 27 Aug 2020 11:25:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200826191555.3350406-1-ndesaulniers@google.com>
-In-Reply-To: <20200826191555.3350406-1-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 28 Aug 2020 03:24:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATqUV48aNW2NGN7gz_oMo_3kZ+mbbiq2nGsfnQR=oEHAg@mail.gmail.com>
-Message-ID: <CAK7LNATqUV48aNW2NGN7gz_oMo_3kZ+mbbiq2nGsfnQR=oEHAg@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: add minimum clang/llvm version
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Borislav Petkov <bp@suse.de>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726802AbgH0SZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 14:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726197AbgH0SZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 14:25:13 -0400
+Received: from localhost.localdomain (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 834FE2087C;
+        Thu, 27 Aug 2020 18:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598552713;
+        bh=Z0fq8dm88+dU9bSyD1/ti5vEZonGfauWaztGQMRRjv4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IwTyGYXlnbFOhjBVfmnr32F+ohdbcGf6mHx2E6En0fwR5qRBHq9yO91+/S6zv2h0w
+         4+NDrFOePMEVUsNYcT3MvpBJoxWD+XLp4nmvr2ulQcvggxIVrcUxRGGgOk39RdthS2
+         ksaZ/x2Y9mvHGkvPkj4TIMDEonMo0PEZr+dfXpt8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>, HS Liao <hs.liao@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v3] mailbox: mediatek: Fix handling of platform_get_irq() error
+Date:   Thu, 27 Aug 2020 20:25:07 +0200
+Message-Id: <20200827182507.4938-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 4:16 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Based on a vote at the LLVM BoF at Plumbers 2020, we decided to start
-> small, supporting just one formal upstream release of LLVM for now.
->
-> We can probably widen the support window of supported versions over
-> time.  Also, note that LLVM's release process is different than GCC's.
-> GCC tends to have 1 major release per year while releasing minor updates
-> to the past 3 major versions.  LLVM tends to support one major release
-> and one minor release every six months.
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> Tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V1 -> V2:
-> * fix typo, as per Will.
-> * add link to getting LLVM, as per Nathan.
-> * collect tags.
->
->  Documentation/kbuild/llvm.rst     |  4 ++++
->  Documentation/process/changes.rst | 15 +++++++++++++++
->  2 files changed, 19 insertions(+)
->
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index 2aac50b97921..3f10a9c47551 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -1,3 +1,5 @@
-> +.. _kbuild_llvm:
-> +
->  ==============================
->  Building Linux with Clang/LLVM
->  ==============================
-> @@ -73,6 +75,8 @@ Getting Help
->  - `Wiki <https://github.com/ClangBuiltLinux/linux/wiki>`_
->  - `Beginner Bugs <https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22>`_
->
-> +.. _getting_llvm:
-> +
->  Getting LLVM
->  -------------
->
-> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-> index ee741763a3fc..dac17711dc11 100644
-> --- a/Documentation/process/changes.rst
-> +++ b/Documentation/process/changes.rst
-> @@ -30,6 +30,7 @@ you probably needn't concern yourself with pcmciautils.
->          Program        Minimal version       Command to check the version
->  ====================== ===============  ========================================
->  GNU C                  4.9              gcc --version
-> +Clang/LLVM (optional)  10.0.1           clang --version
+platform_get_irq() returns -ERRNO on error.  In such case casting to u32
+and comparing to 0 would pass the check.
 
+Fixes: 623a6143a845 ("mailbox: mediatek: Add Mediatek CMDQ driver")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Just playing a nitpick:
-Supporting Clang makes GCC optional, so now
-"GNU C (optional)"
+---
 
-:-)
+Changes since v2:
+1. Fix subject.
 
+Changes since v1:
+1. Correct u32->int,
+2. Fix left-over '!'.
+---
+ drivers/mailbox/mtk-cmdq-mailbox.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index 484d4438cd83..5665b6ea8119 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -69,7 +69,7 @@ struct cmdq_task {
+ struct cmdq {
+ 	struct mbox_controller	mbox;
+ 	void __iomem		*base;
+-	u32			irq;
++	int			irq;
+ 	u32			thread_nr;
+ 	u32			irq_mask;
+ 	struct cmdq_thread	*thread;
+@@ -525,10 +525,8 @@ static int cmdq_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	cmdq->irq = platform_get_irq(pdev, 0);
+-	if (!cmdq->irq) {
+-		dev_err(dev, "failed to get irq\n");
+-		return -EINVAL;
+-	}
++	if (cmdq->irq < 0)
++		return cmdq->irq;
+ 
+ 	plat_data = (struct gce_plat *)of_device_get_match_data(dev);
+ 	if (!plat_data) {
+-- 
+2.17.1
 
-
---
-Best Regards
-Masahiro Yamada
