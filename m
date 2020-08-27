@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5915D2546F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72F0254712
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgH0OeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:34:23 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:58787 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727885AbgH0Oaq (ORCPT
+        id S1728092AbgH0Ohk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:37:40 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:42904 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728043AbgH0OdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:30:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U7.leK6_1598538641;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U7.leK6_1598538641)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 27 Aug 2020 22:30:41 +0800
-Date:   Thu, 27 Aug 2020 22:30:41 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, ming.lei@redhat.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] block: Add a new helper to attempt to merge a bio
-Message-ID: <20200827143041.GA122928@VM20190228-100.tbsite.net>
-Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-References: <cover.1597727255.git.baolin.wang@linux.alibaba.com>
- <7749d6068b9e5404ef59bacfcb278d604f84af75.1597727255.git.baolin.wang@linux.alibaba.com>
- <20200827094415.GA16058@lst.de>
+        Thu, 27 Aug 2020 10:33:02 -0400
+Received: from [78.134.86.56] (port=49228 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kBIxY-0006H2-J7; Thu, 27 Aug 2020 16:33:00 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-fpga@vger.kernel.org
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anatolij Gustschin <agust@denx.de>
+Subject: [PATCH v2 1/5] fpga manager: xilinx-spi: remove stray comment
+Date:   Thu, 27 Aug 2020 16:32:45 +0200
+Message-Id: <20200827143249.10973-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827094415.GA16058@lst.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 11:44:15AM +0200, Christoph Hellwig wrote:
-> On Tue, Aug 18, 2020 at 01:45:29PM +0800, Baolin Wang wrote:
-> > Meanwhile move the blk_mq_bio_list_merge() into blk-merge.c and
-> > rename it as a generic name.
-> 
-> That should probably a separate patch.
+Remove comment committed by mistake.
 
-Sure.
+Fixes: dd2784c01d93 ("fpga manager: xilinx-spi: check INIT_B pin during write_init")
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-> 
-> > +		if (blk_attempt_bio_merge(q, rq, bio, nr_segs, false) == BIO_MERGE_OK)
-> > +			return true;
-> 
-> This adds an overly long line.
+---
 
-The checkpatch.pl has increased the default limit to 100 characters, so
-I did not get a long line warning. Anyway I will change a new line if
-you concern about this.
+Changes in v2: none.
 
-> > -		if (merged)
-> > +		switch (blk_attempt_bio_merge(q, rq, bio, nr_segs, true)) {
-> > +		default:
-> > +		case BIO_MERGE_NONE:
-> > +			continue;
-> > +		case BIO_MERGE_OK:
-> >  			return true;
-> > +		case BIO_MERGE_FAILED:
-> > +			return false;
-> > +		}
-> 
-> I don't think we need a default statement here as we handle all
-> possible values of the enum.
+Note: Moritz replied "Applied to for-next", but it doesn't show up yet.
+---
+ drivers/fpga/xilinx-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-OK. Will remove it in next version. Thanks.
+diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
+index 2967aa2a74e2..502fae0d1d85 100644
+--- a/drivers/fpga/xilinx-spi.c
++++ b/drivers/fpga/xilinx-spi.c
+@@ -57,7 +57,6 @@ static int wait_for_init_b(struct fpga_manager *mgr, int value,
+ 
+ 	if (conf->init_b) {
+ 		while (time_before(jiffies, timeout)) {
+-			/* dump_state(conf, "wait for init_d .."); */
+ 			if (gpiod_get_value(conf->init_b) == value)
+ 				return 0;
+ 			usleep_range(100, 400);
+-- 
+2.28.0
+
