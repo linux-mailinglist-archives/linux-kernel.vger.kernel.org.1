@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20D12546D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411C2254678
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgH0O3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgH0OQj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:16:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB9C061236
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:51:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k15so1683934wrn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 06:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gVkUKTaskmscEtJ5ZzwNNX4gLUBJNoLUiPlck3rKbv8=;
-        b=U49jQz3y2e7EBaQRi0qQ8rVwz+yVCuKIkU3XMjTPV0+omeVKFMKkRkG1gj9Z1Qs0e+
-         9/0eC6U3p2vdfQyOzwun5pf9Tgf3/WZK43hOtQZrAmXwbrTx+ZcmOCjxqbEFi/mTvLdR
-         9QfHSL8A+03Qb/FkGs0R3usdDG+Cu4cehsMOL2SgT0SuW0RLJk3B2Yih4xj+1w0SiYhX
-         3uvT4T8iKUPGuYAPD/H9xXeId5nuIflMmqrtHnkj2zYKDt9ysmD0UvCQhdSFAhZ9b4P2
-         ahfSfh3d4Xf9Iti9vX/BS1QEv8Gd56wgLUwKxS28ZyBOsP7CixS9ed9DCUpS2gAyTvml
-         LAmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gVkUKTaskmscEtJ5ZzwNNX4gLUBJNoLUiPlck3rKbv8=;
-        b=cdk5R39jFpBAmlO2M2HmbP6XSPKn0pq7nD8UH6Ylrb/CpSRdbdJrG0OHCzzQk99MYW
-         tDQmAjgmgwMCKjZiKvf6Xl3mSiRZPjq8UQVxY1SD9IB4znqklLfXh4KpkhLqLMZyNrN7
-         UDqECJ5kFNIEft5sh4qNb9yLswHgV+UstzhacNJ+zWidwICWyDWWixnVuW6zLMJxiAq7
-         HMtquVav3bDHM6n4lTHvxw01kU/qfBP7DbnrEcIwpTQZt4//Q741zp4EcC8Y5A63KgB5
-         ZylqnRxreA7c9ZiEoDq6DiydAW+gfHyGklZlz64xhaerxAd0brIFY7SvVPjaoPlF9uy0
-         hNDw==
-X-Gm-Message-State: AOAM532neeTrOH9IzodMehdNLfiFCmoxVUxgGy1npsmuS3IdCD9gJq7J
-        pbi7xo5eovTRtUJjprDI/4qC7YI/4KhjwJuKyyI=
-X-Google-Smtp-Source: ABdhPJxUZbYiTHvH8yDDYRyp/OquPDJR8jlbS1sFzWfTl9o8bEGgVH+bzOnmOMvlXjdes3JSpG739Z6gh+aJGBfj90Q=
-X-Received: by 2002:adf:fecc:: with SMTP id q12mr21109309wrs.374.1598536279457;
- Thu, 27 Aug 2020 06:51:19 -0700 (PDT)
+        id S1726882AbgH0OJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:09:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:58514 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727056AbgH0OEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 10:04:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B2C8101E;
+        Thu, 27 Aug 2020 06:53:39 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 889CB3F68F;
+        Thu, 27 Aug 2020 06:53:33 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 14:53:31 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 130/232] sched/uclamp: Protect uclamp fast path code
+ with static key
+Message-ID: <20200827135330.246pbwc7h5gvdli7@e107158-lin.cambridge.arm.com>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091619.114657136@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20200825173349.24580-1-kai.heng.feng@canonical.com> <36ccb6ad-d005-4c39-fc32-7ecf4e71331f@amd.com>
-In-Reply-To: <36ccb6ad-d005-4c39-fc32-7ecf4e71331f@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 27 Aug 2020 09:51:08 -0400
-Message-ID: <CADnq5_NX8xmYbz8EiXZMRLXUV46W7cLUsBEj+AHX=we-sN=m8w@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: Prefer lower feedback dividers
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200820091619.114657136@linuxfoundation.org>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On 08/20/20 11:19, Greg Kroah-Hartman wrote:
+> From: Qais Yousef <qais.yousef@arm.com>
+> 
+> [ Upstream commit 46609ce227039fd192e0ecc7d940bed587fd2c78 ]
+> 
+> There is a report that when uclamp is enabled, a netperf UDP test
+> regresses compared to a kernel compiled without uclamp.
+> 
+> https://lore.kernel.org/lkml/20200529100806.GA3070@suse.de/
+> 
+> While investigating the root cause, there were no sign that the uclamp
+> code is doing anything particularly expensive but could suffer from bad
+> cache behavior under certain circumstances that are yet to be
+> understood.
+> 
+> https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
+> 
+> To reduce the pressure on the fast path anyway, add a static key that is
+> by default will skip executing uclamp logic in the
+> enqueue/dequeue_task() fast path until it's needed.
+> 
+> As soon as the user start using util clamp by:
+> 
+> 	1. Changing uclamp value of a task with sched_setattr()
+> 	2. Modifying the default sysctl_sched_util_clamp_{min, max}
+> 	3. Modifying the default cpu.uclamp.{min, max} value in cgroup
+> 
+> We flip the static key now that the user has opted to use util clamp.
+> Effectively re-introducing uclamp logic in the enqueue/dequeue_task()
+> fast path. It stays on from that point forward until the next reboot.
+> 
+> This should help minimize the effect of util clamp on workloads that
+> don't need it but still allow distros to ship their kernels with uclamp
+> compiled in by default.
+> 
+> SCHED_WARN_ON() in uclamp_rq_dec_id() was removed since now we can end
+> up with unbalanced call to uclamp_rq_dec_id() if we flip the key while
+> a task is running in the rq. Since we know it is harmless we just
+> quietly return if we attempt a uclamp_rq_dec_id() when
+> rq->uclamp[].bucket[].tasks is 0.
+> 
+> In schedutil, we introduce a new uclamp_is_enabled() helper which takes
+> the static key into account to ensure RT boosting behavior is retained.
+> 
+> The following results demonstrates how this helps on 2 Sockets Xeon E5
+> 2x10-Cores system.
+> 
+>                                    nouclamp                 uclamp      uclamp-static-key
+> Hmean     send-64         162.43 (   0.00%)      157.84 *  -2.82%*      163.39 *   0.59%*
+> Hmean     send-128        324.71 (   0.00%)      314.78 *  -3.06%*      326.18 *   0.45%*
+> Hmean     send-256        641.55 (   0.00%)      628.67 *  -2.01%*      648.12 *   1.02%*
+> Hmean     send-1024      2525.28 (   0.00%)     2448.26 *  -3.05%*     2543.73 *   0.73%*
+> Hmean     send-2048      4836.14 (   0.00%)     4712.08 *  -2.57%*     4867.69 *   0.65%*
+> Hmean     send-3312      7540.83 (   0.00%)     7425.45 *  -1.53%*     7621.06 *   1.06%*
+> Hmean     send-4096      9124.53 (   0.00%)     8948.82 *  -1.93%*     9276.25 *   1.66%*
+> Hmean     send-8192     15589.67 (   0.00%)    15486.35 *  -0.66%*    15819.98 *   1.48%*
+> Hmean     send-16384    26386.47 (   0.00%)    25752.25 *  -2.40%*    26773.74 *   1.47%*
+> 
+> The perf diff between nouclamp and uclamp-static-key when uclamp is
+> disabled in the fast path:
+> 
+>      8.73%     -1.55%  [kernel.kallsyms]        [k] try_to_wake_up
+>      0.07%     +0.04%  [kernel.kallsyms]        [k] deactivate_task
+>      0.13%     -0.02%  [kernel.kallsyms]        [k] activate_task
+> 
+> The diff between nouclamp and uclamp-static-key when uclamp is enabled
+> in the fast path:
+> 
+>      8.73%     -0.72%  [kernel.kallsyms]        [k] try_to_wake_up
+>      0.13%     +0.39%  [kernel.kallsyms]        [k] activate_task
+>      0.07%     +0.38%  [kernel.kallsyms]        [k] deactivate_task
+> 
+> Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+> Reported-by: Mel Gorman <mgorman@suse.de>
+> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+> Link: https://lkml.kernel.org/r/20200630112123.12076-3-qais.yousef@arm.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
 
-Alex
+Greg/Peter/Mel
 
-On Thu, Aug 27, 2020 at 7:18 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 25.08.20 um 19:33 schrieb Kai-Heng Feng:
-> > Commit 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
-> > fixed screen flicker for HP Compaq nx9420 but breaks other laptops like
-> > Asus X50SL.
-> >
-> > Turns out we also need to favor lower feedback dividers.
->
-> Mhm, let's hope that this works out for all others as well :)
->
-> >
-> > Users confirmed this change fixes the regression and doesn't regress th=
-e
-> > original fix.
-> >
-> > Fixes: 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
-> > BugLink: https://bugs.launchpad.net/bugs/1791312
-> > BugLink: https://bugs.launchpad.net/bugs/1861554
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/radeon/radeon_display.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/=
-radeon/radeon_display.c
-> > index e0ae911ef427..7b69d6dfe44a 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_display.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_display.c
-> > @@ -933,7 +933,7 @@ static void avivo_get_fb_ref_div(unsigned nom, unsi=
-gned den, unsigned post_div,
-> >
-> >       /* get matching reference and feedback divider */
-> >       *ref_div =3D min(max(den/post_div, 1u), ref_div_max);
-> > -     *fb_div =3D DIV_ROUND_CLOSEST(nom * *ref_div * post_div, den);
-> > +     *fb_div =3D max(nom * *ref_div * post_div / den, 1u);
-> >
-> >       /* limit fb divider to its maximum */
-> >       if (*fb_div > fb_div_max) {
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Should this go to 5.4 too? Not saying it should, but I don't know if distros
+could care about potential performance hit that this patch addresses.
+
+Thanks
+
+--
+Qais Yousef
