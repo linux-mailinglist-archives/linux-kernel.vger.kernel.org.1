@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747DB253B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DF8253B73
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 03:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgH0BiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 21:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgH0BiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 21:38:15 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541AC0617BE
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:38:13 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id t74so2028428lff.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Aug 2020 18:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tcZaZT5thwhJ11Sw+P5MksLekBOktbPk7Gm1gWNLeIg=;
-        b=Dnw0CNEgWHRjRY6mVfKDmenVclOHmH5gb8vsyRKn1HlquwSK9oiMqP5+l+4bHIUmEN
-         ImBA+i6GyDM1F0AHWS7CRMjJ7MbjGg3iMTfGDiQs2TxZFuTaeWydDDDSQzsB1j+J+HS2
-         hF5BeBXmPWTkNM6rGsgz2JkcZoHkS34A8KeAOj/TRNVUC4cD4QDaQFLc1HCe10CG1PYe
-         Q0U9h5FTzR8smu+Ap/LU1p61Im/PL+P7y/rCDRvwMmMg06sLJPyajSl/UF/RMG3Dnw47
-         6BcaQUsr7h/UOccf+voQ08xND5Y4s1o9fVhqmMAio85FbwxE4hrSZAgkBPmBsn1k0C6I
-         e/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tcZaZT5thwhJ11Sw+P5MksLekBOktbPk7Gm1gWNLeIg=;
-        b=UNoBplobcy++e0WGoQ36spNqgXpzE5jsca+75iUAGltjgZPuF5Pm7NLTdlbRFupuah
-         q+wUDbVrKDSxEh2XzwZU+57N9PRoQTJqA55rtn1QH7a14DW0bB6SC2ERokdgje4j7NjC
-         fzQFOcCe987w6UTCAfFZFHyPgyvfv4nQ27MSThIK13sZ70bgx9ajJQ2WRd3beE7ORI3P
-         dYf78fFS5MdVhrn23bx0fVhNTpQYc9qva7l7aggS04PutCPLrzvNnHJTMQKErBeHnU6q
-         k0MoGL+7/8GhOz2yaV6zERQA4yoBqU7O+/vRcE5YYFM2ZeCbZZCNpey2hTp29RwsUEgL
-         HgmA==
-X-Gm-Message-State: AOAM532ukHLzmXuxBTzJCayMNCecW9+h7GhrehnujFA8PZv9Cc0BWmFn
-        H471w7zATH+slhmun8O2c2Dg/sMyMCFMnTo88N1iMQ==
-X-Google-Smtp-Source: ABdhPJxRcjc/Gqp/xT0urxhuNv5VqgxhHlf/nPvUR2crUR0WvM1oYHdUzyehd4aChT2XgBrBktIsBGkJHiIB0EJwAh4=
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr3245912lfp.124.1598492292040;
- Wed, 26 Aug 2020 18:38:12 -0700 (PDT)
+        id S1726912AbgH0BfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 21:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726784AbgH0BfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 21:35:21 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF2462074A;
+        Thu, 27 Aug 2020 01:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598492120;
+        bh=7qVVxVRgHLIAbQt6FUd6V7CT56tLdcOFc7sCY/XcW4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a4pTmfB3sgIMJjFbdFWoRbsU8OwiaxyKW+QuNkBKy9GSWjT/k15qFfn7RLWNGDTqS
+         BJFRsSmCpgtGwhOq/T+6lt8yzWWtRHNlVRLevw7dNAh1Rt4e+a2j4mum8/GxihxbsM
+         uU2ZQwBWpuvRsTh7kYANI78/IqpYwQPC3C9ilcHY=
+Date:   Wed, 26 Aug 2020 20:41:20 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>, dennis.dalessandro@intel.com,
+        dledford@redhat.com, gustavo@embeddedor.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mike.marciniszyn@intel.com, roland@purestorage.com
+Subject: Re: [PATCH v2 1/2] IB/qib: remove superfluous fallthrough statements
+Message-ID: <20200827014120.GD2671@embeddedor>
+References: <64d7e1c9-9c6a-93f3-ce0a-c24b1c236071@gmail.com>
+ <20200825171242.448447-1-alex.dewar90@gmail.com>
+ <20200825193327.GA5504@embeddedor>
+ <20200826191859.GB2671@embeddedor>
+ <20200827001149.GK24045@ziepe.ca>
 MIME-Version: 1.0
-References: <20200821150134.2581465-1-guro@fb.com> <20200821150134.2581465-8-guro@fb.com>
-In-Reply-To: <20200821150134.2581465-8-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 26 Aug 2020 18:38:01 -0700
-Message-ID: <CALvZod62e=y1-HJJrC7dQQiarRR9o5t+4y_NtZT4B7aGhF46WQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 07/30] bpf: refine memcg-based memory
- accounting for devmap maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>, Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827001149.GK24045@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:18 AM Roman Gushchin <guro@fb.com> wrote:
->
-> Include map metadata and the node size (struct bpf_dtab_netdev) on
-> element update into the accounting.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
+On Wed, Aug 26, 2020 at 09:11:49PM -0300, Jason Gunthorpe wrote:
+> On Wed, Aug 26, 2020 at 02:18:59PM -0500, Gustavo A. R. Silva wrote:
+> > Hi,
+> > 
+> > On Tue, Aug 25, 2020 at 02:33:27PM -0500, Gustavo A. R. Silva wrote:
+> > > On Tue, Aug 25, 2020 at 06:12:42PM +0100, Alex Dewar wrote:
+> > > > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+> > > > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
+> > > > were later converted to fallthrough statements by commit df561f6688fe
+> > > > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
+> > > > warning about unreachable code.
+> > > >
+> > > 
+> > > It's worth mentioning that this warning is triggered only by compilers
+> > > that don't support __attribute__((__fallthrough__)), which has been
+> > > supported since GCC 7.1.
+> > > 
+> > > > Remove the fallthrough statements.
+> > > > 
+> > > > Addresses-Coverity: ("Unreachable code")
+> > > > Fixes: 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+> > > > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> > > 
+> > > Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > > 
+> > 
+> > I can take this in my tree for 5.9-rc3.
+> 
+> That would make conflicts for the 2nd patch, lets just send them all
+> through the rdma tree please.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+OK.
+
+> Is there a reason this is -rc material?
+
+It's just that this warning is currently in mainline.
+
+Thanks
+--
+Gustavo
