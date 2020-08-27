@@ -2,163 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5995825444A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BD625444F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 13:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgH0L3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 07:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgH0LQi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:16:38 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80798C061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:54:30 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id e14so2710266ybf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kL50AETAxFQ/Z0PEcxjtY/mje72xQ1KRsR0dYMPRn0c=;
-        b=K6Cc/U/vzKW4aV2SdSpKnLr1XjzAN1/VEe0yjjqGP3KsKhratD7w7onOLADM18p/Qs
-         AcGr9a1+s5Q7xa5Opw8DuDF/ohYNjtntk4ddMwwhWH0EWIckOG8814MLnXDsf6VVw3oJ
-         uQ08O9VvQWDytcc2Msrf4hcSDGA1xGcEohd9UfQ8oHMeCFl7SMwRpi/Gbv5/TXcjCyL7
-         Q3Sd/ItaMD3/1kENtjVpfSpfaBIwFE80iGsGwJkZRidMiEeqGY4KFrN3VJNdS3hwvHcT
-         rwqmRSMs2cp0fcQBUyAprlc0Ry+xBeTo/mS1kmWmDqkB/nZpb9HFDXyWjd3lBUAriq7+
-         QD+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kL50AETAxFQ/Z0PEcxjtY/mje72xQ1KRsR0dYMPRn0c=;
-        b=NC7QSjGaOw/j2nYGG8rloAFvrJ7CnkYXbpo1cWLpZJzmlxkv8F/oGTUl1a7uCGsX3D
-         H0wSh2HJxI8WYrJhznL9u5Qnegu625dDYpkJ80tEcR6M8wiD1N6hYHcvlAFmunXljPs+
-         PUOW8pKdV/ca7W1YK8svnjKiLJ+anCYu7dIJ9qksSjNkEsnZqeV9K0vGuP9dODKkKZYH
-         +N7lkmwB82cz+QUTijwudCpm0NJd7X43zQSAUeRgIKVSjCvPjsPn9rDghNFioqrNEDa6
-         /VGV5Q6/6xOJ8TRolGj2iGtBb8f3+0UExTW1krI1MQlGPIHlzphVTxTKCgu8q9Sfj22G
-         Wt+w==
-X-Gm-Message-State: AOAM53185YdoUd/ySA0m41/Gn4TkuNdb8HfyerUVWnExUpdBjYKKHIHE
-        FJ0QRiOwRppQVNZklr+8zBvX4nrrl5jpWkVLC7QU2w==
-X-Google-Smtp-Source: ABdhPJxVB9AdgiqMEazYyTVnGYST+nW3/Chayz5MJ7mUKthRW3swWaa3QBpMH158AtV1ihmZErHV2SAtA9bYT3wjE3E=
-X-Received: by 2002:a25:f42:: with SMTP id 63mr28803335ybp.348.1598525669597;
- Thu, 27 Aug 2020 03:54:29 -0700 (PDT)
+        id S1728458AbgH0L36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 07:29:58 -0400
+Received: from mga06.intel.com ([134.134.136.31]:25895 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728001AbgH0LQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 07:16:39 -0400
+IronPort-SDR: fZA/Uwmv6ju5YRAP+EE6lkqv+etZSSE1Zz3eOsXxZfpX3+Lj1W8dGqLstaPFuEfEyRLK5bVGw6
+ zj+Q95yUQrNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="218008691"
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="218008691"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 03:57:05 -0700
+IronPort-SDR: 5VR6ccig7DZlLiO+sMhEo+Emle4xy6LXWOE2nLy+9HD06TFwaDF3kjkmYll9QnidBP84HuExZ0
+ bWSumeroZ0Jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,359,1592895600"; 
+   d="scan'208";a="299810019"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga006.jf.intel.com with SMTP; 27 Aug 2020 03:57:01 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 27 Aug 2020 13:57:01 +0300
+Date:   Thu, 27 Aug 2020 13:57:01 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Algea Cao <algea.cao@rock-chips.com>
+Cc:     mripard@kernel.org, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] drm: Parse Colorimetry data block from EDID
+Message-ID: <20200827105701.GS6112@intel.com>
+References: <20200826142328.131144-1-algea.cao@rock-chips.com>
 MIME-Version: 1.0
-References: <20200729192357.477350-1-vitor@massaru.org> <20200827102333.GA3564678@elver.google.com>
-In-Reply-To: <20200827102333.GA3564678@elver.google.com>
-From:   Vitor Massaru Iha <vitor@massaru.org>
-Date:   Thu, 27 Aug 2020 07:53:53 -0300
-Message-ID: <CADQ6JjVzx=kPsF4Lcek1HtGU7bGW3H62UoN0XDUHDrTxKt3FVg@mail.gmail.com>
-Subject: Re: [PATCH] lib: kunit: add list_sort test conversion to KUnit
-To:     Marco Elver <elver@google.com>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        tglx@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        geert@linux-m68k.org, paul.gortmaker@windriver.com,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        arnd@arndb.de, elfring@users.sourceforge.net, mhocko@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200826142328.131144-1-algea.cao@rock-chips.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 7:23 AM Marco Elver <elver@google.com> wrote:
->
-> On Wed, Jul 29, 2020 at 04:23PM -0300, Vitor Massaru Iha wrote:
-> > This adds the conversion of the runtime tests of test_list_sort,
-> > from `lib/test_list_sort.c` to KUnit tests.
-> >
-> > Please apply this commit first (linux-kselftest/kunit-fixes):
-> > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
-> >
-> > Code Style Documentation: [0]
-> >
-> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
-> > ---
-> >  lib/Kconfig.debug                           | 29 +++++---
-> >  lib/Makefile                                |  2 +-
-> >  lib/{test_list_sort.c => list_sort_kunit.c} | 73 +++++++++++----------
-> >  3 files changed, 58 insertions(+), 46 deletions(-)
-> >  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
-> >
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 9ad9210d70a1..de4fd020a4af 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -1854,16 +1854,6 @@ config LKDTM
-> >       Documentation on how to use the module can be found in
-> >       Documentation/fault-injection/provoke-crashes.rst
-> >
-> > -config TEST_LIST_SORT
-> > -     tristate "Linked list sorting test"
-> > -     depends on DEBUG_KERNEL || m
-> > -     help
-> > -       Enable this to turn on 'list_sort()' function test. This test is
-> > -       executed only once during system boot (so affects only boot time),
-> > -       or at module load time.
-> > -
-> > -       If unsure, say N.
-> > -
-> >  config TEST_MIN_HEAP
-> >       tristate "Min heap test"
-> >       depends on DEBUG_KERNEL || m
-> > @@ -2173,6 +2163,25 @@ config LIST_KUNIT_TEST
-> >
-> >         If unsure, say N.
-> >
-> > +config LIST_SORT_KUNIT
-> > +     tristate "KUnit Linked list sorting test"
-> > +     depends on KUNIT
-> > +     depends on DEBUG_KERNEL || m
->
-> I think the style [0] you linked suggests '*_KUNIT_TEST' for config
-> variables.
->
-> Only noticed this because I was doing a
->
->         git grep 'config.*TEST'
->
-> to find tests in the kernel + new tests floating on the LKML.
+On Wed, Aug 26, 2020 at 10:23:28PM +0800, Algea Cao wrote:
+> CEA 861.3 spec adds colorimetry data block for HDMI.
+> Parsing the block to get the colorimetry data from
+> panel.
 
-Thanks, I'll fix it.
+And what exactly do you want to do with that data?
 
->
-> Apologies for picking this patch to comment on, but if it's still
-> changeable it might be worth adjusting.
+> 
+> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+> ---
+> 
+>  drivers/gpu/drm/drm_edid.c  | 45 +++++++++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h |  3 +++
+>  include/drm/drm_edid.h      | 14 ++++++++++++
+>  3 files changed, 62 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 31496b6cfc56..67e607c04492 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3223,6 +3223,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
+>  #define VIDEO_BLOCK     0x02
+>  #define VENDOR_BLOCK    0x03
+>  #define SPEAKER_BLOCK	0x04
+> +#define COLORIMETRY_DATA_BLOCK		0x5
+>  #define HDR_STATIC_METADATA_BLOCK	0x6
+>  #define USE_EXTENDED_TAG 0x07
+>  #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
+> @@ -4309,6 +4310,48 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
+>  	mode->clock = clock;
+>  }
+>  
+> +static bool cea_db_is_hdmi_colorimetry_data_block(const u8 *db)
+> +{
+> +	if (cea_db_tag(db) != USE_EXTENDED_TAG)
+> +		return false;
+> +
+> +	if (db[1] != COLORIMETRY_DATA_BLOCK)
+> +		return false;
+> +
+> +	if (cea_db_payload_len(db) < 2)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void
+> +drm_parse_colorimetry_data_block(struct drm_connector *connector, const u8 *db)
+> +{
+> +	struct drm_hdmi_info *info = &connector->display_info.hdmi;
+> +
+> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_601)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_709)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_709;
+> +	if (db[2] & DRM_EDID_CLRMETRY_sYCC_601)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_sYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_ADBYCC_601)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADBYCC_601;
+> +	if (db[2] & DRM_EDID_CLRMETRY_ADB_RGB)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADB_RGB;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_CYCC)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_CYCC;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_YCC)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_YCC;
+> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_RGB)
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_RGB;
+> +	/* Byte 4 Bit 7: DCI-P3 */
+> +	if (db[3] & BIT(7))
+> +		info->colorimetry |= DRM_EDID_CLRMETRY_DCI_P3;
+> +
+> +	DRM_DEBUG_KMS("Supported Colorimetry 0x%x\n", info->colorimetry);
+> +}
+> +
+>  static bool cea_db_is_hdmi_hdr_metadata_block(const u8 *db)
+>  {
+>  	if (cea_db_tag(db) != USE_EXTENDED_TAG)
+> @@ -4994,6 +5037,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
+>  			drm_parse_vcdb(connector, db);
+>  		if (cea_db_is_hdmi_hdr_metadata_block(db))
+>  			drm_parse_hdr_metadata_block(connector, db);
+> +		if (cea_db_is_hdmi_colorimetry_data_block(db))
+> +			drm_parse_colorimetry_data_block(connector, db);
+>  	}
+>  }
+>  
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index af145608b5ed..d599c3b9e881 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -207,6 +207,9 @@ struct drm_hdmi_info {
+>  
+>  	/** @y420_dc_modes: bitmap of deep color support index */
+>  	u8 y420_dc_modes;
+> +
+> +	/* @colorimetry: bitmap of supported colorimetry modes */
+> +	u16 colorimetry;
+>  };
+>  
+>  /**
+> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> index cfa4f5af49af..98fa78c2f82d 100644
+> --- a/include/drm/drm_edid.h
+> +++ b/include/drm/drm_edid.h
+> @@ -229,6 +229,20 @@ struct detailed_timing {
+>  				    DRM_EDID_YCBCR420_DC_36 | \
+>  				    DRM_EDID_YCBCR420_DC_30)
+>  
+> +/*
+> + * Supported Colorimetry from colorimetry data block
+> + * as per CEA 861-G spec
+> + */
+> +#define DRM_EDID_CLRMETRY_xvYCC_601   (1 << 0)
+> +#define DRM_EDID_CLRMETRY_xvYCC_709   (1 << 1)
+> +#define DRM_EDID_CLRMETRY_sYCC_601    (1 << 2)
+> +#define DRM_EDID_CLRMETRY_ADBYCC_601  (1 << 3)
+> +#define DRM_EDID_CLRMETRY_ADB_RGB     (1 << 4)
+> +#define DRM_EDID_CLRMETRY_BT2020_CYCC (1 << 5)
+> +#define DRM_EDID_CLRMETRY_BT2020_YCC  (1 << 6)
+> +#define DRM_EDID_CLRMETRY_BT2020_RGB  (1 << 7)
+> +#define DRM_EDID_CLRMETRY_DCI_P3      (1 << 15)
+> +
+>  /* ELD Header Block */
+>  #define DRM_ELD_HEADER_BLOCK_SIZE	4
+>  
+> -- 
+> 2.25.1
+> 
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-No problem.
-
-
-> > +     help
-> > +       Enable this to turn on 'list_sort()' function test. This test is
-> > +       executed only once during system boot (so affects only boot time),
-> > +       or at module load time.
-> > +
-> > +          KUnit tests run during boot and output the results to the debug log
-> > +       in TAP format (http://testanything.org/). Only useful for kernel devs
-> > +       running the KUnit test harness, and not intended for inclusion into a
-> > +       production build.
->
-> Not a big deal, but I'm not sure if summarizing KUnit here is useful.
-> You already link to the documentation below.
-
-Sure, I'll remove this.
-
-> > +       For more information on KUnit and unit tests in general please refer
-> > +       to the KUnit documentation in Documentation/dev-tools/kunit/.
-> ...
->
-> Thanks,
-> -- Marco
-
-Thanks for the review.
+-- 
+Ville Syrjälä
+Intel
