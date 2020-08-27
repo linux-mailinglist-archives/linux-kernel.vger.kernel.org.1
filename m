@@ -2,250 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D51253C38
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487A3253C5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgH0Dul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 23:50:41 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18255 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgH0Dug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 23:50:36 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f472d7e0000>; Wed, 26 Aug 2020 20:50:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 26 Aug 2020 20:50:36 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 26 Aug 2020 20:50:36 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
- 2020 03:50:30 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 27 Aug 2020 03:50:30 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.174.186]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f472d860000>; Wed, 26 Aug 2020 20:50:30 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>
-CC:     <skomatineni@nvidia.com>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: [PATCH v6 7/7] sdhci: tegra: Add missing TMCLK for data timeout
-Date:   Wed, 26 Aug 2020 20:50:01 -0700
-Message-ID: <1598500201-5987-8-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
-References: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S1726936AbgH0DyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 23:54:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10268 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726804AbgH0DyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 Aug 2020 23:54:10 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 55A1047872667942D41D;
+        Thu, 27 Aug 2020 11:54:08 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.108) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 27 Aug 2020
+ 11:54:05 +0800
+Subject: Re: [PATCH] libnvdimm/e820: Fix build error without MEMORY_HOTPLUG
+To:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
+        <dave.jiang@intel.com>, <ira.weiny@intel.com>, <mingo@kernel.org>
+References: <20200826121800.732-1-yuehaibing@huawei.com>
+CC:     <linux-nvdimm@lists.01.org>, <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <c1b6d720-513d-10de-364f-46c7f5b750fc@huawei.com>
+Date:   Thu, 27 Aug 2020 11:54:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598500222; bh=fU0W0lQH6TUHqegrUenmFQDw6Q7G+5MGgzZQlaMJ8cQ=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=Ekxk9qz7fgTNb0Q4mkGAUCs7Pv9TrIfAhtcWx/P/eylz+5jroq+p0qt9hKgG08S88
-         ntQQhuUQxXRkBA9GRsHLhQHKoSu7oho3XgMF2WbJcRprXNBrWSF23UFHM11XCjpfKt
-         sdedBR8LkAuPhh5V0pyB1BcHA6Vnu4TnUiDGuh8eaZZa4uCa6i9y0w2K0tNceHqMRW
-         mpKzh+Fv2nY+R+BreDDS64GL+U10SUStM0QKuLu1kGI0+dJofFPVlznXYryHkurUZJ
-         1FKPbQdyFf1+ETgh808C0uccWw3KNs3fQFJJWjVcv8DtIuXsMKZYxH/l3y6UGtR4p4
-         hkk+QJOx2+QWQ==
+In-Reply-To: <20200826121800.732-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+Pls ignore this
 
-Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegra
-SDMMC hawdware for data timeout to achive better timeout than using
-SDCLK and using TMCLK is recommended.
+It has be fixed in commit dbb8733abb1c ("mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix")
 
-USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
-SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
-SDCLK for data timeout.
-
-Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
-for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
-is not recommended.
-
-So, this patch adds quirk NVQUIRK_HAS_TMCLK for SoC having separate
-timeout clock and keeps TMCLK enabled all the time.
-
-Fixes: b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
-Cc: stable <stable@vger.kernel.org> # 5.4
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/mmc/host/sdhci-tegra.c | 90 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 82 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-index 31ed321..f69ca8d 100644
---- a/drivers/mmc/host/sdhci-tegra.c
-+++ b/drivers/mmc/host/sdhci-tegra.c
-@@ -13,6 +13,7 @@
- #include <linux/clk.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/of_clk.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/regulator/consumer.h>
-@@ -110,6 +111,12 @@
- #define NVQUIRK_DIS_CARD_CLK_CONFIG_TAP			BIT(8)
- #define NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING		BIT(9)
- 
-+/*
-+ * NVQUIRK_HAS_TMCLK is for SoC's having separate timeout clock for Tegra
-+ * SDMMC hardware data timeout.
-+ */
-+#define NVQUIRK_HAS_TMCLK				BIT(10)
-+
- /* SDMMC CQE Base Address for Tegra Host Ver 4.1 and Higher */
- #define SDHCI_TEGRA_CQE_BASE_ADDR			0xF000
- 
-@@ -140,6 +147,7 @@ struct sdhci_tegra_autocal_offsets {
- struct sdhci_tegra {
- 	const struct sdhci_tegra_soc_data *soc_data;
- 	struct gpio_desc *power_gpio;
-+	struct clk *tmclk;
- 	bool ddr_signaling;
- 	bool pad_calib_required;
- 	bool pad_control_available;
-@@ -1433,7 +1441,8 @@ static const struct sdhci_tegra_soc_data soc_data_tegra210 = {
- 		    NVQUIRK_HAS_PADCALIB |
- 		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
- 		    NVQUIRK_ENABLE_SDR50 |
--		    NVQUIRK_ENABLE_SDR104,
-+		    NVQUIRK_ENABLE_SDR104 |
-+		    NVQUIRK_HAS_TMCLK,
- 	.min_tap_delay = 106,
- 	.max_tap_delay = 185,
- };
-@@ -1471,6 +1480,7 @@ static const struct sdhci_tegra_soc_data soc_data_tegra186 = {
- 		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
- 		    NVQUIRK_ENABLE_SDR50 |
- 		    NVQUIRK_ENABLE_SDR104 |
-+		    NVQUIRK_HAS_TMCLK |
- 		    NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING,
- 	.min_tap_delay = 84,
- 	.max_tap_delay = 136,
-@@ -1483,7 +1493,8 @@ static const struct sdhci_tegra_soc_data soc_data_tegra194 = {
- 		    NVQUIRK_HAS_PADCALIB |
- 		    NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
- 		    NVQUIRK_ENABLE_SDR50 |
--		    NVQUIRK_ENABLE_SDR104,
-+		    NVQUIRK_ENABLE_SDR104 |
-+		    NVQUIRK_HAS_TMCLK,
- 	.min_tap_delay = 96,
- 	.max_tap_delay = 139,
- };
-@@ -1611,15 +1622,76 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
- 		goto err_power_req;
- 	}
- 
--	clk = devm_clk_get(mmc_dev(host->mmc), NULL);
--	if (IS_ERR(clk)) {
--		rc = PTR_ERR(clk);
-+	/*
-+	 * Tegra210 and later has separate SDMMC_LEGACY_TM clock used for
-+	 * hardware data timeout clock and SW can choose TMCLK or SDCLK for
-+	 * hardware data timeout through the bit USE_TMCLK_FOR_DATA_TIMEOUT
-+	 * of the register SDHCI_TEGRA_VENDOR_SYS_SW_CTRL.
-+	 *
-+	 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is set to 1 and SDMMC uses
-+	 * 12Mhz TMCLK which is advertised in host capability register.
-+	 * With TMCLK of 12Mhz provides maximum data timeout period that can
-+	 * be achieved is 11s better than using SDCLK for data timeout.
-+	 *
-+	 * So, TMCLK is set to 12Mhz and kept enabled all the time on SoC's
-+	 * supporting separate TMCLK.
-+	 *
-+	 * Old device tree has single sdhci clock. So with addition of TMCLK,
-+	 * retrieving sdhci clock by "sdhci" clock name based on number of
-+	 * clocks in sdhci device node.
-+	 */
-+
-+	if (of_clk_get_parent_count(pdev->dev.of_node) == 1) {
-+		if (soc_data->nvquirks & NVQUIRK_HAS_TMCLK)
-+			dev_warn(&pdev->dev,
-+				 "missing tmclk in the device tree\n");
-+
-+		clk = devm_clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(clk)) {
-+			rc = PTR_ERR(clk);
- 
--		if (rc != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "failed to get clock: %d\n", rc);
-+			if (rc != -EPROBE_DEFER)
-+				dev_err(&pdev->dev,
-+					"failed to get sdhci clock: %d\n", rc);
- 
--		goto err_clk_get;
-+			goto err_power_req;
-+		}
-+	} else {
-+		if (soc_data->nvquirks & NVQUIRK_HAS_TMCLK) {
-+			clk = devm_clk_get(&pdev->dev, "tmclk");
-+			if (IS_ERR(clk)) {
-+				rc = PTR_ERR(clk);
-+				if (rc == -EPROBE_DEFER)
-+					goto err_power_req;
-+
-+				dev_warn(&pdev->dev,
-+					 "failed to get tmclk: %d\n", rc);
-+				clk = NULL;
-+			}
-+
-+			clk_set_rate(clk, 12000000);
-+			rc = clk_prepare_enable(clk);
-+			if (rc) {
-+				dev_err(&pdev->dev,
-+					"failed to enable tmclk: %d\n", rc);
-+				goto err_power_req;
-+			}
-+
-+			tegra_host->tmclk = clk;
-+		}
-+
-+		clk = devm_clk_get(&pdev->dev, "sdhci");
-+		if (IS_ERR(clk)) {
-+			rc = PTR_ERR(clk);
-+
-+			if (rc != -EPROBE_DEFER)
-+				dev_err(&pdev->dev,
-+					"failed to get sdhci clock: %d\n", rc);
-+
-+			goto err_clk_get;
-+		}
- 	}
-+
- 	clk_prepare_enable(clk);
- 	pltfm_host->clk = clk;
- 
-@@ -1654,6 +1726,7 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
- err_rst_get:
- 	clk_disable_unprepare(pltfm_host->clk);
- err_clk_get:
-+	clk_disable_unprepare(tegra_host->tmclk);
- err_power_req:
- err_parse_dt:
- 	sdhci_pltfm_free(pdev);
-@@ -1671,6 +1744,7 @@ static int sdhci_tegra_remove(struct platform_device *pdev)
- 	reset_control_assert(tegra_host->rst);
- 	usleep_range(2000, 4000);
- 	clk_disable_unprepare(pltfm_host->clk);
-+	clk_disable_unprepare(tegra_host->tmclk);
- 
- 	sdhci_pltfm_free(pdev);
- 
--- 
-2.7.4
+On 2020/8/26 20:18, YueHaibing wrote:
+> If MEMORY_HOTPLUG is n, build fails:
+> 
+> drivers/nvdimm/e820.c: In function ‘e820_register_one’:
+> drivers/nvdimm/e820.c:24:12: error: implicit declaration of function ‘phys_to_target_node’; did you mean ‘set_page_node’? [-Werror=implicit-function-declaration]
+>   int nid = phys_to_target_node(res->start);
+>             ^~~~~~~~~~~~~~~~~~~
+>             set_page_node
+> 
+> Fixes: 7b27a8622f80 ("libnvdimm/e820: Retrieve and populate correct 'target_node' info")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/nvdimm/e820.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/nvdimm/e820.c b/drivers/nvdimm/e820.c
+> index 4cd18be9d0e9..c741f029f215 100644
+> --- a/drivers/nvdimm/e820.c
+> +++ b/drivers/nvdimm/e820.c
+> @@ -17,6 +17,13 @@ static int e820_pmem_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +#ifndef CONFIG_MEMORY_HOTPLUG
+> +static inline int phys_to_target_node(u64 start)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int e820_register_one(struct resource *res, void *data)
+>  {
+>  	struct nd_region_desc ndr_desc;
+> 
 
