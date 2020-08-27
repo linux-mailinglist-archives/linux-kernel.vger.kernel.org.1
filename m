@@ -2,172 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE53255108
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5049D2550F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 00:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgH0W1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 18:27:36 -0400
-Received: from gateway20.websitewelcome.com ([192.185.65.13]:17399 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726234AbgH0W1g (ORCPT
+        id S1727069AbgH0WLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 18:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726256AbgH0WLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 18:27:36 -0400
-X-Greylist: delayed 1464 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 18:27:35 EDT
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 0BE29400C5F70
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:39:25 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id BPzCkfvEcOIGpBPzCkEjWa; Thu, 27 Aug 2020 17:03:10 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=FvnhuzSdN+I0gWQnpuvrEB9W+fGpRmA5GbAp6gB4udY=; b=MArYJ3D2+4E6+pJ/Dtakgk6Kfg
-        kWLKHcUH6+X9nwJJ6liJaTDCcJ+hcWXbxJw5qA0iZXqbd4pfBv7n83I52Rzxcnjc9lUAyWHzcTXfc
-        0Oq3u6lZ3vDXEIKmxbhDvdtJWi6BwknB0FgpUoW+UT5c35mhd6jEebULlORRLcbzVZ01ePcm94N94
-        M0RbXEyY7mDjedn8/UTGz6t96PKz4mk/RVWopJ5zta3qrpLSs8nz51ZvOCciIAp4EYTDjJR23KNMB
-        39q6mQ4rLaUSboLurgoXXCK4XdNMiS2z+Hig6aE0vFLUraX7IEctP/DehqbaaLU2+XTVhvpwckRKN
-        GIRWVwiw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:54518 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kBPzC-00128n-BY; Thu, 27 Aug 2020 17:03:10 -0500
-To:     Denis Efremov <efremov@linux.com>, Jan Kara <jack@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
-References: <20200827151923.40067-1-efremov@linux.com>
- <20200827212530.48013-1-efremov@linux.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Subject: Re: [PATCH v2] udf: Use kvzalloc() in udf_sb_alloc_bitmap()
-Message-ID: <0caaeb1e-6f71-b97f-f86c-22819c30e31f@embeddedor.com>
-Date:   Thu, 27 Aug 2020 17:09:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 Aug 2020 18:11:36 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6AFC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:11:36 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id z3so7645153qkz.7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 15:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=tckEyhhhQ7HGtoJozq598EKm+bx20MWZHeieMIF9q5g=;
+        b=XufHWbEzrTArFbdd0uvm8hn5uvxsEsVAO3eGPiZJG+A34kNZEwwswC15vWvmQxWbe4
+         ic9hXfr/HdobtOL/qWXE8X09cd5SECRxF7Nvhjc9tywTzsuI/kb2rK1MWcXoNC1QcTil
+         rWeTMaWqvJeaMWo1xDp6qs8COZPe5OMKNxKoUO8IRfaUWqKI6XIqiR9NwFhe19yg25c0
+         Dt3syjscZUmmI3s3Zf9PQFjv6C9Sd9ThAcIkQuKLYr4CeUG0ybKD0khabMM+YhyjqTtK
+         GcBHW8KGgand8Vp4WWk6lOg0yUrSlCdN2L9DIi3iPHRIJcs9kGsyHJ+uYtqwT+Iht9to
+         A4iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=tckEyhhhQ7HGtoJozq598EKm+bx20MWZHeieMIF9q5g=;
+        b=s/PQRoVfockkDGBCr4nyvgjKzhETeHXY+s0wGuQP7tXVOJhOFuP8gycYcWaBSVGR5H
+         WNZo38VaQrM91o2fWeAAKL2SNkJbAnnLiKX/8wKICWvsMpZOWZjfhcJcKfA15/nDYhVF
+         WWkv9RcXbU01JxO+oB9PMz1oENibhxfMhLA0TDEJS8nDPV90z0G5VyirSVBB2C2n/+uH
+         xA5SDtcYFsnf9dpGDLZT+zCSyrJIm5M9DajLaj/KHlaNn0jOAmGHyqFDGRYebODQLZ6P
+         lKkalth4xbqkElClTw73UTqaMSAmUrJLql0Rn7ZMnq0Q2wO07Xf3g0944hMfAMqARCRH
+         CE7A==
+X-Gm-Message-State: AOAM5327Y/r/mB7K0fVb1Q0veyG3Tf4KaZHdAwOntH8u8Y7EgvJ7K0om
+        9XoFloEAj/jK7kuDyzQofHw=
+X-Google-Smtp-Source: ABdhPJwtCZUwqtlcF8l5OmsR4/12SZH/mhBkSlTzKlRzZWsnWrsjxsA04j84C1jKbFRO0yCFcP5S1Q==
+X-Received: by 2002:a37:7407:: with SMTP id p7mr21257829qkc.350.1598566295135;
+        Thu, 27 Aug 2020 15:11:35 -0700 (PDT)
+Received: from LeoBras ([2804:14d:8084:8e41:9b0d:571e:a65:b5d8])
+        by smtp.gmail.com with ESMTPSA id x5sm2813588qtp.76.2020.08.27.15.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 15:11:34 -0700 (PDT)
+Message-ID: <f80040bf941755469918fb75cf520590a4a5e3db.camel@gmail.com>
+Subject: Re: [PATCH v1 06/10] powerpc/pseries/iommu: Add ddw_list_add()
+ helper
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joel Stanley <joel@jms.id.au>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>,
+        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
+        David Dai <zdai@linux.vnet.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Thu, 27 Aug 2020 19:11:28 -0300
+In-Reply-To: <af4246bb-9357-098e-f167-8f30c6b893f2@ozlabs.ru>
+References: <20200817234033.442511-1-leobras.c@gmail.com>
+         <20200817234033.442511-7-leobras.c@gmail.com>
+         <af4246bb-9357-098e-f167-8f30c6b893f2@ozlabs.ru>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200827212530.48013-1-efremov@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kBPzC-00128n-BY
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:54518
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/27/20 16:25, Denis Efremov wrote:
-> Use kvzalloc() in udf_sb_alloc_bitmap() instead of open-coding it.
-> Size computation wrapped in struct_size() macro to prevent potential
-> integer overflows.
+On Mon, 2020-08-24 at 13:46 +1000, Alexey Kardashevskiy wrote:
+> >  static int find_existing_ddw_windows(void)
+> >  {
+> >  	int len;
+> > @@ -887,18 +905,11 @@ static int find_existing_ddw_windows(void)
+> >  		if (!direct64)
+> >  			continue;
+> >  
+> > -		window = kzalloc(sizeof(*window), GFP_KERNEL);
+> > -		if (!window || len < sizeof(struct dynamic_dma_window_prop)) {
+> > +		window = ddw_list_add(pdn, direct64);
+> > +		if (!window || len < sizeof(*direct64)) {
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
+> Since you are touching this code, it looks like the "len <
+> sizeof(*direct64)" part should go above to "if (!direct64)".
 
-Please, comment here what changed in v2, vn... e.g.:
+Sure, makes sense.
+It will be fixed for v2.
 
-Changes in v2:
- - Use struct_size() helper.
-
-
->  fs/udf/super.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
 > 
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index 1c42f544096d..bdf51bea54f3 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -1010,14 +1010,9 @@ static struct udf_bitmap *udf_sb_alloc_bitmap(struct super_block *sb, u32 index)
->  	int size;
->  
->  	nr_groups = udf_compute_nr_groups(sb, index);
-> -	size = sizeof(struct udf_bitmap) +
-> -		(sizeof(struct buffer_head *) * nr_groups);
-> -
-> -	if (size <= PAGE_SIZE)
-> -		bitmap = kzalloc(size, GFP_KERNEL);
-> -	else
-> -		bitmap = vzalloc(size); /* TODO: get rid of vzalloc */
-> +	size = struct_size(bitmap, s_block_bitmap, nr_groups);
->  
-> +	bitmap = kvzalloc(size, GFP_KERNEL);
-
-Why not this:
-
-bitmap = kvzalloc(struct_size(bitmap, s_block_bitmap, nr_groups),
-		  GFP_KERNEL);
-
-and you can also get rid of _size_ entirely.
-
-Thanks
---
-Gustavo
-
->  	if (!bitmap)
->  		return NULL;
->  
 > 
+> 
+> >  			kfree(window);
+> >  			remove_ddw(pdn, true);
+> > -			continue;
+> >  		}
+> > -
+> > -		window->device = pdn;
+> > -		window->prop = direct64;
+> > -		spin_lock(&direct_window_list_lock);
+> > -		list_add(&window->list, &direct_window_list);
+> > -		spin_unlock(&direct_window_list_lock);
+> >  	}
+> >  
+> >  	return 0;
+> > @@ -1261,7 +1272,8 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	dev_dbg(&dev->dev, "created tce table LIOBN 0x%x for %pOF\n",
+> >  		  create.liobn, dn);
+> >  
+> > -	window = kzalloc(sizeof(*window), GFP_KERNEL);
+> > +	/* Add new window to existing DDW list */
+> 
+> The comment seems to duplicate what the ddw_list_add name already suggests.
+
+Ok, I will remove it then.
+
+> > +	window = ddw_list_add(pdn, ddwprop);
+> >  	if (!window)
+> >  		goto out_clear_window;
+> >  
+> > @@ -1280,16 +1292,14 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  		goto out_free_window;
+> >  	}
+> >  
+> > -	window->device = pdn;
+> > -	window->prop = ddwprop;
+> > -	spin_lock(&direct_window_list_lock);
+> > -	list_add(&window->list, &direct_window_list);
+> > -	spin_unlock(&direct_window_list_lock);
+> 
+> I'd leave these 3 lines here and in find_existing_ddw_windows() (which
+> would make  ddw_list_add -> ddw_prop_alloc). In general you want to have
+> less stuff to do on the failure path. kmalloc may fail and needs kfree
+> but you can safely delay list_add (which cannot fail) and avoid having
+> the lock help twice in the same function (one of them is hidden inside
+> ddw_list_add).
+> Not sure if this change is really needed after all. Thanks,
+
+I understand this leads to better performance in case anything fails.
+Also, I think list_add happening in the end is less error-prone (in
+case the list is checked between list_add and a fail).
+
+But what if we put it at the end?
+What is the chance of a kzalloc of 4 pointers (struct direct_window)
+failing after walk_system_ram_range?  
+
+Is it not worthy doing that for making enable_ddw() easier to
+understand?
+
+Best regards,
+Leonardo
+
