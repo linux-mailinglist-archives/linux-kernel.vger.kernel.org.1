@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E731E254391
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F6425439D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 12:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgH0KTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 06:19:10 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:14253 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728893AbgH0KTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 06:19:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598523544; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=QbKK+5+ggvjqHyMHZ4elMsujh+LOHuTBEDXE/1UtSuQ=;
- b=UXGZKPplcn4QRgBk9qYnplwqJNCCme+QzoiXMgk0LPGhCYlwbQTE8nGoQgjtTPHmyLaWo17r
- jzbh+hEds+f0jf1GS5MW+1xCXRm2By+8KzIH8NWZUnVhnBuv3ld548bRHmqOscvw8OfwdZRS
- I4e7FVLgJodKxG4ajzfIVmnJwvk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f478897c598aced5430085a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 Aug 2020 10:19:03
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 970DAC433AD; Thu, 27 Aug 2020 10:19:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3B27C433CB;
-        Thu, 27 Aug 2020 10:19:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3B27C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1728714AbgH0KW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 06:22:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40438 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728466AbgH0KWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 06:22:23 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9002C4E592AF5C867A64;
+        Thu, 27 Aug 2020 18:22:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 27 Aug 2020 18:22:13 +0800
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Yuqi Jin <jinyuqi@huawei.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH] fs: Optimized fget to improve performance
+Date:   Thu, 27 Aug 2020 18:19:44 +0800
+Message-ID: <1598523584-25601-1-git-send-email-zhangshaokun@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: return error if firmware request fails
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200825143040.233619-1-alex.dewar90@gmail.com>
-References: <20200825143040.233619-1-alex.dewar90@gmail.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     unlisted-recipients:; (no To-header on input)
-        Alex Dewar <alex.dewar90@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)Alex Dewar <alex.dewar90@gmail.com>
-                                                                     ^-missing end of address
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200827101903.970DAC433AD@smtp.codeaurora.org>
-Date:   Thu, 27 Aug 2020 10:19:03 +0000 (UTC)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Dewar <alex.dewar90@gmail.com> wrote:
+From: Yuqi Jin <jinyuqi@huawei.com>
 
-> In ath11k_qmi_prepare_bdf_download(), ath11k_core_firmware_request() is
-> called, but the returned pointer is not checked for errors. Rather the
-> variable ret (which will always be zero) is checked by mistake. Fix
-> this and replace the various gotos with simple returns for clarity.
-> 
-> While we are at it, move the call to memset, as variable bd is not used
-> on all code paths.
-> 
-> Fixes: 7b57b2ddec21 ("ath11k: create a common function to request all firmware files")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+It is well known that the performance of atomic_add is better than that of
+atomic_cmpxchg.
+The initial value of @f_count is 1. While @f_count is increased by 1 in
+__fget_files, it will go through three phases: > 0, < 0, and = 0. When the
+fixed value 0 is used as the condition for terminating the increase of 1,
+only atomic_cmpxchg can be used. When we use < 0 as the condition for
+stopping plus 1, we can use atomic_add to obtain better performance.
 
-Patch applied to ath-next branch of ath.git, thanks.
+we test syscall in unixbench on Huawei Kunpeng920(arm64). We've got a 132%
+performance boost. 
 
-342b6194a75b ath11k: return error if firmware request fails
+with this patch and the patch [1]
+System Call Overhead                        9516926.2 lps   (10.0 s, 1 samples)
 
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    9516926.2   6344.6
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         6344.6
+
+with this patch and without the patch [1]
+System Call Overhead                        5290449.3 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    5290449.3   3527.0
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         3527.0
+
+without any patch
+System Call Overhead                        4102310.5 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    4102310.5   2734.9
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         2734.9
+
+[1] https://lkml.org/lkml/2020/6/24/283
+
+Cc: kernel test robot <rong.a.chen@intel.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+---
+Hi Rong,
+
+Can you help to test this patch individually and with [1] together on
+your platform please? [1] has been tested on your platform[2].
+
+[2] https://lkml.org/lkml/2020/7/8/227
+
+ include/linux/fs.h | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index e019ea2f1347..2a9c2a30dc58 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -972,8 +972,19 @@ static inline struct file *get_file(struct file *f)
+ 	atomic_long_inc(&f->f_count);
+ 	return f;
+ }
++
++static inline bool get_file_unless_negative(atomic_long_t *v, long a)
++{
++	long c = atomic_long_read(v);
++
++	if (c <= 0)
++		return 0;
++
++	return atomic_long_add_return(a, v) - 1;
++}
++
+ #define get_file_rcu_many(x, cnt)	\
+-	atomic_long_add_unless(&(x)->f_count, (cnt), 0)
++	get_file_unless_negative(&(x)->f_count, (cnt))
+ #define get_file_rcu(x) get_file_rcu_many((x), 1)
+ #define file_count(x)	atomic_long_read(&(x)->f_count)
+ 
 -- 
-https://patchwork.kernel.org/patch/11735787/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.7.4
 
