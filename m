@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945E2253EEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DC2253EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 09:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgH0HWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 03:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgH0HVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 03:21:53 -0400
-Received: from mail.kernel.org (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 579AC22CAF;
-        Thu, 27 Aug 2020 07:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598512912;
-        bh=ijiJsy842E2W8CaSP8r0issb9p3P15IoOFSdRUCujvE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JkbugvyfRdY/EeyLM/himOSRzrflsJYqgXqfJ5m1E6fkpE8h5tY3zGHG6djLnXa5T
-         VyCrjQQbULeemn087fBIsdizF3nYsueyYkWXlZhsgbG+1MA9PNOCt3ELVXBo8f17tR
-         mhXaxqIxqyBxBz7sMWWgHDXqyO1rKXkjsnpLkkKw=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kBCEI-002s5L-DK; Thu, 27 Aug 2020 09:21:50 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH v10 4/4] media: open.rst: document mc-centric and video-node-centric
-Date:   Thu, 27 Aug 2020 09:21:48 +0200
-Message-Id: <ce0a0412fb21ba3256c42aa7aeceb7b33bd358ab.1598512802.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1598512802.git.mchehab+huawei@kernel.org>
-References: <cover.1598512802.git.mchehab+huawei@kernel.org>
+        id S1728180AbgH0HW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 03:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbgH0HW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 03:22:26 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C670C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:22:26 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id b9so3847134oiy.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 00:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nHYyDnDGU0SstXAm4qaNf6rFQtn/4uEmUBDoFdDHiDI=;
+        b=cAgk5+wHgubtgnNdBBZNCrVs6B6Nx05jKGBCcKZxZr5GenekXuvXzpC84SZuhInHPw
+         M8YECkQo+6ANeLWcIlK39VqoBvYWexpUBWUBokrl2BscDUHF2hbjUrokiTysi+ylo4Z6
+         oMpEHD8nh+FXAYWuAgynRfvSK0SLhkuLs7NCdGySSe2FCeL4juT9hHXZaCFNFO5/RQgt
+         w6gsjsCuSJI/eeIlWrvTIoWDd6wJLQYcvl8tFN21KyFZHUpK0sEwVXIjurH2RulajoG5
+         ALrvRtS8VOZdM7ruX1XNXAow8KCQH3I0qElMj4969Q+gjvqJH/zGMfwLr2f3nfYqX+mN
+         ZOcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nHYyDnDGU0SstXAm4qaNf6rFQtn/4uEmUBDoFdDHiDI=;
+        b=o0G4LLhMYpTVb4sjdLyMmInn1BDISIBLuNWuOdMVTPaCF4qPbdt/ZNirlw7BPTBBx+
+         v4qSOfZpBB+hh5UTYszPZfk6U9EUl54qGgXAVME5pac/gvkLpcf7hOr+d13SWMbJJByC
+         aYV9q3qtT5buIwaVg/RtD08hmwDX8Ymy5I8VZCkhP24I0kNcC3Sem+3IQuJCmT20+xY5
+         MCGTQPNuUpIw4IZIZh0cFeRcLERm2yLx38q1f+eR/Btx6meJQbOrOHaXgp9Qr7VC+/qb
+         aEchBY6XctbR0DeT+JxFk5E/EE2UPpAvkVnuuAJDGdHjsNczXxiMjjD2Qphb+xOwN+Uv
+         TqdQ==
+X-Gm-Message-State: AOAM530aCeE4hEtXwrprxSGd5K7m8Rm8PDyqbsJF3ANYSK6x9m4eImWl
+        e7qGpjaHX+awxf+g9bTf/LCGBNmEj/8peBvPKBA=
+X-Google-Smtp-Source: ABdhPJyw1DVjlkfy2n9wlQ6tG0Kkp9FMfkL5isxbfsnOGkxBIdIXCrmYwkIgB2YXkoRCLKSwlglwOKSB1q8PUj7qJL0=
+X-Received: by 2002:a05:6808:311:: with SMTP id i17mr6336757oie.72.1598512944261;
+ Thu, 27 Aug 2020 00:22:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200826201420.3414123-1-ndesaulniers@google.com>
+In-Reply-To: <20200826201420.3414123-1-ndesaulniers@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 27 Aug 2020 09:22:13 +0200
+Message-ID: <CA+icZUUKqMaN5rUjz+U9itZ9-3_4EoqdBTP+41+WUjr=UzPN-g@mail.gmail.com>
+Subject: Re: [PATCH] compiler-clang: add build check for clang 10.0.1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we added support for omap3, back in 2010, we added a new
-type of V4L2 devices that aren't fully controlled via the V4L2
-device node.
+On Wed, Aug 26, 2020 at 10:14 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> During Plumbers 2020, we voted to just support the latest release of
+> Clang for now.  Add a compile time check for this.
+>
+> Older clang's may work, but we will likely drop workarounds for older
+> versions.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/9
+> Link: https://github.com/ClangBuiltLinux/linux/issues/941
+> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Yet, we have never clearly documented in the V4L2 specification
-the differences between the two types.
+Nice to see This Is Happening!
 
-Let's document them based on the the current implementation.
+See also my other replies to Kees and Nathan comments.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../userspace-api/media/v4l/open.rst          | 58 +++++++++++++++++--
- 1 file changed, 52 insertions(+), 6 deletions(-)
+Acked-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-diff --git a/Documentation/userspace-api/media/v4l/open.rst b/Documentation/userspace-api/media/v4l/open.rst
-index b9367e02b884..e9cfbe954918 100644
---- a/Documentation/userspace-api/media/v4l/open.rst
-+++ b/Documentation/userspace-api/media/v4l/open.rst
-@@ -13,6 +13,52 @@
- Opening and Closing Devices
- ***************************
- 
-+.. _v4l2_hardware_control:
-+
-+Controlling a hardware peripheral via V4L2
-+==========================================
-+
-+A V4L2 hardware peripheral is usually complex: support for it is
-+implemented via a bridge driver and often by several additional drivers.
-+The bridge driver exposes one or more V4L2 device nodes
-+(see :ref:`v4l2_device_naming`).
-+
-+There are other drivers providing support for other components of
-+the hardware, which may also expose device nodes, called V4L2 sub-devices.
-+
-+When such V4L2 sub-devices are exposed, they allow controlling those
-+other hardware components - usually connected via a serial bus (like
-+I²C, SMBus or SPI). Depending on the bridge driver, those sub-devices
-+can be controlled indirectly via the bridge driver or explicitly via
-+the :ref:`Media Controller <media_controller>` and via the
-+:ref:`V4L2 sub-devices <subdev>`.
-+
-+The devices that require the use of the
-+:ref:`Media Controller <media_controller>` are called **MC-centric**
-+devices. The devices that are fully controlled via V4L2 device nodes
-+are called **video-node-centric**.
-+
-+Userspace can check if a V4L2 hardware peripheral is MC-centric by
-+calling :ref:`VIDIOC_QUERYCAP` and checking the
-+:ref:`device_caps field <device-capabilities>`.
-+
-+If the device returns ``V4L2_CAP_IO_MC`` flag at ``device_caps``,
-+then it is MC-centric, otherwise, it is video-node-centric.
-+
-+It is required for MC-centric hardware to identify the V4L2
-+sub-devices and to configure the pipelines via the
-+:ref:`media controller API <media_controller>` before using the peripheral.
-+Also, the sub-devices' configuration shall be controlled via the
-+:ref:`sub-device API <subdev>`.
-+
-+.. note::
-+
-+   A video-node-centric may still provide media-controller and
-+   sub-device interfaces as well.
-+
-+  However, in that case the media-controller and the sub-device
-+  interfaces are read-only and just provide information about the
-+  device. The actual configuration is done via the video nodes.
- 
- .. _v4l2_device_naming:
- 
-@@ -109,7 +155,7 @@ Related Devices
- Devices can support several functions. For example video capturing, VBI
- capturing and radio support.
- 
--The V4L2 API creates different nodes for each of these functions.
-+The V4L2 API creates different V4L2 device nodes for each of these functions.
- 
- The V4L2 API was designed with the idea that one device node could
- support all functions. However, in practice this never worked: this
-@@ -119,17 +165,17 @@ switching a device node between different functions only works when
- using the streaming I/O API, not with the
- :ref:`read() <func-read>`/\ :ref:`write() <func-write>` API.
- 
--Today each device node supports just one function.
-+Today each V4L2 device node supports just one function.
- 
- Besides video input or output the hardware may also support audio
- sampling or playback. If so, these functions are implemented as ALSA PCM
- devices with optional ALSA audio mixer devices.
- 
- One problem with all these devices is that the V4L2 API makes no
--provisions to find these related devices. Some really complex devices
--use the Media Controller (see :ref:`media_controller`) which can be
--used for this purpose. But most drivers do not use it, and while some
--code exists that uses sysfs to discover related devices (see
-+provisions to find these related V4L2 device nodes. Some really complex
-+hardware use the Media Controller (see :ref:`media_controller`) which can
-+be used for this purpose. But several drivers do not use it, and while some
-+code exists that uses sysfs to discover related V4L2 device nodes (see
- libmedia_dev in the
- `v4l-utils <http://git.linuxtv.org/cgit.cgi/v4l-utils.git/>`__ git
- repository), there is no library yet that can provide a single API
--- 
-2.26.2
+- Sedat -
 
+> ---
+>  include/linux/compiler-clang.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index cee0c728d39a..7338d3ffd240 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -3,6 +3,14 @@
+>  #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
+>  #endif
+>
+> +#define CLANG_VERSION (__clang_major__ * 10000 \
+> +                    + __clang_minor__ * 100    \
+> +                    + __clang_patchlevel__)
+> +
+> +#if CLANG_VERSION < 100001
+> +# error Sorry, your compiler is too old - please upgrade it.
+> +#endif
+> +
+>  /* Compiler specific definitions for Clang compiler */
+>
+>  /* same as gcc, this was present in clang-2.6 so we can assume it works
+> --
+> 2.28.0.297.g1956fa8f8d-goog
+>
