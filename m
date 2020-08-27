@@ -2,115 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC762549B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165072549C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 17:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgH0PnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 11:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgH0PnZ (ORCPT
+        id S1727979AbgH0Pnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 11:43:45 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18571 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgH0Pnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:43:25 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA3BC061264
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:43:24 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i10so6988373ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 08:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XIpBinZVLwccOBlQBwmOknbrZNBrR3bkWjqwBSx1Ckk=;
-        b=do/I7ZmOR+XxfTQSZQQaQ86eu/9s9+55pppFDCRfQVmCBPn46dcJvtoSCNbWpXtLfu
-         gNHYltkazjgDNSkazXFvBneCeymvSKxWuuhdtYjX7h7AqkZthPn4B2Sgt3F3StbC4TLK
-         ezCNJMCiVaiNm0ZFilZFiLjiLJ8o6F8xl8Hmqm4H5khKSO+ysQWZBoB2qaEavG1D/3LH
-         nSFPh/vz+UDNUbRqGbdl6RMUnx/ojj/PZPvoVqJKJvYVgnzbb0OojXmC+DLMW6o5cX1z
-         5LdwEHy90I9RnPiejmoo5mH9lV8CKh6CUgGfDp6oCbbo6rbf0GzSokbnQyuoNx2cHgc1
-         Cosg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XIpBinZVLwccOBlQBwmOknbrZNBrR3bkWjqwBSx1Ckk=;
-        b=qtSXptf0VakKQAWG2TAxFWfmiRKoFHFyvV+eIX4JthckMbPsSNqhSezw1ndZj96tX/
-         Pvzh5VJTvuca+BXue2ZOBU4RHyrvNIg0tHpnl8vhbBhnc2C9LNq3HP7X7DOXcDModSZN
-         ApN5rvHG9MiqGf/lrweDQAgo/gbm7RPa9w7Go7n5u+HMDLldKd1wLGeWdfjBYSy1PPW+
-         oRL5n9aT40blgx9hiflEFHjridNBXAtFu88/AMjFjr2W8656kpMqtY4/MqHcbhwaBpLv
-         AQ3FEXlENHUgUYG7hYXbF43htA99Q2KCbJJju2h4+e9l1uY9C78GdhP2YUrHvia2HEEc
-         8NUQ==
-X-Gm-Message-State: AOAM531T3z4euyFRqPcuhDIViDv1a6UNpspy1mBU81tY8GCcjrKs1scd
-        m4qHKMeXaB3q5T4ZUdLGS59W6pq9HLUaaWmzz1ibBg==
-X-Google-Smtp-Source: ABdhPJyVXHaWDvLF6jvFEiQw9jw4Oje6jc/9baf3oe2YEBqqjLzQH3oGnTTaDIRk2YN+H3bR/D4WHwMzPUPYw481bnU=
-X-Received: by 2002:a2e:9b99:: with SMTP id z25mr10463710lji.226.1598543003021;
- Thu, 27 Aug 2020 08:43:23 -0700 (PDT)
+        Thu, 27 Aug 2020 11:43:43 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f47d4a00000>; Thu, 27 Aug 2020 08:43:28 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 27 Aug 2020 08:43:42 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 27 Aug 2020 08:43:42 -0700
+Received: from [10.2.174.186] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
+ 2020 15:43:38 +0000
+Subject: Re: [PATCH v6 7/7] sdhci: tegra: Add missing TMCLK for data timeout
+To:     Jon Hunter <jonathanh@nvidia.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>, <thierry.reding@gmail.com>,
+        <robh+dt@kernel.org>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <1598500201-5987-1-git-send-email-skomatineni@nvidia.com>
+ <1598500201-5987-8-git-send-email-skomatineni@nvidia.com>
+ <93d0188b-c833-33b4-211e-b9293c4f3a1c@nvidia.com>
+ <3deac67c-bb1e-ef23-7dcc-8d4024203ab1@nvidia.com>
+ <5ec4d869-f134-6e6d-6496-2410f271b196@nvidia.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <2d5f8c57-47be-4874-b9dd-98e9ccebd4c0@nvidia.com>
+Date:   Thu, 27 Aug 2020 08:43:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200825121818.30260-1-vincent.guittot@linaro.org> <20200827153534.GF3033@suse.de>
-In-Reply-To: <20200827153534.GF3033@suse.de>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 27 Aug 2020 17:43:11 +0200
-Message-ID: <CAKfTPtCRmts+qH+hexKbhZ7595zGs1U3Q5V4-XzHgpU0dJd+1Q@mail.gmail.com>
-Subject: Re: [PATCH] sched/numa: use runnable_avg to classify node
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5ec4d869-f134-6e6d-6496-2410f271b196@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598543008; bh=hAE+Y0lHPU9XcqgS1BZZASAAxYKCMlo+JetUZ85HwJk=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=OhI8DIHkT7hBvvNfuy0A9BWFBHL20Hv1xbKFAu9s5k7VMwzsQxuWk61XkrnIKhWDo
+         YGLzkzqB9Ptwkq0qb95REt9M9UmucQzPSfZCs2/FBkzUFbwlVJ1yF5pEJtpgMIUQwz
+         M85Knu3oOgwPWWUl5J/Qo1fWHCwIqqREEL/ApB1w7ZodrqLNDR84LupcmmqsMR52Q/
+         ER1IVXGxGtmmx1xXcMVsaKQ9Ty9UHYxnTwMALjFQg50dPZB/5yC4pBV8aTUKjphKKP
+         T9mQJ9pickW/TMYM8JsnxCuuKFWjHm82cikH65SICby3auDEu9yuor9pJ3HhdoG71m
+         DN9aOT26AevGw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 17:35, Mel Gorman <mgorman@suse.de> wrote:
->
-> On Tue, Aug 25, 2020 at 02:18:18PM +0200, Vincent Guittot wrote:
-> > Use runnable_avg to classify numa node state similarly to what is done for
-> > normal load balancer. This helps to ensure that numa and normal balancers
-> > use the same view of the state of the system.
-> >
-> > - large arm64system: 2 nodes / 224 CPUs
-> > hackbench -l (256000/#grp) -g #grp
-> >
-> > grp    tip/sched/core         +patchset              improvement
-> > 1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
-> > 4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
-> > 16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
-> > 32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
-> > 64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
-> > 128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
-> > 256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
->
-> The testing was a mixed bag of wins and losses but wins more than it
-> loses. Biggest loss was a 9.04% regression on nas-SP using openmp for
-> parallelisation on Zen1. Biggest win was around 8% gain running
-> specjbb2005 on Zen2 (with some major gains of up to 55% for some thread
-> counts). Most workloads were stable across multiple Intel and AMD
-> machines.
->
-> There were some oddities in changes in NUMA scanning rate but that is
-> likely a side-effect because the locality over time for the same loads
-> did not look obviously worse. There was no negative result I could point
-> at that was not offset by a positive result elsewhere. Given it's not
-> a univeral win or loss, matching numa and lb balancing as closely as
-> possible is best so
->
-> Reviewed-by: Mel Gorman <mgorman@suse.de>
 
-Thanks.
-
-I will try to reproduce the nas-SP test on my setup to see what is going one
-
-Vincent
-
+On 8/27/20 8:14 AM, Jon Hunter wrote:
+> On 27/08/2020 16:03, Sowjanya Komatineni wrote:
+>> On 8/27/20 1:40 AM, Jon Hunter wrote:
+>>> On 27/08/2020 04:50, Sowjanya Komatineni wrote:
+>>>> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>>>>
+>>>> Tegra210 and later has a separate sdmmc_legacy_tm (TMCLK) used by Tegr=
+a
+>>>> SDMMC hawdware for data timeout to achive better timeout than using
+>>>> SDCLK and using TMCLK is recommended.
+>>>>
+>>>> USE_TMCLK_FOR_DATA_TIMEOUT bit in Tegra SDMMC register
+>>>> SDHCI_TEGRA_VENDOR_SYS_SW_CTRL can be used to choose either TMCLK or
+>>>> SDCLK for data timeout.
+>>>>
+>>>> Default USE_TMCLK_FOR_DATA_TIMEOUT bit is set to 1 and TMCLK is used
+>>>> for data timeout by Tegra SDMMC hardware and having TMCLK not enabled
+>>>> is not recommended.
+>>>>
+>>>> So, this patch adds quirk NVQUIRK_HAS_TMCLK for SoC having separate
+>>>> timeout clock and keeps TMCLK enabled all the time.
+>>>>
+>>>> Fixes: b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>>>> Cc: stable <stable@vger.kernel.org> # 5.4
+>>>> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+>>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>>>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>>> ---
+>>>>  =C2=A0 drivers/mmc/host/sdhci-tegra.c | 90
+>>>> ++++++++++++++++++++++++++++++++++++++----
+>>>>  =C2=A0 1 file changed, 82 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mmc/host/sdhci-tegra.c
+>>>> b/drivers/mmc/host/sdhci-tegra.c
+>>>> index 31ed321..f69ca8d 100644
+>>>> --- a/drivers/mmc/host/sdhci-tegra.c
+>>>> +++ b/drivers/mmc/host/sdhci-tegra.c
+>>>> @@ -13,6 +13,7 @@
+>>>>  =C2=A0 #include <linux/clk.h>
+>>>>  =C2=A0 #include <linux/io.h>
+>>>>  =C2=A0 #include <linux/of.h>
+>>>> +#include <linux/of_clk.h>
+>>>>  =C2=A0 #include <linux/of_device.h>
+>>>>  =C2=A0 #include <linux/pinctrl/consumer.h>
+>>>>  =C2=A0 #include <linux/regulator/consumer.h>
+>>>> @@ -110,6 +111,12 @@
+>>>>  =C2=A0 #define NVQUIRK_DIS_CARD_CLK_CONFIG_TAP=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BIT(8)
+>>>>  =C2=A0 #define NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 BIT(9)
+>>>>  =C2=A0 +/*
+>>>> + * NVQUIRK_HAS_TMCLK is for SoC's having separate timeout clock for
+>>>> Tegra
+>>>> + * SDMMC hardware data timeout.
+>>>> + */
+>>>> +#define NVQUIRK_HAS_TMCLK=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BIT(10)
+>>>> +
+>>>>  =C2=A0 /* SDMMC CQE Base Address for Tegra Host Ver 4.1 and Higher */
+>>>>  =C2=A0 #define SDHCI_TEGRA_CQE_BASE_ADDR=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0xF000
+>>>>  =C2=A0 @@ -140,6 +147,7 @@ struct sdhci_tegra_autocal_offsets {
+>>>>  =C2=A0 struct sdhci_tegra {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct sdhci_tegra_soc_data *soc=
+_data;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc *power_gpio;
+>>>> +=C2=A0=C2=A0=C2=A0 struct clk *tmclk;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool ddr_signaling;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool pad_calib_required;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool pad_control_available;
+>>>> @@ -1433,7 +1441,8 @@ static const struct sdhci_tegra_soc_data
+>>>> soc_data_tegra210 =3D {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_HAS_PADCALIB |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_ENABLE_SDR104,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_ENABLE_SDR104 |
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_HAS_TMCLK,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 106,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 185,
+>>>>  =C2=A0 };
+>>>> @@ -1471,6 +1480,7 @@ static const struct sdhci_tegra_soc_data
+>>>> soc_data_tegra186 =3D {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_ENABLE_SDR104 |
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_HAS_TMCLK |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 84,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 136,
+>>>> @@ -1483,7 +1493,8 @@ static const struct sdhci_tegra_soc_data
+>>>> soc_data_tegra194 =3D {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_HAS_PADCALIB |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_DIS_CARD_CLK_CONFIG_TAP |
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 NVQUIRK_ENABLE_SDR50 |
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_ENABLE_SDR104,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_ENABLE_SDR104 |
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NV=
+QUIRK_HAS_TMCLK,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .min_tap_delay =3D 96,
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .max_tap_delay =3D 139,
+>>>>  =C2=A0 };
+>>>> @@ -1611,15 +1622,76 @@ static int sdhci_tegra_probe(struct
+>>>> platform_device *pdev)
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_power=
+_req;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(mmc_dev(host->mmc), N=
+ULL);
+>>>> -=C2=A0=C2=A0=C2=A0 if (IS_ERR(clk)) {
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rc =3D PTR_ERR(clk);
+>>>> +=C2=A0=C2=A0=C2=A0 /*
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Tegra210 and later has separate SDMMC_LEGA=
+CY_TM clock used for
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * hardware data timeout clock and SW can cho=
+ose TMCLK or SDCLK for
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * hardware data timeout through the bit USE_=
+TMCLK_FOR_DATA_TIMEOUT
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * of the register SDHCI_TEGRA_VENDOR_SYS_SW_=
+CTRL.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * USE_TMCLK_FOR_DATA_TIMEOUT bit default is =
+set to 1 and SDMMC
+>>>> uses
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * 12Mhz TMCLK which is advertised in host ca=
+pability register.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * With TMCLK of 12Mhz provides maximum data =
+timeout period that
+>>>> can
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * be achieved is 11s better than using SDCLK=
+ for data timeout.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * So, TMCLK is set to 12Mhz and kept enabled=
+ all the time on SoC's
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * supporting separate TMCLK.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Old device tree has single sdhci clock. So=
+ with addition of
+>>>> TMCLK,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * retrieving sdhci clock by "sdhci" clock na=
+me based on number of
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * clocks in sdhci device node.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0 if (of_clk_get_parent_count(pdev->dev.of_node) =3D=
+=3D 1) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (soc_data->nvquirks & N=
+VQUIRK_HAS_TMCLK)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_warn(&pdev->dev,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 "missing tmclk in the device tree\n");
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(&pdev=
+->dev, NULL);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(clk)) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rc=
+ =3D PTR_ERR(clk);
+>>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (rc !=3D -EPROB=
+E_DEFER)
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_err(&pdev->dev, "failed to get clock: %d\n", rc);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if=
+ (rc !=3D -EPROBE_DEFER)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 dev_err(&pdev->dev,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "failed to get sdhci clock: %=
+d\n", rc);
+>>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_clk_get;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
+to err_power_req;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> +=C2=A0=C2=A0=C2=A0 } else {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (soc_data->nvquirks & N=
+VQUIRK_HAS_TMCLK) {
+>>> I think that I would do the inverse of this ...
+>>>
+>>>  =C2=A0=C2=A0=C2=A0 } else {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(soc_data->nvqui=
+rks & NVQUIRK_HAS_TMCLK)) {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(&pdev->dev, "Device has unexpected cloc=
+ks!\n");
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 rc =3D -EINVAL;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto_power_req;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk =3D devm_clk_get(=
+&pdev->dev, "tmclk");
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>>
+>>> If the device does not have a single clock, then we expect it to suppor=
+t
+>>> the tmclk. If this is not the case, then this is a bug.
+>>>
+>>> Cheers
+>>> Jon
+>> I don't see other drivers validating for unexpected device tree entries.
+>>
+>> Also only for SoC with quirk HAS_TMCLK, we are retrieving TMCLK with
+>> clock name and enabling it.
+>>
+>> So for other SoC even if device tree has additional clock entry other
+>> than sdhci driver don't use it and also dt-binding do not have any tmclk
+>> entry for other SoC. So why would this be a bug?
+> In the device tree binding doc, we say has two clocks for Tegra210,
+> Tegra186 and Tegra194 and one clock for all other devices. So if we no
+> there is more than 1 but the device does not have this quirk, then the
+> device-tree does not reflect what is stated in the binding doc or the
+> quirk is no populated as it should be. I feel that either case is a bug.
 >
-> Thanks.
+> Now of course it could be possible for someone to add a 3rd clock for
+> Tegra210 and we would not detect this but like you said we don't check
+> all conditions. So yes we don't catch all cases, but the ones that matter=
+.
 >
-> --
-> Mel Gorman
-> SUSE Labs
+> Jon
+>
+Based on internal discussion with Thierry we don't need to handle clocks
+
+order in driver. So will revert clock retrieval to same as in v4 and=20
+will send v7 series.
+
+Thanks
+
+Sowjanya
+
