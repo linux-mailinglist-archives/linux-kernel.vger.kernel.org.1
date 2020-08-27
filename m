@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C927253D51
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 07:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218F1253D5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 08:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgH0FsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 01:48:16 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4620 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726093AbgH0FsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 01:48:16 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07R5Wi3g048787;
-        Thu, 27 Aug 2020 01:47:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=zSIWCgv1AFSTEWsdYYA2McSDyTkrvCd17IJDAQrUJbw=;
- b=mGpQuaLHPjFChdnevl1ny1zznoXkwqTQSUc16gqFAZIkB4cjQnbgETgIvhNhO3lEMhX6
- 2tefzQ3d1kLHWJ1xNE18cOcVY8qxmGJCSNbp83oVdbjGCcbQ0LhZuGVHJphpi8dbmloT
- V3ohDTLc3c+Rimr78EZWVVGiJcNbi8mWI6mqo0WZ+L/ACeA1DBodOnZ3o0Zdg5cL2lVl
- wbvIaVrVDzn6chuk8e/DPL9DVwChPLShrnJAz/X/qKMORg42V92jGnpvgkYqcYcfTB8S
- jDe5PP+/b5zsZQzBV4j0w4rGbvY16qlST6qCmkMRQlQQJ0VpUfGxR3tfUrqNHrfbR7cT JQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3366ax0ws0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 01:47:50 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07R5X7MR050140;
-        Thu, 27 Aug 2020 01:47:50 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3366ax0wr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 01:47:49 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07R5kpMG027213;
-        Thu, 27 Aug 2020 05:47:48 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 332uk6daq9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Aug 2020 05:47:48 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07R5ljgY61735298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Aug 2020 05:47:45 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 438215204F;
-        Thu, 27 Aug 2020 05:47:45 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 0EF8152050;
-        Thu, 27 Aug 2020 05:47:42 +0000 (GMT)
-Date:   Thu, 27 Aug 2020 11:17:42 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, peterz@infradead.org, jolsa@redhat.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        maddy@linux.ibm.com, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        daniel@iogearbox.net, brho@google.com
-Subject: Re: [RFC v2] perf/core: Fixes hung issue on perf stat command during
- cpu hotplug
-Message-ID: <20200827054742.GA5431@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200826145411.489169-1-kjain@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200826145411.489169-1-kjain@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-27_01:2020-08-26,2020-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- phishscore=0 clxscore=1011 malwarescore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008270041
+        id S1726929AbgH0GC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 02:02:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:41865 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbgH0GC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:02:28 -0400
+IronPort-SDR: KCIQ06N3G1iaqIsz1JlqMFaujbqplsweBql2jJqV2yDSyCO/TYgXyHwidRjlZUKSJlVMOf1xpw
+ P/FPjb/eHIcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="174478312"
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="174478312"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 23:02:28 -0700
+IronPort-SDR: g458IpR5q5Fk5w4SrGst7CMiEYyAC/8cVA3zQox3Z5s+/Q4cI2JgieD4dwA5Qt1ej3VyCAJgtN
+ EXdHjEoePllQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
+   d="scan'208";a="403302698"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Aug 2020 23:02:26 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: [PATCH 1/1] iommu/vt-d: Use device numa domain if RHSA is missing
+Date:   Thu, 27 Aug 2020 13:56:40 +0800
+Message-Id: <20200827055640.31408-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Kajol Jain <kjain@linux.ibm.com> [2020-08-26 20:24:11]:
+If there are multiple NUMA domains but the RHSA is missing in ACPI/DMAR
+table, we could default to the device NUMA domain as fall back. This also
+benefits the vIOMMU use case where only a single vIOMMU is exposed, hence
+no RHSA will be present but device numa domain can be correct.
 
-> Commit 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
-> added assignment of ret value as -EAGAIN in case function
-> call to 'smp_call_function_single' fails.
-> For non-zero ret value, it did
-> 'ret = !ret ? data.ret : -EAGAIN;', which always
-> assign -EAGAIN to ret and make second if condition useless.
-> 
-> In scenarios like when executing a perf stat with --per-thread option, and
-> if any of the monitoring cpu goes offline, the 'smp_call_function_single'
-> function could return -ENXIO, and with the above check,
-> task_function_call hung and increases CPU
-> usage (because of repeated 'smp_call_function_single()')
-> 
-> Recration scenario:
-> 	# perf stat -a --per-thread && (offline a CPU )
-> 
-> Patch here removes the tertiary condition added as part of that
-> commit and added a check for NULL and -EAGAIN.
-> 
-> Fixes: 2ed6edd33a21("perf: Add cond_resched() to task_function_call()")
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>
+Cc: Ashok Raj <ashok.raj@intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/intel/iommu.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-Tested-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
-
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index e0516d64d7a3..bce158468abf 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -700,12 +700,41 @@ static int domain_update_iommu_superpage(struct dmar_domain *domain,
+ 	return fls(mask);
+ }
+ 
++static int domain_update_device_node(struct dmar_domain *domain)
++{
++	struct device_domain_info *info;
++	int nid = NUMA_NO_NODE;
++
++	assert_spin_locked(&device_domain_lock);
++
++	if (list_empty(&domain->devices))
++		return NUMA_NO_NODE;
++
++	list_for_each_entry(info, &domain->devices, link) {
++		if (!info->dev)
++			continue;
++
++		nid = dev_to_node(info->dev);
++		if (nid != NUMA_NO_NODE)
++			break;
++	}
++
++	return nid;
++}
++
+ /* Some capabilities may be different across iommus */
+ static void domain_update_iommu_cap(struct dmar_domain *domain)
+ {
+ 	domain_update_iommu_coherency(domain);
+ 	domain->iommu_snooping = domain_update_iommu_snooping(NULL);
+ 	domain->iommu_superpage = domain_update_iommu_superpage(domain, NULL);
++
++	/*
++	 * If RHSA is missing, we should default to the device numa domain
++	 * as fall back.
++	 */
++	if (domain->nid == NUMA_NO_NODE)
++		domain->nid = domain_update_device_node(domain);
+ }
+ 
+ struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
+@@ -5086,8 +5115,6 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
+ 		if (type == IOMMU_DOMAIN_DMA)
+ 			intel_init_iova_domain(dmar_domain);
+ 
+-		domain_update_iommu_cap(dmar_domain);
+-
+ 		domain = &dmar_domain->domain;
+ 		domain->geometry.aperture_start = 0;
+ 		domain->geometry.aperture_end   =
 -- 
-Thanks and Regards
-Srikar Dronamraju
+2.17.1
+
