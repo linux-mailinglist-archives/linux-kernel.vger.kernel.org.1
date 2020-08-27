@@ -2,81 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB889254746
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B4725474C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 16:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgH0Oqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 10:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727999AbgH0OlT (ORCPT
+        id S1727784AbgH0OsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 10:48:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45822 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727095AbgH0Olk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 10:41:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60150C061264;
-        Thu, 27 Aug 2020 07:41:18 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a5so5631824wrm.6;
-        Thu, 27 Aug 2020 07:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=crqoUDoVI2GahOjG/uInXq2IOADeVeHTS/KrzK3bGe8=;
-        b=UG3mzNuXy4XJ6CQBJLWvFDGyPYOZdBE6IHM/880S3XB7KGehVvGelv0JkAbELqG2x+
-         FMToy3GlRs6YVPjgxtUhJu91Viv99ZNSkjPaBuh1Dw2OiC/h+MTWbWHv3gmzp726By3n
-         RtZ/UV8+nI+U4qm0PFr1GXzxQXun5kPGy0ToueNNFW5sYAmn45dcZuEANVMukTlOKqJi
-         KR1Pyf07kja156AI3INm+X9tSagbbB3JMQtMJEaN0pWVreM4lt5DeL/VoJ1p5elOY/1Q
-         xdyQCXiBBcts6z2h/falIUgYkf0N6y6i3o96Njs4LtG/SkJREWULaU9FAXO9w762w/0/
-         oubA==
+        Thu, 27 Aug 2020 10:41:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598539297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kSkJbE4XJrwDOFMLE7e16e7obrhoIIgU7bHmd2/ZWC4=;
+        b=HDO4OhGKNgBp6QYNS+SMvx8dHCbko6RogmMZ74Dh+Hq4tb0wkUURO32DpxPnFUVQAmErFO
+        a8f2AezJ1fzN3G2e2Ph+Mak+eWOsR666JDxlq01XFeZ1SV/j8cmiSes3isrRCUT2STRJcG
+        jM9IF3JyYv48+A3CGkxEPmlrP5tYuWE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-Bf86DHbhNh-G4ylUDx6UQw-1; Thu, 27 Aug 2020 10:41:35 -0400
+X-MC-Unique: Bf86DHbhNh-G4ylUDx6UQw-1
+Received: by mail-wm1-f72.google.com with SMTP id p184so2208979wmp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 07:41:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=crqoUDoVI2GahOjG/uInXq2IOADeVeHTS/KrzK3bGe8=;
-        b=maCgWvQ4p/YshvNTpZHSkpFsiPqXiQkU5ZodZG+xPm8dos1LT+TGEYUZq6OTDZf1gt
-         8K9jmhWxqCRkzzgD/mEVPg3N/TuBmdveWyLUMgw6LpUljW7x2nlRw9jxWK030Z5M7Vsf
-         50ixu8pRUhBYKu23Fy2KuKlEEc3tEIdQB2kdym7vEoyFOz2KuJbbMWMqwnjXjOk/Tb7Z
-         9mYba3HtRf8OQmfBDrfIRpPtMSsuvJ7nFrkVrReEmiQIBpKZ0hSXIX04UrEZTFzCg0hv
-         D0wEguKbbqA9zTGBlJOFaepG/Ar9UkliFVYh89ccAKRDgEIX9UDZUidf1tl0pnK9oA1E
-         UqZA==
-X-Gm-Message-State: AOAM533WUyS8rKTJdxY8yt0Qf3xkyPakbsuEedRBxjBY+dY2t6yW9kf3
-        /1/c3UdnozF1HIom47RwiDPixiHKjGs=
-X-Google-Smtp-Source: ABdhPJwp8q4V4P34CkZy0trs88ZOw1wBVk43Ait/5AtPVgDwuVPMn/leocLfh9V43Z8tFi1vh4dAAw==
-X-Received: by 2002:adf:cf10:: with SMTP id o16mr19130873wrj.380.1598539277151;
-        Thu, 27 Aug 2020 07:41:17 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id f6sm7417864wme.32.2020.08.27.07.41.16
+        bh=kSkJbE4XJrwDOFMLE7e16e7obrhoIIgU7bHmd2/ZWC4=;
+        b=PlIINuII8xHFY6ojPWIxjljigZsD3hXUI1m5w+5dQuvuf5Fa1eXpFhAxlVUheMG9au
+         XKybZ/uNXR7y2xbZYv+DFEmy9isVMUcOvAaB4P6YiRiNbh6Mwz1jgBce9zcChFsjWMFh
+         aYdNaVmY40Czf/jWQCZCkeI4cr3UxfobMQ+QaCjpnrUbDzPZynws5mOdldJJDJC0e+jj
+         /mpeqFRUP6L6lToyZ7dV61jiZ1cUflBrPOX7y+1lKqAFi/XR7dDa9i67QQlKEJRusGoy
+         zLaIlX/afCGzCoEQLkXHLnBsQe7UhiGI92iEKyczXwbswaXB2IHmXaFXKY56e0zcTVmM
+         gHWw==
+X-Gm-Message-State: AOAM531BNbCGkUkelrbEBcRmnqi9qWzHeFCUlWwRyUYhqFoty3lgZu84
+        G/mZuXwMJHlXhxMooIv5gPUp6Bb5+ecgF5HNNuaJJwX8p7KN+UzXLbs402ZqdZlzvWyfvB+YNT8
+        b0yLI/Ij1FCAhWDAqu2NZOnlg
+X-Received: by 2002:a05:600c:2292:: with SMTP id 18mr11627451wmf.136.1598539294166;
+        Thu, 27 Aug 2020 07:41:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLjn6ioesLZuvJno4GpX4fuvfwIAu0+UbwSF5co10COtOk6HNz4fDGRY0086+HvxSJxGfKEA==
+X-Received: by 2002:a05:600c:2292:: with SMTP id 18mr11627429wmf.136.1598539293910;
+        Thu, 27 Aug 2020 07:41:33 -0700 (PDT)
+Received: from steredhat.lan ([5.170.39.106])
+        by smtp.gmail.com with ESMTPSA id a3sm5579959wme.34.2020.08.27.07.41.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:41:16 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 16:41:14 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] crypto: sun8i-ss - use kfree_sensitive()
-Message-ID: <20200827144114.GB11280@Red>
-References: <20200827064402.7130-1-efremov@linux.com>
- <20200827064402.7130-5-efremov@linux.com>
+        Thu, 27 Aug 2020 07:41:33 -0700 (PDT)
+Date:   Thu, 27 Aug 2020 16:41:29 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Aleksa Sarai <asarai@suse.de>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v5 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Message-ID: <20200827144129.5yvu2icj7a5jfp3p@steredhat.lan>
+References: <20200827134044.82821-1-sgarzare@redhat.com>
+ <2ded8df7-6dcb-ee8a-c1fd-e0c420b7b95d@kernel.dk>
+ <20200827141002.an34n2nx6m4dfhce@steredhat.lan>
+ <f7c0ff79-87c0-6c7e-b048-b82a45d0f44a@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827064402.7130-5-efremov@linux.com>
+In-Reply-To: <f7c0ff79-87c0-6c7e-b048-b82a45d0f44a@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:44:02AM +0300, Denis Efremov wrote:
-> Use kfree_sensitive() instead of open-coding it.
+On Thu, Aug 27, 2020 at 08:10:49AM -0600, Jens Axboe wrote:
+> On 8/27/20 8:10 AM, Stefano Garzarella wrote:
+> > On Thu, Aug 27, 2020 at 07:50:44AM -0600, Jens Axboe wrote:
+> >> On 8/27/20 7:40 AM, Stefano Garzarella wrote:
+> >>> v5:
+> >>>  - explicitly assigned enum values [Kees]
+> >>>  - replaced kmalloc/copy_from_user with memdup_user [kernel test robot]
+> >>>  - added Kees' R-b tags
+> >>>
+> >>> v4: https://lore.kernel.org/io-uring/20200813153254.93731-1-sgarzare@redhat.com/
+> >>> v3: https://lore.kernel.org/io-uring/20200728160101.48554-1-sgarzare@redhat.com/
+> >>> RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redhat.com
+> >>> RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@redhat.com
+> >>>
+> >>> Following the proposal that I send about restrictions [1], I wrote this series
+> >>> to add restrictions in io_uring.
+> >>>
+> >>> I also wrote helpers in liburing and a test case (test/register-restrictions.c)
+> >>> available in this repository:
+> >>> https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
+> >>>
+> >>> Just to recap the proposal, the idea is to add some restrictions to the
+> >>> operations (sqe opcode and flags, register opcode) to safely allow untrusted
+> >>> applications or guests to use io_uring queues.
+> >>>
+> >>> The first patch changes io_uring_register(2) opcodes into an enumeration to
+> >>> keep track of the last opcode available.
+> >>>
+> >>> The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+> >>> handle restrictions.
+> >>>
+> >>> The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+> >>> allowing the user to register restrictions, buffers, files, before to start
+> >>> processing SQEs.
+> >>>
+> >>> Comments and suggestions are very welcome.
+> >>
+> >> Looks good to me, just a few very minor comments in patch 2. If you
+> >> could fix those up, let's get this queued for 5.10.
+> >>
+> > 
+> > Sure, I'll fix the issues. This is great :-)
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  .../crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c   | 15 +++------------
->  1 file changed, 3 insertions(+), 12 deletions(-)
-> 
+> Thanks! I'll pull in your liburing tests as well once we get the kernel
+> side sorted.
 
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Yeah. Let me know if you'd prefer that I send patches on io-uring ML.
 
-Thanks
+About io-uring UAPI, do you think we should set explicitly the enum
+values also for IOSQE_*_BIT and IORING_OP_*?
+
+I can send a separated patch for this.
+
+Thanks,
+Stefano
+
