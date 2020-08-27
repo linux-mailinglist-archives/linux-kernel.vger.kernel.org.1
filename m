@@ -2,180 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC25253C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69184253C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Aug 2020 05:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgH0D1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Aug 2020 23:27:03 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:58028 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgH0D1C (ORCPT
+        id S1726887AbgH0De2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Aug 2020 23:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgH0De1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Aug 2020 23:27:02 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200827032658epoutp04c5e2d8415ff09bbfc1fe4b5c3a956faf~vAjTKZJ-j2856428564epoutp045
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 03:26:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200827032658epoutp04c5e2d8415ff09bbfc1fe4b5c3a956faf~vAjTKZJ-j2856428564epoutp045
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598498818;
-        bh=U76Vdtc7EDVWhqSvRaNyZOwX1cE/x5mdcyecTRFpnuI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=W5nSRs7jkS+BZOba32IyyWKCk0+Jt7Gv70iSarL5Gma6rO33Mi+LxqK9LMMDh6Nfh
-         pcXHJvq/8C1fyFbyz07X/J4tIhG3DllWLaJF/6f8KZk/WSVe9KjlM3cG/KsGCTv47R
-         Zwxq7yd0iLjbBiHVZbI3j4m44A7QW2Zsacjxud+o=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200827032657epcas1p3f3ace6d41dade59aba39fab5707f0354~vAjShAP8f0956209562epcas1p3P;
-        Thu, 27 Aug 2020 03:26:57 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BcSnq4PTLzMqYkZ; Thu, 27 Aug
-        2020 03:26:55 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        54.ED.18978.FF7274F5; Thu, 27 Aug 2020 12:26:55 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200827032654epcas1p2b00fa3f451b029a211530916c8498873~vAjPgxCNO2982229822epcas1p2g;
-        Thu, 27 Aug 2020 03:26:54 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200827032654epsmtrp23b7960c41672b94b487cfaf3ff21f79e~vAjPfwIYV2007320073epsmtrp2T;
-        Thu, 27 Aug 2020 03:26:54 +0000 (GMT)
-X-AuditID: b6c32a35-5edff70000004a22-a9-5f4727ff3390
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FB.A6.08303.EF7274F5; Thu, 27 Aug 2020 12:26:54 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200827032654epsmtip23dc4e3a6970ef64beedbf011b519f219~vAjPSRgiZ1840218402epsmtip2Z;
-        Thu, 27 Aug 2020 03:26:54 +0000 (GMT)
-Subject: Re: [PATCH v2] extcon: ptn5150: Deduplicate parts of
- dev_err_probe()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <7441c256-d680-ed47-e29d-3eb7d89e8566@samsung.com>
-Date:   Thu, 27 Aug 2020 12:39:21 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 26 Aug 2020 23:34:27 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE5FC0612A3;
+        Wed, 26 Aug 2020 20:34:27 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kx11so1884976pjb.5;
+        Wed, 26 Aug 2020 20:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fTqRIwnZFU6b90pNOTDxaF0ZeXG1vv8vI2iJjfxpFAs=;
+        b=giA62sGZ0ZBLeeFr1JlRdn/K/cK1g8j46o2DlloqUDmynxEHilz0BCVHnw4v/A7fdC
+         goCncEpLvJO6bayudrON5gzVdr1QGvYqqsThI3ecg9DWXR0xWlmHZGeKt6yCxkaWdhz2
+         /PAwHoZUri4I21inzBfDadJ6vt+UnNSRRkpU+pSqbjLUTBSPLblRqNdG6OIUkmGGL4up
+         Xci6hO0pBvJTOsScOK4r/hYv0pKRpNl1cAoffpHh4g393z0URqEGkTLasX2Fojp1yPU7
+         u572F2c/X3CyZEe2wVWZdL73e4+p2J05lWWiivyQsidanSBysVuX3wxXit45m8S3jMYO
+         zUbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fTqRIwnZFU6b90pNOTDxaF0ZeXG1vv8vI2iJjfxpFAs=;
+        b=nPit5tKe2nmle7agqiW+gPkWZBURZ4EYA2747KeXHulgkiJbqYCai7qyK5t5Ao5u9V
+         vU6feHVdyXurZ8iwzOHsKRyTZ9KvZvq3P/Ju5G6EJv9urzhMICmOR75NZBKKWWkckIa7
+         QMHK18B7klWeuykGp26kV1meKDUsRBYgHT17lNrGEL/L2n+Mbg3v9fVAcrqWV4ZsiCPY
+         KineoX+PkBctDmpWo82KEofCcVH0PmgAKtq+CNf81sPvN5PUFSufb0IS9rdTzz8SXrOY
+         buhl6kv5Soh6PXtMsS/SEtjffJ6kDI+fySTvPL6/fo64cMEwze8u6PUaR1lUvNoeUy83
+         WgKg==
+X-Gm-Message-State: AOAM531euv57l5vmwKB6DoyNffj4SHudrqoC3b/563cK6ZFOBKDeUtLi
+        AufAPOtznEl2iiOSawSQ1K/KqrZFETY=
+X-Google-Smtp-Source: ABdhPJz5CzdGTThvhez3QQPEXO5BGErOSYvcylEGAsCyZsXqSdZZVXm0jlOTdFJ0Mwwx3tLaYicCbA==
+X-Received: by 2002:a17:90a:ccd:: with SMTP id 13mr8820541pjt.123.1598499266545;
+        Wed, 26 Aug 2020 20:34:26 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e62sm725891pfh.144.2020.08.26.20.34.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 20:34:25 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] usb typec: mt6360: Prevent the race condition
+ during module remove
+To:     cy_huang <u0084500@gmail.com>, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, matthias.bgg@gmail.com,
+        heikki.krogerus@linux.intel.com
+Cc:     cy_huang@richtek.com, gene_chen@richtek.com,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1598498732-25194-1-git-send-email-u0084500@gmail.com>
+ <1598498732-25194-3-git-send-email-u0084500@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <b9c73699-bd84-52f7-e42d-a482036e78e0@roeck-us.net>
+Date:   Wed, 26 Aug 2020 20:34:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200826152341.56741-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <1598498732-25194-3-git-send-email-u0084500@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmk+LIzCtJLcpLzFFi42LZdljTQPe/unu8wcc5yha9TdOZLM6f38Bu
-        cXnXHDaL240r2Cxe7p/O6sDqsXPWXXaPTas62TzmnQz06NuyitHj8ya5ANaobJuM1MSU1CKF
-        1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoN1KCmWJOaVAoYDE4mIl
-        fTubovzSklSFjPziElul1IKUnALLAr3ixNzi0rx0veT8XCtDAwMjU6DChOyMxsXz2AruClac
-        2beOrYFxAl8XIyeHhICJRNO0JnYQW0hgB6PEt5/ZXYxcQPYnRombbQeYIJzPjBIPr75m62Lk
-        AOvoPF0B0bCLUeLA6ziImveMErN3b2MGSQgL+Es0zmwGaxYRaGCUuPPgOAtIglkgVmLNwptg
-        69gEtCT2v7jBBmLzCyhKXP3xmBHE5hWwk2j7fYUVZBmLgKrE4vVgraICYRInt7VAlQhKnJz5
-        BCzOKeAu8XwDSDnIeHGJW0/mM0HY8hLb385hBrlBQqCTQ+LLimWsEC+7SPxtaGODsIUlXh3f
-        wg5hS0l8frcXKl4tsfLkETaI5g5GiS37L0A1G0vsXzqZCeQ4ZgFNifW79CHCihI7f89lhFjM
-        J/Huaw8rJLB4JTrahCBKlCUuP7jLBGFLSixu72SbwKg0C8k7s5C8MAvJC7MQli1gZFnFKJZa
-        UJybnlpsWGCIHNebGMGpUst0B+PEtx/0DjEycTAeYpTgYFYS4RW86BwvxJuSWFmVWpQfX1Sa
-        k1p8iNEUGL4TmaVEk/OByTqvJN7Q1MjY2NjCxNDM1NBQSZz34S2FeCGB9MSS1OzU1ILUIpg+
-        Jg5OqQamgly1i3vqCiTbEhotOwr2XN/YsjLktPhO7hkFbHf3/+YxOlMxd9P+T1In9jqovms6
-        lvHsyoQXaSVqi5YrXEtv2ct3R3Hneq7EVqm5nTJfPWxe/02JZbgfenWCvYn3jqMi06+VO0YW
-        WnOsOGq3T+LtAgOLd7GzRWYvDWBT+zrfbW3QDIPvm59bT457N9mJq3KyadLjTc86az7qHFF/
-        O32ewOXuvIVszw59Uphx4e/aP7tYvn2/GS/+kIM1ueFSbQM7v10R3+ypj/7Ocv2t5uxwIGJJ
-        tMBF3Qv6nS5mZz7+ZF+zi9uNuytx9ZOqmM0WGXlTo7MqZTz2ro9vPJauf4SvIlp4tX78K+kr
-        3wMT/6W8UmIpzkg01GIuKk4EAJe4qhAeBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSvO4/dfd4g1mzZCx6m6YzWZw/v4Hd
-        4vKuOWwWtxtXsFm83D+d1YHVY+esu+wem1Z1snnMOxno0bdlFaPH501yAaxRXDYpqTmZZalF
-        +nYJXBmNi+exFdwVrDizbx1bA+MEvi5GDg4JAROJztMVXYxcHEICOxglVj3+zNrFyAkUl5SY
-        dvEoM0SNsMThw8UgYSGBt4wSbS9lQWxhAV+JzsbZzCC9IgINjBKzl/1nBEkwC8RKHJy8iAVi
-        6CxGidZ5L8ASbAJaEvtf3GADsfkFFCWu/ngMFucVsJNo+32FFWQZi4CqxOL1LCBhUYEwiZ1L
-        HjNBlAhKnJz5BCzOKeAu8XzDFVaIXeoSf+ZdYoawxSVuPZnPBGHLS2x/O4d5AqPwLCTts5C0
-        zELSMgtJywJGllWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMFRo6W1g3HPqg96hxiZ
-        OBgPMUpwMCuJ8ApedI4X4k1JrKxKLcqPLyrNSS0+xCjNwaIkzvt11sI4IYH0xJLU7NTUgtQi
-        mCwTB6dUA1Npi8ZyW/FFpWHOy6Lml8W9/7bg64E9ElIOu767Cx/M1TZpK/v0T9Y1zXrXivD3
-        uY0smZrzX03c5Prk+N5p6Vs+n78afWqz0Nent3aVno1LdVM6ZPBY8122/0/bI5NZdjJILzzs
-        IS3SLMbL0p2b3vK/3/XXyZPB5UemHErzrb2ixrPzd+/j2JsV2xnebpFOs9jdZpKuV6/vUpJs
-        Z5J+uu51EtuDXbHOqaEPqtTmuhyK7L+2Ler4LJEPVUxZ87ZyiMWHR9jXb8vVaPx+9WCX0Lsf
-        gf9U6gJX/bv0s/mr3k7jhj4JsZ7OH7GTq1/o+uz5LnrhUSR7m9nG+o7MXuWDP9+m/ro7mdVu
-        b0cii7P2WSWW4oxEQy3mouJEAO3r8HMJAwAA
-X-CMS-MailID: 20200827032654epcas1p2b00fa3f451b029a211530916c8498873
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200826152348epcas1p28c09ca69c54287c9c55f5403f2c0e4a1
-References: <CGME20200826152348epcas1p28c09ca69c54287c9c55f5403f2c0e4a1@epcas1p2.samsung.com>
-        <20200826152341.56741-1-andriy.shevchenko@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On 8/26/20 8:25 PM, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> Prevent the race condition from interrupt and tcpci port unregister
+> during module remove.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 
-On 8/27/20 12:23 AM, Andy Shevchenko wrote:
-> dev_err_probe() is designed to be used like
-> 
-> 	return dev_err_probe(dev, ret, "Error message\n");
-> 
-> Hence no need to have a separate return statement. Besides that
-> dev_err_probe() prints already returned error code, no need to repeat
-> that either.
-> 
-> Cc: Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Please squash with the first patch of the series.
+
+Thanks,
+Guenter
+
 > ---
-> v2: dropped Fixed tag (Krzysztof)
->  drivers/extcon/extcon-ptn5150.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+>  drivers/usb/typec/tcpm/tcpci_mt6360.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-> index 8ba706fad887..051bf374b43f 100644
-> --- a/drivers/extcon/extcon-ptn5150.c
-> +++ b/drivers/extcon/extcon-ptn5150.c
-> @@ -242,8 +242,7 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
->  			dev_info(dev, "No VBUS GPIO, ignoring VBUS control\n");
->  			info->vbus_gpiod = NULL;
->  		} else {
-> -			dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
-> -			return ret;
-> +			return dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
->  		}
->  	}
+> diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> index 6a28193..a381b5d 100644
+> --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> @@ -164,6 +164,7 @@ static int mt6360_tcpc_remove(struct platform_device *pdev)
+>  {
+>  	struct mt6360_tcpc_info *mti = platform_get_drvdata(pdev);
 >  
-> @@ -253,10 +252,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
->  
->  	info->regmap = devm_regmap_init_i2c(i2c, &ptn5150_regmap_config);
->  	if (IS_ERR(info->regmap)) {
-> -		ret = PTR_ERR(info->regmap);
-> -		dev_err_probe(info->dev, ret, "failed to allocate register map: %d\n",
-> -			      ret);
-> -		return ret;
-> +		return dev_err_probe(info->dev, PTR_ERR(info->regmap),
-> +				     "failed to allocate register map\n");
->  	}
->  
->  	if (i2c->irq > 0) {
-> @@ -264,9 +261,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c)
->  	} else {
->  		info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
->  		if (IS_ERR(info->int_gpiod)) {
-> -			ret = PTR_ERR(info->int_gpiod);
-> -			dev_err_probe(dev, ret, "failed to get INT GPIO\n");
-> -			return ret;
-> +			return dev_err_probe(dev, PTR_ERR(info->int_gpiod),
-> +					     "failed to get INT GPIO\n");
->  		}
->  
->  		info->irq = gpiod_to_irq(info->int_gpiod);
+> +	disable_irq(mti->irq);
+>  	tcpci_unregister_port(mti->tcpci);
+>  	return 0;
+>  }
 > 
 
-Applied it. Thanks.
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
