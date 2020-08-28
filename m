@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7504255B48
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3832A255B82
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgH1Nil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgH1Nd1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:33:27 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1B1C061264;
-        Fri, 28 Aug 2020 06:30:57 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id i7so383257wre.13;
-        Fri, 28 Aug 2020 06:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=rLh0TPLDRuHOF1sa434RgV9ws5clmGQaNXDdUaR7GmQ=;
-        b=pCT4pUfIHlx9O2ITdmY6m/sbmp1b1Z/cp65/o1lcKDvl+A7DMxXchyIHOA3WZkjsnF
-         Ism/mGsI1nxAb3iPvLqcseknvp16pzyRaW7N12cqo/tAfKaQLv11ndd95ebWN8IBp/sl
-         xdJntUwPN/YbxE+zK5hu7FXMWD+z3QXXSx+7mgf4ANazLT1oBJyPJKGxnP1c8MVM8iRu
-         kV+8zEi6/87Y1xmCWm/qxLLkNr5o/HwZTwv+uyUoF876Xsi7mbAtItMVLPgojpKICY9e
-         h4ZjhziNfOgPemc/weD7q5VXzTVlLhfmKwgW4ghnwWtxi3Q+f8bLea4WWfHZWopVXQuH
-         ohWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=rLh0TPLDRuHOF1sa434RgV9ws5clmGQaNXDdUaR7GmQ=;
-        b=dX2FToRh8fq5gO+xziDaU3R/vO+/MeJidtpPJzO5qPZD66/oQYnbgZEJISjfO/A72q
-         +sAcj5bUtucWDleEks8IHRrPJT9egzYL4Nr7upRB0ph8i8696v04cpl1vzJevGNWJntA
-         6vq5fncKOszMdokPMfYfj8/qqW9DbhyYaxxPMqZ+1dm9z86Gcr9fTXEDvf0T7J2zRD0l
-         DZckUBEc/Cjj6Uz4DPKl/BiVaWmysUTGQjwvaJYaisVeJ2BoxK8JZ1uDN0sItjvJsWAu
-         vtsHyH2StC5lb1DhTwZLtorOthWGe7LjXUqiEGdiEXgRj7vywCcjqNxw98i4AF7RoZmP
-         /KGA==
-X-Gm-Message-State: AOAM5333+N9zPW/t52r2DKg9Uu/YjfDuikT/yiKZ6BOc0uZOkEMuW0GO
-        DN+ULrMlE5KdGmRWZwo42yg=
-X-Google-Smtp-Source: ABdhPJyfgahGUNslcWxi1Qo1bcb+12VpnW3m9WmMwH9GuULHZ3CZ8GQBwKDjrNeoJpwJ4+ZgVCKvEQ==
-X-Received: by 2002:adf:de08:: with SMTP id b8mr1503680wrm.4.1598621456377;
-        Fri, 28 Aug 2020 06:30:56 -0700 (PDT)
-Received: from felia ([2001:16b8:2d94:4000:f807:c6f3:919:9c25])
-        by smtp.gmail.com with ESMTPSA id n205sm2539670wma.47.2020.08.28.06.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 06:30:55 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Fri, 28 Aug 2020 15:30:44 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Roman Bolshakov <r.bolshakov@yadro.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Arun Easi <aeasi@marvell.com>
-Subject: Re: [PATCH] MAINTAINERS: orphan sections with qlogic.com group
- alias
-In-Reply-To: <20200828091758.GF54274@SPB-NB-133.local>
-Message-ID: <alpine.DEB.2.21.2008281524360.11562@felia>
-References: <20200828070824.8032-1-lukas.bulwahn@gmail.com> <20200828091758.GF54274@SPB-NB-133.local>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726395AbgH1Nqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:46:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:49632 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729482AbgH1No0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:44:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91FD81FB;
+        Fri, 28 Aug 2020 06:31:52 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 795CC3F66B;
+        Fri, 28 Aug 2020 06:31:49 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 14:31:31 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        linux-arch@vger.kernel.org, cameron@moodycamel.com,
+        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
+Subject: Re: [PATCH v4 04/23] arm64: kprobes: Use generic kretprobe
+ trampoline handler
+Message-ID: <20200828133131.GA71981@C02TD0UTHF1T.local>
+References: <159861759775.992023.12553306821235086809.stgit@devnote2>
+ <159861764221.992023.10214437014901668680.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159861764221.992023.10214437014901668680.stgit@devnote2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On Fri, 28 Aug 2020, Roman Bolshakov wrote:
-
-> On Fri, Aug 28, 2020 at 09:08:24AM +0200, Lukas Bulwahn wrote:
-> > Previous attempts of getting an answer from the qlogic.com group alias,
-> > i.e., QLogic-Storage-Upstream@qlogic.com, have remained unanswered; see
-> > links below.
-> > 
-> > Mark those sections Orphan to prepare their deletion or give an actual
-> > person a chance to step up to maintain those drivers.
-> > 
-> > Link: https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de
-> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2006300644130.4919@felia
-> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2008270740140.31123@felia
-> > 
+On Fri, Aug 28, 2020 at 09:27:22PM +0900, Masami Hiramatsu wrote:
+> Use the generic kretprobe trampoline handler, and use the
+> kernel_stack_pointer(regs) for framepointer verification.
 > 
-> CC'd Arun,
-> 
-> I think it's worth to update the alias to:
-> 
-> GR-QLogic-Storage-Upstream@marvell.com
-> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  arch/arm64/kernel/probes/kprobes.c |   78 +-----------------------------------
+>  1 file changed, 3 insertions(+), 75 deletions(-)
 
-So, if these drivers are not orphans, you can answer Thomas Gleixner's 
-original email from 2019. If you can quickly ack that patch set, I am 
-happy to do the donkey work to get this apply nicely on the current 
-master (please CC me on that response).
+> +	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+> +					(void *)kernel_stack_pointer(regs));
+>  }
+>  
+>  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+>  				      struct pt_regs *regs)
+>  {
+>  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+> +	ri->fp = (void *)kernel_stack_pointer(regs);
 
-Lukas
+This is probably a nomenclature problem, but what exactly is
+kretprobe_instance::fp used for?
+
+I ask because arm64's frame pointer lives in x29 (and is not necessarily
+the same as the stack pointer at function boundaries), so the naming
+is potentially misleading and possibly worth a comment or rename.
+
+Thanks,
+Mark.
