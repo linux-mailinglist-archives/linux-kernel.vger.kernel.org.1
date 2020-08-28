@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D46A255C64
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A42255C80
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgH1O1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:27:24 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:61075 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgH1O1W (ORCPT
+        id S1727863AbgH1ObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgH1ObT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:27:22 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8FD584000D;
-        Fri, 28 Aug 2020 14:27:17 +0000 (UTC)
-Date:   Fri, 28 Aug 2020 16:31:03 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        kernel-list@raspberrypi.com, linux-kernel@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        dave.stevenson@raspberrypi.com, naush@raspberrypi.com
-Subject: Re: [PATCH v2 28/47] staging: vchi: Get rid of vchiq_shim's message
- callback
-Message-ID: <20200828143103.2ljdrxk4py35ecu6@uno.localdomain>
-References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
- <20200629150945.10720-29-nsaenzjulienne@suse.de>
+        Fri, 28 Aug 2020 10:31:19 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B271C061232
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:31:18 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id t23so1549314ljc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uulk0f5tN77Sy8VPiV8bfXz3aXrvD+qaFtC9g5b1o5k=;
+        b=mwrWOh5FW8SYexG7nJkfBA7ExLj9HY/yJCs1pbJkRP8mjO0Vm5IuQRxOn3jCFPiDKy
+         TPp+apvkl1PFKQVmrFtao9K39ss3eGRv32OCkcTWEOPpv2wCCHIBlvSdYZeBo7OIy/wy
+         H1/Y3pj9oqdxvILjV0gQEGtanA2tWIxfIoVdkHTS3Jf7wwRA+BTeO1VteJUNf+0SHF+5
+         kRy8mUoXzqx0+JiIzqfnMWbxCFCsNUJuFpV7P7HNQmdck+EjmpePdcrD/sxzJA2FX2aq
+         nFdUSMCJlK9hheCrVt7Dr2ioHkVb4f521szLVOXf77uzgGVqIRDOQGTblZMiHusdXfv5
+         WsIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uulk0f5tN77Sy8VPiV8bfXz3aXrvD+qaFtC9g5b1o5k=;
+        b=sxsm67Yj9nUm9QlJRGeX+dv+BgyNFzBUTI40FpF3ERdGhsb/Lv4qGSNrHmTsawjBoQ
+         kO0fzmS7cAENi8OnkJruX7tc/kj12F3VGRA82OC2x8j4QOMVN8Qp5+ar/I3upn5kTSCF
+         akjhOgtAhMI5jvlguBLEPqk8TBMGZ5A0e+yFgv1p3oIJ7ojPRPmdWCCAIBix52lnzpdB
+         eOfS/yPV8D8YWWnYzmj701DzHAriAGN243iAdnOzQLLX/PA0yoOmRuNgc66yUW/dZgv6
+         c5sQon8UIrJGCJB7dedZdWiBRZTLibW0AwpEcRxh09PNDwlHpUXe3sP9HvJxoND+nk03
+         9GgA==
+X-Gm-Message-State: AOAM5338fOEW3V3+qKTkqcoj6Nxb6PSqr+7pAn8lv30X0Qu1smTUYLfZ
+        rDyDYvl1zKBHdwP3283uxqJFWeGpcYhb/+Y4P5KQIg==
+X-Google-Smtp-Source: ABdhPJzZo9V8yKD7QGeGDGdwGYh46SecHaHj/YVK7pilBfuxI7RKFuaeR5C1/8xhA/6gVBQXQ3zGwVDH9/8XRxPY9Rc=
+X-Received: by 2002:a2e:9dd0:: with SMTP id x16mr989729ljj.144.1598625076956;
+ Fri, 28 Aug 2020 07:31:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629150945.10720-29-nsaenzjulienne@suse.de>
+References: <20200827185829.30096-1-krzk@kernel.org> <20200827185829.30096-25-krzk@kernel.org>
+In-Reply-To: <20200827185829.30096-25-krzk@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 Aug 2020 16:31:06 +0200
+Message-ID: <CACRpkdZNS6TTpUDEiezORKXu-h0Sdz_dPcCxmR+UbT_Rc+oMpw@mail.gmail.com>
+Subject: Re: [PATCH v3 24/27] gpio: Add devm_fwnode_gpiod_get_optional() helpers
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        platform-driver-x86 <platform-driver-x86@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+On Thu, Aug 27, 2020 at 9:00 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-   I'm working on a v2 of the bcm2835-isp support which was sent along
-with UNICAM v4l2 driver and some misc changes you have collected in
-this series. Reference to v1:
-https://lore.kernel.org/linux-media/20200504092611.9798-1-laurent.pinchart@ideasonboard.com/
-
-On Mon, Jun 29, 2020 at 05:09:26PM +0200, Nicolas Saenz Julienne wrote:
-> As vchiq_shim's callback does nothing aside from pushing messages into
-> the service's queue, let's bypass it and jump directly to the service's
-> callbacks, letting them choose whether to use the message queue.
-
-I admit this patch caused me some pain, as after a few days chasing
-why the ISP got stuck in importing buffers into the VPU through the vc-sm-cma
-driver I realized that this patch removed a significant part of the
-process..
-
+> Add devm_fwnode_gpiod_get_optional() and
+> devm_fwnode_gpiod_get_index_optional() helpers, similar to regular
+> devm_gpiod optional versions.  Drivers getting GPIOs from a firmware
+> node might use it to remove some boilerplate code.
 >
-> It turns out most services don't need to use the message queue, which
-> makes for simpler code in the end.
->
-> -
-> -	if (reason == VCHIQ_MESSAGE_AVAILABLE)
-> -		vchiq_msg_queue_push(service->handle, header);
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-This one '-.-
+OK then, I suppose this gets merged with the rest?
 
-I wonder if this was intentional and it is expected all services now
-handle the message queue (it seems so according to your commit
-message).
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Fair enough, I could add in the vc-sma-cma callback a call to
-vchiq_msg_queue_push() but I wonder if it wouldn't be better to do so
-in vchiq_core.c:parse_rx_slots(), just before calling the service's
-callback, so that this has not to be re-implemented in all services.
-
-What would you suggest ?
-
-And by the way I see mmal-vchiq.c:service_callback() releasing
-messages but never pushing them to the queue. Is this intended as well ?
-
-Thanks
-  j
-
+Yours,
+Linus Walleij
