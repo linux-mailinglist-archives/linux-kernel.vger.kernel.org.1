@@ -2,231 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6372554E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A8F2554E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgH1HJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 03:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
+        id S1728092AbgH1HJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728458AbgH1HJS (ORCPT
+        with ESMTP id S1727059AbgH1HJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 03:09:18 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3209AC061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:17 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id w186so21097pgb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:17 -0700 (PDT)
+        Fri, 28 Aug 2020 03:09:57 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FEBC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:56 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id h4so49937oop.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0/HQoclrFB+hqZ38ogIZhhpo7z/PjWFWcD7V3KhVE1M=;
-        b=cXf97D38uxELp4hcn43WKFfrM5IaDjMOCdIcXvlotIPCzE342mRt7SeGtV2/3Y4pKr
-         UdDZXNWHq/DFoL7J75V7PyjEJD8/lUYz3iokq3eMf1tmnewPpAOgDXrDB4JOh0AITOOY
-         PSSlpS8UQKPYxrMVS1F6pNYE1FUL9XRExG2uewWikjWdMG48UI8qErW10Pk/zjrNBY44
-         yo0gp0h+lOXYucfCqouCRZ7ykjvB/oe3bpJroTdQC2E6+yJH/vfiJv3ACcC84sThd2lg
-         mUS1Nmqsj9iioFZ9HS8sjt0XXg3lJ3KigDrk9o5svYXfyvjQ7plG1l3L7+wfkZtlZLWy
-         zntA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DVuVd6p5WUIda7pE1WrjTg4zSVXkLhlT+xCt0yR++Os=;
+        b=aCtNnk7zEgx71MZ0li20Hed24dO1JYlQFvABddQov9B6BuQZwUGuM9rYoDcmcR52Rb
+         PLiEcsslY2WP24AjQJw0BfdIs+Mi7yvPixtAe5JqSdWZv3MZHTAWBUnPiZJPdkNsdgZi
+         TyQSEdNsqUa4842GX2ezZu2bFoau1JHYZnTi6c7jBCcctQz1uzXZ7aCz6j4JEEggblI1
+         9D4LNbT9BHiNPm7NVKLCf337hPFe0CzJWkwey3I3Rs2FE4ciiAXnRx/JmhEAeezsnNy3
+         dzVfgYQY8R7nCi/ooqV5pAoMs4ZYs7X1IUIkYr+yd6PUDPx/dnoZuyP9xuH3fmyXKqAl
+         boxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0/HQoclrFB+hqZ38ogIZhhpo7z/PjWFWcD7V3KhVE1M=;
-        b=Qnig3EhD4edBI52gpeT4SQ/PnhHOugjgcq++kQbrRXdBUm8cGDTIaynvqUpRZ4WN7n
-         jefex1kodRI+2X5FnOdoBXekdQUOYqtCfjPz6qaAVo/1QIQNigouVA+rCbhXBMAYuVgF
-         PekK9wb8o6PvNgV0eXG0ETt77kxxxRDnjO7nmkgA6RBmSY3EAOmiN2weQTs+zWZMSvJ8
-         vfrsqd7Y3E+w5eTi0qi8856nYRMCgOAhgaX2DhAsab7V2EFP9MQb+PT9PmQjjr4t6UQ/
-         9ccfTDwVIkwaib0WmUxPg70Pxz3NNZ+3j09OSh47fmTmJS/esST4wa5cKOceMIzvzyYo
-         nrRg==
-X-Gm-Message-State: AOAM530FGhBpcfUbU2DaNdwPNksxuZs0K+IUt3G27QehRrlJdIWrdtoY
-        zu5OPQ/l/zoO7VB40WQM9edyUg==
-X-Google-Smtp-Source: ABdhPJyrhpDTUbmO4L2Q/Sn00KMcK7LGG3TJpgsBkxKWlDHQD0kNvvDeVaDvwm3UpZuR43Opdk344A==
-X-Received: by 2002:a63:b70c:: with SMTP id t12mr246648pgf.178.1598598556647;
-        Fri, 28 Aug 2020 00:09:16 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id b8sm434158pfp.48.2020.08.28.00.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 00:09:16 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        david.abdurachmanov@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v3 3/3] riscv: Add cache information in AUX vector
-Date:   Fri, 28 Aug 2020 15:09:07 +0800
-Message-Id: <ee6a18d118b65cca0602e32bbb8be092f63ae8b6.1598598459.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1598598459.git.zong.li@sifive.com>
-References: <cover.1598598459.git.zong.li@sifive.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DVuVd6p5WUIda7pE1WrjTg4zSVXkLhlT+xCt0yR++Os=;
+        b=IHGP/DkPKLlOnp/5vAoTLko92cH8IC3lbWFThlO0pRjc7fFFX4lTV5EQmIrf24+bSj
+         sTj389HrAsm9dI8Y4V4Ngq6o7bFSfDh+VmJTZUtoXhXxzemhUYzT8+J55sAMTZuC3uSg
+         bL8iAbTB0JnandTxu+dc9Mlaz5rQ33/oa00lbph6cwZPGjLnNFXy6PMcSvzvtz3IM8eC
+         6VwmYQmyv5G+Hh+gDR4810DjHzFyy7zvP1HCnVh1ctHIAPCyOdbyIVTxz0KJJtrG7nFf
+         FJ3KkkycX4i2v5Qqd3it+MMW83IeYKJlzFL/SusssmDUJVOsltnzMV4D52UKqWnjAio9
+         45pw==
+X-Gm-Message-State: AOAM5333mxWXwFuVrGuhghsLQIjaX20jM25xqxZ5olo1ILAlQ2ehMQCn
+        5ZCAHmiLq54LM8mUeYESKi0HpyvhSOeDly0LVZg=
+X-Google-Smtp-Source: ABdhPJw0ppKKCCfdqyVwaJ4pWjujRJHaStvQsL6Ksle+Mc6vIXt525LQ25yGxEEjVinfwZcZgCvdJuLOA0c59GPZ9Rg=
+X-Received: by 2002:a4a:d588:: with SMTP id z8mr164471oos.84.1598598594507;
+ Fri, 28 Aug 2020 00:09:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200827013636.149307-1-allen.lkml@gmail.com> <CAHk-=whiEUUrtnbgUH2xsD0+jNyoXudYJ4hGCA55MCjryaHGjw@mail.gmail.com>
+ <1598553133.4237.8.camel@HansenPartnership.com> <CAHk-=wi8o+FvfQkUiH_2MUs3J19FzfMzumOViAJ2aboGg9qY7Q@mail.gmail.com>
+ <CAHk-=wingJWToQfoc+m2am7Q=7r8XD+6p0FXasCRAzOdcRyngw@mail.gmail.com>
+ <202008271150.7231B901@keescook> <CAHk-=whDhHWQo_QjZp36=x=GLMGOJ2xnfsUk9xkUuWRz=i9gOg@mail.gmail.com>
+ <20200827213636.GF1236603@ZenIV.linux.org.uk> <202008271503.181A6A609@keescook>
+In-Reply-To: <202008271503.181A6A609@keescook>
+From:   Allen <allen.lkml@gmail.com>
+Date:   Fri, 28 Aug 2020 12:39:42 +0530
+Message-ID: <CAOMdWSLJuG+EN3gDUYpoPjYU2cuRrN34NYZZ9Uhb08_egw3ZCA@mail.gmail.com>
+Subject: Re: [PATCH] linux/kernel.h: add container_from()
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no standard CSR registers to provide cache information, the
-way for RISC-V is to get this information from DT. Currently, AT_L1I_X,
-AT_L1D_X and AT_L2_X are present in glibc header, and sysconf syscall
-could use them to get information of cache through AUX vector.
+> > > You really have to pick some pretty excessive type names (or variable
+> > > names) to get close to 80 characters. Again, to pick an example:
+> > >
+> > >         struct timer_group_priv *priv = container_of(handle,
+> > >                         struct timer_group_priv, timer[handle->num]);
+> > >
+> > > ends up being long even if you were to split it, but that funky
+> > > container_from() wouldn't have helped the real problem - the fact that
+> > > the above is complex and nasty.
+>
+> The point about doing the assignment with the declaration certainly makes
+> the "ugliness" worse, I agree. I'm still not generally convinced about
+> the redundancy level pros/cons, but I concede that having a common idiom
+> (rather than a succinct but subsystem-dependent idiom) is better for
+> people reading the code for the first time.
+>
+> > > And I had to _search_ for that example. All the normal cases of
+> > > split-line container-of's were due to doing it with the declaration,
+> > > or beause the first argument ended up being an expression in itself
+> > > and the nested expressions made it more complex.
+> >
+> > Speaking of searching, this kind of typeof use is, IMO, actively
+> > harmful - it makes finding the places where we might get from
+> > e.g. linked list to containing objects much harder.  container_of
+> > (unless combined with obfuscating use of typeof()) at least gives
+> > you a chance to grep - struct foo *not* followed by '*' is a pattern
+> > that doesn't give too many false positives.  This one, OTOH, is
+> > essentially impossible to grep for.
+>
+> And this observation about workflow does strike a chord with me. I do end
+> up with those kind of searches too. In trying to examine my preferences
+> here, I think my instincts are to avoid open-coded types (leading me to
+> want to use typeof()) but I think those instincts were actually developed
+> from dealing with _sizeof_ and all the way it goes terribly wrong. So,
+> okay, I'm convinced. container_of() it is.
 
-The result of 'getconf -a' as follows:
-LEVEL1_ICACHE_SIZE                 32768
-LEVEL1_ICACHE_ASSOC                8
-LEVEL1_ICACHE_LINESIZE             64
-LEVEL1_DCACHE_SIZE                 32768
-LEVEL1_DCACHE_ASSOC                8
-LEVEL1_DCACHE_LINESIZE             64
-LEVEL2_CACHE_SIZE                  2097152
-LEVEL2_CACHE_ASSOC                 32
-LEVEL2_CACHE_LINESIZE              64
+ so container_of() it is :)
+Will start updating the rest of the patches.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/include/asm/cacheinfo.h   |  5 +++++
- arch/riscv/include/asm/elf.h         | 13 +++++++++++
- arch/riscv/include/uapi/asm/auxvec.h | 23 +++++++++++++++++++-
- arch/riscv/kernel/cacheinfo.c        | 32 +++++++++++++++++++++++++++-
- 4 files changed, 71 insertions(+), 2 deletions(-)
+Thanks,
+- Allen
 
-diff --git a/arch/riscv/include/asm/cacheinfo.h b/arch/riscv/include/asm/cacheinfo.h
-index 5d9662e9aba8..d1a365215ec0 100644
---- a/arch/riscv/include/asm/cacheinfo.h
-+++ b/arch/riscv/include/asm/cacheinfo.h
-@@ -1,4 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 SiFive
-+ */
- 
- #ifndef _ASM_RISCV_CACHEINFO_H
- #define _ASM_RISCV_CACHEINFO_H
-@@ -11,5 +14,7 @@ struct riscv_cacheinfo_ops {
- };
- 
- void riscv_set_cacheinfo_ops(struct riscv_cacheinfo_ops *ops);
-+uintptr_t get_cache_size(u32 level, enum cache_type type);
-+uintptr_t get_cache_geometry(u32 level, enum cache_type type);
- 
- #endif /* _ASM_RISCV_CACHEINFO_H */
-diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-index d83a4efd052b..5c725e1df58b 100644
---- a/arch/riscv/include/asm/elf.h
-+++ b/arch/riscv/include/asm/elf.h
-@@ -11,6 +11,7 @@
- #include <uapi/asm/elf.h>
- #include <asm/auxvec.h>
- #include <asm/byteorder.h>
-+#include <asm/cacheinfo.h>
- 
- /*
-  * These are used to set parameters in the core dumps.
-@@ -61,6 +62,18 @@ extern unsigned long elf_hwcap;
- do {								\
- 	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 		(elf_addr_t)current->mm->context.vdso);		\
-+	NEW_AUX_ENT(AT_L1I_CACHESIZE,				\
-+		get_cache_size(1, CACHE_TYPE_INST));		\
-+	NEW_AUX_ENT(AT_L1I_CACHEGEOMETRY,			\
-+		get_cache_geometry(1, CACHE_TYPE_INST));	\
-+	NEW_AUX_ENT(AT_L1D_CACHESIZE,				\
-+		get_cache_size(1, CACHE_TYPE_DATA));		\
-+	NEW_AUX_ENT(AT_L1D_CACHEGEOMETRY,			\
-+		get_cache_geometry(1, CACHE_TYPE_DATA));	\
-+	NEW_AUX_ENT(AT_L2_CACHESIZE,				\
-+		get_cache_size(2, CACHE_TYPE_UNIFIED));		\
-+	NEW_AUX_ENT(AT_L2_CACHEGEOMETRY,			\
-+		get_cache_geometry(2, CACHE_TYPE_UNIFIED));	\
- } while (0)
- #define ARCH_HAS_SETUP_ADDITIONAL_PAGES
- struct linux_binprm;
-diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
-index 22e0ae888406..32c73ba1d531 100644
---- a/arch/riscv/include/uapi/asm/auxvec.h
-+++ b/arch/riscv/include/uapi/asm/auxvec.h
-@@ -10,7 +10,28 @@
- /* vDSO location */
- #define AT_SYSINFO_EHDR 33
- 
-+/*
-+ * The set of entries below represent more extensive information
-+ * about the caches, in the form of two entry per cache type,
-+ * one entry containing the cache size in bytes, and the other
-+ * containing the cache line size in bytes in the bottom 16 bits
-+ * and the cache associativity in the next 16 bits.
-+ *
-+ * The associativity is such that if N is the 16-bit value, the
-+ * cache is N way set associative. A value if 0xffff means fully
-+ * associative, a value of 1 means directly mapped.
-+ *
-+ * For all these fields, a value of 0 means that the information
-+ * is not known.
-+ */
-+#define AT_L1I_CACHESIZE	40
-+#define AT_L1I_CACHEGEOMETRY	41
-+#define AT_L1D_CACHESIZE	42
-+#define AT_L1D_CACHEGEOMETRY	43
-+#define AT_L2_CACHESIZE		44
-+#define AT_L2_CACHEGEOMETRY	45
-+
- /* entries in ARCH_DLINFO */
--#define AT_VECTOR_SIZE_ARCH	1
-+#define AT_VECTOR_SIZE_ARCH	7
- 
- #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
-diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-index 8b85abfbd77a..ee6ec91260b3 100644
---- a/arch/riscv/kernel/cacheinfo.c
-+++ b/arch/riscv/kernel/cacheinfo.c
-@@ -3,7 +3,6 @@
-  * Copyright (C) 2017 SiFive
-  */
- 
--#include <linux/cacheinfo.h>
- #include <linux/cpu.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-@@ -25,6 +24,37 @@ cache_get_priv_group(struct cacheinfo *this_leaf)
- 	return NULL;
- }
- 
-+static struct cacheinfo *get_cacheinfo(u32 level, enum cache_type type)
-+{
-+	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(smp_processor_id());
-+	struct cacheinfo *this_leaf;
-+	int index;
-+
-+	for (index = 0; index < this_cpu_ci->num_leaves; index++) {
-+		this_leaf = this_cpu_ci->info_list + index;
-+		if (this_leaf->level == level && this_leaf->type == type)
-+			return this_leaf;
-+	}
-+
-+	return NULL;
-+}
-+
-+uintptr_t get_cache_size(u32 level, enum cache_type type)
-+{
-+	struct cacheinfo *this_leaf = get_cacheinfo(level, type);
-+
-+	return this_leaf ? this_leaf->size : 0;
-+}
-+
-+uintptr_t get_cache_geometry(u32 level, enum cache_type type)
-+{
-+	struct cacheinfo *this_leaf = get_cacheinfo(level, type);
-+	uintptr_t ret = (this_leaf->ways_of_associativity << 16 |
-+			 this_leaf->coherency_line_size);
-+
-+	return this_leaf ? ret : 0;
-+}
-+
- static void ci_leaf_init(struct cacheinfo *this_leaf, enum cache_type type,
- 			 unsigned int level, unsigned int size,
- 			 unsigned int sets, unsigned int line_size)
--- 
-2.28.0
-
+> Doing these conversions becomes a little less mechanical if assignment
+> needs to be split from declaration, but hey, we've got a 100 character
+> line "limit" now, so maybe it'll be less needed. :)
+>
+> --
+> Kees Cook
