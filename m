@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAC2255237
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0136255234
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgH1BMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 21:12:06 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9885 "EHLO
+        id S1728273AbgH1BMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 21:12:01 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9882 "EHLO
         hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728223AbgH1BL7 (ORCPT
+        with ESMTP id S1726147AbgH1BL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Aug 2020 21:11:59 -0400
 Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4859640001>; Thu, 27 Aug 2020 18:09:56 -0700
+        id <B5f4859640000>; Thu, 27 Aug 2020 18:09:56 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate102.nvidia.com (PGP Universal service);
   Thu, 27 Aug 2020 18:11:58 -0700
 X-PGP-Universal: processed;
         by hqpgpgate102.nvidia.com on Thu, 27 Aug 2020 18:11:58 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 28 Aug
- 2020 01:11:55 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 28 Aug 2020 01:11:55 +0000
+ 2020 01:11:57 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 28 Aug 2020 01:11:57 +0000
 Received: from jckuo-lt.nvidia.com (Not Verified[10.19.101.4]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f4859d80000>; Thu, 27 Aug 2020 18:11:54 -0700
+        id <B5f4859db0000>; Thu, 27 Aug 2020 18:11:56 -0700
 From:   JC Kuo <jckuo@nvidia.com>
 To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
         <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>
 CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH 01/12] clk: tegra: Add PLLE HW power sequencer control
-Date:   Fri, 28 Aug 2020 09:10:45 +0800
-Message-ID: <20200828011056.1067559-2-jckuo@nvidia.com>
+Subject: [PATCH 02/12] clk: tegra: don't enable PLLE HW sequencer at init
+Date:   Fri, 28 Aug 2020 09:10:46 +0800
+Message-ID: <20200828011056.1067559-3-jckuo@nvidia.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200828011056.1067559-1-jckuo@nvidia.com>
 References: <20200828011056.1067559-1-jckuo@nvidia.com>
@@ -44,135 +44,55 @@ X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598576996; bh=z9aKw1vyHrzjJiun8JEcoFXSJ50fQe9EfkdaKJIYd9U=;
+        t=1598576996; bh=H0R9Siiu+twi27jJX/Jx8a1i8OSPS6fZLapkwSfwBYg=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          In-Reply-To:References:MIME-Version:X-NVConfidentiality:
          Content-Transfer-Encoding:Content-Type;
-        b=aSHLmvQRMK82RBen91xzSUpEy7rFZA38MPvC1aZnKNq9iXJQUtMjnRM42l5NpGIC4
-         QOx5d6guECBSf8yB8eApZnQotsjFgI6Frk/zjNV2Sh14G67N0Wfy5w9nDR9PylcIvn
-         8lusAPNOlP7P+lgmZaKMmMRiYuAAwjWh2AcplXDbkjy8buUzOS95JVJRhiWztXsNJG
-         hl2j2EOvpnZpcljZlehejJpMKci4heNnQhpEwGxZwTVP1xnXskZgTQ6fSOPWBBYAwz
-         DQOVHfDECKMQZwjs9mgJBC8aDaOOS6kSguEbW+/N7/I5uBcjHcpTt0R99+KVB5C+/Z
-         sYSHYPQ6poyhQ==
+        b=gir4tIU4i7QiR/gjr2bUR54nyhEjRZnO1uhL3csVFY0pYSrFU9zXnOfDc3Be+5is4
+         ubWBUOcJYU35hdkwADyug2Zw+it6sOKdyf8s/hjaipG122vyq2rx09qkYe9/9f2/ib
+         2v2NHpLdIlCszVSXx+c4YgK9p0DRAdgD6Pb0ORfL47AKKh4x4w6pvrO7fbPXu6dOkx
+         b3OWu+0JULuIgBAIUTAbLjyCRlJFO6spDH9hIzVw3BPo/IvXcq07vehsvCkolCiDju
+         7cBLhNY3KpIgooQWJ8LsFOWFSpykALQUynPUCo4KDCyAPWWSsx28HRV5F+r1I5mIKA
+         5XnKsTbu5eljA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PLLE has a hardware power sequencer logic which is a state machine
-that can power on/off PLLE without any software intervention. The
-sequencer has two inputs, one from XUSB UPHY PLL and the other from
-SATA UPHY PLL. PLLE provides reference clock to XUSB and SATA UPHY
-PLLs. When both of the downstream PLLs are powered-off, PLLE hardware
-power sequencer will automatically power off PLLE for power saving.
-
-XUSB and SATA UPHY PLLs also have their own hardware power sequencer
-logic. XUSB UPHY PLL is shared between XUSB SuperSpeed ports and PCIE
-controllers. The XUSB UPHY PLL hardware power sequencer has inputs
-from XUSB and PCIE. When all of the XUSB SuperSpeed ports and PCIE
-controllers are in low power state, XUSB UPHY PLL hardware power
-sequencer automatically power off PLL and flags idle to PLLE hardware
-power sequencer. Similar applies to SATA UPHY PLL.
-
-PLLE hardware power sequencer has to be enabled after both downstream
-sequencers are enabled.
-
-This commit adds two helper functions:
-1. tegra210_plle_hw_sequence_start() for XUSB PADCTL driver to enable
-   PLLE hardware sequencer at proper time.
-
-2. tegra210_plle_hw_sequence_is_enabled() for XUSB PADCTL driver to
-   check whether PLLE hardware sequencer has been enabled or not.
+PLLE hardware power sequencer references PEX/SATA UPHY PLL hardware
+power sequencers' output to enable/disable PLLE. PLLE hardware power
+sequencer has to be enabled only after PEX/SATA UPHY PLL's sequencers
+are enabled.
 
 Signed-off-by: JC Kuo <jckuo@nvidia.com>
 ---
- drivers/clk/tegra/clk-tegra210.c | 51 ++++++++++++++++++++++++++++++++
- include/linux/clk/tegra.h        |  2 ++
- 2 files changed, 53 insertions(+)
+ drivers/clk/tegra/clk-pll.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/drivers/clk/tegra/clk-tegra210.c b/drivers/clk/tegra/clk-tegra=
-210.c
-index 68cbb98af567..255de6c23c67 100644
---- a/drivers/clk/tegra/clk-tegra210.c
-+++ b/drivers/clk/tegra/clk-tegra210.c
-@@ -403,6 +403,14 @@ static unsigned long tegra210_input_freq[] =3D {
- #define PLLRE_BASE_DEFAULT_MASK		0x1c000000
- #define PLLRE_MISC0_WRITE_MASK		0x67ffffff
+diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
+index c5cc0a2dac6f..0193cebe8c5a 100644
+--- a/drivers/clk/tegra/clk-pll.c
++++ b/drivers/clk/tegra/clk-pll.c
+@@ -2515,18 +2515,6 @@ static int clk_plle_tegra210_enable(struct clk_hw *h=
+w)
+ 	pll_writel(val, PLLE_SS_CTRL, pll);
+ 	udelay(1);
 =20
-+/* PLLE */
-+#define PLLE_MISC_IDDQ_SW_CTRL		(1 << 14)
-+#define PLLE_AUX_USE_LOCKDET		(1 << 3)
-+#define PLLE_AUX_SS_SEQ_INCLUDE		(1 << 31)
-+#define PLLE_AUX_ENABLE_SWCTL		(1 << 4)
-+#define PLLE_AUX_SS_SWCTL		(1 << 6)
-+#define PLLE_AUX_SEQ_ENABLE		(1 << 24)
-+
- /* PLLX */
- #define PLLX_USE_DYN_RAMP		1
- #define PLLX_BASE_LOCK			(1 << 27)
-@@ -489,6 +497,49 @@ static unsigned long tegra210_input_freq[] =3D {
- #define PLLU_MISC0_WRITE_MASK		0xbfffffff
- #define PLLU_MISC1_WRITE_MASK		0x00000007
-=20
-+bool tegra210_plle_hw_sequence_is_enabled(void)
-+{
-+	u32 val;
-+
-+	val =3D readl_relaxed(clk_base + PLLE_AUX);
-+	if (val & PLLE_AUX_SEQ_ENABLE)
-+		return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(tegra210_plle_hw_sequence_is_enabled);
-+
-+int tegra210_plle_hw_sequence_start(void)
-+{
-+	u32 val;
-+
-+	if (tegra210_plle_hw_sequence_is_enabled())
-+		return 0;
-+
-+	/* skip if PLLE is not enabled yet */
-+	val =3D readl_relaxed(clk_base + PLLE_MISC0);
-+	if (!(val & PLLE_MISC_LOCK))
-+		return -EIO;
-+
-+	val &=3D ~PLLE_MISC_IDDQ_SW_CTRL;
-+	writel_relaxed(val, clk_base + PLLE_MISC0);
-+
-+	val =3D readl_relaxed(clk_base + PLLE_AUX);
-+	val |=3D (PLLE_AUX_USE_LOCKDET | PLLE_AUX_SS_SEQ_INCLUDE);
-+	val &=3D ~(PLLE_AUX_ENABLE_SWCTL | PLLE_AUX_SS_SWCTL);
-+	writel_relaxed(val, clk_base + PLLE_AUX);
-+
-+	fence_udelay(1, clk_base);
-+
-+	val |=3D PLLE_AUX_SEQ_ENABLE;
-+	writel_relaxed(val, clk_base + PLLE_AUX);
-+
-+	fence_udelay(1, clk_base);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(tegra210_plle_hw_sequence_start);
-+
- void tegra210_xusb_pll_hw_control_enable(void)
- {
- 	u32 val;
-diff --git a/include/linux/clk/tegra.h b/include/linux/clk/tegra.h
-index 3f01d43f0598..7a6b29ca3040 100644
---- a/include/linux/clk/tegra.h
-+++ b/include/linux/clk/tegra.h
-@@ -123,6 +123,8 @@ static inline void tegra_cpu_clock_resume(void)
- }
- #endif
-=20
-+extern int tegra210_plle_hw_sequence_start(void);
-+extern bool tegra210_plle_hw_sequence_is_enabled(void);
- extern void tegra210_xusb_pll_hw_control_enable(void);
- extern void tegra210_xusb_pll_hw_sequence_start(void);
- extern void tegra210_sata_pll_hw_control_enable(void);
+-	val =3D pll_readl_misc(pll);
+-	val &=3D ~PLLE_MISC_IDDQ_SW_CTRL;
+-	pll_writel_misc(val, pll);
+-
+-	val =3D pll_readl(pll->params->aux_reg, pll);
+-	val |=3D (PLLE_AUX_USE_LOCKDET | PLLE_AUX_SS_SEQ_INCLUDE);
+-	val &=3D ~(PLLE_AUX_ENABLE_SWCTL | PLLE_AUX_SS_SWCTL);
+-	pll_writel(val, pll->params->aux_reg, pll);
+-	udelay(1);
+-	val |=3D PLLE_AUX_SEQ_ENABLE;
+-	pll_writel(val, pll->params->aux_reg, pll);
+-
+ out:
+ 	if (pll->lock)
+ 		spin_unlock_irqrestore(pll->lock, flags);
 --=20
 2.25.1
 
