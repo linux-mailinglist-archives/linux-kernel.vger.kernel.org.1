@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2A22551ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 02:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9822551F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 02:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgH1AZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 20:25:25 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55768 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgH1AZY (ORCPT
+        id S1728146AbgH1Afq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 20:35:46 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36716 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727008AbgH1Afq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 20:25:24 -0400
-Received: from [192.168.1.17] (50-47-107-221.evrt.wa.frontiernet.net [50.47.107.221])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D6B1E20B7178;
-        Thu, 27 Aug 2020 17:25:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D6B1E20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1598574324;
-        bh=ZuPP2sDGF4DA7iI6cuuRyzGh+0z8ccGr3KwC1RdsDF0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=a/Vp8fmtmRgXvQfOIFkxmif6CUiNyoI2EybhMM2JJ+SIzOfPKxL7F8yQzAapN7bLe
-         Jx1Z2EfOXctZUoVcGEsh3C5vGxJebIOZ6oeWDqxSC1xRGTQG0Ks/vk1MG7V+POxHkN
-         3ngUR8au2AkcutNEnbgQr10kpYT+Wngic5uzSyE8=
-Subject: Re: [PATCH 1/4] drivers: hv: dxgkrnl: core code
-To:     Pavel Machek <pavel@denx.de>, Sasha Levin <sashal@kernel.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, gregkh@linuxfoundation.org,
-        iourit@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-References: <20200814123856.3880009-1-sashal@kernel.org>
- <20200814123856.3880009-2-sashal@kernel.org> <20200821135340.GA4067@bug>
-From:   Iouri Tarassov <iourit@linux.microsoft.com>
-Message-ID: <054abab3-748e-c56b-526a-1b1734a9eaf7@linux.microsoft.com>
-Date:   Thu, 27 Aug 2020 17:25:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 27 Aug 2020 20:35:46 -0400
+Received: from dread.disaster.area (pa49-181-146-199.pa.nsw.optusnet.com.au [49.181.146.199])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id C82003A7122;
+        Fri, 28 Aug 2020 10:35:42 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kBSMn-0007ec-DX; Fri, 28 Aug 2020 10:35:41 +1000
+Date:   Fri, 28 Aug 2020 10:35:41 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, y-goto@fujitsu.com
+Subject: Re: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if
+ DCACHE_REFERENCED is set
+Message-ID: <20200828003541.GD12096@dread.disaster.area>
+References: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
+ <20200827063748.GA12096@dread.disaster.area>
+ <6b3b3439-2199-8f00-ceca-d65769e94fe0@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20200821135340.GA4067@bug>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b3b3439-2199-8f00-ceca-d65769e94fe0@cn.fujitsu.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=IuRgj43g c=1 sm=1 tr=0 cx=a_idp_d
+        a=GorAHYkI+xOargNMzM6qxQ==:117 a=GorAHYkI+xOargNMzM6qxQ==:17
+        a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=omOdbC7AAAAA:8 a=7-415B0cAAAA:8
+        a=4EakmT0XTRVUVr4ZEt4A:9 a=CjuIK1q_8ugA:10 a=baC4JDFNLZpnPwus_NF9:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Thu, Aug 27, 2020 at 05:58:07PM +0800, Li, Hao wrote:
+> On 2020/8/27 14:37, Dave Chinner wrote:
+> > On Fri, Aug 21, 2020 at 09:59:53AM +0800, Hao Li wrote:
+> >> Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
+> >> set from being killed, so the corresponding inode can't be evicted. If
+> >> the DAX policy of an inode is changed, we can't make policy changing
+> >> take effects unless dropping caches manually.
+> >>
+> >> This patch fixes this problem and flushes the inode to disk to prepare
+> >> for evicting it.
+> >>
+> >> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+> >> ---
+> >>  fs/dcache.c | 3 ++-
+> >>  fs/inode.c  | 2 +-
+> >>  2 files changed, 3 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/fs/dcache.c b/fs/dcache.c
+> >> index ea0485861d93..486c7409dc82 100644
+> >> --- a/fs/dcache.c
+> >> +++ b/fs/dcache.c
+> >> @@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
+> >>  	 */
+> >>  	smp_rmb();
+> >>  	d_flags = READ_ONCE(dentry->d_flags);
+> >> -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
+> >> +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
+> >> +			| DCACHE_DONTCACHE;
+> > Seems reasonable, but you need to update the comment above as to
+> > how this flag fits into this code....
+> 
+> Yes. I will change it. Thanks.
+> 
+> >
+> >>  	/* Nothing to do? Dropping the reference was all we needed? */
+> >>  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
+> >> diff --git a/fs/inode.c b/fs/inode.c
+> >> index 72c4c347afb7..5218a8aebd7f 100644
+> >> --- a/fs/inode.c
+> >> +++ b/fs/inode.c
+> >> @@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
+> >>  	}
+> >>  
+> >>  	state = inode->i_state;
+> >> -	if (!drop) {
+> >> +	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
+> >>  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
+> >>  		spin_unlock(&inode->i_lock);
+> > What's this supposed to do? We'll only get here with drop set if the
+> > filesystem is mounting or unmounting.
+> 
+> The variable drop will also be set to True if I_DONTCACHE is set on
+> inode->i_state.
+> Although mounting/unmounting will set the drop variable, it won't set
+> I_DONTCACHE if I understand correctly. As a result,
+> drop && (inode->i_state & I_DONTCACHE) will filter out mounting/unmounting.
 
-Thanks for your time reviewing the driver.
+So what does this have to do with changing the way the dcache
+treats DCACHE_DONTCACHE?
 
-On 8/21/2020 6:53 AM, Pavel Machek wrote:
-> On Fri 2020-08-14 08:38:53, Sasha Levin wrote:
-> > Add support for a Hyper-V based vGPU implementation that exposes the
-> > DirectX API to Linux userspace.
->
-> NAK.
->
-> Kernel APIs should be documented. ... in tree and with suitable license.
-We are considering to add required documentation. The design is that the 
-driver IOCTLs will not be called directly by user mode drivers or 
-applications. They will instead link with libdxcore.so and use the 
-D3DKMT* interface to send requests to the driver.  libdxcore will 
-translate the request to driver IOCTLs and do some additional work. For 
-example, it will translate the path of the user mode driver name to the 
-Linux namespace. The D3DKMTinterface is documented on MSDN. Do you 
-suggest that the IOCTL interface needs to be documented or the D3DKMT 
-interface?
-> 	
-> > +int dxgadapter_init(struct dxgadapter *adapter, struct hv_device *hdev)
-> > +{
-> > +	int ret = 0;
-> > +	char s[80];
-> > +
-> > +	UNUSED(s);
->
-> What is going on here?
-This is a mistake, which will be fixed.
->
-> > +{
-> > +	struct dxgprocess_adapter *adapter_info = dxgmem_alloc(process,
-> > +							       DXGMEM_PROCESS_ADAPTER,
-> > +							       sizeof
-> > +							       (*adapter_info));
->
-> We normally use kernel functions in kernel code.
-Using a custom memory allocation function allows us to track memory 
-allocations per DXGPROCESS and catch memory leaks when a DXGPROCESS is 
-destroyed or when the driver is unloaded. It also allows to easily 
-change the memory allocation implementation if needed.
->
-> > +	dxgmutex_unlock(&device->adapter_info->device_list_mutex);
->
-> And you should not have private locking primitives, either.
-This is done to allow the implementation of custom lock order 
-verification. We learnt recently about lock dependency checking in 
-kernel and will evaluate if it can replace the custom lock order 
-verification.
->
-> > +bool dxghwqueue_acquire_reference(struct dxghwqueue *hwqueue)
-> > +{
-> > +	return refcount_inc_not_zero(&hwqueue->refcount);
-> > +}
->
-> Midlayers are evil.
-I strongly agree in general, but think that in our case the layers are 
-very small. It allows to quickly find all places where a 
-reference/dereference on an object is done and addition of debug tracing 
-to catch errors.
->
-> Best regards,
-> 									Pavel
+Also, if I_DONTCACHE is set, but the inode has also been unlinked or
+is unhashed, should we be writing it back? i.e. it might have been
+dropped for a different reason to I_DONTCACHE....
 
-Thank you
-Iouri
+IOWs, if there is a problem with how I_DONTCACHE is being handled,
+then the problem must already exists regardless of the
+DCACHE_DONTCACHE behaviour, right? So shouldn't this be a separate
+bug fix with it's own explanation of the problem and the fix?
 
+Cheers,
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
