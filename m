@@ -2,86 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5926B255E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB8F255E6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgH1QAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:00:49 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44760 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgH1QAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:00:34 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2023D20B36E7;
-        Fri, 28 Aug 2020 09:00:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2023D20B36E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1598630433;
-        bh=rFS7E9EDFK2NArtUO3BlDUuIRiMcxaSWtbaQ0LSrhHI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KzpF/wd+aA6rwHO+q6X+ytLf4Zit/tOWra0KBylE8WuFSrDJsCGifaBLh+1RUbbTl
-         FBPLmMJ/ckkMURFTfM3isJnTZi4vEDBjKHrjqiNxN13CtDifFool7ToFXkHLE1kKlS
-         c46W67h1IpWckpArWJXeeeHxMcFXc7L8tLQCqu1U=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com
-Cc:     tyhicks@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] IMA: Support early boot measurement of critical data
-Date:   Fri, 28 Aug 2020 09:00:21 -0700
-Message-Id: <20200828160021.11537-4-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200828160021.11537-1-nramas@linux.microsoft.com>
-References: <20200828160021.11537-1-nramas@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728446AbgH1QBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728417AbgH1QBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:01:03 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E0502098B;
+        Fri, 28 Aug 2020 16:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598630461;
+        bh=cUKLGExJz2RcE5gBspH6LUaYtyfTA5PI8XGobETwgvk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iadQq1waQgmncxeH8RRxiOYnfm+e/sGq2kqlVH9J9fzrDBcXq/JUPdGwoA0feft+S
+         7KCxUljPKGqybMJqFIJSLFigEAVc+W3h9yvsbb9Gdm9fZhBnvlrHjMfPEcQtTChAEE
+         zVZMvVucXEgouDEUPjYGEQdcya/cO5e3AUqdthnQ=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/3] dt-bindings: media: imx258: Add bindings for IMX258 sensor
+Date:   Fri, 28 Aug 2020 18:00:51 +0200
+Message-Id: <20200828160053.6064-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IMA hook, namely ima_measure_critical_data(), to measure kernel
-critical data requires a custom IMA policy to be loaded.
+Add bindings for the IMX258 camera sensor.  The bindings, just like the
+driver, are quite limited, e.g. do not support regulator supplies.
 
-Update ima_measure_critical_data() to utilize early boot measurement
-support to defer processing data if a custom IMA policy is not yet
-loaded.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- security/integrity/ima/ima_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../devicetree/bindings/media/i2c/imx258.yaml | 92 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 93 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 41be4d1d839e..ce0ef310c575 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -885,12 +885,22 @@ int ima_measure_critical_data(const char *event_name,
- 			      const void *buf, int buf_len,
- 			      bool measure_buf_hash)
- {
-+	bool queued = false;
+diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+new file mode 100644
+index 000000000000..ef789ad31143
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	if (!event_name || !event_data_source || !buf || !buf_len)
- 		return -EINVAL;
++title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++
++description: |-
++  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
++  type stacked image sensor with a square pixel array of size 4208 x 3120. It
++  is programmable through I2C interface.  Image data is sent through MIPI
++  CSI-2.
++
++properties:
++  compatible:
++    const: sony,imx258
++
++  clocks:
++    maxItems: 1
++
++  clock-frequency:
++    description: Frequency of input clock if clock is not provided
++    deprecated: true
++    const: 19200000
++
++  reg:
++    maxItems: 1
++
++  # See ../video-interfaces.txt for more details
++  port:
++    type: object
++    properties:
++      endpoint:
++        type: object
++        properties:
++          data-lanes:
++            items:
++              - const: 1
++              - const: 2
++              - const: 3
++              - const: 4
++
++          link-frequencies:
++            allOf:
++              - $ref: /schemas/types.yaml#/definitions/uint64-array
++            description:
++              Allowed data bus frequencies.
++
++        required:
++          - data-lanes
++          - link-frequencies
++
++required:
++  - compatible
++  - reg
++  - port
++
++
++if:
++  not:
++    required:
++      - clocks
++then:
++  required:
++    - clock-frequency
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sensor@6c {
++            compatible = "sony,imx258";
++            reg = <0x6c>;
++            clocks = <&imx258_clk>;
++
++            port {
++                imx258_ep: endpoint {
++                    remote-endpoint = <&csi1_ep>;
++                    data-lanes = <1 2 3 4>;
++                    link-frequencies = /bits/ 64 <320000000>;
++                };
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dc2aa691b75a..cca13d483d22 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16130,6 +16130,7 @@ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ T:	git git://linuxtv.org/media_tree.git
++F:	Documentation/devicetree/bindings/media/i2c/imx258.yaml
+ F:	drivers/media/i2c/imx258.c
  
- 	if (!ima_kernel_data_source_is_supported(event_data_source))
- 		return -EPERM;
- 
-+	if (ima_should_queue_data())
-+		queued = ima_queue_data(event_name, buf, buf_len,
-+					event_data_source, CRITICAL_DATA,
-+					measure_buf_hash);
-+
-+	if (queued)
-+		return 0;
-+
- 	return process_buffer_measurement(NULL, buf, buf_len, event_name,
- 					  CRITICAL_DATA, 0, event_data_source,
- 					  measure_buf_hash);
+ SONY IMX274 SENSOR DRIVER
 -- 
-2.28.0
+2.17.1
 
