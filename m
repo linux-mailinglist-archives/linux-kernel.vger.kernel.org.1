@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB819255425
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 07:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DA725542E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgH1F6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 01:58:54 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:38888 "EHLO pegase1.c-s.fr"
+        id S1726954AbgH1GBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 02:01:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbgH1F6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 01:58:52 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bd86f0bqHz9v46X;
-        Fri, 28 Aug 2020 07:58:50 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id BtiWnx0qMdGG; Fri, 28 Aug 2020 07:58:50 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bd86d6nStz9v46V;
-        Fri, 28 Aug 2020 07:58:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D1A908B783;
-        Fri, 28 Aug 2020 07:58:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id EODWWxGjNj7H; Fri, 28 Aug 2020 07:58:50 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B35668B769;
-        Fri, 28 Aug 2020 07:58:50 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id AD45265D47; Fri, 28 Aug 2020 05:58:50 +0000 (UTC)
-Message-Id: <b91f507cfc591929ac0c34a85eec7061bc1b1203.1598594308.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0f65bb24a2519e5e6c33089016cb249a7c1b1e35.1598594308.git.christophe.leroy@csgroup.eu>
-References: <0f65bb24a2519e5e6c33089016cb249a7c1b1e35.1598594308.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 5/5] powerpc/vdso: Declare vdso_patches[] as __initdata
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 28 Aug 2020 05:58:50 +0000 (UTC)
+        id S1725849AbgH1GBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 02:01:31 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C44220791;
+        Fri, 28 Aug 2020 06:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598594491;
+        bh=BUfH8WfAunZhF8fDtPUaM+v2rLlSiXdp/dFdKzj/AuE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lzwddw+QutyLPhpntRMPv0eTIEG3GvvQomBWL+4KVVVkJatqq3srm5gw3MpqJMDWt
+         AZ9AssC4WQqVePCrOZ//hxANF6oGy0bAYqZubQyUMvSOMcA0XKuFsLm+VJbmb3Af4w
+         HNiN6edWKP91sRb1YaAJIn5y8UoylQQFJrXLC21E=
+Date:   Fri, 28 Aug 2020 08:01:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Iouri Tarassov <iourit@linux.microsoft.com>
+Cc:     Sasha Levin <sashal@kernel.org>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        iourit@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/4] drivers: hv: dxgkrnl: core code
+Message-ID: <20200828060127.GA56396@kroah.com>
+References: <20200814123856.3880009-1-sashal@kernel.org>
+ <20200814123856.3880009-2-sashal@kernel.org>
+ <20200814125528.GA56456@kroah.com>
+ <58011269-e910-b3e4-2a3c-552b08c90574@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58011269-e910-b3e4-2a3c-552b08c90574@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vdso_patches[] table is used only at init time.
+On Thu, Aug 27, 2020 at 04:29:59PM -0700, Iouri Tarassov wrote:
+> On 8/14/2020 5:55 AM, Greg KH wrote:
+> > On Fri, Aug 14, 2020 at 08:38:53AM -0400, Sasha Levin wrote:
+> > > Add support for a Hyper-V based vGPU implementation that exposes the
+> > > DirectX API to Linux userspace.
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > 
+> > Better, but what is this mess:
+> > 
+> > > +#define ISERROR(ret)					(ret < 0)
+> 
+> The VM bus messages return the NTSTATUS error code from the host. NTSTATUS
+> is integer and the positive values indicate success.
+> The success error code needs to be returned by IOCTLs to the DxCore
+> applications. The ISERROR() macro is used in places where the NTSTATUS
+> success code could be returned from a function. "if (ret)" cannot be used. I
+> will add a comment to the macro in the next patch.
 
-Mark it __initdata.
+No, please just "open code" this, there is no need for a macro that is
+actually more characters than the original test.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/vdso.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > +#define DXGKDEBUG 1
+> > > +/* #define USEPRINTK 1 */
+> > > +
+> > > +#ifndef DXGKDEBUG
+> > > +#define TRACE_DEBUG(...)
+> > > +#define TRACE_DEFINE(...)
+> > > +#define TRACE_FUNC_ENTER(...)
+> > > +#define TRACE_FUNC_EXIT(...)
+> > 
+> > No, please do not to custom "trace" printk messages, that is what ftrace
+> > is for, no individual driver should ever need to do that.
+> > 
+> > Just use the normal dev_*() calls for error messages and the like, do
+> > not try to come up with a custom tracing framework for one tiny
+> > individual driver.  If every driver in kernel did that, we would have a
+> > nightmare...
+> I understand the concern. This will be fixed later when we learn and pick
+> the final tracing technology for the driver.
 
-diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index 4ad042995ccc..dfa08a7b4e7c 100644
---- a/arch/powerpc/kernel/vdso.c
-+++ b/arch/powerpc/kernel/vdso.c
-@@ -76,7 +76,7 @@ struct vdso_patch_def
-  * Currently, we only change sync_dicache to do nothing on processors
-  * with a coherent icache
-  */
--static struct vdso_patch_def vdso_patches[] = {
-+static struct vdso_patch_def vdso_patches[] __initdata = {
- 	{
- 		CPU_FTR_COHERENT_ICACHE, CPU_FTR_COHERENT_ICACHE,
- 		"__kernel_sync_dicache", "__kernel_sync_dicache_p5"
--- 
-2.25.0
+When is "later"?  We don't want to review something that you do not
+think is ready to be merged, do it now so we don't trip over things that
+you know you want to fix up.
 
+> The current implementation
+> allows the hardware vendors to quickly identify issues without learning
+> about ftrace. They just need to enable the WSL debug console and mount
+> debugfs.
+
+Hardware vendors who know Linux already know about ftrace, don't make
+people have to read up and learn about custom ways to debug
+just-your-tiny-individual-driver.  Instead follow the customs and ways
+the _WHOLE_ kernel works, that is just polite, don't you think?
+
+thanks,
+
+greg k-h
