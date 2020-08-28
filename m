@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2FB255A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4AC255A5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgH1Mhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:37:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
+        id S1729394AbgH1MjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:39:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:26490 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729123AbgH1Mhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:37:34 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729388AbgH1MiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:38:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598618279; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=HcPm6uanbnSQDeODcZhSA9sG6LtPllH/vG6zVc29+Uc=; b=TzmnR0mTWmuigleTfJdpEEP4VonMn7tiHOAAHgA0v3j0xlDEBQ2inP+rVF6jlQoZzVBDkU7z
+ uSvi8s5ZAi2W2hwvG+H65Cf1IoLFzhxa64lcMxA6wmNC7JQ9AMjjtKHvA6PQQqwHgW14VAS8
+ NX55788M6zILMujOSXeT9ONekH8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f48faa563431d11444e8918 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 Aug 2020 12:37:57
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 33C4BC433A0; Fri, 28 Aug 2020 12:37:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05A5E2078A;
-        Fri, 28 Aug 2020 12:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598618254;
-        bh=An3L22TmRcfX000BNuwZ5uCqAfiTYo6+waUJ67sacTs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WPZnpNBiLi0wM5wZ7/sn+ySRZgD7aZu6kpCcqhwPq2n/Raj0eBVT4ZQ/YSzplSzez
-         SJxMfc8nsyRgb0POzv8BmML2V4UYi6eIMcEBQLtssWVYu6crF1kUUOwhcOWk2gHUnP
-         KVt0K2rwi/qwTiY4SfRKhnEViF2S9pv/meN3HJxI=
-Date:   Fri, 28 Aug 2020 21:37:29 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        linux-arch@vger.kernel.org, cameron@moodycamel.com,
-        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
-Subject: Re: [PATCH v4 00/23] kprobes: Unify kretprobe trampoline handlers
- and make kretprobe lockless
-Message-Id: <20200828213729.68bb199c02812e24c2ffe942@kernel.org>
-In-Reply-To: <159861759775.992023.12553306821235086809.stgit@devnote2>
-References: <159861759775.992023.12553306821235086809.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8131BC433CB;
+        Fri, 28 Aug 2020 12:37:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8131BC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Ondrej Zary <linux@zary.sk>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Reed <breed@users.sourceforge.net>,
+        Javier Achirica <achirica@users.sourceforge.net>,
+        Jean Tourrilhes <jt@hpl.hp.com>,
+        Fabrice Bellet <fabrice@bellet.info>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding style issues
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+        <202008172335.02988.linux@zary.sk> <87v9h4le9z.fsf@codeaurora.org>
+        <202008272223.57461.linux@zary.sk> <87lfhz9mdi.fsf@codeaurora.org>
+        <20200828100834.GG1826686@dell>
+Date:   Fri, 28 Aug 2020 15:37:50 +0300
+In-Reply-To: <20200828100834.GG1826686@dell> (Lee Jones's message of "Fri, 28
+        Aug 2020 11:08:34 +0100")
+Message-ID: <87lfhz7xpd.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 21:26:38 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Lee Jones <lee.jones@linaro.org> writes:
 
-> Hi,
-> 
-> Here is the 4th version of the series to unify the kretprobe trampoline handler
-> and make kretprobe lockless.
-> 
-> Previous version is here;
-> 
->  https://lkml.kernel.org/r/159854631442.736475.5062989489155389472.stgit@devnote2
-> 
-> In this version, I updated the generic trampoline handler a bit, merge 
-> the Peter's lockless patches(*), and add an RFC "remove task scan" patch
-> as [20/23].
-> 
-> (*) https://lkml.kernel.org/r/20200827161237.889877377@infradead.org
-> 
-> I ran some tests and ftracetest on x86-64. Mostly OK, but hit a BUG in the
-> trampoline handler once. I'm trying to reproduce it but not succeeded yet.
-> So this may need a careful review and tests.
+> On Fri, 28 Aug 2020, Kalle Valo wrote:
+>
+>> Ondrej Zary <linux@zary.sk> writes:
+>> 
+>> > On Thursday 27 August 2020 09:49:12 Kalle Valo wrote:
+>> >> Ondrej Zary <linux@zary.sk> writes:
+>> >> 
+>> >> > On Monday 17 August 2020 20:27:06 Jesse Brandeburg wrote:
+>> >> >> On Mon, 17 Aug 2020 16:27:01 +0300
+>> >> >> Kalle Valo <kvalo@codeaurora.org> wrote:
+>> >> >> 
+>> >> >> > I was surprised to see that someone was using this driver in 2015, so
+>> >> >> > I'm not sure anymore what to do. Of course we could still just remove
+>> >> >> > it and later revert if someone steps up and claims the driver is still
+>> >> >> > usable. Hmm. Does anyone any users of this driver?
+>> >> >> 
+>> >> >> What about moving the driver over into staging, which is generally the
+>> >> >> way I understood to move a driver slowly out of the kernel?
+>> >> >
+>> >> > Please don't remove random drivers.
+>> >> 
+>> >> We don't want to waste time on obsolete drivers and instead prefer to
+>> >> use our time on more productive tasks. For us wireless maintainers it's
+>> >> really hard to know if old drivers are still in use or if they are just
+>> >> broken.
+>> >> 
+>> >> > I still have the Aironet PCMCIA card and can test the driver.
+>> >> 
+>> >> Great. Do you know if the airo driver still works with recent kernels?
+>> >
+>> > Yes, it does.
+>> 
+>> Nice, I'm very surprised that so old and unmaintained driver still
+>> works. Thanks for testing.
+>
+> That's awesome.  Go Linux!
+>
+> So where does this leave us from a Maintainership perspective?  Are
+> you still treating the driver as obsolete?  After this revelation, I
+> suggest not.  So let's make it better. :)
 
-The series is also available on
-git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git lockless-kretprobe-v4
-
-Thank you,
-
+Yeah, I can take patches to airo now. I already applied this one.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
