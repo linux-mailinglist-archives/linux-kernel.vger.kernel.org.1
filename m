@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F692556BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484532556C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgH1IpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 04:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        id S1728801AbgH1IpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 04:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728722AbgH1Ion (ORCPT
+        with ESMTP id S1728731AbgH1Ior (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:44:43 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FE0C061234
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:43 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id s29so143805uae.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:42 -0700 (PDT)
+        Fri, 28 Aug 2020 04:44:47 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5667C061235
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:46 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id v138so190944vsv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7lAWD6TQfNDSdNYPEmyMSG7pnhu8lt92hgM43kOsomI=;
-        b=LOer1m9yauU/QuGkOJQ8YveIhHP+0Zrtgxnrx+OGFSqR7wMZr2JIbhDhlMQfHqDI0l
-         Eo+FJGve05tHGCcXv3i3xyHs136HtTJNGMOFNNVfRYD2EbpzpnlAtvyXSgvS+5zCRy+p
-         nb1NOOUz/XzZGSb7D/IiYRLFVgboA9bzMRIFjb+DHJDzICTJaCeXpEpLd1eh8S6V8sw6
-         et7sIu6Oy+dYbh/x4XIDULqag3DSvLszdnF5V61Vh0YtpDwkrAjUP6zLzjkrweYcaWEq
-         3xplg2ZFP2L6dgwvcE9DMivQslslJWrF9yrLk2iV1MT33mUe7aowd/Ceye3v681SZJEn
-         B9QQ==
+        bh=NSwGttpO58UNwtKWNF+HN930HSSYOnpc/+bKIQZS/m8=;
+        b=iMHU9AikMMYxn9wjsl5wJsIqBY9vBfVrFeLa6kGhKLJwY1KMy7nAhGcTPOfxcsnAQM
+         HOQLo8fuQIioyP4A/ZOKHzrbm/9Zc+NIXrrxNfF4my9wymu0SU/OdWqRChcsJYNQChBT
+         wi5V636btYgP1WD1SJ9+Rbi1UswjFK4NEiyz2heNMMOqece9ty2xGUlAP94uEEwapP9d
+         +ht/ZbC2N599ujNQ1IaY4zq7I9pwedKRVti/nT/qw2dB17psBky+3lhYpBwkFy2FQ88l
+         5bEqWtPgVw6g8gaWILC+NfdrpIP+56zBxXzzjZAqqapEkc1cClBgcX7KJCnm93qbjpeC
+         tWvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7lAWD6TQfNDSdNYPEmyMSG7pnhu8lt92hgM43kOsomI=;
-        b=nQ3nPBL3y7kjRp2cew1dZeMj4OfTnpMX+00Ixofp1RCgNQSU9+dizQfh4t/ogsdw5U
-         icnTinCqwAKk68bkWperBPHfrEG2sGjbwMXKL1dLvWi2KHvZwc5QTdSjcOMC1xat/h1y
-         xTW1G5abfvdsGWch5nPENLhaBPe9/sUclibcHd1Sxb3DR691x/C4INncjLzZ8TI+F/gL
-         aOnWtsXUhetEdFoxNXi+6LI25drefI1hPTLJEPIDhOVHtR97YuReDsErzu6FokN4MJ96
-         U4ndPWSW+6yWfjGqbPdqgAJj7bhSgFb8joF5ywT2YBgyc23WaulZ+6II0izAqXM53Kjx
-         gxjA==
-X-Gm-Message-State: AOAM530dioDCeF+JrH+Xwh52xSL5WoSVogtJLp998LILC6+aECZ+25AT
-        Tz2zBlCvf0oGgNkWdDA2nMxmIDj44la69uatN4y+ow==
-X-Google-Smtp-Source: ABdhPJyey/cFwzGHoCV6mglyXWxHNMbQDC+rWq9YJ6/iADYQnA4MvGX/TEiudf2Du0KrDfmjiOQkU0RdgfeRKCON3xc=
-X-Received: by 2002:a9f:2190:: with SMTP id 16mr284027uac.19.1598604282247;
- Fri, 28 Aug 2020 01:44:42 -0700 (PDT)
+        bh=NSwGttpO58UNwtKWNF+HN930HSSYOnpc/+bKIQZS/m8=;
+        b=paJ9xm00jMluNbvvD6MSx3TBBLJH33aMDi6cF7bZuhR8p94JkkMrr29oHCGcKDp6uc
+         uPHYGVQyqLidkWAfO2y6S/16k6ARIPatl3bnDBHaZBnKTMPFhZuidtdoXCMs370QfFuv
+         V50jPoWzLIF7CtwdH8bbeHLlsce98STJkruhSNEnyxayEloB4odWat4UHmKTzZCgLziH
+         jUwdPdGedhLzG+LUMnDDgsMOiJDxE4rQLeDHKf9qDfe8WWxd4JUoMMA/64rxlBmODMC6
+         Pe/3yqhIix2tgX+FrPXSuoDcNr4DCmo8g8BDxd7klmQyyTe5ExdvxW1O7iHGieQtdCZu
+         YaHg==
+X-Gm-Message-State: AOAM531nTsly/+p9NFQy4q4yjcH3PYTMeXDkEDK92TpSrge/l/EkWDIf
+        INxStOv8yLZfKDgFPordvC5pmc/4eRdozF6Rs98tDt/hXZ45mQ==
+X-Google-Smtp-Source: ABdhPJyMTa+YCR54kZRT2NcbU5tNIxtghSNNIBzuFrngPMB9n10lMo1q3cbFPdXVIPo59zok8Er6V4HJCsgKwouWK0A=
+X-Received: by 2002:a05:6102:1043:: with SMTP id h3mr66844vsq.60.1598604285942;
+ Fri, 28 Aug 2020 01:44:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200824171854.406157-1-alex.dewar90@gmail.com>
-In-Reply-To: <20200824171854.406157-1-alex.dewar90@gmail.com>
+References: <20200825170015.32285-1-faiz_abbas@ti.com>
+In-Reply-To: <20200825170015.32285-1-faiz_abbas@ti.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 28 Aug 2020 10:44:05 +0200
-Message-ID: <CAPDyKFrTtDo1PfKhN2h_WjUmnsWPKQtD0_Gd34ysHtkd5UkVVQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] mmc: sdhci-msm: enable compile-testing on !ARM
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Takao Orito <orito.takao@socionext.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
+Date:   Fri, 28 Aug 2020 10:44:09 +0200
+Message-ID: <CAPDyKFrvO1fQP0cVkL+UMjxsg5n02Q-ynph9T3yXn4nqY3GG+g@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci_am654: Add workaround for card detect
+ debounce timer
+To:     Faiz Abbas <faiz_abbas@ti.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 at 19:20, Alex Dewar <alex.dewar90@gmail.com> wrote:
+On Tue, 25 Aug 2020 at 19:00, Faiz Abbas <faiz_abbas@ti.com> wrote:
 >
-> There seems to be no particular reason to only test for ARM, so allow
-> for build-testing on other platforms to increase coverage.
-
-Agree.
-
+> There is a one time delay because of a card detect debounce timer in the
+> controller IP. This timer runs as soon as power is applied to the module
+> regardless of whether a card is present or not and any writes to
+> SDHCI_POWER_ON will return 0 before it expires. This timeout has been
+> measured to be about 1 second in am654x and j721e.
 >
-> Build-tested on x86 with allyesconfig.
+> Write-and-read-back in a loop on SDHCI_POWER_ON for a maximum of
+> 1.5 seconds to make sure that the controller actually powers on.
 >
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 
-I have applied this for next, let's see what the build bots reports, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
-> Let me know if there is some extra dependency needed for COMPILE_TEST! I
-> don't want to break anything.
-> ---
->  drivers/mmc/host/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index f6c6eed5227a..7707f7385b5b 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -525,7 +525,7 @@ config MMC_ATMELMCI
+> v2: Use read_poll_timeout() standard macro
 >
->  config MMC_SDHCI_MSM
->         tristate "Qualcomm SDHCI Controller Support"
-> -       depends on ARCH_QCOM || (ARM && COMPILE_TEST)
-> +       depends on ARCH_QCOM || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         select MMC_CQHCI
+>  drivers/mmc/host/sdhci_am654.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+> index f9d24af12396..9a048c80dad4 100644
+> --- a/drivers/mmc/host/sdhci_am654.c
+> +++ b/drivers/mmc/host/sdhci_am654.c
+> @@ -6,6 +6,7 @@
+>   *
+>   */
+>  #include <linux/clk.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/of.h>
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+> @@ -272,9 +273,19 @@ static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
+>         sdhci_set_clock(host, clock);
+>  }
+>
+> +static u8 sdhci_am654_write_power_on(struct sdhci_host *host, u8 val, int reg)
+> +{
+> +       writeb(val, host->ioaddr + reg);
+> +       usleep_range(1000, 10000);
+> +       return readb(host->ioaddr + reg);
+> +}
+> +
+> +#define MAX_POWER_ON_TIMEOUT   1500000 /* us */
+>  static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
+>  {
+>         unsigned char timing = host->mmc->ios.timing;
+> +       u8 pwr;
+> +       int ret;
+>
+>         if (reg == SDHCI_HOST_CONTROL) {
+>                 switch (timing) {
+> @@ -291,6 +302,19 @@ static void sdhci_am654_write_b(struct sdhci_host *host, u8 val, int reg)
+>         }
+>
+>         writeb(val, host->ioaddr + reg);
+> +       if (reg == SDHCI_POWER_CONTROL && (val & SDHCI_POWER_ON)) {
+> +               /*
+> +                * Power on will not happen until the card detect debounce
+> +                * timer expires. Wait at least 1.5 seconds for the power on
+> +                * bit to be set
+> +                */
+> +               ret = read_poll_timeout(sdhci_am654_write_power_on, pwr,
+> +                                       pwr & SDHCI_POWER_ON, 0,
+> +                                       MAX_POWER_ON_TIMEOUT, false, host, val,
+> +                                       reg);
+> +               if (ret)
+> +                       dev_warn(mmc_dev(host->mmc), "Power on failed\n");
+> +       }
+>  }
+>
+>  static int sdhci_am654_execute_tuning(struct mmc_host *mmc, u32 opcode)
 > --
-> 2.28.0
+> 2.17.1
 >
