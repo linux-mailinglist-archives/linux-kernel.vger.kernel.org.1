@@ -2,104 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50388255449
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E30E255460
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbgH1GIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 02:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgH1GIl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 02:08:41 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3166CC061232
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 23:08:38 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y6so1425116plk.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 23:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ufKBHISWCWvOqS3pagmUuZtAX3KSE6Mpoh1OD1fJ0nE=;
-        b=y0gXzthAdWxwTpuW9Oxu/1ExcjTSHnwN3OeQ01rK2TQQSHvAVnRS2HCUZZ/sAuJXhI
-         kaXZ0UHK1ULuqWEACaMuE0zlCIEMN6RY3c1VjXWLNomn2lFXNoVdw7NGiHvpR3GAd6wp
-         uXR63D+BuKNT6qDtbaD9I9wdebXGIjbYqPqoyYpXX1XDsnMvfag98hH429aGqlYT/nsU
-         7HNPurBFa/hE1eJNYduC9TXuquAgsXTI4tSIIKfkJ3Pz2043EModpk9VNJawn8/pC94x
-         d7EcnD7omCPhSw00DvrUuXGybqDgwsGYBPW0NGf8yrf8U9vdseI0gU7QDXFjnl2/5j5l
-         BzZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ufKBHISWCWvOqS3pagmUuZtAX3KSE6Mpoh1OD1fJ0nE=;
-        b=DGOIJ0yyEeF+zpfcjbcXMc58POfqjaHGnukAf6/MdQFgcWnGum8Pw3s6LtNkmMAqMs
-         q7D6UiAAgC9itNl8x3j1IosKJnqn8pF8B7bKJx8gK1r6QJkyFYf0gB3yMNqHQA9eL7RR
-         pPi2G3S/goBFKUJ1Xh+OMJRuEJVaFtB2ZJQMWAmO8JQE3VWnmBvcyruVLdfcZR5/ol51
-         PAKHg/mQgKAxkTtlSWXUJCCd3QuKu/B0S0LIVLjSg/6Mu/X/r2BStanxLfV1Sbr5LReq
-         GmcnnwY18UqqpoHWuYzL5L4Uo30zQbwzsMSTggPacE8BaL8hRK2H3vgOlQnC5eSxdwp3
-         gy2g==
-X-Gm-Message-State: AOAM531UJOsJ63bCLwO++t49cFGtalB01RZ6Eje4rQ0VAV2lhhwTFLVY
-        rcWNwlrzEhnhYA73KsmYxkbkuQ==
-X-Google-Smtp-Source: ABdhPJy+5cVwOjOgnDKJ3qyp2HX8wvR/pXAmhS6KoRfL1isEqkXJJ3c6TmzNNqgEnIdAsynxvzWcrw==
-X-Received: by 2002:a17:90a:8c8f:: with SMTP id b15mr306637pjo.84.1598594918497;
-        Thu, 27 Aug 2020 23:08:38 -0700 (PDT)
-Received: from localhost ([122.167.135.199])
-        by smtp.gmail.com with ESMTPSA id i14sm200061pfu.50.2020.08.27.23.08.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 23:08:38 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     rnayak@codeaurora.org
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 8/8] qcom-geni-se: remove has_opp_table
-Date:   Fri, 28 Aug 2020 11:37:53 +0530
-Message-Id: <7e28e6f93f463ffbe91b2a5c18b82e7123500f44.1598594714.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1598594714.git.viresh.kumar@linaro.org>
-References: <cover.1598594714.git.viresh.kumar@linaro.org>
+        id S1727922AbgH1GNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 02:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726733AbgH1GNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 02:13:00 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12A5620791;
+        Fri, 28 Aug 2020 06:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598595179;
+        bh=LBzk3oAAqHfohZe8S681TVYnX6X9sRlHhrjkcFYQ0DE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AInTcH93bPhdmVAkwLFdnaN2i6U1IofBalPyTYS+GVrVYHEuU0S2m5vUG3YJxHT4k
+         /Q3tXvqCkJl/q0VyxzVRE09XGkCtZb/YnT6p6Lut/vfmhTcMGMQCzdD5fHj8/AzNCz
+         zio1VJropXRY3WMmZXISTGpk1v9NZ5AuMIRAV/Tk=
+Date:   Fri, 28 Aug 2020 08:12:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Iouri Tarassov <iourit@linux.microsoft.com>
+Cc:     Sasha Levin <sashal@kernel.org>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        iourit@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/4] drivers: hv: dxgkrnl: core code
+Message-ID: <20200828061257.GB56396@kroah.com>
+References: <20200814123856.3880009-1-sashal@kernel.org>
+ <20200814123856.3880009-2-sashal@kernel.org>
+ <20200814130406.GC56456@kroah.com>
+ <cfb9eb69-24f9-2a0c-1f1b-9204c6666aa8@linux.microsoft.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cfb9eb69-24f9-2a0c-1f1b-9204c6666aa8@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-has_opp_table isn't used anymore, remove it.
+On Thu, Aug 27, 2020 at 05:05:44PM -0700, Iouri Tarassov wrote:
+> 
+> On 8/14/2020 6:04 AM, Greg KH wrote:
+> > On Fri, Aug 14, 2020 at 08:38:53AM -0400, Sasha Levin wrote:
+> > > Add support for a Hyper-V based vGPU implementation that exposes the
+> > > DirectX API to Linux userspace.
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  drivers/hv/dxgkrnl/Kconfig      |   10 +
+> > >  drivers/hv/dxgkrnl/Makefile     |   12 +
+> > >  drivers/hv/dxgkrnl/d3dkmthk.h   | 1636 ++++++++++
+> > >  drivers/hv/dxgkrnl/dxgadapter.c | 1406 ++++++++
+> > >  drivers/hv/dxgkrnl/dxgkrnl.h    |  927 ++++++
+> > >  drivers/hv/dxgkrnl/dxgmodule.c  |  656 ++++
+> > >  drivers/hv/dxgkrnl/dxgprocess.c |  357 ++
+> > >  drivers/hv/dxgkrnl/dxgvmbus.c   | 3084 ++++++++++++++++++
+> > >  drivers/hv/dxgkrnl/dxgvmbus.h   |  873 +++++
+> > >  drivers/hv/dxgkrnl/hmgr.c       |  604 ++++
+> > >  drivers/hv/dxgkrnl/hmgr.h       |  112 +
+> > >  drivers/hv/dxgkrnl/ioctl.c      | 5413 +++++++++++++++++++++++++++++++
+> > >  drivers/hv/dxgkrnl/misc.c       |  279 ++
+> > >  drivers/hv/dxgkrnl/misc.h       |  309 ++
+> > >  14 files changed, 15678 insertions(+)
+> > 
+> > It's almost impossible to review 15k lines at once, please break this up
+> > into reviewable chunks next time.
+> 
+> Sorry about this, but we had to replace a lot of typedefs, which are not
+> allowed by the coding style.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Ok, nice work, but that has nothing to do with how you submit a patch to
+us for review.
 
----
-V2: No changes.
----
- include/linux/qcom-geni-se.h | 2 --
- 1 file changed, 2 deletions(-)
+> We expect one more big patch, which cannot be split in my opinion.
 
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index 8f385fbe5a0e..02d1417c8ecf 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -48,7 +48,6 @@ struct geni_icc_path {
-  * @clk_perf_tbl:	Table of clock frequency input to serial engine clock
-  * @icc_paths:		Array of ICC paths for SE
-  * @opp_table:		Pointer to the OPP table
-- * @has_opp_table:	Specifies if the SE has an OPP table
-  */
- struct geni_se {
- 	void __iomem *base;
-@@ -59,7 +58,6 @@ struct geni_se {
- 	unsigned long *clk_perf_tbl;
- 	struct geni_icc_path icc_paths[3];
- 	struct opp_table *opp_table;
--	bool has_opp_table;
- };
- 
- /* Common SE registers */
--- 
-2.25.0.rc1.19.g042ed3e048af
+I disagree with that opinion, and so do thousands of other Linux kernel
+developers who have done this successfully in the past :)
 
+Remember, it is your job to make this as simple and as easy as possible
+for me to review your code, such that it is trivial for me to understand
+and accept it.  That takes more work on your side to do this, as we have
+thousands of developers, but very few reviewers.  We know we waste
+engineering time on this type of thing, but the end result makes for
+better reviews and consequentially, better reviews.
+
+So don't ignore this advice, remember, you are wanting me to do
+something for you, for free.  Make it easy for me to do so.
+
+> The VM
+> vbus message format was changed to include additional header. As the result,
+> every function in dxgvmbus.c needs to be changed to handle the new header. I
+> do not see how this can be split to multiple patches so each patch produces
+> a working driver.
+
+It doesn't have to "work" fully, see many many examples of how to do
+this every week submitted to us.  It's not an impossible task at all.
+
+> > > +++ b/drivers/hv/dxgkrnl/Kconfig
+> > > @@ -0,0 +1,10 @@
+> > > +#
+> > > +# dxgkrnl configuration
+> > > +#
+> > > +
+> > > +config DXGKRNL
+> > > +	tristate "Microsoft virtual GPU support"
+> > > +	depends on HYPERV
+> > > +	help
+> > > +	  This driver supports Microsoft virtual GPU.
+> > > +
+> > 
+> > You need more text here, this isn't a staging driver submission :)
+> Is the the proposed description good enough?
+
+What proposed description?
+
+> "This driver handles paravirtualized GPU devices exposed by Microsoft
+> Hyper-V when Linux is running inside of a virtual machine hosted
+> by Windows."
+
+That's better, but really, when a tiny serial port driver has more text
+than this huge thing, you might want to consider expanding on exactly
+what you want people to understand...
+
+> > > +struct d3dkmt_closeadapter {
+> > > +	struct d3dkmthandle		adapter_handle;
+> > > +};
+> > 
+> > A "handle"?  And that has to be one of the most difficult structure
+> > names ever :)
+> > 
+> > Why not just use the "handle" for the structure as obviously that's all
+> > that is needed here.
+> The structure definition matches the Windows D3DKMT interface. Some input
+> structures to the interface functions have only one member. But there is
+> possibility that new member could be added in the future. We prefer to have
+> matching names between Windows and Linux to avoid confusion.
+
+Don't write code because "it might change in the future".  Write code
+for what you have today.  If it does change in the future, wonderful, go
+and change the code.  You have the full ability to do so then, no need
+to hurt all of us today for that potential.
+
+As for "matching names", why does that matter?  Who sees both names at
+the same time?
+
+> > > +
+> > > +struct d3dkmt_openadapterfromluid {
+> > > +	struct winluid			adapter_luid;
+> > > +	struct d3dkmthandle		adapter_handle;
+> > > +};
+> > > +
+> > > +struct d3dddi_allocationlist {
+> > > +	struct d3dkmthandle		allocation;
+> > > +	union {
+> > > +		struct {
+> > > +			uint		write_operation		:1;
+> > > +			uint		do_not_retire_instance	:1;
+> > > +			uint		offer_priority		:3;
+> > > +			uint		reserved		:27;
+> > 
+> > endian issues?
+> > 
+> > If not, why are these bit fields?
+> This matches the definition on the Windows side. Windows only works on
+> little endian platforms.
+
+But Linux works on both, so you need to properly document/handle this somehow.
+
+> > 
+> > > +struct d3dkmt_destroydevice {
+> > > +	struct d3dkmthandle		device;
+> > > +};
+> > 
+> > Again, single entity structures?
+> > 
+> > Are you trying to pass around "handles" and cast them backwards?
+> > 
+> > If so, great, but then use the real kernel structures for that like
+> > 'struct device' if these are actually devices.
+> > 
+> Again. The structure matches the definition on the Windows side to avoid
+> confusion.
+
+Who is confused here?  We accept naming conventions that do not match
+the normal Linux style when they are referring to external sources of
+the data.  Examples of this are USB device field names, and other
+hardware specifications that are public.  You aren't sharing code with a
+Windows system, so please follow the Linux coding style rules, as you
+want Linux developers to be helping you maintain this code, not
+developers who have ever read code from other operating systems.
+
+So please follow the rule of, "unless these fields and structures are
+publically defined somewhere, use Linux naming rules", like all of the
+rest of us do.
+
+> > > +	ret = dxgglobal_getiospace(dxgglobal);
+> > > +	if (ret) {
+> > > +		pr_err("getiospace failed: %d\n", ret);
+> > > +		goto error;
+> > > +	}
+> > > +
+> > > +	ret = dxgvmb_send_set_iospace_region(dxgglobal->mmiospace_base,
+> > > +					     dxgglobal->mmiospace_size, 0);
+> > > +	if (ISERROR(ret)) {
+> > > +		pr_err("send_set_iospace_region failed");
+> > > +		goto error;
+> > 
+> > You forgot to unwind from the things you initialized above :(
+> The caller of dxgglobal_init_global_channel() checks the return value and
+> calls dxgglobal_destroy_global_channel() in case of an error, which does the
+> cleanup. If preferred the call to destroy the channel could be moved to the
+> end of this function.
+
+It is generally a good idea for a function to clean up after itself if
+things go wrong as it is almost impossible for a reader of the code, or
+automated tools, to determine that these resources are freed up by an
+external call later on in the code path.
+
+So yes, please fix this up.
+
+> > > +static void dxgglobal_destroy_global_channel(void)
+> > > +{
+> > > +	dxglockorder_acquire(DXGLOCK_GLOBAL_CHANNEL);
+> > > +	down_write(&dxgglobal->channel_lock);
+> > > +
+> > > +	TRACE_DEBUG(1, "%s", __func__);
+> > 
+> > ftrace is your friend :)
+> I mentioned in other mail that these macros will be removed when we pick to
+> final tracing technology for the driver.
+
+Please pick now, no need to wait :)
+
+thanks,
+
+greg k-h
