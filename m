@@ -2,52 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1867255339
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6C8255345
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgH1DOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 23:14:47 -0400
-Received: from ms.lwn.net ([45.79.88.28]:50744 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727926AbgH1DOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 23:14:47 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5082C60C;
-        Fri, 28 Aug 2020 03:14:47 +0000 (UTC)
-Date:   Thu, 27 Aug 2020 21:14:46 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     ksummit-discuss@lists.linuxfoundation.org
-Cc:     tech-board-discuss@lists.linuxfoundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        tab-elections@lists.linuxfoundation.org
-Subject: Results from the 2020 Linux Foundation Technical Advisory Board
- election
-Message-ID: <20200827211446.4a056099@lwn.net>
-Organization: LWN.net
+        id S1728134AbgH1DVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 23:21:49 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3144 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728015AbgH1DVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 23:21:46 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 229623A5125A796D7393;
+        Fri, 28 Aug 2020 11:16:22 +0800 (CST)
+Received: from [10.174.61.242] (10.174.61.242) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 28 Aug 2020 11:16:22 +0800
+Subject: Re: [PATCH net-next v1 3/3] hinic: add support to query function
+ table
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+References: <20200827111321.24272-1-luobin9@huawei.com>
+ <20200827111321.24272-4-luobin9@huawei.com>
+ <20200827124404.496ff40b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <ef510fbe-8b73-a50e-445f-2b3771072529@huawei.com>
+Date:   Fri, 28 Aug 2020 11:16:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200827124404.496ff40b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.61.242]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This year's election for the Linux Foundation Technical Advisory Board had
-955 authorized voters; 235 of them cast ballots.  The results were:
+On 2020/8/28 3:44, Jakub Kicinski wrote:
+> On Thu, 27 Aug 2020 19:13:21 +0800 Luo bin wrote:
+>> +	switch (idx) {
+>> +	case VALID:
+>> +		return funcfg_table_elem->dw0.bs.valid;
+>> +	case RX_MODE:
+>> +		return funcfg_table_elem->dw0.bs.nic_rx_mode;
+>> +	case MTU:
+>> +		return funcfg_table_elem->dw1.bs.mtu;
+>> +	case VLAN_MODE:
+>> +		return funcfg_table_elem->dw1.bs.vlan_mode;
+>> +	case VLAN_ID:
+>> +		return funcfg_table_elem->dw1.bs.vlan_id;
+>> +	case RQ_DEPTH:
+>> +		return funcfg_table_elem->dw13.bs.cfg_rq_depth;
+>> +	case QUEUE_NUM:
+>> +		return funcfg_table_elem->dw13.bs.cfg_q_num;
+> 
+> The first two patches look fairly unobjectionable to me, but here the
+> information does not seem that driver-specific. What's vlan_mode, and
+> vlan_id in the context of PF? Why expose mtu, is it different than
+> netdev mtu? What's valid? rq_depth?
+> .
+> 
+The vlan_mode and vlan_id in function table are provided for VF in QinQ scenario
+and they are useless for PF. Querying VF's function table is unsupported now, so
+there is no need to expose vlan_id and vlan mode and I'll remove them in my next
+patchset. The function table is saved in hw and we expose the mtu to ensure the
+mtu saved in hw is same with netdev mtu. The valid filed indicates whether this
+function is enabled or not and the hw can judge whether the RQ buffer in host is
+sufficient by comparing the values of rq depth, pi and ci.
 
-	1: Laura Abbott
-	2: Kees Cook
-	3: Dan Williams
-	4: Christian Brauner
-	5: Chris Mason
-	----
-	6: Olof Johansson
-	7: Frank Rowand
 
-The top five will serve two-year terms on the TAB.
-
-Many thanks to all who voted this year, and to all of the candidates.
-
-jon
