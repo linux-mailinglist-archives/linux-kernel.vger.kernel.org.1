@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A81255F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02B9255F15
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgH1QuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43714 "EHLO mail.kernel.org"
+        id S1728486AbgH1Qt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728454AbgH1Qto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:49:44 -0400
+        id S1728469AbgH1Qtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:49:49 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13DCE2098B;
-        Fri, 28 Aug 2020 16:49:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8443320B80;
+        Fri, 28 Aug 2020 16:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598633383;
-        bh=UtPYY+Ho4KT6wf42Y2B4Y9hguY5yOcNJn2uCRqnItIQ=;
+        s=default; t=1598633388;
+        bh=tMAMGxqIF7yzVEB7ojVRCLXtOkuEnHAvF6XNEXvOM7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JlPIv+FtQLeHm+YLGoNBp1zH84NQErmlAiQUmJ0x8lckhQT9uYnYekbar2EUCY5VY
-         h31Eyd8Z9Bv1JTGgGpXUrQt9ET+31rPGzDdxZcEnRy0YsJyOtsJnH7QMgmNAlbxesX
-         bRABegoiRqVnUQOj+XTpfoeq1dzQuE8n4S8LtkYI=
+        b=uZsn4rx/cQ04tzbfnAuHAAkpRFU8dfexY1NW0tyaF7Ll870+UHpuh/f9d3xP71xgf
+         cJ/dKXyq7CcSN9Z8DWeBUqfavbyXOEMVvWO55XMUXjeNsbS8+6x+BL0QrWscfV0ynn
+         9fXZxJYmBCR4e59710N90WQPWJLA9X1Ym2IuPdvs=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -39,9 +39,9 @@ To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 10/19] arm64: dts: imx8mm-ddr4-evk: Align pin configuration group names with schema
-Date:   Fri, 28 Aug 2020 18:47:41 +0200
-Message-Id: <20200828164750.10377-11-krzk@kernel.org>
+Subject: [PATCH v2 11/19] arm64: dts: imx8mn-ddr4-evk: Align regulator names with schema
+Date:   Fri, 28 Aug 2020 18:47:42 +0200
+Message-Id: <20200828164750.10377-12-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200828164750.10377-1-krzk@kernel.org>
 References: <20200828164750.10377-1-krzk@kernel.org>
@@ -50,29 +50,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device tree schema expects pin configuration groups to end with 'grp'
-suffix, otherwise dtbs_check complain with a warning like:
+Device tree schema expects regulator names to be lowercase.  Changing to
+lowercase has multiple effects:
+1. LDO6 supply is now properly configured, because regulator driver
+   looks for supplies by lowercase name,
+2. User-visible names via sysfs or debugfs are now lowercase,
+2. dtbs_check warnings are fixed:
 
-    ... do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
+    pmic@4b: regulators:LDO1:regulator-name:0: 'LDO1' does not match '^ldo[1-6]$'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../boot/dts/freescale/imx8mn-ddr4-evk.dts    | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-index a1e5483dbbbe..3ac8f9d3c372 100644
+index 3ac8f9d3c372..8f7155716c84 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-@@ -155,7 +155,7 @@
- };
+@@ -60,7 +60,7 @@
  
- &iomuxc {
--	pinctrl_pmic: pmicirq {
-+	pinctrl_pmic: pmicirqgrp {
- 		fsl,pins = <
- 			MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
- 		>;
+ 		regulators {
+ 			buck1_reg: BUCK1 {
+-				regulator-name = "BUCK1";
++				regulator-name = "buck1";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
+@@ -69,7 +69,7 @@
+ 			};
+ 
+ 			buck2_reg: BUCK2 {
+-				regulator-name = "BUCK2";
++				regulator-name = "buck2";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
+@@ -79,14 +79,14 @@
+ 
+ 			buck3_reg: BUCK3 {
+ 				// BUCK5 in datasheet
+-				regulator-name = "BUCK3";
++				regulator-name = "buck3";
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1350000>;
+ 			};
+ 
+ 			buck4_reg: BUCK4 {
+ 				// BUCK6 in datasheet
+-				regulator-name = "BUCK4";
++				regulator-name = "buck4";
+ 				regulator-min-microvolt = <3000000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -95,7 +95,7 @@
+ 
+ 			buck5_reg: BUCK5 {
+ 				// BUCK7 in datasheet
+-				regulator-name = "BUCK5";
++				regulator-name = "buck5";
+ 				regulator-min-microvolt = <1605000>;
+ 				regulator-max-microvolt = <1995000>;
+ 				regulator-boot-on;
+@@ -104,7 +104,7 @@
+ 
+ 			buck6_reg: BUCK6 {
+ 				// BUCK8 in datasheet
+-				regulator-name = "BUCK6";
++				regulator-name = "buck6";
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <1400000>;
+ 				regulator-boot-on;
+@@ -112,7 +112,7 @@
+ 			};
+ 
+ 			ldo1_reg: LDO1 {
+-				regulator-name = "LDO1";
++				regulator-name = "ldo1";
+ 				regulator-min-microvolt = <1600000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -120,7 +120,7 @@
+ 			};
+ 
+ 			ldo2_reg: LDO2 {
+-				regulator-name = "LDO2";
++				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <900000>;
+ 				regulator-boot-on;
+@@ -128,7 +128,7 @@
+ 			};
+ 
+ 			ldo3_reg: LDO3 {
+-				regulator-name = "LDO3";
++				regulator-name = "ldo3";
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+@@ -136,7 +136,7 @@
+ 			};
+ 
+ 			ldo4_reg: LDO4 {
+-				regulator-name = "LDO4";
++				regulator-name = "ldo4";
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
+@@ -144,7 +144,7 @@
+ 			};
+ 
+ 			ldo6_reg: LDO6 {
+-				regulator-name = "LDO6";
++				regulator-name = "ldo6";
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
 -- 
 2.17.1
 
