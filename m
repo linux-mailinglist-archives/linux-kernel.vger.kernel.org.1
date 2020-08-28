@@ -2,72 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50245255DA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9221C255D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgH1PSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 11:18:33 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1989 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgH1PSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 11:18:20 -0400
-IronPort-SDR: pz4LaaT+8mwjNDf4JDySGScND6n/AzhucaSjsG6E5qq24R6aTSZHpDZl/+dpQlAcJF/Ju9wrFo
- W8Hvc/ca1MRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="174732357"
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="174732357"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 08:18:20 -0700
-IronPort-SDR: lpnUix3jb1jq5RniOzI6GlxCPQkIhMwJ2N2ThQElCFiFYWFOWsKKR9DPQKVUtEpN5FFTJ5NW61
- g8ymFrLqnyBg==
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="300266458"
-Received: from lilymao-mobl.amr.corp.intel.com (HELO [10.209.185.175]) ([10.209.185.175])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 08:18:18 -0700
-Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
- clock-stop invalid configs
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
- <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
- <20200826094817.GC2639@vkoul-mobl>
- <21038e8d-dbd9-76c7-c758-9933fb45024a@linux.intel.com>
- <20200828074952.GO2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b5d8a731-d753-060a-f224-63de3b29b7d2@linux.intel.com>
-Date:   Fri, 28 Aug 2020 09:54:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727022AbgH1PB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 11:01:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43052 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbgH1PBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 11:01:25 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07SEWS0R080188;
+        Fri, 28 Aug 2020 11:01:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=whWwP11nLkwAhTzmvg3pxCC7eFCxf/dZHtL4Lprb/U4=;
+ b=tOnfqc4q6loVCIUljkUdZ3pqhjUVorJH7t74xWinwP5HsHDqw4fQQDLSCD7J04zYEfqp
+ tJrAfFhIvGJZFHJtAugYY3HOCRZbbLSGykjkNyu9C2PfWJkkLCptTuEY/vTqLkk4eq1F
+ gKJh4QYxHsMR1zSjFSVbLOIxFwV3xAnKoNpaudlgTFP9UttApq6hc/7MK6e43jWOxRpE
+ b5weWm/n+DKsVtUAi/epMC+CiXGnqIqsLWwoUQsCa+xcimw5dcwxWQm1ycjoaat3aTSG
+ BZokYd3s0jKlFOOgbwLfGRqdhYP/4zQbuifA6u8KiNBeoQZCJCMa1K+T+CXTvd+aYWP+ FQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3370k56se9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Aug 2020 11:01:10 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07SEvF04009069;
+        Fri, 28 Aug 2020 15:01:08 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 336124sv9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Aug 2020 15:01:07 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07SF15jS30015968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Aug 2020 15:01:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EDFBAE057;
+        Fri, 28 Aug 2020 15:01:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 866C5AE065;
+        Fri, 28 Aug 2020 15:01:04 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.56.70])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 28 Aug 2020 15:01:04 +0000 (GMT)
+Date:   Fri, 28 Aug 2020 17:01:03 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [RFC PATCH 0/2] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200828170103.6d954d95@thinkpad>
+In-Reply-To: <20200828142137.GX24045@ziepe.ca>
+References: <20200828140314.8556-1-gerald.schaefer@linux.ibm.com>
+        <20200828142137.GX24045@ziepe.ca>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200828074952.GO2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-28_08:2020-08-28,2020-08-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
+ spamscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008280108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 28 Aug 2020 11:21:37 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
->>>> Detect cases where the clock is assumed to be stopped but the IP is
->>>> not in the relevant state, and add a dynamic debug trace.
->>>
->>> you meant a debug print..and it looks like error print below (also in title).
->>
->> I don't understand the comment. Is the 'trace' confusing and are you asking
->> to e.g. change the commit message to 'add dynamic debug log'?
+> On Fri, Aug 28, 2020 at 04:03:12PM +0200, Gerald Schaefer wrote:
+> > Commit 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast
+> > code") introduced a subtle but severe bug on s390 with gup_fast, due to
+> > dynamic page table folding.
 > 
-> Question is what is dynamic about this?
-dev_dbg() is part of the kernel dynamic debug capability...
+> I think the page walk code in mm/pagewalk.c has similar issues to
+> GUP. I've been noodling on some patches to add the missing stack
+> copies to pagewalk.c as they are clearly missing..
+> 
+> It would be good if this could be less GUP specific?
+> 
+> Generically this is about walking the page table without holding the
+> page table spinlocks using READ_ONCE.
 
-https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
+Indeed, if there were other code paths doing that, they would most
+likely also be broken (at least) for s390. Alexander was already
+looking into generalizing the new gup-specific helpers, but so
+far we assumed that would only be "nice to have" for the future,
+and not fix any real issues at the moment. So we wanted to
+focus on first fixing the very real gup_fast issue.
 
-Not sure what you are asking here?
+Both approaches here probably could be generalized, by either
+changing pXd_address_end() or pXd_offset(), but I guess it makes
+sense to already take into account that we might need such
+generalization sooner than expected.
+
+Just to make sure, you are referring to some future / planned
+changes to mm/pagewalk.c, and not some currently existing
+pagetable walkers already using the READ_ONCE logic w/o
+spinlocks? If those would exist already, I guess we would
+already have issues on s390, independent from our conversion
+to common code gup_fast.
+
+Regards,
+Gerald
