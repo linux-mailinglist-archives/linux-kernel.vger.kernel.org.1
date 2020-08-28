@@ -2,119 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A8F2554E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4322554EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgH1HJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 03:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgH1HJ5 (ORCPT
+        id S1728219AbgH1HNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:13:06 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:52561 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgH1HNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 03:09:57 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FEBC061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:56 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id h4so49937oop.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 00:09:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DVuVd6p5WUIda7pE1WrjTg4zSVXkLhlT+xCt0yR++Os=;
-        b=aCtNnk7zEgx71MZ0li20Hed24dO1JYlQFvABddQov9B6BuQZwUGuM9rYoDcmcR52Rb
-         PLiEcsslY2WP24AjQJw0BfdIs+Mi7yvPixtAe5JqSdWZv3MZHTAWBUnPiZJPdkNsdgZi
-         TyQSEdNsqUa4842GX2ezZu2bFoau1JHYZnTi6c7jBCcctQz1uzXZ7aCz6j4JEEggblI1
-         9D4LNbT9BHiNPm7NVKLCf337hPFe0CzJWkwey3I3Rs2FE4ciiAXnRx/JmhEAeezsnNy3
-         dzVfgYQY8R7nCi/ooqV5pAoMs4ZYs7X1IUIkYr+yd6PUDPx/dnoZuyP9xuH3fmyXKqAl
-         boxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DVuVd6p5WUIda7pE1WrjTg4zSVXkLhlT+xCt0yR++Os=;
-        b=IHGP/DkPKLlOnp/5vAoTLko92cH8IC3lbWFThlO0pRjc7fFFX4lTV5EQmIrf24+bSj
-         sTj389HrAsm9dI8Y4V4Ngq6o7bFSfDh+VmJTZUtoXhXxzemhUYzT8+J55sAMTZuC3uSg
-         bL8iAbTB0JnandTxu+dc9Mlaz5rQ33/oa00lbph6cwZPGjLnNFXy6PMcSvzvtz3IM8eC
-         6VwmYQmyv5G+Hh+gDR4810DjHzFyy7zvP1HCnVh1ctHIAPCyOdbyIVTxz0KJJtrG7nFf
-         FJ3KkkycX4i2v5Qqd3it+MMW83IeYKJlzFL/SusssmDUJVOsltnzMV4D52UKqWnjAio9
-         45pw==
-X-Gm-Message-State: AOAM5333mxWXwFuVrGuhghsLQIjaX20jM25xqxZ5olo1ILAlQ2ehMQCn
-        5ZCAHmiLq54LM8mUeYESKi0HpyvhSOeDly0LVZg=
-X-Google-Smtp-Source: ABdhPJw0ppKKCCfdqyVwaJ4pWjujRJHaStvQsL6Ksle+Mc6vIXt525LQ25yGxEEjVinfwZcZgCvdJuLOA0c59GPZ9Rg=
-X-Received: by 2002:a4a:d588:: with SMTP id z8mr164471oos.84.1598598594507;
- Fri, 28 Aug 2020 00:09:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200827013636.149307-1-allen.lkml@gmail.com> <CAHk-=whiEUUrtnbgUH2xsD0+jNyoXudYJ4hGCA55MCjryaHGjw@mail.gmail.com>
- <1598553133.4237.8.camel@HansenPartnership.com> <CAHk-=wi8o+FvfQkUiH_2MUs3J19FzfMzumOViAJ2aboGg9qY7Q@mail.gmail.com>
- <CAHk-=wingJWToQfoc+m2am7Q=7r8XD+6p0FXasCRAzOdcRyngw@mail.gmail.com>
- <202008271150.7231B901@keescook> <CAHk-=whDhHWQo_QjZp36=x=GLMGOJ2xnfsUk9xkUuWRz=i9gOg@mail.gmail.com>
- <20200827213636.GF1236603@ZenIV.linux.org.uk> <202008271503.181A6A609@keescook>
-In-Reply-To: <202008271503.181A6A609@keescook>
-From:   Allen <allen.lkml@gmail.com>
-Date:   Fri, 28 Aug 2020 12:39:42 +0530
-Message-ID: <CAOMdWSLJuG+EN3gDUYpoPjYU2cuRrN34NYZZ9Uhb08_egw3ZCA@mail.gmail.com>
-Subject: Re: [PATCH] linux/kernel.h: add container_from()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 28 Aug 2020 03:13:05 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200828071302epoutp03324e14ebea4afa7adacf39200460d118~vXR_Clc101082110821epoutp03V
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:13:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200828071302epoutp03324e14ebea4afa7adacf39200460d118~vXR_Clc101082110821epoutp03V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598598782;
+        bh=dhb4o4jk0hfzRaKRK8AUBrnrMdhfXSXoi1n2XCF5SIE=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=KiNfL2MY0/OWkWsS2zjAvbQBkSDJYo232ody3+8KoyTPhiSxHnUc/guuANtp0E4lq
+         sTT0RnfKf+/FcHw/BMDnNLheVQwNUioxCu30px0Hg0Qmx1sdnhSPIaZ5z35kxxPcZJ
+         0NyRGRjvk+kpivD4OU81omT1YzJmi6il7DOHmEZs=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200828071302epcas1p2d94523b62da93756d326b26fc42d3aa9~vXR9ma-4V2556625566epcas1p2w;
+        Fri, 28 Aug 2020 07:13:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v9 0/4] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21598598782155.JavaMail.epsvc@epcpadp2>
+Date:   Fri, 28 Aug 2020 16:09:50 +0900
+X-CMS-MailID: 20200828070950epcms2p5470bd43374be18d184dd802da09e73c8
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200828070950epcms2p5470bd43374be18d184dd802da09e73c8
+References: <CGME20200828070950epcms2p5470bd43374be18d184dd802da09e73c8@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > You really have to pick some pretty excessive type names (or variable
-> > > names) to get close to 80 characters. Again, to pick an example:
-> > >
-> > >         struct timer_group_priv *priv = container_of(handle,
-> > >                         struct timer_group_priv, timer[handle->num]);
-> > >
-> > > ends up being long even if you were to split it, but that funky
-> > > container_from() wouldn't have helped the real problem - the fact that
-> > > the above is complex and nasty.
->
-> The point about doing the assignment with the declaration certainly makes
-> the "ugliness" worse, I agree. I'm still not generally convinced about
-> the redundancy level pros/cons, but I concede that having a common idiom
-> (rather than a succinct but subsystem-dependent idiom) is better for
-> people reading the code for the first time.
->
-> > > And I had to _search_ for that example. All the normal cases of
-> > > split-line container-of's were due to doing it with the declaration,
-> > > or beause the first argument ended up being an expression in itself
-> > > and the nested expressions made it more complex.
-> >
-> > Speaking of searching, this kind of typeof use is, IMO, actively
-> > harmful - it makes finding the places where we might get from
-> > e.g. linked list to containing objects much harder.  container_of
-> > (unless combined with obfuscating use of typeof()) at least gives
-> > you a chance to grep - struct foo *not* followed by '*' is a pattern
-> > that doesn't give too many false positives.  This one, OTOH, is
-> > essentially impossible to grep for.
->
-> And this observation about workflow does strike a chord with me. I do end
-> up with those kind of searches too. In trying to examine my preferences
-> here, I think my instincts are to avoid open-coded types (leading me to
-> want to use typeof()) but I think those instincts were actually developed
-> from dealing with _sizeof_ and all the way it goes terribly wrong. So,
-> okay, I'm convinced. container_of() it is.
+Changelog:
 
- so container_of() it is :)
-Will start updating the rest of the patches.
+v8 -> v9
+1. Change sysfs initialization.
+2. Change reading descriptor during HPB initialization
+3. Fix problems commentted in Bart's review.
+4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
 
-Thanks,
-- Allen
+v7 -> v8
+Remove wrongly added tags.
 
-> Doing these conversions becomes a little less mechanical if assignment
-> needs to be split from declaration, but hey, we've got a 100 character
-> line "limit" now, so maybe it'll be less needed. :)
->
-> --
-> Kees Cook
+v6 -> v7
+1. Remove UFS feature layer.
+2. Cleanup for sparse error.
+
+v5 -> v6
+Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+
+v4 -> v5
+Delete unused macro define.
+
+v3 -> v4
+1. Cleanup.
+
+v2 -> v3
+1. Add checking input module parameter value.
+2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+3. Cleanup for unused variables and label.
+
+v1 -> v2
+1. Change the full boilerplate text to SPDX style.
+2. Adopt dynamic allocation for sub-region data structure.
+3. Cleanup.
+
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
+
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
+
+The current version only supports the DCM (device control mode).
+This patch consists of 3 parts to support HPB feature.
+
+1) HPB probe and initialization process
+2) READ -> HPB READ using cached map information
+3) L2P (logical to physical) map management
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB.
+
+The HPB manages the L2P map using information received from the
+device. For active sub-region, the HPB caches through ufshpb_map
+request. For the in-active region, the HPB discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+This series patches are based on the 5.9/scsi-queue branch.
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun park (4):
+ scsi: ufs: Add HPB feature related parameters
+ scsi: ufs: Introduce HPB feature
+ scsi: ufs: L2P map management for HPB read
+ scsi: ufs: Prepare HPB read for cached sub-region
+ 
+ drivers/scsi/ufs/Kconfig  |    9 +
+ drivers/scsi/ufs/Makefile |    1 +
+ drivers/scsi/ufs/ufs.h    |   47 ++
+ drivers/scsi/ufs/ufshcd.c |   58 ++
+ drivers/scsi/ufs/ufshcd.h |   22 +-
+ drivers/scsi/ufs/ufshpb.c | 1817 ++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h |  231 +++++
+ 7 files changed, 2184 insertions(+), 1 deletion(-)
+ created mode 100644 drivers/scsi/ufs/ufshpb.c
+ created mode 100644 drivers/scsi/ufs/ufshpb.h
