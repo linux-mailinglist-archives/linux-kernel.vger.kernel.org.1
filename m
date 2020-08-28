@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34861255FA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F85255FAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgH1RWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 13:22:08 -0400
-Received: from correo.us.es ([193.147.175.20]:54696 "EHLO mail.us.es"
+        id S1726828AbgH1R0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 13:26:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727889AbgH1RV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 13:21:59 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 218711C436B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 19:21:58 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1095FDA78D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 19:21:58 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 04FD1DA73F; Fri, 28 Aug 2020 19:21:58 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E174EDA730;
-        Fri, 28 Aug 2020 19:21:55 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 28 Aug 2020 19:21:55 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1726010AbgH1R0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 13:26:01 -0400
+Received: from gaia (unknown [46.69.195.127])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id A052142EF4E1;
-        Fri, 28 Aug 2020 19:21:55 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 19:21:55 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net-next v2] ipvs: Fix
- uninit-value in do_ip_vs_set_ctl()
-Message-ID: <20200828172155.GA6651@salvia>
-References: <20200810220703.796718-1-yepeilin.cs@gmail.com>
- <20200811074640.841693-1-yepeilin.cs@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id E2A3220872;
+        Fri, 28 Aug 2020 17:25:59 +0000 (UTC)
+Date:   Fri, 28 Aug 2020 18:25:57 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] arm64 fixes for 5.9-rc3
+Message-ID: <20200828172555.GA31202@gaia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811074640.841693-1-yepeilin.cs@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 03:46:40AM -0400, Peilin Ye wrote:
-> do_ip_vs_set_ctl() is referencing uninitialized stack value when `len` is
-> zero. Fix it.
+Hi Linus,
 
-Applied to nf-next, thanks.
+Please pull the arm64 fixes below. Thanks.
+
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+
+for you to fetch changes up to 71a7f8cb1ca4ca7214a700b1243626759b6c11d4:
+
+  KVM: arm64: Set HCR_EL2.PTW to prevent AT taking synchronous exception (2020-08-28 15:27:47 +0100)
+
+----------------------------------------------------------------
+- Fix kernel build with the integrated LLVM assembler which doesn't
+  see the -Wa,-march option.
+
+- Fix "make vdso_install" when COMPAT_VDSO is disabled.
+
+- Make KVM more robust if the AT S1E1R instruction triggers an exception
+  (architecture corner cases).
+
+----------------------------------------------------------------
+Frank van der Linden (1):
+      arm64: vdso32: make vdso32 install conditional
+
+James Morse (3):
+      KVM: arm64: Add kvm_extable for vaxorcism code
+      KVM: arm64: Survive synchronous exceptions caused by AT instructions
+      KVM: arm64: Set HCR_EL2.PTW to prevent AT taking synchronous exception
+
+Sami Tolvanen (1):
+      arm64: use a common .arch preamble for inline assembly
+
+ arch/arm64/Makefile                     | 14 +++++--
+ arch/arm64/include/asm/compiler.h       |  6 +++
+ arch/arm64/include/asm/kvm_arm.h        |  3 +-
+ arch/arm64/include/asm/kvm_asm.h        | 43 ++++++++++++++++++++++
+ arch/arm64/include/asm/tlbflush.h       |  6 ++-
+ arch/arm64/kernel/image-vars.h          |  4 ++
+ arch/arm64/kernel/vmlinux.lds.S         |  8 ++++
+ arch/arm64/kvm/hyp/entry.S              | 15 +++++---
+ arch/arm64/kvm/hyp/hyp-entry.S          | 65 +++++++++++++++++++++------------
+ arch/arm64/kvm/hyp/include/hyp/switch.h | 39 ++++++++++++++++++--
+ arch/arm64/kvm/hyp/nvhe/switch.c        |  5 +++
+ arch/arm64/kvm/hyp/vhe/switch.c         |  5 +++
+ 12 files changed, 172 insertions(+), 41 deletions(-)
+
+-- 
+Catalin
