@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B59255D8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC07255D95
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgH1PO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 11:14:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:25221 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726720AbgH1POy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 11:14:54 -0400
-IronPort-SDR: x6oVqprKSPnA3ELfjOWHM7jKVJx6WouuOKb0sDxZy4ECH/dhjGyGHmpph/Ki1N905ZHGM1n+3l
- w3Q6BCpcy0sQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="154094575"
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="154094575"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 08:14:53 -0700
-IronPort-SDR: lmmOffibLsj9n0W6xaXGeuDfgSX/QKOitxVzhsT/UObzEMYoNNzzUbIzp8LZrJ0NAv1/emfTqf
- 00P4tmDuBt8w==
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="300265640"
-Received: from lilymao-mobl.amr.corp.intel.com (HELO [10.209.185.175]) ([10.209.185.175])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 08:14:52 -0700
-Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
- and Slave device alerts
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
- <20200819090637.GE2639@vkoul-mobl>
- <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
- <20200821050758.GI2639@vkoul-mobl>
- <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
- <20200828080024.GP2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
-Date:   Fri, 28 Aug 2020 10:14:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728082AbgH1PQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 11:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgH1PQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 11:16:20 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9DBC061264;
+        Fri, 28 Aug 2020 08:16:19 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ba600cd7838aec083f6d5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:a600:cd78:38ae:c083:f6d5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 944A81EC02B9;
+        Fri, 28 Aug 2020 17:16:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1598627777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=meDwPOYTdd66T0vfwRFtMe688dT0+BMttG7+4yclsTQ=;
+        b=XUALlOcx2zHv1DJKkc6oXIOLCMHUY1mZHaAjbPaB7YVQdNjsJLwQgJzU5K5CRagOMDH3hl
+        3FsyQfYAAmB+9nG4T0bEp6DVzI9Oil9Dc+/F/hkJ+LzDJBEn2ptVVXoBtmZaaZC+AEjoFJ
+        eGyvtTUPt0etAek6KaT7XY8gDWITvIk=
+Date:   Fri, 28 Aug 2020 17:16:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v6 29/76] x86/idt: Split idt_data setup out of
+ set_intr_gate()
+Message-ID: <20200828151620.GA19342@zn.tnic>
+References: <20200824085511.7553-1-joro@8bytes.org>
+ <20200824085511.7553-30-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20200828080024.GP2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200824085511.7553-30-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-
-> Is this timeout for suspend or resume? Somehow I was under the
-> assumption that it is former? Or is the result seen on resume?
+On Mon, Aug 24, 2020 at 10:54:24AM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> Rereading the race describe above in steps, I think this should be
-> handled in step c above. Btw is that suspend or runtime suspend which
-> causes this? Former would be bigger issue as we should not have work
-> running when we return from suspend call. Latter should be dealt with
-> anyway as device might be off after suspend.
+> The code to setup idt_data is needed for early exception handling, but
+> set_intr_gate() can't be used that early because it has pv-ops in its
+> code path, which don't work that early.
+> 
+> Split out the idt_data initialization part from set_intr_gate() so
+> that it can be used separatly.
 
-This happens with a system suspend. Because we disable the interrupts, 
-the workqueue never completes, and we have a timeout on system resume.
+"separately"
 
-That's why we want to prevent the workqueue from starting, or let it 
-complete, but not have this zombie state where we suspend but there's 
-still a wait for completion that times out later. The point here is 
-really  making sure the workqueue is not used before suspend.
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
