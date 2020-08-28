@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEBE255340
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36FD255343
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgH1DSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 23:18:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39978 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727926AbgH1DSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 23:18:35 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 353D0A606CB6908B1DDD;
-        Fri, 28 Aug 2020 11:18:31 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 28 Aug 2020 11:18:24 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <mark.rutland@arm.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>
-CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
-Subject: [PATCH] arm64: fix some spelling mistakes in the comments by codespell
-Date:   Fri, 28 Aug 2020 11:18:22 +0800
-Message-ID: <20200828031822.35928-1-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728257AbgH1DTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 23:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727817AbgH1DTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 23:19:47 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44883C061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 20:19:47 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id w186so4792310pgb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 20:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rquQ8wDF13kuQATC5YYw+dEo0yOaMMMchDgnI+iOso0=;
+        b=AzTa+G5R6IdGurzzZWnNFoLZm2hiJ9IgYqhvoL0VcGsg7QxxeNMbbfyaHVacCzgXYF
+         W+XXTMpllFfQIHsttRKcFToWcwilx2XHDyw7b+wydGIaWq9ZH/8zh56Sy+Kfuf6zauhi
+         alo5eLMVmqYYoVG5qwlhfnBlGtUZJZRikJfSh2ilLIRGbRJ4/sEUMNebeC9TtDqGAU/e
+         B1JovEd86mjoD5es4+Yd0v3CsFaroPOB4DlgKX4gyMVrIcwcOajsv2BKl+OB56z9FmoG
+         pv9zEPwSY99cmu0/Uh5sgZzVy9jzKXDEBs/UT1q66lq97IKN3/fwsMsZBbCdVTJ+aFQD
+         xUng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rquQ8wDF13kuQATC5YYw+dEo0yOaMMMchDgnI+iOso0=;
+        b=hzV9ME51oD2mOwBRIpJWlM01tuIqRafYcgOq7V5qw2OkwxhiCvwOy9Xb4Z9Ho44hIT
+         N5juGZXNO31ocRVF+DIm/XSa8j/Gxz/+L7lXq/Bw2rw4d6VzUFFNzq9CmKGes2By7cbD
+         Iw3BIDQy8SESurmDLYwwCTFe7sqEs9bdvjq72qGfQZdm57Xj92TqvLEz5xgD8MspfKZ3
+         ExN220KXCLrqXFsELHqtUf2gq+5m9zx5Q47sM98c5lxaHyB9+fAxiuneA4AcPZ/2xALk
+         E/NNoeoJme4YqTwyqEhHoo8l91TKaSOc9L/3RFkCoMyKS2e6wa6Zou8sYBVzIYZyeFZn
+         qhtQ==
+X-Gm-Message-State: AOAM53335vhmJXo76twJA17zJwhYrToJh3SYUFTRp31z7K0I4XfiE3eW
+        fTr+GVZuh57GMHSdjofX/QiOrc5u0xR8Sx1V
+X-Google-Smtp-Source: ABdhPJxGr+6JMkMbKKM7uaO5Xejh8aJ5GXOFdmUUjkBYxm2K/NqMxGwAez7uXc1L8O90ogjuzP3sFA==
+X-Received: by 2002:a62:a203:: with SMTP id m3mr19057061pff.86.1598584786857;
+        Thu, 27 Aug 2020 20:19:46 -0700 (PDT)
+Received: from Smcdef-MBP.local.net ([103.136.221.72])
+        by smtp.gmail.com with ESMTPSA id 135sm4475756pfy.61.2020.08.27.20.19.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Aug 2020 20:19:46 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     keescook@chromium.org, mhiramat@kernel.org, rostedt@goodmis.org,
+        alex.popov@linux.com, miguel.ojeda.sandonis@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] stackleak: Fix a race between stack erasing sysctl handlers
+Date:   Fri, 28 Aug 2020 11:19:28 +0800
+Message-Id: <20200828031928.43584-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/arm64/include/asm/cpu_ops.h:24: necesary ==> necessary
-arch/arm64/include/asm/kvm_arm.h:69: maintainance ==> maintenance
-arch/arm64/include/asm/cpufeature.h:361: capabilties ==> capabilities
-arch/arm64/kernel/perf_regs.c:19: compatability ==> compatibility
-arch/arm64/kernel/smp_spin_table.c:86: endianess ==> endianness
-arch/arm64/kernel/smp_spin_table.c:88: endianess ==> endianness
-arch/arm64/kvm/vgic/vgic-mmio-v3.c:1004: targetting ==> targeting
-arch/arm64/kvm/vgic/vgic-mmio-v3.c:1005: targetting ==> targeting
+There is a race between the assignment of `table->data` and write value
+to the pointer of `table->data` in the __do_proc_doulongvec_minmax() on
+the other thread.
 
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+    CPU0:                                 CPU1:
+                                          proc_sys_write
+    stack_erasing_sysctl                    proc_sys_call_handler
+      table->data = &state;                   stack_erasing_sysctl
+                                                table->data = &state;
+      proc_doulongvec_minmax
+        do_proc_doulongvec_minmax             sysctl_head_finish
+          __do_proc_doulongvec_minmax           unuse_table
+            i = table->data;
+            *i = val;  // corrupt CPU1's stack
+
+Fix this by duplicating the `table`, and only update the duplicate of
+it.
+
+Fixes: 964c9dff0091 ("stackleak: Allow runtime disabling of kernel stack erasing")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- arch/arm64/include/asm/cpu_ops.h    | 2 +-
- arch/arm64/include/asm/cpufeature.h | 2 +-
- arch/arm64/include/asm/kvm_arm.h    | 2 +-
- arch/arm64/kernel/perf_regs.c       | 2 +-
- arch/arm64/kernel/smp_spin_table.c  | 4 ++--
- arch/arm64/kvm/vgic/vgic-mmio-v3.c  | 4 ++--
- 6 files changed, 8 insertions(+), 8 deletions(-)
+changelogs in v2:
+ 1. Add more details about how the race happened to the commit message.
 
-diff --git a/arch/arm64/include/asm/cpu_ops.h b/arch/arm64/include/asm/cpu_ops.h
-index d28e8f37d3b4..e95c4df83911 100644
---- a/arch/arm64/include/asm/cpu_ops.h
-+++ b/arch/arm64/include/asm/cpu_ops.h
-@@ -21,7 +21,7 @@
-  *		mechanism for doing so, tests whether it is possible to boot
-  *		the given CPU.
-  * @cpu_boot:	Boots a cpu into the kernel.
-- * @cpu_postboot: Optionally, perform any post-boot cleanup or necesary
-+ * @cpu_postboot: Optionally, perform any post-boot cleanup or necessary
-  *		synchronisation. Called from the cpu being booted.
-  * @cpu_can_disable: Determines whether a CPU can be disabled based on
-  *		mechanism-specific information.
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 89b4f0142c28..3a42dc8e697c 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -358,7 +358,7 @@ static inline int cpucap_default_scope(const struct arm64_cpu_capabilities *cap)
- }
+ kernel/stackleak.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/stackleak.c b/kernel/stackleak.c
+index a8fc9ae1d03d..fd95b87478ff 100644
+--- a/kernel/stackleak.c
++++ b/kernel/stackleak.c
+@@ -25,10 +25,15 @@ int stack_erasing_sysctl(struct ctl_table *table, int write,
+ 	int ret = 0;
+ 	int state = !static_branch_unlikely(&stack_erasing_bypass);
+ 	int prev_state = state;
++	struct ctl_table dup_table = *table;
  
- /*
-- * Generic helper for handling capabilties with multiple (match,enable) pairs
-+ * Generic helper for handling capabilities with multiple (match,enable) pairs
-  * of call backs, sharing the same capability bit.
-  * Iterate over each entry to see if at least one matches.
-  */
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
-index 51c1d9918999..21f91aebc052 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -66,7 +66,7 @@
-  * TWI:		Trap WFI
-  * TIDCP:	Trap L2CTLR/L2ECTLR
-  * BSU_IS:	Upgrade barriers to the inner shareable domain
-- * FB:		Force broadcast of all maintainance operations
-+ * FB:		Force broadcast of all maintenance operations
-  * AMO:		Override CPSR.A and enable signaling with VA
-  * IMO:		Override CPSR.I and enable signaling with VI
-  * FMO:		Override CPSR.F and enable signaling with VF
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index 666b225aeb3a..94e8718e7229 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -16,7 +16,7 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
- 
- 	/*
- 	 * Our handling of compat tasks (PERF_SAMPLE_REGS_ABI_32) is weird, but
--	 * we're stuck with it for ABI compatability reasons.
-+	 * we're stuck with it for ABI compatibility reasons.
- 	 *
- 	 * For a 32-bit consumer inspecting a 32-bit task, then it will look at
- 	 * the first 16 registers (see arch/arm/include/uapi/asm/perf_regs.h).
-diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
-index c8a3fee00c11..5892e79fa429 100644
---- a/arch/arm64/kernel/smp_spin_table.c
-+++ b/arch/arm64/kernel/smp_spin_table.c
-@@ -83,9 +83,9 @@ static int smp_spin_table_cpu_prepare(unsigned int cpu)
- 
- 	/*
- 	 * We write the release address as LE regardless of the native
--	 * endianess of the kernel. Therefore, any boot-loaders that
-+	 * endianness of the kernel. Therefore, any boot-loaders that
- 	 * read this address need to convert this address to the
--	 * boot-loader's endianess before jumping. This is mandated by
-+	 * boot-loader's endianness before jumping. This is mandated by
- 	 * the boot protocol.
- 	 */
- 	writeq_relaxed(__pa_symbol(secondary_holding_pen), release_addr);
-diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-index 5c786b915cd3..52d6f24f65dc 100644
---- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-@@ -1001,8 +1001,8 @@ void vgic_v3_dispatch_sgi(struct kvm_vcpu *vcpu, u64 reg, bool allow_group1)
- 		raw_spin_lock_irqsave(&irq->irq_lock, flags);
- 
- 		/*
--		 * An access targetting Group0 SGIs can only generate
--		 * those, while an access targetting Group1 SGIs can
-+		 * An access targeting Group0 SGIs can only generate
-+		 * those, while an access targeting Group1 SGIs can
- 		 * generate interrupts of either group.
- 		 */
- 		if (!irq->group || allow_group1) {
+-	table->data = &state;
+-	table->maxlen = sizeof(int);
+-	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
++	/*
++	 * In order to avoid races with __do_proc_doulongvec_minmax(), we
++	 * can duplicate the @table and alter the duplicate of it.
++	 */
++	dup_table.data = &state;
++	dup_table.maxlen = sizeof(int);
++	ret = proc_dointvec_minmax(&dup_table, write, buffer, lenp, ppos);
+ 	state = !!state;
+ 	if (ret || !write || state == prev_state)
+ 		return ret;
 -- 
-2.27.0
+2.11.0
 
