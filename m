@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B446255FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52DA255FB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgH1R1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 13:27:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:54000 "EHLO foss.arm.com"
+        id S1726928AbgH1R3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 13:29:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:15760 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgH1R1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 13:27:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1011FB;
-        Fri, 28 Aug 2020 10:27:01 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDBFF3F71F;
-        Fri, 28 Aug 2020 10:27:00 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 18:26:58 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     vincent.donnefort@arm.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
-User-Agent: NeoMutt/20171215
+        id S1725814AbgH1R3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 13:29:20 -0400
+IronPort-SDR: X6pMAcha3bXDGl8EIN/o595J3i1PSVGHD0Ot1nqZs4WrLkfs7YsHIu1cjRY8kDdF+fR8z3yy/J
+ zKtQk2jOravg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="157730105"
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="157730105"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 10:29:20 -0700
+IronPort-SDR: nHTfcn7JVfJd53R2p7+j8nIWc5YP+IAvZoIP3qEBBv0sMxW+12txq1vOqlof9bPYS1qfQyRhpR
+ Arys+x7zMACQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="337561443"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Aug 2020 10:29:19 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 1/2] perf/x86/intel: Add Jasper Lake support
+Date:   Fri, 28 Aug 2020 10:27:09 -0700
+Message-Id: <1598635630-148489-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/28/20 19:10, Dietmar Eggemann wrote:
-> On 28/08/2020 12:27, Qais Yousef wrote:
-> > On 08/28/20 10:00, vincent.donnefort@arm.com wrote:
-> >> From: Vincent Donnefort <vincent.donnefort@arm.com>
-> >>
-> >> rq->cpu_capacity is a key element in several scheduler parts, such as EAS
-> >> task placement and load balancing. Tracking this value enables testing
-> >> and/or debugging by a toolkit.
-> >>
-> >> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-> >>
-> >> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > 
-> > [...]
-> > 
-> >> +int sched_trace_rq_cpu_capacity(struct rq *rq)
-> >> +{
-> >> +	return rq ?
-> >> +#ifdef CONFIG_SMP
-> >> +		rq->cpu_capacity
-> >> +#else
-> >> +		SCHED_CAPACITY_SCALE
-> >> +#endif
-> >> +		: -1;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(sched_trace_rq_cpu_capacity);
-> >> +
-> > 
-> > The placement of this #ifdef looks odd to me. But FWIW
-> > 
-> > Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-> 
-> Returning -1 for cpu_capacity? It makes sense for sched_trace_rq_cpu()
-> but for cpu_capacity?
+From: Kan Liang <kan.liang@linux.intel.com>
 
-If rq is NULL you return -1, an error the way I read it. rq is passed as an
-argument, so better ensure we handle NULL and not blindly dereference rq and
-crash.
+The Jasper Lake processor is also a Tremont microarchitecture. From the
+perspective of Intel PMU, there is nothing changed compared with
+Elkhart Lake.
+Share the perf code with Elkhart Lake.
 
-> 
-> Can you remind me why we have all these helper functions like
-> sched_trace_rq_cpu_capacity?
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-struct rq is defined in kernel/sched/sched.h. It's not exported. Exporting
-these helper functions was the agreement to help modules trace internal info.
-By passing generic info you decouple the tracepoint from giving specific info
-and allow the modules to extract all the info they need from the same
-tracepoint. IE: if you need more than just cpu_capacity from this tracepoint,
-you can get that without having to continuously add extra arguments everytime
-you need an extra piece of info. Unless this info is not in the rq of course.
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c72e490..75dea67 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5135,6 +5135,7 @@ __init int intel_pmu_init(void)
+ 
+ 	case INTEL_FAM6_ATOM_TREMONT_D:
+ 	case INTEL_FAM6_ATOM_TREMONT:
++	case INTEL_FAM6_ATOM_TREMONT_L:
+ 		x86_pmu.late_ack = true;
+ 		memcpy(hw_cache_event_ids, glp_hw_cache_event_ids,
+ 		       sizeof(hw_cache_event_ids));
+-- 
+2.7.4
 
-> 
-> In case we would let the extra code (which transforms trace points into
-> trace events) know the internals of struct rq we could handle those
-> things in the TRACE_EVENT and/or the register_trace_##name(void
-> (*probe)(data_proto), void *data) thing.
-> We always said when the internal things will change this extra code will
-> break. So that's not an issue.
-
-The problem is that you need to export struct rq in a public header. Which we
-don't want to do. I have been trying to find out how to use BTF so we can
-remove these functions. Haven't gotten far away yet - but it should be doable
-and it's a question of me finding enough time to understand what was currently
-done and if I can re-use something or need to come up with extra infrastructure
-first.
-
-Thanks
-
---
-Qais Yousef
