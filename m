@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8902561A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7758F25619F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgH1Tyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
+        id S1727951AbgH1Tyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726924AbgH1Twu (ORCPT
+        with ESMTP id S1726939AbgH1Tww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:52:50 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E578C061232
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:50 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id s16so436071qtn.7
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:50 -0700 (PDT)
+        Fri, 28 Aug 2020 15:52:52 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70922C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:52 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id p185so630567qkb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=digitalocean.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=oIb65ASfbKXg/SMNVuqzS+vdYF4f56w1EFWwackJJ1s=;
-        b=V6KMxLhbmNVvZH1km0YNIrK4NeqQThXbp97ov7AdrGsm4A3B077a80GFDsgieUjddN
-         k5Ge1NANBBfalKd0Ka33Xgq5k5fWTuzqjxs4hsTD1zXAKBhg2uqPelw3nDpwkkdguO7v
-         o3RQNWUew32RW80sGqBIXfLpNdlu9BgAT18Lk=
+        bh=hAl2Qv+gya0aMStEufG0YmAWHMkijjGFRP91A0YMk2w=;
+        b=F77cC/Q7oekktaQh1HPk/9cEPeXkBbnGVVjTA0mTrYSASPzm24/29eun2gNpN9AlPI
+         H68xrMBntc0rIDLIDcU94N5t9SSqhYgW+ENQ7Oxxw0FgpWVMOuG4EGiYAo2WuxY5286q
+         gr8XoGEyv8nuSrWIUSPAPdQZ+gUL/iDgoBFm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=oIb65ASfbKXg/SMNVuqzS+vdYF4f56w1EFWwackJJ1s=;
-        b=crURPAlldLYh939cYwT1PcLhC3uDh+5Q5Xb/bQeE2mNr54imkYnFPQCELFh02QT8+h
-         dZWSPsLEfSe2ygzUMwpLHnex2paGp6j6xVQMXB2b7rbwvrgeqZQtkV4iTSu1an2U2eIn
-         /InQG1wAMiWCHXFpPSTuLf+3fXRqXYIHv25Wwc3t54DkXq/HiJAOj4mVRRwD8fTSBJ7D
-         4Y0FYBYrNVQGCXmG5bXKGdEhCrARghoA5bgMxRujSYlE2Wgi1kuPK+s3wuQdaAFCSQH2
-         vbYTAUNLWmSVnzDoXE7Tt4+l96wAWexIxucF9Z/i9WS9j2a/Aa3vm4e8JV1Qw/AaCX2Q
-         URXA==
-X-Gm-Message-State: AOAM533AIZfOtMST4t8m6fk0xjY+pbbJNsJgQxp9xwnyjYycPH0XOyd+
-        vv3ukA/hvkY9w6zuS7CFM7NtVQ==
-X-Google-Smtp-Source: ABdhPJzutjgRHCg8nucSqXLpiE92co/BCk0sTb1azyxg8LQV6CKwoAhW4O01hYFldehEXEzdOG2PyA==
-X-Received: by 2002:aed:2f02:: with SMTP id l2mr3199217qtd.48.1598644369352;
-        Fri, 28 Aug 2020 12:52:49 -0700 (PDT)
+        bh=hAl2Qv+gya0aMStEufG0YmAWHMkijjGFRP91A0YMk2w=;
+        b=geXc75oJhMytkrxm0BYCljM6XOdvuJ8FddfhaeCi3vr/mMrWHEnElZ30UxAV4vjeVK
+         VzTR/wXxGFw2gk/yWaGOcT4xHxky5tP22i96ljWtXudeAQ/VYvbp279t8D0ZnN0gdHWL
+         JDA37kogWTRqG75SlIG8az1a09MuHRxbt0bjbdPM0jtBCTqroovWEbO8m+AtRQCku7NG
+         qlLmzEqSmv9ybIXmE3s5UM3wkjzvaMQ1/o14HfyksdCn/wVR9d4iHvT8u8I+NNV5bZpZ
+         KmJKnIy411xDR4SLTNXbACRLJTRnX4s5n2fshuIW5ILofwKAEVOmMPApaugqyexqaFKJ
+         9eYw==
+X-Gm-Message-State: AOAM533heJN2PJKfjweLDmHvCnRznPArc9W1fYOQGXAJHZLUCkbvklwV
+        f80d0aePZYiVMpz9cZLH1T/I5w==
+X-Google-Smtp-Source: ABdhPJzpFTcbPXcK4jxv9h1tbQS26e2ncBTCnnQp+MWLt3nxUW8BBU8AFdHDsgx+aAq4fNW2Gxo6cA==
+X-Received: by 2002:a37:6f43:: with SMTP id k64mr799357qkc.212.1598644371664;
+        Fri, 28 Aug 2020 12:52:51 -0700 (PDT)
 Received: from [192.168.1.240] (192-222-189-155.qc.cable.ebox.net. [192.222.189.155])
-        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.52.47
+        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.52.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 12:52:48 -0700 (PDT)
+        Fri, 28 Aug 2020 12:52:50 -0700 (PDT)
 From:   Julien Desfossez <jdesfossez@digitalocean.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -69,11 +69,10 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Agata Gruza <agata.gruza@intel.com>,
         Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
         graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        paulmck@kernel.org
-Subject: [RFC PATCH v7 14/23] irq_work: Add support to detect if work is pending
-Date:   Fri, 28 Aug 2020 15:51:15 -0400
-Message-Id: <c283856632af132e32b87a7ba0fc8b71f01c8508.1598643276.git.jdesfossez@digitalocean.com>
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com
+Subject: [RFC PATCH v7 15/23] entry/idle: Add a common function for activites during idle entry/exit
+Date:   Fri, 28 Aug 2020 15:51:16 -0400
+Message-Id: <05fa01e3d4200a5e3ef224bb56db5b09ecfdd927.1598643276.git.jdesfossez@digitalocean.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1598643276.git.jdesfossez@digitalocean.com>
 References: <cover.1598643276.git.jdesfossez@digitalocean.com>
@@ -86,103 +85,122 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-When an unsafe region is entered on an HT, an IPI needs to be sent to
-siblings to ensure they enter the kernel.
+Currently only RCU hooks for idle entry/exit are called. In later
+patches, kernel-entry protection functionality will be added.
 
-Following are the reasons why we would like to use irq_work to implement
-forcing of sibling into kernel mode:
-
-1. Existing smp_call infrastructure cannot be used easily since we could
-   end up waiting on CSD lock if previously an smp_call was not yet
-   serviced.
-
-2. I'd like to use generic code, such that there is no need to add an
-   arch-specific IPI.
-
-3. IRQ work already has support to detect that previous work was not yet
-   executed through the IRQ_WORK_PENDING bit.
-
-4. We need to know if the destination of the IPI is not sending more
-   IPIs due to that IPI itself causing an entry into unsafe region.
-
-Support for 4. requires us to be able to detect that irq_work is
-pending.
-
-This commit therefore adds a way for irq_work users to know if a
-previous per-HT irq_work is pending. If it is, we need not send new
-IPIs.
-
-Memory ordering:
-
-I was trying to handle the MP-pattern below. Consider the flag to be the
-pending bit. P0() is the IRQ work handler. P1() is the code calling
-irq_work_pending(). P0() already implicitly adds a memory barrier as a
-part of the atomic_fetch_andnot() before calling work->func(). For P1(),
-this patch adds the memory barrier as the atomic_read() in this patch's
-irq_work_pending() is not sufficient.
-
-        P0()
-        {
-                WRITE_ONCE(buf, 1);
-                WRITE_ONCE(flag, 1);
-        }
-
-        P1()
-        {
-                int r1;
-                int r2 = 0;
-
-                r1 = READ_ONCE(flag);
-                if (r1)
-                        r2 = READ_ONCE(buf);
-        }
-
-Note: This patch is included in the following:
-https://lore.kernel.org/lkml/20200722153017.024407984@infradead.org/
-
-This could be removed when the above patch gets merged.
-
-Cc: paulmck@kernel.org
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/irq_work.h |  1 +
- kernel/irq_work.c        | 11 +++++++++++
- 2 files changed, 12 insertions(+)
+ include/linux/entry-common.h | 16 ++++++++++++++++
+ kernel/sched/idle.c          | 17 +++++++++--------
+ 2 files changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
-index 30823780c192..b26466f95d04 100644
---- a/include/linux/irq_work.h
-+++ b/include/linux/irq_work.h
-@@ -42,6 +42,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu);
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index efebbffcd5cc..2ea0e09b00d5 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -369,4 +369,20 @@ void irqentry_exit_cond_resched(void);
+  */
+ void noinstr irqentry_exit(struct pt_regs *regs, irqentry_state_t state);
  
- void irq_work_tick(void);
- void irq_work_sync(struct irq_work *work);
-+bool irq_work_pending(struct irq_work *work);
- 
- #ifdef CONFIG_IRQ_WORK
- #include <asm/irq_work.h>
-diff --git a/kernel/irq_work.c b/kernel/irq_work.c
-index eca83965b631..2d206d511aa0 100644
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -24,6 +24,17 @@
- static DEFINE_PER_CPU(struct llist_head, raised_list);
- static DEFINE_PER_CPU(struct llist_head, lazy_list);
- 
-+bool irq_work_pending(struct irq_work *work)
++/**
++ * generic_idle_enter - Called during entry into idle for housekeeping.
++ */
++static inline void generic_idle_enter(void)
 +{
-+	/*
-+	 * Provide ordering to callers who may read other stuff
-+	 * after the atomic read (MP-pattern).
-+	 */
-+	bool ret = atomic_read_acquire(&work->flags) & IRQ_WORK_PENDING;
-+
-+	return ret;
++	rcu_idle_enter();
 +}
 +
- /*
-  * Claim the entry so that no one else will poke at it.
++/**
++ * generic_idle_enter - Called when exiting idle for housekeeping.
++ */
++static inline void generic_idle_exit(void)
++{
++	rcu_idle_exit();
++}
++
+ #endif
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 9c5637d866fd..269de55086c1 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -8,6 +8,7 @@
   */
+ #include "sched.h"
+ 
++#include <linux/entry-common.h>
+ #include <trace/events/power.h>
+ 
+ /* Linker adds these: start and end of __cpuidle functions */
+@@ -54,7 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
+ 
+ static noinline int __cpuidle cpu_idle_poll(void)
+ {
+-	rcu_idle_enter();
++	generic_idle_enter();
+ 	trace_cpu_idle_rcuidle(0, smp_processor_id());
+ 	local_irq_enable();
+ 	stop_critical_timings();
+@@ -64,7 +65,7 @@ static noinline int __cpuidle cpu_idle_poll(void)
+ 		cpu_relax();
+ 	start_critical_timings();
+ 	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
+-	rcu_idle_exit();
++	generic_idle_exit();
+ 
+ 	return 1;
+ }
+@@ -158,7 +159,7 @@ static void cpuidle_idle_call(void)
+ 
+ 	if (cpuidle_not_available(drv, dev)) {
+ 		tick_nohz_idle_stop_tick();
+-		rcu_idle_enter();
++		generic_idle_enter();
+ 
+ 		default_idle_call();
+ 		goto exit_idle;
+@@ -178,13 +179,13 @@ static void cpuidle_idle_call(void)
+ 		u64 max_latency_ns;
+ 
+ 		if (idle_should_enter_s2idle()) {
+-			rcu_idle_enter();
++			generic_idle_enter();
+ 
+ 			entered_state = call_cpuidle_s2idle(drv, dev);
+ 			if (entered_state > 0)
+ 				goto exit_idle;
+ 
+-			rcu_idle_exit();
++			generic_idle_exit();
+ 
+ 			max_latency_ns = U64_MAX;
+ 		} else {
+@@ -192,7 +193,7 @@ static void cpuidle_idle_call(void)
+ 		}
+ 
+ 		tick_nohz_idle_stop_tick();
+-		rcu_idle_enter();
++		generic_idle_enter();
+ 
+ 		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+ 		call_cpuidle(drv, dev, next_state);
+@@ -209,7 +210,7 @@ static void cpuidle_idle_call(void)
+ 		else
+ 			tick_nohz_idle_retain_tick();
+ 
+-		rcu_idle_enter();
++		generic_idle_enter();
+ 
+ 		entered_state = call_cpuidle(drv, dev, next_state);
+ 		/*
+@@ -227,7 +228,7 @@ static void cpuidle_idle_call(void)
+ 	if (WARN_ON_ONCE(irqs_disabled()))
+ 		local_irq_enable();
+ 
+-	rcu_idle_exit();
++	generic_idle_exit();
+ }
+ 
+ /*
 -- 
 2.17.1
 
