@@ -2,168 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4072E2552A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C242552BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgH1BpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 21:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727124AbgH1BpE (ORCPT
+        id S1728300AbgH1Byx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 21:54:53 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:45003 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbgH1Byw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 21:45:04 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54847C061264;
-        Thu, 27 Aug 2020 18:45:04 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id d18so7912111iop.13;
-        Thu, 27 Aug 2020 18:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=38INnuUjTFHLtUA45Nn3FEw2KFZHxnh4HKLBgG7stGo=;
-        b=Cg3EujFIDQ7ni52SCf2uI5ywuinZ3kzuBBLKeWuvvsmlZi+nZW1GacVnRYRb82OETG
-         fAFnbFLKVyW3S6tF3iWOKuTB6rjSoD4H+uG/d2K7frnQqskLDbVaOnYklfrNG+JCxRhR
-         qU0ISgTQnbP+wfH65ANjq8NeHHXYA8bCIAZW8QcOjfrFW3K13/0sjaISbirCG1/NdTDr
-         PTp9Ywpq7A9lqlMr2sigSv1JbSYcmrKRzepRgYIrhXL4g8rPD7MQUxShSf8ZotBMVaL0
-         o2ubilfeETvKGvhGGp8/Nxy/e/NmNrYplbtL3YuL+aIrBe0G22q45/RRwVjr6txCEc9E
-         vjQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=38INnuUjTFHLtUA45Nn3FEw2KFZHxnh4HKLBgG7stGo=;
-        b=EFZvZSZ8xVtufZ4vftnJFFnxxMEk4soapZ2wbShUWw7c/5sUW6DGNXnR4gtvk/76zG
-         icxvN25S+TD7Q3+n6cRXJ5idaalz0Ymhj4n6o8HP/hPadv5U9STY1e8EjE9chg+MmqE3
-         Fgvcmkq0OgjuSUD5hppD2H3R31uKgyhjsWCcxiHZ0ZmYxDGmJ5qRt2nZKgiGdcInkAzl
-         LZhc2gHMIu+pHMfLgSGNQKuG56lcQNRLOgqKXweIHG7vi89yFz+GsR+blJXUo9Rci1k6
-         kumbvvViauIhAStIi12VwQLR2Qe0v6c2PTCazTI6uMe55jLwmSVKSD8zeZ1RZrt4ZM10
-         Rb4Q==
-X-Gm-Message-State: AOAM533S0d/nOHiJeQ4MWATF8TVocRv84c1GnLGiblBViaJ26E4rF94T
-        prP+s3ZQFHfQE18COqDXNak+Z3TzAxe/FB47v8w=
-X-Google-Smtp-Source: ABdhPJypT+VAuP9IPpwXd6IBj34UiFng/du++myhAan6wmw240QaNF6nuqWJYF2cBL3zLW/ReOrrwwPSW69WMOa+FIA=
-X-Received: by 2002:a5d:924c:: with SMTP id e12mr19523575iol.28.1598579103322;
- Thu, 27 Aug 2020 18:45:03 -0700 (PDT)
+        Thu, 27 Aug 2020 21:54:52 -0400
+X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Aug 2020 21:54:51 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="37064319"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 28 Aug 2020 09:45:03 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(167078:0:AUTH_RELAY)
+        (envelope-from <johnny.chuang@emc.com.tw>); Fri, 28 Aug 2020 09:45:00 +0800 (CST)
+Received: from 192.168.55.71
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2481:0:AUTH_LOGIN)
+        (envelope-from <johnny.chuang@emc.com.tw>); Fri, 28 Aug 2020 09:44:58 +0800 (CST)
+From:   "Johnny.Chuang" <johnny.chuang@emc.com.tw>
+To:     "'Harry Cutts'" <hcutts@chromium.org>,
+        "'Johnny Chuang'" <johnny.chuang.emc@gmail.com>
+Cc:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
+        "'Benjamin Tissoires'" <benjamin.tissoires@redhat.com>,
+        "'Peter Hutterer'" <peter.hutterer@who-t.net>,
+        "'lkml'" <linux-kernel@vger.kernel.org>,
+        "'linux-input'" <linux-input@vger.kernel.org>,
+        "'James Chen'" <james.chen@emc.com.tw>,
+        "'Jennifer Tsai'" <jennifer.tsai@emc.com.tw>,
+        "'Paul Liang'" <paul.liang@emc.com.tw>,
+        "'Jeff Chuang'" <jeff.chuang@emc.com.tw>
+References: <1598492651-9072-1-git-send-email-johnny.chuang.emc@gmail.com> <CA+jURctrQcKsGwxZriX8bD3AQr-yh_J_Z7kkP+6HtD72Gt5DUw@mail.gmail.com>
+In-Reply-To: <CA+jURctrQcKsGwxZriX8bD3AQr-yh_J_Z7kkP+6HtD72Gt5DUw@mail.gmail.com>
+Subject: RE: [PATCH v2] Input: elants_i2c - Report resolution of ABS_MT_TOUCH_MAJOR by FW information.
+Date:   Fri, 28 Aug 2020 09:44:58 +0800
+Message-ID: <005b01d67cdc$d6b9abb0$842d0310$@emc.com.tw>
 MIME-Version: 1.0
-References: <a770d45d-b147-a8c5-b7f8-30d668cbed84@intel.com>
- <4BDFD364-798C-4537-A88E-F94F101F524B@amacapital.net> <CAMe9rOoTjSwRSPuqP6RKkDzPA_VPh5gVYRVFJ-ezAD4Et-FUng@mail.gmail.com>
- <CALCETrW=-ahC7GUCCyX7nPjCHfG3tiyDespud2Z7UbB6yWWWAA@mail.gmail.com>
-In-Reply-To: <CALCETrW=-ahC7GUCCyX7nPjCHfG3tiyDespud2Z7UbB6yWWWAA@mail.gmail.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Thu, 27 Aug 2020 18:44:27 -0700
-Message-ID: <CAMe9rOrt5hz6qsNAxPgdKCOhRcKKESv-D3rxdSfraeJ-LFHM4w@mail.gmail.com>
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQFRGjtInX7OpHFNBLKqABUOrfrToAHhntm3qkh3FuA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDUwMTBcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0xM2M4MjJhMC1lOGQwLTExZWEtODc2YS03YzVjZjg3NDk0NzhcYW1lLXRlc3RcMTNjODIyYTItZThkMC0xMWVhLTg3NmEtN2M1Y2Y4NzQ5NDc4Ym9keS50eHQiIHN6PSIyNzE2IiB0PSIxMzI0MzA1MjY5ODIyNTYyMjIiIGg9IlJaWkh1ZjZwa29WZEVKcGMyTDVId3hYdis0OD0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 6:35 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Thu, Aug 27, 2020 at 12:38 PM H.J. Lu <hjl.tools@gmail.com> wrote:
+> On Wed, 26 Aug 2020 at 18:44, Johnny Chuang
+> <johnny.chuang.emc@gmail.com> wrote:
 > >
-> > On Thu, Aug 27, 2020 at 11:56 AM Andy Lutomirski <luto@amacapital.net> =
-wrote:
-> > >
-> > >
-> > >
-> > > > On Aug 27, 2020, at 11:13 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> =
-wrote:
-> > > >
-> > > > =EF=BB=BFOn 8/27/2020 6:36 AM, Florian Weimer wrote:
-> > > >> * H. J. Lu:
-> > > >>>> On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.c=
-om> wrote:
-> > > >>>>>
-> > > >>>>> * Dave Martin:
-> > > >>>>>
-> > > >>>>>> You're right that this has implications: for i386, libc probab=
-ly pulls
-> > > >>>>>> more arguments off the stack than are really there in some sit=
-uations.
-> > > >>>>>> This isn't a new problem though.  There are already generic pr=
-ctls with
-> > > >>>>>> fewer than 4 args that are used on x86.
-> > > >>>>>
-> > > >>>>> As originally posted, glibc prctl would have to know that it ha=
-s to pull
-> > > >>>>> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.=
-  But
-> > > >>>>> then the u64 argument is a problem for arch_prctl as well.
-> > > >>>>>
-> > > >>>
-> > > >>> Argument of ARCH_X86_CET_DISABLE is int and passed in register.
-> > > >> The commit message and the C source say otherwise, I think (not su=
-re
-> > > >> about the C source, not a kernel hacker).
-> > > >
-> > > > H.J. Lu suggested that we fix x86 arch_prctl() to take four argumen=
-ts, and then keep MMAP_SHSTK as an arch_prctl().  Because now the map flags=
- and size are all in registers, this also solves problems being pointed out=
- earlier.  Without a wrapper, the shadow stack mmap call (from user space) =
-will be:
-> > > >
-> > > > syscall(_NR_arch_prctl, ARCH_X86_CET_MMAP_SHSTK, size, MAP_32BIT).
-> > >
-> > > I admit I don=E2=80=99t see a show stopping technical reason we can=
-=E2=80=99t add arguments to an existing syscall, but I=E2=80=99m pretty sur=
-e it=E2=80=99s unprecedented, and it doesn=E2=80=99t seem like a good idea.
+> > This patch adds a new behavior to report touch major resolution based
+> > on information provided by firmware.
 > >
-> > prctl prototype is:
-> >
-> > extern int prctl (int __option, ...)
-> >
-> > and implemented in kernel as:
-> >
-> >       int prctl(int option, unsigned long arg2, unsigned long arg3,
-> >                  unsigned long arg4, unsigned long arg5);
-> >
-> > Not all prctl operations take all 5 arguments.   It also applies
-> > to arch_prctl.  It is quite normal for different operations of
-> > arch_prctl to take different numbers of arguments.
->
-> If by "quite normal" you mean "does not happen", then I agree.
->
-> In any event, I will not have anything to do with a patch that changes
-> an existing syscall signature unless Linus personally acks it.  So if
-> you want to email him and linux-abi, be my guest.
+> > In initial process, driver acquires touch information from touch ic.
+> > This information contains of one flag about reporting resolution of
+> > ABS_MT_TOUCH_MAJOR is needed, or not.
+> > Touch driver will report touch major resolution after geting this flag.
+> 
+> I think this paragraph needs updating now that the firmware's reporting the
+> actual resolution instead of a flag.
 
-Can you think of ANY issues of passing more arguments to arch_prctl?
-syscall () provided by glibc always passes 6 arguments to the kernel.
-Arguments are already in the registers.  What kind of problems do
-you see?
+Thanks Harry, I will update patch v3 for this.
 
---=20
-H.J.
+> 
+> >
+> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+> > ---
+> > Changes in v2:
+> >   - register real resolution instead of true/false.
+> > ---
+> >  drivers/input/touchscreen/elants_i2c.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/input/touchscreen/elants_i2c.c
+> > b/drivers/input/touchscreen/elants_i2c.c
+> > index b0bd5bb..dc7f4a5 100644
+> > --- a/drivers/input/touchscreen/elants_i2c.c
+> > +++ b/drivers/input/touchscreen/elants_i2c.c
+> > @@ -151,6 +151,7 @@ struct elants_data {
+> >
+> >         bool wake_irq_enabled;
+> >         bool keep_power_in_suspend;
+> > +       u8 report_major_resolution;
+> >
+> >         /* Must be last to be used for DMA operations */
+> >         u8 buf[MAX_PACKET_SIZE] ____cacheline_aligned; @@ -459,6
+> > +460,9 @@ static int elants_i2c_query_ts_info(struct elants_data *ts)
+> >         rows = resp[2] + resp[6] + resp[10];
+> >         cols = resp[3] + resp[7] + resp[11];
+> >
+> > +       /* Decide if report resolution of ABS_MT_TOUCH_MAJOR */
+> > +       ts->report_major_resolution = resp[16];
+> > +
+> >         /* Process mm_to_pixel information */
+> >         error = elants_i2c_execute_command(client,
+> >                                            get_osr_cmd,
+> > sizeof(get_osr_cmd), @@ -1325,6 +1329,8 @@ static int
+> elants_i2c_probe(struct i2c_client *client,
+> >                              0, MT_TOOL_PALM, 0, 0);
+> >         input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
+> >         input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
+> > +       if (ts->report_major_resolution > 0)
+> > +               input_abs_set_res(ts->input, ABS_MT_TOUCH_MAJOR,
+> > + ts->report_major_resolution);
+> >
+> >         touchscreen_parse_properties(ts->input, true, &ts->prop);
+> >
+> > --
+> > 2.7.4
+> >
+> 
+> Harry Cutts
+> Chrome OS Touch/Input team
+
+--
+Johnny
+
