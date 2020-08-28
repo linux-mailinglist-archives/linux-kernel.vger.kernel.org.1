@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9A92556C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C4B2556C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgH1IpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 04:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
+        id S1728807AbgH1Ipf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 04:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728680AbgH1Iot (ORCPT
+        with ESMTP id S1728742AbgH1Iov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:44:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868D6C06121B;
-        Fri, 28 Aug 2020 01:44:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TQPuTYQQB4pOJ2VUNBqFXHekENNLvmCPnFhX6nzKkZk=; b=AFwI67gz692Isbnzz0zmHkhP9h
-        rgWUbjvv0vtvVMurV25ZzlWTnRX4oi9p+2IfPJfPtfQ+y7cD2fcTJ2zC3Ka6dNgoVoun+dQPxTVGy
-        fHGjUK8wBUN4HlEKlU7g9JXja8Po/j/WUzuKIRHBd7ng1/JwR+Jsbav+Py+NfVI3ZukRh0GULhVFu
-        /oUXFozYJJclo4iCgYkc87m4H9XPmrh6e9kl/AK/L93W5zoLiE3uCVDyf0bVeTUKT2jGLY47JOv0l
-        BCEg9z2CWLXlht0gb9FinnkmgX2DbgZfuB3lITyOdqOc0qL5eI85iIL0ClOBLK+1OqPs6e5jZmPpR
-        QF8UkRRQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBZza-0004nk-Om; Fri, 28 Aug 2020 08:44:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6B353003E5;
-        Fri, 28 Aug 2020 10:44:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8CF392C5F134E; Fri, 28 Aug 2020 10:44:11 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 10:44:11 +0200
-From:   peterz@infradead.org
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        linux-arch@vger.kernel.org, cameron@moodycamel.com,
-        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
-Subject: Re: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
-Message-ID: <20200828084411.GP1362448@hirez.programming.kicks-ass.net>
-References: <20200827161237.889877377@infradead.org>
- <20200827161754.359432340@infradead.org>
- <20200828030059.d6618caf5b0214c424b941df@kernel.org>
+        Fri, 28 Aug 2020 04:44:51 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0FDC061236
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:51 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id k1so80149vkb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i68K1oVW//N2+LJY/Znt9A9GXSvc2knY+uF5OLZlW3E=;
+        b=T11C7mphpjdwy94FR3QiUCw/s5gZrgGyEYLzUcAk2VBMcgtTsIiASblHRXVOWjTR8f
+         fSKqXBAkgf1x0Aawx9GdU41IiybGpPpfdoZ24viRcWevKccV7/LcywLkUf39qPSUIgHM
+         gs3BKu6/VuSar3C7KsUUdC7YkhhrLIOQuBKubp2UruUbOs/EryrB50B+emHFGs2JTcpL
+         VnPJw8ECgwjn62NENrOKdNdJnG69PlgCedXkB67QgRMqh5EHp/8AIAUYzOyGUVsoAk4o
+         QKcK/gsJaQdig0KI4JuE1N5YPUHbqVZcGeOdMXpK93TV0Xm1DzaetY5de3wKBWnGDfMQ
+         EuFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i68K1oVW//N2+LJY/Znt9A9GXSvc2knY+uF5OLZlW3E=;
+        b=dvHnuqBYYZQDebQSMCxygmE3Uu7xgiVy6so6MAS8so/A9CTNavamELV1S4+dY0/9nh
+         mtvFgPSdKfBHA2objcfAyOqAXFsaHz/31LTZX7nzIKs3BHFzYn5LQ+QesN3Q4oLTY+vn
+         Btsc//EXBJFvgl/ffqopbkyFexxz/Dqs4eu6DlZxafoHSoO3fAUYrWaWx2wvsBP3MeNf
+         DE6oXfBUzZ/6yPif8A+7IT+WjIW1E3U+EL4BdnTMI30QAXSWUwFpxL0iDs3UA+4R0EMZ
+         ZOPYJejGCy6UzMNz5ysVHHJI5CrnnKgHkL0u2nzTap3qpbVJayRO5CQDm5XgCT6pLY1N
+         lyPg==
+X-Gm-Message-State: AOAM531DU/rsnDvU9zCaGlkse2wKSb0vXphH2eVq7Sddmlm7gxOPjliV
+        r8E/v+CsVv5So36wi1FPIdvdJc7IQwgtO3OxY5sgXg==
+X-Google-Smtp-Source: ABdhPJwyLUVJLFv8vKvkEYsSU7ILzcE5NWJavW5HwQPyZHyyUDM1gvnGVTI+2DM9xnyhEB7GbwL/uRVULNGsWzDFs6Y=
+X-Received: by 2002:a1f:2a48:: with SMTP id q69mr199169vkq.69.1598604290613;
+ Fri, 28 Aug 2020 01:44:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828030059.d6618caf5b0214c424b941df@kernel.org>
+References: <1598548861-32373-1-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <1598548861-32373-1-git-send-email-skomatineni@nvidia.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 28 Aug 2020 10:44:12 +0200
+Message-ID: <CAPDyKFo+1XzHaS55jV3KsjkGA5a6A_NovLFrBw66Vg3xzTNkRQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/7] Fix timeout clock used by hardware data timeout
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 03:00:59AM +0900, Masami Hiramatsu wrote:
-> On Thu, 27 Aug 2020 18:12:40 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > +static void invalidate_rp_inst(struct task_struct *t, struct kretprobe *rp)
-> > +{
-> > +	struct invl_rp_ipi iri = {
-> > +		.task = t,
-> > +		.rp = rp,
-> > +		.done = false
-> > +	};
-> > +
-> > +	for (;;) {
-> > +		if (try_invoke_on_locked_down_task(t, __invalidate_rp_inst, rp))
-> > +			return;
-> > +
-> > +		smp_call_function_single(task_cpu(t), __invalidate_rp_ipi, &iri, 1);
-> > +		if (iri.done)
-> > +			return;
-> > +	}
-> 
-> Hmm, what about making a status place holder and point it from
-> each instance to tell it is valid or not?
-> 
-> struct kretprobe_holder {
-> 	atomic_t refcnt;
-> 	struct kretprobe *rp;
-> };
-> 
-> struct kretprobe {
-> ...
-> 	struct kretprobe_holder	*rph;	// allocate at register
-> ...
-> };
-> 
-> struct kretprobe_instance {
-> ...
-> 	struct kretprobe_holder	*rph; // free if refcnt == 0
-> ...
-> };
-> 
-> cleanup_rp_inst(struct kretprobe *rp)
-> {
-> 	rp->rph->rp = NULL;
-> }
-> 
-> kretprobe_trampoline_handler()
-> {
-> ...
-> 	rp = READ_ONCE(ri->rph-rp);
-> 	if (likely(rp)) {
-> 		// call rp->handler
-> 	} else
-> 		rcu_call(ri, free_rp_inst_rcu);
-> ...
-> }
-> 
-> free_rp_inst_rcu()
-> {
-> 	if (!atomic_dec_return(ri->rph->refcnt))
-> 		kfree(ri->rph);
-> 	kfree(ri);
-> }
-> 
-> This increase kretprobe_instance a bit, but make things simpler.
-> (and still keep lockless, atomic op is in the rcu callback).
+On Thu, 27 Aug 2020 at 19:21, Sowjanya Komatineni
+<skomatineni@nvidia.com> wrote:
+>
+> Tegra210/Tegra186/Tegra194 has incorrectly enabled
+> SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
+>
+> Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
+> all the time for hardware data timeout instead of SDCLK and this TMCLK
+> need to be kept enabled by Tegra sdmmc driver.
+>
+> This series includes patches to fix this for Tegra210/Tegra186/Tegra194.
+>
+> These patches need to be manually backported to 4.19.
+>
+> Will send patches for 4.19 backport separately.
+>
+> Delta between patch versions:
+> [v7]:   v7 has below change
+>         - v6 has implementation for retrieving tmclk irrespective of
+>           clocks order. But based in internal discussion with Thierry
+>           this is not required as typically order specified in DT
+>           bindings is the order validator want to see in DT.
+>
+> [v6]:   v5 is sent out mistakenly with incorrect patches.
+>         v6 includes proper patches addressing v4 feedback
+>         - updated dt-binding doc to be more clear
+>         - updated Tegra sdhci driver to retrieve sdhci and tmclk clocks
+>           based on no. of clocks in sdhci device node as old device trees
+>           do not use sdhci clock name and this allows proper clock retrival
+>           irrespective of sdhci and tmclk clocks order in device tree.
+>         - Added separate quirk for identifying SoC's supporting separate
+>           timeout clock to be more clear.
+>
+> [v5]:   Include below changes based on v4 feedback
+>         - updated dt-binding doc to be more clear
+>         - updated Tegra sdhci driver to retrieve sdhci and tmclk clocks
+>           based on no. of clocks in sdhci device node as old device trees
+>           do not use sdhci clock name and this allows proper clock retrival
+>           irrespective of sdhci and tmclk clocks order in device tree.
+>         - Added separate quirk for identifying SoC's supporting separate
+>           timeout clock to be more clear.
+>
+> [v4]:   Include additional dt-binding patch
+>
+> [v3]:   Same as v2 with fixes tag
+>
+> [v2]:   Includes minor fix
+>         - Patch-0006: parentheses around operand of '!'
+>
+> Sowjanya Komatineni (7):
+>   sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+>   sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+>   dt-bindings: mmc: tegra: Add tmclk for Tegra210 and later
+>   arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+>   arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+>   arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+>   sdhci: tegra: Add missing TMCLK for data timeout
+>
+>  .../bindings/mmc/nvidia,tegra20-sdhci.txt          | 32 +++++++++++--
+>  arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 20 ++++----
+>  arch/arm64/boot/dts/nvidia/tegra194.dtsi           | 15 +++---
+>  arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 20 ++++----
+>  drivers/mmc/host/sdhci-tegra.c                     | 55 ++++++++++++++++++++--
+>  5 files changed, 113 insertions(+), 29 deletions(-)
+>
+> --
+> 2.7.4
+>
 
-Yes, much better.
+Applied for fixes, thanks!
 
-Although I'd _love_ to get rid of rp->data_size, then we can simplify
-all of this even more. I was thinking we could then have a single global
-freelist thing and add some per-cpu cache to it (say 4-8 entries) to
-avoid the worst contention.
-
-And then make function-graph use this, instead of the other way around
-:-)
+Kind regards
+Uffe
