@@ -2,240 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90D8255C9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B2F255CAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgH1Oei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:34:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:50858 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgH1Oef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:34:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C05EE1FB;
-        Fri, 28 Aug 2020 07:34:34 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FFB43F71F;
-        Fri, 28 Aug 2020 07:34:33 -0700 (PDT)
-Subject: Re: [PATCH 4/4] kselftests/arm64: add PAuth tests for single threaded
- consistency and key uniqueness
-To:     Boyan Karatotev <boyan.karatotev@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     amit.kachhap@arm.com, boian4o1@gmail.com,
-        Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <20200828131606.7946-1-boyan.karatotev@arm.com>
- <20200828131606.7946-5-boyan.karatotev@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <5c6622cb-e81f-c175-8150-b14009877468@arm.com>
-Date:   Fri, 28 Aug 2020 15:36:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727924AbgH1Ohe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbgH1Ohc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:37:32 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD08BC06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:37:31 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m22so1571399ljj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4mU7k790HuWLIpNETwnz7Qzfl109PAxDhdZuzU9xKJQ=;
+        b=UJNfiaDzdbzf5ty9QvZhyk7ZCWmYoGqsdmjASmP7eTi9cKLQeuopls1a5lNFUBiiD4
+         tbg9XnZc0fkbNQ4QIdwJf6V9sLu/nuLmygZPU3mxuHYBVqNTDJ1qF2xIampR2yzGbdX2
+         UITbKOG5KIB5poCrDMUHFjBXCQDjgnYQ4eB0K68KyrCAkdGPw+CYsQ7TG5DvY6BvrPwX
+         bzpyanzBxhLqulrClklfkTkTynK9KX3UJCMbRShHzvJV8SI6hca4pKpCezGkX2MKvR0N
+         hHGem4BZITKd0S1zadSg/qZG/ac6vwbo2C+BN1l5CKXrT3pE8H+ThQzYolLv4sYF+/Y8
+         9yzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4mU7k790HuWLIpNETwnz7Qzfl109PAxDhdZuzU9xKJQ=;
+        b=EaZmo9E7rrcKzpAOArdgTYJWRJ6DhQ8onv8jQrCLdpnW0M24S8RG2yIGr9pwR0i8lY
+         kr9z4h9jEZmXIfUHYR3GW1fVKmZ+boeMoNskXjdRaIHKCIoyiuhyXSkLP64jnHlibGd1
+         PjD5aTCPV+kf7wiK3wNWSfynyHf7NpfAfV0J9z0FZyK1wd11QE43xC7YUolfJf2B1AvI
+         nKgGBkBuoBGq21uBslgisV06xkv8bl89dBXfb3MucT4nrXlYHTp/9obtTJ4jgt1ZuiVC
+         5j4tdyiONTwmfnrZqUUT0i4ClG+BFCd1SlhxFH7kbbftBuzJNc96G0t007U1rC02e39J
+         y4xQ==
+X-Gm-Message-State: AOAM532sOGtXcTD+KrTBP1+0RScxCvkJMbdVTZYIKkZ2G5gNJyTxq8Z+
+        BLie/5QTdju8wtubUiPQuoonhUasKdXKkrcv5CQzHA==
+X-Google-Smtp-Source: ABdhPJwBaJfqMTHl4gS94f7uT2FW6lkcdrgQLQnL1S8tsLSV8XSM4cZOnybzOcN13V3S4EZHTiST1oz2Juyk/AZAgh8=
+X-Received: by 2002:a2e:8144:: with SMTP id t4mr1139879ljg.100.1598625450137;
+ Fri, 28 Aug 2020 07:37:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200828131606.7946-5-boyan.karatotev@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200827140020.159627-1-warthog618@gmail.com> <CACRpkdZZMbfpKy4gcfAzNq53LkYLcL9wm3Qtzyj_K8vkUW9RfQ@mail.gmail.com>
+ <CAMpxmJXRY2wqqN3SzfJN+QTWAHYSYz4vEjLKWU82Y=PAmcm=5w@mail.gmail.com> <20200827224742.GA3714@sol>
+In-Reply-To: <20200827224742.GA3714@sol>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 Aug 2020 16:37:19 +0200
+Message-ID: <CACRpkdZroNFFsHoBHUFTUUQij7nOcPQiXP-567+fH-Xerv=L4w@mail.gmail.com>
+Subject: Re: [PATCH v5 00/20] gpio: cdev: add uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 28, 2020 at 12:47 AM Kent Gibson <warthog618@gmail.com> wrote:
 
+> The particular use case I am considering is one I had been asked about -
+> changing a requested line from input with edge detection to output, and
+> vice versa. Losing interrupts isn't really an issue for this use case -
+> it is expected.  Yet the current implementation requires a re-request.
 
-On 8/28/20 2:16 PM, Boyan Karatotev wrote:
-> PAuth adds 5 different keys that can be used to sign addresses.
-> 
-> Add a test that verifies that the kernel initializes them uniquely and
-> preserves them across context switches.
->
+This is possible to do for in-kernel users, but I don't know if that makes
+sense for userspace. It is for one-offs and prototyping after all, there
+is no need (IMO) to make it overly convenient for users to implement
+all kind of weirdness in userspace unless there is a very real use case.
 
-Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
-> ---
->  tools/testing/selftests/arm64/pauth/pac.c | 116 ++++++++++++++++++++++
->  1 file changed, 116 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
-> index 16dea47b11c7..718f49adc275 100644
-> --- a/tools/testing/selftests/arm64/pauth/pac.c
-> +++ b/tools/testing/selftests/arm64/pauth/pac.c
-> @@ -1,10 +1,13 @@
->  // SPDX-License-Identifier: GPL-2.0
->  // Copyright (C) 2020 ARM Limited
->  
-> +#define _GNU_SOURCE
-> +
->  #include <sys/auxv.h>
->  #include <sys/types.h>
->  #include <sys/wait.h>
->  #include <signal.h>
-> +#include <sched.h>
->  
->  #include "../../kselftest_harness.h"
->  #include "helper.h"
-> @@ -21,6 +24,7 @@
->   * The VA space size is 48 bits. Bigger is opt-in.
->   */
->  #define PAC_MASK (~0xff80ffffffffffff)
-> +#define ARBITRARY_VALUE (0x1234)
->  #define ASSERT_PAUTH_ENABLED() \
->  do { \
->  	unsigned long hwcaps = getauxval(AT_HWCAP); \
-> @@ -66,13 +70,36 @@ int are_same(struct signatures *old, struct signatures *new, int nkeys)
->  	return res;
->  }
->  
-> +int are_unique(struct signatures *sign, int nkeys)
-> +{
-> +	size_t vals[nkeys];
-> +
-> +	vals[0] = sign->keyia & PAC_MASK;
-> +	vals[1] = sign->keyib & PAC_MASK;
-> +	vals[2] = sign->keyda & PAC_MASK;
-> +	vals[3] = sign->keydb & PAC_MASK;
-> +
-> +	if (nkeys >= 4)
-> +		vals[4] = sign->keyg & PAC_MASK;
-> +
-> +	for (int i = 0; i < nkeys - 1; i++) {
-> +		for (int j = i + 1; j < nkeys; j++) {
-> +			if (vals[i] == vals[j])
-> +				return 0;
-> +		}
-> +	}
-> +	return 1;
-> +}
-> +
->  int exec_sign_all(struct signatures *signed_vals, size_t val)
->  {
->  	int new_stdin[2];
->  	int new_stdout[2];
->  	int status;
-> +	int i;
->  	ssize_t ret;
->  	pid_t pid;
-> +	cpu_set_t mask;
->  
->  	ret = pipe(new_stdin);
->  	if (ret == -1) {
-> @@ -86,6 +113,20 @@ int exec_sign_all(struct signatures *signed_vals, size_t val)
->  		return -1;
->  	}
->  
-> +	/*
-> +	 * pin this process and all its children to a single CPU, so it can also
-> +	 * guarantee a context switch with its child
-> +	 */
-> +	sched_getaffinity(0, sizeof(mask), &mask);
-> +
-> +	for (i = 0; i < sizeof(cpu_set_t); i++)
-> +		if (CPU_ISSET(i, &mask))
-> +			break;
-> +
-> +	CPU_ZERO(&mask);
-> +	CPU_SET(i, &mask);
-> +	sched_setaffinity(0, sizeof(mask), &mask);
-> +
->  	pid = fork();
->  	// child
->  	if (pid == 0) {
-> @@ -192,6 +233,38 @@ TEST(pac_instructions_not_nop_generic)
->  	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
->  }
->  
-> +TEST(single_thread_unique_keys)
-> +{
-> +	int unique = 0;
-> +	int nkeys = NKEYS;
-> +	struct signatures signed_vals;
-> +	unsigned long hwcaps = getauxval(AT_HWCAP);
-> +
-> +	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
-> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
-> +	if (!(hwcaps & HWCAP_PACG)) {
-> +		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
-> +		nkeys = NKEYS - 1;
-> +	}
-> +
-> +	/*
-> +	 * The PAC field is up to 7 bits. Even with unique keys there is about
-> +	 * 5% chance for a collision.  This chance rapidly increases the fewer
-> +	 * bits there are, a comparison of the keys directly will be more
-> +	 * reliable All signed values need to be unique at least once out of n
-> +	 * attempts to be certain that the keys are unique
-> +	 */
-> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
-> +		if (nkeys == NKEYS)
-> +			sign_all(&signed_vals, i);
-> +		else
-> +			sign_specific(&signed_vals, i);
-> +		unique |= are_unique(&signed_vals, nkeys);
-> +	}
-> +
-> +	ASSERT_EQ(1, unique) TH_LOG("keys clashed every time");
-> +}
-> +
->  /*
->   * fork() does not change keys. Only exec() does so call a worker program.
->   * Its only job is to sign a value and report back the resutls
-> @@ -227,5 +300,48 @@ TEST(exec_unique_keys)
->  	ASSERT_EQ(1, different) TH_LOG("exec() did not change keys");
->  }
->  
-> +TEST(context_switch_keep_keys)
-> +{
-> +	int ret;
-> +	struct signatures trash;
-> +	struct signatures before;
-> +	struct signatures after;
-> +
-> +	ASSERT_PAUTH_ENABLED();
-> +
-> +	sign_specific(&before, ARBITRARY_VALUE);
-> +
-> +	/* will context switch with a process with different keys at least once */
-> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-> +
-> +	sign_specific(&after, ARBITRARY_VALUE);
-> +
-> +	ASSERT_EQ(before.keyia, after.keyia) TH_LOG("keyia changed after context switching");
-> +	ASSERT_EQ(before.keyib, after.keyib) TH_LOG("keyib changed after context switching");
-> +	ASSERT_EQ(before.keyda, after.keyda) TH_LOG("keyda changed after context switching");
-> +	ASSERT_EQ(before.keydb, after.keydb) TH_LOG("keydb changed after context switching");
-> +}
-> +
-> +TEST(context_switch_keep_keys_generic)
-> +{
-> +	int ret;
-> +	struct signatures trash;
-> +	size_t before;
-> +	size_t after;
-> +
-> +	ASSERT_GENERIC_PAUTH_ENABLED();
-> +
-> +	before = keyg_sign(ARBITRARY_VALUE);
-> +
-> +	/* will context switch with a process with different keys at least once */
-> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-> +
-> +	after = keyg_sign(ARBITRARY_VALUE);
-> +
-> +	ASSERT_EQ(before, after) TH_LOG("keyg changed after context switching");
-> +}
-> +
->  TEST_HARNESS_MAIN
->  
-> 
-
--- 
-Regards,
-Vincenzo
+Yours,
+Linus Walleij
