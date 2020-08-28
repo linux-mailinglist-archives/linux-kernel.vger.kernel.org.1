@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7619255975
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93481255982
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbgH1Lfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 07:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        id S1729279AbgH1Lki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 07:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729218AbgH1Ld1 (ORCPT
+        with ESMTP id S1729268AbgH1LiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 07:33:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C359C061233
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:32:54 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g1so316573pgm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:32:54 -0700 (PDT)
+        Fri, 28 Aug 2020 07:38:12 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D0EC061232;
+        Fri, 28 Aug 2020 04:38:05 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t4so578325iln.1;
+        Fri, 28 Aug 2020 04:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=sJlJAZsPRsD+xt0Gc+U8XLwW9T9mmZah5YOzeNxtWsw=;
-        b=uLYQM+vka2RYRGHsi4U4RPVXWSwQT64Ppm672AWI6TdxMES7oeAOuyYlyXLS5GP0Dw
-         /CRL5j0DcH8Alr1MKSZZIByH9Tw1K3SLiAPyb8r+vfZHlJ6Kre1472BCZkWsCb7OhhKz
-         suR4BdACHkLBSAFp7mTZxp/bAQ61zlm2Uj6evqvaY6NeIKXjqiPytAGo5Hq+jID/tc+I
-         lfU2csEiwNa8sHYqTK1aB9nh8fnGyF/4axHmk8jTRvjYdH0gdtNpeKb2Q74dMF+if8DE
-         9rTfqd+skkNnsWm9DAOfU4MP21N9/GXak5E9sAGbhvFWQBLYbH0PQBMqMu5ZbYezi+x4
-         NI3g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YkhG0d/qOT3/PWJBg69FZnqsmWy5PRGz7aCU+rLDXxM=;
+        b=pjn/h9gD/HjPLZEqJAJsF2uf24PYQdDAWmiD1wPfNvudgPxGPyd4OzHlALIT+VSh5Y
+         T1zcvcf/2OMybRQ2gT7gBjFIjjRInfx9UkYnnINep6/pptBICO/GXDmFxw0v7PeiW4wu
+         XDkRvqRvF6dHqX/VMJ7Qse/4QKYNFSQJSGuTljEs4hS0CsaRzZHiJRn515VXp64VUyHo
+         mUROMmrauEJmNQQXeTDOGVVV/4ge7l3vFWlkNU5rIlNJrK6Y2W9Lp4B2rTeyXqaieX2Y
+         nXNYq1z4Vsdd0w5W3dTDzbIzp/Y2343ZT6F4T5GYEDa/0jKrQnYPkFGbTDr0W4yLGmCr
+         XMHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=sJlJAZsPRsD+xt0Gc+U8XLwW9T9mmZah5YOzeNxtWsw=;
-        b=LOXO8M8/32sFdC+C486TI7yiUzj1+0kWPBxsrN+CypzMTClaky2TPG0RobI8g7wKv5
-         Kx9MLJmAYO/ZWzSuN+M/YP73jy/CYGeTAboeVHtRNj45/4UOEKqvzjiu0wnsj7UE6q4l
-         sKE3Qe0ZfoS90vONkR3mhlkqe3vG3hB6qKoKvPcQx7N4hhFyYCVJvchGKxAPJqK76iGw
-         zh2+B727cgLiA42Jx2xgnDFn0lKkl0uVtY4hh1aPGbaeaFQxvk3++cpI6c3m/AN72Kcn
-         dH04zhfWIdqiIlQhj0AV5jIohPR0ziflyUdOxjceQK6W/7PuqBC3gqTuFl85ANILVYxw
-         Emaw==
-X-Gm-Message-State: AOAM530GkKI5xuuGzLoAe7Rt7PAbJ1cJ4JJ5WbRTaT/LZJiEKXTjUfbt
-        Ks0Moa7iYCX4m2FrBR3S0LY=
-X-Google-Smtp-Source: ABdhPJxKmkf+J/hlM82diV7dv+qCAjQqm8Iz8p0rYb0Kow+MfjgaWD3fHOVXXswU/IrjgWfNN/qwVA==
-X-Received: by 2002:a63:4246:: with SMTP id p67mr938773pga.110.1598614373289;
-        Fri, 28 Aug 2020 04:32:53 -0700 (PDT)
-Received: from cosmos ([103.113.142.250])
-        by smtp.gmail.com with ESMTPSA id q71sm1158750pja.9.2020.08.28.04.32.49
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 28 Aug 2020 04:32:52 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 17:02:46 +0530
-From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-To:     mhiramat@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        davem@davemloft.net, oleg@redhat.com, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, tglx@linutronix.de, bp@alien8.de,
-        hpa@zytor.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kprobes, x86/ptrace.h: fix regs argument order for i386
-Message-ID: <20200828113242.GA1424@cosmos>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YkhG0d/qOT3/PWJBg69FZnqsmWy5PRGz7aCU+rLDXxM=;
+        b=qobOkPolgRwz6XBHweJZq2qYVObyAJizRjhB0srUoh08mGQ6mw6XjhawUF23MAYjs5
+         2ciKvZHkw0KAx3QEhUVpXDLBkN2TnPi8SiJF3fEzpnddEB/76DwmqPI3HEpRNeT2GwYh
+         G/ng4c1WqlJXJl81bxAjp0d+Qc7Tu/qiPrUpSyn8QuufkpBkjjs2FsCzUOsCFLuJ2eWV
+         Sw4LfBvEjtsu4Q9Eku/ajvNk8TvhB1McGb9f8NKrfDKPUmfMW9ptfjLZzySFaMwJxSVm
+         n6bjgLQx6Q/Q2xm2oe7HsxxnulIE3FRU+PJEMhaj8ouebE2yUw5JY/j1Iyi09rR3CWJd
+         3OeQ==
+X-Gm-Message-State: AOAM5301TYOwcegUa9vpG9udVlQ0j0FCyjE4GHzfdRMcnYSCJMplzXro
+        lA6EFoYg2kvoK1qyq+2P5huZi+kARj0MuxDyTLM=
+X-Google-Smtp-Source: ABdhPJwHi2iqfV/mS52ggNLcex3m9VMBQ2/QGNsUdS0LRP4Op+NbUqXOoljtmaRM1TqvP73cHCEfd4beFso+xHIV+0Y=
+X-Received: by 2002:a05:6e02:586:: with SMTP id c6mr1122698ils.13.1598614684703;
+ Fri, 28 Aug 2020 04:38:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <a770d45d-b147-a8c5-b7f8-30d668cbed84@intel.com>
+ <4BDFD364-798C-4537-A88E-F94F101F524B@amacapital.net> <CAMe9rOoTjSwRSPuqP6RKkDzPA_VPh5gVYRVFJ-ezAD4Et-FUng@mail.gmail.com>
+ <CALCETrW=-ahC7GUCCyX7nPjCHfG3tiyDespud2Z7UbB6yWWWAA@mail.gmail.com>
+ <CAMe9rOrt5hz6qsNAxPgdKCOhRcKKESv-D3rxdSfraeJ-LFHM4w@mail.gmail.com> <87v9h3thj9.fsf@oldenburg2.str.redhat.com>
+In-Reply-To: <87v9h3thj9.fsf@oldenburg2.str.redhat.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Fri, 28 Aug 2020 04:37:28 -0700
+Message-ID: <CAMe9rOr=BZw3GyXf0g6tAZnfa8NbamoyBoU9KqoxtHg9c2yZhw@mail.gmail.com>
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On i386, the order of parameters passed on regs is eax,edx,and ecx
-(as per regparm(3) calling conventions).
+On Thu, Aug 27, 2020 at 11:24 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * H. J. Lu:
+>
+> > Can you think of ANY issues of passing more arguments to arch_prctl?
+>
+> On x32, the glibc arch_prctl system call wrapper only passes two
+> arguments to the kernel, and applications have no way of detecting that.
+> musl only passes two arguments on all architectures.  It happens to work
+> anyway with default compiler flags, but that's an accident.
 
-Change the mapping in regs_get_kernel_argument(), so that arg1=ax
-arg2=dx, and arg3=cx.
+In the current glibc, there is no arch_prctl wrapper for i386.  There are
+arch_prctl wrappers with 2 arguments for x86-64 and x32.  But this isn't an
+issue for glibc since glibc is both the provider and the user of the new
+arch_prctl extension.  Besides,
 
-Running the selftests testcase kprobes_args_use.tc shows the result
-as passed.
+long syscall(long number, ...);
 
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
----
- arch/x86/include/asm/ptrace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+is always available.
 
-diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-index 40aa69d..d8324a2 100644
---- a/arch/x86/include/asm/ptrace.h
-+++ b/arch/x86/include/asm/ptrace.h
-@@ -327,8 +327,8 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
- 	static const unsigned int argument_offs[] = {
- #ifdef __i386__
- 		offsetof(struct pt_regs, ax),
--		offsetof(struct pt_regs, cx),
- 		offsetof(struct pt_regs, dx),
-+		offsetof(struct pt_regs, cx),
- #define NR_REG_ARGUMENTS 3
- #else
- 		offsetof(struct pt_regs, di),
 -- 
-2.7.4
-
+H.J.
