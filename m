@@ -2,151 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFCB255BF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565D4255BCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgH1OGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:06:15 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46516 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgH1OFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:05:44 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07SBFRav012670;
-        Fri, 28 Aug 2020 06:15:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598613327;
-        bh=LpqrOHF44XfOEG7neuggXZZ3FacN1nbqF6F4qL4SNjQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ip3yFS34DLh4CPtLcj8I7JkeKE8wFi7RHZjNiSW2xQdhgxCcEzYx8wBLlPSnPDbv3
-         sBV4xBmdi+SjuuaKpkOwwrxXT6QBrsjFmWCJ8pw6CT6HJIdyeh6ZjKFWsY1WC62Tsq
-         3NLu/sZw3PTmKamSYjIybMSnj8z382yA8BEKad3g=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07SBFRYR100008
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 28 Aug 2020 06:15:27 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 28
- Aug 2020 06:15:26 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 28 Aug 2020 06:15:26 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07SBFO20074789;
-        Fri, 28 Aug 2020 06:15:24 -0500
-Subject: Re: [PATCH v5 2/2] Add Intel LGM soc DMA support.
-To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>,
-        <dmaengine@vger.kernel.org>, <vkoul@kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <andriy.shevchenko@intel.com>,
-        <cheol.yong.kim@intel.com>, <qi-ming.wu@intel.com>,
-        <chuanhua.lei@linux.intel.com>, <malliamireddy009@gmail.com>
-References: <cover.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <cdd26d104000c060d85a0c5f8abe8492e4103de5.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <fbc98cdb-3b50-cbcc-0e90-c9d6116566d1@ti.com>
- <bf3e4422-b023-4148-9aa6-60c4d74fe5a9@linux.intel.com>
- <3aea19e6-de96-12ba-495c-94b3b313074d@ti.com>
- <51ed096a-d211-9bab-bf1e-44f912b2a20e@linux.intel.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <831fadff-8127-7634-32be-0000e69e0d94@ti.com>
-Date:   Fri, 28 Aug 2020 14:17:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727825AbgH1OBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:01:34 -0400
+Received: from mail-dm6nam12on2048.outbound.protection.outlook.com ([40.107.243.48]:64737
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726550AbgH1N74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:59:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GaxXSNSIrAaJDfeUcJPLJOoBkPVaZBz8vBrL1DHb7lcF8+o4uNn8yodOUk/WyQTDMnvUJ4hn+WEIE7WeuSsyNWd3rcSAtl4hWwHTenUo6YXvtq3DJbCqEZrqxLApgMgJYTUTNkuMfpmts/T8M0Ux9SSeB/pbPP4UJdCBND8WkXLokGbSA+pN3oKQtdM/fZjINKkezOPj8VHImVeR0/lA2dcKhzFzblTcr3C8tyG/nCDrf+uwwDY5bhikGO7ymkX6eDKtYRupunIk15s0mg6ztbHXorYlDSVAnVgOthftWRiS1JuzNU9SErRXBLYJ+1/b6C7qI35IAGIcvUp4aHIXhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ODr807QNJv9l/eM4eFpjvTeYc+chEjWpdMZeqwpfWk8=;
+ b=B9pFxAjKF4R2GzIlxMt3qmiziJkW6ApqzA/WEmVMTGu86pu6ZAZe1LB1r1cGJehF5byjxmEV6eaS25RM41V2CfoIru07HCK0Kpe7eb0jxFhMDPUGESuQ2jl1l0ui8Pe7JMJ3XXdRzvSuWEsLdAbmJdnOvz80RLphGT8kyhhlX5Uozp0YAvtYzZcsnL+ZPk5aOAkeCgDPAUk7eptuT3YJqcTb6r6o4GNo+f36/LHdyAAeARVi5gsaWjv5vHo/fECZnjm+mQPROTSu6cZaQ11KaIFP8BGeDiqrLPim6y1ab7zMiwRZpQrjWwhCPx2h84BY8vaVtWSunBfNu7SePVTpig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ODr807QNJv9l/eM4eFpjvTeYc+chEjWpdMZeqwpfWk8=;
+ b=Eq5j5GPItKh92gSmybwYRW//BQDC2AToSFzo+cZyynmJg4AyzvDeTU3GKPt23kUamoO7vYmAC2TQxUnCTJVs8cn+icDb2nuJWG58D/CblnvjZH0mDUsK0RXKJmzOYBrLvOddHDxFo+Dr7/bS2gTLbokIZThY6JJAQNw11PbM85E=
+Received: from SN4PR0401CA0036.namprd04.prod.outlook.com
+ (2603:10b6:803:2a::22) by MW2PR02MB3884.namprd02.prod.outlook.com
+ (2603:10b6:907:4::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Fri, 28 Aug
+ 2020 13:40:13 +0000
+Received: from SN1NAM02FT049.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2a:cafe::3e) by SN4PR0401CA0036.outlook.office365.com
+ (2603:10b6:803:2a::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Fri, 28 Aug 2020 13:40:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT049.mail.protection.outlook.com (10.152.72.166) with Microsoft SMTP
+ Server id 15.20.3326.19 via Frontend Transport; Fri, 28 Aug 2020 13:40:13
+ +0000
+Received: from [149.199.38.66] (port=58589 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBebS-0004sL-MZ; Fri, 28 Aug 2020 06:39:38 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBec0-00065Q-NY; Fri, 28 Aug 2020 06:40:12 -0700
+Received: from xsj-pvapsmtp01 (mailhost.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 07SDe89C024460;
+        Fri, 28 Aug 2020 06:40:08 -0700
+Received: from [10.140.6.59] (helo=xhdshubhraj40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBebw-0005it-0j; Fri, 28 Aug 2020 06:40:08 -0700
+From:   Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+To:     linux-clk@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, sboyd@kernel.org, robh+dt@kernel.org,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: [PATCH v6 1/8] dt-bindings: add documentation of xilinx clocking wizard
+Date:   Fri, 28 Aug 2020 19:09:49 +0530
+Message-Id: <1598621996-31040-2-git-send-email-shubhrajyoti.datta@xilinx.com>
+X-Mailer: git-send-email 2.1.1
+In-Reply-To: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com>
+References: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com>
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-In-Reply-To: <51ed096a-d211-9bab-bf1e-44f912b2a20e@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 37c71119-db78-48e2-2d8a-08d84b57e3e1
+X-MS-TrafficTypeDiagnostic: MW2PR02MB3884:
+X-Microsoft-Antispam-PRVS: <MW2PR02MB38842C7DCA8D344FDE83D546AA520@MW2PR02MB3884.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:546;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ILXO4mLqjAfciJLcxEPnqBxULbDnIEsL2v/HPVfJCHCR6iNs8A1u0CXK31W5DpQhoQa6AYxpxQ2CLAvBlaYc3ezmiKqCzJahfAyKpzrFCzsnIjNJ47qCO93YC79D8Djj0S0UgIvhwEx6lYYpEarmPtszRLXFFoP9LFw6b89N/PmIKlAASqrhXBlKp54U//LzUdoFnuhsybw8ex3KgeSvunrPgZY51JMNACHxfmq2juip1MdDeANxu2d2dS2/JSIhSQMuSB//AgqayrmMwT3rdQ4/TvrHaGD5u7DYXomxwLwZRw+yrFFC3BjHCAA3SvSeZm8yMceDo2rgxa2zSodaqfzYL+98IBEltNONW8cQSRS/eMhOaITXLOUUHkNwzKdP+lCC44PSZQzciZvMg4Rcpom7bSS06dqyHU5DJjdUZ+vxXGRQSGZdOdNNoNrY9Xb/Od67dePGHgP/Na98LyGDFlCx/ckZFnCL+ZRlEK9Q+vg=
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(396003)(46966005)(26005)(81166007)(186003)(7696005)(9786002)(6666004)(47076004)(82740400003)(966005)(336012)(426003)(4326008)(44832011)(478600001)(70206006)(8936002)(2616005)(70586007)(82310400002)(83380400001)(6916009)(5660300002)(107886003)(36756003)(8676002)(356005)(316002)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2020 13:40:13.0248
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37c71119-db78-48e2-2d8a-08d84b57e3e1
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT049.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3884
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add the devicetree binding for the xilinx clocking wizard.
 
-On 27/08/2020 17.41, Reddy, MallikarjunaX wrote:
->>>>> +
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_alloc_chan_resources =3D
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 d->inst->ops->device_al=
-loc_chan_resources;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_free_chan_resources =3D
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 d->inst->ops->device_fr=
-ee_chan_resources;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_terminate_all =3D
->>>>> d->inst->ops->device_terminate_all;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_issue_pending =3D
->>>>> d->inst->ops->device_issue_pending;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_tx_status =3D d->inst->ops->dev=
-ice_tx_status;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_resume =3D d->inst->ops->device=
-_resume;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_pause =3D d->inst->ops->device_=
-pause;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_config =3D d->inst->ops->device=
-_config;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_prep_slave_sg =3D
->>>>> d->inst->ops->device_prep_slave_sg;
->>>>> +=C2=A0=C2=A0=C2=A0 dma_dev->device_synchronize =3D d->inst->ops->d=
-evice_synchronize;
->>>>> +
->>>>> +=C2=A0=C2=A0=C2=A0 if (d->ver =3D=3D DMA_VER22) {
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma_dev->src_addr_width=
-s =3D BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma_dev->dst_addr_width=
-s =3D BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma_dev->directions =3D=
- BIT(DMA_MEM_TO_DEV) |
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BIT(DMA_DEV_=
-TO_MEM);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma_dev->residue_granul=
-arity =3D
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DMA_RESIDUE_GRANULARITY_=
-DESCRIPTOR;
->>>>> +=C2=A0=C2=A0=C2=A0 }
->>>> So, if version is !=3D DMA_VER22, then you don't support any directi=
-on?
->>>> Why register the DMA device if it can not do any transfer?
->>> Only dma0 instance (intel,lgm-cdma) is used as a general purpose slav=
-e
->>> DMA. we set both control and datapath here.
->>> Other instances we set only control path. data path is taken care by =
-dma
->>> client(GSWIP).
->> How the client (GSWIP) can request a channel from intel,lgm-* ? Don't
->> you need some capabilities for the DMA device so core can sort out the=
+Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+---
+v6:
+Fix a yaml warning
 
->> request?
-> client request channel by name, dma_request_slave_channel(dev, name);
+ .../bindings/clock/xlnx,clocking-wizard.yaml       | 71 ++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
 
-clients should use dma_request_chan(dev, name);
-
-If the channel can be requested via DT or ACPI then we don't check the
-capabilities at all, so yes, that could work.
-
->>> Only thing needs to do is get the channel, set the descriptor and jus=
-t
->>> on the channel.
->> How do you 'on' the channel?
-> we on the channel in issue_pending.
-
-Right.
-Basically you only prep_slave_sg/single for the DMA_VER22? Or do you
-that for the others w/o direction support?
-
-For the intel,lgm-* DMAs you only call issue_pending() and probably
-terminate_all?
-
-Interesting setup ;)
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml b/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
+new file mode 100644
+index 0000000..ca63593
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/xlnx,clocking-wizard.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx clocking wizard
++
++maintainers:
++  - Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
++
++description: |
++  The clocking wizard is a soft ip clocking block of Xilinx versal. It
++  reads required input clock frequencies from the devicetree and acts as clock
++  clock output.
++
++select: false
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - xlnx,clocking-wizard
++          - xlnx,clocking-wizard-6.0
++
++  "#clock-cells":
++    const: 1
++
++  clocks:
++    description: List of clock specifiers which are external input
++      clocks to the given clock controller.
++    items:
++      - description: clock input
++      - description: axi clock
++
++  clock-names:
++    items:
++      - const: clk_in1
++      - const: s_axi_aclk
++
++  speed-grade:
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - enum: [1, 2, 3]
++    description:
++      Speed grade of the device.
++    maxItems: 1
++
++required:
++  - compatible
++  - "#clock-cells"
++  - clocks
++  - clock-names
++  - speed-grade
++
++additionalProperties: false
++
++examples:
++  - |
++    clock-generator@40040000 {
++        #clock-cells = <1>;
++        reg = <0x40040000 0x1000>;
++        compatible = "xlnx,clk-wizard-1.0";
++        speed-grade = <1>;
++        clock-names = "clk_in1", "s_axi_aclk";
++        clocks = <&clkc 15>, <&clkc 15>;
++        clock-output-names = "clk_out1", "clk_out2",
++        "clk_out3", "clk_out4", "clk_out5",
++        "clk_out6", "clk_out7";
++    };
++...
+-- 
+2.1.1
 
