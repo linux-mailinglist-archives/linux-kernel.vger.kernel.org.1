@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED61025574B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813C325574F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgH1JOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S1728909AbgH1JPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgH1JOk (ORCPT
+        with ESMTP id S1728556AbgH1JPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:14:40 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B514AC061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:14:39 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w2so273863wmi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:14:39 -0700 (PDT)
+        Fri, 28 Aug 2020 05:15:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A195CC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:15:24 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w13so606507wrk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:15:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+hChkKN1HckAnSSwUAMdVpF1WRU/euEadm0RXnOq7TU=;
-        b=lIOc/kwkevDQBYSfkwNnkHpp9DP6te0aE4qmANWjrGSn68BbykLwjRhIFtE+gtvR+A
-         dRJKWPZipfm892hgm43Jzbjo/72RiZsF3OvDoghkRCSQSs3dRgsMk3xAJnKFuoMIb/Th
-         9j4YnKKdQr/hkfZT/SAV1U8yyLQ36tHrf4SPvGf3cZU3t/UVi0bdHhEIAKACEIpJybkx
-         DQBcHFa9dZ2lUwR+OrLiBv1U35dOsuvcIBjn+HoRsqOCeE8JoGcx94SDAfXCNVBr2F7B
-         J9cLrFfMyDHaaNxS0VQ3KcphyVqK3XYXzdRLi8oHTsOWXjFX4nef4fVjnaGTurr7rxJ5
-         B2Tg==
+        bh=DyS9aZq/xs6zouph/9AtxWEvp+h3V9CCefV4eIl9S4M=;
+        b=nl6Y97MIFxIpC7Bk4tfVgBT8u4TJTbwxPVOzEh2b/lL3jk59hkL8h2bD6d5DGyQLR4
+         47yuudgVUrS1gfMfr5poWFMS4lE7YLogH8T39HrlJ5F0jWICxo5srW7MrGYLuYbS9HAX
+         cR+BmDZ9R01dYgUj7NG2Q7BoY6L1QE3HHd7I9+/8XC5T1TcREbDFA003y2hyNF/Hh/IZ
+         hwyuT68VnNcXlmZRT62VFqD1MGT6ynuPg5lAqulypzAFkH5NXbyOp6DDBJQVGy8FoTFA
+         e4i0HXyLEYncqy3hOAswyg+Dd+l2EvaekK++xgosQ+v7Q1iLoHYxLhc1llxHU++NVFvM
+         7pNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=+hChkKN1HckAnSSwUAMdVpF1WRU/euEadm0RXnOq7TU=;
-        b=im1dnRXrBbKKe7hGYgJcTaku0Yo0LfB+AkWjRRzAUM1zeEgv2rffKAjJJDpVRne40k
-         vXpRZ+oN60GLaoug1SUKv3WnFTu6e0Tkw90jQ2HvRbkibztCC1btXOAo052v+fMewfcp
-         TY5UIfwyXJ1RLtzlflmnCJdL/HxhBdeWx513QahtlsRj35kRIowzvZaRiYaRfAPDnrwZ
-         ivwTSBD8e2jx2HbZ5PLfk/LqeFhgIaGMayGufhmCmgEq5qamVLb86lJtFmvaMmxNpL4V
-         qC8d1gXEx2Q6tgTgBcJ3V3TdjP/TffFTeMKsf5LFGKY7HK+jQ6Uh0JFmBDiWcZQLYcyF
-         /N0g==
-X-Gm-Message-State: AOAM5334u7gsyZh39jGTarB1nLaVUD0jfYbGKNtfKmbVPRjynwM3QSUt
-        FsAf6YhqgJLKXlAoi3kPmuNQrzLzkp4MOQ==
-X-Google-Smtp-Source: ABdhPJx6IH9BCn7CwR6KY5pfFbbHFmN5psEf3AvfmdsNp48w8VWlYk0fVM5KuYJfzdVrZp6a8ukhQw==
-X-Received: by 2002:a1c:cc0c:: with SMTP id h12mr627896wmb.57.1598606078432;
-        Fri, 28 Aug 2020 02:14:38 -0700 (PDT)
+        bh=DyS9aZq/xs6zouph/9AtxWEvp+h3V9CCefV4eIl9S4M=;
+        b=reSHG5LaCxQOSqM4yjVEdF73zp2ZKFAW7/UHfYLvABCkvawVWfHDWqNLcsBct0qvF2
+         L8VSCmVG9GqqAIBU3ECZQ9153ZEnCMG9r4/54UEAuo7lqTTWO0QXrV7vnuQSGdkFXG4N
+         COOj8XBIfMk5xkC0+zyglrda642LHq2dygS4m3QvQZATurgRm2gJggU8vjQltYSOlLQs
+         WNQH0IF5/7IuVWjg/IltGumNk6HR9U8bj8yi8dBZ/A8mD1me/fZkbRYtvT0E8HGtTi3f
+         BjBCBa2oTYHUzC4meIj933es6IyGXraCxJ4hRq1CU8cVzqb79ImzBIC7GE5ATk5F2nWS
+         4GMA==
+X-Gm-Message-State: AOAM533LAY7s3A4l1xuQF5MDGOFUtToIAP0DtZHz/uJfE+pjeBMFdVCc
+        ln8P21856dvaeqjH4RCHbjmfHw+YTmLOVw==
+X-Google-Smtp-Source: ABdhPJzPbwAdjzVQkwNrEAzUuWKOth9o/dWf66Vg0RWuqSAzGs0y1rEjdvHnIjI/xWHpDMOD+hOSCg==
+X-Received: by 2002:a5d:54c8:: with SMTP id x8mr551838wrv.405.1598606123291;
+        Fri, 28 Aug 2020 02:15:23 -0700 (PDT)
 Received: from dell ([91.110.221.141])
-        by smtp.gmail.com with ESMTPSA id g16sm958502wrs.88.2020.08.28.02.14.37
+        by smtp.gmail.com with ESMTPSA id q7sm1001982wra.56.2020.08.28.02.15.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 02:14:37 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 10:14:36 +0100
+        Fri, 28 Aug 2020 02:15:22 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 10:15:21 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: mfd: Add ENE KB3930 Embedded
- Controller binding
-Message-ID: <20200828091436.GB1826686@dell>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] mfd: ene-kb3930: Add driver for ENE KB3930
+ Embedded Controller
+Message-ID: <20200828091521.GC1826686@dell>
 References: <20200709231228.11564-1-lkundrak@v3.sk>
- <20200709231228.11564-2-lkundrak@v3.sk>
+ <20200709231228.11564-3-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200709231228.11564-2-lkundrak@v3.sk>
+In-Reply-To: <20200709231228.11564-3-lkundrak@v3.sk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,24 +70,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 10 Jul 2020, Lubomir Rintel wrote:
 
-> Add binding document for the ENE KB3930 Embedded Controller.
+> This driver provides access to the EC RAM of said embedded controller
+> attached to the I2C bus as well as optionally supporting its slightly weird
+> power-off/restart protocol.
+> 
+> A particular implementation of the EC firmware can be identified by a
+> model byte. If this driver identifies the Dell Ariel platform, it
+> registers the appropriate cells.
 > 
 > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
 > ---
 > Changes since v5:
-> - s/a I2C bus/an I2C bus/
+> - Clarify the command in kb3930_off()
+> - Remove an extraneous comment above the call to devm_mfd_add_devices()
+> - s/pm_power_off == NULL/!pm_power_off/
 > 
-> Changes since v4:
-> - Collected Rob's Reviewed-by
+> Changes since v3:
+> - Clarify that the power-off function is provided by this driver while
+>   LEDS_ARIEL is necessary to drive the leds in Kconfig help text
+> - s/kb3930_power_off/kb3930_pm_power_off/, s/global_kb3930/kb3930_power_off/
+> - Don't fail with -EEXIST with more than one instance
+> - s/ret < 0/ret/ for devm_mfd_add_devices() return value
+> - Drop a \n between struct i2c_driver and module_i2c_driver()
 > 
-> Changes since v1:
-> - Addressed binding validation failure
+> Changes since v2:
+> - Sort the includes
+> - s/EC_MODEL_ID/EC_MODEL/
+> - Add a couple of clarifying comments
+> - Use #defines for values used in poweroff routine
+> - Remove priority from a restart notifier block
+> - s/priv/ddata/
+> - s/ec_ram/ram_regmap/ for the regmap name
+> - Fix the error handling when getting off gpios was not successful
+> - Remove a useless dev_info at the end of probe()
+> - Use i2c probe_new() callback, drop i2c_device_id
+> - Modify the logic in checking the model ID
 > ---
->  .../devicetree/bindings/mfd/ene-kb3930.yaml   | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb3930.yaml
+>  drivers/mfd/Kconfig      |  11 ++
+>  drivers/mfd/Makefile     |   1 +
+>  drivers/mfd/ene-kb3930.c | 212 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 224 insertions(+)
+>  create mode 100644 drivers/mfd/ene-kb3930.c
 
 Applied, thanks.
 
