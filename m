@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5358A2561B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0212561B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgH1T6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34228 "EHLO mail.kernel.org"
+        id S1726995AbgH1T6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:58:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbgH1T60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:58:26 -0400
-Subject: Re: [GIT PULL] MFD fixes for v5.9
+        id S1726828AbgH1T61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 15:58:27 -0400
+Subject: Re: [GIT PULL] Ceph fixes for 5.9-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598644706;
-        bh=wFNo3ACxFGBabxEtMsfguCb1FbxBjNkpi/2nTOarmYk=;
+        bh=pLb6YgNF7r3bbleGDfeo95EUv/ZD6PP1am1Rc1qaHEw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZRoLSnK2IDJl18yGthN0pyvrjcPVsXXsv9dfdXve91Io/4bucGhsvEIfYn7nZDvMw
-         9PFauFW1rX2jKAa863TMr++EtoTPqdj2Tc1Y7JFcqV3GuVRm1jzQfBQh2RZ5YkIllK
-         hOvAjVqdYopxx2XFtQX5xjz2bZ0pcY3x9DUi2eBQ=
+        b=WNvieWsCHkjhFMxOAq++arN8DhylzssYhW26Fj96bVvW26MLd245Oz5UK02GI6/3Q
+         zKRoP9cnjWUoT7IjZFzj235T+B1sZ6DavFmGS76K3wgwL2X90vI+xq4+dcfKSWTKgP
+         DjY9dGLd6gE69OGLrJDNvuhRHNsi5wTDDTKZxETo=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200828085815.GA1826686@dell>
-References: <20200828085815.GA1826686@dell>
+In-Reply-To: <20200828122000.1422-1-idryomov@gmail.com>
+References: <20200828122000.1422-1-idryomov@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200828085815.GA1826686@dell>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-fixes-5.9
-X-PR-Tracked-Commit-Id: 22380b65dc70f5b132c5afdf6b4011e2a84ec34a
+X-PR-Tracked-Message-Id: <20200828122000.1422-1-idryomov@gmail.com>
+X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git tags/ceph-for-5.9-rc3
+X-PR-Tracked-Commit-Id: 496ceaf12432b3d136dcdec48424312e71359ea7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3a7c327767221660e9e9a62e5538173873193f0a
-Message-Id: <159864470606.31636.2929275535172328354.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b0bfd5eca956c498b8f9c7ec4a25f355f793f24e
+Message-Id: <159864470692.31636.7304735457148606684.pr-tracker-bot@kernel.org>
 Date:   Fri, 28 Aug 2020 19:58:26 +0000
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 28 Aug 2020 09:58:15 +0100:
+The pull request you sent on Fri, 28 Aug 2020 14:20:00 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-fixes-5.9
+> https://github.com/ceph/ceph-client.git tags/ceph-for-5.9-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3a7c327767221660e9e9a62e5538173873193f0a
+https://git.kernel.org/torvalds/c/b0bfd5eca956c498b8f9c7ec4a25f355f793f24e
 
 Thank you!
 
