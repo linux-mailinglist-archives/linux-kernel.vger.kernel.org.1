@@ -2,53 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DE52561B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9452561D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgH1T6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726859AbgH1T63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:58:29 -0400
-Subject: Re: [GIT PULL] arm64 fixes for 5.9-rc3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598644708;
-        bh=BydAT8LZM7y6FrUKof/ZuYLrasLpA7c9m89Fd2Rqkv8=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ft9Y5pDAaP0gcJXPuDVR7vMVtNdVv3dHk9R3+iNEl+DwJQQPawxFn4E5uYbGpHuOW
-         FMhiEl5NYHZcI31D93cptvcTIvKC761PIZw7WhQlpBnpPhYHZce7Ajwk/LP2X8XRFp
-         w4hgxUp4KvBszZNOnZQBex6oOYZPkQnAXl9ENEXg=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200828172555.GA31202@gaia>
-References: <20200828172555.GA31202@gaia>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200828172555.GA31202@gaia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-X-PR-Tracked-Commit-Id: 71a7f8cb1ca4ca7214a700b1243626759b6c11d4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 96d454cd2c1668010406ea4c28ab915bcbb747f4
-Message-Id: <159864470864.31636.11102316857316987642.pr-tracker-bot@kernel.org>
-Date:   Fri, 28 Aug 2020 19:58:28 +0000
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S1726804AbgH1UD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgH1UD1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 16:03:27 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737FEC06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:03:25 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 5so948296pgl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=h7Ftm48B3zFmIS9M4aT7GVlSUnSM7LcCY/YqVFwhLHo=;
+        b=XUd1hfAyoS3QpCSSDAtZZ4HWcuSrlNFYYcOyQBKSJodElFHPqQmepn/jSxfDhXtjph
+         IMLLUf86iQd+mOQcSNo4mtJhoj+wykLrWjnJ+TQ5GessrrCwly5QOj92iAFong1Tu7yM
+         cG8/D3zz7cai+Z5TdtOB3VPw6LVfosJU5uVBBKJig3gmXJxg76P88VpwTM4SR11yn7hL
+         tbYigjN6TOgmffKRkck0h5OZPorG8r4cs1tzcXkRxPhTN11Ng5PBIxWWb5BhaX5Orpp5
+         XyVCVKrZQKaPI1Zgrxou88EbFniVHY3NQdMDf6vTaw42heBSSFpQVrngznIShUAyaBQp
+         PK5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=h7Ftm48B3zFmIS9M4aT7GVlSUnSM7LcCY/YqVFwhLHo=;
+        b=HnlH4JlqxDKb8jEGqbLYSJLkVWSJz64cpjbF4ID0jin4YNhRRRccdiz2zKUUAGt0Vy
+         giuFUdTPrmRxi1pg/rnt5LW4EVOBNJkZF5qvL2vyOQzhVcoJAf9OLI00JYJMw7UYxm8V
+         NqA0eZAVNB/WfNpW7tYXzjV8xcFCOeeMOnCu/4imH1YL8E3F/A1g5Tdu3+ILEtz5ywIu
+         XnBNNe7qQXltzqkFIT2sMiKxRfkdQY/FIMbBVz1MZL0V/jQhazMHw57m4utvn+8RfOxr
+         6xkH8y88MD/HXuAjqySJVfd1NA1TFw7S7bVFU0hx+7kHRmOByuPGaoJrxDAkaGcLAOPa
+         FBBQ==
+X-Gm-Message-State: AOAM5325On+VtgdX6igu5VodTT3BNq3axG6dwK1sOX208DPQr3t811Oj
+        5KkhWI6QhN/i+YrMdiQiVmZO96hNcNMJMc5I
+X-Google-Smtp-Source: ABdhPJxSXzNhTuv3cHgMU3UDiBBvHEeMnOCm0dbPY8aUswPt0mPJGecOb/Hx4Q2e3wEFwkGsInCCGg==
+X-Received: by 2002:a62:b608:: with SMTP id j8mr542187pff.126.1598645004641;
+        Fri, 28 Aug 2020 13:03:24 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id x1sm262394pfp.7.2020.08.28.13.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Aug 2020 13:03:23 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] io_uring fixes for 5.9-rc3
+Message-ID: <654bd4f0-7d2b-a39c-46ab-e7d180246bdd@kernel.dk>
+Date:   Fri, 28 Aug 2020 14:03:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 28 Aug 2020 18:25:57 +0100:
+Hi Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+A few fixes in here, all based on reports and test cases from folks
+using it. Most of it is stable material as well.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/96d454cd2c1668010406ea4c28ab915bcbb747f4
+- Hashed work cancelation fix (Pavel)
 
-Thank you!
+- poll wakeup signalfd fix
+
+- memlock accounting fix
+
+- nonblocking poll retry fix
+
+- Ensure we never return -ERESTARTSYS for reads
+
+- Ensure offset == -1 is consistent with preadv2() as documented
+
+- IOPOLL -EAGAIN handling fixes
+
+- Remove useless task_work bounce for block based -EAGAIN retry 
+
+Please pull!
+
+
+The following changes since commit 867a23eab52847d41a0a6eae41a64d76de7782a8:
+
+  io_uring: kill extra iovec=NULL in import_iovec() (2020-08-20 05:36:19 -0600)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-08-28
+
+for you to fetch changes up to fdee946d0925f971f167d2606984426763355e4f:
+
+  io_uring: don't bounce block based -EAGAIN retry off task_work (2020-08-27 16:48:34 -0600)
+
+----------------------------------------------------------------
+io_uring-5.9-2020-08-28
+
+----------------------------------------------------------------
+Jens Axboe (9):
+      io_uring: don't recurse on tsk->sighand->siglock with signalfd
+      io_uring: revert consumed iov_iter bytes on error
+      io_uring: fix imbalanced sqo_mm accounting
+      io_uring: don't use poll handler if file can't be nonblocking read/written
+      io_uring: ensure read requests go through -ERESTART* transformation
+      io_uring: make offset == -1 consistent with preadv2/pwritev2
+      io_uring: clear req->result on IOPOLL re-issue
+      io_uring: fix IOPOLL -EAGAIN retries
+      io_uring: don't bounce block based -EAGAIN retry off task_work
+
+Pavel Begunkov (1):
+      io-wq: fix hang after cancelling pending hashed work
+
+ fs/io-wq.c    | 21 +++++++++++--
+ fs/io_uring.c | 99 ++++++++++++++++++++++++++++++++++-------------------------
+ 2 files changed, 76 insertions(+), 44 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Jens Axboe
+
