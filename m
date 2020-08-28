@@ -2,148 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E842F255A1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B186255A27
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgH1M31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729370AbgH1M2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:28:25 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D54D02086A;
-        Fri, 28 Aug 2020 12:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598617702;
-        bh=Feorqse8LD2mz9xBdoGlCTBWdy0RlnoC1IUSHqgskw4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zx7LjhETARB7R/jr52UYhQC5axSbpWL/qAbuPHfoWe6MBCrumgmU/HyYdRTy7tfxE
-         F5xpv05MLaZqt2t600BLTHdCs7YrI/2VXOo+rGRlV9kL9yPHnqLSBCw+jED+GhjHaU
-         RTo4XdAkUfHR8wepgv2Rx0hpR3r3T0oMeeqbPALs=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
-        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org, mhiramat@kernel.org
-Subject: [PATCH v4 09/23] parisc: kprobes: Use generic kretprobe trampoline handler
-Date:   Fri, 28 Aug 2020 21:28:16 +0900
-Message-Id: <159861769658.992023.7563129409710470888.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159861759775.992023.12553306821235086809.stgit@devnote2>
-References: <159861759775.992023.12553306821235086809.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1729326AbgH1MbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729373AbgH1M2f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:28:35 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F9FC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:28:35 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y6so398186plt.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yn8qp0pF0/ymUX0XYVgXndiqVwNlWscX3zxb5Gz4UJU=;
+        b=X+FVf6O2bFdGzHWCgjCVD7j07pWnLrK8pDEB5dJnuBAu/1F1HKyE/tVrR3DRtYNMya
+         K2cxsdNeQTdW/cf8AxIBxcdnw/3Q5y1XGI5F1JUxfSwtfez0txiFW7IW40UV6G+R42/b
+         yALQTnIGOqqF8ftT9SqLysAXjXYNyMLIqn1PvOg/NU801yPaSTppbr6uOiLwoMnOF8YO
+         cHAqvsryqhxVYEwQAZu+2u11KG4AN/uIwiePYtMvXettO0NAy4QYXuwm6t8OVbQjGuwl
+         VFLEJ/EFZOxdq76gNC+vdgubsan2Ta9NlfJfeSuu5sd1vZVPCP1349OMVHCsWM/mNP3C
+         RKSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yn8qp0pF0/ymUX0XYVgXndiqVwNlWscX3zxb5Gz4UJU=;
+        b=pJ6Een1NmzmkgEz4/QMt3EHXduD1n/2Vu+7pirbQErlGQsa5pxYsckTbqGvmZdGRiE
+         ycPDYNxG0j+Xi1rYPEzqOL0Fqsqxw8WnCswxEGFwtFz3IRd0gpfZbTjZsiE3aACHdlvB
+         +CFWRytjx16Dur5VV21gjG9xIE2b4+v6sHY6g5eXz5C3peFr7GrZBtlovIAoeFUlI8Ds
+         JQM6UW2e+6oOWuWv5XWxelaEVPxFXBiZz33Ki3nveOLiXKwkrSQdNE81sbmgmUCKAmem
+         9tCQEee9640rd9usBvXfKtWeiTqMi9b3QA4P+pozOpYhoOXpwO0eWyf+fsLgN9MHtQOz
+         gkjQ==
+X-Gm-Message-State: AOAM532seXKvFfEJZno0vaMy9mFVJjV/qrN7NT/BW+YF6epmraOyifTB
+        k4ap43bHX3c75XCDvYlkn+DdjXzuGS2/xJWTAzmPBg==
+X-Google-Smtp-Source: ABdhPJzVZkYCWWsHu7+PNcR14S9/KpmQmb3zA6Q9/eo/rw8us10i1Vm/2ObVdHhvBAhwplZzBagcUgtxDPrC1liV4rI=
+X-Received: by 2002:a17:90a:a791:: with SMTP id f17mr1015324pjq.136.1598617714338;
+ Fri, 28 Aug 2020 05:28:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <cover.1597425745.git.andreyknvl@google.com> <5d0f3c0ee55c58ffa9f58bdea6fa6bf4f6f973a4.1597425745.git.andreyknvl@google.com>
+ <20200828111221.GA185387@elver.google.com>
+In-Reply-To: <20200828111221.GA185387@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 28 Aug 2020 14:28:23 +0200
+Message-ID: <CAAeHK+zpKXQT4-6CfVt1BfXr=SdYjWjhMR_0yV4Wncbz7Aq73w@mail.gmail.com>
+Subject: Re: [PATCH 35/35] kasan: add documentation for hardware tag-based mode
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/parisc/kernel/kprobes.c |   76 ++----------------------------------------
- 1 file changed, 4 insertions(+), 72 deletions(-)
+On Fri, Aug 28, 2020 at 1:12 PM Marco Elver <elver@google.com> wrote:
+>
+> On Fri, Aug 14, 2020 at 07:27PM +0200, Andrey Konovalov wrote:
+> > Add documentation for hardware tag-based KASAN mode and also add some
+> > clarifications for software tag-based mode.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  Documentation/dev-tools/kasan.rst | 73 +++++++++++++++++++++----------
+> >  1 file changed, 51 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> > index a3030fc6afe5..aeed89d6eaf5 100644
+> [...]
+> > -Tag-based KASAN uses the Top Byte Ignore (TBI) feature of modern arm64 CPUs to
+> > -store a pointer tag in the top byte of kernel pointers. Like generic KASAN it
+> > -uses shadow memory to store memory tags associated with each 16-byte memory
+> > -cell (therefore it dedicates 1/16th of the kernel memory for shadow memory).
+> > +Software tag-based KASAN uses the Top Byte Ignore (TBI) feature of modern arm64
+> > +CPUs to store a pointer tag in the top byte of kernel pointers. Like generic
+> > +KASAN it uses shadow memory to store memory tags associated with each 16-byte
+> > +memory cell (therefore it dedicates 1/16th of the kernel memory for shadow
+> > +memory).
+>
+> It might be helpful to be more specific vs. saying "modern arm64 CPUs".
+> Does the "modern" qualifier suggest not all arm64 CPUs support the
+> feature?  (HW tag-based KASAN below is specific, and mentions ARMv8.5.)
 
-diff --git a/arch/parisc/kernel/kprobes.c b/arch/parisc/kernel/kprobes.c
-index 77ec51818916..6d21a515eea5 100644
---- a/arch/parisc/kernel/kprobes.c
-+++ b/arch/parisc/kernel/kprobes.c
-@@ -191,80 +191,11 @@ static struct kprobe trampoline_p = {
- static int __kprobes trampoline_probe_handler(struct kprobe *p,
- 					      struct pt_regs *regs)
- {
--	struct kretprobe_instance *ri = NULL;
--	struct hlist_head *head, empty_rp;
--	struct hlist_node *tmp;
--	unsigned long flags, orig_ret_address = 0;
--	unsigned long trampoline_address = (unsigned long)trampoline_p.addr;
--	kprobe_opcode_t *correct_ret_addr = NULL;
--
--	INIT_HLIST_HEAD(&empty_rp);
--	kretprobe_hash_lock(current, &head, &flags);
--
--	/*
--	 * It is possible to have multiple instances associated with a given
--	 * task either because multiple functions in the call path have
--	 * a return probe installed on them, and/or more than one return
--	 * probe was registered for a target function.
--	 *
--	 * We can handle this because:
--	 *     - instances are always inserted at the head of the list
--	 *     - when multiple return probes are registered for the same
--	 *       function, the first instance's ret_addr will point to the
--	 *       real return address, and all the rest will point to
--	 *       kretprobe_trampoline
--	 */
--	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
--		if (ri->task != current)
--			/* another task is sharing our hash bucket */
--			continue;
--
--		orig_ret_address = (unsigned long)ri->ret_addr;
--
--		if (orig_ret_address != trampoline_address)
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			break;
--	}
--
--	kretprobe_assert(ri, orig_ret_address, trampoline_address);
--
--	correct_ret_addr = ri->ret_addr;
--	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
--		if (ri->task != current)
--			/* another task is sharing our hash bucket */
--			continue;
--
--		orig_ret_address = (unsigned long)ri->ret_addr;
--		if (ri->rp && ri->rp->handler) {
--			__this_cpu_write(current_kprobe, &ri->rp->kp);
--			get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
--			ri->ret_addr = correct_ret_addr;
--			ri->rp->handler(ri, regs);
--			__this_cpu_write(current_kprobe, NULL);
--		}
--
--		recycle_rp_inst(ri, &empty_rp);
--
--		if (orig_ret_address != trampoline_address)
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			break;
--	}
-+	unsigned long orig_ret_address;
- 
--	kretprobe_hash_unlock(current, &flags);
--
--	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
--		hlist_del(&ri->hlist);
--		kfree(ri);
--	}
-+	orig_ret_address = __kretprobe_trampoline_handler(regs, trampoline_p.addr, NULL);
- 	instruction_pointer_set(regs, orig_ret_address);
-+
- 	return 1;
- }
- 
-@@ -272,6 +203,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				      struct pt_regs *regs)
- {
- 	ri->ret_addr = (kprobe_opcode_t *)regs->gr[2];
-+	ri->fp = NULL;
- 
- 	/* Replace the return addr with trampoline addr. */
- 	regs->gr[2] = (unsigned long)trampoline_p.addr;
+Will clarify this in v2.
 
+> > +On each memory allocation software tag-based KASAN generates a random tag, tags
+> > +the allocated memory with this tag, and embeds this tag into the returned
+> > +pointer.
+> >
+> > -On each memory allocation tag-based KASAN generates a random tag, tags the
+> > -allocated memory with this tag, and embeds this tag into the returned pointer.
+> >  Software tag-based KASAN uses compile-time instrumentation to insert checks
+> >  before each memory access. These checks make sure that tag of the memory that
+> >  is being accessed is equal to tag of the pointer that is used to access this
+> > -memory. In case of a tag mismatch tag-based KASAN prints a bug report.
+> > +memory. In case of a tag mismatch software tag-based KASAN prints a bug report.
+> >
+> >  Software tag-based KASAN also has two instrumentation modes (outline, that
+> >  emits callbacks to check memory accesses; and inline, that performs the shadow
+> > @@ -215,9 +222,31 @@ simply printed from the function that performs the access check. With inline
+> >  instrumentation a brk instruction is emitted by the compiler, and a dedicated
+> >  brk handler is used to print bug reports.
+> >
+> > -A potential expansion of this mode is a hardware tag-based mode, which would
+> > -use hardware memory tagging support instead of compiler instrumentation and
+> > -manual shadow memory manipulation.
+> > +Software tag-based KASAN uses 0xFF as a match-all pointer tag (accesses aren't
+> > +checked).
+> > +
+> > +Software tag-based KASAN currently only supports tagging of slab memory.
+> > +
+> > +Hardware tag-based KASAN
+> > +~~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +Hardware tag-based KASAN is similar to the software mode in concept, but uses
+> > +hardware memory tagging support instead of compiler instrumentation and
+> > +shadow memory.
+> > +
+> > +Hardware tag-based KASAN is based on both arm64 Memory Tagging Extension (MTE)
+> > +introduced in ARMv8.5 Instruction Set Architecture, and Top Byte Ignore (TBI).
+>
+> Is there anything inherently tying tag-based KASAN to arm64?
+
+Not really, the approach is generic and can be used by any arch that
+supports memory tagging.
+
+> I guess if
+> some other architecture supports MTE, they just have to touch arch/,
+> right?
+
+For the most part - yes, but maybe adjustments to the generic code
+will be required. No way to know before one tries to integrate another
+arch.
+
+> You could reword to say that "Hardware tag-based KASAN is currently only
+> supported on the ARM64 architecture.
+>
+> On the ARM64 architecture, tag-based KASAN is based on both ..."
+
+Will do in v2, thanks!
