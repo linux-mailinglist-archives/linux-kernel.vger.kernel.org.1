@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B6B25571A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBF525571D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728748AbgH1JGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgH1JGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:06:36 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DAAC061232
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:06:34 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id d11so520507ejt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HvV7eXBvyQgCBgrsjvWaIv2rEaJefsbSLUIuZLspMEA=;
-        b=h1hgyTlR8KltTUDbvjiOZ0FJPdU1qPb2uGFPxuC9WkmLFRhAEyeaFSrZW97ojGNcp0
-         ccRdiTageCHFfZJBLuATi1xd0boWZlbxqSGcqSlmEk1SE5ZKwTSi9YCZAIGfUZiNksWn
-         mBZgya8M2DBV7E+1WLVtyLXHnyeyR28qvSLsk3mBKW1XGhw+ERe3+pE8Hxv8ePRG2Uc3
-         FqDohuRqdAKDiQe60Wp7dd+SAqOlJDTYXWvF5PYjIrtO70S+9wpqgoV0PH57Lti/mkS7
-         lkA0rwUzvgBigA19Oou95yEg2rao3yIdKqpkBcEr/hgJpNN9FGAPgr0LiMO2eTLNh9sf
-         XsnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HvV7eXBvyQgCBgrsjvWaIv2rEaJefsbSLUIuZLspMEA=;
-        b=Fge027/jEnObOxLT6oauSzDnWZEu23mo3f0YZWR6i0+hOieDafKv9qfYJhrj6YPxlo
-         epcoRbq+pqqzz7gMVVGZyAP98HnBqqpgOv1s5QKO2iOY8ZQZ+gWme5f7ZL0mOGiuLGQ1
-         hVuDmyBBL9hYQy5CyerA8DnEgg58/TCiwwK4HyJd99BqUXIYeyglZfwp8RHB1fUpWHa8
-         02LIG8Pl0AQL/9RbuSf/IGTvbO00nBN2HVyc8Kr9zh8vg60h4ZMu9JeGFfhkPFonr6Wf
-         isFo47aeK/pENwnTHN0JBEpXnt3CFW+oddmCKTsq4e7jE6TL6r3bqY2k0qn7oyQUdyRv
-         V2Xw==
-X-Gm-Message-State: AOAM530mHuqw7A36msQpbJfoCelgYItXz7LsP5WFZ3gHu26E8iOUXNXr
-        zchKBfZo6hx3Ggm3H/rOzffYqBxZAEyK77eNRFcGIA==
-X-Google-Smtp-Source: ABdhPJzmAhVb+RcSV8T4sZX5/XRKDlKD6uVeC4jK3X8WbHU7aWhc8Y1BK4BLw7LNFeiAVXdSfK9JBKq/4Qwn8LtOpcU=
-X-Received: by 2002:a17:906:5f8d:: with SMTP id a13mr767284eju.226.1598605593511;
- Fri, 28 Aug 2020 02:06:33 -0700 (PDT)
+        id S1728799AbgH1JG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:06:58 -0400
+Received: from mga11.intel.com ([192.55.52.93]:26004 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728016AbgH1JGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 05:06:55 -0400
+IronPort-SDR: GlsDsNMx4xOaIno4HOAZisms88byJCxpXcMkftYrZjND0qrJMr6ZUQtTSRPQtiNlsUboiHOTm2
+ /wXFktquJ81Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="154180503"
+X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
+   d="scan'208";a="154180503"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 02:06:54 -0700
+IronPort-SDR: KYKLewt87hnvbbAjOQkkY8A5iNbs2fJEoSetOBLplhFxK/STXZXql9eTm0JfOxXAqcfCg1adZH
+ a1DpfRsnfGRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
+   d="scan'208";a="444773272"
+Received: from liaoh-mobl1.ccr.corp.intel.com (HELO yhuang-mobile.ccr.corp.intel.com) ([10.254.212.20])
+  by orsmga004.jf.intel.com with ESMTP; 28 Aug 2020 02:06:50 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Subject: [PATCH] x86, fakenuma: Fix invalid starting node ID
+Date:   Fri, 28 Aug 2020 17:06:37 +0800
+Message-Id: <20200828090637.344320-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200814100357.209340-1-thomas.preston@codethink.co.uk> <20200814100357.209340-2-thomas.preston@codethink.co.uk>
-In-Reply-To: <20200814100357.209340-2-thomas.preston@codethink.co.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 Aug 2020 11:06:21 +0200
-Message-ID: <CACRpkdZj-eAz0yse3OcKLiO0sPVHJMmhVZ_yLWFt1YKPe3hkRg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pinctrl: mcp23s08: Fixup mcp23x17 regmap_config
-To:     Thomas Preston <thomas.preston@codethink.co.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
-        Phil Reid <preid@electromag.com.au>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 12:04 PM Thomas Preston
-<thomas.preston@codethink.co.uk> wrote:
+Commit cc9aec03e58f ("x86/numa_emulation: Introduce uniform split
+capability") uses "-1" as the starting node ID, which causes the
+strange kernel log as following, when "numa=fake=32G" is added to the
+kernel command line.
 
-> - Fix a typo where mcp23x17 configs are referred to as mcp23x16.
-> - Fix precious range to include INTCAP{A,B}, which clear on read.
-> - Fix precious range to include GPIOB, which clears on read.
-> - Fix volatile range to include GPIOB, to fix debugfs registers
->   reporting different values than `gpioget gpiochip2 {0..15}`.
->
-> Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
+    Faking node -1 at [mem 0x0000000000000000-0x0000000893ffffff] (35136MB)
+    Faking node 0 at [mem 0x0000001840000000-0x000000203fffffff] (32768MB)
+    Faking node 1 at [mem 0x0000000894000000-0x000000183fffffff] (64192MB)
+    Faking node 2 at [mem 0x0000002040000000-0x000000283fffffff] (32768MB)
+    Faking node 3 at [mem 0x0000002840000000-0x000000303fffffff] (32768MB)
 
-Since the other two patches seem wrong, please resend this one patch,
-also include the people on TO: here: Andy, Phil and Jan, who all use
-this chip a lot.
+And finally kernel BUG as following,
 
-Yours,
-Linus Walleij
+    BUG: Bad page state in process swapper  pfn:00011
+    page:(____ptrval____) refcount:0 mapcount:1 mapping:(____ptrval____) index:0x55cd7e44b270 pfn:0x11
+    failed to read mapping contents, not a valid kernel address?
+    flags: 0x5(locked|uptodate)
+    raw: 0000000000000005 000055cd7e44af30 000055cd7e44af50 0000000100000006
+    raw: 000055cd7e44b270 000055cd7e44b290 0000000000000000 000055cd7e44b510
+    page dumped because: page still charged to cgroup
+    page->mem_cgroup:000055cd7e44b510
+    Modules linked in:
+    CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-rc2 #1
+    Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+    Call Trace:
+     dump_stack+0x57/0x80
+     bad_page.cold+0x63/0x94
+     __free_pages_ok+0x33f/0x360
+     memblock_free_all+0x127/0x195
+     mem_init+0x23/0x1f5
+     start_kernel+0x219/0x4f5
+     secondary_startup_64+0xb6/0xc0
+
+Fixes this bug via using 0 as the starting node ID.  This restores the
+original behavior before the commit cc9aec03e58f ("x86/numa_emulation:
+Introduce uniform split capability").
+
+Fixes: cc9aec03e58f ("x86/numa_emulation: Introduce uniform split capability")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+---
+ arch/x86/mm/numa_emulation.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/mm/numa_emulation.c b/arch/x86/mm/numa_emulation.c
+index c5174b4e318b..683cd12f4793 100644
+--- a/arch/x86/mm/numa_emulation.c
++++ b/arch/x86/mm/numa_emulation.c
+@@ -321,7 +321,7 @@ static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
+ 					      u64 addr, u64 max_addr, u64 size)
+ {
+ 	return split_nodes_size_interleave_uniform(ei, pi, addr, max_addr, size,
+-			0, NULL, NUMA_NO_NODE);
++			0, NULL, 0);
+ }
+ 
+ static int __init setup_emu2phys_nid(int *dfl_phys_nid)
+-- 
+2.28.0
+
