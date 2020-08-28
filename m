@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1F62552C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0C82552C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgH1B53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728394AbgH1B53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 27 Aug 2020 21:57:29 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38500 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbgH1B5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 21:57:21 -0400
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5BEF120C27C5;
-        Thu, 27 Aug 2020 18:57:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5BEF120C27C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+Received: from mail.kernel.org ([198.145.29.99]:36464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728338AbgH1B5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 21:57:20 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40E602080C;
+        Fri, 28 Aug 2020 01:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598579840;
-        bh=/oNkgUW9zSIuVV9hzhJDu+lqIFChEKC0BuHbXmW5m3Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cyz/YHC3WltXaOC2W1Hu7dvdzMKlVlrik0OyrAKvc3bYjiBOWarXk/sMLKG5Rg302
-         fbDJaPYrLp1qHtc2FhixkEyPt5aRcJ9BDsKfLQZuW7svV2PjA1czuY27qzJ0eRdFwn
-         TEcJ+5giT+ILXTcXHTRG3KaEqEnPdHzOp8Y6cqDM=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH v3 6/6] IMA: validate supported kernel data sources before measurement
-Date:   Thu, 27 Aug 2020 18:57:04 -0700
-Message-Id: <20200828015704.6629-7-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
-References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
+        bh=ytVYmdvTxAHSvpNi2RcVC8TEBHrhZKe/ZTew0OdUFkg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n1Ug5cjFKvK7LDWSaWQXnOwQtS4KmW086f5qCkSAxdNbnQDxNtBCQeh3u0gd4Amc+
+         CUwWt7TRQR8rg+BpnvA9u0wFBEUn/MsJKg/KeUyjQLJxyRNxNCbhce6vL/LoWFUHO3
+         2hIJRZeNqAsqoo93U3qbnLy96JyVfjPvNiqnhdSY=
+Date:   Fri, 28 Aug 2020 10:57:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        linux-arch@vger.kernel.org, guoren@kernel.org
+Subject: Re: [PATCH v3 01/16] kprobes: Add generic kretprobe trampoline
+ handler
+Message-Id: <20200828105714.b499777a12e5cd5d11855f8b@kernel.org>
+In-Reply-To: <159854632381.736475.17150452390088286224.stgit@devnote2>
+References: <159854631442.736475.5062989489155389472.stgit@devnote2>
+        <159854632381.736475.17150452390088286224.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, IMA does not restrict random data sources from measuring their
-data using ima_measure_critical_data(). Any kernel data source can call
-the function, and it's data will get measured as long as the input
-event_data_source is part of the IMA policy -
-CRITICAL_DATA+critical_kernel_data_sources. This may result in IMA log
-getting bloated by random data sources. Supporting random data sources
-at run-time may also impact the reliability of the system. 
+On Fri, 28 Aug 2020 01:38:44 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-To ensure that only data from supported sources are measured, the kernel
-component needs to be added to a compile-time list of supported sources
-(an "allowed list of components") in ima.h. IMA then validates the input
-parameter - event_data_source passed to ima_measure_critical_data()
-against this allowed list at run-time.
+> +unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> +					unsigned long trampoline_address,
+> +					void *frame_pointer)
+> +{
+> +	struct kretprobe_instance *ri = NULL;
+> +	struct hlist_head *head, empty_rp;
+> +	struct hlist_node *tmp;
+> +	unsigned long flags, orig_ret_address = 0;
+> +	kprobe_opcode_t *correct_ret_addr = NULL;
+> +	bool skipped = false;
+> +
+> +	INIT_HLIST_HEAD(&empty_rp);
+> +	kretprobe_hash_lock(current, &head, &flags);
+> +
+> +	/*
+> +	 * It is possible to have multiple instances associated with a given
+> +	 * task either because multiple functions in the call path have
+> +	 * return probes installed on them, and/or more than one
+> +	 * return probe was registered for a target function.
+> +	 *
+> +	 * We can handle this because:
+> +	 *     - instances are always pushed into the head of the list
+> +	 *     - when multiple return probes are registered for the same
+> +	 *	 function, the (chronologically) first instance's ret_addr
+> +	 *	 will be the real return address, and all the rest will
+> +	 *	 point to kretprobe_trampoline.
+> +	 */
+> +	hlist_for_each_entry(ri, head, hlist) {
+> +		if (ri->task != current)
+> +			/* another task is sharing our hash bucket */
+> +			continue;
+> +		/*
+> +		 * Return probes must be pushed on this hash list correct
+> +		 * order (same as return order) so that it can be popped
+> +		 * correctly. However, if we find it is pushed it incorrect
+> +		 * order, this means we find a function which should not be
+> +		 * probed, because the wrong order entry is pushed on the
+> +		 * path of processing other kretprobe itself.
+> +		 */
+> +		if (ri->fp != frame_pointer) {
+> +			if (!skipped)
+> +				pr_warn("kretprobe is stacked incorrectly. Trying to fixup.\n");
+> +			skipped = true;
+> +			continue;
+> +		}
+> +
+> +		orig_ret_address = (unsigned long)ri->ret_addr;
+> +		if (skipped)
+> +			pr_warn("%ps must be blacklisted because of incorrect kretprobe order\n",
+> +				ri->rp->kp.addr);
+> +
+> +		if (orig_ret_address != trampoline_address)
+> +			/*
+> +			 * This is the real return address. Any other
+> +			 * instances associated with this task are for
+> +			 * other calls deeper on the call stack
+> +			 */
+> +			break;
+> +	}
+> +
+> +	kretprobe_assert(ri, orig_ret_address, trampoline_address);
+> +
+> +	correct_ret_addr = ri->ret_addr;
 
-Provide an infrastructure for kernel data sources to be added to
-the supported data sources list at compile-time. Update
-ima_measure_critical_data() to validate, at run-time, that the data
-source is supported before measuring the data.
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
----
- security/integrity/ima/ima.h      | 29 +++++++++++++++++++++++++++++
- security/integrity/ima/ima_main.c |  3 +++
- 2 files changed, 32 insertions(+)
+Oops, here is an insane code... why we have orig_ret_address *and* correct_ret_addr?
+I'll clean this up.
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 00b84052c8f1..ecb0a1e7378f 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -228,6 +228,35 @@ extern const char *const func_tokens[];
- 
- struct modsig;
- 
-+#define __ima_supported_kernel_data_sources(source)	\
-+	source(MIN_SOURCE, min_source)			\
-+	source(MAX_SOURCE, max_source)
-+
-+#define __ima_enum_stringify(ENUM, str) (#str),
-+
-+enum ima_supported_kernel_data_sources {
-+	__ima_supported_kernel_data_sources(__ima_hook_enumify)
-+};
-+
-+static const char * const ima_supported_kernel_data_sources_str[] = {
-+	__ima_supported_kernel_data_sources(__ima_enum_stringify)
-+};
-+
-+static inline bool ima_kernel_data_source_is_supported(const char *source)
-+{
-+	int i;
-+
-+	if (!source)
-+		return false;
-+
-+	for (i = MIN_SOURCE + 1; i < MAX_SOURCE; i++) {
-+		if (!strcmp(ima_supported_kernel_data_sources_str[i], source))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- #ifdef CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS
- /*
-  * To track keys that need to be measured.
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index a889bf40cb7e..41be4d1d839e 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -888,6 +888,9 @@ int ima_measure_critical_data(const char *event_name,
- 	if (!event_name || !event_data_source || !buf || !buf_len)
- 		return -EINVAL;
- 
-+	if (!ima_kernel_data_source_is_supported(event_data_source))
-+		return -EPERM;
-+
- 	return process_buffer_measurement(NULL, buf, buf_len, event_name,
- 					  CRITICAL_DATA, 0, event_data_source,
- 					  measure_buf_hash);
+Thanks,
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
