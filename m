@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85299255CD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34F8255CDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgH1OmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:42:05 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:57928 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728010AbgH1Ok1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:40:27 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 8911A1D14;
-        Fri, 28 Aug 2020 17:40:20 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1598625620;
-        bh=6yh9wsXrrUwgAauulN6NDeqzPbS2YfuufHPinxnH05o=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lyejLyhpgyq+4nbybQ5+4YTz4psnhMp5br3XVAUIqObaYHOJEAoLtTqOT6XmfQVkG
-         ZZbs4rtHYk2gISySQNZCzIOLNmj6MVAMVqFNEWwQda2Ri7hdmBm/ND7ygcE7Retgst
-         CtJ5k+eXH2XcLHAp1PwycMxHPoj201lQqNN9ZFw4=
-Received: from localhost.localdomain (172.30.8.44) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 28 Aug 2020 17:40:19 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v3 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 28 Aug 2020 07:39:38 -0700
-Message-ID: <20200828143938.102889-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
-References: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.30.8.44]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+        id S1726614AbgH1Onf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:43:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727912AbgH1Olc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:41:32 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B15B020757;
+        Fri, 28 Aug 2020 14:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598625687;
+        bh=MApO7IXUAC6FNjyRIIj5d7nxPW2xAsj7WUutz95Xyqg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a4nxuEPFYWe+mitbJg8k/3/xHYjWwm7zcHFWaceJ8o+6JQbMJAw1fxA8m9xacqKtT
+         IQ82vAR3yWmOwMtfcdGMO7aVHEYhZL/0KofUjreowr1fZMqKcvoofRvtVIe4Z2G4ZZ
+         FJ267yddp/UCr2FVdAvkh/+R3B0vdpwCAi4L3abk=
+Date:   Fri, 28 Aug 2020 23:41:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     peterz@infradead.org
+Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "cameron@moodycamel.com" <cameron@moodycamel.com>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+Subject: Re: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
+Message-Id: <20200828234123.f033d15e4d345c03eef97e88@kernel.org>
+In-Reply-To: <20200828141917.GE1362448@hirez.programming.kicks-ass.net>
+References: <20200827161237.889877377@infradead.org>
+        <20200827161754.359432340@infradead.org>
+        <7df0a1af432040d9908517661c32dc34@trendmicro.com>
+        <20200828225113.9541a5f67a3bcb17c4ce930c@kernel.org>
+        <23d43cfb12c54a1fbc766ea313ecb5a6@trendmicro.com>
+        <20200828141917.GE1362448@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On Fri, 28 Aug 2020 16:19:17 +0200
+peterz@infradead.org wrote:
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+> On Fri, Aug 28, 2020 at 02:11:18PM +0000, Eddy_Wu@trendmicro.com wrote:
+> > > From: Masami Hiramatsu <mhiramat@kernel.org>
+> > >
+> > > OK, schedule function will be the key. I guess the senario is..
+> > >
+> > > 1) kretporbe replace the return address with kretprobe_trampoline on task1's kernel stack
+> > > 2) the task1 forks task2 before returning to the kretprobe_trampoline
+> > > 3) while copying the process with the kernel stack, task2->kretprobe_instances.first = NULL
+> > 
+> > I think new process created by fork/clone uses a brand new kernel
+> > stack? I thought only user stack are copied.  Otherwise any process
+> > launch should crash in the same way
+> 
+> I was under the same impression, we create a brand new stack-frame for
+> the new task, this 'fake' frame we can schedule into.
+> 
+> It either points to ret_from_fork() for new user tasks, or
+> kthread_frame_init() for kernel threads.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b186ade3597..b3db537a8310 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12354,6 +12354,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
+Ah sorry, then it's my misreading... anyway, I could reproduce the crash with
+probing on schedule(). Hmm, it is better to dump the current comm with
+BUG().
+
+Thank you,
+
+
+
 -- 
-2.25.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
