@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82061255EE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889AE255EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgH1QjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:39:19 -0400
-Received: from smtprelay0173.hostedemail.com ([216.40.44.173]:43104 "EHLO
+        id S1728386AbgH1Qjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:39:32 -0400
+Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:43120 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728169AbgH1QjO (ORCPT
+        by vger.kernel.org with ESMTP id S1726733AbgH1QjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:39:14 -0400
+        Fri, 28 Aug 2020 12:39:18 -0400
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id D055318026A0C;
-        Fri, 28 Aug 2020 16:39:12 +0000 (UTC)
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 0EC9B18026A1B;
+        Fri, 28 Aug 2020 16:39:16 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:327:355:371:372:379:541:800:960:966:973:988:989:1260:1311:1314:1345:1359:1437:1515:1605:1730:1747:1777:1792:2196:2198:2199:2200:2393:2553:2559:2562:2689:2895:2898:2902:2914:2924:2926:3138:3139:3140:3141:3142:3280:3503:3504:3653:3865:3866:3867:3868:3870:3871:4250:4321:4385:4605:5007:6117:6119:6261:6630:7875:7903:7904:8568:8603:8957:9036:9040:10004:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12679:12683:12895:12986:13894:14096:14110:14394:21080:21324:21433:21451:21505:21627:21939:21990:30029:30054:30062:30070:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: club31_270d19427077
-X-Filterd-Recvd-Size: 22594
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:327:355:379:541:800:960:966:968:973:988:989:1260:1311:1314:1345:1359:1437:1515:1605:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2559:2562:2689:2895:2898:3138:3139:3140:3141:3142:3653:3865:3866:3867:3868:3871:3872:4321:4385:4605:5007:6117:6119:6261:7875:7903:7904:8531:8603:8957:9036:10004:10848:11026:11473:11658:11914:12043:12291:12296:12297:12438:12555:12683:12895:12986:13894:14096:14110:14394:21080:21324:21611:21627:21795:21990:30029:30034:30051:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: mark23_2f0837e27077
+X-Filterd-Recvd-Size: 21453
 Received: from joe-laptop.perches.com (unknown [47.151.133.149])
         (Authenticated sender: joe@perches.com)
         by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 28 Aug 2020 16:39:11 +0000 (UTC)
+        Fri, 28 Aug 2020 16:39:15 +0000 (UTC)
 From:   Joe Perches <joe@perches.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ntfs3: Add and use logging macros
-Date:   Fri, 28 Aug 2020 09:39:03 -0700
-Message-Id: <3b52b62bafe9f723b9c2dfbc68cf0a6d3adbf3fa.1598632661.git.joe@perches.com>
+Subject: [PATCH 2/3] ntfs3: Use more common brace style
+Date:   Fri, 28 Aug 2020 09:39:04 -0700
+Message-Id: <12b6a0e66778715d74fa30f0522a520864f326ba.1598632661.git.joe@perches.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <cover.1598632661.git.joe@perches.com>
 References: <cover.1598632661.git.joe@perches.com>
@@ -39,660 +39,686 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use more common kernel style by removing direct uses of KERN_<LEVEL>.
-
-Miscellanea:
-
-o Correct spelling of garbage in logging
+Add open and close braces when if/else arms have multiple statements.
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- fs/ntfs3/debug.h   | 12 +++++++++
- fs/ntfs3/dir.c     | 24 ++++++++----------
- fs/ntfs3/file.c    | 47 +++++++++++++----------------------
- fs/ntfs3/frecord.c | 11 +++------
- fs/ntfs3/fslog.c   |  6 ++---
- fs/ntfs3/fsntfs.c  | 43 ++++++++++++--------------------
- fs/ntfs3/index.c   |  2 +-
- fs/ntfs3/inode.c   | 18 +++++---------
- fs/ntfs3/ntfs_fs.h |  4 +--
- fs/ntfs3/super.c   | 61 +++++++++++++++++-----------------------------
- 10 files changed, 93 insertions(+), 135 deletions(-)
+ fs/ntfs3/attrib.c   |  7 ++++---
+ fs/ntfs3/attrlist.c |  4 ++--
+ fs/ntfs3/bitmap.c   | 43 ++++++++++++++++++++++---------------------
+ fs/ntfs3/file.c     | 15 ++++++++-------
+ fs/ntfs3/frecord.c  | 32 +++++++++++++++++---------------
+ fs/ntfs3/fslog.c    | 18 ++++++++++--------
+ fs/ntfs3/fsntfs.c   | 13 +++++++------
+ fs/ntfs3/index.c    | 16 ++++++++--------
+ fs/ntfs3/inode.c    |  4 ++--
+ fs/ntfs3/lznt.c     |  3 ++-
+ fs/ntfs3/namei.c    |  3 ++-
+ fs/ntfs3/record.c   | 13 +++++++------
+ fs/ntfs3/run.c      |  8 ++++----
+ fs/ntfs3/super.c    |  6 +++---
+ fs/ntfs3/xattr.c    | 24 ++++++++++++------------
+ 15 files changed, 110 insertions(+), 99 deletions(-)
 
-diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
-index eff8e52b1560..cd3d23dff2d9 100644
---- a/fs/ntfs3/debug.h
-+++ b/fs/ntfs3/debug.h
-@@ -40,6 +40,18 @@ static inline __printf(2, 3) void ntfs_inode_printk(struct inode *inode,
- }
- #endif
+diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+index 3a61dbbe2b5f..566847af3c55 100644
+--- a/fs/ntfs3/attrib.c
++++ b/fs/ntfs3/attrib.c
+@@ -1071,9 +1071,9 @@ int attr_is_frame_compressed(struct ntfs_inode *ni, struct ATTRIB *attr,
+ 				return -ENOENT;
+ 		}
  
-+#define ntfs_err(sb, fmt, ...)						\
-+	ntfs_printk(sb, KERN_ERR fmt, ##__VA_ARGS__)
-+#define ntfs_warn(sb, fmt, ...)						\
-+	ntfs_printk(sb, KERN_WARNING fmt, ##__VA_ARGS__)
-+#define ntfs_notice(sb, fmt, ...)					\
-+	ntfs_printk(sb, KERN_NOTICE fmt, ##__VA_ARGS__)
-+
-+#define ntfs_inode_err(inode, fmt, ...)					\
-+	ntfs_inode_printk(inode, KERN_ERR fmt, ##__VA_ARGS__)
-+#define ntfs_inode_warn(inode, fmt, ...)				\
-+	ntfs_inode_printk(inode, KERN_WARNING fmt, ##__VA_ARGS__)
-+
- #define ntfs_alloc(s, z) kmalloc(s, z ? (GFP_NOFS | __GFP_ZERO) : GFP_NOFS)
- #define ntfs_free(p) kfree(p)
- #define ntfs_memdup(src, len) kmemdup(src, len, GFP_NOFS)
-diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
-index 5bf0297f6b2f..5a06c6db16ce 100644
---- a/fs/ntfs3/dir.c
-+++ b/fs/ntfs3/dir.c
-@@ -47,8 +47,8 @@ int ntfs_utf16_to_nls(struct ntfs_sb_info *sbi, const struct le_str *uni,
- 		int charlen;
- 
- 		if (buf_len < NLS_MAX_CHARSET_SIZE) {
--			ntfs_printk(sbi->sb, KERN_WARNING
--				    "filename was truncated while converting.");
-+			ntfs_warn(sbi->sb,
-+				  "filename was truncated while converting");
+-		if (lcn == SPARSE_LCN)
++		if (lcn == SPARSE_LCN) {
+ 			slen += len;
+-		else {
++		} else {
+ 			if (slen) {
+ 				/*
+ 				 * data_clusters + sparse_clusters =
+@@ -1091,8 +1091,9 @@ int attr_is_frame_compressed(struct ntfs_inode *ni, struct ATTRIB *attr,
+ 				 * So it is not compressed
+ 				 */
+ 				*clst_data = clst_frame;
+-			} else
++			} else {
+ 				*is_compr = *clst_data < clst_frame;
++			}
  			break;
  		}
+ 	}
+diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+index 3739572a4eca..95a80fe9756d 100644
+--- a/fs/ntfs3/attrlist.c
++++ b/fs/ntfs3/attrlist.c
+@@ -444,9 +444,9 @@ int al_update(struct ntfs_inode *ni)
+ 	if (err)
+ 		goto out;
  
-@@ -199,13 +199,12 @@ int ntfs_nls_to_utf16(struct ntfs_sb_info *sbi, const u8 *name, u32 name_len,
+-	if (!attr->non_res)
++	if (!attr->non_res) {
+ 		memcpy(resident_data(attr), al->le, al->size);
+-	else {
++	} else {
+ 		err = ntfs_sb_write_run(sbi, &al->run, 0, al->le, al->size);
+ 		if (err)
+ 			goto out;
+diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
+index fe41e010b2eb..6b8b090b3b53 100644
+--- a/fs/ntfs3/bitmap.c
++++ b/fs/ntfs3/bitmap.c
+@@ -133,13 +133,14 @@ static struct rb_node *rb_lookup(struct rb_root *root, size_t v)
+ 		struct rb_node_key *k;
  
- 		if (!warn) {
- 			warn = 1;
--			ntfs_printk(
--				sbi->sb,
--				KERN_ERR
--				"%s -> utf16 failed: '%.*s', pos %d, chars %x %x %x",
--				nls->charset, name_len, name, (int)(str - name),
--				str[0], tail > 1 ? str[1] : 0,
--				tail > 2 ? str[2] : 0);
-+			ntfs_err(sbi->sb,
-+				 "%s -> utf16 failed: '%.*s', pos %d, chars %x %x %x",
-+				 nls->charset, name_len, name,
-+				 (int)(str - name),
-+				 str[0], tail > 1 ? str[1] : 0,
-+				 tail > 2 ? str[2] : 0);
+ 		k = rb_entry(*p, struct rb_node_key, node);
+-		if (v < k->key)
++		if (v < k->key) {
+ 			p = &(*p)->rb_left;
+-		else if (v > k->key) {
++		} else if (v > k->key) {
+ 			r = &k->node;
+ 			p = &(*p)->rb_right;
+-		} else
++		} else {
+ 			return &k->node;
++		}
+ 	}
+ 
+ 	return r;
+@@ -161,15 +162,15 @@ static inline bool rb_insert_count(struct rb_root *root, struct e_node *e)
+ 		struct e_node *k =
+ 			rb_entry(parent = *p, struct e_node, count.node);
+ 
+-		if (e_ckey > k->count.key)
++		if (e_ckey > k->count.key) {
+ 			p = &(*p)->rb_left;
+-		else if (e_ckey < k->count.key)
++		} else if (e_ckey < k->count.key) {
+ 			p = &(*p)->rb_right;
+-		else if (e_skey < k->start.key)
++		} else if (e_skey < k->start.key) {
+ 			p = &(*p)->rb_left;
+-		else if (e_skey > k->start.key)
++		} else if (e_skey > k->start.key) {
+ 			p = &(*p)->rb_right;
+-		else {
++		} else {
+ 			WARN_ON(1);
+ 			return false;
  		}
+@@ -197,11 +198,11 @@ static inline bool rb_insert_start(struct rb_root *root, struct e_node *e)
+ 		parent = *p;
  
- 		if (max_ulen < 3)
-@@ -348,10 +347,7 @@ static inline int ntfs_filldir(struct ntfs_sb_info *sbi, struct ntfs_inode *ni,
- 	name_len = ntfs_utf16_to_nls(sbi, (struct le_str *)&fname->name_len,
- 				     name, PATH_MAX);
- 	if (name_len <= 0) {
--		ntfs_printk(sbi->sb,
--			    KERN_WARNING
--			    "failed to convert name for inode %lx.",
--			    ino);
-+		ntfs_warn(sbi->sb, "failed to convert name for inode %lx", ino);
- 		return 0;
+ 		k = rb_entry(parent, struct e_node, start.node);
+-		if (e_skey < k->start.key)
++		if (e_skey < k->start.key) {
+ 			p = &(*p)->rb_left;
+-		else if (e_skey > k->start.key)
++		} else if (e_skey > k->start.key) {
+ 			p = &(*p)->rb_right;
+-		else {
++		} else {
+ 			WARN_ON(1);
+ 			return false;
+ 		}
+@@ -241,9 +242,9 @@ static void wnd_add_free_ext(struct wnd_bitmap *wnd, size_t bit, size_t len,
+ 	/* Try to find extent before 'bit' */
+ 	n = rb_lookup(&wnd->start_tree, bit);
+ 
+-	if (!n)
++	if (!n) {
+ 		n = rb_first(&wnd->start_tree);
+-	else {
++	} else {
+ 		e = rb_entry(n, struct e_node, start.node);
+ 
+ 		n = rb_next(n);
+@@ -1100,17 +1101,17 @@ size_t wnd_find(struct wnd_bitmap *wnd, size_t to_alloc, size_t hint,
+ 		wnd->extent_max = e->count.key;
+ 
+ 	if (e->count.key < max_alloc) {
+-		if (e->count.key >= to_alloc)
++		if (e->count.key >= to_alloc) {
+ 			;
+-		else if (flags & BITMAP_FIND_FULL) {
++		} else if (flags & BITMAP_FIND_FULL) {
+ 			if (e->count.key < to_alloc0) {
+ 				/* Biggest free block is less then requested */
+ 				goto no_space;
+ 			}
+ 			to_alloc = e->count.key;
+-		} else if (-1 != wnd->uptodated)
++		} else if (-1 != wnd->uptodated) {
+ 			to_alloc = e->count.key;
+-		else {
++		} else {
+ 			/* Check if we can use more bits */
+ 			size_t op, max_check;
+ 			struct rb_root start_tree;
+@@ -1191,9 +1192,9 @@ size_t wnd_find(struct wnd_bitmap *wnd, size_t to_alloc, size_t hint,
  	}
  
-@@ -515,7 +511,7 @@ static int ntfs_readdir(struct file *file, struct dir_context *ctx)
- 	}
+ 	if (unlikely(iw + 1 == nwnd)) {
+-		if (max_alloc == wnd->nbits)
++		if (max_alloc == wnd->nbits) {
+ 			wbits = wnd->bits_last;
+-		else {
++		} else {
+ 			size_t t = max_alloc & (wbits - 1);
  
- fs_error:
--	ntfs_inode_printk(dir, KERN_ERR "Looks like your dir is corrupt");
-+	ntfs_inode_err(dir, "Looks like your dir is corrupt");
- 	err = -EINVAL;
- out:
+ 			if (t) {
+@@ -1376,9 +1377,9 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
+ 	if (new_wnd == wnd->nwnd)
+ 		goto skip_reallocate;
  
+-	if (new_wnd <= ARRAY_SIZE(wnd->free_holder))
++	if (new_wnd <= ARRAY_SIZE(wnd->free_holder)) {
+ 		new_free = wnd->free_holder;
+-	else {
++	} else {
+ 		new_free = ntfs_alloc(new_wnd * sizeof(u16), 0);
+ 		if (!new_free)
+ 			return -ENOMEM;
 diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 72c6a263b5bc..52511299b4b7 100644
+index 52511299b4b7..5cc34f8661cb 100644
 --- a/fs/ntfs3/file.c
 +++ b/fs/ntfs3/file.c
-@@ -187,10 +187,8 @@ static int ntfs_extend_initialized_size(struct file *file,
+@@ -142,9 +142,9 @@ static int ntfs_extend_initialized_size(struct file *file,
+ 					goto next;
+ 				}
  
- out:
- 	ni->i_valid = valid;
--	ntfs_inode_printk(inode,
--			  KERN_WARNING
--			  "failed to extend initialized size to %llx.",
--			  new_valid);
-+	ntfs_inode_warn(inode, "failed to extend initialized size to %llx",
-+			new_valid);
- 	return err;
- }
+-				if (vbo < pos)
++				if (vbo < pos) {
+ 					pos = vbo;
+-				else {
++				} else {
+ 					to = (new_valid >> bits) << bits;
+ 					if (pos < to) {
+ 						ni->i_valid = to;
+@@ -355,8 +355,9 @@ void ntfs_sparse_cluster(struct inode *inode, struct page *page0, loff_t vbo,
+ 				if (from <= bh_off && bh_next <= to) {
+ 					set_buffer_uptodate(bh);
+ 					mark_buffer_dirty(bh);
+-				} else if (!buffer_uptodate(bh))
++				} else if (!buffer_uptodate(bh)) {
+ 					partial = true;
++				}
+ 				bh_off = bh_next;
+ 			} while (head != (bh = bh->b_this_page));
+ 		}
+@@ -995,17 +996,17 @@ static noinline ssize_t ntfs_compress_write(struct kiocb *iocb,
+ 			if (!bytes || !cp)
+ 				break;
  
-@@ -296,11 +294,9 @@ static int ntfs_extend_initialized_size_cmpr(struct file *file,
- 
- out:
- 	ni->i_valid = valid;
--	ntfs_inode_printk(
--		inode,
--		KERN_WARNING
--		"failed to extend initialized compressed size to %llx.",
--		new_valid);
-+	ntfs_inode_warn(inode,
-+			"failed to extend initialized compressed size to %llx",
-+			new_valid);
- 	return err;
- }
- 
-@@ -341,9 +337,8 @@ void ntfs_sparse_cluster(struct inode *inode, struct page *page0, loff_t vbo,
- 		    likely(!page_has_buffers(page))) {
- 			create_empty_buffers(page, blocksize, 0);
- 			if (!page_has_buffers(page)) {
--				ntfs_inode_printk(
--					inode, KERN_ERR
--					"failed to allocate page buffers.");
-+				ntfs_inode_err(inode,
-+					       "failed to allocate page buffers");
- 				/*err = -ENOMEM;*/
- 				goto unlock_page;
+-			if (cp < tail)
++			if (cp < tail) {
+ 				off += cp;
+-			else {
++			} else {
+ 				ip++;
+ 				off = 0;
  			}
-@@ -829,27 +824,23 @@ static ssize_t ntfs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	struct ntfs_inode *ni = ntfs_i(inode);
+ 		}
  
- 	if (is_encrypted(ni)) {
--		ntfs_inode_printk(inode,
--				  KERN_WARNING "encrypted i/o not supported");
-+		ntfs_inode_warn(inode, "encrypted i/o not supported");
- 		return -EOPNOTSUPP;
- 	}
+-		if (!copied)
++		if (!copied) {
+ 			force_uptodate = true;
+-		else {
++		} else {
+ 			size_t dpages;
  
- 	if (is_compressed(ni) && (iocb->ki_flags & IOCB_DIRECT)) {
--		ntfs_inode_printk(inode, KERN_WARNING
--				  "direct i/o + compressed not supported");
-+		ntfs_inode_warn(inode, "direct i/o + compressed not supported");
- 		return -EOPNOTSUPP;
- 	}
- 
- 	if (ni->ni_flags & NI_FLAG_COMPRESSED_MASK) {
--		ntfs_inode_printk(
--			inode, KERN_WARNING
--			"read external compressed file not supported (temporary)");
-+		ntfs_inode_warn(inode,
-+				"read external compressed file not supported (temporary)");
- 		return -EOPNOTSUPP;
- 	}
- 
- 	if (is_dedup(ni)) {
--		ntfs_inode_printk(inode, KERN_WARNING
--				  "read deduplicated not supported");
-+		ntfs_inode_warn(inode, "read deduplicated not supported");
- 		return -EOPNOTSUPP;
- 	}
- 
-@@ -1073,27 +1064,23 @@ static ssize_t ntfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	struct ntfs_inode *ni = ntfs_i(inode);
- 
- 	if (is_encrypted(ni)) {
--		ntfs_inode_printk(inode,
--				  KERN_WARNING "encrypted i/o not supported");
-+		ntfs_inode_warn(inode, "encrypted i/o not supported");
- 		return -EOPNOTSUPP;
- 	}
- 
- 	if (is_compressed(ni) && (iocb->ki_flags & IOCB_DIRECT)) {
--		ntfs_inode_printk(inode, KERN_WARNING
--				  "direct i/o + compressed not supported");
-+		ntfs_inode_warn(inode, "direct i/o + compressed not supported");
- 		return -EOPNOTSUPP;
- 	}
- 
- 	if (ni->ni_flags & NI_FLAG_COMPRESSED_MASK) {
--		ntfs_inode_printk(
--			inode, KERN_WARNING
--			"write into external compressed file not supported (temporary)");
-+		ntfs_inode_warn(inode,
-+				"write into external compressed file not supported (temporary)");
- 		return -EOPNOTSUPP;
- 	}
- 
- 	if (is_dedup(ni)) {
--		ntfs_inode_printk(inode, KERN_WARNING
--				  "write into deduplicated not supported");
-+		ntfs_inode_warn(inode, "write into deduplicated not supported");
- 		return -EOPNOTSUPP;
- 	}
- 
+ 			force_uptodate = false;
 diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index ad09fca5d7db..3402863c8352 100644
+index 3402863c8352..77a9a46d1510 100644
 --- a/fs/ntfs3/frecord.c
 +++ b/fs/ntfs3/frecord.c
-@@ -2298,11 +2298,9 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
- 		/*ntfs_iget5 may sleep*/
- 		dir = ntfs_iget5(sb, &fname->home, NULL);
- 		if (IS_ERR(dir)) {
--			ntfs_inode_printk(
--				inode,
--				KERN_WARNING
--				"failed to open parent directory r=%lx to update",
--				(long)ino_get(&fname->home));
-+			ntfs_inode_warn(inode,
-+					"failed to open parent directory r=%lx to update",
-+					(long)ino_get(&fname->home));
- 			continue;
+@@ -598,9 +598,9 @@ int ni_create_attr_list(struct ntfs_inode *ni)
+ 	ni->attr_list.size = lsize;
+ 
+ 	to_free = le32_to_cpu(rec->used) + lsize + SIZEOF_RESIDENT;
+-	if (to_free <= rs)
++	if (to_free <= rs) {
+ 		to_free = 0;
+-	else {
++	} else {
+ 		to_free -= rs;
+ 
+ 		if (to_free > free_b) {
+@@ -1303,9 +1303,9 @@ int ni_delete_all(struct ntfs_inode *ni)
+ 	if (!attr)
+ 		goto attr_list;
+ 
+-	if (!nt5 || attr->name_len)
++	if (!nt5 || attr->name_len) {
+ 		;
+-	else if (attr->type == ATTR_REPARSE) {
++	} else if (attr->type == ATTR_REPARSE) {
+ 		get_mi_ref(&ni->mi, &ref);
+ 		err = ntfs_remove_reparse(sbi, 0, &ref);
+ 	} else if (attr->type == ATTR_ID) {
+@@ -1653,9 +1653,9 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
  		}
  
-@@ -2362,8 +2360,7 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
- 	ni_unlock(ni);
+ 		flags = FIEMAP_EXTENT_MERGED;
+-		if (S_ISDIR(ni->vfs_inode.i_mode))
++		if (S_ISDIR(ni->vfs_inode.i_mode)) {
+ 			;
+-		else if (is_attr_compressed(attr)) {
++		} else if (is_attr_compressed(attr)) {
+ 			bool is_compr;
+ 			CLST clst_data;
  
- 	if (err) {
--		ntfs_printk(sb, KERN_ERR "%s r=%lx failed, %d.", hint,
--			    inode->i_ino, err);
-+		ntfs_err(sb, "%s r=%lx failed, %d", hint, inode->i_ino, err);
- 		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
- 		return err;
- 	}
+@@ -1666,8 +1666,9 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
+ 				break;
+ 			if (is_compr)
+ 				flags |= FIEMAP_EXTENT_ENCODED;
+-		} else if (is_attr_encrypted(attr))
++		} else if (is_attr_encrypted(attr)) {
+ 			flags |= FIEMAP_EXTENT_DATA_ENCRYPTED;
++		}
+ 
+ 		vbo = (u64)vcn << cluster_bits;
+ 		bytes = (u64)clen << cluster_bits;
+@@ -1680,11 +1681,11 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
+ 			flags |= FIEMAP_EXTENT_LAST;
+ 		}
+ 
+-		if (vbo + bytes <= valid)
++		if (vbo + bytes <= valid) {
+ 			;
+-		else if (vbo >= valid)
++		} else if (vbo >= valid) {
+ 			flags |= FIEMAP_EXTENT_UNWRITTEN;
+-		else {
++		} else {
+ 			/* vbo < valid && valid < vbo + bytes */
+ 			u64 dlen = valid - vbo;
+ 
+@@ -2234,9 +2235,9 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
+ 
+ 		attr = ni_find_attr(ni, NULL, &le, ATTR_DATA, NULL, 0, NULL,
+ 				    &mi);
+-		if (!attr)
++		if (!attr) {
+ 			dup.alloc_size = dup.data_size = 0;
+-		else if (!attr->non_res) {
++		} else if (!attr->non_res) {
+ 			u32 data_size = le32_to_cpu(attr->res.data_size);
+ 
+ 			dup.alloc_size = cpu_to_le64(QuadAlign(data_size));
+@@ -2289,8 +2290,9 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
+ 		if (memcmp(&fname->dup, &dup, sizeof(fname->dup))) {
+ 			memcpy(&fname->dup, &dup, sizeof(fname->dup));
+ 			mi->dirty = true;
+-		} else if (!upd_parent)
++		} else if (!upd_parent) {
+ 			continue;
++		}
+ 
+ 		if (!active)
+ 			continue; /*avoid __wait_on_freeing_inode(inode); */
+@@ -2307,9 +2309,9 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
+ 		if (!is_bad_inode(dir)) {
+ 			struct ntfs_inode *dir_ni = ntfs_i(dir);
+ 
+-			if (!ni_trylock(dir_ni))
++			if (!ni_trylock(dir_ni)) {
+ 				re_dirty = true;
+-			else {
++			} else {
+ 				indx_update_dup(dir_ni, sbi, fname, &dup, sync);
+ 				ni_unlock(dir_ni);
+ 			}
 diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index e9d41b7d99dd..f282e96a45cb 100644
+index f282e96a45cb..c80b5d594d9b 100644
 --- a/fs/ntfs3/fslog.c
 +++ b/fs/ntfs3/fslog.c
-@@ -4096,10 +4096,8 @@ int log_replay(struct ntfs_inode *ni)
- 	case 0x20000:
- 		break;
- 	default:
--		ntfs_printk(sbi->sb,
--			    KERN_WARNING
--			    "$LogFile version %d.%d is not supported",
--			    log->major_ver, log->minor_ver);
-+		ntfs_warn(sbi->sb, "$LogFile version %d.%d is not supported",
-+			  log->major_ver, log->minor_ver);
- 		err = -EOPNOTSUPP;
- 		log->set_dirty = true;
- 		goto out;
+@@ -841,8 +841,9 @@ static inline struct RESTART_TABLE *extend_rsttbl(struct RESTART_TABLE *tbl,
+ 	if (tbl->first_free) {
+ 		rt->first_free = tbl->first_free;
+ 		*(__le32 *)Add2Ptr(rt, le32_to_cpu(tbl->last_free)) = osize;
+-	} else
++	} else {
+ 		rt->first_free = osize;
++	}
+ 
+ 	rt->total = tbl->total;
+ 
+@@ -3735,9 +3736,9 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
+ 			ib->rhdr.lsn = t64;
+ 	}
+ 
+-	if (inode)
++	if (inode) {
+ 		err = _ni_write_inode(inode, 0);
+-	else if (mi && mi->dirty) {
++	} else if (mi && mi->dirty) {
+ 		err = mi_write(mi, 0);
+ 		if (err)
+ 			goto out;
+@@ -4056,9 +4057,9 @@ int log_replay(struct ntfs_inode *ni)
+ 	log->ra = ra;
+ 
+ 	t16 = le16_to_cpu(ra2->client_off);
+-	if (t16 == offsetof(struct RESTART_AREA, clients))
++	if (t16 == offsetof(struct RESTART_AREA, clients)) {
+ 		memcpy(ra, ra2, log->ra_size);
+-	else {
++	} else {
+ 		memcpy(ra, ra2, offsetof(struct RESTART_AREA, clients));
+ 		memcpy(ra->clients, Add2Ptr(ra2, t16),
+ 		       le16_to_cpu(ra2->ra_len) - t16);
+@@ -4511,11 +4512,11 @@ int log_replay(struct ntfs_inode *ni)
+ 		 * Calculate the number of clusters per page the system
+ 		 * which wrote the checkpoint, possibly creating the table
+ 		 */
+-		if (dptbl)
++		if (dptbl) {
+ 			t32 = 1 + (le16_to_cpu(dptbl->size) -
+ 				   sizeof(struct DIR_PAGE_ENTRY)) /
+ 					  sizeof(u64);
+-		else {
++		} else {
+ 			t32 = log->clst_per_page;
+ 			ntfs_free(dptbl);
+ 			dptbl = init_rsttbl(sizeof(struct DIR_PAGE_ENTRY) +
+@@ -4615,8 +4616,9 @@ int log_replay(struct ntfs_inode *ni)
+ 			oe->name_len = 0; //oe0.name_len;
+ 			oe->ref = oe0->ref;
+ 			oe->open_record_lsn = oe0->open_record_lsn;
+-		} else
++		} else {
+ 			memcpy(oe, Add2Ptr(lrh, t16), bytes_per_attr_entry);
++		}
+ 
+ 		t16 = le16_to_cpu(lrh->undo_len);
+ 		if (t16) {
 diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index c5ab623763aa..d142b42f2cc2 100644
+index d142b42f2cc2..9c489e8be91a 100644
 --- a/fs/ntfs3/fsntfs.c
 +++ b/fs/ntfs3/fsntfs.c
-@@ -172,7 +172,7 @@ int ntfs_extend_init(struct ntfs_sb_info *sbi)
- 	struct MFT_REF ref;
+@@ -196,9 +196,9 @@ int ntfs_extend_init(struct ntfs_sb_info *sbi)
+ 	/* Try to find $ObjId */
+ 	inode2 = dir_search_u(inode, &NAME_OBJID, NULL);
+ 	if (inode2 && !IS_ERR(inode2)) {
+-		if (is_bad_inode(inode2))
++		if (is_bad_inode(inode2)) {
+ 			iput(inode2);
+-		else {
++		} else {
+ 			sbi->objid.ni = ntfs_i(inode2);
+ 			sbi->objid_no = inode2->i_ino;
+ 		}
+@@ -690,11 +690,11 @@ int ntfs_look_free_mft(struct ntfs_sb_info *sbi, CLST *rno, bool mft,
+ 		sbi->mft.next_free = MFT_REC_USER;
  
- 	if (sbi->volume.major_ver < 3) {
--		ntfs_printk(sb, KERN_NOTICE "Skip $Extend 'cause NTFS version");
-+		ntfs_notice(sb, "Skip $Extend 'cause NTFS version");
- 		return 0;
- 	}
+ 	for (;;) {
+-		if (sbi->mft.next_free >= sbi->mft.bitmap.nbits)
++		if (sbi->mft.next_free >= sbi->mft.bitmap.nbits) {
+ 			;
+-		else if (!wnd_find(wnd, 1, MFT_REC_USER, 0, &fr))
++		} else if (!wnd_find(wnd, 1, MFT_REC_USER, 0, &fr)) {
+ 			sbi->mft.next_free = sbi->mft.bitmap.nbits;
+-		else {
++		} else {
+ 			*rno = fr;
+ 			sbi->mft.next_free = *rno + 1;
+ 			break;
+@@ -743,8 +743,9 @@ void ntfs_mark_rec_free(struct ntfs_sb_info *sbi, CLST rno)
+ 			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
+ 		else
+ 			wnd_set_free(wnd, rno, 1);
+-	} else if (rno >= MFT_REC_RESERVED && sbi->mft.reserved_bitmap_inited)
++	} else if (rno >= MFT_REC_RESERVED && sbi->mft.reserved_bitmap_inited) {
+ 		__clear_bit(rno - MFT_REC_RESERVED, &sbi->mft.reserved_bitmap);
++	}
  
-@@ -182,7 +182,7 @@ int ntfs_extend_init(struct ntfs_sb_info *sbi)
- 	inode = ntfs_iget5(sb, &ref, &NAME_EXTEND);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $Extend.");
-+		ntfs_err(sb, "Failed to load $Extend");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -244,7 +244,7 @@ int ntfs_loadlog_and_replay(struct ntfs_inode *ni, struct ntfs_sb_info *sbi)
- 
- 	/* Check for 4GB */
- 	if (inode->i_size >= 0x100000000ull) {
--		ntfs_printk(sb, KERN_ERR "$LogFile is too big");
-+		ntfs_err(sb, "$LogFile is too big");
- 		err = -EINVAL;
- 		goto out;
- 	}
-@@ -273,7 +273,7 @@ int ntfs_loadlog_and_replay(struct ntfs_inode *ni, struct ntfs_sb_info *sbi)
- 
- 	if (!inode) {
- 		err = -EINVAL;
--		ntfs_printk(sb, KERN_ERR "Failed to load $MFT.");
-+		ntfs_err(sb, "Failed to load $MFT");
- 		goto out;
- 	}
- 
-@@ -371,8 +371,8 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
- 			zlen = wnd_zone_len(wnd);
- 
- 			if (!zlen) {
--				ntfs_printk(sbi->sb, KERN_ERR
--					    "no free space to extend mft");
-+				ntfs_err(sbi->sb,
-+					 "no free space to extend mft");
- 				err = -ENOSPC;
- 				goto out;
- 			}
-@@ -443,11 +443,8 @@ int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
- 	}
- 
- no_space:
--	ntfs_printk(
--		sb,
--		KERN_NOTICE
--		"Can not allocate %x cluster(s), Zone: %zx, free %zx, flags %d",
--		(u32)len, zlen, wnd_zeroes(wnd), (int)opt);
-+	ntfs_notice(sb, "Can not allocate %x cluster(s), Zone: %zx, free %zx, flags %d",
-+		    (u32)len, zlen, wnd_zeroes(wnd), (int)opt);
- 
- 	up_write(&wnd->rw_lock);
- 
-@@ -615,9 +612,7 @@ int ntfs_look_free_mft(struct ntfs_sb_info *sbi, CLST *rno, bool mft,
- 			i = ntfs_iget5(sb, &ref, NULL);
- 			if (IS_ERR(i)) {
- next:
--				ntfs_printk(sb,
--					    KERN_NOTICE
--					    "Invalid reserved record %x",
-+				ntfs_notice(sb, "Invalid reserved record %x",
- 					    ref.low);
- 				continue;
- 			}
-@@ -846,7 +841,7 @@ int ntfs_refresh_zone(struct ntfs_sb_info *sbi)
- 	/* Try to allocate clusters after last MFT run */
- 	zlen = wnd_find(wnd, zone_max, lcn_s, 0, &lcn_s);
- 	if (!zlen) {
--		ntfs_printk(sbi->sb, KERN_NOTICE "MftZone: unavailable");
-+		ntfs_notice(sbi->sb, "MftZone: unavailable");
- 		return 0;
- 	}
- 
-@@ -975,8 +970,7 @@ int ntfs_set_state(struct ntfs_sb_info *sbi, enum NTFS_DIRTY_FLAGS dirty)
- 
- 	switch (dirty) {
- 	case NTFS_DIRTY_ERROR:
--		ntfs_printk(sbi->sb, KERN_NOTICE
--			    "Mark volume as dirty due to NTFS errors");
-+		ntfs_notice(sbi->sb, "Mark volume as dirty due to NTFS errors");
- 		sbi->volume.real_dirty = true;
- 		fallthrough;
- 	case NTFS_DIRTY_DIRTY:
-@@ -1067,10 +1061,8 @@ int ntfs_sb_write(struct super_block *sb, u64 lbo, size_t bytes,
- 		if (op < blocksize) {
- 			bh = __bread(bdev, block, blocksize);
- 			if (!bh) {
--				ntfs_printk(sb,
--					    KERN_ERR
--					    "failed to read block %llx",
--					    (u64)block);
-+				ntfs_err(sb, "failed to read block %llx",
-+					 (u64)block);
- 				return -EIO;
- 			}
- 		} else {
-@@ -1098,11 +1090,8 @@ int ntfs_sb_write(struct super_block *sb, u64 lbo, size_t bytes,
- 			int err = sync_dirty_buffer(bh);
- 
- 			if (err) {
--				ntfs_printk(
--					sb,
--					KERN_ERR
--					"failed to sync buffer at block %llx, error %d",
--					(u64)block, err);
-+				ntfs_err(sb, "failed to sync buffer at block %llx, error %d",
-+					 (u64)block, err);
- 				put_bh(bh);
- 				return err;
- 			}
-@@ -1570,7 +1559,7 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
- 	inode = ntfs_iget5(sb, &ref, &NAME_SECURE);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $Secure.");
-+		ntfs_err(sb, "Failed to load $Secure");
- 		inode = NULL;
- 		goto out;
- 	}
+ 	if (rno < wnd_zone_bit(wnd))
+ 		wnd_zone_set(wnd, rno, 1);
 diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 37ea369318ec..43853daa3a48 100644
+index 43853daa3a48..304d48b4e838 100644
 --- a/fs/ntfs3/index.c
 +++ b/fs/ntfs3/index.c
-@@ -1707,7 +1707,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		 * new entry classic case when mft record is 1K and index
- 		 * buffer 4K the problem should not occurs
- 		 */
--		ntfs_printk(sbi->sb, KERN_NOTICE
-+		ntfs_notice(sbi->sb,
- 			    "Failed: root + new entry > index. Reinsert");
- 		ntfs_free(re);
- 		indx_write(indx, ni, n, 0);
+@@ -388,9 +388,9 @@ static int scan_nres_bitmap(struct ntfs_sb_info *sbi, struct ATTRIB *bitmap,
+ 			return -EIO;
+ 
+ 		vbo = (u64)vblock << sb->s_blocksize_bits;
+-		if (vbo >= valid_size)
++		if (vbo >= valid_size) {
+ 			memset(bh->b_data, 0, blocksize);
+-		else if (vbo + blocksize > valid_size) {
++		} else if (vbo + blocksize > valid_size) {
+ 			u32 voff = valid_size & sbi->block_mask;
+ 
+ 			memset(bh->b_data + voff, 0, blocksize - voff);
+@@ -1608,9 +1608,9 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+ 	}
+ 
+ 	n = NULL;
+-	if (!to_move)
++	if (!to_move) {
+ 		re = NULL;
+-	else {
++	} else {
+ 		re = ntfs_memdup(e0, to_move);
+ 		if (!re) {
+ 			err = -ENOMEM;
+@@ -2327,9 +2327,9 @@ int indx_delete_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
+ 
+ 		de_set_vbn_le(next, de_get_vbn_le(e));
+ 		hdr_delete_de(hdr, e);
+-		if (level)
++		if (level) {
+ 			indx_write(indx, ni, n, 0);
+-		else {
++		} else {
+ 			hdr->total = hdr->used;
+ 
+ 			/* Shrink resident root attribute */
+@@ -2643,9 +2643,9 @@ int indx_update_dup(struct ntfs_inode *ni, struct ntfs_sb_info *sbi,
+ 
+ 	memcpy(&e_fname->dup, dup, sizeof(*dup));
+ 
+-	if (fnd->level)
++	if (fnd->level) {
+ 		err = indx_write(indx, ni, fnd->nodes[fnd->level - 1], sync);
+-	else if (sync) {
++	} else if (sync) {
+ 		mi->dirty = true;
+ 		err = mi_write(mi, 1);
+ 	} else {
 diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index ddc1b5810959..117800126c17 100644
+index 117800126c17..3e66ad89d2fd 100644
 --- a/fs/ntfs3/inode.c
 +++ b/fs/ntfs3/inode.c
-@@ -79,13 +79,12 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+@@ -75,9 +75,9 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+ 
+ 	rec = ni->mi.mrec;
+ 
+-	if (sbi->flags & NTFS_FLAGS_LOG_REPLAING)
++	if (sbi->flags & NTFS_FLAGS_LOG_REPLAING) {
  		;
- 	else if (ref->seq != rec->seq) {
+-	else if (ref->seq != rec->seq) {
++	} else if (ref->seq != rec->seq) {
  		err = -EINVAL;
--		ntfs_printk(sb,
--			    KERN_ERR "MFT: r=%lx, expect seq=%x instead of %x!",
--			    ino, le16_to_cpu(ref->seq), le16_to_cpu(rec->seq));
-+		ntfs_err(sb, "MFT: r=%lx, expect seq=%x instead of %x!",
-+			 ino, le16_to_cpu(ref->seq), le16_to_cpu(rec->seq));
- 		goto out;
- 	} else if (!is_rec_inuse(rec)) {
- 		err = -EINVAL;
--		ntfs_printk(sb, KERN_ERR "Inode r=%x is not in use!", (u32)ino);
-+		ntfs_err(sb, "Inode r=%x is not in use!", (u32)ino);
- 		goto out;
- 	}
+ 		ntfs_err(sb, "MFT: r=%lx, expect seq=%x instead of %x!",
+ 			 ino, le16_to_cpu(ref->seq), le16_to_cpu(rec->seq));
+diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
+index 123ee648dc38..c9bdecfb1294 100644
+--- a/fs/ntfs3/lznt.c
++++ b/fs/ntfs3/lznt.c
+@@ -76,8 +76,9 @@ static size_t longest_match_std(const u8 *src, struct lznt *ctx)
+ 	if (len1 < len2) {
+ 		ctx->best_match = hash[1];
+ 		len1 = len2;
+-	} else
++	} else {
+ 		ctx->best_match = hash[0];
++	}
  
-@@ -781,10 +780,7 @@ int ntfs_readpage(struct file *file, struct page *page)
- 		if (PageLocked(page))
- 			wait_on_page_bit(page, PG_locked);
- 		if (PageError(page)) {
--			ntfs_inode_printk(inode,
--					  KERN_WARNING
--					  "file garbadge at 0x%llx",
--					  valid);
-+			ntfs_inode_warn(inode, "file garbage at 0x%llx", valid);
+ 	hash[1] = hash[0];
+ 	hash[0] = src;
+diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
+index 55116311ade9..8dd4adf64058 100644
+--- a/fs/ntfs3/namei.c
++++ b/fs/ntfs3/namei.c
+@@ -515,8 +515,9 @@ static int ntfs_atomic_open(struct inode *dir, struct dentry *dentry,
+ 			if (file->f_mode & FMODE_OPENED) {
+ 				dput(d);
+ 				err = 0;
+-			} else
++			} else {
+ 				err = finish_no_open(file, d);
++			}
+ 			goto out1;
+ 		}
+ 		WARN_ON(d);
+diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
+index 8a3f7af581b7..4dcddc903b0b 100644
+--- a/fs/ntfs3/record.c
++++ b/fs/ntfs3/record.c
+@@ -290,8 +290,9 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
+ 
+ 		if (attr->nres.c_unit)
  			goto out;
- 		}
- 		zero_user_segment(page, valid & (PAGE_SIZE - 1), PAGE_SIZE);
-@@ -904,7 +900,7 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- out:
- 	return ret;
- fix_error:
--	ntfs_inode_printk(inode, KERN_WARNING "file garbadge at 0x%llx", valid);
-+	ntfs_inode_warn(inode, "file garbage at 0x%llx", valid);
- 	goto out;
- }
+-	} else if (asize + 8 < SIZEOF_NONRESIDENT_EX)
++	} else if (asize + 8 < SIZEOF_NONRESIDENT_EX) {
+ 		goto out;
++	}
  
-@@ -1414,9 +1410,7 @@ int ntfs_create_inode(struct inode *dir, struct dentry *dentry,
- 		nsize = ntfs_reparse_bytes(err);
+ 	return attr;
  
- 		if (nsize > sbi->reparse.max_size) {
--			ntfs_printk(sb,
--				    KERN_WARNING "Symbolic link %u is too big",
--				    size);
-+			ntfs_warn(sb, "Symbolic link %u is too big", size);
- 			err = -EFBIG;
- 			goto out4;
- 		}
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index a28ccc36b288..066c5d0549b1 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -892,8 +892,8 @@ static inline struct buffer_head *ntfs_bread(struct super_block *sb,
- 	if (bh)
- 		return bh;
+@@ -370,15 +371,15 @@ int mi_format_new(struct mft_inode *mi, struct ntfs_sb_info *sbi, CLST rno,
  
--	ntfs_printk(sb, KERN_ERR "failed to read volume at offset 0x%llx",
--		    (u64)block << sb->s_blocksize_bits);
-+	ntfs_err(sb, "failed to read volume at offset 0x%llx",
-+		 (u64)block << sb->s_blocksize_bits);
- 	return NULL;
- }
+ 	rec = mi->mrec;
  
+-	if (rno == MFT_REC_MFT)
++	if (rno == MFT_REC_MFT) {
+ 		;
+-	else if (rno < MFT_REC_FREE)
++	} else if (rno < MFT_REC_FREE) {
+ 		seq = rno;
+-	else if (rno >= sbi->mft.used)
++	} else if (rno >= sbi->mft.used) {
+ 		;
+-	else if (mi_read(mi, is_mft))
++	} else if (mi_read(mi, is_mft)) {
+ 		;
+-	else if (rec->rhdr.sign == NTFS_FILE_SIGNATURE) {
++	} else if (rec->rhdr.sign == NTFS_FILE_SIGNATURE) {
+ 		/* Record is reused. Update its sequence number */
+ 		seq = le16_to_cpu(rec->seq) + 1;
+ 		if (!seq)
+diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
+index 4c6757b8bb82..90700de3f346 100644
+--- a/fs/ntfs3/run.c
++++ b/fs/ntfs3/run.c
+@@ -401,9 +401,9 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, CLST lcn, CLST len)
+ 		struct ntfs_run *new_ptr;
+ 
+ 		/* Use power of 2 for 'bytes'*/
+-		if (!used)
++		if (!used) {
+ 			bytes = 64;
+-		else if (used <= 16 * PAGE_SIZE) {
++		} else if (used <= 16 * PAGE_SIZE) {
+ 			if (is_power_of2(run->allocated))
+ 				bytes = run->allocated << 1;
+ 			else
+@@ -603,9 +603,9 @@ int run_pack(const struct runs_tree *run, CLST svcn, CLST len, u8 *run_buf,
+ 	size_size = run_packed_size(&len64);
+ 
+ 	/* offset_size - how much bytes is packed dlcn */
+-	if (lcn == SPARSE_LCN)
++	if (lcn == SPARSE_LCN) {
+ 		offset_size = 0;
+-	else {
++	} else {
+ 		/* NOTE: lcn can be less than prev_lcn! */
+ 		dlcn = (s64)lcn - prev_lcn;
+ 		offset_size = run_packed_size(&dlcn);
 diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index e9a1fe191dab..8c8cba759471 100644
+index 8c8cba759471..f87b91ee04a1 100644
 --- a/fs/ntfs3/super.c
 +++ b/fs/ntfs3/super.c
-@@ -524,9 +524,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 	 * - Volume formatted 512 and mounted as 4K
- 	 */
- 	if (sbi->sector_size != sector_size) {
--		ntfs_printk(
--			sb, KERN_WARNING
--			"Different NTFS' sector size and media sector size");
-+		ntfs_warn(sb, "Different NTFS' sector size and media sector size");
- 		dev_size += sector_size - 1;
- 	}
+@@ -128,10 +128,10 @@ void *ntfs_set_shared(void *ptr, u32 bytes)
  
-@@ -569,11 +567,8 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 		u32 mb0, gb0;
- 
- 		gb0 = format_size_gb(dev_size, &mb0);
--		ntfs_printk(
--			sb,
--			KERN_WARNING
--			"RAW NTFS volume: Filesystem size %u.%02u Gb > volume size %u.%02u Gb. Mount in read-only",
--			gb, mb, gb0, mb0);
-+		ntfs_warn(sb, "RAW NTFS volume: Filesystem size %u.%02u Gb > volume size %u.%02u Gb. Mount in read-only",
-+			  gb, mb, gb0, mb0);
- 		sb->s_flags |= SB_RDONLY;
- 	}
- 
-@@ -585,11 +580,8 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- #else
- 	/* 32 bits per cluster */
- 	if (clusters >> 32) {
--		ntfs_printk(
--			sb,
--			KERN_NOTICE
--			"NTFS %u.%02u Gb is too big to use 32 bits per cluster",
--			gb, mb);
-+		ntfs_notice(sb, "NTFS %u.%02u Gb is too big to use 32 bits per cluster",
-+			    gb, mb);
- 		goto out;
- 	}
- #endif
-@@ -773,11 +765,8 @@ static int ntfs_parse_options(struct super_block *sb, char *options, int silent,
- 		/* unknown option */
- 		default:
- 			if (!silent)
--				ntfs_printk(
--					sb,
--					KERN_ERR
--					"Unrecognized mount option \"%s\" or missing value",
--					p);
-+				ntfs_err(sb, "Unrecognized mount option \"%s\" or missing value",
-+					 p);
- 			//return -EINVAL;
+ 	spin_lock(&s_shared_lock);
+ 	for (i = 0; i < ARRAY_SIZE(s_shared); i++) {
+-		if (!s_shared[i].cnt)
++		if (!s_shared[i].cnt) {
+ 			j = i;
+-		else if (bytes == s_shared[i].len &&
+-			 !memcmp(s_shared[i].ptr, ptr, bytes)) {
++		} else if (bytes == s_shared[i].len &&
++			   !memcmp(s_shared[i].ptr, ptr, bytes)) {
+ 			s_shared[i].cnt += 1;
+ 			ret = s_shared[i].ptr;
+ 			break;
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 04e1c74b0e3d..496023b0ba4c 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -756,11 +756,11 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
+ 	if (name_len == sizeof(SYSTEM_DOS_ATTRIB) - 1 &&
+ 	    !memcmp(name, SYSTEM_DOS_ATTRIB, sizeof(SYSTEM_DOS_ATTRIB))) {
+ 		/* system.dos_attrib */
+-		if (!buffer)
++		if (!buffer) {
+ 			err = sizeof(u8);
+-		else if (size < sizeof(u8))
++		} else if (size < sizeof(u8)) {
+ 			err = -ENODATA;
+-		else {
++		} else {
+ 			err = sizeof(u8);
+ 			*(u8 *)buffer = le32_to_cpu(ni->std_fa);
  		}
- 	}
-@@ -786,14 +775,13 @@ static int ntfs_parse_options(struct super_block *sb, char *options, int silent,
- 	if (nls_name[0]) {
- 		sbi->nls = load_nls(nls_name);
- 		if (!sbi->nls) {
--			ntfs_printk(sb, KERN_ERR "failed to load \"%s\"",
--				    nls_name);
-+			ntfs_err(sb, "failed to load \"%s\"", nls_name);
- 			return -EINVAL;
+@@ -770,11 +770,11 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
+ 	if (name_len == sizeof(SYSTEM_NTFS_ATTRIB) - 1 &&
+ 	    !memcmp(name, SYSTEM_NTFS_ATTRIB, sizeof(SYSTEM_NTFS_ATTRIB))) {
+ 		/* system.ntfs_attrib */
+-		if (!buffer)
++		if (!buffer) {
+ 			err = sizeof(u32);
+-		else if (size < sizeof(u32))
++		} else if (size < sizeof(u32)) {
+ 			err = -ENODATA;
+-		else {
++		} else {
+ 			err = sizeof(u32);
+ 			*(u32 *)buffer = le32_to_cpu(ni->std_fa);
  		}
- 	} else {
- 		sbi->nls = load_nls_default();
- 		if (!sbi->nls) {
--			ntfs_printk(sb, KERN_ERR "failed to load default nls");
-+			ntfs_err(sb, "failed to load default nls");
- 			return -EINVAL;
- 		}
- 	}
-@@ -892,7 +880,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_VOLUME);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $Volume.");
-+		ntfs_err(sb, "Failed to load $Volume");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -943,7 +931,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_MIRROR);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $MFTMirr.");
-+		ntfs_err(sb, "Failed to load $MFTMirr");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -959,7 +947,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_LOGFILE);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $LogFile.");
-+		ntfs_err(sb, "Failed to load $LogFile");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -977,17 +965,15 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	if (sbi->flags & NTFS_FLAGS_NEED_REPLAY) {
- 		if (!is_ro) {
--			ntfs_printk(
--				sb, KERN_WARNING
--				"failed to replay log file. Can't mount rw!");
-+			ntfs_warn(sb,
-+				  "failed to replay log file. Can't mount rw!");
- 			err = -EINVAL;
- 			goto out;
- 		}
- 	} else if (sbi->volume.flags & VOLUME_FLAG_DIRTY) {
- 		if (!is_ro && !sbi->options.force) {
--			ntfs_printk(
--				sb, KERN_WARNING
--				"volume is dirty and \"force\" flag is not set!");
-+			ntfs_warn(sb,
-+				  "volume is dirty and \"force\" flag is not set!");
- 			err = -EINVAL;
- 			goto out;
- 		}
-@@ -1000,7 +986,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_MFT);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $MFT.");
-+		ntfs_err(sb, "Failed to load $MFT");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -1027,7 +1013,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_BADCLUS);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $BadClus.");
-+		ntfs_err(sb, "Failed to load $BadClus");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -1039,8 +1025,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 			continue;
- 
- 		if (!sbi->bad_clusters)
--			ntfs_printk(sb,
--				    KERN_NOTICE "Volume contains bad blocks");
-+			ntfs_notice(sb, "Volume contains bad blocks");
- 
- 		sbi->bad_clusters += len;
- 	}
-@@ -1053,7 +1038,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_BITMAP);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $Bitmap.");
-+		ntfs_err(sb, "Failed to load $Bitmap");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -1093,7 +1078,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sbi->sb, &ref, &NAME_ATTRDEF);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $AttrDef -> %d", err);
-+		ntfs_err(sb, "Failed to load $AttrDef -> %d", err);
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -1153,7 +1138,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_UPCASE);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load $LogFile.");
-+		ntfs_err(sb, "Failed to load $LogFile");
- 		inode = NULL;
- 		goto out;
- 	}
-@@ -1239,7 +1224,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	inode = ntfs_iget5(sb, &ref, &NAME_ROOT);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
--		ntfs_printk(sb, KERN_ERR "Failed to load root.");
-+		ntfs_err(sb, "Failed to load root");
- 		inode = NULL;
- 		goto out;
- 	}
+@@ -785,11 +785,11 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
+ 	    !memcmp(name, SYSTEM_NTFS_ATTRIB_BE,
+ 		    sizeof(SYSTEM_NTFS_ATTRIB_BE))) {
+ 		/* system.ntfs_attrib_be */
+-		if (!buffer)
++		if (!buffer) {
+ 			err = sizeof(u32);
+-		else if (size < sizeof(u32))
++		} else if (size < sizeof(u32)) {
+ 			err = -ENODATA;
+-		else {
++		} else {
+ 			err = sizeof(u32);
+ 			*(__be32 *)buffer =
+ 				cpu_to_be32(le32_to_cpu(ni->std_fa));
+@@ -802,11 +802,11 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
+ 		    sizeof(SAMBA_PROCESS_NAME)) &&
+ 	    !memcmp(name, USER_DOSATTRIB, sizeof(USER_DOSATTRIB))) {
+ 		/* user.DOSATTRIB */
+-		if (!buffer)
++		if (!buffer) {
+ 			err = 5;
+-		else if (size < 5)
++		} else if (size < 5) {
+ 			err = -ENODATA;
+-		else {
++		} else {
+ 			err = sprintf((char *)buffer, "0x%x",
+ 				      le32_to_cpu(ni->std_fa) & 0xff) +
+ 			      1;
 -- 
 2.26.0
 
