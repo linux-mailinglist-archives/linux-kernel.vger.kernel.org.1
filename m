@@ -2,111 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D898255B5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116D4255B6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgH1Nm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729526AbgH1NjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:39:01 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C18FC061232;
-        Fri, 28 Aug 2020 06:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LOexncqInd9UhATcu9VDk+sYlfrOpuGRHHk9ZHPPG40=; b=vpjhziZVX2mDZ0xUL0b3jpksFR
-        o++pJAu7Utjlj/ITds01XQp3jeXjmGgW5q7Ufe2TCqKr9ksQbY8JZLdfpAv8WTeJtGUMS7uGLgnJ+
-        L2sCHjbzFYYAx02JkKcyUn1ysEgVvouyI+EyEOTFgyFbpZYKJce3GxgvsNYf1iWxYBkhvQ37wh6rT
-        1yUG0aZg06B6ClVsluxih9/HkOAP7XDh/76TTv+bYOXdIOF2GvDFv+PEndl21CZqz0EhCp+Yb6VyT
-        6lx4i+0j2dU9HXC9Xa4HbYtkiB9CciZ9FVafDMxz4OljL5aZEtO3UcsN6Y8N1sJ+82xprKCgovL8V
-        u4hRcEJQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBeab-0008K0-Gp; Fri, 28 Aug 2020 13:38:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23F393003E5;
-        Fri, 28 Aug 2020 15:38:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D3B6F2C5F933F; Fri, 28 Aug 2020 15:38:43 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 15:38:43 +0200
-From:   peterz@infradead.org
-To:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "cameron@moodycamel.com" <cameron@moodycamel.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-Subject: Re: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
-Message-ID: <20200828133843.GC1362448@hirez.programming.kicks-ass.net>
-References: <20200827161237.889877377@infradead.org>
- <20200827161754.359432340@infradead.org>
- <7df0a1af432040d9908517661c32dc34@trendmicro.com>
+        id S1729636AbgH1Nof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:44:35 -0400
+Received: from mail-co1nam11on2085.outbound.protection.outlook.com ([40.107.220.85]:34272
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729550AbgH1NkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:40:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XAtiOIapAHkyQZwq7tGDUIJRolYqwcvWeIU3G+piB3yxkI5tplqY3RsqHrZtLG7pWcVKmAZbgiWqUsiLyBpVtigA3uumxNLgPhhAahfM6mM+orii3CpzLItLLG0pgVnuI8hiQqFx9+XHU1enPdZqUKgzOpP/SNTjrFSs+fWQKB0hj1F0GevhICrUNFYrdjgq9cajrlWX5aubJ6i/ZeJ6xa91bsHCZQPKQTwfQdoF1MGbXe0nV+Sv7yy9aQKbTQU3ENafbc+sqGif/b0p9GGozYVwsWwvnKrTHelrgDJcqoJfJqOehw+0eCoxHj9/WyXSma0mjjnprupSd39tjnWsqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CWNw/uFzzcTbbb546rFGvYtEV7r5RGaHTN4/9EQwNQ=;
+ b=BWA/BKnXL6mLIW4HcSC34Y8gZeV9M4PHUaATJBbmF5mafdGRdmIPhkVt01I1dD4akPswL1DCglx2YqvWq0BfpW73CVC8R6XxnNeFsfzybDv9AftVjjSwsb5/LCUNXYWPF9LN3jKenAgrrZ9r/T/pDA/Z7pXMpK26Xyuvj/rk9iA5RtvMkxBdBiNKSsmiaa7SFo/3l7us+4BFjBGIHtJcKkHblLSUal+rmA0j7fCkHUEdTLq6p6Fiop3K3lRpS0yVC/PaK74VFBc+jyQL25X+xkG6p8XqROB9NgdQ4HMpZFMB4fGSr8McRi/l/5ycvXhB8Sr7LF2f/YFDzkgFek721w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CWNw/uFzzcTbbb546rFGvYtEV7r5RGaHTN4/9EQwNQ=;
+ b=oiH5dcGw4YyeKFZB9aznFaA7vBV3clQqEGsKk0eciR60801eoCRV7mV0wOoNYBgbvUDlA7H5SLXuoUf5gpGfcFOJVuvMWUqjLU7qSv4yQDgSS2TRp7nRXnlSjcUjUCyZBHcTIEiMvSZ1kNMPG5SAB+MDDTqAaK2qq90HYTgsr0I=
+Received: from SA9PR11CA0018.namprd11.prod.outlook.com (2603:10b6:806:6e::23)
+ by BN6PR02MB2643.namprd02.prod.outlook.com (2603:10b6:404:5c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Fri, 28 Aug
+ 2020 13:40:03 +0000
+Received: from SN1NAM02FT018.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:6e:cafe::5a) by SA9PR11CA0018.outlook.office365.com
+ (2603:10b6:806:6e::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Fri, 28 Aug 2020 13:40:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT018.mail.protection.outlook.com (10.152.72.122) with Microsoft SMTP
+ Server id 15.20.3326.19 via Frontend Transport; Fri, 28 Aug 2020 13:40:02
+ +0000
+Received: from [149.199.38.66] (port=57271 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBebI-0004sA-Bs; Fri, 28 Aug 2020 06:39:28 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBebq-0005os-CT; Fri, 28 Aug 2020 06:40:02 -0700
+Received: from xsj-pvapsmtp01 (smtp-fallback.xilinx.com [149.199.38.66] (may be forged))
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 07SDe0EV028008;
+        Fri, 28 Aug 2020 06:40:00 -0700
+Received: from [10.140.6.59] (helo=xhdshubhraj40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <shubhrajyoti.datta@xilinx.com>)
+        id 1kBebo-0005it-0V; Fri, 28 Aug 2020 06:40:00 -0700
+From:   Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+To:     linux-clk@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, sboyd@kernel.org, robh+dt@kernel.org,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: [PATCH v6 0/8] clk: clk-wizard: clock-wizard: Driver updates
+Date:   Fri, 28 Aug 2020 19:09:48 +0530
+Message-Id: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com>
+X-Mailer: git-send-email 2.1.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7df0a1af432040d9908517661c32dc34@trendmicro.com>
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 4e119a77-58c4-4d54-5b62-08d84b57ddc4
+X-MS-TrafficTypeDiagnostic: BN6PR02MB2643:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB264396CAB12E575E1278416FAA520@BN6PR02MB2643.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:207;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zIhjjoO/trY2NVqXw0jtmRrui1tUvokzh5BCQh6ShmKvcha19aT3CCFdZuwgQ5HnAZkPo7NdisI3XvdSmPb/e+q0+Fs2rskLTMcv/lKYO79Ernx3hPPCJb71XtKj8Gq1eWlF6Pm/3kRdtiTjLM8lQqFcHSu+Oc4d2meIJzvQbjOT3FrB8tqIszu+FD/hdZc7Q0fJY7WK6KNlAxF4gkj2drclh/v9CcIcXBrMf5zKIt4qCPIPs2qYhsSd3xYW6lbcsg42MS44GwJD4blLYMHrQY80cIeuBXk//bXg8fGfqKuLnLO+E2r5ySI1w+SWudcKxAyWTCPcD7Q3+aHE65ySkrmP/2J6+2ZDj7nM3zkPovA5QnU4/XuNwzPg9ln5aw2olZFH5CiOfJ5VE1ZzR694TSY5S6J5Pxl2LRhDCQACGasN6A1f3qgT6Tul+DLru5fbmQfVYniFpPXzOvA5HjNzevXg+wNO4hQeR9cZwRlbTFZXr71kubiwsVlpRHsfIfyh
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(46966005)(4326008)(356005)(336012)(2616005)(8936002)(44832011)(9786002)(82310400002)(6916009)(8676002)(70586007)(81166007)(107886003)(966005)(186003)(5660300002)(15650500001)(426003)(478600001)(36756003)(7696005)(26005)(70206006)(6666004)(47076004)(82740400003)(2906002)(316002)(83380400001)(42866002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2020 13:40:02.7696
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e119a77-58c4-4d54-5b62-08d84b57ddc4
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT018.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2643
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 01:11:15PM +0000, Eddy_Wu@trendmicro.com wrote:
-> > -----Original Message-----
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > Sent: Friday, August 28, 2020 12:13 AM
-> > To: linux-kernel@vger.kernel.org; mhiramat@kernel.org
-> > Cc: Eddy Wu (RD-TW) <Eddy_Wu@trendmicro.com>; x86@kernel.org; davem@davemloft.net; rostedt@goodmis.org;
-> > naveen.n.rao@linux.ibm.com; anil.s.keshavamurthy@intel.com; linux-arch@vger.kernel.org; cameron@moodycamel.com;
-> > oleg@redhat.com; will@kernel.org; paulmck@kernel.org; peterz@infradead.org
-> > Subject: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
-> >
-> > @@ -1935,71 +1932,45 @@ unsigned long __kretprobe_trampoline_han
-> >                                         unsigned long trampoline_address,
-> >                                         void *frame_pointer)
-> >  {
-> > // ... removed
-> > // NULL here
-> > +       first = node = current->kretprobe_instances.first;
-> > +       while (node) {
-> > +               ri = container_of(node, struct kretprobe_instance, llist);
-> >
-> > -               orig_ret_address = (unsigned long)ri->ret_addr;
-> > -               if (skipped)
-> > -                       pr_warn("%ps must be blacklisted because of incorrect kretprobe order\n",
-> > -                               ri->rp->kp.addr);
-> > +               BUG_ON(ri->fp != frame_pointer);
-> >
-> > -               if (orig_ret_address != trampoline_address)
-> > +               orig_ret_address = (unsigned long)ri->ret_addr;
-> > +               if (orig_ret_address != trampoline_address) {
-> >                         /*
-> >                          * This is the real return address. Any other
-> >                          * instances associated with this task are for
-> >                          * other calls deeper on the call stack
-> >                          */
-> >                         break;
-> > +               }
-> > +
-> > +               node = node->next;
-> >         }
-> >
-> 
-> Hi, I found a NULL pointer dereference here, where
-> current->kretprobe_instances.first == NULL in these two scenario:
+In the thread [1] Greg suggested that we move the driver
+to the clk from the staging.
+Add patches to address the concerns regarding the fractional and
+set rate support in the TODO.
 
-Hurmph, that would mean hitting the trampoline and not having a
-kretprobe_instance, weird. Let me try and reproduce.
+The patch set does the following
+- Trivial fixes for kernel doc.
+- Move the driver to the clk folder
+- Add capability to set rate.
+- Add fractional support.
+- Add support for configurable outputs.
+- Make the output names unique so that multiple instances
+do not crib.
+
+Changes in the v3:
+Added the cover-letter.
+Add patches for rate setting and fractional support
+Add patches for warning.
+Remove the driver from staging as suggested
+
+v4:
+Reorder the patches.
+Merge the CLK_IS_BASIC patch.
+Add the yaml form of binding document
+
+v5:
+Fix a mismerge
+
+v6:
+Fix the yaml warning
+use poll timedout
+
+[1] https://spinics.net/lists/linux-driver-devel/msg117326.html
+
+Shubhrajyoti Datta (8):
+  dt-bindings: add documentation of xilinx clocking wizard
+  clk: clock-wizard: Add the clockwizard to clk directory
+  clk: clock-wizard: Fix kernel-doc warning
+  clk: clock-wizard: Add support for dynamic reconfiguration
+  clk: clock-wizard: Add support for fractional support
+  clk: clock-wizard: Remove the hardcoding of the clock outputs
+  clk: clock-wizard: Update the fixed factor divisors
+  staging: clocking-wizard: Delete the driver from the staging
+
+ .../bindings/clock/xlnx,clocking-wizard.yaml       |  71 +++
+ drivers/clk/Kconfig                                |   9 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/clk-xlnx-clock-wizard.c                | 657 +++++++++++++++++++++
+ drivers/staging/Kconfig                            |   2 -
+ drivers/staging/Makefile                           |   1 -
+ drivers/staging/clocking-wizard/Kconfig            |  10 -
+ drivers/staging/clocking-wizard/Makefile           |   2 -
+ drivers/staging/clocking-wizard/TODO               |  12 -
+ .../clocking-wizard/clk-xlnx-clock-wizard.c        | 333 -----------
+ drivers/staging/clocking-wizard/dt-binding.txt     |  30 -
+ 11 files changed, 738 insertions(+), 390 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
+ create mode 100644 drivers/clk/clk-xlnx-clock-wizard.c
+ delete mode 100644 drivers/staging/clocking-wizard/Kconfig
+ delete mode 100644 drivers/staging/clocking-wizard/Makefile
+ delete mode 100644 drivers/staging/clocking-wizard/TODO
+ delete mode 100644 drivers/staging/clocking-wizard/clk-xlnx-clock-wizard.c
+ delete mode 100644 drivers/staging/clocking-wizard/dt-binding.txt
+
+-- 
+2.1.1
+
