@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BF2255565
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1DE255567
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgH1Hgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 03:36:54 -0400
-Received: from mail.monom.org ([188.138.9.77]:53924 "EHLO mail.monom.org"
+        id S1728483AbgH1HhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:37:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgH1Hgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 03:36:53 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 0104050035A;
-        Fri, 28 Aug 2020 09:36:51 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id AFF2250019C;
-        Fri, 28 Aug 2020 09:36:50 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 09:36:50 +0200
-From:   Daniel Wagner <wagi@monom.org>
-To:     Daniel Vacek <neelx.g@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.9-rc2-rt1
-Message-ID: <20200828073650.kq4qaon2u4xsqqlr@beryllium.lan>
-References: <20200826081211.bvk5kfuzh4vlbh5k@linutronix.de>
- <20200826090518.m6vblobggnfdjau5@beryllium.lan>
- <20200826104326.xfexkwovwbi2q4el@beryllium.lan>
- <20200827091910.ibuyr53qprb7qmju@beryllium.lan>
- <20200827092743.kjl6hkaephx3a64a@linutronix.de>
- <20200827101622.xx4jzecouxrlwbii@beryllium.lan>
- <20200827102840.msv556nrah4h4vmq@linutronix.de>
- <20200827112705.uleixtdmx3pacr5u@beryllium.lan>
- <20200827124611.tsivo4xopvoenfmy@beryllium.lan>
- <CAA7rmPG1j0vD4rtv2piLF1UV9qD4mfcXVAHfA3vqGniPUAerrw@mail.gmail.com>
+        id S1726500AbgH1Hg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 03:36:57 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A3BE20776;
+        Fri, 28 Aug 2020 07:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598600217;
+        bh=TPzU+ne6lWyUaBunEnndm3XP49gskrG9vdKDqsGEFEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ksbEVTGrfCApRpy8fEr6o4fImtuJP5woYut7dX5Pe3r07H4ZxlQqXoPIH14fl9K+m
+         YJ6M5N7eU70NhI5MZZOp8oaLyANVd3zizpQbpGbzcZzvtValwVVkexQEGBH9w/TxsP
+         fm+I0gnwxe6bvA338yfqVjFzU5KjduAHfJXGvlXA=
+Date:   Fri, 28 Aug 2020 09:37:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/14 v5] usb: typec: tcpci: Add set_vbus tcpci callback
+Message-ID: <20200828073709.GA942935@kroah.com>
+References: <20200825042210.300632-1-badhri@google.com>
+ <20200825042210.300632-6-badhri@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA7rmPG1j0vD4rtv2piLF1UV9qD4mfcXVAHfA3vqGniPUAerrw@mail.gmail.com>
+In-Reply-To: <20200825042210.300632-6-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 05:50:24PM +0200, Daniel Vacek wrote:
-> Maybe the threshold is 33554432, eg. 32 megs...
+On Mon, Aug 24, 2020 at 09:22:01PM -0700, Badhri Jagan Sridharan wrote:
+> set_vbus callback allows TCPC which are TCPCI based, however,
+> does not support turning on sink and source mode through
+> Command.SinkVbus and Command.SourceVbusDefaultVoltage.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpci.c | 7 +++++++
+>  drivers/usb/typec/tcpm/tcpci.h | 1 +
+>  2 files changed, 8 insertions(+)
 
-I've rearranged the load addresses for the kernel and the dtb and now
-the board is booting again. Starting with a full test run now.
+Why is this patch "v5" and the others "v1" in this series?
 
-The size list was mainly to see if the v5.9 tree is showing abnormal
-size regression. It doesn't look that's the case. All RT kernels are
-bigger than the rest.
+That's totally confusing, please just version the whole series, not
+individual patches, as you are not providing version information about
+what changed in this patch, right?
+
+Make it easy for reviewers please...
+
+thanks,
+
+greg k-h
