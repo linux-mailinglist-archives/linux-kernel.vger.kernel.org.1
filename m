@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808922559C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F152D2559D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgH1MBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S1729261AbgH1MHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgH1MAf (ORCPT
+        with ESMTP id S1729175AbgH1MHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:00:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D99AC06121B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cz1rNOCNT5CSCOeWlrhQ78XNjBUksye1Ha1Kw8MEE5I=; b=t0qwzX6qpHGrDkwWT1ETMZtwX9
-        yRhGGQT4zNr3TeAqrQWRNgYggxYOEv4JliCDF3XowsbSNPC82uTFUwQxwO93EuzAdix4XjqFwYseW
-        9FHbytCu7OJD04hvmaJHb+LdKd9LwgZdx24nH59i7y+9VmN6JTyI4iLdNmWLO6AIgte9RAgMJk146
-        /TlECDUMGXsMVhkrQ1sN3e7DiLX82Uab9r3eyKc3MQvpaRtoYyc73o49NMy4mma7b4iAkfrK5Q/4f
-        j4TRIgJMnssy2syKAmQKO8j+6f7rWuOe9hkXmEmBlghQjqM8iwlt6vz0zNPJBShcrqeNRzYLVM/Je
-        uhbZ19Ng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBd30-00080a-5O; Fri, 28 Aug 2020 11:59:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1096330015A;
-        Fri, 28 Aug 2020 13:59:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E01092C56DEBE; Fri, 28 Aug 2020 13:59:54 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 13:59:54 +0200
-From:   peterz@infradead.org
-To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Cc:     mhiramat@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        davem@davemloft.net, oleg@redhat.com, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, tglx@linutronix.de, bp@alien8.de,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kprobes, x86/ptrace.h: fix regs argument order for i386
-Message-ID: <20200828115954.GY1362448@hirez.programming.kicks-ass.net>
-References: <20200828113242.GA1424@cosmos>
+        Fri, 28 Aug 2020 08:07:14 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59227C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:07:14 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id a13so430689vso.12
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d6PvVFdNEXqrisTqlB/SwjexIHyVp9z/FWKW+XWK+dg=;
+        b=DB3DuWnGy9DxF5THrJXbcjwYGeSgP7Wsf/P0IlXzlgUoujukUJjO+afTBup3gUB29Y
+         w+1IG36r/UACEKFpaIXkluY1E2xEjokiZxy7JgfahNhoxtL2VLIcXA8K/tn3hk+OHMqu
+         6eNmWqS0GdOqU0cLI98e3XAHPUt0/z6OIpP9fSXymhCYajyT4zhkoitHevFJzw59xtBn
+         tC8JLIgO72yxJZLsW71CsGkF36B1P6BeM8sSK1ELJ6B6CSMmXHJWWAWaoPQolvCTljln
+         GV+rR2te4RAD/m2VPRGBcu5RmMBUydGIBjN00LIaf0u4atqHQFqRgOcjxQ/XogTRgdO4
+         CrwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d6PvVFdNEXqrisTqlB/SwjexIHyVp9z/FWKW+XWK+dg=;
+        b=Kdjs5DG0UEkFOLenSHbMpWYgnPCvq0FYllf8quNd4ZAtVq2TcJo2xiVVpuzDTpy1up
+         sDKYWoIW1qYnr1c4eCAoeV2JQGBETJm1KqAnZHzO5DMdRRUV88wfl73iQbKY3kHpE4QV
+         Z+GCKdGhnmgKgRaIlZr9PKLQ6xRGM3/OtajBKa8rVB2nNsNDvCl1oydAkFH++a5mgirQ
+         vMrSJNHOQpX46+3V//D5T8SuKqdeYfAkJykGinepJY3atURT8ly2QfqvSvmQa3XReNg6
+         etBcOP1TY/99VSbaw6xET3Be/AFAhjNhjuMgY5YLhPqZiik1vYhUGzhp4EldYiAcOhOl
+         dPYg==
+X-Gm-Message-State: AOAM5314o5ezQYA3WLFcsxNVERQDfEvogMkO3u1LRa4HH94jtLvBr+pt
+        r2JK5t+N5L3sQowPDhqH7h86Cb6dYVjT
+X-Google-Smtp-Source: ABdhPJxn0WX99+39mM8B4VO7nY4s/6kZZ+XAIiXnJVKTG+D+TYkIOjQOet6BU1RegdaPnBtctyr8tA==
+X-Received: by 2002:a62:dd8a:: with SMTP id w132mr1029481pff.220.1598616061949;
+        Fri, 28 Aug 2020 05:01:01 -0700 (PDT)
+Received: from mani ([2409:4072:6d87:4cd4:5db4:99cb:1fe6:fc86])
+        by smtp.gmail.com with ESMTPSA id k5sm1215520pjq.5.2020.08.28.05.00.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 28 Aug 2020 05:01:01 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 17:30:54 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     sboyd@kernel.org
+Cc:     andre.przywara@arm.com, afaerber@suse.de,
+        cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, amittomer25@gmail.com
+Subject: Re: [PATCH v7 04/10] clk: actions: Add MMC clock-register reset bits
+Message-ID: <20200828120054.GD9143@mani>
+References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
+ <1595180527-11320-5-git-send-email-amittomer25@gmail.com>
+ <20200828115431.GA9143@mani>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200828113242.GA1424@cosmos>
+In-Reply-To: <20200828115431.GA9143@mani>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 05:02:46PM +0530, Vamshi K Sthambamkadi wrote:
-> On i386, the order of parameters passed on regs is eax,edx,and ecx
-> (as per regparm(3) calling conventions).
+On 0828, Manivannan Sadhasivam wrote:
+> On 0719, Amit Singh Tomar wrote:
+> > This commit adds reset bits needed for MMC clock registers present
+> > on Actions S700 SoC.
+> > 
+> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 > 
-> Change the mapping in regs_get_kernel_argument(), so that arg1=ax
-> arg2=dx, and arg3=cx.
+> Stephen, can you please apply this patch? I'll queue the dts bits for v5.10.
 > 
-> Running the selftests testcase kprobes_args_use.tc shows the result
-> as passed.
-> 
-Fixes: 3c88ee194c28 ("x86: ptrace: Add function argument access API")
-> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Just realized that you'd need to have the bindings patch also. I've asked Amit
+to resend with you in CC for that patch.
 
-> ---
->  arch/x86/include/asm/ptrace.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Mani
+
+> Andreas: Let me know if you want to do the PR! These patches are waiting to be
+> queued for a while...
 > 
-> diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-> index 40aa69d..d8324a2 100644
-> --- a/arch/x86/include/asm/ptrace.h
-> +++ b/arch/x86/include/asm/ptrace.h
-> @@ -327,8 +327,8 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
->  	static const unsigned int argument_offs[] = {
->  #ifdef __i386__
->  		offsetof(struct pt_regs, ax),
-> -		offsetof(struct pt_regs, cx),
->  		offsetof(struct pt_regs, dx),
-> +		offsetof(struct pt_regs, cx),
->  #define NR_REG_ARGUMENTS 3
->  #else
->  		offsetof(struct pt_regs, di),
-> -- 
-> 2.7.4
+> Thanks,
+> Mani
 > 
+> > ---
+> > Changes since v6:
+> > 	* No change.
+> > Changes since v5:
+> >         * Added Mani's Reviewed-by: tag.
+> > Changes from v4:
+> >         * Reordered it from 03/10 to 04/10.
+> > Changes from v3:
+> >         * NO change.
+> > Changes from v2:
+> >         * No change.
+> > Changes from v1:
+> >         * No change.
+> > Changes from RFC:
+> >         * No change.
+> > ---
+> >  drivers/clk/actions/owl-s700.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/clk/actions/owl-s700.c b/drivers/clk/actions/owl-s700.c
+> > index a2f34d13fb54..cd60eca7727d 100644
+> > --- a/drivers/clk/actions/owl-s700.c
+> > +++ b/drivers/clk/actions/owl-s700.c
+> > @@ -577,6 +577,9 @@ static const struct owl_reset_map s700_resets[] = {
+> >  	[RESET_DSI]	= { CMU_DEVRST0, BIT(2) },
+> >  	[RESET_CSI]	= { CMU_DEVRST0, BIT(13) },
+> >  	[RESET_SI]	= { CMU_DEVRST0, BIT(14) },
+> > +	[RESET_SD0]     = { CMU_DEVRST0, BIT(22) },
+> > +	[RESET_SD1]     = { CMU_DEVRST0, BIT(23) },
+> > +	[RESET_SD2]     = { CMU_DEVRST0, BIT(24) },
+> >  	[RESET_I2C0]	= { CMU_DEVRST1, BIT(0) },
+> >  	[RESET_I2C1]	= { CMU_DEVRST1, BIT(1) },
+> >  	[RESET_I2C2]	= { CMU_DEVRST1, BIT(2) },
+> > -- 
+> > 2.7.4
+> > 
