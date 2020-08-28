@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84F8256035
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 20:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1D825603B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgH1SDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 14:03:46 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:47606 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgH1SDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 14:03:46 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1727834AbgH1SEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 14:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726010AbgH1SEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 14:04:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 1DAEB201C1;
-        Fri, 28 Aug 2020 20:03:41 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 20:03:40 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 2/2] drm: panel: simple: Add AM-1280800N3TZQW-T00H
-Message-ID: <20200828180340.GA661644@ravnborg.org>
-References: <20200828155938.328982-1-jagan@amarulasolutions.com>
- <20200828155938.328982-2-jagan@amarulasolutions.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828155938.328982-2-jagan@amarulasolutions.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=iP-xVBlJAAAA:8 a=Zgqa_LbdGVfCA1qB94sA:9
-        a=CjuIK1q_8ugA:10 a=lHLH-nfn2y1bM_0xSXwp:22
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B06E20936;
+        Fri, 28 Aug 2020 18:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598637882;
+        bh=frjSPFJ+75o4QdoDtU1nI4HxnaQxhFcRXTKiq6ZSpg8=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=nVnAVtK6fs7r+1K5wDFx9R1apyIw853o9edYRooJ1u6l/v7NEn6wMK50EbnHrsF90
+         twOiHIeb288j343Rjyd/YK9IKCRJoPmgkoQPPPLhaIvyHKFsNXcoR6GeF2jfowH93T
+         CjCbHWbMgnKONJ4XFnQcBZsGAvKgyF1ckLcDR40Q=
+Date:   Fri, 28 Aug 2020 19:04:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        Nicolas Belin <nbelin@baylibre.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200828151438.350974-1-jbrunet@baylibre.com>
+References: <20200828151438.350974-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: axg-toddr: fix channel order on g12 platforms
+Message-Id: <159863784461.17371.15318009139642856704.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan.
-
-On Fri, Aug 28, 2020 at 09:29:38PM +0530, Jagan Teki wrote:
-> Add Ampire, AM-1280800N3TZQW-T00H 10.1" TFT LCD panel timings.
+On Fri, 28 Aug 2020 17:14:38 +0200, Jerome Brunet wrote:
+> On g12 and following platforms, The first channel of record with more than
+> 2 channels ends being placed randomly on an even channel of the output.
 > 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  drivers/gpu/drm/panel/panel-simple.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+> On these SoCs, a bit was added to force the first channel to be placed at
+> the beginning of the output. Apparently the behavior if the bit is not set
+> is not easily predictable. According to the documentation, this bit is not
+> present on the axg series.
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index b6ecd1552132..c988fe8094f8 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -592,6 +592,31 @@ static void panel_simple_shutdown(struct device *dev)
->  	drm_panel_unprepare(&panel->base);
->  }
->  
-> +static const struct drm_display_mode ampire_am_1280800n3tzqw_t00h_mode = {
-> +	.clock = 71100,
-> +	.hdisplay = 1280,
-> +	.hsync_start = 1280 + 40,
-> +	.hsync_end = 1280 + 40 + 80,
-> +	.htotal = 1280 + 40 + 80 + 40,
-> +	.vdisplay = 800,
-> +	.vsync_start = 800 + 3,
-> +	.vsync_end = 800 + 3 + 10,
-> +	.vtotal = 800 + 3 + 10 + 10,
-> +	.vrefresh = 60,
-No longer preset - delete.
+> [...]
 
-> +	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC,
-> +};
-> +
-> +static const struct panel_desc ampire_am_1280800n3tzqw_t00h = {
-> +	.modes = &ampire_am_1280800n3tzqw_t00h_mode,
-> +	.num_modes = 1,
-> +	.bpc = 6,
-> +	.size = {
-> +		.width = 217,
-> +		.height = 136,
-> +	},
-> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-> +};
-.connector_type is mandatory today.
-And based on connector type you may need to specify .bus_flags.
+Applied to
 
-	Sam
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> +
->  static const struct drm_display_mode ampire_am_480272h3tmqw_t01h_mode = {
->  	.clock = 9000,
->  	.hdisplay = 480,
-> @@ -3637,6 +3662,9 @@ static const struct panel_desc arm_rtsm = {
->  
->  static const struct of_device_id platform_of_match[] = {
->  	{
-> +		.compatible = "ampire,am-1280800n3tzqw-t00h",
-> +		.data = &ampire_am_1280800n3tzqw_t00h,
-> +	}, {
->  		.compatible = "ampire,am-480272h3tmqw-t01h",
->  		.data = &ampire_am_480272h3tmqw_t01h,
->  	}, {
-> -- 
-> 2.25.1
+Thanks!
+
+[1/1] ASoC: meson: axg-toddr: fix channel order on g12 platforms
+      commit: 9c4b205a20f483d8a5d1208cfec33e339347d4bd
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
