@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD0E255AB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648DF255ABB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgH1M44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:56:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:48520 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgH1M4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:56:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4186D6E;
-        Fri, 28 Aug 2020 05:56:33 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89E183F66B;
-        Fri, 28 Aug 2020 05:56:32 -0700 (PDT)
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Subject: [PATCH 2/2] sched/uclamp: Fix a deadlock when enabling uclamp static key
-Date:   Fri, 28 Aug 2020 13:56:10 +0100
-Message-Id: <20200828125610.30943-3-qais.yousef@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200828125610.30943-1-qais.yousef@arm.com>
-References: <20200828125610.30943-1-qais.yousef@arm.com>
+        id S1729415AbgH1NBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729352AbgH1NAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:00:45 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB75CC06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 06:00:44 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <has@pengutronix.de>)
+        id 1kBdzh-0006LG-AF; Fri, 28 Aug 2020 15:00:37 +0200
+Received: from has by dude02.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <has@pengutronix.de>)
+        id 1kBdzf-0005JG-Ou; Fri, 28 Aug 2020 15:00:36 +0200
+From:   Holger Assmann <h.assmann@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Holger Assmann <h.assmann@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: stm32: lxa-mc1: enable DDR50 mode on eMMC
+Date:   Fri, 28 Aug 2020 15:00:02 +0200
+Message-Id: <20200828130002.1701-1-h.assmann@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: has@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following splat was caught when setting uclamp value of a task:
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-  BUG: sleeping function called from invalid context at ./include/linux/percpu-rwsem.h:49
+The "eMMC high-speed DDR mode (3.3V I/O)" at 50MHz is supported on
+the eMMC-interface of the lxa-mc1. Set it in the device tree to
+benefit from the speed improvement.
 
-   cpus_read_lock+0x68/0x130
-   static_key_enable+0x1c/0x38
-   __sched_setscheduler+0x900/0xad8
-
-Fix by ensuring we enable the key outside of the critical section in
-__sched_setscheduler()
-
-Fixes: 46609ce22703 ("sched/uclamp: Protect uclamp fast path code with static key")
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200716110347.19553-4-qais.yousef@arm.com
-(cherry picked from commit e65855a52b479f98674998cb23b21ef5a8144b04)
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
 ---
- kernel/sched/core.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a8ab68aa189a..352239c411a4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1249,6 +1249,15 @@ static int uclamp_validate(struct task_struct *p,
- 	if (upper_bound > SCHED_CAPACITY_SCALE)
- 		return -EINVAL;
- 
-+	/*
-+	 * We have valid uclamp attributes; make sure uclamp is enabled.
-+	 *
-+	 * We need to do that here, because enabling static branches is a
-+	 * blocking operation which obviously cannot be done while holding
-+	 * scheduler locks.
-+	 */
-+	static_branch_enable(&sched_uclamp_used);
-+
- 	return 0;
- }
- 
-@@ -1279,8 +1288,6 @@ static void __setscheduler_uclamp(struct task_struct *p,
- 	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
- 		return;
- 
--	static_branch_enable(&sched_uclamp_used);
--
- 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
- 			      attr->sched_util_min, true);
+diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+index b85025d00943..1e5333fd437f 100644
+--- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+@@ -212,6 +212,7 @@
+ 	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_b>;
+ 	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_b>;
+ 	bus-width = <8>;
++	mmc-ddr-3_3v;
+ 	no-1-8-v;
+ 	no-sd;
+ 	no-sdio;
 -- 
-2.17.1
+2.20.1
 
