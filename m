@@ -2,377 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D26255C97
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD975255C86
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgH1Odx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgH1Odv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:33:51 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B4BC061264;
-        Fri, 28 Aug 2020 07:33:50 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r13so1573407ljm.0;
-        Fri, 28 Aug 2020 07:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OCikJRMTs4xsn1R4s14WoPrXml08NXG0b5Xs1oTpCvk=;
-        b=A5nAhCf90mZbfJdZlIVtVQ+y7WWm+/NtA61wl7Hodw73kgbF6TWjkKQWH6n+CSZIZb
-         oM+wEFw4w7Dnr/CckRoQug6x4UQD573x6/6U2MlefE9nGjgx0ItXFjnE3s8RhIMYiDe3
-         Ovf8wWfOWD32buNTOyb2D3varTj3CEiD+xXb7LtsRFvceLvLRaQGRP/KRgfYneZNOZUW
-         x5Y+m0a5RTOPVJy+fLz5rYytMWYwEKpVDRJdxgzHPy/n+4D0HC1NQ0ZcNcj7oR6SH5Tj
-         JcTvqWdsa1jPWc54Wm7g+HzO36HyrXT8bwEUIFjgbDCqulRkfNB4DC1Um6TshhxornlB
-         l3iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OCikJRMTs4xsn1R4s14WoPrXml08NXG0b5Xs1oTpCvk=;
-        b=N/WdxXR55NbDXMy+ZKqs+StN60qMmyo4p+1wQX2+KXn9pBd8luEfN8R3khDB9+cPsI
-         u783MAhDX+VXXRzUT2awajya2BGV5THLT83KVcSIRnEU6WoUSqLD9kDq7bnnMqkiDqt8
-         hmg34OTEa9aI4XlEQjKXMWwlOicSNREc6qGGHRwWSy/QgzKZcqYmSSFlJAn4JZrwVZEy
-         TUokBp//maN2arlDKNBD282mj6D7yjuhNILZWlRpBuqHNehv6Slz75FAp9IBrad4vXtW
-         BQ6ykPtAfUIcy3n4x9uKQoinWFcjJceqg329mvrJvuTFqbJ+lNoxTAH/SjJC40F+hra6
-         1c3g==
-X-Gm-Message-State: AOAM530YO1/khuhsVBWV7GKuX4nQt5XlM3Nejt4UG4QFrSexcb5vhvvG
-        c5m2qRc5dmygGEBCw/c7I2gBcFWI2facOWmSDxs=
-X-Google-Smtp-Source: ABdhPJw7pZiInBPe8b6WeWZyBNvaEr5FADjE8R7f+kAvMeFfkb2nMOcQ5nwsCVU1i/Kt9Q7ALooMDUFUYCEIoY6icTQ=
-X-Received: by 2002:a2e:9b08:: with SMTP id u8mr967908lji.208.1598625228693;
- Fri, 28 Aug 2020 07:33:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <1598527137-6915-1-git-send-email-u0084500@gmail.com> <1598616616.7054.3.camel@mhfsdcap03>
-In-Reply-To: <1598616616.7054.3.camel@mhfsdcap03>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Fri, 28 Aug 2020 22:33:36 +0800
-Message-ID: <CADiBU3_-Jvk8ORu1MxrccJkdK0_1WdH4Yd8AR-cGyDMEA3Htpw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] usb typec: mt6360: Add support for mt6360 Type-C driver
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1727116AbgH1Obx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:31:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:50768 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726762AbgH1Obv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:31:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A2671FB;
+        Fri, 28 Aug 2020 07:31:50 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DFC53F71F;
+        Fri, 28 Aug 2020 07:31:49 -0700 (PDT)
+Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
+ changes keys
+To:     Boyan Karatotev <boyan.karatotev@arm.com>,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     amit.kachhap@arm.com, boian4o1@gmail.com,
+        Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-4-boyan.karatotev@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <e7d078f7-c516-2055-bcae-d56de951b5d2@arm.com>
+Date:   Fri, 28 Aug 2020 15:33:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200828131606.7946-4-boyan.karatotev@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=882=
-8=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=888:11=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> On Thu, 2020-08-27 at 19:18 +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > Mediatek MT6360 is a multi-functional IC that includes USB Type-C.
-> > It works with Type-C Port Controller Manager to provide USB PD
-> > and USB Type-C functionalities.
-> >
-> > v1 to v2
-> > 1. Add fix to Prevent the race condition from interrupt and tcpci port
-> > unregister during module remove.
-> >
-> > v2 to v3
-> > 1. Change comment style for the head of source code.
-> > 2. No need to print error for platform_get_irq_byname.
-> > 3. Fix tcpci_register_port check from IS_ERR_OR_NULL to IS_ERR.
-> > 4. Rename driver/Kconfig/Makefile form mt6360 to mt636x.
-> > 5. Rename DT binding documents from mt6360 to mt636x.
-> >
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  drivers/usb/typec/tcpm/Kconfig        |   8 ++
-> >  drivers/usb/typec/tcpm/Makefile       |   1 +
-> >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 212 ++++++++++++++++++++++++++=
-++++++++
-> >  3 files changed, 221 insertions(+)
-> >  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
-> >
-> > diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kc=
-onfig
-> > index fa3f393..58a64e1 100644
-> > --- a/drivers/usb/typec/tcpm/Kconfig
-> > +++ b/drivers/usb/typec/tcpm/Kconfig
-> > @@ -27,6 +27,14 @@ config TYPEC_RT1711H
-> >         Type-C Port Controller Manager to provide USB PD and USB
-> >         Type-C functionalities.
-> >
-> > +config TYPEC_MT6360
-> > +     tristate "Mediatek MT6360 Type-C driver"
-> > +     depends on MFD_MT6360
-> > +     help
-> > +       Mediatek MT6360 is a multi-functional IC that includes
-> > +       USB Type-C. It works with Type-C Port Controller Manager
-> > +       to provide USB PD and USB Type-C functionalities.
-> > +
-> >  endif # TYPEC_TCPCI
-> >
-> >  config TYPEC_FUSB302
-> > diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/M=
-akefile
-> > index a5ff6c8..7592ccb 100644
-> > --- a/drivers/usb/typec/tcpm/Makefile
-> > +++ b/drivers/usb/typec/tcpm/Makefile
-> > @@ -5,3 +5,4 @@ obj-$(CONFIG_TYPEC_WCOVE)     +=3D typec_wcove.o
-> >  typec_wcove-y                        :=3D wcove.o
-> >  obj-$(CONFIG_TYPEC_TCPCI)    +=3D tcpci.o
-> >  obj-$(CONFIG_TYPEC_RT1711H)  +=3D tcpci_rt1711h.o
-> > +obj-$(CONFIG_TYPEC_MT6360)   +=3D tcpci_mt6360.o
-> > diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/=
-tcpm/tcpci_mt6360.c
-> > new file mode 100644
-> > index 00000000..f1bd9e0
-> > --- /dev/null
-> > +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > @@ -0,0 +1,212 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2020 MediaTek Inc.
-> > + *
-> > + * Author: ChiYuan Huang <cy_huang@richtek.com>
-> > + */
-> > +
-> > +#include <linux/interrupt.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/usb/tcpm.h>
-> > +
-> > +#include "tcpci.h"
-> > +
-> > +#define MT6360_REG_VCONNCTRL1        0x8C
-> > +#define MT6360_REG_MODECTRL2 0x8F
-> > +#define MT6360_REG_SWRESET   0xA0
-> > +#define MT6360_REG_DEBCTRL1  0xA1
-> > +#define MT6360_REG_DRPCTRL1  0xA2
-> > +#define MT6360_REG_DRPCTRL2  0xA3
-> > +#define MT6360_REG_I2CTORST  0xBF
-> > +#define MT6360_REG_RXCTRL2   0xCF
-> > +#define MT6360_REG_CTDCTRL2  0xEC
-> > +
-> > +/* MT6360_REG_VCONNCTRL1 */
-> > +#define MT6360_VCONNCL_ENABLE        BIT(0)
-> > +/* MT6360_REG_RXCTRL2 */
-> > +#define MT6360_OPEN40M_ENABLE        BIT(7)
-> > +/* MT6360_REG_CTDCTRL2 */
-> > +#define MT6360_RPONESHOT_ENABLE      BIT(6)
-> > +
-> > +struct mt6360_tcpc_info {
-> > +     struct tcpci_data tdata;
-> > +     struct tcpci *tcpci;
-> > +     struct device *dev;
-> > +     int irq;
-> > +};
-> > +
-> > +static inline int mt6360_tcpc_read16(struct regmap *regmap,
-> > +                                  unsigned int reg, u16 *val)
-> > +{
-> > +     return regmap_raw_read(regmap, reg, val, sizeof(u16));
-> > +}
-> > +
-> > +static inline int mt6360_tcpc_write16(struct regmap *regmap,
-> > +                                   unsigned int reg, u16 val)
-> > +{
-> > +     return regmap_raw_write(regmap, reg, &val, sizeof(u16));
-> > +}
-> > +
-> > +static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *td=
-ata)
-> > +{
-> > +     struct regmap *regmap =3D tdata->regmap;
-> > +     int ret;
-> > +
-> > +     ret =3D regmap_write(regmap, MT6360_REG_SWRESET, 0x01);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* after reset command, wait 1~2ms to wait IC action */
-> > +     usleep_range(1000, 2000);
-> > +
-> > +     /* write all alert to masked */
-> > +     ret =3D mt6360_tcpc_write16(regmap, TCPC_ALERT_MASK, 0);
-> Wonder why access some register by 2bytes, and others 4bytes?
-> can we access them all by 4bytes?
+On 8/28/20 2:16 PM, Boyan Karatotev wrote:
+> Kernel documentation states that it will change PAuth keys on exec() calls.
+> 
+> Verify that all keys are correctly switched to new ones.
+> 
 
-Actually, the access bus is still I2C.
-Each register is still one byte only.
-Register address like as TCPC_ALERT_MASK are continuous two byte used
-as IRQ MASK.
-That's why it's used wirte16 function to access.
+Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
 
-Actually, you also can divided into two bytes write into one byte
-access by two times.
-For I2C bus efficiency, it seems bad.
->
->
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* config I2C timeout reset enable , and timeout to 200ms */
-> > +     ret =3D regmap_write(regmap, MT6360_REG_I2CTORST, 0x8F);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* config CC Detect Debounce : 26.7*val us */
-> > +     ret =3D regmap_write(regmap, MT6360_REG_DEBCTRL1, 0x10);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* DRP Toggle Cycle : 51.2 + 6.4*val ms */
-> > +     ret =3D regmap_write(regmap, MT6360_REG_DRPCTRL1, 4);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* DRP Duyt Ctrl : dcSRC: /1024 */
-> > +     ret =3D mt6360_tcpc_write16(regmap, MT6360_REG_DRPCTRL2, 330);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* Enable VCONN Current Limit function */
-> > +     ret =3D regmap_update_bits(regmap, MT6360_REG_VCONNCTRL1, MT6360_=
-VCONNCL_ENABLE,
-> > +                              MT6360_VCONNCL_ENABLE);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* Enable cc open 40ms when pmic send vsysuv signal */
-> > +     ret =3D regmap_update_bits(regmap, MT6360_REG_RXCTRL2, MT6360_OPE=
-N40M_ENABLE,
-> > +                              MT6360_OPEN40M_ENABLE);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* Enable Rpdet oneshot detection */
-> > +     ret =3D regmap_update_bits(regmap, MT6360_REG_CTDCTRL2, MT6360_RP=
-ONESHOT_ENABLE,
-> > +                              MT6360_RPONESHOT_ENABLE);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* Set shipping mode off, AUTOIDLE on */
-> > +     return regmap_write(regmap, MT6360_REG_MODECTRL2, 0x7A);
-> > +}
-> > +
-> > +static irqreturn_t mt6360_irq(int irq, void *dev_id)
-> > +{
-> > +     struct mt6360_tcpc_info *mti =3D dev_id;
-> > +
-> > +     return tcpci_irq(mti->tcpci);
-> > +}
-> > +
-> > +static int mt6360_tcpc_probe(struct platform_device *pdev)
-> > +{
-> > +     struct mt6360_tcpc_info *mti;
-> > +     int ret;
-> > +
-> > +     mti =3D devm_kzalloc(&pdev->dev, sizeof(*mti), GFP_KERNEL);
-> > +     if (!mti)
-> > +             return -ENOMEM;
-> > +
-> > +     mti->dev =3D &pdev->dev;
-> > +
-> > +     mti->tdata.regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
-> > +     if (!mti->tdata.regmap) {
-> > +             dev_err(&pdev->dev, "Failed to get parent regmap\n");
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     mti->irq =3D platform_get_irq_byname(pdev, "PD_IRQB");
-> Use lowercase letters for irq name?
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> ---
+>  tools/testing/selftests/arm64/pauth/Makefile  |   4 +
+>  .../selftests/arm64/pauth/exec_target.c       |  35 +++++
+>  tools/testing/selftests/arm64/pauth/helper.h  |  10 ++
+>  tools/testing/selftests/arm64/pauth/pac.c     | 148 ++++++++++++++++++
+>  4 files changed, 197 insertions(+)
+>  create mode 100644 tools/testing/selftests/arm64/pauth/exec_target.c
+> 
+> diff --git a/tools/testing/selftests/arm64/pauth/Makefile b/tools/testing/selftests/arm64/pauth/Makefile
+> index a017d1c8dd58..2e237b21ccf6 100644
+> --- a/tools/testing/selftests/arm64/pauth/Makefile
+> +++ b/tools/testing/selftests/arm64/pauth/Makefile
+> @@ -5,6 +5,7 @@ CFLAGS += -mbranch-protection=pac-ret
+>  
+>  TEST_GEN_PROGS := pac
+>  TEST_GEN_FILES := pac_corruptor.o helper.o
+> +TEST_GEN_PROGS_EXTENDED := exec_target
+>  
+>  include ../../lib.mk
+>  
+> @@ -20,6 +21,9 @@ $(OUTPUT)/helper.o: helper.c
+>  # greater, gcc emits pac* instructions which are not in HINT NOP space,
+>  # preventing the tests from occurring at all. Compile for ARMv8.2 so tests can
+>  # run on earlier targets and print a meaningful error messages
+> +$(OUTPUT)/exec_target: exec_target.c $(OUTPUT)/helper.o
+> +	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+> +
+>  $(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o $(OUTPUT)/helper.o
+>  	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/exec_target.c b/tools/testing/selftests/arm64/pauth/exec_target.c
+> new file mode 100644
+> index 000000000000..07addef5a1d7
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/pauth/exec_target.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2020 ARM Limited
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/auxv.h>
+> +
+> +#include "helper.h"
+> +
+> +
+> +int main(void)
+> +{
+> +	struct signatures signed_vals;
+> +	unsigned long hwcaps;
+> +	size_t val;
+> +
+> +	fread(&val, sizeof(size_t), 1, stdin);
+> +
+> +	/* don't try to execute illegal (unimplemented) instructions) caller
+> +	 * should have checked this and keep worker simple
+> +	 */
+> +	hwcaps = getauxval(AT_HWCAP);
+> +
+> +	if (hwcaps & HWCAP_PACA) {
+> +		signed_vals.keyia = keyia_sign(val);
+> +		signed_vals.keyib = keyib_sign(val);
+> +		signed_vals.keyda = keyda_sign(val);
+> +		signed_vals.keydb = keydb_sign(val);
+> +	}
+> +	signed_vals.keyg = (hwcaps & HWCAP_PACG) ?  keyg_sign(val) : 0;
+> +
+> +	fwrite(&signed_vals, sizeof(struct signatures), 1, stdout);
+> +
+> +	return 0;
+> +}
+> diff --git a/tools/testing/selftests/arm64/pauth/helper.h b/tools/testing/selftests/arm64/pauth/helper.h
+> index b3cf709e249d..fceaa1e4824a 100644
+> --- a/tools/testing/selftests/arm64/pauth/helper.h
+> +++ b/tools/testing/selftests/arm64/pauth/helper.h
+> @@ -6,6 +6,16 @@
+>  
+>  #include <stdlib.h>
+>  
+> +#define NKEYS 5
+> +
+> +
+> +struct signatures {
+> +	size_t keyia;
+> +	size_t keyib;
+> +	size_t keyda;
+> +	size_t keydb;
+> +	size_t keyg;
+> +};
+>  
+>  void pac_corruptor(void);
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+> index cdbffa8bf61e..16dea47b11c7 100644
+> --- a/tools/testing/selftests/arm64/pauth/pac.c
+> +++ b/tools/testing/selftests/arm64/pauth/pac.c
+> @@ -2,6 +2,8 @@
+>  // Copyright (C) 2020 ARM Limited
+>  
+>  #include <sys/auxv.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+>  #include <signal.h>
+>  
+>  #include "../../kselftest_harness.h"
+> @@ -33,6 +35,117 @@ do { \
+>  } while (0)
+>  
+>  
+> +void sign_specific(struct signatures *sign, size_t val)
+> +{
+> +	sign->keyia = keyia_sign(val);
+> +	sign->keyib = keyib_sign(val);
+> +	sign->keyda = keyda_sign(val);
+> +	sign->keydb = keydb_sign(val);
+> +}
+> +
+> +void sign_all(struct signatures *sign, size_t val)
+> +{
+> +	sign->keyia = keyia_sign(val);
+> +	sign->keyib = keyib_sign(val);
+> +	sign->keyda = keyda_sign(val);
+> +	sign->keydb = keydb_sign(val);
+> +	sign->keyg  = keyg_sign(val);
+> +}
+> +
+> +int are_same(struct signatures *old, struct signatures *new, int nkeys)
+> +{
+> +	int res = 0;
+> +
+> +	res |= old->keyia == new->keyia;
+> +	res |= old->keyib == new->keyib;
+> +	res |= old->keyda == new->keyda;
+> +	res |= old->keydb == new->keydb;
+> +	if (nkeys == NKEYS)
+> +		res |= old->keyg  == new->keyg;
+> +
+> +	return res;
+> +}
+> +
+> +int exec_sign_all(struct signatures *signed_vals, size_t val)
+> +{
+> +	int new_stdin[2];
+> +	int new_stdout[2];
+> +	int status;
+> +	ssize_t ret;
+> +	pid_t pid;
+> +
+> +	ret = pipe(new_stdin);
+> +	if (ret == -1) {
+> +		perror("pipe returned error");
+> +		return -1;
+> +	}
+> +
+> +	ret = pipe(new_stdout);
+> +	if (ret == -1) {
+> +		perror("pipe returned error");
+> +		return -1;
+> +	}
+> +
+> +	pid = fork();
+> +	// child
+> +	if (pid == 0) {
+> +		dup2(new_stdin[0], STDIN_FILENO);
+> +		if (ret == -1) {
+> +			perror("dup2 returned error");
+> +			exit(1);
+> +		}
+> +
+> +		dup2(new_stdout[1], STDOUT_FILENO);
+> +		if (ret == -1) {
+> +			perror("dup2 returned error");
+> +			exit(1);
+> +		}
+> +
+> +		close(new_stdin[0]);
+> +		close(new_stdin[1]);
+> +		close(new_stdout[0]);
+> +		close(new_stdout[1]);
+> +
+> +		ret = execl("exec_target", "exec_target", (char *) NULL);
+> +		if (ret == -1) {
+> +			perror("exec returned error");
+> +			exit(1);
+> +		}
+> +	}
+> +
+> +	close(new_stdin[0]);
+> +	close(new_stdout[1]);
+> +
+> +	ret = write(new_stdin[1], &val, sizeof(size_t));
+> +	if (ret == -1) {
+> +		perror("write returned error");
+> +		return -1;
+> +	}
+> +
+> +	/*
+> +	 * wait for the worker to finish, so that read() reads all data
+> +	 * will also context switch with worker so that this function can be used
+> +	 * for context switch tests
+> +	 */
+> +	waitpid(pid, &status, 0);
+> +	if (WIFEXITED(status) == 0) {
+> +		fprintf(stderr, "worker exited unexpectedly\n");
+> +		return -1;
+> +	}
+> +	if (WEXITSTATUS(status) != 0) {
+> +		fprintf(stderr, "worker exited with error\n");
+> +		return -1;
+> +	}
+> +
+> +	ret = read(new_stdout[0], signed_vals, sizeof(struct signatures));
+> +	if (ret == -1) {
+> +		perror("read returned error");
+> +		return -1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /* check that a corrupted PAC results in SIGSEGV */
+>  TEST_SIGNAL(corrupt_pac, SIGSEGV)
+>  {
+> @@ -79,5 +192,40 @@ TEST(pac_instructions_not_nop_generic)
+>  	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
+>  }
+>  
+> +/*
+> + * fork() does not change keys. Only exec() does so call a worker program.
+> + * Its only job is to sign a value and report back the resutls
+> + */
+> +TEST(exec_unique_keys)
+> +{
+> +	struct signatures new_keys;
+> +	struct signatures old_keys;
+> +	int ret;
+> +	int different = 0;
+> +	int nkeys = NKEYS;
+> +	unsigned long hwcaps = getauxval(AT_HWCAP);
+> +
+> +	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
+> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
+> +	if (!(hwcaps & HWCAP_PACG)) {
+> +		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
+> +		nkeys = NKEYS - 1;
+> +	}
+> +
+> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
+> +		ret = exec_sign_all(&new_keys, i);
+> +		ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
+> +
+> +		if (nkeys == NKEYS)
+> +			sign_all(&old_keys, i);
+> +		else
+> +			sign_specific(&old_keys, i);
+> +
+> +		different |= !are_same(&old_keys, &new_keys, nkeys);
+> +	}
+> +
+> +	ASSERT_EQ(1, different) TH_LOG("exec() did not change keys");
+> +}
+> +
+>  TEST_HARNESS_MAIN
+>  
+> 
 
-PD_IRQB is defined in MT6360 pinout. The datasheet is also labeled as PD_IR=
-QB.
-My thinking is to keep the pinout name like as the datasheet defined.
-B means bar to be identified the pin is active low.
->
-> > +     if (mti->irq < 0)
-> > +             return mti->irq;
-> > +
-> > +     mti->tdata.init =3D mt6360_tcpc_init;
-> > +     mti->tcpci =3D tcpci_register_port(&pdev->dev, &mti->tdata);
-> > +     if (IS_ERR(mti->tcpci)) {
-> > +             dev_err(&pdev->dev, "Failed to register tcpci port\n");
-> > +             return PTR_ERR(mti->tcpci);
-> > +     }
-> > +
-> > +     ret =3D devm_request_threaded_irq(mti->dev, mti->irq, NULL, mt636=
-0_irq, IRQF_ONESHOT,
-> > +                                     dev_name(&pdev->dev), mti);
-> > +     if (ret) {
-> > +             dev_err(mti->dev, "Failed to register irq\n");
-> > +             tcpci_unregister_port(mti->tcpci);
-> > +             return ret;
-> > +     }
-> > +
-> > +     device_init_wakeup(&pdev->dev, true);
-> > +     platform_set_drvdata(pdev, mti);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_tcpc_remove(struct platform_device *pdev)
-> > +{
-> > +     struct mt6360_tcpc_info *mti =3D platform_get_drvdata(pdev);
-> > +
-> > +     disable_irq(mti->irq);
-> > +     tcpci_unregister_port(mti->tcpci);
-> > +     return 0;
-> > +}
-> > +
-> > +static int __maybe_unused mt6360_tcpc_suspend(struct device *dev)
-> > +{
-> > +     struct mt6360_tcpc_info *mti =3D dev_get_drvdata(dev);
-> > +
-> > +     if (device_may_wakeup(dev))
-> > +             enable_irq_wake(mti->irq);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int __maybe_unused mt6360_tcpc_resume(struct device *dev)
-> > +{
-> > +     struct mt6360_tcpc_info *mti =3D dev_get_drvdata(dev);
-> > +
-> > +     if (device_may_wakeup(dev))
-> > +             disable_irq_wake(mti->irq);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static SIMPLE_DEV_PM_OPS(mt6360_tcpc_pm_ops, mt6360_tcpc_suspend, mt63=
-60_tcpc_resume);
-> > +
-> > +static const struct of_device_id __maybe_unused mt6360_tcpc_of_id[] =
-=3D {
-> > +     { .compatible =3D "mediatek,mt6360-tcpc", },
-> > +     {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, mt6360_tcpc_of_id);
-> > +
-> > +static struct platform_driver mt6360_tcpc_driver =3D {
-> > +     .driver =3D {
-> > +             .name =3D "mt6360-tcpc",
-> > +             .pm =3D &mt6360_tcpc_pm_ops,
-> > +             .of_match_table =3D mt6360_tcpc_of_id,
-> > +     },
-> > +     .probe =3D mt6360_tcpc_probe,
-> > +     .remove =3D mt6360_tcpc_remove,
-> > +};
-> > +module_platform_driver(mt6360_tcpc_driver);
-> > +
-> > +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-> > +MODULE_DESCRIPTION("MT6360 USB Type-C Port Controller Interface Driver=
-");
-> > +MODULE_LICENSE("GPL v2");
->
+-- 
+Regards,
+Vincenzo
