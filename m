@@ -2,124 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B589255824
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD8C255830
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgH1KAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 06:00:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728218AbgH1KAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 06:00:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84FA42078A;
-        Fri, 28 Aug 2020 10:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598608836;
-        bh=sqJqYmGsrcZElJ0eIt1DDvGzLzBOscBm1LDUda7F5RM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i31hSp8bPrdNGQNpJQZSoFNam+AFIlE7FvuXcZYibC9fo602ow06v4rMVY6EGkeP1
-         iyxDeKCu79LIBm/3hceUgb0KbtjAZsXD4sTsA1oC9NyuyVKEHXJc2jkEd0rt+lsFpO
-         YwUexOu8ydV13OE4YzmS9q3gz0Lt/7aAWnVq5Xoo=
-Date:   Fri, 28 Aug 2020 12:00:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Roman Bolshakov <r.bolshakov@yadro.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Arun Easi <aeasi@marvell.com>
-Subject: Re: [PATCH] MAINTAINERS: orphan sections with qlogic.com group alias
-Message-ID: <20200828100048.GA1229122@kroah.com>
-References: <20200828070824.8032-1-lukas.bulwahn@gmail.com>
- <20200828091758.GF54274@SPB-NB-133.local>
+        id S1729037AbgH1KBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 06:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728997AbgH1KBN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 06:01:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53CBC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 03:01:12 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598608870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TxawP7Xvcne27bXzzvxEdOUoxnK/l+1pljs/g64LDS4=;
+        b=DDVfezUceiL6fXQ3vB1xkmKCKSjXoAfbxBmdN2F1nVl2a+nov1BQuhyw0FBETQW8XvGx3G
+        1yrWayUxke4N3QLnz16VDr0Mwu5rkLQ2GURWAKfcTc0hMJlrqDk9zcBOa/rRF7PzI0l0tz
+        tIacKEEn3FzdAxNpK8EayOEhs9L9g4QoUWH3qg0xh2QSOPp+aX+SsUtexkDvf8XgRQmYCQ
+        X/IbUAm1mKorZ7kj3TJ5+qsfnBrIznQf9nxGBWXGpH/l9rDF/T8420lp3wJ0GwIVfVWO6e
+        xfJoVWnd0TLNFol2i4OyCrK7s0oTvnQvmkyxRTLayA/TBCBH+wmuAS1DavqRCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598608870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TxawP7Xvcne27bXzzvxEdOUoxnK/l+1pljs/g64LDS4=;
+        b=Fg6eGi44lIyC5beC0XIEO6hIai0ziCIAC9wQiceP9JElKDZx8NkRtA16iwik97SKisU+lq
+        BdcBpemCl2yl4wAQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7][next] printk: ringbuffer: add finalization/extension support
+In-Reply-To: <20200828072148.GC4353@alley>
+References: <20200824103538.31446-1-john.ogness@linutronix.de> <20200824103538.31446-6-john.ogness@linutronix.de> <87lfi1ls2g.fsf@jogness.linutronix.de> <20200826100113.GA8849@jagdpanzerIV.localdomain> <87eentlh19.fsf@jogness.linutronix.de> <20200826150726.GA4928@alley> <87pn7c5s0t.fsf@jogness.linutronix.de> <20200828072148.GC4353@alley>
+Date:   Fri, 28 Aug 2020 12:07:09 +0206
+Message-ID: <873647144a.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828091758.GF54274@SPB-NB-133.local>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 12:17:58PM +0300, Roman Bolshakov wrote:
-> On Fri, Aug 28, 2020 at 09:08:24AM +0200, Lukas Bulwahn wrote:
-> > Previous attempts of getting an answer from the qlogic.com group alias,
-> > i.e., QLogic-Storage-Upstream@qlogic.com, have remained unanswered; see
-> > links below.
-> > 
-> > Mark those sections Orphan to prepare their deletion or give an actual
-> > person a chance to step up to maintain those drivers.
-> > 
-> > Link: https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de
-> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2006300644130.4919@felia
-> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2008270740140.31123@felia
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > applies cleanly on current master and next-20200828
-> > 
-> > James, Martin, please pick this minor non-urgent patch.
-> > 
-> > Anil, Sudarsana, if these drivers are still maintained by qlogic, please
-> > provide actual names of people that maintain these drivers.
-> > 
-> >  MAINTAINERS | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 3b186ade3597..415058b48a2e 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3507,15 +3507,13 @@ F:	drivers/net/ethernet/broadcom/bnx2.*
-> >  F:	drivers/net/ethernet/broadcom/bnx2_*
-> >  
-> >  BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER
-> > -M:	QLogic-Storage-Upstream@qlogic.com
-> >  L:	linux-scsi@vger.kernel.org
-> > -S:	Supported
-> > +S:	Orphan
-> >  F:	drivers/scsi/bnx2fc/
-> >  
-> >  BROADCOM BNX2I 1/10 GIGABIT iSCSI DRIVER
-> > -M:	QLogic-Storage-Upstream@qlogic.com
-> >  L:	linux-scsi@vger.kernel.org
-> > -S:	Supported
-> > +S:	Orphan
-> >  F:	drivers/scsi/bnx2i/
-> >  
-> >  BROADCOM BNX2X 10 GIGABIT ETHERNET DRIVER
-> > @@ -14212,9 +14210,8 @@ F:	Documentation/networking/device_drivers/ethernet/qlogic/LICENSE.qla3xxx
-> >  F:	drivers/net/ethernet/qlogic/qla3xxx.*
-> >  
-> >  QLOGIC QLA4XXX iSCSI DRIVER
-> > -M:	QLogic-Storage-Upstream@qlogic.com
-> >  L:	linux-scsi@vger.kernel.org
-> > -S:	Supported
-> > +S:	Orphan
-> >  F:	Documentation/scsi/LICENSE.qla4xxx
-> >  F:	drivers/scsi/qla4xxx/
-> >  
-> > -- 
-> > 2.17.1
-> > 
-> 
-> CC'd Arun,
-> 
-> I think it's worth to update the alias to:
-> 
-> GR-QLogic-Storage-Upstream@marvell.com
+On 2020-08-28, Petr Mladek <pmladek@suse.com> wrote:
+>> Below is a patch against this series that adds support for finalizing
+>> all 4 queried states. It passes all my tests. Note that the code handles
+>> 2 corner cases:
+>> 
+>> 1. When seq is 0, there is no previous descriptor to finalize. This
+>>    exception is important because we don't want to finalize the -1
+>>    placeholder. Otherwise, upon the first wrap, a descriptor will be
+>>    prematurely finalized.
+>> 
+>> 2. When a previous descriptor is being reserved for the first time, it
+>>    might have a state_var value of 0 because the writer is still in
+>>    prb_reserve() and has not set the initial value yet. I added
+>>    considerable comments on this special case.
+>> 
+>> I am comfortable with adding this new code, although it clearly adds
+>> complexity.
+>> 
+>> John Ogness
+>> 
+>> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+>> index 90d48973ac9e..1ed1e9eb930f 100644
+>> --- a/kernel/printk/printk_ringbuffer.c
+>> +++ b/kernel/printk/printk_ringbuffer.c
+>> @@ -860,9 +860,11 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+>>  	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+>>  	unsigned long prev_state_val;
+>>  	unsigned long id_prev_wrap;
+>> +	unsigned long state_val;
+>>  	struct prb_desc *desc;
+>>  	unsigned long head_id;
+>>  	unsigned long id;
+>> +	bool is_final;
+>>  
+>>  	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(desc_reserve:A) */
+>>  
+>> @@ -953,10 +955,17 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+>>  	 * See "ABA Issues" about why this verification is performed.
+>>  	 */
+>>  	prev_state_val = atomic_long_read(&desc->state_var); /* LMM(desc_reserve:E) */
+>> -	if (prev_state_val &&
+>> -	    get_desc_state(id_prev_wrap, prev_state_val, NULL) != desc_reusable) {
+>> -		WARN_ON_ONCE(1);
+>> -		return false;
+>> +	if (get_desc_state(id_prev_wrap, prev_state_val, &is_final) != desc_reusable) {
+>> +		/*
+>> +		 * If this descriptor has never been used, @prev_state_val
+>> +		 * will be 0. However, even though it may have never been
+>> +		 * used, it may have been finalized. So that flag must be
+>> +		 * ignored.
+>> +		 */
+>> +		if ((prev_state_val & ~DESC_FINAL_MASK)) {
+>> +			WARN_ON_ONCE(1);
+>> +			return false;
+>> +		}
+>>  	}
+>>  
+>>  	/*
+>> @@ -967,10 +976,25 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+>>  	 * any other changes. A write memory barrier is sufficient for this.
+>>  	 * This pairs with desc_read:D.
+>>  	 */
+>> -	if (!atomic_long_try_cmpxchg(&desc->state_var, &prev_state_val,
+>> -				     id | 0)) { /* LMM(desc_reserve:F) */
+>> -		WARN_ON_ONCE(1);
+>> -		return false;
+>> +	if (is_final)
+>> +		state_val = id | 0 | DESC_FINAL_MASK;
+>
+> The state from the previous wrap always have to have DESC_FINAL_MASK set.
+> Do I miss something, please?
 
-Again, no, please remove aliases and use real names and email addresses,
-otherwise accountability is lost over time, as we have seen constantly.
+Important: FINAL is not a _state_. It is a _flag_ that marks a
+descriptor as non-reopenable. This was a simple change because it does
+not affect any state logic. The number of states and possible
+transitions have not changed.
 
-thanks,
+When a descriptor transitions to reusable, the FINAL flag is cleared. It
+has reached the end of its lifecycle. See desc_make_reusable().
 
-greg k-h
+(In order to have transitioned to reusable, the FINAL and COMMIT flags
+must have been set.)
+
+In the case of desc_reserve(), a reusable descriptor is transitioning to
+reserved. When this transition happens, there may already be a later
+descriptor that has been reserved and finalized this descriptor. If the
+FINAL flag is set here, it means that the FINAL flag is set for the
+_new_ descriptor being reserved.
+
+In summary, the FINAL flag can be set in _any_ state. Once set, it is
+preserved for all further state transitions. And it is cleared when that
+descriptor becomes reusable.
+
+>> +	else
+>> +		state_val = id | 0;
+>> +	if (atomic_long_cmpxchg(&desc->state_var, prev_state_val,
+>> +				state_val) != prev_state_val) { /* LMM(desc_reserve:F) */
+>> +		/*
+>> +		 * This reusable descriptor must have been finalized already.
+>> +		 * Retry with a reusable+final expected value.
+>> +		 */
+>> +		prev_state_val |= DESC_FINAL_MASK;
+>> +		state_val |= DESC_FINAL_MASK;
+>> +
+>> +		if (!atomic_long_try_cmpxchg(&desc->state_var, &prev_state_val,
+>> +					     state_val)) { /* LMM(desc_reserve:FIXME) */
+>> +
+>> +			WARN_ON_ONCE(1);
+>> +			return false;
+>> +		}
+>>  	}
+>>  
+>>  	/* Now data in @desc can be modified: LMM(desc_reserve:G) */
+>> @@ -1364,9 +1388,37 @@ static void desc_finalize(struct prb_desc_ring *desc_ring, unsigned long id)
+>>  	while (!atomic_long_try_cmpxchg_relaxed(&d->state_var, &prev_state_val,
+>>  						prev_state_val | DESC_FINAL_MASK)) {
+>>  
+>> -		if (get_desc_state(id, prev_state_val, &is_final) != desc_reserved)
+>> +		switch (get_desc_state(id, prev_state_val, &is_final)) {
+>> +		case desc_miss:
+>> +			/*
+>> +			 * If the ID is exactly 1 wrap behind the expected, it is
+>> +			 * in the process of being reserved by another writer and
+>> +			 * must be considered reserved.
+>> +			 */
+>> +			if (get_desc_state(DESC_ID_PREV_WRAP(desc_ring, id),
+>> +					   prev_state_val, &is_final) != desc_reusable) {
+>> +				/*
+>> +				 * If this descriptor has never been used, @prev_state_val
+>> +				 * will be 0. However, even though it may have never been
+>> +				 * used, it may have been finalized. So that flag must be
+>> +				 * ignored.
+>> +				 */
+>> +				if ((prev_state_val & ~DESC_FINAL_MASK)) {
+>> +					WARN_ON_ONCE(1);
+>> +					return;
+>> +				}
+>> +			}
+>> +			fallthrough;
+>
+> How is this supposed to work please?
+>
+> If the ID is exactly one wrap behind, it is being reserved but the new
+> id was not written yet. In this case, DESC_FINAL_MASK is already set.
+
+No. If it is exactly one wrap behind, it is still in the reusable
+state. The FINAL flag will not be set because it is cleared when
+transitioning to reusable.
+
+> The above cmpxchg will not do any change. And prb_reserve() will not
+> be able to distinguish that it has been finalized.
+
+The cmpxchg() will try again using the newly updated @prev_state_val and
+try to set it to "prev_state_val | FINAL".
+
+Now, theoretically, a writer could commit and reopen the descriptor with
+such timing that this cmpxchg() will always fail. A kind of cat and
+mouse, always trying to set the FINAL flag for the last @state_var
+value.
+
+That game could be avoided if the descriptor noticed that it is no
+longer the head ID and set its own FINAL flag. I like the idea of a
+guaranteed finalizing of the previous descriptor and the ability for a
+descriptor to finalize itself.
+
+(Although really, if we start talking about timed cmpxchg() attacks,
+almost any cmpxchg loop can become near-infinite.)
+
+> I am really not sure what solution is better. Mine have more barriers.
+> But this brings many new combinations that need to be checked and
+> handled.
+
+I am putting together a fully functional version of your solution with
+the appropriate memory barriers and correct handling of the special
+cases so that we can get a better look at the difference.
+
+John Ogness
