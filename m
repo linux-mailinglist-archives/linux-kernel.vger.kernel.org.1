@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CDC255922
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6222255957
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgH1LIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 07:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
+        id S1729178AbgH1L2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 07:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729177AbgH1LGr (ORCPT
+        with ESMTP id S1729156AbgH1L0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 07:06:47 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D030C061264;
-        Fri, 28 Aug 2020 04:06:36 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k20so516260wmi.5;
-        Fri, 28 Aug 2020 04:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bzCkNueS5Za9fJgI1E1trgmJ9rPWtcxrqIv2kBAEIIA=;
-        b=nqNXrGMQwoqzpRB0gErrvZ6yYPDlhcf0cEjJP4PIpxwB3TJzLQD9R6QDUdKahtv6/G
-         ZG5GzNPiR3HzMBsN7cl7yvedrbGYXei4jvXKk0FC+HLsZk4t3B8ErGvWAi6d0A1Hz3kD
-         cqzdi1s+VA8IcfGwk04GBOtpvpWF3RhR4DZWmDeft7V1jvKr3zwKGJdg/60VgxmAE6T5
-         /r/dLa1uLko+S0/vjA52DFxzWzL1etpUz08eF86r1EkTpCn33uxnV9yZ3UEHiMonJsZ2
-         nVKQawEmps+uIMH/wWb+Bl17iC79KiLZDSXwusWhNGVKTqelTrDd0SzrUeaKdQ5YGE8P
-         4fZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bzCkNueS5Za9fJgI1E1trgmJ9rPWtcxrqIv2kBAEIIA=;
-        b=Q9pcU0L4hpNSEdkVAg80LQpQ8rN0rvtec/Geb7QOS1wbJrpxiDJsaOIPQ5zAdfYjtA
-         nNDO9lR3siWOOSCQ36BjhR2hs31HB4PcvY1CPMD38tMbK4DnlUa2qJAv8QOOLQtUSE7a
-         wLIa04zOdlTUL6AILSUIVUVw6xTjMEmgMi6Gch6syGVDK8w6bxjgUht6K0pWUiL/Y/w9
-         ucre9CAlOJU09TXA+d3fu/mmDtRJgyfmzO9bQVFEtHj0egcGAvzQmr8clf/6xCk3LZQW
-         2KTq834GrQjubi6+GiVL3JETr5IBE3sHZZ8E9bKdfV8wZrz9HPC0ImTjGc2q9EkoVd8I
-         oYHA==
-X-Gm-Message-State: AOAM5323VWmKtPx9jqWd/4NJiGg28l0RQmShZt5SU29nRDlgfh5rMOJV
-        MEHbCEFzNz6w5AjlRvSwfnBCaPxAHUwsqwuiyi58a0DA+cs=
-X-Google-Smtp-Source: ABdhPJwEGhSTxPCFU8vPrE3opqM8wcD1YF7m5PGxddaCKQmaFW5dJBzjJv1a3VJ25037p9UaUp0nkEGDo0oVxkrByx4=
-X-Received: by 2002:a7b:c923:: with SMTP id h3mr1025587wml.29.1598612795186;
- Fri, 28 Aug 2020 04:06:35 -0700 (PDT)
+        Fri, 28 Aug 2020 07:26:41 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF4FC061235;
+        Fri, 28 Aug 2020 04:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vIhwCesJTseG3yB623ZttocnuTn6e3tnM3q7J6zZ9Kg=; b=NfCCiLf0zc5PcQJaZCCJsN4tCi
+        2CY6IwnecyFSbp6lPV8ze1xb1XBG8QfJS+RdwfRMOUnxfiJQ1RLugGon18Dym+KeLYaWPT07BXRSE
+        XO3OCsaiEsU4YK1f0HeJgmcDRhF9/QLxNm5aElYdGB3PcitsmpLCjjjKr52xghLl4P+G/PFTnBQ7r
+        udW0s+yDs+pLSFrhILeJk9e3uETXurfC2LOSwa0Mm1GfqkUhWVKKyC5Xbp5UdMyoPKKICHetVEZOw
+        b/8Kg0HeUqMJYd8H5jqBgU7WA+lCIg4Lk8QjTLcmb1sz0tiB+mR9yOgygok6g+Yu1FPVY9EuHhfgq
+        wE45mhiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBcLv-0003dw-E1; Fri, 28 Aug 2020 11:15:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 81649300238;
+        Fri, 28 Aug 2020 13:15:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 331F52C56DB14; Fri, 28 Aug 2020 13:15:25 +0200 (CEST)
+Date:   Fri, 28 Aug 2020 13:15:25 +0200
+From:   peterz@infradead.org
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/4] mm: fix exec activate_mm vs TLB shootdown and lazy
+ tlb switching race
+Message-ID: <20200828111525.GX1362448@hirez.programming.kicks-ass.net>
+References: <20200828100022.1099682-1-npiggin@gmail.com>
+ <20200828100022.1099682-2-npiggin@gmail.com>
 MIME-Version: 1.0
-References: <20200827065355.15177-1-himadrispandya@gmail.com> <5dd266df-33cf-f351-7253-33a7f589cd56@gmail.com>
-In-Reply-To: <5dd266df-33cf-f351-7253-33a7f589cd56@gmail.com>
-From:   Himadri Pandya <himadrispandya@gmail.com>
-Date:   Fri, 28 Aug 2020 16:36:22 +0530
-Message-ID: <CAOY-YV=Ad6E2nbJ-m9SHW4zuet9VeDMLw9M-VtTebp0Far-8SA@mail.gmail.com>
-Subject: Re: [PATCH] net: usb: Fix uninit-was-stored issue in asix_read_phy_addr()
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828100022.1099682-2-npiggin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 1:28 PM Sergei Shtylyov
-<sergei.shtylyov@gmail.com> wrote:
->
-> Hello!
->
-> On 27.08.2020 9:53, Himadri Pandya wrote:
->
-> > The buffer size is 2 Bytes and we expect to receive the same amount of
-> > data. But sometimes we receive less data and run into uninit-was-stored
-> > issue upon read. Hence modify the error check on the return value to match
-> > with the buffer size as a prevention.
-> >
-> > Reported-and-tested by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
-> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> > ---
-> >   drivers/net/usb/asix_common.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
-> > index e39f41efda3e..7bc6e8f856fe 100644
-> > --- a/drivers/net/usb/asix_common.c
-> > +++ b/drivers/net/usb/asix_common.c
-> > @@ -296,7 +296,7 @@ int asix_read_phy_addr(struct usbnet *dev, int internal)
-> >
-> >       netdev_dbg(dev->net, "asix_get_phy_addr()\n");
-> >
-> > -     if (ret < 0) {
-> > +     if (ret < 2) {
-> >               netdev_err(dev->net, "Error reading PHYID register: %02x\n", ret);
->
->     Hm... printing possibly negative values as hex?
->
+On Fri, Aug 28, 2020 at 08:00:19PM +1000, Nicholas Piggin wrote:
 
-Yeah. That's odd! Fixing it.
+> Closing this race only requires interrupts to be disabled while ->mm
+> and ->active_mm are being switched, but the TLB problem requires also
+> holding interrupts off over activate_mm. Unfortunately not all archs
+> can do that yet, e.g., arm defers the switch if irqs are disabled and
+> expects finish_arch_post_lock_switch() to be called to complete the
+> flush; um takes a blocking lock in activate_mm().
 
-Thanks,
-Himadri
-
-> [...]
->
-> MBR, Sergei
+ARM at least has activate_mm() := switch_mm(), so it could be made to
+work.
