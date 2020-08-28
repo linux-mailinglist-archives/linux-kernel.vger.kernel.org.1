@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0379F25542B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882BF255424
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 07:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgH1GAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 02:00:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35794 "EHLO mga17.intel.com"
+        id S1727044AbgH1F6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 01:58:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:51364 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgH1GAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 02:00:07 -0400
-IronPort-SDR: RvNbL0lzqj8HYRC6ReaFedLaBQkRQev0btJZ3bBMCiu/VE+SCqKJ7FPlSEqGjHqo5ufsGB3lLQ
- /k0aa4X1+bag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="136677957"
-X-IronPort-AV: E=Sophos;i="5.76,362,1592895600"; 
-   d="scan'208";a="136677957"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 23:00:04 -0700
-IronPort-SDR: McsTh8G5D3tbZMqZlooEqwZTeP1Uyb5WLzaHsn6IM/SQPxe/wRQqU9dcd9Qrwpd32yBG1b+lUb
- OtfWWPNgvdeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,362,1592895600"; 
-   d="scan'208";a="300117330"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga006.jf.intel.com with ESMTP; 27 Aug 2020 23:00:02 -0700
-Date:   Fri, 28 Aug 2020 13:56:03 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
-Subject: Re: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
-Message-ID: <20200828055603.GA5814@yilunxu-OptiPlex-7050>
-References: <1597027273-25288-1-git-send-email-yilun.xu@intel.com>
- <1597027273-25288-2-git-send-email-yilun.xu@intel.com>
- <20200812035604.GA2544@epycbox.lan>
- <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
- <20200813075843.GB7383@yilunxu-OptiPlex-7050>
- <54216e492cec4f84bc43dee176130e89@AcuMS.aculab.com>
- <20200813090409.GA1080@yilunxu-OptiPlex-7050>
- <20200820041431.GB4022@epycbox.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820041431.GB4022@epycbox.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1725858AbgH1F6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 01:58:49 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bd86Y6Ctkz9v46D;
+        Fri, 28 Aug 2020 07:58:45 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id T6UqNHO5jRzl; Fri, 28 Aug 2020 07:58:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bd86Y5Ks6z9v1yg;
+        Fri, 28 Aug 2020 07:58:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DCE48B783;
+        Fri, 28 Aug 2020 07:58:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id SCkNkZwN6Va9; Fri, 28 Aug 2020 07:58:46 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 71E818B769;
+        Fri, 28 Aug 2020 07:58:46 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 66AAF65D47; Fri, 28 Aug 2020 05:58:46 +0000 (UTC)
+Message-Id: <0f65bb24a2519e5e6c33089016cb249a7c1b1e35.1598594308.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/5] powerpc/vdso: Remove DBG()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 28 Aug 2020 05:58:46 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 09:14:31PM -0700, Moritz Fischer wrote:
-> On Thu, Aug 13, 2020 at 05:04:09PM +0800, Xu Yilun wrote:
-> > On Thu, Aug 13, 2020 at 08:28:05AM +0000, David Laight wrote:
-> > > From: Xu Yilun
-> > > > Sent: 13 August 2020 08:59
-> > > > On Wed, Aug 12, 2020 at 08:52:39AM +0000, David Laight wrote:
-> > > > > From: Moritz Fischer
-> > > > > > Sent: 12 August 2020 04:56
-> > > > > >
-> > > > > > On Mon, Aug 10, 2020 at 10:41:10AM +0800, Xu Yilun wrote:
-> > > > > > > The feature id is stored in a 12 bit field in DFH. So a u16 variable is
-> > > > > > > enough for feature id.
-> > > > > > >
-> > > > > > > This patch changes all feature id related places to fit u16.
-> > > > >
-> > > > > How much bigger does it make the kernel?
-> > > > 
-> > > > The patch changes the definition of feature id from u64 to u16, and will
-> > > > make the kernel slightly smaller.
-> > > 
-> > > Unlikely.
-> > > Most of the structures will gain a 'pad' field.
-> > > Using u16 for function parameters and results almost certainly
-> > > requires instructions to mask the value.
-> > > Any arithmetic on u16 will require masking instructions on
-> > > (probably) all architectures except x86.
-> > > 
-> > > Using 'unsigned int' is probably best.
-> > > 
-> > > u16 is never a good idea unless you are defining enough
-> > > of them in a structure (eg as an array) to reduce the
-> > > structure size below some threshold.
-> > > (Or are matching some hardware layout.)
-> > 
-> > I got it. Thanks for your detailed explanation. I think we may change them to
-> > u32. Is it the same case for u8? Think we may also change the dfl_device_id.type.
-> > 
-> > 
-> > Hi Moritz:
-> > 
-> > The patch is applied to for-next, is it possible we recall it, or we
-> > make another fix after it?
-> > 
-> > Thanks,
-> > Yilun.
-> 
-> Sorry for the delay, can you send a follow-up please?
+DBG() is defined as void when DEBUG is not defined,
+and DEBUG is explicitly undefined.
 
-Hi moritz:
+It means there is no other way than modifying source code
+to get the messages printed.
 
-I think I don't have to change it now. As discussed with David, these
-fields aren't often accessed. So it should be OK.
+It was most likely useful in the first days of VDSO, but
+today the only 3 DBG() calls don't deserve a special
+handling.
 
-Thanks,
-Yilun.
+Just remove them. If one day someone need such messages back,
+use a standard pr_debug() or equivalent.
 
-> 
-> Cheers,
-> Moritz
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+This is a follow up series, applying on top of the series that
+switches powerpc VDSO to _install_special_mapping(),
+rebased on today's powerpc/next-test (dd419a93bd99)
+
+v2 removes the modification to arch_setup_additional_pages() to
+consider when is_32bit_task() returning true when CONFIG_VDSO32
+not set, as this should never happen.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/vdso.c | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
+index e2568d9ecdff..3ef3fc546ac8 100644
+--- a/arch/powerpc/kernel/vdso.c
++++ b/arch/powerpc/kernel/vdso.c
+@@ -31,14 +31,6 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/setup.h>
+ 
+-#undef DEBUG
+-
+-#ifdef DEBUG
+-#define DBG(fmt...) printk(fmt)
+-#else
+-#define DBG(fmt...)
+-#endif
+-
+ /* Max supported size for symbol names */
+ #define MAX_SYMNAME	64
+ 
+@@ -567,9 +559,6 @@ static __init int vdso_fixup_alt_funcs(struct lib32_elfinfo *v32,
+ 		if (!match)
+ 			continue;
+ 
+-		DBG("replacing %s with %s...\n", patch->gen_name,
+-		    patch->fix_name ? "NONE" : patch->fix_name);
+-
+ 		/*
+ 		 * Patch the 32 bits and 64 bits symbols. Note that we do not
+ 		 * patch the "." symbol on 64 bits.
+@@ -704,7 +693,6 @@ static int __init vdso_init(void)
+ 	 * Calculate the size of the 64 bits vDSO
+ 	 */
+ 	vdso64_pages = (&vdso64_end - &vdso64_start) >> PAGE_SHIFT;
+-	DBG("vdso64_kbase: %p, 0x%x pages\n", vdso64_kbase, vdso64_pages);
+ 
+ 	vdso32_kbase = &vdso32_start;
+ 
+@@ -712,7 +700,6 @@ static int __init vdso_init(void)
+ 	 * Calculate the size of the 32 bits vDSO
+ 	 */
+ 	vdso32_pages = (&vdso32_end - &vdso32_start) >> PAGE_SHIFT;
+-	DBG("vdso32_kbase: %p, 0x%x pages\n", vdso32_kbase, vdso32_pages);
+ 
+ 	/*
+ 	 * Setup the syscall map in the vDOS
+-- 
+2.25.0
+
