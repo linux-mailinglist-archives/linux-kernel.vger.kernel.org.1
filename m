@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484E425541F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 07:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0379F25542B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgH1Fyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 01:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgH1Fyc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 01:54:32 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C1EC061264;
-        Thu, 27 Aug 2020 22:54:32 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e11so1006273ljn.6;
-        Thu, 27 Aug 2020 22:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=M5X//ZshFwH0KFUFC07IKRMrNcpHsYLBwYNF7u93/jc=;
-        b=F6iZdECVa/kC5OREMqVO4E3qSsVlgWKNDTK8rq46y6mvBT8n0W1NYWRQqb7du7Fx9M
-         yDeuyYdz9peRTfxLOYbdSOOavxmHIQ3JYtMqq9N9xSGpdEPGNePDNHLxxaW79jOPw9rW
-         K+wQIWujkdKVzKm4QfKadr8CH79KcuM4+JFbt78igw+vbjzjO8rqaiGLfwDwPDhSLjUZ
-         DZfZmjj5SdRzzc17r3iHwjEKCP/Hjo87fElmJj5jFSL100xIAflQklK9F92nlrEk7+KE
-         EwriOUxhqRtsk0tPr+eAsnJe3TFJxj+IL/SNDq05FL9lLIa8PHYgBYx1NbI8UTVi715N
-         EhMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=M5X//ZshFwH0KFUFC07IKRMrNcpHsYLBwYNF7u93/jc=;
-        b=Jde+IinPG4arEy1VMXqj00YuQ2tEUtf+cfE0yhCFPfCWQsIBhNtS91fhmWGnlMrijO
-         or4GInDuhQgrjOelcb+5PbQwO8UDrGZmDXDmSA0W741+T8++NSgB4qjIvmr7vNY8VChN
-         DjHHXJEVcH0Qjo5F96pKWISUySnRihx/gXzjz+Zuy6jo37Uu/AbzzF3z/z8v5l7RaEO1
-         Gt+KWolyB6BtwGrrbWc9Sa/KktEttWxxFQj2n1q+r/u4AK3zUI3PNXA6Xis1TMr813As
-         yLcMAeJR6XA8Hv2GMMv7iE8Rn31V4/Mks09vQ1xJNHEYZRWLvneI4Xe/guINhyuiXEIo
-         /L5g==
-X-Gm-Message-State: AOAM532GIHFT0HBxSTXiYhQ0g3vOv8ZNxUkIp9D6CVUQXswxyQrKZZbK
-        vDuowGALj9BCQTvsNU+ZrZYHjbxc8CPo2Sk+4Hw=
-X-Google-Smtp-Source: ABdhPJwyIjGEyHiu5PklJExnAu2irMyZy92E3HWunXZk6nTyo4YZk5QUP6tuzmB3qWO18Rd/8O81zM+WhqbVxbAaCsI=
-X-Received: by 2002:a2e:a40f:: with SMTP id p15mr96315ljn.356.1598594068735;
- Thu, 27 Aug 2020 22:54:28 -0700 (PDT)
+        id S1728246AbgH1GAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 02:00:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:35794 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgH1GAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 02:00:07 -0400
+IronPort-SDR: RvNbL0lzqj8HYRC6ReaFedLaBQkRQev0btJZ3bBMCiu/VE+SCqKJ7FPlSEqGjHqo5ufsGB3lLQ
+ /k0aa4X1+bag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="136677957"
+X-IronPort-AV: E=Sophos;i="5.76,362,1592895600"; 
+   d="scan'208";a="136677957"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 23:00:04 -0700
+IronPort-SDR: McsTh8G5D3tbZMqZlooEqwZTeP1Uyb5WLzaHsn6IM/SQPxe/wRQqU9dcd9Qrwpd32yBG1b+lUb
+ OtfWWPNgvdeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,362,1592895600"; 
+   d="scan'208";a="300117330"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga006.jf.intel.com with ESMTP; 27 Aug 2020 23:00:02 -0700
+Date:   Fri, 28 Aug 2020 13:56:03 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
+Subject: Re: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
+Message-ID: <20200828055603.GA5814@yilunxu-OptiPlex-7050>
+References: <1597027273-25288-1-git-send-email-yilun.xu@intel.com>
+ <1597027273-25288-2-git-send-email-yilun.xu@intel.com>
+ <20200812035604.GA2544@epycbox.lan>
+ <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
+ <20200813075843.GB7383@yilunxu-OptiPlex-7050>
+ <54216e492cec4f84bc43dee176130e89@AcuMS.aculab.com>
+ <20200813090409.GA1080@yilunxu-OptiPlex-7050>
+ <20200820041431.GB4022@epycbox.lan>
 MIME-Version: 1.0
-References: <1598527137-6915-1-git-send-email-u0084500@gmail.com>
- <1598527137-6915-2-git-send-email-u0084500@gmail.com> <20200827164131.GA86149@roeck-us.net>
-In-Reply-To: <20200827164131.GA86149@roeck-us.net>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Fri, 28 Aug 2020 13:54:16 +0800
-Message-ID: <CADiBU38oTZLR=EPSW=ANGZn8074FyQqb=WS5kyMvu_8_Ua=XaQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] usb typec: mt6360: Rename driver/Kconfig/Makefile
- from mt6360 to mt636x
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820041431.GB4022@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B48=E6=9C=8828=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:41=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On Thu, Aug 27, 2020 at 07:18:56PM +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > 1. Rename file form tcpci_mt6360.c to tcpci_mt636x.c
-> > 2. Rename internal function from mt6360 to mt636x, except the register
-> > definition.
-> > 3. Change Kconfig/Makefile from MT6360 to MT636X.
-> >
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  drivers/usb/typec/tcpm/Kconfig        |   6 +-
-> >  drivers/usb/typec/tcpm/Makefile       |   2 +-
-> >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 212 --------------------------=
---------
-> >  drivers/usb/typec/tcpm/tcpci_mt636x.c | 212 ++++++++++++++++++++++++++=
-++++++++
-> >  4 files changed, 216 insertions(+), 216 deletions(-)
-> >  delete mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
-> >  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt636x.c
->
-> Maybe Heikki is ok with this change, but I am not, for the reasons
-> mentioned before. So I won't approve this patch. Note that, either
-> case, it should be merged with the first patch.
+On Wed, Aug 19, 2020 at 09:14:31PM -0700, Moritz Fischer wrote:
+> On Thu, Aug 13, 2020 at 05:04:09PM +0800, Xu Yilun wrote:
+> > On Thu, Aug 13, 2020 at 08:28:05AM +0000, David Laight wrote:
+> > > From: Xu Yilun
+> > > > Sent: 13 August 2020 08:59
+> > > > On Wed, Aug 12, 2020 at 08:52:39AM +0000, David Laight wrote:
+> > > > > From: Moritz Fischer
+> > > > > > Sent: 12 August 2020 04:56
+> > > > > >
+> > > > > > On Mon, Aug 10, 2020 at 10:41:10AM +0800, Xu Yilun wrote:
+> > > > > > > The feature id is stored in a 12 bit field in DFH. So a u16 variable is
+> > > > > > > enough for feature id.
+> > > > > > >
+> > > > > > > This patch changes all feature id related places to fit u16.
+> > > > >
+> > > > > How much bigger does it make the kernel?
+> > > > 
+> > > > The patch changes the definition of feature id from u64 to u16, and will
+> > > > make the kernel slightly smaller.
+> > > 
+> > > Unlikely.
+> > > Most of the structures will gain a 'pad' field.
+> > > Using u16 for function parameters and results almost certainly
+> > > requires instructions to mask the value.
+> > > Any arithmetic on u16 will require masking instructions on
+> > > (probably) all architectures except x86.
+> > > 
+> > > Using 'unsigned int' is probably best.
+> > > 
+> > > u16 is never a good idea unless you are defining enough
+> > > of them in a structure (eg as an array) to reduce the
+> > > structure size below some threshold.
+> > > (Or are matching some hardware layout.)
+> > 
+> > I got it. Thanks for your detailed explanation. I think we may change them to
+> > u32. Is it the same case for u8? Think we may also change the dfl_device_id.type.
+> > 
+> > 
+> > Hi Moritz:
+> > 
+> > The patch is applied to for-next, is it possible we recall it, or we
+> > make another fix after it?
+> > 
+> > Thanks,
+> > Yilun.
+> 
+> Sorry for the delay, can you send a follow-up please?
 
-Yes, I agree with you opinion. use 636x,  the range is too large from
-0 to 9, it may not all be compatible.
-Even though it's also possible that the part number don't have the
-same function.
-So I'm going to remove the rename patch.
-Do I need to add a patch named "revert"? Or just remove it. I'm not
-sure which way is better.
+Hi moritz:
 
-It seems you all want the code change to be squashed into the first
-code. And the second one is the DT binding. Right?
+I think I don't have to change it now. As discussed with David, these
+fields aren't often accessed. So it should be OK.
 
+Thanks,
+Yilun.
 
->
-> Guenter
+> 
+> Cheers,
+> Moritz
