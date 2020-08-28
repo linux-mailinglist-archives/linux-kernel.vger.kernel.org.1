@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA6E2556FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19302255709
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgH1I7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 04:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728555AbgH1I67 (ORCPT
+        id S1728819AbgH1JAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:00:05 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:32285 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728754AbgH1I76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:58:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D122C061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:58:59 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 10:59:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598605137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GmU8AAPW1+rQRjQVKnNtyU0wtD0uH65CO+M6xximNpg=;
-        b=YnzhO/UFbdwlJThK+sAKvpR7v6mpKuuYB/R1lewMQeeDO8xS+jwz/k9xhSf890jW9e5Zkl
-        iRtPT3ULag2INy3HOFTiUbMRqtt7TDSMv13TqWdPjnKtKIuO9Hy4GSo1vX5dVaaqdZJ35J
-        eX3qjqtlcVZE6IQbUpqIQEoiLsITBHxMsp2hbN1LVST2IDlInkYQrz80+9zY9XElSRF5Gr
-        LN4013/wx8Fd5T7i5vkZdnorzmMNDWTHKScoEUwlWcewl8x8X7dkogsZhSdu4JlOA2UNfX
-        e7+h98NalzfOLoLXzTAx2gakKPm3O+8q0M7eyOiRWOAkT7gDlC5jwkFFz5EseQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598605137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GmU8AAPW1+rQRjQVKnNtyU0wtD0uH65CO+M6xximNpg=;
-        b=VYP2gybb44CwkG7K2QMc2nCuVFcU+n9/xiQ5cIOb+wrJ6lTqge83XyZA5xwC0Xh/ipkZyf
-        qOHaqhZQNskSDqBQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/5] seqlock: Use unique prefix for seqcount_t
- property accessors
-Message-ID: <20200828085917.GA7205@lx-t490>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200828010710.5407-1-a.darwish@linutronix.de>
- <20200828010710.5407-3-a.darwish@linutronix.de>
- <20200828082754.GN1362448@hirez.programming.kicks-ass.net>
+        Fri, 28 Aug 2020 04:59:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598605198; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=fotnpsF0EYIr+SiKtcUih+0Uan6DLmURDNPjSJ8hGBA=; b=QOHtPyva4sAaE1tLEW3Xpr8zBasIuBJ6Uh1YQ3j/MGPR/brNG/vvvwI+8bC0hJqlMs3wu1zc
+ JNsm6D97uYec+C/m32PBBxeCplEItJHjjCQVAgUakwjLLa31n4NIzIzZScFKih8y3vGtXja+
+ meu32aUCLe6NzUnEpNYnDL36/P8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f48c78112acec35e2f3fbc4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 Aug 2020 08:59:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEEC5C433C6; Fri, 28 Aug 2020 08:59:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 101C9C433CB;
+        Fri, 28 Aug 2020 08:59:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 101C9C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Reed <breed@users.sourceforge.net>,
+        Javier Achirica <achirica@users.sourceforge.net>,
+        Jean Tourrilhes <jt@hpl.hp.com>,
+        "Fabrice Bellet" <fabrice@bellet.info>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding style issues
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+        <202008172335.02988.linux@zary.sk> <87v9h4le9z.fsf@codeaurora.org>
+        <202008272223.57461.linux@zary.sk>
+Date:   Fri, 28 Aug 2020 11:59:37 +0300
+In-Reply-To: <202008272223.57461.linux@zary.sk> (Ondrej Zary's message of
+        "Thu, 27 Aug 2020 22:23:57 +0200")
+Message-ID: <87lfhz9mdi.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828082754.GN1362448@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 10:27:54AM +0200, peterz@infradead.org wrote:
-> On Fri, Aug 28, 2020 at 03:07:07AM +0200, Ahmed S. Darwish wrote:
-> > Differentiate the first group by using "__seqcount_t_" as prefix. This
-> > also conforms with the rest of seqlock.h naming conventions.
->
-> >  #define __seqprop_case(s, locktype, prop)				\
-> >  	seqcount_##locktype##_t: __seqcount_##locktype##_##prop((void *)(s))
-> >
-> >  #define __seqprop(s, prop) _Generic(*(s),				\
-> > -	seqcount_t:		__seqcount_##prop((void *)(s)),		\
-> > +	seqcount_t:		__seqcount_t_##prop((void *)(s)),	\
-> >  	__seqprop_case((s),	raw_spinlock,	prop),			\
-> >  	__seqprop_case((s),	spinlock,	prop),			\
-> >  	__seqprop_case((s),	rwlock,		prop),			\
->
-> If instead you do:
->
-> #define __seqprop_case(s, _lockname, prop) \
-> 	seqcount##_lockname##_t: __seqcount##_lockname##_##prop((void *)(s))
->
-> You can have:
->
-> 	__seqprop_case((s),	,		prop),
-> 	__seqprop_case((s),	_raw_spinlock,	prop),
-> 	__seqprop_case((s),	_spinlock,	prop),
-> 	__seqprop_case((s),	_rwlock,	prop),
-> 	__seqprop_case((s),	_mutex,		prop),
-> 	__seqprop_case((s),	_ww_mutex,	prop),
->
-> And it's all good again.
->
-> Although arguably we should do something like s/__seqcount/__seqprop/
-> over this lot.
->
+Ondrej Zary <linux@zary.sk> writes:
 
-ACK.
+> On Thursday 27 August 2020 09:49:12 Kalle Valo wrote:
+>> Ondrej Zary <linux@zary.sk> writes:
+>> 
+>> > On Monday 17 August 2020 20:27:06 Jesse Brandeburg wrote:
+>> >> On Mon, 17 Aug 2020 16:27:01 +0300
+>> >> Kalle Valo <kvalo@codeaurora.org> wrote:
+>> >> 
+>> >> > I was surprised to see that someone was using this driver in 2015, so
+>> >> > I'm not sure anymore what to do. Of course we could still just remove
+>> >> > it and later revert if someone steps up and claims the driver is still
+>> >> > usable. Hmm. Does anyone any users of this driver?
+>> >> 
+>> >> What about moving the driver over into staging, which is generally the
+>> >> way I understood to move a driver slowly out of the kernel?
+>> >
+>> > Please don't remove random drivers.
+>> 
+>> We don't want to waste time on obsolete drivers and instead prefer to
+>> use our time on more productive tasks. For us wireless maintainers it's
+>> really hard to know if old drivers are still in use or if they are just
+>> broken.
+>> 
+>> > I still have the Aironet PCMCIA card and can test the driver.
+>> 
+>> Great. Do you know if the airo driver still works with recent kernels?
+>
+> Yes, it does.
+
+Nice, I'm very surprised that so old and unmaintained driver still
+works. Thanks for testing.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
