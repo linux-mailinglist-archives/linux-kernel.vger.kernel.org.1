@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E315256279
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 23:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB1925627D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 23:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgH1Vct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 17:32:49 -0400
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:60590 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726594AbgH1Vcr (ORCPT
+        id S1726584AbgH1VeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 17:34:25 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:32958 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgH1VeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 17:32:47 -0400
-Received: from [188.210.212.0] (helo=localhost.localdomain)
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1kBlzE-0001C9-N6; Fri, 28 Aug 2020 22:32:40 +0100
-From:   Thomas Preston <thomas.preston@codethink.co.uk>
-To:     linus.walleij@linaro.org, sre@kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, jan.kundrat@cesnet.cz,
-        preid@electromag.com.au
-Cc:     thomas.preston@codethink.co.uk
-Subject: [PATCH v2 2/2] pinctrl: mcp23s08: Fix mcp23x17 precious range
-Date:   Fri, 28 Aug 2020 22:32:26 +0100
-Message-Id: <20200828213226.1734264-3-thomas.preston@codethink.co.uk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200828213226.1734264-1-thomas.preston@codethink.co.uk>
-References: <20200828213226.1734264-1-thomas.preston@codethink.co.uk>
+        Fri, 28 Aug 2020 17:34:21 -0400
+Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id CF3E37A0188;
+        Fri, 28 Aug 2020 23:34:18 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding style issues
+Date:   Fri, 28 Aug 2020 23:34:15 +0200
+User-Agent: KMail/1.9.10
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Reed <breed@users.sourceforge.net>,
+        Javier Achirica <achirica@users.sourceforge.net>,
+        Jean Tourrilhes <jt@hpl.hp.com>,
+        "Fabrice Bellet" <fabrice@bellet.info>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+References: <20200814113933.1903438-1-lee.jones@linaro.org> <202008272223.57461.linux@zary.sk> <87lfhz9mdi.fsf@codeaurora.org>
+In-Reply-To: <87lfhz9mdi.fsf@codeaurora.org>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202008282334.15902.linux@zary.sk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On page 23 of the datasheet [0] it says "The register remains unchanged
-until the interrupt is cleared via a read of INTCAP or GPIO." Include
-INTCAPA and INTCAPB registers in precious range, so that they aren't
-accidentally cleared when we read via debugfs.
+On Friday 28 August 2020 10:59:37 Kalle Valo wrote:
+> Ondrej Zary <linux@zary.sk> writes:
+> 
+> > On Thursday 27 August 2020 09:49:12 Kalle Valo wrote:
+> >> Ondrej Zary <linux@zary.sk> writes:
+> >> 
+> >> > On Monday 17 August 2020 20:27:06 Jesse Brandeburg wrote:
+> >> >> On Mon, 17 Aug 2020 16:27:01 +0300
+> >> >> Kalle Valo <kvalo@codeaurora.org> wrote:
+> >> >> 
+> >> >> > I was surprised to see that someone was using this driver in 2015, so
+> >> >> > I'm not sure anymore what to do. Of course we could still just remove
+> >> >> > it and later revert if someone steps up and claims the driver is still
+> >> >> > usable. Hmm. Does anyone any users of this driver?
+> >> >> 
+> >> >> What about moving the driver over into staging, which is generally the
+> >> >> way I understood to move a driver slowly out of the kernel?
+> >> >
+> >> > Please don't remove random drivers.
+> >> 
+> >> We don't want to waste time on obsolete drivers and instead prefer to
+> >> use our time on more productive tasks. For us wireless maintainers it's
+> >> really hard to know if old drivers are still in use or if they are just
+> >> broken.
+> >> 
+> >> > I still have the Aironet PCMCIA card and can test the driver.
+> >> 
+> >> Great. Do you know if the airo driver still works with recent kernels?
+> >
+> > Yes, it does.
+> 
+> Nice, I'm very surprised that so old and unmaintained driver still
+> works. Thanks for testing.
 
-[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
+Thanks to great work of all kernel maintainers most of the old drivers still work so Linux users aren't forced to throw away hardware just because it stopped working after a software update.
 
-Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
-Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
----
- drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 87cde8fb08dd9..7edb067f5e76a 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -109,7 +109,7 @@ static const struct regmap_access_table mcp23x17_volatile_table = {
- };
- 
- static const struct regmap_range mcp23x17_precious_range = {
--	.range_min = MCP_GPIO << 1,
-+	.range_min = MCP_INTCAP << 1,
- 	.range_max = MCP_GPIO << 1,
- };
- 
 -- 
-2.26.2
-
+Ondrej Zary
