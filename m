@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFBA255C0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E5B255C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgH1ONS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:13:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:20238 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgH1ONP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:13:15 -0400
-IronPort-SDR: n3b2WS4BrVof+fy4+0WE6rB1L80F6lGjb8GZ5oHqhUMY2eBvzQrl38HEfox7s8PIRAUb+PqOyQ
- 0Xemhzjs/UMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="154082410"
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="154082410"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 07:13:14 -0700
-IronPort-SDR: VeRSSMCHykQpfxo/L3BXcxPdq9kBqY73nr0AMvWIFwS6X8HMgyYhIC4N1XQGokcnFivLgrm0rh
- /4IYuP855YtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="403763094"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 28 Aug 2020 07:13:11 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 28 Aug 2020 17:13:11 +0300
-Date:   Fri, 28 Aug 2020 17:13:11 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/14] usb: typec: tcpm: Implement enabling Auto
- Discharge disconnect support
-Message-ID: <20200828141311.GJ174928@kuha.fi.intel.com>
-References: <20200825042210.300632-1-badhri@google.com>
- <20200825042210.300632-13-badhri@google.com>
+        id S1727041AbgH1OPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgH1OOU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:14:20 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C349EC061264;
+        Fri, 28 Aug 2020 07:14:15 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k15so1439191wrn.10;
+        Fri, 28 Aug 2020 07:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zlt5UNWrrUfldyXAKmHrnUn5NEQ0elR0Vt5Pg2JGln8=;
+        b=kzMp7c0AdIAC5mQQZmdYUf6jblzE71CtRJtKTuuwgWIb97aI25qdH9h6CFAj2ozClI
+         kjKQ6UKCCcb8VPdBlIBMY4/ApJyKLLvWA0NJxy9gezTKJbO2LmDk5KeUyewNj/LJRhNK
+         t0UJSE7FHDYdEl3yfav4iDej5uzWCL+sgLYXkpMHzf1djcwbwUWRxNxg0y7vTf1X799O
+         GniYDvB0XjXTT8+FcL+qdX1fXmAGpXUU7uGyqhtdCOaEP0KFCukHlLRXU/VfbednUJJm
+         6Ys3pFJXgkq9s8R+7YlfVjIoI1FY3XKcI+jkRrQJzNSm6WItLcCORz7p46G9mqmznhc6
+         lw5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zlt5UNWrrUfldyXAKmHrnUn5NEQ0elR0Vt5Pg2JGln8=;
+        b=EyqECl71bDPoWOoMY4SnddUSHAfh258qSU1Sbf2oJhsBuSLvl7Ze8SornnstLoSZTH
+         M0w2z+fJoIsmYwhWpIQgFPIhblqGQzz+pE4yc/tnpv6ITpmvylPwzEYV4CY21SlhYT9E
+         ruOTdx9bjMVMfHkOYIf6AIt4nLAkjgC0Hlk3WfsAQ9QYfqPlAk3/TIe5fkVBnIPCSAgE
+         hrSRw9q3ONELf/IXii0z/KO1pAtCnLrICZTY/8FlZL7JaqPXUcyJGsoPFuG0ZfS/Btkz
+         i4e3H1fnACSKtWYRYPjLL734yGMpHV5lQPuy+Y5MfQ+6wgR2bPTWD7qke6rq3LPhw0Hm
+         pGUg==
+X-Gm-Message-State: AOAM533AYKuvPTl3NlIYfN6RfthIznagvb0UGsCuJfGCQ6zrfF59zJmH
+        WFoct0efkPNutA0L8J//Pzg=
+X-Google-Smtp-Source: ABdhPJxZMGdWa6syImFZ1Rpg1i8h5r50MIv9UEemFtniL2GpHk/rKW5vb9dDjGmujLjKTbhrW1KHxg==
+X-Received: by 2002:a5d:544a:: with SMTP id w10mr1728874wrv.317.1598624054401;
+        Fri, 28 Aug 2020 07:14:14 -0700 (PDT)
+Received: from alinde.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id t4sm2248235wre.30.2020.08.28.07.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Aug 2020 07:14:13 -0700 (PDT)
+From:   albert.linde@gmail.com
+X-Google-Original-From: alinde@google.com
+To:     akpm@linux-foundation.org, bp@alien8.de, mingo@redhat.com,
+        corbet@lwn.net, tglx@linutronix.de, arnd@arndb.de
+Cc:     akinobu.mita@gmail.com, hpa@zytor.com, viro@zeniv.linux.org.uk,
+        glider@google.com, andreyknvl@google.com, dvyukov@google.com,
+        elver@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        x86@kernel.org, albert.linde@gmail.com,
+        Albert van der Linde <alinde@google.com>
+Subject: [PATCH v2 0/3] add fault injection to user memory access
+Date:   Fri, 28 Aug 2020 14:13:41 +0000
+Message-Id: <20200828141344.2277088-1-alinde@google.com>
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825042210.300632-13-badhri@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 09:22:08PM -0700, Badhri Jagan Sridharan wrote:
-> TCPCI spec allows TCPC hardware to autonomously discharge the vbus
-> capacitance upon disconnect. The expectation is that the TCPM enables
-> AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
-> then automously discharges vbus when the vbus falls below a certain
-> threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
-> 
-> Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
-> is also used a flag to move TCPCI based TCPC implementations into
-> Attached.Snk/Attached.Src state as mentioned in
-> Figure 4-15. TCPC State Diagram before a Connection of the
-> USB Type-C Port Controller Interface Specification.
-> In such TCPC implementations, setting AutoDischargeDisconnect would
-> prevent TCPC into entering "Connection_Invalid" state as well.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> Change-Id: I09c407eb228d69eb1259008eeb14c429b0fda765
+From: Albert van der Linde <alinde@google.com>
 
-It looks like this patch is also formated a bit differently compared
-to the others.
+The goal of this series is to improve testing of fault-tolerance in
+usages of user memory access functions, by adding support for fault
+injection.
 
-thanks,
+The first patch adds failure injection capability for usercopy
+functions. The second changes usercopy functions to use this new failure
+capability (copy_from_user, ...). The third patch adds
+get/put/clear_user failures to x86.
+
+Changes in v2:
+ - simplified overall failure capability by either failing or not, without
+   having functions fail partially by copying/clearing only some bytes
+
+Albert van der Linde (3):
+  lib, include/linux: add usercopy failure capability
+  lib, uaccess: add failure injection to usercopy functions
+  x86: add failure injection to get/put/clear_user
+
+ .../admin-guide/kernel-parameters.txt         |  1 +
+ .../fault-injection/fault-injection.rst       |  7 +-
+ arch/x86/include/asm/uaccess.h                | 68 +++++++++++--------
+ arch/x86/lib/usercopy_64.c                    |  3 +
+ include/linux/fault-inject-usercopy.h         | 22 ++++++
+ include/linux/uaccess.h                       | 11 ++-
+ lib/Kconfig.debug                             |  7 ++
+ lib/Makefile                                  |  1 +
+ lib/fault-inject-usercopy.c                   | 39 +++++++++++
+ lib/iov_iter.c                                |  5 ++
+ lib/strncpy_from_user.c                       |  3 +
+ lib/usercopy.c                                |  5 +-
+ 12 files changed, 140 insertions(+), 32 deletions(-)
+ create mode 100644 include/linux/fault-inject-usercopy.h
+ create mode 100644 lib/fault-inject-usercopy.c
 
 -- 
-heikki
+2.28.0.402.g5ffc5be6b7-goog
+
