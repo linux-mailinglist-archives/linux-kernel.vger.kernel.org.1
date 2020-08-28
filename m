@@ -2,131 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404C3255401
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 07:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B777C255405
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 07:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgH1FWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 01:22:13 -0400
-Received: from mout.gmx.net ([212.227.15.18]:47533 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgH1FWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 01:22:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1598592112;
-        bh=WD3AJvfzF9oAQ+hbHrZsou5r5C78WR8jKTk/O/wDxkc=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=bhCGu83IIKmtmmNDUf2qiJ8fQ+syL2IrcoYwvcwZYbZNoiu7CzhFqkLrnr3WvF6qI
-         RmKuT8w0Vi2ZTeqhHvQfMole1GlGC2xHpuuqZBn+VFJs0mktANxVDxjVpz1x+gKubS
-         DZgWaey4t7a9ZbQt18hh3rUNEfykbUocbTPsDJic=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([185.53.41.233]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mwwdl-1kW4vD0uKZ-00yTBG; Fri, 28
- Aug 2020 07:21:52 +0200
-Date:   Fri, 28 Aug 2020 07:21:46 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAAOTY_9R24-tcAMSfDhxLEXDFPAbMd5fYm8EwGODDMpULq-UZA@mail.gmail.com>
-References: <20200819081752.4805-1-linux@fw-web.de> <20200819081752.4805-4-linux@fw-web.de> <trinity-14a1b182-38ab-4f84-bb72-94d448b05fd5-1597994235320@3c-app-gmx-bs37> <81276d4c-8883-8bfd-d7d0-9b9ac025ed97@gmail.com> <trinity-ddd51146-41eb-49ae-9456-4588450d31aa-1598535710011@3c-app-gmx-bap26> <e0edfd9f-5916-80ee-3bef-92d7050f97db@gmail.com> <CAAOTY_9R24-tcAMSfDhxLEXDFPAbMd5fYm8EwGODDMpULq-UZA@mail.gmail.com>
+        id S1726881AbgH1FYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 01:24:21 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53915 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725849AbgH1FYV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 01:24:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U7448ER_1598592253;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7448ER_1598592253)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 28 Aug 2020 13:24:14 +0800
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+ <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
+ <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
+ <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <327a1bb4-b64d-65b8-e18f-db33e03ca9ed@linux.alibaba.com>
+Date:   Fri, 28 Aug 2020 13:22:28 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: Aw: Re: [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
-Reply-to: frank-w@public-files.de
-To:     linux-mediatek@lists.infradead.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     chunkuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <B3A0E53D-ADC0-4D67-B9C2-70009DDD5D36@public-files.de>
-X-Provags-ID: V03:K1:7PW5OPifrURLSHF7MjbrcWo5/B8RnBtD0szhETXVFhtYaU1kflx
- 8RahuKcyckTIREd1Fujksg+Qo9pSqdK75DMSepPIN5mlJqSxvoSRfvem2ypHN5VizKwVrZw
- Z/6Of3tVfXrI1Nj4Ts4XF2VzbDbe9fIkdJWfnCCweJe0FLWrzWP1Pl4e8bCca9DBES1LOZl
- mp6yVVTPMo0VfSfa560xw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QBOEfSUFWXw=:RAuERleBgbJ+4wBWJIU4j5
- qcxsB6bPgpyUh3OQLvDAXj/+9fyNvY003SbBu64EJT2wl6Fe9hK3cpU0Rmg1rXnRbQbvY4EVz
- 9u3+zEIIdouB8Sx6PGGlylWAkm/c5thKzxtG14yMQjkRToDqd9O1ziiLPcdzwtyUXDeXdEVX8
- F5U28qUIO7Fp6rBFIIZFyWdy6NVDHLGE5ac0GDc7ox33UCWyu7fj2HM1vIqsOIMfEWkZOxLpX
- yMkmqZut/9jpNOSZJq0IfJ1OGqFGXyv4y+QCqgO5uq63BFjUCi6f+zVlmGr6Ue4GciHr8z9au
- OrAwLLIRmJlvlyBlV2rBq1yOzGrdyJtCpHyS1bq9fqdDEnwiulNVNqUeziK5nRsDyjDtEdHqe
- tPcHkmfaocY0pp9Lo2X+1gfT1ZdwYHIeDJD9y1pNZyfrNymU8S//hhSa+PaKN9iRCK6ONNOin
- yASBTGWLG8j1f1HWRkfVTGeGyPB38ElZRxxVQ0ppu5HYcHSIpvm0wYO4z5Hc7QVP1UCXNg89W
- fMTShvEG9yvhps6WZGyHG52BpnXJ9O2SrmrCIy1+1uM8vymn3uD8ZxR5/lYGdrxLho4/dgTt3
- 1070daybhPTjV0xwiWRfewsCnFUNC79IhyvvspBO+iBRRjFGGoN+eaOQ+0eILURRYwPIQPdhN
- wSp8FYPxSbUtVv3Vo3VvTSSn/y1Ba/Xr4sS3WPa3eYvJA3rdN83llebo19mEpYt2ZvT1yK3Us
- FtafbmGMF7ntFR/2/qxyDEQDGCkXbsYVpkzvwN0ykhbNjIP0C90Ol78b2rH125uRLK2sWfUjx
- JaH3mV3rYiA0YDO5RatiQnSuSO1y4qQiHOrXWzvwBr/6Hq+Uvxg/SxyVN5nxxhl2EuXeCVeOP
- hBptGE++PkS6hcv46bBuDOl1wDTkAbphH6BbJap9IxqjAOFqw+nYD3KHItf9kyHwhbNxR1NBd
- qT2EEWWtVATO8TRlvaU6qw2r3Ag6H8R+JhuJJXdKd5hkk4epnSxPdVDz9Tr4iOqx2x2Y9ZY9j
- OQe5xijS0g5Q9UQL86D78rmAUCXgRTeHJbuyNeP0UFrpJ62lBs/8sWU899JX62xyFJWMus/Wd
- aVz5hMKReYPr2aBZ27qB13nyRo5+JugLgBGIyoswYxQ2rVC5iNEW77poNbuGnn9bQCnIozChg
- 1go5OIwy2mKBdYLtBWXjfMrajv76V9JvBznUsAbjTkZdH99aizmzz1Lsw5tkg+JlES65SCvXg
- +JxmknOM2vQzOj4Gxbe4zOjKCHcC+aDA/LuJJiw==
+In-Reply-To: <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without this patch i have flickering/horizontal distortion (looks line ever=
-y second line has different x position as one above approx=2E 5 px) on my 1=
-280x1024 tft=2E
 
-Fbcon is unreadable with this problem=2E
+ÔÚ 2020/8/28 ÉÏÎç9:40, Daniel Jordan Ð´µÀ:
+> I went back to your v1 post to see what motivated you originally, and you had
+> some results from aim9 but nothing about where this reared its head in the
+> first place.  How did you discover the bottleneck?  I'm just curious about how
+> lru_lock hurts in practice.
 
-Hard to describe by words only :(
+We have gotten very high 'sys' in some buiness/machines. And found much of time spent
+on the lru_lock and/or zone lock. Seems per memcg lru_lock could help this, but still
+no idea on zone lock.
 
-Am 28=2E August 2020 01:46:07 MESZ schrieb Chun-Kuang Hu <chunkuang=2Ehu@k=
-ernel=2Eorg>:
->Hi, Frank:
->
->Matthias Brugger <matthias=2Ebgg@gmail=2Ecom> =E6=96=BC 2020=E5=B9=B48=E6=
-=9C=8827=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8810:28=E5=AF=AB=E9=81=
-=93=EF=BC=9A
->>
->>
->>
->> On 27/08/2020 15:41, Frank Wunderlich wrote:
->> > Hi Matthias,
->> >
->> > any opinions about the dts-changes?
->> >
->>
->> they look good to me=2E
->>
->> > maybe series except the tmds-Patch get merged=2E=2E=2Eso i add it onl=
-y to
->my own repo till we find a better way?
->> > currently mainline does not support hdmi at all for the board=2E the
->tmds-patch is only a fix for specific resolutions which have a
->"flickering" without this Patch=2E
->> >
->>
->> Well let's see what CK's opinion=2E
->>
->
->Because no one has comment on this patch, I could apply this patch but
->I need you to add more experiment information so if someone meets
->another bug, he could fix his bug and consider your problem=2E
->
->Regards,
->Chun-Kuang=2E
->
->> Regards,
->> Matthias
->
->_______________________________________________
->Linux-mediatek mailing list
->Linux-mediatek@lists=2Einfradead=2Eorg
->http://lists=2Einfradead=2Eorg/mailman/listinfo/linux-mediatek
-
-regards Frank
+Thanks
+Alex
