@@ -2,79 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A27D256190
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251D02561A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgH1Txa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:53:30 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38592 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgH1Twr (ORCPT
+        id S1727993AbgH1Tzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgH1Tze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:52:47 -0400
-Received: by mail-oi1-f196.google.com with SMTP id j18so1692769oig.5;
-        Fri, 28 Aug 2020 12:52:46 -0700 (PDT)
+        Fri, 28 Aug 2020 15:55:34 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F40C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:55:34 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id j10so196086qvk.11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=o36Cmr3OXJRZce0uBQNiBVYMiMoOxeo0YMfigbFdEdo=;
+        b=ACBUpLaE0lbdBO+MnjckyQnvzPNXul4bx+ZnJUyXquia/RquuXx0k/zhf/enUJ9TuF
+         /qY8kAJksifVdcveboVRaQ4bB7cU87H+Z8fMOGqqjysDKn0UaiCYo360+ukJwBLiCtry
+         E2TgQxvtgRbAMMzCPiPHE4zJai2+Nlh843HqcrSsNx8Ao1xdvq+HNzjlCQX1zS1QC/Rn
+         fjIzUGGOXUWcDimqJVTUjYprlc91fINI5S4FQV7InogjGk4wJoDFz6Sb8uOH1fExbUFQ
+         lgBXeQl+QPS3LeY9RajrKzrVOrtdJ5/Fi6EVn0CHAePp0We7MaqJzcfYJnlJi68l1Zs0
+         PDog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=IIC+v+rMB2R/Q/pneIzZqnD45x7WKCthyoc0N8lU/3M=;
-        b=m6LyseE/eJyky1ZLmUYW2eR4nFduyugE6r7IUG8BDifu+UGSkeuamCKrO1mTjc2ikV
-         2Te5KIKGNUB6cq64cUSWKrY1Zg5YyAINusKuvHiEIEp2CulHz7H5gbVSlwEW0546baXy
-         DO6M0XnIHqgag/Kf/CE77GDfu9rW7sL/SwIPfmy4hm433DQVSGuikho/uslUITLUrX8M
-         2zhQw79p24Iz3UUbQzB78XBLQRLDJqNX6e5ODk4easwo51hPUxXpNIv4iTo/fgulkavs
-         6mImFEckLN49AgKQzXbA/oh9B2sgAJkpiB2MR+KJXywwjWeAt/6aS80Xnl1ZUnWLNVBo
-         n9bg==
-X-Gm-Message-State: AOAM533s5tPhPb/qxjHMB51NkBZZYxFVUT0HFqoAjc7wN2E90sV4kE/v
-        cEOjcdUY0WtlvXMHeJgzNODlB6NuQHhOgcZcZ9rfUFBAV5s=
-X-Google-Smtp-Source: ABdhPJyzrF39Y3pm33iU7zZ+oZcAdet36fVvj4TQXxORXmfxOOcbYTO7FRc7wDn+NySVj04B7xEMPU4UW2AT4v+55iU=
-X-Received: by 2002:a54:4f14:: with SMTP id e20mr429629oiy.103.1598644366315;
- Fri, 28 Aug 2020 12:52:46 -0700 (PDT)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 28 Aug 2020 21:52:35 +0200
-Message-ID: <CAJZ5v0jWBqqU_-w5yn9iGaJZT6wFnaqNHUvE9e6TRKZhxyxFkg@mail.gmail.com>
-Subject: [GIT PULL] Device properties framework fix for v5.9-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=o36Cmr3OXJRZce0uBQNiBVYMiMoOxeo0YMfigbFdEdo=;
+        b=AykxKih54NHrbdjhDFWtkMue6iciagxgSJ8qtoKilH+OdktNf+ZEfkjeG5jv9lxt2w
+         JkoQWBsRzAdWNVBFIIsXmzDl90caWEcbbKJNecJ5aTKSdpFhMo96wGJBc4ZZ/5KXbwZJ
+         5o8LLvqNMisJGATuW4DYzUkEe3TQspO1uYPVmQ8JU1ONNEFCDcDhPO7t0Sh8k7vzWJd7
+         DY7rjl+Mf+MXTGAVUVF0gpHbej3yPMgZkNg+fL9SldTCiUTsEP5lj6h/2piSBB9OE1el
+         46j0Ty/Wqf/p41TJNYknhV+CUgahQ7Trx9O8+N3hMHcLzXvq0812IeZliUHnhD5P8qsr
+         JKcQ==
+X-Gm-Message-State: AOAM532PANLVo8wFr4f8HhK+EaDH5NNXUt4sPq+yPzSSf7kCy8W32k8C
+        d5bLimovWqaqVPZOMDmA0nE=
+X-Google-Smtp-Source: ABdhPJy+1wXwwXL37YnXQ0Wc+ya5tWXF5b4c/zouuVbAKyu5qc5wQZhg+IWmw+TtRRA9WBAGHB/F8g==
+X-Received: by 2002:a05:6214:954:: with SMTP id dn20mr199304qvb.122.1598644533555;
+        Fri, 28 Aug 2020 12:55:33 -0700 (PDT)
+Received: from LeoBras ([2804:14d:8084:8e41:9b0d:571e:a65:b5d8])
+        by smtp.gmail.com with ESMTPSA id z10sm150980qtb.17.2020.08.28.12.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Aug 2020 12:55:32 -0700 (PDT)
+Message-ID: <93037398c7afaabc0411890998f3f29f741c8aff.camel@gmail.com>
+Subject: Re: [PATCH v1 01/10] powerpc/pseries/iommu: Replace hard-coded page
+ shift
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joel Stanley <joel@jms.id.au>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>,
+        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
+        David Dai <zdai@linux.vnet.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Fri, 28 Aug 2020 16:55:25 -0300
+In-Reply-To: <1e77a3d9-dff9-f58b-45be-77be7cbea41a@ozlabs.ru>
+References: <20200817234033.442511-1-leobras.c@gmail.com>
+         <20200817234033.442511-2-leobras.c@gmail.com>
+         <6232948f-033d-8322-e656-544f12c5f784@ozlabs.ru>
+         <31e913d842693b6e107cb2b8e51fd45118b1bd2c.camel@gmail.com>
+         <1e77a3d9-dff9-f58b-45be-77be7cbea41a@ozlabs.ru>
+Organization: IBM
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 2020-08-28 at 12:27 +1000, Alexey Kardashevskiy wrote:
+> 
+> On 28/08/2020 01:32, Leonardo Bras wrote:
+> > Hello Alexey, thank you for this feedback!
+> > 
+> > On Sat, 2020-08-22 at 19:33 +1000, Alexey Kardashevskiy wrote:
+> > > > +#define TCE_RPN_BITS		52		/* Bits 0-51 represent RPN on TCE */
+> > > 
+> > > Ditch this one and use MAX_PHYSMEM_BITS instead? I am pretty sure this
+> > > is the actual limit.
+> > 
+> > I understand this MAX_PHYSMEM_BITS(51) comes from the maximum physical memory addressable in the machine. IIUC, it means we can access physical address up to (1ul << MAX_PHYSMEM_BITS). 
+> > 
+> > This 52 comes from PAPR "Table 9. TCE Definition" which defines bits
+> > 0-51 as the RPN. By looking at code, I understand that it means we may input any address < (1ul << 52) to TCE.
+> > 
+> > In practice, MAX_PHYSMEM_BITS should be enough as of today, because I suppose we can't ever pass a physical page address over 
+> > (1ul << 51), and TCE accepts up to (1ul << 52).
+> > But if we ever increase MAX_PHYSMEM_BITS, it doesn't necessarily means that TCE_RPN_BITS will also be increased, so I think they are independent values. 
+> > 
+> > Does it make sense? Please let me know if I am missing something.
+> 
+> The underlying hardware is PHB3/4 about which the IODA2 Version 2.4
+> 6Apr2012.pdf spec says:
+> 
+> "The number of most significant RPN bits implemented in the TCE is
+> dependent on the max size of System Memory to be supported by the platform".
+> 
+> IODA3 is the same on this matter.
+> 
+> This is MAX_PHYSMEM_BITS and PHB itself does not have any other limits
+> on top of that. So the only real limit comes from MAX_PHYSMEM_BITS and
+> where TCE_RPN_BITS comes from exactly - I have no idea.
 
-Please pull from the tag
+Well, I created this TCE_RPN_BITS = 52 because the previous mask was a
+hardcoded 40-bit mask (0xfffffffffful), for hard-coded 12-bit (4k)
+pagesize, and on PAPR+/LoPAR also defines TCE as having bits 0-51
+described as RPN, as described before.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- devprop-5.9-rc3
+IODA3 Revision 3.0_prd1 (OpenPowerFoundation), Figure 3.4 and 3.5.
+shows system memory mapping into a TCE, and the TCE also has bits 0-51
+for the RPN (52 bits). "Table 3.6. TCE Definition" also shows it.
 
-with top-most commit c15e1bdda4365a5f17cdadf22bf1c1df13884a9e
+In fact, by the looks of those figures, the RPN_MASK should always be a
+52-bit mask, and RPN = (page >> tceshift) & RPN_MASK.
 
- device property: Fix the secondary firmware node handling in
-set_primary_fwnode()
+Maybe that's it?
 
-on top of commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+> 
+> 
+> > > 
+> > > > +#define TCE_RPN_MASK(ps)	((1ul << (TCE_RPN_BITS - (ps))) - 1)
+> > > >  #define TCE_VALID		0x800		/* TCE valid */
+> > > >  #define TCE_ALLIO		0x400		/* TCE valid for all lpars */
+> > > >  #define TCE_PCI_WRITE		0x2		/* write from PCI allowed */
+> > > > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> > > > index e4198700ed1a..8fe23b7dff3a 100644
+> > > > --- a/arch/powerpc/platforms/pseries/iommu.c
+> > > > +++ b/arch/powerpc/platforms/pseries/iommu.c
+> > > > @@ -107,6 +107,9 @@ static int tce_build_pSeries(struct iommu_table *tbl, long index,
+> > > >  	u64 proto_tce;
+> > > >  	__be64 *tcep;
+> > > >  	u64 rpn;
+> > > > +	const unsigned long tceshift = tbl->it_page_shift;
+> > > > +	const unsigned long pagesize = IOMMU_PAGE_SIZE(tbl);
+> > > > +	const u64 rpn_mask = TCE_RPN_MASK(tceshift);
+> > > 
+> > > Using IOMMU_PAGE_SIZE macro for the page size and not using
+> > > IOMMU_PAGE_MASK for the mask - this incosistency makes my small brain
+> > > explode :) I understand the history but maaaaan... Oh well, ok.
+> > > 
+> > 
+> > Yeah, it feels kind of weird after two IOMMU related consts. :)
+> > But sure IOMMU_PAGE_MASK() would not be useful here :)
+> > 
+> > And this kind of let me thinking:
+> > > > +		rpn = __pa(uaddr) >> tceshift;
+> > > > +		*tcep = cpu_to_be64(proto_tce | (rpn & rpn_mask) << tceshift);
+> > Why not:
+> > 	rpn_mask =  TCE_RPN_MASK(tceshift) << tceshift;
+> 
+> A mask for a page number (but not the address!) hurts my brain, masks
+> are good against addresses but numbers should already have all bits
+> adjusted imho, may be it is just me :-/
+> 
+> 
+> > 	
+> > 	rpn = __pa(uaddr) & rpn_mask;
+> > 	*tcep = cpu_to_be64(proto_tce | rpn)
+> > 
+> > I am usually afraid of changing stuff like this, but I think it's safe.
+> > 
+> > > Good, otherwise. Thanks,
+> > 
+> > Thank you for reviewing!
+> >  
+> > 
+> > 
 
- Linux 5.9-rc1
-
-to receive device properties framework fix for 5.9-rc1.
-
-This prevents the promotion of the secondary firmware node of a
-device to the primary one from leaking a pointer (Heikki Krogerus).
-
-Thanks!
-
-
----------------
-
-Heikki Krogerus (1):
-      device property: Fix the secondary firmware node handling in
-set_primary_fwnode()
-
----------------
-
- drivers/base/core.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
