@@ -2,53 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDE4256204
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A9A256241
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgH1U3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:29:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43858 "EHLO mail.kernel.org"
+        id S1726771AbgH1Ux4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:53:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:11098 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgH1U3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:29:12 -0400
-Subject: Re: [GIT PULL] ACPI fixes for v5.9-rc3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598646552;
-        bh=oobALYKizrnp4yGCZqf8dPuqBEmv6/w8VufHaQsCFXQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=E/qBHg2uEhfv0osfYlRAQGfVhChpxNKINvQVhdH12Wd05lWMN6NBlc/zL6QkVtzkO
-         FFRQoslGTUGtO2VJWK4Iw7znWn+J3MBNW+gzXhMuWazam/+L+Qdkm3Gg2ODG5fmHLn
-         qxjl9aE9lKltJWGZ1OB0R/zx+txuDst6JFtRO87I=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0hZPb+qOAZFd1vknZ4S0ay=WpJSQECML88fsRGQOWoQSQ@mail.gmail.com>
-References: <CAJZ5v0hZPb+qOAZFd1vknZ4S0ay=WpJSQECML88fsRGQOWoQSQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0hZPb+qOAZFd1vknZ4S0ay=WpJSQECML88fsRGQOWoQSQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.9-rc3
-X-PR-Tracked-Commit-Id: 4f31d53c21ec98a2c8973cff759804bd1c217c93
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0b2f18e7aeef86f966bbfccec8d698e05ccc4631
-Message-Id: <159864655213.14109.1487829125294451597.pr-tracker-bot@kernel.org>
-Date:   Fri, 28 Aug 2020 20:29:12 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1725979AbgH1Uxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 16:53:54 -0400
+IronPort-SDR: wSvcNr0FwoSG2zCc7unEEvrJ3qZGByctjsLP3yQR96fc4QjW+nV4axF25hW8gT+hpp2idiBiCq
+ Es3z1Q02n43A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="144423368"
+X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; 
+   d="scan'208";a="144423368"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 13:53:54 -0700
+IronPort-SDR: /OCPrcZkRiHahOLjQ8MnMDVN9cT2EI/iOS5XT0iMuitLHFQIcMIfg4Ju0VrihGCnZq0S65Jl+S
+ pW8RKe4vlt2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; 
+   d="scan'208";a="330060605"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 28 Aug 2020 13:53:54 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 096E3301C54; Fri, 28 Aug 2020 13:30:34 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 13:30:33 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/hugetlb: Fix a race between hugetlb sysctl handlers
+Message-ID: <20200828203033.GT1509399@tassilo.jf.intel.com>
+References: <20200828031146.43035-1-songmuchun@bytedance.com>
+ <20200828145950.GS1509399@tassilo.jf.intel.com>
+ <fee0c3a6-af68-5971-1959-a66d41ea16a3@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fee0c3a6-af68-5971-1959-a66d41ea16a3@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 28 Aug 2020 21:51:11 +0200:
+On Fri, Aug 28, 2020 at 10:14:16AM -0700, Mike Kravetz wrote:
+> On 8/28/20 7:59 AM, Andi Kleen wrote:
+> >> Fixes: e5ff215941d5 ("hugetlb: multiple hstates for multiple page sizes")
+> > 
+> > I believe the Fixes line is still not correct. The original patch
+> > didn't have that problem. Please identify which patch added
+> > the problematic code.
+> 
+> Hi Andi,
+> 
+> I agree with Muchun's assessment that the issue was caused by e5ff215941d5.
+> Why?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.9-rc3
+Yes when checking the code again I agree. It was introduced with that
+patch. Patches look ok to me now.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0b2f18e7aeef86f966bbfccec8d698e05ccc4631
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+-Andi
