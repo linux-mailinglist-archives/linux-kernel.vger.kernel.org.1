@@ -2,242 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5022554B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60922554E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgH1Gxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 02:53:37 -0400
-Received: from mail-vi1eur05on2046.outbound.protection.outlook.com ([40.107.21.46]:35264
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725969AbgH1Gxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 02:53:34 -0400
+        id S1727059AbgH1HLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:11:14 -0400
+Received: from mx0b-00328301.pphosted.com ([148.163.141.47]:33768 "EHLO
+        mx0b-00328301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725858AbgH1HLM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 03:11:12 -0400
+X-Greylist: delayed 2064 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 Aug 2020 03:11:10 EDT
+Received: from pps.filterd (m0156136.ppops.net [127.0.0.1])
+        by mx0b-00328301.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 07S6STNB000878;
+        Thu, 27 Aug 2020 23:36:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=invensense.com; h=from : to :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt1;
+ bh=s3oNc/aroHRT0LGnJ6MatEAtknT0o3rAkQWAPHki2hM=;
+ b=ag/+CjI3qGXmaV3HPJkJSZ1MgRj3K6OLzEu0bnelboHntV7rhcnpMf5sQRA5gVSZxJHt
+ Xs3C0MF33IxQ76/ZxMB3XOd26t87Ct29gFOG/z4Da8JGMgVTg2qITwsuU+chThF43V/t
+ pr9YU5jQE2U3+hZw2YBXy6h/9yYEciPnF2X6seaEQ4iyYK/pKXChgq0s8D93SquLjYcX
+ rn+/McX7PUA+cHvxfwUfcFph7n+C4wJTxdZezQ9yTCNBZ5Bewbf6RNXbupdZJ18kmzkf
+ ARTtsgxaWcklDgEFOmODjd0YckVNbIYajXwuARwnTcnX+WQdb769SbAubnnflExxvqLK pw== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
+        by mx0b-00328301.pphosted.com with ESMTP id 33512u9c8w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Aug 2020 23:36:04 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OSHV4yZeSN8/ZXTBxIiXOYJYfxSDl7CDsqzw4FSzMcwxZgt7/VhTSv4px4PiJi5djkZvwSbQpSdhAaoxGwDGA9hbhRHIYBc+9s3zSn2CBk8uZwKk2qzKRi9WqOYcSqiAwO0486UPQfTkHes8vxw35qF6gNtu27R2AUsYpfctVBpwXkqs3DGMVZ4rYqHZXNwR1/mlB7Pyag1tiuHSijrTvpUjzUjYE7NHkudeqXRNkiFmfDCQ4w/0Odln0uaN2g5WjJysDOdZhQ2+ckIqQSnJQWj1lgOeKJlqLnrPnzAW27GgQPAqxdBo84VrXf96TA9xeMNh+YonFdyY9el170murA==
+ b=jFQG+z3S0xOfyhe+7eMLPVKVu4M5rs4w6yzdvXImpp77Bdf4SwOg5BLBoMTLOSJwTTLAHzDy51G5O4B30Me8nmOIbqd7ClCMxldKWVWUx3CfNRstjwS4wdszrGYiabdPFsQm75xYRQP8uHIjw3bVxMPnTLsv2uEBAIWUXzxtSSwxPj25L1r4wQ89BAozvEEXe37qOABtDVir0J9mSOTSHZNtqa5tMhaB3P8HbDeS5xX1B+LMD3/u4NGK1E3/RwyKIMIV1PmDOHpDhue1Bz1pOjRJW/tbmCBczCmAcwsUwYH4tfqr7RmK1khdHExhctSna7sKcYNwLaMn8uDpBkYQzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PQDZY2vJHEH6YpaVHf2PiUaIqZhmzi2j6jd83QELNbU=;
- b=CdQquqOP1YvWKtB3KGCAlQIKa2RwRBKYcNCb4qmiNgsvdDJqRr4CZmeSTtPwoMWytgrpFIyQxfnmFkSy3Nz8ZHuKZGas1RU6yDUXhH42LnL+H7a4XGrzZsK262qHRd3+7+m4/7H92eJqBYnyKSVi9R67ittCTF8X368BXkIEkgrqUq04+967VFE/zG4ncpx7LktlzSzXR2eICMrcgCiY3YJ0dnGBVmss9jG9iLQyOMShIqrDSIlEf0rKXZ3YNbZQl608N3uKG5HfvkMRSIEkxu8s90nFKvuEnOgY1tRqF5xxgTk40VrGBfTb1S3CKcnvcXDuny/wEpDnD41PjWb7Fg==
+ bh=s3oNc/aroHRT0LGnJ6MatEAtknT0o3rAkQWAPHki2hM=;
+ b=j0bAcb7akqGMd5WkMVKZwSzyIbYA6+Bnd3TEQlv0xn4TJc2CbB8ASeNdt7oxgfSJge6NVZjhcKIjmC0uzFa2ym+a/fpP5PawN/zlhXrSxpQRJqywNUvRELm3rl72jiAQYPopD+6k0jCZIZu8RsAIDNKWAViTmIwk6vwWKfT5InyABe/85PgziiAbsQ4IMpMawZbX2aol+DzJX57fRZt9O4iWtfFtQY2CBEZHwn1LDkosqhFE7QzF3jZ0CLH1goSSI4bUTJTrqlJX2pL+gjJCko/MWMNmPSamUTRD6ei3qfeiLPvwnY4QY2V554LPme9KyAP4TmkKoE59JAfhsfnHUg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=invensense.com; dmarc=pass action=none
+ header.from=invensense.com; dkim=pass header.d=invensense.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=invensense.onmicrosoft.com; s=selector2-invensense-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PQDZY2vJHEH6YpaVHf2PiUaIqZhmzi2j6jd83QELNbU=;
- b=jSNP/df+Trkz9cdrHmAyhCqiob9DcxVW5HRHvaOM8l7p57Pg07+oKftxYnw55eksM7pXv2GfuXKim5mMQdLt3QkqdnrfO40B2V2GfWBVnSB38bqBL975KwjdyFTs4QwgYqLoe6TEkWpAkQCRCDxQveORc73t68fcfqcY1ITtE6M=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR04MB3127.eurprd04.prod.outlook.com (2603:10a6:6:c::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3326.21; Fri, 28 Aug 2020 06:53:26 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3305.032; Fri, 28 Aug
- 2020 06:53:26 +0000
-From:   peng.fan@nxp.com
-To:     sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        abel.vesa@nxp.com, Anson.Huang@nxp.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] clk: imx: fix i.MX7D peripheral clk mux flags
-Date:   Fri, 28 Aug 2020 15:18:50 +0800
-Message-Id: <20200828071850.24945-1-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.28.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0001.APCP153.PROD.OUTLOOK.COM (2603:1096::11) To
- DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ bh=s3oNc/aroHRT0LGnJ6MatEAtknT0o3rAkQWAPHki2hM=;
+ b=K0OybrXNcBWDbGUZCmA7ZEf9guopG6XijiJ5mRIPAAEMpXov9Bmj5xh+p9XsSUFlXqicoZrWR5S3Xj56EWHQ6TXmYDV0qZcUPoCaSU+3EpLIBi+2M93BbG6yzIcHG85eRxPiXkXwVKVMhIXdQkezBbDPaV7V3qH7U0V4QYSPi1k=
+Received: from MN2PR12MB4390.namprd12.prod.outlook.com (2603:10b6:208:26e::21)
+ by MN2PR12MB4205.namprd12.prod.outlook.com (2603:10b6:208:198::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Fri, 28 Aug
+ 2020 06:36:03 +0000
+Received: from MN2PR12MB4390.namprd12.prod.outlook.com
+ ([fe80::88ac:4a48:bb2a:51b7]) by MN2PR12MB4390.namprd12.prod.outlook.com
+ ([fe80::88ac:4a48:bb2a:51b7%9]) with mapi id 15.20.3326.021; Fri, 28 Aug 2020
+ 06:36:02 +0000
+From:   Jean-Baptiste Maneyrol <JManeyrol@invensense.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Kukjin Kim <kgene@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Beniamin Bia <beniamin.bia@analog.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH v2 13/18] iio: imu: inv_mpu6050: Simplify with
+ dev_err_probe()
+Thread-Topic: [PATCH v2 13/18] iio: imu: inv_mpu6050: Simplify with
+ dev_err_probe()
+Thread-Index: AQHWfKhP9EoLl2DH4kG3ErVWqrVkfKlNELaV
+Date:   Fri, 28 Aug 2020 06:36:02 +0000
+Message-ID: <MN2PR12MB439074B42FE1114B62189130C4520@MN2PR12MB4390.namprd12.prod.outlook.com>
+References: <20200827192642.1725-1-krzk@kernel.org>,<20200827192642.1725-13-krzk@kernel.org>
+In-Reply-To: <20200827192642.1725-13-krzk@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=invensense.com;
+x-originating-ip: [2a01:e0a:393:a700:8116:36f6:f0c8:916f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2c529cfe-f087-4ab0-b116-08d84b1ca25a
+x-ms-traffictypediagnostic: MN2PR12MB4205:
+x-microsoft-antispam-prvs: <MN2PR12MB42054E7302A8B7C168CC4A0FC4520@MN2PR12MB4205.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JMeFDUcupaFrahFRQmZRXxmZyi0g4ecjwzKuWhGUa33/c1Vrst6MTaXM8czHRSn8f3CeODfjGJt0FdtykYgdKUnT/jumjrYrU1WAtmE4BTQkWDGS9OIecasUjU1SYJke1CrmrFKo8cn32x6ljtlECB6xZerZJKNYaQjmyxEyy4gTATSznvB9SHCJNhX8t4vjHsqJC3OG3iF66yNg/Sk8zxlUW555wVWax5bHkS0y6hTKKBz8crC1n10nOYTYXRCorckGTWb1x98HkwEQOxChhg8834YSmGWFp7aqqHHKTwTvBMcZYJkDCs+vRA7j/U/cdsnuKb+qxEF7/Pdxp8HCAHQfAFbNG3IhLZfc9ElC2X5FxW/bCDTGr4hmn6x59dB6
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39850400004)(366004)(136003)(396003)(7696005)(2906002)(33656002)(86362001)(71200400001)(52536014)(5660300002)(83380400001)(110136005)(7416002)(8936002)(64756008)(55016002)(9686003)(186003)(478600001)(8676002)(316002)(66446008)(76116006)(53546011)(66476007)(66556008)(66946007)(91956017)(6506007)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: cCZkIEut8EQUM5+mzAVAIQObSeOPcb3mmweEqv5nymqe0UopRbW5x0g+HrSfM5L3SN9gZ+Nm1rqKKw/yRINRFbDpnDgBnoLJOj3dupI2kH1hMPwCv7pFlD5lyBQ0GcMAttfwWUX0gkeET6x0kz45ffGXBq7rWZDXPdTeSd5tezYcPKuVQ1UejqFCMjuAXrBvLJY0ZygbSyWnFtk1WeGiKVOkfKtmgKnthAOKUQXutltQsF2N3PC8izTHvhzj5j05bKZX4mlEAOtFPm10dtASjghqA8Z68LhE91moZBm9SKtPjwQIbDOUo/eP+U/gpfn61RMs6y44JVFuBWdpJkLqNQh8qlAbnw7qFzQBHzxqYIsS9K3tEDp0JzXa7pU5Vh89gRxDq3P4TZp+ji8Y79ZOLaUs32YkAWmCTqtghlE1YigoEdsbp8Zq9FdZ4s+QhrIuKgTyBkgVvNmnJtDCT1zf97+KPYPTOqakaaFOJqbeRQiPO/rgLbyu27ikjogpvtc2Mauiw5nT6dA41alM8PwjoVVKSHdzROCW6bkWqZI0IwI6sitTATkOu0pI+VJ2uhYbeGvzsg/RQzImacXCM5+iZC4i9W0pvFtDWvr1ybyKi7B3tsBs66lvozRa+7N+eK4gtOj/BCPYwA0PpOgYrpt8+osO6QCbVP/NJawcbcfkwA5Z6uUXxbdEyiGy9LzmeizX9YPgAabeJvP86sAMmN5/Tw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2P153CA0001.APCP153.PROD.OUTLOOK.COM (2603:1096::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.3 via Frontend Transport; Fri, 28 Aug 2020 06:53:22 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e14831ea-5eeb-4758-7c92-08d84b1f106c
-X-MS-TrafficTypeDiagnostic: DB6PR04MB3127:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR04MB3127CAC1A4EE893526FB275888520@DB6PR04MB3127.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: baGMV/HHaLuMrMaDuZzeAg3KMi9wFlgcqKiabn+h0WAlhUCMSWJbXi9tckXx0BY8PI2ZAKcEg4sJ8lDDUMZ1aX8tijyYZqTZyV0a06UFTOFaqn4HBJlaCzCN2IYm/7uEKEUi6pED1kJdv23BywaRKFU+UWjgYEIOtLrymmfrC+Z5y41df+LExbCo2Hw5tRQVdLx8KFhBr2acgGHz7uyVXhy0SH76Oak4OvSmGuATeF6Uuy0qeVG9ekZGOgW9nD+cYXievXlj5bAveA6j6OgZ1Ciwzf0Lxcjq17Blv7a8Vf9Ensd2ytglU4x4FSTQCqTL6RMF9ofnE0clg6zk+DO+cA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(6666004)(2906002)(86362001)(6486002)(8936002)(83380400001)(36756003)(2616005)(52116002)(1076003)(16526019)(66476007)(316002)(5660300002)(8676002)(30864003)(478600001)(66556008)(956004)(4326008)(6512007)(26005)(6506007)(186003)(9686003)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 3bZSyo4nUeuAG41+XRhMsSIcZUUY/5O1h6AOcKO/UHM+AYzEadyH3C9ZifrNbagrBzM34cfnyat5zhdxeGC4/ejEmWPSthf3QwEngVfyfipGlawi88EUCbJd5fJeQIzRvhBvcEb6klD7DEBTKY2RfZ3K+UQAysPORFM9OJtL9UJKiO49BhZG8FTuTYVQVQ1p7uxyZmPeOmqP30oaTxysTVQLdxfsSiMrLoou7+VF0wdmUOJKEVSW85az1Ib+22X0DrtF47Two3RniCJiKXwD56tf8a3gNL793qf2aAE9nXB02oGf/1ClrKbH8cEHx4+RdTrc7lX2GU53gfTNWaY0TTyAGBfQfCvD3YM0xHbZv8mch93Qcn3J7LMO3Z0WWeSzT4bsFRAeDt6PLaZV1Jd9Ue4DS/kKjzo8MWPKI9rfsuyPlK6LIpgJmQCFO9vujHDASWFanQA48k0KgRx8w/aqCSQFvjUUf2soQLAtvJf/UdLJbh3mbpUKEWVyrQG9Ggt5c+FL8SLUnpiRNsipJW2kgIsJzkzNM2/TK8/LpMClXFp9gmg3oepU8XNi1wVFAKnx5dlowLx2WTsE/g/Igy3b8Q6Px26xCYv0ahUA2iyG/c7l2/HsxdaIZqDMMz/tfsNcwYW9Ej1WwgVCY54IgwmkIw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e14831ea-5eeb-4758-7c92-08d84b1f106c
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-OriginatorOrg: invensense.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2020 06:53:26.7428
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4390.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c529cfe-f087-4ab0-b116-08d84b1ca25a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2020 06:36:02.4390
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: npkmsUwpjM3SpDioQaURHpVjHYN5TCRap3XTqkqFVlwUhQuEqfot6vYZ3mS9hOHnjZbcRlX8V7XueUSTfV4W5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3127
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 462b3b3b-e42b-47ea-801a-f1581aac892d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hGmIj4EPrsJmTxyinPjmc6sYmo35TCcJ/ItiWZli9WxNiSmzr9gdnqUkhmLW20lGlWlSrcwU5o4+esuLKWPO9OzYfmGQ5KR68z+i94pgFb8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4205
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-28_03:2020-08-27,2020-08-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
+ suspectscore=0 phishscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008280050
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hello,
 
-According to RM, Page 574, Chapter 5.2.6.4.3 Peripheral clock slice,
-"IP clock slices must be stopped to change the clock source.".
+thanks for the patch.
 
-So we must have CLK_SET_PARENT_GATE flag to avoid glitch.
+Best regards,
+JB
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Reviewed-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+
+________________________________________
+From: linux-iio-owner@vger.kernel.org <linux-iio-owner@vger.kernel.org> on =
+behalf of Krzysztof Kozlowski <krzk@kernel.org>
+Sent: Thursday, August 27, 2020 21:26
+To: Jonathan Cameron; Hartmut Knaack; Lars-Peter Clausen; Peter Meerwald-St=
+adler; Peter Rosin; Kukjin Kim; Krzysztof Kozlowski; Michael Hennerich; Kev=
+in Hilman; Neil Armstrong; Jerome Brunet; Martin Blumenstingl; Marek Vasut;=
+ Maxime Coquelin; Alexandre Torgue; Beniamin Bia; Tomasz Duszynski; Linus W=
+alleij; Andy Shevchenko; linux-iio@vger.kernel.org; linux-kernel@vger.kerne=
+l.org; linux-arm-kernel@lists.infradead.org; linux-samsung-soc@vger.kernel.=
+org; linux-amlogic@lists.infradead.org; linux-stm32@st-md-mailman.stormrepl=
+y.com
+Subject: [PATCH v2 13/18] iio: imu: inv_mpu6050: Simplify with dev_err_prob=
+e()
+
+ CAUTION: This email originated from outside of the organization. Please ma=
+ke sure the sender is who they say they are and do not click links or open =
+attachments unless you recognize the sender and know the content is safe.
+
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and also it prints the error value.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/clk/imx/clk-imx7d.c | 131 ++++++++++++++++++------------------
- 1 file changed, 66 insertions(+), 65 deletions(-)
+ drivers/iio/imu/inv_mpu6050/inv_mpu_core.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx7d.c b/drivers/clk/imx/clk-imx7d.c
-index 6197710ee8c5..22d24a6a05e7 100644
---- a/drivers/clk/imx/clk-imx7d.c
-+++ b/drivers/clk/imx/clk-imx7d.c
-@@ -506,72 +506,73 @@ static void __init imx7d_clocks_init(struct device_node *ccm_node)
- 	hws[IMX7D_ARM_M4_ROOT_SRC] = imx_clk_hw_mux2("arm_m4_src", base + 0x8080, 24, 3, arm_m4_sel, ARRAY_SIZE(arm_m4_sel));
- 	hws[IMX7D_MAIN_AXI_ROOT_SRC] = imx_clk_hw_mux2("axi_src", base + 0x8800, 24, 3, axi_sel, ARRAY_SIZE(axi_sel));
- 	hws[IMX7D_DISP_AXI_ROOT_SRC] = imx_clk_hw_mux2("disp_axi_src", base + 0x8880, 24, 3, disp_axi_sel, ARRAY_SIZE(disp_axi_sel));
--	hws[IMX7D_ENET_AXI_ROOT_SRC] = imx_clk_hw_mux2("enet_axi_src", base + 0x8900, 24, 3, enet_axi_sel, ARRAY_SIZE(enet_axi_sel));
--	hws[IMX7D_NAND_USDHC_BUS_ROOT_SRC] = imx_clk_hw_mux2("nand_usdhc_src", base + 0x8980, 24, 3, nand_usdhc_bus_sel, ARRAY_SIZE(nand_usdhc_bus_sel));
- 	hws[IMX7D_AHB_CHANNEL_ROOT_SRC] = imx_clk_hw_mux2("ahb_src", base + 0x9000, 24, 3, ahb_channel_sel, ARRAY_SIZE(ahb_channel_sel));
--	hws[IMX7D_DRAM_PHYM_ROOT_SRC] = imx_clk_hw_mux2("dram_phym_src", base + 0x9800, 24, 1, dram_phym_sel, ARRAY_SIZE(dram_phym_sel));
--	hws[IMX7D_DRAM_ROOT_SRC] = imx_clk_hw_mux2("dram_src", base + 0x9880, 24, 1, dram_sel, ARRAY_SIZE(dram_sel));
--	hws[IMX7D_DRAM_PHYM_ALT_ROOT_SRC] = imx_clk_hw_mux2("dram_phym_alt_src", base + 0xa000, 24, 3, dram_phym_alt_sel, ARRAY_SIZE(dram_phym_alt_sel));
--	hws[IMX7D_DRAM_ALT_ROOT_SRC]  = imx_clk_hw_mux2("dram_alt_src", base + 0xa080, 24, 3, dram_alt_sel, ARRAY_SIZE(dram_alt_sel));
--	hws[IMX7D_USB_HSIC_ROOT_SRC] = imx_clk_hw_mux2("usb_hsic_src", base + 0xa100, 24, 3, usb_hsic_sel, ARRAY_SIZE(usb_hsic_sel));
--	hws[IMX7D_PCIE_CTRL_ROOT_SRC] = imx_clk_hw_mux2("pcie_ctrl_src", base + 0xa180, 24, 3, pcie_ctrl_sel, ARRAY_SIZE(pcie_ctrl_sel));
--	hws[IMX7D_PCIE_PHY_ROOT_SRC] = imx_clk_hw_mux2("pcie_phy_src", base + 0xa200, 24, 3, pcie_phy_sel, ARRAY_SIZE(pcie_phy_sel));
--	hws[IMX7D_EPDC_PIXEL_ROOT_SRC] = imx_clk_hw_mux2("epdc_pixel_src", base + 0xa280, 24, 3, epdc_pixel_sel, ARRAY_SIZE(epdc_pixel_sel));
--	hws[IMX7D_LCDIF_PIXEL_ROOT_SRC] = imx_clk_hw_mux2("lcdif_pixel_src", base + 0xa300, 24, 3, lcdif_pixel_sel, ARRAY_SIZE(lcdif_pixel_sel));
--	hws[IMX7D_MIPI_DSI_ROOT_SRC] = imx_clk_hw_mux2("mipi_dsi_src", base + 0xa380, 24, 3,  mipi_dsi_sel, ARRAY_SIZE(mipi_dsi_sel));
--	hws[IMX7D_MIPI_CSI_ROOT_SRC] = imx_clk_hw_mux2("mipi_csi_src", base + 0xa400, 24, 3, mipi_csi_sel, ARRAY_SIZE(mipi_csi_sel));
--	hws[IMX7D_MIPI_DPHY_ROOT_SRC] = imx_clk_hw_mux2("mipi_dphy_src", base + 0xa480, 24, 3, mipi_dphy_sel, ARRAY_SIZE(mipi_dphy_sel));
--	hws[IMX7D_SAI1_ROOT_SRC] = imx_clk_hw_mux2("sai1_src", base + 0xa500, 24, 3, sai1_sel, ARRAY_SIZE(sai1_sel));
--	hws[IMX7D_SAI2_ROOT_SRC] = imx_clk_hw_mux2("sai2_src", base + 0xa580, 24, 3, sai2_sel, ARRAY_SIZE(sai2_sel));
--	hws[IMX7D_SAI3_ROOT_SRC] = imx_clk_hw_mux2("sai3_src", base + 0xa600, 24, 3, sai3_sel, ARRAY_SIZE(sai3_sel));
--	hws[IMX7D_SPDIF_ROOT_SRC] = imx_clk_hw_mux2("spdif_src", base + 0xa680, 24, 3, spdif_sel, ARRAY_SIZE(spdif_sel));
--	hws[IMX7D_ENET1_REF_ROOT_SRC] = imx_clk_hw_mux2("enet1_ref_src", base + 0xa700, 24, 3, enet1_ref_sel, ARRAY_SIZE(enet1_ref_sel));
--	hws[IMX7D_ENET1_TIME_ROOT_SRC] = imx_clk_hw_mux2("enet1_time_src", base + 0xa780, 24, 3, enet1_time_sel, ARRAY_SIZE(enet1_time_sel));
--	hws[IMX7D_ENET2_REF_ROOT_SRC] = imx_clk_hw_mux2("enet2_ref_src", base + 0xa800, 24, 3, enet2_ref_sel, ARRAY_SIZE(enet2_ref_sel));
--	hws[IMX7D_ENET2_TIME_ROOT_SRC] = imx_clk_hw_mux2("enet2_time_src", base + 0xa880, 24, 3, enet2_time_sel, ARRAY_SIZE(enet2_time_sel));
--	hws[IMX7D_ENET_PHY_REF_ROOT_SRC] = imx_clk_hw_mux2("enet_phy_ref_src", base + 0xa900, 24, 3, enet_phy_ref_sel, ARRAY_SIZE(enet_phy_ref_sel));
--	hws[IMX7D_EIM_ROOT_SRC] = imx_clk_hw_mux2("eim_src", base + 0xa980, 24, 3, eim_sel, ARRAY_SIZE(eim_sel));
--	hws[IMX7D_NAND_ROOT_SRC] = imx_clk_hw_mux2("nand_src", base + 0xaa00, 24, 3, nand_sel, ARRAY_SIZE(nand_sel));
--	hws[IMX7D_QSPI_ROOT_SRC] = imx_clk_hw_mux2("qspi_src", base + 0xaa80, 24, 3, qspi_sel, ARRAY_SIZE(qspi_sel));
--	hws[IMX7D_USDHC1_ROOT_SRC] = imx_clk_hw_mux2("usdhc1_src", base + 0xab00, 24, 3, usdhc1_sel, ARRAY_SIZE(usdhc1_sel));
--	hws[IMX7D_USDHC2_ROOT_SRC] = imx_clk_hw_mux2("usdhc2_src", base + 0xab80, 24, 3, usdhc2_sel, ARRAY_SIZE(usdhc2_sel));
--	hws[IMX7D_USDHC3_ROOT_SRC] = imx_clk_hw_mux2("usdhc3_src", base + 0xac00, 24, 3, usdhc3_sel, ARRAY_SIZE(usdhc3_sel));
--	hws[IMX7D_CAN1_ROOT_SRC] = imx_clk_hw_mux2("can1_src", base + 0xac80, 24, 3, can1_sel, ARRAY_SIZE(can1_sel));
--	hws[IMX7D_CAN2_ROOT_SRC] = imx_clk_hw_mux2("can2_src", base + 0xad00, 24, 3, can2_sel, ARRAY_SIZE(can2_sel));
--	hws[IMX7D_I2C1_ROOT_SRC] = imx_clk_hw_mux2("i2c1_src", base + 0xad80, 24, 3, i2c1_sel, ARRAY_SIZE(i2c1_sel));
--	hws[IMX7D_I2C2_ROOT_SRC] = imx_clk_hw_mux2("i2c2_src", base + 0xae00, 24, 3, i2c2_sel, ARRAY_SIZE(i2c2_sel));
--	hws[IMX7D_I2C3_ROOT_SRC] = imx_clk_hw_mux2("i2c3_src", base + 0xae80, 24, 3, i2c3_sel, ARRAY_SIZE(i2c3_sel));
--	hws[IMX7D_I2C4_ROOT_SRC] = imx_clk_hw_mux2("i2c4_src", base + 0xaf00, 24, 3, i2c4_sel, ARRAY_SIZE(i2c4_sel));
--	hws[IMX7D_UART1_ROOT_SRC] = imx_clk_hw_mux2("uart1_src", base + 0xaf80, 24, 3, uart1_sel, ARRAY_SIZE(uart1_sel));
--	hws[IMX7D_UART2_ROOT_SRC] = imx_clk_hw_mux2("uart2_src", base + 0xb000, 24, 3, uart2_sel, ARRAY_SIZE(uart2_sel));
--	hws[IMX7D_UART3_ROOT_SRC] = imx_clk_hw_mux2("uart3_src", base + 0xb080, 24, 3, uart3_sel, ARRAY_SIZE(uart3_sel));
--	hws[IMX7D_UART4_ROOT_SRC] = imx_clk_hw_mux2("uart4_src", base + 0xb100, 24, 3, uart4_sel, ARRAY_SIZE(uart4_sel));
--	hws[IMX7D_UART5_ROOT_SRC] = imx_clk_hw_mux2("uart5_src", base + 0xb180, 24, 3, uart5_sel, ARRAY_SIZE(uart5_sel));
--	hws[IMX7D_UART6_ROOT_SRC] = imx_clk_hw_mux2("uart6_src", base + 0xb200, 24, 3, uart6_sel, ARRAY_SIZE(uart6_sel));
--	hws[IMX7D_UART7_ROOT_SRC] = imx_clk_hw_mux2("uart7_src", base + 0xb280, 24, 3, uart7_sel, ARRAY_SIZE(uart7_sel));
--	hws[IMX7D_ECSPI1_ROOT_SRC] = imx_clk_hw_mux2("ecspi1_src", base + 0xb300, 24, 3, ecspi1_sel, ARRAY_SIZE(ecspi1_sel));
--	hws[IMX7D_ECSPI2_ROOT_SRC] = imx_clk_hw_mux2("ecspi2_src", base + 0xb380, 24, 3, ecspi2_sel, ARRAY_SIZE(ecspi2_sel));
--	hws[IMX7D_ECSPI3_ROOT_SRC] = imx_clk_hw_mux2("ecspi3_src", base + 0xb400, 24, 3, ecspi3_sel, ARRAY_SIZE(ecspi3_sel));
--	hws[IMX7D_ECSPI4_ROOT_SRC] = imx_clk_hw_mux2("ecspi4_src", base + 0xb480, 24, 3, ecspi4_sel, ARRAY_SIZE(ecspi4_sel));
--	hws[IMX7D_PWM1_ROOT_SRC] = imx_clk_hw_mux2("pwm1_src", base + 0xb500, 24, 3, pwm1_sel, ARRAY_SIZE(pwm1_sel));
--	hws[IMX7D_PWM2_ROOT_SRC] = imx_clk_hw_mux2("pwm2_src", base + 0xb580, 24, 3, pwm2_sel, ARRAY_SIZE(pwm2_sel));
--	hws[IMX7D_PWM3_ROOT_SRC] = imx_clk_hw_mux2("pwm3_src", base + 0xb600, 24, 3, pwm3_sel, ARRAY_SIZE(pwm3_sel));
--	hws[IMX7D_PWM4_ROOT_SRC] = imx_clk_hw_mux2("pwm4_src", base + 0xb680, 24, 3, pwm4_sel, ARRAY_SIZE(pwm4_sel));
--	hws[IMX7D_FLEXTIMER1_ROOT_SRC] = imx_clk_hw_mux2("flextimer1_src", base + 0xb700, 24, 3, flextimer1_sel, ARRAY_SIZE(flextimer1_sel));
--	hws[IMX7D_FLEXTIMER2_ROOT_SRC] = imx_clk_hw_mux2("flextimer2_src", base + 0xb780, 24, 3, flextimer2_sel, ARRAY_SIZE(flextimer2_sel));
--	hws[IMX7D_SIM1_ROOT_SRC] = imx_clk_hw_mux2("sim1_src", base + 0xb800, 24, 3, sim1_sel, ARRAY_SIZE(sim1_sel));
--	hws[IMX7D_SIM2_ROOT_SRC] = imx_clk_hw_mux2("sim2_src", base + 0xb880, 24, 3, sim2_sel, ARRAY_SIZE(sim2_sel));
--	hws[IMX7D_GPT1_ROOT_SRC] = imx_clk_hw_mux2("gpt1_src", base + 0xb900, 24, 3, gpt1_sel, ARRAY_SIZE(gpt1_sel));
--	hws[IMX7D_GPT2_ROOT_SRC] = imx_clk_hw_mux2("gpt2_src", base + 0xb980, 24, 3, gpt2_sel, ARRAY_SIZE(gpt2_sel));
--	hws[IMX7D_GPT3_ROOT_SRC] = imx_clk_hw_mux2("gpt3_src", base + 0xba00, 24, 3, gpt3_sel, ARRAY_SIZE(gpt3_sel));
--	hws[IMX7D_GPT4_ROOT_SRC] = imx_clk_hw_mux2("gpt4_src", base + 0xba80, 24, 3, gpt4_sel, ARRAY_SIZE(gpt4_sel));
--	hws[IMX7D_TRACE_ROOT_SRC] = imx_clk_hw_mux2("trace_src", base + 0xbb00, 24, 3, trace_sel, ARRAY_SIZE(trace_sel));
--	hws[IMX7D_WDOG_ROOT_SRC] = imx_clk_hw_mux2("wdog_src", base + 0xbb80, 24, 3, wdog_sel, ARRAY_SIZE(wdog_sel));
--	hws[IMX7D_CSI_MCLK_ROOT_SRC] = imx_clk_hw_mux2("csi_mclk_src", base + 0xbc00, 24, 3, csi_mclk_sel, ARRAY_SIZE(csi_mclk_sel));
--	hws[IMX7D_AUDIO_MCLK_ROOT_SRC] = imx_clk_hw_mux2("audio_mclk_src", base + 0xbc80, 24, 3, audio_mclk_sel, ARRAY_SIZE(audio_mclk_sel));
--	hws[IMX7D_WRCLK_ROOT_SRC] = imx_clk_hw_mux2("wrclk_src", base + 0xbd00, 24, 3, wrclk_sel, ARRAY_SIZE(wrclk_sel));
--	hws[IMX7D_CLKO1_ROOT_SRC] = imx_clk_hw_mux2("clko1_src", base + 0xbd80, 24, 3, clko1_sel, ARRAY_SIZE(clko1_sel));
--	hws[IMX7D_CLKO2_ROOT_SRC] = imx_clk_hw_mux2("clko2_src", base + 0xbe00, 24, 3, clko2_sel, ARRAY_SIZE(clko2_sel));
-+
-+	hws[IMX7D_ENET_AXI_ROOT_SRC] = imx_clk_hw_mux2_flags("enet_axi_src", base + 0x8900, 24, 3, enet_axi_sel, ARRAY_SIZE(enet_axi_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_NAND_USDHC_BUS_ROOT_SRC] = imx_clk_hw_mux2_flags("nand_usdhc_src", base + 0x8980, 24, 3, nand_usdhc_bus_sel, ARRAY_SIZE(nand_usdhc_bus_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_DRAM_PHYM_ROOT_SRC] = imx_clk_hw_mux2_flags("dram_phym_src", base + 0x9800, 24, 1, dram_phym_sel, ARRAY_SIZE(dram_phym_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_DRAM_ROOT_SRC] = imx_clk_hw_mux2_flags("dram_src", base + 0x9880, 24, 1, dram_sel, ARRAY_SIZE(dram_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_DRAM_PHYM_ALT_ROOT_SRC] = imx_clk_hw_mux2_flags("dram_phym_alt_src", base + 0xa000, 24, 3, dram_phym_alt_sel, ARRAY_SIZE(dram_phym_alt_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_DRAM_ALT_ROOT_SRC]  = imx_clk_hw_mux2_flags("dram_alt_src", base + 0xa080, 24, 3, dram_alt_sel, ARRAY_SIZE(dram_alt_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_USB_HSIC_ROOT_SRC] = imx_clk_hw_mux2_flags("usb_hsic_src", base + 0xa100, 24, 3, usb_hsic_sel, ARRAY_SIZE(usb_hsic_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PCIE_CTRL_ROOT_SRC] = imx_clk_hw_mux2_flags("pcie_ctrl_src", base + 0xa180, 24, 3, pcie_ctrl_sel, ARRAY_SIZE(pcie_ctrl_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PCIE_PHY_ROOT_SRC] = imx_clk_hw_mux2_flags("pcie_phy_src", base + 0xa200, 24, 3, pcie_phy_sel, ARRAY_SIZE(pcie_phy_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_EPDC_PIXEL_ROOT_SRC] = imx_clk_hw_mux2_flags("epdc_pixel_src", base + 0xa280, 24, 3, epdc_pixel_sel, ARRAY_SIZE(epdc_pixel_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_LCDIF_PIXEL_ROOT_SRC] = imx_clk_hw_mux2_flags("lcdif_pixel_src", base + 0xa300, 24, 3, lcdif_pixel_sel, ARRAY_SIZE(lcdif_pixel_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_MIPI_DSI_ROOT_SRC] = imx_clk_hw_mux2_flags("mipi_dsi_src", base + 0xa380, 24, 3,  mipi_dsi_sel, ARRAY_SIZE(mipi_dsi_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_MIPI_CSI_ROOT_SRC] = imx_clk_hw_mux2_flags("mipi_csi_src", base + 0xa400, 24, 3, mipi_csi_sel, ARRAY_SIZE(mipi_csi_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_MIPI_DPHY_ROOT_SRC] = imx_clk_hw_mux2_flags("mipi_dphy_src", base + 0xa480, 24, 3, mipi_dphy_sel, ARRAY_SIZE(mipi_dphy_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SAI1_ROOT_SRC] = imx_clk_hw_mux2_flags("sai1_src", base + 0xa500, 24, 3, sai1_sel, ARRAY_SIZE(sai1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SAI2_ROOT_SRC] = imx_clk_hw_mux2_flags("sai2_src", base + 0xa580, 24, 3, sai2_sel, ARRAY_SIZE(sai2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SAI3_ROOT_SRC] = imx_clk_hw_mux2_flags("sai3_src", base + 0xa600, 24, 3, sai3_sel, ARRAY_SIZE(sai3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SPDIF_ROOT_SRC] = imx_clk_hw_mux2_flags("spdif_src", base + 0xa680, 24, 3, spdif_sel, ARRAY_SIZE(spdif_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ENET1_REF_ROOT_SRC] = imx_clk_hw_mux2_flags("enet1_ref_src", base + 0xa700, 24, 3, enet1_ref_sel, ARRAY_SIZE(enet1_ref_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ENET1_TIME_ROOT_SRC] = imx_clk_hw_mux2_flags("enet1_time_src", base + 0xa780, 24, 3, enet1_time_sel, ARRAY_SIZE(enet1_time_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ENET2_REF_ROOT_SRC] = imx_clk_hw_mux2_flags("enet2_ref_src", base + 0xa800, 24, 3, enet2_ref_sel, ARRAY_SIZE(enet2_ref_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ENET2_TIME_ROOT_SRC] = imx_clk_hw_mux2_flags("enet2_time_src", base + 0xa880, 24, 3, enet2_time_sel, ARRAY_SIZE(enet2_time_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ENET_PHY_REF_ROOT_SRC] = imx_clk_hw_mux2_flags("enet_phy_ref_src", base + 0xa900, 24, 3, enet_phy_ref_sel, ARRAY_SIZE(enet_phy_ref_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_EIM_ROOT_SRC] = imx_clk_hw_mux2_flags("eim_src", base + 0xa980, 24, 3, eim_sel, ARRAY_SIZE(eim_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_NAND_ROOT_SRC] = imx_clk_hw_mux2_flags("nand_src", base + 0xaa00, 24, 3, nand_sel, ARRAY_SIZE(nand_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_QSPI_ROOT_SRC] = imx_clk_hw_mux2_flags("qspi_src", base + 0xaa80, 24, 3, qspi_sel, ARRAY_SIZE(qspi_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_USDHC1_ROOT_SRC] = imx_clk_hw_mux2_flags("usdhc1_src", base + 0xab00, 24, 3, usdhc1_sel, ARRAY_SIZE(usdhc1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_USDHC2_ROOT_SRC] = imx_clk_hw_mux2_flags("usdhc2_src", base + 0xab80, 24, 3, usdhc2_sel, ARRAY_SIZE(usdhc2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_USDHC3_ROOT_SRC] = imx_clk_hw_mux2_flags("usdhc3_src", base + 0xac00, 24, 3, usdhc3_sel, ARRAY_SIZE(usdhc3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_CAN1_ROOT_SRC] = imx_clk_hw_mux2_flags("can1_src", base + 0xac80, 24, 3, can1_sel, ARRAY_SIZE(can1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_CAN2_ROOT_SRC] = imx_clk_hw_mux2_flags("can2_src", base + 0xad00, 24, 3, can2_sel, ARRAY_SIZE(can2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_I2C1_ROOT_SRC] = imx_clk_hw_mux2_flags("i2c1_src", base + 0xad80, 24, 3, i2c1_sel, ARRAY_SIZE(i2c1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_I2C2_ROOT_SRC] = imx_clk_hw_mux2_flags("i2c2_src", base + 0xae00, 24, 3, i2c2_sel, ARRAY_SIZE(i2c2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_I2C3_ROOT_SRC] = imx_clk_hw_mux2_flags("i2c3_src", base + 0xae80, 24, 3, i2c3_sel, ARRAY_SIZE(i2c3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_I2C4_ROOT_SRC] = imx_clk_hw_mux2_flags("i2c4_src", base + 0xaf00, 24, 3, i2c4_sel, ARRAY_SIZE(i2c4_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART1_ROOT_SRC] = imx_clk_hw_mux2_flags("uart1_src", base + 0xaf80, 24, 3, uart1_sel, ARRAY_SIZE(uart1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART2_ROOT_SRC] = imx_clk_hw_mux2_flags("uart2_src", base + 0xb000, 24, 3, uart2_sel, ARRAY_SIZE(uart2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART3_ROOT_SRC] = imx_clk_hw_mux2_flags("uart3_src", base + 0xb080, 24, 3, uart3_sel, ARRAY_SIZE(uart3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART4_ROOT_SRC] = imx_clk_hw_mux2_flags("uart4_src", base + 0xb100, 24, 3, uart4_sel, ARRAY_SIZE(uart4_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART5_ROOT_SRC] = imx_clk_hw_mux2_flags("uart5_src", base + 0xb180, 24, 3, uart5_sel, ARRAY_SIZE(uart5_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART6_ROOT_SRC] = imx_clk_hw_mux2_flags("uart6_src", base + 0xb200, 24, 3, uart6_sel, ARRAY_SIZE(uart6_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_UART7_ROOT_SRC] = imx_clk_hw_mux2_flags("uart7_src", base + 0xb280, 24, 3, uart7_sel, ARRAY_SIZE(uart7_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ECSPI1_ROOT_SRC] = imx_clk_hw_mux2_flags("ecspi1_src", base + 0xb300, 24, 3, ecspi1_sel, ARRAY_SIZE(ecspi1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ECSPI2_ROOT_SRC] = imx_clk_hw_mux2_flags("ecspi2_src", base + 0xb380, 24, 3, ecspi2_sel, ARRAY_SIZE(ecspi2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ECSPI3_ROOT_SRC] = imx_clk_hw_mux2_flags("ecspi3_src", base + 0xb400, 24, 3, ecspi3_sel, ARRAY_SIZE(ecspi3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_ECSPI4_ROOT_SRC] = imx_clk_hw_mux2_flags("ecspi4_src", base + 0xb480, 24, 3, ecspi4_sel, ARRAY_SIZE(ecspi4_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PWM1_ROOT_SRC] = imx_clk_hw_mux2_flags("pwm1_src", base + 0xb500, 24, 3, pwm1_sel, ARRAY_SIZE(pwm1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PWM2_ROOT_SRC] = imx_clk_hw_mux2_flags("pwm2_src", base + 0xb580, 24, 3, pwm2_sel, ARRAY_SIZE(pwm2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PWM3_ROOT_SRC] = imx_clk_hw_mux2_flags("pwm3_src", base + 0xb600, 24, 3, pwm3_sel, ARRAY_SIZE(pwm3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_PWM4_ROOT_SRC] = imx_clk_hw_mux2_flags("pwm4_src", base + 0xb680, 24, 3, pwm4_sel, ARRAY_SIZE(pwm4_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_FLEXTIMER1_ROOT_SRC] = imx_clk_hw_mux2_flags("flextimer1_src", base + 0xb700, 24, 3, flextimer1_sel, ARRAY_SIZE(flextimer1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_FLEXTIMER2_ROOT_SRC] = imx_clk_hw_mux2_flags("flextimer2_src", base + 0xb780, 24, 3, flextimer2_sel, ARRAY_SIZE(flextimer2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SIM1_ROOT_SRC] = imx_clk_hw_mux2_flags("sim1_src", base + 0xb800, 24, 3, sim1_sel, ARRAY_SIZE(sim1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_SIM2_ROOT_SRC] = imx_clk_hw_mux2_flags("sim2_src", base + 0xb880, 24, 3, sim2_sel, ARRAY_SIZE(sim2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_GPT1_ROOT_SRC] = imx_clk_hw_mux2_flags("gpt1_src", base + 0xb900, 24, 3, gpt1_sel, ARRAY_SIZE(gpt1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_GPT2_ROOT_SRC] = imx_clk_hw_mux2_flags("gpt2_src", base + 0xb980, 24, 3, gpt2_sel, ARRAY_SIZE(gpt2_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_GPT3_ROOT_SRC] = imx_clk_hw_mux2_flags("gpt3_src", base + 0xba00, 24, 3, gpt3_sel, ARRAY_SIZE(gpt3_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_GPT4_ROOT_SRC] = imx_clk_hw_mux2_flags("gpt4_src", base + 0xba80, 24, 3, gpt4_sel, ARRAY_SIZE(gpt4_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_TRACE_ROOT_SRC] = imx_clk_hw_mux2_flags("trace_src", base + 0xbb00, 24, 3, trace_sel, ARRAY_SIZE(trace_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_WDOG_ROOT_SRC] = imx_clk_hw_mux2_flags("wdog_src", base + 0xbb80, 24, 3, wdog_sel, ARRAY_SIZE(wdog_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_CSI_MCLK_ROOT_SRC] = imx_clk_hw_mux2_flags("csi_mclk_src", base + 0xbc00, 24, 3, csi_mclk_sel, ARRAY_SIZE(csi_mclk_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_AUDIO_MCLK_ROOT_SRC] = imx_clk_hw_mux2_flags("audio_mclk_src", base + 0xbc80, 24, 3, audio_mclk_sel, ARRAY_SIZE(audio_mclk_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_WRCLK_ROOT_SRC] = imx_clk_hw_mux2_flags("wrclk_src", base + 0xbd00, 24, 3, wrclk_sel, ARRAY_SIZE(wrclk_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_CLKO1_ROOT_SRC] = imx_clk_hw_mux2_flags("clko1_src", base + 0xbd80, 24, 3, clko1_sel, ARRAY_SIZE(clko1_sel), CLK_SET_PARENT_GATE);
-+	hws[IMX7D_CLKO2_ROOT_SRC] = imx_clk_hw_mux2_flags("clko2_src", base + 0xbe00, 24, 3, clko2_sel, ARRAY_SIZE(clko2_sel), CLK_SET_PARENT_GATE);
- 
- 	hws[IMX7D_ARM_A7_ROOT_CG] = imx_clk_hw_gate3("arm_a7_cg", "arm_a7_src", base + 0x8000, 28);
- 	hws[IMX7D_ARM_M4_ROOT_CG] = imx_clk_hw_gate3("arm_m4_cg", "arm_m4_src", base + 0x8080, 28);
--- 
-2.28.0
+diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c b/drivers/iio/imu/i=
+nv_mpu6050/inv_mpu_core.c
+index 3fee3947f772..18a1898e3e34 100644
+--- a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
++++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
+@@ -1475,22 +1475,14 @@ int inv_mpu_core_probe(struct regmap *regmap, int i=
+rq, const char *name,
+        }
+
+        st->vdd_supply =3D devm_regulator_get(dev, "vdd");
+-       if (IS_ERR(st->vdd_supply)) {
+-               if (PTR_ERR(st->vdd_supply) !=3D -EPROBE_DEFER)
+-                       dev_err(dev, "Failed to get vdd regulator %d\n",
+-                               (int)PTR_ERR(st->vdd_supply));
+-
+-               return PTR_ERR(st->vdd_supply);
+-       }
++       if (IS_ERR(st->vdd_supply))
++               return dev_err_probe(dev, PTR_ERR(st->vdd_supply),
++                                    "Failed to get vdd regulator\n");
+
+        st->vddio_supply =3D devm_regulator_get(dev, "vddio");
+-       if (IS_ERR(st->vddio_supply)) {
+-               if (PTR_ERR(st->vddio_supply) !=3D -EPROBE_DEFER)
+-                       dev_err(dev, "Failed to get vddio regulator %d\n",
+-                               (int)PTR_ERR(st->vddio_supply));
+-
+-               return PTR_ERR(st->vddio_supply);
+-       }
++       if (IS_ERR(st->vddio_supply))
++               return dev_err_probe(dev, PTR_ERR(st->vddio_supply),
++                                    "Failed to get vddio regulator\n");
+
+        result =3D regulator_enable(st->vdd_supply);
+        if (result) {
+--
+2.17.1
 
