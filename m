@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CDA2557AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951C02557C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgH1JbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:31:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44136 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgH1JbN (ORCPT
+        id S1728555AbgH1Jfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728532AbgH1JfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:31:13 -0400
-Date:   Fri, 28 Aug 2020 11:31:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598607070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+363vywbnVCEVxIi8Y5h0DSwiMHbXktW2NcpgL5JfP8=;
-        b=s9MNUqTEahCmCeuJMEVtzQRU/g3Glpee98Btnh7PEzty13itOAmurS7+fpD/Z1l30aso2f
-        W6d4Vj0uZ5oKmRPHFXmkXWdU1Qhrp7gnDGU4PgZex1QHAcCVGiJJmmO/EIspV4GhDykZcs
-        au+r+v4ZWtqnGC+V3rVUG9ViSGvXjo4uMm0LNekJFFPtZmfl7XHrNhUp9xA0x0Mhqotrn+
-        Oyr+p3Pf7g7MFBs2QM4Tf4Ztwe+4WINiudrj+WifQnbDOo9W6Lot5lXscnyIjGcxpD/bH5
-        8uQf4mCqle59J13r5WxHSY9MG6TlptWOD7lcSuNGDllTiO5yUvQ1n7uHq9fY+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598607070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+363vywbnVCEVxIi8Y5h0DSwiMHbXktW2NcpgL5JfP8=;
-        b=+dv1raORZNCi2GS/wUIlPR32I0qmrnp4hPVCslKckQvLtABokNGtTYXGyCNDMKZg6b5bAq
-        uvN9EjdXHkqHwwBA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/5] seqlock: seqcount_LOCKTYPE_t: Introduce
- PREEMPT_RT support
-Message-ID: <20200828093130.GA7672@lx-t490>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200828010710.5407-1-a.darwish@linutronix.de>
- <20200828010710.5407-5-a.darwish@linutronix.de>
- <20200828085938.GS1362448@hirez.programming.kicks-ass.net>
+        Fri, 28 Aug 2020 05:35:25 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606DFC061232
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:35:25 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id v24so175336uaj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/mdittT6+6EzCIerCsP+eMrYewGCwnIzPurZ3euQ7cw=;
+        b=xrmlci1XQklPdv8VwdCziv8Ar/UxceOi05ImtRTPFIMg7t76W0VOXgbBWgcSxJjQkG
+         7OJJGmztUHDLhPlStrGS21cIy5G6Pdq52sx8L7JibwmnsKieNyqGFvCapPJ8yi2BDPDJ
+         CgTRJM8yNZAoZXqD+jmroylm/y1t+0HhlTzN1rbouTe7W23Peslwhhfnh4ywe1FFVZic
+         O/JgK5vKgaqEaa9wlPsvOpPgYkM9103S/GERZ5qOGtuZhDMhq6PMFsYao4NsTuvl/BK4
+         lSouNSllEvVZ6zGY0cl/i5I6yOn8sKy4YCKbn5aOCd8rM+cQQDHY1BfGR/48IyyGYfg5
+         QugA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/mdittT6+6EzCIerCsP+eMrYewGCwnIzPurZ3euQ7cw=;
+        b=Co5OXjVI7DEw2w38eBxc9MzattPdQQVbm3SPL9CMJvqBhCDg/ATwbEfQEiuD1DCVp1
+         mcYaNIYRny4Ejd/eB0n5LD8LtrxLEg/xrlISGpG4oxOsSLscBmVkKLIVkrH53V5AIOeL
+         iJMnh8LLYzlYA1wtqqg1Z4ReXrhcRKlIrH81jK+6+s5gremrzvGi2DNAc73+Clwch2PX
+         de9UIk4BK+SXvDjbzta/vLwe7D+RjTEI8jVx1rCtYpyFRB06ePSJs4EbA2jIlHKxKFbt
+         E3CKzWZAJuoorcEkTn/KywAimgO7nItGWn4SJTEmip14HzhQyUuzVZG+ZNqeVFHSQHDX
+         kHww==
+X-Gm-Message-State: AOAM533AyFUHQSCHqP/9zx5n0Ezqq1MULATyu+fJZT4EKgKS4gaf3iLf
+        fzLla9kzCW3Wr3edzDl6MtZKd4LPW686/7ZovZtZ8Q==
+X-Google-Smtp-Source: ABdhPJzxNEeZfoY+k3gp0uBoTm4yCYE5kPlcV9PGhfGkgvhiqDyqVKsddEc6lWq8Z8xFJlOpwC9vsbIVbRpsPgjPmsM=
+X-Received: by 2002:ab0:3114:: with SMTP id e20mr380470ual.104.1598607324469;
+ Fri, 28 Aug 2020 02:35:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828085938.GS1362448@hirez.programming.kicks-ass.net>
+References: <CA+G9fYvUwH2FA9GOeA_7GYpLA31uOmEpg32VKnJ8-d5QSK4PdQ@mail.gmail.com>
+ <20200827090813.fjugeqbb47fachy7@vireshk-i7> <CAK8P3a2zxybiMDzHXkTsT=VpHJOLkwd1=YTtCNU04vuMjZLkxA@mail.gmail.com>
+ <20200827101231.smqrhqu5da6jlz6i@vireshk-i7> <CA+G9fYv=XLtsuD=tVR1HHotwpKLkbwZVyPr4UhY-jD+6-duTmw@mail.gmail.com>
+ <CA+G9fYvSEHua0EpW64rASucWuS-U2STAZxufrfN75UDspGt2cA@mail.gmail.com>
+In-Reply-To: <CA+G9fYvSEHua0EpW64rASucWuS-U2STAZxufrfN75UDspGt2cA@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 28 Aug 2020 11:34:47 +0200
+Message-ID: <CAPDyKFrpOqpBiSvkvO7sXHiQDOwdXYmx-80Ji5wW79QF-MrOuQ@mail.gmail.com>
+Subject: Re: Kernel panic : Unable to handle kernel paging request at virtual
+ address - dead address between user and kernel address ranges
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, John Stultz <john.stultz@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 10:59:38AM +0200, peterz@infradead.org wrote:
-> On Fri, Aug 28, 2020 at 03:07:09AM +0200, Ahmed S. Darwish wrote:
-> > +#define __SEQ_RT	IS_ENABLED(CONFIG_PREEMPT_RT)
-> > +
-> > +SEQCOUNT_LOCKTYPE(raw_spinlock, raw_spinlock_t,  false,    s->lock,        raw_spin, raw_spin_lock(s->lock))
-> > +SEQCOUNT_LOCKTYPE(spinlock,     spinlock_t,      __SEQ_RT, s->lock,        spin,     spin_lock(s->lock))
-> > +SEQCOUNT_LOCKTYPE(rwlock,       rwlock_t,        __SEQ_RT, s->lock,        read,     read_lock(s->lock))
-> > +SEQCOUNT_LOCKTYPE(mutex,        struct mutex,    true,     s->lock,        mutex,    mutex_lock(s->lock))
-> > +SEQCOUNT_LOCKTYPE(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mutex, ww_mutex_lock(s->lock, NULL))
+On Fri, 28 Aug 2020 at 11:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 >
-> Ooh, reading is hard, but ^^^^ you already have that.
+> On Thu, 27 Aug 2020 at 17:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Thu, 27 Aug 2020 at 15:42, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > On 27-08-20, 11:48, Arnd Bergmann wrote:
+> > > > > > [    3.680477]  dev_pm_opp_put_clkname+0x30/0x58
+> > > > > > [    3.683431]  sdhci_msm_probe+0x284/0x9a0
+> > > >
+> > > > dev_pm_opp_put_clkname() is part of the error handling in the
+> > > > probe function, so I would deduct there are two problems:
+> > > >
+> > > > - something failed during the probe and the driver is trying
+> > > >   to unwind
+> > > > - the error handling it self is buggy and tries to undo something
+> > > >   again that has already been undone.
+> > >
+> > > Right.
+> > >
+> > > > This points to Viresh's
+> > > > d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
+> > >
+> > > I completely forgot that Ulf already pushed this patch and I was
+> > > wondering on which of the OPP core changes I wrote have done this :(
+> > >
+> > > > Most likely this is not the entire problem but it uncovered a preexisting
+> > > > bug.
+> > >
+> > > I think this is.
+> > >
+> > > Naresh: Can you please test with this diff ?
+> >
+> > I have applied your patch and tested but still see the reported problem.
 >
-
-Haha, I was just answering the other mail :)
-
-> > +/*
-> > + * Automatically disable preemption for seqcount_LOCKTYPE_t writers, if the
-> > + * associated lock does not implicitly disable preemption.
-> > + *
-> > + * Don't do it for PREEMPT_RT. Check __SEQ_LOCK().
-> > + */
-> > +#define __seq_enforce_preemption_protection(s)				\
-> > +	(!IS_ENABLED(CONFIG_PREEMPT_RT) && __seqcount_lock_preemptible(s))
+> The git bisect shows that the first bad commit is,
+> d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
 >
-> Then what is this doing ?!? I'm confused now.
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Anders Roxell <anders.roxell@linaro.org>
 
-There were a number of call sites (at DRM mainly) that protected their
-seqcount_t write sections with mutex and ww_mutex. So, they manually
-disabled preemption before entering the seqcount_t write sections.
+I am not sure what version of the patch you tested. However, I have
+dropped Viresh's v1 and replaced it with v2 [1]. It's available for
+testing at:
 
-Unfortunately these write sections were big, and spinlocks were also
-acquired inside them.  This was all very bad for RT...
+https://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git next
 
-So the idea was to relieve call sites from the responsibility of
-disabling/enabling preemption upon entering a seqcount_LOCKNAME_t write
-section, and let seqlock.h automatically handle it if LOCKNAME_t is
-preemptible (the macro's condition, second part).
+Can you please check if it still causes problems, then I will drop it, again.
 
-Having seqlock.h control the preempt disable/enable allows us to never
-disable preemption for RT, which is exactly what is needed since we
-already handle any possible livelock through the mechanisms described at
-__SEQ_LOCK (the macro's condition test, first part).
+Kind regards
+Uffe
 
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+[1] https://lkml.org/lkml/2020/8/28/43
