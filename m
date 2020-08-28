@@ -2,325 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD975255C86
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3374C255CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgH1Obx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:31:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:50768 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbgH1Obv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:31:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A2671FB;
-        Fri, 28 Aug 2020 07:31:50 -0700 (PDT)
-Received: from [192.168.1.190] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DFC53F71F;
-        Fri, 28 Aug 2020 07:31:49 -0700 (PDT)
-Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
- changes keys
-To:     Boyan Karatotev <boyan.karatotev@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     amit.kachhap@arm.com, boian4o1@gmail.com,
-        Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <20200828131606.7946-1-boyan.karatotev@arm.com>
- <20200828131606.7946-4-boyan.karatotev@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <e7d078f7-c516-2055-bcae-d56de951b5d2@arm.com>
-Date:   Fri, 28 Aug 2020 15:33:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726236AbgH1OgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgH1Of7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:35:59 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAC7C06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:35:58 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a21so1834250ejp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=obd2Zc0n5DWbUEzzD7kqNaHpie9Nx9kaG1EevQsqECs=;
+        b=FGsI/0p1m5MAwISMfbO63e+nCOplHEUbxSgCKXheCymeRaYx7V+9Ftdmr/IQD241pe
+         XXJEDfkE0iflNjucnCjTvbt2bDo2pWgLbT9Uwc5jCYTR3OcK3mGrkt0TbsbbqaFkIJYL
+         bro0vw7HGvwT15minkx/TtjTcIKE08qB3Vj3YC53uvollDZbeu+6NSvU2E77GWVUukZQ
+         yoeDG1laHDPpJ560BBMKWU1iq1Zr+HIasn5gM/oFm+F4Aea61RFzWQIWA/FCcZcVDikl
+         jBROUmGrW4HiNJ+uHAdnxVKFaEhW4i3KwU4GyfAdNb/O8SFmqWeM8ferVcz3KwFkTB+T
+         2pLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=obd2Zc0n5DWbUEzzD7kqNaHpie9Nx9kaG1EevQsqECs=;
+        b=cbUZEWfxqMaBN+0ZcSZkuvd6Jq5lNyW8ETCsiTmvdQY/nm5BeQZgx7WUvMPwF0PI3g
+         pLYnGL6P1tdlT7d7AM9SGLzFR/dJC8jzLbuTF6NlxFQtj/5eSU2tyX3DXUa656VIilmV
+         ikBJBg3onkJCRBFuoIjGzKsJZFahrgf6vGj8VLMn3lw/JMkpTEYxM1r4cc6/pYG9igX5
+         QZHk4Kph4VvVNSy77+pUFkwffXmPy0pPXBwVuB6ppm51U5wC6s75+W0jTNyDXv5sQU2q
+         NT+dlxexaAn3fk00cD0/J0hXGAsjqozVV65tZFEAkoqZlO3ecX7y7UTMdUjI+wS/XMpX
+         9nHA==
+X-Gm-Message-State: AOAM533gS/g2V5QMWzdoEcSlv0LPsl+cqj9j/BfwGXwG5i/fGmxXyPNa
+        +1WknPOix7qM3b/8HmzJVO6Bs9BGQlYIQwFbQnGv
+X-Google-Smtp-Source: ABdhPJzz5lNpNpxvFaRpKv3gn84Ku8yr5VVSXLMhtrqrByBsncrWUIYtdGNZ//e3YabtiKup95M88KHvNBQiw49d1zg=
+X-Received: by 2002:a17:906:5205:: with SMTP id g5mr2098362ejm.488.1598625356901;
+ Fri, 28 Aug 2020 07:35:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200828131606.7946-4-boyan.karatotev@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHC9VhRtTykJVze_93ed+n+v14Ai9J5Mbre9nGEc2rkqbqKc_g@mail.gmail.com>
+ <20200828135523.12867-1-alex.dewar90@gmail.com>
+In-Reply-To: <20200828135523.12867-1-alex.dewar90@gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 28 Aug 2020 10:35:45 -0400
+Message-ID: <CAHC9VhSTqJ9YF4CP=U9xhP15j_-yEf5JnGFcxpu_NZfnxijP2w@mail.gmail.com>
+Subject: Re: [PATCH v2] netlabel: remove unused param from audit_log_format()
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/20 2:16 PM, Boyan Karatotev wrote:
-> Kernel documentation states that it will change PAuth keys on exec() calls.
-> 
-> Verify that all keys are correctly switched to new ones.
-> 
-
-Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+On Fri, Aug 28, 2020 at 9:56 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
+>
+> Commit d3b990b7f327 ("netlabel: fix problems with mapping removal")
+> added a check to return an error if ret_val != 0, before ret_val is
+> later used in a log message. Now it will unconditionally print "...
+> res=1". So just drop the check.
+>
+> Addresses-Coverity: ("Dead code")
+> Fixes: d3b990b7f327 ("netlabel: fix problems with mapping removal")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 > ---
->  tools/testing/selftests/arm64/pauth/Makefile  |   4 +
->  .../selftests/arm64/pauth/exec_target.c       |  35 +++++
->  tools/testing/selftests/arm64/pauth/helper.h  |  10 ++
->  tools/testing/selftests/arm64/pauth/pac.c     | 148 ++++++++++++++++++
->  4 files changed, 197 insertions(+)
->  create mode 100644 tools/testing/selftests/arm64/pauth/exec_target.c
-> 
-> diff --git a/tools/testing/selftests/arm64/pauth/Makefile b/tools/testing/selftests/arm64/pauth/Makefile
-> index a017d1c8dd58..2e237b21ccf6 100644
-> --- a/tools/testing/selftests/arm64/pauth/Makefile
-> +++ b/tools/testing/selftests/arm64/pauth/Makefile
-> @@ -5,6 +5,7 @@ CFLAGS += -mbranch-protection=pac-ret
->  
->  TEST_GEN_PROGS := pac
->  TEST_GEN_FILES := pac_corruptor.o helper.o
-> +TEST_GEN_PROGS_EXTENDED := exec_target
->  
->  include ../../lib.mk
->  
-> @@ -20,6 +21,9 @@ $(OUTPUT)/helper.o: helper.c
->  # greater, gcc emits pac* instructions which are not in HINT NOP space,
->  # preventing the tests from occurring at all. Compile for ARMv8.2 so tests can
->  # run on earlier targets and print a meaningful error messages
-> +$(OUTPUT)/exec_target: exec_target.c $(OUTPUT)/helper.o
-> +	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
-> +
->  $(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o $(OUTPUT)/helper.o
->  	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
->  
-> diff --git a/tools/testing/selftests/arm64/pauth/exec_target.c b/tools/testing/selftests/arm64/pauth/exec_target.c
-> new file mode 100644
-> index 000000000000..07addef5a1d7
-> --- /dev/null
-> +++ b/tools/testing/selftests/arm64/pauth/exec_target.c
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (C) 2020 ARM Limited
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/auxv.h>
-> +
-> +#include "helper.h"
-> +
-> +
-> +int main(void)
-> +{
-> +	struct signatures signed_vals;
-> +	unsigned long hwcaps;
-> +	size_t val;
-> +
-> +	fread(&val, sizeof(size_t), 1, stdin);
-> +
-> +	/* don't try to execute illegal (unimplemented) instructions) caller
-> +	 * should have checked this and keep worker simple
-> +	 */
-> +	hwcaps = getauxval(AT_HWCAP);
-> +
-> +	if (hwcaps & HWCAP_PACA) {
-> +		signed_vals.keyia = keyia_sign(val);
-> +		signed_vals.keyib = keyib_sign(val);
-> +		signed_vals.keyda = keyda_sign(val);
-> +		signed_vals.keydb = keydb_sign(val);
-> +	}
-> +	signed_vals.keyg = (hwcaps & HWCAP_PACG) ?  keyg_sign(val) : 0;
-> +
-> +	fwrite(&signed_vals, sizeof(struct signatures), 1, stdout);
-> +
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/arm64/pauth/helper.h b/tools/testing/selftests/arm64/pauth/helper.h
-> index b3cf709e249d..fceaa1e4824a 100644
-> --- a/tools/testing/selftests/arm64/pauth/helper.h
-> +++ b/tools/testing/selftests/arm64/pauth/helper.h
-> @@ -6,6 +6,16 @@
->  
->  #include <stdlib.h>
->  
-> +#define NKEYS 5
-> +
-> +
-> +struct signatures {
-> +	size_t keyia;
-> +	size_t keyib;
-> +	size_t keyda;
-> +	size_t keydb;
-> +	size_t keyg;
-> +};
->  
->  void pac_corruptor(void);
->  
-> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
-> index cdbffa8bf61e..16dea47b11c7 100644
-> --- a/tools/testing/selftests/arm64/pauth/pac.c
-> +++ b/tools/testing/selftests/arm64/pauth/pac.c
-> @@ -2,6 +2,8 @@
->  // Copyright (C) 2020 ARM Limited
->  
->  #include <sys/auxv.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
->  #include <signal.h>
->  
->  #include "../../kselftest_harness.h"
-> @@ -33,6 +35,117 @@ do { \
->  } while (0)
->  
->  
-> +void sign_specific(struct signatures *sign, size_t val)
-> +{
-> +	sign->keyia = keyia_sign(val);
-> +	sign->keyib = keyib_sign(val);
-> +	sign->keyda = keyda_sign(val);
-> +	sign->keydb = keydb_sign(val);
-> +}
-> +
-> +void sign_all(struct signatures *sign, size_t val)
-> +{
-> +	sign->keyia = keyia_sign(val);
-> +	sign->keyib = keyib_sign(val);
-> +	sign->keyda = keyda_sign(val);
-> +	sign->keydb = keydb_sign(val);
-> +	sign->keyg  = keyg_sign(val);
-> +}
-> +
-> +int are_same(struct signatures *old, struct signatures *new, int nkeys)
-> +{
-> +	int res = 0;
-> +
-> +	res |= old->keyia == new->keyia;
-> +	res |= old->keyib == new->keyib;
-> +	res |= old->keyda == new->keyda;
-> +	res |= old->keydb == new->keydb;
-> +	if (nkeys == NKEYS)
-> +		res |= old->keyg  == new->keyg;
-> +
-> +	return res;
-> +}
-> +
-> +int exec_sign_all(struct signatures *signed_vals, size_t val)
-> +{
-> +	int new_stdin[2];
-> +	int new_stdout[2];
-> +	int status;
-> +	ssize_t ret;
-> +	pid_t pid;
-> +
-> +	ret = pipe(new_stdin);
-> +	if (ret == -1) {
-> +		perror("pipe returned error");
-> +		return -1;
-> +	}
-> +
-> +	ret = pipe(new_stdout);
-> +	if (ret == -1) {
-> +		perror("pipe returned error");
-> +		return -1;
-> +	}
-> +
-> +	pid = fork();
-> +	// child
-> +	if (pid == 0) {
-> +		dup2(new_stdin[0], STDIN_FILENO);
-> +		if (ret == -1) {
-> +			perror("dup2 returned error");
-> +			exit(1);
-> +		}
-> +
-> +		dup2(new_stdout[1], STDOUT_FILENO);
-> +		if (ret == -1) {
-> +			perror("dup2 returned error");
-> +			exit(1);
-> +		}
-> +
-> +		close(new_stdin[0]);
-> +		close(new_stdin[1]);
-> +		close(new_stdout[0]);
-> +		close(new_stdout[1]);
-> +
-> +		ret = execl("exec_target", "exec_target", (char *) NULL);
-> +		if (ret == -1) {
-> +			perror("exec returned error");
-> +			exit(1);
-> +		}
-> +	}
-> +
-> +	close(new_stdin[0]);
-> +	close(new_stdout[1]);
-> +
-> +	ret = write(new_stdin[1], &val, sizeof(size_t));
-> +	if (ret == -1) {
-> +		perror("write returned error");
-> +		return -1;
-> +	}
-> +
-> +	/*
-> +	 * wait for the worker to finish, so that read() reads all data
-> +	 * will also context switch with worker so that this function can be used
-> +	 * for context switch tests
-> +	 */
-> +	waitpid(pid, &status, 0);
-> +	if (WIFEXITED(status) == 0) {
-> +		fprintf(stderr, "worker exited unexpectedly\n");
-> +		return -1;
-> +	}
-> +	if (WEXITSTATUS(status) != 0) {
-> +		fprintf(stderr, "worker exited with error\n");
-> +		return -1;
-> +	}
-> +
-> +	ret = read(new_stdout[0], signed_vals, sizeof(struct signatures));
-> +	if (ret == -1) {
-> +		perror("read returned error");
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /* check that a corrupted PAC results in SIGSEGV */
->  TEST_SIGNAL(corrupt_pac, SIGSEGV)
->  {
-> @@ -79,5 +192,40 @@ TEST(pac_instructions_not_nop_generic)
->  	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
->  }
->  
-> +/*
-> + * fork() does not change keys. Only exec() does so call a worker program.
-> + * Its only job is to sign a value and report back the resutls
-> + */
-> +TEST(exec_unique_keys)
-> +{
-> +	struct signatures new_keys;
-> +	struct signatures old_keys;
-> +	int ret;
-> +	int different = 0;
-> +	int nkeys = NKEYS;
-> +	unsigned long hwcaps = getauxval(AT_HWCAP);
-> +
-> +	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
-> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
-> +	if (!(hwcaps & HWCAP_PACG)) {
-> +		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
-> +		nkeys = NKEYS - 1;
-> +	}
-> +
-> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
-> +		ret = exec_sign_all(&new_keys, i);
-> +		ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-> +
-> +		if (nkeys == NKEYS)
-> +			sign_all(&old_keys, i);
-> +		else
-> +			sign_specific(&old_keys, i);
-> +
-> +		different |= !are_same(&old_keys, &new_keys, nkeys);
-> +	}
-> +
-> +	ASSERT_EQ(1, different) TH_LOG("exec() did not change keys");
-> +}
-> +
->  TEST_HARNESS_MAIN
->  
-> 
+> v2: Still print the res field, because it's useful (Paul)
+>
+>  net/netlabel/netlabel_domainhash.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+
+Thanks Alex.
+
+Acked-by: Paul Moore <paul@paul-moore.com>
+
+> diff --git a/net/netlabel/netlabel_domainhash.c b/net/netlabel/netlabel_domainhash.c
+> index f73a8382c275e..dc8c39f51f7d3 100644
+> --- a/net/netlabel/netlabel_domainhash.c
+> +++ b/net/netlabel/netlabel_domainhash.c
+> @@ -612,9 +612,8 @@ int netlbl_domhsh_remove_entry(struct netlbl_dom_map *entry,
+>         audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
+>         if (audit_buf != NULL) {
+>                 audit_log_format(audit_buf,
+> -                                " nlbl_domain=%s res=%u",
+> -                                entry->domain ? entry->domain : "(default)",
+> -                                ret_val == 0 ? 1 : 0);
+> +                                " nlbl_domain=%s res=1",
+> +                                entry->domain ? entry->domain : "(default)");
+>                 audit_log_end(audit_buf);
+>         }
+>
+> --
+> 2.28.0
+>
+
 
 -- 
-Regards,
-Vincenzo
+paul moore
+www.paul-moore.com
