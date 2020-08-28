@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3832A255B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C50255B93
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgH1Nqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:46:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:49632 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729482AbgH1No0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:44:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91FD81FB;
-        Fri, 28 Aug 2020 06:31:52 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 795CC3F66B;
-        Fri, 28 Aug 2020 06:31:49 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 14:31:31 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        linux-arch@vger.kernel.org, cameron@moodycamel.com,
-        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
-Subject: Re: [PATCH v4 04/23] arm64: kprobes: Use generic kretprobe
- trampoline handler
-Message-ID: <20200828133131.GA71981@C02TD0UTHF1T.local>
-References: <159861759775.992023.12553306821235086809.stgit@devnote2>
- <159861764221.992023.10214437014901668680.stgit@devnote2>
+        id S1726776AbgH1NvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:51:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726141AbgH1NvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:51:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598622661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ljr3BWVg1KGhtkgQvIGb9sjmr9D7YopQJEcP8hioYqE=;
+        b=CuLNsIZsHuDxmx9E/UPgCL/0Z01a2OTtdbon1gWpUaTNXU571BbmYa/DuzRhVru1giloO4
+        vv13/PUHpoL0fa2VAvrayIz7hpXLWF7x9Yc1KBLHzkyzZ69YHxLElFgVK2iGRDRPZ+SkV+
+        fBiLNLq0Smq7foZJOT8YDnYcxxzFFDE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-g72IHILWMXClwDIqqONPPQ-1; Fri, 28 Aug 2020 09:32:51 -0400
+X-MC-Unique: g72IHILWMXClwDIqqONPPQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DDD618A2240;
+        Fri, 28 Aug 2020 13:32:50 +0000 (UTC)
+Received: from max.home.com (unknown [10.40.194.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA5097D4F6;
+        Fri, 28 Aug 2020 13:32:34 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [GIT PULL] gfs2: Fix memory leak on filesystem withdraw
+Date:   Fri, 28 Aug 2020 15:32:33 +0200
+Message-Id: <20200828133233.1147149-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159861764221.992023.10214437014901668680.stgit@devnote2>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On Fri, Aug 28, 2020 at 09:27:22PM +0900, Masami Hiramatsu wrote:
-> Use the generic kretprobe trampoline handler, and use the
-> kernel_stack_pointer(regs) for framepointer verification.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/arm64/kernel/probes/kprobes.c |   78 +-----------------------------------
->  1 file changed, 3 insertions(+), 75 deletions(-)
+could you please pull the following gfs2 fix?
 
-> +	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
-> +					(void *)kernel_stack_pointer(regs));
->  }
->  
->  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
->  				      struct pt_regs *regs)
->  {
->  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
-> +	ri->fp = (void *)kernel_stack_pointer(regs);
-
-This is probably a nomenclature problem, but what exactly is
-kretprobe_instance::fp used for?
-
-I ask because arm64's frame pointer lives in x29 (and is not necessarily
-the same as the stack pointer at function boundaries), so the naming
-is potentially misleading and possibly worth a comment or rename.
+We didn't detect this bug because we have slab merging on by default
+(CONFIG_SLAB_MERGE_DEFAULT).  Adding "slub_nomerge" to the kernel
+command line exposed the problem.
 
 Thanks,
-Mark.
+Andreas
+
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.9-rc2-fixes
+
+for you to fetch changes up to 462582b99b6079a6fbcdfc65bac49f5c2a27cfff:
+
+  gfs2: add some much needed cleanup for log flushes that fail (2020-08-24 13:54:07 +0200)
+
+----------------------------------------------------------------
+Fix memory leak on filesystem withdraw
+
+----------------------------------------------------------------
+Bob Peterson (1):
+      gfs2: add some much needed cleanup for log flushes that fail
+
+ fs/gfs2/log.c   | 31 +++++++++++++++++++++++++++++++
+ fs/gfs2/trans.c |  1 +
+ 2 files changed, 32 insertions(+)
+
