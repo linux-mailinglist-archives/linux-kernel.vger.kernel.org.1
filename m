@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD21255FEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB062255FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgH1Rno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 13:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgH1Rnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 13:43:43 -0400
-Received: from gaia (unknown [46.69.195.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDB422074A;
-        Fri, 28 Aug 2020 17:43:41 +0000 (UTC)
-Date:   Fri, 28 Aug 2020 18:43:39 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     linux-kernel@vger.kernel.org, f.fainelli@gmail.com, hch@lst.de,
-        linux-rpi-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, robh@kernel.org
-Subject: Re: [RFC] arm64: mm: Do not use both DMA zones when 30-bit address
- space unavailable
-Message-ID: <20200828174338.GK3169@gaia>
-References: <20200819182434.28196-1-nsaenzjulienne@suse.de>
+        id S1726010AbgH1RoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 13:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgH1RoO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 13:44:14 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5879C06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 10:44:13 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j7so1351450oij.9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 10:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ka2toJ4SYrtlIK7dbmXsBvo9OeZt2glE+FJPcFz/zOg=;
+        b=DPn2RIwp6mfg1MAUt4+Srg5bxuZEx9fYANzGEqGJQISQOlLQrLguIJHV66Rnh81Kr7
+         ZZrhgcDcafPJ9LPgWeWeK0F9/LjLT2yAZ7g0EKpo0rc2iDU718WC1UKs3kqUB0LSZFNl
+         p9+C1x/wEwBdKQN2ZWy4G9+H4fvx9PJT+3kXCa0j5GkPg2cHu6wbckVO09UfCTzjq1+x
+         TC1KtbUzV7qK4BULbgVwydqRTQ3Z7EwMDqj4ujza52SjWvLnCx3Egyk7+XCAps6SL+cW
+         JF04vt5QmT69IYNlPK3wIruGGd5KdqR8eIOpkBc295doloy0Pvd4+e2vUKmDwoBjomqG
+         Cl9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ka2toJ4SYrtlIK7dbmXsBvo9OeZt2glE+FJPcFz/zOg=;
+        b=jj7pj7ARq3cVdno1Zajl4tIn3Ch/uPdmiPVuquLmm111ejRYr/kpPuIr6G96D4da2r
+         N8ncjMUGYxr85ekI06iQiMq/Z8LhByXFa6+79ogAwRlJYOjU+THCQv7Vw1AXuGejRxhX
+         nXqdPTqfbASaf9SqgeQ4/fVSs7NAUASAqKl1WbMOZpTnZQ9N9EFtAiDOaKa46QgrVo3v
+         7Gi/IrCWpY6CSrzXP5ieiOBIzaaQ3UcKPxW6zEQWvgXwUM1FUXTgugAfAYuKtYdhTRt6
+         7xK5s8FS+R3zoTgzL8Q5Qa12OgHlGlXvwmfgfYmPnFJ8oQvyNxxNmkCRGGKO9sTqO6wt
+         dhTg==
+X-Gm-Message-State: AOAM533EdJFMJWqL1xQBj6c2sZfg3b9w/ug3g6lzv/mgbpt/Yinev6jC
+        4gSgO3VLSpFRQDZrg7PhJc0zY+X+FMBiqYbMfyn1yQ==
+X-Google-Smtp-Source: ABdhPJxtNn8CA5FcxTF8jvHIbj/TkyPMxjPH3XVVcKj9TobvyTQ7+5i4iEqy1KoT4MrD8qO7vzAqYY9rmtVb6NjlbJE=
+X-Received: by 2002:aca:4b12:: with SMTP id y18mr125116oia.28.1598636651259;
+ Fri, 28 Aug 2020 10:44:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819182434.28196-1-nsaenzjulienne@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200828085622.8365-1-chenyi.qiang@intel.com> <20200828085622.8365-2-chenyi.qiang@intel.com>
+In-Reply-To: <20200828085622.8365-2-chenyi.qiang@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 28 Aug 2020 10:43:59 -0700
+Message-ID: <CALMp9eThyqWuduU=JN+w3M3ANeCYN+7=s-gippzyu_GmvgtVGA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] KVM: nVMX: Fix VMX controls MSRs setup when nested
+ VMX enabled
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+On Fri, Aug 28, 2020 at 1:54 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+>
+> KVM supports the nested VM_{EXIT, ENTRY}_LOAD_IA32_PERF_GLOBAL_CTRL and
+> VM_{ENTRY_LOAD, EXIT_CLEAR}_BNDCFGS, but they doesn't expose during
+> the setup of nested VMX controls MSR.
+>
 
-On Wed, Aug 19, 2020 at 08:24:33PM +0200, Nicolas Saenz Julienne wrote:
-> There is no benefit in splitting the 32-bit address space into two
-> distinct DMA zones when the 30-bit address space isn't even available on
-> a device. If that is the case, default to one big ZONE_DMA spanning the
-> whole 32-bit address space.
-> 
-> This will help reduce some of the issues we've seen with big crash
-> kernel allocations.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
-> 
-> Whith this patch, on a 8GB RPi4 the setup looks like this:
-> 
-> 	DMA      [mem 0x0000000000000000-0x000000003fffffff]
-> 	DMA32    [mem 0x0000000040000000-0x00000000ffffffff]
-> 	Normal   [mem 0x0000000100000000-0x00000001ffffffff]
-> 
-> And stock 8GB virtme/qemu:
-> 
-> 	DMA      [mem 0x0000000040000000-0x00000000ffffffff]
-> 	DMA32    empty
-> 	Normal   [mem 0x0000000100000000-0x000000023fffffff]
-> 
->  arch/arm64/mm/init.c | 29 +++++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index b6881d61b818..857a62611d7a 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -183,13 +183,20 @@ static void __init reserve_elfcorehdr(void)
->  
->  /*
->   * Return the maximum physical address for a zone with a given address size
-> - * limit. It currently assumes that for memory starting above 4G, 32-bit
-> - * devices will use a DMA offset.
-> + * limit or zero if memory starts from an address higher than the zone targeted.
-> + * It currently assumes that for memory starting above 4G, 32-bit devices will
-> + * use a DMA offset.
->   */
->  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
->  {
-> -	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
-> -	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
-> +	phys_addr_t base = memblock_start_of_DRAM();
-> +	phys_addr_t offset = base & GENMASK_ULL(63, 32);
-> +	s64 zone_size = (1ULL << zone_bits) - (base & DMA_BIT_MASK(32));
-> +
-> +	if (zone_size <= 0)
-> +		return 0;
-> +
-> +	return min(base + zone_size + offset, memblock_end_of_DRAM());
->  }
-
-OK, so we can still get some ZONE_DMA if DRAM starts in the first GB.
-
-I don't think it entirely solves the problem. It just happens that the
-other affected SoCs don't have memory in the first GB. With this patch,
-we go by the assumption that ZONE_DMA/DMA32 split is only needed if
-there is memory in the low 1GB and such <32-bit devices don't have a DMA
-offset.
-
-Adding Rob H (it's easier to ask him than grep'ing the DT files ;)), we
-may be ok with this assumption on current SoCs.
-
-An alternative (and I think we had a patch at some point) is to make it
-generic and parse the dma-range in the DT to identify the minimum mask
-and set ZONE_DMA accordingly. But this doesn't solve ACPI, so if Linux
-can boot with ACPI on RPi4 it would still be broken.
-
--- 
-Catalin
+Aren't these features added conditionally in
+nested_vmx_entry_exit_ctls_update() and
+nested_vmx_pmu_entry_exit_ctls_update()?
