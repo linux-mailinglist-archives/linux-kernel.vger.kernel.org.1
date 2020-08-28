@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7A4255B1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C952F255B13
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgH1NTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:19:50 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:44063 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgH1NRy (ORCPT
+        id S1729363AbgH1NTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:19:15 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:32934 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729560AbgH1NS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:17:54 -0400
-X-Originating-IP: 90.89.180.255
-Received: from lhopital-XPS-13-9360.home (lfbn-tou-1-1372-bdcst.w90-89.abo.wanadoo.fr [90.89.180.255])
-        (Authenticated sender: kevin.lhopital@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPA id 2AD0CFF80D;
-        Fri, 28 Aug 2020 13:17:51 +0000 (UTC)
-From:   =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?= 
-        <kevin.lhopital@bootlin.com>
-To:     linux-media@vger.kernel.org
-Cc:     robh+dt@kernel.org, mark.rutland@arm.com, mripard@kernel.org,
-        wens@csie.org, yong.deng@magewell.com, mchehab+samsung@kernel.org,
-        p.zabel@pengutronix.de, sakari.ailus@linux.intel.com,
-        hans.verkuil@cisco.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        paul.kocialkowski@bootlin.com, thomas.petazzoni@bootlin.com,
-        =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?= 
-        <kevin.lhopital@bootlin.com>
-Subject: [PATCH v2 4/4] ARM: dts: sun8i: a83t: Add support for the MIPI CSI-2 in CSI node
-Date:   Fri, 28 Aug 2020 15:17:36 +0200
-Message-Id: <20200828131737.12483-5-kevin.lhopital@bootlin.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200828131737.12483-1-kevin.lhopital@bootlin.com>
-References: <20200828131737.12483-1-kevin.lhopital@bootlin.com>
+        Fri, 28 Aug 2020 09:18:26 -0400
+Received: by mail-il1-f199.google.com with SMTP id b85so766231ilg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 06:18:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iDPByw2KCkmB2dqdYQKNtmzV2Di4FyFUua38hXPB5cE=;
+        b=aaRngBV9Ni0Pxv3GulBWglZ5BlbfEGmwlQHU+Mmpz3CzBJUQkpbJckrtyE2g1oA5kF
+         rOt18u4XE+7NZmz9mZZFMM8Mq4DNpvwQwpnO9Bbwk45mCU7K+wd1Hx1Zm6LaN66T/MMV
+         S9sWua6xFBmmFxOCC6pxoPyTKZ1scsvwtEFZxT88oU36c1LXne9t16skQECxg36OPJTi
+         NaRalaK0SKbSX4Q8GEODPTLvSJ6W82NjU6qmIOr9DFxYQ9MDet13bckMHg4UsYpWcTe7
+         g3iMH/0DreiKrWJJnYd7xatwZ41C1Mwnl4Xf1M5XkJSFilbgVLzWLhfkYx715vKukJrJ
+         3kBQ==
+X-Gm-Message-State: AOAM533PSr6tT3zrKrJ07y/7nEUnKdYliDwbmCLhwkuuqU/lU3f+sNOL
+        FMAKYizcMc7ypg7d+hWzFDTDBNwJR1R/uXVZSu1bjHWoYrNP
+X-Google-Smtp-Source: ABdhPJxRFmiBdnwHGuc1MqyYLVqQooGrzl2/2LFdz46AqW4m54hHj4oPRW0yTVDHF3nseYoBOjugV5hGPKLJYIGpDMVMmHaS4gTU
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr1280258iow.65.1598620697163;
+ Fri, 28 Aug 2020 06:18:17 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 06:18:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8fcd905adefe24b@google.com>
+Subject: kernel BUG at fs/inode.c:LINE! (2)
+From:   syzbot <syzbot+c92c93d1f1aaaacdb9db@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org, oleg@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add in the CSI device node the MIPI CSI2 clocks, interrupt and
-increase the memory size in order to add the support of the
-MIPI CSI-2 for A83T
+Hello,
 
-Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+syzbot found the following issue on:
+
+HEAD commit:    d012a719 Linux 5.9-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15aa650e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+dashboard link: https://syzkaller.appspot.com/bug?extid=c92c93d1f1aaaacdb9db
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ecb939900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=140a19a9900000
+
+The issue was bisected to:
+
+commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682
+Author: Marc Zyngier <maz@kernel.org>
+Date:   Wed Aug 19 16:12:17 2020 +0000
+
+    epoll: Keep a reference on files added to the check list
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16a50519900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15a50519900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a50519900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c92c93d1f1aaaacdb9db@syzkaller.appspotmail.com
+Fixes: a9ed4a6560b8 ("epoll: Keep a reference on files added to the check list")
+
+------------[ cut here ]------------
+kernel BUG at fs/inode.c:1668!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 29571 Comm: syz-executor709 Not tainted 5.9.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:iput+0x6d8/0x6e0 fs/inode.c:1668
+Code: ef ff e9 1a fc ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c c8 fe ff ff 4c 89 ef e8 a2 51 ef ff e9 bb fe ff ff e8 68 77 af ff <0f> 0b 66 0f 1f 44 00 00 55 41 57 41 56 53 48 89 f5 48 89 fb 49 bf
+RSP: 0018:ffffc9000e25fda8 EFLAGS: 00010293
+RAX: ffffffff81c580b8 RBX: ffff888085112600 RCX: ffff8880a6eea200
+RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+RBP: 0000000000000040 R08: ffffffff81c57a40 R09: ffffed10116fe44d
+R10: ffffed10116fe44d R11: 0000000000000000 R12: 1ffff11010a224ac
+R13: dffffc0000000000 R14: ffff888085112600 R15: ffff888085112560
+FS:  0000000001665880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 000000008f752000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __sock_release net/socket.c:608 [inline]
+ sock_close+0x1c3/0x260 net/socket.c:1277
+ __fput+0x34f/0x7b0 fs/file_table.c:281
+ task_work_run+0x137/0x1c0 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
+ exit_to_user_mode_prepare+0xfa/0x1b0 kernel/entry/common.c:167
+ syscall_exit_to_user_mode+0x5e/0x1a0 kernel/entry/common.c:242
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4058e1
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 19 00 00 c3 48 83 ec 08 e8 6a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 b3 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007ffc7ca575a0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000006 RCX: 00000000004058e1
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 0000000000000007 R08: 0000000120080522 R09: 0000000120080522
+R10: 0000000120080522 R11: 0000000000000293 R12: 00000000006dbc5c
+R13: 0000000000000001 R14: 00000000006dbc50 R15: 0000000000000064
+Modules linked in:
+---[ end trace 35240c511479d576 ]---
+RIP: 0010:iput+0x6d8/0x6e0 fs/inode.c:1668
+Code: ef ff e9 1a fc ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c c8 fe ff ff 4c 89 ef e8 a2 51 ef ff e9 bb fe ff ff e8 68 77 af ff <0f> 0b 66 0f 1f 44 00 00 55 41 57 41 56 53 48 89 f5 48 89 fb 49 bf
+RSP: 0018:ffffc9000e25fda8 EFLAGS: 00010293
+RAX: ffffffff81c580b8 RBX: ffff888085112600 RCX: ffff8880a6eea200
+RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+RBP: 0000000000000040 R08: ffffffff81c57a40 R09: ffffed10116fe44d
+R10: ffffed10116fe44d R11: 0000000000000000 R12: 1ffff11010a224ac
+R13: dffffc0000000000 R14: ffff888085112600 R15: ffff888085112560
+FS:  0000000001665880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 000000008f752000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- arch/arm/boot/dts/sun8i-a83t.dtsi | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8i-a83t.dtsi
-index 53c38deb8a08..5e6421eb8e28 100644
---- a/arch/arm/boot/dts/sun8i-a83t.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
-@@ -1025,12 +1025,15 @@
- 
- 		csi: camera@1cb0000 {
- 			compatible = "allwinner,sun8i-a83t-csi";
--			reg = <0x01cb0000 0x1000>;
--			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
-+			reg = <0x01cb0000 0x2000>;
-+			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&ccu CLK_BUS_CSI>,
- 				 <&ccu CLK_CSI_SCLK>,
--				 <&ccu CLK_DRAM_CSI>;
--			clock-names = "bus", "mod", "ram";
-+				 <&ccu CLK_DRAM_CSI>,
-+				 <&ccu CLK_MIPI_CSI>,
-+				 <&ccu CLK_CSI_MISC>;
-+			clock-names = "bus", "mod", "ram", "mipi", "misc";
- 			resets = <&ccu RST_BUS_CSI>;
- 			status = "disabled";
- 
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
