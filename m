@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06862552DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847DF2552B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgH1B7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 21:59:34 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51654 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727124AbgH1B7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 21:59:34 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AD070D3F16C2953E7244;
-        Fri, 28 Aug 2020 09:59:31 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 28 Aug 2020
- 09:59:21 +0800
-Subject: Re: [PATCH v11 5/5] kdump: update Documentation about crashkernel
-To:     Dave Young <dyoung@redhat.com>, <catalin.marinas@arm.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-6-chenzhou10@huawei.com>
- <20200808100239.GB60590@dhcp-128-65.nay.redhat.com>
- <96d0da23-d484-7f66-1680-07b4b5984831@huawei.com>
- <20200810060355.GB6988@dhcp-128-65.nay.redhat.com>
- <2e6aebf9-3765-5d8c-933c-698442db1d52@huawei.com>
- <20200819120301.GA13727@dhcp-128-65.nay.redhat.com>
-CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <bhsharma@redhat.com>, <horms@verge.net.au>, <robh+dt@kernel.org>,
-        <arnd@arndb.de>, <nsaenzjulienne@suse.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <a2e6def1-f81a-d90d-e0a9-c7bdee6675a9@huawei.com>
-Date:   Fri, 28 Aug 2020 09:59:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1728295AbgH1BvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 21:51:11 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51152 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgH1BvK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 21:51:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07S1idOa027183;
+        Fri, 28 Aug 2020 01:50:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0vEFas0o4yRWOhG2ENnl7n65xG6A/FN00LeWvkgsczw=;
+ b=XE0VIDKyogXdQZ0qzKJ+Wu+i/b6H01FhVfL4/cLGsMMPiz9MWho9/U1pIpgkJa1Rjj19
+ sM7oGO8JWZn/t6a3zVIHme05BRziso5hDoiwgxKrWYJSAOgSB2QC1f8qIBYK7iAsTaQi
+ kv0oZeyi/GXxIS/bHV0m3n7k1IEJc6dTWa2s9q9CYMR+icrVTO3wCyua3wfjLR6V6c2M
+ QrJpqpaAUNI1fesVfiE4z2RPjCVQJmMVs0BmoI2jqhcGJjuOysmPu18GC4rOjInK3nAj
+ BGSp0PtHtHwZBJGIfMgSErcTQ1zj5UJ2aXqqdDYnKNciGHxy4nlhCNXS/NgNJ3GfAx+r Ew== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 336ht3hjf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Aug 2020 01:50:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07S1oul0163912;
+        Fri, 28 Aug 2020 01:50:58 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 333r9p44dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Aug 2020 01:50:57 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07S1ojq9030304;
+        Fri, 28 Aug 2020 01:50:46 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 27 Aug 2020 18:50:45 -0700
+Date:   Thu, 27 Aug 2020 21:59:44 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] padata: add a reviewer
+Message-ID: <20200828015944.tk45hzuyzkabbrs3@ca-dmjordan1.us.oracle.com>
+References: <20200826145923.719126-1-daniel.m.jordan@oracle.com>
+ <20200827064409.GA20687@gauss3.secunet.de>
 MIME-Version: 1.0
-In-Reply-To: <20200819120301.GA13727@dhcp-128-65.nay.redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827064409.GA20687@gauss3.secunet.de>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxlogscore=901 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008280015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 clxscore=1015 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=901 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008280014
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Thu, Aug 27, 2020 at 08:44:09AM +0200, Steffen Klassert wrote:
+> Please also consider to add yourself as one of the maintainers.
 
-
-On 2020/8/19 20:03, Dave Young wrote:
-> On 08/18/20 at 03:07pm, chenzhou wrote:
->>
->> On 2020/8/10 14:03, Dave Young wrote:
->>> Hi,
->>>
->>>>> Previously I remember we talked about to use similar logic as X86, but I
->>>>> remember you mentioned on some arm64 platform there could be no low
->>>>> memory at all.  Is this not a problem now for the fallback?  Just be
->>>>> curious, thanks for the update, for the common part looks good.
->>>> Hi Dave,
->>>>
->>>> Did you mean this discuss: https://lkml.org/lkml/2019/12/27/122?
->>> I meant about this reply instead :)
->>> https://lkml.org/lkml/2020/1/16/616
->> Hi Dave,
->>
->> Sorry for not repley in time, I was on holiday last week.
-> Hi, no problem, thanks for following up.
->
->> The platform James mentioned may exist for which have no devices and need no low memory.
->> For our arm64 server platform, there are some devices and need low memory.
->>
->> I got it. For the platform with no low memory, reserving crashkernel will  always fail.
->> How about like this:
-> I think the question should leave to Catalin or James, I have no
-> suggestion about this:)
-Any suggestions about this?
-
-Thanks,
-Chen Zhou
->
->> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->> index a8e34d97a894..4df18c7ea438 100644
->> --- a/arch/arm64/mm/init.c
->> +++ b/arch/arm64/mm/init.c
->> @@ -147,7 +147,7 @@ static void __init reserve_crashkernel(void)
->>         }
->>         memblock_reserve(crash_base, crash_size);
->>  
->> -       if (crash_base >= CRASH_ADDR_LOW_MAX) {
->> +       if (memstart_addr < CRASH_ADDR_LOW_MAX && crash_base >= CRASH_ADDR_LOW_MAX) {
->>                 const char *rename = "Crash kernel (low)";
->>  
->>                 if (reserve_crashkernel_low()) {
->>
->>
->> Thanks,
->> Chen Zhou
->>
->>> Thanks
->>> Dave
->>>
->>>
->>> .
->>>
->>
->
-> .
->
-
-
+Ok, sure!  I'll take you up on that.
