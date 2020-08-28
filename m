@@ -2,172 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059C12555F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FE7255600
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgH1II1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 04:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727911AbgH1IIS (ORCPT
+        id S1728610AbgH1IKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 04:10:32 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54842 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728593AbgH1IKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:08:18 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43879C061264;
-        Fri, 28 Aug 2020 01:08:17 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f26so311532ljc.8;
-        Fri, 28 Aug 2020 01:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g96tIDvgXJwPKOOA7+dvNjyN4dZbplzDaIkRNTr7fA8=;
-        b=OIyLwi3Vr5KWpQPEDlhBsXpg/0S4rnyQymPOqu1yKAIwoMPbUTHVXdAMh+1nVxeqw+
-         +RXtkoQIUQWC+DpfY+fW4qXGBgOfXzpjrJBQ7mZTtsK9+i7uPSYwwFDafP+zgFt6BkH4
-         AHSV2gmRA55eQ6IPxvdYIWrkB4dVDk0dY6OqRRifGMNsd0gXZk5MyMgVxL7/jHa9Be0A
-         ZsAq0kTkAk3NDfQOFaG2E7cbKz2+pGobSGLJCEQleR8L6AQQ4NyYArQh/XfvkLd9EwOE
-         7euZli3irUtQnZ3yaWVy0UVHWWdFs/lQ2YilW0VaFnAp7yRJQC9d+c+g9hCkCTKnDJ41
-         n8dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g96tIDvgXJwPKOOA7+dvNjyN4dZbplzDaIkRNTr7fA8=;
-        b=F0WBz9mWx7y+yloysECzd/IvZ4TAvvmAktEpOhjsm4+cdJADtYaWX2nApWRU4SxjIG
-         YqCSQMm8clt0FzF7/xUdMrMvwUFFNw+oqfl7huVV7b3dlPegvufxZWfndvCK/wV3Bqy4
-         g0i4VILL3qt4YP54z9Kfu1GDRQtL5ugCaDkbPmaUJFTQMyHa6L+MazVcaDQRKZ3MlwAM
-         XH4FykBA0QJNg5sBh6wJckoGh/28z0hAXp586ADNFp6hEGbNp6WaLJK2PlPJTHJ2jOqs
-         3STmhW9HzhMs8+m+CSY+AFC0f4ATduWsbHejZUewFsrtQkjlwKH+XhtmepFnVIXGIZIJ
-         deKQ==
-X-Gm-Message-State: AOAM532QJXnt0yOICzDX/Bl0HrIJnOnZpSPGZa9Uh35jYq1462Ku94uo
-        DOO9fY/1UcT2sfXOAFIjV/k=
-X-Google-Smtp-Source: ABdhPJyu8QkdtOQ5d0gDqWk3Z8P06H3SGbpZ1bKzRyPqQwAQ2k0JdyGShskPUlc7V9A+tZXc+qDtEw==
-X-Received: by 2002:a2e:b0db:: with SMTP id g27mr339392ljl.69.1598602095628;
-        Fri, 28 Aug 2020 01:08:15 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id a4sm124716lfr.2.2020.08.28.01.08.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Aug 2020 01:08:15 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] Input: atmel_mxt_ts - allow specification of
- firmware file name
-To:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200821075410.8250-1-jiada_wang@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <081a63b6-b34e-1e52-50ac-b44255c8ed40@gmail.com>
-Date:   Fri, 28 Aug 2020 11:08:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 28 Aug 2020 04:10:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598602221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xvafGB3h1uSuShOcxklJX4Q2Ef6CI/lwjYNIZ0zdVjc=;
+        b=IAJ0KU/y5M3VFQYb7/2GeCjUEQEkMijjGGhKGvBRTD7dtRO/0Eb30o7/ebdIk5/tWm3JYc
+        u9T8IJasvDzws8iDwRYVss7soKgmWRKyXwNDR+WwJ6UHM5YCkOj4Fx1MzgmrXKwLXEHSXi
+        zb2I7PpQp4HK/CfHlsUrrI6abjvzUSs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-RHOgIQ7tOa6GJlcVJUT-kg-1; Fri, 28 Aug 2020 04:10:17 -0400
+X-MC-Unique: RHOgIQ7tOa6GJlcVJUT-kg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 204F5425E8;
+        Fri, 28 Aug 2020 08:10:15 +0000 (UTC)
+Received: from gondolin (ovpn-113-255.ams2.redhat.com [10.36.113.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F2C85D9F3;
+        Fri, 28 Aug 2020 08:10:05 +0000 (UTC)
+Date:   Fri, 28 Aug 2020 10:10:02 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 01/16] s390/vfio-ap: add version vfio_ap module
+Message-ID: <20200828101002.57c0d81f.cohuck@redhat.com>
+In-Reply-To: <8b3eb14e-c388-3025-1bfb-2dc7fb820de3@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-2-akrowiak@linux.ibm.com>
+        <20200825120432.13a1b444.cohuck@redhat.com>
+        <ca016eca-1ee7-2d0f-c2ec-3ef147b6216a@linux.ibm.com>
+        <20200827123240.42e0c787.cohuck@redhat.com>
+        <8b3eb14e-c388-3025-1bfb-2dc7fb820de3@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200821075410.8250-1-jiada_wang@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.08.2020 10:54, Jiada Wang пишет:
-> From: Nick Dyer <nick.dyer@itdev.co.uk>
-> 
-> On platforms which have multiple device instances using this driver, the
-> firmware may be different on each device. This patch makes the user give
-> the name of the firmware file when flashing.
-> 
-> If user specified firmware file can't be found, then driver will try to
-> flash default firmware "maxtouch.fw".
-> 
-> Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
-> Acked-by: Benson Leung <bleung@chromium.org>
-> Acked-by: Yufeng Shen <miletus@chromium.org>
-> (cherry picked from ndyer/linux/for-upstream commit 76ebb7cee971cb42dfb0a3a9224403b8b09abcf1)
-> [gdavis: Forward port and fix conflicts.]
-> Signed-off-by: George G. Davis <george_davis@mentor.com>
-> [jiada: change to flash default firmware file, when user specified firmware can't be found]
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
->  drivers/input/touchscreen/atmel_mxt_ts.c | 33 +++++++++++++++++++++++-
->  1 file changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-> index a2189739e30f..a20bc1bf8d52 100644
-> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
-> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-> @@ -34,6 +34,7 @@
->  #define MXT_FW_NAME		"maxtouch.fw"
->  #define MXT_CFG_NAME		"maxtouch.cfg"
->  #define MXT_CFG_MAGIC		"OBP_RAW V1"
-> +#define MAX_FILENAME_SIZE	64
->  
->  /* Registers */
->  #define MXT_OBJECT_START	0x07
-> @@ -308,6 +309,7 @@ struct mxt_data {
->  	struct t7_config t7_cfg;
->  	struct mxt_dbg dbg;
->  	struct gpio_desc *reset_gpio;
-> +	char fw_name[MAX_FILENAME_SIZE];
->  
->  	/* Cached parameters from object table */
->  	u16 T5_address;
-> @@ -2887,6 +2889,26 @@ static int mxt_load_fw(struct device *dev, const char *fn)
->  	return ret;
->  }
->  
-> +static int mxt_update_file_name(struct device *dev, char *file_name,
-> +				const char *buf, size_t count)
-> +{
-> +	size_t len = count;
-> +
-> +	/* Echo into the sysfs entry may append newline at the end of buf */
-> +	if (buf[count - 1] == '\n')
-> +		len = count - 1;
-> +
-> +	/* Simple sanity check */
-> +	if (len > MAX_FILENAME_SIZE - 1) {
-> +		dev_warn(dev, "File name too long\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	strscpy(file_name, buf, len + 1);
-> +
-> +	return 0;
-> +}
-> +
->  static ssize_t mxt_update_fw_store(struct device *dev,
->  					struct device_attribute *attr,
->  					const char *buf, size_t count)
-> @@ -2894,7 +2916,16 @@ static ssize_t mxt_update_fw_store(struct device *dev,
->  	struct mxt_data *data = dev_get_drvdata(dev);
->  	int error;
->  
-> -	error = mxt_load_fw(dev, MXT_FW_NAME);
-> +	error = mxt_update_file_name(dev, data->fw_name, buf, count);
-> +	if (error)
-> +		return error;
-> +
-> +	error = mxt_load_fw(dev, data->fw_name);
-> +	if (error) {
-> +		dev_warn(dev, "try %s instead\n", MXT_FW_NAME);
+On Thu, 27 Aug 2020 10:39:07 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Hello, Jiada!
+> Currently there are two tools that probably need to be aware of
+> the changes to these assignment interfaces:
+> * The hades test framework has tests that will fail if run against
+>  =C2=A0=C2=A0 these patches that should be skipped if over-provisioning is
+>  =C2=A0=C2=A0 allowed. There are also tests under development to test the
+>  =C2=A0=C2=A0 function introduced by these patches that will fail if run =
+against
+>  =C2=A0=C2=A0 an older version of the driver. These tests should be skipp=
+ed in
+>  =C2=A0=C2=A0 that case.
+> * There is a tool under development for configuring AP matrix
+>  =C2=A0=C2=A0 mediated devices that probably need to be aware of the chan=
+ge
+>  =C2=A0=C2=A0 introduced by this series.
+>=20
+> Since a tool would have to first determine whether a new sysfs
+> interface documenting facilities is available and it would only
+> expose one facility at this point, it seems reasonable for these tools
+> to check for the sysfs guest_matrix attribute to discern whether
+> over-provisioning is available or not. I'll go ahead and remove this
+> patch from the series.
 
-Will this message be printed even if fw_name is an empty string or
-whatever string that is already used by existing userspace for writing
-to update_fw?
-
-Maybe it actually should be better to add a new device attribute that
-will take the fw_name? Then the old attribute will continue to work like
-it worked before.
-
-> +		error = mxt_load_fw(dev, MXT_FW_NAME);
-> +	}
-> +
->  	if (error) {
->  		dev_err(dev, "The firmware update failed(%d)\n", error);
->  		count = error;
-> 
+Thanks for the explanation, that seems reasonable to me.
 
