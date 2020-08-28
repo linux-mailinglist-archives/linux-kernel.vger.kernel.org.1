@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DE325571C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C83425571F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgH1JGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44740 "EHLO mail.kernel.org"
+        id S1728812AbgH1JHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728016AbgH1JGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:06:41 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728016AbgH1JHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 05:07:08 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DC1D2071B;
-        Fri, 28 Aug 2020 09:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 493062071B;
+        Fri, 28 Aug 2020 09:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598605599;
-        bh=MPhtp0UtdEZ75rpOuAq7t66CaY460V2FzguTeM/ym6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A0bRjlHrquKlHU4zHVZhrlp9d3Y2By2Ei+MSTE1ZwDh2nnxwrAeNuRNcjYusUPAWs
-         /fr41z6y8Lw1uo6Woec2U/a+1GiY680HU//nN0Uv6Tg48dqe1rWrt3toWDq29pFbSU
-         dw7RWdVwgAn1rYS+M/bDi/PADHv4ERW79Bc2D198=
-Date:   Fri, 28 Aug 2020 11:06:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH kernel] serial_core: Check for port state when tty is
- in error state
-Message-ID: <20200828090651.GA1110962@kroah.com>
-References: <20200728124359.980-1-aik@ozlabs.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728124359.980-1-aik@ozlabs.ru>
+        s=default; t=1598605627;
+        bh=iJ29MQbverKkUXcy2t6xCo9ztoVcU48RgfAfleJOr/s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sHOU5fS3eW+dkXh3hubsixQafbCFIeb1C1fi8ZpJ1lXPiGZyRfv/XBfYZRlHXGxej
+         OZgGP+A/wy1jqDlMKbZB8R3dcWK8qb18wqqs7ib8GmeLrdF7mnOCFk6YidbK+2z5Bh
+         mE+JLb+YzL8p2NXPen2uI8wj2pyksFsjyH74KdO8=
+Date:   Fri, 28 Aug 2020 18:07:02 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        linux-arch@vger.kernel.org, cameron@moodycamel.com,
+        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
+Subject: Re: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
+Message-Id: <20200828180702.1e00c4e75e0f4b92fbc7b001@kernel.org>
+In-Reply-To: <20200828030059.d6618caf5b0214c424b941df@kernel.org>
+References: <20200827161237.889877377@infradead.org>
+        <20200827161754.359432340@infradead.org>
+        <20200828030059.d6618caf5b0214c424b941df@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:43:59PM +1000, Alexey Kardashevskiy wrote:
-> At the moment opening a serial device node (such as /dev/ttyS3)
-> succeeds even if there is no actual serial device behind it.
-> Reading/writing/ioctls (most) expectantly fail as the uart port is not
-> initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
-> bit is set fot the tty.
+On Fri, 28 Aug 2020 03:00:59 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-That is only if there is no ldisc set for the port, right?  I don't
-think that always will be the case if the port is not initialized.
-
-Yes, we do clear this on port open, but we clear it before the
-->activate() callback happens.
-
-Why not check for initialized instead?  That would seem to be what you
-want to do here instead of checking for an io error.
-
-> However syzkaller (a syscall fuzzer) found that setting line discipline
-> does not have these checks all the way down to io_serial_out() in
-> 8250_port.c (8250 is the default choice made by univ8250_console_init()).
-> As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
-> a platform translates onto some address accessing which produces a crash
-> like below.
+> On Thu, 27 Aug 2020 18:12:40 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> This adds tty_io_error() to uart_set_ldisc() to prevent the crash.
+> > +static void invalidate_rp_inst(struct task_struct *t, struct kretprobe *rp)
+> > +{
+> > +	struct invl_rp_ipi iri = {
+> > +		.task = t,
+> > +		.rp = rp,
+> > +		.done = false
+> > +	};
+> > +
+> > +	for (;;) {
+> > +		if (try_invoke_on_locked_down_task(t, __invalidate_rp_inst, rp))
+> > +			return;
+> > +
+> > +		smp_call_function_single(task_cpu(t), __invalidate_rp_ipi, &iri, 1);
+> > +		if (iri.done)
+> > +			return;
+> > +	}
 > 
-> The example of crash on PPC64/pseries:
+> Hmm, what about making a status place holder and point it from
+> each instance to tell it is valid or not?
 > 
-> BUG: Unable to handle kernel data access on write at 0xc00a000000000001
-> Faulting instruction address: 0xc000000000c9c9cc
-> cpu 0x0: Vector: 300 (Data Access) at [c00000000c6d7800]
->     pc: c000000000c9c9cc: io_serial_out+0xcc/0xf0
->     lr: c000000000c9c9b4: io_serial_out+0xb4/0xf0
->     sp: c00000000c6d7a90
->    msr: 8000000000009033
->    dar: c00a000000000001
->  dsisr: 42000000
->   current = 0xc00000000cd22500
->   paca    = 0xc0000000035c0000   irqmask: 0x03   irq_happened: 0x01
->     pid   = 1371, comm = syz-executor.0
-> Linux version 5.8.0-rc7-le-guest_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc (Ubunt
-> untu) 2.30) #660 SMP Tue Jul 28 22:29:22 AEST 2020
-> enter ? for help
-> [c00000000c6d7a90] c0000000018a8cc0 _raw_spin_lock_irq+0xb0/0xe0 (unreliable)
-> [c00000000c6d7ad0] c000000000c9bdc0 serial8250_do_set_ldisc+0x140/0x180
-> [c00000000c6d7b10] c000000000c9bea4 serial8250_set_ldisc+0xa4/0xb0
-> [c00000000c6d7b50] c000000000c91138 uart_set_ldisc+0xb8/0x160
-> [c00000000c6d7b90] c000000000c5a22c tty_set_ldisc+0x23c/0x330
-> [c00000000c6d7c20] c000000000c4c220 tty_ioctl+0x990/0x12f0
-> [c00000000c6d7d20] c00000000056357c ksys_ioctl+0x14c/0x180
-> [c00000000c6d7d70] c0000000005635f0 sys_ioctl+0x40/0x60
-> [c00000000c6d7db0] c00000000003b814 system_call_exception+0x1a4/0x330
-> [c00000000c6d7e20] c00000000000d368 system_call_common+0xe8/0x214
+> struct kretprobe_holder {
+> 	atomic_t refcnt;
+> 	struct kretprobe *rp;
+> };
 > 
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
+> struct kretprobe {
+> ...
+> 	struct kretprobe_holder	*rph;	// allocate at register
+> ...
+> };
 > 
-> While looking at it, I noticed that a bunch of callbacks are prone to
-> this bug and since I wanted to fix them all with minimum effort,
-> I tried checking for PORT_UNKNOWN in uart_port_check() but it breaks
-> device opening. Another approach could be checking for uart_port::iobase
-> in 8250 (and probably uart_port::membase as well) but this will make
-> the rest of the code to think the device is ok while there is no device
-> at all.
+> struct kretprobe_instance {
+> ...
+> 	struct kretprobe_holder	*rph; // free if refcnt == 0
+> ...
+> };
 > 
-> What would the correct approach be and what is the expectation?
+> cleanup_rp_inst(struct kretprobe *rp)
+> {
+> 	rp->rph->rp = NULL;
+> }
+> 
+> kretprobe_trampoline_handler()
+> {
+> ...
+> 	rp = READ_ONCE(ri->rph-rp);
+> 	if (likely(rp)) {
+> 		// call rp->handler
+> 	} else
+> 		rcu_call(ri, free_rp_inst_rcu);
+> ...
+> }
+> 
+> free_rp_inst_rcu()
+> {
+> 	if (!atomic_dec_return(ri->rph->refcnt))
+> 		kfree(ri->rph);
+> 	kfree(ri);
+> }
+> 
+> This increase kretprobe_instance a bit, but make things simpler.
+> (and still keep lockless, atomic op is in the rcu callback).
 
-We should probably check tty_port_initialized() on these code paths
-better, care to fix that up?
+OK, I've written the code and run a smoke test on it.
+I'll send it with my 4th version of series.
 
-thanks,
+Thank you,
 
-greg k-h
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
