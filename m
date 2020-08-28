@@ -2,171 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A8425582F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B589255824
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729031AbgH1KBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 06:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgH1KAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 06:00:52 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A440C061264;
-        Fri, 28 Aug 2020 03:00:52 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mw10so294152pjb.2;
-        Fri, 28 Aug 2020 03:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1Y/faACy8cJZqe+8jbvX5+3MT7IMXQLldBAzW7OQGFU=;
-        b=AP/FuUUz2c24R7h91evEMtU7s8yHhwXL6DM9u/2Mj6P86m31kOa2XEFxhYVFf9tZrE
-         jv91cc3rMnttdOv5nUM25o4L9TDkox0OKTI4NdHKWJ2t8G5X6kuCjT11G/p+JGAnetfj
-         aAdB92JLJZ+7ALLMOIx0G2O39sEKINQW7bkStFpXhtzHjTjJGrWOw521+Rp98GWmDpbD
-         fJqSEgzfi/V8ctIwTqI7EUTk+Eu0WQf2y+CmgiuYKQkw+ftlvW12QmS43WzjL5wegPaU
-         +VekSmy9gjIfJo4DEQR7zjgtk3AuxjdbAtl+UiSUVXtR4ga0IDGrVC4DCumTFiQTzqNp
-         WBZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1Y/faACy8cJZqe+8jbvX5+3MT7IMXQLldBAzW7OQGFU=;
-        b=GX4rdgUmQKUHHx61gzyDHSmQpNtc06gmhn8weDyKRx/kqN4oukcCGewxZIPvhmKFWC
-         kqBKMa9cHpmrSaJo5MRms93NgOSEx6R66DVCDXprpJak0yxTYm0McMW8HG5eFRmCFWs1
-         h1+fFn+idqiJgImrg7OOQFJ3CIUIkDuc3YJkXMDYRZtKQ46sJs9h6PkDy0gBWIAgqz8z
-         5WTTc+fuRsZcf5vZJA1Q5MxdYUs2+DJLC05Mqm6X4Bcob+WGxjeasVDiCojnqx7njt4Z
-         RiOuGU4ZI4dp7YAKCc9Rgo1zA3KvzApfnIMUKrejc8mbGWTaUt0WZPEWYUOQOxbY0ABC
-         so+g==
-X-Gm-Message-State: AOAM530juMOVABjdKDQDDBJuh4ll48hxGrs0qcWUiE7ggLG/HB4ZISTX
-        ExukPEW24NIaDOhdQmHt/3k=
-X-Google-Smtp-Source: ABdhPJxv4t8TEETyZrq5vtkYIY4wLkQzivB6f4HHzIzllMBpn1clbhbAwA9g7HebVxjFpblwPrb97w==
-X-Received: by 2002:a17:90b:100e:: with SMTP id gm14mr556462pjb.39.1598608851815;
-        Fri, 28 Aug 2020 03:00:51 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
-        by smtp.gmail.com with ESMTPSA id 78sm1068608pfv.200.2020.08.28.03.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 03:00:51 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4/4] powerpc/64s/radix: Fix mm_cpumask trimming race vs kthread_use_mm
-Date:   Fri, 28 Aug 2020 20:00:22 +1000
-Message-Id: <20200828100022.1099682-5-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200828100022.1099682-1-npiggin@gmail.com>
-References: <20200828100022.1099682-1-npiggin@gmail.com>
+        id S1728946AbgH1KAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 06:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728218AbgH1KAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 06:00:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84FA42078A;
+        Fri, 28 Aug 2020 10:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598608836;
+        bh=sqJqYmGsrcZElJ0eIt1DDvGzLzBOscBm1LDUda7F5RM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i31hSp8bPrdNGQNpJQZSoFNam+AFIlE7FvuXcZYibC9fo602ow06v4rMVY6EGkeP1
+         iyxDeKCu79LIBm/3hceUgb0KbtjAZsXD4sTsA1oC9NyuyVKEHXJc2jkEd0rt+lsFpO
+         YwUexOu8ydV13OE4YzmS9q3gz0Lt/7aAWnVq5Xoo=
+Date:   Fri, 28 Aug 2020 12:00:48 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Roman Bolshakov <r.bolshakov@yadro.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Arun Easi <aeasi@marvell.com>
+Subject: Re: [PATCH] MAINTAINERS: orphan sections with qlogic.com group alias
+Message-ID: <20200828100048.GA1229122@kroah.com>
+References: <20200828070824.8032-1-lukas.bulwahn@gmail.com>
+ <20200828091758.GF54274@SPB-NB-133.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828091758.GF54274@SPB-NB-133.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of
-single-threaded mm_cpumask") added a mechanism to trim the mm_cpumask of
-a process under certain conditions. One of the assumptions is that
-mm_users would not be incremented via a reference outside the process
-context with mmget_not_zero() then go on to kthread_use_mm() via that
-reference.
+On Fri, Aug 28, 2020 at 12:17:58PM +0300, Roman Bolshakov wrote:
+> On Fri, Aug 28, 2020 at 09:08:24AM +0200, Lukas Bulwahn wrote:
+> > Previous attempts of getting an answer from the qlogic.com group alias,
+> > i.e., QLogic-Storage-Upstream@qlogic.com, have remained unanswered; see
+> > links below.
+> > 
+> > Mark those sections Orphan to prepare their deletion or give an actual
+> > person a chance to step up to maintain those drivers.
+> > 
+> > Link: https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de
+> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2006300644130.4919@felia
+> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2008270740140.31123@felia
+> > 
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > applies cleanly on current master and next-20200828
+> > 
+> > James, Martin, please pick this minor non-urgent patch.
+> > 
+> > Anil, Sudarsana, if these drivers are still maintained by qlogic, please
+> > provide actual names of people that maintain these drivers.
+> > 
+> >  MAINTAINERS | 9 +++------
+> >  1 file changed, 3 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3b186ade3597..415058b48a2e 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -3507,15 +3507,13 @@ F:	drivers/net/ethernet/broadcom/bnx2.*
+> >  F:	drivers/net/ethernet/broadcom/bnx2_*
+> >  
+> >  BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER
+> > -M:	QLogic-Storage-Upstream@qlogic.com
+> >  L:	linux-scsi@vger.kernel.org
+> > -S:	Supported
+> > +S:	Orphan
+> >  F:	drivers/scsi/bnx2fc/
+> >  
+> >  BROADCOM BNX2I 1/10 GIGABIT iSCSI DRIVER
+> > -M:	QLogic-Storage-Upstream@qlogic.com
+> >  L:	linux-scsi@vger.kernel.org
+> > -S:	Supported
+> > +S:	Orphan
+> >  F:	drivers/scsi/bnx2i/
+> >  
+> >  BROADCOM BNX2X 10 GIGABIT ETHERNET DRIVER
+> > @@ -14212,9 +14210,8 @@ F:	Documentation/networking/device_drivers/ethernet/qlogic/LICENSE.qla3xxx
+> >  F:	drivers/net/ethernet/qlogic/qla3xxx.*
+> >  
+> >  QLOGIC QLA4XXX iSCSI DRIVER
+> > -M:	QLogic-Storage-Upstream@qlogic.com
+> >  L:	linux-scsi@vger.kernel.org
+> > -S:	Supported
+> > +S:	Orphan
+> >  F:	Documentation/scsi/LICENSE.qla4xxx
+> >  F:	drivers/scsi/qla4xxx/
+> >  
+> > -- 
+> > 2.17.1
+> > 
+> 
+> CC'd Arun,
+> 
+> I think it's worth to update the alias to:
+> 
+> GR-QLogic-Storage-Upstream@marvell.com
 
-That invariant was broken by io_uring code (see previous sparc64 fix),
-but I'll point Fixes: to the original powerpc commit because we are
-changing that assumption going forward, so this will make backports
-match up.
+Again, no, please remove aliases and use real names and email addresses,
+otherwise accountability is lost over time, as we have seen constantly.
 
-Fix this by no longer relying on that assumption, but by having each CPU
-check the mm is not being used, and clearing their own bit from the mask
-if it's okay. This fix relies on commit 38cf307c1f20 ("mm: fix
-kthread_use_mm() vs TLB invalidate") to disable irqs over the mm switch,
-and ARCH_WANT_IRQS_OFF_ACTIVATE_MM to be enabled.
+thanks,
 
-Fixes: 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of single-threaded mm_cpumask")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/powerpc/include/asm/tlb.h       | 13 -------------
- arch/powerpc/mm/book3s64/radix_tlb.c | 23 ++++++++++++++++-------
- 2 files changed, 16 insertions(+), 20 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/tlb.h b/arch/powerpc/include/asm/tlb.h
-index fbc6f3002f23..d97f061fecac 100644
---- a/arch/powerpc/include/asm/tlb.h
-+++ b/arch/powerpc/include/asm/tlb.h
-@@ -66,19 +66,6 @@ static inline int mm_is_thread_local(struct mm_struct *mm)
- 		return false;
- 	return cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm));
- }
--static inline void mm_reset_thread_local(struct mm_struct *mm)
--{
--	WARN_ON(atomic_read(&mm->context.copros) > 0);
--	/*
--	 * It's possible for mm_access to take a reference on mm_users to
--	 * access the remote mm from another thread, but it's not allowed
--	 * to set mm_cpumask, so mm_users may be > 1 here.
--	 */
--	WARN_ON(current->mm != mm);
--	atomic_set(&mm->context.active_cpus, 1);
--	cpumask_clear(mm_cpumask(mm));
--	cpumask_set_cpu(smp_processor_id(), mm_cpumask(mm));
--}
- #else /* CONFIG_PPC_BOOK3S_64 */
- static inline int mm_is_thread_local(struct mm_struct *mm)
- {
-diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-index 0d233763441f..a421a0e3f930 100644
---- a/arch/powerpc/mm/book3s64/radix_tlb.c
-+++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-@@ -645,19 +645,29 @@ static void do_exit_flush_lazy_tlb(void *arg)
- 	struct mm_struct *mm = arg;
- 	unsigned long pid = mm->context.id;
- 
-+	/*
-+	 * A kthread could have done a mmget_not_zero() after the flushing CPU
-+	 * checked mm_users == 1, and be in the process of kthread_use_mm when
-+	 * interrupted here. In that case, current->mm will be set to mm,
-+	 * because kthread_use_mm() setting ->mm and switching to the mm is
-+	 * done with interrupts off.
-+	 */
- 	if (current->mm == mm)
--		return; /* Local CPU */
-+		goto out_flush;
- 
- 	if (current->active_mm == mm) {
--		/*
--		 * Must be a kernel thread because sender is single-threaded.
--		 */
--		BUG_ON(current->mm);
-+		WARN_ON_ONCE(current->mm != NULL);
-+		/* Is a kernel thread and is using mm as the lazy tlb */
- 		mmgrab(&init_mm);
--		switch_mm(mm, &init_mm, current);
- 		current->active_mm = &init_mm;
-+		switch_mm_irqs_off(mm, &init_mm, current);
- 		mmdrop(mm);
- 	}
-+
-+	atomic_dec(&mm->context.active_cpus);
-+	cpumask_clear_cpu(smp_processor_id(), mm_cpumask(mm));
-+
-+out_flush:
- 	_tlbiel_pid(pid, RIC_FLUSH_ALL);
- }
- 
-@@ -672,7 +682,6 @@ static void exit_flush_lazy_tlbs(struct mm_struct *mm)
- 	 */
- 	smp_call_function_many(mm_cpumask(mm), do_exit_flush_lazy_tlb,
- 				(void *)mm, 1);
--	mm_reset_thread_local(mm);
- }
- 
- void radix__flush_tlb_mm(struct mm_struct *mm)
--- 
-2.23.0
-
+greg k-h
