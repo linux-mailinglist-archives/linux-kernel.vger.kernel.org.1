@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC2E2557A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5352557B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgH1Jah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgH1Jaf (ORCPT
+        id S1728898AbgH1Jbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:31:40 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57644 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728016AbgH1JbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:30:35 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C441C061264;
-        Fri, 28 Aug 2020 02:30:35 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t11so211775plr.5;
-        Fri, 28 Aug 2020 02:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6auKxjABp8YXUIlDJF9wtAGoOtymbxc4WRIaQCnHnVM=;
-        b=naRW4w7le/y5do4SyfWsvc3IZ5gXnazcX9lYqMnQYkXxoH0qkqZM+3s99LoxOA14Ba
-         t+eFc1J4jBI9BtHtSGRx10SI3UEXsE+6LpctMy3wsYEbEKDvvkdmZEL/pCK2zqKW5E2s
-         9mwgjcw2maacFVMBTUG3GZJUqFZEN2UfT0mxdiAXauVEKLDfGCol3ApCPvB6VjAcwuqE
-         dXHPWQy3MqvJpYXhaDcMDlz4ZkADvo4MKkPru9Ab+kGwsKv1DpLc9WmtC0jBQeUNdxet
-         cAAvnyViT6uZTt9D8YZLIkpt1ZtpyBM3/Lqlk/z60W7SD5soIsUtfR67i97EJuhdCJtH
-         foSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6auKxjABp8YXUIlDJF9wtAGoOtymbxc4WRIaQCnHnVM=;
-        b=YQxMDhupt6hRqv1nyN3Ym5032xxo/TXIWmhxhRRlRygqi8WsrecF0HYK5RqSBxotEW
-         024tQkGCVXmBOe5jBW5Ug1DU50giKIq8jb/trL0kWiIu/f/CUruFBak1ro64wMGcAEQ/
-         3wKzvYlHDMyI59uSz62/k2vMVCVvVvR/0gotS3xaHzkFba/ZGjyAVxr7OqcR/2dyTSWQ
-         Gl0WnZ1RGH9YIpVqbTvv3DDtQB+0taWtXn0sF5XzKw8F+dnp7c4nfEQDwCpTwD/7oVLl
-         tp5vRLb9rghnlimhH5bk8+fz/+9zTMzsXLbeyyMee9CW4i0qID7tAO2LtFVYBh1NqLcs
-         K5Tg==
-X-Gm-Message-State: AOAM533Cd1qqkkAZcUHNocRP1/AHoQKN59XTnz2p3XzL0UhQtFDsvG9x
-        mSSX9+QgXKLEXiXKKoQBXnmKgs99VekIFMav7IM=
-X-Google-Smtp-Source: ABdhPJzk3I3Y5B5oN+gAHy9JGTl43ke6auVS++wh6yF16T11jn259sPUb2TXq+hzFsHBPx2u+g3H2qlV7QXqw1wsd08=
-X-Received: by 2002:a17:90b:509:: with SMTP id r9mr490987pjz.228.1598607034956;
- Fri, 28 Aug 2020 02:30:34 -0700 (PDT)
+        Fri, 28 Aug 2020 05:31:22 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07S9RKLH005422;
+        Fri, 28 Aug 2020 11:30:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=GZcXYK4IQ/ttyWbgQ2w+8/AUl4mLyk/JntubDt8xpu4=;
+ b=iUJdiq08j1aAdX0H//CuLIvKCyuHq+0qo06HR0veCNKqtfts+9GPogoz7knCy4K6H2Tn
+ rII6qYVUpDXcqmuN2R0T010lAr8/3hIeUNaCs48mgCAMxjSkLcbuhj168DSlabMBrPB8
+ UbzyAqIycsEyWw0NfqB9/v/EohNmJRNe8FH5aK9W+ZOqXrDx0eVzEEcGSxIAiWsM3sB5
+ qtjPsBRjuo2xWipwyiMeUAbrQCZF+usgqdzZFm125aVg5bTXq9sbdTojV/8HiF6vfaDn
+ HNQgrnRPXS4jTFLUciLAAyKgaiHN3j4tm6bvLLXALI28xEY5BaKPfDGmxatcXU+ux7Bz NQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 332t8g5mm2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Aug 2020 11:30:46 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 753D510002A;
+        Fri, 28 Aug 2020 11:30:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 547472AD2DE;
+        Fri, 28 Aug 2020 11:30:38 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 28 Aug
+ 2020 11:30:37 +0200
+Subject: Re: [PATCH v7 3/3] ARM: dts: stm32: add initial support for
+ stm32mp157-odyssey board
+To:     Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
+        <mani@kernel.org>, <a.fatoum@pengutronix.de>, <sam@ravnborg.org>,
+        <linus.walleij@linaro.org>, <arnd@arndb.de>, <broonie@kernel.org>,
+        <lkundrak@v3.sk>, <daniel@0x0f.com>,
+        <kuninori.morimoto.gx@renesas.com>, <allen.chen@ite.com.tw>,
+        <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20200809164450.289731-1-marcin.sloniewski@gmail.com>
+ <20200809164450.289731-3-marcin.sloniewski@gmail.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <8a95db7e-865a-db34-ae8a-b2fe3533ab8d@st.com>
+Date:   Fri, 28 Aug 2020 11:30:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200827202452.27714-1-krzk@kernel.org> <CAHp75VdE-Nxr7yDPPyRjG2vJZs-nkZowi+daUJTKK348Su_Pow@mail.gmail.com>
- <20200828090038.GA17717@pi3>
-In-Reply-To: <20200828090038.GA17717@pi3>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 28 Aug 2020 12:30:18 +0300
-Message-ID: <CAHp75Vcz7ByVFSTeXLn7AvNcOgr=bw26mrmi=DsCfC9khro_kQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Move Hartmut Knaack to Credits
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200809164450.289731-3-marcin.sloniewski@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-28_05:2020-08-28,2020-08-28 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 12:00 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> On Fri, Aug 28, 2020 at 11:20:58AM +0300, Andy Shevchenko wrote:
-> > On Thu, Aug 27, 2020 at 11:25 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> > > Hartmut Knaack was an active reviewer and contributor to the IIO
-> > > subsystem and drivers.  However last message on LKML from him was sent
-> > > in October 2015.
-> >
-> > But this is not a problem we solve here. His address is invalid for a
-> > long time...
->
-> I did not receive any bounces so I cannot confirm it. However I can
-> quote you if you are sure that email is not valid.
->
-> >
-> > > In thanks for Hartmut's effort, move him name to the Credits.
-> > >
-> > > Cc: Jonathan Cameron <jic23@kernel.org>
-> > > Cc: linux-iio <linux-iio@vger.kernel.org>
-> >
-> > > Cc: Hartmut Knaack <knaack.h@gmx.de>
-> >
-> > ...and this?!
->
-> Since email is not bouncing, he might still receive it.
+Hi Marcin,
 
-Hmm... I'm a bit puzzled now. It seems gmx.net has some policies in
-places that make my replies to your emails (patches) bounced, but this
-one is okay. Strange...
+On 8/9/20 6:44 PM, Marcin Sloniewski wrote:
+> Add support for Seeed Studio's stm32mp157c odyssey board.
+> Board consists of SoM with stm32mp157c with 4GB eMMC and 512 MB DDR3 RAM
+> and carrier board with USB and ETH interfaces, SD card connector,
+> wifi and BT chip AP6236.
+> 
+> In this patch only basic kernel boot is supported and interfacing
+> SD card and on-board eMMC.
+> 
+> Signed-off-by: Marcin Sloniewski <marcin.sloniewski@gmail.com>
+> ---
 
-> > Reported-by: ?
->
-> Reported-by is for problems/bugs, so here Suggested feels better.
+Series applied on stm32-next.
 
-Okay, works for me.
+Regards
+Alex
 
--- 
-With Best Regards,
-Andy Shevchenko
