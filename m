@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02A9256186
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A4E256188
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgH1Twj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
+        id S1726929AbgH1Twv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgH1Tw2 (ORCPT
+        with ESMTP id S1726733AbgH1Twb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:52:28 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0FFC061234
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:28 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id p2so667421qkj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:28 -0700 (PDT)
+        Fri, 28 Aug 2020 15:52:31 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2E2C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:31 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id j10so186342qvo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=digitalocean.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=btfMl1Zmdwqg9zLIRNR4wlUEBz+PpjVtdy3Z/cuZ+M4=;
-        b=GCVufsQs5XomveuvJOtXxbW+4/dC8fStdngmpICX1ZSzRZPhLtcqP4/LbMDl/W5Zex
-         EpjHkHitT2xrbT3dLL2oL+neE2hntX5bCbRlZKmI2vl5/5DlnMok0XMFAlL8KFbgQQ7O
-         Av9SUVGQ1H25udL23rKyALHKBcdZrX5XpZxTo=
+        bh=tJ0gOBViXeVA8sneerLluYksnQAlUcTp8XjiIkCaKF8=;
+        b=P26s+koNh3LKBTyjD8sSPvL5FtNHKf9A76YCuuu2WlWHv+F0KP0FuIencydiw0znzc
+         UbhiD93Ocd6+FaVLa2wZX7cl2K9gCgdI66PSVk3+SElUhCS7qkzefRMYHL2mWSOt2RkL
+         zAQnhw5qzzoVFR2bdDSxTLMs8bwfcKmPwBCSM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=btfMl1Zmdwqg9zLIRNR4wlUEBz+PpjVtdy3Z/cuZ+M4=;
-        b=ctl0ZHj6lnbaLRpep6iIzo1v9vngYxVzQphUGD+jmEN87GjsGK6ei2FcWjgmgH6ZLT
-         Xo2Ytg7m0VO9vG3C6JM6hiDhAJy/OVM9hFIO1KL5eRBQBdwDFaSDrJZ9v3hTbctjcGAF
-         Qd1QHPxdQY/FlRxhh1RfsCrawW3lIP4IMUhvnhKwmrZ2OxYsCQfF25mfh2UjMvzyInbZ
-         NGmDWXzjFLrLykzIBOyfZnWFwZpucLKr7dCikJHbGVF2WyrvREa1L25yUBQMzJteLhla
-         rpHDq55xMsCUb/ZSeOrlu/ohn2kfEMXZJLcEPMNha+PQfHW6+ZDQFk5GjtaC3XR6WFwb
-         Kf9g==
-X-Gm-Message-State: AOAM533/5HR3M/cK2l/Jvqjg1FAjjToWcHbyQuIhdbI160IOghgzuh0+
-        SPBbpXVDWRANoicREy+p1Trsjg==
-X-Google-Smtp-Source: ABdhPJzyAgXrkKkSsO8VwklVlrGJ1TU3MJI9Wc7Kb5NItmcl4sX2Q2I2S75ZMU2vuJharBTqyCUZvg==
-X-Received: by 2002:a37:9746:: with SMTP id z67mr701458qkd.425.1598644347514;
-        Fri, 28 Aug 2020 12:52:27 -0700 (PDT)
+        bh=tJ0gOBViXeVA8sneerLluYksnQAlUcTp8XjiIkCaKF8=;
+        b=ptGyq4C64RmRUL9TNWQmg0Skv4a5s+jX8Buvg2xgcNvJLAErR6u8ZAsdrVYGAaHAlJ
+         7Oeb53hZGvX6wkrj51ycGqVqvNHyCYt2w6Exx2HrKBo/T88ay5wZQ6rZ3GmqQykU/iax
+         SEldafr6btAaLzm9Jb8QXgeS1hd9eLx1cLijpzTE+9DqNeuB9xBTPMv/UZnNKK1+684R
+         2M64tVVapOKAki+9zNeKoZExBDYGx7JAXQukr8a9g2uaFU2ywjJPTcm3O4WHkRg6tvb6
+         3i8ghzNIlzzE4bt+UgtSJiIsSawHu6D/F2fY1dqLVrnkjdzQCwwDb34OedOmsFZ3ntxN
+         +UzQ==
+X-Gm-Message-State: AOAM532chGkNZPsHbf007gb+07Btp/TxaiS2GGLHmIhjeN0Z0f8XcM42
+        jnqNw6RZZG8Psts1o274uaoaxA==
+X-Google-Smtp-Source: ABdhPJyhpcK8ScS2UQCS3CkaF/gV6e1AFM4S2nRrnfzzIIohVO43sdk9vN/Mgc5zRr/sM13U7xDYQg==
+X-Received: by 2002:a0c:8b5d:: with SMTP id d29mr175687qvc.172.1598644349971;
+        Fri, 28 Aug 2020 12:52:29 -0700 (PDT)
 Received: from [192.168.1.240] (192-222-189-155.qc.cable.ebox.net. [192.222.189.155])
-        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.52.25
+        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.52.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 12:52:26 -0700 (PDT)
+        Fri, 28 Aug 2020 12:52:29 -0700 (PDT)
 From:   Julien Desfossez <jdesfossez@digitalocean.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -68,12 +68,10 @@ Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
         Agata Gruza <agata.gruza@intel.com>,
         Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
         graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>
-Subject: [RFC PATCH v7 05/23] sched: Basic tracking of matching tasks
-Date:   Fri, 28 Aug 2020 15:51:06 -0400
-Message-Id: <ab2aebc528c010404f1617e7a6f861486e1c8a36.1598643276.git.jdesfossez@digitalocean.com>
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com
+Subject: [RFC PATCH v7 06/23] bitops: Introduce find_next_or_bit
+Date:   Fri, 28 Aug 2020 15:51:07 -0400
+Message-Id: <b802d1711231deb5cd00723a2c63eada71d8b5a3.1598643276.git.jdesfossez@digitalocean.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1598643276.git.jdesfossez@digitalocean.com>
 References: <cover.1598643276.git.jdesfossez@digitalocean.com>
@@ -84,378 +82,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-Introduce task_struct::core_cookie as an opaque identifier for core
-scheduling. When enabled; core scheduling will only allow matching
-task to be on the core; where idle matches everything.
+Hotplug fixes to core-scheduling require a new bitops API.
 
-When task_struct::core_cookie is set (and core scheduling is enabled)
-these tasks are indexed in a second RB-tree, first on cookie value
-then on scheduling function, such that matching task selection always
-finds the most elegible match.
+Introduce a new API find_next_or_bit() which returns the
+bit number of the next set bit in OR-ed bit masks of the
+given bit masks.
 
-NOTE: *shudder* at the overhead...
-
-NOTE: *sigh*, a 3rd copy of the scheduling function; the alternative
-is per class tracking of cookies and that just duplicates a lot of
-stuff for no raisin (the 2nd copy lives in the rt-mutex PI code).
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/sched.h |   8 ++-
- kernel/sched/core.c   | 146 ++++++++++++++++++++++++++++++++++++++++++
- kernel/sched/fair.c   |  46 -------------
- kernel/sched/sched.h  |  55 ++++++++++++++++
- 4 files changed, 208 insertions(+), 47 deletions(-)
+ include/asm-generic/bitops/find.h | 16 +++++++++
+ lib/find_bit.c                    | 58 +++++++++++++++++++++++++------
+ 2 files changed, 63 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 93ecd930efd3..5fe9878502cb 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -682,10 +682,16 @@ struct task_struct {
- 	const struct sched_class	*sched_class;
- 	struct sched_entity		se;
- 	struct sched_rt_entity		rt;
-+	struct sched_dl_entity		dl;
-+
-+#ifdef CONFIG_SCHED_CORE
-+	struct rb_node			core_node;
-+	unsigned long			core_cookie;
+diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+index 9fdf21302fdf..0b476ca0d665 100644
+--- a/include/asm-generic/bitops/find.h
++++ b/include/asm-generic/bitops/find.h
+@@ -32,6 +32,22 @@ extern unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		unsigned long offset);
+ #endif
+ 
++#ifndef find_next_or_bit
++/**
++ * find_next_or_bit - find the next set bit in any memory regions
++ * @addr1: The first address to base the search on
++ * @addr2: The second address to base the search on
++ * @offset: The bitnumber to start searching at
++ * @size: The bitmap size in bits
++ *
++ * Returns the bit number for the next set bit
++ * If no bits are set, returns @size.
++ */
++extern unsigned long find_next_or_bit(const unsigned long *addr1,
++		const unsigned long *addr2, unsigned long size,
++		unsigned long offset);
 +#endif
 +
- #ifdef CONFIG_CGROUP_SCHED
- 	struct task_group		*sched_task_group;
- #endif
--	struct sched_dl_entity		dl;
+ #ifndef find_next_zero_bit
+ /**
+  * find_next_zero_bit - find the next cleared bit in a memory region
+diff --git a/lib/find_bit.c b/lib/find_bit.c
+index 49f875f1baf7..e36257bb0701 100644
+--- a/lib/find_bit.c
++++ b/lib/find_bit.c
+@@ -19,7 +19,16 @@
  
- #ifdef CONFIG_UCLAMP_TASK
- 	/*
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e2642c5dbd61..eea18956a9ef 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -77,6 +77,141 @@ __read_mostly int scheduler_running;
- 
- DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
- 
-+/* kernel prio, less is more */
-+static inline int __task_prio(struct task_struct *p)
-+{
-+	if (p->sched_class == &stop_sched_class) /* trumps deadline */
-+		return -2;
-+
-+	if (rt_prio(p->prio)) /* includes deadline */
-+		return p->prio; /* [-1, 99] */
-+
-+	if (p->sched_class == &idle_sched_class)
-+		return MAX_RT_PRIO + NICE_WIDTH; /* 140 */
-+
-+	return MAX_RT_PRIO + MAX_NICE; /* 120, squash fair */
-+}
+ #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
+ 	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
+-	!defined(find_next_and_bit)
++	!defined(find_next_and_bit) || !defined(find_next_or_bit)
 +
 +/*
-+ * l(a,b)
-+ * le(a,b) := !l(b,a)
-+ * g(a,b)  := l(b,a)
-+ * ge(a,b) := !l(a,b)
++ * find_next_bit bitwise operation types
 + */
-+
-+/* real prio, less is less */
-+static inline bool prio_less(struct task_struct *a, struct task_struct *b)
-+{
-+
-+	int pa = __task_prio(a), pb = __task_prio(b);
-+
-+	if (-pa < -pb)
-+		return true;
-+
-+	if (-pb < -pa)
-+		return false;
-+
-+	if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
-+		return !dl_time_before(a->dl.deadline, b->dl.deadline);
-+
-+	if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
-+		u64 vruntime = b->se.vruntime;
-+
-+		/*
-+		 * Normalize the vruntime if tasks are in different cpus.
-+		 */
-+		if (task_cpu(a) != task_cpu(b)) {
-+			vruntime -= task_cfs_rq(b)->min_vruntime;
-+			vruntime += task_cfs_rq(a)->min_vruntime;
-+		}
-+
-+		return !((s64)(a->se.vruntime - vruntime) <= 0);
-+	}
-+
-+	return false;
-+}
-+
-+static inline bool __sched_core_less(struct task_struct *a, struct task_struct *b)
-+{
-+	if (a->core_cookie < b->core_cookie)
-+		return true;
-+
-+	if (a->core_cookie > b->core_cookie)
-+		return false;
-+
-+	/* flip prio, so high prio is leftmost */
-+	if (prio_less(b, a))
-+		return true;
-+
-+	return false;
-+}
-+
-+static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
-+{
-+	struct rb_node *parent, **node;
-+	struct task_struct *node_task;
-+
-+	rq->core->core_task_seq++;
-+
-+	if (!p->core_cookie)
-+		return;
-+
-+	node = &rq->core_tree.rb_node;
-+	parent = *node;
-+
-+	while (*node) {
-+		node_task = container_of(*node, struct task_struct, core_node);
-+		parent = *node;
-+
-+		if (__sched_core_less(p, node_task))
-+			node = &parent->rb_left;
-+		else
-+			node = &parent->rb_right;
-+	}
-+
-+	rb_link_node(&p->core_node, parent, node);
-+	rb_insert_color(&p->core_node, &rq->core_tree);
-+}
-+
-+static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
-+{
-+	rq->core->core_task_seq++;
-+
-+	if (!p->core_cookie)
-+		return;
-+
-+	rb_erase(&p->core_node, &rq->core_tree);
-+}
-+
-+/*
-+ * Find left-most (aka, highest priority) task matching @cookie.
-+ */
-+static struct task_struct *sched_core_find(struct rq *rq, unsigned long cookie)
-+{
-+	struct rb_node *node = rq->core_tree.rb_node;
-+	struct task_struct *node_task, *match;
-+
-+	/*
-+	 * The idle task always matches any cookie!
-+	 */
-+	match = idle_sched_class.pick_task(rq);
-+
-+	while (node) {
-+		node_task = container_of(node, struct task_struct, core_node);
-+
-+		if (cookie < node_task->core_cookie) {
-+			node = node->rb_left;
-+		} else if (cookie > node_task->core_cookie) {
-+			node = node->rb_right;
-+		} else {
-+			match = node_task;
-+			node = node->rb_left;
-+		}
-+	}
-+
-+	return match;
-+}
++enum fnb_bwops_type {
++	FNB_AND = 0,
++	FNB_OR  = 1
++};
 +
  /*
-  * The static-key + stop-machine variable are needed such that:
-  *
-@@ -135,6 +270,11 @@ void sched_core_put(void)
- 	mutex_unlock(&sched_core_mutex);
- }
- 
-+#else /* !CONFIG_SCHED_CORE */
-+
-+static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-+static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-+
- #endif /* CONFIG_SCHED_CORE */
- 
- /*
-@@ -1628,6 +1768,9 @@ static inline void init_uclamp(void) { }
- 
- static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
- {
-+	if (sched_core_enabled(rq))
-+		sched_core_enqueue(rq, p);
-+
- 	if (!(flags & ENQUEUE_NOCLOCK))
- 		update_rq_clock(rq);
- 
-@@ -1642,6 +1785,9 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
- 
- static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
- {
-+	if (sched_core_enabled(rq))
-+		sched_core_dequeue(rq, p);
-+
- 	if (!(flags & DEQUEUE_NOCLOCK))
- 		update_rq_clock(rq);
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index af8c40191a19..285002a2f641 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -258,33 +258,11 @@ const struct sched_class fair_sched_class;
+  * This is a common helper function for find_next_bit, find_next_zero_bit, and
+  * find_next_and_bit. The differences are:
+@@ -29,7 +38,8 @@
   */
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
--static inline struct task_struct *task_of(struct sched_entity *se)
--{
--	SCHED_WARN_ON(!entity_is_task(se));
--	return container_of(se, struct task_struct, se);
--}
- 
- /* Walk up scheduling entities hierarchy */
- #define for_each_sched_entity(se) \
- 		for (; se; se = se->parent)
- 
--static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
--{
--	return p->se.cfs_rq;
--}
--
--/* runqueue on which this entity is (to be) queued */
--static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
--{
--	return se->cfs_rq;
--}
--
--/* runqueue "owned" by this group */
--static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
--{
--	return grp->my_q;
--}
--
- static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
+ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long nbits,
+-		unsigned long start, unsigned long invert, unsigned long le)
++		unsigned long start, unsigned long invert,
++		enum fnb_bwops_type type, unsigned long le)
  {
- 	if (!path)
-@@ -445,33 +423,9 @@ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+ 	unsigned long tmp, mask;
  
- #else	/* !CONFIG_FAIR_GROUP_SCHED */
+@@ -37,8 +47,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 		return nbits;
  
--static inline struct task_struct *task_of(struct sched_entity *se)
--{
--	return container_of(se, struct task_struct, se);
--}
--
- #define for_each_sched_entity(se) \
- 		for (; se; se = NULL)
+ 	tmp = addr1[start / BITS_PER_LONG];
+-	if (addr2)
+-		tmp &= addr2[start / BITS_PER_LONG];
++	if (addr2) {
++		switch (type) {
++		case FNB_AND:
++			tmp &= addr2[start / BITS_PER_LONG];
++			break;
++		case FNB_OR:
++			tmp |= addr2[start / BITS_PER_LONG];
++			break;
++		}
++	}
+ 	tmp ^= invert;
  
--static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
--{
--	return &task_rq(p)->cfs;
--}
--
--static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
--{
--	struct task_struct *p = task_of(se);
--	struct rq *rq = task_rq(p);
--
--	return &rq->cfs;
--}
--
--/* runqueue "owned" by this group */
--static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
--{
--	return NULL;
--}
--
- static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
+ 	/* Handle 1st word. */
+@@ -56,8 +74,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 			return nbits;
+ 
+ 		tmp = addr1[start / BITS_PER_LONG];
+-		if (addr2)
+-			tmp &= addr2[start / BITS_PER_LONG];
++		if (addr2) {
++			switch (type) {
++			case FNB_AND:
++				tmp &= addr2[start / BITS_PER_LONG];
++				break;
++			case FNB_OR:
++				tmp |= addr2[start / BITS_PER_LONG];
++				break;
++			}
++		}
+ 		tmp ^= invert;
+ 	}
+ 
+@@ -75,7 +101,7 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+ 			    unsigned long offset)
  {
- 	if (path)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 6ab8adff169b..92e0b8679eef 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1053,6 +1053,10 @@ struct rq {
- 	/* per rq */
- 	struct rq		*core;
- 	unsigned int		core_enabled;
-+	struct rb_root		core_tree;
-+
-+	/* shared state */
-+	unsigned int		core_task_seq;
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
++	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_bit);
  #endif
- };
+@@ -84,7 +110,7 @@ EXPORT_SYMBOL(find_next_bit);
+ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+ 				 unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_zero_bit);
+ #endif
+@@ -94,11 +120,21 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long size,
+ 		unsigned long offset)
+ {
+-	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
++	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_and_bit);
+ #endif
  
-@@ -1132,6 +1136,57 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- #define cpu_curr(cpu)		(cpu_rq(cpu)->curr)
- #define raw_rq()		raw_cpu_ptr(&runqueues)
- 
-+#ifdef CONFIG_FAIR_GROUP_SCHED
-+static inline struct task_struct *task_of(struct sched_entity *se)
++#if !defined(find_next_or_bit)
++unsigned long find_next_or_bit(const unsigned long *addr1,
++		const unsigned long *addr2, unsigned long size,
++		unsigned long offset)
 +{
-+	SCHED_WARN_ON(!entity_is_task(se));
-+	return container_of(se, struct task_struct, se);
++	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_OR, 0);
 +}
-+
-+static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
-+{
-+	return p->se.cfs_rq;
-+}
-+
-+/* runqueue on which this entity is (to be) queued */
-+static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
-+{
-+	return se->cfs_rq;
-+}
-+
-+/* runqueue "owned" by this group */
-+static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
-+{
-+	return grp->my_q;
-+}
-+
-+#else
-+
-+static inline struct task_struct *task_of(struct sched_entity *se)
-+{
-+	return container_of(se, struct task_struct, se);
-+}
-+
-+static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
-+{
-+	return &task_rq(p)->cfs;
-+}
-+
-+static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
-+{
-+	struct task_struct *p = task_of(se);
-+	struct rq *rq = task_rq(p);
-+
-+	return &rq->cfs;
-+}
-+
-+/* runqueue "owned" by this group */
-+static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
-+{
-+	return NULL;
-+}
++EXPORT_SYMBOL(find_next_or_bit);
 +#endif
 +
- extern void update_rq_clock(struct rq *rq);
- 
- static inline u64 __rq_clock_broken(struct rq *rq)
+ #ifndef find_first_bit
+ /*
+  * Find the first set bit in a memory region.
+@@ -161,7 +197,7 @@ EXPORT_SYMBOL(find_last_bit);
+ unsigned long find_next_zero_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 1);
+ }
+ EXPORT_SYMBOL(find_next_zero_bit_le);
+ #endif
+@@ -170,7 +206,7 @@ EXPORT_SYMBOL(find_next_zero_bit_le);
+ unsigned long find_next_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
++	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 1);
+ }
+ EXPORT_SYMBOL(find_next_bit_le);
+ #endif
 -- 
 2.17.1
 
