@@ -2,54 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C4D255F33
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2AF255EC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgH1Qxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:53:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42190 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgH1Qxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:53:52 -0400
-IronPort-SDR: Fhj32nmgp7eltoj/q5yOkyoahPTFINM06xPzY4JXZv/YG2ruRTGLJ4dmPbViVENl6aresifVBs
- dICjXV+HjIjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="136243215"
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="136243215"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 09:53:51 -0700
-IronPort-SDR: m37eGOiRVDtLjlEXWPDtSflNmlPbKTZq9zmm5qG3nXhxfb4GLupEcVhRzAT94U3qGkHGwFexVn
- x8va+e5MHItg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
-   d="scan'208";a="330006494"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga008.jf.intel.com with ESMTP; 28 Aug 2020 09:53:51 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id DD0ED301C54; Fri, 28 Aug 2020 07:59:50 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 07:59:50 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/hugetlb: Fix a race between hugetlb sysctl handlers
-Message-ID: <20200828145950.GS1509399@tassilo.jf.intel.com>
-References: <20200828031146.43035-1-songmuchun@bytedance.com>
+        id S1726867AbgH1QbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:31:00 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:47696 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726649AbgH1Qa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:30:59 -0400
+Date:   Fri, 28 Aug 2020 12:30:58 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: [PATCH 3/4] sh: Add SECCOMP_FILTER
+Message-ID: <20200828163057.GY3265@brightrain.aerifal.cx>
+References: <20200722231322.419642-1-kernel@mkarcher.dialup.fu-berlin.de>
+ <20200722231322.419642-3-kernel@mkarcher.dialup.fu-berlin.de>
+ <20200828155024.GX3265@brightrain.aerifal.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200828031146.43035-1-songmuchun@bytedance.com>
+In-Reply-To: <20200828155024.GX3265@brightrain.aerifal.cx>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Fixes: e5ff215941d5 ("hugetlb: multiple hstates for multiple page sizes")
+On Fri, Aug 28, 2020 at 11:50:25AM -0400, Rich Felker wrote:
+> On Thu, Jul 23, 2020 at 01:13:21AM +0200, Michael Karcher wrote:
+> > Port sh to use the new SECCOMP_FILTER code.
+> > 
+> > Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+> > ---
+> >  arch/sh/Kconfig                               | 1 +
+> >  arch/sh/kernel/entry-common.S                 | 2 ++
+> >  arch/sh/kernel/ptrace_32.c                    | 5 +++--
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 8 +++++++-
+> >  4 files changed, 13 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+> > index 32d959849df9..10b510c16841 100644
+> > --- a/arch/sh/Kconfig
+> > +++ b/arch/sh/Kconfig
+> > @@ -27,6 +27,7 @@ config SUPERH
+> >  	select GENERIC_SMP_IDLE_THREAD
+> >  	select GUP_GET_PTE_LOW_HIGH if X2TLB
+> >  	select HAVE_ARCH_AUDITSYSCALL
+> > +	select HAVE_ARCH_SECCOMP_FILTER
+> >  	select HAVE_ARCH_KGDB
+> >  	select HAVE_ARCH_TRACEHOOK
+> >  	select HAVE_DEBUG_BUGVERBOSE
+> > diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
+> > index c4d88d61890d..ad963104d22d 100644
+> > --- a/arch/sh/kernel/entry-common.S
+> > +++ b/arch/sh/kernel/entry-common.S
+> > @@ -368,6 +368,8 @@ syscall_trace_entry:
+> >  	mov.l	7f, r11		! Call do_syscall_trace_enter which notifies
+> >  	jsr	@r11	    	! superior (will chomp R[0-7])
+> >  	 nop
+> > +	cmp/eq	#-1, r0
+> > +	bt	syscall_exit
+> >  	mov.l	r0, @(OFF_R0,r15)	! Save return value
+> >  	!			Reload R0-R4 from kernel stack, where the
+> >  	!   	    	    	parent may have modified them using
+> > diff --git a/arch/sh/kernel/ptrace_32.c b/arch/sh/kernel/ptrace_32.c
+> > index 64bfb714943e..25ccfbd02bfa 100644
+> > --- a/arch/sh/kernel/ptrace_32.c
+> > +++ b/arch/sh/kernel/ptrace_32.c
+> > @@ -485,8 +485,6 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
+> >  {
+> >  	long ret = 0;
+> >  
+> > -	secure_computing_strict(regs->regs[0]);
+> > -
+> >  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> >  	    tracehook_report_syscall_entry(regs))
+> >  		/*
+> > @@ -496,6 +494,9 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
+> >  		 */
+> >  		ret = -1L;
+> >  
+> > +	if (secure_computing() == -1)
+> > +		return -1;
+> > +
+> >  	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+> >  		trace_sys_enter(regs, regs->regs[0]);
+> >  
+> 
+> This patch broke strace - it spews out bogus syscalls and gets the
+> tracee hung. I suspect the last hunk is wrong and breaks all
+> non-seccomp tracing. I'll follow up with further analysis and possibly
+> a fix if you don't find one sooner.
 
-I believe the Fixes line is still not correct. The original patch
-didn't have that problem. Please identify which patch added
-the problematic code.
+It looks like the problem is actually the hunk in entry-common.S, but
+this code has been wrong since ab99c733ae in 2008: it was storing the
+return value of do_syscall_trace_enter, which is supposed to replace
+the syscall number and make it fail, in r0 (the 5th argument) rather
+than r3 (the syscall number). This looks like the reason you put the
+(apparently wrong) branch to syscall_exit in there -- the existing
+code was not actually causing ENOSYS when do_syscall_trace_enter tried
+to replace nr with -1, because the -1 was put in the wrong place.
 
--Andi
+I'm guessing something in syscall_exit assumes the registers have been
+reloaded (the code skipped by your branch) and blows up when they
+haven't.
+
+I think the right change is going to be something like replacing 
+mov.l r0, @(OFF_R0,r15) with mov r0, r3 and getting rid of the r3
+reload below. do_syscall_trace_enter should also be returning
+regs->regs[3] in the success case, not regs->regs[0] as it's doing, at
+least if it's to match other archs (that return the original syscall
+number on success). In any case, returning the 5th argument register
+is nonsense.
+
+I'm about to test a patch along these lines and will report what I
+find.
+
+Rich
