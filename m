@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43648255BF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB98255BF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgH1OGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S1728008AbgH1OGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgH1OFe (ORCPT
+        with ESMTP id S1727919AbgH1OGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:05:34 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DC7C061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:05:33 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w25so1421384ljo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=peoAMhin340g8hfujS0m2ecCBCi8hVoacuqHhCFz4m8=;
-        b=wnRuOp88vxN4lXK4sfBVZy9DYmyxBdGcOPdLP35yzgUkT9VXxZetgT5ohQXAnunZkt
-         SoEe8EdsMihiNH44I3YIFiBLpyEGQ1Cm6fXh5tbK9SaIDuuKnQItWv+2abAZkytC3VNa
-         G3SLv7kCUiM3zgv/CbSlY9DMB5N6Nig6xc4EGouM+Hyz9HOwA5P1S2c5cXGUSolaGT46
-         ealsDnAifQV3i/bpYOac3L0nP9U8+PexkVEw66IpXAf9TbsqqBZ3jdfSNXpu3k5paoXs
-         GC6jCNGMPuSQEceIIK2+Gj8e4iuyrieyHdN4Tr24FDzHoxH35Ogc7yl8zrugGsOCtGk8
-         Twuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=peoAMhin340g8hfujS0m2ecCBCi8hVoacuqHhCFz4m8=;
-        b=WNNq8lkYwFWLEtwbxyax2aiaol56XFmH2FvlfgtM0v4uuzaYSFppDpV2FXSpxVacKL
-         gj0/IfP5K8hTyx9uTJojxx7I3MTvXadUBAGE78Z4P/j8e5zkR2MnrrqqYUrA+9ZPyHi3
-         p7ffa1xai7rQ4B7og65/Q8sVOy5mqetp5yKkq3go7/qIhx7jcrgoh6HJ8xiouMVmHbfp
-         EZ9o667cDaJ01Dk4uN1NF7URv92+1SqNDc1JF9P4piDpdbaEXDmxZshvQ//Lx1pc8RBH
-         B2V5qfVCHxkcbw6SdoP9El+ABUn6wVzHCnEFbcRqGPWdlN9oWi17v6ddW12IXyu9lmXO
-         mWlw==
-X-Gm-Message-State: AOAM532Q+zrAgL+dqvtZ09DOVWwihjQKufJMpK629TZgLjiCX6GeZxNl
-        ejIqlh1j0cncp+k96ZMHkaFwkBIOOdyeNlF1+9g4SQy0/FI=
-X-Google-Smtp-Source: ABdhPJyZK+nyo5nTYz3NzSKuoc28bBQ5aH56BgFuYIxHsyIWvpg2GG1PynT6PAdWZQLdLlwBIDygqkN4EcQix8MSwgI=
-X-Received: by 2002:a2e:4e09:: with SMTP id c9mr1005540ljb.283.1598623531997;
- Fri, 28 Aug 2020 07:05:31 -0700 (PDT)
+        Fri, 28 Aug 2020 10:06:09 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025EAC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=E57ufVy/Xyp2As9q9f5ZuJpwUNN0dS/jixbFSkhJ07w=; b=buvukgVRXIgzOeVt9OWrYHn1jf
+        xByVXZMtFrzIj1qVmd9mts1RKXSuTLap8rB29x7viWy4eQPDZWW1bfxsUhxZJwFKTUVzPiDJFwm3Y
+        By7fLAkRWsFfaUZ/fCarjMr6yzXeUNJERNGNCh5zMLSsAiUC4t75VPBNoy5X13sFvvCOOOBvjp5+l
+        y+l6EFzW7tM9Fcz307V7T3fO1GwVwdk3JiozgEAgtsJ/0RU09QhStRTgp4djEep7uqbHRnms0bWik
+        Whzy6W1zgEsK/ozbyf54qq0a3PzWhX+/PenL+k1BGX/CSTn/JEfgYLRqdPbgLMmZrZ+PUXDDl0DfI
+        42DCxmjw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBf0y-0005nF-Hx; Fri, 28 Aug 2020 14:06:00 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v2] drm: virtio: fix kconfig dependency warning
+Message-ID: <7481fb88-6b04-3726-57e0-0f513245c657@infradead.org>
+Date:   Fri, 28 Aug 2020 07:05:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200827071107.27429-1-krzk@kernel.org> <20200827071107.27429-2-krzk@kernel.org>
-In-Reply-To: <20200827071107.27429-2-krzk@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 Aug 2020 16:05:21 +0200
-Message-ID: <CACRpkdbFJxfF6wGPAw_jEA0bYzT7JBYZOWEb1PbVc1iT8uJJrw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/tve200: Fix handling of platform_get_irq() error
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Eric Anholt <eric@anholt.net>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 9:11 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> platform_get_irq() returns -ERRNO on error.  In such case comparison
-> to 0 would pass the check.
->
-> Fixes: 179c02fe90a4 ("drm/tve200: Add new driver for TVE200")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fix kconfig dependency warning by using a different Kconfig symbol.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+WARNING: unmet direct dependencies detected for VIRTIO_DMA_SHARED_BUFFER
+  Depends on [n]: VIRTIO_MENU [=n] && DMA_SHARED_BUFFER [=y]
+  Selected by [y]:
+  - DRM_VIRTIO_GPU [=y] && HAS_IOMEM [=y] && DRM [=y] && VIRTIO [=y] && MMU [=y]
 
-Yours,
-Linus Walleij
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: virtualization@lists.linux-foundation.org
+---
+v2: depends on VIRTIO + VIRTIO_MENU (Gerd)
+
+Found in linux-next but applies to mainline.
+
+ drivers/gpu/drm/virtio/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20200828.orig/drivers/gpu/drm/virtio/Kconfig
++++ linux-next-20200828/drivers/gpu/drm/virtio/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config DRM_VIRTIO_GPU
+ 	tristate "Virtio GPU driver"
+-	depends on DRM && VIRTIO && MMU
++	depends on DRM && VIRTIO && VIRTIO_MENU && MMU
+ 	select DRM_KMS_HELPER
+ 	select DRM_GEM_SHMEM_HELPER
+ 	select VIRTIO_DMA_SHARED_BUFFER
+
