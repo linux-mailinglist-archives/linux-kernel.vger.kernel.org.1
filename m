@@ -2,272 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544D1255CFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB4A255D07
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgH1OtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
+        id S1728074AbgH1Ot5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbgH1Os7 (ORCPT
+        with ESMTP id S1727912AbgH1Otp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:48:59 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928BFC061264;
-        Fri, 28 Aug 2020 07:48:59 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ls14so599793pjb.3;
-        Fri, 28 Aug 2020 07:48:59 -0700 (PDT)
+        Fri, 28 Aug 2020 10:49:45 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E79C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:49:45 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id t189so298545vka.10
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 07:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GwsJK12F/RO3TxV8DL1QHEyRAdItfHxC7ojNdGJazTI=;
-        b=ZVxBAghHGheQcnCpCUTauZpnptW7RVAxlmJDMKuCA7iIDe5ETmEImECQ9Jvmm02dRX
-         T4MU583V9ZKesh7713tJxKze+vdNFvA40Hq87T3tevYQtp7jV8Nd5NSzKJXELNcRPV3H
-         Y1S3vt9sy1JrZK8GodFt74OByaJii4IONE3KVY+8NEry1TRm0W9RqNFL6bpk0KybHvi8
-         LIL7YTQOhBKX8mqUgLjCR+n4upgy3Em8KKwYyxacXs2YmuMiNpbQqU/nQ5LdeWf+As+n
-         QlnjmOdRh/xsYWsTz98yc9F2JM0lWmGaTf3IZ77RIW8BrQ8MBmxNqTd0998Rf+3/tGz/
-         4hig==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lcqUUPdr/umD2pWC4NsvVbmxb5fCA12Uxq69aXRfr0o=;
+        b=wCNHUCaw7Le0VGnSa8RivY7ZMCA0au8zTO2M/ds9hsm3vRcIn+K7hH3J7DBnolJ7JA
+         PQbFVEPm6MGnt52tcIGmbqwLVASwQ8l3OL1QFZz8S7XIBhj1a89khlX2dZCGaF5kMsqy
+         +xFFAoXerlNOzQAMzCTV1IAQdikvVjY69ULl+RUQKfrYWAU4XzFnrvh2deIPPlVyezXJ
+         dzqOntNCMIBYKpGNA5nsb71XMvKG4aeu9cggP1/iQrT2XvEscjeFT9O3KqZ1Zq9Uhb/m
+         nacNtbMVtgr+Tx1m1FbuMosKavVETXgnSs9N3nEsMK0rhjXiXVV+kYq3QL9bokAx3WOj
+         j+xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GwsJK12F/RO3TxV8DL1QHEyRAdItfHxC7ojNdGJazTI=;
-        b=iWIBjPfhDzgl2DEB/x9QHzkAZiDjyzowKRcwY8VFxqU6AMoyoCqfNGee4giF06l76P
-         DCUUOXjPhpGaSLvF5eB7X0bdIjMBNf2PpFB/HIcrGCkfTPTM2uGMXI9CD6JkT9eiokIL
-         oYq2Jym8X2te/VjsV07x/N2rx4nSYINqqtgsJj4XCG5G+aKb4bBU3P0VRyIiA8lmuk8T
-         MWEqVq34q9keYqq4kYJG2Dung/E3zvo/OXmV94qmJ5enVlpZzyH4d6589Nux5NlzoJum
-         V649n1V9s1Q0rA7lncP6wB1vCud2ctJQqumORv/wxNnpBYCcy74SF7FW2Rv8ip7iUALQ
-         wm+g==
-X-Gm-Message-State: AOAM532sPYr/IuhcTTGp1rY7d1W7L8mvGLSDaN7MkOsJyMcBHIB+zQiQ
-        tIwwvEJ4mBOu0BbVxOEPhhxAqSpqId0=
-X-Google-Smtp-Source: ABdhPJyb+pG0Wk74bLWhX8DcPqkmUTC9YoFj3AX5iklc5Qnyy9Hg1smucBxCDLJ+Ti74vRo4D6DvVA==
-X-Received: by 2002:a17:902:8e85:: with SMTP id bg5mr1567021plb.306.1598626138765;
-        Fri, 28 Aug 2020 07:48:58 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f4sm1901303pgi.49.2020.08.28.07.48.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Aug 2020 07:48:58 -0700 (PDT)
-Subject: Re: [PATCH v3 1/3] usb typec: mt6360: Add support for mt6360 Type-C
- driver
-To:     ChiYuan Huang <u0084500@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1598527137-6915-1-git-send-email-u0084500@gmail.com>
- <1598616616.7054.3.camel@mhfsdcap03>
- <CADiBU3_-Jvk8ORu1MxrccJkdK0_1WdH4Yd8AR-cGyDMEA3Htpw@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6a66d52d-5f30-5982-e14c-12d81863f684@roeck-us.net>
-Date:   Fri, 28 Aug 2020 07:48:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lcqUUPdr/umD2pWC4NsvVbmxb5fCA12Uxq69aXRfr0o=;
+        b=AO1mL85hXRBfXDI9/XGmjPiE2OFfKpT6K18X0Ufik5z4VXzeRWiiIFASWn1xhdyUz1
+         laztgOBqL8d/Bxw3fxJyhbVJkE8U8YzaC5RKHtEWXSoYc4Ljpr4BsVhhqfZlLgR/Co8J
+         l80Ne76A7aZlVJXeXF82co2j1uwoK1XHY0OYPsyQHzzWvtUWxWUkrwNLTDBnJg+UYg5b
+         7UQmSHk0KNe5lEO/XxrANQrDRXo43JzZVsbXem4Tj8mzbToalnpZZL+ouhpjAls2tJh/
+         ZyxIk4e30CMJFbQxxSwOM/9xt2Ig77kUy8COs0AymKbLr3PGofiVnz1AfQ7FzA/vZv2s
+         ammg==
+X-Gm-Message-State: AOAM5315RG94SFNwLJp98o963zgaqZX4T50kK1b2epg0SpNlxY8cDwTC
+        GJorgjotahECKyk0hKUa+xE9K1O/i4rxQl6av+tOfQ==
+X-Google-Smtp-Source: ABdhPJziKZmHuzDoUCZdZNu39nIz/3TJOOrx0fiZZDSDps6xosGzRKxSkYsFgAeBfIQLhZxo+dIA+bIT+SRCJvXS5dA=
+X-Received: by 2002:a1f:2cd0:: with SMTP id s199mr1319049vks.25.1598626184206;
+ Fri, 28 Aug 2020 07:49:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADiBU3_-Jvk8ORu1MxrccJkdK0_1WdH4Yd8AR-cGyDMEA3Htpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200825042210.300632-1-badhri@google.com> <20200825042210.300632-3-badhri@google.com>
+ <20200828131214.GH174928@kuha.fi.intel.com>
+In-Reply-To: <20200828131214.GH174928@kuha.fi.intel.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Fri, 28 Aug 2020 07:49:08 -0700
+Message-ID: <CAPTae5K=RFN4kX-QzEY2Y8iDbqAaEeS-KjTR5XHfdRZ40Lu5-w@mail.gmail.com>
+Subject: Re: [PATCH 02/14 v2] usb: typec: tcpci: Add support when hidden tx
+ registers are inaccessible
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/20 7:33 AM, ChiYuan Huang wrote:
-> Chunfeng Yun <chunfeng.yun@mediatek.com> 於 2020年8月28日 週五 下午8:11寫道：
->>
->> On Thu, 2020-08-27 at 19:18 +0800, cy_huang wrote:
->>> From: ChiYuan Huang <cy_huang@richtek.com>
->>>
->>> Mediatek MT6360 is a multi-functional IC that includes USB Type-C.
->>> It works with Type-C Port Controller Manager to provide USB PD
->>> and USB Type-C functionalities.
->>>
->>> v1 to v2
->>> 1. Add fix to Prevent the race condition from interrupt and tcpci port
->>> unregister during module remove.
->>>
->>> v2 to v3
->>> 1. Change comment style for the head of source code.
->>> 2. No need to print error for platform_get_irq_byname.
->>> 3. Fix tcpci_register_port check from IS_ERR_OR_NULL to IS_ERR.
->>> 4. Rename driver/Kconfig/Makefile form mt6360 to mt636x.
->>> 5. Rename DT binding documents from mt6360 to mt636x.
->>>
->>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
->>> ---
->>>  drivers/usb/typec/tcpm/Kconfig        |   8 ++
->>>  drivers/usb/typec/tcpm/Makefile       |   1 +
->>>  drivers/usb/typec/tcpm/tcpci_mt6360.c | 212 ++++++++++++++++++++++++++++++++++
->>>  3 files changed, 221 insertions(+)
->>>  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
->>>
->>> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
->>> index fa3f393..58a64e1 100644
->>> --- a/drivers/usb/typec/tcpm/Kconfig
->>> +++ b/drivers/usb/typec/tcpm/Kconfig
->>> @@ -27,6 +27,14 @@ config TYPEC_RT1711H
->>>         Type-C Port Controller Manager to provide USB PD and USB
->>>         Type-C functionalities.
->>>
->>> +config TYPEC_MT6360
->>> +     tristate "Mediatek MT6360 Type-C driver"
->>> +     depends on MFD_MT6360
->>> +     help
->>> +       Mediatek MT6360 is a multi-functional IC that includes
->>> +       USB Type-C. It works with Type-C Port Controller Manager
->>> +       to provide USB PD and USB Type-C functionalities.
->>> +
->>>  endif # TYPEC_TCPCI
->>>
->>>  config TYPEC_FUSB302
->>> diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
->>> index a5ff6c8..7592ccb 100644
->>> --- a/drivers/usb/typec/tcpm/Makefile
->>> +++ b/drivers/usb/typec/tcpm/Makefile
->>> @@ -5,3 +5,4 @@ obj-$(CONFIG_TYPEC_WCOVE)     += typec_wcove.o
->>>  typec_wcove-y                        := wcove.o
->>>  obj-$(CONFIG_TYPEC_TCPCI)    += tcpci.o
->>>  obj-$(CONFIG_TYPEC_RT1711H)  += tcpci_rt1711h.o
->>> +obj-$(CONFIG_TYPEC_MT6360)   += tcpci_mt6360.o
->>> diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
->>> new file mode 100644
->>> index 00000000..f1bd9e0
->>> --- /dev/null
->>> +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
->>> @@ -0,0 +1,212 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Copyright (C) 2020 MediaTek Inc.
->>> + *
->>> + * Author: ChiYuan Huang <cy_huang@richtek.com>
->>> + */
->>> +
->>> +#include <linux/interrupt.h>
->>> +#include <linux/kernel.h>
->>> +#include <linux/module.h>
->>> +#include <linux/of.h>
->>> +#include <linux/platform_device.h>
->>> +#include <linux/regmap.h>
->>> +#include <linux/usb/tcpm.h>
->>> +
->>> +#include "tcpci.h"
->>> +
->>> +#define MT6360_REG_VCONNCTRL1        0x8C
->>> +#define MT6360_REG_MODECTRL2 0x8F
->>> +#define MT6360_REG_SWRESET   0xA0
->>> +#define MT6360_REG_DEBCTRL1  0xA1
->>> +#define MT6360_REG_DRPCTRL1  0xA2
->>> +#define MT6360_REG_DRPCTRL2  0xA3
->>> +#define MT6360_REG_I2CTORST  0xBF
->>> +#define MT6360_REG_RXCTRL2   0xCF
->>> +#define MT6360_REG_CTDCTRL2  0xEC
->>> +
->>> +/* MT6360_REG_VCONNCTRL1 */
->>> +#define MT6360_VCONNCL_ENABLE        BIT(0)
->>> +/* MT6360_REG_RXCTRL2 */
->>> +#define MT6360_OPEN40M_ENABLE        BIT(7)
->>> +/* MT6360_REG_CTDCTRL2 */
->>> +#define MT6360_RPONESHOT_ENABLE      BIT(6)
->>> +
->>> +struct mt6360_tcpc_info {
->>> +     struct tcpci_data tdata;
->>> +     struct tcpci *tcpci;
->>> +     struct device *dev;
->>> +     int irq;
->>> +};
->>> +
->>> +static inline int mt6360_tcpc_read16(struct regmap *regmap,
->>> +                                  unsigned int reg, u16 *val)
->>> +{
->>> +     return regmap_raw_read(regmap, reg, val, sizeof(u16));
->>> +}
->>> +
->>> +static inline int mt6360_tcpc_write16(struct regmap *regmap,
->>> +                                   unsigned int reg, u16 val)
->>> +{
->>> +     return regmap_raw_write(regmap, reg, &val, sizeof(u16));
->>> +}
->>> +
->>> +static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *tdata)
->>> +{
->>> +     struct regmap *regmap = tdata->regmap;
->>> +     int ret;
->>> +
->>> +     ret = regmap_write(regmap, MT6360_REG_SWRESET, 0x01);
->>> +     if (ret)
->>> +             return ret;
->>> +
->>> +     /* after reset command, wait 1~2ms to wait IC action */
->>> +     usleep_range(1000, 2000);
->>> +
->>> +     /* write all alert to masked */
->>> +     ret = mt6360_tcpc_write16(regmap, TCPC_ALERT_MASK, 0);
->> Wonder why access some register by 2bytes, and others 4bytes?
->> can we access them all by 4bytes?
-> 
-> Actually, the access bus is still I2C.
-> Each register is still one byte only.
-> Register address like as TCPC_ALERT_MASK are continuous two byte used
-> as IRQ MASK.
-> That's why it's used wirte16 function to access.
-> 
-> Actually, you also can divided into two bytes write into one byte
-> access by two times.
-> For I2C bus efficiency, it seems bad.
+On Fri, Aug 28, 2020 at 6:12 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> Looks like you forgot v1 somewhere :-)
 
-For MT6360_REG_DRPCTRL2, it might also be racy, since the two i2c addresses
-are really one register containing a 10-bit value. I would probably not matter
-here (afaics the value is changed from the default 327 to 330), but in general
-it seems safer to write such a value with a single 16-bit i2c write.
 
-Guenter
+Dumb me :P Yeah I was doing the patch numbers manually causing the confusion.
+Greg was complaining as well.
+These are all v1. I will re-upload everything as v2. Just noticed that
+I can use the -v option.
+
+>
+>
+> On Mon, Aug 24, 2020 at 09:21:58PM -0700, Badhri Jagan Sridharan wrote:
+> > TCPCI spec forbids direct access of TX_BUF_BYTE_x register.
+> > The existing version of tcpci driver assumes that those registers
+> > are directly addressible. Add support for tcpci chips which do
+> > not support direct access to TX_BUF_BYTE_x registers. TX_BUF_BYTE_x
+> > can only be accessed by I2C_WRITE_BYTE_COUNT.
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+> >  drivers/usb/typec/tcpm/tcpci.c | 49 +++++++++++++++++++++++++---------
+> >  drivers/usb/typec/tcpm/tcpci.h |  8 ++++++
+> >  2 files changed, 44 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> > index f57d91fd0e09..90d348caa6a8 100644
+> > --- a/drivers/usb/typec/tcpm/tcpci.c
+> > +++ b/drivers/usb/typec/tcpm/tcpci.c
+> > @@ -320,8 +320,7 @@ static int tcpci_set_vbus(struct tcpc_dev *tcpc, bool source, bool sink)
+> >       return 0;
+> >  }
+> >
+> > -static int tcpci_pd_transmit(struct tcpc_dev *tcpc,
+> > -                          enum tcpm_transmit_type type,
+> > +static int tcpci_pd_transmit(struct tcpc_dev *tcpc, enum tcpm_transmit_type type,
+> >                            const struct pd_message *msg)
+>
+> That does not look like a relevant change.
+>
+> >  {
+> >       struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > @@ -330,23 +329,47 @@ static int tcpci_pd_transmit(struct tcpc_dev *tcpc,
+> >       int ret;
+> >
+> >       cnt = msg ? pd_header_cnt(header) * 4 : 0;
+> > -     ret = regmap_write(tcpci->regmap, TCPC_TX_BYTE_CNT, cnt + 2);
+> > -     if (ret < 0)
+> > -             return ret;
+> > +     /**
+> > +      * TCPCI spec forbids direct access of TCPC_TX_DATA.
+> > +      * But, since some of the chipsets offer this capability,
+> > +      * it's fair to support both.
+> > +      */
+> > +     if (!tcpci->data->TX_BUF_BYTE_x_hidden) {
+>
+> Couldn't check if the flag is set first?
+
+Yes will do !
+
+>
+>         if (tcpci->data->TX_BUF_BYTE_x_hidden) {
+>                 ...
+>
+> > +             ret = regmap_write(tcpci->regmap, TCPC_TX_BYTE_CNT, cnt + 2);
+> > +             if (ret < 0)
+> > +                     return ret;
+> >
+> > -     ret = tcpci_write16(tcpci, TCPC_TX_HDR, header);
+> > -     if (ret < 0)
+> > -             return ret;
+> > +             ret = tcpci_write16(tcpci, TCPC_TX_HDR, header);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +
+> > +             if (cnt > 0) {
+> > +                     ret = regmap_raw_write(tcpci->regmap, TCPC_TX_DATA, &msg->payload, cnt);
+> > +                     if (ret < 0)
+> > +                             return ret;
+> > +             }
+> > +     } else {
+> > +             u8 buf[TCPC_TRANSMIT_BUFFER_MAX_LEN] = {0,};
+> > +             u8 pos = 0;
+> > +
+> > +             /* Payload + header + TCPC_TX_BYTE_CNT */
+> > +             buf[pos++] = cnt + 2;
+> > +
+> > +             if (msg)
+> > +                     memcpy(&buf[pos], &msg->header, sizeof(msg->header));
+> > +
+> > +             pos += sizeof(header);
+> > +
+> > +             if (cnt > 0)
+> > +                     memcpy(&buf[pos], msg->payload, cnt);
+> >
+> > -     if (cnt > 0) {
+> > -             ret = regmap_raw_write(tcpci->regmap, TCPC_TX_DATA,
+> > -                                    &msg->payload, cnt);
+> > +             pos += cnt;
+> > +             ret = regmap_raw_write(tcpci->regmap, TCPC_TX_BYTE_CNT, buf, pos);
+> >               if (ret < 0)
+> >                       return ret;
+> >       }
+> >
+> > -     reg = (PD_RETRY_COUNT << TCPC_TRANSMIT_RETRY_SHIFT) |
+> > -             (type << TCPC_TRANSMIT_TYPE_SHIFT);
+> > +     reg = (PD_RETRY_COUNT << TCPC_TRANSMIT_RETRY_SHIFT) | (type << TCPC_TRANSMIT_TYPE_SHIFT);
+> >       ret = regmap_write(tcpci->regmap, TCPC_TRANSMIT, reg);
+> >       if (ret < 0)
+> >               return ret;
+> > diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
+> > index fd26ca35814c..cf9d8b63adcb 100644
+> > --- a/drivers/usb/typec/tcpm/tcpci.h
+> > +++ b/drivers/usb/typec/tcpm/tcpci.h
+> > @@ -128,9 +128,17 @@
+> >  #define TCPC_VBUS_VOLTAGE_ALARM_HI_CFG               0x76
+> >  #define TCPC_VBUS_VOLTAGE_ALARM_LO_CFG               0x78
+> >
+> > +/* I2C_WRITE_BYTE_COUNT + 1 when TX_BUF_BYTE_x is only accessible I2C_WRITE_BYTE_COUNT */
+> > +#define TCPC_TRANSMIT_BUFFER_MAX_LEN         31
+> > +
+> > +/*
+> > + * @TX_BUF_BYTE_x_hidden
+> > + *           optional; Set when TX_BUF_BYTE_x can only be accessed through I2C_WRITE_BYTE_COUNT.
+> > + */
+> >  struct tcpci;
+> >  struct tcpci_data {
+> >       struct regmap *regmap;
+> > +     unsigned char TX_BUF_BYTE_x_hidden:1;
+> >       int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
+> >       int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
+> >                        bool enable);
+> > --
+> > 2.28.0.297.g1956fa8f8d-goog
+>
+> thanks,
+>
+> --
+> heikki
