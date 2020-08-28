@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15881255BA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128C9255BAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgH1Nxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        id S1727111AbgH1NyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgH1Nx0 (ORCPT
+        with ESMTP id S1726944AbgH1Nx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:53:26 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB9DC06121B;
-        Fri, 28 Aug 2020 06:53:25 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id s19so1607954eju.6;
-        Fri, 28 Aug 2020 06:53:25 -0700 (PDT)
+        Fri, 28 Aug 2020 09:53:28 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ED6C061232;
+        Fri, 28 Aug 2020 06:53:26 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ay8so1227722edb.8;
+        Fri, 28 Aug 2020 06:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BsvSCf6Oxm1voeABbB7CdX3byuKaze3qDjclCol3Tzg=;
-        b=LhpFyMUW7+cLkrtU0cHc2qKqzwGS5Vgxu9SSPs6tR2VL2u3DFyN8RxzSJ5mnckrMJb
-         agFrM686c9Zt9evIsysql7LLGsk5fnbGItq3FOiXF6RNoaAp5aEU7qqXVvtDT8HyDEPT
-         GpY3Q4F6+qNIZzWGcdPbSzU0HElREJpe5eZYJRDDQdOOEDXfW0+E0mMSsiiTi2tUu+NB
-         wjvT4A2oo07zZehSgXrIztuxIs/+g7AXmsrgI5ToSc7KxXszZDfebekLvYbm6DPRCZVS
-         Q8kxV8Q91W89rofRgei6lSpvK8DfRBTI659xiMGDujj9gNbsI04lFT0Vb9emJFm17n3M
-         R5EQ==
+        bh=hV5uJZHsvTb+qZMm6Fh/vKOZnWe5kKD9JZaAyweNigU=;
+        b=hp9nwZfasbwEGUoXKE1NJRgbokRuyeaubaLo/Kc0ocQEuV3T1bJz1R6Vm5wpNOf8EH
+         p6CDEHszPSPFIRqul+1b1uitnnFkd90dV5biLz8ab1bRZd03EoLlsKvI5PoJOW/ztRnd
+         26Nnyw1fwLiR57S8fWkJSQqPJqHMPnKiVzYEExWdSnD/gbVnxdpbvrBMfLhQepwIQk17
+         g4aj8aSPKgcQHQfrH5Z4VQBlYaKJJzdRTctfHo9uUm0oagKPvFmpdtxdjQKmCORQ+QAy
+         jwoDhyFHkXuxdEtfDXHOTolfaxEPtrpJzLechj9zb668XP62ttPKsq5b0LqCSdkLPUsx
+         QU8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BsvSCf6Oxm1voeABbB7CdX3byuKaze3qDjclCol3Tzg=;
-        b=kkqwrlBhn/os62zvDhTkVwEQeFMiq4Pr2pNF+vOxJlPIjIxlknl8hrfwulM0rrzm7X
-         RUevfdrmR1e7IcMYhjXNt9VuyC0txNSNHcFa0INjH4t4WMpFj255Zv1RM1gcVsE0Qq+5
-         /MqSBMe4uKNH0rnh5ZKXp/C9/rJg9Tj5Ij+nvzNn+s4Yo1BpEQW9bykK9BaI/85gPI5i
-         frizN6dr3rHjSgtIDs8Dgh6rS2B4/0MdK3Tt5FzCuFwVb6uWTQKx6mBDkmiP85SQz46G
-         PRxo/b8EeHx6f9BAzNza9zCOBJE1Aq9Bweo/Ntl6opl/uVKvB1fcKH0gEzrQAWga08W4
-         nWgQ==
-X-Gm-Message-State: AOAM531APBUnItyOBfCc7PN7R3tZOyhgvvReLoAd2gW+/3jiqeBDCfe9
-        iyKRkhQsPy38IdmRiPYntzU=
-X-Google-Smtp-Source: ABdhPJyf3pdgw6sOwc+9jGXm1GWx/NL7CadUHYcQkvlLjJZTuhsHW/CAXGSXTgPjXZASqmUpl3QPxg==
-X-Received: by 2002:a17:906:b086:: with SMTP id x6mr2045012ejy.204.1598622804098;
-        Fri, 28 Aug 2020 06:53:24 -0700 (PDT)
+        bh=hV5uJZHsvTb+qZMm6Fh/vKOZnWe5kKD9JZaAyweNigU=;
+        b=Nm3A0Ona2u3FrR6p9Zc0xBgGME7iPJ1Svr7wFXwkEr6nlD/95e0XSdN1QgvjvpNUZ5
+         Opb32J5fz0eVfkQ88LGITIt+CXO0WksflibB/X6pOvaIGSQ6b5r2n6h83XTlsculpWqc
+         WnIIgwSeMzp1NCYd9+Yr+2CrP2AHBhrKAKPaXUOrabmCWjAte6m81IswTK9ZM1rPHLWd
+         TMXBOCizvWN59FmGJ7BQhNk6XwAPyz0g1vnB1JVcefVX8HoLpPIZdQXCsxMv4nBlwTjF
+         +nCUkxpH2HLKp0UEkkKjkEXKuMIdwBdvqskwm5GErzC6TCu14sy5qsOOCEto0D87uZn/
+         1+Tg==
+X-Gm-Message-State: AOAM530p/Nsam9vl6RTPphidpijCCdgkfPQFTL8B5sfXg3WXIspjFgL3
+        5t1k69MhF7gloEf/MzL3EDI=
+X-Google-Smtp-Source: ABdhPJwBwd54XjIF2yG1Ai43w5bDSEkse4/CvzAve+mEXNIc+Jkbp8gW5514ehb317z/qe30tCuiog==
+X-Received: by 2002:a50:8e11:: with SMTP id 17mr2101058edw.54.1598622805256;
+        Fri, 28 Aug 2020 06:53:25 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id f20sm981624ejq.60.2020.08.28.06.53.23
+        by smtp.gmail.com with ESMTPSA id f20sm981624ejq.60.2020.08.28.06.53.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 06:53:23 -0700 (PDT)
+        Fri, 28 Aug 2020 06:53:24 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Peter Korsgaard <peter@korsgaard.com>
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: [PATCH v2 1/4] arm: dts: owl-s500: Fix incorrect PPI interrupt specifiers
-Date:   Fri, 28 Aug 2020 16:53:17 +0300
-Message-Id: <43702e492090417a490ba4cd81990a05aeea9f48.1598621459.git.cristian.ciocaltea@gmail.com>
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 2/4] dt-bindings: Add vendor prefix for RoseapplePi.org
+Date:   Fri, 28 Aug 2020 16:53:18 +0300
+Message-Id: <7b2624c1e2aa4cb09869ff38676ef2681caa2f77.1598621459.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1598621459.git.cristian.ciocaltea@gmail.com>
 References: <cover.1598621459.git.cristian.ciocaltea@gmail.com>
@@ -68,44 +69,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PPI interrupts for cortex-a9 were incorrectly specified, fix them.
+Add devicetree vendor prefix for RoseapplePi.org Foundation.
+Website: http://roseapplepi.org/
 
-Fixes: fdfe7f4f9d85 ("ARM: dts: Add Actions Semi S500 and LeMaker Guitar")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 5ceb6cc4451d..1dbe4e8b38ac 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -84,21 +84,21 @@ scu: scu@b0020000 {
- 		global_timer: timer@b0020200 {
- 			compatible = "arm,cortex-a9-global-timer";
- 			reg = <0xb0020200 0x100>;
--			interrupts = <GIC_PPI 0 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
- 		twd_timer: timer@b0020600 {
- 			compatible = "arm,cortex-a9-twd-timer";
- 			reg = <0xb0020600 0x20>;
--			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
- 		twd_wdt: wdt@b0020620 {
- 			compatible = "arm,cortex-a9-twd-wdt";
- 			reg = <0xb0020620 0xe0>;
--			interrupts = <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 63996ab03521..0b5bd97b4211 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -894,6 +894,8 @@ patternProperties:
+     description: Ronbo Electronics
+   "^roofull,.*":
+     description: Shenzhen Roofull Technology Co, Ltd
++  "^roseapplepi,.*":
++    description: RoseapplePi.org
+   "^samsung,.*":
+     description: Samsung Semiconductor
+   "^samtec,.*":
 -- 
 2.28.0
 
