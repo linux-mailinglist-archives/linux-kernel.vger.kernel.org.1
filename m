@@ -2,187 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B494255D88
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A85255D8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 17:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgH1PMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 11:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        id S1728061AbgH1PNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 11:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727957AbgH1PMa (ORCPT
+        with ESMTP id S1726579AbgH1PNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 11:12:30 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68818C061264;
-        Fri, 28 Aug 2020 08:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=n2RN+rEjm+Zy1oHtyfmOVgisvgCHlCOJPis+fgHx5RA=; b=Ll4f1pNjTbdHJaZTNyzGh3KnmY
-        0dgrp78B98fzYKZ7C+n0K1MotLAD09MiSKBYpU92JiIBfBoOgoswrqggoT5tjRpET1A/Ykihg7t9+
-        uh9umYsxiTVyHhdCSns1js8xG8RtnOHS27xQMpOOTGg8CQKFRuUzldi6YbTFjSPCxKZQsmcdTAaiX
-        qGtj2Ndii428RWtDA/6BeUkgB+P9F7bJxd3FLunrikSZsYh6ex+3xH5UU1AWeBAeZJryVpvF9gyXY
-        BQpUHberGmiUSGWqiuTVDL6mVLemU9wMbK0GKgqLRtLtW5bD6ZQ0apFiiU3tJK3ptFzpTKzXUeQWk
-        b2Ius9xg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kBg3F-00010N-Rx; Fri, 28 Aug 2020 15:12:26 +0000
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Sven Joachim <svenjoac@gmx.de>, Brian Vazquez <brianvv@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200729212721.1ee4eef8@canb.auug.org.au>
- <87ft8lwxes.fsf@turtle.gmx.de>
- <CAMzD94Rz4NYnhheS8SmuL14MNM4VGxOnAW-WZ9k1JEqrbwyrvw@mail.gmail.com>
- <87y2m7gq86.fsf@turtle.gmx.de> <87pn7gh3er.fsf@turtle.gmx.de>
- <CAMzD94Rkq1RTZJG5UsEz9VhaCBbvObD1azqU2gsJzZ6gPYcfag@mail.gmail.com>
- <878sdyn6xz.fsf@turtle.gmx.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <49315f94-1ae6-8280-1050-5fc0d1ead984@infradead.org>
-Date:   Fri, 28 Aug 2020 08:12:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 28 Aug 2020 11:13:14 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF48FC06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 08:13:13 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id p11so795855pfn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 08:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BKjrrvGukms7oApav7erWoo0oPTGMcbx8gjhXd3ukgs=;
+        b=NhhM7Wd+6AXFxeOeMWRB148tGgNlOMcALtzVTyDpKSNCuzc3VWYLfJz/pX5kXgMHGL
+         9yWWnDA5z/smkM1Md/N/OArnjuz3dkLQV4msTL+jLALnqY9rkSCrrIw3nio1scj68TCz
+         kmbApPm0zBAt0F7neVf0zLYRSsyNM0OCcLf+HpLOhoJcFqOK+xSHUgVdylKhSuEnIixE
+         rpId1DnDwsD41p0iGXpblh/s1NjnVMFJ/HXYO3mQuwurIrfBJTzxcGKgRyueLjGR9ZhD
+         r9pYDJDfQwYo++eOmCF7TQpboaZRr/hNx95K1YSvRQpGo5gRDwPlVae/L9cg29T3IQBh
+         8lag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BKjrrvGukms7oApav7erWoo0oPTGMcbx8gjhXd3ukgs=;
+        b=cNMAubD3rU5vNVar0rv3qVoEIwruNiZTM6bvB5WeUgpeFlclDkOyuLl4EwBYsM6G5m
+         ZckdLM9PNwHDw7+0zrGGDm5dVPrQxX/B1A8uPENL/aibMapHnnrkVvRdi2gPsGl2IsMg
+         pYuTCsfVpjSjxPLLNjPLVenuDS3m3XHQy05HVga1JhP4T/AmX1JRcRjVAu/zZrzHXWTx
+         WalZMNK1k//B+lsQzVC3W+3MNVMcXo+pJrQjZxIEekqRYFB86aponRSuwoh+p2M61ITD
+         ElrJmZSsK8h/wWKmRGyA39j2979b3PBD9Fb5XCIJgMoiEgPlbIQO0zmqpzWg5UCy4PkG
+         YM8w==
+X-Gm-Message-State: AOAM5320ldwcCEctz9uvfcItzx5LaPVHGXWKFCN8UODT505NM/8bR2of
+        JWtfToDwiXrTpX5LIsVT7cuLOSmwu3gsPjl86q/MJQ==
+X-Google-Smtp-Source: ABdhPJzBRHZpU27bCnEfRWEIjU42rJu3H1xXxc3QjqEmLrHzIIwqgmaz4ebaoH3M0cNLgMndZvXGFvpUlnmrLB9iN0o=
+X-Received: by 2002:a62:1514:: with SMTP id 20mr1712792pfv.62.1598627593154;
+ Fri, 28 Aug 2020 08:13:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <878sdyn6xz.fsf@turtle.gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200828145518.26324-1-trix@redhat.com>
+In-Reply-To: <20200828145518.26324-1-trix@redhat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 28 Aug 2020 08:13:02 -0700
+Message-ID: <CAKwvOd=S=aw6KoRvzhUMi4fR799kaPwAKoigjuR9fS-JSYSGPA@mail.gmail.com>
+Subject: Re: [PATCH] media: ov7670: check status of ov7670_read
+To:     trix@redhat.com
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/20 8:09 AM, Sven Joachim wrote:
-> On 2020-08-27 11:12 -0700, Brian Vazquez wrote:
-> 
->> I've been trying to reproduce it with your config but I didn't
->> succeed. I also looked at the file after the preprocessor and it
->> looked good:
->>
->> ret = ({ __builtin_expect(!!(ops->match == fib6_rule_match), 1) ?
->> fib6_rule_match(rule, fl, flags) : ops->match(rule, fl, flags); })
-> 
-> However, in my configuration I have CONFIG_IPV6=m, and so
-> fib6_rule_match is not available as a builtin.  I think that's why ld is
-> complaining about the undefined reference.
+On Fri, Aug 28, 2020 at 7:55 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> clang static analysis flags this representative problem
+>
+> drivers/media/i2c/ov7670.c:1463:9: warning: Assigned
+>   value is garbage or undefined
+>         *value = gain;
+>                ^ ~~~~
+>
+> gain is set by a successful call to ov7670_read()
 
-Same here FWIW. CONFIG_IPV6=m.
+Indeed, it looks like gain is only valid if the return value from
+ov7670_read() is >= 0.  Would it be simpler to just initialize gain to
+0 in ov7670_g_gain?
 
+Side question; I'm super happy to see someone sending patches for
+things identified by clang's static analyzer.  I'm curious, Tom, how
+did you run it?  Did you use the recently landed in kbuild-next
+support for the make target `make clang-analyzer`?
 
-> Changing the configuration to CONFIG_IPV6=y helps, FWIW.
-> 
->> Note that fib4_rule_match doesn't appear as the
->> CONFIG_IP_MULTIPLE_TABLES is not there.
->>
->> Could you share more details on how you're compiling it and what
->> compiler you're using??
-> 
-> Tried with both gcc 9 and gcc 10 under Debian unstable, binutils 2.35.
-> I usually use "make bindebpkg", but just running "make" is sufficient to
-> reproduce the problem, as it happens when linking vmlinux.
-> 
-> Cheers,
->        Sven
-> 
-> 
->> On Mon, Aug 24, 2020 at 1:08 AM Sven Joachim <svenjoac@gmx.de> wrote:
->>>
->>> On 2020-08-22 08:16 +0200, Sven Joachim wrote:
->>>
->>>> On 2020-08-21 09:23 -0700, Brian Vazquez wrote:
->>>>
->>>>> Hi Sven,
->>>>>
->>>>> Sorry for the late reply, did you still see this after:
->>>>> https://patchwork.ozlabs.org/project/netdev/patch/20200803131948.41736-1-yuehaibing@huawei.com/
->>>>> ??
->>>>
->>>> That patch is apparently already in 5.9-rc1 as commit 80fbbb1672e7, so
->>>> yes I'm still seeing it.
->>>
->>> Still present in 5.9-rc2 as of today, I have attached my .config for
->>> reference.  Note that I have CONFIG_IPV6_MULTIPLE_TABLES=y, but
->>> CONFIG_IP_MULTIPLE_TABLES is not mentioned at all there.
->>>
->>> To build the kernel, I have now deselected IPV6_MULTIPLE_TABLES.  Not
->>> sure why this was enabled in my .config which has grown organically over
->>> many years.
->>>
->>> Cheers,
->>>        Sven
->>>
->>>
->>>>> On Mon, Aug 17, 2020 at 12:21 AM Sven Joachim <svenjoac@gmx.de> wrote:
->>>>>
->>>>>> On 2020-07-29 21:27 +1000, Stephen Rothwell wrote:
->>>>>>
->>>>>>> Hi all,
->>>>>>>
->>>>>>> After merging the net-next tree, today's linux-next build (i386
->>>>>> defconfig)
->>>>>>> failed like this:
->>>>>>>
->>>>>>> x86_64-linux-gnu-ld: net/core/fib_rules.o: in function
->>>>>> `fib_rules_lookup':
->>>>>>> fib_rules.c:(.text+0x5c6): undefined reference to `fib6_rule_match'
->>>>>>> x86_64-linux-gnu-ld: fib_rules.c:(.text+0x5d8): undefined reference to
->>>>>> `fib6_rule_match'
->>>>>>> x86_64-linux-gnu-ld: fib_rules.c:(.text+0x64d): undefined reference to
->>>>>> `fib6_rule_action'
->>>>>>> x86_64-linux-gnu-ld: fib_rules.c:(.text+0x662): undefined reference to
->>>>>> `fib6_rule_action'
->>>>>>> x86_64-linux-gnu-ld: fib_rules.c:(.text+0x67a): undefined reference to
->>>>>> `fib6_rule_suppress'
->>>>>>> x86_64-linux-gnu-ld: fib_rules.c:(.text+0x68d): undefined reference to
->>>>>> `fib6_rule_suppress'
->>>>>>
->>>>>> FWIW, I saw these errors in 5.9-rc1 today, so the fix in commit
->>>>>> 41d707b7332f ("fib: fix fib_rules_ops indirect calls wrappers") was
->>>>>> apparently not sufficient.
->>>>>>
->>>>>> ,----
->>>>>> | $ grep IPV6 .config
->>>>>> | CONFIG_IPV6=m
->>>>>> | # CONFIG_IPV6_ROUTER_PREF is not set
->>>>>> | # CONFIG_IPV6_OPTIMISTIC_DAD is not set
->>>>>> | # CONFIG_IPV6_MIP6 is not set
->>>>>> | # CONFIG_IPV6_ILA is not set
->>>>>> | # CONFIG_IPV6_VTI is not set
->>>>>> | CONFIG_IPV6_SIT=m
->>>>>> | # CONFIG_IPV6_SIT_6RD is not set
->>>>>> | CONFIG_IPV6_NDISC_NODETYPE=y
->>>>>> | CONFIG_IPV6_TUNNEL=m
->>>>>> | CONFIG_IPV6_MULTIPLE_TABLES=y
->>>>>> | # CONFIG_IPV6_SUBTREES is not set
->>>>>> | # CONFIG_IPV6_MROUTE is not set
->>>>>> | # CONFIG_IPV6_SEG6_LWTUNNEL is not set
->>>>>> | # CONFIG_IPV6_SEG6_HMAC is not set
->>>>>> | # CONFIG_IPV6_RPL_LWTUNNEL is not set
->>>>>> | # CONFIG_NF_SOCKET_IPV6 is not set
->>>>>> | # CONFIG_NF_TPROXY_IPV6 is not set
->>>>>> | # CONFIG_NF_DUP_IPV6 is not set
->>>>>> | # CONFIG_NF_REJECT_IPV6 is not set
->>>>>> | # CONFIG_NF_LOG_IPV6 is not set
->>>>>> | CONFIG_NF_DEFRAG_IPV6=m
->>>>>> `----
->>>>>>
->>>>>>> Caused by commit
->>>>>>>
->>>>>>>   b9aaec8f0be5 ("fib: use indirect call wrappers in the most common
->>>>>> fib_rules_ops")
->>>>>>>
->>>>>>> # CONFIG_IPV6_MULTIPLE_TABLES is not set
->>>>>>>
->>>>>>> I have reverted that commit for today.
->>>>>>
->>>>>> Cheers,
->>>>>>        Sven
+>
+> So check that ov7670_read() is successful.
+>
+> The remaining static analysis problems are false positives.
+> There appears to be a limitation with checking the
+> aggregated returns.
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/media/i2c/ov7670.c | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
+> index b42b289faaef..001d4b09db72 100644
+> --- a/drivers/media/i2c/ov7670.c
+> +++ b/drivers/media/i2c/ov7670.c
+> @@ -929,6 +929,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
+>         ret =  ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
+>         ret += ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
+>         ret += ov7670_read(sd, REG_HREF, &v);
+> +       if (ret)
+> +               return ret;
+>         v = (v & 0xc0) | ((hstop & 0x7) << 3) | (hstart & 0x7);
+>         msleep(10);
+>         ret += ov7670_write(sd, REG_HREF, v);
+> @@ -938,6 +940,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
+>         ret += ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
+>         ret += ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
+>         ret += ov7670_read(sd, REG_VREF, &v);
+> +       if (ret)
+> +               return ret;
+>         v = (v & 0xf0) | ((vstop & 0x3) << 2) | (vstart & 0x3);
+>         msleep(10);
+>         ret += ov7670_write(sd, REG_VREF, v);
+> @@ -1460,6 +1464,8 @@ static int ov7670_g_gain(struct v4l2_subdev *sd, __s32 *value)
+>         unsigned char gain;
+>
+>         ret = ov7670_read(sd, REG_GAIN, &gain);
+> +       if (ret)
+> +               return ret;
+>         *value = gain;
+>         return ret;
+>  }
+> @@ -1470,11 +1476,14 @@ static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
+>         unsigned char com8;
+>
+>         ret = ov7670_write(sd, REG_GAIN, value & 0xff);
+> +       if (ret)
+> +               return ret;
+>         /* Have to turn off AGC as well */
+> -       if (ret == 0) {
+> -               ret = ov7670_read(sd, REG_COM8, &com8);
+> -               ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
+> -       }
+> +       ret = ov7670_read(sd, REG_COM8, &com8);
+> +       if (ret)
+> +               return ret;
+> +       ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
+> +
+>         return ret;
+>  }
+>
+> --
+> 2.18.1
+>
 
 
 -- 
-~Randy
-
+Thanks,
+~Nick Desaulniers
