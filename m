@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3D3255C2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD931255C41
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgH1OT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:19:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        id S1727115AbgH1OUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:20:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:50328 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgH1OTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:19:24 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F8C7208C9;
-        Fri, 28 Aug 2020 14:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598624364;
-        bh=TdetsC/IwhbsAgTlgvX2TtgjuiEy6W6tBp2ZWqLO+JM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qtDWadleCxTR0PpV04LVMcmFE6CLPUIAXMPQ01N15drNu1lbMIvXC65zqFQ4kp6WG
-         Gih9hip23BkPOqD3sY/i9NgFZUnQ4gf7g6v8tnpXSS6aADVP/GRRdhKXlEEGBEWqzg
-         NL6VQLuwsWmPZ96IL+h1DpTYX02OGeYN7drBGqkk=
-Date:   Fri, 28 Aug 2020 23:19:20 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     peterz@infradead.org
-Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "cameron@moodycamel.com" <cameron@moodycamel.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-Subject: Re: [RFC][PATCH 3/7] kprobes: Remove kretprobe hash
-Message-Id: <20200828231920.4cb817dd9c624703ecfedc5d@kernel.org>
-In-Reply-To: <20200828135824.GD1362448@hirez.programming.kicks-ass.net>
-References: <20200827161237.889877377@infradead.org>
-        <20200827161754.359432340@infradead.org>
-        <7df0a1af432040d9908517661c32dc34@trendmicro.com>
-        <20200828225113.9541a5f67a3bcb17c4ce930c@kernel.org>
-        <20200828135824.GD1362448@hirez.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725857AbgH1OU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:20:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4400E1FB;
+        Fri, 28 Aug 2020 07:20:28 -0700 (PDT)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E0F33F71F;
+        Fri, 28 Aug 2020 07:20:26 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chanho Min <chanho.min@lge.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>
+Subject: [PATCH v2 0/6] dt-bindings: Convert SP804 to Json-schema (and fix users)
+Date:   Fri, 28 Aug 2020 15:20:12 +0100
+Message-Id: <20200828142018.43298-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 15:58:24 +0200
-peterz@infradead.org wrote:
+This is the second attempt at converting the SP804 timer binding to yaml.
+Compared to v1, I forbid additional properties, and included the primecell
+binding. Also the clock-names property is now listed, although without
+further requirements on the names. Changelog below.
 
-> On Fri, Aug 28, 2020 at 10:51:13PM +0900, Masami Hiramatsu wrote:
->  
-> > OK, schedule function will be the key. I guess the senario is..
-> > 
-> > 1) kretporbe replace the return address with kretprobe_trampoline on task1's kernel stack
-> > 2) the task1 forks task2 before returning to the kretprobe_trampoline
-> > 3) while copying the process with the kernel stack, task2->kretprobe_instances.first = NULL
-> > 4) task2 returns to the kretprobe_trampoline
-> > 5) Bomb!
-> > 
-> > Hmm, we need to fixup the kernel stack when copying process. 
-> 
-> How would that scenario have been avoided in the old code? Because there
-> task2 would have a different has and not have found a kretprobe_instance
-> either.
+--------------
+The yaml conversion is done in the first patch, the remaining five fix
+some DT users.
 
-Good question, I think this bug has not been solved in old code too.
-Let me check.
+I couldn't test any of those DT files on actual machines, but tried
+to make the changes in a way that would be transparent to at least the
+Linux driver. The only other SP804 DT user I could find is FreeBSD,
+but they seem to use a different binding (no clocks, but a
+clock-frequency property).
 
-Thanks,
+Cheers,
+Andre
+
+Changelog v1 .. v2:
+- Add additional-properties: false
+- Allow clock-names property
+- Include primecell binding
+- Fix subject on Broadcom patch
+- Add Florian's Tested-by: on Broadcom patch
+- Add Linus' Acked-by: on Arm patch
+
+Andre Przywara (6):
+  dt-bindings: timers: sp-804: Convert to json-schema
+  ARM: dts: arm: Fix SP804 users
+  ARM: dts: NSP: Fix SP804 compatible node
+  ARM: dts: hisilicon: Fix SP804 users
+  ARM: dts: nspire: Fix SP804 users
+  arm64: dts: lg: Fix SP804 users
+
+ .../devicetree/bindings/timer/arm,sp804.txt   | 29 ------
+ .../devicetree/bindings/timer/arm,sp804.yaml  | 93 +++++++++++++++++++
+ arch/arm/boot/dts/arm-realview-pb11mp.dts     | 16 ++--
+ arch/arm/boot/dts/bcm-nsp.dtsi                |  2 +-
+ arch/arm/boot/dts/hi3620.dtsi                 | 30 ++++--
+ arch/arm/boot/dts/hip04.dtsi                  |  4 +-
+ arch/arm/boot/dts/mps2.dtsi                   |  6 +-
+ arch/arm/boot/dts/nspire.dtsi                 | 12 ++-
+ arch/arm/boot/dts/vexpress-v2p-ca9.dts        |  4 +-
+ arch/arm64/boot/dts/lg/lg1312.dtsi            |  6 +-
+ arch/arm64/boot/dts/lg/lg1313.dtsi            |  6 +-
+ 11 files changed, 144 insertions(+), 64 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/arm,sp804.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/arm,sp804.yaml
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
+
