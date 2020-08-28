@@ -2,223 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58757255B40
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780BF255B45
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729461AbgH1Nbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgH1N36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:29:58 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BEE8207DF;
-        Fri, 28 Aug 2020 13:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598621384;
-        bh=tZ9uQzkb+ExAZr5uhfv1xxUUAsoHvUK3Z0MNvDQ1CGw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iS7XKfy2983XHdzMECKdhqeAmDKoKIOh61Fnqe1+aXkdvgLGiRwviCT2b5uaoRUXB
-         Yo/ajqTcVh6Qz4SHA7tyN0NsG2YqP6h51OdceXVgupLbsv/wjYCVnX9+KPhhOFIMI/
-         NGTEHpwsaD9yH/pYLReGB1v6REB52Ha0xH87WlMU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6A2FC3522679; Fri, 28 Aug 2020 06:29:44 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 06:29:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Aug 26
-Message-ID: <20200828132944.GN2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200826163330.16e5b0d4@canb.auug.org.au>
- <CADYN=9KQcdLH=BfXZ2riuH0icw7d+2HbfPxvww7fiJG2G=8ALQ@mail.gmail.com>
- <20200826193945.GT2855@paulmck-ThinkPad-P72>
- <CADYN=9+XRhPOkds36JdHU-h2h3va=JJj6aeDHmNUzrpCHWEJ0A@mail.gmail.com>
+        id S1729508AbgH1NhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:37:01 -0400
+Received: from sonic312-20.consmr.mail.bf2.yahoo.com ([74.6.128.82]:33740 "EHLO
+        sonic312-20.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729410AbgH1NbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:31:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598621446; bh=zXaFIo8mjTpXao4VNtylOhTc/LqLzQin3ncX1bFuSgM=; h=Date:From:Reply-To:Subject:References:From:Subject; b=umgRTzYbOVG0BydnZUwZAInR09RN4ogj96Kv/GZXQoRmnfLJ92h9arI0ymon5fzvYU38TezE7RTnTuHXP9bIcbVFgqFIFTvQmF/QNhAkHJB9dsHlbwH2BVyr3awoHNLiXNOhtAgHODDHSK9xmnCY7UsOckYmqDujnGEaVt/Nr6OHLuEOicC7cPSdXAREZwXhk9N96pz1qwiU7ZWqRo1A/MI3fbGPGioKH8LME+77tSm2ltqwfGAANjf2Q8+/QVV4f3jq//XoAp0iiq9nTsOafGiaVNZhpjZdLFHAzDW5Hs2GLEs1r/Djor6TtHftp1wd8rgHHjWN08NTKEvKHseX3A==
+X-YMail-OSG: Er3YvYkVM1lfrbGlMZB2r4aDKTD9AirOddmjbBOU.7hjc3jYSWpdhFGVkLfUf11
+ JcqZsia_cfwdE6npYxQQOpWoIeiUjM8TbZZG84eJciVffdfQKuaGE4RPoyNRjzvIwtZTMEsqd8mE
+ hY1.z6hyhSHS0iIYNjkjeYNqMhFfay1.VdNKxJoCnRjoXppP.2SUc4_14cyGcbi1MsCbZ9.W4BBd
+ aGjiRiJotTl5btEPCgyBCcmgDWvRejPj.fKECoF.mOx2R5FhbBMunI.IxRski_ntu7b0SbRXt3HQ
+ CNOPfdZbrASombDbfjBbUgSOAZDV4H5ZPzItCC1XlDq4pTb.KBLVkVmlWx2XCjs4QCjVEx0f2dxg
+ QNvPGonHYh_Ac4hgmMDQpLc7RBVoBEBaFr4tOOOPtaf9CzgunIHuxCfqVpiKCwYe13ivEm1TWs4j
+ kC9DQkXJ.hmf00jE1dG1Dk4d_MD7ZMYF6rKrULFUy6DQlpCs.iNXNZR7KaKFr13kwsmJDycrkoxl
+ LSYgYGMmSBaxhFUSJIWfWy_.WcHngLc8u3Gu3oOUYOZM4b_K7yWVOypiScv8o7Ie.29cj7KOhBsL
+ PUDycaRIF60vZscCKYQ3gpwJskjBXBdA__LuQWK2XzMMIxSYRM5RikNE9OShexmMFDrDUnK7CKSE
+ q4htG_bn_KQ3K7W40mthaelr7sUYOhzf9GneRvWGX70YGVvNP0WUiDsj4X99pXBmy1IonaaB5abS
+ CkfHWDdVL1lBpG5ZL77QDY9PifqaylRsxGJFSLGsIKriuse__Nfgflbf1tDgjSvxiQK5LbqCl8_l
+ WDw7em5p.OMm3DkI1T7gu3PlmOQ5D.2Tbp191TQaCpGzyHwPHagiEiPfxisY_xq3AEIvCdJ2lVqR
+ vZMu9eO0mzGyW_xiU46ynd5kcS53B9t9EdO9WPAipR6BuwjqebMZSqBCyf4i72pxewSbmgO3Q8fd
+ K.Qse76xZUYLURGp6NsjFrJB.4WiyjVvOXS18.YD2wHXZSPnSzX2hK4VYScZWieME9h2rAPFjqE9
+ bvqHOsuHbC0pKYPTpcdbR6OzbX1vAti682V5.u6JzdUeZ1ryIHHN24QhNwLeBEEdQS79Puu7n70R
+ sUIloHV8.fC4SinzQNr1G_xSKvhlgZuQY1yrDsbjR.ovQIv0b9nTvFmf.8OdaUVVP0sqrF3Mkc9Q
+ J3rcM2gT0s_6kQkGeAliFWIvjItFisMPSQPiIp9dKFo9u4_qDRRiXMwLoWBeTRZ7hgUrMscu70Bu
+ TmW3qfEmMqILigBKm6igbd_8I_jf4hh03k1Yai3IbADbGOlEoTLBMTq0rUjucCa_jmT0muYKPeCu
+ xkgyumZfhH8tvHDYy89KvfJfuV0AfIps7z5AE6lVgcBEwfx1KDeB4LeZUcKMcANoSTQdwSCy65S_
+ LeV4MQN0Rgw22mF98IpXA9lwevIm34IUNA8000_fqZDckR.9c
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 28 Aug 2020 13:30:46 +0000
+Date:   Fri, 28 Aug 2020 13:30:44 +0000 (UTC)
+From:   KUBAN MANFI <nolanbraten4@gmail.com>
+Reply-To: fadiansi55@gmail.com
+Message-ID: <28592325.6638224.1598621444691@mail.yahoo.com>
+Subject:   VERY CONFIDENTIAL.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADYN=9+XRhPOkds36JdHU-h2h3va=JJj6aeDHmNUzrpCHWEJ0A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <28592325.6638224.1598621444691.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 09:37:17AM +0200, Anders Roxell wrote:
-> On Wed, 26 Aug 2020 at 21:39, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Aug 26, 2020 at 08:19:01PM +0200, Anders Roxell wrote:
-> > > On Wed, 26 Aug 2020 at 08:33, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > [ . . . ]
-> >
-> > > I've built and run an arm64 allmodconfig kernel where I use the
-> > > defconfig as the base, I do this for testing purposes.
-> > > I can see the following call trace [1]:
-> > >
-> > > [ 2595.811453][    T1] Running tests on all trace events:
-> > > [ 2595.860933][    T1] Testing all events:
-> > > [ 4316.066072][    T8] kworker/dying (8) used greatest stack depth:
-> > > 27056 bytes left
-> > > [ 8561.924871][    C0] watchdog: BUG: soft lockup - CPU#0 stuck for
-> > > 22s! [migration/0:14]
-> > > [ 8561.934498][    C0] Modules linked in:
-> > > [ 8561.942303][    C0] irq event stamp: 4044
-> > > [ 8561.949044][    C0] hardirqs last  enabled at (4043):
-> > > [<ffffa000126b530c>] _raw_spin_unlock_irqrestore+0xac/0x138
-> > > [ 8561.960848][    C0] hardirqs last disabled at (4044):
-> > > [<ffffa000126a89f8>] __schedule+0xf8/0x7e0
-> > > [ 8561.971418][    C0] softirqs last  enabled at (3698):
-> > > [<ffffa00010001b04>] __do_softirq+0x524/0x5f8
-> > > [ 8561.982191][    C0] softirqs last disabled at (3689):
-> > > [<ffffa000101216c8>] __irq_exit_rcu+0x128/0x1a0
-> > > [ 8561.993068][    C0] CPU: 0 PID: 14 Comm: migration/0 Tainted: G
-> > >    W         5.9.0-rc2-next-20200826-00005-g24628bb4c0bf #1
-> > > [ 8562.005684][    C0] Hardware name: linux,dummy-virt (DT)
-> > > [ 8562.013247][    C0] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
-> > > [ 8562.021657][    C0] pc : arch_local_irq_enable+0x58/0x80
-> > > [ 8562.029323][    C0] lr : _raw_spin_unlock_irq+0x84/0xc0
-> > > [ 8562.036739][    C0] sp : ffff0000698efaa0
-> > > [ 8562.042984][    C0] x29: ffff0000698efaa0 x28: ffff00006ad0f270
-> > > [ 8562.053814][    C0] x27: ffff00006ad0f248 x26: ffff0000698d4718
-> > > [ 8562.064687][    C0] x25: ffff00006ad0e798 x24: ffffa000139e3a40
-> > > [ 8562.075506][    C0] x23: 0000000000000001 x22: ffffa000154f5000
-> > > [ 8562.086425][    C0] x21: ffff00006ad0e798 x20: ffff00006ad0e780
-> > > [ 8562.097255][    C0] x19: ffffa000126a905c x18: 00000000000014c0
-> > > [ 8562.108071][    C0] x17: 0000000000001500 x16: 0000000000001440
-> > > [ 8562.118918][    C0] x15: 00000000f1f1f1f1 x14: 003d090000000000
-> > > [ 8562.129739][    C0] x13: 00003d0900000000 x12: ffff80000d31df41
-> > > [ 8562.140544][    C0] x11: 1fffe0000d31df40 x10: ffff80000d31df40
-> > > [ 8562.151366][    C0] x9 : dfffa00000000000 x8 : ffff0000698efa07
-> > > [ 8562.162247][    C0] x7 : 0000000000000001 x6 : 00007ffff2ce20c0
-> > > [ 8562.173072][    C0] x5 : ffff0000698d4040 x4 : dfffa00000000000
-> > > [ 8562.183954][    C0] x3 : ffffa0001040f904 x2 : 0000000000000007
-> > > [ 8562.194811][    C0] x1 : ffffa00014080000 x0 : 00000000000000e0
-> > > [ 8562.205858][    C0] Call trace:
-> > > [ 8562.211739][    C0]  arch_local_irq_enable+0x58/0x80
-> > > [ 8562.219076][    C0]  _raw_spin_unlock_irq+0x84/0xc0
-> > > [ 8562.226394][    C0]  __schedule+0x75c/0x7e0
-> > > [ 8562.233074][    C0]  preempt_schedule_notrace+0x64/0xc0
-> > > [ 8562.268210][    C0]  ftrace_ops_list_func+0x494/0x4e0
-> > > [ 8562.275735][    C0]  ftrace_graph_call+0x0/0x4
-> > > [ 8562.282647][    C0]  preempt_count_add+0xc/0x240
-> > > [ 8562.289686][    C0]  schedule+0xe4/0x160
-> > > [ 8562.296187][    C0]  smpboot_thread_fn+0x47c/0x540
-> > > [ 8562.303377][    C0]  kthread+0x23c/0x260
-> > > [ 8562.309906][    C0]  ret_from_fork+0x10/0x18
-> > > [ 8562.316604][    C0] Kernel panic - not syncing: softlockup: hung tasks
-> > > [ 8562.325230][    C0] CPU: 0 PID: 14 Comm: migration/0 Tainted: G
-> > >    W    L    5.9.0-rc2-next-20200826-00005-g24628bb4c0bf #1
-> > > [ 8562.337861][    C0] Hardware name: linux,dummy-virt (DT)
-> > > [ 8562.345374][    C0] Call trace:
-> > > [ 8562.351228][    C0]  dump_backtrace+0x0/0x320
-> > > [ 8562.358070][    C0]  show_stack+0x38/0x60
-> > > [ 8562.364728][    C0]  dump_stack+0x1c0/0x280
-> > > [ 8562.371447][    C0]  panic+0x32c/0x614
-> > > [ 8562.377868][    C0]  watchdog_timer_fn+0x49c/0x560
-> > > [ 8562.385076][    C0]  __run_hrtimer+0x1cc/0x360
-> > > [ 8562.392021][    C0]  __hrtimer_run_queues+0x1a0/0x220
-> > > [ 8562.399500][    C0]  hrtimer_interrupt+0x1f8/0x440
-> > > [ 8562.406807][    C0]  arch_timer_handler_virt+0x68/0xa0
-> > > [ 8562.414338][    C0]  handle_percpu_devid_irq+0x118/0x2a0
-> > > [ 8562.421992][    C0]  __handle_domain_irq+0x150/0x1c0
-> > > [ 8562.429315][    C0]  gic_handle_irq+0x98/0x120
-> > > [ 8562.436297][    C0]  el1_irq+0xd4/0x1c0
-> >
-> > We appear to have taken an interrupt here, just after releasing
-> > an irq-disabled lock and enabling interrupts.
-> >
-> > > [ 8562.442748][    C0]  arch_local_irq_enable+0x58/0x80
-> > > [ 8562.450116][    C0]  _raw_spin_unlock_irq+0x84/0xc0
-> > > [ 8562.457360][    C0]  __schedule+0x75c/0x7e0
-> > > [ 8562.464142][    C0]  preempt_schedule_notrace+0x64/0xc0
-> > > [ 8562.471745][    C0]  ftrace_ops_list_func+0x494/0x4e0
-> > > [ 8562.479195][    C0]  ftrace_graph_call+0x0/0x4
-> > > [ 8562.486159][    C0]  preempt_count_add+0xc/0x240
-> > > [ 8562.493210][    C0]  schedule+0xe4/0x160
-> >
-> > We are trying to sleep, so we took a pass through the scheduler and
-> > did some tracing.
-> >
-> > > [ 8562.499737][    C0]  smpboot_thread_fn+0x47c/0x540
-> >
-> > Here we might be bringing up a CPU?  Except that according to your
-> > dmesg, there is only one CPU.  ("RCU restricting CPUs from NR_CPUS=256
-> > to nr_cpu_ids=1").  So this seems unlikely.
-> >
-> > Huh.  The first dmesg in output-next-20200826.log is instead a
-> > DEBUG_LOCKS_WARN_ON() from lockdep.  Might this be related?  Or do you
-> > also see this warning when boot happens quickly?
-> >
-> > (I do see the soft lockup later on.)
-> >
-> > > [ 8562.506960][    C0]  kthread+0x23c/0x260
-> > > [ 8562.513496][    C0]  ret_from_fork+0x10/0x18
-> > > [ 8562.521052][    C0] Kernel Offset: disabled
-> > > [ 8562.527725][    C0] CPU features: 0x0240002,20002004
-> > > [ 8562.534950][    C0] Memory Limit: none
-> > > [ 8562.543830][    C0] ---[ end Kernel panic - not syncing:
-> > > softlockup: hung tasks ]---
-> > >
-> > > When I tested to checkout and build e6df9766894d ("Merge remote-tracking branch
-> > > 'irqchip/irq/irqchip-next' into master") that was merged into today's
-> > > tag I was able to
-> > > boot [2]. When I checked out 25e6e115dd1d ("Merge remote-tracking
-> > > branch 'rcu/rcu/next' into master") and built and tested that I was
-> > > able to boot [3] after a
-> > > looong time. To clarify, the rcu merge comes after the irqchip merge.
-> > >
-> > > I also tried to only revert the rcu tree from todays next tag like this:
-> > > "git diff e6df9766894d..25e6e115dd1d | patch -Rp1". When I built that
-> > > I was able to
-> > > boot [4] too.
-> > >
-> > > Any idea what's going on here?
-> >
-> > Could you please try bisecting the RCU commits?
-> 
-> I did a bisect and found:
-> 3c8e1e3eca23 ("rcu: Always set .need_qs from __rcu_read_lock() for strict GPs")
-> 
-> When I reverted that on next-20200826 and on next-20200827 the
-> allmodconfig kernel boots [1], there's other issues that I can see in
-> the log but not this one.
 
-Thank you for bisecting!
 
-I take it that you have CONFIG_RCU_STRICT_GRACE_PERIOD=y in your .config?
-Ah, you do, according to this line in your dmesg:
+Compliment of the season,
 
-	rcu: 	RCU strict (and thus non-scalable) grace periods enabled.
+My names are Mr. Kuban Manfi, i work a department manager in one of the reputable banks here in Africa.
 
-And much else besides, serious debugging enabled!  ;-)
+I have a lucrative and profitable business which i would like to introduce to you. Please this is very confidential and if you are interested kindly get back to me for more details.
 
-Does this reproduce with CONFIG_RCU_STRICT_GRACE_PERIOD=n?  My guess,
-given the commit that your bisection converged on, is that it will not
-reproduce in that case.
-
-							Thanx, Paul
-
-> Cheers,
-> Anders
-> [1] https://people.linaro.org/~anders.roxell/output-next-20200827-3c8e1e3eca23.log
-> 
-> >  They are linear,
-> > extending from 0d23eddbe5d4 ("rcu: Remove KCSAN stubs") to 72cc80705122
-> > ("rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()".
-> >
-> > I do regularly test single-CPU premptible RCU, but not on ARM.  Nor do
-> > I normally enable quite this much debug, so I might have missed something.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Cheers,
-> > > Anders
-> > > [1] https://people.linaro.org/~anders.roxell/output-next-20200826.log
-> > > [2] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-e6df9766894d.log
-> > > [3] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-25e6e115dd1d.log
-> > > [4] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-revert-e6df9766894d-25e6e115dd1d.log
+Thanks
+Mr.Kuban Manfi
