@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5792561A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9F9256183
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgH1TzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgH1Twi (ORCPT
+        id S1726439AbgH1Tv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:51:27 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:44528 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgH1TvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:52:38 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ADDC061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:38 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n129so664733qkd.6
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=jzrDh8F1P7cj1/y8+1Q53tboBr/LZN7b1bXIb97ZFkc=;
-        b=d9JUYenwSdG7ij1501kfI889mz+/FGM4ww5MiOn9H4ciJO3E7YVPF6CtqqeqgcM+Wm
-         sd0pLrP7UFrKqMO+G6WQeLW5DHeyIp3maLQr4BXYLiLuSunWE+BIH8zvdiowvkrkglf2
-         SZiZd2n8jRuVMnzVgxrIgKxAsSMlhMYZrUcrk=
+        Fri, 28 Aug 2020 15:51:23 -0400
+Received: by mail-ot1-f67.google.com with SMTP id n23so213821otq.11;
+        Fri, 28 Aug 2020 12:51:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=jzrDh8F1P7cj1/y8+1Q53tboBr/LZN7b1bXIb97ZFkc=;
-        b=N9VgxqjSY/b8HzY5NDYrZDeF6dpuB06QDMJtPVsXnr5fseUJkgs2FTb/LdYm/YLqme
-         Y9cWmrneBG3JjNqbli05nAsgkALyIZe6jl0/ZV8+0sZyUbBLVi6/DjPq8gps/PYI3SD+
-         wlqu1InUKmErKSLdOzatwxWxAqg0Bkppe5MLOloT11Qz+Xyvs7tQ4N9WazfeZl1yUijy
-         wFaoOjQaQl3BeByk42PWyRv6PZ+2L4c+j+DDgJXjG+kZ0pAFZYDEXl3ci88BxhBYqzoM
-         sXfZvZfdLL0oA5kR1c7E4AVt4/q1q9P80sO/nD/88JbjpTIgrMRGRZwDO1U3ip2QM2uu
-         6IUQ==
-X-Gm-Message-State: AOAM533UOOmu5YYKDh1eXcfUpOcfM5gkeygrkZBAeVEWFJ43xxbiGKto
-        vjRaoBLpLs4C3mgq2Vz1pTraeQ==
-X-Google-Smtp-Source: ABdhPJy/ssNRSQuLFGbjjjR+HqY0OyyhHRvc84AVYsJpPMLnuRQwmohEktPJ7FcPxXI1S+cRu9sPfQ==
-X-Received: by 2002:a37:d8d:: with SMTP id 135mr740147qkn.59.1598644357227;
-        Fri, 28 Aug 2020 12:52:37 -0700 (PDT)
-Received: from [192.168.1.240] (192-222-189-155.qc.cable.ebox.net. [192.222.189.155])
-        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 12:52:36 -0700 (PDT)
-From:   Julien Desfossez <jdesfossez@digitalocean.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>
-Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>
-Subject: [RFC PATCH v7 09/23] sched/fair: Fix forced idle sibling starvation corner case
-Date:   Fri, 28 Aug 2020 15:51:10 -0400
-Message-Id: <7d50f038cef452c78213b7c513a98b3286476701.1598643276.git.jdesfossez@digitalocean.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1598643276.git.jdesfossez@digitalocean.com>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
-In-Reply-To: <cover.1598643276.git.jdesfossez@digitalocean.com>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=kh02sOtDbCvUSxLLTQedVHawiKK6RbNa3pLiwpLAY8E=;
+        b=IiS6WDTul1XdPysF8nV8qdAqF37BHJAkrUGPVztwsWMQ/ar/wECLGKWdLxIpz0luTY
+         2u3/ihOk08zhEYJrS3LYTgquvlRs0ogo1PqbFFUbZio8XlyNzOnQxNaMRd1soRm4h55W
+         ccXrr7x5UecauQEnCZCBKtGoTVnpFPEuQ9jkCDhL/eVRt48pyEVArNhN+LkXMlucBhhh
+         z3hz3zzlMK1QJ0LIX0zXzTn/RVhtTw5/GLTZu+cspQwJJ8kR2rQtiv2Twuz1n/Eik2BI
+         m/ROogALYOcWKvYn0eldBxBA7bTmxwbUhiFBLsFuxC9nVLWB0GQaq5Hb99OIrWKICJxz
+         TmlQ==
+X-Gm-Message-State: AOAM532zMpDi1wPNPyVuj0sPckDXGArZfgQ2UP9q1VYd6PIwAi1rgXjz
+        Q7vM1vTpbNE04rAd45Fpe0nJ2/191E9FK/pmhJtxFcSVEuA=
+X-Google-Smtp-Source: ABdhPJyNIqtgoq1r2Ggvj9+7qt0vvYdY5uyh9CAgVeCrzT4Zy0AT8odfdT5SOGkolmSPtYrg9XHa99GPhmIuEvByKnk=
+X-Received: by 2002:a9d:7e99:: with SMTP id m25mr208277otp.118.1598644282097;
+ Fri, 28 Aug 2020 12:51:22 -0700 (PDT)
+MIME-Version: 1.0
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 28 Aug 2020 21:51:11 +0200
+Message-ID: <CAJZ5v0hZPb+qOAZFd1vknZ4S0ay=WpJSQECML88fsRGQOWoQSQ@mail.gmail.com>
+Subject: [GIT PULL] ACPI fixes for v5.9-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Pillai <viremana@linux.microsoft.com>
+Hi Linus,
 
-If there is only one long running local task and the sibling is
-forced idle, it  might not get a chance to run until a schedule
-event happens on any cpu in the core.
+Please pull from the tag
 
-So we check for this condition during a tick to see if a sibling
-is starved and then give it a chance to schedule.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.9-rc3
 
-Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
----
- kernel/sched/fair.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+with top-most commit 4f31d53c21ec98a2c8973cff759804bd1c217c93
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 285002a2f641..409edc736297 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10631,6 +10631,40 @@ static void rq_offline_fair(struct rq *rq)
- 
- #endif /* CONFIG_SMP */
- 
-+#ifdef CONFIG_SCHED_CORE
-+static inline bool
-+__entity_slice_used(struct sched_entity *se)
-+{
-+	return (se->sum_exec_runtime - se->prev_sum_exec_runtime) >
-+		sched_slice(cfs_rq_of(se), se);
-+}
-+
-+/*
-+ * If runqueue has only one task which used up its slice and if the sibling
-+ * is forced idle, then trigger schedule to give forced idle task a chance.
-+ */
-+static void resched_forceidle_sibling(struct rq *rq, struct sched_entity *se)
-+{
-+	int cpu = cpu_of(rq), sibling_cpu;
-+
-+	if (rq->cfs.nr_running > 1 || !__entity_slice_used(se))
-+		return;
-+
-+	for_each_cpu(sibling_cpu, cpu_smt_mask(cpu)) {
-+		struct rq *sibling_rq;
-+		if (sibling_cpu == cpu)
-+			continue;
-+		if (cpu_is_offline(sibling_cpu))
-+			continue;
-+
-+		sibling_rq = cpu_rq(sibling_cpu);
-+		if (sibling_rq->core_forceidle) {
-+			resched_curr(sibling_rq);
-+		}
-+	}
-+}
-+#endif
-+
- /*
-  * scheduler tick hitting a task of our scheduling class.
-  *
-@@ -10654,6 +10688,11 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
- 
- 	update_misfit_status(curr, rq);
- 	update_overutilized_status(task_rq(curr));
-+
-+#ifdef CONFIG_SCHED_CORE
-+	if (sched_core_enabled(rq))
-+		resched_forceidle_sibling(rq, &curr->se);
-+#endif
- }
- 
- /*
--- 
-2.17.1
+ Merge branch 'acpi-mm'
 
+on top of commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+
+ Linux 5.9-rc1
+
+to receive ACPI fixes for 5.9-rc3.
+
+These fix two recent issues in the ACPI memory mappings management
+code and tighten up error handling in the ACPI driver for AMD SoCs
+(APD).
+
+Specifics:
+
+ - Avoid redundant rounding to the page size in acpi_os_map_iomem()
+   to address a recently introduced issue with the EFI memory map
+   permission check on ARM64 (Ard Biesheuvel).
+
+ - Fix acpi_release_memory() to wait until the memory mappings
+   released by it have been really unmapped (Rafael Wysocki).
+
+ - Make the ACPI driver for AMD SoCs (APD) check the return value
+   of acpi_dev_get_property() to avoid failures in the cases when the
+   device property under inspection is missing (Furquan Shaikh).
+
+Thanks!
+
+
+---------------
+
+Ard Biesheuvel (1):
+      ACPI: ioremap: avoid redundant rounding to OS page size
+
+Furquan Shaikh (1):
+      ACPI: SoC: APD: Check return value of acpi_dev_get_property()
+
+Rafael J. Wysocki (1):
+      ACPI: OSL: Prevent acpi_release_memory() from returning too early
+
+---------------
+
+ drivers/acpi/acpi_apd.c |  4 ++--
+ drivers/acpi/osl.c      | 23 +++++++++++++++++++----
+ 2 files changed, 21 insertions(+), 6 deletions(-)
