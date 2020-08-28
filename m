@@ -2,141 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6749D255A6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F944255A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgH1MnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:43:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31868 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729352AbgH1Mmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:42:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598618570; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=c6xULzU1XsJ6TGZBb+0t/bcTsFldcoqHdKPiZhgYt0A=;
- b=fhFymwhYkkbbPcEfXLSs2GAN4RWH6P0ogmIn1WroVyjuxAPLVT2wrIjvBEeJ8EdO4cVS5Qg3
- gWpXOou3XkTeLUpFUbg51yVL7VPQy/Wo5PWNPpAOAgNvRRj/PSIbJN41idrjqo377PByQbXI
- DxWpPgrCqUnc3I3DYfbZhHNJl/E=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f48fbbc9db79768eb10e006 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 Aug 2020 12:42:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6775DC433A1; Fri, 28 Aug 2020 12:42:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75AA5C433C6;
-        Fri, 28 Aug 2020 12:42:34 +0000 (UTC)
+        id S1729367AbgH1Mnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729271AbgH1Mno (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:43:44 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9953DC061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:43:44 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id v2so710274ilq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BlGqee6LUFbQlE8A/CJ72Y5d50MDkiMD4t/Odvf7ASU=;
+        b=qIe1wGvJCvxhcj68y8/oHRAx47yLHDKofI0vmuim9NR/PWCdH/7RQAHSP2eYFPv8ud
+         Pcd0+JHmQwLRL3v3DHWMk9aoLJ2L9XkRfpAAB98r4m47hhcHGSAhi5Xtdyygs/7Ex6uJ
+         uR1oLx/IPJ2Wi/Ib3wn9kwhsfwSjY1yrkje290OFqlmLjJjvu7YHbyzk5+rYb1zpzr5k
+         8GnLrYnRD7BWOeolsxG6ocrEx7LA0/7TJQSORnWeXYULUyRM8q64gUSKNr9d+co9BLxT
+         V3MX1ea7ggCGlvgB26UT2UEvKRY2jDzMwtprUynN19kCIJA/+gdC7PYSp+zf/90IJYPV
+         L5JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BlGqee6LUFbQlE8A/CJ72Y5d50MDkiMD4t/Odvf7ASU=;
+        b=lNmElYpAG8as8FuU9Yrh7vKHtv/8YMbj6vYyNgd+9aQ8o0nwjXCUy9MUr86ImU9yUx
+         2O90C+7Tb/8kfymcVBjQDADskxMt39np78p3do8CQ/SIbBvV71y5mjgMvg2zBovZyaqj
+         3zPSSorLx+epmbujdLUk9tcxCOOYjD9xJY1qBoGsJ0x4KKTFnSF7sDNfR4f5ETktdxhi
+         4G+hwaty2l55xos+23kW4guWABeqwljrADq1bPLwq+KVzg/VzZBFDuP5oaJ/FcSx9ruE
+         a4MbsRVpZH+DuROaHFow7jpXxpfwz7txCt2rwL/dJZY3HLUVf9hRWWBBEFyYqPdqMK6F
+         +pGg==
+X-Gm-Message-State: AOAM533WtM1fcPiIRiKo1lXVvcZQ+M4ZxS4kfrwNPnweF4mM/m2XFt8F
+        E8t91BWLKHDmE4bi8SyrhkZ9g54+oWCdDf530TY=
+X-Google-Smtp-Source: ABdhPJyXoRYFnAomBCPJy+w+LO23nUTbQyGzwjW5zkTcAeUckUO9HFTvnby7Y0dUx8ShDp0e1k2OiKDKjosctjzgPds=
+X-Received: by 2002:a92:8550:: with SMTP id f77mr1215513ilh.129.1598618623906;
+ Fri, 28 Aug 2020 05:43:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 28 Aug 2020 18:12:34 +0530
-From:   vbadigan@codeaurora.org
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chris Ball <chris@printf.net>,
-        Georgi Djakov <gdjakov@mm-sol.com>,
-        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: Re: [PATCH] mmc: sdhci-msm: Add retries when all tuning phases are
- found valid
-In-Reply-To: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
-References: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
-Message-ID: <f986b516b37dbb788330334468af07cf@codeaurora.org>
-X-Sender: vbadigan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200814071431.201400-1-ztong0001@gmail.com> <20200814150433.GA3498391@dhcp-10-100-145-180.wdl.wdc.com>
+ <CAA5qM4CctYiBe766-OnxAPHJWByyOo1rE7FzW-75ZcOib6niCA@mail.gmail.com>
+ <20200814154233.GA3772144@dhcp-10-100-145-180.wdl.wdc.com>
+ <CAA5qM4CtnNgZDpT-8Wiwvs18-h4fmxv3jPmW4AqWXgT-BqNLYw@mail.gmail.com> <20200827150103.GA2613662@dhcp-10-100-145-180.wdl.wdc.com>
+In-Reply-To: <20200827150103.GA2613662@dhcp-10-100-145-180.wdl.wdc.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Fri, 28 Aug 2020 08:43:32 -0400
+Message-ID: <CAA5qM4ARCf-28eH6dME6pDc8WBNpMh2jGUfcj-Wp7vfwvVRz8Q@mail.gmail.com>
+Subject: Re: [PATCH] nvme-pci: cancel nvme device request before disabling
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        axboe@fb.com, Christoph Hellwig <hch@lst.de>, sagi@grimberg.me
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-27 20:28, Douglas Anderson wrote:
-> As the comments in this patch say, if we tune and find all phases are
-> valid it's _almost_ as bad as no phases being found valid.  Probably
-> all phases are not really reliable but we didn't detect where the
-> unreliable place is.  That means we'll essentially be guessing and
-> hoping we get a good phase.
-> 
-> This is not just a problem in theory.  It was causing real problems on
-> a real board.  On that board, most often phase 10 is found as the only
-> invalid phase, though sometimes 10 and 11 are invalid and sometimes
-> just 11.  Some percentage of the time, however, all phases are found
-> to be valid.  When this happens, the current logic will decide to use
-> phase 11.  Since phase 11 is sometimes found to be invalid, this is a
-> bad choice.  Sure enough, when phase 11 is picked we often get mmc
-> errors later in boot.
-> 
-> I have seen cases where all phases were found to be valid 3 times in a
-> row, so increase the retry count to 10 just to be extra sure.
-> 
-> Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning
-> implementation")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Hi Keith,
+Thanks for the confirmation. I will send another revision according to
+your comments.
+Best,
+- Tong
+
+On Thu, Aug 27, 2020 at 11:01 AM Keith Busch <kbusch@kernel.org> wrote:
+>
+> On Fri, Aug 14, 2020 at 12:11:56PM -0400, Tong Zhang wrote:
+> > On Fri, Aug 14, 2020 at 11:42 AM Keith Busch <kbusch@kernel.org> wrote:
+> > > > > On Fri, Aug 14, 2020 at 03:14:31AM -0400, Tong Zhang wrote:
+> > > > > > diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> > > > > > index ba725ae47305..c4f1ce0ee1e3 100644
+> > > > > > --- a/drivers/nvme/host/pci.c
+> > > > > > +++ b/drivers/nvme/host/pci.c
+> > > > > > @@ -1249,8 +1249,8 @@ static enum blk_eh_timer_return nvme_timeout(struct request *req, bool reserved)
+> > > > > >               dev_warn_ratelimited(dev->ctrl.device,
+> > > > > >                        "I/O %d QID %d timeout, disable controller\n",
+> > > > > >                        req->tag, nvmeq->qid);
+> > > > > > -             nvme_dev_disable(dev, true);
+> > > > > >               nvme_req(req)->flags |= NVME_REQ_CANCELLED;
+> > > > > > +             nvme_dev_disable(dev, true);
+> > > > > >               return BLK_EH_DONE;
+> >
+> > > anymore. The driver is not reporting   non-response back for all
+> > > cancelled requests, and that is probably not what we should be doing.
+> >
+> > OK, thanks for the explanation. I think the bottom line here is to let the
+> > probe function know and stop proceeding when there's an error.
+> > I also don't see an obvious reason to set NVME_REQ_CANCELLED
+> > after nvme_dev_disable(dev, true).
+>
+> The flag was set after disabling when it didn't happen to matter: the
+> block layer had a complicated timeout scheme that didn't actually
+> complete the request until the timeout handler returned, so the flag set
+> where it is was 'ok'. That's clearly not the case anymore, so yes, I
+> think we do need your patch.
+>
+> There is one case you are missing, though:
+>
 > ---
-> 
-
-Thanks for adding this logic.
-
-Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-
-
->  drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-msm.c 
-> b/drivers/mmc/host/sdhci-msm.c
-> index b7e47107a31a..1b78106681e0 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -1165,7 +1165,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host
-> *host, bool enable)
->  static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
->  {
->  	struct sdhci_host *host = mmc_priv(mmc);
-> -	int tuning_seq_cnt = 3;
-> +	int tuning_seq_cnt = 10;
->  	u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
->  	int rc;
->  	struct mmc_ios ios = host->mmc->ios;
-> @@ -1221,6 +1221,22 @@ static int sdhci_msm_execute_tuning(struct
-> mmc_host *mmc, u32 opcode)
->  	} while (++phase < ARRAY_SIZE(tuned_phases));
-> 
->  	if (tuned_phase_cnt) {
-> +		if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
-> +			/*
-> +			 * All phases valid is _almost_ as bad as no phases
-> +			 * valid.  Probably all phases are not really reliable
-> +			 * but we didn't detect where the unreliable place is.
-> +			 * That means we'll essentially be guessing and hoping
-> +			 * we get a good phase.  Better to try a few times.
-> +			 */
-> +			dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
-> +				mmc_hostname(mmc));
-> +			if (--tuning_seq_cnt) {
-> +				tuned_phase_cnt = 0;
-> +				goto retry;
-> +			}
-> +		}
-> +
->  		rc = msm_find_most_appropriate_phase(host, tuned_phases,
->  						     tuned_phase_cnt);
->  		if (rc < 0)
+> @@ -1267,10 +1267,10 @@ static enum blk_eh_timer_return nvme_timeout(struct request *req, bool reserved)
+>                 dev_warn(dev->ctrl.device,
+>                          "I/O %d QID %d timeout, reset controller\n",
+>                          req->tag, nvmeq->qid);
+> +               nvme_req(req)->flags |= NVME_REQ_CANCELLED;
+>                 nvme_dev_disable(dev, false);
+>                 nvme_reset_ctrl(&dev->ctrl);
+>
+> -               nvme_req(req)->flags |= NVME_REQ_CANCELLED;
+>                 return BLK_EH_DONE;
+>         }
+> --
