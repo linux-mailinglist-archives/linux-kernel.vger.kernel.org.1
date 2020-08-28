@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A424255A69
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D21255A6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgH1Mm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
+        id S1729419AbgH1MnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729317AbgH1Mlh (ORCPT
+        with ESMTP id S1729332AbgH1Mmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:41:37 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B21C061232;
-        Fri, 28 Aug 2020 05:41:37 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id m23so1042036iol.8;
-        Fri, 28 Aug 2020 05:41:37 -0700 (PDT)
+        Fri, 28 Aug 2020 08:42:39 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FC1C06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:42:38 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w25so1115582ljo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:42:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/PjC7+cnl5CWnyCWiaQzqw74CMAkPasrXZ6S6jQlDPs=;
-        b=ThW49ctlu0d2JrV6uT92UoDyZs4JLao0pgs68KzMIUCj24D2QSJ8r4PE+WBYx5ezcL
-         ekZCydxJd/4bdBNTURbBUN1RlKYqmlDxCcelenBXOZYJGtyFfv+x82NB4M6xCL6rRF77
-         qJaNwBZbgnfLFA2xQnPQZ553Cz7LT0UjZWm84dF30dG85c6kmlCl76I/QR/IZqmJNVmT
-         1VIWad3vXrfWmzFtJ+Wul4aZBOqYrTm9gaj8AqFQDmG2uYMASInu8LDMG+rFWZQ0IpVj
-         EdOE1kDrJ4whYSqzmbOCnBUWfZ8yQj5FXtrlWCB54xy5jMkOFT7zv4nAluK34Q2sBlN7
-         lJ1Q==
+        bh=/5zqwAk7r19VbbapnJvQ3irBLvFfiJZbIrHezMmTPXU=;
+        b=BtJw29RQNERRIfGfc1w5ErhoaKY+Tsu7I6WxNhT3vLOsTDSFDLx89zfGMvxIuLxUJL
+         b5SYvgCTVkgF/w/upA4EtTZXa7cOph2XTjLSV3VL5TQ0qYrScLNEgIjQpubBlz9GECYm
+         M6zBALTIZt9kZ6IT+cTSHmofWoT5mZQnQUDLzrc99HOp3gCbSZKx1E96DC/SiolCEMzF
+         x5v10M1uV7wwhPhfoFUvy2qnD5epm4TLqZQS/ckI60spjubZY7ztBP4jHmr8kABXBwwV
+         g5YGR68fM0NILHEso5Ltw/K6CbviyjKc/6uXFBxaGlbtucr14wWyPdjiHhGyAqZVZaE1
+         DNlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/PjC7+cnl5CWnyCWiaQzqw74CMAkPasrXZ6S6jQlDPs=;
-        b=nUhfjfATUl0lZtkqJtsK3BLFQ0rZSAI3O9zD1CeaNcoaPWUel/N10YbDVKLO1JLF6U
-         QDNhcdJFQWprT9GCZP7nhfH/V2R2nblMfBAdhW9HSxXJQ+FGyCDjjGukjZ7rmmtSgJj6
-         j+MgzODHx/GBCM+ikbHvEGbGBzsb3TMioScAi8sx/b0vewW806/KTg6CIMeKbZPksbPH
-         FVteW/s1SgluMNnK8UqPh3a/Ec1kTszcwOQqif4N43S7ldZsuBeVrMzSRtD6GDdTYdJS
-         uyJs7fepAhQBwEKZZy3oHTKmDc/c+TYLLWu/TmeUamLRI7g4oom7jbfq7CCwQnHN5hVE
-         +anw==
-X-Gm-Message-State: AOAM5328sAcHwvAbAwe7jW4qhNyBzdgeuMDx4nxrRLIhMaX4MFhzsZ24
-        ayJwOwrMNZvLhGHsKwNTumSf6Dvf0S8qU2qaeSk=
-X-Google-Smtp-Source: ABdhPJxZ84KnMEe2egigaI7iy7iamRHxIBQMcvh9SAIuKVSS4I1KLLHQIaSZZQwXoqZqKD896pVL7NRwItklDk4Vzcg=
-X-Received: by 2002:a02:e4a:: with SMTP id 71mr938436jae.133.1598618496331;
- Fri, 28 Aug 2020 05:41:36 -0700 (PDT)
+        bh=/5zqwAk7r19VbbapnJvQ3irBLvFfiJZbIrHezMmTPXU=;
+        b=K81WG+L+GVLbiF5jptvgJLpoZkKM7FxEAzAv1c2Kvc2YSgJAjefJ4rzhZX5ghfVe/7
+         lvWf2ebU9OaOzB+2/rqLPRclR1ptCXZdswCgvDcyRRn0CmfHKAAMa6fIwhWFsuumkPLE
+         S30C2ZOs3ygRa+YQVKtqWBGlKSLE0/KDh0QoOt64rZoamvp+/in93H5/KLaBHA+aiKbi
+         hO+dJR/8IpEUU+ebWvpTBBNutCMsLDjdWy0wupDHPUvByx9u60UTtyAzfWtaEsV/TlzW
+         UVkVUlFvNyiGcAgBOVouHRYyIem/Fd4OU5Yi/uL05dDfyrgCNwiNbhoNRKNBR1BLzYM5
+         p2ag==
+X-Gm-Message-State: AOAM533AEgGlzb2GejNlvgRcmckRaW5AeoSQaxqGl3A3JegSeT5qmwq2
+        pqeceB6QRldUSfA3hKXaj/MKwVjCUq+ahsjVeS+tPQ==
+X-Google-Smtp-Source: ABdhPJxFJ+sPiCIUWaiBfJG6iVO8KI14e9lM1TexLLLZYSIPaYndoG33IsNrNvGWZQUjYZGGzvFSbia1xjrzAgHOAB4=
+X-Received: by 2002:a2e:558:: with SMTP id 85mr826002ljf.293.1598618556891;
+ Fri, 28 Aug 2020 05:42:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200818162556.6621-1-ztong0001@gmail.com> <20200818185458.84418-1-ztong0001@gmail.com>
- <20200828082015.GA1052883@kroah.com>
-In-Reply-To: <20200828082015.GA1052883@kroah.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Fri, 28 Aug 2020 08:41:25 -0400
-Message-ID: <CAA5qM4BFYuwE+-Ooqn=wJ29nvcMX6oTCakJVcgybeO5J9qFoYA@mail.gmail.com>
-Subject: Re: [PATCH v4] tty: serial: earlycon dependency
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, robh@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
+References: <20200825143348.1358679-1-thierry.reding@gmail.com>
+In-Reply-To: <20200825143348.1358679-1-thierry.reding@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 Aug 2020 14:42:26 +0200
+Message-ID: <CACRpkdajUgrcjWPHZ60OxpXmo7FFH8ytspHoFLt-FZoTymKAPw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: devicetree: Keep deferring even on timeout
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 4:20 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> > Fixes: 9aac5887595b ("tty/serial: add generic serial earlycon")
->
-> This should be up above your signed-off-by line.
->
-> Can you fix that up and resend?
->
-> thanks,
->
-> greg k-h
+On Tue, Aug 25, 2020 at 4:33 PM Thierry Reding <thierry.reding@gmail.com> wrote:
 
-Thanks Greg! I did another revision.
+> From: Thierry Reding <treding@nvidia.com>
+>
+> driver_deferred_probe_check_state() may return -ETIMEDOUT instead of
+> -EPROBE_DEFER after all built-in drivers have been probed. This can
+> cause issues for built-in drivers that depend on resources provided by
+> loadable modules.
+>
+> One such case happens on Tegra where I2C controllers are used during
+> early boot to set up the system PMIC, so the I2C driver needs to be a
+> built-in driver. At the same time, some instances of the I2C controller
+> depend on the DPAUX hardware for pinmuxing. Since the DPAUX is handled
+> by the display driver, which is usually not built-in, the pin control
+> states will not become available until after the root filesystem has
+> been mounted and the display driver loaded from it.
+>
+> Fixes: bec6c0ecb243 ("pinctrl: Remove use of driver_deferred_probe_check_state_continue()")
+> Suggested-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+
+Just like with the identical patch from John I got a while back, I'd like
+some nod from the device core maintainers (Greg or Raphael) that this
+is how we want to do things.
+
+Yours,
+Linus Walleij
