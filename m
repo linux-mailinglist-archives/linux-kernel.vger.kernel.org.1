@@ -2,92 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2264255EBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C4D255F33
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgH1Q0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:26:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33464 "EHLO mail.kernel.org"
+        id S1726838AbgH1Qxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:53:52 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42190 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgH1Q0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:26:42 -0400
-Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 765D22080C;
-        Fri, 28 Aug 2020 16:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598632001;
-        bh=4Vnh1C/RoVVBKrT7SjMj6aee4KReTZw02BiPUaRhAQ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=QVOV/M0eLCw2BVGQp4zvew/mE1Q4RL7hiEsH79cNpyPCxwSZe05WMETsy+9Db+hDj
-         sKvWOaB1vh6jVlK2lN5CmqNofr7zadr76rZ5qfeZphI3NzUxMq7O8ZX0a8uuo4+Hex
-         1gmGg+jCAvGxgygQHK+NpsxfUpiX7u90xwPUIC7M=
-Date:   Fri, 28 Aug 2020 11:26:40 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jean Delvare <jdelvare@suse.de>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-i2c@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Subject: Re: [PATCH 1/2] i2c: i801: Fix runtime PM
-Message-ID: <20200828162640.GA2160001@bjorn-Precision-5520>
+        id S1725814AbgH1Qxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:53:52 -0400
+IronPort-SDR: Fhj32nmgp7eltoj/q5yOkyoahPTFINM06xPzY4JXZv/YG2ruRTGLJ4dmPbViVENl6aresifVBs
+ dICjXV+HjIjw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="136243215"
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="136243215"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 09:53:51 -0700
+IronPort-SDR: m37eGOiRVDtLjlEXWPDtSflNmlPbKTZq9zmm5qG3nXhxfb4GLupEcVhRzAT94U3qGkHGwFexVn
+ x8va+e5MHItg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="330006494"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 28 Aug 2020 09:53:51 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id DD0ED301C54; Fri, 28 Aug 2020 07:59:50 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 07:59:50 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/hugetlb: Fix a race between hugetlb sysctl handlers
+Message-ID: <20200828145950.GS1509399@tassilo.jf.intel.com>
+References: <20200828031146.43035-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180627212340.GA161569@bhelgaas-glaptop.roam.corp.google.com>
+In-Reply-To: <20200828031146.43035-1-songmuchun@bytedance.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Vaibhav]
+> Fixes: e5ff215941d5 ("hugetlb: multiple hstates for multiple page sizes")
 
-On Wed, Jun 27, 2018 at 04:23:40PM -0500, Bjorn Helgaas wrote:
-> [+cc Rafael, linux-pm, linux-kernel]
-> 
-> On Wed, Jun 27, 2018 at 10:15:50PM +0200, Jean Delvare wrote:
-> > Hi Jarkko,
-> > 
-> > On Tue, 26 Jun 2018 17:39:12 +0300, Jarkko Nikula wrote:
-> > > Commit 9c8088c7988 ("i2c: i801: Don't restore config registers on
-> > > runtime PM") nullified the runtime PM suspend/resume callback pointers
-> > > while keeping the runtime PM enabled. This causes that device stays in
-> > > D0 power state and sysfs /sys/bus/pci/devices/.../power/runtime_status
-> > > shows "error" when runtime PM framework attempts to autosuspend the
-> > > device.
-> > > 
-> > > This is due PCI bus runtime PM which checks for driver runtime PM
-> > > callbacks and returns with -ENOSYS if they are not set. Fix this by
-> > > having a shared dummy runtime PM callback that returns with success.
-> > > 
-> > > Fixes: a9c8088c7988 ("i2c: i801: Don't restore config registers on runtime PM")
-> > 
-> > I don't want to sound like I'm trying to decline all responsibility for
-> > a regression I caused, but frankly, if just using SIMPLE_DEV_PM_OPS()
-> > breaks runtime PM, then it's the PM model which is broken, not the
-> > i2c-i801 driver.
-> > 
-> > I will boldly claim that the PCI bus runtime code is simply wrong in
-> > returning -ENOSYS in the absence of runtime PM callbacks, and it should
-> > be changed to return 0 instead. Or whoever receives that -ENOSYS should
-> > not treat it as an error - whatever makes more sense.
-> > 
-> > Having to add dummy functions in every PCI driver that doesn't need to
-> > do anything special for runtime PM sounds plain stupid. It should be
-> > pretty obvious that a whole lot of drivers are going to use
-> > SIMPLE_DEV_PM_OPS() because it exists and seems to do what they want,
-> > and all of them will be bugged because the PCI core is doing something
-> > silly and unexpected.
-> > 
-> > So please let's fix it at the PCI subsystem core level. Adding Bjorn
-> > and the linux-pci list to Cc.
-> 
-> Thanks Jean.  What you describe does sound broken.  I think the PM
-> guys (cc'd) will have a better idea of how to deal with this.
+I believe the Fixes line is still not correct. The original patch
+didn't have that problem. Please identify which patch added
+the problematic code.
 
-Did we ever get anywhere with this?  It seems like the thread petered
-out.
+-Andi
