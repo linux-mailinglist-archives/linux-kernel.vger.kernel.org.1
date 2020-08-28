@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B75255904
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F49255915
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgH1LAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 07:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgH1K5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 06:57:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE7BC061232
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 03:56:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so890971wrm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 03:56:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6dAy6oQX3mxrE+oxJsDs9WAbPrSNKxjGvuLNGWIC4oM=;
-        b=kM4ssiCWMiZAAZ2OWMpy/DriODdVtl3gCmEfDR/c50iR/N3ODFW0YACnDWzoTSYz+a
-         qFaIZe8BCjsreh8eip7ZRi6Eu39LwT/WEGLyVO+MrgO8GEbDddMQ9mfr5WAD6AxfH98v
-         weZqD9j6lXoxksJvmm3YdHu8BsZ3tsu8oxCEvMbV1AHWadxh97loR8QbvMdZDJyfqpmv
-         uLJY42pCGRq9Ra5MTPtqpA1SXRCysf9Yo778mEl+vohDD5yX3qMYPp5mvFflXvEux12n
-         743jcdL6DcisuXKqTQ5RrGeZSGCd9Efphkt2/DkqoFt16DhKFRU/kwVo57qbUywTcuup
-         1/NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6dAy6oQX3mxrE+oxJsDs9WAbPrSNKxjGvuLNGWIC4oM=;
-        b=lJC1wyyMSX7N19QBd8wjZxFg543V1jiqqtCpUJcSM7s2lusn6jlflugpZnwcHCFDDk
-         Ki/TW8b4/WofL/IvFnezx/smFdwsERu9zYgF8lWA0fS+norgkMPR4z64Rj0IbqoZF2tP
-         PVUZP6gaYOop67pUtjHVcNrpns0uGMoBxlOxfPlGlQpcAuKMq04S/u/NpbvTMbUWOwY5
-         vvw7t8AsFAzMXGArFcVqzuY0zozlO7HaomK1xnSPhc9z7XIqSvY+Fi4IY2ZzO8Xl2zFO
-         GccdBgmi1EdR0lmLEqJ8BY2mw30SD151pbsGy65UsMeDQlo3Hjug4fBpIGuU2xft0U0/
-         aMbQ==
-X-Gm-Message-State: AOAM533l8wwNMJobEKou1HkCTN4XciZPmrYcCrl4urtcIbtL2ibVbFVw
-        b2lAP1QdYYT/ZJgS65NhF361ew==
-X-Google-Smtp-Source: ABdhPJw/pGifNiKSDL+fZAMKRrWedIGRP9Xar1f6rZ+tD/5UoRm11w6CkIx3lDRpcW4omPV/wyXKng==
-X-Received: by 2002:adf:f808:: with SMTP id s8mr995576wrp.218.1598612217550;
-        Fri, 28 Aug 2020 03:56:57 -0700 (PDT)
-Received: from dell ([91.110.221.141])
-        by smtp.gmail.com with ESMTPSA id q11sm1313636wrw.61.2020.08.28.03.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 03:56:56 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 11:56:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [RESEND PATCH V5 0/3] Intel Platform Monitoring Technology
-Message-ID: <20200828105655.GU1826686@dell>
-References: <20200819180255.11770-1-david.e.box@linux.intel.com>
+        id S1729212AbgH1LEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 07:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729156AbgH1LEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 07:04:13 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EEED207DF;
+        Fri, 28 Aug 2020 11:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598612653;
+        bh=c7c25Ad7ytC5Nvm3HpoIhR0Ip8Ni9wwASMQD/vt/XEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OdkPbxH3//2B1lmlRwK/7kEk7/mQ+9ro8Jd3YUEfOEhH19iqvfDxISyROvjy2/glP
+         bm3gJ7K8TB6Taob/SGu4njdFkrNda4Oa1jnzEwmVX53RM1O5zTfCmUo21Tir9tX866
+         BjxQc4iICM4k4NWVGLOh5kJ64l7n4KbOiXjemdRY=
+Date:   Fri, 28 Aug 2020 12:04:08 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [NAK] Re: [PATCH] fs: Optimized fget to improve performance
+Message-ID: <20200828110408.GA30722@willie-the-truck>
+References: <1598523584-25601-1-git-send-email-zhangshaokun@hisilicon.com>
+ <20200827142848.GZ1236603@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200819180255.11770-1-david.e.box@linux.intel.com>
+In-Reply-To: <20200827142848.GZ1236603@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020, David E. Box wrote:
-
-[...]
-
-> David E. Box (3):
->   PCI: Add defines for Designated Vendor-Specific Extended Capability
->   mfd: Intel Platform Monitoring Technology support
->   platform/x86: Intel PMT Telemetry capability driver
+On Thu, Aug 27, 2020 at 03:28:48PM +0100, Al Viro wrote:
+> On Thu, Aug 27, 2020 at 06:19:44PM +0800, Shaokun Zhang wrote:
+> > From: Yuqi Jin <jinyuqi@huawei.com>
+> > 
+> > It is well known that the performance of atomic_add is better than that of
+> > atomic_cmpxchg.
+> > The initial value of @f_count is 1. While @f_count is increased by 1 in
+> > __fget_files, it will go through three phases: > 0, < 0, and = 0. When the
+> > fixed value 0 is used as the condition for terminating the increase of 1,
+> > only atomic_cmpxchg can be used. When we use < 0 as the condition for
+> > stopping plus 1, we can use atomic_add to obtain better performance.
 > 
->  .../ABI/testing/sysfs-class-pmt_telemetry     |  46 ++
->  MAINTAINERS                                   |   6 +
->  drivers/mfd/Kconfig                           |  10 +
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/intel_pmt.c                       | 220 +++++++++
->  drivers/platform/x86/Kconfig                  |  10 +
->  drivers/platform/x86/Makefile                 |   1 +
->  drivers/platform/x86/intel_pmt_telemetry.c    | 448 ++++++++++++++++++
->  include/uapi/linux/pci_regs.h                 |   5 +
->  9 files changed, 747 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_telemetry
->  create mode 100644 drivers/mfd/intel_pmt.c
->  create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
+> Suppose another thread has just removed it from the descriptor table.
+> 
+> > +static inline bool get_file_unless_negative(atomic_long_t *v, long a)
+> > +{
+> > +	long c = atomic_long_read(v);
+> > +
+> > +	if (c <= 0)
+> > +		return 0;
+> 
+> Still 1.  Now the other thread has gotten to dropping the last reference,
+> decremented counter to zero and committed to freeing the struct file.
+> 
+> > +
+> > +	return atomic_long_add_return(a, v) - 1;
+> 
+> ... and you increment that sucker back to 1.  Sure, you return 0, so the
+> caller does nothing to that struct file.  Which includes undoing the
+> changes to its refecount.
+> 
+> In the meanwhile, the third thread does fget on the same descriptor,
+> and there we end up bumping the refcount to 2 and succeeding.  Which
+> leaves the caller with reference to already doomed struct file...
+> 
+> 	IOW, NAK - this is completely broken.  The whole point of
+> atomic_long_add_unless() is that the check and conditional increment
+> are atomic.  Together.  That's what your optimization takes out.
 
-What's the plan for this set?
+Cheers Al, yes, this is fscked.
 
-I'm happy to pick it up and take it through MFD if required.
+As an aside, I've previously toyed with the idea of implementing a form
+of cmpxchg() using a pair of xchg() operations and a smp_cond_load_relaxed(),
+where the thing would transition through a "reserved value", which might
+perform better with the current trend of building hardware that doesn't
+handle CAS failure so well.
 
-If that's the route of choice, I'll pick it up in just over a week.
+But I've never had the time/motivation to hack it up, and it relies on that
+reserved value which obviously doesn't always work (so it would have to be a
+separate API).
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Will
