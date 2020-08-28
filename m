@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A363256246
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260E0256248
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgH1U4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:56:24 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45319 "EHLO
+        id S1726952AbgH1U4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:56:34 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:35928 "EHLO
         mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgH1U4U (ORCPT
+        with ESMTP id S1726858AbgH1U4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:56:20 -0400
-Received: by mail-io1-f67.google.com with SMTP id u126so372048iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:56:20 -0700 (PDT)
+        Fri, 28 Aug 2020 16:56:23 -0400
+Received: by mail-io1-f67.google.com with SMTP id i10so426798iow.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:56:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z9z3VR6zD4FpK2wX25Sr8AogKHA4TBLm2zvFT7kdd5s=;
-        b=jE6sYdaVZjDxE1Ig6SHnkOrsLCWGsdbOmmD0BQSLCeVZQ0X/reoCehML3lnAkgO3Yg
-         qAiKwQyHryQeSNGmDnS040acyaoBV8I+U4hz/B1ymYybCSlnwvLRhwFnsaFRmZm7sT3J
-         exshUbMlKz9aHikaQuT76TgMms1EXAm6cKEV+Gbnf4U3R6WCKemzPVz2pVGxVw6HR1nJ
-         Ck4ep10otVM5w64cgLahPaOgaZnuZnsBUK/H6clmH0P1Uj4hbnkpOOD/dCsD2fbc2B13
-         a+VlBrdABD+lTNT7EWhRdcJww95dFV4o9yXLMZmd4l0Mvwf7GD/0pnDCGYxhTpT0Tnj4
-         iGvQ==
-X-Gm-Message-State: AOAM5338LLDAf0e0Qn1UkCN8/EVIfXB2FD7DKY27xKXfb3DRGBT4LqEz
-        xoZv0X7nJIwT7DoIqkXO1A==
-X-Google-Smtp-Source: ABdhPJzP8WExZ75Y0WDb21p745r6kjxEkhwFK5rZL6G5aFJRZnLtGy9/1Zrj4J8+Df9GoO9K7Rca7w==
-X-Received: by 2002:a05:6602:584:: with SMTP id v4mr472293iox.195.1598648180025;
-        Fri, 28 Aug 2020 13:56:20 -0700 (PDT)
+        bh=evx4ES4Aelq1S/aOsFR1P9EyHf1WVald+woJD7LPgyY=;
+        b=lc+KPO6lgi1hWWSshEM3ugjEAMMGpOvFIt9zFc0fmGh3KzHDA8iFcKpWHX/7r04f6k
+         9eClExpxnBJSYGv7R9eAOs2wPkWTCd6s26B6x60H1qu8eAavmr/qa8IjU1kqXOHDHz6g
+         iJXZGKhToFZalurjP6vTH+nwdIn6T4yf3V6m4yUZwdAYjtqPt5eDyHJ94MegeiJqUSn0
+         awtDkZFnPfU63nQ8LjFAXzGy8Vdb2UA80iiRs3ATsl63WZ2kdIGMVslkoArnzcaC1g2V
+         MUIzxsEsB7bTi2u96YpWVSpoCDfkY1tHXg85eZp9EPAyRrfyQT1e5bm6PxO+bFOlmy0L
+         ZDaQ==
+X-Gm-Message-State: AOAM533G41wlSw4iqfnZgvNrBj8qMBd7QhbOnYo/Kqy7p308fMqXkOTa
+        Sk828ktvE3HM9Ehxg4eguzW+oXXR6Sjr
+X-Google-Smtp-Source: ABdhPJypI31ImBS1JmU/eH+7KFMncrMHvRX9icJjvWxAYvi0V7t78i7lRsf3xVi38t2egWOebYJwVA==
+X-Received: by 2002:a05:6602:2c03:: with SMTP id w3mr475639iov.39.1598648182743;
+        Fri, 28 Aug 2020 13:56:22 -0700 (PDT)
 Received: from xps15.herring.priv ([64.188.179.249])
-        by smtp.googlemail.com with ESMTPSA id l203sm147089ioa.31.2020.08.28.13.56.18
+        by smtp.googlemail.com with ESMTPSA id l203sm147089ioa.31.2020.08.28.13.56.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 13:56:19 -0700 (PDT)
+        Fri, 28 Aug 2020 13:56:22 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: [PATCH v2 1/9] arm64: pmu: Add hook to handle pmu-related undefined instructions
-Date:   Fri, 28 Aug 2020 14:56:06 -0600
-Message-Id: <20200828205614.3391252-2-robh@kernel.org>
+Subject: [PATCH v2 2/9] arm64: pmu: Add function implementation to update event index in userpage
+Date:   Fri, 28 Aug 2020 14:56:07 -0600
+Message-Id: <20200828205614.3391252-3-robh@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200828205614.3391252-1-robh@kernel.org>
 References: <20200828205614.3391252-1-robh@kernel.org>
@@ -63,124 +63,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Raphael Gault <raphael.gault@arm.com>
 
-This patch introduces a protection for the userspace processes which are
-trying to access the registers from the pmu registers on a big.LITTLE
-environment. It introduces a hook to handle undefined instructions.
+In order to be able to access the counter directly for userspace,
+we need to provide the index of the counter using the userpage.
+We thus need to override the event_idx function to retrieve and
+convert the perf_event index to armv8 hardware index.
 
-The goal here is to prevent the process to be interrupted by a signal
-when the error is caused by the task being scheduled while accessing
-a counter, causing the counter access to be invalid. As we are not able
-to know efficiently the number of counters available physically on both
-pmu in that context we consider that any faulting access to a counter
-which is architecturally correct should not cause a SIGILL signal if
-the permissions are set accordingly.
+Since the arm_pmu driver can be used by any implementation, even
+if not armv8, two components play a role into making sure the
+behaviour is correct and consistent with the PMU capabilities:
 
-This commit also modifies the mask of the mrs_hook declared in
-arch/arm64/kernel/cpufeatures.c which emulates only feature register
-access. This is necessary because this hook's mask was too large and
-thus masking any mrs instruction, even if not related to the emulated
-registers which made the pmu emulation inefficient.
+* the ARMPMU_EL0_RD_CNTR flag which denotes the capability to access
+counter from userspace.
+* the event_idx call back, which is implemented and initialized by
+the PMU implementation: if no callback is provided, the default
+behaviour applies, returning 0 as index value.
 
 Signed-off-by: Raphael Gault <raphael.gault@arm.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-v2:
- - Fix warning for set but unused sys_reg
----
- arch/arm64/kernel/cpufeature.c |  4 +--
- arch/arm64/kernel/perf_event.c | 54 ++++++++++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/perf_event.c | 21 +++++++++++++++++++++
+ include/linux/perf/arm_pmu.h   |  2 ++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index a389b999482e..00bf53ffd9b0 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -2811,8 +2811,8 @@ static int emulate_mrs(struct pt_regs *regs, u32 insn)
- }
- 
- static struct undef_hook mrs_hook = {
--	.instr_mask = 0xfff00000,
--	.instr_val  = 0xd5300000,
-+	.instr_mask = 0xffff0000,
-+	.instr_val  = 0xd5380000,
- 	.pstate_mask = PSR_AA32_MODE_MASK,
- 	.pstate_val = PSR_MODE_EL0t,
- 	.fn = emulate_mrs,
 diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 462f9a9cc44b..70538ae684da 100644
+index 70538ae684da..2727d126cecd 100644
 --- a/arch/arm64/kernel/perf_event.c
 +++ b/arch/arm64/kernel/perf_event.c
-@@ -8,9 +8,11 @@
-  * This code is based heavily on the ARMv7 perf event code.
-  */
- 
-+#include <asm/cpu.h>
- #include <asm/irq_regs.h>
- #include <asm/perf_event.h>
- #include <asm/sysreg.h>
-+#include <asm/traps.h>
- #include <asm/virt.h>
- 
- #include <clocksource/arm_arch_timer.h>
-@@ -1016,6 +1018,58 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
- 	return probe.present ? 0 : -ENODEV;
+@@ -820,6 +820,22 @@ static void armv8pmu_clear_event_idx(struct pmu_hw_events *cpuc,
+ 		clear_bit(idx - 1, cpuc->used_mask);
  }
  
-+static int emulate_pmu(struct pt_regs *regs, u32 insn)
++static int armv8pmu_access_event_idx(struct perf_event *event)
 +{
-+	u32 rt;
-+	u32 pmuserenr;
-+
-+	rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
-+	pmuserenr = read_sysreg(pmuserenr_el0);
-+
-+	if ((pmuserenr & (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR)) !=
-+	    (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR))
-+		return -EINVAL;
-+
++	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
++		return 0;
 +
 +	/*
-+	 * Userspace is expected to only use this in the context of the scheme
-+	 * described in the struct perf_event_mmap_page comments.
-+	 *
-+	 * Given that context, we can only get here if we got migrated between
-+	 * getting the register index and doing the MSR read.  This in turn
-+	 * implies we'll fail the sequence and retry, so any value returned is
-+	 * 'good', all we need is to be non-fatal.
-+	 *
-+	 * The choice of the value 0 is comming from the fact that when
-+	 * accessing a register which is not counting events but is accessible,
-+	 * we get 0.
++	 * We remap the cycle counter index to 32 to
++	 * match the offset applied to the rest of
++	 * the counter indices.
 +	 */
-+	pt_regs_write_reg(regs, rt, 0);
++	if (event->hw.idx == ARMV8_IDX_CYCLE_COUNTER)
++		return 32;
 +
-+	arm64_skip_faulting_instruction(regs, 4);
-+	return 0;
++	return event->hw.idx;
 +}
 +
-+/*
-+ * This hook will only be triggered by mrs
-+ * instructions on PMU registers. This is mandatory
-+ * in order to have a consistent behaviour even on
-+ * big.LITTLE systems.
-+ */
-+static struct undef_hook pmu_hook = {
-+	.instr_mask = 0xffff8800,
-+	.instr_val  = 0xd53b8800,
-+	.fn = emulate_pmu,
-+};
+ /*
+  * Add an event filter to a given event.
+  */
+@@ -916,6 +932,9 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+ 	if (armv8pmu_event_is_64bit(event))
+ 		event->hw.flags |= ARMPMU_EVT_64BIT;
+ 
++	if (!armv8pmu_event_is_chained(event))
++		event->hw.flags |= ARMPMU_EL0_RD_CNTR;
 +
-+static int __init enable_pmu_emulation(void)
-+{
-+	register_undef_hook(&pmu_hook);
-+	return 0;
-+}
+ 	/* Only expose micro/arch events supported by this PMU */
+ 	if ((hw_event_id > 0) && (hw_event_id < ARMV8_PMUV3_MAX_COMMON_EVENTS)
+ 	    && test_bit(hw_event_id, armpmu->pmceid_bitmap)) {
+@@ -1092,6 +1111,8 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+ 	cpu_pmu->set_event_filter	= armv8pmu_set_event_filter;
+ 	cpu_pmu->filter_match		= armv8pmu_filter_match;
+ 
++	cpu_pmu->pmu.event_idx		= armv8pmu_access_event_idx;
 +
-+core_initcall(enable_pmu_emulation);
-+
- static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
- 			  int (*map_event)(struct perf_event *event),
- 			  const struct attribute_group *events,
+ 	cpu_pmu->name			= name;
+ 	cpu_pmu->map_event		= map_event;
+ 	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = events ?
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index 5b616dde9a4c..74fbbbd29dc7 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -26,6 +26,8 @@
+  */
+ /* Event uses a 64bit counter */
+ #define ARMPMU_EVT_64BIT		1
++/* Allow access to hardware counter from userspace */
++#define ARMPMU_EL0_RD_CNTR		2
+ 
+ #define HW_OP_UNSUPPORTED		0xFFFF
+ #define C(_x)				PERF_COUNT_HW_CACHE_##_x
 -- 
 2.25.1
 
