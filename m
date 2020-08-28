@@ -2,197 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AF12559F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BBE2559FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgH1MVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:21:34 -0400
-Received: from vps.xff.cz ([195.181.215.36]:38848 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729155AbgH1MVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:21:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1598617280; bh=NDdup/+089plEBW+jyGfrQ2zgz1ZcQugtWmPbMt6ZPo=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=hDWe7jeFkV5vZk+D3NVJ2l0MuQLpT6+3NXep2bKmu5LzLvFm4wrkm00rtLKpOVcwM
-         JjoQHXAHEAuFoHAkLhYzOBm46wCQ+OgDR/huBtM/0vJr2SBEYVF7Jh7QNLcEsNdhwq
-         7hX35JFivKXGlzClTOVnd14xWupxbo31HuQhPAh4=
-Date:   Fri, 28 Aug 2020 14:21:19 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [PATCH v2 13/14] [DO NOT MERGE] arm64: dts: allwinner: h6: Add
- GPU OPP table
-Message-ID: <20200828122119.eadup4aiohnqldam@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-References: <20200704102535.189647-1-peron.clem@gmail.com>
- <20200704102535.189647-14-peron.clem@gmail.com>
- <20200704121301.jfd3m3jnlghmddg4@gilmour.lan>
- <CAJiuCceMS__bNVO54E2OYnqnaOAL9pGkxRo4XAABiyqagaEtmw@mail.gmail.com>
- <CAJiuCce58Gaxf_Qg2cnMwvOgUqYU__eKb3MDX1Fe_+47htg2bA@mail.gmail.com>
- <20200824131133.hp3resve6c3r3xqq@gilmour.lan>
- <CAJiuCce=Oh-vtR8u-RvAvtAb2ZqSfK6jY+cQ6wBBh7maN30Wfg@mail.gmail.com>
+        id S1729334AbgH1MYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:24:39 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:20686 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729123AbgH1MY2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:24:28 -0400
+X-Greylist: delayed 512 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 Aug 2020 08:24:26 EDT
+Received: from pps.filterd (m0127840.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07SCGgwv004968;
+        Fri, 28 Aug 2020 05:21:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=proofpoint20171006;
+ bh=kd0l9gAP44RHMqQ/nvInM9sbiHcef79FhCx2FIcvLFM=;
+ b=BQCnXVWxW5iVRjahjlNlHf+l45VZ5TTWt3uQZSSJh9DiZ/oKcp9gQsVBIE/vihDv3peV
+ WtGGQjnT2uOfY0ulhv8WyajkUaBdsTt48Yoxc6exuSoqvANNRsfbXAA7eMSGA0TtsqSA
+ M6dGUU0AoSjIVMv8QHE49ychIDh+7zg9wSkOn/xO2GZdmAMAXMJaoC9nC8ptO6xig81+
+ EAkBrx4qBcpXgxb6gPJj+yikIDNtGaKEnysbeyfro/VvKwEhf1uziv4L6kjSfB/R/hkI
+ tf+NRRALSu/4BJw0GQL8gcl2h/5JGKnibfB4q/jW62/BTBXvT7Ps7l3jHxSqCNcZsSsW pg== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 332ypup94f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Aug 2020 05:21:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IlUz9Xn5sB99ZDsB3IiYbbqlOl6+M3wq0VOE42maO/JcxSKphRWrc4CceMtHIyeZOdJausruhpWp9DIl0mYx/bSckgubVZ2MbElElL6wAllzXJSEE7Ubr2DzzDfHQcrAZR5tvo+H7xHusgcNHGadqQMjw07FXo1MaJHQbgP2CvRlnAQNAXDXzlPK0BKjscSLDupqedOJd+yPB28Vj76GeeiOytD/hwdlJNcXFNsyGf/t0BnxMyYs/LbUIj0zqkaGCm6C99SIip2Uh31htgvqW4TpTd6UE+wKEyn7lnwBkmyhii7AZAFOtV9azNBvkHV0XmceWTlqKS6o6c0rUuQ4bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kd0l9gAP44RHMqQ/nvInM9sbiHcef79FhCx2FIcvLFM=;
+ b=LJuCli3L5Etd+aWNhtnnDXzMGu4Q/yS1flVYD88XwqrCwFJF0UPrbDQ6bWwT3ZujZ0HSQ/ursxA01LyyBmjE1OyD7XaZ0M79JKvvnJlEcBacHeb9ecgAsuG9L3Kv6Z58yOI5GUKXvTb7G7j9K2HGCkDdOeg1rmTvheBReOrsPRr2pj07JOt6Dw/Qfr7zcI37xPSMINUGPJSSRff1d8KmOGGx5kjdDrmLvuwSg2lGExV5cqAr792iTnF4HVUpVrF80ABkObM7O9ObovfWh+sIFvzbjyLlqnhibvPmexF1qsVfKYLnDPq0stHan7i2JArPADPFAi3noXFYuIv0SkJn3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from CY4PR02MB3335.namprd02.prod.outlook.com (2603:10b6:910:7e::32)
+ by CY4PR02MB3269.namprd02.prod.outlook.com (2603:10b6:910:7c::35) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Fri, 28 Aug
+ 2020 12:21:35 +0000
+Received: from CY4PR02MB3335.namprd02.prod.outlook.com
+ ([fe80::11e:60f7:3f20:9464]) by CY4PR02MB3335.namprd02.prod.outlook.com
+ ([fe80::11e:60f7:3f20:9464%7]) with mapi id 15.20.3305.026; Fri, 28 Aug 2020
+ 12:21:35 +0000
+From:   Matej Genci <matej.genci@nutanix.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Felipe Franciosi <felipe@nutanix.com>,
+        Matej Genci <matej.genci@nutanix.com>
+Subject: [PATCH] Rescan the entire target on transport reset when LUN is 0
+Thread-Topic: [PATCH] Rescan the entire target on transport reset when LUN is
+ 0
+Thread-Index: AdZ9NZ5vwNLMSE8+SVisPIkQE+RzLg==
+Date:   Fri, 28 Aug 2020 12:21:35 +0000
+Message-ID: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=nutanix.com;
+x-originating-ip: [2a02:6b62:d067:0:9415:9641:464e:41b1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 53b6499d-649b-40c6-474d-08d84b4ce802
+x-ms-traffictypediagnostic: CY4PR02MB3269:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR02MB326955278E3DFD244F486BF3FB520@CY4PR02MB3269.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xQd6IH3QZBt9wJALzppyvp/I7etQXbxHN13fiLyOizfmIPRPoTYbc6PYwMTIBkk5DdFo8XyfBeWJUf4i6eZxljT1uJLgTxmKd5DuckgAcDuTg4yoi/wBOsOrZOS/YswZLpSk4fDAj6NPH12JyOx09mcy0YQ7sfb+vxKD82DawDr4J0G8foyc78QMpEHJqZ+XwhL20Hank6ABKI3jEol1nmBphJq+bXXFUgqaLRfekCeudtBVaovlWOuJ7FJ2nrQb55VQiswk3nDUOcn+GwOSbN9y35yGvqDi2Qh+elAabzqgdE+TFYRgbBAScGLUklUb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR02MB3335.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(107886003)(6506007)(83380400001)(86362001)(186003)(6916009)(5660300002)(52536014)(71200400001)(76116006)(4326008)(66946007)(66556008)(66446008)(44832011)(66476007)(64756008)(8936002)(54906003)(2906002)(7696005)(478600001)(8676002)(55016002)(9686003)(33656002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: GTO3YcqZfRRTcK54BxAVN8n45RS6X4/nNVcoaz516z/EJQAIpfWf/Ma9M7LJNh2OxfSGhntdsjY0py3qh9DSWQQXRJ8BlwvQMum/bqVKc+uPMHmS7pT8iq1qx1ueS1aizKlMC5vbgUKsM+Cx8kN9z5j6fCVrykN1qmA6+UqqEsbL7uNi7UIrQruI8GgyvTZjH4AfWHsML+JzMzY3lFzr/JV34DO2NZ9ehTxtdVp1awCMOdYUK7/QqG0G5xaFxS4WU/AmtKmmPA5VwxzjjczNpyl+dJMErpCuN2UCy6WagiWRLc45/ExndxLi/wtU72OvlslZVMUfdm9+w1xxR+tYuljAOhe9fas9vctxcsAtmDs6TEGjr0zU5JvQ9zpt+tmIx7dz+V+Bix9Ae0ngBXi+Lozh78nlB9FCcPxzbpkPccWkj5C/7ZarbNgQxq8oNoOn2edlg59TThXGZko55ze+qMsqX+x6w0ZEQOH0A4mvrFW7hNcQ44iIV7tkSmIs6WYP7kjqb5rg79DRxyWiHkxzzS7t5qcaOAEYL82HrwC+ON3ZPSPzJ+xQTsPetcTd58CNS/FXQeVCGODlk1zCDzYR4nGtBgF1Vz/ksiiJ5XUIVMiRlv0g0xJ5/717SgJe7Z+a/jkWgJODpG9Tc68YOw86gA/5SGn8Su5bNk0/FvY7/oN7fczP2pEuZWgyIVdrEr5HaL+iGDWVR8A/Ggop/AvsHg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJiuCce=Oh-vtR8u-RvAvtAb2ZqSfK6jY+cQ6wBBh7maN30Wfg@mail.gmail.com>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR02MB3335.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53b6499d-649b-40c6-474d-08d84b4ce802
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2020 12:21:35.3697
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3+cQwhXBHoH44LXCmTRYzicy8gNGwLRcSzk7f9wTHGhf3Xu8WCoXZpmnTroytdpJAj4eT1t9JUSl8OlQ0WP4XQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB3269
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-28_07:2020-08-28,2020-08-28 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 02:16:36PM +0200, Clément Péron wrote:
-> Hi Maxime,
-> 
-> On Tue, 25 Aug 2020 at 15:35, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > Hi Clement,
-> >
-> > On Mon, Aug 03, 2020 at 09:54:05AM +0200, Clément Péron wrote:
-> > > Hi Maxime and All,
-> > >
-> > > On Sat, 4 Jul 2020 at 16:56, Clément Péron <peron.clem@gmail.com> wrote:
-> > > >
-> > > > Hi Maxime,
-> > > >
-> > > > On Sat, 4 Jul 2020 at 14:13, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > On Sat, Jul 04, 2020 at 12:25:34PM +0200, Clément Péron wrote:
-> > > > > > Add an Operating Performance Points table for the GPU to
-> > > > > > enable Dynamic Voltage & Frequency Scaling on the H6.
-> > > > > >
-> > > > > > The voltage range is set with minival voltage set to the target
-> > > > > > and the maximal voltage set to 1.2V. This allow DVFS framework to
-> > > > > > work properly on board with fixed regulator.
-> > > > > >
-> > > > > > Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> > > > >
-> > > > > That patch seems reasonable, why shouldn't we merge it?
-> > > >
-> > > > I didn't test it a lot and last time I did, some frequencies looked unstable.
-> > > > https://lore.kernel.org/patchwork/cover/1239739/
-> > > >
-> > > > This series adds regulator support to Panfrost devfreq, I will send a
-> > > > new one if DVFS on the H6 GPU is stable.
-> > > >
-> > > > I got this running glmark2 last time
-> > > > # glmark2-es2-drm
-> > > > =======================================================
-> > > >     glmark2 2017.07
-> > > > =======================================================
-> > > >     OpenGL Information
-> > > >     GL_VENDOR:     Panfrost
-> > > >     GL_RENDERER:   Mali T720 (Panfrost)
-> > > >     GL_VERSION:    OpenGL ES 2.0 Mesa 20.0.5
-> > > > =======================================================
-> > > >
-> > > > [   93.550063] panfrost 1800000.gpu: GPU Fault 0x00000088 (UNKNOWN) at
-> > > > 0x0000000080117100
-> > > > [   94.045401] panfrost 1800000.gpu: gpu sched timeout, js=0,
-> > > > config=0x3700, status=0x8, head=0x21d6c00, tail=0x21d6c00,
-> > > > sched_job=00000000e3c2132f
-> > > >
-> > > > [  328.871070] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA
-> > > > 0x0000000000000000
-> > > > [  328.871070] Reason: TODO
-> > > > [  328.871070] raw fault status: 0xAA0003C2
-> > > > [  328.871070] decoded fault status: SLAVE FAULT
-> > > > [  328.871070] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
-> > > > [  328.871070] access type 0x3: WRITE
-> > > > [  328.871070] source id 0xAA00
-> > > > [  329.373327] panfrost 1800000.gpu: gpu sched timeout, js=1,
-> > > > config=0x3700, status=0x8, head=0xa1a4900, tail=0xa1a4900,
-> > > > sched_job=000000007ac31097
-> > > > [  329.386527] panfrost 1800000.gpu: js fault, js=0,
-> > > > status=DATA_INVALID_FAULT, head=0xa1a4c00, tail=0xa1a4c00
-> > > > [  329.396293] panfrost 1800000.gpu: gpu sched timeout, js=0,
-> > > > config=0x3700, status=0x58, head=0xa1a4c00, tail=0xa1a4c00,
-> > > > sched_job=0000000004c90381
-> > > > [  329.411521] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA
-> > > > 0x0000000000000000
-> > > > [  329.411521] Reason: TODO
-> > > > [  329.411521] raw fault status: 0xAA0003C2
-> > > > [  329.411521] decoded fault status: SLAVE FAULT
-> > > > [  329.411521] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
-> > > > [  329.411521] access type 0x3: WRITE
-> > > > [  329.411521] source id 0xAA00
-> > >
-> > > Just to keep a track of this issue.
-> > >
-> > > Piotr Oniszczuk give more test and seems to be software related:
-> > > https://www.spinics.net/lists/dri-devel/msg264279.html
-> > >
-> > > Ondrej gave a great explanation about a possible origin of this issue:
-> > > https://freenode.irclog.whitequark.org/linux-sunxi/2020-07-11
-> > >
-> > > 20:12 <megi> looks like gpu pll on H6 is NKMP clock, and those are
-> > > implemented in such a way in mainline that they are prone to
-> > > overshooting the frequency during output divider reduction
-> > > 20:13 <megi> so disabling P divider may help
-> > > 20:13 <megi> or fixing the dividers
-> > > 20:14 <megi> and just allowing N to change
-> > > 20:22 <megi> hmm, I haven't looked at this for quite some time, but H6
-> > > BSP way of setting PLL factors actually makes the most sense out of
-> > > everything I've seen/tested so far
-> > > 20:23 <megi> it waits for lock not after setting NK factors, but after
-> > > reducing the M factor (pre-divider)
-> > > 20:24 <megi> I might as well re-run my CPU PLL tester with this
-> > > algorithm, to see if it fixes the lockups
-> > > 20:26 <megi> it makes sense to wait for PLL to stabilize "after"
-> > > changing all the factors that actually affect the VCO, and not just
-> > > some of them
-> > > 20:27 <megi> warpme_: ^
-> > > 20:28 <megi> it may be the same thing that plagues the CPU PLL rate
-> > > changes at runtime
-> >
-> > I guess it's one of the bugs we never heard of...
-> >
-> > It would be a good idea to test it on another platform (like Rockchip?)
-> > to rule out any driver issue?
-> >
-> > What do you think?
-> 
-> I can't exclude a bug in the driver, but if it was the case LE
-> community or Panfrost maintainer would have heard of that.
-> 
-> Megi's explanations match what I observed.
-> NKMP drivers seem the perfect guilty here or maybe it's a combination of both...
-> 
-> Jernej sent me this patch to test:
-> https://github.com/clementperon/linux/commit/56bde359beaf8e827ce53ede1fe4a0ad233cb79b
-> But it didn't fix the issue, If someone want to have a look at it :)
+VirtIO 1.0 spec says
+    The removed and rescan events ... when sent for LUN 0, they MAY
+    apply to the entire target so the driver can ask the initiator
+    to rescan the target to detect this.
 
-Not sure how that patch is supposed to work, but it seems to apply
-all factors at once to me.
+This change introduces the behaviour described above by scanning the
+entire scsi target when LUN is set to 0. This is both a functional and a
+performance fix. It aligns the driver with the spec and allows control
+planes to hotplug targets with large numbers of LUNs without having to
+request a RESCAN for each one of them.
 
-regards,
-	o.
+Signed-off-by: Matej Genci <matej@nutanix.com>
+Suggested-by: Felipe Franciosi <felipe@nutanix.com>
+---
+ drivers/scsi/virtio_scsi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> Regards,
-> Clement
-> 
-> >
-> > Maxime
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index bfec84aacd90..a4b9bc7b4b4a 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -284,7 +284,12 @@ static void virtscsi_handle_transport_reset(struct vir=
+tio_scsi *vscsi,
+=20
+ 	switch (virtio32_to_cpu(vscsi->vdev, event->reason)) {
+ 	case VIRTIO_SCSI_EVT_RESET_RESCAN:
+-		scsi_add_device(shost, 0, target, lun);
++		if (lun =3D=3D 0) {
++			scsi_scan_target(&shost->shost_gendev, 0, target,
++					 SCAN_WILD_CARD, SCSI_SCAN_INITIAL);
++		} else {
++			scsi_add_device(shost, 0, target, lun);
++		}
+ 		break;
+ 	case VIRTIO_SCSI_EVT_RESET_REMOVED:
+ 		sdev =3D scsi_device_lookup(shost, 0, target, lun);
+--=20
+2.20.1
+
