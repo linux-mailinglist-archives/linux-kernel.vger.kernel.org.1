@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20A2255359
+	by mail.lfdr.de (Postfix) with ESMTP id 84F44255358
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgH1DdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 23:33:13 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51442 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728115AbgH1Dcz (ORCPT
+        id S1728271AbgH1DdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 23:33:10 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56684 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728114AbgH1Dcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Aug 2020 23:32:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U736V1Q_1598585571;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U736V1Q_1598585571)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U741Gbc_1598585571;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U741Gbc_1598585571)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 Aug 2020 11:32:51 +0800
+          Fri, 28 Aug 2020 11:32:52 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, bhe@redhat.com,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [Patch v2 2/7] mm/hugetlb: remove VM_BUG_ON(!nrg) in get_file_region_entry_from_cache()
-Date:   Fri, 28 Aug 2020 11:32:37 +0800
-Message-Id: <20200828033242.8787-3-richard.weiyang@linux.alibaba.com>
+Subject: [Patch v2 3/7] mm/hugetlb: use list_splice to merge two list at once
+Date:   Fri, 28 Aug 2020 11:32:38 +0800
+Message-Id: <20200828033242.8787-4-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200828033242.8787-1-richard.weiyang@linux.alibaba.com>
 References: <20200828033242.8787-1-richard.weiyang@linux.alibaba.com>
@@ -33,29 +33,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are sure to get a valid file_region, otherwise the
-VM_BUG_ON(resv->region_cache_count <= 0) at the very beginning would be
-triggered.
+Instead of add allocated file_region one by one to region_cache, we
+could use list_splice to merge two list at once.
 
-Let's remove the redundant one.
+Also we know the number of entries in the list, increase the number
+directly.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/hugetlb.c | 1 -
- 1 file changed, 1 deletion(-)
+ mm/hugetlb.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 62ec74f6d03f..f325839be617 100644
+index f325839be617..cbe67428bf99 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -238,7 +238,6 @@ get_file_region_entry_from_cache(struct resv_map *resv, long from, long to)
+@@ -441,11 +441,8 @@ static int allocate_file_region_entries(struct resv_map *resv,
  
- 	resv->region_cache_count--;
- 	nrg = list_first_entry(&resv->region_cache, struct file_region, link);
--	VM_BUG_ON(!nrg);
- 	list_del(&nrg->link);
+ 		spin_lock(&resv->lock);
  
- 	nrg->from = from;
+-		list_for_each_entry_safe(rg, trg, &allocated_regions, link) {
+-			list_del(&rg->link);
+-			list_add(&rg->link, &resv->region_cache);
+-			resv->region_cache_count++;
+-		}
++		list_splice(&allocated_regions, &resv->region_cache);
++		resv->region_cache_count += to_allocate;
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1 (Apple Git-117)
 
