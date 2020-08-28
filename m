@@ -2,184 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C8A255775
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D0E255780
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 11:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgH1JWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 05:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728532AbgH1JWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 05:22:45 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D1CC061232
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:22:45 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so284213wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 02:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2DlptSyQ6kK0LdKojTYG+w08dirY2KbV81Pw6DWot84=;
-        b=nqiHsYPIPE8UefWA1HkkZwjSxIkjNZpT8378QBvGCD4eZ5Ij20TwxdlTGp0hhMXr8d
-         3YLbqgl7yK88MDZ2PThJt5GWd/zY6AOJieKvMUdKELQc49sVGrP5rUce2hjWEhdqnBz8
-         FU3s1VDV6EyR/XNNX8seTRyZkjBDM4GefCVO3cUtXPzElvsmqjeTqZhUZ+yYMDBf8AW+
-         gRzjoFABNuBcIgNL/6+bwaIuu3zhttwP4r/RFxAT1Uqayha2Bq6V2O2wK5MIDM1liBLT
-         QR5yWMwwt9db7uIo2cIzxvwggC4vW4CyxgBYwzVBlOwpuit1hfyt7ZLeaPyMl//J9JDo
-         5GgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2DlptSyQ6kK0LdKojTYG+w08dirY2KbV81Pw6DWot84=;
-        b=rNz+nbjbG4VbL+QX+I6BinKmuL2WCIYNmPEmalLNAPa7NzD2zHkclzXIoFS0RBHiqz
-         U6YDCK4D5F2u3WA2/OUYMDc9iTz4lBe9384OGfYjlt7WNV5HgManBLDrxqUgsG378R5a
-         KPRajLnH6L9JB4EDcnNSLGmRcx784b6qxpq1t0uTFLtAH8rb5k2k33JO0JNHtcJwvf8p
-         zLWLumC1Rwvt1YIVT8oJ/QKYsIbUvsm4RAeUOcTFBGAfkDhPionHH1CG6dWV2Frxf9iM
-         GRS5A/8vWWpWUATgv/o+xHSNZJsYXEuYu8qZbtwblHua/rX64//Aj7nhGEE/9WWz1fFE
-         Ij7g==
-X-Gm-Message-State: AOAM5337pXWqjXewgv6uQK5qsm5ZOtuelczWOTdZQPAqk3G/H2xq72mJ
-        FSIag8sJ0WymEoejrsIAfWFL1wP3CIcR8zLtLTeqnt1IyCY=
-X-Google-Smtp-Source: ABdhPJzs9vPg5xA1LTbcB2/EjJx3fmlzCtMtNI5cEOKYcIq9PYUVrwqMjE1yeoUY9PaenffWSX4vJ6D+nwowaYDwaKU=
-X-Received: by 2002:a7b:cd05:: with SMTP id f5mr708379wmj.116.1598606563447;
- Fri, 28 Aug 2020 02:22:43 -0700 (PDT)
+        id S1728887AbgH1JYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 05:24:20 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2706 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728555AbgH1JYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 05:24:11 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id E7216BF6519CB261C7E2;
+        Fri, 28 Aug 2020 10:24:09 +0100 (IST)
+Received: from localhost (10.52.127.106) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 28 Aug
+ 2020 10:24:08 +0100
+Date:   Fri, 28 Aug 2020 10:22:33 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Atish Patra <atish.patra@wdc.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Zong Li <zong.li@sifive.com>,
+        <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>,
+        <linux-arch@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Ganapatrao Kulkarni <gkulkarni@cavium.com>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [RFC/RFT PATCH 1/6] numa: Move numa implementation to common
+ code
+Message-ID: <20200828102233.00006ef4@Huawei.com>
+In-Reply-To: <20200814214725.28818-2-atish.patra@wdc.com>
+References: <20200814214725.28818-1-atish.patra@wdc.com>
+        <20200814214725.28818-2-atish.patra@wdc.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200821071045.24501-1-hoegeun.kwon@samsung.com>
- <CGME20200821071122epcas1p3d00dda4665f94192ac5e9ee829d0557d@epcas1p3.samsung.com>
- <20200821071045.24501-4-hoegeun.kwon@samsung.com> <61c199bf-852f-82d3-089a-a0a435343acf@i2se.com>
-In-Reply-To: <61c199bf-852f-82d3-089a-a0a435343acf@i2se.com>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 28 Aug 2020 10:22:28 +0100
-Message-ID: <CAPY8ntABzkR+NPeTvifGbrLGcpom97zWdArxdFjEUq5JnjOU6A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] drm/vc4: hdmi: Add pixel bvb clock control
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        Maxime Ripard <maxime@cerno.tech>, devicetree@vger.kernel.org,
-        Tim Gover <tim.gover@raspberrypi.com>, kdasu.kdev@gmail.com,
-        sboyd@kernel.org, mturquette@baylibre.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Phil Elwell <phil@raspberrypi.com>, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.106]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan & Hoegeun
+On Fri, 14 Aug 2020 14:47:20 -0700
+Atish Patra <atish.patra@wdc.com> wrote:
 
-On Wed, 26 Aug 2020 at 11:04, Stefan Wahren <stefan.wahren@i2se.com> wrote:
->
-> Hi Hoeguen,
->
-> Am 21.08.20 um 09:10 schrieb Hoegeun Kwon:
-> > There is a problem that the output does not work at a resolution
-> > exceeding FHD. To solve this, we need to adjust the bvb clock at a
-> > resolution exceeding FHD.
->
-> this patch introduces a mandatory clock, please update
-> brcm,bcm2835-hdmi.yaml first.
->
-> Is this clock physically available on BCM283x or only on BCM2711?
->
-> I'm a little bit afraid, this change could break with older firmware
-> versions on BCM283x.
+> ARM64 numa implementation is generic enough that RISC-V can reuse that
+> implementation with very minor cosmetic changes. This will help both
+> ARM64 and RISC-V in terms of maintanace and feature improvement
+> 
+> Move the numa implementation code to common directory so that both ISAs
+> can reuse this. This doesn't introduce any function changes for ARM64.
+> 
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Hi Atish,
 
-Thanks for your keen eye on these things.
+One trivial question inline.  Otherwise subject to Anshuman's point about
+location, this looks fine to me.
 
-BVB only exists on 2711, not 283x.
+I'll run some sanity checks later.
 
-It runs at 2 pixels/clock, must be an integer divider of I believe
-600MHz, and between 75 and 300MHz.
-This aim of this patch is fine as we currently only go up to 4k30, but
-for 4k60 the BVB will need to be set to 300MHz.
+Jonathan
+> ---
+>  arch/arm64/Kconfig                            |  1 +
+>  arch/arm64/include/asm/numa.h                 | 45 +---------------
+>  arch/arm64/mm/Makefile                        |  1 -
+>  drivers/base/Kconfig                          |  6 +++
+>  drivers/base/Makefile                         |  1 +
+>  .../mm/numa.c => drivers/base/arch_numa.c     |  0
+>  include/asm-generic/numa.h                    | 51 +++++++++++++++++++
+>  7 files changed, 60 insertions(+), 45 deletions(-)
+>  rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (100%)
+>  create mode 100644 include/asm-generic/numa.h
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d232837cbee..955a0cf75b16 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -960,6 +960,7 @@ config HOTPLUG_CPU
+>  # Common NUMA Features
+>  config NUMA
+>  	bool "NUMA Memory Allocation and Scheduler Support"
+> +	select GENERIC_ARCH_NUMA
+>  	select ACPI_NUMA if ACPI
+>  	select OF_NUMA
+>  	help
+> diff --git a/arch/arm64/include/asm/numa.h b/arch/arm64/include/asm/numa.h
+> index 626ad01e83bf..8c8cf4297cc3 100644
+> --- a/arch/arm64/include/asm/numa.h
+> +++ b/arch/arm64/include/asm/numa.h
+> @@ -3,49 +3,6 @@
+>  #define __ASM_NUMA_H
+>  
+>  #include <asm/topology.h>
+> -
+> -#ifdef CONFIG_NUMA
+> -
+> -#define NR_NODE_MEMBLKS		(MAX_NUMNODES * 2)
+> -
+> -int __node_distance(int from, int to);
+> -#define node_distance(a, b) __node_distance(a, b)
+> -
+> -extern nodemask_t numa_nodes_parsed __initdata;
+> -
+> -extern bool numa_off;
+> -
+> -/* Mappings between node number and cpus on that node. */
+> -extern cpumask_var_t node_to_cpumask_map[MAX_NUMNODES];
+> -void numa_clear_node(unsigned int cpu);
+> -
+> -#ifdef CONFIG_DEBUG_PER_CPU_MAPS
+> -const struct cpumask *cpumask_of_node(int node);
+> -#else
+> -/* Returns a pointer to the cpumask of CPUs on Node 'node'. */
+> -static inline const struct cpumask *cpumask_of_node(int node)
+> -{
+> -	return node_to_cpumask_map[node];
+> -}
+> -#endif
+> -
+> -void __init arm64_numa_init(void);
+> -int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+> -void __init numa_set_distance(int from, int to, int distance);
+> -void __init numa_free_distance(void);
+> -void __init early_map_cpu_to_node(unsigned int cpu, int nid);
+> -void numa_store_cpu_info(unsigned int cpu);
+> -void numa_add_cpu(unsigned int cpu);
+> -void numa_remove_cpu(unsigned int cpu);
+> -
+> -#else	/* CONFIG_NUMA */
+> -
+> -static inline void numa_store_cpu_info(unsigned int cpu) { }
+> -static inline void numa_add_cpu(unsigned int cpu) { }
+> -static inline void numa_remove_cpu(unsigned int cpu) { }
+> -static inline void arm64_numa_init(void) { }
+> -static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
+> -
+> -#endif	/* CONFIG_NUMA */
+> +#include <asm-generic/numa.h>
+>  
+>  #endif	/* __ASM_NUMA_H */
+> diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
+> index d91030f0ffee..928c308b044b 100644
+> --- a/arch/arm64/mm/Makefile
+> +++ b/arch/arm64/mm/Makefile
+> @@ -6,7 +6,6 @@ obj-y				:= dma-mapping.o extable.o fault.o init.o \
+>  obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
+>  obj-$(CONFIG_PTDUMP_CORE)	+= dump.o
+>  obj-$(CONFIG_PTDUMP_DEBUGFS)	+= ptdump_debugfs.o
+> -obj-$(CONFIG_NUMA)		+= numa.o
+>  obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+>  KASAN_SANITIZE_physaddr.o	+= n
+>  
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 8d7001712062..73c2151de194 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -210,4 +210,10 @@ config GENERIC_ARCH_TOPOLOGY
+>  	  appropriate scaling, sysfs interface for reading capacity values at
+>  	  runtime.
+>  
+> +config GENERIC_ARCH_NUMA
+> +	bool
+> +	help
+> +	  Enable support for generic numa implementation. Currently, RISC-V
+> +	  and ARM64 uses it.
+> +
+>  endmenu
+> diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+> index 157452080f3d..c3d02c644222 100644
+> --- a/drivers/base/Makefile
+> +++ b/drivers/base/Makefile
+> @@ -23,6 +23,7 @@ obj-$(CONFIG_PINCTRL) += pinctrl.o
+>  obj-$(CONFIG_DEV_COREDUMP) += devcoredump.o
+>  obj-$(CONFIG_GENERIC_MSI_IRQ_DOMAIN) += platform-msi.o
+>  obj-$(CONFIG_GENERIC_ARCH_TOPOLOGY) += arch_topology.o
+> +obj-$(CONFIG_GENERIC_ARCH_NUMA) += arch_numa.o
+>  
+>  obj-y			+= test/
+>  
+> diff --git a/arch/arm64/mm/numa.c b/drivers/base/arch_numa.c
+> similarity index 100%
+> rename from arch/arm64/mm/numa.c
+> rename to drivers/base/arch_numa.c
+> diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+> new file mode 100644
+> index 000000000000..0635c0724b7c
+> --- /dev/null
+> +++ b/include/asm-generic/numa.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __ASM_GENERIC_NUMA_H
+> +#define __ASM_GENERIC_NUMA_H
+> +
+> +#ifdef CONFIG_NUMA
+> +
+> +#define NR_NODE_MEMBLKS		(MAX_NUMNODES * 2)
+> +
+> +int __node_distance(int from, int to);
+> +#define node_distance(a, b) __node_distance(a, b)
+> +
+> +extern nodemask_t numa_nodes_parsed __initdata;
+> +
+> +extern bool numa_off;
+> +
+> +/* Mappings between node number and cpus on that node. */
+> +extern cpumask_var_t node_to_cpumask_map[MAX_NUMNODES];
+> +void numa_clear_node(unsigned int cpu);
+> +
+> +#ifdef CONFIG_DEBUG_PER_CPU_MAPS
+> +const struct cpumask *cpumask_of_node(int node);
+> +#else
+> +/* Returns a pointer to the cpumask of CPUs on Node 'node'. */
+> +static inline const struct cpumask *cpumask_of_node(int node)
+> +{
+> +	return node_to_cpumask_map[node];
+> +}
+> +#endif
+> +
+> +void __init arm64_numa_init(void);
+> +int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+> +void __init numa_set_distance(int from, int to, int distance);
+> +void __init numa_free_distance(void);
+> +void __init early_map_cpu_to_node(unsigned int cpu, int nid);
+> +void numa_store_cpu_info(unsigned int cpu);
+> +void numa_add_cpu(unsigned int cpu);
+> +void numa_remove_cpu(unsigned int cpu);
+> +
+> +#else	/* CONFIG_NUMA */
+> +
+> +static inline void numa_store_cpu_info(unsigned int cpu) { }
+> +static inline void numa_add_cpu(unsigned int cpu) { }
+> +static inline void numa_remove_cpu(unsigned int cpu) { }
+> +static inline void arm64_numa_init(void) { }
+> +static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
+> +
+> +#endif	/* CONFIG_NUMA */
+> +
+> +#include <asm/topology.h>
 
-Thanks
-  Dave
+Why the include here?
 
-> Best regards
-> Stefan
->
-> >
-> > Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> > ---
-> >  drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++++++++++
-> >  drivers/gpu/drm/vc4/vc4_hdmi.h |  1 +
-> >  2 files changed, 26 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > index 95ec5eedea39..eb3192d1fd86 100644
-> > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > @@ -80,6 +80,7 @@
-> >  # define VC4_HD_M_ENABLE                     BIT(0)
-> >
-> >  #define CEC_CLOCK_FREQ 40000
-> > +#define VC4_HSM_MID_CLOCK 149985000
-> >
-> >  static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
-> >  {
-> > @@ -380,6 +381,7 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder)
-> >       HDMI_WRITE(HDMI_VID_CTL,
-> >                  HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
-> >
-> > +     clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
-> >       clk_disable_unprepare(vc4_hdmi->hsm_clock);
-> >       clk_disable_unprepare(vc4_hdmi->pixel_clock);
-> >
-> > @@ -638,6 +640,23 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
-> >               return;
-> >       }
-> >
-> > +     ret = clk_set_rate(vc4_hdmi->pixel_bvb_clock,
-> > +                     (hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
-> > +     if (ret) {
-> > +             DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
-> > +             clk_disable_unprepare(vc4_hdmi->hsm_clock);
-> > +             clk_disable_unprepare(vc4_hdmi->pixel_clock);
-> > +             return;
-> > +     }
-> > +
-> > +     ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
-> > +     if (ret) {
-> > +             DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
-> > +             clk_disable_unprepare(vc4_hdmi->hsm_clock);
-> > +             clk_disable_unprepare(vc4_hdmi->pixel_clock);
-> > +             return;
-> > +     }
-> > +
-> >       if (vc4_hdmi->variant->reset)
-> >               vc4_hdmi->variant->reset(vc4_hdmi);
-> >
-> > @@ -1593,6 +1612,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
-> >               return PTR_ERR(vc4_hdmi->audio_clock);
-> >       }
-> >
-> > +     vc4_hdmi->pixel_bvb_clock = devm_clk_get(dev, "bvb");
-> > +     if (IS_ERR(vc4_hdmi->pixel_bvb_clock)) {
-> > +             DRM_ERROR("Failed to get pixel bvb clock\n");
-> > +             return PTR_ERR(vc4_hdmi->pixel_bvb_clock);
-> > +     }
-> > +
-> >       vc4_hdmi->reset = devm_reset_control_get(dev, NULL);
-> >       if (IS_ERR(vc4_hdmi->reset)) {
-> >               DRM_ERROR("Failed to get HDMI reset line\n");
-> > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> > index 0806c6d9f24e..63c6f8bddf1d 100644
-> > --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-> > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> > @@ -147,6 +147,7 @@ struct vc4_hdmi {
-> >       struct clk *pixel_clock;
-> >       struct clk *hsm_clock;
-> >       struct clk *audio_clock;
-> > +     struct clk *pixel_bvb_clock;
-> >
-> >       struct reset_control *reset;
-> >
->
+> +
+> +#endif	/* __ASM_GENERIC_NUMA_H */
+
+
