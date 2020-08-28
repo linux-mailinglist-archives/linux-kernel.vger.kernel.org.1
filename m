@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A9A256241
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700B525620A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgH1Ux4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:53:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11098 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgH1Uxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:53:54 -0400
-IronPort-SDR: wSvcNr0FwoSG2zCc7unEEvrJ3qZGByctjsLP3yQR96fc4QjW+nV4axF25hW8gT+hpp2idiBiCq
- Es3z1Q02n43A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="144423368"
-X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; 
-   d="scan'208";a="144423368"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 13:53:54 -0700
-IronPort-SDR: /OCPrcZkRiHahOLjQ8MnMDVN9cT2EI/iOS5XT0iMuitLHFQIcMIfg4Ju0VrihGCnZq0S65Jl+S
- pW8RKe4vlt2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,365,1592895600"; 
-   d="scan'208";a="330060605"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga008.jf.intel.com with ESMTP; 28 Aug 2020 13:53:54 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 096E3301C54; Fri, 28 Aug 2020 13:30:34 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 13:30:33 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/hugetlb: Fix a race between hugetlb sysctl handlers
-Message-ID: <20200828203033.GT1509399@tassilo.jf.intel.com>
-References: <20200828031146.43035-1-songmuchun@bytedance.com>
- <20200828145950.GS1509399@tassilo.jf.intel.com>
- <fee0c3a6-af68-5971-1959-a66d41ea16a3@oracle.com>
+        id S1726464AbgH1Udm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:33:42 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39144 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgH1Udl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 16:33:41 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07SKXXP4029943;
+        Fri, 28 Aug 2020 15:33:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598646814;
+        bh=EV957dVqXwgi4Qk6sYNVR1mRHi86YzzOiCLQ3wQfmGk=;
+        h=From:To:CC:Subject:Date;
+        b=anwXKXlczXZPKKsHA3SQ8baan66Be5woMdSG7ZS63I8hXHa3WmlD32e3lsmhrRrXT
+         +ZNARGwVq3aizuf9fM1pG0ckgArR7YSMcQxk57IPH6G2jIoOEdEp8761QU1AA0prdA
+         rW1qFErenthRq6asQqN/mgogrhSe8bK0dKEwFLNc=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07SKXXu9096410;
+        Fri, 28 Aug 2020 15:33:33 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 28
+ Aug 2020 15:33:33 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 28 Aug 2020 15:33:33 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07SKXWE7008196;
+        Fri, 28 Aug 2020 15:33:33 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next] net: ethernet: ti: am65-cpts: fix i2083 genf (and estf) Reconfiguration Issue
+Date:   Fri, 28 Aug 2020 23:33:25 +0300
+Message-ID: <20200828203325.29588-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fee0c3a6-af68-5971-1959-a66d41ea16a3@oracle.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 10:14:16AM -0700, Mike Kravetz wrote:
-> On 8/28/20 7:59 AM, Andi Kleen wrote:
-> >> Fixes: e5ff215941d5 ("hugetlb: multiple hstates for multiple page sizes")
-> > 
-> > I believe the Fixes line is still not correct. The original patch
-> > didn't have that problem. Please identify which patch added
-> > the problematic code.
-> 
-> Hi Andi,
-> 
-> I agree with Muchun's assessment that the issue was caused by e5ff215941d5.
-> Why?
+The new bit TX_GENF_CLR_EN has been added in AM65x SR2.0 to fix i2083
+errata, which can be just set unconditionally for all SoCs.
 
-Yes when checking the code again I agree. It was introduced with that
-patch. Patches look ok to me now.
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ drivers/net/ethernet/ti/am65-cpts.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
--Andi
+diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+index 365b5b9c6897..75056c14b161 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.c
++++ b/drivers/net/ethernet/ti/am65-cpts.c
+@@ -83,6 +83,8 @@ struct am65_cpts_regs {
+ #define AM65_CPTS_CONTROL_HW8_TS_PUSH_EN	BIT(15)
+ #define AM65_CPTS_CONTROL_HW1_TS_PUSH_OFFSET	(8)
+ 
++#define AM65_CPTS_CONTROL_TX_GENF_CLR_EN	BIT(17)
++
+ #define AM65_CPTS_CONTROL_TS_SYNC_SEL_MASK	(0xF)
+ #define AM65_CPTS_CONTROL_TS_SYNC_SEL_SHIFT	(28)
+ 
+@@ -986,7 +988,9 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+ 
+ 	am65_cpts_set_add_val(cpts);
+ 
+-	am65_cpts_write32(cpts, AM65_CPTS_CONTROL_EN | AM65_CPTS_CONTROL_64MODE,
++	am65_cpts_write32(cpts, AM65_CPTS_CONTROL_EN |
++			  AM65_CPTS_CONTROL_64MODE |
++			  AM65_CPTS_CONTROL_TX_GENF_CLR_EN,
+ 			  control);
+ 	am65_cpts_write32(cpts, AM65_CPTS_INT_ENABLE_TS_PEND_EN, int_enable);
+ 
+-- 
+2.17.1
+
