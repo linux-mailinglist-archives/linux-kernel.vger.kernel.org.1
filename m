@@ -2,138 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6404255A7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F3B255A8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgH1MqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729052AbgH1MqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:46:07 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5513C061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:46:06 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k13so396388plk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LV/s2CXjmyhaK0LBWgRhhTyeIospCDq6TJzHGpvnT6g=;
-        b=LWFJgGfDyKBtY5lmHYWRLbRndAjD016GbhtAM2jdvCP4MpD96uhACFDW2/tC1qgetI
-         pjEg1cuwysDRp1hauaUd0PV+OvjYYdFqtA/0rCnWwvh2HsY8NkP4Nk2wXw3UqQjqdHi0
-         rzfFtqxxfhcIQdKSfxc+Njr+rdFD/efrWPaCsZBYp5mtG2dQsfgCimHs0K9nVIMuZrbc
-         kvzpgq8orLyx1gVegYmLbXhBrxpP2vCpcVsnfN9nW7dFUnEPezCW4QCyOMPjr15I6iJ+
-         CZyhml0+ucHExmV+BVrpipGTkMX7psbPiH/Z4+oSE9Xu7RsJ4NtiAvcZBcCmOBjtMmjA
-         XrTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LV/s2CXjmyhaK0LBWgRhhTyeIospCDq6TJzHGpvnT6g=;
-        b=sL4wjkHtNGX2Ho8Hh5UCfFSHnrS+sIPOlh7/bd2uW0/7q3CCAhYeyWwt5dY2museC8
-         eC2fffjrErVhUGsBIW/rAzCkyNC5md6RWz+/CqvuN8Ke7/khFOCDwyMt24VCecIVqAJ6
-         fdVe0y1394yik73afXNUPRlj3lgvGEzNXnwVNNS4f9LsUxFeU+t8h1rUzK9tlgEpJCO6
-         I/S1KiATjY9SXmzn8jhDdepVPBPgceV2kNtddmIeasK3BWVEtkmSCMWo62bs/o4whToI
-         z+CskCyHMOUZuQfEdVRIm/6MwIVNPQVeArpljEhCgwM7VjX855Tw66WKegXOQosPGVVE
-         WQAw==
-X-Gm-Message-State: AOAM533IhIsH5SYiedR94dAdl2EglJxiI+IGXdS2xpw6iwK3mLm15iTs
-        QYIupnk77ntlwCLf+u0beDY=
-X-Google-Smtp-Source: ABdhPJxp/41vncbzOQ0/ckQNO2o3dIOncvs0wTo348fYMlDIw0uCdLBHSseAdneK28/TWPC3VOwyDA==
-X-Received: by 2002:a17:90a:de89:: with SMTP id n9mr1090213pjv.50.1598618765344;
-        Fri, 28 Aug 2020 05:46:05 -0700 (PDT)
-Received: from realwakka.navercorp.com ([61.83.141.80])
-        by smtp.gmail.com with ESMTPSA id 79sm1665930pfw.97.2020.08.28.05.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 05:46:04 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Melissa Wen <melissa.srw@gmail.com>
-Cc:     Sidong Yang <realwakka@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v3] drm/vkms: avoid warning in vkms_get_vblank_timestamp
-Date:   Fri, 28 Aug 2020 12:45:53 +0000
-Message-Id: <20200828124553.2178-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729238AbgH1MuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:50:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729311AbgH1MsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:48:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 623062086A;
+        Fri, 28 Aug 2020 12:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598618881;
+        bh=Tmg6hNWVmQSJS0uP7afJ4MMWpAN7NReRjmWywe3CvWg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1+w8OFAyaU/aWlYarVXfqLN9fIBCmKiNEB0Jq48rpTVBQjoDoRWSuL+fHLBf6YsVQ
+         0jHKOc8fYAOkqjR2KhMCnoFrwVZYEYkuA5zRP2QSVxlGQweX4oXyTrY5Fp6mL5LaJq
+         JXGC+7f0QfgyXvjiWKhAg1/Bko+ABpmHB9iTJxFE=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kBdnT-007Pl5-Sa; Fri, 28 Aug 2020 13:48:00 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 Aug 2020 13:47:59 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [patch V2 34/46] PCI/MSI: Make arch_.*_msi_irq[s] fallbacks
+ selectable
+In-Reply-To: <20200828121944.GQ1152540@nvidia.com>
+References: <20200826112333.992429909@linutronix.de>
+ <20200827182040.GA2049623@bjorn-Precision-5520>
+ <20200828112142.GA14208@e121166-lin.cambridge.arm.com>
+ <20200828121944.GQ1152540@nvidia.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <0cc8bfd9258dfc507585fd0f19a945e3@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jgg@nvidia.com, lorenzo.pieralisi@arm.com, helgaas@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org, joro@8bytes.org, iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org, haiyangz@microsoft.com, jonathan.derrick@intel.com, baolu.lu@linux.intel.com, wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com, steve.wahl@hpe.com, sivanich@hpe.com, rja@hpe.com, linux-pci@vger.kernel.org, bhelgaas@google.com, konrad.wilk@oracle.com, xen-devel@lists.xenproject.org, jgross@suse.com, boris.ostrovsky@oracle.com, sstabellini@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org, megha.dey@intel.com, dave.jiang@intel.com, alex.williamson@redhat.com, jacob.jun.pan@intel.com, baolu.lu@intel.com, kevin.tian@intel.com, dan.j.williams@intel.com, robh@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch avoid the warning in vkms_get_vblank_timestamp when vblanks aren't
-enabled. When running igt test kms_cursor_crc just after vkms module, the
-warning raised like below. Initial value of vblank time is zero and
-hrtimer.node.expires is also zero if vblank aren't enabled before. vkms module
-isn't real hardware but just virtual hardware module. so vkms can't generate a
-resonable timestamp when hrtimer is off. it's best to grab the current time.
+Hi Jason,
 
-[106444.464503] [IGT] kms_cursor_crc: starting subtest pipe-A-cursor-size-change
-[106444.471475] WARNING: CPU: 0 PID: 10109 at
-/home/realwakka/git/linux/drivers/gpu/drm/vkms//vkms_crtc.c:91
-vkms_get_vblank_timestamp+0x42/0x50 [vkms]
-[106444.471511] CPU: 0 PID: 10109 Comm: kms_cursor_crc Tainted: G        W  OE
-5.9.0-rc1+ #6
-[106444.471514] RIP: 0010:vkms_get_vblank_timestamp+0x42/0x50 [vkms]
-[106444.471528] Call Trace:
-[106444.471551]  drm_get_last_vbltimestamp+0xb9/0xd0 [drm]
-[106444.471566]  drm_reset_vblank_timestamp+0x63/0xe0 [drm]
-[106444.471579]  drm_crtc_vblank_on+0x85/0x150 [drm]
-[106444.471582]  vkms_crtc_atomic_enable+0xe/0x10 [vkms]
-[106444.471592]  drm_atomic_helper_commit_modeset_enables+0x1db/0x230
-[drm_kms_helper]
-[106444.471594]  vkms_atomic_commit_tail+0x38/0xc0 [vkms]
-[106444.471601]  commit_tail+0x97/0x130 [drm_kms_helper]
-[106444.471608]  drm_atomic_helper_commit+0x117/0x140 [drm_kms_helper]
-[106444.471622]  drm_atomic_commit+0x4a/0x50 [drm]
-[106444.471629]  drm_atomic_helper_set_config+0x63/0xb0 [drm_kms_helper]
-[106444.471642]  drm_mode_setcrtc+0x1d9/0x7b0 [drm]
-[106444.471654]  ? drm_mode_getcrtc+0x1a0/0x1a0 [drm]
-[106444.471666]  drm_ioctl_kernel+0xb6/0x100 [drm]
-[106444.471677]  drm_ioctl+0x3ad/0x470 [drm]
-[106444.471688]  ? drm_mode_getcrtc+0x1a0/0x1a0 [drm]
-[106444.471692]  ? tomoyo_file_ioctl+0x19/0x20
-[106444.471694]  __x64_sys_ioctl+0x96/0xd0
-[106444.471697]  do_syscall_64+0x37/0x80
-[106444.471699]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On 2020-08-28 13:19, Jason Gunthorpe wrote:
+> On Fri, Aug 28, 2020 at 12:21:42PM +0100, Lorenzo Pieralisi wrote:
+>> On Thu, Aug 27, 2020 at 01:20:40PM -0500, Bjorn Helgaas wrote:
+>> 
+>> [...]
+>> 
+>> > And I can't figure out what's special about tegra, rcar, and xilinx
+>> > that makes them need it as well.  Is there something I could grep for
+>> > to identify them?  Is there a way to convert them so they don't need
+>> > it?
+>> 
+>> I think DT binding and related firmware support are needed to setup 
+>> the
+>> MSI IRQ domains correctly, there is nothing special about tegra, rcar
+>> and xilinx AFAIK (well, all native host controllers MSI handling is
+>> *special* just to be polite but let's gloss over this for the time
+>> being).
+>> 
+>> struct msi_controller, to answer the first question.
+>> 
+>> I have doubts about pci_mvebu too, they do allocate an msi_controller
+>> but without methods so it looks pretty much useless.
+> 
+> Oh, I did once know things about mvebu..
+> 
+> I suspect the msi controller pointer assignment is dead code at this
+> point. The only implementation of MSI with that PCI root port is
+> drivers/irqchip/irq-armada-370-xp.c which looks like it uses
+> irq_domain.
+> 
+> Actually looks like things are very close to eliminating
+> msi_controller.
+> 
+> This is dead code, can't find a setter for hw_pci->msi_ctrl:
+> 
+> arch/arm/include/asm/mach/pci.h:        struct msi_controller 
+> *msi_ctrl;
+> arch/arm/kernel/bios32.c:                               bridge->msi =
+> hw->msi_ctrl;
+> 
+> This is probably just copying NULL from one place to another:
+> 
+> drivers/pci/controller/pci-mvebu.c:     struct msi_controller *msi;
+> 
+> These need conversion to irq_domain (right?):
+> 
+> drivers/pci/controller/pci-hyperv.c:    struct msi_controller msi_chip;
+> drivers/pci/controller/pci-tegra.c:     struct msi_controller chip;
+> drivers/pci/controller/pcie-rcar-host.c:        struct msi_controller 
+> chip;
+> drivers/pci/controller/pcie-xilinx.c:static struct msi_controller
+> xilinx_pcie_msi_chip = {
+> 
+> Then the stuff in drivers/pci/msi.c can go away.
+> 
+> So the arch_setup_msi_irq/etc is not really an arch hook, but some
+> infrastructure to support those 4 PCI root port drivers.
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-Cc: Melissa Wen <melissa.srw@gmail.com>
+I happen to have a *really old* patch addressing Tegra [1], which
+I was never able to test (no HW). Rebasing it shouldn't be too hard,
+and maybe you can find someone internally willing to give it a spin?
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
+That'd be a good start towards the removal of this cruft.
 
----
+Thanks,
 
-v3:
- - add cc.
+         M.
 
-v2:
- - modify commit message to make it a bit easier to understand.
-
----
- drivers/gpu/drm/vkms/vkms_crtc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index ac85e17428f8..09c012d54d58 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -86,6 +86,11 @@ static bool vkms_get_vblank_timestamp(struct drm_crtc *crtc,
- 	struct vkms_output *output = &vkmsdev->output;
- 	struct drm_vblank_crtc *vblank = &dev->vblank[pipe];
- 
-+	if (!READ_ONCE(vblank->enabled)) {
-+		*vblank_time = ktime_get();
-+		return true;
-+	}
-+
- 	*vblank_time = READ_ONCE(output->vblank_hrtimer.node.expires);
- 
- 	if (WARN_ON(*vblank_time == vblank->time))
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=irq/kill-msi-controller&id=83b3602fcee7972b9d549ed729b56ec28de16081
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
