@@ -2,190 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33190256334
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 00:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FC9256338
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 00:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgH1Wot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 18:44:49 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62301 "EHLO m43-7.mailgun.net"
+        id S1726988AbgH1WuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 18:50:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgH1Wor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 18:44:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598654686; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=7zYeKLZuM7Jqdsbun4qwTZWBNVjMkdc6/XUKOp3cAGk=; b=qFXL1PfF6KrVWlIRqnCmbuq5qKZKllu6iYO1XX9KpdP3BckfFmVG2+QajEUlh8lNOan9fphB
- wEP3ZsnBj7rCDfkHJOf8mHpvy6kxkpN89C5/ClY26mYAV150/kyI6sZfB9qztP4hMS5y7ofO
- 7gg5xp6lacXo7eiX3VVa+Wf3+y4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f4988deebeeb2610602a5c4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 Aug 2020 22:44:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E7141C43391; Fri, 28 Aug 2020 22:44:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726928AbgH1Wt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 18:49:58 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1D76C433CA;
-        Fri, 28 Aug 2020 22:44:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D1D76C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: dwc3: Stop active transfers before halting the controller
-Date:   Fri, 28 Aug 2020 15:44:40 -0700
-Message-Id: <20200828224440.22091-1-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        by mail.kernel.org (Postfix) with ESMTPSA id E6E44208A9;
+        Fri, 28 Aug 2020 22:49:56 +0000 (UTC)
+Date:   Fri, 28 Aug 2020 18:49:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Wen Gong <wgong@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel-owner@vger.kernel.org, ath10k@lists.infradead.org,
+        ath11k@lists.infradead.org, abhishekpandit@google.com,
+        briannorris@google.com, drinkcat@google.com, tientzu@google.com
+Subject: Re: [for-next][PATCH 2/2] tracing: Use temp buffer when filtering
+ events
+Message-ID: <20200828184955.6de9b54e@oasis.local.home>
+In-Reply-To: <b504b3d7e989cae108669a0cd3072454@codeaurora.org>
+References: <20160504135202.422290539@goodmis.org>
+        <20160504135241.308454993@goodmis.org>
+        <b504b3d7e989cae108669a0cd3072454@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the DWC3 databook, for a device initiated disconnect or bus reset, the
-driver is required to send dependxfer commands for any pending transfers.
-In addition, before the controller can move to the halted state, the SW
-needs to acknowledge any pending events.  If the controller is not halted
-properly, there is a chance the controller will continue accessing stale or
-freed TRBs and buffers.
+On Fri, 28 Aug 2020 15:53:06 +0800
+Wen Gong <wgong@codeaurora.org> wrote:
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> this patch commit id is : 0fc1b09ff1ff404ddf753f5ffa5cd0adc8fdcdc9 which 
+> has upstream.
+> 
+> how much size is the per cpu buffer?
+> seems it is initilized in trace_buffered_event_enable,
+> it is only 1 page size as below:
+> void trace_buffered_event_enable(void)
+> {
+> ...
+> 	for_each_tracing_cpu(cpu) {
+> 		page = alloc_pages_node(cpu_to_node(cpu),
+> 					GFP_KERNEL | __GFP_NORETRY, 0);
+> If the size of buffer to trace is more than 1 page, such as 46680, then 
+> it trigger kernel crash/panic in my case while run trace-cmd.
+> After debugging, the trace_file->flags in 
+> trace_event_buffer_lock_reserve is 0x40b while run trace-cmd, and it is 
+> 0x403 while collecting ftrace log.
+> 
+> Is it have any operation to disable this patch dynamically?
 
----
-Changes in v2:
- - Moved cleanup code to the pullup() API to differentiate between device
-   disconnect and hibernation.
- - Added cleanup code to the bus reset case as well.
- - Verified the move to pullup() did not reproduce the problen using the
-   same test sequence.
+It shouldn't be disabled, this is a bug that needs to be fixed.
 
-Verified fix by adding a check for ETIMEDOUT during the run stop call.
-Shell script writing to the configfs UDC file to trigger disconnect and
-connect.  Batch script to have PC execute data transfers over adb (ie adb
-push)  After a few iterations, we'd run into a scenario where the
-controller wasn't halted.  With the following change, no failed halts after
-many iterations.
----
- drivers/usb/dwc3/ep0.c    |  2 +-
- drivers/usb/dwc3/gadget.c | 52 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 52 insertions(+), 2 deletions(-)
+Also, if an event is more than a page, it wont be saved in the ftrace
+ring buffer, as events are limited by page size minus the headers.
 
-diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
-index 59f2e8c31bd1..456aa87e8778 100644
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -197,7 +197,7 @@ int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
- 	int				ret;
- 
- 	spin_lock_irqsave(&dwc->lock, flags);
--	if (!dep->endpoint.desc) {
-+	if (!dep->endpoint.desc || !dwc->pullups_connected) {
- 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		ret = -ESHUTDOWN;
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 3ab6f118c508..df8d89d6bdc9 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1516,7 +1516,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
- {
- 	struct dwc3		*dwc = dep->dwc;
- 
--	if (!dep->endpoint.desc) {
-+	if (!dep->endpoint.desc || !dwc->pullups_connected) {
- 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		return -ESHUTDOWN;
-@@ -1926,6 +1926,24 @@ static int dwc3_gadget_set_selfpowered(struct usb_gadget *g,
- 	return 0;
- }
- 
-+static void dwc3_stop_active_transfers(struct dwc3 *dwc)
-+{
-+	u32 epnum;
-+
-+	for (epnum = 2; epnum < DWC3_ENDPOINTS_NUM; epnum++) {
-+		struct dwc3_ep *dep;
-+
-+		dep = dwc->eps[epnum];
-+		if (!dep)
-+			continue;
-+
-+		if (!(dep->flags & DWC3_EP_ENABLED))
-+			continue;
-+
-+		dwc3_remove_requests(dwc, dep);
-+	}
-+}
-+
- static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
- {
- 	u32			reg;
-@@ -1994,9 +2012,39 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 		}
- 	}
- 
-+	/*
-+	 * Synchronize and disable any further event handling while controller
-+	 * is being enabled/disabled.
-+	 */
-+	disable_irq(dwc->irq_gadget);
- 	spin_lock_irqsave(&dwc->lock, flags);
-+
-+	/* Controller is not halted until pending events are acknowledged */
-+	if (!is_on) {
-+		u32 reg;
-+
-+		__dwc3_gadget_ep_disable(dwc->eps[0]);
-+		__dwc3_gadget_ep_disable(dwc->eps[1]);
-+
-+		/*
-+		 * The databook explicitly mentions for a device-initiated
-+		 * disconnect sequence, the SW needs to ensure that it ends any
-+		 * active transfers.
-+		 */
-+		dwc3_stop_active_transfers(dwc);
-+
-+		reg = dwc3_readl(dwc->regs, DWC3_GEVNTCOUNT(0));
-+		reg &= DWC3_GEVNTCOUNT_MASK;
-+		if (reg > 0) {
-+			dwc3_writel(dwc->regs, DWC3_GEVNTCOUNT(0), reg);
-+			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + reg) %
-+						dwc->ev_buf->length;
-+		}
-+	}
-+
- 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
- 	spin_unlock_irqrestore(&dwc->lock, flags);
-+	enable_irq(dwc->irq_gadget);
- 
- 	return ret;
- }
-@@ -3100,6 +3148,8 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
- 	}
- 
- 	dwc3_reset_gadget(dwc);
-+	/* Stop any active/pending transfers when receiving bus reset */
-+	dwc3_stop_active_transfers(dwc);
- 
- 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
- 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+-- Steve
