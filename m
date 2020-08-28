@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB63256221
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5197E256226
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgH1Ujz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
+        id S1726452AbgH1Ukf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgH1Ujw (ORCPT
+        with ESMTP id S1726797AbgH1Ukd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:39:52 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D7CC06121B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:39:52 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id k20so373099otr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LoEnI6osRj6yag/7TgRddr4TWXVaho6xu2ojKmFndVs=;
-        b=TiElAugIVvRoduQxZ8e0Ug49jkWVhXTEhvgxShz2TILmhyYd6887UvA4i908P2zVGL
-         oBC+yeSxYh5ryXv3nuafaJQ3bFDs08Xk1cTzq9dYidvBvAAUiBfZcICepOssoo1bmPaA
-         gVNaRDHNN8WHZ+PrEigLtPw04cI9HdST4dcC4YYIMeaCBziGVR3LDG5/BU9nzfAT+ZG2
-         td5QJ+kyFugt4LACdOiIXA+Z0env1/KRqWP/Dt2gKj59tJ/MXArIKqpUWG/S94TLj38W
-         9SL/JepY4yTrtbw41wghHxlr32fZb7Ulj3eJtvyavAt8ipOALUuzVkgG6itu3RS3HLJC
-         XX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LoEnI6osRj6yag/7TgRddr4TWXVaho6xu2ojKmFndVs=;
-        b=ZOstuwThpfGY5TGYMF6hoZLqpCQkgFnRWj6pVHeR7dO1NKgUAkD6tmt8OeCdXUtwhc
-         eUfeVwHI5Ec1+5bZfBBXyubA2T/FAYqClFmZmboO0rkL/duuK7DqhpjrcDPfGxyPjF1X
-         UL/X+ld8XbVYjKcKNv0QPg9QxWnMqErtfGdpP4+7MuIhV2GdXIPbwCA7yQZqslxbvvoa
-         bCK+aEUe2YHyvg6NnhIYjysixywYaIrqSHQkEM2dOCJmSO2frMt4/aP8XpznUP8/Th/m
-         QwzY+i9grrEJfqC8Rp9EnLePe3MHsAQmU6oW9WgbN1dvFOqrgUBOwTCn3k6TFWv7vI69
-         Qgdg==
-X-Gm-Message-State: AOAM532iEJ2R5bHD31PeWoft7hF5kErudL+eFdSWPw1STwPsdV4ebSGS
-        qv4Nq8304Wui5BFoO+YDQ+Ef+vNWWm9CMa+fDk+zCg==
-X-Google-Smtp-Source: ABdhPJxYdLw7BXQXA24VIltH7C6XUh7pH1HLMLSyWcOc2TFZmVnQFgAM/7fnxZTmVHnDhy7J8INPrPSPHU83LIS1l74=
-X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr302546ota.241.1598647190949;
- Fri, 28 Aug 2020 13:39:50 -0700 (PDT)
+        Fri, 28 Aug 2020 16:40:33 -0400
+Received: from outbound.soverin.net (outbound.soverin.net [IPv6:2a01:4f8:fff0:2d:8::218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D529C061264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:40:33 -0700 (PDT)
+Received: from smtp.soverin.net (unknown [10.10.3.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by outbound.soverin.net (Postfix) with ESMTPS id 1A7FF60901;
+        Fri, 28 Aug 2020 20:40:24 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [159.69.232.142]) by soverin.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=bartavi.nl; s=soverin;
+        t=1598647221; bh=8xkQ/ltprH+eyjeuEUkHOc9x8L26C1hcmS7SUa7P7s4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hj/whvg/NYNju60G7k6okxcEe68OESHMzXUKNQn9IYYLndd/Yd9gny+H1fwcQSvkD
+         2JwCG+2FJxvicZRd9f0xcZRlXzpahU810yHXH5to4cAlrC9Fzb8upX3+CMgdEpGv3F
+         TbAUtGavlxZLbvjYM1G9zQhlgAGI8SpQWZCpCBUmRKut1A1YZ9HNzkUb77nAQJj6dH
+         25QuadkCxqOAgFeJk5yusZjBB2iBUUMbThFzDeG4LPBbbgQRt1S5YqNuJIW4knuiOQ
+         lgJXZzdKCdS8TG4qz8+SpN3j1Ri3yyR9nBO/+qyd9Ek5lYG3XRY4J46YCboRK6u6XI
+         hZ2PU23d7Fccg==
+From:   Bart Groeneveld <avi@bartavi.nl>
+To:     Patches internal <patches.internal@link.bartavi.nl>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bart Groeneveld <avi@bartavi.nl>
+Subject: [PATCH v2] net: Use standardized (IANA) local port range
+Date:   Fri, 28 Aug 2020 22:39:59 +0200
+Message-Id: <20200828203959.32010-1-avi@bartavi.nl>
+In-Reply-To: <20200821142533.45694-1-avi@bartavi.nl>
+References: <20200821142533.45694-1-avi@bartavi.nl>
 MIME-Version: 1.0
-References: <20200828085622.8365-1-chenyi.qiang@intel.com> <20200828085622.8365-4-chenyi.qiang@intel.com>
-In-Reply-To: <20200828085622.8365-4-chenyi.qiang@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 28 Aug 2020 13:39:39 -0700
-Message-ID: <CALMp9eT1makVq46TB-EtTPiz=Z_2DfhudJekrtheSsmwBc4pZA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] KVM: nVMX: Update VMX controls MSR according to guest
- CPUID after setting VMX MSRs
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 1:54 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
->
-> Update the fields (i.e. VM_{ENTRY_LOAD, EXIT_CLEAR}_BNDCFGS and
-> VM_{ENTRY, EXIT}_LOAD_IA32_PERF_GLOBAL_CTRL) in
-> nested MSR_IA32_VMX_TRUE_{ENTRY, EXIT}_CTLS according to guest CPUID
-> when user space initializes the features MSRs. Regardless of the order
-> of SET_CPUID and SET_MSRS from the user space, do the update to avoid
-> MSR values overriding.
->
-> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 819c185adf09..f9664ccc003b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -345,6 +345,7 @@ static bool guest_state_valid(struct kvm_vcpu *vcpu);
->  static u32 vmx_segment_access_rights(struct kvm_segment *var);
->  static __always_inline void vmx_disable_intercept_for_msr(unsigned long *msr_bitmap,
->                                                           u32 msr, int type);
-> +static void nested_vmx_entry_exit_ctls_update(struct kvm_vcpu *vcpu);
->
->  void vmx_vmexit(void);
->
-> @@ -2161,7 +2162,10 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->                         return 1; /* they are read-only */
->                 if (!nested_vmx_allowed(vcpu))
->                         return 1;
-> -               return vmx_set_vmx_msr(vcpu, msr_index, data);
-> +               ret = vmx_set_vmx_msr(vcpu, msr_index, data);
-> +               nested_vmx_pmu_entry_exit_ctls_update(vcpu);
-> +               nested_vmx_entry_exit_ctls_update(vcpu);
-> +               break;
+IANA specifies User ports as 1024-49151,
+and Private ports (local/ephemeral/dynamic/w/e) as 49152-65535 [1].
 
-Now I see what you're doing. This commit should probably come before
-the previous commit, so that at no point in the series can userspace
-set VMX MSR bits that should be cleared based on the guest CPUID.
+This means Linux uses 32768-49151 'illegally'.
+This is not just a matter of following specifications:
+IANA actually assigns numbers in this range [1].
 
-There's an ABI change here: userspace may no longer get -EINVAL if it
-tries to set an illegal VMX MSR bit. Instead, some illegal bits are
-silently cleared. Moreover, these functions will potentially set VMX
-MSR bits that userspace has just asked to clear.
+I understand that Linux uses 61000-65535 for masquarading/NAT [2],
+so I left the high value at 60999.
+This means the high value still does not follow the specification,
+but it also doesn't conflict with it.
 
->         case MSR_IA32_RTIT_CTL:
->                 if (!vmx_pt_mode_is_host_guest() ||
->                         vmx_rtit_ctl_check(vcpu, data) ||
-> --
-> 2.17.1
->
+This change will effectively halve the available ephemeral ports,
+increasing the risk of port exhaustion. But:
+a) I don't think that warrants ignoring standards.
+	Consider for example setting up a (corporate) firewall blocking
+	all unknown external services.
+	It will only allow outgoing trafiic at port 80,443 and 49152-65535.
+	A Linux computer behind such a firewall will not be able to connect
+	to *any* external service *half of the time*.
+	Of course, the firewall can be adjusted to also allow 32768-49151,
+	but that allows computers to use some services against the policy.
+b) It is only an issue with more than 11848 *outgoing* connections.
+	I think that is a niche case (I know, citation needed, but still).
+	If someone finds themselves in such a niche case,
+	they can still modify ip_local_port_range.
+
+This patch keeps the low and high value at different parity,
+as to optimize port assignment [3].
+
+[1]: https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.txt
+[2]: https://marc.info/?l=linux-kernel&m=117900026927289
+[3]: See for example commit 1580ab63fc9a03593072cc5656167a75c4f1d173 ("tcp/dccp: better use of ephemeral ports in connect()")
+
+Signed-off-by: Bart Groeneveld <avi@bartavi.nl>
+---
+ Documentation/networking/ip-sysctl.rst | 4 ++--
+ net/ipv4/af_inet.c                     | 2 +-
+ net/ipv4/inet_connection_sock.c        | 2 +-
+ net/ipv4/inet_hashtables.c             | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+index 837d51f9e1fa..5048b326f773 100644
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -1024,7 +1024,7 @@ ip_local_port_range - 2 INTEGERS
+ 	If possible, it is better these numbers have different parity
+ 	(one even and one odd value).
+ 	Must be greater than or equal to ip_unprivileged_port_start.
+-	The default values are 32768 and 60999 respectively.
++	The default values are 49152 and 60999 respectively.
+ 
+ ip_local_reserved_ports - list of comma separated ranges
+ 	Specify the ports which are reserved for known third-party
+@@ -1047,7 +1047,7 @@ ip_local_reserved_ports - list of comma separated ranges
+ 	ip_local_port_range, e.g.::
+ 
+ 	    $ cat /proc/sys/net/ipv4/ip_local_port_range
+-	    32000	60999
++	    49152	60999
+ 	    $ cat /proc/sys/net/ipv4/ip_local_reserved_ports
+ 	    8080,9148
+ 
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 4307503a6f0b..f95a9ffffdc9 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1838,7 +1838,7 @@ static __net_init int inet_init_net(struct net *net)
+ 	 * Set defaults for local port range
+ 	 */
+ 	seqlock_init(&net->ipv4.ip_local_ports.lock);
+-	net->ipv4.ip_local_ports.range[0] =  32768;
++	net->ipv4.ip_local_ports.range[0] =  49152;
+ 	net->ipv4.ip_local_ports.range[1] =  60999;
+ 
+ 	seqlock_init(&net->ipv4.ping_group_range.lock);
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..322bcfce0737 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -196,7 +196,7 @@ inet_csk_find_open_port(struct sock *sk, struct inet_bind_bucket **tb_ret, int *
+ 	attempt_half = (sk->sk_reuse == SK_CAN_REUSE) ? 1 : 0;
+ other_half_scan:
+ 	inet_get_local_port_range(net, &low, &high);
+-	high++; /* [32768, 60999] -> [32768, 61000[ */
++	high++; /* [49152, 60999] -> [49152, 61000[ */
+ 	if (high - low < 4)
+ 		attempt_half = 0;
+ 	if (attempt_half) {
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b65..547b95a4891a 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -695,7 +695,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 	l3mdev = inet_sk_bound_l3mdev(sk);
+ 
+ 	inet_get_local_port_range(net, &low, &high);
+-	high++; /* [32768, 60999] -> [32768, 61000[ */
++	high++; /* [49152, 60999] -> [49152, 61000[ */
+ 	remaining = high - low;
+ 	if (likely(remaining > 1))
+ 		remaining &= ~1U;
+-- 
+2.28.0
+
