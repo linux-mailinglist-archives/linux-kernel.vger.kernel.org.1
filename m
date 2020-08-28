@@ -2,115 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42134255C78
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C329255C6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgH1OaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgH1OaN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:30:13 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25775C061264;
-        Fri, 28 Aug 2020 07:30:12 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u126so1401349iod.12;
-        Fri, 28 Aug 2020 07:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oIurT9NnRMICNXs1unTV39g8GKqfYQZhBJKD6PuXkBQ=;
-        b=kIEIT1BCstEYEHMwMC4RZZV+EDytYneUK+PJfUj0poGcIHIZHweoj7tdraNnwSvNj6
-         Z04fw9gM8wo5UmjdBdCgBKDj6CpGZNLsanoklyg4Db3aT657yfHgvxDteFIkjoHiEvCl
-         NjAfv2TDab+Frw3dly6dr43QItQdgjyzdFESNfhJ3zwMVHQ3RVFjidUrheYZt9TGArfR
-         wRByYHtiOJlD0UHr6rgfbukN7AlIJpb2Dsr+JCfjTGCYOh//2xicddGxeL+ryANiL/dd
-         YU7FM0Eew8M0aI7z/Aa5ARMAMez0Iun4t/KH37lDvcf0upO004UUhQsOAnxtYpq9b+CG
-         HUTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oIurT9NnRMICNXs1unTV39g8GKqfYQZhBJKD6PuXkBQ=;
-        b=StVSwYlxlSN0IROYeXiv78+7TXu/9UzCFEk5bLmdUH1n/PZ9CyaMAIVhRsZWrRGu0u
-         YDgv3NXxjKQUdM/XOMjiWfh69Fcay/mYe9VQrmUijv2IaLmlMCFWrgZDcJ797plw6B22
-         WhhK3U6UNmrKAPNMbH3Ej3T/BwpjY9g+Jci9bBjtaG60CFZ3Y4I21n9BkwPomsw45LIH
-         ZfR5EcbGLsB3iPwWx+Tyvhl1CeEeI4TzY42Ra56ASY+M05NV3ieBG1PFW5Y9WgCPQWnR
-         5bEZBP+WCylDi8HcVvtXHDMQLzygg1PrihErJEYRgLKXIaqsczTuIfBXm7gH/rYeC6X9
-         h6Ww==
-X-Gm-Message-State: AOAM532cILcgyirAaeZpmjvsbF1cj3pd7PmAJNqdUQLfRoTVkn9RXunQ
-        hkXA6rtFGgL7qF6qAI6n2ZlpkwstsQvy8eRE8KA=
-X-Google-Smtp-Source: ABdhPJzuT2eph4LucKaa7svK138E8jC2IC4brqlxG2Y/KFo0tvGHyV/Ij30PdVjqFx3uU4yjILA80JrJf9IdXdC/FEU=
-X-Received: by 2002:a02:730b:: with SMTP id y11mr1441273jab.126.1598625011513;
- Fri, 28 Aug 2020 07:30:11 -0700 (PDT)
+        id S1727849AbgH1O2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:28:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:50684 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgH1O2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:28:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32F8D1FB;
+        Fri, 28 Aug 2020 07:28:47 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE1133F71F;
+        Fri, 28 Aug 2020 07:28:45 -0700 (PDT)
+Subject: Re: [PATCH 2/4] kselftests/arm64: add nop checks for PAuth tests
+To:     Boyan Karatotev <boyan.karatotev@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     amit.kachhap@arm.com, boian4o1@gmail.com,
+        Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-3-boyan.karatotev@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <96f6009c-9f61-ebd2-9a2f-7d54486e85eb@arm.com>
+Date:   Fri, 28 Aug 2020 15:30:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <c33df0ebe8be16b56741ce7f873221ab9087a0a6.1598564619.git.stefan@agner.ch>
-In-Reply-To: <c33df0ebe8be16b56741ce7f873221ab9087a0a6.1598564619.git.stefan@agner.ch>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Fri, 28 Aug 2020 20:00:00 +0530
-Message-ID: <CANAwSgT1bQh+vhzYxygTkN7NP5zq-2jaspvvTfjx3rWxZ07hGw@mail.gmail.com>
-Subject: Re: [PATCH] clk: meson: g12a: mark fclk_div2 as critical
-To:     Stefan Agner <stefan@agner.ch>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200828131606.7946-3-boyan.karatotev@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On 8/28/20 2:16 PM, Boyan Karatotev wrote:
+> PAuth adds sign/verify controls to enable and disable groups of
+> instructions in hardware for compatibility with libraries that do not
+> implement PAuth. The kernel always enables them if it detects PAuth.
+> 
+> Add a test that checks that each group of instructions is enabled, if the
+> kernel reports PAuth as detected.
+> 
+> Note: For groups, for the purpose of this patch, we intend instructions
+> that use a certain key.
+>
 
-On Fri, 28 Aug 2020 at 03:14, Stefan Agner <stefan@agner.ch> wrote:
->
-> On Amlogic Meson G12b platform, similar to fclk_div3, the fclk_div2
-> seems to be necessary for the system to operate correctly as well.
->
-> Typically, the clock also gets chosen by the eMMC peripheral. This
-> probably masked the problem so far. However, when booting from a SD
-> card the clock seems to get disabled which leads to a system freeze.
->
-> Let's mark this clock as critical, fixing boot from SD card on G12b
-> platforms.
->
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
+
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
 > ---
+>  .../testing/selftests/arm64/pauth/.gitignore  |  1 +
+>  tools/testing/selftests/arm64/pauth/Makefile  |  7 ++-
+>  tools/testing/selftests/arm64/pauth/helper.c  | 41 +++++++++++++++
+>  tools/testing/selftests/arm64/pauth/helper.h  | 10 ++++
+>  tools/testing/selftests/arm64/pauth/pac.c     | 51 +++++++++++++++++++
+>  5 files changed, 108 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/arm64/pauth/helper.c
+> 
+> diff --git a/tools/testing/selftests/arm64/pauth/.gitignore b/tools/testing/selftests/arm64/pauth/.gitignore
+> index b557c916720a..155137d92722 100644
+> --- a/tools/testing/selftests/arm64/pauth/.gitignore
+> +++ b/tools/testing/selftests/arm64/pauth/.gitignore
+> @@ -1 +1,2 @@
+> +exec_target
+>  pac
+> diff --git a/tools/testing/selftests/arm64/pauth/Makefile b/tools/testing/selftests/arm64/pauth/Makefile
+> index 785c775e5e41..a017d1c8dd58 100644
+> --- a/tools/testing/selftests/arm64/pauth/Makefile
+> +++ b/tools/testing/selftests/arm64/pauth/Makefile
+> @@ -4,7 +4,7 @@
+>  CFLAGS += -mbranch-protection=pac-ret
+>  
+>  TEST_GEN_PROGS := pac
+> -TEST_GEN_FILES := pac_corruptor.o
+> +TEST_GEN_FILES := pac_corruptor.o helper.o
+>  
+>  include ../../lib.mk
+>  
+> @@ -13,10 +13,13 @@ include ../../lib.mk
+>  $(OUTPUT)/pac_corruptor.o: pac_corruptor.S
+>  	$(CC) -c $^ -o $@ $(CFLAGS) -march=armv8.3-a
+>  
+> +$(OUTPUT)/helper.o: helper.c
+> +	$(CC) -c $^ -o $@ $(CFLAGS) -march=armv8.3-a
+> +
+>  # when -mbranch-protection is enabled and the target architecture is ARMv8.3 or
+>  # greater, gcc emits pac* instructions which are not in HINT NOP space,
+>  # preventing the tests from occurring at all. Compile for ARMv8.2 so tests can
+>  # run on earlier targets and print a meaningful error messages
+> -$(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o
+> +$(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o $(OUTPUT)/helper.o
+>  	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/helper.c b/tools/testing/selftests/arm64/pauth/helper.c
+> new file mode 100644
+> index 000000000000..8619afb16124
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/pauth/helper.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2020 ARM Limited
+> +
+> +#include "helper.h"
+> +
+> +
+> +size_t keyia_sign(size_t ptr)
+> +{
+> +	asm volatile("paciza %0" : "+r" (ptr));
+> +	return ptr;
+> +}
+> +
+> +size_t keyib_sign(size_t ptr)
+> +{
+> +	asm volatile("pacizb %0" : "+r" (ptr));
+> +	return ptr;
+> +}
+> +
+> +size_t keyda_sign(size_t ptr)
+> +{
+> +	asm volatile("pacdza %0" : "+r" (ptr));
+> +	return ptr;
+> +}
+> +
+> +size_t keydb_sign(size_t ptr)
+> +{
+> +	asm volatile("pacdzb %0" : "+r" (ptr));
+> +	return ptr;
+> +}
+> +
+> +size_t keyg_sign(size_t ptr)
+> +{
+> +	/* output is encoded in the upper 32 bits */
+> +	size_t dest = 0;
+> +	size_t modifier = 0;
+> +
+> +	asm volatile("pacga %0, %1, %2" : "=r" (dest) : "r" (ptr), "r" (modifier));
+> +
+> +	return dest;
+> +}
+> +
+> diff --git a/tools/testing/selftests/arm64/pauth/helper.h b/tools/testing/selftests/arm64/pauth/helper.h
+> index f777f88acf0a..b3cf709e249d 100644
+> --- a/tools/testing/selftests/arm64/pauth/helper.h
+> +++ b/tools/testing/selftests/arm64/pauth/helper.h
+> @@ -4,7 +4,17 @@
+>  #ifndef _HELPER_H_
+>  #define _HELPER_H_
+>  
+> +#include <stdlib.h>
+> +
+> +
+>  void pac_corruptor(void);
+>  
+> +/* PAuth sign a value with key ia and modifier value 0 */
+> +size_t keyia_sign(size_t val);
+> +size_t keyib_sign(size_t val);
+> +size_t keyda_sign(size_t val);
+> +size_t keydb_sign(size_t val);
+> +size_t keyg_sign(size_t val);
+> +
+>  #endif
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+> index ed445050f621..cdbffa8bf61e 100644
+> --- a/tools/testing/selftests/arm64/pauth/pac.c
+> +++ b/tools/testing/selftests/arm64/pauth/pac.c
+> @@ -12,12 +12,25 @@
+>   * future version of the arm architecture
+>   */
+>  
+> +#define PAC_COLLISION_ATTEMPTS 10
+> +/*
+> + * The kernel sets TBID by default. So bits 55 and above should remain
+> + * untouched no matter what.
+> + * The VA space size is 48 bits. Bigger is opt-in.
+> + */
+> +#define PAC_MASK (~0xff80ffffffffffff)
+>  #define ASSERT_PAUTH_ENABLED() \
+>  do { \
+>  	unsigned long hwcaps = getauxval(AT_HWCAP); \
+>  	/* data key instructions are not in NOP space. This prevents a SIGILL */ \
+>  	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled"); \
+>  } while (0)
+> +#define ASSERT_GENERIC_PAUTH_ENABLED() \
+> +do { \
+> +	unsigned long hwcaps = getauxval(AT_HWCAP); \
+> +	/* generic key instructions are not in NOP space. This prevents a SIGILL */ \
+> +	ASSERT_NE(0, hwcaps & HWCAP_PACG) TH_LOG("Generic PAUTH not enabled"); \
+> +} while (0)
+>  
+>  
+>  /* check that a corrupted PAC results in SIGSEGV */
+> @@ -28,5 +41,43 @@ TEST_SIGNAL(corrupt_pac, SIGSEGV)
+>  	pac_corruptor();
+>  }
+>  
+> +/*
+> + * There are no separate pac* and aut* controls so checking only the pac*
+> + * instructions is sufficient
+> + */
+> +TEST(pac_instructions_not_nop)
+> +{
+> +	size_t keyia = 0;
+> +	size_t keyib = 0;
+> +	size_t keyda = 0;
+> +	size_t keydb = 0;
+> +
+> +	ASSERT_PAUTH_ENABLED();
+> +
+> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
+> +		keyia |= keyia_sign(i) & PAC_MASK;
+> +		keyib |= keyib_sign(i) & PAC_MASK;
+> +		keyda |= keyda_sign(i) & PAC_MASK;
+> +		keydb |= keydb_sign(i) & PAC_MASK;
+> +	}
+> +
+> +	ASSERT_NE(0, keyia) TH_LOG("keyia instructions did nothing");
+> +	ASSERT_NE(0, keyib) TH_LOG("keyib instructions did nothing");
+> +	ASSERT_NE(0, keyda) TH_LOG("keyda instructions did nothing");
+> +	ASSERT_NE(0, keydb) TH_LOG("keydb instructions did nothing");
+> +}
+> +
+> +TEST(pac_instructions_not_nop_generic)
+> +{
+> +	size_t keyg = 0;
+> +
+> +	ASSERT_GENERIC_PAUTH_ENABLED();
+> +
+> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++)
+> +		keyg |= keyg_sign(i) & PAC_MASK;
+> +
+> +	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
+> +}
+> +
+>  TEST_HARNESS_MAIN
+>  
+> 
 
-Thank you for this patch. I reported this a long time ago but could
-not solve it.
-Please add my
-Tested-by: Anand Moon <linux.amoon@gmail.com>
-
-
-
->  drivers/clk/meson/g12a.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-> index fad616cac01e..2214b974f748 100644
-> --- a/drivers/clk/meson/g12a.c
-> +++ b/drivers/clk/meson/g12a.c
-> @@ -298,6 +298,7 @@ static struct clk_regmap g12a_fclk_div2 = {
->                         &g12a_fclk_div2_div.hw
->                 },
->                 .num_parents = 1,
-> +               .flags = CLK_IS_CRITICAL,
->         },
->  };
->
-> --
-> 2.28.0
->
->
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+-- 
+Regards,
+Vincenzo
