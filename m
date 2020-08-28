@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A24255327
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 04:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF6025532D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgH1Cxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 22:53:52 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47738 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726854AbgH1Cxv (ORCPT
+        id S1728001AbgH1DBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 23:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726972AbgH1DBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 22:53:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U73igQg_1598583227;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U73igQg_1598583227)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 Aug 2020 10:53:48 +0800
-Subject: Re: [PATCH] sched/fair: Fix wrong cpu selecting from isolated domain
-From:   Xunlei Pang <xlpang@linux.alibaba.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
-Message-ID: <9bfaa095-2074-e0bb-da0b-81e00c7ca490@linux.alibaba.com>
-Date:   Fri, 28 Aug 2020 10:53:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        Thu, 27 Aug 2020 23:01:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FFBC061264
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 20:01:16 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o13so4784530pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 20:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IiuhGhzNgL/DLui8gzTK8ao7Oz/TOVe+cUKUpQqg/f0=;
+        b=A21YlOTJEsZNmnka2SfNcYfgw1+lPMwJqhBVCkpEPv7LqDIBnDQ1HyazAFYe3K5uz2
+         P9BSVvy4PZtAGr2MZ3SLhzIdEgEEDcCVNXLIHl0XN5Suu0YyGuHwSJfASthuIGbDq3IQ
+         vb5ym4nNJOEbsawe5V/XdyIOduT+k+Bd5H2LWHDaJWDfIhRafUXcWvZYFFuV3PUwNYps
+         k20xTAnBGa9QEmhjnP0csDgUrCHWALxg/bbUVlV1EJmuQQMn2axcjNTl7+5TB7+HJd9P
+         /X1wZdjRci0LnAeuD+O5cXn22bEFiQ2dk5WQ8V1bV2NqM4SlAQ33C+QNdmaOGpA7Eikx
+         YclQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IiuhGhzNgL/DLui8gzTK8ao7Oz/TOVe+cUKUpQqg/f0=;
+        b=AGb9Eaw6x1vVibh3T9AnruCR2OKn4ruQUXl8YsJPUe6KSyf8qSOghlbV+M+gh6341M
+         Snbk70dvVm1tHCgdaXr4b70h0He6JZVy2lVw3LTFBtmqXrk4FKS69Z+U/vpYWgaYFSMl
+         IRdtRPoqL+QT+kA8jPkUT3skstdYt27VB0eWH+EIVxyYg5nWzpaNtxdaTqmBO8Cp0SE1
+         Sp+uHUVSxWQstRA/pr7e9vqyBlP07yWtgPkO37/jG+MUTTkkcvJ9/FR3yfekc8ehhg57
+         rdWHC1GeRrR1EWVegs3cEOCNqKeb+bW2Doo6bCyzK/irVpDbVZAo2KlNSjuxHH7TWogY
+         DRRA==
+X-Gm-Message-State: AOAM532yKRuHqBGOlIVasWHjUw3SA/fAFO7k/7uGhj55cPDc1XGo8dBS
+        PwHOmMEnc/Pi7Da6AX2EGdczlg==
+X-Google-Smtp-Source: ABdhPJwOvqqC+wLSGyfhpDIPXvlFwqQ3jCC/e/zr3AGe57QwIOArUNETxLAixcYF7uYEXMzihbQNmw==
+X-Received: by 2002:a05:6a00:15cb:: with SMTP id o11mr19227116pfu.263.1598583675314;
+        Thu, 27 Aug 2020 20:01:15 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id t10sm3575280pgp.15.2020.08.27.20.01.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 20:01:14 -0700 (PDT)
+Subject: Re: [PATCH v6 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
+        Aleksa Sarai <asarai@suse.de>,
+        Sargun Dhillon <sargun@sargun.me>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20200827145831.95189-1-sgarzare@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8a86fc8a-56f6-351e-aaee-d80c4798d152@kernel.dk>
+Date:   Thu, 27 Aug 2020 21:01:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1598272219-43040-1-git-send-email-xlpang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20200827145831.95189-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/24 PM8:30, Xunlei Pang wrote:
-> We've met problems that occasionally tasks with full cpumask
-> (e.g. by putting it into a cpuset or setting to full affinity)
-> were migrated to our isolated cpus in production environment.
+On 8/27/20 8:58 AM, Stefano Garzarella wrote:
+> v6:
+>  - moved restriction checks in a function [Jens]
+>  - changed ret value handling in io_register_restrictions() [Jens]
 > 
-> After some analysis, we found that it is due to the current
-> select_idle_smt() not considering the sched_domain mask.
+> v5: https://lore.kernel.org/io-uring/20200827134044.82821-1-sgarzare@redhat.com/
+> v4: https://lore.kernel.org/io-uring/20200813153254.93731-1-sgarzare@redhat.com/
+> v3: https://lore.kernel.org/io-uring/20200728160101.48554-1-sgarzare@redhat.com/
+> RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redhat.com
+> RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@redhat.com
 > 
-> Fix it by checking the valid domain mask in select_idle_smt().
+> Following the proposal that I send about restrictions [1], I wrote this series
+> to add restrictions in io_uring.
 > 
-> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
-> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-> ---
->  kernel/sched/fair.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> I also wrote helpers in liburing and a test case (test/register-restrictions.c)
+> available in this repository:
+> https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1a68a05..fa942c4 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
->  /*
->   * Scan the local SMT mask for idle CPUs.
->   */
-> -static int select_idle_smt(struct task_struct *p, int target)
-> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->  	int cpu;
->  
-> @@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
->  		return -1;
->  
->  	for_each_cpu(cpu, cpu_smt_mask(target)) {
-> -		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-> +		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-> +		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
->  			continue;
->  		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
->  			return cpu;
-> @@ -6099,7 +6100,7 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
->  	return -1;
->  }
->  
-> -static inline int select_idle_smt(struct task_struct *p, int target)
-> +static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->  	return -1;
->  }
-> @@ -6274,7 +6275,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  	if ((unsigned)i < nr_cpumask_bits)
->  		return i;
->  
-> -	i = select_idle_smt(p, target);
-> +	i = select_idle_smt(p, sd, target);
->  	if ((unsigned)i < nr_cpumask_bits)
->  		return i;
->  
+> Just to recap the proposal, the idea is to add some restrictions to the
+> operations (sqe opcode and flags, register opcode) to safely allow untrusted
+> applications or guests to use io_uring queues.
 > 
+> The first patch changes io_uring_register(2) opcodes into an enumeration to
+> keep track of the last opcode available.
+> 
+> The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+> handle restrictions.
+> 
+> The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+> allowing the user to register restrictions, buffers, files, before to start
+> processing SQEs.
 
-Hi Peter, any other comments?
+Applied, thanks.
+
+-- 
+Jens Axboe
+
