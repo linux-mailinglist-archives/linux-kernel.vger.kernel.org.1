@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F70F255BBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47D1255BC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgH1N4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgH1N4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:56:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B066C061264;
-        Fri, 28 Aug 2020 06:56:12 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id A3F53290E5E
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-media@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, mchehab@kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, dafna3@gmail.com,
-        enric.balletbo@collabora.com, dafna.hirschfeld@collabora.com
-Subject: [PATCH] media: mtk-mdp: Fix Null pointer dereference when calling list_add
-Date:   Fri, 28 Aug 2020 15:55:41 +0200
-Message-Id: <20200828135541.8282-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726838AbgH1N61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbgH1N6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 09:58:11 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8925520776;
+        Fri, 28 Aug 2020 13:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598623090;
+        bh=SpTHr264Yj5qROOV9l4xhdNrZFLq921O7KsjMz/LhwA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=i9sl61eavdgFXBk/XhPbbdtnUTUefunlnuMhrscT4UhB4pFLbXw7w5QKEU3zChxrQ
+         8Qy782YHhMt06VeOi1Q2dqq4dRAsBx0N039QvWmWDErpIvaiXJV6AGbthFUPsUJoXv
+         jL5VYguh/esGbsL0NsDAtVJEsT53PI3PTnVVhbF4=
+Date:   Fri, 28 Aug 2020 22:58:05 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     peterz@infradead.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        linux-arch@vger.kernel.org, cameron@moodycamel.com,
+        oleg@redhat.com, will@kernel.org, paulmck@kernel.org
+Subject: Re: [PATCH v4 04/23] arm64: kprobes: Use generic kretprobe
+ trampoline handler
+Message-Id: <20200828225805.01b685e634c62f99913ddc87@kernel.org>
+In-Reply-To: <20200828133718.GB1362448@hirez.programming.kicks-ass.net>
+References: <159861759775.992023.12553306821235086809.stgit@devnote2>
+        <159861764221.992023.10214437014901668680.stgit@devnote2>
+        <20200828133131.GA71981@C02TD0UTHF1T.local>
+        <20200828133718.GB1362448@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In list_add, the first variable is the new node and the second
-is the list head. The function is called with a wrong order causing
-NULL dereference:
+On Fri, 28 Aug 2020 15:37:18 +0200
+peterz@infradead.org wrote:
 
-[   15.527030] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-[   15.542317] Mem abort info:
-[   15.545152]   ESR = 0x96000044
-[   15.548248]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   15.553624]   SET = 0, FnV = 0
-[   15.556715]   EA = 0, S1PTW = 0
-[   15.559892] Data abort info:
-[   15.562799]   ISV = 0, ISS = 0x00000044
-[   15.566678]   CM = 0, WnR = 1
-[   15.569683] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001373f0000
-[   15.576196] [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
-[   15.583101] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-[   15.588747] Modules linked in: mtk_mdp(+) cfg80211 v4l2_mem2mem videobuf2_vmalloc videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common vide
-odev mt8173_rt5650 smsc95xx usbnet ecdh_generic ecc snd_soc_rt5645 mc mt8173_afe_pcm rfkill cros_ec_sensors snd_soc_mtk_common elan_i2c crct10dif_ce cros_ec_se
-nsors_core snd_soc_rl6231 elants_i2c industrialio_triggered_buffer kfifo_buf mtk_vpu cros_ec_chardev cros_usbpd_charger cros_usbpd_logger sbs_battery display_c
-onnector pwm_bl ip_tables x_tables ipv6
-[   15.634295] CPU: 0 PID: 188 Comm: systemd-udevd Not tainted 5.9.0-rc2+ #69
-[   15.641242] Hardware name: Google Elm (DT)
-[   15.645381] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[   15.651022] pc : mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-[   15.656041] lr : mtk_mdp_probe+0x128/0x3a8 [mtk_mdp]
-[   15.661055] sp : ffff80001255b910
-[   15.669548] x29: ffff80001255b910 x28: 0000000000000000
-[   15.679973] x27: ffff800009089bf8 x26: ffff0000fafde800
-[   15.690347] x25: ffff0000ff7d2768 x24: ffff800009089010
-[   15.700670] x23: ffff0000f01a7cd8 x22: ffff0000fafde810
-[   15.710940] x21: ffff0000f01a7c80 x20: ffff0000f0c3c180
-[   15.721148] x19: ffff0000ff7f1618 x18: 0000000000000010
-[   15.731289] x17: 0000000000000000 x16: 0000000000000000
-[   15.741375] x15: 0000000000aaaaaa x14: 0000000000000020
-[   15.751399] x13: 00000000ffffffff x12: 0000000000000020
-[   15.761363] x11: 0000000000000028 x10: 0101010101010101
-[   15.771279] x9 : 0000000000000004 x8 : 7f7f7f7f7f7f7f7f
-[   15.781148] x7 : 646bff6171606b2b x6 : 0000000000806d65
-[   15.790981] x5 : ffff0000ff7f8360 x4 : 0000000000000000
-[   15.800767] x3 : 0000000000000004 x2 : 0000000000000001
-[   15.810501] x1 : 0000000000000005 x0 : 0000000000000000
-[   15.820171] Call trace:
-[   15.826944]  mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-[   15.835908]  platform_drv_probe+0x54/0xa8
-[   15.844247]  really_probe+0xe4/0x3b0
-[   15.852104]  driver_probe_device+0x58/0xb8
-[   15.860457]  device_driver_attach+0x74/0x80
-[   15.868854]  __driver_attach+0x58/0xe0
-[   15.876770]  bus_for_each_dev+0x70/0xc0
-[   15.884726]  driver_attach+0x24/0x30
-[   15.892374]  bus_add_driver+0x14c/0x1f0
-[   15.900295]  driver_register+0x64/0x120
-[   15.908168]  __platform_driver_register+0x48/0x58
-[   15.916864]  mtk_mdp_driver_init+0x20/0x1000 [mtk_mdp]
-[   15.925943]  do_one_initcall+0x54/0x1b4
-[   15.933662]  do_init_module+0x54/0x200
-[   15.941246]  load_module+0x1cf8/0x22d0
-[   15.948798]  __do_sys_finit_module+0xd8/0xf0
-[   15.956829]  __arm64_sys_finit_module+0x20/0x30
-[   15.965082]  el0_svc_common.constprop.0+0x6c/0x168
-[   15.973527]  do_el0_svc+0x24/0x90
-[   15.980403]  el0_sync_handler+0x90/0x198
-[   15.987867]  el0_sync+0x158/0x180
-[   15.994653] Code: 9400014b 2a0003fc 35000920 f9400280 (f9000417)
-[   16.004299] ---[ end trace 76fee0203f9898e5 ]---
+> On Fri, Aug 28, 2020 at 02:31:31PM +0100, Mark Rutland wrote:
+> > Hi,
+> > 
+> > On Fri, Aug 28, 2020 at 09:27:22PM +0900, Masami Hiramatsu wrote:
+> > > Use the generic kretprobe trampoline handler, and use the
+> > > kernel_stack_pointer(regs) for framepointer verification.
+> > > 
+> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > ---
+> > >  arch/arm64/kernel/probes/kprobes.c |   78 +-----------------------------------
+> > >  1 file changed, 3 insertions(+), 75 deletions(-)
+> > 
+> > > +	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+> > > +					(void *)kernel_stack_pointer(regs));
+> > >  }
+> > >  
+> > >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+> > >  				      struct pt_regs *regs)
+> > >  {
+> > >  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+> > > +	ri->fp = (void *)kernel_stack_pointer(regs);
+> > 
+> > This is probably a nomenclature problem, but what exactly is
+> > kretprobe_instance::fp used for?
+> > 
+> > I ask because arm64's frame pointer lives in x29 (and is not necessarily
+> > the same as the stack pointer at function boundaries), so the naming
+> > is potentially misleading and possibly worth a comment or rename.
+> 
+> IIUC ri->rp is used for matching up the frame between the moment we
+> install the return trampoline on the stack and actually hitting that
+> trampoline.
 
-Fixes: 86698b9505bbc ("media: mtk-mdp: convert mtk_mdp_dev.comp array to list")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, it is confusing, sorry. On x86, CONFIG_FRAME_POINTER can be disabled,
+so we used the address of stack entry where arch_prepare_kretprobe() stores
+the trampoline address.
+For arm64 which doesn't use a stack entry for call, I decided to use the
+stack address when the target function is called.
+Indeed, it should be commented.
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-index f96c8b3bf861..976aa1f4829b 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-@@ -94,7 +94,7 @@ static void mtk_mdp_reset_handler(void *priv)
- void mtk_mdp_register_component(struct mtk_mdp_dev *mdp,
- 				struct mtk_mdp_comp *comp)
- {
--	list_add(&mdp->comp_list, &comp->node);
-+	list_add(&comp->node, &mdp->comp_list);
- }
- 
- void mtk_mdp_unregister_component(struct mtk_mdp_dev *mdp,
+Thank you,
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
