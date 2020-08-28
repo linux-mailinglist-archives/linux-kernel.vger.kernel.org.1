@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAE5255EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390FE255EE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 18:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgH1QiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 12:38:14 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43737 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726775AbgH1QiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:38:13 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kBhOF-002GXC-1T; Fri, 28 Aug 2020 18:38:11 +0200
-Received: from p2e585587.dip0.t-ipconnect.de ([46.88.85.135] helo=[192.168.2.101])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kBhOE-002lm0-Qm; Fri, 28 Aug 2020 18:38:10 +0200
-Subject: Re: [PATCH 3/4] sh: Add SECCOMP_FILTER
-To:     Rich Felker <dalias@libc.org>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20200722231322.419642-1-kernel@mkarcher.dialup.fu-berlin.de>
- <20200722231322.419642-3-kernel@mkarcher.dialup.fu-berlin.de>
- <20200828155024.GX3265@brightrain.aerifal.cx>
- <20200828163057.GY3265@brightrain.aerifal.cx>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <82b625c2-23cb-69a4-7495-39427430c306@physik.fu-berlin.de>
-Date:   Fri, 28 Aug 2020 18:38:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728072AbgH1QjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 12:39:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726524AbgH1QjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:39:08 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57F7520872;
+        Fri, 28 Aug 2020 16:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598632748;
+        bh=YVCQjg73RxPTvlTXDUxrWS87exJNOw0r+AtJ4Kjw2bM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OAnMIBUg/35kIR+XHFI3uW81Vhsq5RuiNO8PZO0o+7cScYYcfQFJ/tKoqYInqbOSi
+         dQWnnF3AWY7qf+6NtTYAPh1hjs5+LeMHiPoLIzkFYN69Mx3EDHR9KMKJKlYqzI8jS1
+         aTQbasoMLnPibL/SFcRCQ2iAC1tMlDy4bHOcscvs=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH] arc: fix memory initialization for systems with two memory banks
+Date:   Fri, 28 Aug 2020 19:39:02 +0300
+Message-Id: <20200828163902.4548-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200828163057.GY3265@brightrain.aerifal.cx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 46.88.85.135
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-On 8/28/20 6:30 PM, Rich Felker wrote:
-> I'm about to test a patch along these lines and will report what I
-> find.
+Rework if memory map initialization broke initialization of ARC systems
+with two memory banks. Before these changes, memblock was not aware of
+nodes configuration and the memory map was always allocated from the
+"lowmem" bank. After the addition of node information to memblock, the core
+mm attempts to allocate the memory map for the "highmem" bank from its
+node. The access to this memory using __va() fails because it can be only
+accessed using kmap.
 
-Let me know when you have something to test and I will test the patch as
-well, making sure we're not breaking seccomp again.
+Anther problem that was uncovered is that {min,max}_high_pfn are calculated
+from u64 high_mem_start variable which prevents truncation to 32-bit
+physical address and the PFN values are above the node and zone boundaries.
 
-Adrian
+Use phys_addr_t type for high_mem_start and high_mem_size to ensure
+correspondence between PFNs and highmem zone boundaries and reserve the
+entire highmem bank until mem_init() to avoid accesses to it before highmem
+is enabled.
 
+Fixes: 51930df5801e ("mm: free_area_init: allow defining max_zone_pfn in descend ing order")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/arc/mm/init.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+index f886ac69d8ad..3a35b82a718e 100644
+--- a/arch/arc/mm/init.c
++++ b/arch/arc/mm/init.c
+@@ -26,8 +26,8 @@ static unsigned long low_mem_sz;
+ 
+ #ifdef CONFIG_HIGHMEM
+ static unsigned long min_high_pfn, max_high_pfn;
+-static u64 high_mem_start;
+-static u64 high_mem_sz;
++static phys_addr_t high_mem_start;
++static phys_addr_t high_mem_sz;
+ #endif
+ 
+ #ifdef CONFIG_DISCONTIGMEM
+@@ -69,6 +69,7 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
+ 		high_mem_sz = size;
+ 		in_use = 1;
+ 		memblock_add_node(base, size, 1);
++		memblock_reserve(base, size);
+ #endif
+ 	}
+ 
+@@ -157,7 +158,7 @@ void __init setup_arch_memory(void)
+ 	min_high_pfn = PFN_DOWN(high_mem_start);
+ 	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
+ 
+-	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
++	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
+ 
+ 	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
+ 	kmap_init();
+@@ -166,22 +167,26 @@ void __init setup_arch_memory(void)
+ 	free_area_init(max_zone_pfn);
+ }
+ 
+-/*
+- * mem_init - initializes memory
+- *
+- * Frees up bootmem
+- * Calculates and displays memory available/used
+- */
+-void __init mem_init(void)
++static void __init highmem_init(void)
+ {
+ #ifdef CONFIG_HIGHMEM
+ 	unsigned long tmp;
+ 
+-	reset_all_zones_managed_pages();
++	memblock_free(high_mem_start, high_mem_sz);
+ 	for (tmp = min_high_pfn; tmp < max_high_pfn; tmp++)
+ 		free_highmem_page(pfn_to_page(tmp));
+ #endif
++}
+ 
++/*
++ * mem_init - initializes memory
++ *
++ * Frees up bootmem
++ * Calculates and displays memory available/used
++ */
++void __init mem_init(void)
++{
+ 	memblock_free_all();
++	highmem_init();
+ 	mem_init_print_info(NULL);
+ }
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.26.2
+
