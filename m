@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BF255B45
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7504255B48
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 15:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgH1NhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 09:37:01 -0400
-Received: from sonic312-20.consmr.mail.bf2.yahoo.com ([74.6.128.82]:33740 "EHLO
-        sonic312-20.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729410AbgH1NbY (ORCPT
+        id S1729511AbgH1Nil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 09:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729413AbgH1Nd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 09:31:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598621446; bh=zXaFIo8mjTpXao4VNtylOhTc/LqLzQin3ncX1bFuSgM=; h=Date:From:Reply-To:Subject:References:From:Subject; b=umgRTzYbOVG0BydnZUwZAInR09RN4ogj96Kv/GZXQoRmnfLJ92h9arI0ymon5fzvYU38TezE7RTnTuHXP9bIcbVFgqFIFTvQmF/QNhAkHJB9dsHlbwH2BVyr3awoHNLiXNOhtAgHODDHSK9xmnCY7UsOckYmqDujnGEaVt/Nr6OHLuEOicC7cPSdXAREZwXhk9N96pz1qwiU7ZWqRo1A/MI3fbGPGioKH8LME+77tSm2ltqwfGAANjf2Q8+/QVV4f3jq//XoAp0iiq9nTsOafGiaVNZhpjZdLFHAzDW5Hs2GLEs1r/Djor6TtHftp1wd8rgHHjWN08NTKEvKHseX3A==
-X-YMail-OSG: Er3YvYkVM1lfrbGlMZB2r4aDKTD9AirOddmjbBOU.7hjc3jYSWpdhFGVkLfUf11
- JcqZsia_cfwdE6npYxQQOpWoIeiUjM8TbZZG84eJciVffdfQKuaGE4RPoyNRjzvIwtZTMEsqd8mE
- hY1.z6hyhSHS0iIYNjkjeYNqMhFfay1.VdNKxJoCnRjoXppP.2SUc4_14cyGcbi1MsCbZ9.W4BBd
- aGjiRiJotTl5btEPCgyBCcmgDWvRejPj.fKECoF.mOx2R5FhbBMunI.IxRski_ntu7b0SbRXt3HQ
- CNOPfdZbrASombDbfjBbUgSOAZDV4H5ZPzItCC1XlDq4pTb.KBLVkVmlWx2XCjs4QCjVEx0f2dxg
- QNvPGonHYh_Ac4hgmMDQpLc7RBVoBEBaFr4tOOOPtaf9CzgunIHuxCfqVpiKCwYe13ivEm1TWs4j
- kC9DQkXJ.hmf00jE1dG1Dk4d_MD7ZMYF6rKrULFUy6DQlpCs.iNXNZR7KaKFr13kwsmJDycrkoxl
- LSYgYGMmSBaxhFUSJIWfWy_.WcHngLc8u3Gu3oOUYOZM4b_K7yWVOypiScv8o7Ie.29cj7KOhBsL
- PUDycaRIF60vZscCKYQ3gpwJskjBXBdA__LuQWK2XzMMIxSYRM5RikNE9OShexmMFDrDUnK7CKSE
- q4htG_bn_KQ3K7W40mthaelr7sUYOhzf9GneRvWGX70YGVvNP0WUiDsj4X99pXBmy1IonaaB5abS
- CkfHWDdVL1lBpG5ZL77QDY9PifqaylRsxGJFSLGsIKriuse__Nfgflbf1tDgjSvxiQK5LbqCl8_l
- WDw7em5p.OMm3DkI1T7gu3PlmOQ5D.2Tbp191TQaCpGzyHwPHagiEiPfxisY_xq3AEIvCdJ2lVqR
- vZMu9eO0mzGyW_xiU46ynd5kcS53B9t9EdO9WPAipR6BuwjqebMZSqBCyf4i72pxewSbmgO3Q8fd
- K.Qse76xZUYLURGp6NsjFrJB.4WiyjVvOXS18.YD2wHXZSPnSzX2hK4VYScZWieME9h2rAPFjqE9
- bvqHOsuHbC0pKYPTpcdbR6OzbX1vAti682V5.u6JzdUeZ1ryIHHN24QhNwLeBEEdQS79Puu7n70R
- sUIloHV8.fC4SinzQNr1G_xSKvhlgZuQY1yrDsbjR.ovQIv0b9nTvFmf.8OdaUVVP0sqrF3Mkc9Q
- J3rcM2gT0s_6kQkGeAliFWIvjItFisMPSQPiIp9dKFo9u4_qDRRiXMwLoWBeTRZ7hgUrMscu70Bu
- TmW3qfEmMqILigBKm6igbd_8I_jf4hh03k1Yai3IbADbGOlEoTLBMTq0rUjucCa_jmT0muYKPeCu
- xkgyumZfhH8tvHDYy89KvfJfuV0AfIps7z5AE6lVgcBEwfx1KDeB4LeZUcKMcANoSTQdwSCy65S_
- LeV4MQN0Rgw22mF98IpXA9lwevIm34IUNA8000_fqZDckR.9c
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 28 Aug 2020 13:30:46 +0000
-Date:   Fri, 28 Aug 2020 13:30:44 +0000 (UTC)
-From:   KUBAN MANFI <nolanbraten4@gmail.com>
-Reply-To: fadiansi55@gmail.com
-Message-ID: <28592325.6638224.1598621444691@mail.yahoo.com>
-Subject:   VERY CONFIDENTIAL.
+        Fri, 28 Aug 2020 09:33:27 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1B1C061264;
+        Fri, 28 Aug 2020 06:30:57 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id i7so383257wre.13;
+        Fri, 28 Aug 2020 06:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=rLh0TPLDRuHOF1sa434RgV9ws5clmGQaNXDdUaR7GmQ=;
+        b=pCT4pUfIHlx9O2ITdmY6m/sbmp1b1Z/cp65/o1lcKDvl+A7DMxXchyIHOA3WZkjsnF
+         Ism/mGsI1nxAb3iPvLqcseknvp16pzyRaW7N12cqo/tAfKaQLv11ndd95ebWN8IBp/sl
+         xdJntUwPN/YbxE+zK5hu7FXMWD+z3QXXSx+7mgf4ANazLT1oBJyPJKGxnP1c8MVM8iRu
+         kV+8zEi6/87Y1xmCWm/qxLLkNr5o/HwZTwv+uyUoF876Xsi7mbAtItMVLPgojpKICY9e
+         h4ZjhziNfOgPemc/weD7q5VXzTVlLhfmKwgW4ghnwWtxi3Q+f8bLea4WWfHZWopVXQuH
+         ohWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=rLh0TPLDRuHOF1sa434RgV9ws5clmGQaNXDdUaR7GmQ=;
+        b=dX2FToRh8fq5gO+xziDaU3R/vO+/MeJidtpPJzO5qPZD66/oQYnbgZEJISjfO/A72q
+         +sAcj5bUtucWDleEks8IHRrPJT9egzYL4Nr7upRB0ph8i8696v04cpl1vzJevGNWJntA
+         6vq5fncKOszMdokPMfYfj8/qqW9DbhyYaxxPMqZ+1dm9z86Gcr9fTXEDvf0T7J2zRD0l
+         DZckUBEc/Cjj6Uz4DPKl/BiVaWmysUTGQjwvaJYaisVeJ2BoxK8JZ1uDN0sItjvJsWAu
+         vtsHyH2StC5lb1DhTwZLtorOthWGe7LjXUqiEGdiEXgRj7vywCcjqNxw98i4AF7RoZmP
+         /KGA==
+X-Gm-Message-State: AOAM5333+N9zPW/t52r2DKg9Uu/YjfDuikT/yiKZ6BOc0uZOkEMuW0GO
+        DN+ULrMlE5KdGmRWZwo42yg=
+X-Google-Smtp-Source: ABdhPJyfgahGUNslcWxi1Qo1bcb+12VpnW3m9WmMwH9GuULHZ3CZ8GQBwKDjrNeoJpwJ4+ZgVCKvEQ==
+X-Received: by 2002:adf:de08:: with SMTP id b8mr1503680wrm.4.1598621456377;
+        Fri, 28 Aug 2020 06:30:56 -0700 (PDT)
+Received: from felia ([2001:16b8:2d94:4000:f807:c6f3:919:9c25])
+        by smtp.gmail.com with ESMTPSA id n205sm2539670wma.47.2020.08.28.06.30.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Aug 2020 06:30:55 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Fri, 28 Aug 2020 15:30:44 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Roman Bolshakov <r.bolshakov@yadro.com>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Arun Easi <aeasi@marvell.com>
+Subject: Re: [PATCH] MAINTAINERS: orphan sections with qlogic.com group
+ alias
+In-Reply-To: <20200828091758.GF54274@SPB-NB-133.local>
+Message-ID: <alpine.DEB.2.21.2008281524360.11562@felia>
+References: <20200828070824.8032-1-lukas.bulwahn@gmail.com> <20200828091758.GF54274@SPB-NB-133.local>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <28592325.6638224.1598621444691.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,11 +78,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Compliment of the season,
+On Fri, 28 Aug 2020, Roman Bolshakov wrote:
 
-My names are Mr. Kuban Manfi, i work a department manager in one of the reputable banks here in Africa.
+> On Fri, Aug 28, 2020 at 09:08:24AM +0200, Lukas Bulwahn wrote:
+> > Previous attempts of getting an answer from the qlogic.com group alias,
+> > i.e., QLogic-Storage-Upstream@qlogic.com, have remained unanswered; see
+> > links below.
+> > 
+> > Mark those sections Orphan to prepare their deletion or give an actual
+> > person a chance to step up to maintain those drivers.
+> > 
+> > Link: https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de
+> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2006300644130.4919@felia
+> > Link: https://lore.kernel.org/linux-spdx/alpine.DEB.2.21.2008270740140.31123@felia
+> > 
+> 
+> CC'd Arun,
+> 
+> I think it's worth to update the alias to:
+> 
+> GR-QLogic-Storage-Upstream@marvell.com
+> 
 
-I have a lucrative and profitable business which i would like to introduce to you. Please this is very confidential and if you are interested kindly get back to me for more details.
+So, if these drivers are not orphans, you can answer Thomas Gleixner's 
+original email from 2019. If you can quickly ack that patch set, I am 
+happy to do the donkey work to get this apply nicely on the current 
+master (please CC me on that response).
 
-Thanks
-Mr.Kuban Manfi
+Lukas
