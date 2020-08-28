@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590EE25559F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977B12555A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgH1Ht5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 03:49:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726571AbgH1Ht4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 03:49:56 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69DFB2078A;
-        Fri, 28 Aug 2020 07:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598600996;
-        bh=NNuyrQlMojjJklrBvWVr2Dpn4uxkjEtV2E5JBA+oGWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFQEiSEUytCjWefRFRgUjJQ2NVOhkve6dF106PTG/snvexkpMSDQaVsy1f652YuNP
-         L0Gf7X/f2LeYVV1xscapD0lUYVbMJeiFrmTvi/mvdATGE2eXcP0jRBliufZqV+pCUy
-         B2NEZmjDnXNMSRKLO8Em4aSntiwBewOH/eUSLVnk=
-Date:   Fri, 28 Aug 2020 13:19:52 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
- clock-stop invalid configs
-Message-ID: <20200828074952.GO2639@vkoul-mobl>
-References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
- <20200818024120.20721-10-yung-chuan.liao@linux.intel.com>
- <20200826094817.GC2639@vkoul-mobl>
- <21038e8d-dbd9-76c7-c758-9933fb45024a@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21038e8d-dbd9-76c7-c758-9933fb45024a@linux.intel.com>
+        id S1728590AbgH1Hu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:50:29 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:56242 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726571AbgH1Hu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 03:50:28 -0400
+X-IronPort-AV: E=Sophos;i="5.76,362,1592838000"; 
+   d="scan'208";a="55774010"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 28 Aug 2020 16:50:27 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 05EEA400E8CC;
+        Fri, 28 Aug 2020 16:50:24 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH v2] dt-bindings: usb: renesas,usb-xhci: Document r8a774e1 support
+Date:   Fri, 28 Aug 2020 08:50:19 +0100
+Message-Id: <20200828075019.541-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-08-20, 09:38, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 8/26/20 4:48 AM, Vinod Koul wrote:
-> > On 18-08-20, 10:41, Bard Liao wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > 
-> > > Detect cases where the clock is assumed to be stopped but the IP is
-> > > not in the relevant state, and add a dynamic debug trace.
-> > 
-> > you meant a debug print..and it looks like error print below (also in title).
-> 
-> I don't understand the comment. Is the 'trace' confusing and are you asking
-> to e.g. change the commit message to 'add dynamic debug log'?
+Document r8a774e1 xhci support. The driver will use the fallback
+compatible string "renesas,rcar-gen3-xhci", therefore no driver
+change is needed.
 
-Question is what is dynamic about this?
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Hi All,
 
+This patch is part of series [1] (patch 08/20), rest of the patches
+have been queued/acked.
+
+[1] https://lkml.org/lkml/2020/7/16/890
+
+Cheers,
+Prabhakar
+
+v1->v2
+* Rebased the patch on 5.9-rc1 (Renesas devices were moved from usb-xhci.txt
+  renesas,usb-xhci.yaml)
+* Restored Ack's from Geert and Rob
+---
+ Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+index add9f7b66da0..0f078bd0a3e5 100644
+--- a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+@@ -30,6 +30,7 @@ properties:
+               - renesas,xhci-r8a774a1 # RZ/G2M
+               - renesas,xhci-r8a774b1 # RZ/G2N
+               - renesas,xhci-r8a774c0 # RZ/G2E
++              - renesas,xhci-r8a774e1 # RZ/G2H
+               - renesas,xhci-r8a7795  # R-Car H3
+               - renesas,xhci-r8a7796  # R-Car M3-W
+               - renesas,xhci-r8a77961 # R-Car M3-W+
 -- 
-~Vinod
+2.17.1
+
