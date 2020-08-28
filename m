@@ -2,116 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9020E255CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90D8255C9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 16:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgH1Ogc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 10:36:32 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45624 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgH1OgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:36:12 -0400
-Date:   Fri, 28 Aug 2020 16:36:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598625364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BSovyqDfmPCPEib/KWIWlJ0IAJg/5IQArvXAUs+2PUY=;
-        b=pt0kC2B6nyFbu8RDsQ6n4PquGn0T4ZoO8QQ61dO/ffkQgkCmGmsJB5rY9xbvkPln/ptxoY
-        I5Dk+CqLkNa9NILFD4sBF9QNUopSeQOBIJdZDNJN+I0mGYb5G5J8eZP9LYwH2h9J7KqGZS
-        thEuF+WeE5GJ56taBRgalvT7+/tl+WfBY1BsBg771+HfT2ajIAKEF+y/0ip5uTpaTXhlI/
-        TAUI1qpr5UXadHhFeUWWuwkCYb9A2ZZkAqJFr0zQgLhSRR+qX0pe/8/2HmaosK7nar4ciu
-        KydrdM0vQW8+NPOg8MNye8pwEqhmXoxphv37SNnbwhDZKWPzIHyVLOHOPBQB/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598625364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BSovyqDfmPCPEib/KWIWlJ0IAJg/5IQArvXAUs+2PUY=;
-        b=bQnestssn8lajILGdoZtMd7gyV1QUAV8D5cb3JQ1Pslw1lKGjk/FwixMQvoW4ahN7Hr8O0
-        XhjxlQP7eyWvNPAA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/5] seqlock: seqcount_LOCKTYPE_t: Introduce
- PREEMPT_RT support
-Message-ID: <20200828143623.GA10273@lx-t490>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200828010710.5407-1-a.darwish@linutronix.de>
- <20200828010710.5407-5-a.darwish@linutronix.de>
- <20200828085938.GS1362448@hirez.programming.kicks-ass.net>
- <20200828093130.GA7672@lx-t490>
+        id S1726762AbgH1Oei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 10:34:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:50858 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbgH1Oef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 10:34:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C05EE1FB;
+        Fri, 28 Aug 2020 07:34:34 -0700 (PDT)
+Received: from [192.168.1.190] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FFB43F71F;
+        Fri, 28 Aug 2020 07:34:33 -0700 (PDT)
+Subject: Re: [PATCH 4/4] kselftests/arm64: add PAuth tests for single threaded
+ consistency and key uniqueness
+To:     Boyan Karatotev <boyan.karatotev@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     amit.kachhap@arm.com, boian4o1@gmail.com,
+        Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-5-boyan.karatotev@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <5c6622cb-e81f-c175-8150-b14009877468@arm.com>
+Date:   Fri, 28 Aug 2020 15:36:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828093130.GA7672@lx-t490>
+In-Reply-To: <20200828131606.7946-5-boyan.karatotev@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 11:31:32AM +0200, Ahmed S. Darwish wrote:
-> On Fri, Aug 28, 2020 at 10:59:38AM +0200, peterz@infradead.org wrote:
-> > On Fri, Aug 28, 2020 at 03:07:09AM +0200, Ahmed S. Darwish wrote:
-> > > +#define __SEQ_RT	IS_ENABLED(CONFIG_PREEMPT_RT)
-> > > +
-> > > +SEQCOUNT_LOCKTYPE(raw_spinlock, raw_spinlock_t,  false,    s->lock,        raw_spin, raw_spin_lock(s->lock))
-> > > +SEQCOUNT_LOCKTYPE(spinlock,     spinlock_t,      __SEQ_RT, s->lock,        spin,     spin_lock(s->lock))
-> > > +SEQCOUNT_LOCKTYPE(rwlock,       rwlock_t,        __SEQ_RT, s->lock,        read,     read_lock(s->lock))
-> > > +SEQCOUNT_LOCKTYPE(mutex,        struct mutex,    true,     s->lock,        mutex,    mutex_lock(s->lock))
-> > > +SEQCOUNT_LOCKTYPE(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mutex, ww_mutex_lock(s->lock, NULL))
-> >
-> > Ooh, reading is hard, but ^^^^ you already have that.
-> >
->
-> Haha, I was just answering the other mail :)
->
-> > > +/*
-> > > + * Automatically disable preemption for seqcount_LOCKTYPE_t writers, if the
-> > > + * associated lock does not implicitly disable preemption.
-> > > + *
-> > > + * Don't do it for PREEMPT_RT. Check __SEQ_LOCK().
-> > > + */
-> > > +#define __seq_enforce_preemption_protection(s)				\
-> > > +	(!IS_ENABLED(CONFIG_PREEMPT_RT) && __seqcount_lock_preemptible(s))
-> >
-> > Then what is this doing ?!? I'm confused now.
->
-> There were a number of call sites (at DRM mainly) that protected their
-> seqcount_t write sections with mutex and ww_mutex. So, they manually
-> disabled preemption before entering the seqcount_t write sections.
->
-> Unfortunately these write sections were big, and spinlocks were also
-> acquired inside them.  This was all very bad for RT...
->
-> So the idea was to relieve call sites from the responsibility of
-> disabling/enabling preemption upon entering a seqcount_LOCKNAME_t write
-> section, and let seqlock.h automatically handle it if LOCKNAME_t is
-> preemptible (the macro's condition, second part).
->
-> Having seqlock.h control the preempt disable/enable allows us to never
-> disable preemption for RT, which is exactly what is needed since we
-> already handle any possible livelock through the mechanisms described at
-> __SEQ_LOCK (the macro's condition test, first part).
+
+
+On 8/28/20 2:16 PM, Boyan Karatotev wrote:
+> PAuth adds 5 different keys that can be used to sign addresses.
+> 
+> Add a test that verifies that the kernel initializes them uniquely and
+> preserves them across context switches.
 >
 
-So to summarize, __seqcount_lock_preemptible() has two use cases:
+Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
 
-    1. For !PREEMPT_RT, to automatically disable preemption on the write
-       side when the seqcount associated lock is preemptible.
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> ---
+>  tools/testing/selftests/arm64/pauth/pac.c | 116 ++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+> index 16dea47b11c7..718f49adc275 100644
+> --- a/tools/testing/selftests/arm64/pauth/pac.c
+> +++ b/tools/testing/selftests/arm64/pauth/pac.c
+> @@ -1,10 +1,13 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (C) 2020 ARM Limited
+>  
+> +#define _GNU_SOURCE
+> +
+>  #include <sys/auxv.h>
+>  #include <sys/types.h>
+>  #include <sys/wait.h>
+>  #include <signal.h>
+> +#include <sched.h>
+>  
+>  #include "../../kselftest_harness.h"
+>  #include "helper.h"
+> @@ -21,6 +24,7 @@
+>   * The VA space size is 48 bits. Bigger is opt-in.
+>   */
+>  #define PAC_MASK (~0xff80ffffffffffff)
+> +#define ARBITRARY_VALUE (0x1234)
+>  #define ASSERT_PAUTH_ENABLED() \
+>  do { \
+>  	unsigned long hwcaps = getauxval(AT_HWCAP); \
+> @@ -66,13 +70,36 @@ int are_same(struct signatures *old, struct signatures *new, int nkeys)
+>  	return res;
+>  }
+>  
+> +int are_unique(struct signatures *sign, int nkeys)
+> +{
+> +	size_t vals[nkeys];
+> +
+> +	vals[0] = sign->keyia & PAC_MASK;
+> +	vals[1] = sign->keyib & PAC_MASK;
+> +	vals[2] = sign->keyda & PAC_MASK;
+> +	vals[3] = sign->keydb & PAC_MASK;
+> +
+> +	if (nkeys >= 4)
+> +		vals[4] = sign->keyg & PAC_MASK;
+> +
+> +	for (int i = 0; i < nkeys - 1; i++) {
+> +		for (int j = i + 1; j < nkeys; j++) {
+> +			if (vals[i] == vals[j])
+> +				return 0;
+> +		}
+> +	}
+> +	return 1;
+> +}
+> +
+>  int exec_sign_all(struct signatures *signed_vals, size_t val)
+>  {
+>  	int new_stdin[2];
+>  	int new_stdout[2];
+>  	int status;
+> +	int i;
+>  	ssize_t ret;
+>  	pid_t pid;
+> +	cpu_set_t mask;
+>  
+>  	ret = pipe(new_stdin);
+>  	if (ret == -1) {
+> @@ -86,6 +113,20 @@ int exec_sign_all(struct signatures *signed_vals, size_t val)
+>  		return -1;
+>  	}
+>  
+> +	/*
+> +	 * pin this process and all its children to a single CPU, so it can also
+> +	 * guarantee a context switch with its child
+> +	 */
+> +	sched_getaffinity(0, sizeof(mask), &mask);
+> +
+> +	for (i = 0; i < sizeof(cpu_set_t); i++)
+> +		if (CPU_ISSET(i, &mask))
+> +			break;
+> +
+> +	CPU_ZERO(&mask);
+> +	CPU_SET(i, &mask);
+> +	sched_setaffinity(0, sizeof(mask), &mask);
+> +
+>  	pid = fork();
+>  	// child
+>  	if (pid == 0) {
+> @@ -192,6 +233,38 @@ TEST(pac_instructions_not_nop_generic)
+>  	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
+>  }
+>  
+> +TEST(single_thread_unique_keys)
+> +{
+> +	int unique = 0;
+> +	int nkeys = NKEYS;
+> +	struct signatures signed_vals;
+> +	unsigned long hwcaps = getauxval(AT_HWCAP);
+> +
+> +	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
+> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
+> +	if (!(hwcaps & HWCAP_PACG)) {
+> +		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
+> +		nkeys = NKEYS - 1;
+> +	}
+> +
+> +	/*
+> +	 * The PAC field is up to 7 bits. Even with unique keys there is about
+> +	 * 5% chance for a collision.  This chance rapidly increases the fewer
+> +	 * bits there are, a comparison of the keys directly will be more
+> +	 * reliable All signed values need to be unique at least once out of n
+> +	 * attempts to be certain that the keys are unique
+> +	 */
+> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
+> +		if (nkeys == NKEYS)
+> +			sign_all(&signed_vals, i);
+> +		else
+> +			sign_specific(&signed_vals, i);
+> +		unique |= are_unique(&signed_vals, nkeys);
+> +	}
+> +
+> +	ASSERT_EQ(1, unique) TH_LOG("keys clashed every time");
+> +}
+> +
+>  /*
+>   * fork() does not change keys. Only exec() does so call a worker program.
+>   * Its only job is to sign a value and report back the resutls
+> @@ -227,5 +300,48 @@ TEST(exec_unique_keys)
+>  	ASSERT_EQ(1, different) TH_LOG("exec() did not change keys");
+>  }
+>  
+> +TEST(context_switch_keep_keys)
+> +{
+> +	int ret;
+> +	struct signatures trash;
+> +	struct signatures before;
+> +	struct signatures after;
+> +
+> +	ASSERT_PAUTH_ENABLED();
+> +
+> +	sign_specific(&before, ARBITRARY_VALUE);
+> +
+> +	/* will context switch with a process with different keys at least once */
+> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
+> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
+> +
+> +	sign_specific(&after, ARBITRARY_VALUE);
+> +
+> +	ASSERT_EQ(before.keyia, after.keyia) TH_LOG("keyia changed after context switching");
+> +	ASSERT_EQ(before.keyib, after.keyib) TH_LOG("keyib changed after context switching");
+> +	ASSERT_EQ(before.keyda, after.keyda) TH_LOG("keyda changed after context switching");
+> +	ASSERT_EQ(before.keydb, after.keydb) TH_LOG("keydb changed after context switching");
+> +}
+> +
+> +TEST(context_switch_keep_keys_generic)
+> +{
+> +	int ret;
+> +	struct signatures trash;
+> +	size_t before;
+> +	size_t after;
+> +
+> +	ASSERT_GENERIC_PAUTH_ENABLED();
+> +
+> +	before = keyg_sign(ARBITRARY_VALUE);
+> +
+> +	/* will context switch with a process with different keys at least once */
+> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
+> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
+> +
+> +	after = keyg_sign(ARBITRARY_VALUE);
+> +
+> +	ASSERT_EQ(before, after) TH_LOG("keyg changed after context switching");
+> +}
+> +
+>  TEST_HARNESS_MAIN
+>  
+> 
 
-    2. For PREEMPT_RT, to lock/unlock the seqcount associated lock on
-       the read side if it is RT-preemptible (sleeping lock).
-
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+-- 
+Regards,
+Vincenzo
