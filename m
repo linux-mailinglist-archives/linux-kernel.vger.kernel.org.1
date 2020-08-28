@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D792555FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21068255605
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 10:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgH1IKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 04:10:16 -0400
-Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:39048 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727971AbgH1IKP (ORCPT
+        id S1728638AbgH1ILE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 04:11:04 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42718 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728629AbgH1IKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:10:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A91BB18033E5D;
-        Fri, 28 Aug 2020 08:10:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2911:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:3874:4250:4321:4425:5007:8531:10004:10400:10848:11232:11658:11914:12295:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21433:21627:21990,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: drink66_59176f727074
-X-Filterd-Recvd-Size: 2525
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 28 Aug 2020 08:10:07 +0000 (UTC)
-Message-ID: <526af204ddf95f94012c6132d12693852bfe7442.camel@perches.com>
-Subject: Re: [Cocci] [PATCH] usb: atm: don't use snprintf() for sysfs attrs
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, cocci <cocci@systeme.lip6.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>
-Date:   Fri, 28 Aug 2020 01:10:06 -0700
-In-Reply-To: <202008280056.6442BCC@keescook>
-References: <20200827071537.GA168593@kroah.com>
-         <20200827131819.7rcl2f5js3hkoqj2@lenovo-laptop>
-         <def24e9e-018c-9712-0d07-d4cbc84f07d9@rasmusvillemoes.dk>
-         <20200827144846.yauuttjaqtxaldxg@lenovo-laptop>
-         <5d1dfb9b031130d4d20763ec621233a19d6a88a2.camel@perches.com>
-         <alpine.DEB.2.22.394.2008272141220.2482@hadrien>
-         <5853c58e-7d26-2cf9-6cbf-698ecd93cbf9@linux.com>
-         <202008271517.ECC1F1F8F@keescook>
-         <5ebe5c2737b59d04f1b8a46008cd3159c638f9d0.camel@perches.com>
-         <d99c613aa70617f440c51d9413372b858a4ae826.camel@perches.com>
-         <202008280056.6442BCC@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 28 Aug 2020 04:10:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U750IIp_1598602237;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U750IIp_1598602237)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 28 Aug 2020 16:10:37 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH] mm/mmap: leave adjust_next as virtual address instead of page frame number
+Date:   Fri, 28 Aug 2020 16:10:31 +0800
+Message-Id: <20200828081031.11306-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-28 at 00:58 -0700, Kees Cook wrote:
-> On Thu, Aug 27, 2020 at 09:12:06PM -0700, Joe Perches wrote:
-> > Perhaps something like the below with a sample conversion
-> > that uses single and multiple sysfs_emit uses.
-> 
-> On quick review, I like it. :)
-> 
-> > [...]
-> > +int sysfs_emit(char *buf, char *pos, const char *fmt, ...)
-> > +{
-> > +	int len;
-> > +	va_list args;
-> > +
-> > +	WARN(pos < buf, "pos < buf\n");
-> > +	WARN(pos - buf >= PAGE_SIZE, "pos >= PAGE_SIZE (%tu > %lu)\n",
-> > +	     pos - buf, PAGE_SIZE);
-> > +	if (pos < buf || pos - buf >= PAGE_SIZE)
-> > +		return 0;
-> 
-> This can be:
-> 
-> 	if (WARN(pos < buf, "pos < buf\n") ||
-> 	    WARN(pos - buf >= PAGE_SIZE, "pos >= PAGE_SIZE (%tu > %lu)\n",
-> 		 pos - buf, PAGE_SIZE))
-> 		return 0;
+Instead of convert adjust_next between virtual address and page frame
+number, let's just store the virtual address into adjust_next.
 
-I had some vague recollection that WARN could be compiled
-away to nothing somehow.  True or false?
+Also, this patch fixes one typo in the comment of
+vma_adjust_trans_huge().
 
-If false, sure, of course, it'd be faster too.
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+---
+ mm/huge_memory.c | 4 ++--
+ mm/mmap.c        | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 78c84bee7e29..2c633ba14440 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2300,13 +2300,13 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+ 
+ 	/*
+ 	 * If we're also updating the vma->vm_next->vm_start, if the new
+-	 * vm_next->vm_start isn't page aligned and it could previously
++	 * vm_next->vm_start isn't hpage aligned and it could previously
+ 	 * contain an hugepage: check if we need to split an huge pmd.
+ 	 */
+ 	if (adjust_next > 0) {
+ 		struct vm_area_struct *next = vma->vm_next;
+ 		unsigned long nstart = next->vm_start;
+-		nstart += adjust_next << PAGE_SHIFT;
++		nstart += adjust_next;
+ 		if (nstart & ~HPAGE_PMD_MASK &&
+ 		    (nstart & HPAGE_PMD_MASK) >= next->vm_start &&
+ 		    (nstart & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE <= next->vm_end)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 90b1298d4222..e4c9bbfd4103 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -758,7 +758,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+ 			 * vma expands, overlapping part of the next:
+ 			 * mprotect case 5 shifting the boundary up.
+ 			 */
+-			adjust_next = (end - next->vm_start) >> PAGE_SHIFT;
++			adjust_next = (end - next->vm_start);
+ 			exporter = next;
+ 			importer = vma;
+ 			VM_WARN_ON(expand != importer);
+@@ -768,7 +768,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+ 			 * split_vma inserting another: so it must be
+ 			 * mprotect case 4 shifting the boundary down.
+ 			 */
+-			adjust_next = -((vma->vm_end - end) >> PAGE_SHIFT);
++			adjust_next = -(vma->vm_end - end);
+ 			exporter = vma;
+ 			importer = next;
+ 			VM_WARN_ON(expand != importer);
+@@ -840,8 +840,8 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+ 	}
+ 	vma->vm_pgoff = pgoff;
+ 	if (adjust_next) {
+-		next->vm_start += adjust_next << PAGE_SHIFT;
+-		next->vm_pgoff += adjust_next;
++		next->vm_start += adjust_next;
++		next->vm_pgoff += adjust_next >> PAGE_SHIFT;
+ 	}
+ 
+ 	if (root) {
+-- 
+2.20.1 (Apple Git-117)
 
