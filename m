@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E0E256056
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 20:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609E225605B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 20:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgH1SRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 14:17:31 -0400
-Received: from smtprelay0133.hostedemail.com ([216.40.44.133]:35428 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726677AbgH1SR1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 14:17:27 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A8F7B5DC5;
-        Fri, 28 Aug 2020 18:17:25 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3867:3868:3870:3871:3872:3874:4321:5007:6119:7903:10004:10400:11026:11232:11658:11914:12297:12679:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21611:21627:21795:21990:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: goose22_600e06e27077
-X-Filterd-Recvd-Size: 1995
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 28 Aug 2020 18:17:24 +0000 (UTC)
-Message-ID: <23029e176062d707bdd5ca1d360f9bedcec3aaa6.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in
- git
-From:   Joe Perches <joe@perches.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 28 Aug 2020 11:17:23 -0700
-In-Reply-To: <234290e5-b8dc-22c7-d26f-60a02844ce0a@rasmusvillemoes.dk>
-References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
-         <234290e5-b8dc-22c7-d26f-60a02844ce0a@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1728033AbgH1STd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 14:19:33 -0400
+Received: from correo.us.es ([193.147.175.20]:40486 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726794AbgH1STc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 14:19:32 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 360F12A2BB4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2838FDA730
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 16134DA78E; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id EFC0BDA730;
+        Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id CB44942EF4E1;
+        Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
+Date:   Fri, 28 Aug 2020 20:19:28 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: nf_conntrack_sip: fix parsing error
+Message-ID: <20200828181928.GA14349@salvia>
+References: <20200815165030.5849-1-ztong0001@gmail.com>
+ <20200828180742.GA20488@salvia>
+ <CAA5qM4CUO47EkJ-4wRoi0wkReAXtB5isLbvBEUw045po_TY8Sw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAA5qM4CUO47EkJ-4wRoi0wkReAXtB5isLbvBEUw045po_TY8Sw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 14:23 +0200, Rasmus Villemoes wrote:
-> On 25/08/2020 02.09, Joe Perches wrote:
-> > If a file exists in git and checkpatch is used without the -f
-> > flag for scanning a file, then checkpatch will scan the file
-> > assuming it's a patch
+On Fri, Aug 28, 2020 at 02:14:48PM -0400, Tong Zhang wrote:
+> Hi Pablo,
+> I'm not an expert in this networking stuff.
+> But from my point of view there's no point in checking if this
+> condition is always true.
 
-[]
+Understood.
 
-> > +sub git_is_single_file {
-> > +	my ($filename) = @_;
-> > +
-> > +	return 0 if ((which("git") eq "") || !(-e "$gitroot"));
-> > +
-> > +	my $output = `${git_command} ls-files -- $filename`;
-> > +	my $count = $output =~ tr/\n//;
-> > +	return $count eq 1 && $output =~ m{^${filename}$};
-> > +}
-> 
-> Isn't that somewhat expensive to do for each file?
+> There's also no need of returning anything from the
+> ct_sip_parse_numerical_param()
+> if they are all being ignored like this.
 
-Just FYI:  Not really.
-
-On my 4 year old laptop git ls-files -- <file> takes
-about .02 seconds.
-
-$ time git ls-files -- 'net/l2tp/l2tp_ip.c'
-net/l2tp/l2tp_ip.c
-
-real	0m0.013s
-user	0m0.009s
-sys	0m0.004s
-
-Even uncached, it's quite quick.
-
-# sync; echo 3 > /proc/sys/vm/drop_caches
-$ time git ls-files -- 'net/l2tp/l2tp_ip.c'
-net/l2tp/l2tp_ip.c
-
-real	0m0.079s
-user	0m0.004s
-sys	0m0.037s
-
-cheers, Joe
-
+Then probably update this code to ignore the return value?
