@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CF72559FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0FF255A01
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 14:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgH1MXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 08:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729195AbgH1MXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:23:42 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6B4C061232
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:23:40 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id e14so460075vsa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 05:23:39 -0700 (PDT)
+        id S1729337AbgH1MZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 08:25:38 -0400
+Received: from mail-eopbgr1400132.outbound.protection.outlook.com ([40.107.140.132]:29843
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729123AbgH1MZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:25:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FSqPOHIXcBP6mwrGWj5Ovqq2SgTFO+C2w0Se8oVmarYzj9LJ5m00BiL7b9qP50WvecUfcBYqhaztiq7ZRHsRg3hEvewVhP36AH48xS8BNQX5OoGADLJuyvADNVRjIxwr9UEjocr8ZV3wDDhSsA7jL2gh8TuNj9BelJOBgRqv8DkS2289pijR8T90t6XNeK5jn+uAjyqCtJq3nFXeB/UQmRxx5DIKFFIDoPn3Oxgh1C3cD1y5DoD+pFfHfOSe1/q623kR2QFuqUSO9HOSWtlUpdsB1OsHF4dNlMSyI5liWhIBMC2SmDVcmLr3MAczNp1E+xd4IO9JWRDtqYKbVvIEGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZNWk5KD4eCK1klmT/qFj4DuDuVSK8cHoZjxFsZS2UsE=;
+ b=T3CB41N6kIPkgasddXyEtyu3btU/8GDXHt7hX2tKwv/jSIIPjIwY9YaiZX6Yy642UzIbwXluYzFbhxVUy+BL/QeOrDs/Cegl5rjHZRuRplA/IfG3qw4q2w/kDNT3KTT9MNn+c7bg9O1PFxMiUH/sqp0H0+//nMd579Obd/TpiwNuiogKDjrggGp+/3Nzuu/ZTkMPjjltq2l8GBSABdlMr9FVQyp+FCDfdVvhCTTM5OgAXskSZ//1e6iKWLkIW/XMxDaSRG75dkJHoZrfM+GZt8Ke0HjzyDgBwPIr/hkqoSFxMYDBgI5t3xq3PP9FHkZCH+GJGQ3hAac6+F8y5Cec3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l+h+5XJ+em1JYNkK91WZyfQCnc3U3ITRWLKDQcz7Tz8=;
-        b=Nk2iyxnX3VcxNGcUkNfIcs/0gqMCwNoJycWt9IuI72hQw1RDzGqQYv7T/Oci9THJPg
-         YsMMWXtr8YQ7KsKBT36Oi7lM1LgchA/VZvPxFTBcCFQtxVh/gw0x3onsqlTtfi5PhfKv
-         R+V/gIIDTMO/xIcnZfV3eS5Zd+KV+JAc0VjP+eOxgIGsySwx3cEJgIu5Thcl/c/sOacK
-         UY9ynuhxom0XR3cLW31i2OeeFecjBDmU67bQbmlGl9u5FY6LzL14w5AAFFlROCh6GuNz
-         sqk41UtOVvJrfnbDIcYXZ+ta3tieXLtw4292FTBf+++492g/DGSMpiVeowZXfWh0OGId
-         Q6lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l+h+5XJ+em1JYNkK91WZyfQCnc3U3ITRWLKDQcz7Tz8=;
-        b=OIKqn8c03AvV9cwiLBwi2qQ6lv20eGiDGXX78+Hy6Va/JjNOLl1/p6MFkaBTcY0E6d
-         i8bWAOIii7Ocyy0kr4U3gdG8FHWZMZUjlFx0eckkRXDVLPm8SCmBSpc/QCiee3Xnhunf
-         6fkbNrQrPwPQ3RRF9REwwuz74HCvY393eFYr7ZoI6LJigR6j4yt95h3xgrOXD+W6LFQd
-         RQxU0VWKhCBKMvIry70hzWbSQ3RzgB+P8Ds4Im+d/ZYvt77S34THi7GCv8EhAC0PcbO2
-         eAMORstoM/r7NaKrm6/L+ie4ptKFpIS8bvNjkP2d2pces4efky6jLvS41Txb2zn8ZTAK
-         aYBQ==
-X-Gm-Message-State: AOAM532Zk94a/MyjEn+asD/lbQcf8nznl6baZLvgHBQwYeaXXYq6QaXf
-        yccymVRdnueS+1wnQa8h2FGKsmBns71zqCv5FYqWgQ==
-X-Google-Smtp-Source: ABdhPJyjruMDViNwBvxoZ1ZSIkD9wSIeXDFzCU5GboJ6CETuh0DyRNRlHDBPQo2WEgCHhwlh2jCNV5uFFcOWjVVFIfw=
-X-Received: by 2002:a67:f8ce:: with SMTP id c14mr634530vsp.14.1598617419004;
- Fri, 28 Aug 2020 05:23:39 -0700 (PDT)
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZNWk5KD4eCK1klmT/qFj4DuDuVSK8cHoZjxFsZS2UsE=;
+ b=EQQ0CFjAu5D0UG6iQDyPcSD8072Vla2l0dJ7PNjjEADLPKtXm+FYrIuN71lTbnO49b5Ze2cjomAWYIXkRCP+J5GS4QM/43rCYEc/dVOFNhICKOjt6qs1SZAvbVEGPU9aBx5WVo7Zne9Zb88ygUPJROb+uyJImT0FTND38Uwbimg=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TY1PR01MB1817.jpnprd01.prod.outlook.com (2603:1096:403:5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Fri, 28 Aug
+ 2020 12:25:30 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3%6]) with mapi id 15.20.3305.032; Fri, 28 Aug 2020
+ 12:25:30 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: RE: [PATCH v2] dt-bindings: usb: renesas,usb-xhci: Document r8a774e1
+ support
+Thread-Topic: [PATCH v2] dt-bindings: usb: renesas,usb-xhci: Document r8a774e1
+ support
+Thread-Index: AQHWfQ/lJJAKTkDaH0mjhAANDn85G6lNckyw
+Date:   Fri, 28 Aug 2020 12:25:30 +0000
+Message-ID: <TY2PR01MB36920FE551287FC3611F5D1DD8520@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20200828075019.541-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200828075019.541-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: bp.renesas.com; dkim=none (message not signed)
+ header.d=none;bp.renesas.com; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a8fb611c-aa5d-434d-1b7d-08d84b4d73f0
+x-ms-traffictypediagnostic: TY1PR01MB1817:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY1PR01MB181765F7233E11773569D4DDD8520@TY1PR01MB1817.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: k3kTauDZafaMv7NA2KZVUTgTSa05LesfRJ29EmZbLmvhLyurbS4QarjgbAFOm3QlKuG0Rd+k9UFGpWsOm3wX4MvyIh5zY3gsqvfzhTaPylLQ68KtRv5pBETxcHTXmCOQDZKP8URHP8bYTstYhYtDj0qU4nL2E8WzCjOqWS6zNy9IEsjNZjKaUfSS6FV8eFqPHdJmIOtEdB9xMWDvKQLOSLW9M2Wiod09L1jk/VZqN3QxZrfhZ8X63NdWEjFhHRmqFhpRpAFpr7kScBJc+FaLsJu5Hc/Oa6g1vcKkMjFKmfZ6idbWXhItfVzBStOGpYJg4j1tdgDcET8xMO7CLZL5n+M1+NwqxI4dWnUOCiqZol20/RjHqFGeanUrCxGimKyQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(136003)(396003)(366004)(54906003)(110136005)(478600001)(6506007)(55236004)(316002)(7696005)(2906002)(4744005)(66556008)(186003)(8676002)(26005)(4326008)(9686003)(55016002)(8936002)(66446008)(5660300002)(66946007)(76116006)(86362001)(71200400001)(33656002)(64756008)(66476007)(52536014)(142933001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 22Pnfsrf3gQpWEhcYMWnX/FtAdbAptKD8RqCmI/dz8wErvcbmjNvoihk2Hk/pVrzep7DZrgrQipl6yYkH3UxI/zkoUSDKJKFIaa7Ct3DkWXC6KfLi2bpZ85rJLNWIhXn0cn+6WZ5TxW7VJV2moLZ4uVdNMGR8TGzFHR8ZDBMylvzSHAea8lr6+hGsJTpCNQ37tbA3PABVIcG132lU1I5GGeVLrcPlVvoBYZucNd2yN00JffHDLslUF7YnU0s4KzqlT03u2iIz+QurXpEV/eFsziE/UjeA1jk6x8ELUha9ASc7dioU372mCN6LOVsumx4Neb2XiGlif2RzGAIiWBBX+65MUZ0vEbgagMpXt2fPxjSfP/boOK4YWSxTO87nZ2bdXocNDn7ONqKDgvwutuaGbEtfnNzDV8fDkZcKSwunazbyI7bJNj0oGZUEZlx8gxI7/7L/wGTlNsCjct6G1yCJtSukD7hJvymH6tTCYzq+vpBLgHJ7UEcB2XBYv6G8vbDA7rqijdQtu7Ydirq3HkylRVWl5ssM1250XrWULAlR8fkt+/TKEjlr4C3AjzU/dhnDLjli60rVMivIakWGfOmJAC5UR116Wy9DoGiI2qECCCRFGeidR5UvSNAOn3BpkkUX5+3F66TzpYwObEA6+Xvsg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CA+G9fYvUwH2FA9GOeA_7GYpLA31uOmEpg32VKnJ8-d5QSK4PdQ@mail.gmail.com>
- <20200827090813.fjugeqbb47fachy7@vireshk-i7> <CAK8P3a2zxybiMDzHXkTsT=VpHJOLkwd1=YTtCNU04vuMjZLkxA@mail.gmail.com>
- <20200827101231.smqrhqu5da6jlz6i@vireshk-i7> <CA+G9fYv=XLtsuD=tVR1HHotwpKLkbwZVyPr4UhY-jD+6-duTmw@mail.gmail.com>
- <CA+G9fYvSEHua0EpW64rASucWuS-U2STAZxufrfN75UDspGt2cA@mail.gmail.com>
- <CAPDyKFrpOqpBiSvkvO7sXHiQDOwdXYmx-80Ji5wW79QF-MrOuQ@mail.gmail.com> <CADYN=9K3D3OZ5T_K+6MfcgVLRoktPB6LvwDiXGj-+Zpq3faYfg@mail.gmail.com>
-In-Reply-To: <CADYN=9K3D3OZ5T_K+6MfcgVLRoktPB6LvwDiXGj-+Zpq3faYfg@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 28 Aug 2020 14:23:02 +0200
-Message-ID: <CAPDyKFpNVJZ0FddJ8naXYp-oZr-mYSOH-5iXG-wASZEFozBJJQ@mail.gmail.com>
-Subject: Re: Kernel panic : Unable to handle kernel paging request at virtual
- address - dead address between user and kernel address ranges
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, John Stultz <john.stultz@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8fb611c-aa5d-434d-1b7d-08d84b4d73f0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2020 12:25:30.1476
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ONKQH2t89GRvPg4sY6UBbDdwN2cATGyrbQqdK8FxgwTnN0ArnYHQ7D3Z3feyxNYjRLzr6SHDho0o2C1yNU+wNtl2sp0iyqfthZX3LQ/88HkSaAjtUItFiMUVT/RX/yj9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB1817
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 at 12:29, Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> On Fri, 28 Aug 2020 at 11:35, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Fri, 28 Aug 2020 at 11:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > >
-> > > On Thu, 27 Aug 2020 at 17:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > >
-> > > > On Thu, 27 Aug 2020 at 15:42, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > > >
-> > > > > On 27-08-20, 11:48, Arnd Bergmann wrote:
-> > > > > > > > [    3.680477]  dev_pm_opp_put_clkname+0x30/0x58
-> > > > > > > > [    3.683431]  sdhci_msm_probe+0x284/0x9a0
-> > > > > >
-> > > > > > dev_pm_opp_put_clkname() is part of the error handling in the
-> > > > > > probe function, so I would deduct there are two problems:
-> > > > > >
-> > > > > > - something failed during the probe and the driver is trying
-> > > > > >   to unwind
-> > > > > > - the error handling it self is buggy and tries to undo something
-> > > > > >   again that has already been undone.
-> > > > >
-> > > > > Right.
-> > > > >
-> > > > > > This points to Viresh's
-> > > > > > d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
-> > > > >
-> > > > > I completely forgot that Ulf already pushed this patch and I was
-> > > > > wondering on which of the OPP core changes I wrote have done this :(
-> > > > >
-> > > > > > Most likely this is not the entire problem but it uncovered a preexisting
-> > > > > > bug.
-> > > > >
-> > > > > I think this is.
-> > > > >
-> > > > > Naresh: Can you please test with this diff ?
-> > > >
-> > > > I have applied your patch and tested but still see the reported problem.
-> > >
-> > > The git bisect shows that the first bad commit is,
-> > > d05a7238fe1c mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
-> > >
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > Reported-by: Anders Roxell <anders.roxell@linaro.org>
-> >
-> > I am not sure what version of the patch you tested. However, I have
-> > dropped Viresh's v1 and replaced it with v2 [1]. It's available for
-> > testing at:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git next
-> >
-> > Can you please check if it still causes problems, then I will drop it, again.
->
-> I tried to run with a kernel from your tree and I could see the same
-> kernel panic on db410c [1].
+Hi Lad-san,
 
-Anders, Naresh - thanks for testing and reporting. I am dropping the
-patch from my tree.
+> From: Lad Prabhakar, Sent: Friday, August 28, 2020 4:50 PM
+>=20
+> Document r8a774e1 xhci support. The driver will use the fallback
+> compatible string "renesas,rcar-gen3-xhci", therefore no driver
+> change is needed.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renes=
+as.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Viresh, I suggest to keep Anders/Naresh in the cc, for the next
-version. Then I can wait for their tested-by tag before I apply again.
+Thank you for the patch!
 
-Kind regards
-Uffe
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+
+Best regards,
+Yoshihiro Shimoda
+
