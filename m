@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5310256196
+	by mail.lfdr.de (Postfix) with ESMTP id 68482256195
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 21:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgH1TyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 15:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        id S1727881AbgH1Txv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 15:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgH1TxG (ORCPT
+        with ESMTP id S1727000AbgH1TxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 15:53:06 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4241C061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:53:06 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id t23so458532qto.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:53:06 -0700 (PDT)
+        Fri, 28 Aug 2020 15:53:09 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D9C061236
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:53:09 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id s15so203472qvv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 12:53:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=digitalocean.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=rkgHQwSYHOGIglJXooigt9hTeVNRwmHLtdbUe0ivKtQ=;
-        b=WA3NlxvAF5BI/guXu3dqJu/r1FjfaO/y6hONzV3gIOaVkCjf2+y1/EsMvNjPP+DX5Z
-         Qo25LC/rb91PKd09PjkPSloZImRkoG76RRxzoHo7xaHaLiRU9OdIhFIrcerJN2HfFY3f
-         bM8zxLETt8Y6jBuH8+5+xclE/86OiQNmaNKig=
+        bh=kqnuk9AXXBAKTcx0hh4liiEEzZugxS774eknhTnrHHw=;
+        b=E44tgBHza2olgmfYteic4oiAS2GAziGhd7jDj6ZeBJlcv4QT0J2t196X5rxlcwpUQG
+         vqVurdnVC2Ed+RBO/3WQVatGm2zRseHUwzzJLuLIGYvnKJXbySK5lSAUl3rwmlZtW6T8
+         Rz0EJ0i6YQ6tPWalgGSr+cLFaWu+zXsfwFOjw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=rkgHQwSYHOGIglJXooigt9hTeVNRwmHLtdbUe0ivKtQ=;
-        b=WEX31m7uL0fzAMGSjAZzCOw/mmlga+5hi7jp1fPWC3jLBDwqD/aQwLWCyhBWU+FKju
-         bFqnhpmQwrMfciOUqxlujudXvvLG1GxZLaLDqFbpnk3FDr37klAmBmIGj46yEvzlNu0Q
-         d/kQ4sqh+AZfCQeYqDtf1w8oLPSp27vbBlTamxtjab/G31ijHe2pe3Xk8hTlQ2c6bHem
-         j3F1gsJM7qX6OLJ7i0/sBw8tb5NME4A5+BzAu/bB+YBN8dHEFGdBBV+lDg3sHslL/+1K
-         S4Gtc8bvdXBDf2SC9Sv2afdn1i4BwDS418bhfdDIpCEVzO1wCAAsR5OkhPOvvDaQPM+C
-         q6GQ==
-X-Gm-Message-State: AOAM532gjNulwC0nUc1Lh35WXfIgN8QrZjfMNVH6AcuZNRfoi5qi3bfp
-        qNZ/tlpN4HFOSeljoFkZ9VGIIA==
-X-Google-Smtp-Source: ABdhPJyNh8eP5pTr3GAoJLGx70QODuuA1rfEhxDlHEPgD43zZMWhFY/dumZH539wj75xR3AKys+Enw==
-X-Received: by 2002:aed:21da:: with SMTP id m26mr3129609qtc.197.1598644385820;
-        Fri, 28 Aug 2020 12:53:05 -0700 (PDT)
+        bh=kqnuk9AXXBAKTcx0hh4liiEEzZugxS774eknhTnrHHw=;
+        b=tEYw4LarDTG5FSYiLdPR1pvzyExFY0rjqYRwwARxUpo3+6RJx+tXCDhD2/+gynafVK
+         mBp0JFVmLmBS0+d5prnAXoX1IfsyBKdHxyVG27Ec6EBrNXlowYVoe8E+oTQCCtfoNkIW
+         ghoxzwRzeBOTeSnPVGJJ9qBCgXrLVVnEiYW9h8VBuSDXjWxJ+jjVQsBckpYuZ9DcxMFg
+         J+Riy30ki8vZB+oVlJVzltsqVh8w1F0GSSy3gVMiciv6Dx+KEyg2ZfQLT45v/Dru8h1r
+         7ln8MFdT0huBifIxoRMdWNNBSt1ek2EQZ/G8ahsdC95Y1poyxWwZwL1NbgxfXT5j17bx
+         OCMg==
+X-Gm-Message-State: AOAM533XeEWjLG05aEMka8fJQvuA6MGpMIDnIqrM8f4K/80qvjD0SVgv
+        BxNiG5wqouwK0xSy/PSlZ+9jLw==
+X-Google-Smtp-Source: ABdhPJzcmOIYfwOLDySvudex6Sc3ItJEMnYotq4Kl0y1Ok+q+JmKVQlCwW3zLo2EFn2v2vwllX/P0Q==
+X-Received: by 2002:ad4:4bc5:: with SMTP id l5mr149526qvw.95.1598644388175;
+        Fri, 28 Aug 2020 12:53:08 -0700 (PDT)
 Received: from [192.168.1.240] (192-222-189-155.qc.cable.ebox.net. [192.222.189.155])
-        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.53.03
+        by smtp.gmail.com with ESMTPSA id r34sm150885qtr.18.2020.08.28.12.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 12:53:05 -0700 (PDT)
+        Fri, 28 Aug 2020 12:53:07 -0700 (PDT)
 From:   Julien Desfossez <jdesfossez@digitalocean.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -55,25 +55,24 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         Dhaval Giani <dhaval.giani@oracle.com>,
         Chris Hyser <chris.hyser@oracle.com>,
         Nishanth Aravamudan <naravamudan@digitalocean.com>
-Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
         torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
         fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
         Phil Auld <pauld@redhat.com>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Agata Gruza <agata.gruza@intel.com>,
         Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
         graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Subject: [RFC PATCH v7 21/23] sched: cgroup tagging interface for core scheduling
-Date:   Fri, 28 Aug 2020 15:51:22 -0400
-Message-Id: <21d4fb65591c039d485a5eda306dfa83e766f91b.1598643276.git.jdesfossez@digitalocean.com>
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com
+Subject: [RFC PATCH v7 22/23] Documentation: Add documentation on core scheduling
+Date:   Fri, 28 Aug 2020 15:51:23 -0400
+Message-Id: <36608b6359cbaa46627126bc452c30adb3b97d2f.1598643276.git.jdesfossez@digitalocean.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1598643276.git.jdesfossez@digitalocean.com>
 References: <cover.1598643276.git.jdesfossez@digitalocean.com>
@@ -84,343 +83,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-Marks all tasks in a cgroup as matching for core-scheduling.
-
-A task will need to be moved into the core scheduler queue when the cgroup
-it belongs to is tagged to run with core scheduling.  Similarly the task
-will need to be moved out of the core scheduler queue when the cgroup
-is untagged.
-
-Also after we forked a task, its core scheduler queue's presence will
-need to be updated according to its new cgroup's status.
-
-Use stop machine mechanism to update all tasks in a cgroup to prevent a
-new task from sneaking into the cgroup, and missed out from the update
-while we iterates through all the tasks in the cgroup.  A more complicated
-scheme could probably avoid the stop machine.  Such scheme will also
-need to resovle inconsistency between a task's cgroup core scheduling
-tag and residency in core scheduler queue.
-
-We are opting for the simple stop machine mechanism for now that avoids
-such complications.
-
-Core scheduler has extra overhead.  Enable it only for core with
-more than one SMT hardware threads.
-
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+Co-developed-by: Vineeth Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 ---
- kernel/sched/core.c  | 183 +++++++++++++++++++++++++++++++++++++++++--
- kernel/sched/sched.h |   4 +
- 2 files changed, 180 insertions(+), 7 deletions(-)
+ .../admin-guide/hw-vuln/core-scheduling.rst   | 253 ++++++++++++++++++
+ Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+ 2 files changed, 254 insertions(+)
+ create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 34238fd67f31..5f77e575bbac 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -153,6 +153,37 @@ static inline bool __sched_core_less(struct task_struct *a, struct task_struct *
- 	return false;
- }
- 
-+static bool sched_core_empty(struct rq *rq)
-+{
-+	return RB_EMPTY_ROOT(&rq->core_tree);
-+}
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+new file mode 100644
+index 000000000000..7ebece93f1d3
+--- /dev/null
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -0,0 +1,253 @@
++Core Scheduling
++================
++MDS and L1TF mitigations do not protect from cross-HT attacks (attacker running
++on one HT with victim running on another). For proper mitigation of this,
++core scheduling support is available via the ``CONFIG_SCHED_CORE`` config option.
++Using this feature, userspace defines groups of tasks that trust each other.
++The core scheduler uses this information to make sure that tasks that do not
++trust each other will never run simultaneously on a core while still meeting
++the scheduler's requirements.
 +
-+static bool sched_core_enqueued(struct task_struct *task)
-+{
-+	return !RB_EMPTY_NODE(&task->core_node);
-+}
++Usage
++-----
++The current interface implementation is just for testing and uses CPU
++controller CGroups which will change soon. A ``cpu.tag`` file has been added to
++the CPU controller CGroup. If the content of this file is 1, then all the
++CGroup's tasks trust each other and are allowed to run concurrently on a core's
++hyperthreads (also called siblings).
 +
-+static struct task_struct *sched_core_first(struct rq *rq)
-+{
-+	struct task_struct *task;
++As mention, the interface is for testing purposes and has drawbacks. Trusted
++tasks have to be grouped into CPU CGroup which is not always possible
++depending on the system's existing CGroup configuration, where trusted tasks
++could already be in different CPU CGroups. Also, this feature will have a hard
++dependency on CGroups and systems with CGroups disabled would not be able to
++use core scheduling so another API is needed in conjunction with
++CGroups. See `Future work`_ for other API proposals.
 +
-+	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
-+	return task;
-+}
++Design/Implementation
++---------------------
++Each task that is tagged is assigned a cookie internally in the kernel. As
++mentioned in `Usage`_, tasks with the same cookie value are assumed to trust
++each other and share a core.
 +
-+static void sched_core_flush(int cpu)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+	struct task_struct *task;
++The basic idea is that, every schedule event tries to select tasks for all the
++siblings of a core such that all the selected tasks running on a core are
++trusted (same cookie) at any point in time. Kernel threads are assumed trusted.
++The idle task is considered special, in that it trusts every thing.
 +
-+	while (!sched_core_empty(rq)) {
-+		task = sched_core_first(rq);
-+		rb_erase(&task->core_node, &rq->core_tree);
-+		RB_CLEAR_NODE(&task->core_node);
-+	}
-+	rq->core->core_task_seq++;
-+}
++During a schedule() event on any sibling of a core, the highest priority task for
++that core is picked and assigned to the sibling calling schedule() if it has it
++enqueued. For rest of the siblings in the core, highest priority task with the
++same cookie is selected if there is one runnable in their individual run
++queues. If a task with same cookie is not available, the idle task is selected.
++Idle task is globally trusted.
 +
- static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
- {
- 	struct rb_node *parent, **node;
-@@ -184,10 +215,11 @@ static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
- {
- 	rq->core->core_task_seq++;
- 
--	if (!p->core_cookie)
-+	if (!sched_core_enqueued(p))
- 		return;
- 
- 	rb_erase(&p->core_node, &rq->core_tree);
-+	RB_CLEAR_NODE(&p->core_node);
- }
- 
- /*
-@@ -253,9 +285,23 @@ static int __sched_core_stopper(void *data)
- 
- 	for_each_possible_cpu(cpu) {
- 		struct rq *rq = cpu_rq(cpu);
--		rq->core_enabled = enabled;
--		if (cpu_online(cpu) && rq->core != rq)
--			sched_core_adjust_sibling_vruntime(cpu, enabled);
++Once a task has been selected for all the siblings in the core, an IPI is sent to
++siblings for whom a new task was selected. Siblings on receiving the IPI, will
++switch to the new task immediately. If an idle task is selected for a sibling,
++then the sibling is considered to be in a "forced idle" state. i.e., it may
++have tasks on its on runqueue to run, however it will still have to run idle.
++More on this in the next section.
 +
-+		WARN_ON_ONCE(enabled == rq->core_enabled);
++Forced-idling of tasks
++---------------------
++The scheduler tries its best to find tasks that trust each other such that all
++tasks selected to be scheduled are of the highest priority in a core.  However,
++it is possible that some runqueues had tasks that were incompatibile with the
++highest priority ones in the core. Favoring security over fairness, one or more
++siblings could be forced to select a lower priority task if the highest
++priority task is not trusted with respect to the core wide highest priority
++task.  If a sibling does not have a trusted task to run, it will be forced idle
++by the scheduler(idle thread is scheduled to run).
 +
-+		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
-+			/*
-+			 * All active and migrating tasks will have already
-+			 * been removed from core queue when we clear the
-+			 * cgroup tags. However, dying tasks could still be
-+			 * left in core queue. Flush them here.
-+			 */
-+			if (!enabled)
-+				sched_core_flush(cpu);
++When the highest priorty task is selected to run, a reschedule-IPI is sent to
++the sibling to force it into idle. This results in 4 cases which need to be
++considered depending on whether a VM or a regular usermode process was running
++on either HT:
 +
-+			rq->core_enabled = enabled;
-+			if (cpu_online(cpu) && rq->core != rq)
-+				sched_core_adjust_sibling_vruntime(cpu, enabled);
-+		}
- 	}
- 
- 	return 0;
-@@ -266,7 +312,11 @@ static int sched_core_count;
- 
- static void __sched_core_enable(void)
- {
--	// XXX verify there are no cookie tasks (yet)
-+	int cpu;
++::
++          HT1 (attack)            HT2 (victim)
++   
++   A      idle -> user space      user space -> idle
++   
++   B      idle -> user space      guest -> idle
++   
++   C      idle -> guest           user space -> idle
++   
++   D      idle -> guest           guest -> idle
 +
-+	/* verify there are no cookie tasks (yet) */
-+	for_each_online_cpu(cpu)
-+		BUG_ON(!sched_core_empty(cpu_rq(cpu)));
- 
- 	static_branch_enable(&__sched_core_enabled);
- 	stop_machine(__sched_core_stopper, (void *)true, NULL);
-@@ -274,8 +324,6 @@ static void __sched_core_enable(void)
- 
- static void __sched_core_disable(void)
- {
--	// XXX verify there are no cookie tasks (left)
--
- 	stop_machine(__sched_core_stopper, (void *)false, NULL);
- 	static_branch_disable(&__sched_core_enabled);
- }
-@@ -300,6 +348,7 @@ void sched_core_put(void)
- 
- static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
- static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-+static bool sched_core_enqueued(struct task_struct *task) { return false; }
- 
- #endif /* CONFIG_SCHED_CORE */
- 
-@@ -3534,6 +3583,9 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- #ifdef CONFIG_SMP
- 	plist_node_init(&p->pushable_tasks, MAX_PRIO);
- 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
-+#endif
-+#ifdef CONFIG_SCHED_CORE
-+	RB_CLEAR_NODE(&p->core_node);
- #endif
- 	return 0;
- }
-@@ -7431,6 +7483,9 @@ void init_idle(struct task_struct *idle, int cpu)
- #ifdef CONFIG_SMP
- 	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
- #endif
-+#ifdef CONFIG_SCHED_CORE
-+	RB_CLEAR_NODE(&idle->core_node);
-+#endif
- }
- 
- #ifdef CONFIG_SMP
-@@ -8416,6 +8471,15 @@ static void sched_change_group(struct task_struct *tsk, int type)
- 	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
- 			  struct task_group, css);
- 	tg = autogroup_task_group(tsk, tg);
++Note that for better performance, we do not wait for the destination CPU
++(victim) to enter idle mode. This is because the sending of the IPI would bring
++the destination CPU immediately into kernel mode from user space, or VMEXIT
++in the case of  guests. At best, this would only leak some scheduler metadata
++which may not be worth protecting. It is also possible that the IPI is received
++too late on some architectures, but this has not been observed in the case of
++x86.
 +
-+#ifdef CONFIG_SCHED_CORE
-+	if ((unsigned long)tsk->sched_task_group == tsk->core_cookie)
-+		tsk->core_cookie = 0UL;
++Kernel protection from untrusted tasks
++--------------------------------------
++The scheduler on its own cannot protect the kernel executing concurrently with
++an untrusted task in a core. This is because the scheduler is unaware of
++interrupts/syscalls at scheduling time. To mitigate this, we send an IPI to
++siblings on kernel entry. This forces the sibling to enter kernel mode and it
++waits before returning to user until all siblings of the core has left kernel
++mode.  For good performance, we send an IPI only if it is detected that the
++core is running tasks that have been marked for core scheduling. If a sibling
++is running kernel threads or is idle, no IPI is sent.
 +
-+	if (tg->tagged /* && !tsk->core_cookie ? */)
-+		tsk->core_cookie = (unsigned long)tg;
-+#endif
++For easier testing, a temporary (not intended for mainline) patch is included
++in this series to make kernel protection configurable via a
++``CONFIG_SCHED_CORE_KERNEL_PROTECTION`` config option or a
++``sched_core_kernel_protection`` boot parameter.
 +
- 	tsk->sched_task_group = tg;
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-@@ -8508,6 +8572,18 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
- 	return 0;
- }
- 
-+static void cpu_cgroup_css_offline(struct cgroup_subsys_state *css)
-+{
-+#ifdef CONFIG_SCHED_CORE
-+	struct task_group *tg = css_tg(css);
++Other ideas for kernel protection which are
 +
-+	if (tg->tagged) {
-+		sched_core_put();
-+		tg->tagged = 0;
-+	}
-+#endif
-+}
++1. Changing interrupt affinities to a trusted core which does not execute untrusted tasks
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++By changing the interrupt affinities to a designated safe-CPU which runs
++only trusted tasks, IRQ data can be protected. One issue is this involves
++giving up a full CPU core of the system to run safe tasks. Another is that,
++per-cpu interrupts such as the local timer interrupt cannot have their
++affinity changed. also, sensitive timer callbacks such as the random entropy timer
++can run in softirq on return from these interrupts and expose sensitive
++data. In the future, that could be mitigated by forcing softirqs into threaded
++mode by utilizing a mechanism similar to ``PREEMPT_RT``.
 +
- static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
- {
- 	struct task_group *tg = css_tg(css);
-@@ -9073,6 +9149,82 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
- }
- #endif /* CONFIG_RT_GROUP_SCHED */
- 
-+#ifdef CONFIG_SCHED_CORE
-+static u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-+{
-+	struct task_group *tg = css_tg(css);
++Yet another issue with this is, for multiqueue devices with managed
++interrupts, the IRQ affinities cannot be changed however it could be
++possible to force a reduced number of queues which would in turn allow to
++shield one or two CPUs from such interrupts and queue handling for the price
++of indirection.
 +
-+	return !!tg->tagged;
-+}
++2. Running IRQs as threaded-IRQs
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++This would result in forcing IRQs into the scheduler which would then provide
++the process-context mitigation. However, not all interrupts can be threaded.
++Also this does nothing about syscall entries.
 +
-+struct write_core_tag {
-+	struct cgroup_subsys_state *css;
-+	int val;
-+};
++3. Kernel Address Space Isolation
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++System calls could run in a much restricted address space which is
++guarenteed not to leak any sensitive data. There are practical limitation in
++implementing this - the main concern being how to decide on an address space
++that is guarenteed to not have any sensitive data.
 +
-+static int __sched_write_tag(void *data)
-+{
-+	struct write_core_tag *tag = (struct write_core_tag *) data;
-+	struct cgroup_subsys_state *css = tag->css;
-+	int val = tag->val;
-+	struct task_group *tg = css_tg(tag->css);
-+	struct css_task_iter it;
-+	struct task_struct *p;
++4. Limited cookie-based protection
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++On a system call, change the cookie to the system trusted cookie and initiate a
++schedule event. This would be better than pausing all the siblings during the
++entire duration for the system call, but still would be a huge hit to the
++performance.
 +
-+	tg->tagged = !!val;
++Trust model
++-----------
++Core scheduling understands trust relationships by assignment of a cookie to
++related tasks using the above mentioned interface.  When a system with core
++scheduling boots, all tasks are considered to trust each other. This is because
++the scheduler does not have information about trust relationships. That is, all
++tasks have a default cookie value of 0. This cookie value is also considered
++the system-wide cookie value and the IRQ-pausing mitigation is avoided if
++siblings are running these cookie-0 tasks.
 +
-+	css_task_iter_start(css, 0, &it);
-+	/*
-+	 * Note: css_task_iter_next will skip dying tasks.
-+	 * There could still be dying tasks left in the core queue
-+	 * when we set cgroup tag to 0 when the loop is done below.
-+	 */
-+	while ((p = css_task_iter_next(&it))) {
-+		p->core_cookie = !!val ? (unsigned long)tg : 0UL;
++By default, all system processes on boot are considered trusted and userspace
++has to explicitly use the interfaces mentioned above to group sets of tasks.
++Tasks within the group trust each other, but not those outside. Tasks outside
++the group don't trust the task inside.
 +
-+		if (sched_core_enqueued(p)) {
-+			sched_core_dequeue(task_rq(p), p);
-+			if (!p->core_cookie)
-+				continue;
-+		}
++Limitations
++-----------
++Core scheduling tries to guarentee that only trusted tasks run concurrently on a
++core. But there could be small window of time during which untrusted tasks run
++concurrently or kernel could be running concurrently with a task not trusted by
++kernel.
 +
-+		if (sched_core_enabled(task_rq(p)) &&
-+		    p->core_cookie && task_on_rq_queued(p))
-+			sched_core_enqueue(task_rq(p), p);
++1. IPI processing delays
++^^^^^^^^^^^^^^^^^^^^^^^^
++Core scheduling selects only trusted tasks to run together. IPI is used to notify
++the siblings to switch to the new task. But there could be hardware delays in
++receiving of the IPI on some arch (on x86, this has not been observed). This may
++cause an attacker task to start running on a cpu before its siblings receive the
++IPI. Even though cache is flushed on entry to user mode, victim tasks on siblings
++may populate data in the cache and micro acrhitectural buffers after the attacker
++starts to run and this is a possibility for data leak.
 +
-+	}
-+	css_task_iter_end(&it);
++Open cross-HT issues that core scheduling does not solve
++--------------------------------------------------------
++1. For MDS
++^^^^^^^^^^
++Core scheduling cannot protect against MDS attacks between an HT running in
++user mode and another running in kernel mode. Even though both HTs run tasks
++which trust each other, kernel memory is still considered untrusted. Such
++attacks are possible for any combination of sibling CPU modes (host or guest mode).
 +
-+	return 0;
-+}
++2. For L1TF
++^^^^^^^^^^^
++Core scheduling cannot protect against a L1TF guest attackers exploiting a
++guest or host victim. This is because the guest attacker can craft invalid
++PTEs which are not inverted due to a vulnerable guest kernel. The only
++solution is to disable EPT.
 +
-+static int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
-+{
-+	struct task_group *tg = css_tg(css);
-+	struct write_core_tag wtag;
++For both MDS and L1TF, if the guest vCPU is configured to not trust each
++other (by tagging separately), then the guest to guest attacks would go away.
++Or it could be a system admin policy which considers guest to guest attacks as
++a guest problem.
 +
-+	if (val > 1)
-+		return -ERANGE;
++Another approach to resolve these would be to make every untrusted task on the
++system to not trust every other untrusted task. While this could reduce
++parallelism of the untrusted tasks, it would still solve the above issues while
++allowing system processes (trusted tasks) to share a core.
 +
-+	if (!static_branch_likely(&sched_smt_present))
-+		return -EINVAL;
++Use cases
++---------
++The main use case for Core scheduling is mitigating the cross-HT vulnerabilities
++with SMT enabled. There are other use cases where this feature could be used:
 +
-+	if (tg->tagged == !!val)
-+		return 0;
++- Isolating tasks that needs a whole core: Examples include realtime tasks, tasks
++  that uses SIMD instructions etc.
++- Gang scheduling: Requirements for a group of tasks that needs to be scheduled
++  together could also be realized using core scheduling. One example is vcpus of
++  a VM.
 +
-+	if (!!val)
-+		sched_core_get();
++Future work
++-----------
++1. API Proposals
++^^^^^^^^^^^^^^^^
 +
-+	wtag.css = css;
-+	wtag.val = val;
-+	stop_machine(__sched_write_tag, (void *) &wtag, NULL);
-+	if (!val)
-+		sched_core_put();
++As mentioned in `Usage`_ section, various API proposals are listed here:
 +
-+	return 0;
-+}
-+#endif
++- ``prctl`` : We can pass in a tag and all tasks with same tag set by prctl forms
++  a trusted group.
 +
- static struct cftype cpu_legacy_files[] = {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	{
-@@ -9109,6 +9261,14 @@ static struct cftype cpu_legacy_files[] = {
- 		.write_u64 = cpu_rt_period_write_uint,
- 	},
- #endif
-+#ifdef CONFIG_SCHED_CORE
-+	{
-+		.name = "tag",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = cpu_core_tag_read_u64,
-+		.write_u64 = cpu_core_tag_write_u64,
-+	},
-+#endif
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- 	{
- 		.name = "uclamp.min",
-@@ -9282,6 +9442,14 @@ static struct cftype cpu_files[] = {
- 		.write_s64 = cpu_weight_nice_write_s64,
- 	},
- #endif
-+#ifdef CONFIG_SCHED_CORE
-+	{
-+		.name = "tag",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = cpu_core_tag_read_u64,
-+		.write_u64 = cpu_core_tag_write_u64,
-+	},
-+#endif
- #ifdef CONFIG_CFS_BANDWIDTH
- 	{
- 		.name = "max",
-@@ -9310,6 +9478,7 @@ static struct cftype cpu_files[] = {
- struct cgroup_subsys cpu_cgrp_subsys = {
- 	.css_alloc	= cpu_cgroup_css_alloc,
- 	.css_online	= cpu_cgroup_css_online,
-+	.css_offline	= cpu_cgroup_css_offline,
- 	.css_released	= cpu_cgroup_css_released,
- 	.css_free	= cpu_cgroup_css_free,
- 	.css_extra_stat_show = cpu_extra_stat_show,
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 676818bdb9df..8ef7ab3061ed 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -384,6 +384,10 @@ struct cfs_bandwidth {
- struct task_group {
- 	struct cgroup_subsys_state css;
- 
-+#ifdef CONFIG_SCHED_CORE
-+	int			tagged;
-+#endif
++- ``sched_setattr`` : Similar to prctl, but has the advantage that tasks could be
++  tagged by other tasks with appropriate permissions.
 +
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	/* schedulable entities of this group on each CPU */
- 	struct sched_entity	**se;
++- ``Auto Tagging`` : Related tasks are tagged automatically. Relation could be,
++  threads of the same process, tasks by a user, group or session etc.
++
++- Dedicated CGroup or procfs/sysfs interface for grouping trusted tasks. This could
++  be combined with prctl/sched_setattr as well.
++
++2. Auto-tagging of KVM vCPU threads
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++To make configuration easier, it would be great if KVM auto-tags vCPU threads
++such that a given VM only trusts other vCPUs of the same VM. Or something more
++aggressive like assiging a vCPU thread a unique tag.
++
++3. Auto-tagging of processes by default
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++Currently core scheduling does not prevent 'unconfigured' tasks from being
++co-scheduled on the same core. In other words, everything trusts everything
++else by default. If a user wants everything default untrusted, a CONFIG option
++could be added to assign every task with a unique tag by default.
++
++4. Auto-tagging on fork
++^^^^^^^^^^^^^^^^^^^^^^^
++Currently, on fork a thread is added to the same trust-domain as the parent. For
++systems which want all tasks to have a unique tag, it could be desirable to assign
++a unique tag to a task so that the parent does not trust the child by default.
++
++5. Skipping per-HT mitigations if task is trusted
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++If core scheduling is enabled, by default all tasks trust each other as
++mentioned above. In such scenario, it may be desirable to skip the same-HT
++mitigations on return to the trusted user-mode to improve performance.
+diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
+index ca4dbdd9016d..f12cda55538b 100644
+--- a/Documentation/admin-guide/hw-vuln/index.rst
++++ b/Documentation/admin-guide/hw-vuln/index.rst
+@@ -15,3 +15,4 @@ are configurable at compile, boot or run time.
+    tsx_async_abort
+    multihit.rst
+    special-register-buffer-data-sampling.rst
++   core-scheduling.rst
 -- 
 2.17.1
 
