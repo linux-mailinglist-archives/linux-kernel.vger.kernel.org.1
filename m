@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D3925558E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF762255595
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 09:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgH1Hrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 03:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgH1Hr2 (ORCPT
+        id S1728578AbgH1Hrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 03:47:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59684 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgH1Hrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 03:47:28 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8B5C061264;
-        Fri, 28 Aug 2020 00:47:28 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id u25so212284lfm.10;
-        Fri, 28 Aug 2020 00:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cM3CJT9ftDt6aTs3xRQ+GG6zAYjrPTl2+cVjFjcTkMQ=;
-        b=QJuP2dU9nPLiBKRlazKHKpQXSmc3FoD0hpYNKIxSYi87jkEMWKYzqaffspNwFgpmo8
-         cpAgYduG4CJc5Iv6RtB8eKrx2CYqypJM49zAhqEZVpOJr2As2WrO533AVaE4GHnlRVpX
-         hOxGR9eysSbDr+A2uXkX2km3/RBUCdoSgAjmcYkoR49V4bLoxsLd4DC+eShUVf3lrTF2
-         +EHFq74xRLZs37uMbcFtOzZZIMorE/zeiwmAxYK35/Nc1o/oH1WR0s24E+cnJdqoFhVM
-         m/KIUS9oMdzGSa/2mll3oOpqTMixHhRj66QnKulGPg+q4rPsosDkqmgw47EDLRNXpEmi
-         +BCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cM3CJT9ftDt6aTs3xRQ+GG6zAYjrPTl2+cVjFjcTkMQ=;
-        b=CckfY5Cg5fsOx/tabEcIUZjQ2JaP4qkS5hxz0wKp8N25b7FMavbkLki5/sjAPYLoYW
-         0IE80AsVnj/7FCQ9MLeevIMzD226VIf+S00qHbgQuf/cNzKfc1QVFfJtvYwv9c42ed1G
-         am9qndfjg0GSoZ982VFREm9AHjmywbgg3uCz9w4/ZtSJU5FKf4m+da4BEv/SyqfwkfDx
-         VLJxHo5clzFv/WBEjv6iMhJQY/VBI32ow5PU87eKakbjtSa1jclcJcp8ncFVivbWXl6N
-         rBbotqE5qZmX+9KJU2E5+YSV5tpijLNRRd+e/8iAhgVIoP+gF5gahmp8aHRP3xQCJubH
-         KGeQ==
-X-Gm-Message-State: AOAM530QfzG2UtPB/yghA69e6gHKWTiCZEZNJBjTE2UWhCbIvh9SH+C3
-        1G4OMPlroyz4dMjw/wApVeo=
-X-Google-Smtp-Source: ABdhPJwcpYZeInkiji0iQ5GJYarL0+TWbG/UNG+ujPcVWjnEZrpKT27KsykDmAkTuLT4PSEsXma4/g==
-X-Received: by 2002:a19:102:: with SMTP id 2mr201353lfb.54.1598600846525;
-        Fri, 28 Aug 2020 00:47:26 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id i7sm42511ljg.54.2020.08.28.00.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Aug 2020 00:47:25 -0700 (PDT)
-Subject: Re: [PATCHv1 1/2] power: supply: smb347-charger: Drop pdata support
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20200826144159.353837-1-sebastian.reichel@collabora.com>
- <20200826144159.353837-2-sebastian.reichel@collabora.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e41c781e-7342-dda1-3911-e2d59d827d90@gmail.com>
-Date:   Fri, 28 Aug 2020 10:47:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 28 Aug 2020 03:47:48 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07S7ldLN055379;
+        Fri, 28 Aug 2020 02:47:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598600859;
+        bh=asKcJDTQmbkVWh1oo047VzwZ6hi/mmdOx2VzMsErg/c=;
+        h=From:To:CC:Subject:Date;
+        b=t1OJeGrU7ULaU9AE5wjKvdKprxBqGE3tCrQYMGXhKGOn8D6BPD6aDil8cIFQsfkYD
+         KLYkXLY8OwOW0yMvf8p97+jt2TfVHqzfHhobCCfGEzh9gn0kn1pRn7Fo+LoJzRqzCw
+         b6JiQl41xQjIYiT3bVcPUdT7xPkTvwBXrOk5Atc0=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07S7ldQY024943
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Aug 2020 02:47:39 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 28
+ Aug 2020 02:47:38 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 28 Aug 2020 02:47:38 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07S7lZ8H012237;
+        Fri, 28 Aug 2020 02:47:36 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Pratyush Yadav <p.yadav@ti.com>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] spi: spi-cadence-quadspi: Fix mapping of buffers for DMA reads
+Date:   Fri, 28 Aug 2020 13:17:26 +0530
+Message-ID: <20200828074726.24546-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200826144159.353837-2-sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.08.2020 17:41, Sebastian Reichel пишет:
-> There are no platforms using the pdata support, so let's
-> drop it to simplify the driver.
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  drivers/power/supply/smb347-charger.c | 287 ++++++++++++++------------
->  include/linux/power/smb347-charger.h  | 114 ----------
->  2 files changed, 159 insertions(+), 242 deletions(-)
->  delete mode 100644 include/linux/power/smb347-charger.h
+Buffers need to mapped to DMA channel's device pointer instead of SPI
+controller's device pointer as its system DMA that actually does data
+transfer.
+Data inconsistencies have been reported when reading from flash
+without this fix.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Fixes: 31fb632b5d43c ("spi: Move cadence-quadspi driver to drivers/spi/")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
 
+This issue was present in the original driver under SPI NOR framework as well.
+But only got exposed as driver started handling probe deferral for DMA channel
+request and thus uses DMA almost always unlike before.
+
+ drivers/spi/spi-cadence-quadspi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 508b219eabf8..c6795c684b16 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -907,14 +907,16 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+ 	struct dma_async_tx_descriptor *tx;
+ 	dma_cookie_t cookie;
+ 	dma_addr_t dma_dst;
++	struct device *ddev;
+ 
+ 	if (!cqspi->rx_chan || !virt_addr_valid(buf)) {
+ 		memcpy_fromio(buf, cqspi->ahb_base + from, len);
+ 		return 0;
+ 	}
+ 
+-	dma_dst = dma_map_single(dev, buf, len, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(dev, dma_dst)) {
++	ddev = cqspi->rx_chan->device->dev;
++	dma_dst = dma_map_single(ddev, buf, len, DMA_FROM_DEVICE);
++	if (dma_mapping_error(ddev, dma_dst)) {
+ 		dev_err(dev, "dma mapping failed\n");
+ 		return -ENOMEM;
+ 	}
+@@ -948,7 +950,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+ 	}
+ 
+ err_unmap:
+-	dma_unmap_single(dev, dma_dst, len, DMA_FROM_DEVICE);
++	dma_unmap_single(ddev, dma_dst, len, DMA_FROM_DEVICE);
+ 
+ 	return ret;
+ }
+-- 
+2.28.0
 
