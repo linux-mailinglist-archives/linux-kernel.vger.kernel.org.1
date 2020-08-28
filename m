@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682A1255294
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1856325529C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 03:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgH1BfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 21:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgH1BfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 21:35:20 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E648C061264;
-        Thu, 27 Aug 2020 18:35:20 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id 2so3561540pjx.5;
-        Thu, 27 Aug 2020 18:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=rxAwjBtuOkOHsCKI2ATmMoWk7nn27DCJ9baRXRPv7gw=;
-        b=fRHT5WZFbeMN+s2XVWB/NxbZCCyRDtI6J+tcc1/dyBOTnfX954wwDt3kriLkxSvyzM
-         p5zo85HxXxh3wTjsQ5b57HMd4x6/sq0M8kmBRo24B5PfrwE+6rngKdYU22ZH2PmEsbYN
-         tf/d/7IPgibKHH+/DjBwn8hyAZ6ccE2bFNzCoeUIrveT23AB7Dm/oPhej5AyFGNH2n1x
-         vjDk6zWGOfx50Np0VhiAGPPImXpKlR48Zwo0HtQStzP7Lqll037XWBGQdX4JFpds/PZJ
-         Zumtzf5UzA6ebwN2wGOVmZuYJzf6VXL9tw4eLOFGT8c7Bpo0X/aHtOGcS6ATBjvPFTta
-         K5mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rxAwjBtuOkOHsCKI2ATmMoWk7nn27DCJ9baRXRPv7gw=;
-        b=TnW/k6GBKS+pRvUvKMK9iEc6zal91lglHa9MraFXv6/cu0YJpd2EBZvatIZi2taYVR
-         fWYLbjvIhNaXk0AtR+y577OKwdymLwASTDUOaUfkVcXir7RM3dRk1C3AzQqhZmMskPJa
-         ACZQSQU9oCJLfpPDISSIKzCscbNA17SuExtnGAdu0yGmQxL3W7f0TN2rY2iw4zfvdq/V
-         weY7sNpX6QouuZ0VZLXXaHDsaSJaMkD7MtSJBeiY1ZSt+MkcOcT4GW6DQlQe7SCmYj5k
-         YSSyL8mPHgAHeDyTUchvQfeHTIrQWBJuF/f2CemrUIIAyMSQ1MST3Dg6jC9kDf3dWtGD
-         Lf6Q==
-X-Gm-Message-State: AOAM530nvCC7eAeX+v2189FXXY4zEyp919nQJ9eoob+L50KPcgUNRszA
-        IbfHWnx/LL1u4NHOTeG2FnT2vAdOFBQ=
-X-Google-Smtp-Source: ABdhPJzariVnAqnB4Hk/D+KzhbrZIV+Xpa5zg7Et27t3/fcuC6vm7zCm93AbP6pLhCsbe69QM36Ehg==
-X-Received: by 2002:a17:90a:d597:: with SMTP id v23mr352068pju.24.1598578519288;
-        Thu, 27 Aug 2020 18:35:19 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id b6sm3309715pjz.33.2020.08.27.18.35.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Aug 2020 18:35:18 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: LAPIC: Reset timer_advance_ns if timer mode switch
-Date:   Fri, 28 Aug 2020 09:35:08 +0800
-Message-Id: <1598578508-14134-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728320AbgH1Bfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 21:35:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728268AbgH1Bfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 21:35:38 -0400
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21DC720C09
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 01:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598578537;
+        bh=tiwxfT4ZMLpMEWhyNE2BjdBuHmjGuQJ6mucgE6D9qkc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uRmcfm+eR0WIlwue7S9+eANKIDrpY5M+F5fBcTFGN90g2h81uyWfSVhceV5DbbGrg
+         /Oe5GG3/y3AnqLUHitHWCx3ciML13KjKruPDw0fiif4jRsXq3GE3Z+Zx6IsOfaqJNf
+         nVVeHjN2y0rW8BdIxt1ec8TPXeNOAQvJn+5LmDI4=
+Received: by mail-wm1-f51.google.com with SMTP id a65so6839373wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Aug 2020 18:35:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533OAcWBQsLJw4ohM0bVqpt3dAmr0/lqRCeYMfHABKBlbqJAoo9U
+        ya1wMAlKQMomFZQoDNofyesFiLLi/eDsuzdW2EKbtw==
+X-Google-Smtp-Source: ABdhPJyYDWVWk+/eFi0FJX/LuTNS1lOPnideF7PaS5X0ejA+L68tTArSn1hMT49k/7qw7ckWeiQo1VUVs2+8b5+fEY8=
+X-Received: by 2002:a7b:c76e:: with SMTP id x14mr303768wmk.176.1598578535632;
+ Thu, 27 Aug 2020 18:35:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <a770d45d-b147-a8c5-b7f8-30d668cbed84@intel.com>
+ <4BDFD364-798C-4537-A88E-F94F101F524B@amacapital.net> <CAMe9rOoTjSwRSPuqP6RKkDzPA_VPh5gVYRVFJ-ezAD4Et-FUng@mail.gmail.com>
+In-Reply-To: <CAMe9rOoTjSwRSPuqP6RKkDzPA_VPh5gVYRVFJ-ezAD4Et-FUng@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 27 Aug 2020 18:35:22 -0700
+X-Gmail-Original-Message-ID: <CALCETrW=-ahC7GUCCyX7nPjCHfG3tiyDespud2Z7UbB6yWWWAA@mail.gmail.com>
+Message-ID: <CALCETrW=-ahC7GUCCyX7nPjCHfG3tiyDespud2Z7UbB6yWWWAA@mail.gmail.com>
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Thu, Aug 27, 2020 at 12:38 PM H.J. Lu <hjl.tools@gmail.com> wrote:
+>
+> On Thu, Aug 27, 2020 at 11:56 AM Andy Lutomirski <luto@amacapital.net> wr=
+ote:
+> >
+> >
+> >
+> > > On Aug 27, 2020, at 11:13 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wr=
+ote:
+> > >
+> > > =EF=BB=BFOn 8/27/2020 6:36 AM, Florian Weimer wrote:
+> > >> * H. J. Lu:
+> > >>>> On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com=
+> wrote:
+> > >>>>>
+> > >>>>> * Dave Martin:
+> > >>>>>
+> > >>>>>> You're right that this has implications: for i386, libc probably=
+ pulls
+> > >>>>>> more arguments off the stack than are really there in some situa=
+tions.
+> > >>>>>> This isn't a new problem though.  There are already generic prct=
+ls with
+> > >>>>>> fewer than 4 args that are used on x86.
+> > >>>>>
+> > >>>>> As originally posted, glibc prctl would have to know that it has =
+to pull
+> > >>>>> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  =
+But
+> > >>>>> then the u64 argument is a problem for arch_prctl as well.
+> > >>>>>
+> > >>>
+> > >>> Argument of ARCH_X86_CET_DISABLE is int and passed in register.
+> > >> The commit message and the C source say otherwise, I think (not sure
+> > >> about the C source, not a kernel hacker).
+> > >
+> > > H.J. Lu suggested that we fix x86 arch_prctl() to take four arguments=
+, and then keep MMAP_SHSTK as an arch_prctl().  Because now the map flags a=
+nd size are all in registers, this also solves problems being pointed out e=
+arlier.  Without a wrapper, the shadow stack mmap call (from user space) wi=
+ll be:
+> > >
+> > > syscall(_NR_arch_prctl, ARCH_X86_CET_MMAP_SHSTK, size, MAP_32BIT).
+> >
+> > I admit I don=E2=80=99t see a show stopping technical reason we can=E2=
+=80=99t add arguments to an existing syscall, but I=E2=80=99m pretty sure i=
+t=E2=80=99s unprecedented, and it doesn=E2=80=99t seem like a good idea.
+>
+> prctl prototype is:
+>
+> extern int prctl (int __option, ...)
+>
+> and implemented in kernel as:
+>
+>       int prctl(int option, unsigned long arg2, unsigned long arg3,
+>                  unsigned long arg4, unsigned long arg5);
+>
+> Not all prctl operations take all 5 arguments.   It also applies
+> to arch_prctl.  It is quite normal for different operations of
+> arch_prctl to take different numbers of arguments.
 
-per-vCPU timer_advance_ns should be set to 0 if timer mode is not tscdeadline 
-otherwise we waste cpu cycles in the function lapic_timer_int_injected(), 
-especially on AMD platform which doesn't support tscdeadline mode. We can 
-reset timer_advance_ns to the initial value if switch back to tscdealine 
-timer mode.
+If by "quite normal" you mean "does not happen", then I agree.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/lapic.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 654649b..abc296d 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1499,10 +1499,16 @@ static void apic_update_lvtt(struct kvm_lapic *apic)
- 			kvm_lapic_set_reg(apic, APIC_TMICT, 0);
- 			apic->lapic_timer.period = 0;
- 			apic->lapic_timer.tscdeadline = 0;
-+			if (timer_mode == APIC_LVT_TIMER_TSCDEADLINE &&
-+				lapic_timer_advance_dynamic)
-+				apic->lapic_timer.timer_advance_ns = LAPIC_TIMER_ADVANCE_NS_INIT;
- 		}
- 		apic->lapic_timer.timer_mode = timer_mode;
- 		limit_periodic_timer_frequency(apic);
- 	}
-+	if (timer_mode != APIC_LVT_TIMER_TSCDEADLINE &&
-+		lapic_timer_advance_dynamic)
-+		apic->lapic_timer.timer_advance_ns = 0;
- }
- 
- /*
--- 
-2.7.4
-
+In any event, I will not have anything to do with a patch that changes
+an existing syscall signature unless Linus personally acks it.  So if
+you want to email him and linux-abi, be my guest.
