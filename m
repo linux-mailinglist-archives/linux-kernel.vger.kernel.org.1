@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66332256247
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367CC25624F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgH1U4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:56:35 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:46728 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgH1U40 (ORCPT
+        id S1727819AbgH1U5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 16:57:01 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:42060 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgH1U41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:56:26 -0400
-Received: by mail-il1-f193.google.com with SMTP id c6so1792988ilo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:56:25 -0700 (PDT)
+        Fri, 28 Aug 2020 16:56:27 -0400
+Received: by mail-il1-f194.google.com with SMTP id t13so1810838ile.9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:56:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vV/NJwKiI4ho72v7Wl7XJgGkuK2ZmPRXa/ZcvRowyvA=;
-        b=IrmJ0iwDDmZtVnR1ECjKi0XafI+rJ5pn4/CSX1dyaGY99JDL9/XpVSAERAVvWAEhet
-         yGPjuWFa2SBTP+KII+epxd4rBHjzuYicOYh4gcfSYOtGmWAjmxSPcwCJmHrMjLMhziBh
-         aHvxkeJKWyDcXp4mDAQKoTuja5WWdF4V4OJ+ChTuvv3T67UABSuL8a4S2ykzWSeD4rHB
-         oWszO3qkxaU7SnzFldmx/+hwedwzvR1BbUd65sBtQNolL8cue9RiWXezYmTY+HpuzkuW
-         73oiLA3Pvi45l3ew5k+QHn+p3p7wZ5o3NDwdPrJmzqMBcePzKA8czlsPfN4hSq2BXTkX
-         5lUA==
-X-Gm-Message-State: AOAM533ZyGp7r2sWMN9CehL6u7UyRVoVOA6QmyjZEEM2Hgfz5fbwyFv8
-        ty1vz6h7GyOQ3rYguBUYUQ==
-X-Google-Smtp-Source: ABdhPJxeyzFQbIEPzgdKe3IQHVj4oqKwQlWYU1KbBXmt1r7n3YD7Cg3Dkt75pGMYCugHG/G3suIeFQ==
-X-Received: by 2002:a05:6e02:ef2:: with SMTP id j18mr642058ilk.2.1598648185312;
-        Fri, 28 Aug 2020 13:56:25 -0700 (PDT)
+        bh=Mv5bR3+D06zbxqvFs+zuZPo2cV/Tfy8G7nPGXO/hjAU=;
+        b=mlEFjLMn6Ycjq7otWvcjQ0dpFB8yfwwAdy61YGWLhpeyTTIrYTfV1Xr2ELqaT7+sb/
+         OZY99vvMEdG+QlvXNJU3HWgLJTjnjEmk1Uts2XoA2Hi7Job8KDn1XaUncFCdd1Nkk5Gr
+         N53vFydlh2Gjh8+feMJSmd5dm8aM7NMpa6vXT6OCi8SCCH0uFWU6/komNEiKR5jIuRyI
+         AKIuB5dqlC5YlfvtM+VP2NcDuURMgDDQUTLvZehQuh+jUaid/kBCc55r5arjQgL8jw66
+         KBB/aT88sByTsC170VB/6jUtwbLO1K4l37jTNBdzxF+a1RehnR1Yqh5qmi6BCpOcTeUv
+         0yTQ==
+X-Gm-Message-State: AOAM530HQ1PlGsCY7V/LE0VDqNH3clWy1Yit922UDpUncOZPxyV7y43j
+        Otc2SQ5iZBozgxHBJo5K8A==
+X-Google-Smtp-Source: ABdhPJyxOG80OGdnAhzUR9EE/kBXC0gtLzjMiKCfzG/7ihXt64wtyAdyn2CfQE8oPVG2Xhc9SzNmbQ==
+X-Received: by 2002:a92:a1c5:: with SMTP id b66mr596524ill.71.1598648186927;
+        Fri, 28 Aug 2020 13:56:26 -0700 (PDT)
 Received: from xps15.herring.priv ([64.188.179.249])
-        by smtp.googlemail.com with ESMTPSA id l203sm147089ioa.31.2020.08.28.13.56.22
+        by smtp.googlemail.com with ESMTPSA id l203sm147089ioa.31.2020.08.28.13.56.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 13:56:24 -0700 (PDT)
+        Fri, 28 Aug 2020 13:56:26 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: [PATCH v2 3/9] arm64: perf: Enable pmu counter direct access for perf event on armv8
-Date:   Fri, 28 Aug 2020 14:56:08 -0600
-Message-Id: <20200828205614.3391252-4-robh@kernel.org>
+Subject: [PATCH v2 4/9] tools/include: Add an initial math64.h
+Date:   Fri, 28 Aug 2020 14:56:09 -0600
+Message-Id: <20200828205614.3391252-5-robh@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200828205614.3391252-1-robh@kernel.org>
 References: <20200828205614.3391252-1-robh@kernel.org>
@@ -61,168 +61,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
+Add an initial math64.h similar to linux/math64.h with functions
+mul_u64_u64_div64() and mul_u64_u32_shr(). This isn't a direct copy of
+include/linux/math64.h as that doesn't define mul_u64_u64_div64().
 
-Keep track of event opened with direct access to the hardware counters
-and modify permissions while they are open.
+Implementation was written by Peter Zilkstra based on linux/math64.h
+and div64.h[1]. The original implementation was not optimal on arm64 as
+__int128 division is not optimal with a call out to __udivti3, so I
+dropped the __int128 variant of mul_u64_u64_div64().
 
-The strategy used here is the same which x86 uses: everytime an event
-is mapped, the permissions are set if required. The atomic field added
-in the mm_context helps keep track of the different event opened and
-de-activate the permissions when all are unmapped.
-We also need to update the permissions in the context switch code so
-that tasks keep the right permissions.
+[1] https://lore.kernel.org/lkml/20200322101848.GF2452@worktop.programming.kicks-ass.net/
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-v2:
- - Move mapped/unmapped into arm64 code. Fixes arm32.
- - Rebase on cap_user_time_short changes
+I'm not really sure what's desired here. Unlike most of the headers copied
+into tools/, this one is not a copy from include/linux/. Perhaps adding
+mul_u64_u64_div64() to include/linux/math64.h first and then copying it
+over is preferred? Or I could just move this into libperf?
 
-Changes from Raphael's v4:
-  - Drop homogeneous check
-  - Disable access for chained counters
-  - Set pmc_width in user page
----
- arch/arm64/include/asm/mmu.h         |  5 ++++
- arch/arm64/include/asm/mmu_context.h |  2 ++
- arch/arm64/include/asm/perf_event.h  | 14 ++++++++++
- arch/arm64/kernel/perf_event.c       | 41 ++++++++++++++++++++++++++++
- 4 files changed, 62 insertions(+)
 
-diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-index a7a5ecaa2e83..52cfdb676f06 100644
---- a/arch/arm64/include/asm/mmu.h
-+++ b/arch/arm64/include/asm/mmu.h
-@@ -19,6 +19,11 @@
- 
- typedef struct {
- 	atomic64_t	id;
-+	/*
-+	 * non-zero if userspace have access to hardware
-+	 * counters directly.
-+	 */
-+	atomic_t	pmu_direct_access;
- #ifdef CONFIG_COMPAT
- 	void		*sigpage;
- #endif
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index f2d7537d6f83..d24589ecb07a 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -21,6 +21,7 @@
- #include <asm/proc-fns.h>
- #include <asm-generic/mm_hooks.h>
- #include <asm/cputype.h>
-+#include <asm/perf_event.h>
- #include <asm/sysreg.h>
- #include <asm/tlbflush.h>
- 
-@@ -224,6 +225,7 @@ static inline void __switch_mm(struct mm_struct *next)
- 	}
- 
- 	check_and_switch_context(next);
-+	perf_switch_user_access(next);
- }
- 
- static inline void
-diff --git a/arch/arm64/include/asm/perf_event.h b/arch/arm64/include/asm/perf_event.h
-index 2c2d7dbe8a02..a025d9595d51 100644
---- a/arch/arm64/include/asm/perf_event.h
-+++ b/arch/arm64/include/asm/perf_event.h
-@@ -8,6 +8,7 @@
- 
- #include <asm/stack_pointer.h>
- #include <asm/ptrace.h>
-+#include <linux/mm_types.h>
- 
- #define	ARMV8_PMU_MAX_COUNTERS	32
- #define	ARMV8_PMU_COUNTER_MASK	(ARMV8_PMU_MAX_COUNTERS - 1)
-@@ -251,4 +252,17 @@ extern unsigned long perf_misc_flags(struct pt_regs *regs);
- 	(regs)->pstate = PSR_MODE_EL1h;	\
- }
- 
-+static inline void perf_switch_user_access(struct mm_struct *mm)
-+{
-+	if (!IS_ENABLED(CONFIG_PERF_EVENTS))
-+		return;
+ tools/include/linux/math64.h | 75 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 tools/include/linux/math64.h
+
+diff --git a/tools/include/linux/math64.h b/tools/include/linux/math64.h
+new file mode 100644
+index 000000000000..4ad45d5943dc
+--- /dev/null
++++ b/tools/include/linux/math64.h
+@@ -0,0 +1,75 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_MATH64_H
++#define _LINUX_MATH64_H
 +
-+	if (atomic_read(&mm->context.pmu_direct_access)) {
-+		write_sysreg(ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR,
-+			     pmuserenr_el0);
-+	} else {
-+		write_sysreg(0, pmuserenr_el0);
-+	}
++#include <linux/types.h>
++
++#ifdef __x86_64__
++static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
++{
++	u64 q;
++
++	asm ("mulq %2; divq %3" : "=a" (q)
++				: "a" (a), "rm" (b), "rm" (c)
++				: "rdx");
++
++	return q;
++}
++#define mul_u64_u64_div64 mul_u64_u64_div64
++#endif
++
++#ifdef __SIZEOF_INT128__
++static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
++{
++	return (u64)(((unsigned __int128)a * b) >> shift);
 +}
 +
- #endif
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 2727d126cecd..cf44591f5be1 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -836,6 +836,41 @@ static int armv8pmu_access_event_idx(struct perf_event *event)
- 	return event->hw.idx;
- }
- 
-+static void refresh_pmuserenr(void *mm)
++#else
++
++#ifdef __i386__
++static inline u64 mul_u32_u32(u32 a, u32 b)
 +{
-+	perf_switch_user_access(mm);
++	u32 high, low;
++
++	asm ("mull %[b]" : "=a" (low), "=d" (high)
++			 : [a] "a" (a), [b] "rm" (b) );
++
++	return low | ((u64)high) << 32;
++}
++#else
++static inline u64 mul_u32_u32(u32 a, u32 b)
++{
++	return (u64)a * b;
++}
++#endif
++
++static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
++{
++	u32 ah, al;
++	u64 ret;
++
++	al = a;
++	ah = a >> 32;
++
++	ret = mul_u32_u32(al, b) >> shift;
++	if (ah)
++		ret += mul_u32_u32(ah, b) << (32 - shift);
++
++	return ret;
 +}
 +
-+static void armv8pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
++#endif	/* __SIZEOF_INT128__ */
++
++#ifndef mul_u64_u64_div64
++static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
 +{
-+	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
-+		return;
++	u64 quot, rem;
 +
-+	/*
-+	 * This function relies on not being called concurrently in two
-+	 * tasks in the same mm.  Otherwise one task could observe
-+	 * pmu_direct_access > 1 and return all the way back to
-+	 * userspace with user access disabled while another task is still
-+	 * doing on_each_cpu_mask() to enable user access.
-+	 *
-+	 * For now, this can't happen because all callers hold mmap_lock
-+	 * for write.  If this changes, we'll need a different solution.
-+	 */
-+	lockdep_assert_held_write(&mm->mmap_lock);
++	quot = a / c;
++	rem = a % c;
 +
-+	if (atomic_inc_return(&mm->context.pmu_direct_access) == 1)
-+		on_each_cpu(refresh_pmuserenr, mm, 1);
++	return quot * b + (rem * b) / c;
 +}
++#endif
 +
-+static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
-+{
-+	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
-+		return;
-+
-+	if (atomic_dec_and_test(&mm->context.pmu_direct_access))
-+		on_each_cpu_mask(mm_cpumask(mm), refresh_pmuserenr, NULL, 1);
-+}
-+
- /*
-  * Add an event filter to a given event.
-  */
-@@ -1112,6 +1147,8 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
- 	cpu_pmu->filter_match		= armv8pmu_filter_match;
- 
- 	cpu_pmu->pmu.event_idx		= armv8pmu_access_event_idx;
-+	cpu_pmu->pmu.event_mapped	= armv8pmu_event_mapped;
-+	cpu_pmu->pmu.event_unmapped	= armv8pmu_event_unmapped;
- 
- 	cpu_pmu->name			= name;
- 	cpu_pmu->map_event		= map_event;
-@@ -1272,6 +1309,10 @@ void arch_perf_update_userpage(struct perf_event *event,
- 	userpg->cap_user_time = 0;
- 	userpg->cap_user_time_zero = 0;
- 	userpg->cap_user_time_short = 0;
-+	userpg->cap_user_rdpmc = !!(event->hw.flags & ARMPMU_EL0_RD_CNTR);
-+
-+	if (userpg->cap_user_rdpmc)
-+		userpg->pmc_width = armv8pmu_event_is_64bit(event) ? 64 : 32;
- 
- 	do {
- 		rd = sched_clock_read_begin(&seq);
--- 
++#endif /* _LINUX_MATH64_H */
+--
 2.25.1
-
