@@ -2,267 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FB92554AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC152554B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 08:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgH1Gvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 02:51:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgH1Gva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 02:51:30 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AACB220825;
-        Fri, 28 Aug 2020 06:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598597489;
-        bh=/bhjJvxPGi0YxD+jDxjpPtYNclCNwWY9zpiia8ZDhCA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m+NiDIn6Xja1b4Arx3GBrQKP9KH40E5H+ysjB5zuUJtKdtHvV9n+YsQusa8lxVt2i
-         ffQqSDy0TV4qnzlB9Rq26sisxGmXN2owFlOX9PHeC9dBLE/nwL1j0EU0+qTDc95A1h
-         cReJsi/Enkve4dAcvZgX3f59Qn0SH28TPXnlFV/s=
-Date:   Fri, 28 Aug 2020 12:21:25 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
-Message-ID: <20200828065125.GI2639@vkoul-mobl>
-References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
- <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+        id S1727941AbgH1Gz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 02:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgH1Gz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 02:55:27 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAEAC061264;
+        Thu, 27 Aug 2020 23:55:27 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mt12so94850pjb.4;
+        Thu, 27 Aug 2020 23:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=+JUN11wzB4//nQqIzalGuMruUm78CprFXuE4iMliK+A=;
+        b=QHEhcA+L2xDZeLWaOimRKxMvcWKUV7APQj13AGQse1tQz3oysNoNSOkHG+jpm5RNx4
+         vyTGU8HxgauBixzldRhKqsl5qWqOGKgC0R1gwOlnpwyfzOyEfFP9SturS3sMgSHA//Uo
+         eCHXavTvDGOEEVPGzGvzbPbFD/VZ2h7ZWfLB9vKwS9G+DPJnwV7TWhrxEfTp886e3cEW
+         TjzveX8PL40tHXSj4eH12gqa33hWfhdy1pQjWzFwJBDXUZBgP60ahgKxXx47e4bhK5rs
+         x51wCeaCAT3xZAD9TIGpmQ6F4YY2QGbnonTNSzbwSjVsDsn/TgUC0U2fNoGnuyrAIE61
+         2uGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=+JUN11wzB4//nQqIzalGuMruUm78CprFXuE4iMliK+A=;
+        b=c1DVz4qbpU0NT4pVodzMRdWaDOJIABoOxyNQjNhD3iz2eq+AQ4u6dkifgdmhimVCyP
+         PztwE5F6Rtvn4H6ZCw7Ic5+DoC37iFEoaXMm6lv27djcyykBW61/hYCjc+e296/MjukA
+         7VIpTnVgXubfcRtPW6/wROQYPH9sKhBfUfPUVLLEE8mZ6uCmEqMGpIY4AipXZiClgapF
+         TEorZLyHzeDEHCF6NUSUYY2WfH6mfId15avNEW/bqaadqRFFJ7obHhaJ7x83PACq+6S1
+         luoQTNX52C3Xw4poRyb7WWx/91t4STZPKIFDeXsdrSnNEaDK1pRZge9YHI+0atZyEmrf
+         uimw==
+X-Gm-Message-State: AOAM531v4PU5mivw/cVEc4mXPn9i84fV81NPxBvQjhunnXH4+++/o7mJ
+        tmKpd5Ni5VitZGbobFTL6PnRGkIdXjM=
+X-Google-Smtp-Source: ABdhPJzY1y30hYoc7MXm9GmsWDJ0rbKwyOd+c7kG3lLflh5q+WfA5awxRQg1RVn9pL5erj3EeWb06A==
+X-Received: by 2002:a17:902:b497:: with SMTP id y23mr191262plr.251.1598597727069;
+        Thu, 27 Aug 2020 23:55:27 -0700 (PDT)
+Received: from localhost (61-68-212-105.tpgi.com.au. [61.68.212.105])
+        by smtp.gmail.com with ESMTPSA id j10sm306996pff.171.2020.08.27.23.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2020 23:55:26 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 16:55:21 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3] mm: Fix kthread_use_mm() vs TLB invalidate
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-arch@vger.kernel.org, peterz@infradead.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, axboe@kernel.dk,
+        hch@lst.de, jannh@google.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, luto@amacapital.net,
+        mathieu.desnoyers@efficios.com, torvalds@linux-foundation.org,
+        will@kernel.org
+References: <20200721154106.GE10769@hirez.programming.kicks-ass.net>
+        <87y2m8muag.fsf@linux.ibm.com>
+        <20200821130445.GP1362448@hirez.programming.kicks-ass.net>
+        <1598583976.kyraed50wg.astroid@bobo.none>
+In-Reply-To: <1598583976.kyraed50wg.astroid@bobo.none>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+Message-Id: <1598597607.h04xhbtpuo.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Excerpts from Nicholas Piggin's message of August 28, 2020 1:26 pm:
+> Excerpts from peterz@infradead.org's message of August 21, 2020 11:04 pm:
+>> On Fri, Aug 21, 2020 at 11:09:51AM +0530, Aneesh Kumar K.V wrote:
+>>> Peter Zijlstra <peterz@infradead.org> writes:
+>>>=20
+>>> > For SMP systems using IPI based TLB invalidation, looking at
+>>> > current->active_mm is entirely reasonable. This then presents the
+>>> > following race condition:
+>>> >
+>>> >
+>>> >   CPU0			CPU1
+>>> >
+>>> >   flush_tlb_mm(mm)	use_mm(mm)
+>>> >     <send-IPI>
+>>> > 			  tsk->active_mm =3D mm;
+>>> > 			  <IPI>
+>>> > 			    if (tsk->active_mm =3D=3D mm)
+>>> > 			      // flush TLBs
+>>> > 			  </IPI>
+>>> > 			  switch_mm(old_mm,mm,tsk);
+>>> >
+>>> >
+>>> > Where it is possible the IPI flushed the TLBs for @old_mm, not @mm,
+>>> > because the IPI lands before we actually switched.
+>>> >
+>>> > Avoid this by disabling IRQs across changing ->active_mm and
+>>> > switch_mm().
+>>> >
+>>> > [ There are all sorts of reasons this might be harmless for various
+>>> > architecture specific reasons, but best not leave the door open at
+>>> > all. ]
+>>>=20
+>>>=20
+>>> Do we have similar race with exec_mmap()? I am looking at exec_mmap()
+>>> runnning parallel to do_exit_flush_lazy_tlb(). We can get
+>>>=20
+>>> 	if (current->active_mm =3D=3D mm) {
+>>>=20
+>>> true and if we don't disable irq around updating tsk->mm/active_mm we
+>>> can end up doing mmdrop on wrong mm?
+>>=20
+>> exec_mmap() is called after de_thread(), there should not be any mm
+>> specific invalidations around I think.
+>>=20
+>> Then again, CLONE_VM without CLONE_THREAD might still be possible, so
+>> yeah, we probably want IRQs disabled there too, just for consistency and
+>> general paranoia if nothing else.
+>=20
+> The problem is probably not this TLB flushing race, but I think there
+> is a lazy tlb race.
 
-On 18-08-20, 22:06, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Add a slave-level property and program the SCP_INT1_MASK as desired by
-> the codec driver. Since there is no DisCo property this has to be an
-> implementation-specific firmware property or hard-coded in the driver.
-> 
-> The only functionality change is that implementation-defined
-> interrupts are no longer set for amplifiers - those interrupts are
-> typically for jack detection or acoustic event detection/hotwording.
-> 
-> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/soundwire/bus.c         | 12 ++++++------
->  include/linux/soundwire/sdw.h   |  2 ++
->  sound/soc/codecs/max98373-sdw.c |  3 +++
->  sound/soc/codecs/rt1308-sdw.c   |  2 ++
->  sound/soc/codecs/rt5682-sdw.c   |  4 ++++
->  sound/soc/codecs/rt700-sdw.c    |  4 ++++
->  sound/soc/codecs/rt711-sdw.c    |  4 ++++
->  sound/soc/codecs/rt715-sdw.c    |  4 ++++
->  sound/soc/codecs/wsa881x.c      |  1 +
+Hmm, is it possible for something to be holding the mm_users when we
+exec? That could actually make it a problem for TLB flushing too.
 
-This touches codecs, can you Ack it please
-
-Ideally this should have been split up to header, the codec updates and
-finally the bus change!
-
-
->  9 files changed, 30 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index e6e0fb9a81b4..3b6a87bc254e 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -1184,13 +1184,13 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
->  		return ret;
->  
->  	/*
-> -	 * Set bus clash, parity and SCP implementation
-> -	 * defined interrupt mask
-> -	 * TODO: Read implementation defined interrupt mask
-> -	 * from Slave property
-> +	 * Set SCP_INT1_MASK register, typically bus clash and
-> +	 * implementation-defined interrupt mask. The Parity detection
-> +	 * may not always be correct on startup so its use is
-> +	 * device-dependent, it might e.g. only be enabled in
-> +	 * steady-state after a couple of frames.
->  	 */
-> -	val = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
-> -					SDW_SCP_INT1_PARITY;
-> +	val = slave->prop.scp_int1_mask;
->  
->  	/* Enable SCP interrupts */
->  	ret = sdw_update(slave, SDW_SCP_INTMASK1, val, val);
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index 76052f12c9f7..6d91f2ca20b2 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -355,6 +355,7 @@ struct sdw_dpn_prop {
->   * @dp0_prop: Data Port 0 properties
->   * @src_dpn_prop: Source Data Port N properties
->   * @sink_dpn_prop: Sink Data Port N properties
-> + * @scp_int1_mask: SCP_INT1_MASK desired settings
->   */
->  struct sdw_slave_prop {
->  	u32 mipi_revision;
-> @@ -376,6 +377,7 @@ struct sdw_slave_prop {
->  	struct sdw_dp0_prop *dp0_prop;
->  	struct sdw_dpn_prop *src_dpn_prop;
->  	struct sdw_dpn_prop *sink_dpn_prop;
-> +	u8 scp_int1_mask;
->  };
->  
->  /**
-> diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
-> index 5fe724728e84..17fd1989e873 100644
-> --- a/sound/soc/codecs/max98373-sdw.c
-> +++ b/sound/soc/codecs/max98373-sdw.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_type.h>
-> +#include <linux/soundwire/sdw_registers.h>
->  #include "max98373.h"
->  #include "max98373-sdw.h"
->  
-> @@ -287,6 +288,8 @@ static int max98373_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-> +
->  	/* BITMAP: 00001000  Dataport 3 is active */
->  	prop->source_ports = BIT(3);
->  	/* BITMAP: 00000010  Dataport 1 is active */
-> diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-> index b0ba0d2acbdd..5cf10fd447eb 100644
-> --- a/sound/soc/codecs/rt1308-sdw.c
-> +++ b/sound/soc/codecs/rt1308-sdw.c
-> @@ -123,6 +123,8 @@ static int rt1308_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-> +
->  	prop->paging_support = true;
->  
->  	/* first we need to allocate memory for set bits in port lists */
-> diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-> index 94bf6bee78e6..544073975020 100644
-> --- a/sound/soc/codecs/rt5682-sdw.c
-> +++ b/sound/soc/codecs/rt5682-sdw.c
-> @@ -19,6 +19,7 @@
->  #include <linux/mutex.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_type.h>
-> +#include <linux/soundwire/sdw_registers.h>
->  #include <sound/core.h>
->  #include <sound/pcm.h>
->  #include <sound/pcm_params.h>
-> @@ -542,6 +543,9 @@ static int rt5682_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
-> +		SDW_SCP_INT1_PARITY;
-> +
->  	prop->paging_support = false;
->  
->  	/* first we need to allocate memory for set bits in port lists */
-> diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
-> index 4d14048d1197..a46b957a3f1b 100644
-> --- a/sound/soc/codecs/rt700-sdw.c
-> +++ b/sound/soc/codecs/rt700-sdw.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_type.h>
-> +#include <linux/soundwire/sdw_registers.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
->  #include <sound/soc.h>
-> @@ -338,6 +339,9 @@ static int rt700_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
-> +		SDW_SCP_INT1_PARITY;
-> +
->  	prop->paging_support = false;
->  
->  	/* first we need to allocate memory for set bits in port lists */
-> diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-> index 45b928954b58..a877e366fec5 100644
-> --- a/sound/soc/codecs/rt711-sdw.c
-> +++ b/sound/soc/codecs/rt711-sdw.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_type.h>
-> +#include <linux/soundwire/sdw_registers.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
->  #include <sound/soc.h>
-> @@ -342,6 +343,9 @@ static int rt711_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
-> +		SDW_SCP_INT1_PARITY;
-> +
->  	prop->paging_support = false;
->  
->  	/* first we need to allocate memory for set bits in port lists */
-> diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-> index d11b23d6b240..0eb8943ed6ff 100644
-> --- a/sound/soc/codecs/rt715-sdw.c
-> +++ b/sound/soc/codecs/rt715-sdw.c
-> @@ -12,6 +12,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_type.h>
-> +#include <linux/soundwire/sdw_registers.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/regmap.h>
-> @@ -436,6 +437,9 @@ static int rt715_read_prop(struct sdw_slave *slave)
->  	unsigned long addr;
->  	struct sdw_dpn_prop *dpn;
->  
-> +	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
-> +		SDW_SCP_INT1_PARITY;
-> +
->  	prop->paging_support = false;
->  
->  	/* first we need to allocate memory for set bits in port lists */
-> diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-> index d39d479e2378..68e774e69c85 100644
-> --- a/sound/soc/codecs/wsa881x.c
-> +++ b/sound/soc/codecs/wsa881x.c
-> @@ -1112,6 +1112,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
->  	wsa881x->sconfig.type = SDW_STREAM_PDM;
->  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
->  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
-> +	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
->  	gpiod_direction_output(wsa881x->sd_n, 1);
->  
->  	wsa881x->regmap = devm_regmap_init_sdw(pdev, &wsa881x_regmap_config);
-> -- 
-> 2.17.1
-
--- 
-~Vinod
+Thanks,
+Nick
