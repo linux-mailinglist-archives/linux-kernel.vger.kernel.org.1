@@ -2,154 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B231E255881
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AE1255883
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 12:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgH1K1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 06:27:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
+        id S1729058AbgH1K1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 06:27:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:46004 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728936AbgH1K0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 06:26:52 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF03C208FE;
-        Fri, 28 Aug 2020 10:26:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598610412;
-        bh=sGwLxXatxYVVjkeAogvWxa4Nvg3MhA5K+YdBEeR09d8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=koulL5hz+rIBcqdX3nLjrHH9Uc7NMFyBSOxX8SvwtD56AulrYa+JYVdSqsdhy4EMv
-         Cp+R8z8NT99CX2Lbwf9MHtYjgZbJsKNumvPUXZhP8EbocX11lHl+SMfKDFIsdBla6c
-         vFBbirYFfXWAzSGIwQwBLqf4EQxlS5eJ/7zihcVs=
-Date:   Fri, 28 Aug 2020 12:27:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH 06/17] virt: acrn: Introduce VM management interfaces
-Message-ID: <20200828102704.GB1470435@kroah.com>
-References: <20200825024516.16766-1-shuo.a.liu@intel.com>
- <20200825024516.16766-7-shuo.a.liu@intel.com>
+        id S1729039AbgH1K13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 06:27:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8906331B;
+        Fri, 28 Aug 2020 03:27:28 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A3BB3F68F;
+        Fri, 28 Aug 2020 03:27:27 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 11:27:25 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     vincent.donnefort@arm.com
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+Message-ID: <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200825024516.16766-7-shuo.a.liu@intel.com>
+In-Reply-To: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:45:06AM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
+On 08/28/20 10:00, vincent.donnefort@arm.com wrote:
+> From: Vincent Donnefort <vincent.donnefort@arm.com>
 > 
-> The VM management interfaces expose several VM operations to ACRN
-> userspace via ioctls. For example, creating VM, starting VM, destroying
-> VM and so on.
+> rq->cpu_capacity is a key element in several scheduler parts, such as EAS
+> task placement and load balancing. Tracking this value enables testing
+> and/or debugging by a toolkit.
 > 
-> The ACRN Hypervisor needs to exchange data with the ACRN userspace
-> during the VM operations. HSM provides VM operation ioctls to the ACRN
-> userspace and communicates with the ACRN Hypervisor for VM operations
-> via hypercalls.
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 > 
-> HSM maintains a list of User VM. Each User VM will be bound to an
-> existing file descriptor of /dev/acrn_hsm. The User VM will be
-> destroyed when the file descriptor is closed.
-> 
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Yu Wang <yu1.wang@intel.com>
-> Cc: Reinette Chatre <reinette.chatre@intel.com>
-> ---
->  drivers/virt/acrn/Makefile    |  2 +-
->  drivers/virt/acrn/acrn_drv.h  | 16 ++++++++-
->  drivers/virt/acrn/hsm.c       | 58 +++++++++++++++++++++++++++++-
->  drivers/virt/acrn/hypercall.h | 62 ++++++++++++++++++++++++++++++++
->  drivers/virt/acrn/vm.c        | 66 +++++++++++++++++++++++++++++++++++
->  include/uapi/linux/acrn.h     | 36 +++++++++++++++++++
->  6 files changed, 237 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/virt/acrn/vm.c
-> 
-> diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-> index 6920ed798aaf..cf8b4ed5e74e 100644
-> --- a/drivers/virt/acrn/Makefile
-> +++ b/drivers/virt/acrn/Makefile
-> @@ -1,3 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
-> -acrn-y := hsm.o
-> +acrn-y := hsm.o vm.o
-> diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-> index 36f43d8d43d0..35fcb5cbbff3 100644
-> --- a/drivers/virt/acrn/acrn_drv.h
-> +++ b/drivers/virt/acrn/acrn_drv.h
-> @@ -10,12 +10,26 @@
->  
->  #define ACRN_INVALID_VMID (0xffffU)
->  
-> +#define ACRN_VM_FLAG_DESTROYED		0U
-> +extern struct list_head acrn_vm_list;
-> +extern rwlock_t acrn_vm_list_lock;
->  /**
->   * struct acrn_vm - Properties of ACRN User VM.
-> + * @list:	Entry within global list of all VMs
->   * @vmid:	User VM ID
-> + * @vcpu_num:	Number of virtual CPUs in the VM
-> + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
-> + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
->   */
->  struct acrn_vm {
-> -	u16	vmid;
-> +	struct list_head	list;
-> +	u16			vmid;
-> +	int			vcpu_num;
-> +	unsigned long		flags;
->  };
->  
-> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-> +			       struct acrn_vm_creation *vm_param);
-> +int acrn_vm_destroy(struct acrn_vm *vm);
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+
+[...]
+
+> +int sched_trace_rq_cpu_capacity(struct rq *rq)
+> +{
+> +	return rq ?
+> +#ifdef CONFIG_SMP
+> +		rq->cpu_capacity
+> +#else
+> +		SCHED_CAPACITY_SCALE
+> +#endif
+> +		: -1;
+> +}
+> +EXPORT_SYMBOL_GPL(sched_trace_rq_cpu_capacity);
 > +
->  #endif /* __ACRN_HSM_DRV_H */
-> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> index a08169f35c96..ed8921a6c68b 100644
-> --- a/drivers/virt/acrn/hsm.c
-> +++ b/drivers/virt/acrn/hsm.c
-> @@ -45,19 +45,75 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
->  static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->  			   unsigned long ioctl_param)
->  {
-> +	struct acrn_vm *vm = filp->private_data;
-> +	struct acrn_vm_creation *vm_param;
-> +	int ret = 0;
-> +
->  	if (cmd == ACRN_IOCTL_GET_API_VERSION) {
->  		if (copy_to_user((void __user *)ioctl_param,
->  				 &api_version, sizeof(api_version)))
->  			return -EFAULT;
-> +		return 0;
->  	}
->  
-> -	return 0;
-> +	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-> +		pr_err("ioctl 0x%x: Invalid VM state!\n", cmd);
 
-For this whole driver, you have a real 'struct device' to use, please
-use it for all of these error messages everywhere.  dev_err() gives you
-much more information than pr_err() does.
+The placement of this #ifdef looks odd to me. But FWIW
 
-Same everywhere in this patch series.
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 
-thanks,
+Cheers
 
-greg k-h
+--
+Qais Yousef
