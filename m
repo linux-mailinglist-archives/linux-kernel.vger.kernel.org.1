@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79510256020
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E2F256026
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 19:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgH1R4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 13:56:07 -0400
-Received: from correo.us.es ([193.147.175.20]:35980 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgH1R4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 13:56:07 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 56ED520A52E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 19:56:06 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 487DDDA704
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 19:56:06 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 3CD64DA78C; Fri, 28 Aug 2020 19:56:06 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 0A9D3DA7E1;
-        Fri, 28 Aug 2020 19:56:04 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 28 Aug 2020 19:56:04 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1727885AbgH1R61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 13:58:27 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:47008 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgH1R61 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 13:58:27 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id CB39542EF4E1;
-        Fri, 28 Aug 2020 19:56:03 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 19:56:03 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, mcroce@redhat.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] netfilter: xt_HMARK: Use ip_is_fragment() helper
-Message-ID: <20200828175603.GA756@salvia>
-References: <20200827140813.28624-1-yuehaibing@huawei.com>
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 10DFE201BD;
+        Fri, 28 Aug 2020 19:58:00 +0200 (CEST)
+Date:   Fri, 28 Aug 2020 19:57:59 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH RFC v6 1/6] dt-bindings: display: add Unisoc's drm master
+ bindings
+Message-ID: <20200828175759.GB660103@ravnborg.org>
+References: <1595930879-2478-1-git-send-email-kevin3.tang@gmail.com>
+ <1595930879-2478-2-git-send-email-kevin3.tang@gmail.com>
+ <20200728202732.GB1277651@ravnborg.org>
+ <CAFPSGXahb7KzsM3iZFjW=JjZAYr0h1vwMx2ROrwR=x8MCchn1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827140813.28624-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <CAFPSGXahb7KzsM3iZFjW=JjZAYr0h1vwMx2ROrwR=x8MCchn1Q@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=eyGgB6SCGB90EZ01wQQA:9 a=CjuIK1q_8ugA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 10:08:13PM +0800, YueHaibing wrote:
-> Use ip_is_fragment() to simpify code.
+Hi Kevin.
 
-Applied.
+> >
+> > Any specific reason why this is not a ports node like used by many other
+> > display bindings?
+> > In other words - I think this is too simple.
+> We only support one display pipeline now, other interface, like
+> DP(DisplayPort), HDMI...will be add later...
+> 
+>   ports:
+>     $ref: /schemas/types.yaml#/definitions/phandle-array
+>     description: |
+>       Should contain a list of phandles pointing to display interface port
+>       of dpu devices.. dpu definitions as defined in
+>       Documentation/devicetree/bindings/display/sprd/sprd,dpu.yaml
+
+There is nothing wrong having a ports node that is limited to a single
+port node. But please remember the binding describes the HW - so if the
+HW supports more than one port the binding should describe this.
+What the driver supports is not relevant for the binding.
+
+	Sam
