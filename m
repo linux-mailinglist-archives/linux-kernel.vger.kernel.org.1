@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A592559B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BFC2559B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbgH1L5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 07:57:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729257AbgH1L5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 07:57:13 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EB3E2078A;
-        Fri, 28 Aug 2020 11:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598615832;
-        bh=TOhlmPsIva1ZSS82EFbuu8cDMiEJaAX9xE3RopU/jlE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rFBtRc5t171E6t/XfdQBMG5xulHTXN51XZ83jRL5UBztuMFQiKvBwSEUCcp6KeTrL
-         t5/B8HGXReBr3NMXi2a8A1nmalsySQiZttC6GrKUlwiSkKqeVwLuUMdMg9tj3ZCFz3
-         qh3S+um3NCoUSlxC04QNpQQpNhEKwawHbCC6XIEQ=
-Date:   Fri, 28 Aug 2020 20:57:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Cc:     rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
-        oleg@redhat.com, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, tglx@linutronix.de, bp@alien8.de,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kprobes, x86/ptrace.h: fix regs argument order for i386
-Message-Id: <20200828205706.09f010c99f331b2ac03fcea7@kernel.org>
-In-Reply-To: <20200828113242.GA1424@cosmos>
-References: <20200828113242.GA1424@cosmos>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729314AbgH1L60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 07:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729295AbgH1L51 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 Aug 2020 07:57:27 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4011C06121B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:57:26 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id t9so544940pfq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=he/1Y5Z3SlUXhKbC55WmYLfVqWvQ3/UHR/4S+KYdVOA=;
+        b=jCFPhCXHofmlgkGJnYDXPFJNqBvZU7QtO+9+GO8EZSuInkwY0980++VLGNSUU73qjc
+         TD/JoChxAwl0YuZPu5FpTv5Z/MDmkruFiyMa4QTI6hl3hxGnZv2tGlXCWNXpb7FqYlBk
+         etcR+mEUuP1aEX/unZ9Hz6AubebPdHiN4bbfKas3/Jfg1ihh4YVL5qFBQvM41yjZnqkb
+         SRdDMpg21Ozuioj4YZHV0lG6vPDcQRo570/0kWaGoBe4gbiTaqVJdbVALEmt6cfGiPJF
+         Qbpm93IPBj+fOiQEf52torUMGzbU2jqd1Zygi8QgTQ74vi4J50m2f6Hff164DkR9tIzb
+         LUwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=he/1Y5Z3SlUXhKbC55WmYLfVqWvQ3/UHR/4S+KYdVOA=;
+        b=CV8v45lvo8l6zd79ELf+DZsbktwkhTDjJ4vfAxlvMXePZeOkUI3tXFw6xRuRvAi4hB
+         trZP6kV3Y951oW2Be3SyWuBUZDReXOZZ58Yy2kRWRmrETvoYkyBw9hXzjI8YMEFlPsF0
+         jZCZgyInrdrlV5Trjf+RIl8Sy26krRxcX3TYebzorM/AXNBIKxOXXIouKcSslBc3do1l
+         9R4dA92OpRkunKr7nPPCTzbCQstb+HZYmEt7vQy/EK8miC/2VZd6p2UXyopWiegCRsH5
+         rHN+EOsnfr1w0zLpsVk9IEVh5p08yPb2ECPleYeaYMvKT1Dfdpwj3Bf5/mE5vp/BcSmq
+         EO6g==
+X-Gm-Message-State: AOAM5313TewI/DpGQOqknsBfaWfn8p0B9QC2PL2EVnVBhWZ2bNUcccra
+        FT4O828FRQeInjsnTAjQhVp2
+X-Google-Smtp-Source: ABdhPJzK7GZyhXHBIKF1Skcpwd8jWllhXrq6DetBSfYkudsvOrJ4CpdNkylyF4haLgFaUSYh4pix+A==
+X-Received: by 2002:a62:2704:: with SMTP id n4mr1021505pfn.246.1598615846151;
+        Fri, 28 Aug 2020 04:57:26 -0700 (PDT)
+Received: from mani ([2409:4072:6d87:4cd4:5db4:99cb:1fe6:fc86])
+        by smtp.gmail.com with ESMTPSA id d10sm1229146pjg.0.2020.08.28.04.57.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 28 Aug 2020 04:57:25 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 17:27:18 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Amit Singh Tomar <amittomer25@gmail.com>
+Cc:     andre.przywara@arm.com, afaerber@suse.de, robh+dt@kernel.org,
+        cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 07/10] dt-bindings: reset: s700: Add binding constants
+ for mmc
+Message-ID: <20200828115718.GB9143@mani>
+References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
+ <1595180527-11320-8-git-send-email-amittomer25@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595180527-11320-8-git-send-email-amittomer25@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 17:02:46 +0530
-Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com> wrote:
-
-> On i386, the order of parameters passed on regs is eax,edx,and ecx
-> (as per regparm(3) calling conventions).
+On 0719, Amit Singh Tomar wrote:
+> This commit adds device tree binding reset constants for mmc controller
+> present on Actions S700 Soc.
 > 
-> Change the mapping in regs_get_kernel_argument(), so that arg1=ax
-> arg2=dx, and arg3=cx.
-> 
-> Running the selftests testcase kprobes_args_use.tc shows the result
-> as passed.
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 
-Good catch! BTW, this is for tracing (ftrace kprobe events), so the "tracing/kprobes:" tag is better.
-Anyway,
+I think Stephen should queue this one too but he is not in CC. Can you please
+resend it?
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Mani
 
-Thank you,
-
-> 
-> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 > ---
->  arch/x86/include/asm/ptrace.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes since v6:
+> 	* No change.
+> Changes since v5:
+>         * Added Mani's Reviewed-by: tag.
+> Changes since v4:
+>         * No change.
+> Changes since v3:
+>         * No change.
+> Changes since v2:
+>         * No change.
+> Changes since v1:
+>         * No change.
+> Changes since RFC:
+>         * added Rob's acked-by tag
+> ---
+>  include/dt-bindings/reset/actions,s700-reset.h | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-> index 40aa69d..d8324a2 100644
-> --- a/arch/x86/include/asm/ptrace.h
-> +++ b/arch/x86/include/asm/ptrace.h
-> @@ -327,8 +327,8 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
->  	static const unsigned int argument_offs[] = {
->  #ifdef __i386__
->  		offsetof(struct pt_regs, ax),
-> -		offsetof(struct pt_regs, cx),
->  		offsetof(struct pt_regs, dx),
-> +		offsetof(struct pt_regs, cx),
->  #define NR_REG_ARGUMENTS 3
->  #else
->  		offsetof(struct pt_regs, di),
+> diff --git a/include/dt-bindings/reset/actions,s700-reset.h b/include/dt-bindings/reset/actions,s700-reset.h
+> index 5e3b16b8ef53..a3118de6d7aa 100644
+> --- a/include/dt-bindings/reset/actions,s700-reset.h
+> +++ b/include/dt-bindings/reset/actions,s700-reset.h
+> @@ -30,5 +30,8 @@
+>  #define RESET_UART4				20
+>  #define RESET_UART5				21
+>  #define RESET_UART6				22
+> +#define RESET_SD0				23
+> +#define RESET_SD1				24
+> +#define RESET_SD2				25
+>  
+>  #endif /* __DT_BINDINGS_ACTIONS_S700_RESET_H */
 > -- 
 > 2.7.4
 > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
