@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAC825636D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 01:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863F0256376
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 01:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgH1XUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 19:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726720AbgH1XUv (ORCPT
+        id S1726720AbgH1XYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 19:24:21 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2982 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgH1XYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 19:20:51 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC4EC061264
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 16:20:51 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id h2so370343plr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 16:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vekX/Mq23RWwnDgk+6LdcBexEyHMvoMGcRuZ1SgDRMk=;
-        b=LUFgVPrt2Xx4hKMx9nbPEckkaLhVk6gHlJYu31JIplGtbqqbxXGUs9Ik6zkfNEzONc
-         Fepsz9ipT6OZQsO5sUpYT1lTke6Xc3PnJAMODWEsolbqaXJvBZ7hg8bsyHYf9Vsqqf1m
-         qIT2L2wYuYRca4ABfr2Odlioxk5YGEVymiJNA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vekX/Mq23RWwnDgk+6LdcBexEyHMvoMGcRuZ1SgDRMk=;
-        b=eRZ3e5uNToQj+m9x67DTwHVfRW6dPQfoQAZeFmJSyk820KhZMNlGv/Q9DHYN+K2VQV
-         xLqrx5Li7Gid2soduv+t6Z6/2peTR4bxTRo3YQwtUSSfUwM5enrPt653OfeZC+KqGVNa
-         ndOOGRZmXITvyD9RRbwrFzJgVIA7GvFibCOEl/4UnTUq/MRkQWkVPR1g6AN4dyxgl1Rq
-         DeWatHBWDgvONcMUZBZ0wR84jPY7B9ry/SgrYr9XOKx0xyp6nXIln43FaMWPPo4FM5GS
-         7eutCsRHQgojrgjQkI1Lc+L9inZDQKJN5wjpa/opZN80IPMu7OibWd74pBylcpcRepWl
-         LREA==
-X-Gm-Message-State: AOAM5325qDMHBwl0XpJWjDmIrTF1RG76IX4SdEWnhpbRfmKjFowxuv7H
-        tNYDOoEUFWSQD+QNm03NbaJgz5KxrvBvTA==
-X-Google-Smtp-Source: ABdhPJw5KEwmKeKe8mZkKXkaEnaqU+EpMdmR9lHHNGzs1BSmbnljanSuhsnw5f0EIMVjUuqQ+S6WOA==
-X-Received: by 2002:a17:902:c24b:: with SMTP id 11mr922349plg.64.1598656851274;
-        Fri, 28 Aug 2020 16:20:51 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id h10sm517971pgn.32.2020.08.28.16.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 16:20:50 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     cychiang@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rt5682: Prefer async probe
-Date:   Fri, 28 Aug 2020 16:20:27 -0700
-Message-Id: <20200828162005.1.I4f67f494c4f759b0e5c7f487e040dfdcf16e0876@changeid>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+        Fri, 28 Aug 2020 19:24:20 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4991f80001>; Fri, 28 Aug 2020 16:23:36 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 28 Aug 2020 16:24:20 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 28 Aug 2020 16:24:20 -0700
+Received: from [10.2.174.186] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 28 Aug
+ 2020 23:24:17 +0000
+Subject: Re: [PATCH 4.19 1/7] sdhci: tegra: Remove
+ SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>
+References: <1598653517-13658-1-git-send-email-skomatineni@nvidia.com>
+ <1598653517-13658-2-git-send-email-skomatineni@nvidia.com>
+ <20200828231536.GU8670@sasha-vm>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <dc6bfd08-baaf-e1ad-6b3f-77ff82d110bb@nvidia.com>
+Date:   Fri, 28 Aug 2020 16:23:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200828231536.GU8670@sasha-vm>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598657016; bh=TyI6d2Ju+76mqOnwS5pcHvlDKt8Y0bBRO/8b8AY+sio=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=m0nMr+yfVLhgIys6rwPF6LX8naSK2+gxL0PP7QhiyvQPFO863yuJ+SaQacGrCHG1H
+         xEsHzIaIWsNQ4oh28IGenzYpHSIs570ezt5RjJqwy2odFXi7RAlFQbd7L6UAV7LuOT
+         sRN4VtmzWSXN6H0ZUtj2xKBxCQ8LbZhPENXYZ+qolIpcHa7hRo3KLdJeSq2J6y9GJk
+         yCZFe8pkti8C9ORNSf0COFrb5SYp4k7KZQhZ7b7Ejx8qmMZAgD8xpjBNJecaFEqD0g
+         OnxoaqullDImlBSPCFcF/JKOG1v8WaD4GIUsAgA87YTlaAL7ikfqa1pHUQU7bj3kh8
+         HE2iWChSJyW1g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The probe of rt5682 is pretty slow.  A quick measurement shows that it
-takes ~650 ms on at least one board.  There's no reason to block all
-other drivers waiting for this probe to finish.  Set the flag to allow
-other drivers to probe while we're probing.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-NOTE: I haven't done any analysis of the driver to see _why_ it's so
-slow, only that I have measured it to be slow.  Someone could
-certainly take the time to profile / optimize it, but in any case it
-still won't hurt to be async.
+On 8/28/20 4:15 PM, Sasha Levin wrote:
+> On Fri, Aug 28, 2020 at 03:25:11PM -0700, Sowjanya Komatineni wrote:
+>> commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>
+> What does this line above represent?
+>
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set incorrectly in above commit
 
-This is a very safe flag to turn on since:
+when Tegra210 support was added.
 
-1. It's not like our probe order was defined by anything anyway.  When
-we probe is at the whim of when our i2c controller probes and that can
-be any time.
 
-2. If some other driver needs us then they have to handle the fact
-that we might not have probed yet anyway.
-
-3. There may be other drivers probing at the same time as us anyway
-because _they_ used async probe.
-
-While I won't say that it's impossible to tickle a bug by turning on
-async probe, I would assert that in almost all cases the bug was
-already there and needed to be fixed anyway.
-
- sound/soc/codecs/rt5682-i2c.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 85aba311bdc8..6b4e0eb30c89 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -294,6 +294,7 @@ static struct i2c_driver rt5682_i2c_driver = {
- 		.name = "rt5682",
- 		.of_match_table = rt5682_of_match,
- 		.acpi_match_table = rt5682_acpi_match,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
- 	.probe = rt5682_i2c_probe,
- 	.shutdown = rt5682_i2c_shutdown,
--- 
-2.28.0.402.g5ffc5be6b7-goog
-
+>> SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set for Tegra210 from the
+>> beginning of Tegra210 support in the driver.
+>>
+>> Tegra210 SDMMC hardware by default uses timeout clock (TMCLK)
+>> instead of SDCLK and this quirk should not be set.
+>>
+>> So, this patch remove this quirk for Tegra210.
+>>
+>> Fixes: b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+>> Cc: stable <stable@vger.kernel.org> # 4.19
+>> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>
