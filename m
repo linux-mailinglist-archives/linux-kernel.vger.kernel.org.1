@@ -2,308 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE4425624B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 22:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEAB256256
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 23:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgH1U4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 16:56:51 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:36395 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgH1U4l (ORCPT
+        id S1726851AbgH1VFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 17:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgH1VFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 16:56:41 -0400
-Received: by mail-il1-f196.google.com with SMTP id f75so1829045ilh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 13:56:39 -0700 (PDT)
+        Fri, 28 Aug 2020 17:05:45 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2A5C061264;
+        Fri, 28 Aug 2020 14:05:44 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p37so1018247pgl.3;
+        Fri, 28 Aug 2020 14:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5ane8DBc+f3r1w7tC8dfBuPl+fS6X/x6Y++VRwRzwLQ=;
+        b=MsL7kGa1JiTOPBkJ2PoXKt3Fr0+C/uzb9XgehxuRwK7TkBMMoeYquf8/R4btCU+W6/
+         u4BhD+TJOyVEAF0sEEGAfZ0riANm/clvP3zjEp+ZvsdVir4lQPTuJxOHYgdtPkEDC0Pt
+         5H/ArWQK/IhY3gXjFB5VHqvLUxcPkVhAlQXbNHPGIcMD0NiTJJlV450VIC24CLgYspuK
+         Y7BrPgYCcP7Fv1FRKqVi0tAee6xJiXJD6T24fLKiVTjNetC4Dc7bwD2iZG4ePxY+aMZ+
+         bGjINg5PRRtwJBDGH7ACw5kuGsRRN6RuQlrVQgvnIJmJPpPA+H/0VnfUl2/h9tx4sr9K
+         k1jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1uoeeUQXGqu4Uf6HLlv5trG9Ierr5xwa79vETxfyzuA=;
-        b=lz6mE6Ddp4r/LUQ6MHfTvjSzPRATITzCHtmZii0pQCYXf/5/0hH0IXSppEOROVe0Fp
-         0pY14Yba72HLSA9nVEsYC8Q363MrK9833A0yc9yYO9pd8VPSkcVEGVuY7C2c8UFJQS3T
-         K3WwU8Yw7bV6dbV6RM6JQVoU3kdymZchWronJ9gfT/S4OW5Au+5bT0L3PHtCVLRH7aKH
-         hO/+ZQNZGleOVtxB7Sp9SP49B3wuvsWRu7wGh6q9dt+4rbwEZ9ck08QWiLnJUgClv3XG
-         CfpI6K+TAZFMy9VWizNyoFvjsyzXKbbeHbzXP8O1zst2FbZeD9dZd74Isf90jWbK/5b1
-         OYyw==
-X-Gm-Message-State: AOAM533Iqn8c+tI7NBpAh53z+Z0W1G6GMuUyO/zWThTqPjDK3SFgFsfh
-        CfrTDYdRzH3mYWCNrMEdHg==
-X-Google-Smtp-Source: ABdhPJyPI/K0+ocmuBrRMKRrA/okUuO/9rO/D67BfewuVZSgkKJHTIIZ2Vx+htLWb7cBgYFm2ZDgZA==
-X-Received: by 2002:a05:6e02:d52:: with SMTP id h18mr549850ilj.215.1598648199393;
-        Fri, 28 Aug 2020 13:56:39 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.249])
-        by smtp.googlemail.com with ESMTPSA id l203sm147089ioa.31.2020.08.28.13.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Aug 2020 13:56:38 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: [PATCH v2 9/9] perf: Remove x86 specific rdpmc test
-Date:   Fri, 28 Aug 2020 14:56:14 -0600
-Message-Id: <20200828205614.3391252-10-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200828205614.3391252-1-robh@kernel.org>
-References: <20200828205614.3391252-1-robh@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5ane8DBc+f3r1w7tC8dfBuPl+fS6X/x6Y++VRwRzwLQ=;
+        b=e6/xwDnL0Kj3UO/BHsh8NvTx/4YKrX/LtRAPVL5pnNC+uolM6UpO7v9NRxRlO/TfmQ
+         Xsu6MfKPUavyz24La0GKPhTtGRixWcQZHZMy8WOJFCG6xyp/f+ZO/VITNOrU5qamzYe7
+         494koFSKThaMGEGowzR0GLbbp/PkOfB7MO+C6nXPDFpwkTBqEk84GNrOZzVEQQWIJ3+R
+         MWYnBRHIsSzQC9m43Tb5lFtuAb6poWZfkXaidcMGsyRM/tS8ozIBKSKy8M5pZkb1Y/rP
+         JBZBiD2wpVys5KM5klcmsGI9C5ttD0mhDVIITRmX7i9NYOyysRZ243tqwxmtsC5a/IK+
+         DIAw==
+X-Gm-Message-State: AOAM532X/JVMxoxfYQBwqkX7W+AmQ2bNNN6FqV+ZtthWDQSlbS2Hd0ce
+        qn/HZNPGMv4kSWeJNaKCJxxXYfsamS10GAtaE+BRyF9ALlo=
+X-Google-Smtp-Source: ABdhPJzuCr+aNitJffvBCNOF3MiA7pUa312fVi1VhewBnSyhEjpIVPDYBB9N7lJJzeuTL2wOJNm5hINQn/RWXrooM10=
+X-Received: by 2002:aa7:96cf:: with SMTP id h15mr692046pfq.294.1598648743207;
+ Fri, 28 Aug 2020 14:05:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200828070752.54444-1-xie.he.0141@gmail.com> <m3pn7b6opa.fsf@t19.piap.pl>
+In-Reply-To: <m3pn7b6opa.fsf@t19.piap.pl>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 28 Aug 2020 14:05:32 -0700
+Message-ID: <CAJht_EOk2_L-77KDDEJTcfqhw48X0ZMA2PKdLG4+LXHAAtNtsw@mail.gmail.com>
+Subject: Re: [PATCH net] drivers/net/wan/hdlc_cisco: Add hard_header_len
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a common libperf based userspace counter read test
-with the same functionality as the x86 specific rdpmc test, let's remove
-it.
+On Fri, Aug 28, 2020 at 3:37 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wro=
+te:
+>
+> OTOH hdlc_setup_dev() initializes hard_header_len to 16,
+> but in this case I guess 4 bytes are better.
+>
+> Acked-by: Krzysztof Halasa <khc@pm.waw.pl>
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-This one is optional. On the plus side, it eliminates a copy of the read
-loop. The main downside I see is loosing the ability to test in 'perf test'.
+Thank you, Krzysztof!
 
+Actually I'm thinking about changing the default value of 16 in hdlc.c to 0=
+.
 
- tools/perf/arch/x86/include/arch-tests.h |   1 -
- tools/perf/arch/x86/tests/Build          |   1 -
- tools/perf/arch/x86/tests/arch-tests.c   |   4 -
- tools/perf/arch/x86/tests/rdpmc.c        | 182 -----------------------
- 4 files changed, 188 deletions(-)
- delete mode 100644 tools/perf/arch/x86/tests/rdpmc.c
+I think a driver should always keep its hard_header_len consistent
+with its header_ops functions. If a driver doesn't have header_ops,
+its hard_header_len should be set to 0. This makes the driver able to
+be correctly used with AF_PACKET sockets.
 
-diff --git a/tools/perf/arch/x86/include/arch-tests.h b/tools/perf/arch/x86/include/arch-tests.h
-index c41c5affe4be..d9c32ba0cdac 100644
---- a/tools/perf/arch/x86/include/arch-tests.h
-+++ b/tools/perf/arch/x86/include/arch-tests.h
-@@ -6,7 +6,6 @@
- struct test;
+In net/packet/af_packet.c, in the function packet_snd, for
+AF_PACKET/DGRAM sockets, it would reserve a headroom of
+hard_header_len for the skb, and call dev_hard_header (which calls the
+header_ops->create function) to fill in the headroom, but for
+AF_PACKET/RAW sockets, it would not reserve the headroom of
+hard_header_len, and will check (in function dev_validate_header)
+whether the user has provided the header of length hard_header_len. So
+I think hard_header_len should be kept consistent with header_ops to
+make the driver able to work correctly with af_packet.c.
 
- /* Tests */
--int test__rdpmc(struct test *test __maybe_unused, int subtest);
- int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest);
- int test__insn_x86(struct test *test __maybe_unused, int subtest);
- int test__intel_pt_pkt_decoder(struct test *test, int subtest);
-diff --git a/tools/perf/arch/x86/tests/Build b/tools/perf/arch/x86/tests/Build
-index 2997c506550c..e3b3cd3b40e8 100644
---- a/tools/perf/arch/x86/tests/Build
-+++ b/tools/perf/arch/x86/tests/Build
-@@ -2,7 +2,6 @@ perf-$(CONFIG_DWARF_UNWIND) += regs_load.o
- perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
+If the driver really needs to use additional header space outside of
+the header_ops->create function, it should request that header space
+in dev->needed_headroom instead of hard_header_len. This avoids the
+complex header processing in af_packet.c but still gets the header
+space reserved.
 
- perf-y += arch-tests.o
--perf-y += rdpmc.o
- perf-y += perf-time-to-tsc.o
- perf-$(CONFIG_AUXTRACE) += insn-x86.o intel-pt-pkt-decoder-test.o
- perf-$(CONFIG_X86_64) += bp-modify.o
-diff --git a/tools/perf/arch/x86/tests/arch-tests.c b/tools/perf/arch/x86/tests/arch-tests.c
-index 6763135aec17..300e9954d530 100644
---- a/tools/perf/arch/x86/tests/arch-tests.c
-+++ b/tools/perf/arch/x86/tests/arch-tests.c
-@@ -4,10 +4,6 @@
- #include "arch-tests.h"
+Currently for the 6 HDLC protocol drivers, hdlc_ppp sets
+hard_header_len and the value is consistent with its header_ops,
+hdlc_raw_eth sets both hard_header_len and header_ops correctly with
+the ether_setup function, hdlc_x25 has been previously changed by me
+to set hard_header_len to 0 because it doesn't have header_ops, and
+this patch would make hdlc_cisco set its hard_header_len to the value
+consistent with its header_ops. This leaves us hdlc_raw and hdlc_fr. I
+see that both of these 2 drivers don't set hard_header_len when
+attaching the protocol, so they will use the default value of 16. But
+because both of these drivers don't have header_ops, I think their
+hard_header_len should be set to 0. So I think maybe it's better to
+change the default value in hdlc.c to 0 and let them take the default
+value of 0.
 
- struct test arch_tests[] = {
--	{
--		.desc = "x86 rdpmc",
--		.func = test__rdpmc,
--	},
- 	{
- 		.desc = "Convert perf time to TSC",
- 		.func = test__perf_time_to_tsc,
-diff --git a/tools/perf/arch/x86/tests/rdpmc.c b/tools/perf/arch/x86/tests/rdpmc.c
-deleted file mode 100644
-index 1ea916656a2d..000000000000
---- a/tools/perf/arch/x86/tests/rdpmc.c
-+++ /dev/null
-@@ -1,182 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <errno.h>
--#include <unistd.h>
--#include <stdlib.h>
--#include <signal.h>
--#include <sys/mman.h>
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <linux/string.h>
--#include <linux/types.h>
--#include "perf-sys.h"
--#include "debug.h"
--#include "tests/tests.h"
--#include "cloexec.h"
--#include "event.h"
--#include <internal/lib.h> // page_size
--#include "arch-tests.h"
--
--static u64 rdpmc(unsigned int counter)
--{
--	unsigned int low, high;
--
--	asm volatile("rdpmc" : "=a" (low), "=d" (high) : "c" (counter));
--
--	return low | ((u64)high) << 32;
--}
--
--static u64 rdtsc(void)
--{
--	unsigned int low, high;
--
--	asm volatile("rdtsc" : "=a" (low), "=d" (high));
--
--	return low | ((u64)high) << 32;
--}
--
--static u64 mmap_read_self(void *addr)
--{
--	struct perf_event_mmap_page *pc = addr;
--	u32 seq, idx, time_mult = 0, time_shift = 0;
--	u64 count, cyc = 0, time_offset = 0, enabled, running, delta;
--
--	do {
--		seq = pc->lock;
--		barrier();
--
--		enabled = pc->time_enabled;
--		running = pc->time_running;
--
--		if (enabled != running) {
--			cyc = rdtsc();
--			time_mult = pc->time_mult;
--			time_shift = pc->time_shift;
--			time_offset = pc->time_offset;
--		}
--
--		idx = pc->index;
--		count = pc->offset;
--		if (idx)
--			count += rdpmc(idx - 1);
--
--		barrier();
--	} while (pc->lock != seq);
--
--	if (enabled != running) {
--		u64 quot, rem;
--
--		quot = (cyc >> time_shift);
--		rem = cyc & (((u64)1 << time_shift) - 1);
--		delta = time_offset + quot * time_mult +
--			((rem * time_mult) >> time_shift);
--
--		enabled += delta;
--		if (idx)
--			running += delta;
--
--		quot = count / running;
--		rem = count % running;
--		count = quot * enabled + (rem * enabled) / running;
--	}
--
--	return count;
--}
--
--/*
-- * If the RDPMC instruction faults then signal this back to the test parent task:
-- */
--static void segfault_handler(int sig __maybe_unused,
--			     siginfo_t *info __maybe_unused,
--			     void *uc __maybe_unused)
--{
--	exit(-1);
--}
--
--static int __test__rdpmc(void)
--{
--	volatile int tmp = 0;
--	u64 i, loops = 1000;
--	int n;
--	int fd;
--	void *addr;
--	struct perf_event_attr attr = {
--		.type = PERF_TYPE_HARDWARE,
--		.config = PERF_COUNT_HW_INSTRUCTIONS,
--		.exclude_kernel = 1,
--	};
--	u64 delta_sum = 0;
--        struct sigaction sa;
--	char sbuf[STRERR_BUFSIZE];
--
--	sigfillset(&sa.sa_mask);
--	sa.sa_sigaction = segfault_handler;
--	sa.sa_flags = 0;
--	sigaction(SIGSEGV, &sa, NULL);
--
--	fd = sys_perf_event_open(&attr, 0, -1, -1,
--				 perf_event_open_cloexec_flag());
--	if (fd < 0) {
--		pr_err("Error: sys_perf_event_open() syscall returned "
--		       "with %d (%s)\n", fd,
--		       str_error_r(errno, sbuf, sizeof(sbuf)));
--		return -1;
--	}
--
--	addr = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
--	if (addr == (void *)(-1)) {
--		pr_err("Error: mmap() syscall returned with (%s)\n",
--		       str_error_r(errno, sbuf, sizeof(sbuf)));
--		goto out_close;
--	}
--
--	for (n = 0; n < 6; n++) {
--		u64 stamp, now, delta;
--
--		stamp = mmap_read_self(addr);
--
--		for (i = 0; i < loops; i++)
--			tmp++;
--
--		now = mmap_read_self(addr);
--		loops *= 10;
--
--		delta = now - stamp;
--		pr_debug("%14d: %14Lu\n", n, (long long)delta);
--
--		delta_sum += delta;
--	}
--
--	munmap(addr, page_size);
--	pr_debug("   ");
--out_close:
--	close(fd);
--
--	if (!delta_sum)
--		return -1;
--
--	return 0;
--}
--
--int test__rdpmc(struct test *test __maybe_unused, int subtest __maybe_unused)
--{
--	int status = 0;
--	int wret = 0;
--	int ret;
--	int pid;
--
--	pid = fork();
--	if (pid < 0)
--		return -1;
--
--	if (!pid) {
--		ret = __test__rdpmc();
--
--		exit(ret);
--	}
--
--	wret = waitpid(pid, &status, 0);
--	if (wret < 0 || status)
--		return -1;
--
--	return 0;
--}
---
-2.25.1
+What do you think?
+
+Thanks!
+
+Xie He
