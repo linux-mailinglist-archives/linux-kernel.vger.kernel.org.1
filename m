@@ -2,165 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83565255976
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7619255975
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 13:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729249AbgH1Lgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Aug 2020 07:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S1729245AbgH1Lfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Aug 2020 07:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbgH1Lde (ORCPT
+        with ESMTP id S1729218AbgH1Ld1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Aug 2020 07:33:34 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AB1C061234;
-        Fri, 28 Aug 2020 04:33:01 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q93so443419pjq.0;
-        Fri, 28 Aug 2020 04:33:01 -0700 (PDT)
+        Fri, 28 Aug 2020 07:33:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C359C061233
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:32:54 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id g1so316573pgm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Aug 2020 04:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LOlDEU1BsYBbFWhmh59xuuWngnqIWmuc5c1z2N5X5iU=;
-        b=okKA5t+819t4aL82S/1lPHpK0etGCZAg+DWAd3Aa+/Kfd0TPjmAiMHRr+BtuzqUrNw
-         FQNIJW6q/u50hqueNTXZJF3fsD7RnkcRFhXLhUuF4mmD8NYK69Gw1D1ZDKMWqg+JvywU
-         Gk/sJ4QZGcvZjNK3CQ76/z2vDWIpvEmDnkU7vJr8agn9cyNHgmgZtb9r67Ap0sh5i3gd
-         nQnktlRbPIG4bQ0a36AnzchmeHGvqCyQa22RtOi5upQ7CwhZc5alUuUWe6DrDfWIo7Fi
-         sxO/vQMTdzTbwOLookZJa0WJxb5rjL97X0f280Si6C281JKHUBFx1UATzKFNpxilEfFW
-         eCgA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=sJlJAZsPRsD+xt0Gc+U8XLwW9T9mmZah5YOzeNxtWsw=;
+        b=uLYQM+vka2RYRGHsi4U4RPVXWSwQT64Ppm672AWI6TdxMES7oeAOuyYlyXLS5GP0Dw
+         /CRL5j0DcH8Alr1MKSZZIByH9Tw1K3SLiAPyb8r+vfZHlJ6Kre1472BCZkWsCb7OhhKz
+         suR4BdACHkLBSAFp7mTZxp/bAQ61zlm2Uj6evqvaY6NeIKXjqiPytAGo5Hq+jID/tc+I
+         lfU2csEiwNa8sHYqTK1aB9nh8fnGyF/4axHmk8jTRvjYdH0gdtNpeKb2Q74dMF+if8DE
+         9rTfqd+skkNnsWm9DAOfU4MP21N9/GXak5E9sAGbhvFWQBLYbH0PQBMqMu5ZbYezi+x4
+         NI3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LOlDEU1BsYBbFWhmh59xuuWngnqIWmuc5c1z2N5X5iU=;
-        b=EjNOMZLg7DUaJMcCEtOj4xIz3EKRo2x2OH0MvixSryfBnfNBrDX4bJ5FHVAjzZ9IAs
-         8RjHvKWGXICDiNagFwNX0gb6DV3P/k12LJptNqJed6f8ZGwLRRu5HpObpP4C3Xx0ii/+
-         lKDhCsMI7A4jX8K2FhJqn8YrD+YaThiV6Fr3O9mEIeatRpJYs5j2/NVhdjfINuJ1ndgF
-         cjaH7Xaz1fZ3+naNdpHDlywIoPrdgnz8hopEL3pvjAHfqYCOPvxfzSy0T5rl9ReRXy4m
-         1Yaxyfs0Jbq+/xzRRkX/HgKbqo89+xNx/SrLCj8M0Crc+bEcz4F4J1qiObdLPwY4FPE7
-         IfiQ==
-X-Gm-Message-State: AOAM532JXC1DipmHolbSbQ2SMeBc1PkVVaHnjJb7aAJswGzsZoM5qO7/
-        /op0zNzccESTevcfS0tmRZJ+L+FIAN1t2AAw7xw=
-X-Google-Smtp-Source: ABdhPJyOnYN0eiYT1oRmZEPiOV986t4tAQMWHu343i5WBAGAYTZAwJTws/nQaqTHDZFMTTSFa9GlXpfA7djOWhFxvnw=
-X-Received: by 2002:a17:902:8208:: with SMTP id x8mr1007047pln.65.1598614380745;
- Fri, 28 Aug 2020 04:33:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=sJlJAZsPRsD+xt0Gc+U8XLwW9T9mmZah5YOzeNxtWsw=;
+        b=LOXO8M8/32sFdC+C486TI7yiUzj1+0kWPBxsrN+CypzMTClaky2TPG0RobI8g7wKv5
+         Kx9MLJmAYO/ZWzSuN+M/YP73jy/CYGeTAboeVHtRNj45/4UOEKqvzjiu0wnsj7UE6q4l
+         sKE3Qe0ZfoS90vONkR3mhlkqe3vG3hB6qKoKvPcQx7N4hhFyYCVJvchGKxAPJqK76iGw
+         zh2+B727cgLiA42Jx2xgnDFn0lKkl0uVtY4hh1aPGbaeaFQxvk3++cpI6c3m/AN72Kcn
+         dH04zhfWIdqiIlQhj0AV5jIohPR0ziflyUdOxjceQK6W/7PuqBC3gqTuFl85ANILVYxw
+         Emaw==
+X-Gm-Message-State: AOAM530GkKI5xuuGzLoAe7Rt7PAbJ1cJ4JJ5WbRTaT/LZJiEKXTjUfbt
+        Ks0Moa7iYCX4m2FrBR3S0LY=
+X-Google-Smtp-Source: ABdhPJxKmkf+J/hlM82diV7dv+qCAjQqm8Iz8p0rYb0Kow+MfjgaWD3fHOVXXswU/IrjgWfNN/qwVA==
+X-Received: by 2002:a63:4246:: with SMTP id p67mr938773pga.110.1598614373289;
+        Fri, 28 Aug 2020 04:32:53 -0700 (PDT)
+Received: from cosmos ([103.113.142.250])
+        by smtp.gmail.com with ESMTPSA id q71sm1158750pja.9.2020.08.28.04.32.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Aug 2020 04:32:52 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 17:02:46 +0530
+From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+To:     mhiramat@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
+        davem@davemloft.net, oleg@redhat.com, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, tglx@linutronix.de, bp@alien8.de,
+        hpa@zytor.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kprobes, x86/ptrace.h: fix regs argument order for i386
+Message-ID: <20200828113242.GA1424@cosmos>
 MIME-Version: 1.0
-References: <20200828110507.22407-1-peter.ujfalusi@ti.com>
-In-Reply-To: <20200828110507.22407-1-peter.ujfalusi@ti.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 28 Aug 2020 14:32:44 +0300
-Message-ID: <CAHp75Vef=C=+Ck8T-TCp56TCjV-YsNGo9MWFsDQ=h6rn3cP-MQ@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: Mark dma_request_slave_channel() deprecated
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 2:03 PM Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
->
-> New drivers should use dma_request_chan() instead
-> dma_request_slave_channel()
->
-> dma_request_slave_channel() is a simple wrapper for dma_request_chan()
-> eating up the error code for channel request failure and makes deferred
-> probing impossible.
->
-> Move the dma_request_slave_channel() into the header as inline function,
-> mark it as deprecated.
+On i386, the order of parameters passed on regs is eax,edx,and ecx
+(as per regparm(3) calling conventions).
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Change the mapping in regs_get_kernel_argument(), so that arg1=ax
+arg2=dx, and arg3=cx.
 
-Thanks for this vector of cleaning!
+Running the selftests testcase kprobes_args_use.tc shows the result
+as passed.
 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  drivers/dma/dmaengine.c   | 18 ------------------
->  include/linux/dmaengine.h | 15 +++++++++------
->  2 files changed, 9 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-> index a53e71d2bbd4..ac8ef6cf7626 100644
-> --- a/drivers/dma/dmaengine.c
-> +++ b/drivers/dma/dmaengine.c
-> @@ -871,24 +871,6 @@ struct dma_chan *dma_request_chan(struct device *dev, const char *name)
->  }
->  EXPORT_SYMBOL_GPL(dma_request_chan);
->
-> -/**
-> - * dma_request_slave_channel - try to allocate an exclusive slave channel
-> - * @dev:       pointer to client device structure
-> - * @name:      slave channel name
-> - *
-> - * Returns pointer to appropriate DMA channel on success or NULL.
-> - */
-> -struct dma_chan *dma_request_slave_channel(struct device *dev,
-> -                                          const char *name)
-> -{
-> -       struct dma_chan *ch = dma_request_chan(dev, name);
-> -       if (IS_ERR(ch))
-> -               return NULL;
-> -
-> -       return ch;
-> -}
-> -EXPORT_SYMBOL_GPL(dma_request_slave_channel);
-> -
->  /**
->   * dma_request_chan_by_mask - allocate a channel satisfying certain capabilities
->   * @mask:      capabilities that the channel must satisfy
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 011371b7f081..dd357a747780 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -1472,7 +1472,6 @@ void dma_issue_pending_all(void);
->  struct dma_chan *__dma_request_channel(const dma_cap_mask_t *mask,
->                                        dma_filter_fn fn, void *fn_param,
->                                        struct device_node *np);
-> -struct dma_chan *dma_request_slave_channel(struct device *dev, const char *name);
->
->  struct dma_chan *dma_request_chan(struct device *dev, const char *name);
->  struct dma_chan *dma_request_chan_by_mask(const dma_cap_mask_t *mask);
-> @@ -1502,11 +1501,6 @@ static inline struct dma_chan *__dma_request_channel(const dma_cap_mask_t *mask,
->  {
->         return NULL;
->  }
-> -static inline struct dma_chan *dma_request_slave_channel(struct device *dev,
-> -                                                        const char *name)
-> -{
-> -       return NULL;
-> -}
->  static inline struct dma_chan *dma_request_chan(struct device *dev,
->                                                 const char *name)
->  {
-> @@ -1575,6 +1569,15 @@ void dma_run_dependencies(struct dma_async_tx_descriptor *tx);
->  #define dma_request_channel(mask, x, y) \
->         __dma_request_channel(&(mask), x, y, NULL)
->
-> +/* Deprecated, please use dma_request_chan() directly */
-> +static inline struct dma_chan * __deprecated
-> +dma_request_slave_channel(struct device *dev, const char *name)
-> +{
-> +       struct dma_chan *ch = dma_request_chan(dev, name);
-> +
-> +       return IS_ERR(ch) ? NULL : ch;
-> +}
-> +
->  static inline struct dma_chan
->  *dma_request_slave_channel_compat(const dma_cap_mask_t mask,
->                                   dma_filter_fn fn, void *fn_param,
-> --
-> Peter
->
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+---
+ arch/x86/include/asm/ptrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
+index 40aa69d..d8324a2 100644
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -327,8 +327,8 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
+ 	static const unsigned int argument_offs[] = {
+ #ifdef __i386__
+ 		offsetof(struct pt_regs, ax),
+-		offsetof(struct pt_regs, cx),
+ 		offsetof(struct pt_regs, dx),
++		offsetof(struct pt_regs, cx),
+ #define NR_REG_ARGUMENTS 3
+ #else
+ 		offsetof(struct pt_regs, di),
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
+
