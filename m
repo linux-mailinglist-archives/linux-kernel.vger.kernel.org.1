@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619A8255355
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C815825535A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Aug 2020 05:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgH1Dc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Aug 2020 23:32:58 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:40562 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728015AbgH1Dc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Aug 2020 23:32:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U736V23_1598585574;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U736V23_1598585574)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 Aug 2020 11:32:54 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, bhe@redhat.com,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [Patch v2 7/7] mm/hugetlb: narrow the hugetlb_lock protection area during preparing huge page
-Date:   Fri, 28 Aug 2020 11:32:42 +0800
-Message-Id: <20200828033242.8787-8-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200828033242.8787-1-richard.weiyang@linux.alibaba.com>
-References: <20200828033242.8787-1-richard.weiyang@linux.alibaba.com>
+        id S1728371AbgH1Ddg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Aug 2020 23:33:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59406 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728115AbgH1Ddg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Aug 2020 23:33:36 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3048085FE2F224C0F4FC;
+        Fri, 28 Aug 2020 11:33:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 28 Aug 2020
+ 11:33:13 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <richard.weinberger@gmail.com>, <yi.zhang@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] ubifs: setflags: Don't show error message when vfs_ioc_setflags_prepare() fails
+Date:   Fri, 28 Aug 2020 11:32:50 +0800
+Message-ID: <20200828033250.910168-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_hugetlb_cgroup_[rsvd] just manipulate page local data, which is not
-necessary to be protected by hugetlb_lock.
+Following process will trigger ubifs_err:
+  1. useradd -m freg                                        (Under root)
+  2. cd /home/freg && mkdir mp                              (Under freg)
+  3. mount -t ubifs /dev/ubi0_0 /home/freg/mp               (Under root)
+  4. cd /home/freg && echo 123 > mp/a			    (Under root)
+  5. cd mp && chown freg a && chgrp freg a && chmod 777 a   (Under root)
+  6. chattr +i a                                            (Under freg)
 
-Let's take this out.
+UBIFS error (ubi0:0 pid 1723): ubifs_ioctl [ubifs]: can't modify inode
+65 attributes
+chattr: Operation not permitted while setting flags on a
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+This is not an UBIFS problem, it was caused by task priviliage checking
+on file operations. Remove error message printing from kernel just like
+other filesystems (eg. ext4), since we already have enough information
+from userspace tools.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/ioctl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 6ad365dd1e96..ae840dc09197 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1492,9 +1492,9 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
- {
- 	INIT_LIST_HEAD(&page->lru);
- 	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
--	spin_lock(&hugetlb_lock);
- 	set_hugetlb_cgroup(page, NULL);
- 	set_hugetlb_cgroup_rsvd(page, NULL);
-+	spin_lock(&hugetlb_lock);
- 	h->nr_huge_pages++;
- 	h->nr_huge_pages_node[nid]++;
- 	spin_unlock(&hugetlb_lock);
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 3df9be2c684c..4363d85a3fd4 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -134,7 +134,6 @@ static int setflags(struct inode *inode, int flags)
+ 	return err;
+ 
+ out_unlock:
+-	ubifs_err(c, "can't modify inode %lu attributes", inode->i_ino);
+ 	mutex_unlock(&ui->ui_mutex);
+ 	ubifs_release_budget(c, &req);
+ 	return err;
 -- 
-2.20.1 (Apple Git-117)
+2.25.4
 
