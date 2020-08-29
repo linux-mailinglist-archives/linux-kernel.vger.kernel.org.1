@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2681D256639
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 11:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6B825663E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 11:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgH2JO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 05:14:27 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55905 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726405AbgH2JOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 05:14:25 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id AB40B5C0161;
-        Sat, 29 Aug 2020 05:14:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 29 Aug 2020 05:14:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=vdgCpwlVAM9JPg+izfOV7VwaHm
-        Ozcnhhr5dI10N741Y=; b=sERlu4vTM9W4o+BsA3vsuG7ET1JJmL4YcqnYXfZwai
-        T5lA1CimLxQwHg1UqUfh0D8fDJMq7k2MV2NPzNsnEwJ8myFfpxIMGAsIZJxADYYv
-        IU1N5kUAMeGl+Yu0WT5wMlxek8XW3gkRYzrWxAXjOrDAZ6oJ7sjWpNOn9V81ELFC
-        xOwdGV3oe9oU7i/B6oMepxQueatQfGVBEGpTsk7ZbQXopyNs4xMqqTf7We95PFBG
-        8yZ49eMHC2U8yQSQeXJmxZrn0uPvpB3E1EKOhfO/Kh8FVmlZVBBgz4ijKXw41lPJ
-        rKO1xmgjOa/qmgNbqE15evoeey3s7wxB2jNqClxC6GcA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vdgCpwlVAM9JPg+iz
-        fOV7VwaHmOzcnhhr5dI10N741Y=; b=m4+iXbAwXcxgEWvqMT0DZwXLPt8MK/EmM
-        pehXHmVk7E86D58Fihgu6dUqhhhQUeYfENcLa+5AHiAa8GG8hMgx7DqK2hlXSL9C
-        CBSuiHBCjxM/i4LIgS0LgPEH0iDD4/AZVNAwwJ6MxZu/KtFFYqoY2OIHPSfQ5q35
-        2AM6I77K2mVsCiw2yZ0CoCYyzKuZy3SOyfVCNrHx4mNCCwvEq1Igfye3bXFT7UTG
-        BFEGT/UmrRkaFyz+sEx5P9qWbwGpedzz1pKsdwKR7/fh6wNjIYzXrUr2bIrZE4gC
-        xwGobuj8rMpfTj9b00ZdN6wv8Iz0HN87CetiC0r8rKk+pkRGpG+tQ==
-X-ME-Sender: <xms:bxxKX1pPr69mjndIWH6grRgwhsLcAmrTuAOMK10Dhp8QrLycuiKY9w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefuddgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnnhihucfn
-    ihhnuceouggrnhhnhieskhgurhgrghdtnhdruggvvheqnecuggftrfgrthhtvghrnhephf
-    eihffglefgudefvdduledvfedvfefgieeuueefgeetffdukeeghfevtdeifeetnecukfhp
-    pedutdegrddvtddtrdduvdelrddvuddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepuggrnhhnhieskhgurhgrghdtnhdruggvvh
-X-ME-Proxy: <xmx:bxxKX3rB3ckTgh6fUNE1CirxBSaxhTK73eRbymscTXp37xsBg1fvIg>
-    <xmx:bxxKXyNVF094Vkrwp7dD8pyEArAqgEw8whS0d37Un75OHCby08iY-Q>
-    <xmx:bxxKXw4elL48Xrie--ogZiLdSHo0n9DNduvMNVhPpGTJEcaiAcwd5A>
-    <xmx:bxxKX5jTPuMH-U2rrQRKpN7RuTEKtiIX-Nc6wYbikXqHHZGYX9nZ7Q>
-Received: from pinwheel.localdomain (unknown [104.200.129.212])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5EB653280060;
-        Sat, 29 Aug 2020 05:14:21 -0400 (EDT)
-From:   Danny Lin <danny@kdrag0n.dev>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Danny Lin <danny@kdrag0n.dev>
-Subject: [PATCH] blk-wbt: Remove obsolete multiqueue I/O scheduling comment
-Date:   Sat, 29 Aug 2020 02:13:53 -0700
-Message-Id: <20200829091353.2923361-1-danny@kdrag0n.dev>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727059AbgH2JP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 05:15:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726405AbgH2JP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 05:15:26 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 059DE20776;
+        Sat, 29 Aug 2020 09:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598692526;
+        bh=iRDTespXVTvx6CS5lM7zVBWg9/uBKo9ho+raX1YWhk8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kLv9i3FE1KJO726SXimmRTd74h3DFZ+WHr/YOdiQVRxi6akRkbZlT2Q1sE3quZQc2
+         mfyrjZ8GybJbykf+AMM2xXloYwjG0VYaMOxL0H0rc64Dj2cpjsWrdmjCmpeBSQpgxo
+         2IUi676N4NIE3cu+b1ue+pu2Lz/zXplk2Y9BGb84=
+Date:   Sat, 29 Aug 2020 18:15:20 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Cameron <cameron@moodycamel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        linux-arch@vger.kernel.org, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [RFC][PATCH 7/7] kprobes: Replace rp->free_instance with
+ freelist
+Message-Id: <20200829181520.ec52c425fc0a9d220559230a@kernel.org>
+In-Reply-To: <CAFCw3dqDwP-RM20M7Uv=RS7aBHe=DLr3akhDY_XM8W0foiAEeQ@mail.gmail.com>
+References: <20200827161237.889877377@infradead.org>
+        <20200827161754.594247581@infradead.org>
+        <20200828084851.GQ1362448@hirez.programming.kicks-ass.net>
+        <20200828181341.c1da066360c6085d48850e22@kernel.org>
+        <20200828091813.GU1362448@hirez.programming.kicks-ass.net>
+        <CAFCw3dqhd35mdFE_SjUYtLrxNUYwdO-iFAonZ1OXu9CGBsyGrw@mail.gmail.com>
+        <CAFCw3dqDwP-RM20M7Uv=RS7aBHe=DLr3akhDY_XM8W0foiAEeQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This comment was added before the multiqueue I/O scheduler framework
-was introduced; multiqueue has support for I/O scheduling now, so this
-obsolete comment can be removed.
+On Fri, 28 Aug 2020 22:31:17 -0400
+Cameron <cameron@moodycamel.com> wrote:
 
-Signed-off-by: Danny Lin <danny@kdrag0n.dev>
----
- block/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+> On Fri, Aug 28, 2020 at 10:29 PM Cameron <cameron@moodycamel.com> wrote:
+> > I thought about this some more, and actually, it should be safe.
+> 
+> Although I should note that it's important that the flags/refcount are
+> not overwritten
+> even after the node is taken off the freelist.
 
-diff --git a/block/Kconfig b/block/Kconfig
-index bbad5e8bbffe..a2297edfdde8 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -161,8 +161,6 @@ config BLK_WBT_MQ
- 	depends on BLK_WBT
- 	help
- 	Enable writeback throttling by default on multiqueue devices.
--	Multiqueue currently doesn't have support for IO scheduling,
--	enabling this option is recommended.
- 
- config BLK_DEBUG_FS
- 	bool "Block layer debugging information in debugfs"
+Thanks for the check, but I personally would like to keep it separated
+because the memory layouts of those in-kernel list-like data structures
+can be changed by debug config option...
+
+Thank you,
+
+
 -- 
-2.27.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
