@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB0B2568F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 18:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D883A2568F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 18:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgH2QA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 12:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728445AbgH2P7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 11:59:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FDFC0619C0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 08:59:01 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id g207so2218920pfb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 08:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x7Lva39pftBA6FEqjewb6eW+oOxMNUrFl3pdrz2HNEg=;
-        b=Lj+3HmpEyxK4ys5SQafUdoDlyn05BgUs9LT198QYBWv66qQJuc9nUM/hZ1RjDEcsQN
-         GeBUtxjbZpZ4lCuc2rHCY3ccleQ9JP2YJMCm3Igj5oGHVemhQfjADw3g3DJkwJqLbB2k
-         gLeY7OaYguCEvySyiJJyc4PGcJ+yCFRWAt0gY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x7Lva39pftBA6FEqjewb6eW+oOxMNUrFl3pdrz2HNEg=;
-        b=J061r5gzJBKOcTajKn//pytVnN+TZWt+KvdjnHXXDNuo4kGWfewYejqWIL9jJpS368
-         UFnK4UygomQP1pe5CEojhRPIi1loSfX8Dp3OdfxYPQ0NKEReL2I+3DHrLMlS4IJtxRNN
-         +YwyJdpbn6DCkVVa8NJu9YVsqiVZvtQYHvoXdyvdYLwDdYOcBjMxsz2ozRH0NNzdmZfM
-         1m5dFd0zOtcVWcp71cmd982kgmL9Natt1FumoUi3ZRrshkZI6xXqMgVHbhqBrjhxiHHq
-         +Xm0iKe63AR7kJd7cGEeWTl66ppO/wVUot1fxYj6r+To3CVBbU5kZCO/1+mhjqqJmncM
-         qyIg==
-X-Gm-Message-State: AOAM533wPYQ84rYcP6NFIAu0zsZVL1nXhi4h4MwT4MY6EbEHQWs/RhnW
-        SeiB1PtuI/fbXxART1QFEHfRdQ==
-X-Google-Smtp-Source: ABdhPJyd8r4VaGADPnKOn7M4yhYbeTP6dpEXeeSTpkNjRRZLUrB2zIAkjxL/cFsY6DjyI9ZZiyhwBA==
-X-Received: by 2002:a63:4621:: with SMTP id t33mr2948882pga.32.1598716741018;
-        Sat, 29 Aug 2020 08:59:01 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7d5:9460:cfb8:90a:fedd])
-        by smtp.gmail.com with ESMTPSA id j20sm3131714pfi.122.2020.08.29.08.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Aug 2020 08:59:00 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@libreplatforms.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v2 7/7] arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
-Date:   Sat, 29 Aug 2020 21:28:23 +0530
-Message-Id: <20200829155823.247360-8-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200829155823.247360-1-jagan@amarulasolutions.com>
-References: <20200829155823.247360-1-jagan@amarulasolutions.com>
+        id S1728508AbgH2QBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 12:01:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50538 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728373AbgH2P6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 11:58:55 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bf1NS3lsKz9v7Dc;
+        Sat, 29 Aug 2020 17:58:48 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id AZI3cKIA-s-O; Sat, 29 Aug 2020 17:58:48 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bf1NS1r4Pz9v7Db;
+        Sat, 29 Aug 2020 17:58:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EECD58B7B5;
+        Sat, 29 Aug 2020 17:58:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qSw0-iSMqS91; Sat, 29 Aug 2020 17:58:49 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29E728B767;
+        Sat, 29 Aug 2020 17:58:49 +0200 (CEST)
+Subject: Re: [PATCH] fsldma: fsl_ioread64*() do not need lower_32_bits()
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Joerg Roedel <joerg.roedel@amd.com>,
+        linuxppc-dev@lists.ozlabs.org, Li Yang <leoyang.li@nxp.com>,
+        Zhang Wei <zw@zh-kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20200829150551.GA27225@roeck-us.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dc4491f8-f74c-c3c4-82c4-3986c5352205@csgroup.eu>
+Date:   Sat, 29 Aug 2020 17:58:24 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200829150551.GA27225@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jagan Teki <jagan@libreplatforms.com>
 
-PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 
-C.TOUCH 2.0 is a general purpose carrier board with capacitive
-touch interface support.
+Le 29/08/2020 à 17:05, Guenter Roeck a écrit :
+> On Sat, Aug 29, 2020 at 02:45:38PM +0200, Luc Van Oostenryck wrote:
+>> For ppc32, the functions fsl_ioread64() & fsl_ioread64be()
+>> use lower_32_bits() as a fancy way to cast the pointer to u32
+>> in order to do non-atomic 64-bit IO.
+>>
+>> But the pointer is already 32-bit, so simply cast the pointer to u32.
+>>
+>> This fixes a compile error introduced by
+>>     ef91bb196b0d ("kernel.h: Silence sparse warning in lower_32_bits")
+>>
+>> Fixes: ef91bb196b0db1013ef8705367bc2d7944ef696b
+> 
+> checkpatch complains about this and prefers
+> 
+> Fixes: ef91bb196b0d ("kernel.h: Silence sparse warning in lower_32_bits")
 
-PX30.Core needs to mount on top of this Carrier board for creating
-complete PX30.Core C.TOUCH 2.0 board.
+Checkpatch also complains about spacing:
 
-Add support for it.
+CHECK:SPACING: No space is necessary after a cast
+#39: FILE: drivers/dma/fsldma.h:208:
++	u32 fsl_addr = (u32) addr;
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
-Changes for v2:
-- new patch
+CHECK:SPACING: No space is necessary after a cast
+#48: FILE: drivers/dma/fsldma.h:222:
++	u32 fsl_addr = (u32) addr;
 
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../dts/rockchip/px30-px30-core-ctouch2.dts   | 21 +++++++++++++++++++
- 2 files changed, 22 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
+total: 0 errors, 0 warnings, 2 checks, 16 lines checked
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 65116fcb7368..958eb57e403a 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-px30-core-ctouch2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-px30-core-edimm2.2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-evb.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-roc-cc.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts b/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
-new file mode 100644
-index 000000000000..dffc49348f28
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Fuzhou Rockchip Electronics Co., Ltd
-+ * Copyright (c) 2020 Engicam srl
-+ * Copyright (c) 2020 Amarula Solutions(India)
-+ */
-+
-+/dts-v1/;
-+#include "px30.dtsi"
-+#include "px30-engicam-ctouch2.dtsi"
-+#include "px30-px30-core.dtsi"
-+
-+/ {
-+	model = "Engicam PX30.Core C.TOUCH 2.0";
-+	compatible = "engicam,px30-core-ctouch2", "engicam,px30-px30-core",
-+		     "rockchip,px30";
-+
-+	chosen {
-+		stdout-path = "serial2:115200n8";
-+	};
-+};
--- 
-2.25.1
+Christophe
 
+> 
+> Otherwise
+> 
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> 
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Cc: Li Yang <leoyang.li@nxp.com>
+>> Cc: Zhang Wei <zw@zh-kernel.org>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Vinod Koul <vkoul@kernel.org>
+>> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: dmaengine@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+>> ---
+>>   drivers/dma/fsldma.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/dma/fsldma.h b/drivers/dma/fsldma.h
+>> index 56f18ae99233..6f6fa7641fa2 100644
+>> --- a/drivers/dma/fsldma.h
+>> +++ b/drivers/dma/fsldma.h
+>> @@ -205,7 +205,7 @@ struct fsldma_chan {
+>>   #else
+>>   static u64 fsl_ioread64(const u64 __iomem *addr)
+>>   {
+>> -	u32 fsl_addr = lower_32_bits(addr);
+>> +	u32 fsl_addr = (u32) addr;
+>>   	u64 fsl_addr_hi = (u64)in_le32((u32 *)(fsl_addr + 1)) << 32;
+>>   
+>>   	return fsl_addr_hi | in_le32((u32 *)fsl_addr);
+>> @@ -219,7 +219,7 @@ static void fsl_iowrite64(u64 val, u64 __iomem *addr)
+>>   
+>>   static u64 fsl_ioread64be(const u64 __iomem *addr)
+>>   {
+>> -	u32 fsl_addr = lower_32_bits(addr);
+>> +	u32 fsl_addr = (u32) addr;
+>>   	u64 fsl_addr_hi = (u64)in_be32((u32 *)fsl_addr) << 32;
+>>   
+>>   	return fsl_addr_hi | in_be32((u32 *)(fsl_addr + 1));
+>> -- 
+>> 2.28.0
+>>
