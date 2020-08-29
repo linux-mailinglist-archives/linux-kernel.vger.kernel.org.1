@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A552568E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 17:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332842568E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 17:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgH2P6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 11:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728310AbgH2P5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 11:57:41 -0400
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FDB220CC7;
-        Sat, 29 Aug 2020 15:57:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598716661;
-        bh=YHcSw/hqKHXdDTuCSO/5dUdyJsCtyVzZTzxsaX4IgQ0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AkdJQsqeMBVFlI4TSshlD/nSJrK5ARHEAUHmsDHccDh8eYv3qeyks8P0oSmoUP1JF
-         /iMp71OeOFuKi9TvL5EkWjLwmy/PieLf1t36ev8C2wbtY+MRYbbYCwZ2065fej+fR3
-         VcDQp+02Yv7vLoOzgcYh7Rd3umJh2zYrAwUQtTBc=
-Received: by mail-ed1-f51.google.com with SMTP id q4so1766357eds.3;
-        Sat, 29 Aug 2020 08:57:41 -0700 (PDT)
-X-Gm-Message-State: AOAM533X3b+rBCm3X1gdI75cDONhEabyGt/OVq6nKibSUyY/1Zu4uivV
-        WxevJS99DFvzDyYQGBiw6lHCINmcnnKeK5eOyoo=
-X-Google-Smtp-Source: ABdhPJx/hw+xUReRY08qMnVSvo8WfizFrkcGJBp6fVnLKoNLq4zUQsZf+SAHKYqnu6aW9Akvgdww2mqhRltNtho15Ik=
-X-Received: by 2002:a05:6402:515:: with SMTP id m21mr1264650edv.348.1598716659667;
- Sat, 29 Aug 2020 08:57:39 -0700 (PDT)
+        id S1728458AbgH2P7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 11:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728413AbgH2P6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 11:58:44 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88263C06123B
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 08:58:43 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id v15so1923186pgh.6
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 08:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MZ+O4LsEt26/bO1S7FmN8cAqvXJ4Tlfs0jPsv8jKi+U=;
+        b=ljhum2dLbF4VvYtN4qJIDmyalFKBqIXbGRX8hWQjDkXZtk5Yys+EqKTUH6kOrdvXvN
+         3q58FRB62zhVR1EOdb/TIVC1sNymiWuw8i7EAq6KnMf5Cm85KhjvWGRDlbnlkPUtIhMh
+         PbB5aJkSvsXvstNGV3jGzNEqCMz79Oy8IuKXI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MZ+O4LsEt26/bO1S7FmN8cAqvXJ4Tlfs0jPsv8jKi+U=;
+        b=iZwlDVL5oXtIQuagYsA+5989FzpLxvGx+uPSy1rCwpQJ/yniwC5hwHwaqaDO2ptW32
+         lTRZ7IVFTIErrFwHYa+N3nGJm3pTmSfwSUkNx+HpXJjw+ijRj4fym/UU8g5xy6qtbjuO
+         hULI9iVnEMantTHR/j9zDy5rbLiLPJRbjfvLS7kUvfHTBCC3j/+OZkDoashk5GjS03pg
+         7QYnL9+gwTUfVQANr5XxTC3vrQhOzUdwseNzn/XugvrmW7BvjHqAvuqDlD4juZd/BR4L
+         a8HhiZWyJaPENc2s5YEWJ9R5u5sNfPndg+Rpkr5EwFCi5YKv5Z9Pw6WNjQ1lSRCNxk7p
+         3TWQ==
+X-Gm-Message-State: AOAM532L/SrKy/Zo0QLX/wojtjkCvmIApLfDI787+N7qsAefF4SkQGgs
+        UtE/l8kz5jzdyKE3hq4JeQQ+nA==
+X-Google-Smtp-Source: ABdhPJzEcB+o7wItuxgbQQLsj33yMDZo2V1Gtq8/mqoiG4pegOIOA2BEG59zkXuSYUTV8HwcvYNIEw==
+X-Received: by 2002:a62:2bcc:: with SMTP id r195mr3481135pfr.123.1598716715401;
+        Sat, 29 Aug 2020 08:58:35 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c809:c7d5:9460:cfb8:90a:fedd])
+        by smtp.gmail.com with ESMTPSA id j20sm3131714pfi.122.2020.08.29.08.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Aug 2020 08:58:34 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v2 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
+Date:   Sat, 29 Aug 2020 21:28:16 +0530
+Message-Id: <20200829155823.247360-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200826161539.20788-1-krzk@kernel.org> <20200829162102.602a3424@archlinux>
-In-Reply-To: <20200829162102.602a3424@archlinux>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sat, 29 Aug 2020 17:57:28 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfOBR16_UjW5-Xv+9n4OFuOL9Aykzm2zqjx+G3KYHEkGA@mail.gmail.com>
-Message-ID: <CAJKOXPfOBR16_UjW5-Xv+9n4OFuOL9Aykzm2zqjx+G3KYHEkGA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: magnetometer: mag3110: Simplify with dev_err_probe()
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Peter Rosin <peda@axentia.se>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Aug 2020 at 17:21, Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Wed, 26 Aug 2020 18:15:38 +0200
-> Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe().  Less code and also it prints the error value.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> I'm a lazy person, so if you have a series like this where you decide
-> to post a new version without anyone having commented on it, please
-> send a quick reply to say you have done that.  Avoids me
-> applying wrong versions of things!
+PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 
-It was the part of v3 (18 patches) which you just applied so these two
-you can skip.
+PX30.Core needs to mount on top of Engicam baseboards for creating
+complete platform boards.
 
-Sorry for not mentioning it.
+Possible baseboards are,
+- EDIMM2.2 Starter Kit
+- C.TOUCH 2.0 Carrier Board
 
-Best regards,
-Krzysztof
+Changes for v2:
+- collect Rob A-b
+- include C.TOUCH 2.0 carrier board
+- skip 10" OF LCD as it requires separate dts with panel support.
+
+Note: These baseboards can be used for i.MX8 SOM's as well. So having
+baseboard on respective SoC seems to be easy rather than making it
+common across all.
+
+Any inputs?
+Jagan.
+
+Jagan Teki (7):
+  dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+  arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
+  arm64: dts: rockchip: Add Engicam PX30.Core SOM
+  arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+  dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+  arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
+  arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  12 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+ .../dts/rockchip/px30-engicam-common.dtsi     |  39 +++
+ .../dts/rockchip/px30-engicam-ctouch2.dtsi    |   7 +
+ .../dts/rockchip/px30-engicam-edimm2.2.dtsi   |   7 +
+ .../dts/rockchip/px30-px30-core-ctouch2.dts   |  21 ++
+ .../dts/rockchip/px30-px30-core-edimm2.2.dts  |  21 ++
+ .../boot/dts/rockchip/px30-px30-core.dtsi     | 231 ++++++++++++++++++
+ 8 files changed, 340 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-ctouch2.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-edimm2.2.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-edimm2.2.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
+
+-- 
+2.25.1
+
