@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201262566CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DF62566CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgH2KNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 06:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
+        id S1727793AbgH2KSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 06:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgH2KNb (ORCPT
+        with ESMTP id S1726869AbgH2KS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 06:13:31 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7B0C061236;
-        Sat, 29 Aug 2020 03:13:31 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id d189so2915448oig.12;
-        Sat, 29 Aug 2020 03:13:31 -0700 (PDT)
+        Sat, 29 Aug 2020 06:18:27 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98262C061236
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:18:27 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 2so2930138ois.8
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=g/qBkBixAm5IzDCM7Wp/r22aS2X7KFbRXdhCNpCB+6Q=;
-        b=Dkf7UZIHnVtK1kih+cmqwwme7QN7fFkzR6wxDABHbWY7yAFmLommi1YaL7kwXmXeT3
-         OPFfevhr+hbpa78uX7G7o02iwG/cZDPRLc5kYhA2/Kogf52wwzul/HoqIJNJWNezL8tQ
-         L0XS5eHoEBNsl1pO0NW+U4zg0G7/Ry02hj61UOOmzrn3FPBGU3zwptIEjoj1vhO1znQ9
-         A88qWr6WyrS5L447zKJKvUx9MBM+RBa73Hou0ZRtWJochoHcK9tpocz/WcDH+mxiBdfD
-         WZgsdjuwu/CHHU17CkX7xn8Kp0nNi79d9GANRPzjdae0Q8aTezoEeIMUo+w8MB/3Hweb
-         ALsQ==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zeIiSMFGSf58MsSjbK8J+Ft4DBuziJDKj37mZimnIj4=;
+        b=n87YjpkPo3YnR7fLE5/5FQn5JH6GZ+J4QTeboq7sMswIcepm6JemiQXhZXgQiTpscz
+         i0Z30mtiZ8gcqO93G4TazdwihrtzSFpHNHXtSumAspsa5rnnURF8P5GgO/OBKjBnpTwe
+         Qpb+a9vhqIGMcMrTycEzFTjA1UGDelBteiUxGdH+W0Ts6FjHccMJcEmKuOGMI9se0+gL
+         1SA+0xIM44BvkFXDCJi3SdL4fcHWk44k+XmhaOJbrA7ApL65NtUYp2l9lE99xzRO/69S
+         uRwq6KNWT2lujFQ0DAACUbbfvxZOTg8jCDEqsJ/9amihUtr0AXfPaoWigG7qu7hn5oMb
+         cgGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=g/qBkBixAm5IzDCM7Wp/r22aS2X7KFbRXdhCNpCB+6Q=;
-        b=gPGoktBsRIKoa9eV5+M8l61Kk8BxKLPWgMF+1qF/52gRwUrzx8jv6wCIA+5pf370Dd
-         j6mqaRx8XlsrUo3s6+XUbyBV1QJIoJnDKFpM43llmy8izA3NYIXDXZUwhu2CS+Uthb5u
-         MHeHUUW8WgJk8NTt432hem6Ob+H5PCMPfaAAOp6vVuBknvjDVkrPTRc+bgTLMNabDtRY
-         K4+lOTpnXz2yHIHhtcO+AXpGkvYmfhD3xR2QxkvwGc6nwPl1NlLEq0A9JnA6onB6nZQZ
-         JfJTMFNjYFxD2/4GyLEPv241EcRcE493GNK+6N8SGrwy+Si4/w6BZRGQ5I4SIkkRrtqY
-         UJ/Q==
-X-Gm-Message-State: AOAM532/dbRga+JPrPROssDIbU18rEIv/PFKxfnelBZ8Brl00zv6mQoa
-        VJg9nrgZZKNBiCExkXRBqQqaW+Wede0=
-X-Google-Smtp-Source: ABdhPJwHQ/6wssRgfNw97vxGZOLKS4yWyOUxqUZ3UscaweSbEslAGBEW53sfjY88uK4s+8L6OscRgw==
-X-Received: by 2002:aca:5c55:: with SMTP id q82mr1668256oib.24.1598696011024;
-        Sat, 29 Aug 2020 03:13:31 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y3sm508716ooc.48.2020.08.29.03.13.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 29 Aug 2020 03:13:30 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon fixes for v5.9-rc3
-Date:   Sat, 29 Aug 2020 03:13:29 -0700
-Message-Id: <20200829101329.147475-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=zeIiSMFGSf58MsSjbK8J+Ft4DBuziJDKj37mZimnIj4=;
+        b=VsZG8Nzc/kCpQG4dmPNJmXHNcJvzp5HEiZCyb0DRRA50p5TuxgF23fKnzI5S2CdAGN
+         OBPH8ffexdt5PyrQTKQAbSKK4zKUaZOVTeQOuH0BRgvbv+fFe2KxwPeR+vjOadk6NoYv
+         7kKhF4NvUPNXNtRF/xy1shJJNubK4i9zlT4/MwHtK6yiM9UcLAAMqKmDNaNzfyRd5mqL
+         8giRe+taqRuGM4/uUzYbMHIIr2qnFPwVmwAtXTHMHcAr4ipnHBea98VFs2Z/oabz+yfJ
+         7TQ8fmjBdjcrmhj300AeGbhBP5BfukhB/bQNspZYlNnkhrDUu2YZ0d1jkTGmsFepEtY4
+         huPw==
+X-Gm-Message-State: AOAM532bgZQ0bVbD3SWn+YgR7eVjsX7dR8jpgwuC+Yj/tn4+keOdXINs
+        CXllMu6MvphI+H0E1DuCe6lyLdYnPgZWWsJhHug=
+X-Google-Smtp-Source: ABdhPJwYgdLN5caNkYEMHDfL+HaUgz8hmAJR7G3CoHMX+pImSwGzo4DsodLap5HeWz8AKC2tf9hJZafUFoWKQB0rMVE=
+X-Received: by 2002:aca:c0c1:: with SMTP id q184mr1771520oif.56.1598696306109;
+ Sat, 29 Aug 2020 03:18:26 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: miss.sarrita@yandex.com
+Received: by 2002:ac9:1213:0:0:0:0:0 with HTTP; Sat, 29 Aug 2020 03:18:25
+ -0700 (PDT)
+From:   "Miss. Sarrita Kipkalya" <miss.sarrita22@gmail.com>
+Date:   Sat, 29 Aug 2020 03:18:25 -0700
+X-Google-Sender-Auth: rTwjb9ivk7t5zSgxbLWjEywaLjE
+Message-ID: <CAJfvxtYzwQbL2JnLadyW_r7yFwct+nHTQ9CuFKmLjYnDrhqNzg@mail.gmail.com>
+Subject: Good day My dearest one,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+My dearest,
 
-Please pull hwmon fixes for Linux v5.9-rc3 from signed tag:
+I am writing this mail to you with tears and sorrow from my heart.
+With due respect, trust and humanity, i appeal to you to exercise a
+little patience and read through my letter i feel quite safe dealing
+with you in this important business having gone through your
+remarkable profile, honestly i am writing this email to you with
+pains, tears and sorrow from my heart, i will really like to have good
+relationship with you and i have a special reason why I decided to
+contact you. I decided to contact you due to the urgency of my
+situation.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.9-rc3
+My name is Miss. Sarrita Kipkalya, 22yrs old female and i am from
+Kenya in East Africa. Light in complexion, single (never married) but
+presently i am residing here in Ouagadougou, Burkina Faso refugee
+camp. My father Late Dr Kipkalya Kones was the former Kenyan road
+Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
+been on board the Cessna 210, which was headed to Kericho and crashed
+in a remote area called Kajong'a, in western Kenya. The plane crashed
+on the Tuesday 10th, June, 2008. You can read more about the crash
+through the below site:
+http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?iref=
+=3Dnextin
 
-Thanks,
-Guenter
-------
+After the burial of my father, my Father Brothers conspired and sold
+my father' s property to an Italian Expert rate which they shared the
+money among themselves and live nothing for me. One faithful morning,
+I opened my father's briefcase and found out the documents which he
+have deposited huge amount of money in one bank in Burkina Faso with
+my name as the next of kin, because when he was alive he deposited
+some amount of money in a Bank in Burkina Faso which he used my name
+as the next of kin. The amount in question is $2.7Million.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+I have informed the bank about claiming this money and the only thing
+they told me is to look for a foreign partner who will assist me in
+the transfer due to my refugee status here in Burkina Faso. God told
+me that you are the honest and reliable person who will help me and
+stand as my trustee so that I will present you to the Bank for
+transferring of my father=E2=80=99s money to your bank account in overseas.=
+ I
+have chosen to contact you after my prayers and I believe that you
+will not betray my trust. But rather take me as your own biological
+sister or daughter which I will be coming to your country as soon as
+this money is transferred to your account.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+My dearest, things are very bad for me here in the refugee camp when I
+am living today. People are dying here day after day because of lack
+of food and poor medical treatment. Even one of us died last night and
+was buried this morning. I am afraid of what i am seeing here. I don't
+know who it will be her turn tomorrow; I was planning to read law in
+my life before the ugly incident that killed my parents that put me in
+this horrible place i found myself today. This place is like a prison
+as we are only allowed to go out on Monday and Friday of the week as
+given by the united nation rules and regulation here in Burkina Faso.
+It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
+eek
+it=E2=80=99s just like one staying in the prison and i hope by Gods grace I
+will come out here soon.
 
-are available in the Git repository at:
+I don' t have any relatives now whom i can go to and the only person I
+have now is Rev Isaac Ambrose who is the pastor of the (Christ for all
+Churches) here in the refugee he has been very nice to me since i came
+here but i am not living with him rather i am leaving in the women's
+hostel because the refugee have two hostels one for men the other for
+women, Please if you want to help me out of this situation respond
+back so that I will tell you more about me.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.9-rc3
-
-for you to fetch changes up to c1ae18d313e24bc7833e1749dd36dba5d47f259c:
-
-  hwmon: (gsc-hwmon) Scale temperature to millidegrees (2020-08-27 12:47:55 -0700)
-
-----------------------------------------------------------------
-hwmon fixes for v5.9-rc3
-
-- Fix tempeerature scale in gsc-hwmon driver
-- Fix divide by 0 error in nct7904 driver
-- Drop non-existing attribute from pmbus/isl68137 driver
-- Fix status check in applesmc driver
-
-----------------------------------------------------------------
-Grant Peltier (1):
-      hwmon: (pmbus/isl68137) remove READ_TEMPERATURE_1 telemetry for RAA228228
-
-Jason Baron (1):
-      hwmon: (nct7904) Correct divide by 0
-
-Tim Harvey (1):
-      hwmon: (gsc-hwmon) Scale temperature to millidegrees
-
-Tom Rix (1):
-      hwmon: (applesmc) check status earlier.
-
- drivers/hwmon/applesmc.c       | 31 ++++++++++++++++---------------
- drivers/hwmon/gsc-hwmon.c      |  1 +
- drivers/hwmon/nct7904.c        |  4 ++--
- drivers/hwmon/pmbus/isl68137.c |  7 ++++++-
- 4 files changed, 25 insertions(+), 18 deletions(-)
+Thanks
+Miss. Sarrita Kipkalya
