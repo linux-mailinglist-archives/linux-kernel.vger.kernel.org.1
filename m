@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F552256A8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE46256A96
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgH2WIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 18:08:30 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7220 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgH2WIa (ORCPT
+        id S1728546AbgH2WLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 18:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbgH2WLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 18:08:30 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4ad1610000>; Sat, 29 Aug 2020 15:06:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sat, 29 Aug 2020 15:08:29 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sat, 29 Aug 2020 15:08:29 -0700
-Received: from [10.2.61.161] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 29 Aug
- 2020 22:08:28 +0000
-Subject: Re: [PATCH v2 3/3] bio: convert get_user_pages_fast() -->
- pin_user_pages_fast()
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, <linux-xfs@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20200829080853.20337-1-jhubbard@nvidia.com>
- <20200829080853.20337-4-jhubbard@nvidia.com>
- <20200829150223.GC12470@infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <95880e98-f4d6-add1-db96-ae349064d3c6@nvidia.com>
-Date:   Sat, 29 Aug 2020 15:08:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sat, 29 Aug 2020 18:11:16 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6A7C061575;
+        Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id j15so1531995lfg.7;
+        Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+EGcDME8OsL++fl1T4qVOn72QV5xXHDdtJ+n1uKIFQ=;
+        b=Jm/9upNxlWiHnFELXSdsLWscOzni8nCgG3Lg6i9xvCFJC+yn6ckrsYri70QPrdDTIN
+         aQ55ju53E2BRfYpM40gW6J7nvHBG46INBgO0c+9e0Sm8Tz/IhTLGhPAH29kbF/z0mTWN
+         ulPXqzt+njH8RHkrBPy9j1h4hqmrCshwQJnpBNmZ7rxCCTKM/W9TTKeLRgLeeQ8rpFrq
+         u+QsaR2dKP1ACXkEPi2O0BMbUR0gsF3Zwv6UD0hGa1Ff6w6JGDTTJjtSc3WwKWgC2KSC
+         NnSTmWqW1oLzEC0SKUDaRmRWmL2gEK2CwCW8d9UB6NashxHqcikEk9NlKKbzsKBJHnBz
+         H7kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+EGcDME8OsL++fl1T4qVOn72QV5xXHDdtJ+n1uKIFQ=;
+        b=gqtjMw9XAIHtWud0oRN4T+rrgo7EteIvC9766A4oYPHH85O8shchGf6mGOnb6FNVeh
+         RkYmq3Sf7+VaWOjicA0JpJWAUrwQdUHfEQhNMhUlrvrgI3wINre+kOgfnywNXtHilDke
+         LyHxk2BQ/t/EM39aDjQJLkeUS/nLiX/LXbxHvxOLGhcoQVQEFfG5a1vvdAcT0KPT7JFp
+         d3buxRFiHzMu4Q9sTvPsU4Auv5puxK+qbC6k1dzQjSsBaqN+Ydc64wmC4uOxsgOk9vDg
+         NeJaDkjkzFYrZyGO96vsYDIZfrTVggDD+uT2+YaUFr0rupveHCrkfNoqQXw6p3nANhbW
+         okdw==
+X-Gm-Message-State: AOAM530a+Ahym0Gp4lfalktcm2B3WFib54xsF4u1Dyfbz3FEVoHKjGo1
+        ogWHTlAlK65isgGfTjuSlbUbId9EsMc=
+X-Google-Smtp-Source: ABdhPJwBA2BZvU2D2PIFB8ugQPxHGSAe34/lKbYMGdrfOfZDDMQwyKn0TjUy2r0PuaX1cOsbrI+C8g==
+X-Received: by 2002:ac2:5382:: with SMTP id g2mr356236lfh.140.1598739072880;
+        Sat, 29 Aug 2020 15:11:12 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id 4sm697546ljq.92.2020.08.29.15.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Aug 2020 15:11:12 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
+Subject: [PATCH 0/8] regulator/tps*: Constify static regulator ops
+Date:   Sun, 30 Aug 2020 00:10:56 +0200
+Message-Id: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200829150223.GC12470@infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598738785; bh=prw38Q2A3ZZ+rOHUhaGtFVP9FzXw/WOtwBNM0K0dXqc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=cmCW/N36vGdG5BvU4mtxJvp2EBjq5feBrcE15+24CUg8gsHL7R9Ml6tvtSvVZDC3V
-         C5cWuWNj9/fFSaSox6IK8bcBxmU6Ji72Nj1th3n+XsSgv6bPBsG7wPFosqgf7Mi636
-         ULH/I8q6JRheOie5rqqyXQ8jzKdVvVkRKnIo1uOz50Ckb670Dq4FoVvxSYuJOu0e3X
-         kRa9THr9jTPRON+e5X+v5Vbc8a9J9ISJbhLWH3MIKsI3hgIS9qYQbef8M11D7QkU2j
-         KVZe2lHZrN42XOSVVGaXHO+rDdktsBOq5ORqg8QjDME0O60/AJvX9UG+fF8s6S6vKK
-         0IO4i2sVBJlnA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/20 8:02 AM, Christoph Hellwig wrote:
->> -	size = iov_iter_get_pages(iter, pages, LONG_MAX, nr_pages, &offset);
->> +	size = iov_iter_pin_user_pages(iter, pages, LONG_MAX, nr_pages, &offset);
-> 
-> This is really a comment to the previous patch, but I only spotted it
-> here:  I think the right name is iov_iter_pin_pages, as bvec, kvec and
-> pipe aren't usually user pages.  Same as iov_iter_get_pages vs
-> get_user_pages.  Same for the _alloc variant.
-> 
+Constify static instances of struct regulator_ops to allow the compiler
+to put them in read-only memory. Patches are independent. Compile-tested
+only.
 
-Yes, it is clearly misnamed now! Will fix.
+Rikard Falkeborn (8):
+  regulator: tps51632: Constify tps51632_dcdc_ops
+  regulator: tps6105x: Constify tps6105x_regulator_ops
+  regulator: tps62360: Constify tps62360_dcdc_ops
+  regulator: tps65086: Constify static regulator_ops
+  regulator: tps65090: constify static regulator_ops
+  regulator: tps6586x: Constify static regulator_ops
+  regulator: tps65912: Constify static regulator_ops
+  regulator: tps65910: Constify static regulator_ops
 
->> + * here on.  It will run one unpin_user_page() against each page
->> + * and will run one bio_put() against the BIO.
-> 
-> Nit: the ant and the will still fit on the previous line.
-> 
+ drivers/regulator/tps51632-regulator.c |  2 +-
+ drivers/regulator/tps6105x-regulator.c |  2 +-
+ drivers/regulator/tps62360-regulator.c |  2 +-
+ drivers/regulator/tps65086-regulator.c |  4 ++--
+ drivers/regulator/tps65090-regulator.c |  8 ++++----
+ drivers/regulator/tps6586x-regulator.c |  8 ++++----
+ drivers/regulator/tps65910-regulator.c | 10 +++++-----
+ drivers/regulator/tps65912-regulator.c |  4 ++--
+ 8 files changed, 20 insertions(+), 20 deletions(-)
 
-Sorry about that, *usually* my text editor does the Right Thing for
-those, I must have interfered with the natural flow of things. :)
-
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+2.28.0
+
