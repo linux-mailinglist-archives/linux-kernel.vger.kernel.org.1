@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C7C2567ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841012567EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgH2Ngl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 09:36:41 -0400
-Received: from sonic306-21.consmr.mail.ne1.yahoo.com ([66.163.189.83]:33653
-        "EHLO sonic306-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727913AbgH2Ngg (ORCPT
+        id S1728156AbgH2NhP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 29 Aug 2020 09:37:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:59429 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728082AbgH2NhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 09:36:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598708195; bh=V09D8a1N75lUFkJxVR9aVpVPFU2IfPbM8afoyzXI9EQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=uTOzpCPtVZ6um660KQdhn2u18CbJCXF045syeZrmOQS7e5HeUsZQr16ccb/8O1L/pUdcdoCVUUz7ksNPomvcK3MMojWio0TWnsz8N3racSLm5NVWkZlAj8LZrHiOazPc3X/IqE/zKSgCmPsLs9NUuRyvMj/f+I8wKGSlFX+a2TVSAJQHnV8NmbZ7fdaQnAi9X2+YgguS4WnqR4pmpc38vwtNBJxUxrji5r/6PeY1s9lGI1K/YKxKYqjP/ty6bEsy1mkJsYC1rAGaGheVN6TAU+u/LvNzCuVrlpKZtulgEzFMSF1YMtQlk9pFy3pwC0hxE3eB58l6qlKJtQs+hO+aPQ==
-X-YMail-OSG: j.VwY8sVM1lQ6NREIPk_VYQovAPMl74XNoGkTf.oAYNDkEekVNVJ7bOgq1gs0YV
- xeRdjSmeoY0RZdxL6QV6PcSlyWzn0tcIBbE74KVxxk3McVUa8kGLV0s818H_IdS4Tqcn85Hk04qt
- vkeAqXtZ1IJ16IqYSZNOVfYxIXghs0.gp246fRLVf2zNT7wir8fBRzLTaLh6jVbRPFPem_P8uQ5K
- 4r5fTamUCOwtpy9wgh7yV6zCbx3JzziJTYvmGxRM4BvVgxtsLEzvaniIy6Y_ZUVg0v9IdsNjFATV
- dikYuf95pUZc0LLReJ9SkIrrAAIiIuM5N8W4vCKIoNZFXtpGRvgKVoXvE6e1t7azDpzYhaauF7x7
- 9zyEr.dv0EPggei9.Z5opE7R4S.xk1Fum0qsjfk27MlnhHFG14rk1UlQng7vmbA063vngJhvnACw
- aHJxDD6JF3OzgzRMQbyQ3ApaVrk5ecE9fSXvxtgwj_HXsHhSwytNcwtBJgHnYRa8F0ugE8ICohPP
- v2vKSZnbMoKpcRXb5vEYc.5dErz3417wEPPvrpY.WkqPU.NeODGMZ2XFMdUrRerJU36En39id2p.
- UVsHBokyuQbxC6_14Ii2l1O6F0f0aDS685GxLVhoctbeyCJgCwUYSEUxS67QqFMEnPo02AQ0BqGV
- rnS59O4fbu0p4dbZv1U0n7VXw753gp_0tJ4h1xNRb6s5O119BMiz1XiEurLbjnd26P9IoUDxfrIc
- YABXz20A.Xb7mYj.2IC4NRRNElLBIaAUHTlljEkq.NB9YT5af9Sk9qkXCaIRCiXZ2sYSLqrxGUKD
- eJv0redJj2QkeEkdQiU3bWG9lS2_f7Nt4YfrAW282LMAQnxndWpcWoSOEaLr3xjRPfVUOeEWdsYJ
- 6wLDY6AmIWXe63OQCvNta3M7jLDxMb.DZgH2RW4fzx7F7odlx2cJSy_Hw3_7rSokIFTO4jvsypju
- bYarpQHk10RliqCHoVt.whlbk_kbS7yYP6EL_aPqYSctN464.R2.rR4Su11l0Z78UTmMZUFoGLyl
- MPfinpVtaxikQvSnX84LS9Yjxrk4iFupGihuCIQHVDHX9IC5Zq46.FZEzz0g7ktO80YQqAhIr_h8
- SmMNEgr5dfLjAMyCx1804Z4iA4cMPHdBjvGj3WuWnY2Xv_PUBttfJG49.skRkqwfsvHBfP6xAHYu
- Pp6LVlMvBv9YFsFQvYDkXKZrjqctGjP_ubhcfLDCDJb2zRHiBDNbwoR_gGTqA0RPWiTKRgnuw9jD
- YeofuH7j6wKj6w1GbA_e2UPikVb.okOGkK4Z2aDgYrraQffvljjEs6xlbgdeih_e5Hu8d_0mZogC
- vLmQYQ.c09MHt.Doyao.rpOvBVP_x9ZIw7rrXFYICcDH1YxTSYlZRWJue5KSmzKMv1N7qp4Cyyex
- g2AoV636MvRx4iXQ5WycNw7kCd5CllkljtDXHeiDt3pndRtBnVUvwYg--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Sat, 29 Aug 2020 13:36:35 +0000
-Date:   Sat, 29 Aug 2020 13:36:34 +0000 (UTC)
-From:   Ahmed <mrahmedoue@gmail.com>
-Reply-To: ouedraogoahmed@outlook.com
-Message-ID: <1626605907.129014.1598708194400@mail.yahoo.com>
-Subject: WITH DUE RESPECT.
+        Sat, 29 Aug 2020 09:37:06 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-260-sruLeLQHO6G7wRvBN5rGQw-1; Sat, 29 Aug 2020 14:37:02 +0100
+X-MC-Unique: sruLeLQHO6G7wRvBN5rGQw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 29 Aug 2020 14:37:02 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 29 Aug 2020 14:37:02 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bart Groeneveld' <avi@bartavi.nl>,
+        Patches internal <patches.internal@link.bartavi.nl>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] net: Use standardized (IANA) local port range
+Thread-Topic: [PATCH v2] net: Use standardized (IANA) local port range
+Thread-Index: AQHWfXt8zR3om+J6ikuVkMpiekBWLKlPFWkw
+Date:   Sat, 29 Aug 2020 13:37:01 +0000
+Message-ID: <30c8e904e2114204a4381034e7ee06c7@AcuMS.aculab.com>
+References: <20200821142533.45694-1-avi@bartavi.nl>
+ <20200828203959.32010-1-avi@bartavi.nl>
+In-Reply-To: <20200828203959.32010-1-avi@bartavi.nl>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1626605907.129014.1598708194400.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bart Groeneveld
+> Sent: 28 August 2020 21:40
+> 
+> IANA specifies User ports as 1024-49151,
+> and Private ports (local/ephemeral/dynamic/w/e) as 49152-65535 [1].
+> 
+> This means Linux uses 32768-49151 'illegally'.
+> This is not just a matter of following specifications:
+> IANA actually assigns numbers in this range [1].
 
+Linux is using the 'historic' values.
+IANA shouldn't really have 'grabbed' half the port number space.
+Really the 'problem' of TCP port numbers identifying the service
+as well as the connection should have been addresses by some other
+means (eg using port 1023 and a TCP option to select the serivce).
 
-Dear Friend,
+Changing the default base from 32k to 48k will break some existing
+systems if/when a kernel upgrade is installed.
 
-I know that this mail will come to you as a surprise as we have never met before, but need not to worry as I am contacting you independently of my investigation and no one is informed of this communication. I need your urgent assistance in transferring the sum of $11.3million immediately to your private account.The money has been here in our Bank lying dormant for years now without anybody coming for the claim of it.
+You are also changing the numbers for UDP.
+Anyone doing a lot of RTP (which typically requires 2 adjacent
+UDP ports) is already constrained by the availability or ports.
 
-I want to release the money to you as the relative to our deceased customer (the account owner) who died a long with his supposed Next Of Kin since 16th October 2005. The Banking laws here does not allow such money to stay more than 15 years, because the money will be recalled to the Bank treasury account as unclaimed fund.
+	David
 
-By indicating your interest I will send you the full details on how the business will be executed.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Please respond urgently and delete if you are not interested.
-
-Best Regards,
-Ahmed Ouedraogo.
