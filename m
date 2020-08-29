@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C35A256A91
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E58C256A92
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbgH2WLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 18:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
+        id S1728525AbgH2WLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 18:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728246AbgH2WLS (ORCPT
+        with ESMTP id S1728384AbgH2WLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 29 Aug 2020 18:11:18 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A058C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:17 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so2642956ljg.13
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:17 -0700 (PDT)
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4C0C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:18 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w25so2640312ljo.12
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jIAcjfcjSRRtfK3tD81KW4l+/Y68i1r84BSQhmAOVQo=;
-        b=BWwjHAUko9g1RHLQ2DA5M1wkTS8IJipFYRSm9VNaYvAWQpCtTjBehZpvV7CChxevnv
-         bMVlJs97aTI7npmRxrnLyj1edbP1OSzX03r1MfdDXvi3XOx5vopgywc4I17KjoGovPqa
-         cH0/LTAczSYM7g/gWbOWVLev4U4aQpPxljt6RUZPHFQLPtGV9R9aBwJiBRyzQjBYmcL9
-         HVGjz6aPmnQSAWGvp2ziabD6lNaDEhNWEpfmizOJsbpmR0KEgehJUiVAUe9cSZqvioRP
-         7vx1ol91OLzq41ZXPnFmoSUYllA38Ygq7+pGXmJAkwZ3LLjI8aobH3BuCZvzN/LhGxIP
-         X4ZQ==
+        bh=ogicnl1gleuOgZqLJi7vMlT0fGkrnPsLwcoujGcot4c=;
+        b=R1BRRRTr/kBFXZnhwZ57cwF6n5ZjP0aWC5oDdGCr7vSKCSOzhnSHj0qZJvWp9R6S/k
+         RGvZDlH+tHZ8NPwF/SkH8UVmsHcWzEuJ9lNBEkF9z1xMPyaDTVubiywI6u9aQ8jzYzgh
+         BXDYIuTv4+Qx+P4uwSBo2RWvGHPeinfjZNOG64hFWJkU2ZsDqvfIPWNA6knfxTrd+g4b
+         GKGju/PJPIQB/VkTBrd/dQ8wnIkL26cAterTGnSSpH349V8fRgl+Z13XMV8IxytJ87b8
+         fMGWKxLCPYc2k2qkAyjexSRgA74ODjBuUdpqTEO3i4K+vtUEumIQXpUmV69S1SAbARqc
+         SYPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jIAcjfcjSRRtfK3tD81KW4l+/Y68i1r84BSQhmAOVQo=;
-        b=BZara0ktJBpGSfX2LA1bc/P7O7PbRwuxmVopqzASWkj2aiB1bS0trUppfrDM44IZxn
-         M5AsBfhTIlfKMXzkqp3t64ajSWFqJ6ySMXSzX8WXEmNxIvk5jDEDJFkxgecb8R1Qosc0
-         hVFGnS0FkEIjYhS3sTM0FD2z92UHs8ThGZ2zS854mGa5YeM64ibiZE6gpFjHLmgrfFFM
-         DaRWg+Ojz+gBZX74R4EIvO0ectHG5/N8pq7xF9S+SFqUZqrM9jQJ6JDR12bSaCL9dtfI
-         1gH6Qs0H5POa0IGAqqBSuumgXDlch7N5n1PMzSGup5g4FN4RgnyvBvxapzyRlyBVd3op
-         br9A==
-X-Gm-Message-State: AOAM530POFrg3TEQmTvpQHKkvf5xtxydVg8RsAJmyicd+YjsANJRmcKH
-        WM/+nf5S3qJOnRFH8mmUlt4=
-X-Google-Smtp-Source: ABdhPJx+il0c25Qr0MJmq/JLOPLJykjymUcn+ETIk9hVT4JX7oY2UA+/m2T1FsLfASF3Vqr9/CHyKA==
-X-Received: by 2002:a2e:b5c3:: with SMTP id g3mr2472328ljn.63.1598739076011;
+        bh=ogicnl1gleuOgZqLJi7vMlT0fGkrnPsLwcoujGcot4c=;
+        b=UZN9O9A/qTE4w1VYfD3GdV63rHNCW/IinFGHyFXDMSAAvuprHxdhiyqBtT2LTsygdz
+         rJcCw4qL27HMJgs8Xjbd5t6u/aFhAzZiuaXPPFiTAzYXMPkojWDWU/uDwajO1N0K/O3p
+         6YrkV/o/cGkHl2OVrfsKOeMNAnB7TLhKf+a7FABiqgeKd5auHC54l32s1WbIpDLDGl91
+         u3LNyLcLckjf3xNGS0/to/MgKH87YdyYm0KhYwc1VhD1RMlFBLQVonAtQADNjvOfi0kQ
+         akGw89RNAXXcFfFpSgcE8tcaLwo1p/tz/ms8jSziwZn8bezUCPcZ1Wk0JJdnEQ7Ir9Gg
+         nfbg==
+X-Gm-Message-State: AOAM5314WTth8AGNIyuQAElvJe0VkJrZ30xVKpEMGZJbsccMWhqgRLpA
+        DxT9qgMHquF8kgLP2d/x4vNl5iHwGbc=
+X-Google-Smtp-Source: ABdhPJzVSATsBV4N6Ph+9odZvXPr5Zu5pR9Kp5T9ijKo1Qe7JX1ReOarFQH2NapMSYpqrAJV0UoFgA==
+X-Received: by 2002:a2e:9557:: with SMTP id t23mr2122930ljh.193.1598739076977;
         Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id 4sm697546ljq.92.2020.08.29.15.11.15
+        by smtp.gmail.com with ESMTPSA id 4sm697546ljq.92.2020.08.29.15.11.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Aug 2020 15:11:15 -0700 (PDT)
+        Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/8] regulator: tps62360: Constify tps62360_dcdc_ops
-Date:   Sun, 30 Aug 2020 00:10:59 +0200
-Message-Id: <20200829221104.20870-4-rikard.falkeborn@gmail.com>
+Subject: [PATCH 4/8] regulator: tps65086: Constify static regulator_ops
+Date:   Sun, 30 Aug 2020 00:11:00 +0200
+Message-Id: <20200829221104.20870-5-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
 References: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
@@ -65,28 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of tps62360_dcdc_ops is to assign its address to the ops
-field in the regulator_desc struct, which is a const pointer. Make it
-const to allow the compiler to put it in read-only memory.
+The only usage of reg_ops and switch_ops is to assign their addresses to
+the ops field in the regulator_desc struct, which is a const pointer.
+Make them const to allow the compiler to put them in read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/regulator/tps62360-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/tps65086-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/tps62360-regulator.c b/drivers/regulator/tps62360-regulator.c
-index f6a6d36a6533..315cd5daf480 100644
---- a/drivers/regulator/tps62360-regulator.c
-+++ b/drivers/regulator/tps62360-regulator.c
-@@ -233,7 +233,7 @@ static unsigned int tps62360_get_mode(struct regulator_dev *rdev)
- 				REGULATOR_MODE_FAST : REGULATOR_MODE_NORMAL;
- }
+diff --git a/drivers/regulator/tps65086-regulator.c b/drivers/regulator/tps65086-regulator.c
+index 23528475a962..070c956216b0 100644
+--- a/drivers/regulator/tps65086-regulator.c
++++ b/drivers/regulator/tps65086-regulator.c
+@@ -101,7 +101,7 @@ static const struct linear_range tps65086_ldoa23_ranges[] = {
+ };
  
--static struct regulator_ops tps62360_dcdc_ops = {
-+static const struct regulator_ops tps62360_dcdc_ops = {
- 	.get_voltage_sel	= tps62360_dcdc_get_voltage_sel,
- 	.set_voltage_sel	= tps62360_dcdc_set_voltage_sel,
- 	.list_voltage		= regulator_list_voltage_linear,
+ /* Operations permitted on regulators */
+-static struct regulator_ops reg_ops = {
++static const struct regulator_ops reg_ops = {
+ 	.enable			= regulator_enable_regmap,
+ 	.disable		= regulator_disable_regmap,
+ 	.is_enabled		= regulator_is_enabled_regmap,
+@@ -112,7 +112,7 @@ static struct regulator_ops reg_ops = {
+ };
+ 
+ /* Operations permitted on load switches */
+-static struct regulator_ops switch_ops = {
++static const struct regulator_ops switch_ops = {
+ 	.enable			= regulator_enable_regmap,
+ 	.disable		= regulator_disable_regmap,
+ 	.is_enabled		= regulator_is_enabled_regmap,
 -- 
 2.28.0
 
