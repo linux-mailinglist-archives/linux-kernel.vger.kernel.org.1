@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9FF2568D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 17:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBCD2568D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 17:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgH2Pw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 11:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53900 "EHLO mail.kernel.org"
+        id S1728415AbgH2PxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 11:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728375AbgH2Pwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 11:52:53 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        id S1728375AbgH2PxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 11:53:15 -0400
+Received: from localhost (p5486cb47.dip0.t-ipconnect.de [84.134.203.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B64F320707;
-        Sat, 29 Aug 2020 15:52:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05D6820707;
+        Sat, 29 Aug 2020 15:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598716373;
-        bh=gnfWmnDWzgXsZSAVuQUD4Ilt7RgCEWXUmah7mNFams4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c8ZGRwkhZUZwO9PvBV0lQ10k20fAEQm5Yx/TWDuKt+83li73Dt1nVL6ggGFA/Roy7
-         3lNuZV5W9g/x4WxpSxGnkBaHTOLLwzsEZRlttVRkR8DHaleh3abTd/0ykTWOPxdM4z
-         JjX0pij7+15mMbH1+rhbU5jcnTo2UdwnXDxAqq38=
-Date:   Sat, 29 Aug 2020 16:52:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Peter Rosin <peda@axentia.se>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: dpot-dac: fix code comment in dpot_dac_read_raw()
-Message-ID: <20200829165249.416b2efa@archlinux>
-In-Reply-To: <20200826192529.GC2671@embeddedor>
-References: <20200826000844.GA16807@embeddedor>
-        <3fb79fa8-e86b-111b-a4a7-5da767d40b52@axentia.se>
-        <3528f053-70d8-bd12-8683-3c1ed0b4d6e7@embeddedor.com>
-        <13e9b0cf-9fae-5dcf-d0ac-4beaf18295d0@axentia.se>
-        <20200826192529.GC2671@embeddedor>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        s=default; t=1598716392;
+        bh=Qqj02Lv0IUCa5p5sPcWrTdOrlwUiunqaS/VUy5b1CQ8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Nn7kzJ5P7WCaEJFao9Tcvqb6W7w3j9T9OJyhSqsrJsoGr1VhuH9gViNQD26nXuOs2
+         2+mNS0G5nyhbmEpdwBRJ8an7qmIjeS4mifJy3VOAdxBJXfkQ6PG79j8GaQ1Y8N0YI4
+         0r/eCU7t9OZHl2i8oXs9s5OBw2/TECwdSSomHxmg=
+Date:   Sat, 29 Aug 2020 17:53:07 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.9
+Message-ID: <20200829155302.GA1147@ninjato>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 14:25:29 -0500
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-> On Wed, Aug 26, 2020 at 04:16:23PM +0200, Peter Rosin wrote:
-> > On 2020-08-26 16:17, Gustavo A. R. Silva wrote:  
-> > >> And just to be explicit, this fix is for 5.9.
-> > >>
-> > >> Acked-by: Peter Rosin <peda@axentia.se>
-> > >>  
-> > > 
-> > > If you don't mind I can add this to my tree for 5.9-rc4
-> > > and send it directly to Linus.  
-> > 
-> > Fine by me, Jonathan might think differently but I can't find a reason why.
-> > Just about nothing is happening in that file and the risk for conflicts is
-> > negligible.
-> >   
-> 
-> OK. In the meantime, I have added this to my -next tree and queued it up
-> for 5.9-rc3.
-Absolutely fine by me.
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Linus,
+
+I2C has a core fix for ACPI matching and two driver bugfixes.
+
+Please pull.
 
 Thanks,
 
-Jonathan
+   Wolfram
 
-> 
-> Thanks
-> --
-> Gustavo
 
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+
+for you to fetch changes up to 0204081128d582965e9e39ca83ee6e4f7d27142b:
+
+  i2c: iproc: Fix shifting 31 bits (2020-08-25 09:46:38 +0200)
+
+----------------------------------------------------------------
+Andy Shevchenko (2):
+      i2c: core: Don't fail PRP0001 enumeration when no ID table exist
+      i2c: acpi: Remove dead code, i.e. i2c_acpi_match_device()
+
+Ray Jui (1):
+      i2c: iproc: Fix shifting 31 bits
+
+Wolfram Sang (1):
+      i2c: rcar: in slave mode, clear NACK earlier
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Mika Westerberg (2):
+      (Rev.) i2c: acpi: Remove dead code, i.e. i2c_acpi_match_device()
+      (Rev.) i2c: core: Don't fail PRP0001 enumeration when no ID table exist
+
+ drivers/i2c/busses/i2c-bcm-iproc.c |  4 ++--
+ drivers/i2c/busses/i2c-rcar.c      |  1 +
+ drivers/i2c/i2c-core-acpi.c        | 10 ----------
+ drivers/i2c/i2c-core-base.c        |  2 +-
+ drivers/i2c/i2c-core.h             |  9 ---------
+ 5 files changed, 4 insertions(+), 22 deletions(-)
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9KedoACgkQFA3kzBSg
+KbaeSg//eewASwN0xa1Da5my5CE1Q77LLQKpdNq0cMAaXle+pqt9aEdD3KvAP1Th
+5lBCN8CEcAcDPMjaiLoTAIc1RpFucT4dht6L8V49mXqRA/QfpRW7YGWBCGzxyi+H
+/QGXCag6DuHmA5TP5+DF1/OUbDEKyfkOWRILnlhn0yorl+nOfxeoWGkjL/XrGKI8
+3Aca65HhsHj2x9UXJy97IvPdD03zlKBuSC/I5TuPKuCMQvi7icbjhI40hgD4xLQM
+NjLqCrXZC9Tak8uSIi71UhAMA9mIj6pcUKQdiyWE+lr7QmBFHstIxqzuuKq3evxf
+fcqfIYDatGViMs4ofKFJooWzsNMr0Vt3o/LGxiXvKgq8lvT7zBOQTu7ZknctwB1J
+tmsRBH7dQr/n6HMTrEHUyhurnNeH8jmDfQiPVh6LRzT+BrRAMOVgfUNbsftFtkjI
+GQJgd5g6MB7nBDeBeR5fFzbSpiyaObMyNH43fIt0qaFcOdTsw06JuPDs602zw5BD
+9XH4IfYzdxJbpDzv1Ku5VZRCo61iOLNiLz9++0WGvR3JaMY+2jQtVyg7YykMA97d
+ORhn4ndAWGRGyRX/VEX3qsI8iy7JotBpMXyAAosPZuetUKBIsFToRnnK5vbP7iLl
+g9oNY4/FoXYzvyNa6MzZDD8soumSnPFBkTgQ0ZfdcrwBMr+LS2M=
+=bo2d
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
