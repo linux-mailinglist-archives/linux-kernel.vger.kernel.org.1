@@ -2,161 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D8D25673C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 13:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D324256730
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 13:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgH2LrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 07:47:25 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:38912 "EHLO mout01.posteo.de"
+        id S1728070AbgH2LoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 07:44:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgH2LdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728110AbgH2LdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 29 Aug 2020 07:33:16 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 21C28160061
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 13:24:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1598700288; bh=TgErozqIWt6bpVwLiKoUBYHyYKAEI0+FU/200j3ZaEQ=;
-        h=Subject:To:From:Autocrypt:Date:From;
-        b=jIYis2ciwcJVcRRyeM5vdZwArQNxjA5I5SqGydXSfq7YCeriL02fPICHy1m07ZUqA
-         YNvBAJ8JPKgTvOX6KpNka9swXr6GVS4Bc6A1ajYzS1E+N8vDrR2Eu1TQUef7UXQjFS
-         dfd4XLyemLmcV4mJtuTff88l1kOQXONyZnFhBXaYbQo+hFA7Uo+E1A3n99vtXG1Z2w
-         yQPK36lc2t80ujEZxj8Y51D/whe3T8dQWHRYg0YJv1b6UMbGQ9vz0qjS7s3tK0rWr+
-         BfWgYNEQvYj10RAM+Ud0qVRYkqdGNwZzSK8vIu5OhksiCb9946IuYHLduc20wxZmYq
-         KAEDkllXE+whA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4BdvJG1541z6tmV;
-        Sat, 29 Aug 2020 13:24:45 +0200 (CEST)
-Subject: Re: [PATCH] arm64: dts: imx8mq-librem5-devkit: Add missing
- clock-cells to PMIC
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200828192228.23060-1-krzk@kernel.org>
-From:   Martin Kepplinger <martink@posteo.de>
-Autocrypt: addr=martink@posteo.de; keydata=
- mQINBFULfZABEADRxJqDOYAHfrp1w8Egcv88qoru37k1x0Ugy8S6qYtKLAAt7boZW+q5gPv3
- Sj2KjfkWA7gotXpASN21OIfE/puKGwhDLAySY1DGNMQ0gIVakUO0ji5GJPjeB9JlmN5hbA87
- Si9k3yKQQfv7Cf9Lr1iZaV4A4yjLP/JQMImaCVdC5KyqJ98Luwci1GbsLIGX3EEjfg1+MceO
- dnJTKZpBAKd1J7S2Ib3dRwvALdiD7zqMGqkw5xrtwasatS7pc6o/BFgA9GxbeIzKmvW/hc3Q
- amS/sB12BojyzdUJ3TnIoAqvwKTGcv5VYo2Z+3FV+/MJVXPo8cj2vmfxQx1WG4n6X0pK4X8A
- BkCKw2N/evMZblNqAzzGVtoJvqQYkzQ20Fm+d3wFl6lS1db4MB+kU13G8kEIE22Q3i6kx4NA
- N49FLlPeDabGfJUyDaZp5pmKdcd7/FIGH/HjShjx7g+LKSwWNMkDygr4WARAP4h8zYDZuNqe
- ofPvMLqJxHeexBPIGF/+OwMyTvM7otP5ODuFmq6OqjNPf1irJmkiFv3yEa+Ip0vZzwl4XvrZ
- U0IKjSy2rbRLg22NsJT0XVZJbutIXYSvIHGqSxzzfiOOLnRjR++fbeEoVlRJ4NZHDKCh3pJv
- LNd+j03jXr4Rm058YLgO7164yr7FhMZniBJw6z648rk8/8gGPQARAQABtCVNYXJ0aW4gS2Vw
- cGxpbmdlciA8bWFydGlua0Bwb3N0ZW8uZGU+iQI6BBMBAgAkAhsDAh4BAheABQsJCAcDBRUK
- CQgLBRYCAwEABQJVC4DBAhkBAAoJEFADmN9as4fTpYwQAIqwZ2arvCsfwiZqr/KyJ4ewhn2/
- 7JVR/kvx5G6nfPI55XtNDmd2Lt7xNvY5LbLwGp2c3JMD1rZ2FhbWXC39SA0yxeE4U0NTlxDg
- RGx20k85pZTFvxyPfz9c7dAFTLMajpzLvpjBjEaqVm6KnS/UBBaGHOu0999siD1EDaSBWUiO
- HPMXNYkcFt96p55LYNAgzSsd+zTjknxCnmzUMiDKzjFn6LdqdlyPyMj6IXpeiAFHV43SAGb6
- 8miE+S61pq9pTapt+E5qf3zfuKATK0dfZkkMFaC+Vmv6DvcpR7G1ilpmjkR6o/mDM6dtm21T
- 5jpYrEmb7hgigFl9Pg01mJLwSGm1GYf45aKQH/VZff+sYsDDNQUHwabG9DVV/edSRJGzCu3R
- W/xqeF3Ll44Bhaa9LaVQuN7Yuqixhxm8flJNcfnknYd9TBQYLIZLcUyN3bbaABbCv6xkHaB6
- ZUUQPhpVGoLANrLtTSEtYBYzktSmeARLTtVt5wJ0Q8gQ6h5a0VC6zHv37cRUYqsEwwRwbG+h
- aBs907W8hH4etQtbbXBbbbXnOOl/QnpShjyWYe02A/f/QWpgZD5SPsB6RVQdWnP8ZN7OngzE
- RACA2ftyBnp/0ESKMDLYJDRGm3oM01hZSZHnFBt/aggx3FOM39bmu565xg21hO7I7s9xkvbZ
- Czz2iSRTuQINBFULfZABEADFNrM9n2N+nq4L4FKIi2PCSsWWU0RUqm26b3wkmi9anWSJsz6m
- GXqJWj7AoV6w2ybnry+IzYIDN7NWUyvsXS7o1A0rqm7Tzhb3IdJQpE4UWvzdSKfq3ThTzy1w
- KIFgtDkb5OtW4Zf/mpjV6tVYjjJx2SpDNvwA9swWtb+xFvvzV/zAZdaEOzoF3g81goe/sLSv
- xdijvs95KoZJX/nmWlKyagTb7NHcxblNWhoTzdnGF+qC1MhYx/zyaD/bQQiFgJEbSI6aNfK1
- Z/77Eub3Gkx4qcp9ZdDFFt+8qDf4rMXfQDSE7dgHIoQ1ifC1IHPyh3fY3uicbn75rPF+6Fhk
- bkyRo14k8so9CnIYxzY+ienQGEJlO/EhsjzVl5fpML45lt5b7TeIacLsSjjIn3dBSTNYU6EY
- YTHQUeP6oGQNAuxEQRjCx3Gqqv2TUpQPUYVUOXSDO4qqJXhiOUmIV8eH19tMPO2vc2X+tpY0
- 3EDcy1f2ey06vtv4+gDiAfUZcv1hKVd18E9WeuGCm64lhyovLTaLf/3RSSKL33SeaLkLPOEF
- UXA2OxlNfDs1FK0is+0oJr55ZEI7N9o6oFQp+bNcQeAyXh6yqTIW7YxK9tHpyUhVqOQGZzj5
- 0SC/XdEn1VZbqo11DDupNsMlp+BBRuY5QwjKANGMIAvay38uICLYxaCXzQARAQABiQIfBBgB
- AgAJBQJVC32QAhsMAAoJEFADmN9as4fTBJkQAKl9A9gUvgiLgilK6OoR9vX+cv4yL7c0uubw
- eneL+ZWAytTAF3jHT6cPFzv4rD8iJc1yhAFDc0LW+yywnoP7Tok6cYlYH1DCjIQsZ1Du1Jad
- rjTmvAPFyzKc2dcNPR3f1DAU3adcLLKz7v4+uLmBPI4HIn4TnYXbttfb0vTmJVJFERV7XMsu
- NiQVDgsM1K1Sn9xqYPoU59v725VzOwyhNnV2jZC2MkyVGWFKEbPcZhTDnaFpYp83e2y+sgeN
- l/YXkBjLnM4SCt/w7eObYsM2J2KfzfT5QdtqglWJsJMm91tWqn8GUDUgqnWz9jzzKVKDEMXA
- W5dQSUkD0aWY0cDNkFqs8QlWRgFMelG0gqnCqZRMf/IfSnN23yGK0j5EENjKdifSdTGItlQ8
- B4znBEu3VdpDZANzRAlHxXAEJVJ7z7fmAQ9079CauV43mIDeo4cxbxfBcmiR3sxpLoUkoZ0W
- ONk8MxHhCLw9OfYubU2QMekS1oSOMqZ2u3/g6kTp9XiIq0LWRy862+rE1fOYWf3JpsdWVszB
- NjZPEXwiZ9m+v/VJ3NuzrLOJqw1F/FMaaZgbauYH9c7oAx1qXl7BYMV9WYiJGiJV0xK5UzpD
- GsOfIJ8/tbwPSs6pNZDAJata///+/Py99NtaU3bUYhyluAGZ/2UHygGkuyZnJc2mWFBWYWWi
- uQINBFz0prUBEADX9qwu29Osr6evt73dlU3Esh807gvvROUFASNR2do560FZChk0fX+9qrzg
- i3hk0ad3Q9DjMKRb5n3S0x+1kiVsvY0C5PWJDog2eaCc6l82ARqDb8xvjVrnuF8/1O6lYvl3
- bM60J19MtMRXCeS8MTHlNWG6PFt2sRYtZ/HQOasj6Mtt20J6d7uQNX7ohgoMx1cpXJPMcaa2
- mfmNmdepY3gU4R2NDQg8c6VzUFPSWkyCZPpxIyazmkfdlh/20cb3hfEpKlGl56ZNM18xSQUi
- 1Tr6BvD0YijHpWpu/pkS/Q8CFso+gSOtuukVnD2TTJR6lfR7yevR4PiR5DILpYNZZ0MpXIUW
- iGVwGIVFvoFyEkqb/7cQpm7j4vUgS1QwS0kCCfV6IDjYE4OnY4bgUFP/C0cTsJiEfHPIqT+X
- HFfLZBYZe0IEgrcs89yUwOBiHTHRuixjtu7e1fiOJKzRP3kgvdiXjB4wKUDFBFBi3jkSIRJZ
- 44GeXwAdXxgPDL47u4hPY4enG91jtgrWAc2LkTfJojRcJde3LDzYsgA7FwJS4yS40ywE60Ez
- eAcOi6vGs2djFkQM/pRygmfd9PJ69EGoxFpDBRIe6jTHrK+PNjYeE4fOuDdCHtcufybEiv/P
- zaSf75wP+rd7AR7q4BeS3sjXYxHSNuKEbBvwplaXAr2tgC18IwARAQABiQRyBBgBCAAmFiEE
- 8ggriA+eQjk0aG4/UAOY31qzh9MFAlz0prUCGwIFCQPCZwACQAkQUAOY31qzh9PBdCAEGQEI
- AB0WIQRHcgjP+zRoMgCGPgZ+LO3NP1SshQUCXPSmtQAKCRB+LO3NP1SshR+IEAC3c3xtRQfZ
- lBqG1U7YK4SIfJzcfR/wGYRUbO+cNyagkR8fq5L/SQXRjTlpf5TqhiD8T1VbO0DoTqC4LsHP
- 3Ovp9hloucN5/OS4NFADNnME2nFxSsmF46RgMBr/x85EhBck7XYNI6riD1fZFKohyZCDHb8q
- hbhQbd7g4CuqAxLsRINPq5PVYVyxx+qM8leNcogfe2D9ontkOQYwVqdiwNqIgjVkqmiv1ZkC
- x8iY+LSfZRlI0Rlm1ehHqu2nhRP47dCsyucxlCU4GS/YcOrUV7U9cyIWy3mQBRyCEh5vId1G
- FAAEjussV5SoegRUa4DK5rJOxU15wyx7ukU7jii2nAVl77l4NOwSKFjUt5a5ciSMGCjSSY1N
- k5PCM14vZoN2lnM3vQfgK2/r6vbjbjxEUyLLVhSiwgb9Sfo4pjiFVKEu5c6qxQvjWPhQkpEK
- UcRYQgUVSFSB6Pc+zWlTEtU4j66SEBQnBbAFqCwqr8ZvxP8CEfeeiiwIcFd4/lnJPm8yYeTZ
- m/DBZCdQlUcEC/Z72leg5Yx6nJpOz8327i7ccbf+thKdgWOCXjDM9nvdBS8LERh8mL1XhjOW
- f4X2ErqEqPdsocBCK/H4Tc28W4ggzVp2JGGFAKWHYxplXL3jFTpJ+2X1yjcGyKVXcfvCtZ3n
- ++59mVkO0eY+h1p7u/kAWZq+shcXEACybhk7DDOEbqLP72YZqQkFaNcQrGcCi24jYUItZlX9
- mzy1+GRt6pgU7xWXPejSyP6vrexYWRVNc5tfuMJBTBbsdcR0xoJoN8Lo1SSQpPU8kgEL6Slx
- U9Kri/82yf7KD4r44ZRseN6aGO9LvsHJms38gFk6b3gNJiBlAlFOZNVh33ob77Z0w85pS1aO
- qYLO7fE5+mW4vV1HX2oJmMPX6YDHl6WouLsGtmAk5SOZRv9cj+sMsGmgVD/rE0m4MDhROLV3
- 54Rl5w4S7uZjXEFCS8o1cvp6yrHuV2J5os0B/jBSSwD5MRSXZc+7zimMsxRubQUD6xSca8yS
- EKfxh1C0RtyA1irh4iU6Mdb6HvNTYbn+mb4WbE0AnHuKJdpRj0pDeyegTPevftHEQNy9Nj0o
- pqHDETOTYx/nw49VpXg8SxGJqeuYStJR+amX3dqBu1krWvktrF4i0U6P47aFYUs0N6clGUFj
- BfCUkKIfEz87bveFlk+g/wvmnni5eFpLkQm5XZfOBuLdURvDcZmv4ScMLtc0TbBSueUP/DZb
- pHNViNVPohfhJqY2VX4xZfT/V9gK61+pmXzoFIqYmOVal+Q8rPLOOEZBVmtNlicoC7jvWFG/
- z/oPHkm5kmAMKdhqc3HcMOt5Ey7+erpN9o56Qy3GA1hv/ygOvLT1QUdsYcuxafqgGg==
-Message-ID: <af6f0f6c-3b87-b87b-4b97-92c58466636d@posteo.de>
-Date:   Sat, 29 Aug 2020 13:24:45 +0200
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 86719AEDA;
+        Sat, 29 Aug 2020 11:32:16 +0000 (UTC)
+Subject: Re: [PATCH v3 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com
+References: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <dcea3bfc-a082-8dfe-cbd0-c99333fe1b22@suse.com>
+Date:   Sat, 29 Aug 2020 14:31:41 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200828192228.23060-1-krzk@kernel.org>
+In-Reply-To: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.08.20 21:22, Krzysztof Kozlowski wrote:
-> The PMIC node can be a clock provider (for its 32 kHz clock) and authors
-> of imx8mq-librem5-devkit.dts apparently wanted this because they added
-> input clock and clock-output-names.
-> 
-> Add necessary clock-cells to the PMIC node.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-> index 377591a0e6e9..40b43625f20f 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-> @@ -285,6 +285,7 @@
->  		pinctrl-0 = <&pinctrl_pmic>;
->  		clocks = <&pmic_osc>;
->  		clock-names = "osc";
-> +		#clock-cells = <0>;
->  		clock-output-names = "pmic_clk";
->  		interrupt-parent = <&gpio1>;
->  		interrupts = <3 GPIO_ACTIVE_LOW>;
-> 
 
-Hi Krzysztof,
 
-Reviewed-and-tested-by: Martin Kepplinger <martink@posteo.de>
+On 28.08.20 г. 17:39 ч., Konstantin Komarov wrote:
+> This patch adds NTFS Read-Write driver to fs/ntfs3.
+> 
+> Having decades of expertise in commercial file systems development and huge
+> test coverage, we at Paragon Software GmbH want to make our contribution to
+> the Open Source Community by providing implementation of NTFS Read-Write
+> driver for the Linux Kernel.
+> 
+> This is fully functional NTFS Read-Write driver. Current version works with
+> NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
+> 
+> We plan to support this version after the codebase once merged, and add new
+> features and fix bugs. For example, full journaling support over JBD will be
+> added in later updates.
+> 
+> v2:
+>  - patch splitted to chunks (file-wise)
+>  - build issues fixed
+>  - sparse and checkpatch.pl errors fixed
+>  - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+>  - cosmetics + code cleanup
+> 
+> v3:
+>  - added acl, noatime, no_acs_rules, prealloc mount options
+>  - added fiemap support
+>  - fixed encodings support
+>  - removed typedefs
+>  - adapted Kernel-way logging mechanisms
+>  - fixed typos and corner-case issues
+> 
+> Konstantin Komarov (10):
+>   fs/ntfs3: Add headers and misc files
+>   fs/ntfs3: Add initialization of super block
 
-thanks for reviewing,
+This patch is missing
 
-                            martin
+>   fs/ntfs3: Add bitmap
+>   fs/ntfs3: Add file operations and implementationThis patch is missing
+
+>   fs/ntfs3: Add attrib operations
+>   fs/ntfs3: Add compression
+>   fs/ntfs3: Add NTFS journal
+This patch is missing
+
+>   fs/ntfs3: Add Kconfig, Makefile and doc
+>   fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+>   fs/ntfs3: Add MAINTAINERS
+> 
+>  Documentation/filesystems/ntfs3.rst |  103 +
+>  MAINTAINERS                         |    7 +
+>  fs/Kconfig                          |    1 +
+>  fs/Makefile                         |    1 +
+>  fs/ntfs3/Kconfig                    |   23 +
+>  fs/ntfs3/Makefile                   |   11 +
+>  fs/ntfs3/attrib.c                   | 1285 +++++++
+>  fs/ntfs3/attrlist.c                 |  462 +++
+>  fs/ntfs3/bitfunc.c                  |  137 +
+>  fs/ntfs3/bitmap.c                   | 1545 ++++++++
+>  fs/ntfs3/debug.h                    |   45 +
+>  fs/ntfs3/dir.c                      |  642 ++++
+>  fs/ntfs3/file.c                     | 1214 +++++++
+>  fs/ntfs3/frecord.c                  | 2378 ++++++++++++
+>  fs/ntfs3/fslog.c                    | 5222 +++++++++++++++++++++++++++
+>  fs/ntfs3/fsntfs.c                   | 2218 ++++++++++++
+>  fs/ntfs3/index.c                    | 2661 ++++++++++++++
+>  fs/ntfs3/inode.c                    | 2068 +++++++++++
+>  fs/ntfs3/lznt.c                     |  451 +++
+>  fs/ntfs3/namei.c                    |  580 +++
+>  fs/ntfs3/ntfs.h                     | 1249 +++++++
+>  fs/ntfs3/ntfs_fs.h                  | 1001 +++++
+>  fs/ntfs3/record.c                   |  615 ++++
+>  fs/ntfs3/run.c                      | 1188 ++++++
+>  fs/ntfs3/super.c                    | 1406 ++++++++
+>  fs/ntfs3/upcase.c                   |   78 +
+>  fs/ntfs3/xattr.c                    | 1007 ++++++
+>  27 files changed, 27598 insertions(+)
+>  create mode 100644 Documentation/filesystems/ntfs3.rst
+>  create mode 100644 fs/ntfs3/Kconfig
+>  create mode 100644 fs/ntfs3/Makefile
+>  create mode 100644 fs/ntfs3/attrib.c
+>  create mode 100644 fs/ntfs3/attrlist.c
+>  create mode 100644 fs/ntfs3/bitfunc.c
+>  create mode 100644 fs/ntfs3/bitmap.c
+>  create mode 100644 fs/ntfs3/debug.h
+>  create mode 100644 fs/ntfs3/dir.c
+>  create mode 100644 fs/ntfs3/file.c
+>  create mode 100644 fs/ntfs3/frecord.c
+>  create mode 100644 fs/ntfs3/fslog.c
+>  create mode 100644 fs/ntfs3/fsntfs.c
+>  create mode 100644 fs/ntfs3/index.c
+>  create mode 100644 fs/ntfs3/inode.c
+>  create mode 100644 fs/ntfs3/lznt.c
+>  create mode 100644 fs/ntfs3/namei.c
+>  create mode 100644 fs/ntfs3/ntfs.h
+>  create mode 100644 fs/ntfs3/ntfs_fs.h
+>  create mode 100644 fs/ntfs3/record.c
+>  create mode 100644 fs/ntfs3/run.c
+>  create mode 100644 fs/ntfs3/super.c
+>  create mode 100644 fs/ntfs3/upcase.c
+>  create mode 100644 fs/ntfs3/xattr.c
+> 
