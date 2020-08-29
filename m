@@ -2,116 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0312567EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C7C2567ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgH2NZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 09:25:23 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:37043 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728215AbgH2NVO (ORCPT
+        id S1728054AbgH2Ngl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 09:36:41 -0400
+Received: from sonic306-21.consmr.mail.ne1.yahoo.com ([66.163.189.83]:33653
+        "EHLO sonic306-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727913AbgH2Ngg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 09:21:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-138-LvN-gPRTMnunttHz6U4gHg-1; Sat, 29 Aug 2020 14:21:05 +0100
-X-MC-Unique: LvN-gPRTMnunttHz6U4gHg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 29 Aug 2020 14:21:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 29 Aug 2020 14:21:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: RE: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHWfXGL4X8nWl6IwEyifUSeZx09HqlPCNzQ
-Date:   Sat, 29 Aug 2020 13:21:04 +0000
-Message-ID: <f54657f1b5e74ec99cef62228db50dee@AcuMS.aculab.com>
-References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
- <20200828192911.ezqspexfb2gtvrr7@treble>
-In-Reply-To: <20200828192911.ezqspexfb2gtvrr7@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 29 Aug 2020 09:36:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598708195; bh=V09D8a1N75lUFkJxVR9aVpVPFU2IfPbM8afoyzXI9EQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=uTOzpCPtVZ6um660KQdhn2u18CbJCXF045syeZrmOQS7e5HeUsZQr16ccb/8O1L/pUdcdoCVUUz7ksNPomvcK3MMojWio0TWnsz8N3racSLm5NVWkZlAj8LZrHiOazPc3X/IqE/zKSgCmPsLs9NUuRyvMj/f+I8wKGSlFX+a2TVSAJQHnV8NmbZ7fdaQnAi9X2+YgguS4WnqR4pmpc38vwtNBJxUxrji5r/6PeY1s9lGI1K/YKxKYqjP/ty6bEsy1mkJsYC1rAGaGheVN6TAU+u/LvNzCuVrlpKZtulgEzFMSF1YMtQlk9pFy3pwC0hxE3eB58l6qlKJtQs+hO+aPQ==
+X-YMail-OSG: j.VwY8sVM1lQ6NREIPk_VYQovAPMl74XNoGkTf.oAYNDkEekVNVJ7bOgq1gs0YV
+ xeRdjSmeoY0RZdxL6QV6PcSlyWzn0tcIBbE74KVxxk3McVUa8kGLV0s818H_IdS4Tqcn85Hk04qt
+ vkeAqXtZ1IJ16IqYSZNOVfYxIXghs0.gp246fRLVf2zNT7wir8fBRzLTaLh6jVbRPFPem_P8uQ5K
+ 4r5fTamUCOwtpy9wgh7yV6zCbx3JzziJTYvmGxRM4BvVgxtsLEzvaniIy6Y_ZUVg0v9IdsNjFATV
+ dikYuf95pUZc0LLReJ9SkIrrAAIiIuM5N8W4vCKIoNZFXtpGRvgKVoXvE6e1t7azDpzYhaauF7x7
+ 9zyEr.dv0EPggei9.Z5opE7R4S.xk1Fum0qsjfk27MlnhHFG14rk1UlQng7vmbA063vngJhvnACw
+ aHJxDD6JF3OzgzRMQbyQ3ApaVrk5ecE9fSXvxtgwj_HXsHhSwytNcwtBJgHnYRa8F0ugE8ICohPP
+ v2vKSZnbMoKpcRXb5vEYc.5dErz3417wEPPvrpY.WkqPU.NeODGMZ2XFMdUrRerJU36En39id2p.
+ UVsHBokyuQbxC6_14Ii2l1O6F0f0aDS685GxLVhoctbeyCJgCwUYSEUxS67QqFMEnPo02AQ0BqGV
+ rnS59O4fbu0p4dbZv1U0n7VXw753gp_0tJ4h1xNRb6s5O119BMiz1XiEurLbjnd26P9IoUDxfrIc
+ YABXz20A.Xb7mYj.2IC4NRRNElLBIaAUHTlljEkq.NB9YT5af9Sk9qkXCaIRCiXZ2sYSLqrxGUKD
+ eJv0redJj2QkeEkdQiU3bWG9lS2_f7Nt4YfrAW282LMAQnxndWpcWoSOEaLr3xjRPfVUOeEWdsYJ
+ 6wLDY6AmIWXe63OQCvNta3M7jLDxMb.DZgH2RW4fzx7F7odlx2cJSy_Hw3_7rSokIFTO4jvsypju
+ bYarpQHk10RliqCHoVt.whlbk_kbS7yYP6EL_aPqYSctN464.R2.rR4Su11l0Z78UTmMZUFoGLyl
+ MPfinpVtaxikQvSnX84LS9Yjxrk4iFupGihuCIQHVDHX9IC5Zq46.FZEzz0g7ktO80YQqAhIr_h8
+ SmMNEgr5dfLjAMyCx1804Z4iA4cMPHdBjvGj3WuWnY2Xv_PUBttfJG49.skRkqwfsvHBfP6xAHYu
+ Pp6LVlMvBv9YFsFQvYDkXKZrjqctGjP_ubhcfLDCDJb2zRHiBDNbwoR_gGTqA0RPWiTKRgnuw9jD
+ YeofuH7j6wKj6w1GbA_e2UPikVb.okOGkK4Z2aDgYrraQffvljjEs6xlbgdeih_e5Hu8d_0mZogC
+ vLmQYQ.c09MHt.Doyao.rpOvBVP_x9ZIw7rrXFYICcDH1YxTSYlZRWJue5KSmzKMv1N7qp4Cyyex
+ g2AoV636MvRx4iXQ5WycNw7kCd5CllkljtDXHeiDt3pndRtBnVUvwYg--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Sat, 29 Aug 2020 13:36:35 +0000
+Date:   Sat, 29 Aug 2020 13:36:34 +0000 (UTC)
+From:   Ahmed <mrahmedoue@gmail.com>
+Reply-To: ouedraogoahmed@outlook.com
+Message-ID: <1626605907.129014.1598708194400@mail.yahoo.com>
+Subject: WITH DUE RESPECT.
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+References: <1626605907.129014.1598708194400.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMjggQXVndXN0IDIwMjAgMjA6MjkNCj4gDQo+
-IE9uIFdlZCwgQXVnIDE5LCAyMDIwIGF0IDA5OjUwOjA2QU0gLTA1MDAsIEpvc2ggUG9pbWJvZXVm
-IHdyb3RlOg0KPiA+IFRoZSB4ODYgdWFjY2VzcyBjb2RlIHVzZXMgYmFycmllcl9ub3NwZWMoKSBp
-biB2YXJpb3VzIHBsYWNlcyB0byBwcmV2ZW50DQo+ID4gc3BlY3VsYXRpdmUgZGVyZWZlcmVuY2lu
-ZyBvZiB1c2VyLWNvbnRyb2xsZWQgcG9pbnRlcnMgKHdoaWNoIG1pZ2h0IGJlDQo+ID4gY29tYmlu
-ZWQgd2l0aCBmdXJ0aGVyIGdhZGdldHMgb3IgQ1BVIGJ1Z3MgdG8gbGVhayBkYXRhKS4NCj4gPg0K
-PiA+IFRoZXJlIGFyZSBzb21lIGlzc3VlcyB3aXRoIHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9u
-Og0KPiA+DQo+ID4gLSBUaGUgYmFycmllcl9ub3NwZWMoKSBpbiBjb3B5X2Zyb21fdXNlcigpIHdh
-cyBpbmFkdmVydGVudGx5IHJlbW92ZWQNCj4gPiAgIHdpdGg6IDRiODQyZTRlMjViMSAoIng4Njog
-Z2V0IHJpZCBvZiBzbWFsbCBjb25zdGFudCBzaXplIGNhc2VzIGluDQo+ID4gICByYXdfY29weV97
-dG8sZnJvbX1fdXNlcigpIikNCj4gPg0KPiA+IC0gY29weV90b191c2VyKCkgYW5kIGZyaWVuZHMg
-c2hvdWxkIGFsc28gaGF2ZSBhIHNwZWN1bGF0aW9uIGJhcnJpZXIsDQo+ID4gICBiZWNhdXNlIGEg
-c3BlY3VsYXRpdmUgd3JpdGUgdG8gYSB1c2VyLWNvbnRyb2xsZWQgYWRkcmVzcyBjYW4gc3RpbGwN
-Cj4gPiAgIHBvcHVsYXRlIHRoZSBjYWNoZSBsaW5lIHdpdGggdGhlIG9yaWdpbmFsIGRhdGEuDQo+
-ID4NCj4gPiAtIFRoZSBMRkVOQ0UgaW4gYmFycmllcl9ub3NwZWMoKSBpcyBvdmVya2lsbCwgd2hl
-biBtb3JlIGxpZ2h0d2VpZ2h0IHVzZXINCj4gPiAgIHBvaW50ZXIgbWFza2luZyBjYW4gYmUgdXNl
-ZCBpbnN0ZWFkLg0KPiA+DQo+ID4gUmVtb3ZlIGFsbCBleGlzdGluZyBiYXJyaWVyX25vc3BlYygp
-IHVzYWdlLCBhbmQgaW5zdGVhZCBkbyB1c2VyIHBvaW50ZXINCj4gPiBtYXNraW5nLCB0aHJvdWdo
-b3V0IHRoZSB4ODYgdWFjY2VzcyBjb2RlLiAgVGhpcyBpcyBzaW1pbGFyIHRvIHdoYXQgYXJtNjQN
-Cj4gPiBpcyBhbHJlYWR5IGRvaW5nLg0KPiA+DQo+ID4gYmFycmllcl9ub3NwZWMoKSBpcyBub3cg
-dW51c2VkLCBhbmQgY2FuIGJlIHJlbW92ZWQuDQo+ID4NCj4gPiBGaXhlczogNGI4NDJlNGUyNWIx
-ICgieDg2OiBnZXQgcmlkIG9mIHNtYWxsIGNvbnN0YW50IHNpemUgY2FzZXMgaW4gcmF3X2NvcHlf
-e3RvLGZyb219X3VzZXIoKSIpDQo+ID4gU3VnZ2VzdGVkLWJ5OiBXaWxsIERlYWNvbiA8d2lsbEBr
-ZXJuZWwub3JnPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEpvc2ggUG9pbWJvZXVmIDxqcG9pbWJvZUBy
-ZWRoYXQuY29tPg0KPiANCj4gUGluZz8NCg0KUmVyZWFkaW5nIHRoZSBwYXRjaCBpdCBsb29rcyBs
-aWtlIGEgbG90IG9mIGJsb2F0IChhcyB3ZWxsIGFzIGENCmxvdCBvZiBjaGFuZ2VzKS4NCkRvZXMg
-dGhlIGFycmF5X21hc2sgZXZlbiB3b3JrIG9uIDMyYml0IGFyY2hzIHdoZXJlIHRoZSBrZXJuZWwN
-CmJhc2UgYWRkcmVzcyBpcyAweGMwMDAwMDAwPw0KSSdtIHN1cmUgdGhlcmUgaXMgc29tZXRoaW5n
-IG11Y2ggc2ltcGxlci4NCg0KSWYgYWNjZXNzX29rKCkgZ2VuZXJhdGVzIH4wdSBvciAwIHdpdGhv
-dXQgYSBjb25kaXRpb25hbCB0aGVuDQp0aGUgYWRkcmVzcyBjYW4gYmUgbWFza2VkIHdpdGggdGhl
-IHJlc3VsdC4NClNvIHlvdSBwcm9iYWJseSBuZWVkIHRvIGNoYW5nZSBhY2Nlc3Nfb2soKSB0byB0
-YWtlIHRoZSBhZGRyZXNzDQpvZiB0aGUgdXNlciBwb2ludGVyIC0gc28gdGhlIGNhbGxlcnMgYmVj
-b21lIGxpa2U6DQoJaWYgKGFjY2Vzc19vaygmdXNlcl9idWZmZXIsIGxlbikpDQoJCXJldHVybiAt
-RUZBVUxUDQoJX19wdXRfdXNlcih1c2VyX2J1ZmZlciwgdmFsdWUpOw0KDQpJdCB3b3VsZCBiZSBl
-YXNpZXIgaWYgTlVMTCB3ZXJlIGd1YXJhbnRlZWQgdG8gYmUgYW4gaW52YWxpZA0KdXNlciBhZGRy
-ZXNzIChpcyBpdD8pLg0KVGhlbiBhY2Nlc3Nfb2soKSBjb3VsZCByZXR1cm4gdGhlIG1vZGlmaWVk
-IHBvaW50ZXIuDQpTbyB5b3UgZ2V0IHNvbWV0aGluZyBsaWtlOg0KCXVzZXJfYnVmZmVyID0gYWNj
-ZXNzX29rKHVzZXJfYnVmZmVyLCBsZW4pOw0KCWlmICghdXNlcl9idWZmZXIpDQoJCXJldHVybiAt
-RUZBVUxULg0KDQpQcm92aWRlZCB0aGUgJ2xhc3QnIHVzZXIgcGFnZSBpcyBuZXZlciBhbGxvY2F0
-ZWQgKGl0IGNhbid0DQpiZSBvbiBpMzg2IGR1ZSB0byBjcHUgcHJlZmV0Y2ggaXNzdWVzKSBzb21l
-dGhpbmcgbGlrZToNCihhbmQgd2l0aCB0aGUgYXNtIHByb2JhYmx5IGFsbCBicm9rZW4pDQoNCnN0
-YXRpYyBpbmxpbmUgdm9pZCBfX3VzZXIgKiBhY2Nlc3Nfb2sodm9pZCBfX3VzZXIgKmIsIHNpemVf
-dCBsZW4pDQp7DQoJdW5zaWduZWQgbG9uZyB4ID0gKGxvbmcpYiB8IChsb25nKShiICsgbGVuKTsN
-Cgl1bnNpZ25lZCBsb25nIGxpbSA9IDY0X2JpdCA/IDF1IDw8IDYzIDogMHg0MDAwMDAwMDsNCglh
-c20gdm9sYXRpbGUgKCIgYWRkICUxLCAlMFxuIg0KCQkJIiBzYmIgJDAsICUwIiwgIj1yIiAoeCks
-ICJyIiAobGltKSk7DQoJcmV0dXJuICh2b2lkIF9fdXNlciAqKShsb25nKWIgJiB+eCk7DQp9DQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
 
+
+Dear Friend,
+
+I know that this mail will come to you as a surprise as we have never met before, but need not to worry as I am contacting you independently of my investigation and no one is informed of this communication. I need your urgent assistance in transferring the sum of $11.3million immediately to your private account.The money has been here in our Bank lying dormant for years now without anybody coming for the claim of it.
+
+I want to release the money to you as the relative to our deceased customer (the account owner) who died a long with his supposed Next Of Kin since 16th October 2005. The Banking laws here does not allow such money to stay more than 15 years, because the money will be recalled to the Bank treasury account as unclaimed fund.
+
+By indicating your interest I will send you the full details on how the business will be executed.
+
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Ahmed Ouedraogo.
