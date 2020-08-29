@@ -2,164 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918042567E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C782567AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgH2NWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 09:22:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:41870 "EHLO foss.arm.com"
+        id S1728177AbgH2NCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 09:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgH2NB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 09:01:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44803101E;
-        Sat, 29 Aug 2020 06:01:25 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CC2993F71F;
-        Sat, 29 Aug 2020 06:01:23 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jeremy Linton <Jeremy.Linton@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-Subject: [PATCH] arm64: topology: Stop using MPIDR for topology information
-Date:   Sat, 29 Aug 2020 14:00:16 +0100
-Message-Id: <20200829130016.26106-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728050AbgH2NAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 09:00:30 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C42222076D;
+        Sat, 29 Aug 2020 13:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598706030;
+        bh=VNO9KYZNfPnRAvmpq+O3OW8CvDGM43ULGiTu4X+0Kw4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dL5TYdymZE5rW5d7CBE4yR5Z4R53he+6r+rUa7WBIIhlnYzY4WFxCM4Bn8/ujyuWJ
+         Q2+yKVFv0ReUUEZ1J97H259NwEgPIj1U9Q2UAKAFRMcd7QRljoVzE6NDVdxaEVvwGo
+         K3GerjCmGYTYe/Vy3+wsuY2BkxwuHDouzhneHFVU=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
+        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org, mhiramat@kernel.org
+Subject: [PATCH v5 03/21] arm: kprobes: Use generic kretprobe trampoline handler
+Date:   Sat, 29 Aug 2020 22:00:24 +0900
+Message-Id: <159870602406.1229682.10496730247473708592.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the absence of ACPI or DT topology data, we fallback to haphazardly
-decoding *something* out of MPIDR. Sadly, the contents of that register are
-mostly unusable due to the implementation leniancy and things like Aff0
-having to be capped to 15 (despite being encoded on 8 bits).
+Use the generic kretprobe trampoline handler. Use regs->ARM_fp
+for framepointer verification.
 
-Consider a simple system with a single package of 32 cores, all under the
-same LLC. We ought to be shoving them in the same core_sibling mask, but
-MPIDR is going to look like:
-
-  | CPU  | 0 | ... | 15 | 16 | ... | 31 |
-  |------+---+-----+----+----+-----+----+
-  | Aff0 | 0 | ... | 15 |  0 | ... | 15 |
-  | Aff1 | 0 | ... |  0 |  1 | ... |  1 |
-  | Aff2 | 0 | ... |  0 |  0 | ... |  0 |
-
-Which will eventually yield
-
-  core_sibling(0-15)  == 0-15
-  core_sibling(16-31) == 16-31
-
-NUMA woes
-=========
-
-If we try to play games with this and set up NUMA boundaries within those
-groups of 16 cores via e.g. QEMU:
-
-  # Node0: 0-9; Node1: 10-19
-  $ qemu-system-aarch64 <blah> \
-    -smp 20 -numa node,cpus=0-9,nodeid=0 -numa node,cpus=10-19,nodeid=1
-
-The scheduler's MC domain (all CPUs with same LLC) is going to be built via
-
-  arch_topology.c::cpu_coregroup_mask()
-
-In there we try to figure out a sensible mask out of the topology
-information we have. In short, here we'll pick the smallest of NUMA or
-core sibling mask.
-
-  node_mask(CPU9)    == 0-9
-  core_sibling(CPU9) == 0-15
-
-MC mask for CPU9 will thus be 0-9, not a problem.
-
-  node_mask(CPU10)    == 10-19
-  core_sibling(CPU10) == 0-15
-
-MC mask for CPU10 will thus be 10-19, not a problem.
-
-  node_mask(CPU16)    == 10-19
-  core_sibling(CPU16) == 16-19
-
-MC mask for CPU16 will thus be 16-19... Uh oh. CPUs 16-19 are in two
-different unique MC spans, and the scheduler has no idea what to make of
-that. That triggers the WARN_ON() added by commit
-
-  ccf74128d66c ("sched/topology: Assert non-NUMA topology masks don't (partially) overlap")
-
-Fixing MPIDR-derived topology
-=============================
-
-We could try to come up with some cleverer scheme to figure out which of
-the available masks to pick, but really if one of those masks resulted from
-MPIDR then it should be discarded because it's bound to be bogus.
-
-I was hoping to give MPIDR a chance for SMT, to figure out which threads are
-in the same core using Aff1-3 as core ID, but Sudeep and Robin pointed out
-to me that there are systems out there where *all* cores have non-zero
-values in their higher affinity fields (e.g. RK3288 has "5" in all of its
-cores' MPIDR.Aff1), which would expose a bogus core ID to userspace.
-
-Stop using MPIDR for topology information. When no other source of topology
-information is available, mark each CPU as its own core and its NUMA node
-as its LLC domain.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/arm64/kernel/topology.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+  Changes in v2:
+   - Fix to cast frame_pointer type to void *.
+---
+ arch/arm/probes/kprobes/core.c |   78 ++--------------------------------------
+ 1 file changed, 3 insertions(+), 75 deletions(-)
 
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 0801a0f3c156..ff1dd1dbfe64 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -36,21 +36,23 @@ void store_cpu_topology(unsigned int cpuid)
- 	if (mpidr & MPIDR_UP_BITMASK)
- 		return;
- 
--	/* Create cpu topology mapping based on MPIDR. */
--	if (mpidr & MPIDR_MT_BITMASK) {
--		/* Multiprocessor system : Multi-threads per core */
--		cpuid_topo->thread_id  = MPIDR_AFFINITY_LEVEL(mpidr, 0);
--		cpuid_topo->core_id    = MPIDR_AFFINITY_LEVEL(mpidr, 1);
--		cpuid_topo->package_id = MPIDR_AFFINITY_LEVEL(mpidr, 2) |
--					 MPIDR_AFFINITY_LEVEL(mpidr, 3) << 8;
--	} else {
--		/* Multiprocessor system : Single-thread per core */
--		cpuid_topo->thread_id  = -1;
--		cpuid_topo->core_id    = MPIDR_AFFINITY_LEVEL(mpidr, 0);
--		cpuid_topo->package_id = MPIDR_AFFINITY_LEVEL(mpidr, 1) |
--					 MPIDR_AFFINITY_LEVEL(mpidr, 2) << 8 |
--					 MPIDR_AFFINITY_LEVEL(mpidr, 3) << 16;
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index feefa2055eba..a9653117ca0d 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -413,87 +413,15 @@ void __naked __kprobes kretprobe_trampoline(void)
+ /* Called from kretprobe_trampoline */
+ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
+ {
+-	struct kretprobe_instance *ri = NULL;
+-	struct hlist_head *head, empty_rp;
+-	struct hlist_node *tmp;
+-	unsigned long flags, orig_ret_address = 0;
+-	unsigned long trampoline_address = (unsigned long)&kretprobe_trampoline;
+-	kprobe_opcode_t *correct_ret_addr = NULL;
+-
+-	INIT_HLIST_HEAD(&empty_rp);
+-	kretprobe_hash_lock(current, &head, &flags);
+-
+-	/*
+-	 * It is possible to have multiple instances associated with a given
+-	 * task either because multiple functions in the call path have
+-	 * a return probe installed on them, and/or more than one return
+-	 * probe was registered for a target function.
+-	 *
+-	 * We can handle this because:
+-	 *     - instances are always inserted at the head of the list
+-	 *     - when multiple return probes are registered for the same
+-	 *       function, the first instance's ret_addr will point to the
+-	 *       real return address, and all the rest will point to
+-	 *       kretprobe_trampoline
+-	 */
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
 -	}
-+	/*
-+	 * This would be the place to create cpu topology based on MPIDR.
-+	 *
-+	 * However, it cannot be trusted to depict the actual topology; some
-+	 * pieces of the architecture enforce an artificial cap on Aff0 values
-+	 * (e.g. GICv3's ICC_SGI1R_EL1 limits it to 15), leading to an
-+	 * artificial cycling of Aff1, Aff2 and Aff3 values. IOW, these end up
-+	 * having absolutely no relationship to the actual underlying system
-+	 * topology, and cannot be reasonably used as core / package ID.
-+	 *
-+	 * If the MT bit is set, Aff0 *could* be used to define a thread ID, but
-+	 * we still wouldn't be able to obtain a sane core ID. This means we
-+	 * need to entirely ignore MPIDR for any topology deduction.
-+	 */
-+	cpuid_topo->thread_id  = -1;
-+	cpuid_topo->core_id    = cpuid;
-+	cpuid_topo->package_id = cpu_to_node(cpuid);
+-
+-	kretprobe_assert(ri, orig_ret_address, trampoline_address);
+-
+-	correct_ret_addr = ri->ret_addr;
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-		if (ri->rp && ri->rp->handler) {
+-			__this_cpu_write(current_kprobe, &ri->rp->kp);
+-			get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
+-			ri->ret_addr = correct_ret_addr;
+-			ri->rp->handler(ri, regs);
+-			__this_cpu_write(current_kprobe, NULL);
+-		}
+-
+-		recycle_rp_inst(ri, &empty_rp);
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-
+-	kretprobe_hash_unlock(current, &flags);
+-
+-	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+-		hlist_del(&ri->hlist);
+-		kfree(ri);
+-	}
+-
+-	return (void *)orig_ret_address;
++	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
++						    (void *)regs->ARM_fp);
+ }
  
- 	pr_debug("CPU%u: cluster %d core %d thread %d mpidr %#016llx\n",
- 		 cpuid, cpuid_topo->package_id, cpuid_topo->core_id,
--- 
-2.27.0
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
+ {
+ 	ri->ret_addr = (kprobe_opcode_t *)regs->ARM_lr;
++	ri->fp = (void *)regs->ARM_fp;
+ 
+ 	/* Replace the return addr with trampoline addr. */
+ 	regs->ARM_lr = (unsigned long)&kretprobe_trampoline;
 
