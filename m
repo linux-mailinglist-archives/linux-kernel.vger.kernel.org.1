@@ -2,236 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32CC2566F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579552566EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgH2Kzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 06:55:55 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41602 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728015AbgH2Kv2 (ORCPT
+        id S1728073AbgH2Kyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 06:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727772AbgH2KvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 06:51:28 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07TAVeL8010478;
-        Sat, 29 Aug 2020 06:51:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=sxYFtV5EAeFme9d2OdOx+kLoXL58n3m1iHdGRZ66dVA=;
- b=fAliKrCi6Yn0TFbiBw3a4+F8QIhMdeoNS7f7DQPZh2Tbl4gFapqSQ0MyvoFpokIFsaRK
- lFICVrre5T2GtFVMjCfs+Pg+iKVIGvce3bgb+2M+/c0k98t/ZV422faj+u0a4tS4+4AS
- 90UCtonb20x7m3YB4zkeP500dYhaQ1g0cUXJh6bYw438rj+s6SDj9uiOpgZDE3hdEXDS
- ygXS6sTVXfpZ+2AfrhmwpA66NoFI7eg2cv/xBgUidjuzLpa5Uyc94XIbLVkvnfUoEoyr
- kLz5QFs3EtHWASbYaBUqxppVdxwqgRFHSnP76j/mcE+yt7Ab05PnwISxtpaCdZEvQIqE Lw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 337jwdtjbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 Aug 2020 06:51:21 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07TAlMGx028014;
-        Sat, 29 Aug 2020 10:51:20 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 337en80976-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 Aug 2020 10:51:20 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07TApHCW20382116
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 29 Aug 2020 10:51:17 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B1E6A4060;
-        Sat, 29 Aug 2020 10:51:17 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B82F9A405F;
-        Sat, 29 Aug 2020 10:51:16 +0000 (GMT)
-Received: from localhost (unknown [9.145.56.232])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 29 Aug 2020 10:51:16 +0000 (GMT)
-Date:   Sat, 29 Aug 2020 12:51:15 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.9-rc3
-Message-ID: <your-ad-here.call-01598698275-ext-0854@work.hours>
+        Sat, 29 Aug 2020 06:51:19 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ADCC061236
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:51:19 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id u24so2975444oic.7
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KvyskJqqctuilg5K6B7ivW/tu8NbcRZlLPbLA094dgs=;
+        b=exJz/odPOJBlb6JQhv+k4ICurPyWcyz3F0V/Sb2ul/zBgA0ZD1DTZ4CWAcdYPw5uzL
+         p91OWciSWz3Nu5cWlF/xqa6UceXdu+U9UMEWkLz6ArPKEE4M/becW43L+4Br4qC7tXlI
+         kTmke8jBft8pfa0j0MEdY3rg34T71TCtFp7B9eQYCLjgYmJhqUaoZhXtzDh60OBMEI8A
+         MoXMA21G+pNuDykXvCgnIyiQCL1x83spp1SgqiuVXj9Fkm2s3IRmyEmiXT8qbfm6UvSj
+         NIFZCaG45/sZPqop9b5zIWM+U05zOL6Xp9ctek3d4KQDh3LW9/r9ZJxmBjq/UKv3PqyG
+         IdBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KvyskJqqctuilg5K6B7ivW/tu8NbcRZlLPbLA094dgs=;
+        b=sXYKSM6a06kOXuCnU2RIG9EpCj5x3HNW8R5H1d5HeL3Y+M1TvDyjXGGVUtnaB5GUPR
+         zMR7eRP6TbVXWskfQaqwHf4xdcUWp1/fzw649BFqn3WSCFo7kGZAaJmuvl+gb2yuiz0B
+         eiZdYAMQ/XTKVNn6/wX+aQMqnnK0lWyEtY6wbFcQLTA18/h4H632eUgFborilGE2dnK8
+         pNncpc6am00aFZMFfPKfELLx/UnAAKnzj/h628RH4WVK8IeU6nKtT3roYU+3ourh6fmH
+         7oWx7G+cDqJ1pW9W6y5AQKJQ2r/YuMYdKbSu0TkwWYzRlRIenZ1DtRu0l6jgYQuSs6td
+         w4AA==
+X-Gm-Message-State: AOAM531x1mDAMOd2mY3cQEL9weuPC/6hSv2p0zu6kFRME5SurCJ7IiC/
+        kbt45rxlxIsrOiDZ0rzxKeT8Y6Ysqpw=
+X-Google-Smtp-Source: ABdhPJyCLhFARiJbhB6bpXQ4eSLxJUJuxwU3Sn/yV2brgqBH1q0H6A1ngQdPzXRO+EwmIBTeUsQbSQ==
+X-Received: by 2002:aca:afc3:: with SMTP id y186mr1655045oie.94.1598698278470;
+        Sat, 29 Aug 2020 03:51:18 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g4sm490635otq.33.2020.08.29.03.51.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 29 Aug 2020 03:51:17 -0700 (PDT)
+Date:   Sat, 29 Aug 2020 03:51:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joerg.roedel@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH] kernel.h: Silence sparse warning in lower_32_bits
+Message-ID: <20200829105116.GA246533@roeck-us.net>
+References: <20200828071125.GA18772@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-29_05:2020-08-28,2020-08-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
- lowpriorityscore=0 suspectscore=2 priorityscore=1501 phishscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008290080
+In-Reply-To: <20200828071125.GA18772@gondor.apana.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Fri, Aug 28, 2020 at 05:11:25PM +1000, Herbert Xu wrote:
+> I keep getting sparse warnings in crypto such as:
+> 
 
-please pull s390 changes for 5.9-rc3.
+This patch results in the following compile error when compiling 
+ppc:mpc85xx_defconfig.
 
-Thank you,
-Vasily
+Error log:
+In file included from ./include/linux/list.h:9,
+                 from ./include/linux/module.h:12,
+                 from drivers/dma/fsldma.c:23:
+drivers/dma/fsldma.h: In function 'fsl_ioread64':
+./include/linux/kernel.h:189:37: error: invalid operands to binary & (have 'const u64 *' {aka 'const long long unsigned int *'} and 'unsigned int')
+  189 | #define lower_32_bits(n) ((u32)((n) & 0xffffffff))
+      |                                     ^
+drivers/dma/fsldma.h:208:17: note: in expansion of macro 'lower_32_bits'
+  208 |  u32 fsl_addr = lower_32_bits(addr);
+      |                 ^~~~~~~~~~~~~
+drivers/dma/fsldma.h: In function 'fsl_ioread64be':
+./include/linux/kernel.h:189:37: error: invalid operands to binary & (have 'const u64 *' {aka 'const long long unsigned int *'} and 'unsigned int')
+  189 | #define lower_32_bits(n) ((u32)((n) & 0xffffffff))
+      |                                     ^
+drivers/dma/fsldma.h:222:17: note: in expansion of macro 'lower_32_bits'
+  222 |  u32 fsl_addr = lower_32_bits(addr);
+      |                 ^~~~~~~~~~~~~
+make[2]: *** [drivers/dma/fsldma.o] Error 1
 
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+Bisct log attached.
 
-  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+Guenter
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-4
-
-for you to fetch changes up to bffc2f7aa96343f91931272d7a8a2d8d925e1ab2:
-
-  s390/vmem: fix vmem_add_range for 4-level paging (2020-08-26 18:07:05 +0200)
-
-----------------------------------------------------------------
-s390 fixes for 5.9-rc3
-
-- Disable preemption trace in percpu macros since the lockdep code itself
-  uses percpu variables now and it causes recursions.
-
-- Fix kernel space 4-level paging broken by recent vmem rework.
-
-----------------------------------------------------------------
-Sven Schnelle (1):
-      s390: don't trace preemption in percpu macros
-
-Vasily Gorbik (1):
-      s390/vmem: fix vmem_add_range for 4-level paging
-
- arch/s390/include/asm/percpu.h | 28 ++++++++++++++--------------
- arch/s390/mm/vmem.c            |  1 +
- 2 files changed, 15 insertions(+), 14 deletions(-)
-
-diff --git a/arch/s390/include/asm/percpu.h b/arch/s390/include/asm/percpu.h
-index 50b4ce8cddfd..918f0ba4f4d2 100644
---- a/arch/s390/include/asm/percpu.h
-+++ b/arch/s390/include/asm/percpu.h
-@@ -29,7 +29,7 @@
- 	typedef typeof(pcp) pcp_op_T__;					\
- 	pcp_op_T__ old__, new__, prev__;				\
- 	pcp_op_T__ *ptr__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	prev__ = *ptr__;						\
- 	do {								\
-@@ -37,7 +37,7 @@
- 		new__ = old__ op (val);					\
- 		prev__ = cmpxchg(ptr__, old__, new__);			\
- 	} while (prev__ != old__);					\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	new__;								\
- })
- 
-@@ -68,7 +68,7 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp)); 				\
- 	if (__builtin_constant_p(val__) &&				\
- 	    ((szcast)val__ > -129) && ((szcast)val__ < 128)) {		\
-@@ -84,7 +84,7 @@
- 			: [val__] "d" (val__)				\
- 			: "cc");					\
- 	}								\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- }
- 
- #define this_cpu_add_4(pcp, val) arch_this_cpu_add(pcp, val, "laa", "asi", int)
-@@ -95,14 +95,14 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
- 	asm volatile(							\
- 		op "    %[old__],%[val__],%[ptr__]\n"			\
- 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
- 		: [val__] "d" (val__)					\
- 		: "cc");						\
--	preempt_enable();						\
-+	preempt_enable_notrace();						\
- 	old__ + val__;							\
- })
- 
-@@ -114,14 +114,14 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
- 	asm volatile(							\
- 		op "    %[old__],%[val__],%[ptr__]\n"			\
- 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
- 		: [val__] "d" (val__)					\
- 		: "cc");						\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- }
- 
- #define this_cpu_and_4(pcp, val)	arch_this_cpu_to_op(pcp, val, "lan")
-@@ -136,10 +136,10 @@
- 	typedef typeof(pcp) pcp_op_T__;					\
- 	pcp_op_T__ ret__;						\
- 	pcp_op_T__ *ptr__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	ret__ = cmpxchg(ptr__, oval, nval);				\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
-@@ -152,10 +152,10 @@
- ({									\
- 	typeof(pcp) *ptr__;						\
- 	typeof(pcp) ret__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	ret__ = xchg(ptr__, nval);					\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
-@@ -171,11 +171,11 @@
- 	typeof(pcp1) *p1__;						\
- 	typeof(pcp2) *p2__;						\
- 	int ret__;							\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	p1__ = raw_cpu_ptr(&(pcp1));					\
- 	p2__ = raw_cpu_ptr(&(pcp2));					\
- 	ret__ = __cmpxchg_double(p1__, p2__, o1__, o2__, n1__, n2__);	\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index 1aed1a4dfc2d..eddf71c22875 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -402,6 +402,7 @@ static int modify_p4d_table(pgd_t *pgd, unsigned long addr, unsigned long end,
- 			pud = vmem_crst_alloc(_REGION3_ENTRY_EMPTY);
- 			if (!pud)
- 				goto out;
-+			p4d_populate(&init_mm, p4d, pud);
- 		}
- 		ret = modify_pud_table(p4d, addr, next, add, direct);
- 		if (ret)
+---
+# bad: [4d41ead6ead97c3730bbd186a601a64828668f01] Merge tag 'block-5.9-2020-08-28' of git://git.kernel.dk/linux-block
+# good: [15bc20c6af4ceee97a1f90b43c0e386643c071b4] Merge tag 'tty-5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
+git bisect start 'HEAD' '15bc20c6af4c'
+# good: [5ec06b5c0d259a8c7c4376b121b2f62dfbfe57ef] Merge tag 'drm-fixes-2020-08-28' of git://anongit.freedesktop.org/drm/drm
+git bisect good 5ec06b5c0d259a8c7c4376b121b2f62dfbfe57ef
+# bad: [326e311b849426a95cac0149406efb2bbd13fa65] Merge tag 'pm-5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+git bisect bad 326e311b849426a95cac0149406efb2bbd13fa65
+# good: [e30942859030199dab5ad73f95faac226133c639] Merge tag 'writeback_for_v5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
+git bisect good e30942859030199dab5ad73f95faac226133c639
+# bad: [96d454cd2c1668010406ea4c28ab915bcbb747f4] Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+git bisect bad 96d454cd2c1668010406ea4c28ab915bcbb747f4
+# good: [e9ee186bb735bfc17fa81dbc9aebf268aee5b41e] KVM: arm64: Add kvm_extable for vaxorcism code
+git bisect good e9ee186bb735bfc17fa81dbc9aebf268aee5b41e
+# good: [71a7f8cb1ca4ca7214a700b1243626759b6c11d4] KVM: arm64: Set HCR_EL2.PTW to prevent AT taking synchronous exception
+git bisect good 71a7f8cb1ca4ca7214a700b1243626759b6c11d4
+# bad: [ef91bb196b0db1013ef8705367bc2d7944ef696b] kernel.h: Silence sparse warning in lower_32_bits
+git bisect bad ef91bb196b0db1013ef8705367bc2d7944ef696b
+# first bad commit: [ef91bb196b0db1013ef8705367bc2d7944ef696b] kernel.h: Silence sparse warning in lower_32_bits
