@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D901A256A93
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C35A256A91
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 00:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgH2WLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 18:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        id S1728490AbgH2WLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 18:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgH2WLR (ORCPT
+        with ESMTP id S1728246AbgH2WLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 18:11:17 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7953C061236
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id g6so2648590ljn.11
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
+        Sat, 29 Aug 2020 18:11:18 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A058C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:17 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so2642956ljg.13
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 15:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oiLY8yo0HWRBKsqXzUV3cs7crSuoNAJrrXrn0txeTW0=;
-        b=rAKZIj7y5z4iV3NtO3T65FyvkUyvcTpsIIiL6KwC44nIjfJfoOB+46BvWax4ENxE/C
-         3tSFpNVR+aAafoQIpqumEeca3Ij7a4GptoxGB/IWBWMlIJ8vUZpd9SYjbe71iTt+FMO2
-         H42qg6BmRWZO1GzyntS5O/bia50OIGYwUEzaftOcgHNuuM/aFIJ6wgfFC11vHIpmURbJ
-         zeJmdczYsqvq8CubDLNSJtJ13XYZ+bziBwgudY1ElB8I965eHrrohY//r9GHLGbSBhgF
-         lsLUYzgzlimyyUmvr/D3QFmrqEAcNOAXS+DRqX2OsHRKYdnF/h5fWK7xtOvY9biEMZPE
-         r1qA==
+        bh=jIAcjfcjSRRtfK3tD81KW4l+/Y68i1r84BSQhmAOVQo=;
+        b=BWwjHAUko9g1RHLQ2DA5M1wkTS8IJipFYRSm9VNaYvAWQpCtTjBehZpvV7CChxevnv
+         bMVlJs97aTI7npmRxrnLyj1edbP1OSzX03r1MfdDXvi3XOx5vopgywc4I17KjoGovPqa
+         cH0/LTAczSYM7g/gWbOWVLev4U4aQpPxljt6RUZPHFQLPtGV9R9aBwJiBRyzQjBYmcL9
+         HVGjz6aPmnQSAWGvp2ziabD6lNaDEhNWEpfmizOJsbpmR0KEgehJUiVAUe9cSZqvioRP
+         7vx1ol91OLzq41ZXPnFmoSUYllA38Ygq7+pGXmJAkwZ3LLjI8aobH3BuCZvzN/LhGxIP
+         X4ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oiLY8yo0HWRBKsqXzUV3cs7crSuoNAJrrXrn0txeTW0=;
-        b=RTsD14yTrWTKkB0+PQFwHBGLQgRL4j8Gg6F8RbIz1BcFDANOU7zs0nPtnuUz+DG1N+
-         AIdF5BdmUL0aIwM4JMVLlEg5dR4U9hoJuHKSj+FwxzhT+zKeyCW2lZ0h/prJc80uWEWL
-         sHnD/5CpIwH52gAIBZeV/zqvSIzm7RriS2pBDIW0DeMwUA+3mZ6a8RSGUCRRPXZI6Qfd
-         dMFY54xBVXt0ZmXHda8a17iPeZGq6tS5cSS1phc67X2L7dpp2la0gBgzmYrfyzY5GxuU
-         TgfPYW+ceC0QabhEnt3REwSecsJfWz8ziAILs/qyAVw5Ge7Q/6jrX7m5kl9IqFXcKDQ5
-         1iBA==
-X-Gm-Message-State: AOAM533lrNeAZGm5I0c5ZU+sBlaN+R4FRSwnZV43FD9GNRHERz4HDXBG
-        9KUOs13+WAVV+FaSmvBbeGA=
-X-Google-Smtp-Source: ABdhPJz6gdr2quWTXwENB/6dAEXwoVY7tEKwJ0N/bnv//lbT77DkuiOOmFlxzbqDBmVhCS4A40ilmw==
-X-Received: by 2002:a2e:9d85:: with SMTP id c5mr2066338ljj.343.1598739075038;
-        Sat, 29 Aug 2020 15:11:15 -0700 (PDT)
+        bh=jIAcjfcjSRRtfK3tD81KW4l+/Y68i1r84BSQhmAOVQo=;
+        b=BZara0ktJBpGSfX2LA1bc/P7O7PbRwuxmVopqzASWkj2aiB1bS0trUppfrDM44IZxn
+         M5AsBfhTIlfKMXzkqp3t64ajSWFqJ6ySMXSzX8WXEmNxIvk5jDEDJFkxgecb8R1Qosc0
+         hVFGnS0FkEIjYhS3sTM0FD2z92UHs8ThGZ2zS854mGa5YeM64ibiZE6gpFjHLmgrfFFM
+         DaRWg+Ojz+gBZX74R4EIvO0ectHG5/N8pq7xF9S+SFqUZqrM9jQJ6JDR12bSaCL9dtfI
+         1gH6Qs0H5POa0IGAqqBSuumgXDlch7N5n1PMzSGup5g4FN4RgnyvBvxapzyRlyBVd3op
+         br9A==
+X-Gm-Message-State: AOAM530POFrg3TEQmTvpQHKkvf5xtxydVg8RsAJmyicd+YjsANJRmcKH
+        WM/+nf5S3qJOnRFH8mmUlt4=
+X-Google-Smtp-Source: ABdhPJx+il0c25Qr0MJmq/JLOPLJykjymUcn+ETIk9hVT4JX7oY2UA+/m2T1FsLfASF3Vqr9/CHyKA==
+X-Received: by 2002:a2e:b5c3:: with SMTP id g3mr2472328ljn.63.1598739076011;
+        Sat, 29 Aug 2020 15:11:16 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id 4sm697546ljq.92.2020.08.29.15.11.14
+        by smtp.gmail.com with ESMTPSA id 4sm697546ljq.92.2020.08.29.15.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Aug 2020 15:11:14 -0700 (PDT)
+        Sat, 29 Aug 2020 15:11:15 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 2/8] regulator: tps6105x: Constify tps6105x_regulator_ops
-Date:   Sun, 30 Aug 2020 00:10:58 +0200
-Message-Id: <20200829221104.20870-3-rikard.falkeborn@gmail.com>
+Subject: [PATCH 3/8] regulator: tps62360: Constify tps62360_dcdc_ops
+Date:   Sun, 30 Aug 2020 00:10:59 +0200
+Message-Id: <20200829221104.20870-4-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
 References: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
@@ -65,28 +65,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of tps6105x_regulator_ops is to assign its address to the
-ops field in the regulator_desc struct, which is a const pointer. Make it
+The only usage of tps62360_dcdc_ops is to assign its address to the ops
+field in the regulator_desc struct, which is a const pointer. Make it
 const to allow the compiler to put it in read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/regulator/tps6105x-regulator.c | 2 +-
+ drivers/regulator/tps62360-regulator.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/tps6105x-regulator.c b/drivers/regulator/tps6105x-regulator.c
-index f8939af0bd2c..a6469fe05635 100644
---- a/drivers/regulator/tps6105x-regulator.c
-+++ b/drivers/regulator/tps6105x-regulator.c
-@@ -26,7 +26,7 @@ static const unsigned int tps6105x_voltages[] = {
- 	5000000, /* There is an additional 5V */
- };
+diff --git a/drivers/regulator/tps62360-regulator.c b/drivers/regulator/tps62360-regulator.c
+index f6a6d36a6533..315cd5daf480 100644
+--- a/drivers/regulator/tps62360-regulator.c
++++ b/drivers/regulator/tps62360-regulator.c
+@@ -233,7 +233,7 @@ static unsigned int tps62360_get_mode(struct regulator_dev *rdev)
+ 				REGULATOR_MODE_FAST : REGULATOR_MODE_NORMAL;
+ }
  
--static struct regulator_ops tps6105x_regulator_ops = {
-+static const struct regulator_ops tps6105x_regulator_ops = {
- 	.enable		= regulator_enable_regmap,
- 	.disable	= regulator_disable_regmap,
- 	.is_enabled	= regulator_is_enabled_regmap,
+-static struct regulator_ops tps62360_dcdc_ops = {
++static const struct regulator_ops tps62360_dcdc_ops = {
+ 	.get_voltage_sel	= tps62360_dcdc_get_voltage_sel,
+ 	.set_voltage_sel	= tps62360_dcdc_set_voltage_sel,
+ 	.list_voltage		= regulator_list_voltage_linear,
 -- 
 2.28.0
 
