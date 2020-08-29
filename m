@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99442565BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 10:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95822565BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 10:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgH2IFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 04:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727813AbgH2IEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 04:04:50 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1536AC061239;
-        Sat, 29 Aug 2020 01:04:50 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n13so1099474edo.10;
-        Sat, 29 Aug 2020 01:04:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NScaUaUB/lFvvOsMW5OFZGDv5IzEPsheGuFUDe0DEQ0=;
-        b=sCxKjVqXS1qPmF21kWPqjJb/g979i2SuPgYy7RJVKNW7l6SFAllCdCFXgK5mrI9jVF
-         CPbrBXifLRVTCwBxnrCWbaJmlg+C4HpY0hlbkM8x4UkFNYzr/O7EnbLtO/wceoL1O67z
-         QfwQ7VgU8nSvzRtXoHL38ZoEssZumpESb0h+5Ja3GP+JkpA3F+r3S1bY1F1YB+L9FfM8
-         /4fiF45VeeFzqdBuYZJjTMW2KzO9KcEP4yLNc9VFDvF9dfivaTKB1tYskYuwvXKj/9JK
-         JGseD9cW8cXTH1qxcjgPvgI0HDb1bTCPCdjLQXYkm9K55b0vwF4/hH2nKcpZl84735MP
-         DYxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NScaUaUB/lFvvOsMW5OFZGDv5IzEPsheGuFUDe0DEQ0=;
-        b=ma75AtkajfG5ip1x4bGzgsZHzdepSa4ba5RZ2rSyHnQhvON+tnvDbjv9rsSCeAa31K
-         s5tw0vSBaYKDRKpYPHPvNeI48Ab6THzrXUXkKzUmnm4Xp1/hBxfZuFx9LfYpinZqxJtk
-         rfJ3lXforLLlqTFsFhVJu+BG8zw6w/kxZZxJpkjyrtb45bfqnUdcyn5V/rVQQ9Q48v15
-         fflTtvFIfFDsWSvMIPtUlfVKYwJWcqojM/YHnp3nXRm1UeFz5apof/1AzRdRleB0mDtm
-         vxFc7dtnM4XfnIWWyIIBslmRKfJ1bIZEN4r+8AEiYkf+31zOHD39VRzcWowQfy+U98e6
-         9ORA==
-X-Gm-Message-State: AOAM5336jDmO+a8uCGNwp+og7hEGmZ4+U5zMD6oBXW03T359mPQz3Nag
-        /wMzTOnl9OQwiDg4qCa+o4E=
-X-Google-Smtp-Source: ABdhPJwozVWYZA8ThsgkhN7l67eONiDdpyKZ0QRjbnyfqHdv1jNJOD+baUfc6Cfu85Qhbis1IokVCw==
-X-Received: by 2002:a05:6402:1d12:: with SMTP id dg18mr2364480edb.183.1598688288708;
-        Sat, 29 Aug 2020 01:04:48 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:f90b:b3a9:1300:5b1a])
-        by smtp.gmail.com with ESMTPSA id ec11sm1512036ejb.123.2020.08.29.01.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Aug 2020 01:04:48 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 2/2] Documentation/kokr/howto: Wordsmith
-Date:   Sat, 29 Aug 2020 10:04:28 +0200
-Message-Id: <20200829080428.1219-3-sjpark@amazon.de>
+        id S1727902AbgH2IFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 04:05:47 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:38704 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727111AbgH2IFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 04:05:45 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgCnbuQ9DEpfb+9KAg--.45056S4;
+        Sat, 29 Aug 2020 16:05:20 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: opti9xx: Fix memleak in snd_opti9xx_read_check
+Date:   Sat, 29 Aug 2020 16:05:15 +0800
+Message-Id: <20200829080517.22182-1-dinghao.liu@zju.edu.cn>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200829080428.1219-1-sjpark@amazon.de>
-References: <20200829080428.1219-1-sjpark@amazon.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: by_KCgCnbuQ9DEpfb+9KAg--.45056S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr4fWr48AFWrZr18XFWfAFb_yoWDGFX_G3
+        48Ww4fKw42qr1agr4UJrZ8Aw4Utrn7C3Z5C3yDK3WUJ3W5Wayqv3s8JF9Yy3W7C3ykGrW7
+        WFyqvrWfCw1UujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAA0sx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sentence regarding version numbers of '-stable' kernels is quite
-ambiguous.  This commit makes the sentence more clear and fix
-inconsistent uses of the terms for 'version'.
+When request_region() on chip->res_mc_indir fails,
+chip->res_mc_base should be freed to prevent memleak.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- Documentation/translations/ko_KR/howto.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/isa/opti9xx/opti92x-ad1848.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/translations/ko_KR/howto.rst b/Documentation/translations/ko_KR/howto.rst
-index 6731378bd842..240d29be38f2 100644
---- a/Documentation/translations/ko_KR/howto.rst
-+++ b/Documentation/translations/ko_KR/howto.rst
-@@ -284,10 +284,10 @@ Andrew Morton의 글이 있다.
- 여러 메이저 넘버를 갖는 다양한 안정된 커널 트리들
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index 881d3b5711d2..06ba18d1737c 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -679,8 +679,11 @@ static int snd_opti9xx_read_check(struct snd_opti9xx *chip)
+ #else	/* OPTi93X */
+ 	chip->res_mc_indir = request_region(chip->mc_indir_index, 2,
+ 					    "OPTi93x MC");
+-	if (chip->res_mc_indir == NULL)
++	if (chip->res_mc_indir == NULL) {
++		release_and_free_resource(chip->res_mc_base);
++		chip->res_mc_base = NULL;
+ 		return -EBUSY;
++	}
  
--3 자리 숫자로 이루어진 버젼의 커널들은 -stable 커널들이다. 그것들은 해당 메이저
--메인라인 릴리즈에서 발견된 큰 회귀들이나 보안 문제들 중 비교적 작고 중요한
--수정들을 포함한다.  주요 stable 시리즈 릴리즈는 세번째 버전 넘버를 증가시키며
--앞의 두 버전 넘버는 그대로 유지한다.
-+세개의 버젼 넘버로 이루어진 버젼의 커널들은 -stable 커널들이다. 그것들은 해당
-+메이저 메인라인 릴리즈에서 발견된 큰 회귀들이나 보안 문제들 중 비교적 작고
-+중요한 수정들을 포함한다.  주요 stable 시리즈 릴리즈는 세번째 버젼 넘버를
-+증가시키며 앞의 두 버젼 넘버는 그대로 유지한다.
- 
- 이것은 가장 최근의 안정적인 커널을 원하는 사용자에게 추천되는 브랜치이며,
- 개발/실험적 버젼을 테스트하는 것을 돕고자 하는 사용자들과는 별로 관련이 없다.
-@@ -317,7 +317,7 @@ Andrew Morton의 글이 있다.
- 제안된 패치는 서브시스템 트리에 커밋되기 전에 메일링 리스트를 통해
- 리뷰된다(아래의 관련 섹션을 참고하기 바란다). 일부 커널 서브시스템의 경우, 이
- 리뷰 프로세스는 patchwork라는 도구를 통해 추적된다. patchwork은 등록된 패치와
--패치에 대한 코멘트, 패치의 버전을 볼 수 있는 웹 인터페이스를 제공하고,
-+패치에 대한 코멘트, 패치의 버젼을 볼 수 있는 웹 인터페이스를 제공하고,
- 메인테이너는 패치를 리뷰 중, 리뷰 통과, 또는 반려됨으로 표시할 수 있다.
- 대부분의 이러한 patchwork 사이트는 https://patchwork.kernel.org/ 에 나열되어
- 있다.
+ 	spin_lock_irqsave(&chip->lock, flags);
+ 	outb(chip->password, chip->mc_base + chip->pwd_reg);
 -- 
 2.17.1
 
