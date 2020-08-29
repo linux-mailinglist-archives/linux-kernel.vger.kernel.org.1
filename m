@@ -2,96 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7A42566F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A58A2566F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgH2K4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 06:56:21 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15947 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728061AbgH2Kw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 06:52:26 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4a33590000>; Sat, 29 Aug 2020 03:52:10 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Sat, 29 Aug 2020 03:52:24 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Sat, 29 Aug 2020 03:52:24 -0700
-Received: from [10.25.99.248] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 29 Aug
- 2020 10:52:14 +0000
-Subject: Re: [PATCH v2 3/9] ASoC: audio-graph: Identify 'no_pcm' DAI links for
- DPCM
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-CC:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
-        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
-        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
-        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
-References: <1596605064-27748-1-git-send-email-spujar@nvidia.com>
- <1596605064-27748-4-git-send-email-spujar@nvidia.com>
- <87pn7ofs19.wl-kuninori.morimoto.gx@renesas.com>
- <97f325a6-96cc-11c5-8027-8c0a159e3da0@nvidia.com>
- <2d3aa11e-3c56-1f7a-3d41-2457f973d55b@nvidia.com>
- <87sgcbwcnf.wl-kuninori.morimoto.gx@renesas.com>
- <14691a05-cb29-a030-0e72-eca900d8eb7e@nvidia.com>
- <87o8mzwajg.wl-kuninori.morimoto.gx@renesas.com>
- <e9698ac3-0a2e-08a2-3f78-b0be0069d6ee@nvidia.com>
- <87lfi3w7hj.wl-kuninori.morimoto.gx@renesas.com>
- <f3724be2-c79d-0815-6ff5-460a4f6c10cc@nvidia.com>
- <87eentvwab.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <6c2bb431-c7d5-53b7-2f62-c1487e321680@nvidia.com>
-Date:   Sat, 29 Aug 2020 16:22:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728134AbgH2K4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 06:56:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60007 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728077AbgH2Kzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 06:55:37 -0400
+IronPort-SDR: xA4aNxm5G1MPMSV4g57rEH/BnpcL69lxj+sZYn2comYYHNeP33R9mK2vU9PHyGT0bXemILcykJ
+ sV+6wWNfhQHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="157807118"
+X-IronPort-AV: E=Sophos;i="5.76,367,1592895600"; 
+   d="scan'208";a="157807118"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2020 03:55:36 -0700
+IronPort-SDR: jepVJiZHigirgJG8hB2a6rqM8nfB9gHvja9lJDNkPzODR31JJZwdc/wT2dJ/TxYXPrtpFGeyIB
+ qlkuB7ufGgmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,367,1592895600"; 
+   d="scan'208";a="324338400"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Aug 2020 03:55:33 -0700
+Date:   Sat, 29 Aug 2020 18:55:32 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>, <x86@kernel.org>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH 06/17] virt: acrn: Introduce VM management interfaces
+Message-ID: <20200829105532.GE13723@shuo-intel.sh.intel.com>
+References: <20200825024516.16766-1-shuo.a.liu@intel.com>
+ <20200825024516.16766-7-shuo.a.liu@intel.com>
+ <20200828102704.GB1470435@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <87eentvwab.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598698330; bh=z9YAEWuxCL0ZcZL6/sF4aCg5M+VV5wvIy23653SjDZc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=mZbVHOUqOGxXut6zWwsgRZ0CUbPiGk7QDGFLrWBAMMepGty8Xh28KLm2rwVEvhpUB
-         Q2BwcEzoaFOnzE1pjU7+AH59VEU7ZxQc1I/QGYd/KXXLqbf8YrAue4PhepCWaBKIEz
-         cDBpWWb4sB8fp62IRRIHjRoufyO35FyoCKjXDIZsdtQ+VV3ViOf+0cDLzo3cf0FHzg
-         BcsOm3uobCfVAvFjrY9/3FnvHMdOblx5ZjpvAmBuV58M5GFYv+IzPlN9cqALNhsw9e
-         sx3ui32biKPGCbx7rZhuwEsVUFSS+5PNIdM3vT53hniB9VsNYfod9h97MxB6V+Y8Hn
-         f1FFMcjDp6/eg==
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200828102704.GB1470435@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Morimoto-san,
+Hi Greg,
 
-Sorry for the delayed reply as I was on sick leave.
->> Sure. BTW, there are more such candidates which require 'lock' version
->> of these helpers.
->> For example: soc_find_component(), snd_soc_add/remove_pcm_runtime()
->> and snd_soc_register_dai().
-> soc_find_component() is static function, no need to care about mutex.
-> other functions are indeed exported function, but is used from
-> topology.c which is calling it under mutex.
+On Fri 28.Aug'20 at 12:27:04 +0200, Greg Kroah-Hartman wrote:
+>On Tue, Aug 25, 2020 at 10:45:06AM +0800, shuo.a.liu@intel.com wrote:
+>> From: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> The VM management interfaces expose several VM operations to ACRN
+>> userspace via ioctls. For example, creating VM, starting VM, destroying
+>> VM and so on.
+>>
+>> The ACRN Hypervisor needs to exchange data with the ACRN userspace
+>> during the VM operations. HSM provides VM operation ioctls to the ACRN
+>> userspace and communicates with the ACRN Hypervisor for VM operations
+>> via hypercalls.
+>>
+>> HSM maintains a list of User VM. Each User VM will be bound to an
+>> existing file descriptor of /dev/acrn_hsm. The User VM will be
+>> destroyed when the file descriptor is closed.
+>>
+>> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>> Cc: Zhi Wang <zhi.a.wang@intel.com>
+>> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+>> Cc: Yu Wang <yu1.wang@intel.com>
+>> Cc: Reinette Chatre <reinette.chatre@intel.com>
+>> ---
+>>  drivers/virt/acrn/Makefile    |  2 +-
+>>  drivers/virt/acrn/acrn_drv.h  | 16 ++++++++-
+>>  drivers/virt/acrn/hsm.c       | 58 +++++++++++++++++++++++++++++-
+>>  drivers/virt/acrn/hypercall.h | 62 ++++++++++++++++++++++++++++++++
+>>  drivers/virt/acrn/vm.c        | 66 +++++++++++++++++++++++++++++++++++
+>>  include/uapi/linux/acrn.h     | 36 +++++++++++++++++++
+>>  6 files changed, 237 insertions(+), 3 deletions(-)
+>>  create mode 100644 drivers/virt/acrn/vm.c
+>>
+>> diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
+>> index 6920ed798aaf..cf8b4ed5e74e 100644
+>> --- a/drivers/virt/acrn/Makefile
+>> +++ b/drivers/virt/acrn/Makefile
+>> @@ -1,3 +1,3 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>>  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
+>> -acrn-y := hsm.o
+>> +acrn-y := hsm.o vm.o
+>> diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+>> index 36f43d8d43d0..35fcb5cbbff3 100644
+>> --- a/drivers/virt/acrn/acrn_drv.h
+>> +++ b/drivers/virt/acrn/acrn_drv.h
+>> @@ -10,12 +10,26 @@
+>>
+>>  #define ACRN_INVALID_VMID (0xffffU)
+>>
+>> +#define ACRN_VM_FLAG_DESTROYED		0U
+>> +extern struct list_head acrn_vm_list;
+>> +extern rwlock_t acrn_vm_list_lock;
+>>  /**
+>>   * struct acrn_vm - Properties of ACRN User VM.
+>> + * @list:	Entry within global list of all VMs
+>>   * @vmid:	User VM ID
+>> + * @vcpu_num:	Number of virtual CPUs in the VM
+>> + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
+>> + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
+>>   */
+>>  struct acrn_vm {
+>> -	u16	vmid;
+>> +	struct list_head	list;
+>> +	u16			vmid;
+>> +	int			vcpu_num;
+>> +	unsigned long		flags;
+>>  };
+>>
+>> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+>> +			       struct acrn_vm_creation *vm_param);
+>> +int acrn_vm_destroy(struct acrn_vm *vm);
+>> +
+>>  #endif /* __ACRN_HSM_DRV_H */
+>> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+>> index a08169f35c96..ed8921a6c68b 100644
+>> --- a/drivers/virt/acrn/hsm.c
+>> +++ b/drivers/virt/acrn/hsm.c
+>> @@ -45,19 +45,75 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
+>>  static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+>>  			   unsigned long ioctl_param)
+>>  {
+>> +	struct acrn_vm *vm = filp->private_data;
+>> +	struct acrn_vm_creation *vm_param;
+>> +	int ret = 0;
+>> +
+>>  	if (cmd == ACRN_IOCTL_GET_API_VERSION) {
+>>  		if (copy_to_user((void __user *)ioctl_param,
+>>  				 &api_version, sizeof(api_version)))
+>>  			return -EFAULT;
+>> +		return 0;
+>>  	}
+>>
+>> -	return 0;
+>> +	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
+>> +		pr_err("ioctl 0x%x: Invalid VM state!\n", cmd);
 >
+>For this whole driver, you have a real 'struct device' to use, please
+>use it for all of these error messages everywhere.  dev_err() gives you
+>much more information than pr_err() does.
+
+OK. I will use dev_err() instead.
+
 >
-I was just thinking if we need to future proof these functions. As you 
-mentioned, currently these have limited usage (in topology.c) and should 
-just be fine to address snd_soc_find_dai() for now.
+>Same everywhere in this patch series.
 
-Thanks,
-Sameer.
+Sure.
 
+Thanks
+shuo
