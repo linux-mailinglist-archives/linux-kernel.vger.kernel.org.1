@@ -2,197 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400302567CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521632567D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgH2NKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 09:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728217AbgH2NEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 09:04:01 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EE5C20EDD;
-        Sat, 29 Aug 2020 13:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598706241;
-        bh=bwUpSnsKqLmIuusutOsrTELxriYP7AHmwiKkNiMiQGE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iZu2YxuxCLjpGP+RoPui/atSgSKLt/kLNly96FbCmfx+Ep8zO0wyvM2gM7/fEDxiP
-         D2UQmWchfusLpY9NepkQ9T2YpyMgH9HDSQsQ77ojulnuokSd2F18yINO7Iqm0x0sFN
-         /0J7yl60QMvGo2fo6260+QvXvbPTQs79+uJij20E=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
-        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org, mhiramat@kernel.org
-Subject: [PATCH v5 21/21] kprobes: Replace rp->free_instance with freelist
-Date:   Sat, 29 Aug 2020 22:03:56 +0900
-Message-Id: <159870623583.1229682.17472357584134058687.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1728228AbgH2NLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 09:11:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5880 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728235AbgH2NEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 09:04:48 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07TD1XZa122290;
+        Sat, 29 Aug 2020 09:04:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=7MqhdwTj5lKbX+jh+JmPegmmYZsxZQX9IBMyUrTRHfY=;
+ b=rK1Hmsb3jYg7QCmbv2VGYaw4Wm3vtDjGCyCX+qXTxpC54ODVNPDBveNJAHxWu262GYry
+ bzLa4ZB8P+l6bjq3sfmmIxT5xyEbc15hau/VdpCVbyVWGsN0Tyc3vllOvRH4l7BaExul
+ QZeKBO4cLFCa5Cf+mxPSerfSKxH42t0VyafP/utXIp23NYfMpVWRXrEn6L+Ic1gwqtEg
+ VHq/pYm3fAvt/dzs267SnkTPiwG8L2XOi4viZdPcjTzXApVLPDhE0xXXmks/WA97iGCn
+ TF8wGkP7v7XjqkQS7ZLE1AqVRjEuRkv27iGF2SJK5GOx18C49k5vGPy5QbTiqorzRmlu BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 337kdpv0ka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Aug 2020 09:04:37 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07TD2KRI124347;
+        Sat, 29 Aug 2020 09:04:37 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 337kdpv0jr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Aug 2020 09:04:36 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07TD3kaH025145;
+        Sat, 29 Aug 2020 13:04:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 337en8875s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Aug 2020 13:04:34 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07TD4WOm31457540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 Aug 2020 13:04:32 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FF8E11C04C;
+        Sat, 29 Aug 2020 13:04:32 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 02AE411C04A;
+        Sat, 29 Aug 2020 13:04:31 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.92.75])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 29 Aug 2020 13:04:30 +0000 (GMT)
+Date:   Sat, 29 Aug 2020 16:04:29 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
+Subject: Re: [ALTERNATE PATCH] memblock: fix min_low_pfn/max_low_pfn build
+ errors
+Message-ID: <20200829130429.GG167163@linux.ibm.com>
+References: <20200829000139.2513-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829000139.2513-1-rdunlap@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-29_07:2020-08-28,2020-08-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ phishscore=0 mlxlogscore=875 clxscore=1011 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008290101
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Fri, Aug 28, 2020 at 05:01:39PM -0700, Randy Dunlap wrote:
+> Export min_low_pfn & max_low_pfn in mm/memblock.c to fix build errors
+> on arch/microblaze/ and arch/ia64/: (e.g.)
 
-Gets rid of rp->lock, and as a result kretprobes are now fully
-lockless.
+Please don't. This would give driver developers a wrong impression that
+these variables can be used to query memory boundaries, but this is not
+the case, at least not on all architectures.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- Changes
-  - [MH] expel the llist from anon union in kretprobe_instance
----
- include/linux/kprobes.h |    8 +++----
- kernel/kprobes.c        |   56 ++++++++++++++++++++---------------------------
- 2 files changed, 28 insertions(+), 36 deletions(-)
+I would prefer fixing it up locally for microblaze and ia64.
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index f8f87a13345a..89ff0fc15286 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -28,6 +28,7 @@
- #include <linux/mutex.h>
- #include <linux/ftrace.h>
- #include <linux/refcount.h>
-+#include <linux/freelist.h>
- #include <asm/kprobes.h>
- 
- #ifdef CONFIG_KPROBES
-@@ -157,17 +158,16 @@ struct kretprobe {
- 	int maxactive;
- 	int nmissed;
- 	size_t data_size;
--	struct hlist_head free_instances;
-+	struct freelist_head freelist;
- 	struct kretprobe_holder *rph;
--	raw_spinlock_t lock;
- };
- 
- struct kretprobe_instance {
- 	union {
--		struct llist_node llist;
--		struct hlist_node hlist;
-+		struct freelist_node freelist;
- 		struct rcu_head rcu;
- 	};
-+	struct llist_node llist;
- 	struct kretprobe_holder *rph;
- 	kprobe_opcode_t *ret_addr;
- 	void *fp;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index bc65603fce00..af6551992b91 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1228,11 +1228,8 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
- {
- 	struct kretprobe *rp = get_kretprobe(ri);
- 
--	INIT_HLIST_NODE(&ri->hlist);
- 	if (likely(rp)) {
--		raw_spin_lock(&rp->lock);
--		hlist_add_head(&ri->hlist, &rp->free_instances);
--		raw_spin_unlock(&rp->lock);
-+		freelist_add(&ri->freelist, &rp->freelist);
- 	} else
- 		call_rcu(&ri->rcu, free_rp_inst_rcu);
- }
-@@ -1290,11 +1287,14 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
- static inline void free_rp_inst(struct kretprobe *rp)
- {
- 	struct kretprobe_instance *ri;
--	struct hlist_node *next;
-+	struct freelist_node *node;
- 	int count = 0;
- 
--	hlist_for_each_entry_safe(ri, next, &rp->free_instances, hlist) {
--		hlist_del(&ri->hlist);
-+	node = rp->freelist.head;
-+	while (node) {
-+		ri = container_of(node, struct kretprobe_instance, freelist);
-+		node = node->next;
-+
- 		kfree(ri);
- 		count++;
- 	}
-@@ -1925,32 +1925,26 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
- static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- {
- 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
--	unsigned long flags = 0;
- 	struct kretprobe_instance *ri;
-+	struct freelist_node *fn;
- 
--	/* TODO: consider to only swap the RA after the last pre_handler fired */
--	raw_spin_lock_irqsave(&rp->lock, flags);
--	if (!hlist_empty(&rp->free_instances)) {
--		ri = hlist_entry(rp->free_instances.first,
--				struct kretprobe_instance, hlist);
--		hlist_del(&ri->hlist);
--		raw_spin_unlock_irqrestore(&rp->lock, flags);
--
--		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
--			raw_spin_lock_irqsave(&rp->lock, flags);
--			hlist_add_head(&ri->hlist, &rp->free_instances);
--			raw_spin_unlock_irqrestore(&rp->lock, flags);
--			return 0;
--		}
--
--		arch_prepare_kretprobe(ri, regs);
-+	fn = freelist_try_get(&rp->freelist);
-+	if (!fn) {
-+		rp->nmissed++;
-+		return 0;
-+	}
- 
--		__llist_add(&ri->llist, &current->kretprobe_instances);
-+	ri = container_of(fn, struct kretprobe_instance, freelist);
- 
--	} else {
--		rp->nmissed++;
--		raw_spin_unlock_irqrestore(&rp->lock, flags);
-+	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
-+		freelist_add(&ri->freelist, &rp->freelist);
-+		return 0;
- 	}
-+
-+	arch_prepare_kretprobe(ri, regs);
-+
-+	__llist_add(&ri->llist, &current->kretprobe_instances);
-+
- 	return 0;
- }
- NOKPROBE_SYMBOL(pre_handler_kretprobe);
-@@ -2007,8 +2001,7 @@ int register_kretprobe(struct kretprobe *rp)
- 		rp->maxactive = num_possible_cpus();
- #endif
- 	}
--	raw_spin_lock_init(&rp->lock);
--	INIT_HLIST_HEAD(&rp->free_instances);
-+	rp->freelist.head = NULL;
- 	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
- 	if (!rp->rph)
- 		return -ENOMEM;
-@@ -2023,8 +2016,7 @@ int register_kretprobe(struct kretprobe *rp)
- 			return -ENOMEM;
- 		}
- 		inst->rph = rp->rph;
--		INIT_HLIST_NODE(&inst->hlist);
--		hlist_add_head(&inst->hlist, &rp->free_instances);
-+		freelist_add(&inst->freelist, &rp->freelist);
- 	}
- 	refcount_set(&rp->rph->ref, i);
- 
+>   ERROR: "max_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/mtd/spi-nor/spi-nor.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/mtd/spi-nor/spi-nor.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/mtd/nand/raw/nand.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/mtd/nand/raw/nand.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/rapidio/devices/rio_mport_cdev.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/rapidio/devices/rio_mport_cdev.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
+>   ERROR: "max_low_pfn" [drivers/md/dm-integrity.ko] undefined!
+>   ERROR: "min_low_pfn" [drivers/md/dm-integrity.ko] undefined!
+>   ERROR: "max_low_pfn" [crypto/tcrypt.ko] undefined!
+>   ERROR: "min_low_pfn" [crypto/tcrypt.ko] undefined!
+> 
+> In both arches, these variables are referenced in
+> arch/$ARCH/include/asm/page.h.
+> 
+> Mike had/has an alternate patch for Microblaze:
+> https://lore.kernel.org/lkml/20200630111519.GA1951986@linux.ibm.com/
+> 
+> David suggested just exporting min_low_pfn & max_low_pfn in
+> mm/memblock.c:
+> https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2006291911220.1118534@chino.kir.corp.google.com/
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: David Rientjes <rientjes@google.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: linux-mm@kvack.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Fenghua Yu <fenghua.yu@intel.com>
+> Cc: linux-ia64@vger.kernel.org
+> ---
+>  mm/memblock.c |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> --- linux-next-20200825.orig/mm/memblock.c
+> +++ linux-next-20200825/mm/memblock.c
+> @@ -99,6 +99,8 @@ EXPORT_SYMBOL(contig_page_data);
+>  
+>  unsigned long max_low_pfn;
+>  unsigned long min_low_pfn;
+> +EXPORT_SYMBOL(min_low_pfn);
+> +EXPORT_SYMBOL(max_low_pfn);
+>  unsigned long max_pfn;
+>  unsigned long long max_possible_pfn;
+>  
 
+-- 
+Sincerely yours,
+Mike.
