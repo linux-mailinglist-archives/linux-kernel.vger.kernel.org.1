@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569C52565A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 09:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15A72565AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 09:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgH2Hdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 03:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        id S1727077AbgH2HsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 03:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgH2Hdp (ORCPT
+        with ESMTP id S1726056AbgH2HsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 03:33:45 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC70C061236
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 00:33:45 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id x77so879760lfa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 00:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EymIr82sWdWEIJpbB29qEsVht7ZTs6u+3DBHuAQDqEU=;
-        b=hn0av2B5bLE6silgq7fc3nRrQYff8d+mi+3tMEvCrLTNLZQd5g6XzaRjRz1sYKNeuQ
-         7qUO1x4y+5LJjYvpcSqvLARv7i0nYcTmy/L5OPbK5P3ncJRiS/AM28aXLPXpKTU4ndcS
-         8rnc4myKQ+xj5SUEQMfZBXcBPJ9jk2+hWVQcgYbdptXP8wTLetT2+VZ4RQwYU/D3Eklm
-         OSUv2POQJJCnaplG9XYkzdoRGqD8IsN7wICdxptles3QXHDQStYRqRfLSrxY3PU0yJqw
-         tBooWVSgWrRA2Z1QBVLON69uYphbad6UYJCTHl4IK3QLSGNZ5DrZ8ucjTq5qieSqb8sO
-         Hjsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EymIr82sWdWEIJpbB29qEsVht7ZTs6u+3DBHuAQDqEU=;
-        b=sdWtyspLCr8AQoD4RZkAmLO/CZf0lDlc4gPkthzkbITLsMXzm89BvMZy6H2feBdm8k
-         ogEZxfXVcypP/lE6ojzARxLFpwwFSVQ8cuuPULgvRX67oiD8MTAK2M6Qm0uGbnbtmm8D
-         qnJzPQbP6Gs36ptSH4SboAp+s5/BB1WkA56VT2S4Y2o/ghm3Ble3rjb11ALeHjla92sB
-         imPc8ryCfOQgu4bpKVRVRK3P688KNyEFNbX9SlYJnOCO+UOlHoPqEyGGwGLtS/3jw4ov
-         AdcsJSZHftp+Eni57ZqoXsiRApA/3owZi09kWo02TzHvE3mIU2Eq/OExNIfLFn2ApFRH
-         LrLQ==
-X-Gm-Message-State: AOAM532CxLG/Ez82gdDtiBqK0YRJlsLeJCnd/M4IRMkKEirePnKvIXlx
-        NOZso8UpVDd68aaMe+tO2My6raaagQIcJNUDBC5HOCqNYdI=
-X-Google-Smtp-Source: ABdhPJzvpHomp7Qre7y4tdeCJW+EIEwH4wh5T7U9ChsCQBZ61AOPXWgsjNfmKphPC7Yoje606utdH9Ih+/oI1suEcQs=
-X-Received: by 2002:ac2:519b:: with SMTP id u27mr1097975lfi.10.1598686421917;
- Sat, 29 Aug 2020 00:33:41 -0700 (PDT)
+        Sat, 29 Aug 2020 03:48:21 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD65C061236
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 00:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YAahagjuFW3GJ48qjAgqdEDaO/Mu7SdJDTxXCJMml4g=; b=cRTjp+t541APFVTGgDNVgd0rNL
+        0xXIuXF75g2A4qUHrkn9XsNzTWho5xZz7KxHWSdxs+lEadmBDRJgnwp5BvedTpdbm8p/YhHwD5u8S
+        VepPalCkS94U3q+xmbZYWdh7bFgDfMfbAn+4gYkeNZN/b6EKVxKKukoeJypaWmc5axcpt09osqQqe
+        lJWtbF9a50reYLkEcJpjp3nF22cNCRM+JLJ05ilVToKJ9QouHrRUX8SDa7M6gkNjJ0bZGaNFBBBwk
+        trhkXpwirLM4g4IXdRoDNLixtGeyHXkfoSDJ/P8x7Jr0PGxc2Vj2KawGVIEULpNdgFO375yOV9V7j
+        Lm2gDKSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kBva8-00038N-Th; Sat, 29 Aug 2020 07:47:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C973D3011F0;
+        Sat, 29 Aug 2020 09:47:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A39DC22B8F14A; Sat, 29 Aug 2020 09:47:19 +0200 (CEST)
+Date:   Sat, 29 Aug 2020 09:47:19 +0200
+From:   peterz@infradead.org
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     Julien Desfossez <jdesfossez@digitalocean.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
+        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>
+Subject: Re: [RFC PATCH v7 08/23] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20200829074719.GJ1362448@hirez.programming.kicks-ass.net>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+ <df3af13cc820a3c2397b85cb7de08cb6a0780e1d.1598643276.git.jdesfossez@digitalocean.com>
+ <20200828205154.GB29142@worktop.programming.kicks-ass.net>
+ <381e6ea5-a48c-9882-4c0d-49cfa92d21cc@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20200828085301.78423-1-luc.vanoostenryck@gmail.com>
- <CANiq72no4vv1dX13W8LL6kXj_0ethn0cbUfxM5Nn_Nxag-BrfQ@mail.gmail.com> <20200828201516.p33577vucl6ke4j5@ltop.local>
-In-Reply-To: <20200828201516.p33577vucl6ke4j5@ltop.local>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 29 Aug 2020 09:33:31 +0200
-Message-ID: <CANiq72njPaiPgTKWhZ696Nr+jDiTN1Vqu0ML8DdK==sjSnS1aw@mail.gmail.com>
-Subject: Re: [PATCH] sparse: use static inline for __chk_{user,io}_ptr()
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <381e6ea5-a48c-9882-4c0d-49cfa92d21cc@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luc,
+On Fri, Aug 28, 2020 at 06:02:25PM -0400, Vineeth Pillai wrote:
+> On 8/28/20 4:51 PM, Peter Zijlstra wrote:
 
-On Fri, Aug 28, 2020 at 10:15 PM Luc Van Oostenryck
-<luc.vanoostenryck@gmail.com> wrote:
->
-> But to the bot, any change to the content of the warning itself
-> or its associated info is presented as a new warning.
-> I've talked to the bot's guys about this problem and they've
-> replied that they're seriously considering to change this behaviour.
+> > So where do things go side-ways?
 
-I see! Well, I guess having a "false positive" is OK in that case. It
-makes us look twice.
+> During hotplug stress test, we have noticed that while a sibling is in
+> pick_next_task, another sibling can go offline or come online. What
+> we have observed is smt_mask get updated underneath us even if
+> we hold the lock. From reading the code, looks like we don't hold the
+> rq lock when the mask is updated. This extra logic was to take care of that.
 
-Thanks, queued!
+Sure, the mask is updated async, but _where_ is the actual problem with
+that?
 
-Cheers,
-Miguel
+On Fri, Aug 28, 2020 at 06:23:55PM -0400, Joel Fernandes wrote:
+> Thanks Vineeth. Peter, also the "v6+" series (which were some addons on v6)
+> detail the individual hotplug changes squashed into this patch:
+> https://lore.kernel.org/lkml/20200815031908.1015049-9-joel@joelfernandes.org/
+> https://lore.kernel.org/lkml/20200815031908.1015049-11-joel@joelfernandes.org/
+
+That one looks fishy, the pick is core wide, making that pick_seq per rq
+just doesn't make sense.
+
+> https://lore.kernel.org/lkml/20200815031908.1015049-12-joel@joelfernandes.org/
+
+This one reads like tinkering, there is no description of the actual
+problem just some code that makes a symptom go away.
+
+Sure, on hotplug the smt mask can change, but only for a CPU that isn't
+actually scheduling, so who cares.
+
+/me re-reads the hotplug code...
+
+..ooOO is the problem that we clear the cpumasks on take_cpu_down()
+instead of play_dead() ?! That should be fixable.
+
+> https://lore.kernel.org/lkml/20200815031908.1015049-13-joel@joelfernandes.org/
+
+This is the only one that makes some sense, it makes rq->core consistent
+over hotplug.
+
+> Agreed we can split the patches for the next series, however for final
+> upstream merge, I suggest we fix hotplug issues in this patch itself so that
+> we don't break bisectability.
+
+Meh, who sodding cares about hotplug :-). Also you can 'fix' such things
+by making sure you can't actually enable core-sched until after
+everything is in place.
+
+
