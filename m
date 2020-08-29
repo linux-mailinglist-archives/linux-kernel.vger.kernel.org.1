@@ -2,199 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22E62567E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911F32567EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 15:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbgH2NXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 09:23:49 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:47697
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728180AbgH2NKf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 09:10:35 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="357585620"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2020 15:09:57 +0200
-Date:   Sat, 29 Aug 2020 15:09:57 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Cocci] [RFC PATCH] coccinelle: api: add flex_array_size.cocci
- script
-In-Reply-To: <b131add2-f494-d129-f83f-ef2c6de7a849@web.de>
-Message-ID: <alpine.DEB.2.22.394.2008291507400.3629@hadrien>
-References: <b131add2-f494-d129-f83f-ef2c6de7a849@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1728030AbgH2NYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 09:24:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728202AbgH2NKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 09:10:44 -0400
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 007632076D;
+        Sat, 29 Aug 2020 13:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598706643;
+        bh=z1sTsa1dpruwAUEEfp1W27KJA2xFmbwqQp5IOMzOoU4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DNFZoUQs+N4C1jS97X4sJiyIy1gDiwUEBZhvmyiTp3eqOC5xhZOUhxi3e6iR19L8o
+         A/esD5eCS3bR55GtU6QfbScIxxlABrEtTI/RlRBwwVkR2KsFPUv7HmUgt1oMrT8T5c
+         zY096JfQb2KaZXURE/Bx9vAmU+jLpTTyouiK8Oho=
+Received: by mail-lj1-f178.google.com with SMTP id t23so1857001ljc.3;
+        Sat, 29 Aug 2020 06:10:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533FzM3Ly/BqVLgmku5UCe9WnwUo0EUFzqy9C1z6CPI/IBWqvuJa
+        45yuQgZeqBB8ZsDXxhuQFB1hF+LB7geP7xUwZHo=
+X-Google-Smtp-Source: ABdhPJzcoYwMbQDiFlTomIEruCL5TFbgX/szDz7jSloxr/PA2l7GtagUnsDtLuSgrs6u+KeuSH6Y+qbAcRFt/NYA8xQ=
+X-Received: by 2002:a2e:910b:: with SMTP id m11mr1571569ljg.159.1598706641354;
+ Sat, 29 Aug 2020 06:10:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200828153100.19006-1-krzk@kernel.org>
+In-Reply-To: <20200828153100.19006-1-krzk@kernel.org>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+Date:   Sat, 29 Aug 2020 22:10:04 +0900
+X-Gmail-Original-Message-ID: <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
+Message-ID: <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
+Subject: Re: [PATCH] devfreq: rk3399_dmc: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 29, 2020 at 12:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/devfreq/rk3399_dmc.c | 20 ++++++--------------
+>  1 file changed, 6 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
+> index 027769e39f9b..35b3542f1f7b 100644
+> --- a/drivers/devfreq/rk3399_dmc.c
+> +++ b/drivers/devfreq/rk3399_dmc.c
+> @@ -324,22 +324,14 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
+>         mutex_init(&data->lock);
+>
+>         data->vdd_center = devm_regulator_get(dev, "center");
+> -       if (IS_ERR(data->vdd_center)) {
+> -               if (PTR_ERR(data->vdd_center) == -EPROBE_DEFER)
+> -                       return -EPROBE_DEFER;
+> -
+> -               dev_err(dev, "Cannot get the regulator \"center\"\n");
+> -               return PTR_ERR(data->vdd_center);
+> -       }
+> +       if (IS_ERR(data->vdd_center))
+> +               return dev_err_probe(dev, PTR_ERR(data->vdd_center),
+> +                                    "Cannot get the regulator \"center\"\n");
+>
+>         data->dmc_clk = devm_clk_get(dev, "dmc_clk");
+> -       if (IS_ERR(data->dmc_clk)) {
+> -               if (PTR_ERR(data->dmc_clk) == -EPROBE_DEFER)
+> -                       return -EPROBE_DEFER;
+> -
+> -               dev_err(dev, "Cannot get the clk dmc_clk\n");
+> -               return PTR_ERR(data->dmc_clk);
+> -       }
+> +       if (IS_ERR(data->dmc_clk))
+> +               return dev_err_probe(dev, PTR_ERR(data->dmc_clk),
+> +                                    "Cannot get the clk dmc_clk\n");
+>
+>         data->edev = devfreq_event_get_edev_by_phandle(dev, 0);
+>         if (IS_ERR(data->edev))
+> --
+> 2.17.1
+>
 
+Applied it. Thanks.
 
-On Sat, 29 Aug 2020, Markus Elfring wrote:
-
-> > Suggest flex_array_size() wrapper to compute the size of a
-> > flexible array member in a structure. The macro additionally
-> > checks for integer overflows.
->
-> Can the following script variant for the semantic patch language help
-> to clarify any software development ideas and remaining open issues?
-
-A patch proposal needs to say what it is doing and why.  You haven't
-provided either information.
-
-What changes have you made as compared to the original proposal, and why
-have you made them?  Removing newlines and adding spaces, as done in
-decl_flex, is not something I am interested in.
-
-julia
-
->
->
-> virtual context, patch, report, org
->
-> @decl_flex@
-> identifier name, array, size;
-> type TA, TS;
-> @@
->  struct name {
->  ...
->  TS size;
->  ...
-> (TA array[];
-> |TA array[ \( 0 \| 1 \) ];
-> )
->  };
->
-> @ptr_flex@
-> identifier decl_flex.name, instance;
-> @@
->  struct name *instance;
->
-> @struct_flex@
-> identifier decl_flex.name, instance;
-> @@
->  struct name instance;
->
-> @ptr_flex_size depends on !patch@
-> identifier decl_flex.array, decl_flex.size, ptr_flex.instance;
-> type decl_flex.TA;
-> position p;
-> @@
-> *instance->size *@p \( sizeof(TA) \| sizeof(*instance->array) \)
->
-> @depends on patch exists@
-> identifier decl_flex.array, decl_flex.size, ptr_flex.instance;
-> type decl_flex.TA;
-> @@
-> (
-> -sizeof(TA)
-> |
-> -sizeof(*instance->array)
-> )
-> - *
-> +flex_array_size(instance, array,
->  instance->size
-> +)
->
-> @struct_flex_size depends on !patch@
-> identifier decl_flex.array, decl_flex.size, struct_flex.instance;
-> type decl_flex.TA;
-> position p;
-> @@
-> *instance->size *@p \( sizeof(TA) \| sizeof(*instance->array) \)
->
-> @depends on patch exists@
-> identifier decl_flex.array, decl_flex.size, struct_flex.instance;
-> type decl_flex.TA;
-> @@
-> (
-> -sizeof(TA)
-> |
-> -sizeof(*instance->array)
-> )
-> - *
-> +flex_array_size(instance, array,
->  instance->size
-> +)
->
-> @func_arg_flex_size depends on !patch@
-> identifier decl_flex.name, decl_flex.array, decl_flex.size, func, instance;
-> type decl_flex.TA;
-> position p;
-> @@
->  func(..., struct name *instance, ...) {
->  ... when any
-> *instance->size *@p \( sizeof(TA) \| sizeof(*instance->array) \)
->  ...
->  }
->
-> @depends on patch exists@
-> identifier decl_flex.name, decl_flex.array, decl_flex.size, func, instance;
-> type decl_flex.TA;
-> @@
->  func(..., struct name *instance, ...) {
->  ... when any
-> (
-> -sizeof(TA)
-> |
-> -sizeof(*instance->array)
-> )
-> - *
-> +flex_array_size(instance, array,
->  instance->size
-> +)
->  ...
->  }
->
-> @script:python depends on report@
-> p << ptr_flex_size.p;
-> @@
-> coccilib.report.print_report(p[0], "WARNING opportunity for flex_array_size")
->
-> @script:python depends on org@
-> p << ptr_flex_size.p;
-> @@
-> coccilib.org.print_todo(p[0], "WARNING opportunity for flex_array_size")
->
-> @script:python depends on report@
-> p << struct_flex_size.p;
-> @@
-> coccilib.report.print_report(p[0], "WARNING opportunity for flex_array_size")
->
-> @script:python depends on org@
-> p << struct_flex_size.p;
-> @@
-> coccilib.org.print_todo(p[0], "WARNING opportunity for flex_array_size")
->
-> @script:python depends on report@
-> p << func_arg_flex_size.p;
-> @@
-> coccilib.report.print_report(p[0], "WARNING opportunity for flex_array_size")
->
-> @script:python depends on org@
-> p << func_arg_flex_size.p;
-> @@
-> coccilib.org.print_todo(p[0], "WARNING opportunity for flex_array_size")
->
->
-> Regards,
-> Markus
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
