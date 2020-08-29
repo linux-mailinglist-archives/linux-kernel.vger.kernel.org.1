@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA032569DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 21:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35292569E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 21:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgH2Tb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 15:31:28 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29419 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728370AbgH2Tb1 (ORCPT
+        id S1728472AbgH2Tgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 15:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728442AbgH2Tgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 15:31:27 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-66-2ft33eF5NHCr6OGuIjxBCA-1; Sat, 29 Aug 2020 20:31:21 +0100
-X-MC-Unique: 2ft33eF5NHCr6OGuIjxBCA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 29 Aug 2020 20:31:20 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 29 Aug 2020 20:31:20 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        "'x86@kernel.org'" <x86@kernel.org>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Linus Torvalds'" <torvalds@linux-foundation.org>,
-        'Al Viro' <viro@zeniv.linux.org.uk>,
-        'Will Deacon' <will@kernel.org>,
-        'Dan Williams' <dan.j.williams@intel.com>,
-        'Andrea Arcangeli' <aarcange@redhat.com>,
-        "'Waiman Long'" <longman@redhat.com>,
-        'Peter Zijlstra' <peterz@infradead.org>,
-        "'Thomas Gleixner'" <tglx@linutronix.de>,
-        'Andrew Cooper' <andrew.cooper3@citrix.com>,
-        'Andy Lutomirski' <luto@kernel.org>,
-        'Christoph Hellwig' <hch@lst.de>
-Subject: RE: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHWfXGL4X8nWl6IwEyifUSeZx09HqlPCNzQgABwecA=
-Date:   Sat, 29 Aug 2020 19:31:20 +0000
-Message-ID: <56488b800d044a7e81efd8b40198a527@AcuMS.aculab.com>
-References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
- <20200828192911.ezqspexfb2gtvrr7@treble>
- <f54657f1b5e74ec99cef62228db50dee@AcuMS.aculab.com>
-In-Reply-To: <f54657f1b5e74ec99cef62228db50dee@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 29 Aug 2020 15:36:51 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58664C061236
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 12:36:51 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so3458132eje.7
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 12:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dragonslave.de; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KQd1CZkmF2JS2WqNtkwtAtitWW8A9BxZ2UsFX+gxszg=;
+        b=MPuZ+cdGVfqj6IgoyazyY9fqDopvH4zr34AEj6WfzXSYz/9OyRNInVeVECpcW/YuB9
+         GPt3pPzGFQep3mbrffdhCy8o4Sz/3ti6KWhHB2GM64NtIbJUQqZTMXp2xxJlOd9WTaPs
+         f1HeHUyqTbYC25N2WndeyXhyDTev9tluy1i6k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KQd1CZkmF2JS2WqNtkwtAtitWW8A9BxZ2UsFX+gxszg=;
+        b=TbDwX0djhtSniq5Vnjaps9bPE1QWGY5aorFW1/ZjsaLjZf6jCGOqfDwiaDmypXcx3F
+         szIAbQHNDxBoN4wD557I7XjKu1sqc7wVN16sDUTGAc2UwZBPUy1plWPOkcI6nSBN4F95
+         WMijNo6xzt4rXMBG5qXrYFYNJxy5Pm3oNR8h6Lwv+NGa/3+rjEnq63NHHIWMTJ2zUCDh
+         Fp55RVTiZYhtacp2EIhqMSJQ0rDj/xyc7m/QPylXYmySk596gcVY38YmWvETXeGqllin
+         JQUp2lGeVqNjqXaNhw6fqiIHHpeDkhz+1iEMdsJDeLOw/2jQJ5Csy2BPNMElrxrnm5Gu
+         gHrA==
+X-Gm-Message-State: AOAM532PW8kcNr0M/dPQkq79M74mgN7Qt5eLtve7i0YfTMJGDbYe53MG
+        6DfAVtHHjg2TzDaFvkecRnVoFw==
+X-Google-Smtp-Source: ABdhPJydWr/wP7l2Q232WsPCPiRHz790MynByWRjvWBZMlqFv39tDcBYq1NUj5C9pGkhgN8ovZQ9jA==
+X-Received: by 2002:a17:906:7c46:: with SMTP id g6mr4700942ejp.178.1598729807885;
+        Sat, 29 Aug 2020 12:36:47 -0700 (PDT)
+Received: from [192.168.25.146] (ip92340232.dynamic.kabel-deutschland.de. [146.52.2.50])
+        by smtp.googlemail.com with ESMTPSA id y24sm1837527eds.35.2020.08.29.12.36.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Aug 2020 12:36:47 -0700 (PDT)
+Subject: Re: Kernel 5.9-rc Regression: Boot failure with nvme
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Gabriel C <nix.or.die@googlemail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gabriel C <crazy@frugalware.org>
+References: <f7328aad-ce1d-dd3f-577b-20b3d2efbabc@dragonslave.de>
+ <CAHk-=whuO3U90x_i6nq+xmVymwqcc=kkb5=gv4vyLScQn7ZwBw@mail.gmail.com>
+ <20200829175735.GA16416@lst.de>
+ <CAEJqkgjz2wHAOVfHTw0V1fU8nOR70WZtuY9vJKywrUkJetC=TQ@mail.gmail.com>
+ <CAHk-=wgMJGVqiKnmL+mJ=mrHkc3JsABLrmuaxJ1T=xTrnDCqag@mail.gmail.com>
+From:   Daniel Exner <dex@dragonslave.de>
+Message-ID: <7b8f7ab3-af40-81e2-1e4b-59468404f121@dragonslave.de>
+Date:   Sat, 29 Aug 2020 21:31:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAHk-=wgMJGVqiKnmL+mJ=mrHkc3JsABLrmuaxJ1T=xTrnDCqag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDI5IEF1Z3VzdCAyMDIwIDE0OjIxDQo+IA0KPiBG
-cm9tOiBKb3NoIFBvaW1ib2V1Zg0KPiA+IFNlbnQ6IDI4IEF1Z3VzdCAyMDIwIDIwOjI5DQo+ID4N
-Cj4gPiBPbiBXZWQsIEF1ZyAxOSwgMjAyMCBhdCAwOTo1MDowNkFNIC0wNTAwLCBKb3NoIFBvaW1i
-b2V1ZiB3cm90ZToNCj4gPiA+IFRoZSB4ODYgdWFjY2VzcyBjb2RlIHVzZXMgYmFycmllcl9ub3Nw
-ZWMoKSBpbiB2YXJpb3VzIHBsYWNlcyB0byBwcmV2ZW50DQo+ID4gPiBzcGVjdWxhdGl2ZSBkZXJl
-ZmVyZW5jaW5nIG9mIHVzZXItY29udHJvbGxlZCBwb2ludGVycyAod2hpY2ggbWlnaHQgYmUNCj4g
-PiA+IGNvbWJpbmVkIHdpdGggZnVydGhlciBnYWRnZXRzIG9yIENQVSBidWdzIHRvIGxlYWsgZGF0
-YSkuDQo+ID4gPg0KPiA+ID4gVGhlcmUgYXJlIHNvbWUgaXNzdWVzIHdpdGggdGhlIGN1cnJlbnQg
-aW1wbGVtZW50YXRpb246DQo+ID4gPg0KPiA+ID4gLSBUaGUgYmFycmllcl9ub3NwZWMoKSBpbiBj
-b3B5X2Zyb21fdXNlcigpIHdhcyBpbmFkdmVydGVudGx5IHJlbW92ZWQNCj4gPiA+ICAgd2l0aDog
-NGI4NDJlNGUyNWIxICgieDg2OiBnZXQgcmlkIG9mIHNtYWxsIGNvbnN0YW50IHNpemUgY2FzZXMg
-aW4NCj4gPiA+ICAgcmF3X2NvcHlfe3RvLGZyb219X3VzZXIoKSIpDQo+ID4gPg0KPiA+ID4gLSBj
-b3B5X3RvX3VzZXIoKSBhbmQgZnJpZW5kcyBzaG91bGQgYWxzbyBoYXZlIGEgc3BlY3VsYXRpb24g
-YmFycmllciwNCj4gPiA+ICAgYmVjYXVzZSBhIHNwZWN1bGF0aXZlIHdyaXRlIHRvIGEgdXNlci1j
-b250cm9sbGVkIGFkZHJlc3MgY2FuIHN0aWxsDQo+ID4gPiAgIHBvcHVsYXRlIHRoZSBjYWNoZSBs
-aW5lIHdpdGggdGhlIG9yaWdpbmFsIGRhdGEuDQo+ID4gPg0KPiA+ID4gLSBUaGUgTEZFTkNFIGlu
-IGJhcnJpZXJfbm9zcGVjKCkgaXMgb3ZlcmtpbGwsIHdoZW4gbW9yZSBsaWdodHdlaWdodCB1c2Vy
-DQo+ID4gPiAgIHBvaW50ZXIgbWFza2luZyBjYW4gYmUgdXNlZCBpbnN0ZWFkLg0KPiA+ID4NCj4g
-PiA+IFJlbW92ZSBhbGwgZXhpc3RpbmcgYmFycmllcl9ub3NwZWMoKSB1c2FnZSwgYW5kIGluc3Rl
-YWQgZG8gdXNlciBwb2ludGVyDQo+ID4gPiBtYXNraW5nLCB0aHJvdWdob3V0IHRoZSB4ODYgdWFj
-Y2VzcyBjb2RlLiAgVGhpcyBpcyBzaW1pbGFyIHRvIHdoYXQgYXJtNjQNCj4gPiA+IGlzIGFscmVh
-ZHkgZG9pbmcuDQo+ID4gPg0KPiA+ID4gYmFycmllcl9ub3NwZWMoKSBpcyBub3cgdW51c2VkLCBh
-bmQgY2FuIGJlIHJlbW92ZWQuDQo+ID4gPg0KPiA+ID4gRml4ZXM6IDRiODQyZTRlMjViMSAoIng4
-NjogZ2V0IHJpZCBvZiBzbWFsbCBjb25zdGFudCBzaXplIGNhc2VzIGluIHJhd19jb3B5X3t0byxm
-cm9tfV91c2VyKCkiKQ0KPiA+ID4gU3VnZ2VzdGVkLWJ5OiBXaWxsIERlYWNvbiA8d2lsbEBrZXJu
-ZWwub3JnPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogSm9zaCBQb2ltYm9ldWYgPGpwb2ltYm9lQHJl
-ZGhhdC5jb20+DQo+ID4NCj4gPiBQaW5nPw0KPiANCj4gUmVyZWFkaW5nIHRoZSBwYXRjaCBpdCBs
-b29rcyBsaWtlIGEgbG90IG9mIGJsb2F0IChhcyB3ZWxsIGFzIGENCj4gbG90IG9mIGNoYW5nZXMp
-Lg0KPiBEb2VzIHRoZSBhcnJheV9tYXNrIGV2ZW4gd29yayBvbiAzMmJpdCBhcmNocyB3aGVyZSB0
-aGUga2VybmVsDQo+IGJhc2UgYWRkcmVzcyBpcyAweGMwMDAwMDAwPw0KPiBJJ20gc3VyZSB0aGVy
-ZSBpcyBzb21ldGhpbmcgbXVjaCBzaW1wbGVyLg0KPiANCj4gSWYgYWNjZXNzX29rKCkgZ2VuZXJh
-dGVzIH4wdSBvciAwIHdpdGhvdXQgYSBjb25kaXRpb25hbCB0aGVuDQo+IHRoZSBhZGRyZXNzIGNh
-biBiZSBtYXNrZWQgd2l0aCB0aGUgcmVzdWx0Lg0KPiBTbyB5b3UgcHJvYmFibHkgbmVlZCB0byBj
-aGFuZ2UgYWNjZXNzX29rKCkgdG8gdGFrZSB0aGUgYWRkcmVzcw0KPiBvZiB0aGUgdXNlciBwb2lu
-dGVyIC0gc28gdGhlIGNhbGxlcnMgYmVjb21lIGxpa2U6DQo+IAlpZiAoYWNjZXNzX29rKCZ1c2Vy
-X2J1ZmZlciwgbGVuKSkNCj4gCQlyZXR1cm4gLUVGQVVMVA0KPiAJX19wdXRfdXNlcih1c2VyX2J1
-ZmZlciwgdmFsdWUpOw0KPiANCj4gSXQgd291bGQgYmUgZWFzaWVyIGlmIE5VTEwgd2VyZSBndWFy
-YW50ZWVkIHRvIGJlIGFuIGludmFsaWQNCj4gdXNlciBhZGRyZXNzIChpcyBpdD8pLg0KPiBUaGVu
-IGFjY2Vzc19vaygpIGNvdWxkIHJldHVybiB0aGUgbW9kaWZpZWQgcG9pbnRlci4NCj4gU28geW91
-IGdldCBzb21ldGhpbmcgbGlrZToNCj4gCXVzZXJfYnVmZmVyID0gYWNjZXNzX29rKHVzZXJfYnVm
-ZmVyLCBsZW4pOw0KPiAJaWYgKCF1c2VyX2J1ZmZlcikNCj4gCQlyZXR1cm4gLUVGQVVMVC4NCj4g
-DQo+IFByb3ZpZGVkIHRoZSAnbGFzdCcgdXNlciBwYWdlIGlzIG5ldmVyIGFsbG9jYXRlZCAoaXQg
-Y2FuJ3QNCj4gYmUgb24gaTM4NiBkdWUgdG8gY3B1IHByZWZldGNoIGlzc3Vlcykgc29tZXRoaW5n
-IGxpa2U6DQo+IChhbmQgd2l0aCB0aGUgYXNtIHByb2JhYmx5IGFsbCBicm9rZW4pDQo+IA0KPiBz
-dGF0aWMgaW5saW5lIHZvaWQgX191c2VyICogYWNjZXNzX29rKHZvaWQgX191c2VyICpiLCBzaXpl
-X3QgbGVuKQ0KPiB7DQo+IAl1bnNpZ25lZCBsb25nIHggPSAobG9uZyliIHwgKGxvbmcpKGIgKyBs
-ZW4pOw0KPiAJdW5zaWduZWQgbG9uZyBsaW0gPSA2NF9iaXQgPyAxdSA8PCA2MyA6IDB4NDAwMDAw
-MDA7DQo+IAlhc20gdm9sYXRpbGUgKCIgYWRkICUxLCAlMFxuIg0KPiAJCQkiIHNiYiAkMCwgJTAi
-LCAiPXIiICh4KSwgInIiIChsaW0pKTsNCj4gCXJldHVybiAodm9pZCBfX3VzZXIgKikobG9uZyli
-ICYgfngpOw0KPiB9DQoNCkFjdHVhbGx5LCB0aGlua2luZyBmdXJ0aGVyLCBpZjoNCjEpIHRoZSBh
-Y2Nlc3Nfb2soKSBpbW1lZGlhdGVseSBwcmVjZWRlcyB0aGUgdXNlciBjb3B5IChhcyBpdCBzaG91
-bGQpLg0KMikgdGhlIHVzZXItY29waWVzIHVzZSBhIHNlbnNpYmxlICdpbmNyZWFzaW5nIGFkZHJl
-c3MnIGNvcHkuDQphbmQNCjMpIHRoZXJlIGlzIGEgJ2d1YXJkIHBhZ2UnIGJldHdlZW4gdmFsaWQg
-dXNlciBhbmQga2VybmVsIGFkZHJlc3Nlcy4NClRoZW4gYWNjZXNzX29rKCkgb25seSBuZWVkIGNo
-ZWNrIHRoZSBiYXNlIGFkZHJlc3Mgb2YgdGhlIHVzZXIgYnVmZmVyLg0KDQoJRGF2aWQNCg0KLQ0K
-UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
-bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
-KQ0K
+On 29.08.20 20:40, Linus Torvalds wrote:
+> On Sat, Aug 29, 2020 at 11:36 AM Gabriel C <nix.or.die@googlemail.com> wrote:
+>>
+>>> This kinda looks like the sqsize regression we had in earlier 5.9-rc,
+>>> but that should have been fixed in -rc2 with
+>>
+>> git tag --contains 7442ddcedc344b6fa073692f165dffdd1889e780
+>> returns nothing, that commit only exits in master, so probably in -rc3.
+> 
+> Right you are - that commit is not in rc2.
+> 
+> Daniel - that commit will be in rc3 when I cut that tomorrow, but if
+> you are willing to check current -git to verify that yes, it's fixed,
+> that would be lovely.
 
+Tried current git and indeed it boots just fine. Thanks everyone!
+
+Greetings
+Daniel
