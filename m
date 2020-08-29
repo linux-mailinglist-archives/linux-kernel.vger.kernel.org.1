@@ -2,176 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CCC25667C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 11:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5E5256680
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 11:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgH2Jbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 05:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726405AbgH2Jbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 05:31:44 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29A4320791;
-        Sat, 29 Aug 2020 09:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598693503;
-        bh=mRFSDrdb3CJe2f+LAM7xJ8zLaomR+oMA2NdfHPPa/t0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0yxm7IYZjnpWoncFmotRWzVmXnF0Xg4sF5JIoCi82xNx/OASmYj1Az+HI5i87X4sl
-         IxxhQXmB2/34D3+Ma3jTxSNDJf5x8IgXSf0ERSyv1a/e9t+O2sX4gHr2Ozx2/nrK5f
-         vYnTsiFcyBN3248K09lO/ot/VYcAVmDXe37yQ6ww=
-Date:   Sat, 29 Aug 2020 18:31:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eddy Wu <Eddy_Wu@trendmicro.com>, x86@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v3 06/16] csky: kprobes: Use generic kretprobe
- trampoline handler
-Message-Id: <20200829183139.9bf2877cf4f1a436b360c722@kernel.org>
-In-Reply-To: <CAJF2gTR5z87fb4ieOcrnMNT6GxSAhj99cf7draGVaHnk7G-pCQ@mail.gmail.com>
-References: <159854631442.736475.5062989489155389472.stgit@devnote2>
-        <159854636764.736475.9112286781925119117.stgit@devnote2>
-        <CAJF2gTR5z87fb4ieOcrnMNT6GxSAhj99cf7draGVaHnk7G-pCQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727093AbgH2Jiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 05:38:54 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45636 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727003AbgH2Jix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 05:38:53 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 18FB52DB5BFE21E2EF9B;
+        Sat, 29 Aug 2020 17:38:51 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Sat, 29 Aug 2020
+ 17:38:43 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] block: bio: Trim bio to sensible size in bio_trim()
+Date:   Sat, 29 Aug 2020 05:37:33 -0400
+Message-ID: <20200829093733.45833-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 20:34:22 +0800
-Guo Ren <guoren@kernel.org> wrote:
+Trim bio to sensible size in bio_trim() or something bad may happen.
 
-> Looks more clear.
-> 
-> Acked-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ block/bio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks Guo! I'll add it to the next version.
-
-> 
-> On Fri, Aug 28, 2020 at 12:39 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  arch/csky/kernel/probes/kprobes.c |   78 +------------------------------------
-> >  1 file changed, 3 insertions(+), 75 deletions(-)
-> >
-> > diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
-> > index f0f733b7ac5a..a891fb422e76 100644
-> > --- a/arch/csky/kernel/probes/kprobes.c
-> > +++ b/arch/csky/kernel/probes/kprobes.c
-> > @@ -404,87 +404,15 @@ int __init arch_populate_kprobe_blacklist(void)
-> >
-> >  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
-> >  {
-> > -       struct kretprobe_instance *ri = NULL;
-> > -       struct hlist_head *head, empty_rp;
-> > -       struct hlist_node *tmp;
-> > -       unsigned long flags, orig_ret_address = 0;
-> > -       unsigned long trampoline_address =
-> > -               (unsigned long)&kretprobe_trampoline;
-> > -       kprobe_opcode_t *correct_ret_addr = NULL;
-> > -
-> > -       INIT_HLIST_HEAD(&empty_rp);
-> > -       kretprobe_hash_lock(current, &head, &flags);
-> > -
-> > -       /*
-> > -        * It is possible to have multiple instances associated with a given
-> > -        * task either because multiple functions in the call path have
-> > -        * return probes installed on them, and/or more than one
-> > -        * return probe was registered for a target function.
-> > -        *
-> > -        * We can handle this because:
-> > -        *     - instances are always pushed into the head of the list
-> > -        *     - when multiple return probes are registered for the same
-> > -        *       function, the (chronologically) first instance's ret_addr
-> > -        *       will be the real return address, and all the rest will
-> > -        *       point to kretprobe_trampoline.
-> > -        */
-> > -       hlist_for_each_entry_safe(ri, tmp, head, hlist) {
-> > -               if (ri->task != current)
-> > -                       /* another task is sharing our hash bucket */
-> > -                       continue;
-> > -
-> > -               orig_ret_address = (unsigned long)ri->ret_addr;
-> > -
-> > -               if (orig_ret_address != trampoline_address)
-> > -                       /*
-> > -                        * This is the real return address. Any other
-> > -                        * instances associated with this task are for
-> > -                        * other calls deeper on the call stack
-> > -                        */
-> > -                       break;
-> > -       }
-> > -
-> > -       kretprobe_assert(ri, orig_ret_address, trampoline_address);
-> > -
-> > -       correct_ret_addr = ri->ret_addr;
-> > -       hlist_for_each_entry_safe(ri, tmp, head, hlist) {
-> > -               if (ri->task != current)
-> > -                       /* another task is sharing our hash bucket */
-> > -                       continue;
-> > -
-> > -               orig_ret_address = (unsigned long)ri->ret_addr;
-> > -               if (ri->rp && ri->rp->handler) {
-> > -                       __this_cpu_write(current_kprobe, &ri->rp->kp);
-> > -                       get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
-> > -                       ri->ret_addr = correct_ret_addr;
-> > -                       ri->rp->handler(ri, regs);
-> > -                       __this_cpu_write(current_kprobe, NULL);
-> > -               }
-> > -
-> > -               recycle_rp_inst(ri, &empty_rp);
-> > -
-> > -               if (orig_ret_address != trampoline_address)
-> > -                       /*
-> > -                        * This is the real return address. Any other
-> > -                        * instances associated with this task are for
-> > -                        * other calls deeper on the call stack
-> > -                        */
-> > -                       break;
-> > -       }
-> > -
-> > -       kretprobe_hash_unlock(current, &flags);
-> > -
-> > -       hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
-> > -               hlist_del(&ri->hlist);
-> > -               kfree(ri);
-> > -       }
-> > -       return (void *)orig_ret_address;
-> > +       return (void *)kretprobe_trampoline_handler(regs,
-> > +                       (unsigned long)&kretprobe_trampoline, NULL);
-> >  }
-> >
-> >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> >                                       struct pt_regs *regs)
-> >  {
-> >         ri->ret_addr = (kprobe_opcode_t *)regs->lr;
-> > +       ri->fp = NULL;
-> >         regs->lr = (unsigned long) &kretprobe_trampoline;
-> >  }
-> >
-> >
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
-> 
-> ML: https://lore.kernel.org/linux-csky/
-
-
+diff --git a/block/bio.c b/block/bio.c
+index a9931f23d933..94e4f97d3d4e 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1509,7 +1509,8 @@ void bio_trim(struct bio *bio, int offset, int size)
+ 		return;
+ 
+ 	bio_advance(bio, offset << 9);
+-	bio->bi_iter.bi_size = size;
++	if (likely(bio->bi_iter.bi_size >= size))
++		bio->bi_iter.bi_size = size;
+ 
+ 	if (bio_integrity(bio))
+ 		bio_integrity_trim(bio);
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.19.1
+
